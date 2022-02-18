@@ -15,6 +15,7 @@ General
    general/array.rst
    general/is_array.rst
    general/array_equal.rst
+   general/dtype_bits.rst
    general/clip.rst
    general/round.rst
    general/floormod.rst

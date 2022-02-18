@@ -18,6 +18,7 @@ General
    general/copy_array.rst
    general/array_equal.rst
    general/arrays_equal.rst
+   general/all_equal.rst
    general/equal.rst
    general/to_numpy.rst
    general/to_scalar.rst

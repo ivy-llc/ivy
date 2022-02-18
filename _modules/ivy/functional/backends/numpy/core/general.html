@@ -290,6 +290,17 @@
     <span class="k">return</span> <span class="kc">False</span></div>
 
 
+<span class="n">equal</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">:</span> <span class="n">x1</span> <span class="o">==</span> <span class="n">x2</span>
+
+
+<div class="viewcode-block" id="dtype_bits"><a class="viewcode-back" href="../../../../../../functional/backends/numpy/core/general/dtype_bits.html#ivy.functional.backends.numpy.core.general.dtype_bits">[docs]</a><span class="k">def</span> <span class="nf">dtype_bits</span><span class="p">(</span><span class="n">dtype_in</span><span class="p">):</span>
+    <span class="n">dtype_str</span> <span class="o">=</span> <span class="n">dtype_to_str</span><span class="p">(</span><span class="n">dtype_in</span><span class="p">)</span>
+    <span class="k">if</span> <span class="s1">&#39;bool&#39;</span> <span class="ow">in</span> <span class="n">dtype_str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">1</span>
+    <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">dtype_str</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;uint&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;int&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;bfloat&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;float&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">))</span></div>
+
+
+<span class="n">equal</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">=</span> <span class="s1">&#39;equal&#39;</span>
 <span class="n">copy_array</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 <span class="n">array_equal</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">array_equal</span>
 <span class="n">to_numpy</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span>
@@ -330,6 +341,9 @@
 
 <div class="viewcode-block" id="cast"><a class="viewcode-back" href="../../../../../../functional/backends/numpy/core/general/cast.html#ivy.functional.backends.numpy.core.general.cast">[docs]</a><span class="k">def</span> <span class="nf">cast</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dtype</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">x</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">dtype_from_str</span><span class="p">(</span><span class="n">dtype</span><span class="p">))</span></div>
+
+
+<span class="n">astype</span> <span class="o">=</span> <span class="n">cast</span>
 
 
 <span class="c1"># noinspection PyShadowingNames</span>

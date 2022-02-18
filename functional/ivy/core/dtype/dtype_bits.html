@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>equal &mdash; Ivy 1.0 documentation</title>
+  <title>dtype_bits &mdash; Ivy 1.0 documentation</title>
   
 
   
@@ -176,13 +176,13 @@
     
       <li><a href="../../../../index.html">Docs</a> &raquo;</li>
         
-      <li>equal</li>
+      <li>dtype_bits</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../../../_sources/functional/ivy/core/general/equal.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../../../_sources/functional/ivy/core/dtype/dtype_bits.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -195,23 +195,21 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="equal">
-<h1>equal<a class="headerlink" href="#equal" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="dtype-bits">
+<h1>dtype_bits<a class="headerlink" href="#dtype-bits" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
-<dt id="ivy.functional.ivy.core.general.equal">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">equal</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x1</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">x2</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">f</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>ivy.Framework<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/ivy/functional/ivy/core/general.html#equal"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.core.general.equal" title="Permalink to this definition">¶</a></dt>
-<dd><p>Computes the truth value of x1_i == x2_i for each element x1_i of the input array x1 with the respective
-element x2_i of the input array x2.</p>
+<dt id="ivy.functional.ivy.core.dtype.dtype_bits">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">dtype_bits</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dtype_in</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.Dtype<span class="p">, </span>str<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">f</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>ivy.Framework<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; int<a class="reference internal" href="../../../../_modules/ivy/functional/ivy/core/dtype.html#dtype_bits"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.core.dtype.dtype_bits" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the number of bits used for representing the input data type.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x1</strong> – first input array. May have any data type.</p></li>
-<li><p><strong>x2</strong> – second input array. Must be compatible with x1 (with Broadcasting). May have any data type.</p></li>
+<li><p><strong>dtype_in</strong> – The data tpye to determine the number of bits for.</p></li>
 <li><p><strong>f</strong> – Machine learning framework. Inferred from inputs if None.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>an array containing the element-wise results. The returned array must have a data type of bool.</p>
+<dd class="field-even"><p>The number of bits used to represent the data type.</p>
 </dd>
 </dl>
 </dd></dl>
