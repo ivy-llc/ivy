@@ -1071,6 +1071,20 @@ def full(shape: Union[int, Tuple[int]], fill_value: Union[int, float], dtype: Op
     return _cur_framework(f=f).full(shape, fill_value, dtype, device)
 
 
+def var(x: Union[ivy.Array, ivy.NativeArray], axis: int, correction: Union[int, float],
+        keepdims: bool = False, f: ivy.Framework = None) -> Union[ivy.Array, ivy.NativeArray]:
+    """
+        Calculates the variance of the input array x.
+        :param x: input array
+        :param axis: axis or axes along which variances must be computed
+        :param corr: degrees of freedom adjustment
+        :param keepdims: device on which to place the created array. Default: None.
+        :param f: Machine learning framework. Inferred from inputs if None.
+        :return: The returned array must have the same data type as x.
+    """
+
+    return _cur_framework(f=f).var(x, axis, correction, keepdims)
+
 # noinspection PyShadowingNames
 def one_hot(indices: Union[ivy.Array, ivy.NativeArray], depth: int, dev: ivy.Device = None, f: ivy.Framework = None)\
         -> Union[ivy.Array, ivy.NativeArray]:

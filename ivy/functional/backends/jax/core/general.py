@@ -280,6 +280,8 @@ def zeros_like(x, dtype=None, dev=None):
 def full(shape, fill_value, dtype=None, device=None):
     return to_dev(_jnp.full(shape, fill_value, dtype_from_str(default_dtype(dtype, fill_value))), default_device(device))
 
+def var(x, axis, correction, keepdims):
+    return to_dev(_jnp.var(x, axis, correction, keepdims))
 
 # noinspection PyShadowingNames
 def ones(shape, dtype=None, dev=None):

@@ -282,6 +282,8 @@ def full(shape, fill_value, dtype=None, device=None):
     with _tf.device(dev_from_str(default_device(device))):
         return _tf.cast(_tf.fill(shape, fill_value), dtype_from_str(default_dtype(dtype, fill_value)))
 
+def var(x, axis, correction, keepdims):
+    return _tf.cast(_tf.var(x, axis, correction, keepdims))
 
 # noinspection PyShadowingNames
 def ones(shape, dtype='float32', dev=None):

@@ -424,6 +424,8 @@ def full(shape, fill_value, dtype=None, device=None):
     return _torch.full(
         shape, fill_value, dtype=dtype_from_str(default_dtype(dtype, fill_value)), device=default_device(device))
 
+def var(x, axis, correction, keepdims):
+    return _torch.var(x, axis, correction, keepdims)
 
 # noinspection PyShadowingNames
 def ones(shape: List[int], dtype: ivy.Dtype = 'float32', dev: Optional[str] = None):

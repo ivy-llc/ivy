@@ -280,6 +280,9 @@ def zeros_like(x, dtype=None, dev=None):
 def full(shape, fill_value, dtype=None, device=None):
     return _to_dev(_np.full(shape, fill_value, dtype_from_str(default_dtype(dtype, fill_value))), device)
 
+def var(x, axis, correction, keepdims):
+    return _to_dev(_np.var(x, axis, correction, keepdims))
+
 
 # noinspection PyShadowingNames
 def ones(shape, dtype='float32', dev=None):

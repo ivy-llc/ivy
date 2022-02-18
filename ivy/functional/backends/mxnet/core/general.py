@@ -454,6 +454,9 @@ def full(shape, fill_value, dtype=None, device=None):
             _mx.nd.full((1,), fill_value, cont, dtype_from_str(default_dtype(dtype, fill_value))))
     return _mx.nd.full(shape, fill_value, cont, dtype_from_str(default_dtype(dtype, fill_value)))
 
+def var(x, axis, correction, keepdims):
+    return _mx.nd.var(x, axis, correction, keepdims)
+
 
 # noinspection PyShadowingNames
 def ones(shape, dtype='float32', dev=None):
