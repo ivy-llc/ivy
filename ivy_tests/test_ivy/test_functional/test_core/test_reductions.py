@@ -331,7 +331,6 @@ def test_all(x, axis, kd, dtype, tensor_fn, dev, call):
             expected_shape = [1 if i % len(x.shape) in axis_ else item for i, item in enumerate(expected_shape)]
         else:
             [expected_shape.pop(item) for item in axis_]
-    expected_shape = [1] if expected_shape == [] else expected_shape
     assert ret.shape == tuple(expected_shape)
     # value test
     assert np.allclose(call(ivy.all, x),
