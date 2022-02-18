@@ -56,7 +56,7 @@ def array(object_in, dtype=None, dev=None):
     with _tf.device(dev_from_str(dev)):
         try:
             tensor = _tf.convert_to_tensor(object_in, dtype=dtype)
-        except TypeError:
+        except (TypeError, ValueError):
             tensor = _tf.convert_to_tensor(ivy.nested_map(object_in, lambda x: _tf.cast(x, dtype)), dtype=dtype)
         if dtype is None:
             return tensor
