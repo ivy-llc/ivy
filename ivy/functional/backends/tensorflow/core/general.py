@@ -54,7 +54,10 @@ def array(object_in, dtype=None, dev=None):
     dtype = dtype_from_str(default_dtype(dtype, object_in))
     dev = default_device(dev)
     with _tf.device(dev_from_str(dev)):
-        tensor = _tf.convert_to_tensor(object_in, dtype=dtype)
+        try:
+            tensor = _tf.convert_to_tensor(object_in, dtype=dtype)
+        except TypeError:
+            tensor = _tf.convert_to_tensor(ivy.nested_map(object_in, lambda x: _tf.cast(x, dtype)), dtype=dtype)
         if dtype is None:
             return tensor
         return _tf.cast(tensor, dtype)
@@ -73,6 +76,28 @@ def is_array(x, exclusive=False):
 
 copy_array = _tf.identity
 array_equal = _tf.experimental.numpy.array_equal
+
+
+def dtype_bits(dtype_in):
+    dtype_str = dtype_to_str(dtype_in)
+    if 'bool' in dtype_str:
+        return 1
+    return int(dtype_str.replace('tf.', '').replace('uint', '').replace('int', '').replace('bfloat', '').replace(
+        'float', ''))
+
+
+def equal(x1, x2):
+    x1_bits = dtype_bits(x1.dtype)
+    if isinstance(x2, (int, float, bool)):
+        return x1 == x2
+    x2_bits = dtype_bits(x2.dtype)
+    if x1_bits > x2_bits:
+        x2 = _tf.cast(x2, x1.dtype)
+    elif x2_bits > x1_bits:
+        x1 = _tf.cast(x1, x2.dtype)
+    return x1 == x2
+
+
 to_numpy = lambda x: _np.asarray(_tf.convert_to_tensor(x))
 to_numpy.__name__ = 'to_numpy'
 to_scalar = lambda x: to_numpy(x).item()
@@ -113,6 +138,9 @@ argsort = lambda x, axis=-1: _tf.argsort(x, axis)
 
 def cast(x, dtype):
     return _tf.cast(x, dtype_from_str(dtype))
+
+
+astype = cast
 
 
 # noinspection PyShadowingNames
