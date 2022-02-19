@@ -302,7 +302,7 @@ def test_atanh(x, dtype, tensor_fn, dev, call):
 
 # log
 @pytest.mark.parametrize(
-    "x", [[1.], [[1.]]])
+    "x", [[1.], [[1.]], [float("nan")], [-3], [+0], [-0], [np.inf]])
 @pytest.mark.parametrize(
     "dtype", ['float32'])
 @pytest.mark.parametrize(
@@ -320,6 +320,9 @@ def test_log(x, dtype, tensor_fn, dev, call):
     # compilation test
     if not ivy.array_mode():
         helpers.assert_compilable(ivy.log)
+
+
+
 
 
 # exp
