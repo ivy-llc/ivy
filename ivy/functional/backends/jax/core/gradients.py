@@ -27,9 +27,9 @@ variable_data = lambda x: x
 
 
 def execute_with_gradients(func, xs, retain_grads=False):
-    wrapped_mode = False
+    array_mode = False
     if ivy.array_mode():
-        wrapped_mode = True
+        array_mode = True
         # ToDo: find more elegant solution than setting the global wrap mode to false.
         #  There must be some wrongly wrapped jax functions.
         ivy.set_array_mode(False)
@@ -46,7 +46,7 @@ def execute_with_gradients(func, xs, retain_grads=False):
     grad_func = _jax.grad(grad_fn)
     grads = grad_func(xs)
     grads = Container(grads)
-    if wrapped_mode:
+    if array_mode:
         # ToDo: find more elegant solution than setting the global wrap mode to false.
         #  There must be some wrongly wrapped jax functions.
         ivy.set_array_mode(True)
