@@ -26,19 +26,19 @@ if 'ARRAY_API_TESTS_MODULE' not in os.environ:
     os.environ['ARRAY_API_TESTS_MODULE'] = 'ivy.functional.backends.numpy'
 
 @pytest.fixture(autouse=True)
-def run_around_tests(dev, f, wrapped_mode, compile_graph, call):
-    if wrapped_mode and call is helpers.tf_graph_call:
-        # ToDo: add support for wrapped_mode and tensorflow compilation
+def run_around_tests(dev, f, array_mode, compile_graph, call):
+    if array_mode and call is helpers.tf_graph_call:
+        # ToDo: add support for array_mode and tensorflow compilation
         pytest.skip()
-    if wrapped_mode and call is helpers.jnp_call:
-        # ToDo: add support for wrapped_mode with jax, presumably some errenously wrapped jax methods
+    if array_mode and call is helpers.jnp_call:
+        # ToDo: add support for array_mode with jax, presumably some errenously wrapped jax methods
         pytest.skip()
     if 'gpu' in dev and call is helpers.np_call:
         # Numpy does not support GPU
         pytest.skip()
     clear_framework_stack()
     with f.use:
-        f.set_array_mode(wrapped_mode)
+        f.set_array_mode(array_mode)
         with DefaultDevice(dev):
             yield
 
@@ -59,14 +59,14 @@ def pytest_generate_tests(metafunc):
     else:
         f_strs = raw_value.split(',')
 
-    # wrapped_mode
-    raw_value = metafunc.config.getoption('--wrapped_mode')
+    # array_mode
+    raw_value = metafunc.config.getoption('--array_mode')
     if raw_value == 'both':
-        wrapped_modes = [True, False]
+        array_modes = [True, False]
     elif raw_value == 'true':
-        wrapped_modes = [True]
+        array_modes = [True]
     else:
-        wrapped_modes = [False]
+        array_modes = [False]
 
     # compile_graph
     raw_value = metafunc.config.getoption('--compile_graph')
@@ -81,15 +81,15 @@ def pytest_generate_tests(metafunc):
     configs = list()
     for f_str in f_strs:
         for dev in devs:
-            for wrapped_mode in wrapped_modes:
+            for array_mode in array_modes:
                 for compile_graph in compile_modes:
                     configs.append(
-                        (dev, TEST_FRAMEWORKS[f_str](), wrapped_mode, compile_graph, TEST_CALL_METHODS[f_str]))
-    metafunc.parametrize('dev,f,wrapped_mode,compile_graph,call', configs)
+                        (dev, TEST_FRAMEWORKS[f_str](), array_mode, compile_graph, TEST_CALL_METHODS[f_str]))
+    metafunc.parametrize('dev,f,array_mode,compile_graph,call', configs)
 
 
 def pytest_addoption(parser):
     parser.addoption('--dev', action="store", default="cpu")
     parser.addoption('--framework', action="store", default="jax,mxnet,numpy,tensorflow,torch")
-    parser.addoption('--wrapped_mode', action="store", default="both")
+    parser.addoption('--array_mode', action="store", default="both")
     parser.addoption('--compile_graph', action="store", default="true")
