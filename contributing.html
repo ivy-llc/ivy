@@ -226,6 +226,8 @@ should adhere to the following format:</p>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">my_func</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dtype</span><span class="p">,</span> <span class="n">dev</span><span class="p">)</span>
 </pre></div>
 </div>
+<p>All functions which adhere to the <a class="reference external" href="https://data-apis.org/array-api/latest/">Array API</a> standard should be placed in the submodule <code class="code docutils literal notranslate"><span class="pre">ivy.functional.ivy.array_api</span></code>,
+and should also be placed in the correct file in alignment with the categories used in the standard.</p>
 </div>
 <div class="section" id="backend-api">
 <h2>Backend API<a class="headerlink" href="#backend-api" title="Permalink to this headline">¶</a></h2>
@@ -242,6 +244,9 @@ should adhere to the following format:</p>
 should be identical apart from all <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code>, <code class="code docutils literal notranslate"><span class="pre">ivy.Dtype</span></code> and <code class="code docutils literal notranslate"><span class="pre">ivy.Dev</span></code> types replaced by
 framework-specific types.</p>
 <p>The backend methods should not add a docstring, as this would be identical to the docstring provided in the Ivy API.</p>
+<p>All backend functions which adhere to the <a class="reference external" href="https://data-apis.org/array-api/latest/">Array API</a> standard should also be placed in submodules such as
+<code class="code docutils literal notranslate"><span class="pre">ivy.functional.backends.torch.array_api</span></code>, and should also be placed in the correct file in alignment with the
+categories used in the standard.</p>
 </div>
 </div>
 
