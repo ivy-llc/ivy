@@ -35,6 +35,7 @@ General
    general/floormod.rst
    general/floor.rst
    general/ceil.rst
+   general/abs.rst
    general/argmax.rst
    general/argmin.rst
    general/argsort.rst
