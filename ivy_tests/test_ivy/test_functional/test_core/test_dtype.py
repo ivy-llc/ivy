@@ -51,8 +51,6 @@ def test_cast(object_in, starting_dtype, target_dtype, dev, call):
     if call in [helpers.torch_call]:
         # pytorch scripting does not support .type() method
         return
-    if not ivy.array_mode():
-        helpers.assert_compilable(ivy.cast)
 
 
 # is_int_dtype

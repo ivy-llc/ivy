@@ -28,13 +28,6 @@ def test_cross_entropy(t_n_p_n_res, dtype, tensor_fn, dev, call):
     assert list(ret.shape) == [1]
     # value test
     assert np.allclose(call(ivy.cross_entropy, true, pred), np.asarray(true_target))
-    # compilation test
-    if call in [helpers.torch_call]:
-        # cross_entropy does not have backend implementation,
-        # pytorch scripting requires direct bindings to work, which bypass get_framework()
-        return
-    if not ivy.array_mode():
-        helpers.assert_compilable(ivy.cross_entropy)
 
 
 # binary_cross_entropy
@@ -56,13 +49,6 @@ def test_binary_cross_entropy(t_n_p_n_res, dtype, tensor_fn, dev, call):
     assert ret.shape == pred.shape
     # value test
     assert np.allclose(call(ivy.binary_cross_entropy, true, pred), np.asarray(true_target))
-    # compilation test
-    if call in [helpers.torch_call]:
-        # binary_cross_entropy does not have backend implementation,
-        # pytorch scripting requires direct bindings to work, which bypass get_framework()
-        return
-    if not ivy.array_mode():
-        helpers.assert_compilable(ivy.binary_cross_entropy)
 
 
 # sparse_cross_entropy
@@ -84,10 +70,3 @@ def test_sparse_cross_entropy(t_n_p_n_res, dtype, tensor_fn, dev, call):
     assert list(ret.shape) == [1]
     # value test
     assert np.allclose(call(ivy.sparse_cross_entropy, true, pred), np.asarray(true_target))
-    # compilation test
-    if call in [helpers.torch_call]:
-        # sparse_cross_entropy does not have backend implementation,
-        # pytorch scripting requires direct bindings to work, which bypass get_framework()
-        return
-    if not ivy.array_mode():
-        helpers.assert_compilable(ivy.sparse_cross_entropy)

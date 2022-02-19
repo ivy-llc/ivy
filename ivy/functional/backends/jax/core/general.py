@@ -16,6 +16,7 @@ import multiprocessing as _multiprocessing
 from haiku._src.data_structures import FlatMapping
 
 # local
+import ivy
 from ivy.functional.ivy.core import default_device, default_dtype
 from ivy.functional.backends.jax.core.device import to_dev, dev as callable_dev
 
@@ -102,6 +103,16 @@ def is_array(x, exclusive=False):
 
 copy_array = _jnp.array
 array_equal = _jnp.array_equal
+
+
+def dtype_bits(dtype_in):
+    dtype_str = dtype_to_str(dtype_in)
+    if 'bool' in dtype_str:
+        return 1
+    return int(dtype_str.replace('uint', '').replace('int', '').replace('bfloat', '').replace('float', ''))
+
+
+equal = lambda x1, x2: x1 == x2
 to_numpy = lambda x: _onp.asarray(_to_array(x))
 to_numpy.__name__ = 'to_numpy'
 to_scalar = lambda x: x if isinstance(x, Number) else _to_array(x).item()
@@ -142,6 +153,9 @@ argsort = lambda x, axis=-1: _jnp.argsort(x, axis)
 
 def cast(x, dtype):
     return x.astype(dtype_from_str(dtype))
+
+
+astype = cast
 
 
 # noinspection PyShadowingNames
@@ -257,9 +271,8 @@ def squeeze(x, axis=None):
 
 
 # noinspection PyShadowingNames
-def zeros(shape, dtype='float32', dev=None):
-    dtype = _jnp.__dict__[dtype]
-    return to_dev(_jnp.zeros(shape, dtype), default_device(dev))
+def zeros(shape, dtype=None, dev=None):
+    return to_dev(_jnp.zeros(shape, dtype_from_str(default_dtype(dtype))), default_device(dev))
 
 
 # noinspection PyShadowingNames
@@ -326,43 +339,69 @@ def identity(n, dtype='float32', batch_shape=None, dev=None):
 meshgrid = lambda *xs, indexing='ij': _jnp.meshgrid(*xs, indexing=indexing)
 
 
-def scatter_flat(indices, updates, size, reduction='sum', dev=None):
+def scatter_flat(indices, updates, size=None, tensor=None, reduction='sum', dev=None):
+    target = tensor
+    target_given = ivy.exists(target)
+    if ivy.exists(size) and ivy.exists(target):
+        assert len(target.shape) == 1 and target.shape[0] == size
     if dev is None:
         dev = callable_dev(updates)
     if reduction == 'sum':
-        target = _jnp.zeros([size], dtype=updates.dtype)
+        if not target_given:
+            target = _jnp.zeros([size], dtype=updates.dtype)
         target = target.at[indices].add(updates)
+    elif reduction == 'replace':
+        if not target_given:
+            target = _jnp.zeros([size], dtype=updates.dtype)
+        target = target.at[indices].set(updates)
     elif reduction == 'min':
-        target = _jnp.ones([size], dtype=updates.dtype)*1e12
+        if not target_given:
+            target = _jnp.ones([size], dtype=updates.dtype)*1e12
         target = target.at[indices].min(updates)
-        target = _jnp.where(target == 1e12, 0., target)
+        if not target_given:
+            target = _jnp.where(target == 1e12, 0., target)
     elif reduction == 'max':
-        target = _jnp.ones([size], dtype=updates.dtype)*-1e12
+        if not target_given:
+            target = _jnp.ones([size], dtype=updates.dtype)*-1e12
         target = target.at[indices].max(updates)
-        target = _jnp.where(target == -1e12, 0., target)
+        if not target_given:
+            target = _jnp.where(target == -1e12, 0., target)
     else:
         raise Exception('reduction is {}, but it must be one of "sum", "min" or "max"'.format(reduction))
     return to_dev(target, dev)
 
 
 # noinspection PyShadowingNames
-def scatter_nd(indices, updates, shape, reduction='sum', dev=None):
+def scatter_nd(indices, updates, shape=None, tensor=None, reduction='sum', dev=None):
+    target = tensor
+    target_given = ivy.exists(target)
+    if ivy.exists(shape) and ivy.exists(target):
+        assert ivy.shape_to_tuple(target.shape) == ivy.shape_to_tuple(shape)
     if dev is None:
         dev = callable_dev(updates)
-    shape = list(shape)
+    shape = list(shape) if ivy.exists(shape) else list(tensor.shape)
     indices_flat = indices.reshape(-1, indices.shape[-1]).T
     indices_tuple = tuple(indices_flat) + (Ellipsis,)
     if reduction == 'sum':
-        target = _jnp.zeros(shape, dtype=updates.dtype)
+        if not target_given:
+            target = _jnp.zeros(shape, dtype=updates.dtype)
         target = target.at[indices_tuple].add(updates)
+    elif reduction == 'replace':
+        if not target_given:
+            target = _jnp.zeros(shape, dtype=updates.dtype)
+        target = target.at[indices_tuple].set(updates)
     elif reduction == 'min':
-        target = _jnp.ones(shape, dtype=updates.dtype)*1e12
+        if not target_given:
+            target = _jnp.ones(shape, dtype=updates.dtype)*1e12
         target = target.at[indices_tuple].min(updates)
-        target = _jnp.where(target == 1e12, 0., target)
+        if not target_given:
+            target = _jnp.where(target == 1e12, 0., target)
     elif reduction == 'max':
-        target = _jnp.ones(shape, dtype=updates.dtype)*-1e12
+        if not target_given:
+            target = _jnp.ones(shape, dtype=updates.dtype)*-1e12
         target = target.at[indices_tuple].max(updates)
-        target = _jnp.where(target == -1e12, 0., target)
+        if not target_given:
+            target = _jnp.where(target == -1e12, 0., target)
     else:
         raise Exception('reduction is {}, but it must be one of "sum", "min" or "max"'.format(reduction))
     return to_dev(target, dev)

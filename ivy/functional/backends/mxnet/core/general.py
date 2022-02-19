@@ -147,6 +147,16 @@ def array_equal(x0, x1):
     return _mx.nd.min(_mx.nd.broadcast_equal(x0, x1)) == 1
 
 
+def dtype_bits(dtype_in):
+    dtype_str = dtype_to_str(dtype_in)
+    if 'bool' in dtype_str:
+        return 1
+    return int(dtype_str.replace("<class 'numpy.", '').replace("'>", '').replace('uint', '').replace(
+        'int', '').replace('bfloat', '').replace('float', ''))
+
+
+equal = lambda x1, x2: x1 == x2
+equal.__name__ = 'equal'
 to_numpy = lambda x: x if isinstance(x, _np.ndarray) else (_np.array(x) if isinstance(x, (int, float)) else x.asnumpy())
 to_numpy.__name__ = 'to_numpy'
 to_scalar = lambda x: x if isinstance(x, Number) else x.asscalar().item()
@@ -200,6 +210,9 @@ argsort = lambda x, axis=-1: _mx.nd.argsort(x, axis)
 @_handle_flat_arrays_in_out
 def cast(x, dtype):
     return x.astype(dtype)
+
+
+astype = cast
 
 
 # noinspection PyUnresolvedReferences
@@ -404,7 +417,8 @@ def isinf(x):
 
 @_handle_flat_arrays_in_out
 def isfinite(x):
-    return _mx.nd.contrib.isfinite(x).astype('bool')
+    # ToDo: remove float32 conversion once int8 and uint8 work correctly. Currently 0 returns 0 for these types.
+    return _mx.nd.contrib.isfinite(x.astype('float32')).astype('bool')
 
 
 reshape = lambda x, new_shape: x.reshape(new_shape)
@@ -435,7 +449,7 @@ def squeeze(x, axis=None):
 # noinspection PyShadowingNames
 def zeros(shape, dtype='float32', dev=None):
     cont = _mxnet_init_context(default_device(dev))
-    if len(shape) == 0:
+    if len(shape) == 0 or 0 in shape:
         return _1_dim_array_to_flat_array(_mx.nd.zeros((1,), ctx=cont).astype(dtype))
     return _mx.nd.zeros(shape, ctx=cont).astype(dtype)
 
@@ -448,8 +462,9 @@ def zeros_like(x, dtype=None, dev=None):
 
 
 def full(shape, fill_value, dtype=None, device=None):
+    shape = ivy.shape_to_tuple(shape)
     cont = _mxnet_init_context(default_device(device))
-    if len(shape) == 0:
+    if len(shape) == 0 or 0 in shape:
         return _1_dim_array_to_flat_array(
             _mx.nd.full((1,), fill_value, cont, dtype_from_str(default_dtype(dtype, fill_value))))
     return _mx.nd.full(shape, fill_value, cont, dtype_from_str(default_dtype(dtype, fill_value)))
@@ -543,7 +558,9 @@ def meshgrid(*xs, indexing='ij'):
 
 
 # noinspection PyShadowingNames
-def scatter_flat(indices, updates, size, reduction='sum', dev=None):
+def scatter_flat(indices, updates, size=None, tensor=None, reduction='sum', dev=None):
+    if ivy.exists(tensor):
+        raise Exception('MXNet scatter_flat does not support scattering into an pre-existing tensor.')
     if reduction == 'replace':
         return _mx.nd.scatter_nd(updates, _mx.nd.expand_dims(indices, 0), [size]).copyto(_mxnet_init_context(default_device(dev)))
     else:
@@ -552,7 +569,9 @@ def scatter_flat(indices, updates, size, reduction='sum', dev=None):
 
 
 # noinspection PyShadowingNames
-def scatter_nd(indices, updates, shape, reduction='sum', dev=None):
+def scatter_nd(indices, updates, shape=None, tensor=None, reduction='sum', dev=None):
+    if ivy.exists(tensor):
+        raise Exception('MXNet scatter_flat does not support scattering into an pre-existing tensor.')
     if dev is None:
         dev = _callable_dev(indices)
     shape = list(shape)

@@ -1,3 +1,0 @@
-"""
-PyTorch Pooling Functions Frontend
-"""

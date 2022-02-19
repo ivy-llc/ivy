@@ -67,7 +67,7 @@ class DefaultIntDtype:
 # --------#
 
 # noinspection PyShadowingNames
-def cast(x: Union[ivy.Array, ivy.NativeArray], dtype: ivy.Dtype, f: ivy.Framework = None)\
+def cast(x: Union[ivy.Array, ivy.NativeArray], dtype: ivy.Dtype)\
         -> Union[ivy.Array, ivy.NativeArray]:
     """
     Casts an array to a specified type.
@@ -78,17 +78,18 @@ def cast(x: Union[ivy.Array, ivy.NativeArray], dtype: ivy.Dtype, f: ivy.Framewor
             If not given, then the type will be determined as the minimum type required to hold the objects in the
             sequence.
     :type dtype: data-type string
-    :param f: Machine learning framework. Inferred from inputs if None.
-    :type f: ml_framework, optional
     :return: A new array of the same shape as input array a, with data type given by dtype.
     """
-    return _cur_framework(x, f=f).cast(x, dtype)
+    return _cur_framework(x).cast(x, dtype)
+
+
+astype = cast
 
 
 # Queries #
 # --------#
 
-def dtype(x: Union[ivy.Array, ivy.NativeArray], as_str: bool = False, f: ivy.Framework = None)\
+def dtype(x: Union[ivy.Array, ivy.NativeArray], as_str: bool = False)\
         -> ivy.Dtype:
     """
     Get the data type for input array x.
@@ -97,11 +98,19 @@ def dtype(x: Union[ivy.Array, ivy.NativeArray], as_str: bool = False, f: ivy.Fra
     :type x: array
     :param as_str: Whether or not to return the dtype in string format. Default is False.
     :type as_str: bool, optional
-    :param f: Machine learning framework. Inferred from inputs if None.
-    :type f: ml_framework, optional
     :return: Data type of the array
     """
-    return _cur_framework(x, f=f).dtype(x, as_str)
+    return _cur_framework(x).dtype(x, as_str)
+
+
+def dtype_bits(dtype_in: Union[ivy.Dtype, str]) -> int:
+    """
+    Get the number of bits used for representing the input data type.
+
+    :param dtype_in: The data tpye to determine the number of bits for.
+    :return: The number of bits used to represent the data type.
+    """
+    return _cur_framework(dtype_in).dtype_bits(dtype_in)
 
 
 def is_int_dtype(dtype_in: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray, Number]):
@@ -116,9 +125,9 @@ def is_int_dtype(dtype_in: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray, Num
     elif isinstance(dtype_in, np.ndarray):
         return 'int' in dtype_in.dtype.name
     elif isinstance(dtype_in, Number):
-        return True if isinstance(dtype_in, int) else False
+        return True if isinstance(dtype_in, (int, np.integer)) and not isinstance(dtype_in, bool) else False
     elif isinstance(dtype_in, (list, tuple, dict)):
-        return True if ivy.nested_indices_where(dtype_in, lambda x: isinstance(x, int)) else False
+        return True if ivy.nested_indices_where(dtype_in, lambda x: isinstance(x, (int, np.integer))) else False
     return 'int' in dtype_to_str(dtype_in)
 
 
@@ -134,9 +143,9 @@ def is_float_dtype(dtype_in: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray, N
     elif isinstance(dtype_in, np.ndarray):
         return 'float' in dtype_in.dtype.name
     elif isinstance(dtype_in, Number):
-        return True if isinstance(dtype_in, float) else False
+        return True if isinstance(dtype_in, (float, np.floating)) else False
     elif isinstance(dtype_in, (list, tuple, dict)):
-        return True if ivy.nested_indices_where(dtype_in, lambda x: isinstance(x, float)) else False
+        return True if ivy.nested_indices_where(dtype_in, lambda x: isinstance(x, (float, np.floating))) else False
     return 'float' in dtype_to_str(dtype_in)
 
 
@@ -164,6 +173,17 @@ def invalid_dtype(dtype_in: Union[ivy.Dtype, str, None]):
     return ivy.dtype_to_str(dtype_in) in ivy.invalid_dtype_strs
 
 
+# noinspection PyShadowingBuiltins
+def closest_valid_dtype(type: Union[ivy.Dtype, str, None]):
+    """
+    Determines the closest valid datatype to the datatype passed as input.
+
+    :param type: The data type for which to check the closest valid type for.
+    :return: The closest valid data type as a native ivy.Dtype
+    """
+    return _cur_framework(type).closest_valid_dtype(type)
+
+
 # Dtype Format Conversion #
 # ------------------------#
 
@@ -184,59 +204,53 @@ def convert_dtype(dtype_in: Union[ivy.Dtype, str], backend: str):
     return ivy.dtype_from_str(ivy_backend.dtype_to_str(dtype_in))
 
 
-def dtype_to_str(dtype_in: Union[ivy.Dtype, str], f: ivy.Framework = None)\
+def dtype_to_str(dtype_in: Union[ivy.Dtype, str])\
         -> str:
     """
     Convert native data type to string representation.
 
     :param dtype_in: The data type to convert to string.
     :type dtype_in: data type
-    :param f: Machine learning framework. Inferred from inputs if None.
-    :type f: ml_framework, optional
     :return: data type string 'float32'
     """
-    return _cur_framework(None, f=f).dtype_to_str(dtype_in)
+    return _cur_framework(None).dtype_to_str(dtype_in)
 
 
-def dtype_from_str(dtype_in: Union[ivy.Dtype, str], f: ivy.Framework = None)\
+def dtype_from_str(dtype_in: Union[ivy.Dtype, str])\
         -> ivy.Dtype:
     """
     Convert data type string representation to native data type.
 
     :param dtype_in: The data type string to convert to native data type.
     :type dtype_in: str
-    :param f: Machine learning framework. Inferred from inputs if None.
-    :type f: ml_framework, optional
     :return: data type e.g. ivy.float32.
     """
-    return _cur_framework(None, f=f).dtype_from_str(dtype_in)
+    return _cur_framework(None).dtype_from_str(dtype_in)
 
 
 # Dtype Info #
 # -----------#
 
 # noinspection PyShadowingBuiltins
-def iinfo(type: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray], f: ivy.Framework = None) -> Iinfo:
+def iinfo(type: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray]) -> Iinfo:
     """
     Machine limits for integer data types.
 
     :param type: the kind of integer data-type about which to get information.
-    :param f: Machine learning framework. Inferred from inputs if None.
     :return: out – object with the machine limits for integer data types.
     """
-    return _cur_framework(None, f=f).iinfo(type)
+    return _cur_framework(None).iinfo(type)
 
 
 # noinspection PyShadowingBuiltins
-def finfo(type: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray], f: ivy.Framework = None) -> Finfo:
+def finfo(type: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray]) -> Finfo:
     """
     Machine limits for floating-point data types.
 
     :param type: the kind of floating-point data-type about which to get information.
-    :param f: Machine learning framework. Inferred from inputs if None.
     :return: out – object with the machine limits for floating-point data types.
     """
-    return _cur_framework(None, f=f).finfo(type)
+    return _cur_framework(None).finfo(type)
 
 
 # Default Dtype #
@@ -256,7 +270,7 @@ def default_dtype(dtype=None, item=None, as_str=False):
         _assert_dtype_correct_formatting(ivy.dtype_to_str(dtype))
         return dtype
     elif ivy.exists(item):
-        if hasattr(item, '__len__') and len(item) == 0:
+        if isinstance(item, (list, tuple, dict)) and len(item) == 0:
             pass
         elif ivy.is_float_dtype(item):
             return default_float_dtype(as_str=as_str)
