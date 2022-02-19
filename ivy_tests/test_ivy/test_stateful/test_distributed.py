@@ -147,8 +147,8 @@ def test_distributed_training(bs_ic_oc, dev, call):
 # distributed multiprocess training
 @pytest.mark.parametrize(
     "bs_ic_oc", [([2, 1], 4, 5)])
-def test_distributed_multiprocess_training(bs_ic_oc, dev, wrapped_mode, call):
-    if wrapped_mode:
+def test_distributed_multiprocess_training(bs_ic_oc, dev, array_mode, call):
+    if array_mode:
         # ToDo: get this test passing
         pytest.skip()
     # smoke test
@@ -250,8 +250,8 @@ def test_distributed_multiprocess_training(bs_ic_oc, dev, wrapped_mode, call):
     "from_class_and_args", [True, False])
 @pytest.mark.parametrize(
     "inplace_update", [True, False])
-def test_to_ivy_module_distributed(bs_ic_oc, from_class_and_args, inplace_update, dev, wrapped_mode, call):
-    if wrapped_mode:
+def test_to_ivy_module_distributed(bs_ic_oc, from_class_and_args, inplace_update, dev, array_mode, call):
+    if array_mode:
         # ToDo: get this test passing
         pytest.skip()
     # smoke test
@@ -350,9 +350,9 @@ def test_to_ivy_module_distributed(bs_ic_oc, from_class_and_args, inplace_update
     "from_class_and_args", [True, False])
 @pytest.mark.parametrize(
     "inplace_update", [True, False])
-def test_to_ivy_module_distributed_multiprocess(bs_ic_oc, from_class_and_args, inplace_update, dev, wrapped_mode, call):
+def test_to_ivy_module_distributed_multiprocess(bs_ic_oc, from_class_and_args, inplace_update, dev, array_mode, call):
 
-    if wrapped_mode:
+    if array_mode:
         # ToDo: get this test passing
         pytest.skip()
 
@@ -452,9 +452,9 @@ def test_to_ivy_module_distributed_multiprocess(bs_ic_oc, from_class_and_args, i
     "tune_dev_alloc", [True, False])
 @pytest.mark.parametrize(
     "tune_dev_splits", [True, False])
-def test_device_manager_wrapped_tuning(bs_ic_oc, tune_dev_alloc, tune_dev_splits, dev, wrapped_mode, call):
+def test_device_manager_wrapped_tuning(bs_ic_oc, tune_dev_alloc, tune_dev_splits, dev, array_mode, call):
 
-    if wrapped_mode:
+    if array_mode:
         # ToDo: get this test passing
         pytest.skip()
 

@@ -22,14 +22,14 @@ import ivy_tests.test_ivy.helpers as helpers
     "dtype", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array])
-def test_gelu(bs_oc_target, dtype, tensor_fn, dev, wrapped_mode, compile_graph, call):
+def test_gelu(bs_oc_target, dtype, tensor_fn, dev, array_mode, compile_graph, call):
     # smoke test
     batch_shape, output_channels, target = bs_oc_target
     x = ivy.cast(ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), output_channels), 'float32')
     gelu_layer = ivy.GELU()
 
     # compile if this mode is set
-    if compile_graph and not wrapped_mode and call is helpers.torch_call:
+    if compile_graph and not array_mode and call is helpers.torch_call:
         # Currently only PyTorch is supported for ivy compilation
         gelu_layer.compile_graph(x)
 
@@ -61,14 +61,14 @@ def test_gelu(bs_oc_target, dtype, tensor_fn, dev, wrapped_mode, compile_graph, 
     "dtype", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array])
-def test_geglu(bs_oc_target, dtype, tensor_fn, dev, wrapped_mode, compile_graph, call):
+def test_geglu(bs_oc_target, dtype, tensor_fn, dev, array_mode, compile_graph, call):
     # smoke test
     batch_shape, output_channels, target = bs_oc_target
     x = ivy.cast(ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), output_channels*2), 'float32')
     geglu_layer = ivy.GEGLU()
 
     # compile if this mode is set
-    if compile_graph and not wrapped_mode and call is helpers.torch_call:
+    if compile_graph and not array_mode and call is helpers.torch_call:
         # Currently only PyTorch is supported for ivy compilation
         geglu_layer.compile_graph(x)
 
@@ -85,5 +85,5 @@ def test_geglu(bs_oc_target, dtype, tensor_fn, dev, wrapped_mode, compile_graph,
     if call is helpers.torch_call:
         # pytest scripting does not **kwargs
         return
-    if not wrapped_mode:
+    if not array_mode:
         helpers.assert_compilable(geglu_layer)
