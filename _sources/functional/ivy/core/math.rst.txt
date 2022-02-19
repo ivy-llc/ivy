@@ -28,4 +28,5 @@ Math
    math/log.rst
    math/exp.rst
    math/erf.rst
+   math/divide.rst
 
