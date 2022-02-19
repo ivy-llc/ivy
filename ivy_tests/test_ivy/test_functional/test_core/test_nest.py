@@ -196,9 +196,9 @@ def test_all_nested_indices_w_nest_checks(nest, dev, call):
 
 
 # copy_nest
-def test_copy_nest(dev, wrapped_mode, call):
+def test_copy_nest(dev, array_mode, call):
 
-    if wrapped_mode:
+    if array_mode:
         # ToDo: get this test passing
         pytest.skip()
 
