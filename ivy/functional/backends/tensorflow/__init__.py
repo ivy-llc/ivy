@@ -34,7 +34,6 @@ all_dtypes = (int8, int16, int32, int64,
               uint8, uint16, uint32, uint64,
               bfloat16, float16, float32, float64)
 valid_dtypes = all_dtypes
-invalid_dtypes = ()
 
 all_dtype_strs = ('int8', 'int16', 'int32', 'int64',
                   'uint8', 'uint16', 'uint32', 'uint64',
@@ -42,7 +41,16 @@ all_dtype_strs = ('int8', 'int16', 'int32', 'int64',
 valid_dtype_strs = all_dtypes
 invalid_dtype_strs = ()
 
-iinfo = tf.experimental.numpy.iinfo
+
+def closest_valid_dtype(type):
+    if type is None:
+        return ivy.default_dtype()
+    return type
+
+
+def iinfo(type):
+    return tf.experimental.numpy.iinfo(dtype_to_str(type))
+
 
 class Finfo:
 
@@ -70,8 +78,8 @@ class Finfo:
         return float(self._tf_finfo.tiny)
 
 
-def finfo(datatype_in):
-    return Finfo(tf.experimental.numpy.finfo(datatype_in))
+def finfo(type):
+    return Finfo(tf.experimental.numpy.finfo(dtype_from_str(type)))
 
 
 backend = 'tensorflow'

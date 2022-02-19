@@ -1,3 +1,0 @@
-"""
-PyTorch Loss Functions Frontend
-"""

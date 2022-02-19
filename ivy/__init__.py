@@ -41,7 +41,6 @@ _MIN_BASE = 1e-5
 import ivy
 from .array import Array, Variable
 from .container import Container, MultiDevContainer
-from ivy.array.array_mode_handler import set_array_mode, unset_array_mode, array_mode, array_mode_val
 from .framework_handler import current_framework, get_framework, set_framework, unset_framework, framework_stack,\
     choose_random_framework, try_import_ivy_jax, try_import_ivy_tf, try_import_ivy_torch, try_import_ivy_mxnet,\
     try_import_ivy_numpy, clear_framework_stack
@@ -52,7 +51,6 @@ from . import debugger
 from .graph_compiler import *
 from . import graph_compiler
 from ivy.functional.ivy.core import *
-from .functional import frontends
 from .functional.ivy import nn
 from ivy.functional.ivy.nn import *
 from . import stateful
@@ -77,6 +75,8 @@ float32 = 'float32'
 float64 = 'float64'
 # noinspection PyShadowingBuiltins
 bool = 'bool'
+nan = float('nan')
+inf = float('inf')
 
 all_dtypes = (int8, int16, int32, int64,
               uint8, uint16, uint32, uint64,

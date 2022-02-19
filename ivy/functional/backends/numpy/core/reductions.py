@@ -4,6 +4,7 @@ Collection of Numpy reduction functions, wrapped to fit Ivy syntax and signature
 
 # global
 import numpy as _np
+import numpy.array_api as _npa
 
 
 def reduce_sum(x, axis=None, keepdims=False):
@@ -12,10 +13,7 @@ def reduce_sum(x, axis=None, keepdims=False):
         axis = tuple(range(num_dims))
     elif isinstance(axis, list):
         axis = tuple(axis)
-    ret = _np.asarray(_np.sum(x, axis=axis, keepdims=keepdims))
-    if ret.shape == ():
-        return ret.reshape((1,))
-    return ret
+    return _np.asarray(_np.sum(x, axis=axis, keepdims=keepdims))
 
 
 def reduce_prod(x, axis=None, keepdims=False):
@@ -24,10 +22,7 @@ def reduce_prod(x, axis=None, keepdims=False):
         axis = tuple(range(num_dims))
     elif isinstance(axis, list):
         axis = tuple(axis)
-    ret = _np.asarray(_np.prod(x, axis=axis, keepdims=keepdims))
-    if ret.shape == ():
-        return ret.reshape((1,))
-    return ret
+    return _np.asarray(_np.prod(x, axis=axis, keepdims=keepdims))
 
 
 def reduce_mean(x, axis=None, keepdims=False):
@@ -36,10 +31,7 @@ def reduce_mean(x, axis=None, keepdims=False):
         axis = tuple(range(num_dims))
     elif isinstance(axis, list):
         axis = tuple(axis)
-    ret = _np.asarray(_np.mean(x, axis=axis, keepdims=keepdims))
-    if ret.shape == ():
-        return ret.reshape((1,))
-    return ret
+    return _np.asarray(_np.mean(x, axis=axis, keepdims=keepdims))
 
 
 def reduce_var(x, axis=None, keepdims=False):
@@ -48,10 +40,7 @@ def reduce_var(x, axis=None, keepdims=False):
         axis = tuple(range(num_dims))
     elif isinstance(axis, list):
         axis = tuple(axis)
-    ret = _np.asarray(_np.var(x, axis=axis, keepdims=keepdims))
-    if ret.shape == ():
-        return ret.reshape((1,))
-    return ret
+    return _np.asarray(_np.var(x, axis=axis, keepdims=keepdims))
 
 
 def reduce_min(x, axis=None, keepdims=False):
@@ -60,10 +49,7 @@ def reduce_min(x, axis=None, keepdims=False):
         axis = tuple(range(num_dims))
     elif isinstance(axis, list):
         axis = tuple(axis)
-    ret = _np.asarray(_np.min(x, axis=axis, keepdims=keepdims))
-    if ret.shape == ():
-        return ret.reshape((1,))
-    return ret
+    return _np.asarray(_np.min(x, axis=axis, keepdims=keepdims))
 
 
 def reduce_max(x, axis=None, keepdims=False):
@@ -72,21 +58,12 @@ def reduce_max(x, axis=None, keepdims=False):
         axis = tuple(range(num_dims))
     elif isinstance(axis, list):
         axis = tuple(axis)
-    ret = _np.asarray(_np.max(x, axis=axis, keepdims=keepdims))
-    if ret.shape == ():
-        return ret.reshape((1,))
-    return ret
+    return _np.asarray(_np.max(x, axis=axis, keepdims=keepdims))
 
 
 def einsum(equation, *operands):
-    ret = _np.asarray(_np.einsum(equation, *operands))
-    if ret.shape == ():
-        return ret.reshape((1,))
-    return ret
+    return _np.asarray(_np.einsum(equation, *operands))
 
 
 def all(x, axis=None, keepdims=False):
-    ret = _np.all(x, axis, keepdims=keepdims)
-    if ret.shape == ():
-        return _np.reshape(ret, (1,))
-    return ret
+    return _np.asarray(_npa.all(_npa.asarray(x), axis=axis, keepdims=keepdims))

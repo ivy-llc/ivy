@@ -19,9 +19,6 @@ int16 = _torch.int16
 int32 = _torch.int32
 int64 = _torch.int64
 uint8 = _torch.uint8
-uint16 = 'uint16'
-uint32 = 'uint32'
-uint64 = 'uint64'
 bfloat16 = _torch.bfloat16
 float16 = _torch.float16
 float32 = _torch.float32
@@ -33,7 +30,6 @@ all_dtypes = (int8, int16, int32, int64,
               uint8,
               bfloat16, float16, float32, float64)
 valid_dtypes = all_dtypes
-invalid_dtypes = (uint16, uint32, uint64)
 
 all_dtype_strs = ('int8', 'int16', 'int32', 'int64',
                   'uint8',
@@ -41,7 +37,21 @@ all_dtype_strs = ('int8', 'int16', 'int32', 'int64',
 valid_dtype_strs = all_dtypes
 invalid_dtype_strs = ('uint16', 'uint32', 'uint64')
 
-iinfo = _torch.iinfo
+
+def closest_valid_dtype(type):
+    if type is None:
+        return ivy.default_dtype()
+    type_str = dtype_to_str(type)
+    if type_str in invalid_dtype_strs:
+        return {'uint16': uint8,
+                'uint32': uint8,
+                'uint64': uint8}[type_str]
+    return type
+
+
+def iinfo(type):
+    return _torch.iinfo(dtype_from_str(type))
+
 
 class Finfo:
 
@@ -69,8 +79,8 @@ class Finfo:
         return self._torch_finfo.tiny
 
 
-def finfo(datatype_in):
-    return Finfo(_torch.finfo(datatype_in))
+def finfo(type):
+    return Finfo(_torch.finfo(dtype_from_str(type)))
 
 
 backend = 'torch'

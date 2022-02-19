@@ -49,7 +49,9 @@ def pinv(x):
             else:
                 return xT
 
-cholesky = _mx.np.linalg.cholesky
+
+cholesky = lambda x: _mx.np.linalg.cholesky(x.as_np_ndarray()).as_nd_ndarray()
+
 
 def vector_to_skew_symmetric_matrix(vector):
     batch_shape = list(vector.shape[:-1])
