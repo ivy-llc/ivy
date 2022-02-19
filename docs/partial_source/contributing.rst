@@ -34,7 +34,7 @@ Code in the backend submodules such as :code:`ivy.functional.backends.torch` sho
 
     def my_func(x: torch.Tensor,
                 dtype: Optional[Union[torch.dtype, str]] = None,
-                dev: Optional[Union[torch.dev, str]] = None):
+                dev: Optional[Union[torch.device, str]] = None):
         dtype = ivy.dtype_from_str(ivy.default_dtype(dtype, x))
         dev = ivy.dev_from_str(ivy.default_dev(dev, x))
         return torch.something_cool(x, dtype, dev)
