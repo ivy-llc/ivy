@@ -1,0 +1,437 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>ivy.functional.ivy.core.array_builtins &mdash; Ivy 1.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../../../" src="../../../../../_static/documentation_options.js"></script>
+        <script src="../../../../../_static/jquery.js"></script>
+        <script src="../../../../../_static/underscore.js"></script>
+        <script src="../../../../../_static/doctools.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../../_static/css/custom.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../../../index.html" class="icon icon-home"> Ivy
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../why_ivy.html">Why Ivy?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../using_ivy.html">Using Ivy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../training_a_network.html">Training a Network</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Array</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../array/array_mode_handler.html">Array mode handler</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../array/conversions.html">Conversions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../array/device.html">Device</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../array/general.html">General</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../array/gradients.html">Gradients</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../array/image.html">Image</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../array/linalg.html">Linalg</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../array/logic.html">Logic</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../array/math.html">Math</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../array/meta.html">Meta</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../array/random.html">Random</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../array/reductions.html">Reductions</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Functional</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../functional/backends.html">Backends</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../functional/frontends.html">Frontends</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../functional/ivy.html">Ivy</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Graph compiler</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../graph_compiler/compiler.html">Compiler</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../graph_compiler/globals.html">Globals</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../graph_compiler/graph.html">Graph</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../graph_compiler/helpers.html">Helpers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../graph_compiler/op_logging.html">Op logging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../graph_compiler/param.html">Param</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Stateful</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../stateful/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../stateful/converters.html">Converters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../stateful/initializers.html">Initializers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../stateful/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../stateful/module.html">Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../stateful/norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../stateful/optimizers.html">Optimizers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../stateful/sequential.html">Sequential</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Docs</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../ivy"">Ivy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../mech"">Ivy mech</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../vision"">Ivy vision</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../robot"">Ivy robot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../gym"">Ivy gym</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../memory"">Ivy memory</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../builder"">Ivy builder</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../models"">Ivy models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../ecosystem"">Ivy ecosystem</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">Ivy</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../../../index.html">Module code</a> &raquo;</li>
+        
+      <li>ivy.functional.ivy.core.array_builtins</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for ivy.functional.ivy.core.array_builtins</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Collection of builtin Ivy functions.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+
+<span class="c1"># noinspection PyShadowingBuiltins</span>
+<div class="viewcode-block" id="builtin_dir"><a class="viewcode-back" href="../../../../../functional/ivy/core/array_builtins/builtin_dir.html#ivy.functional.ivy.core.array_builtins.builtin_dir">[docs]</a><span class="k">def</span> <span class="nf">builtin_dir</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">x</span><span class="o">.</span><span class="fm">__dir__</span><span class="p">()</span></div>
+
+
+<span class="c1"># noinspection PyShadowingBuiltins</span>
+<div class="viewcode-block" id="builtin_getattr"><a class="viewcode-back" href="../../../../../functional/ivy/core/array_builtins/builtin_getattr.html#ivy.functional.ivy.core.array_builtins.builtin_getattr">[docs]</a><span class="k">def</span> <span class="nf">builtin_getattr</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">x</span><span class="o">.</span><span class="fm">__getattr__</span><span class="p">(</span><span class="n">item</span><span class="p">)</span></div>
+
+
+<span class="c1"># noinspection PyShadowingBuiltins</span>
+<div class="viewcode-block" id="builtin_getattribute"><a class="viewcode-back" href="../../../../../functional/ivy/core/array_builtins/builtin_getattribute.html#ivy.functional.ivy.core.array_builtins.builtin_getattribute">[docs]</a><span class="k">def</span> <span class="nf">builtin_getattribute</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">x</span><span class="o">.</span><span class="fm">__getattribute__</span><span class="p">(</span><span class="n">item</span><span class="p">)</span></div>
+
+
+<span class="c1"># noinspection PyShadowingBuiltins</span>
+<div class="viewcode-block" id="builtin_getitem"><a class="viewcode-back" href="../../../../../functional/ivy/core/array_builtins/builtin_getitem.html#ivy.functional.ivy.core.array_builtins.builtin_getitem">[docs]</a><span class="k">def</span> <span class="nf">builtin_getitem</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">query</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">x</span><span class="o">.</span><span class="fm">__getitem__</span><span class="p">(</span><span class="n">query</span><span class="p">)</span></div>
+
+
+<span class="c1"># noinspection PyShadowingBuiltins</span>
+<div class="viewcode-block" id="builtin_setitem"><a class="viewcode-back" href="../../../../../functional/ivy/core/array_builtins/builtin_setitem.html#ivy.functional.ivy.core.array_builtins.builtin_setitem">[docs]</a><span class="k">def</span> <span class="nf">builtin_setitem</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">query</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">x</span><span class="o">.</span><span class="fm">__setitem__</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span></div>
+
+
+<span class="c1"># noinspection PyShadowingBuiltins</span>
+<div class="viewcode-block" id="builtin_contains"><a class="viewcode-back" href="../../../../../functional/ivy/core/array_builtins/builtin_contains.html#ivy.functional.ivy.core.array_builtins.builtin_contains">[docs]</a><span class="k">def</span> <span class="nf">builtin_contains</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">x</span><span class="o">.</span><span class="fm">__contains__</span><span class="p">(</span><span class="n">key</span><span class="p">)</span></div>
+
+
+<span class="c1"># noinspection PyShadowingBuiltins</span>
+<div class="viewcode-block" id="builtin_pos"><a class="viewcode-back" href="../../../../../functional/ivy/core/array_builtins/builtin_pos.html#ivy.functional.ivy.core.array_builtins.builtin_pos">[docs]</a><span class="k">def</span> <span class="nf">builtin_pos</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">x</span><span class="o">.</span><span class="fm">__pos__</span><span class="p">()</span></div>
+
+
+<span class="c1"># noinspection PyShadowingBuiltins</span>
+<div class="viewcode-block" id="builtin_neg"><a class="viewcode-back" href="../../../../../functional/ivy/core/array_builtins/builtin_neg.html#ivy.functional.ivy.core.array_builtins.builtin_neg">[docs]</a><span class="k">def</span> <span class="nf">builtin_neg</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">x</span><span class="o">.</span><span class="fm">__neg__</span><span class="p">()</span></div>
+
+
+<span class="c1"># noinspection PyShadowingBuiltins</span>
+<div class="viewcode-block" id="builtin_pow"><a class="viewcode-back" href="../../../../../functional/ivy/core/array_builtins/builtin_pow.html#ivy.functional.ivy.core.array_builtins.builtin_pow">[docs]</a><span class="k">def</span> <span class="nf">builtin_pow</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">power</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">x</span><span class="o">.</span><span class="fm">__pow__</span><span class="p">(</span><span class="n">power</span><span class="p">)</span></div>
+
+
+<span class="c1"># noinspection PyShadowingBuiltins</span>
+<div class="viewcode-block" id="builtin_rpow"><a class="viewcode-back" href="../../../../../functional/ivy/core/array_builtins/builtin_rpow.html#ivy.functional.ivy.core.array_builtins.builtin_rpow">[docs]</a><span class="k">def</span> <span class="nf">builtin_rpow</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">power</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">x</span><span class="o">.</span><span class="fm">__rpow__</span><span class="p">(</span><span class="n">power</span><span class="p">)</span></div>
+
+
+<span class="c1"># noinspection PyShadowingBuiltins</span>
+<div class="viewcode-block" id="builtin_add"><a class="viewcode-back" href="../../../../../functional/ivy/core/array_builtins/builtin_add.html#ivy.functional.ivy.core.array_builtins.builtin_add">[docs]</a><span class="k">def</span> <span class="nf">builtin_add</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">x</span><span class="o">.</span><span class="fm">__add__</span><span class="p">(</span><span class="n">other</span><span class="p">)</span></div>
+
+
+<span class="c1"># noinspection PyShadowingBuiltins</span>
+<div class="viewcode-block" id="builtin_radd"><a class="viewcode-back" href="../../../../../functional/ivy/core/array_builtins/builtin_radd.html#ivy.functional.ivy.core.array_builtins.builtin_radd">[docs]</a><span class="k">def</span> <span class="nf">builtin_radd</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">x</span><span class="o">.</span><span class="fm">__radd__</span><span class="p">(</span><span class="n">other</span><span class="p">)</span></div>
+
+
+<span class="c1"># noinspection PyShadowingBuiltins</span>
+<div class="viewcode-block" id="builtin_sub"><a class="viewcode-back" href="../../../../../functional/ivy/core/array_builtins/builtin_sub.html#ivy.functional.ivy.core.array_builtins.builtin_sub">[docs]</a><span class="k">def</span> <span class="nf">builtin_sub</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">x</span><span class="o">.</span><span class="fm">__sub__</span><span class="p">(</span><span class="n">other</span><span class="p">)</span></div>
+
+
+<span class="c1"># noinspection PyShadowingBuiltins</span>
+<div class="viewcode-block" id="builtin_rsub"><a class="viewcode-back" href="../../../../../functional/ivy/core/array_builtins/builtin_rsub.html#ivy.functional.ivy.core.array_builtins.builtin_rsub">[docs]</a><span class="k">def</span> <span class="nf">builtin_rsub</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">x</span><span class="o">.</span><span class="fm">__rsub__</span><span class="p">(</span><span class="n">other</span><span class="p">)</span></div>
+
+
+<span class="c1"># noinspection PyShadowingBuiltins</span>
+<div class="viewcode-block" id="builtin_mul"><a class="viewcode-back" href="../../../../../functional/ivy/core/array_builtins/builtin_mul.html#ivy.functional.ivy.core.array_builtins.builtin_mul">[docs]</a><span class="k">def</span> <span class="nf">builtin_mul</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">x</span><span class="o">.</span><span class="fm">__mul__</span><span class="p">(</span><span class="n">other</span><span class="p">)</span></div>
+
+
+<span class="c1"># noinspection PyShadowingBuiltins</span>
+<div class="viewcode-block" id="builtin_rmul"><a class="viewcode-back" href="../../../../../functional/ivy/core/array_builtins/builtin_rmul.html#ivy.functional.ivy.core.array_builtins.builtin_rmul">[docs]</a><span class="k">def</span> <span class="nf">builtin_rmul</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">x</span><span class="o">.</span><span class="fm">__rmul__</span><span class="p">(</span><span class="n">other</span><span class="p">)</span></div>
+
+
+<span class="c1"># noinspection PyShadowingBuiltins</span>
+<div class="viewcode-block" id="builtin_truediv"><a class="viewcode-back" href="../../../../../functional/ivy/core/array_builtins/builtin_truediv.html#ivy.functional.ivy.core.array_builtins.builtin_truediv">[docs]</a><span class="k">def</span> <span class="nf">builtin_truediv</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">x</span><span class="o">.</span><span class="fm">__truediv__</span><span class="p">(</span><span class="n">other</span><span class="p">)</span></div>
+
+
+<span class="c1"># noinspection PyShadowingBuiltins</span>
+<div class="viewcode-block" id="builtin_rtruediv"><a class="viewcode-back" href="../../../../../functional/ivy/core/array_builtins/builtin_rtruediv.html#ivy.functional.ivy.core.array_builtins.builtin_rtruediv">[docs]</a><span class="k">def</span> <span class="nf">builtin_rtruediv</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">x</span><span class="o">.</span><span class="fm">__rtruediv__</span><span class="p">(</span><span class="n">other</span><span class="p">)</span></div>
+
+
+<span class="c1"># noinspection PyShadowingBuiltins</span>
+<div class="viewcode-block" id="builtin_floordiv"><a class="viewcode-back" href="../../../../../functional/ivy/core/array_builtins/builtin_floordiv.html#ivy.functional.ivy.core.array_builtins.builtin_floordiv">[docs]</a><span class="k">def</span> <span class="nf">builtin_floordiv</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">x</span><span class="o">.</span><span class="fm">__floordiv__</span><span class="p">(</span><span class="n">other</span><span class="p">)</span></div>
+
+
+<span class="c1"># noinspection PyShadowingBuiltins</span>
+<div class="viewcode-block" id="builtin_rfloordiv"><a class="viewcode-back" href="../../../../../functional/ivy/core/array_builtins/builtin_rfloordiv.html#ivy.functional.ivy.core.array_builtins.builtin_rfloordiv">[docs]</a><span class="k">def</span> <span class="nf">builtin_rfloordiv</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">x</span><span class="o">.</span><span class="fm">__rfloordiv__</span><span class="p">(</span><span class="n">other</span><span class="p">)</span></div>
+
+
+<span class="c1"># noinspection PyShadowingBuiltins</span>
+<div class="viewcode-block" id="builtin_abs"><a class="viewcode-back" href="../../../../../functional/ivy/core/array_builtins/builtin_abs.html#ivy.functional.ivy.core.array_builtins.builtin_abs">[docs]</a><span class="k">def</span> <span class="nf">builtin_abs</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">x</span><span class="o">.</span><span class="fm">__abs__</span><span class="p">()</span></div>
+
+
+<span class="c1"># noinspection PyShadowingBuiltins</span>
+<div class="viewcode-block" id="builtin_float"><a class="viewcode-back" href="../../../../../functional/ivy/core/array_builtins/builtin_float.html#ivy.functional.ivy.core.array_builtins.builtin_float">[docs]</a><span class="k">def</span> <span class="nf">builtin_float</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">x</span><span class="o">.</span><span class="fm">__float__</span><span class="p">()</span></div>
+
+
+<span class="c1"># noinspection PyShadowingBuiltins</span>
+<div class="viewcode-block" id="builtin_int"><a class="viewcode-back" href="../../../../../functional/ivy/core/array_builtins/builtin_int.html#ivy.functional.ivy.core.array_builtins.builtin_int">[docs]</a><span class="k">def</span> <span class="nf">builtin_int</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">x</span><span class="o">.</span><span class="fm">__int__</span><span class="p">()</span></div>
+
+
+<span class="c1"># noinspection PyShadowingBuiltins</span>
+<div class="viewcode-block" id="builtin_bool"><a class="viewcode-back" href="../../../../../functional/ivy/core/array_builtins/builtin_bool.html#ivy.functional.ivy.core.array_builtins.builtin_bool">[docs]</a><span class="k">def</span> <span class="nf">builtin_bool</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">x</span><span class="o">.</span><span class="fm">__bool__</span><span class="p">()</span></div>
+
+
+<span class="c1"># noinspection PyShadowingBuiltins</span>
+<div class="viewcode-block" id="builtin_lt"><a class="viewcode-back" href="../../../../../functional/ivy/core/array_builtins/builtin_lt.html#ivy.functional.ivy.core.array_builtins.builtin_lt">[docs]</a><span class="k">def</span> <span class="nf">builtin_lt</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">x</span><span class="o">.</span><span class="fm">__lt__</span><span class="p">(</span><span class="n">other</span><span class="p">)</span></div>
+
+
+<span class="c1"># noinspection PyShadowingBuiltins</span>
+<div class="viewcode-block" id="builtin_le"><a class="viewcode-back" href="../../../../../functional/ivy/core/array_builtins/builtin_le.html#ivy.functional.ivy.core.array_builtins.builtin_le">[docs]</a><span class="k">def</span> <span class="nf">builtin_le</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">x</span><span class="o">.</span><span class="fm">__le__</span><span class="p">(</span><span class="n">other</span><span class="p">)</span></div>
+
+
+<span class="c1"># noinspection PyShadowingBuiltins</span>
+<div class="viewcode-block" id="builtin_eq"><a class="viewcode-back" href="../../../../../functional/ivy/core/array_builtins/builtin_eq.html#ivy.functional.ivy.core.array_builtins.builtin_eq">[docs]</a><span class="k">def</span> <span class="nf">builtin_eq</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">x</span><span class="o">.</span><span class="fm">__eq__</span><span class="p">(</span><span class="n">other</span><span class="p">)</span></div>
+
+
+<span class="c1"># noinspection PyShadowingBuiltins</span>
+<div class="viewcode-block" id="builtin_ne"><a class="viewcode-back" href="../../../../../functional/ivy/core/array_builtins/builtin_ne.html#ivy.functional.ivy.core.array_builtins.builtin_ne">[docs]</a><span class="k">def</span> <span class="nf">builtin_ne</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">x</span><span class="o">.</span><span class="fm">__ne__</span><span class="p">(</span><span class="n">other</span><span class="p">)</span></div>
+
+
+<span class="c1"># noinspection PyShadowingBuiltins</span>
+<div class="viewcode-block" id="builtin_gt"><a class="viewcode-back" href="../../../../../functional/ivy/core/array_builtins/builtin_gt.html#ivy.functional.ivy.core.array_builtins.builtin_gt">[docs]</a><span class="k">def</span> <span class="nf">builtin_gt</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">x</span><span class="o">.</span><span class="fm">__gt__</span><span class="p">(</span><span class="n">other</span><span class="p">)</span></div>
+
+
+<span class="c1"># noinspection PyShadowingBuiltins</span>
+<div class="viewcode-block" id="builtin_ge"><a class="viewcode-back" href="../../../../../functional/ivy/core/array_builtins/builtin_ge.html#ivy.functional.ivy.core.array_builtins.builtin_ge">[docs]</a><span class="k">def</span> <span class="nf">builtin_ge</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">x</span><span class="o">.</span><span class="fm">__ge__</span><span class="p">(</span><span class="n">other</span><span class="p">)</span></div>
+
+
+<span class="c1"># noinspection PyShadowingBuiltins</span>
+<div class="viewcode-block" id="builtin_and"><a class="viewcode-back" href="../../../../../functional/ivy/core/array_builtins/builtin_and.html#ivy.functional.ivy.core.array_builtins.builtin_and">[docs]</a><span class="k">def</span> <span class="nf">builtin_and</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">x</span><span class="o">.</span><span class="fm">__and__</span><span class="p">(</span><span class="n">other</span><span class="p">)</span></div>
+
+
+<span class="c1"># noinspection PyShadowingBuiltins</span>
+<div class="viewcode-block" id="builtin_rand"><a class="viewcode-back" href="../../../../../functional/ivy/core/array_builtins/builtin_rand.html#ivy.functional.ivy.core.array_builtins.builtin_rand">[docs]</a><span class="k">def</span> <span class="nf">builtin_rand</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">x</span><span class="o">.</span><span class="fm">__rand__</span><span class="p">(</span><span class="n">other</span><span class="p">)</span></div>
+
+
+<span class="c1"># noinspection PyShadowingBuiltins</span>
+<div class="viewcode-block" id="builtin_or"><a class="viewcode-back" href="../../../../../functional/ivy/core/array_builtins/builtin_or.html#ivy.functional.ivy.core.array_builtins.builtin_or">[docs]</a><span class="k">def</span> <span class="nf">builtin_or</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">x</span><span class="o">.</span><span class="fm">__or__</span><span class="p">(</span><span class="n">other</span><span class="p">)</span></div>
+
+
+<span class="c1"># noinspection PyShadowingBuiltins</span>
+<div class="viewcode-block" id="builtin_ror"><a class="viewcode-back" href="../../../../../functional/ivy/core/array_builtins/builtin_ror.html#ivy.functional.ivy.core.array_builtins.builtin_ror">[docs]</a><span class="k">def</span> <span class="nf">builtin_ror</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">x</span><span class="o">.</span><span class="fm">__ror__</span><span class="p">(</span><span class="n">other</span><span class="p">)</span></div>
+
+
+<span class="c1"># noinspection PyShadowingBuiltins</span>
+<div class="viewcode-block" id="builtin_invert"><a class="viewcode-back" href="../../../../../functional/ivy/core/array_builtins/builtin_invert.html#ivy.functional.ivy.core.array_builtins.builtin_invert">[docs]</a><span class="k">def</span> <span class="nf">builtin_invert</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">x</span><span class="o">.</span><span class="fm">__invert__</span><span class="p">(</span><span class="n">other</span><span class="p">)</span></div>
+
+
+<span class="c1"># noinspection PyShadowingBuiltins</span>
+<div class="viewcode-block" id="builtin_xor"><a class="viewcode-back" href="../../../../../functional/ivy/core/array_builtins/builtin_xor.html#ivy.functional.ivy.core.array_builtins.builtin_xor">[docs]</a><span class="k">def</span> <span class="nf">builtin_xor</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">x</span><span class="o">.</span><span class="fm">__xor__</span><span class="p">(</span><span class="n">other</span><span class="p">)</span></div>
+
+
+<span class="c1"># noinspection PyShadowingBuiltins</span>
+<div class="viewcode-block" id="builtin_rxor"><a class="viewcode-back" href="../../../../../functional/ivy/core/array_builtins/builtin_rxor.html#ivy.functional.ivy.core.array_builtins.builtin_rxor">[docs]</a><span class="k">def</span> <span class="nf">builtin_rxor</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">x</span><span class="o">.</span><span class="fm">__rxor__</span><span class="p">(</span><span class="n">other</span><span class="p">)</span></div>
+
+
+<span class="c1"># noinspection PyShadowingBuiltins</span>
+<div class="viewcode-block" id="builtin_deepcopy"><a class="viewcode-back" href="../../../../../functional/ivy/core/array_builtins/builtin_deepcopy.html#ivy.functional.ivy.core.array_builtins.builtin_deepcopy">[docs]</a><span class="k">def</span> <span class="nf">builtin_deepcopy</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">x</span><span class="o">.</span><span class="n">__deepcopy__</span><span class="p">()</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Ivy Team
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

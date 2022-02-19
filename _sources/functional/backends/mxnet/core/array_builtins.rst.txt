@@ -1,0 +1,53 @@
+Array builtins
+==============
+
+.. automodule:: ivy.functional.backends.mxnet.core.array_builtins
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :maxdepth: -1
+   :caption: Array builtins
+
+   array_builtins/builtin_dir.rst
+   array_builtins/builtin_getattr.rst
+   array_builtins/builtin_getattribute.rst
+   array_builtins/builtin_getitem.rst
+   array_builtins/builtin_setitem.rst
+   array_builtins/builtin_contains.rst
+   array_builtins/builtin_pos.rst
+   array_builtins/builtin_neg.rst
+   array_builtins/builtin_pow.rst
+   array_builtins/builtin_rpow.rst
+   array_builtins/builtin_add.rst
+   array_builtins/builtin_radd.rst
+   array_builtins/builtin_sub.rst
+   array_builtins/builtin_rsub.rst
+   array_builtins/builtin_mul.rst
+   array_builtins/builtin_rmul.rst
+   array_builtins/builtin_truediv.rst
+   array_builtins/builtin_rtruediv.rst
+   array_builtins/builtin_floordiv.rst
+   array_builtins/builtin_rfloordiv.rst
+   array_builtins/builtin_abs.rst
+   array_builtins/builtin_float.rst
+   array_builtins/builtin_int.rst
+   array_builtins/builtin_bool.rst
+   array_builtins/builtin_lt.rst
+   array_builtins/builtin_le.rst
+   array_builtins/builtin_eq.rst
+   array_builtins/builtin_ne.rst
+   array_builtins/builtin_gt.rst
+   array_builtins/builtin_ge.rst
+   array_builtins/builtin_and.rst
+   array_builtins/builtin_rand.rst
+   array_builtins/builtin_or.rst
+   array_builtins/builtin_ror.rst
+   array_builtins/builtin_invert.rst
+   array_builtins/builtin_xor.rst
+   array_builtins/builtin_rxor.rst
+   array_builtins/builtin_deepcopy.rst
+
