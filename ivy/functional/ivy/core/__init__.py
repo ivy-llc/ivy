@@ -1,3 +1,5 @@
+from . import builtins
+from .builtins import *
 from . import compilation
 from .compilation import *
 from . import device
