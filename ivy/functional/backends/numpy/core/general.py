@@ -124,6 +124,7 @@ floormod = lambda x, y: _np.asarray(x % y)
 floor = lambda x: _np.asarray(_np.floor(x))
 ceil = lambda x: _np.asarray(_np.ceil(x))
 abs = lambda x: _np.asarray(_np.absolute(x))
+cosh = lambda x: _np.asarray(_np.cosh(x))
 
 
 def argmax(x, axis=0):

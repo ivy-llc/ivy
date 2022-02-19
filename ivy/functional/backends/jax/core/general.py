@@ -132,6 +132,7 @@ floor = _jnp.floor
 ceil = _jnp.ceil
 # noinspection PyShadowingBuiltins
 abs = _jnp.absolute
+cosh = _jnp.cosh
 
 
 def argmax(x, axis=0):
