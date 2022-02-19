@@ -51,7 +51,6 @@ from . import debugger
 from .graph_compiler import *
 from . import graph_compiler
 from ivy.functional.ivy.core import *
-from .functional import frontends
 from .functional.ivy import nn
 from ivy.functional.ivy.nn import *
 from . import stateful
