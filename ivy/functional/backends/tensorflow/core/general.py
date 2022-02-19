@@ -314,10 +314,10 @@ def full(shape, fill_value, dtype=None, device=None):
 
 
 # noinspection PyShadowingNames
-def ones(shape, dtype='float32', dev=None):
-    dtype = _tf.__dict__[dtype]
-    dev = default_device(dev)
-    with _tf.device(dev_from_str(dev)):
+def ones(shape, dtype=None, dev=None):
+    dtype = dtype_from_str(default_dtype(dtype))
+    dev = dev_from_str(default_device(dev))
+    with _tf.device(dev):
         return _tf.ones(shape, dtype)
 
 
