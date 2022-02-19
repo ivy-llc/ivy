@@ -26,7 +26,7 @@ if 'ARRAY_API_TESTS_MODULE' not in os.environ:
     os.environ['ARRAY_API_TESTS_MODULE'] = 'ivy.functional.backends.numpy'
 
 @pytest.fixture(autouse=True)
-def run_around_tests(dev, f, array_mode, compile_graph, call):
+def run_around_tests(dev, f, array_mode, compile_graph, implicit, call):
     if array_mode and call is helpers.tf_graph_call:
         # ToDo: add support for array_mode and tensorflow compilation
         pytest.skip()
@@ -77,15 +77,24 @@ def pytest_generate_tests(metafunc):
     else:
         compile_modes = [False]
 
+    # implicit
+    raw_value = metafunc.config.getoption('--with_implicit')
+    if raw_value == 'true':
+        implicit_modes = [True, False]
+    else:
+        implicit_modes = [False]
+
     # create test configs
     configs = list()
     for f_str in f_strs:
         for dev in devs:
             for array_mode in array_modes:
                 for compile_graph in compile_modes:
-                    configs.append(
-                        (dev, TEST_FRAMEWORKS[f_str](), array_mode, compile_graph, TEST_CALL_METHODS[f_str]))
-    metafunc.parametrize('dev,f,array_mode,compile_graph,call', configs)
+                    for implicit in implicit_modes:
+                        configs.append(
+                            (dev, TEST_FRAMEWORKS[f_str](), array_mode, compile_graph, implicit,
+                             TEST_CALL_METHODS[f_str]))
+    metafunc.parametrize('dev,f,array_mode,compile_graph,implicit,call', configs)
 
 
 def pytest_addoption(parser):
@@ -93,3 +102,4 @@ def pytest_addoption(parser):
     parser.addoption('--framework', action="store", default="jax,mxnet,numpy,tensorflow,torch")
     parser.addoption('--array_mode', action="store", default="both")
     parser.addoption('--compile_graph', action="store", default="true")
+    parser.addoption('--with_implicit', action="store", default="false")
