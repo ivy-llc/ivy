@@ -738,10 +738,8 @@ class Container(dict):
         :type ivyh: handle to ivy module, optional
         :return: Container loaded from disk
         """
-        if ivy.array_mode():
-            return Container(_pickle.load(open(pickle_filepath, 'rb')),
-                             rebuild_child_containers=True, ivyh=ivyh).to_ivy()
-        return Container(_pickle.load(open(pickle_filepath, 'rb')), rebuild_child_containers=True, ivyh=ivyh)
+        return Container(_pickle.load(open(pickle_filepath, 'rb')),
+                         rebuild_child_containers=True, ivyh=ivyh).to_ivy()
 
     @staticmethod
     def from_disk_as_json(json_filepath, ivyh=None):
@@ -2177,10 +2175,7 @@ class Container(dict):
         :param pickle_filepath: Filepath for where to save the container to disk.
         :type pickle_filepath: str
         """
-        if ivy.array_mode():
-            _pickle.dump(self.to_native().to_dict(), open(pickle_filepath, 'wb'))
-        else:
-            _pickle.dump(self.to_dict(), open(pickle_filepath, 'wb'))
+        _pickle.dump(self.to_native().to_dict(), open(pickle_filepath, 'wb'))
 
     def to_jsonable(self, return_dict=None):
         """
@@ -3381,9 +3376,7 @@ class Container(dict):
         conts = list()
         for i in queue_idxs:
             if i not in self._loaded_containers_from_queues:
-                cont = Container(self._queues[i].get(timeout=self._queue_timeout), **self._config)
-                if ivy.array_mode():
-                    cont = cont.to_ivy()
+                cont = Container(self._queues[i].get(timeout=self._queue_timeout), **self._config).to_ivy()
                 self._loaded_containers_from_queues[i] = cont
             else:
                 cont = self._loaded_containers_from_queues[i]
