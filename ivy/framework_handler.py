@@ -8,8 +8,7 @@ from ivy import verbosity
 
 # local
 # noinspection PyProtectedMember
-from ivy.func_wrapper import _wrap_methods
-from ivy.array.array_mode_handler import array_mode_val
+from ivy.func_wrapper import _wrap_methods, _unwrap_methods
 
 
 framework_stack = []
@@ -119,11 +118,7 @@ def set_framework(f):
                 ivy_original_fn_dict[specific_v] = v
             except TypeError:
                 pass
-    # noinspection PyUnresolvedReferences
-    if array_mode_val and (not hasattr(ivy, 'wrapped') or not ivy.functional.core.wrapped):
-        _wrap_methods()
-        ivy.wrapped = True
-        f.wrapped = True
+    _wrap_methods()
     if verbosity.level > 0:
         verbosity.cprint(
             'framework stack: {}'.format(framework_stack))
@@ -150,19 +145,20 @@ def get_framework(f=None):
 
 
 def unset_framework():
+    _unwrap_methods()
     fw = None
     if framework_stack:
         fw = framework_stack.pop(-1)
         if fw.current_framework_str() == 'numpy':
             ivy.unset_default_device()
         f_dict = framework_stack[-1].__dict__ if framework_stack else ivy_original_dict
-        wrapped = f_dict['wrapped'] if 'wrapped' in f_dict else False
         for k, v in f_dict.items():
             ivy.__dict__[k] = v
-        ivy.wrapped = wrapped
     if verbosity.level > 0:
         verbosity.cprint(
             'framework stack: {}'.format(framework_stack))
+    if framework_stack:
+        _wrap_methods()
     return fw
 
 

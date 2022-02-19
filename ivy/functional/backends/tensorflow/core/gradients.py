@@ -23,8 +23,7 @@ variable_data = lambda x: x.value()
 
 
 def execute_with_gradients(func, xs, retain_grads=False):
-    if ivy.array_mode():
-        xs = xs.to_native()
+    xs = xs.to_native()
     with _tf.GradientTape(persistent=retain_grads, watch_accessed_variables=False) as tape:
         tape.watch(xs)
         func_ret = func(xs)
@@ -34,12 +33,10 @@ def execute_with_gradients(func, xs, retain_grads=False):
     else:
         y = func_ret
         rest = tuple()
-    if ivy.array_mode():
-        y = ivy.to_native(y)
+    y = ivy.to_native(y)
     grads = Container(tape.gradient(y, xs))
-    if ivy.array_mode():
-        grads = grads.to_ivy()
-        y = ivy.to_ivy(y)
+    grads = grads.to_ivy()
+    y = ivy.to_ivy(y)
     if not retain_grads:
         y = ivy.stop_gradient(y)
     return (y, grads, *rest)

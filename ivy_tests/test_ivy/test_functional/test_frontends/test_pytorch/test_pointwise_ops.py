@@ -21,10 +21,7 @@ import ivy.functional.frontends.torch as ivy_torch
     "tensor_fn", [ivy.array, helpers.var_fn])
 @pytest.mark.parametrize(
     "inplace", [True, False])
-def test_abs(x_n_x_absed, dtype, tensor_fn, inplace, dev, array_mode, call):
-    if array_mode and inplace:
-        # ToDo: get this test passing
-        pytest.skip()
+def test_abs(x_n_x_absed, dtype, tensor_fn, inplace, dev, call):
     # smoke test
     if (isinstance(x_n_x_absed[0], Number) or isinstance(x_n_x_absed[1], Number))\
             and (tensor_fn == helpers.var_fn or inplace) and call is helpers.mx_call:
@@ -42,6 +39,3 @@ def test_abs(x_n_x_absed, dtype, tensor_fn, inplace, dev, array_mode, call):
     assert ret.shape == x.shape
     # value test
     assert np.allclose(call(ivy.abs, x), np.array(x_n_x_absed[1]))
-    # compilation test
-    if not ivy.array_mode():
-        helpers.assert_compilable(ivy.abs)

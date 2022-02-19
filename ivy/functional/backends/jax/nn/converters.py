@@ -45,8 +45,7 @@ class IvyModule(ivy.Module):
         return self._hk_params
 
     def _build(self, *a, **kw):
-        if ivy.array_mode():
-            a, kw = ivy.args_to_native(*a, **kw)
+        a, kw = ivy.args_to_native(*a, **kw)
         # noinspection PyUnresolvedReferences
         params_hk = self._native_module.init(ivy.random.RNG, *a, **kw)
         params_dict = _hk_flat_map_to_dict(params_hk)
@@ -56,16 +55,12 @@ class IvyModule(ivy.Module):
         self._dev = ivy.dev_to_str(param0.device())
 
     def _forward(self, *a, **kw):
-        array_mode = ivy.array_mode()
-        if array_mode:
-            a, kw = ivy.args_to_native(*a, **kw)
+        a, kw = ivy.args_to_native(*a, **kw)
         params_hk = _dict_to_hk_flat_map(self.v.to_dict())
         ret = self._native_module.apply(params_hk, None, *a, **kw)
-        if array_mode:
-            if isinstance(ret, tuple):
-                return ivy.args_to_native(*ret)
-            return ivy.to_native(ret)
-        return ret
+        if isinstance(ret, tuple):
+            return ivy.args_to_native(*ret)
+        return ivy.to_native(ret)
 
 
 def to_ivy_module(native_module=None, native_module_class=None, args=None, kwargs=None, dev=None, devs=None,
