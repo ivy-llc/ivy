@@ -61,9 +61,3 @@ def test_layer_norm_layer_training(x_n_ns, with_v, dtype, tensor_fn, dev, call):
         assert loss.shape == ()
     # value test
     assert (abs(grads).reduce_max() > 0).all_true()
-    # compilation test
-    if call is helpers.torch_call:
-        # pytest scripting does not **kwargs
-        return
-    if not ivy.array_mode():
-        helpers.assert_compilable(loss_fn)

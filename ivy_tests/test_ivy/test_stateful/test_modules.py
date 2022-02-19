@@ -29,7 +29,7 @@ class TrainableModule(ivy.Module):
 # module training
 @pytest.mark.parametrize(
     "bs_ic_oc", [([1, 2], 4, 5)])
-def test_module_training(bs_ic_oc, dev, array_mode, compile_graph, call):
+def test_module_training(bs_ic_oc, dev, compile_graph, call):
     # smoke test
     if call is helpers.np_call:
         # NumPy does not support gradients
@@ -37,10 +37,6 @@ def test_module_training(bs_ic_oc, dev, array_mode, compile_graph, call):
     batch_shape, input_channels, output_channels = bs_ic_oc
     x = ivy.cast(ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), input_channels), 'float32')
     module = TrainableModule(input_channels, output_channels, dev=dev)
-    # compile if this mode is set
-    if compile_graph and not array_mode and call is helpers.torch_call:
-        # Currently only PyTorch is supported for ivy compilation
-        module.compile_graph(x)
 
     def loss_fn(v_):
         out = module(x, v=v_)
@@ -76,8 +72,6 @@ def test_module_training(bs_ic_oc, dev, array_mode, compile_graph, call):
     if call is helpers.torch_call:
         # pytest scripting does not support **kwargs
         return
-    if not ivy.array_mode():
-        helpers.assert_compilable(loss_fn)
 
 
 class TrainableModuleWithList(ivy.Module):
@@ -99,7 +93,7 @@ class TrainableModuleWithList(ivy.Module):
 # module with list training
 @pytest.mark.parametrize(
     "bs_ic_oc", [([1, 2], 4, 5)])
-def test_module_w_list_training(bs_ic_oc, dev, array_mode, compile_graph, call):
+def test_module_w_list_training(bs_ic_oc, dev, compile_graph, call):
     # smoke test
     if call is helpers.np_call:
         # NumPy does not support gradients
@@ -107,10 +101,6 @@ def test_module_w_list_training(bs_ic_oc, dev, array_mode, compile_graph, call):
     batch_shape, input_channels, output_channels = bs_ic_oc
     x = ivy.cast(ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), input_channels), 'float32')
     module = TrainableModuleWithList(input_channels, output_channels, dev=dev)
-    # compile if this mode is set
-    if compile_graph and not array_mode and call is helpers.torch_call:
-        # Currently only PyTorch is supported for ivy compilation
-        module.compile_graph(x)
 
     def loss_fn(v_):
         out = module(x, v=v_)
@@ -146,14 +136,12 @@ def test_module_w_list_training(bs_ic_oc, dev, array_mode, compile_graph, call):
     if call is helpers.torch_call:
         # pytest scripting does not support **kwargs
         return
-    if not ivy.array_mode():
-        helpers.assert_compilable(loss_fn)
 
 
 # module with partial v
 @pytest.mark.parametrize(
     "bs_ic_oc", [([1, 2], 4, 5)])
-def test_module_w_partial_v(bs_ic_oc, dev, array_mode, compile_graph, call):
+def test_module_w_partial_v(bs_ic_oc, dev, compile_graph, call):
     # smoke test
     if call is helpers.np_call:
         # NumPy does not support gradients
@@ -200,10 +188,6 @@ def test_module_w_partial_v(bs_ic_oc, dev, array_mode, compile_graph, call):
     except AssertionError:
         pass
     module = TrainableModule(input_channels, output_channels, dev=dev, v=v, with_partial_v=True)
-    # compile if this mode is set
-    if compile_graph and not array_mode and call is helpers.torch_call:
-        # Currently only PyTorch is supported for ivy compilation
-        module.compile_graph(x)
     module(x)
 
 
@@ -220,7 +204,7 @@ class ModuleWithNoneAttribute(ivy.Module):
 # module with none attribute
 @pytest.mark.parametrize(
     "bs_ic_oc", [([1, 2], 4, 5)])
-def test_module_w_none_attribute(bs_ic_oc, dev, array_mode, compile_graph, call):
+def test_module_w_none_attribute(bs_ic_oc, dev, compile_graph, call):
     # smoke test
     if call is helpers.np_call:
         # NumPy does not support gradients
@@ -228,10 +212,6 @@ def test_module_w_none_attribute(bs_ic_oc, dev, array_mode, compile_graph, call)
     batch_shape, input_channels, output_channels = bs_ic_oc
     x = ivy.cast(ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), input_channels), 'float32')
     module = ModuleWithNoneAttribute(dev=dev)
-    # compile if this mode is set
-    if compile_graph and not array_mode and call is helpers.torch_call:
-        # Currently only PyTorch is supported for ivy compilation
-        module.compile_graph(x)
     module(x)
 
 
@@ -262,7 +242,7 @@ class TrainableModuleWithDuplicate(ivy.Module):
     "bs_c", [([1, 2], 64)])
 @pytest.mark.parametrize(
     "same_layer", [True, False])
-def test_module_training_with_duplicate(bs_c, same_layer, dev, array_mode, compile_graph, call):
+def test_module_training_with_duplicate(bs_c, same_layer, dev, compile_graph, call):
     # smoke test
     if call is helpers.np_call:
         # NumPy does not support gradients
@@ -270,10 +250,6 @@ def test_module_training_with_duplicate(bs_c, same_layer, dev, array_mode, compi
     batch_shape, channels = bs_c
     x = ivy.cast(ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), channels), 'float32')
     module = TrainableModuleWithDuplicate(channels, same_layer, dev=dev)
-    # compile if this mode is set
-    if compile_graph and not array_mode and call is helpers.torch_call:
-        # Currently only PyTorch is supported for ivy compilation
-        module.compile_graph(x)
 
     def loss_fn(v_):
         out = module(x, v=v_)
@@ -307,8 +283,6 @@ def test_module_training_with_duplicate(bs_c, same_layer, dev, array_mode, compi
     if call is helpers.torch_call:
         # pytest scripting does not support **kwargs
         return
-    if not ivy.array_mode():
-        helpers.assert_compilable(loss_fn)
 
 
 class TrainableModuleWithDict(ivy.Module):
@@ -330,7 +304,7 @@ class TrainableModuleWithDict(ivy.Module):
 # module with dict training
 @pytest.mark.parametrize(
     "bs_ic_oc", [([1, 2], 4, 5)])
-def test_module_w_dict_training(bs_ic_oc, dev, array_mode, compile_graph, call):
+def test_module_w_dict_training(bs_ic_oc, dev, compile_graph, call):
     # smoke test
     if call is helpers.np_call:
         # NumPy does not support gradients
@@ -338,10 +312,6 @@ def test_module_w_dict_training(bs_ic_oc, dev, array_mode, compile_graph, call):
     batch_shape, input_channels, output_channels = bs_ic_oc
     x = ivy.cast(ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), input_channels), 'float32')
     module = TrainableModuleWithDict(input_channels, output_channels, dev=dev)
-    # compile if this mode is set
-    if compile_graph and not array_mode and call is helpers.torch_call:
-        # Currently only PyTorch is supported for ivy compilation
-        module.compile_graph(x)
 
     def loss_fn(v_):
         out = module(x, v=v_)
@@ -377,8 +347,6 @@ def test_module_w_dict_training(bs_ic_oc, dev, array_mode, compile_graph, call):
     if call is helpers.torch_call:
         # pytest scripting does not support **kwargs
         return
-    if not ivy.array_mode():
-        helpers.assert_compilable(loss_fn)
 
 
 class WithCustomVarStructure(ivy.Module):

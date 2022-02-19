@@ -53,16 +53,12 @@ class IvyModule(ivy.Module):
         return native
 
     def _forward(self, *a, **kw):
-        array_mode = ivy.array_mode()
-        if array_mode:
-            a, kw = ivy.args_to_native(*a, **kw)
+        a, kw = ivy.args_to_native(*a, **kw)
         self._update_v(self.v)
         ret = self._native_module(*a, **kw)
-        if array_mode:
-            if isinstance(ret, tuple):
-                return ivy.args_to_native(*ret)
-            return ivy.to_native(ret)
-        return ret
+        if isinstance(ret, tuple):
+            return ivy.args_to_native(*ret)
+        return ivy.to_native(ret)
 
 
 def to_ivy_module(native_module=None, native_module_class=None, args=None, kwargs=None, dev=None, devs=None,

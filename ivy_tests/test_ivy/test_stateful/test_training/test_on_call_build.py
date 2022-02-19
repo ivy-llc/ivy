@@ -130,12 +130,6 @@ def test_weight_conditioned_network_training(batch_shape, dtype, tensor_fn, dev,
         assert loss.shape == ()
     # value test
     assert (abs(grads).reduce_max() > 0).all_true()
-    # compilation test
-    if call is helpers.torch_call:
-        # pytest scripting does not **kwargs
-        return
-    if not ivy.array_mode():
-        helpers.assert_compilable(loss_fn)
 
 
 # HyperNetwork #
@@ -254,9 +248,3 @@ def test_hyper_hypo_network_training(batch_shape, dtype, tensor_fn, dev, call):
         assert loss.shape == ()
     # value test
     assert (abs(grads).reduce_max() > 0).all_true()
-    # compilation test
-    if call is helpers.torch_call:
-        # pytest scripting does not **kwargs
-        return
-    if not ivy.array_mode():
-        helpers.assert_compilable(loss_fn)

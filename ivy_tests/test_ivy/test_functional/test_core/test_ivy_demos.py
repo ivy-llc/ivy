@@ -46,10 +46,7 @@ def test_training_demo(dev, call):
 
 
 # functional api
-def test_array(dev, array_mode, call):
-    if array_mode:
-        # ToDo: get this test passing
-        pytest.skip()
+def test_array(dev, call):
     ivy.unset_framework()
     import jax.numpy as jnp
     assert ivy.concatenate((jnp.ones((1,)), jnp.ones((1,))), -1).shape == (2,)
