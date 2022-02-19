@@ -12,25 +12,17 @@ jobs:
           submodules: 'recursive'
 
       - name: Run JAX Tests
-        env:
-          ARRAY_API_TESTS_MODULE: ivy.functional.backends.jax
         run: |
-          docker run --rm -v `pwd`/ivy:/ivy unifyai/ivy:latest python3 -m pytest ivy/ivy_tests/test_array_api
+          docker run --rm --env ARRAY_API_TESTS_MODULE="ivy.functional.backends.jax" -v `pwd`/ivy:/ivy unifyai/ivy:latest python3 -m pytest ivy/ivy_tests/test_array_api
 
       - name: Run NumPy Tests
-        env:
-          ARRAY_API_TESTS_MODULE: ivy.functional.backends.numpy
         run: |
-          docker run --rm -v `pwd`/ivy:/ivy unifyai/ivy:latest python3 -m pytest ivy/ivy_tests/test_array_api
+          docker run --rm --env ARRAY_API_TESTS_MODULE="ivy.functional.backends.numpy" -v `pwd`/ivy:/ivy unifyai/ivy:latest python3 -m pytest ivy/ivy_tests/test_array_api
 
       - name: Run TensorFlow Tests
-        env:
-          ARRAY_API_TESTS_MODULE: ivy.functional.backends.tensorflow
         run: |
-          docker run --rm -v `pwd`/ivy:/ivy unifyai/ivy:latest python3 -m pytest ivy/ivy_tests/test_array_api
+          docker run --rm --env ARRAY_API_TESTS_MODULE="ivy.functional.backends.tensorflow" -v `pwd`/ivy:/ivy unifyai/ivy:latest python3 -m pytest ivy/ivy_tests/test_array_api
 
       - name: Run Torch Tests
-        env:
-          ARRAY_API_TESTS_MODULE: ivy.functional.backends.torch
         run: |
-          docker run --rm -v `pwd`/ivy:/ivy unifyai/ivy:latest python3 -m pytest ivy/ivy_tests/test_array_api -k 'not uint16 and not uint32 and not uint64'
+          docker run --rm --env ARRAY_API_TESTS_MODULE="ivy.functional.backends.torch" -v `pwd`/ivy:/ivy unifyai/ivy:latest python3 -m pytest ivy/ivy_tests/test_array_api -k 'not uint16 and not uint32 and not uint64'
