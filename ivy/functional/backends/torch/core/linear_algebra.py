@@ -37,8 +37,8 @@ def cholesky(x):
     return _torch.linalg.cholesky(x)
 
 
-def cross(a, b, dim):
-    return _torch.cross(a, b, dim)
+def cross(a, b, axis):
+    return _torch.cross(a, b, dim=axis)
 
 
 def vector_to_skew_symmetric_matrix(vector):

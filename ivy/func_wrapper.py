@@ -59,8 +59,6 @@ def _wrap_method(fn):
     if hasattr(fn, 'reduce'):
         _method_wrapped.reduce = fn.reduce
 
-    return _method_wrapped
-
 
 def _unwrap_method(method_wrapped):
 
