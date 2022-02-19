@@ -1,7 +1,11 @@
+# global
 import sys
 import tensorflow as tf
 from tensorflow.python.framework.dtypes import DType
 
+# local
+from . import array_api
+from .array_api import *
 from .core import *
 from . import nn
 from .nn import *
