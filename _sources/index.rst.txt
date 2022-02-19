@@ -363,7 +363,6 @@ Documentation Tree
    :caption: Functional
 
    functional/backends.rst
-   functional/frontends.rst
    functional/ivy.rst
 
 
