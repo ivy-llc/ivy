@@ -51,12 +51,6 @@ def test_linear(x_n_w_n_b_n_res, dtype, tensor_fn, dev, call):
     assert ret.shape == true_res.shape
     # value test
     assert np.allclose(call(ivy.linear, x, weight, bias), ivy.to_numpy(true_res))
-    # compilation test
-    if call in [helpers.torch_call]:
-        # optional Tensors in framework agnostic implementations not supported by torch.jit
-        return
-    if not ivy.array_mode():
-        helpers.assert_compilable(ivy.linear)
 
 
 # Dropout #
@@ -81,12 +75,6 @@ def test_dropout(x, dtype, tensor_fn, dev, call):
     # value test
     ivy.seed(0)
     assert np.min(call(ivy.dropout, x, 0.9)) == 0.
-    # compilation test
-    if call in [helpers.torch_call]:
-        # dev_from_str not supported by torch.jit due to Device and Str not seen as the same
-        return
-    if not ivy.array_mode():
-        helpers.assert_compilable(ivy.dropout)
 
 
 # Attention #
@@ -113,12 +101,6 @@ def test_scaled_dot_product_attention(q_n_k_n_v_n_s_n_m_n_gt, dtype, tensor_fn, 
     assert ret.shape == q.shape
     # value test
     assert np.allclose(call(ivy.scaled_dot_product_attention, q, k, v, scale, mask), np.array(ground_truth))
-    # compilation test
-    if call in [helpers.torch_call]:
-        # torch.jit compiled functions can't take variable number of arguments, which torch.einsum takes
-        return
-    if not ivy.array_mode():
-        helpers.assert_compilable(ivy.scaled_dot_product_attention)
 
 
 # multi_head_attention
@@ -142,12 +124,6 @@ def test_multi_head_attention(x_n_s_n_m_n_c_n_gt, dtype, tensor_fn, dev, call):
     assert list(ret.shape) == list(np.array(ground_truth).shape)
     # value test
     assert np.allclose(call(ivy.multi_head_attention, x, scale, 2, context, mask, fn, fn, fn), np.array(ground_truth))
-    # compilation test
-    if call in [helpers.torch_call]:
-        # torch.jit compiled functions can't take variable number of arguments, which torch.einsum takes
-        return
-    if not ivy.array_mode():
-        helpers.assert_compilable(ivy.multi_head_attention)
 
 
 # Convolutions #
@@ -194,9 +170,6 @@ def test_conv1d(x_n_filters_n_pad_n_res, dtype, tensor_fn, dev, call):
     # value test
     assert np.allclose(call(ivy.conv1d, x, filters, 1, padding),
                        ivy.to_numpy(true_res))
-    # compilation test
-    if not ivy.array_mode():
-        helpers.assert_compilable(ivy.conv1d)
 
 
 # conv1d_transpose
@@ -242,9 +215,6 @@ def test_conv1d_transpose(x_n_filters_n_pad_n_outshp_n_res, dtype, tensor_fn, de
     assert ret.shape == true_res.shape
     # value test
     assert np.allclose(call(ivy.conv1d_transpose, x, filters, 1, padding, output_shape), ivy.to_numpy(true_res))
-    # compilation test
-    if not ivy.array_mode():
-        helpers.assert_compilable(ivy.conv1d_transpose)
 
 
 # conv2d
@@ -311,9 +281,6 @@ def test_conv2d(x_n_filters_n_pad_n_res, dtype, tensor_fn, dev, call):
     assert ret.shape == true_res.shape
     # value test
     assert np.allclose(call(ivy.conv2d, x, filters, 1, padding), ivy.to_numpy(true_res))
-    # compilation test
-    if not ivy.array_mode():
-        helpers.assert_compilable(ivy.conv2d)
 
 
 # conv2d_transpose
@@ -379,9 +346,6 @@ def test_conv2d_transpose(x_n_filters_n_pad_n_outshp_n_res, dtype, tensor_fn, de
     assert ret.shape == true_res.shape
     # value test
     assert np.allclose(call(ivy.conv2d_transpose, x, filters, 1, padding, output_shape), ivy.to_numpy(true_res))
-    # compilation test
-    if not ivy.array_mode():
-        helpers.assert_compilable(ivy.conv2d_transpose)
 
 
 # depthwise_conv2d
@@ -439,9 +403,6 @@ def test_depthwise_conv2d(x_n_filters_n_pad_n_res, dtype, tensor_fn, dev, call):
     assert ret.shape == true_res.shape
     # value test
     assert np.allclose(call(ivy.depthwise_conv2d, x, filters, 1, padding), ivy.to_numpy(true_res))
-    # compilation test
-    if not ivy.array_mode():
-        helpers.assert_compilable(ivy.depthwise_conv2d)
 
 
 # conv3d
@@ -499,9 +460,6 @@ def test_conv3d(x_n_filters_n_pad_n_res, dtype, tensor_fn, dev, call):
     assert ret.shape == true_res.shape
     # value test
     assert np.allclose(call(ivy.conv3d, x, filters, 1, padding), ivy.to_numpy(true_res))
-    # compilation test
-    if not ivy.array_mode():
-        helpers.assert_compilable(ivy.conv3d)
 
 
 # conv3d_transpose
@@ -575,9 +533,6 @@ def test_conv3d_transpose(x_n_filters_n_pad_n_outshp_n_res, dtype, tensor_fn, de
     assert ret.shape == true_res.shape
     # value test
     assert np.allclose(call(ivy.conv3d_transpose, x, filters, 1, padding, output_shape), ivy.to_numpy(true_res))
-    # compilation test
-    if not ivy.array_mode():
-        helpers.assert_compilable(ivy.conv3d_transpose)
 
 
 # LSTM #
@@ -613,9 +568,3 @@ def test_lstm(b_t_ic_hc_otf_sctv, dtype, tensor_fn, dev, call):
     output, state_c = call(ivy.lstm_update, x, init_h, init_c, kernel, recurrent_kernel)
     assert np.allclose(output, output_true, atol=1e-6)
     assert np.allclose(state_c, state_c_true, atol=1e-6)
-    # compilation test
-    if call in [helpers.torch_call]:
-        # this is not a backend implemented function
-        return
-    if not ivy.array_mode():
-        helpers.assert_compilable(ivy.lstm_update)

@@ -2940,10 +2940,7 @@ def test_container_to_disk_shuffle_and_from_disk_as_hdf5(dev, call):
     os.remove(save_filepath)
 
 
-def test_container_pickle(dev, array_mode, call):
-    if array_mode:
-        # ToDo: get this test passing
-        pytest.skip()
+def test_container_pickle(dev, call):
     if call in [helpers.tf_graph_call]:
         # container disk saving requires eager execution
         pytest.skip()
