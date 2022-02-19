@@ -56,12 +56,12 @@ class IvyModule(ivy.Module):
         self._dev = ivy.dev_to_str(param0.device())
 
     def _forward(self, *a, **kw):
-        wrapped_mode = ivy.array_mode()
-        if wrapped_mode:
+        array_mode = ivy.array_mode()
+        if array_mode:
             a, kw = ivy.args_to_native(*a, **kw)
         params_hk = _dict_to_hk_flat_map(self.v.to_dict())
         ret = self._native_module.apply(params_hk, None, *a, **kw)
-        if wrapped_mode:
+        if array_mode:
             if isinstance(ret, tuple):
                 return ivy.args_to_native(*ret)
             return ivy.to_native(ret)
