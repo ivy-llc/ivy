@@ -3,7 +3,7 @@ Collection of builtin Ivy functions.
 """
 
 # local
-from general import _handle_flat_arrays_in_out
+from ivy.functional.backends.mxnet.core.general import _handle_flat_arrays_in_out
 
 # noinspection PyShadowingBuiltins
 @_handle_flat_arrays_in_out
