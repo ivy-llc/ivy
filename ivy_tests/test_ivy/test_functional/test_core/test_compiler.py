@@ -45,9 +45,6 @@ def _fn_2(x, with_non_compiled: bool = False):
 @pytest.mark.parametrize(
     "with_array_caching", [True, False])
 def test_compile(x, dtype, tensor_fn, with_array_caching, dev, call):
-    if ivy.array_mode():
-        # Wrapped mode does not yet support function compilation
-        pytest.skip()
     # smoke test
     if (isinstance(x, Number) or len(x) == 0) and tensor_fn == helpers.var_fn and call is helpers.mx_call:
         # mxnet does not support 0-dimensional variables

@@ -140,17 +140,12 @@ def test_distributed_training(bs_ic_oc, dev, call):
     if call is helpers.torch_call:
         # pytest scripting does not support **kwargs
         return
-    if not ivy.array_mode():
-        helpers.assert_compilable(loss_fn)
 
 
 # distributed multiprocess training
 @pytest.mark.parametrize(
     "bs_ic_oc", [([2, 1], 4, 5)])
-def test_distributed_multiprocess_training(bs_ic_oc, dev, array_mode, call):
-    if array_mode:
-        # ToDo: get this test passing
-        pytest.skip()
+def test_distributed_multiprocess_training(bs_ic_oc, dev, call):
     # smoke test
     if call is helpers.np_call:
         # NumPy does not support gradients
@@ -235,12 +230,6 @@ def test_distributed_multiprocess_training(bs_ic_oc, dev, array_mode, call):
     # delete dev mapper
     dev_mapper.__del__()
     del dev_mapper
-    # compilation test
-    if call is helpers.torch_call:
-        # pytest scripting does not support **kwargs
-        return
-    if not ivy.array_mode():
-        helpers.assert_compilable(loss_fn)
 
 
 # to_ivy_module_distributed
@@ -250,10 +239,7 @@ def test_distributed_multiprocess_training(bs_ic_oc, dev, array_mode, call):
     "from_class_and_args", [True, False])
 @pytest.mark.parametrize(
     "inplace_update", [True, False])
-def test_to_ivy_module_distributed(bs_ic_oc, from_class_and_args, inplace_update, dev, array_mode, call):
-    if array_mode:
-        # ToDo: get this test passing
-        pytest.skip()
+def test_to_ivy_module_distributed(bs_ic_oc, from_class_and_args, inplace_update, dev, call):
     # smoke test
     if call is not helpers.torch_call:
         # Currently only implemented for PyTorch
@@ -350,11 +336,7 @@ def test_to_ivy_module_distributed(bs_ic_oc, from_class_and_args, inplace_update
     "from_class_and_args", [True, False])
 @pytest.mark.parametrize(
     "inplace_update", [True, False])
-def test_to_ivy_module_distributed_multiprocess(bs_ic_oc, from_class_and_args, inplace_update, dev, array_mode, call):
-
-    if array_mode:
-        # ToDo: get this test passing
-        pytest.skip()
+def test_to_ivy_module_distributed_multiprocess(bs_ic_oc, from_class_and_args, inplace_update, dev, call):
 
     # smoke test
     if call is not helpers.torch_call:
@@ -452,11 +434,7 @@ def test_to_ivy_module_distributed_multiprocess(bs_ic_oc, from_class_and_args, i
     "tune_dev_alloc", [True, False])
 @pytest.mark.parametrize(
     "tune_dev_splits", [True, False])
-def test_device_manager_wrapped_tuning(bs_ic_oc, tune_dev_alloc, tune_dev_splits, dev, array_mode, call):
-
-    if array_mode:
-        # ToDo: get this test passing
-        pytest.skip()
+def test_device_manager_wrapped_tuning(bs_ic_oc, tune_dev_alloc, tune_dev_splits, dev, call):
 
     # smoke test
     if call is helpers.np_call:
@@ -533,12 +511,6 @@ def test_device_manager_wrapped_tuning(bs_ic_oc, tune_dev_alloc, tune_dev_splits
     # delete dev manager
     dev_manager.__del__()
     del dev_manager
-    # compilation test
-    if call is helpers.torch_call:
-        # pytest scripting does not support **kwargs
-        return
-    if not ivy.array_mode():
-        helpers.assert_compilable(loss_fn)
 
 
 # device manager unwrapped tuning
@@ -602,9 +574,3 @@ def test_device_manager_unwrapped_tuning(bs_ic_oc, dev, call):
     # delete dev manager
     dev_manager.__del__()
     del dev_manager
-    # compilation test
-    if call is helpers.torch_call:
-        # pytest scripting does not support **kwargs
-        return
-    if not ivy.array_mode():
-        helpers.assert_compilable(loss_fn)

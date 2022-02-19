@@ -4,8 +4,6 @@ import functools
 from numbers import Number
 
 # local
-from . import array_mode_handler
-from .array_mode_handler import *
 from . import conversions
 from .conversions import *
 from . import device

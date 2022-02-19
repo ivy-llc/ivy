@@ -30,8 +30,6 @@ def test_stack_images(shp_n_num_n_ar_n_newshp, dev, call):
     assert ivy.is_array(ret)
     # cardinality test
     assert ret.shape == new_shape
-    # compilation test
-    if ivy.array_mode():(ivy.stack_images)
 
 
 # bilinear_resample
@@ -60,7 +58,6 @@ def test_bilinear_resample(x_n_warp, dtype, tensor_fn, dev, call):
     if call in [helpers.torch_call]:
         # torch scripting does not support builtins
         return
-    if ivy.array_mode():(ivy.bilinear_resample)
 
 
 # gradient_image
@@ -93,8 +90,6 @@ def test_gradient_image(x_n_dy_n_dx, dtype, tensor_fn, dev, call):
     if call in [helpers.torch_call]:
         # torch device cannot be assigned value of string while scripting
         return
-    if not ivy.array_mode():
-        helpers.assert_compilable(ivy.gradient_image)
 
 
 # float_img_to_uint8_img
@@ -123,8 +118,6 @@ def test_float_img_to_uint8_img(fi_tui, tensor_fn, dev, call):
     if call in [helpers.torch_call]:
         # torch device cannot be assigned value of string while scripting
         return
-    if not ivy.array_mode():
-        helpers.assert_compilable(ivy.float_img_to_uint8_img)
 
 
 # uint8_img_to_float_img
@@ -151,8 +144,6 @@ def test_uint8_img_to_float_img(ui_tfi, dev, call):
     if call in [helpers.torch_call]:
         # torch device cannot be assigned value of string while scripting
         return
-    if not ivy.array_mode():
-        helpers.assert_compilable(ivy.uint8_img_to_float_img)
 
 
 # random_crop
@@ -183,5 +174,3 @@ def test_random_crop(xshp_n_cs, dev, call):
     if call in [helpers.torch_call]:
         # reduce(mul) used for flat batch size computation is not torch jit compilable
         return
-    if not ivy.array_mode():
-        helpers.assert_compilable(ivy.random_crop)
