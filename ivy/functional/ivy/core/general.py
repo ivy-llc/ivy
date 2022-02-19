@@ -396,6 +396,18 @@ def ceil(x: Union[ivy.Array, ivy.NativeArray])\
     return _cur_framework(x).ceil(x)
 
 
+# noinspection PyShadowingBuiltins
+def abs(x: Union[ivy.Array, ivy.NativeArray])\
+        -> Union[ivy.Array, ivy.NativeArray]:
+    """
+    Returns the absolute value of each element in x.
+    :param x: Input array containing elements to absolute value.
+    :type x: array
+    :return: A new array of the same shape as input array a, with all values now positive.
+    """
+    return _cur_framework(x).abs(x)
+
+
 def argmax(x: Union[ivy.Array, ivy.NativeArray], axis: int = 0)\
         -> Union[ivy.Array, ivy.NativeArray]:
     """
