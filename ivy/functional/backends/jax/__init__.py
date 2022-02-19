@@ -19,6 +19,8 @@ register_pytree_node(
 )
 
 # local
+from . import array_api
+from .array_api import *
 from .core import *
 from . import nn
 from .nn import *
