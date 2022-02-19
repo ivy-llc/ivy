@@ -1,0 +1,8 @@
+Array api
+=========
+
+.. automodule:: ivy.functional.backends.mxnet.array_api
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:

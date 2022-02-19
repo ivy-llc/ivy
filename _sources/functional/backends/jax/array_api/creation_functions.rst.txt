@@ -1,0 +1,15 @@
+Creation functions
+==================
+
+.. automodule:: ivy.functional.backends.jax.array_api.creation_functions
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :maxdepth: -1
+   :caption: Creation functions
+
+

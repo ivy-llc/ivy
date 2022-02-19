@@ -1,0 +1,15 @@
+Data type functions
+===================
+
+.. automodule:: ivy.functional.backends.jax.array_api.data_type_functions
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :maxdepth: -1
+   :caption: Data type functions
+
+

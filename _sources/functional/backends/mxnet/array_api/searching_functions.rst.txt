@@ -1,0 +1,15 @@
+Searching functions
+===================
+
+.. automodule:: ivy.functional.backends.mxnet.array_api.searching_functions
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :maxdepth: -1
+   :caption: Searching functions
+
+

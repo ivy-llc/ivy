@@ -1,0 +1,15 @@
+Manipulation functions
+======================
+
+.. automodule:: ivy.functional.ivy.array_api.manipulation_functions
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :maxdepth: -1
+   :caption: Manipulation functions
+
+
