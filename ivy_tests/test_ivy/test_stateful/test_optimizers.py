@@ -23,7 +23,7 @@ from ivy.container import Container
     "inplace", [True, False])
 @pytest.mark.parametrize(
     "dtype", ['float32'])
-def test_sgd_optimizer(bs_ic_oc_target, with_v, inplace, dtype, dev, array_mode, compile_graph, call):
+def test_sgd_optimizer(bs_ic_oc_target, with_v, inplace, dtype, dev, compile_graph, call):
     # smoke test
     if call is helpers.np_call:
         # NumPy does not support gradients
@@ -48,11 +48,6 @@ def test_sgd_optimizer(bs_ic_oc_target, with_v, inplace, dtype, dev, array_mode,
     # optimizer
     optimizer = ivy.SGD(inplace=ivy.inplace_variables_supported() if inplace else False)
 
-    # compile if this mode is set
-    if compile_graph and not array_mode and call is helpers.torch_call:
-        # Currently only PyTorch is supported for ivy compilation
-        optimizer.compile_graph(linear_layer.v, )
-
     # train
     loss_tm1 = 1e12
     loss = None
@@ -79,8 +74,6 @@ def test_sgd_optimizer(bs_ic_oc_target, with_v, inplace, dtype, dev, array_mode,
     if call is helpers.torch_call:
         # pytest scripting does not **kwargs
         return
-    if not ivy.array_mode():
-        helpers.assert_compilable(loss_fn)
 
 
 # lars
@@ -94,7 +87,7 @@ def test_sgd_optimizer(bs_ic_oc_target, with_v, inplace, dtype, dev, array_mode,
     "inplace", [True, False])
 @pytest.mark.parametrize(
     "dtype", ['float32'])
-def test_lars_optimizer(bs_ic_oc_target, with_v, inplace, dtype, dev, array_mode, compile_graph, call):
+def test_lars_optimizer(bs_ic_oc_target, with_v, inplace, dtype, dev, compile_graph, call):
     # smoke test
     if call is helpers.np_call:
         # NumPy does not support gradients
@@ -119,11 +112,6 @@ def test_lars_optimizer(bs_ic_oc_target, with_v, inplace, dtype, dev, array_mode
     # optimizer
     optimizer = ivy.LARS(inplace=ivy.inplace_variables_supported() if inplace else False)
 
-    # compile if this mode is set
-    if compile_graph and not array_mode and call is helpers.torch_call:
-        # Currently only PyTorch is supported for ivy compilation
-        optimizer.compile_graph(linear_layer.v)
-
     # train
     loss_tm1 = 1e12
     loss = None
@@ -150,8 +138,6 @@ def test_lars_optimizer(bs_ic_oc_target, with_v, inplace, dtype, dev, array_mode
     if call is helpers.torch_call:
         # pytest scripting does not **kwargs
         return
-    if not ivy.array_mode():
-        helpers.assert_compilable(loss_fn)
 
 
 # adam
@@ -165,7 +151,7 @@ def test_lars_optimizer(bs_ic_oc_target, with_v, inplace, dtype, dev, array_mode
     "inplace", [True, False])
 @pytest.mark.parametrize(
     "dtype", ['float32'])
-def test_adam_optimizer(bs_ic_oc_target, with_v, inplace, dtype, dev, array_mode, compile_graph, call):
+def test_adam_optimizer(bs_ic_oc_target, with_v, inplace, dtype, dev, compile_graph, call):
     # smoke test
     if call is helpers.np_call:
         # NumPy does not support gradients
@@ -190,11 +176,6 @@ def test_adam_optimizer(bs_ic_oc_target, with_v, inplace, dtype, dev, array_mode
     # optimizer
     optimizer = ivy.Adam(dev=dev, inplace=ivy.inplace_variables_supported() if inplace else False)
 
-    # compile if this mode is set
-    if compile_graph and not array_mode and call is helpers.torch_call:
-        # Currently only PyTorch is supported for ivy compilation
-        optimizer.compile_on_next_step()
-
     # train
     loss, grads = ivy.execute_with_gradients(loss_fn, linear_layer.v)
     linear_layer.v = optimizer.step(linear_layer.v, grads)
@@ -219,12 +200,6 @@ def test_adam_optimizer(bs_ic_oc_target, with_v, inplace, dtype, dev, array_mode
     # value test
     assert ivy.reduce_max(ivy.abs(grads.b)) > 0
     assert ivy.reduce_max(ivy.abs(grads.w)) > 0
-    # compilation test
-    if call is helpers.torch_call:
-        # pytest scripting does not **kwargs
-        return
-    if not ivy.array_mode():
-        helpers.assert_compilable(loss_fn)
 
 
 # lamb
@@ -238,7 +213,7 @@ def test_adam_optimizer(bs_ic_oc_target, with_v, inplace, dtype, dev, array_mode
     "inplace", [True, False])
 @pytest.mark.parametrize(
     "dtype", ['float32'])
-def test_lamb_optimizer(bs_ic_oc_target, with_v, inplace, dtype, dev, array_mode, compile_graph, call):
+def test_lamb_optimizer(bs_ic_oc_target, with_v, inplace, dtype, dev, compile_graph, call):
     # smoke test
     if call is helpers.np_call:
         # NumPy does not support gradients
@@ -263,11 +238,6 @@ def test_lamb_optimizer(bs_ic_oc_target, with_v, inplace, dtype, dev, array_mode
     # optimizer
     optimizer = ivy.LAMB(dev=dev, inplace=ivy.inplace_variables_supported() if inplace else False)
 
-    # compile if this mode is set
-    if compile_graph and not array_mode and call is helpers.torch_call:
-        # Currently only PyTorch is supported for ivy compilation
-        optimizer.compile_on_next_step()
-
     # train
     loss, grads = ivy.execute_with_gradients(loss_fn, linear_layer.v)
     linear_layer.v = optimizer.step(linear_layer.v, grads)
@@ -292,9 +262,3 @@ def test_lamb_optimizer(bs_ic_oc_target, with_v, inplace, dtype, dev, array_mode
     # value test
     assert ivy.reduce_max(ivy.abs(grads.b)) > 0
     assert ivy.reduce_max(ivy.abs(grads.w)) > 0
-    # compilation test
-    if call is helpers.torch_call:
-        # pytest scripting does not **kwargs
-        return
-    if not ivy.array_mode():
-        helpers.assert_compilable(loss_fn)

@@ -52,9 +52,6 @@ def _fn_2(x, with_non_compiled: bool = False):
     "with_array_caching", [True, False])
 def test_compile_graph_inplace(x_raw, dtype, tensor_fn, with_non_compiled, with_array_caching, dev,
                                compile_graph, call):
-    if ivy.array_mode() or not compile_graph:
-        # Wrapped mode does not yet support function compilation
-        pytest.skip()
     if call is not helpers.torch_call:
         # currently only supported by PyTorch
         pytest.skip()
@@ -159,9 +156,6 @@ def _fn_4(x, with_non_compiled: bool = False, with_internal_gen: bool = False):
     "with_array_caching", [True, False])
 def test_compile_graph(x_raw, dtype, tensor_fn, with_non_compiled, with_internal_gen, with_array_caching, dev,
                        compile_graph, call):
-    if ivy.array_mode() or not compile_graph:
-        # Wrapped mode does not yet support function compilation
-        pytest.skip()
     if call is not helpers.torch_call:
         # currently only supported by PyTorch
         pytest.skip()
@@ -256,9 +250,6 @@ def _rand_fn(x, with_non_compiled: bool = False):
     "with_array_caching", [True, False])
 def test_compile_graph_w_random(x_raw, dtype, tensor_fn, with_non_compiled, include_generators, with_array_caching,
                                 dev, compile_graph, call):
-    if ivy.array_mode() or not compile_graph:
-        # Wrapped mode does not yet support function compilation
-        pytest.skip()
     if call is not helpers.torch_call:
         # currently only supported by PyTorch
         pytest.skip()
@@ -313,9 +304,6 @@ def _detach_div_fn(x):
 @pytest.mark.parametrize(
     "with_array_caching", [True, False])
 def test_compile_graph_w_detached_divide(x_raw, dtype, tensor_fn, with_array_caching, dev, compile_graph, call):
-    if ivy.array_mode() or not compile_graph:
-        # Wrapped mode does not yet support function compilation
-        pytest.skip()
     if call is not helpers.torch_call:
         # currently only supported by PyTorch
         pytest.skip()
@@ -357,9 +345,6 @@ def _input_in_output(x, y):
 @pytest.mark.parametrize(
     "with_array_caching", [True, False])
 def test_compile_graph_input_in_output(x_raw, dtype, tensor_fn, with_array_caching, dev, compile_graph, call):
-    if ivy.array_mode() or not compile_graph:
-        # Wrapped mode does not yet support function compilation
-        pytest.skip()
     if call is not helpers.torch_call:
         # currently only supported by PyTorch
         pytest.skip()
@@ -402,9 +387,6 @@ def _inplace_var_update(weight, grad):
 @pytest.mark.parametrize(
     "with_array_caching", [True, False])
 def test_compile_graph_inplace_var_update(weight_n_grad, dtype, with_array_caching, dev, compile_graph, call):
-    if ivy.array_mode() or not compile_graph:
-        # Wrapped mode does not yet support function compilation
-        pytest.skip()
     if call is not helpers.torch_call:
         # currently only supported by PyTorch
         pytest.skip()
@@ -467,9 +449,6 @@ class Stateful:
 @pytest.mark.parametrize(
     "with_array_caching", [True, False])
 def test_compile_graph_w_stateful(x_raw, dtype, with_array_caching, dev, compile_graph, call):
-    if ivy.array_mode() or not compile_graph:
-        # Wrapped mode does not yet support function compilation
-        pytest.skip()
     if call is not helpers.torch_call:
         # currently only supported by PyTorch
         pytest.skip()
@@ -512,9 +491,6 @@ def _update_container(cont, x):
 @pytest.mark.parametrize(
     "with_array_caching", [True, False])
 def test_compile_graph_w_stateful_cont(x_raw, dtype, with_array_caching, dev, compile_graph, call):
-    if ivy.array_mode() or not compile_graph:
-        # Wrapped mode does not yet support function compilation
-        pytest.skip()
     if call is not helpers.torch_call:
         # currently only supported by PyTorch
         pytest.skip()
@@ -571,9 +547,6 @@ def _stateful_in_arg_method(x, sia):
 @pytest.mark.parametrize(
     "with_array_caching", [True, False])
 def test_compile_graph_w_stateful_in_args(x_raw, dtype, with_array_caching, dev, compile_graph, call):
-    if ivy.array_mode() or not compile_graph:
-        # Wrapped mode does not yet support function compilation
-        pytest.skip()
     if call is not helpers.torch_call:
         # currently only supported by PyTorch
         pytest.skip()
@@ -604,9 +577,6 @@ def _rev_builtin(x):
 @pytest.mark.parametrize(
     "with_array_caching", [True, False])
 def test_compile_graph_reverse_builtin(with_array_caching, dev, compile_graph, call):
-    if ivy.array_mode() or not compile_graph:
-        # Wrapped mode does not yet support function compilation
-        pytest.skip()
     if call is not helpers.torch_call:
         # currently only supported by PyTorch
         pytest.skip()
@@ -633,9 +603,6 @@ def test_compile_graph_reverse_builtin(with_array_caching, dev, compile_graph, c
 @pytest.mark.parametrize(
     "image_dims", [[224, 224]])
 def test_resnet_18_imagenet(batch_size, image_dims, dev, compile_graph, call):
-    if ivy.array_mode() or not compile_graph:
-        # Wrapped mode does not yet support function compilation
-        pytest.skip()
     if call is not helpers.torch_call:
         # currently only supported by PyTorch
         pytest.skip()
