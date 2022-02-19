@@ -104,24 +104,24 @@ class Array(ArrayWithDevice, ArrayWithGeneral, ArrayWithGradients, ArrayWithImag
 
     @_native_wrapper
     def __dir__(self):
-        return self._data.__dir__()
+        return ivy.dir(self._data)
 
     @_native_wrapper
     def __getattr__(self, item):
         try:
-            attr = self._data.__getattribute__(item)
+            attr = ivy.getattribute(self._data, item)
         except AttributeError:
-            attr = self._data.__getattr__(item)
+            attr = ivy.getattr(self._data, item)
         return to_ivy(attr)
 
     @_native_wrapper
     def __getitem__(self, query):
-        return to_ivy(self._data.__getitem__(query))
+        return to_ivy(ivy.getitem(self._data, query))
 
     @_native_wrapper
     def __setitem__(self, query, val):
         try:
-            self._data.__setitem__(query, val)
+            ivy.setitem(self._data, query, val)
         except (AttributeError, TypeError):
             query = [[query]] if isinstance(query, Number) else query
             query = ivy.array(query)
@@ -133,7 +133,7 @@ class Array(ArrayWithDevice, ArrayWithGeneral, ArrayWithGradients, ArrayWithImag
 
     @_native_wrapper
     def __contains__(self, key):
-        return self._data.__contains__(key)
+        return ivy.contains(self._data, key)
 
     @_native_wrapper
     def __pos__(self):
@@ -141,7 +141,7 @@ class Array(ArrayWithDevice, ArrayWithGeneral, ArrayWithGradients, ArrayWithImag
 
     @_native_wrapper
     def __neg__(self):
-        res = self._data.__neg__()
+        res = ivy.neg(self._data)
         if res is NotImplemented:
             return res
         return to_ivy(res)
@@ -149,7 +149,7 @@ class Array(ArrayWithDevice, ArrayWithGeneral, ArrayWithGradients, ArrayWithImag
     @_native_wrapper
     def __pow__(self, power):
         power = to_native(power)
-        res = self._data.__pow__(power)
+        res = ivy.pow(self._data, power)
         if res is NotImplemented:
             return res
         return to_ivy(res)
@@ -157,7 +157,7 @@ class Array(ArrayWithDevice, ArrayWithGeneral, ArrayWithGradients, ArrayWithImag
     @_native_wrapper
     def __rpow__(self, power):
         power = to_native(power)
-        res = self._data.__rpow__(power)
+        res = ivy.rpow(self._data, power)
         if res is NotImplemented:
             return res
         return to_ivy(res)
@@ -165,7 +165,7 @@ class Array(ArrayWithDevice, ArrayWithGeneral, ArrayWithGradients, ArrayWithImag
     @_native_wrapper
     def __add__(self, other):
         other = to_native(other)
-        res = self._data.__add__(other)
+        res = ivy.add(self._data, other)
         if res is NotImplemented:
             return res
         return to_ivy(res)
@@ -173,7 +173,7 @@ class Array(ArrayWithDevice, ArrayWithGeneral, ArrayWithGradients, ArrayWithImag
     @_native_wrapper
     def __radd__(self, other):
         other = to_native(other)
-        res = self._data.__radd__(other)
+        res = ivy.radd(self._data, other)
         if res is NotImplemented:
             return res
         return to_ivy(res)
@@ -181,7 +181,7 @@ class Array(ArrayWithDevice, ArrayWithGeneral, ArrayWithGradients, ArrayWithImag
     @_native_wrapper
     def __sub__(self, other):
         other = to_native(other)
-        res = self._data.__sub__(other)
+        res = ivy.sub(self._data, other)
         if res is NotImplemented:
             return res
         return to_ivy(res)
@@ -189,7 +189,7 @@ class Array(ArrayWithDevice, ArrayWithGeneral, ArrayWithGradients, ArrayWithImag
     @_native_wrapper
     def __rsub__(self, other):
         other = to_native(other)
-        res = self._data.__rsub__(other)
+        res = ivy.rsub(self._data, other)
         if res is NotImplemented:
             return res
         return to_ivy(res)
@@ -197,7 +197,7 @@ class Array(ArrayWithDevice, ArrayWithGeneral, ArrayWithGradients, ArrayWithImag
     @_native_wrapper
     def __mul__(self, other):
         other = to_native(other)
-        res = self._data.__mul__(other)
+        res = ivy.mul(self._data, other)
         if res is NotImplemented:
             return res
         return to_ivy(res)
@@ -205,7 +205,7 @@ class Array(ArrayWithDevice, ArrayWithGeneral, ArrayWithGradients, ArrayWithImag
     @_native_wrapper
     def __rmul__(self, other):
         other = to_native(other)
-        res = self._data.__rmul__(other)
+        res = ivy.rmul(self._data, other)
         if res is NotImplemented:
             return res
         return to_ivy(res)
@@ -213,7 +213,7 @@ class Array(ArrayWithDevice, ArrayWithGeneral, ArrayWithGradients, ArrayWithImag
     @_native_wrapper
     def __truediv__(self, other):
         other = to_native(other)
-        res = self._data.__truediv__(other)
+        res = ivy.truediv(self._data, other)
         if res is NotImplemented:
             return res
         return to_ivy(res)
@@ -221,7 +221,7 @@ class Array(ArrayWithDevice, ArrayWithGeneral, ArrayWithGradients, ArrayWithImag
     @_native_wrapper
     def __rtruediv__(self, other):
         other = to_native(other)
-        res = self._data.__rtruediv__(other)
+        res = ivy.rtruediv(self._data, other)
         if res is NotImplemented:
             return res
         return to_ivy(res)
@@ -229,7 +229,7 @@ class Array(ArrayWithDevice, ArrayWithGeneral, ArrayWithGradients, ArrayWithImag
     @_native_wrapper
     def __floordiv__(self, other):
         other = to_native(other)
-        res = self._data.__floordiv__(other)
+        res = ivy.floordiv(self._data, other)
         if res is NotImplemented:
             return res
         return to_ivy(res)
@@ -237,7 +237,7 @@ class Array(ArrayWithDevice, ArrayWithGeneral, ArrayWithGradients, ArrayWithImag
     @_native_wrapper
     def __rfloordiv__(self, other):
         other = to_native(other)
-        res = self._data.__rfloordiv__(other)
+        res = ivy.rfloordiv(self._data, other)
         if res is NotImplemented:
             return res
         return to_ivy(res)
@@ -246,14 +246,14 @@ class Array(ArrayWithDevice, ArrayWithGeneral, ArrayWithGradients, ArrayWithImag
     def __abs__(self):
         if 'uint' in ivy.dtype(self._data, as_str=True):
             return self
-        res = self._data.__abs__()
+        res = ivy.abs(self._data)
         if res is NotImplemented:
             return res
         return to_ivy(res)
 
     @_native_wrapper
     def __float__(self):
-        res = self._data.__float__()
+        res = ivy.float(self._data)
         if res is NotImplemented:
             return res
         return to_ivy(res)
@@ -261,7 +261,7 @@ class Array(ArrayWithDevice, ArrayWithGeneral, ArrayWithGradients, ArrayWithImag
     @_native_wrapper
     def __int__(self):
         if hasattr(self._data, '__int__'):
-            res = self._data.__int__()
+            res = ivy.int(self._data)
         else:
             # noinspection PyTypeChecker
             res = int(ivy.to_scalar(self._data))
@@ -271,12 +271,12 @@ class Array(ArrayWithDevice, ArrayWithGeneral, ArrayWithGradients, ArrayWithImag
 
     @_native_wrapper
     def __bool__(self):
-        return self._data.__bool__()
+        return ivy.bool(self._data)
 
     @_native_wrapper
     def __lt__(self, other):
         other = to_native(other)
-        res = self._data.__lt__(other)
+        res = ivy.lt(self._data, other)
         if res is NotImplemented:
             return res
         return to_ivy(res)
@@ -284,7 +284,7 @@ class Array(ArrayWithDevice, ArrayWithGeneral, ArrayWithGradients, ArrayWithImag
     @_native_wrapper
     def __le__(self, other):
         other = to_native(other)
-        res = self._data.__le__(other)
+        res = ivy.le(self._data, other)
         if res is NotImplemented:
             return res
         return to_ivy(res)
@@ -300,7 +300,7 @@ class Array(ArrayWithDevice, ArrayWithGeneral, ArrayWithGradients, ArrayWithImag
     @_native_wrapper
     def __ne__(self, other):
         other = to_native(other)
-        res = self._data.__ne__(other)
+        res = ivy.ne(self._data, other)
         if res is NotImplemented:
             return res
         return to_ivy(res)
@@ -308,7 +308,7 @@ class Array(ArrayWithDevice, ArrayWithGeneral, ArrayWithGradients, ArrayWithImag
     @_native_wrapper
     def __gt__(self, other):
         other = to_native(other)
-        res = self._data.__gt__(other)
+        res = ivy.gt(self._data, other)
         if res is NotImplemented:
             return res
         return to_ivy(res)
@@ -316,7 +316,7 @@ class Array(ArrayWithDevice, ArrayWithGeneral, ArrayWithGradients, ArrayWithImag
     @_native_wrapper
     def __ge__(self, other):
         other = to_native(other)
-        res = self._data.__ge__(other)
+        res = ivy.ge(self._data, other)
         if res is NotImplemented:
             return res
         return to_ivy(res)
@@ -324,7 +324,7 @@ class Array(ArrayWithDevice, ArrayWithGeneral, ArrayWithGradients, ArrayWithImag
     @_native_wrapper
     def __and__(self, other):
         other = to_native(other)
-        res = self._data.__and__(other)
+        res = ivy.and_(self._data, other)
         if res is NotImplemented:
             return res
         return to_ivy(res)
@@ -332,7 +332,7 @@ class Array(ArrayWithDevice, ArrayWithGeneral, ArrayWithGradients, ArrayWithImag
     @_native_wrapper
     def __rand__(self, other):
         other = to_native(other)
-        res = self._data.__rand__(other)
+        res = ivy.rand(self._data, other)
         if res is NotImplemented:
             return res
         return to_ivy(res)
@@ -340,7 +340,7 @@ class Array(ArrayWithDevice, ArrayWithGeneral, ArrayWithGradients, ArrayWithImag
     @_native_wrapper
     def __or__(self, other):
         other = to_native(other)
-        res = self._data.__or__(other)
+        res = ivy.or_(self._data, other)
         if res is NotImplemented:
             return res
         return to_ivy(res)
@@ -348,14 +348,14 @@ class Array(ArrayWithDevice, ArrayWithGeneral, ArrayWithGradients, ArrayWithImag
     @_native_wrapper
     def __ror__(self, other):
         other = to_native(other)
-        res = self._data.__ror__(other)
+        res = ivy.ror(self._data, other)
         if res is NotImplemented:
             return res
         return to_ivy(res)
 
     @_native_wrapper
     def __invert__(self):
-        res = self._data.__invert__()
+        res = ivy.invert(self._data)
         if res is NotImplemented:
             return res
         return to_ivy(res)
@@ -363,7 +363,7 @@ class Array(ArrayWithDevice, ArrayWithGeneral, ArrayWithGradients, ArrayWithImag
     @_native_wrapper
     def __xor__(self, other):
         other = to_native(other)
-        res = self._data.__xor__(other)
+        res = ivy.xor(self._data, other)
         if res is NotImplemented:
             return res
         return to_ivy(res)
@@ -371,7 +371,7 @@ class Array(ArrayWithDevice, ArrayWithGeneral, ArrayWithGradients, ArrayWithImag
     @_native_wrapper
     def __rxor__(self, other):
         other = to_native(other)
-        res = self._data.__rxor__(other)
+        res = ivy.rxor(self._data, other)
         if res is NotImplemented:
             return res
         return to_ivy(res)
@@ -380,7 +380,7 @@ class Array(ArrayWithDevice, ArrayWithGeneral, ArrayWithGradients, ArrayWithImag
     @_native_wrapper
     def __deepcopy__(self, memodict={}):
         try:
-            return to_ivy(self._data.__deepcopy__(memodict))
+            return to_ivy(ivy.deepcopy(self._data, memodict))
         except AttributeError:
             # ToDo: try and find more elegant solution to jax inability to deepcopy device arrays
             if ivy.current_framework_str() == 'jax':
