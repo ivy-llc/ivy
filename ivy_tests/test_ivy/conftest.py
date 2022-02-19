@@ -100,6 +100,6 @@ def pytest_generate_tests(metafunc):
 def pytest_addoption(parser):
     parser.addoption('--dev', action="store", default="cpu")
     parser.addoption('--framework', action="store", default="jax,mxnet,numpy,tensorflow,torch")
-    parser.addoption('--array_mode', action="store", default="both")
+    parser.addoption('--array_mode', action="store", default="true")
     parser.addoption('--compile_graph', action="store", default="true")
     parser.addoption('--with_implicit', action="store", default="false")
