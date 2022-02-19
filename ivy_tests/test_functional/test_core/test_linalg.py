@@ -216,9 +216,11 @@ def test_vector_to_skew_symmetric_matrix(x, dtype, tensor_fn, dev, call):
     if not ivy.array_mode():
         helpers.assert_compilable(ivy.vector_to_skew_symmetric_matrix)
 
+
 # cholesky
 @pytest.mark.parametrize(
-    "x", [[[1.0, -1.0, 2.0], [-1.0, 5.0, -4.0], [2.0, -4.0, 6.0]], [[[1.0, -1.0, 2.0], [-1.0, 5.0, -4.0], [2.0, -4.0, 6.0]]]])
+    "x", [[[1.0, -1.0, 2.0], [-1.0, 5.0, -4.0], [2.0, -4.0, 6.0]],
+          [[[1.0, -1.0, 2.0], [-1.0, 5.0, -4.0], [2.0, -4.0, 6.0]]]])
 @pytest.mark.parametrize(
     "dtype", ['float32'])
 @pytest.mark.parametrize(
@@ -235,11 +237,34 @@ def test_cholesky(x, dtype, tensor_fn, dev, call):
     assert np.allclose(call(ivy.cholesky, x), ivy.functional.backends.numpy.cholesky(ivy.to_numpy(x)))
     # compilation test
     if not ivy.array_mode():
-<<<<<<< HEAD
         helpers.assert_compilable(ivy.cholesky)
 
 
-
-=======
-        helpers.assert_compilable(ivy.cholesky)
->>>>>>> 699168dfb8d09e0e51ad2fa9335b9ebcfc1a928b
+# cross
+@pytest.mark.parametrize(
+    "x1_x2_kw", [([1, 2, 3], [4, 5, 6], -1)])
+@pytest.mark.parametrize(
+    "dtype", ['float32'])
+@pytest.mark.parametrize(
+    "tensor_fn", [ivy.array, helpers.var_fn])
+def test_cross(x1_x2_kw, dtype, tensor_fn, dev, call):
+    x1_raw, x2_raw, kw = x1_x2_kw
+    # smoke test
+    x1 = tensor_fn(x1_raw, dtype, dev)
+    x2 = tensor_fn(x2_raw, dtype, dev)
+    axis = kw
+    err = "test_cross produced invalid input."
+    assert x1.shape == x2.shape, err
+    shape = x1.shape
+    assert x1.shape[axis] == x2.shape[axis] == 3, err
+    res = ivy.cross(x1, x2, kw)
+    assert res.dtype == x1.dtype == x2.dtype, "cross() did not return the correct dtype"
+    assert res.shape == shape, "cross() did not return the correct shape"
+    # value test
+    pred = call(ivy.cross, x1, x2, kw)
+    assert np.allclose(pred, ivy.functional.backends.numpy.cross(x1_raw, x2_raw,
+                                                                 kw)), "cross() did not correctly perform the " \
+                                                                       "operation"
+    # compilation test
+    if not ivy.array_mode():
+        helpers.assert_compilable(ivy.cross)
