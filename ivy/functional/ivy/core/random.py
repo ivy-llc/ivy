@@ -6,7 +6,7 @@ Collection of random Ivy functions
 from ivy.framework_handler import current_framework as _cur_framework
 
 
-def random_uniform(low=0.0, high=1.0, shape=None, dev=None, f=None):
+def random_uniform(low=0.0, high=1.0, shape=None, dev=None):
     """
     Draws samples from a uniform distribution.
     Samples are uniformly distributed over the half-open interval [low, high) (includes low, but excludes high).
@@ -23,14 +23,12 @@ def random_uniform(low=0.0, high=1.0, shape=None, dev=None, f=None):
     :type shape: sequence of ints
     :param dev: device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
     :type dev: ivy.Device
-    :param f: Machine learning framework. Inferred from inputs if None.
-    :type f: ml_framework, optional
     :return: Drawn samples from the parameterized uniform distribution.
     """
-    return _cur_framework(f=f).random_uniform(low, high, shape, dev)
+    return _cur_framework().random_uniform(low, high, shape, dev)
 
 
-def random_normal(mean=0.0, std=1.0, shape=None, dev=None, f=None):
+def random_normal(mean=0.0, std=1.0, shape=None, dev=None):
     """
     Draws samples from a normal distribution.
 
@@ -42,14 +40,12 @@ def random_normal(mean=0.0, std=1.0, shape=None, dev=None, f=None):
                     If size is None (default), a single value is returned.
     :param dev: device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
     :type dev: ivy.Device
-    :param f: Machine learning framework. Inferred from inputs if None.
-    :type f: ml_framework, optional
     :return: Drawn samples from the parameterized uniform distribution.
     """
-    return _cur_framework(f=f).random_normal(mean, std, shape, dev)
+    return _cur_framework().random_normal(mean, std, shape, dev)
 
 
-def multinomial(population_size, num_samples, batch_size, probs=None, replace=True, dev=None, f=None):
+def multinomial(population_size, num_samples, batch_size, probs=None, replace=True, dev=None):
     """
     Draws samples from a multinomial distribution. Specifcally, returns a tensor where each row contains num_samples
     indices sampled from the multinomial probability distribution located in the corresponding row of tensor input.
@@ -67,14 +63,12 @@ def multinomial(population_size, num_samples, batch_size, probs=None, replace=Tr
     :type replace: bool, optional
     :param dev: device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
     :type dev: ivy.Device
-    :param f: Machine learning framework. Inferred from inputs if None.
-    :type f: ml_framework, optional
     :return: Drawn samples indices from the multinomial distribution.
     """
-    return _cur_framework(f=f).multinomial(population_size, num_samples, batch_size, probs, replace, dev)
+    return _cur_framework().multinomial(population_size, num_samples, batch_size, probs, replace, dev)
 
 
-def randint(low, high, shape, dev=None, f=None):
+def randint(low, high, shape, dev=None):
     """
     Returns a tensor filled with random integers generated uniformly between low (inclusive) and high (exclusive).
 
@@ -86,33 +80,27 @@ def randint(low, high, shape, dev=None, f=None):
     :type shape: sequence of ints
     :param dev: device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
     :type dev: ivy.Device
-    :param f: Machine learning framework. Inferred from inputs if None.
-    :type f: ml_framework, optional
     :return:
     """
-    return _cur_framework(f=f).randint(low, high, shape, dev)
+    return _cur_framework().randint(low, high, shape, dev)
 
 
-def seed(seed_value=0, f=None):
+def seed(seed_value=0):
     """
     Sets the seed for random number generation.
 
     :param seed_value: Seed for random number generation, must be a positive integer.
     :type seed_value: int
-    :param f: Machine learning framework. Inferred from inputs if None.
-    :type f: ml_framework, optional
     """
-    return _cur_framework(f=f).seed(seed_value)
+    return _cur_framework().seed(seed_value)
 
 
-def shuffle(x, f=None):
+def shuffle(x):
     """
     Shuffles the given array along axis 0.
 
     :param x: An array object, in the specific Machine learning framework.
     :type x: array
-    :param f: Machine learning framework. Inferred from inputs if None.
-    :type f: ml_framework, optional
     :return: An array object, shuffled along the first dimension.
     """
-    return _cur_framework(x, f=f).shuffle(x)
+    return _cur_framework(x).shuffle(x)

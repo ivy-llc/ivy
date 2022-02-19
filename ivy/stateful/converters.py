@@ -7,7 +7,7 @@ from ivy.framework_handler import current_framework as _cur_framework
 
 
 def to_ivy_module(native_module=None, native_module_class=None, args=None, kwargs=None, dev=None, devs=None,
-                  inplace_update=False, f=None):
+                  inplace_update=False):
     """
     Convert an instance of a trainable module from a native framework into a trainable ivy.Module instance.
 
@@ -27,9 +27,6 @@ def to_ivy_module(native_module=None, native_module_class=None, args=None, kwarg
     :param inplace_update: For backends with dedicated variable classes, whether to update these inplace.
                            Default is False.
     :type inplace_update: bool, optional
-    :param f: Machine learning library. Inferred from Inputs if None.
-    :type f: ml_framework, optional
     :return: The new trainable ivy.Module instance.
     """
-    return _cur_framework(f=f).to_ivy_module(native_module, native_module_class, args, kwargs, dev, devs,
-                                             inplace_update)
+    return _cur_framework().to_ivy_module(native_module, native_module_class, args, kwargs, dev, devs, inplace_update)
