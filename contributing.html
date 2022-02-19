@@ -35,7 +35,9 @@
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
   <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" /> 
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Conversions" href="array/conversions.html" />
+    <link rel="prev" title="Training a Network" href="training_a_network.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -80,10 +82,15 @@
             
             
               <p class="caption"><span class="caption-text">Guides</span></p>
-<ul>
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="why_ivy.html">Why Ivy?</a></li>
 <li class="toctree-l1"><a class="reference internal" href="using_ivy.html">Using Ivy</a></li>
 <li class="toctree-l1"><a class="reference internal" href="training_a_network.html">Training a Network</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Contributing to Ivy</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#ivy-api">Ivy API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#backend-api">Backend API</a></li>
+</ul>
+</li>
 </ul>
 <p class="caption"><span class="caption-text">Array</span></p>
 <ul>
@@ -205,7 +212,9 @@
 <h2>Ivy API<a class="headerlink" href="#ivy-api" title="Permalink to this headline">¶</a></h2>
 <p>All function signatures for the Ivy API are defined in the <code class="code docutils literal notranslate"><span class="pre">ivy.functional.ivy</span></code> submodule. Functions written here
 should adhere to the following format:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">my_func</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">dtype</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">dev</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dev</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">my_func</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
+            <span class="n">dtype</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">dev</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dev</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    My function does something cool.</span>
 
@@ -221,14 +230,17 @@ should adhere to the following format:</p>
 <div class="section" id="backend-api">
 <h2>Backend API<a class="headerlink" href="#backend-api" title="Permalink to this headline">¶</a></h2>
 <p>Code in the backend submodules such as <code class="code docutils literal notranslate"><span class="pre">ivy.functional.backends.torch</span></code> should then look something like:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">my_func</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">dtype</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">dev</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">dev</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">my_func</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span>
+            <span class="n">dtype</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">dev</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">dev</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
     <span class="n">dtype</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">dtype_from_str</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">default_dtype</span><span class="p">(</span><span class="n">dtype</span><span class="p">,</span> <span class="n">x</span><span class="p">))</span>
     <span class="n">dev</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">dev_from_str</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">default_dev</span><span class="p">(</span><span class="n">dev</span><span class="p">,</span> <span class="n">x</span><span class="p">))</span>
     <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">something_cool</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dtype</span><span class="p">,</span> <span class="n">dev</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Specifically, we should use type hints for all arguments in the Ivy API and also the backend APIs. These type hints
-should be identical apart from all ivy.Array, ivy.Dtype and ivy.Dev types replaced by framework-specific types.</p>
+should be identical apart from all <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code>, <code class="code docutils literal notranslate"><span class="pre">ivy.Dtype</span></code> and <code class="code docutils literal notranslate"><span class="pre">ivy.Dev</span></code> types replaced by
+framework-specific types.</p>
 <p>The backend methods should not add a docstring, as this would be identical to the docstring provided in the Ivy API.</p>
 </div>
 </div>
@@ -238,6 +250,15 @@ should be identical apart from all ivy.Array, ivy.Dtype and ivy.Dev types replac
            
           </div>
           <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="array/conversions.html" class="btn btn-neutral float-right" title="Conversions" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="training_a_network.html" class="btn btn-neutral float-left" title="Training a Network" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
   
 
   <hr/>
