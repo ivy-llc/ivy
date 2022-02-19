@@ -7,7 +7,6 @@ import gc
 import math
 import einops
 import inspect
-import importlib
 import numpy as np
 from numbers import Number
 from typing import Callable, Any, Union, List, Tuple, Dict, Iterable, Optional
@@ -395,19 +394,6 @@ def ceil(x: Union[ivy.Array, ivy.NativeArray])\
     :return: An array of the same shape and type as x, with the elements ceiled to integers.
     """
     return _cur_framework(x).ceil(x)
-
-
-# noinspection PyShadowingBuiltins
-def abs(x: Union[ivy.Array, ivy.NativeArray])\
-        -> Union[ivy.Array, ivy.NativeArray]:
-    """
-    Returns the absolute value of each element in x.
-
-    :param x: Input array containing elements to absolute value.
-    :type x: array
-    :return: A new array of the same shape as input array a, with all values now positive.
-    """
-    return _cur_framework(x).abs(x)
 
 
 def argmax(x: Union[ivy.Array, ivy.NativeArray], axis: int = 0)\
