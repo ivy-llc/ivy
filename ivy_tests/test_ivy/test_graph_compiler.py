@@ -512,7 +512,7 @@ def _update_container(cont, x):
 @pytest.mark.parametrize(
     "with_array_caching", [True, False])
 def test_compile_graph_w_stateful_cont(x_raw, dtype, with_array_caching, dev, compile_graph, call):
-    if ivy.wrapped_mode() or not compile_graph:
+    if ivy.array_mode() or not compile_graph:
         # Wrapped mode does not yet support function compilation
         pytest.skip()
     if call is not helpers.torch_call:

@@ -46,8 +46,8 @@ def test_training_demo(dev, call):
 
 
 # functional api
-def test_array(dev, wrapped_mode, call):
-    if wrapped_mode:
+def test_array(dev, array_mode, call):
+    if array_mode:
         # ToDo: get this test passing
         pytest.skip()
     ivy.unset_framework()

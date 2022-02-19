@@ -14,7 +14,7 @@ NON_WRAPPED_METHODS = ['current_framework', 'current_framework_str', 'set_framew
                        'compile', 'compile_graph', 'dev', 'dev', 'dev_to_str', 'dev_from_str', 'memory_on_dev',
                        'gpu_is_available', 'num_gpus', 'tpu_is_available', 'dtype', 'dtype_to_str', 'cprint',
                        'to_ivy_module', 'tree_flatten', 'tree_unflatten', 'start_compiling', 'stop_compiling',
-                       'get_compiled', 'set_wrapped_mode', 'unset_wrapped_mode', 'wrapped_mode', 'index_nest',
+                       'get_compiled', 'set_array_mode', 'unset_array_mode', 'array_mode', 'index_nest',
                        'set_nest_at_index', 'map_nest_at_index', 'multi_index_nest', 'set_nest_at_indices',
                        'map_nest_at_indices', 'nested_indices_where', 'map', 'unset_default_device',
                        'closest_valid_dtype', 'default_dtype', 'dtype_from_str']

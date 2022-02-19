@@ -92,9 +92,9 @@ def test_match_kwargs(allow_duplicates):
         assert kwca == {'f': 5, 'g': 6}
 
 
-def test_get_referrers_recursive(dev, wrapped_mode, call):
+def test_get_referrers_recursive(dev, array_mode, call):
 
-    if wrapped_mode:
+    if array_mode:
         # ToDo: work out why this test fails in wrapped mode
         pytest.skip()
 
@@ -2279,9 +2279,9 @@ def test_cache_fn_with_args(dev, call):
     assert ret0 is not ret1
 
 
-def test_framework_setting_with_threading(dev, wrapped_mode, call):
+def test_framework_setting_with_threading(dev, array_mode, call):
 
-    if wrapped_mode:
+    if array_mode:
         # ToDO: get this test passing in wrapped mode
         pytest.skip()
 
@@ -2387,9 +2387,9 @@ def test_explicit_ivy_framework_handles(dev, call):
     ivy.unset_framework()
 
 
-def test_class_ivy_handles(dev, wrapped_mode, call):
+def test_class_ivy_handles(dev, array_mode, call):
 
-    if wrapped_mode:
+    if array_mode:
         # ToDo: get this test passing
         pytest.skip()
 
@@ -2568,8 +2568,8 @@ def test_inplace_variables_supported(dev, call):
     "x_n_new", [([0., 1., 2.], [2., 1., 0.]), (0., 1.)])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_inplace_update(x_n_new, tensor_fn, dev, wrapped_mode, call):
-    if wrapped_mode:
+def test_inplace_update(x_n_new, tensor_fn, dev, array_mode, call):
+    if array_mode:
         # ToDo: add support for inplace updates in wrapped mode
         pytest.skip()
     x_orig, new_val = x_n_new
@@ -2591,8 +2591,8 @@ def test_inplace_update(x_n_new, tensor_fn, dev, wrapped_mode, call):
     "x_n_dec", [([0., 1., 2.], [2., 1., 0.]), (0., 1.)])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_inplace_decrement(x_n_dec, tensor_fn, dev, wrapped_mode, call):
-    if wrapped_mode:
+def test_inplace_decrement(x_n_dec, tensor_fn, dev, array_mode, call):
+    if array_mode:
         # ToDo: add support for inplace decrements in wrapped mode
         pytest.skip()
     x_orig, dec = x_n_dec
@@ -2615,8 +2615,8 @@ def test_inplace_decrement(x_n_dec, tensor_fn, dev, wrapped_mode, call):
     "x_n_inc", [([0., 1., 2.], [2., 1., 0.]), (0., 1.)])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_inplace_increment(x_n_inc, tensor_fn, dev, wrapped_mode, call):
-    if wrapped_mode:
+def test_inplace_increment(x_n_inc, tensor_fn, dev, array_mode, call):
+    if array_mode:
         # ToDo: add support for inplace increments in wrapped mode
         pytest.skip()
     x_orig, inc = x_n_inc

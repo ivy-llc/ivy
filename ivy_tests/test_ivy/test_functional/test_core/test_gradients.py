@@ -159,8 +159,8 @@ def test_stop_gradient(x_raw, dtype, tensor_fn, dev, call):
     "dtype", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array])
-def test_execute_with_gradients(func_n_xs_n_ty_n_te_n_tg, dtype, tensor_fn, dev, wrapped_mode, compile_graph, call):
-    if wrapped_mode:
+def test_execute_with_gradients(func_n_xs_n_ty_n_te_n_tg, dtype, tensor_fn, dev, array_mode, compile_graph, call):
+    if array_mode:
         # ToDo: get this test passing
         pytest.skip()
     # smoke test
