@@ -1,0 +1,8 @@
+Core
+====
+
+.. automodule:: ivy.functional.frontends.torch.core
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:

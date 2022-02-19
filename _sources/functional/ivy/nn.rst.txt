@@ -1,0 +1,8 @@
+Nn
+==
+
+.. automodule:: ivy.functional.ivy.nn
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:

@@ -1,0 +1,8 @@
+Backends
+========
+
+.. automodule:: ivy.functional.backends
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:

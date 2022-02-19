@@ -1,0 +1,8 @@
+Jax
+===
+
+.. automodule:: ivy.functional.backends.jax
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:

@@ -1,0 +1,8 @@
+Mxnet
+=====
+
+.. automodule:: ivy.functional.backends.mxnet
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
