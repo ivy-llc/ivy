@@ -71,13 +71,8 @@ def _determine_framework_from_args(args):
                 return importlib.import_module(module_name)
 
 
-def current_framework(*args, f=None, **kwargs):
-    """Priorities: framework > global_framework > input's framework."""
-
-    if f:
-        if verbosity.level > 0:
-            verbosity.cprint('Using provided framework: {}'.format(f))
-        return f
+def current_framework(*args, **kwargs):
+    """Priorities: global_framework > argument's framework."""
 
     if framework_stack:
         f = framework_stack[-1]

@@ -24,63 +24,55 @@ split_factors = dict()
 
 # Retreival #
 
-def node(x: Union[ivy.Array, ivy.NativeArray], f: ivy.Framework = None)\
+def node(x: Union[ivy.Array, ivy.NativeArray])\
         -> ivy.Node:
     """
     Get the native node handle for input array x.
 
     :param x: Tensor for which to get the node handle.
     :type x: array
-    :param f: Machine learning framework. Inferred from inputs if None.
-    :type f: ml_framework, optional
     :return: node handle for the array, in native framework format.
     """
-    return _cur_framework(x, f=f).node(x)
+    return _cur_framework(x).node(x)
 
 
-def node_str(x: Union[ivy.Array, ivy.NativeArray], f: ivy.Framework = None)\
+def node_str(x: Union[ivy.Array, ivy.NativeArray])\
         -> str:
     """
     Get the node string for input array x.
 
     :param x: Tensor for which to get the node string.
     :type x: array
-    :param f: Machine learning framework. Inferred from inputs if None.
-    :type f: ml_framework, optional
     :return: node string for the array, e.g. 'cuda:0', 'cuda:1', 'cpu' etc..
     """
-    return _cur_framework(x, f=f).node_str(x)
+    return _cur_framework(x).node_str(x)
 
 
 # Conversions #
 
-def node_to_str(node_in: ivy.Node, f: ivy.Framework = None)\
+def node_to_str(node_in: ivy.Node)\
         -> str:
     """
     Convert native data type to string representation.
 
     :param node_in: The node handle to convert to string.
     :type node_in: node handle
-    :param f: Machine learning framework. Inferred from inputs if None.
-    :type f: ml_framework, optional
     :return: node string e.g. 'cuda:0'.
     """
-    return _cur_framework(None, f=f).node_to_str(node_in)
+    return _cur_framework(None).node_to_str(node_in)
 
 
 # noinspection PyShadowingNames
-def str_to_node(node_str: str, f: ivy.Framework = None)\
+def str_to_node(node_str: str)\
         -> ivy.Node:
     """
     Convert node string representation to native node type.
 
     :param node_str: The node string to conver to native node handle.
     :type node_str: str
-    :param f: Machine learning framework. Inferred from inputs if None.
-    :type f: ml_framework, optional
     :return: Native node handle.
     """
-    return _cur_framework(None, f=f).str_to_node(node_str)
+    return _cur_framework(None).str_to_node(node_str)
 
 
 # Memory #
@@ -145,40 +137,34 @@ def node_util(node_str: str)\
 
 # Availability #
 
-def gpu_is_available(f: ivy.Framework = None)\
+def gpu_is_available()\
         -> bool:
     """
     Determine whether a GPU is available to use, with the backend framework.
 
-    :param f: Machine learning framework. Inferred from inputs if None.
-    :type f: ml_framework, optional
     :return: Boolean, as to whether a gpu is available.
     """
-    return _cur_framework(f=f).gpu_is_available()
+    return _cur_framework().gpu_is_available()
 
 
-def num_gpus(f: ivy.Framework = None)\
+def num_gpus()\
         -> int:
     """
     Determine the number of available GPUs, with the backend framework.
 
-    :param f: Machine learning framework. Inferred from inputs if None.
-    :type f: ml_framework, optional
     :return: Number of available GPUs.
     """
-    return _cur_framework(f=f).num_gpus()
+    return _cur_framework().num_gpus()
 
 
-def tpu_is_available(f: ivy.Framework = None)\
+def tpu_is_available()\
         -> bool:
     """
     Determine whether a TPU is available to use, with the backend framework.
 
-    :param f: Machine learning framework. Inferred from inputs if None.
-    :type f: ml_framework, optional
     :return: Boolean, as to whether a tpu is available.
     """
-    return _cur_framework(f=f).tpu_is_available()
+    return _cur_framework().tpu_is_available()
 
 
 # Default node #
@@ -207,7 +193,7 @@ def set_default_node(node):
 # ------------------#
 
 # noinspection PyShadowingNames
-def to_node(x: Union[ivy.Array, ivy.NativeArray], node_str: str = None, f: ivy.Framework = None)\
+def to_node(x: Union[ivy.Array, ivy.NativeArray], node_str: str = None)\
         -> Union[ivy.Array, ivy.NativeArray]:
     """
     Move the input array x to the desired node, specified by node string.
@@ -216,11 +202,9 @@ def to_node(x: Union[ivy.Array, ivy.NativeArray], node_str: str = None, f: ivy.F
     :type x: array
     :param node_str: node to move the array to 'cuda:0', 'cuda:1', 'cpu' etc. Keep same node if None.
     :type node_str: str, optional
-    :param f: Machine learning framework. Inferred from inputs if None.
-    :type f: ml_framework, optional
     :return: The array x, but now placed on the target node.
     """
-    return _cur_framework(x, f=f).to_node(x, node_str)
+    return _cur_framework(x).to_node(x, node_str)
 
 
 # Function Splitting #
