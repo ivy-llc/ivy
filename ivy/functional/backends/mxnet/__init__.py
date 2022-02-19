@@ -1,7 +1,11 @@
+# global
 import sys
 import mxnet as mx
 import numpy as np
 
+# local
+from . import array_api
+from .array_api import *
 from .core import *
 from . import nn
 from .nn import *
