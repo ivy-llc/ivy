@@ -395,17 +395,6 @@ def ceil(x: Union[ivy.Array, ivy.NativeArray])\
     """
     return _cur_framework(x).ceil(x)
 
-def cosh(x: Union[ivy.Array, ivy.NativeArray])\
-        -> Union[ivy.Array, ivy.NativeArray]:
-    """
-    Calculates an implementation-dependent approximation to the hyperbolic cosine.
-
-    :param x: input array whose elements each represent a hyperbolic angle.
-    :type x: array
-    :return: an array containing the hyperbolic cosine of each element in x.
-    """
-    return _cur_framework(x).cosh(x)
-
 
 # noinspection PyShadowingBuiltins
 def abs(x: Union[ivy.Array, ivy.NativeArray])\

@@ -116,6 +116,8 @@ floormod = lambda x, y: x % y
 floor = _tf.floor
 ceil = _tf.math.ceil
 cosh = _tf.math.cosh
+tanh = _tf.math.tanh
+
 
 
 # noinspection PyShadowingBuiltins

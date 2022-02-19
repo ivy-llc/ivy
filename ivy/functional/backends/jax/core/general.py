@@ -133,6 +133,7 @@ ceil = _jnp.ceil
 # noinspection PyShadowingBuiltins
 abs = _jnp.absolute
 cosh = _jnp.cosh
+tank = _jnp.tanh
 
 
 def argmax(x, axis=0):
