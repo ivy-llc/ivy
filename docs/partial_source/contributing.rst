@@ -1,6 +1,8 @@
 Contributing to Ivy
 ===================
 
+.. _`Array API`: https://data-apis.org/array-api/latest/
+
 Ivy API
 -------
 
@@ -24,6 +26,9 @@ should adhere to the following format:
         """
         return _cur_framework(x).my_func(x, dtype, dev)
 
+All functions which adhere to the `Array API`_ standard should be placed in the submodule :code:`ivy.functional.ivy.array_api`,
+and should also be placed in the correct file in alignment with the categories used in the standard.
+
 Backend API
 -----------
 
@@ -44,3 +49,7 @@ should be identical apart from all :code:`ivy.Array`, :code:`ivy.Dtype` and :cod
 framework-specific types.
 
 The backend methods should not add a docstring, as this would be identical to the docstring provided in the Ivy API.
+
+All backend functions which adhere to the `Array API`_ standard should also be placed in submodules such as
+:code:`ivy.functional.backends.torch.array_api`, and should also be placed in the correct file in alignment with the
+categories used in the standard.
