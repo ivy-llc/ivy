@@ -54,20 +54,18 @@ def unset_with_grads():
 # Variables #
 # ----------#
 
-def variable(x, f=None):
+def variable(x):
     """
     Creates a variable, which supports gradient computation.
 
     :param x: An ivy array.
     :type x: array
-    :param f: Machine learning framework. Inferred from inputs if None.
-    :type f: ml_framework, optional
     :return: An ivy variable, supporting gradient computation.
     """
-    return _cur_framework(x, f=f).variable(x)
+    return _cur_framework(x).variable(x)
 
 
-def is_variable(x, exclusive=False, f=None):
+def is_variable(x, exclusive=False):
     """
     Determines whether the input is a variable or not.
 
@@ -77,28 +75,24 @@ def is_variable(x, exclusive=False, f=None):
                       For frameworks like JAX that do not have exclusive variable types, the function will always return
                       False if this flag is set, otherwise the check is the same for general arrays. Default is False.
     :type exclusive: bool, optional
-    :param f: Machine learning framework. Inferred from inputs if None.
-    :type f: ml_framework, optional
     :return: Boolean, true if x is a trainable variable, false otherwise.
     """
-    return _cur_framework(x, f=f).is_variable(x, exclusive)
+    return _cur_framework(x).is_variable(x, exclusive)
 
 
-def variable_data(x, f=None):
+def variable_data(x):
     """
     Some backends wrap arrays in a dedicated variable class. For those frameworks, this function returns that wrapped
     array. For frameworks which do not have a dedicated variable class, the function returns the data passed in.
 
     :param x: An ivy variable.
     :type x: variable
-    :param f: Machine learning framework. Inferred from inputs if None.
-    :type f: ml_framework, optional
     :return: The internal data stored by the variable
     """
-    return _cur_framework(x, f=f).variable_data(x)
+    return _cur_framework(x).variable_data(x)
 
 
-def stop_gradient(x, preserve_type=True, f=None):
+def stop_gradient(x, preserve_type=True):
     """
     Stops gradient computation.
 
@@ -107,17 +101,15 @@ def stop_gradient(x, preserve_type=True, f=None):
     :param preserve_type: Whether to preserve the input type (ivy.Variable or ivy.Array),
                           otherwise an array is always returned. Default is True.
     :param preserve_type: bool, optional
-    :param f: Machine learning framework. Inferred from inputs if None.
-    :type f: ml_framework, optional
     :return: The same array x, but with no gradient information.
     """
-    return _cur_framework(x, f=f).stop_gradient(x, preserve_type)
+    return _cur_framework(x).stop_gradient(x, preserve_type)
 
 
 # AutoGrad #
 # ---------#
 
-def execute_with_gradients(func, xs, retain_grads=False, f=None):
+def execute_with_gradients(func, xs, retain_grads=False):
     """
     Call function func with input of xs variables, and return func first output y, the gradients [dy/dx for x in xs],
     and any other function outputs after the returned y value
@@ -128,11 +120,9 @@ def execute_with_gradients(func, xs, retain_grads=False, f=None):
     :type xs: sequence of variables
     :param retain_grads: Whether to retain the gradients of the returned values.
     :type retain_grads: bool
-    :param f: Machine learning framework. Inferred from inputs if None.
-    :type f: ml_framework, optional
     :return: the function first output y, the gradients [dy/dx for x in xs], and any other extra function outputs
     """
-    return _cur_framework(None, f=f).execute_with_gradients(func, xs, retain_grads)
+    return _cur_framework(None).execute_with_gradients(func, xs, retain_grads)
 
 
 # Optimizer Steps #
