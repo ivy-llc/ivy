@@ -115,8 +115,13 @@ round = _tf.round
 floormod = lambda x, y: x % y
 floor = _tf.floor
 ceil = _tf.math.ceil
+
+
 # noinspection PyShadowingBuiltins
-abs = _tf.abs
+def abs(x):
+    if 'uint' in dtype(x, as_str=True):
+        return x
+    return _tf.abs(x)
 
 
 def argmax(x, axis=0):
