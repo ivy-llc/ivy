@@ -87,7 +87,6 @@
 </ul>
 <p class="caption"><span class="caption-text">Array</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../array/array_mode_handler.html">Array mode handler</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../array/conversions.html">Conversions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../array/device.html">Device</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../array/general.html">General</a></li>
@@ -210,8 +209,7 @@
 
 <span class="c1"># local</span>
 <span class="c1"># noinspection PyProtectedMember</span>
-<span class="kn">from</span> <span class="nn">ivy.func_wrapper</span> <span class="kn">import</span> <span class="n">_wrap_methods</span>
-<span class="kn">from</span> <span class="nn">ivy.array.array_mode_handler</span> <span class="kn">import</span> <span class="n">array_mode_val</span>
+<span class="kn">from</span> <span class="nn">ivy.func_wrapper</span> <span class="kn">import</span> <span class="n">_wrap_methods</span><span class="p">,</span> <span class="n">_unwrap_methods</span>
 
 
 <span class="n">framework_stack</span> <span class="o">=</span> <span class="p">[]</span>
@@ -321,11 +319,7 @@
                 <span class="n">ivy_original_fn_dict</span><span class="p">[</span><span class="n">specific_v</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
             <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
                 <span class="k">pass</span>
-    <span class="c1"># noinspection PyUnresolvedReferences</span>
-    <span class="k">if</span> <span class="n">array_mode_val</span> <span class="ow">and</span> <span class="p">(</span><span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">ivy</span><span class="p">,</span> <span class="s1">&#39;wrapped&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">ivy</span><span class="o">.</span><span class="n">functional</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">wrapped</span><span class="p">):</span>
-        <span class="n">_wrap_methods</span><span class="p">()</span>
-        <span class="n">ivy</span><span class="o">.</span><span class="n">wrapped</span> <span class="o">=</span> <span class="kc">True</span>
-        <span class="n">f</span><span class="o">.</span><span class="n">wrapped</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">_wrap_methods</span><span class="p">()</span>
     <span class="k">if</span> <span class="n">verbosity</span><span class="o">.</span><span class="n">level</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
         <span class="n">verbosity</span><span class="o">.</span><span class="n">cprint</span><span class="p">(</span>
             <span class="s1">&#39;framework stack: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">framework_stack</span><span class="p">))</span></div>
@@ -352,19 +346,20 @@
 
 
 <div class="viewcode-block" id="unset_framework"><a class="viewcode-back" href="../../framework_handler/unset_framework.html#ivy.framework_handler.unset_framework">[docs]</a><span class="k">def</span> <span class="nf">unset_framework</span><span class="p">():</span>
+    <span class="n">_unwrap_methods</span><span class="p">()</span>
     <span class="n">fw</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="k">if</span> <span class="n">framework_stack</span><span class="p">:</span>
         <span class="n">fw</span> <span class="o">=</span> <span class="n">framework_stack</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">fw</span><span class="o">.</span><span class="n">current_framework_str</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;numpy&#39;</span><span class="p">:</span>
             <span class="n">ivy</span><span class="o">.</span><span class="n">unset_default_device</span><span class="p">()</span>
         <span class="n">f_dict</span> <span class="o">=</span> <span class="n">framework_stack</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="vm">__dict__</span> <span class="k">if</span> <span class="n">framework_stack</span> <span class="k">else</span> <span class="n">ivy_original_dict</span>
-        <span class="n">wrapped</span> <span class="o">=</span> <span class="n">f_dict</span><span class="p">[</span><span class="s1">&#39;wrapped&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="s1">&#39;wrapped&#39;</span> <span class="ow">in</span> <span class="n">f_dict</span> <span class="k">else</span> <span class="kc">False</span>
         <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">f_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="n">ivy</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
-        <span class="n">ivy</span><span class="o">.</span><span class="n">wrapped</span> <span class="o">=</span> <span class="n">wrapped</span>
     <span class="k">if</span> <span class="n">verbosity</span><span class="o">.</span><span class="n">level</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
         <span class="n">verbosity</span><span class="o">.</span><span class="n">cprint</span><span class="p">(</span>
             <span class="s1">&#39;framework stack: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">framework_stack</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">framework_stack</span><span class="p">:</span>
+        <span class="n">_wrap_methods</span><span class="p">()</span>
     <span class="k">return</span> <span class="n">fw</span></div>
 
 
