@@ -212,7 +212,7 @@
 <span class="kn">from</span> <span class="nn">ivy.framework_handler</span> <span class="kn">import</span> <span class="n">current_framework</span> <span class="k">as</span> <span class="n">_cur_framework</span>
 
 
-<div class="viewcode-block" id="stack_images"><a class="viewcode-back" href="../../../../../functional/ivy/core/image/stack_images.html#ivy.functional.ivy.core.image.stack_images">[docs]</a><span class="k">def</span> <span class="nf">stack_images</span><span class="p">(</span><span class="n">images</span><span class="p">,</span> <span class="n">desired_aspect_ratio</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="stack_images"><a class="viewcode-back" href="../../../../../functional/ivy/core/image/stack_images.html#ivy.functional.ivy.core.image.stack_images">[docs]</a><span class="k">def</span> <span class="nf">stack_images</span><span class="p">(</span><span class="n">images</span><span class="p">,</span> <span class="n">desired_aspect_ratio</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Stacks a group of images into a combined windowed image, fitting the desired aspect ratio as closely as possible.</span>
 
@@ -220,14 +220,12 @@
 <span class="sd">    :type images: sequence of arrays</span>
 <span class="sd">    :param desired_aspect_ratio: Desired aspect ratio of stacked image.</span>
 <span class="sd">    :type desired_aspect_ratio: sequence of ints</span>
-<span class="sd">    :param f: Machine learning framework. Inferred from inputs if None.</span>
-<span class="sd">    :type f: ml_framework, optional</span>
 <span class="sd">    :return: Stacked image, suitable for viewing in a single window.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">images</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">stack_images</span><span class="p">(</span><span class="n">images</span><span class="p">,</span> <span class="n">desired_aspect_ratio</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">images</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">stack_images</span><span class="p">(</span><span class="n">images</span><span class="p">,</span> <span class="n">desired_aspect_ratio</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="bilinear_resample"><a class="viewcode-back" href="../../../../../functional/ivy/core/image/bilinear_resample.html#ivy.functional.ivy.core.image.bilinear_resample">[docs]</a><span class="k">def</span> <span class="nf">bilinear_resample</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">warp</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="bilinear_resample"><a class="viewcode-back" href="../../../../../functional/ivy/core/image/bilinear_resample.html#ivy.functional.ivy.core.image.bilinear_resample">[docs]</a><span class="k">def</span> <span class="nf">bilinear_resample</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">warp</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Performs bilinearly re-sampling on input image.</span>
 
@@ -235,34 +233,28 @@
 <span class="sd">    :type x: array</span>
 <span class="sd">    :param warp: Warp array *[batch_shape,num_samples,2]*</span>
 <span class="sd">    :type warp: array</span>
-<span class="sd">    :param f: Machine learning framework. Inferred from inputs if None.</span>
-<span class="sd">    :type f: ml_framework, optional</span>
 <span class="sd">    :return: Image after bilinear re-sampling.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">bilinear_resample</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">warp</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">bilinear_resample</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">warp</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="gradient_image"><a class="viewcode-back" href="../../../../../functional/ivy/core/image/gradient_image.html#ivy.functional.ivy.core.image.gradient_image">[docs]</a><span class="k">def</span> <span class="nf">gradient_image</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="gradient_image"><a class="viewcode-back" href="../../../../../functional/ivy/core/image/gradient_image.html#ivy.functional.ivy.core.image.gradient_image">[docs]</a><span class="k">def</span> <span class="nf">gradient_image</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Computes image gradients (dy, dx) for each channel.</span>
 
 <span class="sd">    :param x: Input image *[batch_shape, h, w, d]* .</span>
 <span class="sd">    :type x: array</span>
-<span class="sd">    :param f: Machine learning library. Inferred from inputs if None.</span>
-<span class="sd">    :type f: ml_framework, optional</span>
 <span class="sd">    :return: Gradient images dy *[batch_shape,h,w,d]* and dx *[batch_shape,h,w,d]* .</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">gradient_image</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">gradient_image</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="float_img_to_uint8_img"><a class="viewcode-back" href="../../../../../functional/ivy/core/image/float_img_to_uint8_img.html#ivy.functional.ivy.core.image.float_img_to_uint8_img">[docs]</a><span class="k">def</span> <span class="nf">float_img_to_uint8_img</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="float_img_to_uint8_img"><a class="viewcode-back" href="../../../../../functional/ivy/core/image/float_img_to_uint8_img.html#ivy.functional.ivy.core.image.float_img_to_uint8_img">[docs]</a><span class="k">def</span> <span class="nf">float_img_to_uint8_img</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Converts an image of floats into a bit-cast 4-channel image of uint8s, which can be saved to disk.</span>
 
 <span class="sd">    :param x: Input float image *[batch_shape,h,w]*.</span>
 <span class="sd">    :type x: array</span>
-<span class="sd">    :param f: Machine learning library. Inferred from inputs if None.</span>
-<span class="sd">    :type f: ml_framework, optional</span>
 <span class="sd">    :return: The new encoded uint8 image *[batch_shape,h,w,4]* .</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">x_np</span> <span class="o">=</span> <span class="n">_ivy</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
@@ -272,14 +264,12 @@
     <span class="k">return</span> <span class="n">_ivy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">x_uint8</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="n">x_shape</span><span class="p">)</span> <span class="o">+</span> <span class="p">[</span><span class="mi">4</span><span class="p">])</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span></div>
 
 
-<div class="viewcode-block" id="uint8_img_to_float_img"><a class="viewcode-back" href="../../../../../functional/ivy/core/image/uint8_img_to_float_img.html#ivy.functional.ivy.core.image.uint8_img_to_float_img">[docs]</a><span class="k">def</span> <span class="nf">uint8_img_to_float_img</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="uint8_img_to_float_img"><a class="viewcode-back" href="../../../../../functional/ivy/core/image/uint8_img_to_float_img.html#ivy.functional.ivy.core.image.uint8_img_to_float_img">[docs]</a><span class="k">def</span> <span class="nf">uint8_img_to_float_img</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Converts an image of uint8 values into a bit-cast float image.</span>
 
 <span class="sd">    :param x: Input uint8 image *[batch_shape,h,w,4]*.</span>
 <span class="sd">    :type x: array</span>
-<span class="sd">    :param f: Machine learning library. Inferred from inputs if None.</span>
-<span class="sd">    :type f: ml_framework, optional</span>
 <span class="sd">    :return: The new float image *[batch_shape,h,w]*</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">x_np</span> <span class="o">=</span> <span class="n">_ivy</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
@@ -289,7 +279,7 @@
     <span class="k">return</span> <span class="n">_ivy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">x_float</span><span class="p">,</span> <span class="n">x_shape</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span></div>
 
 
-<div class="viewcode-block" id="random_crop"><a class="viewcode-back" href="../../../../../functional/ivy/core/image/random_crop.html#ivy.functional.ivy.core.image.random_crop">[docs]</a><span class="k">def</span> <span class="nf">random_crop</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">crop_size</span><span class="p">,</span> <span class="n">batch_shape</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">image_dims</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="random_crop"><a class="viewcode-back" href="../../../../../functional/ivy/core/image/random_crop.html#ivy.functional.ivy.core.image.random_crop">[docs]</a><span class="k">def</span> <span class="nf">random_crop</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">crop_size</span><span class="p">,</span> <span class="n">batch_shape</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">image_dims</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Randomly crops the input images.</span>
 
@@ -301,8 +291,6 @@
 <span class="sd">    :type batch_shape: sequence of ints, optional</span>
 <span class="sd">    :param image_dims: Image dimensions. Inferred from inputs in None.</span>
 <span class="sd">    :type image_dims: sequence of ints, optional</span>
-<span class="sd">    :param f: Machine learning library. Inferred from inputs if None.</span>
-<span class="sd">    :type f: ml_framework, optional</span>
 <span class="sd">    :return: The new cropped image *[batch_shape,nh,nw,f]*</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 

@@ -256,20 +256,18 @@
 <span class="c1"># Variables #</span>
 <span class="c1"># ----------#</span>
 
-<div class="viewcode-block" id="variable"><a class="viewcode-back" href="../../../../../functional/ivy/core/gradients/variable.html#ivy.functional.ivy.core.gradients.variable">[docs]</a><span class="k">def</span> <span class="nf">variable</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="variable"><a class="viewcode-back" href="../../../../../functional/ivy/core/gradients/variable.html#ivy.functional.ivy.core.gradients.variable">[docs]</a><span class="k">def</span> <span class="nf">variable</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Creates a variable, which supports gradient computation.</span>
 
 <span class="sd">    :param x: An ivy array.</span>
 <span class="sd">    :type x: array</span>
-<span class="sd">    :param f: Machine learning framework. Inferred from inputs if None.</span>
-<span class="sd">    :type f: ml_framework, optional</span>
 <span class="sd">    :return: An ivy variable, supporting gradient computation.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">variable</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">variable</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="is_variable"><a class="viewcode-back" href="../../../../../functional/ivy/core/gradients/is_variable.html#ivy.functional.ivy.core.gradients.is_variable">[docs]</a><span class="k">def</span> <span class="nf">is_variable</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">exclusive</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="is_variable"><a class="viewcode-back" href="../../../../../functional/ivy/core/gradients/is_variable.html#ivy.functional.ivy.core.gradients.is_variable">[docs]</a><span class="k">def</span> <span class="nf">is_variable</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">exclusive</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Determines whether the input is a variable or not.</span>
 
@@ -279,28 +277,24 @@
 <span class="sd">                      For frameworks like JAX that do not have exclusive variable types, the function will always return</span>
 <span class="sd">                      False if this flag is set, otherwise the check is the same for general arrays. Default is False.</span>
 <span class="sd">    :type exclusive: bool, optional</span>
-<span class="sd">    :param f: Machine learning framework. Inferred from inputs if None.</span>
-<span class="sd">    :type f: ml_framework, optional</span>
 <span class="sd">    :return: Boolean, true if x is a trainable variable, false otherwise.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">is_variable</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">exclusive</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">is_variable</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">exclusive</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="variable_data"><a class="viewcode-back" href="../../../../../functional/ivy/core/gradients/variable_data.html#ivy.functional.ivy.core.gradients.variable_data">[docs]</a><span class="k">def</span> <span class="nf">variable_data</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="variable_data"><a class="viewcode-back" href="../../../../../functional/ivy/core/gradients/variable_data.html#ivy.functional.ivy.core.gradients.variable_data">[docs]</a><span class="k">def</span> <span class="nf">variable_data</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Some backends wrap arrays in a dedicated variable class. For those frameworks, this function returns that wrapped</span>
 <span class="sd">    array. For frameworks which do not have a dedicated variable class, the function returns the data passed in.</span>
 
 <span class="sd">    :param x: An ivy variable.</span>
 <span class="sd">    :type x: variable</span>
-<span class="sd">    :param f: Machine learning framework. Inferred from inputs if None.</span>
-<span class="sd">    :type f: ml_framework, optional</span>
 <span class="sd">    :return: The internal data stored by the variable</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">variable_data</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">variable_data</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="stop_gradient"><a class="viewcode-back" href="../../../../../functional/ivy/core/gradients/stop_gradient.html#ivy.functional.ivy.core.gradients.stop_gradient">[docs]</a><span class="k">def</span> <span class="nf">stop_gradient</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">preserve_type</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="stop_gradient"><a class="viewcode-back" href="../../../../../functional/ivy/core/gradients/stop_gradient.html#ivy.functional.ivy.core.gradients.stop_gradient">[docs]</a><span class="k">def</span> <span class="nf">stop_gradient</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">preserve_type</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Stops gradient computation.</span>
 
@@ -309,17 +303,15 @@
 <span class="sd">    :param preserve_type: Whether to preserve the input type (ivy.Variable or ivy.Array),</span>
 <span class="sd">                          otherwise an array is always returned. Default is True.</span>
 <span class="sd">    :param preserve_type: bool, optional</span>
-<span class="sd">    :param f: Machine learning framework. Inferred from inputs if None.</span>
-<span class="sd">    :type f: ml_framework, optional</span>
 <span class="sd">    :return: The same array x, but with no gradient information.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">stop_gradient</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">preserve_type</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">stop_gradient</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">preserve_type</span><span class="p">)</span></div>
 
 
 <span class="c1"># AutoGrad #</span>
 <span class="c1"># ---------#</span>
 
-<div class="viewcode-block" id="execute_with_gradients"><a class="viewcode-back" href="../../../../../functional/ivy/core/gradients/execute_with_gradients.html#ivy.functional.ivy.core.gradients.execute_with_gradients">[docs]</a><span class="k">def</span> <span class="nf">execute_with_gradients</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">xs</span><span class="p">,</span> <span class="n">retain_grads</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="execute_with_gradients"><a class="viewcode-back" href="../../../../../functional/ivy/core/gradients/execute_with_gradients.html#ivy.functional.ivy.core.gradients.execute_with_gradients">[docs]</a><span class="k">def</span> <span class="nf">execute_with_gradients</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">xs</span><span class="p">,</span> <span class="n">retain_grads</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Call function func with input of xs variables, and return func first output y, the gradients [dy/dx for x in xs],</span>
 <span class="sd">    and any other function outputs after the returned y value</span>
@@ -330,11 +322,9 @@
 <span class="sd">    :type xs: sequence of variables</span>
 <span class="sd">    :param retain_grads: Whether to retain the gradients of the returned values.</span>
 <span class="sd">    :type retain_grads: bool</span>
-<span class="sd">    :param f: Machine learning framework. Inferred from inputs if None.</span>
-<span class="sd">    :type f: ml_framework, optional</span>
 <span class="sd">    :return: the function first output y, the gradients [dy/dx for x in xs], and any other extra function outputs</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">execute_with_gradients</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">xs</span><span class="p">,</span> <span class="n">retain_grads</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span><span class="o">.</span><span class="n">execute_with_gradients</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">xs</span><span class="p">,</span> <span class="n">retain_grads</span><span class="p">)</span></div>
 
 
 <span class="c1"># Optimizer Steps #</span>

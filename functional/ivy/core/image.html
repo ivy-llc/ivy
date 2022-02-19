@@ -206,14 +206,13 @@
 <p>Collection of image Ivy functions.</p>
 <dl class="py function">
 <dt id="ivy.functional.ivy.core.image.bilinear_resample">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">bilinear_resample</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">warp</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/core/image.html#bilinear_resample"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.core.image.bilinear_resample" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">bilinear_resample</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">warp</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/core/image.html#bilinear_resample"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.core.image.bilinear_resample" title="Permalink to this definition">¶</a></dt>
 <dd><p>Performs bilinearly re-sampling on input image.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>x</strong> (<em>array</em>) – Input image <em>[batch_shape,h,w,dims]</em>.</p></li>
 <li><p><strong>warp</strong> (<em>array</em>) – Warp array <em>[batch_shape,num_samples,2]</em></p></li>
-<li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -224,14 +223,11 @@
 
 <dl class="py function">
 <dt id="ivy.functional.ivy.core.image.float_img_to_uint8_img">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">float_img_to_uint8_img</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/core/image.html#float_img_to_uint8_img"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.core.image.float_img_to_uint8_img" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">float_img_to_uint8_img</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/core/image.html#float_img_to_uint8_img"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.core.image.float_img_to_uint8_img" title="Permalink to this definition">¶</a></dt>
 <dd><p>Converts an image of floats into a bit-cast 4-channel image of uint8s, which can be saved to disk.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>array</em>) – Input float image <em>[batch_shape,h,w]</em>.</p></li>
-<li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning library. Inferred from inputs if None.</p></li>
-</ul>
+<dd class="field-odd"><p><strong>x</strong> (<em>array</em>) – Input float image <em>[batch_shape,h,w]</em>.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>The new encoded uint8 image <em>[batch_shape,h,w,4]</em> .</p>
@@ -241,14 +237,11 @@
 
 <dl class="py function">
 <dt id="ivy.functional.ivy.core.image.gradient_image">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">gradient_image</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/core/image.html#gradient_image"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.core.image.gradient_image" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">gradient_image</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/core/image.html#gradient_image"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.core.image.gradient_image" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes image gradients (dy, dx) for each channel.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>array</em>) – Input image <em>[batch_shape, h, w, d]</em> .</p></li>
-<li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning library. Inferred from inputs if None.</p></li>
-</ul>
+<dd class="field-odd"><p><strong>x</strong> (<em>array</em>) – Input image <em>[batch_shape, h, w, d]</em> .</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>Gradient images dy <em>[batch_shape,h,w,d]</em> and dx <em>[batch_shape,h,w,d]</em> .</p>
@@ -258,7 +251,7 @@
 
 <dl class="py function">
 <dt id="ivy.functional.ivy.core.image.random_crop">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">random_crop</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">crop_size</span></em>, <em class="sig-param"><span class="n">batch_shape</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">image_dims</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/core/image.html#random_crop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.core.image.random_crop" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">random_crop</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">crop_size</span></em>, <em class="sig-param"><span class="n">batch_shape</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">image_dims</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/core/image.html#random_crop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.core.image.random_crop" title="Permalink to this definition">¶</a></dt>
 <dd><p>Randomly crops the input images.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -267,7 +260,6 @@
 <li><p><strong>crop_size</strong> (<em>sequence of ints</em>) – The 2D crop size.</p></li>
 <li><p><strong>batch_shape</strong> (<em>sequence of ints</em><em>, </em><em>optional</em>) – Shape of batch. Inferred from inputs if None.</p></li>
 <li><p><strong>image_dims</strong> (<em>sequence of ints</em><em>, </em><em>optional</em>) – Image dimensions. Inferred from inputs in None.</p></li>
-<li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning library. Inferred from inputs if None.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -278,14 +270,13 @@
 
 <dl class="py function">
 <dt id="ivy.functional.ivy.core.image.stack_images">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">stack_images</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">images</span></em>, <em class="sig-param"><span class="n">desired_aspect_ratio</span><span class="o">=</span><span class="default_value">(1, 1)</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/core/image.html#stack_images"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.core.image.stack_images" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">stack_images</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">images</span></em>, <em class="sig-param"><span class="n">desired_aspect_ratio</span><span class="o">=</span><span class="default_value">(1, 1)</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/core/image.html#stack_images"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.core.image.stack_images" title="Permalink to this definition">¶</a></dt>
 <dd><p>Stacks a group of images into a combined windowed image, fitting the desired aspect ratio as closely as possible.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>images</strong> (<em>sequence of arrays</em>) – Sequence of image arrays to be stacked <em>[batch_shape,height,width,dims]</em> .</p></li>
 <li><p><strong>desired_aspect_ratio</strong> (<em>sequence of ints</em>) – Desired aspect ratio of stacked image.</p></li>
-<li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -296,14 +287,11 @@
 
 <dl class="py function">
 <dt id="ivy.functional.ivy.core.image.uint8_img_to_float_img">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">uint8_img_to_float_img</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/core/image.html#uint8_img_to_float_img"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.core.image.uint8_img_to_float_img" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">uint8_img_to_float_img</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/core/image.html#uint8_img_to_float_img"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.core.image.uint8_img_to_float_img" title="Permalink to this definition">¶</a></dt>
 <dd><p>Converts an image of uint8 values into a bit-cast float image.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>array</em>) – Input uint8 image <em>[batch_shape,h,w,4]</em>.</p></li>
-<li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning library. Inferred from inputs if None.</p></li>
-</ul>
+<dd class="field-odd"><p><strong>x</strong> (<em>array</em>) – Input uint8 image <em>[batch_shape,h,w,4]</em>.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>The new float image <em>[batch_shape,h,w]</em></p>

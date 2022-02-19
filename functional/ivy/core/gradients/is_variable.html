@@ -205,7 +205,7 @@
 <h1>is_variable<a class="headerlink" href="#is-variable" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
 <dt id="ivy.functional.ivy.core.gradients.is_variable">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">is_variable</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">exclusive</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/ivy/functional/ivy/core/gradients.html#is_variable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.core.gradients.is_variable" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">is_variable</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">exclusive</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/ivy/functional/ivy/core/gradients.html#is_variable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.core.gradients.is_variable" title="Permalink to this definition">¶</a></dt>
 <dd><p>Determines whether the input is a variable or not.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -214,7 +214,6 @@
 <li><p><strong>exclusive</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to check if the data type is exclusively a variable, rather than an array.
 For frameworks like JAX that do not have exclusive variable types, the function will always return
 False if this flag is set, otherwise the check is the same for general arrays. Default is False.</p></li>
-<li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>

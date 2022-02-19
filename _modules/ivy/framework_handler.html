@@ -273,13 +273,8 @@
                 <span class="k">return</span> <span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="n">module_name</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="current_framework"><a class="viewcode-back" href="../../framework_handler/current_framework.html#ivy.framework_handler.current_framework">[docs]</a><span class="k">def</span> <span class="nf">current_framework</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Priorities: framework &gt; global_framework &gt; input&#39;s framework.&quot;&quot;&quot;</span>
-
-    <span class="k">if</span> <span class="n">f</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">verbosity</span><span class="o">.</span><span class="n">level</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">verbosity</span><span class="o">.</span><span class="n">cprint</span><span class="p">(</span><span class="s1">&#39;Using provided framework: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">f</span><span class="p">))</span>
-        <span class="k">return</span> <span class="n">f</span>
+<div class="viewcode-block" id="current_framework"><a class="viewcode-back" href="../../framework_handler/current_framework.html#ivy.framework_handler.current_framework">[docs]</a><span class="k">def</span> <span class="nf">current_framework</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Priorities: global_framework &gt; argument&#39;s framework.&quot;&quot;&quot;</span>
 
     <span class="k">if</span> <span class="n">framework_stack</span><span class="p">:</span>
         <span class="n">f</span> <span class="o">=</span> <span class="n">framework_stack</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>

@@ -205,14 +205,13 @@
 <h1>stack_images<a class="headerlink" href="#stack-images" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
 <dt id="ivy.functional.ivy.core.image.stack_images">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">stack_images</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">images</span></em>, <em class="sig-param"><span class="n">desired_aspect_ratio</span><span class="o">=</span><span class="default_value">(1, 1)</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/ivy/functional/ivy/core/image.html#stack_images"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.core.image.stack_images" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">stack_images</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">images</span></em>, <em class="sig-param"><span class="n">desired_aspect_ratio</span><span class="o">=</span><span class="default_value">(1, 1)</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/ivy/functional/ivy/core/image.html#stack_images"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.core.image.stack_images" title="Permalink to this definition">¶</a></dt>
 <dd><p>Stacks a group of images into a combined windowed image, fitting the desired aspect ratio as closely as possible.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>images</strong> (<em>sequence of arrays</em>) – Sequence of image arrays to be stacked <em>[batch_shape,height,width,dims]</em> .</p></li>
 <li><p><strong>desired_aspect_ratio</strong> (<em>sequence of ints</em>) – Desired aspect ratio of stacked image.</p></li>
-<li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>

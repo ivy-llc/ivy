@@ -211,7 +211,7 @@
 # ————-#</p>
 <p># Retreival #</p>
 <dl>
-<dt>def node(x: Union[ivy.Array, ivy.NativeArray], f: ivy.Framework = None)        -&gt; ivy.Node:</dt><dd><p>“””
+<dt>def node(x: Union[ivy.Array, ivy.NativeArray])        -&gt; ivy.Node:</dt><dd><p>“””
 Get the native node handle for input array x.</p>
 <dl class="field-list simple">
 <dt class="field-odd">param x</dt>
@@ -220,20 +220,14 @@ Get the native node handle for input array x.</p>
 <dt class="field-even">type x</dt>
 <dd class="field-even"><p>array</p>
 </dd>
-<dt class="field-odd">param f</dt>
-<dd class="field-odd"><p>Machine learning framework. Inferred from inputs if None.</p>
-</dd>
-<dt class="field-even">type f</dt>
-<dd class="field-even"><p>ml_framework, optional</p>
-</dd>
 <dt class="field-odd">return</dt>
 <dd class="field-odd"><p>node handle for the array, in native framework format.</p>
 </dd>
 </dl>
 <p>“””
-return _cur_framework(x, f=f).node(x)</p>
+return _cur_framework(x).node(x)</p>
 </dd>
-<dt>def node_str(x: Union[ivy.Array, ivy.NativeArray], f: ivy.Framework = None)        -&gt; str:</dt><dd><p>“””
+<dt>def node_str(x: Union[ivy.Array, ivy.NativeArray])        -&gt; str:</dt><dd><p>“””
 Get the node string for input array x.</p>
 <dl class="field-list simple">
 <dt class="field-odd">param x</dt>
@@ -242,23 +236,17 @@ Get the node string for input array x.</p>
 <dt class="field-even">type x</dt>
 <dd class="field-even"><p>array</p>
 </dd>
-<dt class="field-odd">param f</dt>
-<dd class="field-odd"><p>Machine learning framework. Inferred from inputs if None.</p>
-</dd>
-<dt class="field-even">type f</dt>
-<dd class="field-even"><p>ml_framework, optional</p>
-</dd>
 <dt class="field-odd">return</dt>
 <dd class="field-odd"><p>node string for the array, e.g. ‘cuda:0’, ‘cuda:1’, ‘cpu’ etc..</p>
 </dd>
 </dl>
 <p>“””
-return _cur_framework(x, f=f).node_str(x)</p>
+return _cur_framework(x).node_str(x)</p>
 </dd>
 </dl>
 <p># Conversions #</p>
 <dl>
-<dt>def node_to_str(node_in: ivy.Node, f: ivy.Framework = None)        -&gt; str:</dt><dd><p>“””
+<dt>def node_to_str(node_in: ivy.Node)        -&gt; str:</dt><dd><p>“””
 Convert native data type to string representation.</p>
 <dl class="field-list simple">
 <dt class="field-odd">param node_in</dt>
@@ -267,22 +255,16 @@ Convert native data type to string representation.</p>
 <dt class="field-even">type node_in</dt>
 <dd class="field-even"><p>node handle</p>
 </dd>
-<dt class="field-odd">param f</dt>
-<dd class="field-odd"><p>Machine learning framework. Inferred from inputs if None.</p>
-</dd>
-<dt class="field-even">type f</dt>
-<dd class="field-even"><p>ml_framework, optional</p>
-</dd>
 <dt class="field-odd">return</dt>
 <dd class="field-odd"><p>node string e.g. ‘cuda:0’.</p>
 </dd>
 </dl>
 <p>“””
-return _cur_framework(None, f=f).node_to_str(node_in)</p>
+return _cur_framework(None).node_to_str(node_in)</p>
 </dd>
 </dl>
 <p># noinspection PyShadowingNames
-def str_to_node(node_str: str, f: ivy.Framework = None)        -&gt; ivy.Node:</p>
+def str_to_node(node_str: str)        -&gt; ivy.Node:</p>
 <blockquote>
 <div><p>“””
 Convert node string representation to native node type.</p>
@@ -293,18 +275,12 @@ Convert node string representation to native node type.</p>
 <dt class="field-even">type node_str</dt>
 <dd class="field-even"><p>str</p>
 </dd>
-<dt class="field-odd">param f</dt>
-<dd class="field-odd"><p>Machine learning framework. Inferred from inputs if None.</p>
-</dd>
-<dt class="field-even">type f</dt>
-<dd class="field-even"><p>ml_framework, optional</p>
-</dd>
 <dt class="field-odd">return</dt>
 <dd class="field-odd"><p>Native node handle.</p>
 </dd>
 </dl>
 <p>“””
-return _cur_framework(None, f=f).str_to_node(node_str)</p>
+return _cur_framework(None).str_to_node(node_str)</p>
 </div></blockquote>
 <p># Memory #</p>
 <p># noinspection PyShadowingNames
@@ -398,53 +374,35 @@ raise NotImplementedError</p>
 </div></blockquote>
 <p># Availability #</p>
 <dl>
-<dt>def gpu_is_available(f: ivy.Framework = None)        -&gt; bool:</dt><dd><p>“””
+<dt>def gpu_is_available()        -&gt; bool:</dt><dd><p>“””
 Determine whether a GPU is available to use, with the backend framework.</p>
 <dl class="field-list simple">
-<dt class="field-odd">param f</dt>
-<dd class="field-odd"><p>Machine learning framework. Inferred from inputs if None.</p>
-</dd>
-<dt class="field-even">type f</dt>
-<dd class="field-even"><p>ml_framework, optional</p>
-</dd>
 <dt class="field-odd">return</dt>
 <dd class="field-odd"><p>Boolean, as to whether a gpu is available.</p>
 </dd>
 </dl>
 <p>“””
-return _cur_framework(f=f).gpu_is_available()</p>
+return _cur_framework().gpu_is_available()</p>
 </dd>
-<dt>def num_gpus(f: ivy.Framework = None)        -&gt; int:</dt><dd><p>“””
+<dt>def num_gpus()        -&gt; int:</dt><dd><p>“””
 Determine the number of available GPUs, with the backend framework.</p>
 <dl class="field-list simple">
-<dt class="field-odd">param f</dt>
-<dd class="field-odd"><p>Machine learning framework. Inferred from inputs if None.</p>
-</dd>
-<dt class="field-even">type f</dt>
-<dd class="field-even"><p>ml_framework, optional</p>
-</dd>
 <dt class="field-odd">return</dt>
 <dd class="field-odd"><p>Number of available GPUs.</p>
 </dd>
 </dl>
 <p>“””
-return _cur_framework(f=f).num_gpus()</p>
+return _cur_framework().num_gpus()</p>
 </dd>
-<dt>def tpu_is_available(f: ivy.Framework = None)        -&gt; bool:</dt><dd><p>“””
+<dt>def tpu_is_available()        -&gt; bool:</dt><dd><p>“””
 Determine whether a TPU is available to use, with the backend framework.</p>
 <dl class="field-list simple">
-<dt class="field-odd">param f</dt>
-<dd class="field-odd"><p>Machine learning framework. Inferred from inputs if None.</p>
-</dd>
-<dt class="field-even">type f</dt>
-<dd class="field-even"><p>ml_framework, optional</p>
-</dd>
 <dt class="field-odd">return</dt>
 <dd class="field-odd"><p>Boolean, as to whether a tpu is available.</p>
 </dd>
 </dl>
 <p>“””
-return _cur_framework(f=f).tpu_is_available()</p>
+return _cur_framework().tpu_is_available()</p>
 </dd>
 </dl>
 <p># Default node #
@@ -473,7 +431,7 @@ DEFAULT_NODE = node</p>
 <p># node Allocation #
 # ——————#</p>
 <p># noinspection PyShadowingNames
-def to_node(x: Union[ivy.Array, ivy.NativeArray], node_str: str = None, f: ivy.Framework = None)        -&gt; Union[ivy.Array, ivy.NativeArray]:</p>
+def to_node(x: Union[ivy.Array, ivy.NativeArray], node_str: str = None)        -&gt; Union[ivy.Array, ivy.NativeArray]:</p>
 <blockquote>
 <div><p>“””
 Move the input array x to the desired node, specified by node string.</p>
@@ -490,18 +448,12 @@ Move the input array x to the desired node, specified by node string.</p>
 <dt class="field-even">type node_str</dt>
 <dd class="field-even"><p>str, optional</p>
 </dd>
-<dt class="field-odd">param f</dt>
-<dd class="field-odd"><p>Machine learning framework. Inferred from inputs if None.</p>
-</dd>
-<dt class="field-even">type f</dt>
-<dd class="field-even"><p>ml_framework, optional</p>
-</dd>
 <dt class="field-odd">return</dt>
 <dd class="field-odd"><p>The array x, but now placed on the target node.</p>
 </dd>
 </dl>
 <p>“””
-return _cur_framework(x, f=f).to_node(x, node_str)</p>
+return _cur_framework(x).to_node(x, node_str)</p>
 </div></blockquote>
 <p># Function Splitting #
 # ——————-#</p>

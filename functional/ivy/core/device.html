@@ -514,14 +514,11 @@ multiprocessing.</p>
 
 <dl class="py function">
 <dt id="ivy.functional.ivy.core.device.clear_mem_on_dev">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">clear_mem_on_dev</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dev</span><span class="p">:</span> <span class="n">ivy.Device</span></em>, <em class="sig-param"><span class="n">f</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>ivy.Framework<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="../../../_modules/ivy/functional/ivy/core/device.html#clear_mem_on_dev"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.core.device.clear_mem_on_dev" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">clear_mem_on_dev</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dev</span><span class="p">:</span> <span class="n">ivy.Device</span></em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="../../../_modules/ivy/functional/ivy/core/device.html#clear_mem_on_dev"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.core.device.clear_mem_on_dev" title="Permalink to this definition">¶</a></dt>
 <dd><p>Clear memory cache on target device.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>dev</strong> (<em>Device</em>) – The device string to conver to native device handle.</p></li>
-<li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
-</ul>
+<dd class="field-odd"><p><strong>dev</strong> (<em>Device</em>) – The device string to conver to native device handle.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -534,14 +531,13 @@ multiprocessing.</p>
 
 <dl class="py function">
 <dt id="ivy.functional.ivy.core.device.dev">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">dev</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">as_str</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">f</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>ivy.Framework<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.Device<span class="p">, </span>str<span class="p">]</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/core/device.html#dev"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.core.device.dev" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">dev</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">as_str</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.Device<span class="p">, </span>str<span class="p">]</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/core/device.html#dev"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.core.device.dev" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the native device handle for input array x.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>x</strong> (<em>array</em>) – Tensor for which to get the device handle.</p></li>
 <li><p><strong>as_str</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether or not to return the dev in string format. Default is False.</p></li>
-<li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -696,14 +692,11 @@ multiprocessing.</p>
 
 <dl class="py function">
 <dt id="ivy.functional.ivy.core.device.dev_from_str">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">dev_from_str</code><span class="sig-paren">(</span><em class="sig-param">dev: [&lt;class 'ivy.Device'&gt;, &lt;class 'str'&gt;], f: Optional[ivy.Framework] = None</em><span class="sig-paren">)</span> &#x2192; ivy.Device<a class="reference internal" href="../../../_modules/ivy/functional/ivy/core/device.html#dev_from_str"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.core.device.dev_from_str" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">dev_from_str</code><span class="sig-paren">(</span><em class="sig-param">dev: [&lt;class 'ivy.Device'&gt;, &lt;class 'str'&gt;]</em><span class="sig-paren">)</span> &#x2192; ivy.Device<a class="reference internal" href="../../../_modules/ivy/functional/ivy/core/device.html#dev_from_str"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.core.device.dev_from_str" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert device string representation to native device type.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>dev</strong> (<em>Device</em>) – The device string to conver to native device handle.</p></li>
-<li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
-</ul>
+<dd class="field-odd"><p><strong>dev</strong> (<em>Device</em>) – The device string to conver to native device handle.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>Native device handle.</p>
@@ -713,14 +706,11 @@ multiprocessing.</p>
 
 <dl class="py function">
 <dt id="ivy.functional.ivy.core.device.dev_to_str">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">dev_to_str</code><span class="sig-paren">(</span><em class="sig-param">dev: [&lt;class 'ivy.Device'&gt;, &lt;class 'str'&gt;], f: Optional[ivy.Framework] = None</em><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="../../../_modules/ivy/functional/ivy/core/device.html#dev_to_str"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.core.device.dev_to_str" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">dev_to_str</code><span class="sig-paren">(</span><em class="sig-param">dev: [&lt;class 'ivy.Device'&gt;, &lt;class 'str'&gt;]</em><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="../../../_modules/ivy/functional/ivy/core/device.html#dev_to_str"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.core.device.dev_to_str" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert native data type to string representation.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>dev</strong> (<em>device handle</em>) – The device handle to convert to string.</p></li>
-<li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
-</ul>
+<dd class="field-odd"><p><strong>dev</strong> (<em>device handle</em>) – The device handle to convert to string.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>Device string e.g. ‘cuda:0’.</p>
@@ -830,14 +820,11 @@ on the single target device.</p>
 
 <dl class="py function">
 <dt id="ivy.functional.ivy.core.device.gpu_is_available">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">gpu_is_available</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">f</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>ivy.Framework<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; bool<a class="reference internal" href="../../../_modules/ivy/functional/ivy/core/device.html#gpu_is_available"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.core.device.gpu_is_available" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">gpu_is_available</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; bool<a class="reference internal" href="../../../_modules/ivy/functional/ivy/core/device.html#gpu_is_available"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.core.device.gpu_is_available" title="Permalink to this definition">¶</a></dt>
 <dd><p>Determine whether a GPU is available to use, with the backend framework.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Boolean, as to whether a gpu is available.</p>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Boolean, as to whether a gpu is available.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -856,14 +843,11 @@ on the single target device.</p>
 
 <dl class="py function">
 <dt id="ivy.functional.ivy.core.device.num_gpus">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">num_gpus</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">f</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>ivy.Framework<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; int<a class="reference internal" href="../../../_modules/ivy/functional/ivy/core/device.html#num_gpus"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.core.device.num_gpus" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">num_gpus</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; int<a class="reference internal" href="../../../_modules/ivy/functional/ivy/core/device.html#num_gpus"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.core.device.num_gpus" title="Permalink to this definition">¶</a></dt>
 <dd><p>Determine the number of available GPUs, with the backend framework.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Number of available GPUs.</p>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Number of available GPUs.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -960,14 +944,13 @@ the entire input array at once. This can be useful to reduce memory usage of the
 
 <dl class="py function">
 <dt id="ivy.functional.ivy.core.device.to_dev">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">to_dev</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">dev</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>ivy.Device<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">f</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>ivy.Framework<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/core/device.html#to_dev"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.core.device.to_dev" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">to_dev</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">dev</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>ivy.Device<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/core/device.html#to_dev"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.core.device.to_dev" title="Permalink to this definition">¶</a></dt>
 <dd><p>Move the input array x to the desired device, specified by device string.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>x</strong> (<em>array</em>) – Array to move onto the device.</p></li>
 <li><p><strong>dev</strong> (<em>Device</em><em>, </em><em>optional</em>) – device to move the array to ‘cuda:0’, ‘cuda:1’, ‘cpu’ etc. Keep same device if None.</p></li>
-<li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -992,14 +975,11 @@ the entire input array at once. This can be useful to reduce memory usage of the
 
 <dl class="py function">
 <dt id="ivy.functional.ivy.core.device.tpu_is_available">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">tpu_is_available</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">f</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>ivy.Framework<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; bool<a class="reference internal" href="../../../_modules/ivy/functional/ivy/core/device.html#tpu_is_available"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.core.device.tpu_is_available" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">tpu_is_available</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; bool<a class="reference internal" href="../../../_modules/ivy/functional/ivy/core/device.html#tpu_is_available"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.core.device.tpu_is_available" title="Permalink to this definition">¶</a></dt>
 <dd><p>Determine whether a TPU is available to use, with the backend framework.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Boolean, as to whether a tpu is available.</p>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Boolean, as to whether a tpu is available.</p>
 </dd>
 </dl>
 </dd></dl>
