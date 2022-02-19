@@ -27,13 +27,7 @@ variable_data = lambda x: x
 
 
 def execute_with_gradients(func, xs, retain_grads=False):
-    array_mode = False
-    if ivy.array_mode():
-        array_mode = True
-        # ToDo: find more elegant solution than setting the global wrap mode to false.
-        #  There must be some wrongly wrapped jax functions.
-        ivy.set_array_mode(False)
-        xs = xs.to_native()
+    xs = xs.to_native()
     func_ret = func(xs)
     if isinstance(func_ret, tuple):
         y = func_ret[0]
@@ -46,11 +40,7 @@ def execute_with_gradients(func, xs, retain_grads=False):
     grad_func = _jax.grad(grad_fn)
     grads = grad_func(xs)
     grads = Container(grads)
-    if array_mode:
-        # ToDo: find more elegant solution than setting the global wrap mode to false.
-        #  There must be some wrongly wrapped jax functions.
-        ivy.set_array_mode(True)
-        grads = grads.to_ivy()
+    grads = grads.to_ivy()
     if not retain_grads:
         y = ivy.stop_gradient(y)
     return (y, grads, *rest)
