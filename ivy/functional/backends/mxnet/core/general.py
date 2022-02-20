@@ -419,6 +419,11 @@ def less(x1,x2):
     return _mx.nd.lesser(x1,x2).astype('bool')
 
 @_handle_flat_arrays_in_out
+def less(x1,x2):
+    return _mx.nd.lesser(x1,x2).astype('bool')
+
+
+@_handle_flat_arrays_in_out
 def isfinite(x):
     # ToDo: remove float32 conversion once int8 and uint8 work correctly. Currently 0 returns 0 for these types.
     return _mx.nd.contrib.isfinite(x.astype('float32')).astype('bool')

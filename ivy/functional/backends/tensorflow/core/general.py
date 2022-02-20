@@ -283,6 +283,10 @@ def less(x1,x2):
     return _tf.math.less(x1,x2)
 
 
+def less(x1,x2):
+    return _tf.math.less(x1,x2)
+
+
 def isfinite(x):
     if ivy.is_int_dtype(x):
         return _tf.ones_like(x, _tf.bool)

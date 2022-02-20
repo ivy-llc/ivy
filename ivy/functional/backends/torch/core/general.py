@@ -388,6 +388,10 @@ def less(x1,x2):
     
     return _torch.lt(x1,x2)
 
+def less(x1,x2):
+    return _torch.lt(x1,x2)
+
+    
 def isfinite(x):
     return _torch.isfinite(x)
 
