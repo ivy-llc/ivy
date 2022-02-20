@@ -346,6 +346,7 @@ Documentation Tree
    :maxdepth: -1
    :caption: Array
 
+   array/array_api.rst
    array/conversions.rst
    array/device.rst
    array/general.rst

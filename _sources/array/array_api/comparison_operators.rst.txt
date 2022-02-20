@@ -1,0 +1,16 @@
+Comparison operators
+====================
+
+.. automodule:: ivy.array.array_api.comparison_operators
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :maxdepth: -1
+   :caption: Comparison operators
+
+   comparison_operators/ArrayWithArrayAPIComparisonOperators.rst
+

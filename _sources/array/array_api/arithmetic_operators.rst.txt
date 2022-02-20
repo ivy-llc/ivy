@@ -1,0 +1,16 @@
+Arithmetic operators
+====================
+
+.. automodule:: ivy.array.array_api.arithmetic_operators
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :maxdepth: -1
+   :caption: Arithmetic operators
+
+   arithmetic_operators/ArrayWithArrayAPIArithmeticOperators.rst
+
