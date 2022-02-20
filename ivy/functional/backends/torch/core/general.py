@@ -156,8 +156,9 @@ def argmin(x, axis: int = 0):
     return ret
 
 
-def argsort(x, axis: int = -1):
-    return _torch.argsort(x, axis)
+def argsort(x, axis=-1, descending=False, stable=True):
+        return _torch.argsort(x, dim=axis, descending=descending)
+
 
 
 def cast(x, dtype_in: str):

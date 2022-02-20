@@ -67,3 +67,6 @@ def einsum(equation, *operands):
 
 def all(x, axis=None, keepdims=False):
     return _np.asarray(_npa.all(_npa.asarray(x), axis=axis, keepdims=keepdims))
+
+def any(x, axis=None, keepdims=False):
+    return _np.asarray(_npa.any(_npa.asarray(x), axis=axis, keepdims=keepdims))

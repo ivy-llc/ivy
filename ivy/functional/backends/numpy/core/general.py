@@ -140,7 +140,11 @@ def argmin(x, axis=0):
     return ret
 
 
-argsort = lambda x, axis=-1: _np.asarray(_np.argsort(x, axis))
+def argsort(x, axis=-1, descending=False, stable=True):
+    if descending:
+        return _np.asarray(_np.argsort(-1 * _np.searchsorted(_np.unique(x), x), axis, kind='stable'))
+    else:
+        return _np.asarray(_np.argsort(x, axis, kind='stable'))
 
 
 def cast(x, dtype):

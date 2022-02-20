@@ -148,7 +148,11 @@ def argmin(x, axis=0):
     return ret
 
 
-argsort = lambda x, axis=-1: _jnp.argsort(x, axis)
+def argsort(x, axis=-1, descending=False, stable=True):
+    if descending:
+        return _jnp.asarray(_jnp.argsort(-1 * _jnp.searchsorted(_jnp.unique(x), x), axis, kind='stable'))
+    else:
+        return _jnp.asarray(_jnp.argsort(x, axis, kind='stable'))
 
 
 def cast(x, dtype):

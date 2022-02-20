@@ -123,3 +123,6 @@ def all(x, axis=None, keepdims=False):
     if is_flat:
         return _1_dim_array_to_flat_array(red_prod)
     return red_prod
+
+def any(x, axis=None, keepdims=False):
+    return _mx.nd.array(x).asnumpy().any(axis=axis, keepdims=keepdims)

@@ -138,7 +138,18 @@ def argmin(x, axis=0):
     return ret
 
 
-argsort = lambda x, axis=-1: _tf.argsort(x, axis)
+def argsort(x, axis=-1, descending=False, stable=True):
+    if _tf.convert_to_tensor(x).dtype.is_bool:
+        if descending:
+            return _tf.argsort(_tf.cast(x, dtype=_tf.int32), axis=axis, direction='DESCENDING', stable=stable)
+        else:
+            return _tf.argsort(_tf.cast(x, dtype=_tf.int32), axis=axis, direction='ASCENDING', stable=stable)
+    else:
+        if descending:
+            return _tf.argsort(_tf.convert_to_tensor(x), axis=axis, direction='DESCENDING', stable=stable)
+        else:
+            return _tf.argsort(_tf.convert_to_tensor(x), axis=axis, direction='ASCENDING', stable=stable)
+
 
 
 def cast(x, dtype):
