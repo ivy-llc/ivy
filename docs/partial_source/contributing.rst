@@ -29,6 +29,7 @@ should adhere to the following format:
 All functions which adhere to the `Array API`_ standard should be placed in the submodule :code:`ivy.functional.ivy.array_api`,
 and should also be placed in the correct file in alignment with the categories used in the standard.
 
+
 Backend API
 -----------
 
@@ -53,3 +54,65 @@ The backend methods should not add a docstring, as this would be identical to th
 All backend functions which adhere to the `Array API`_ standard should also be placed in submodules such as
 :code:`ivy.functional.backends.torch.array_api`, and should also be placed in the correct file in alignment with the
 categories used in the standard.
+
+
+Array Operators
+---------------
+
+Array operators are defined in the :code:`ivy.array` submodule. Operators written here should adhere to the following format:
+
+.. code-block:: python
+
+
+    @_native_wrapper
+    def __pow__(self, power):
+        power = to_native(power)
+        res = ivy.builtin_pow(self._data, power)
+        if res is NotImplemented:
+            return res
+        return to_ivy(res)
+
+There is no need to write docstrings for these methods, as they should always defer to a method such as
+:code:`ivy.builtin_some_op`, which will itself have a docstring. The remaining code is essentially simple wrapper code
+around this builtin ivy method.
+
+The associated ivy backend methods should be placed in the same file as the operators. For example, :code:`__pow__` is
+an arithmetic operator, and so this operator should be placed in the submodule :code:`ivy.array.array_api.arithmetic_operators`.
+The method :code:`ivy.builtin_pow` should also be placed in :code:`ivy.array.array_api.arithmetic_operators`.
+
+For most methods and backends these are very simple to implement, such as :code:`ivy.builtin_pow` below:
+
+.. code-block:: python
+
+    # noinspection PyShadowingBuiltins
+    def builtin_pow(self: Union[ivy.Array, ivy.NativeArray],
+                    other: Union[int, float, ivy.Array, ivy.NativeArray]) \
+            -> Union[ivy.Array, ivy.NativeArray]:
+        """
+        Calculates an implementation-dependent approximation of exponentiation by raising each element (the base) of an
+        array instance to the power of other_i (the exponent), where other_i is the corresponding element of the array other.
+
+        :param self: array instance whose elements correspond to the exponentiation base. Should have a numeric data type.
+        :param other: other array whose elements correspond to the exponentiation exponent. Must be compatible with x
+                        (see Broadcasting). Should have a numeric data type.
+        :return: an array containing the element-wise results. The returned array must have a data type determined by
+                  Type Promotion Rules.
+        """
+        return self.__pow__(other)
+
+However, for some backends this does not work. For example, MXNet does not support reshaping arrays to 0-dim arrays,
+but this is required by the standard. Therefore, we've written custom methods for handling 0-dim arrays. For backends
+such as this where more customization is needed, then we must simply redefine these methods, such as :code:`ivy.builtin_pow`,
+in the associated backend submodule, in this case :code:`ivy.functional.backends.mxnet.array.array_api.arithmetic_operators`.
+
+The custom MXNet code is as follows, with the addition of an MXNet-specific function decorator to properly handle flat arrays:
+
+.. code-block:: python
+
+    @_handle_flat_arrays_in_out
+    def builtin_pow(self, other):
+        return self.__pow__(other)
+
+Again, a docstring is not needed given that this is the same as the one provided in :code:`ivy.array.array_api.arithmetic_operators`.
+For other backends, we do not need to specify a custom :code:`builtin_pow` method. These will default to the version implemented in
+:code:`ivy.array.array_api.arithmetic_operators` if no custom implementation is provided.
