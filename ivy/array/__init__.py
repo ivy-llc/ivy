@@ -209,6 +209,14 @@ class Array(ArrayWithDevice, ArrayWithGeneral, ArrayWithGradients, ArrayWithImag
         return to_ivy(res)
 
     @_native_wrapper
+    def __matmul__(self, other):
+        other = to_native(other)
+        res = ivy.builtin_matmul(self._data, other)
+        if res is NotImplemented:
+            return res
+        return to_ivy(res)
+
+    @_native_wrapper
     def __truediv__(self, other):
         other = to_native(other)
         res = ivy.builtin_truediv(self._data, other)

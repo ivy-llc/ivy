@@ -82,6 +82,8 @@ def builtin_mul(x, other):
 def builtin_rmul(x, other):
     return x.__rmul__(other)
 
+def builtin_matmul(x, other):
+    return x.__matmul__(other)
 
 # noinspection PyShadowingBuiltins
 def builtin_truediv(x, other):
