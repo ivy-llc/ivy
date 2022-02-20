@@ -289,7 +289,7 @@ The method <code class="code docutils literal notranslate"><span class="pre">ivy
 <p>However, for some backends this does not work. For example, MXNet does not support reshaping arrays to 0-dim arrays,
 but this is required by the standard. Therefore, we’ve written custom methods for handling 0-dim arrays. For backends
 such as this where more customization is needed, then we must simply redefine these methods, such as <code class="code docutils literal notranslate"><span class="pre">ivy.builtin_pow</span></code>,
-in the associated backend submodule, in this case <code class="code docutils literal notranslate"><span class="pre">ivy.functional.backends.mxnet.array.array_api.arithmetic_operators</span></code>.</p>
+in the associated backend submodule, in this case <code class="code docutils literal notranslate"><span class="pre">ivy.functional.backends.mxnet.array_builtins.array_api.arithmetic_operators</span></code>.</p>
 <p>The custom MXNet code is as follows, with the addition of an MXNet-specific function decorator to properly handle flat arrays:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@_handle_flat_arrays_in_out</span>
 <span class="k">def</span> <span class="nf">builtin_pow</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
