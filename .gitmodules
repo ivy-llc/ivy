@@ -2,3 +2,6 @@
 [submodule "ivy_tests/test_array_api"]
 	path = ivy_tests/test_array_api
 	url = https://github.com/data-apis/array-api-tests.git
+[submodule "ivy_tests/array_api_tests"]
+	path = ivy_tests/array_api_tests
+	url = https://github.com/data-apis/array-api-tests.git
