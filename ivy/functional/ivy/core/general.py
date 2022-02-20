@@ -898,7 +898,7 @@ def broadcast_to(x: Union[ivy.Array, ivy.NativeArray], newshape: Iterable[int])\
     return _cur_framework(x).broadcast_to(x, newshape)
 
 
-def squeeze(x: Union[ivy.Array, ivy.NativeArray], axis: int = None)\
+def squeeze(x: Union[ivy.Array, ivy.NativeArray], axis: Union[int, Tuple[int]] = None)\
         -> Union[ivy.Array, ivy.NativeArray]:
     """
     Removes a single-dimensional entry from the shape of an array.
