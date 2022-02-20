@@ -4,6 +4,8 @@ import functools
 from numbers import Number
 
 # local
+from . import array_api
+from .array_api import *
 from . import conversions
 from .conversions import *
 from . import device
@@ -37,8 +39,8 @@ def _native_wrapper(f):
     return decor
 
 
-class Array(ArrayWithDevice, ArrayWithGeneral, ArrayWithGradients, ArrayWithImage, ArrayWithLinalg, ArrayWithLogic,
-            ArrayWithMath, ArrayWithMeta, ArrayWithRandom, ArrayWithReductions):
+class Array(ArrayWithArrayAPI, ArrayWithDevice, ArrayWithGeneral, ArrayWithGradients, ArrayWithImage, ArrayWithLinalg,
+            ArrayWithLogic, ArrayWithMath, ArrayWithMeta, ArrayWithRandom, ArrayWithReductions):
 
     def __init__(self, data):
         assert ivy.is_array(data)
