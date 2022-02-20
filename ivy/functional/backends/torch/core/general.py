@@ -380,7 +380,18 @@ def isnan(x):
 def isinf(x):
     return _torch.isinf(x)
 
+def less(x1,x2):
+    if hasattr(x1,'dtype') and hasattr(x2,'dtype'):
+        promoted_type = _torch.promote_types(x1.dtype,x2.dtype)
+        x1 = x1.to(promoted_type)
+        x2 = x2.to(promoted_type)
+    
+    return _torch.lt(x1,x2)
 
+def less(x1,x2):
+    return _torch.lt(x1,x2)
+
+    
 def isfinite(x):
     return _torch.isfinite(x)
 
