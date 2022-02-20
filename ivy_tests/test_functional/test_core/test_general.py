@@ -1691,6 +1691,33 @@ def test_full(shape, fill_val, dtype, tensor_fn, dev, call):
         helpers.assert_compilable(ivy.ones)
 
 
+
+# var
+@pytest.mark.parametrize(
+    "x1", [([0], 1), ([0, 1, 2], 3), ([[1, 3], [0, 0], [8, 4], [7, 9]], 10)])
+@pytest.mark.parametrize(
+    "correction", [2., -7.])
+@pytest.mark.parametrize(
+    "dtype", ['float32'])
+@pytest.mark.parametrize(
+    "keepdims", [True, False])
+def test_var(x1, correction,dtype, keepdims,dev, call):
+    axis = x1;
+    x = ivy.array(x1, dtype, dev)
+    # var
+    ret = ivy.var(x, axis, correction, keepdims)
+    # type test
+    assert ivy.is_array(ret)
+    # cardinality test
+    assert ret.shape == x.shape
+    # value test
+    assert np.allclose(call(ivy.cumsum, x, axis),
+                       np.asarray(ivy.functional.backends.numpy.cumsum(ivy.to_numpy(x), axis)))
+    # compilation test
+    if not ivy.array_mode():
+        helpers.assert_compilable(ivy.cumsum)
+
+
 # one_hot
 @pytest.mark.parametrize(
     "ind_n_depth", [([0], 1), ([0, 1, 2], 3), ([[1, 3], [0, 0], [8, 4], [7, 9]], 10)])
