@@ -87,6 +87,7 @@
 <li class="toctree-l1"><a class="reference internal" href="using_ivy.html">Using Ivy</a></li>
 <li class="toctree-l1"><a class="reference internal" href="training_a_network.html">Training a Network</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Contributing to Ivy</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#submodule-design">Submodule Design</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#ivy-api">Ivy API</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#backend-api">Backend API</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#array-operators">Array Operators</a></li>
@@ -210,6 +211,26 @@
             
   <div class="section" id="contributing-to-ivy">
 <h1>Contributing to Ivy<a class="headerlink" href="#contributing-to-ivy" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodule-design">
+<h2>Submodule Design<a class="headerlink" href="#submodule-design" title="Permalink to this headline">¶</a></h2>
+<p>Many already-implemented methods will need to be moved into new locations during various stages of refactoring.
+The package is designed so all methods are called directly from the <code class="code docutils literal notranslate"><span class="pre">ivy</span></code> namespace, such as <code class="code docutils literal notranslate"><span class="pre">ivy.matmul</span></code>,
+and not <code class="code docutils literal notranslate"><span class="pre">ivy.some_namespace.matmul</span></code>. Therefore, inside any of the folders <code class="code docutils literal notranslate"><span class="pre">ivy.functional.ivy</span></code>,
+<code class="code docutils literal notranslate"><span class="pre">ivy.functional.backends.some_backend</span></code>, <code class="code docutils literal notranslate"><span class="pre">ivy.functional.backends.another_backend</span></code> the functions can be moved
+to different files or folders without breaking anything. This makes it very simple to continually refactor and re-organize
+the code structure in an ongoing manner.</p>
+<p>Currently, we are in the process of refactoring things to more closely follow the Array API standard. Many methods will
+need to be moved to new locations. Again, this is not a problem, provided the <code class="code docutils literal notranslate"><span class="pre">__init__</span></code> files have the correct
+imports. Generally, these files look like the following, so that both the submodule namespace is imported but also
+all methods.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">dtype</span>
+<span class="kn">from</span> <span class="nn">.dtype</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">general</span>
+<span class="kn">from</span> <span class="nn">.general</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="c1"># etc.</span>
+</pre></div>
+</div>
+</div>
 <div class="section" id="ivy-api">
 <h2>Ivy API<a class="headerlink" href="#ivy-api" title="Permalink to this headline">¶</a></h2>
 <p>All function signatures for the Ivy API are defined in the <code class="code docutils literal notranslate"><span class="pre">ivy.functional.ivy</span></code> submodule. Functions written here
