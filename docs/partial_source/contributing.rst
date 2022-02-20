@@ -3,6 +3,30 @@ Contributing to Ivy
 
 .. _`Array API`: https://data-apis.org/array-api/latest/
 
+
+Submodule Design
+----------------
+
+Many already-implemented methods will need to be moved into new locations during various stages of refactoring.
+The package is designed so all methods are called directly from the :code:`ivy` namespace, such as :code:`ivy.matmul`,
+and not :code:`ivy.some_namespace.matmul`. Therefore, inside any of the folders :code:`ivy.functional.ivy`,
+:code:`ivy.functional.backends.some_backend`, :code:`ivy.functional.backends.another_backend` the functions can be moved
+to different files or folders without breaking anything. This makes it very simple to continually refactor and re-organize
+the code structure in an ongoing manner.
+
+Currently, we are in the process of refactoring things to more closely follow the Array API standard. Many methods will
+need to be moved to new locations. Again, this is not a problem, provided the :code:`__init__` files have the correct
+imports. Generally, these files look like the following, so that both the submodule namespace is imported but also
+all methods.
+
+.. code-block:: python
+
+    from . import dtype
+    from .dtype import *
+    from . import general
+    from .general import *
+    # etc.
+
 Ivy API
 -------
 
