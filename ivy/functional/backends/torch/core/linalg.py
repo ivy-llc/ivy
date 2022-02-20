@@ -51,3 +51,11 @@ def vector_to_skew_symmetric_matrix(vector):
     row3 = _torch.cat((-a2s, a1s, zs), -1)
     # BS x 3 x 3
     return _torch.cat((row1, row2, row3), -2)
+
+
+def vector_norm(x, p=2, axis=None, keepdims=False):
+    py_normalized_vector_ = _torch.linalg.vector_norm(x,p,axis,keepdims)
+
+    if py_normalized_vector_.shape == tuple():
+        return _torch.unsqueeze(py_normalized_vector_, 0)
+    return py_normalized_vector_
