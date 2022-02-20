@@ -35,7 +35,30 @@ def array(object_in, dtype: Optional[str] = None, dev: Optional[str] = None):
         return _torch.tensor(object_in, device=dev_from_str(dev))
 
 
-asarray = array
+def asarray(object_in, dtype: Optional[str] = None, dev: Optional[str] = None, copy: Optional[bool] = None):
+    dev = default_device(dev)
+    if copy is None:
+        copy = False
+    if copy:
+        if isinstance(object_in, np.ndarray):
+            return _torch.as_tensor(object_in, device=dev_from_str(dev))
+        if dtype is None and isinstance(object_in, _torch.Tensor):
+            return object_in.clone().detach().to(dev_from_str(dev))
+        if dtype is None and not isinstance(object_in, _torch.Tensor):
+            return _torch.tensor(object_in, device=dev_from_str(dev))
+        else:
+            dtype = dtype_from_str(default_dtype(dtype, object_in))
+            return _torch.tensor(object_in, dtype=dtype, device=dev_from_str(dev))
+    else:
+        if isinstance(object_in, np.ndarray):
+            return _torch.tensor(object_in, dtype=dtype, device=dev_from_str(dev))
+        if dtype is None and isinstance(object_in, _torch.Tensor):
+            return object_in.to(dev_from_str(dev))
+        if dtype is None and not isinstance(object_in, _torch.Tensor):
+            return _torch.tensor(object_in, device=dev_from_str(dev))
+        else:
+            dtype = dtype_from_str(default_dtype(dtype, object_in))
+            return _torch.tensor(object_in, dtype=dtype, device=dev_from_str(dev))
 
 
 def is_array(x, exclusive=False):
