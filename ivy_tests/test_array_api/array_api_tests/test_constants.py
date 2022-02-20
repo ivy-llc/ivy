@@ -30,24 +30,24 @@ def test_irrational_numbers(name, n):
     ceil = math.ceil(n)
     assert c < ceil, f"xp.{name}={c!r} >= {ceil}"
     x = xp.asarray(c)
-    assert xp.is_float_dtype(x)
-#
-#
-# def test_inf():
-#     assert hasattr(xp, "inf")
-#     assert_scalar_float("inf", xp.inf)
-#     assert math.isinf(xp.inf)
-#     assert xp.inf > 0, "xp.inf not greater than 0"
-#     x = xp.asarray(xp.inf)
-#     assert_0d_float("inf", x)
-#     assert xp.isinf(x), "xp.isinf(xp.asarray(xp.inf))=False"
-#
-#
-# def test_nan():
-#     assert hasattr(xp, "nan")
-#     assert_scalar_float("nan", xp.nan)
-#     assert math.isnan(xp.nan)
-#     assert xp.nan != xp.nan, "xp.nan should not have equality with itself"
-#     x = xp.asarray(xp.nan)
-#     assert_0d_float("nan", x)
-#     assert xp.isnan(x), "xp.isnan(xp.asarray(xp.nan))=False"
+    assert_0d_float("name", x)
+
+
+def test_inf():
+    assert hasattr(xp, "inf")
+    assert_scalar_float("inf", xp.inf)
+    assert math.isinf(xp.inf)
+    assert xp.inf > 0, "xp.inf not greater than 0"
+    x = xp.asarray(xp.inf)
+    assert_0d_float("inf", x)
+    assert xp.isinf(x), "xp.isinf(xp.asarray(xp.inf))=False"
+
+
+def test_nan():
+    assert hasattr(xp, "nan")
+    assert_scalar_float("nan", xp.nan)
+    assert math.isnan(xp.nan)
+    assert xp.nan != xp.nan, "xp.nan should not have equality with itself"
+    x = xp.asarray(xp.nan)
+    assert_0d_float("nan", x)
+    assert xp.isnan(x), "xp.isnan(xp.asarray(xp.nan))=False"
