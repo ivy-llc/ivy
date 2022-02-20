@@ -274,7 +274,7 @@ class Array(ArrayWithDevice, ArrayWithGeneral, ArrayWithGradients, ArrayWithImag
     @_native_wrapper
     def __lt__(self, other):
         other = to_native(other)
-        res = ivy.builtin_lt(self._data, other)
+        res = ivy.less(self, other)
         if res is NotImplemented:
             return res
         return to_ivy(res)

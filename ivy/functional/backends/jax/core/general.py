@@ -254,6 +254,15 @@ def indices_where(x):
 isnan = _jnp.isnan
 isinf = _jnp.isinf
 
+def less(x1,x2):
+    if hasattr(x1,'dtype') and hasattr(x2,'dtype'):
+        promoted_type = _jnp.promote_types(x1.dtype,x2.dtype)
+        x1 = x1.astype(promoted_type)
+        x2 = x2.astype(promoted_type)
+    
+    return _jnp.less(x1,x2)
+    
+
 def isfinite(x):
     return _jnp.isfinite(x)
 

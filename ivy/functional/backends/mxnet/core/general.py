@@ -414,6 +414,9 @@ def isnan(x):
 def isinf(x):
     return _mx.nd.contrib.isinf(x).astype('bool')
 
+@_handle_flat_arrays_in_out
+def less(x1,x2):
+    return _mx.nd.lesser(x1,x2).astype('bool')
 
 @_handle_flat_arrays_in_out
 def isfinite(x):
