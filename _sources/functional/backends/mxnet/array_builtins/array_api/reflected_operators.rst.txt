@@ -1,0 +1,15 @@
+Reflected operators
+===================
+
+.. automodule:: ivy.functional.backends.mxnet.array_builtins.array_api.reflected_operators
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :maxdepth: -1
+   :caption: Reflected operators
+
+

@@ -1,0 +1,15 @@
+Comparison operators
+====================
+
+.. automodule:: ivy.functional.backends.mxnet.array_builtins.array_api.comparison_operators
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :maxdepth: -1
+   :caption: Comparison operators
+
+

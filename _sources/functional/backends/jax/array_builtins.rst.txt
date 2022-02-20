@@ -1,0 +1,8 @@
+Array builtins
+==============
+
+.. automodule:: ivy.functional.backends.jax.array_builtins
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:

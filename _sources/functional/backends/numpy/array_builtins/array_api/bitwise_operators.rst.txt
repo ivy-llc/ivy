@@ -1,0 +1,15 @@
+Bitwise operators
+=================
+
+.. automodule:: ivy.functional.backends.numpy.array_builtins.array_api.bitwise_operators
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :maxdepth: -1
+   :caption: Bitwise operators
+
+
