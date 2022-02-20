@@ -204,8 +204,13 @@
 <span class="sd">Collection of builtin Ivy functions.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
+<span class="c1"># global</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span>
 
-<span class="c1"># noinspection PyShadowingBuiltins</span>
+<span class="c1"># local</span>
+<span class="kn">import</span> <span class="nn">ivy</span>
+
+
 <div class="viewcode-block" id="builtin_dir"><a class="viewcode-back" href="../../../../../functional/ivy/core/array_builtins/builtin_dir.html#ivy.functional.ivy.core.array_builtins.builtin_dir">[docs]</a><span class="k">def</span> <span class="nf">builtin_dir</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">x</span><span class="o">.</span><span class="fm">__dir__</span><span class="p">()</span></div>
 
@@ -246,8 +251,20 @@
 
 
 <span class="c1"># noinspection PyShadowingBuiltins</span>
-<div class="viewcode-block" id="builtin_pow"><a class="viewcode-back" href="../../../../../functional/ivy/core/array_builtins/builtin_pow.html#ivy.functional.ivy.core.array_builtins.builtin_pow">[docs]</a><span class="k">def</span> <span class="nf">builtin_pow</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">power</span><span class="p">):</span>
-    <span class="k">return</span> <span class="n">x</span><span class="o">.</span><span class="fm">__pow__</span><span class="p">(</span><span class="n">power</span><span class="p">)</span></div>
+<div class="viewcode-block" id="builtin_pow"><a class="viewcode-back" href="../../../../../functional/ivy/core/array_builtins/builtin_pow.html#ivy.functional.ivy.core.array_builtins.builtin_pow">[docs]</a><span class="k">def</span> <span class="nf">builtin_pow</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+                <span class="n">other</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">])</span> \
+        <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Calculates an implementation-dependent approximation of exponentiation by raising each element (the base) of an</span>
+<span class="sd">    array instance to the power of other_i (the exponent), where other_i is the corresponding element of the array other.</span>
+
+<span class="sd">    :param self: array instance whose elements correspond to the exponentiation base. Should have a numeric data type.</span>
+<span class="sd">    :param other: other array whose elements correspond to the exponentiation exponent. Must be compatible with x</span>
+<span class="sd">                    (see Broadcasting). Should have a numeric data type.</span>
+<span class="sd">    :return: an array containing the element-wise results. The returned array must have a data type determined by</span>
+<span class="sd">              Type Promotion Rules.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__pow__</span><span class="p">(</span><span class="n">other</span><span class="p">)</span></div>
 
 
 <span class="c1"># noinspection PyShadowingBuiltins</span>
