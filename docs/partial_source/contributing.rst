@@ -103,7 +103,7 @@ For most methods and backends these are very simple to implement, such as :code:
 However, for some backends this does not work. For example, MXNet does not support reshaping arrays to 0-dim arrays,
 but this is required by the standard. Therefore, we've written custom methods for handling 0-dim arrays. For backends
 such as this where more customization is needed, then we must simply redefine these methods, such as :code:`ivy.builtin_pow`,
-in the associated backend submodule, in this case :code:`ivy.functional.backends.mxnet.array.array_api.arithmetic_operators`.
+in the associated backend submodule, in this case :code:`ivy.functional.backends.mxnet.array_builtins.array_api.arithmetic_operators`.
 
 The custom MXNet code is as follows, with the addition of an MXNet-specific function decorator to properly handle flat arrays:
 
