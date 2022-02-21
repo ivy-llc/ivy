@@ -142,7 +142,7 @@ def builtin_bool(x):
 
 # noinspection PyShadowingBuiltins
 def builtin_lt(x, other):
-    return x.__lt__(other)
+    return ivy.less(x,other)
 
 
 # noinspection PyShadowingBuiltins
