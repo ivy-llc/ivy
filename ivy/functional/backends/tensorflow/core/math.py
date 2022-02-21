@@ -6,7 +6,12 @@ Collection of TensorFlow math functions, wrapped to fit Ivy syntax and signature
 import tensorflow as _tf
 
 sin = _tf.sin
-cos = _tf.cos
+
+
+def cos(x: _tf.Tensor) -> _tf.Tensor:
+    return _tf.cos(x)
+
+
 tan = _tf.tan
 asin = _tf.asin
 acos = _tf.acos

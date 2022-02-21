@@ -7,7 +7,12 @@ import jax as _jax
 import jax.numpy as _jnp
 
 sin = _jnp.sin
-cos = _jnp.cos
+
+
+def cos(x: _jnp.ndarray) -> _jnp.ndarray:
+    return _jnp.cos(x)
+
+
 tan = _jnp.tan
 asin = _jnp.arcsin
 acos = _jnp.arccos

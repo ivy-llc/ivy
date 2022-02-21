@@ -13,7 +13,7 @@ def sin(x):
     return _torch.sin(x)
 
 
-def cos(x):
+def cos(x: _torch.Tensor) -> _torch.Tensor:
     if isinstance(x, float):
         return math.cos(x)
     return _torch.cos(x)
