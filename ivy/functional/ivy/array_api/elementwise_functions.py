@@ -14,3 +14,13 @@ def isfinite(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
              The returned array must have a data type of bool.
     """
     return _cur_framework(x).isfinite(x)
+
+
+def cos(x: ivy.Array) -> ivy.Array:
+    """
+    Computes trigonometric cosine element-wise.
+
+    :param x: Input array, in radians (2*pi radian equals 360 degrees).
+    :return: The cosine of x element-wise.
+    """
+    return _cur_framework(x).cos(x)
