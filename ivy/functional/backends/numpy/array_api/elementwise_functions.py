@@ -3,8 +3,8 @@
 
 
 # global
-import numpy as _np
+import numpy as np
 
 
-def cos(x: _np.ndarray) -> _np.ndarray:
-    return _np.cos(x)
+def cos(x: np.ndarray) -> np.ndarray:
+    return np.cos(x)

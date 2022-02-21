@@ -3,9 +3,9 @@
 
 
 # global
-import jax as _jax
-import jax.numpy as _jnp
+import jax as jax
+import jax.numpy as jnp
 
 
-def cos(x: _jnp.ndarray) -> _jnp.ndarray:
-    return _jnp.cos(x)
+def cos(x: jnp.ndarray) -> jnp.ndarray:
+    return jnp.cos(x)

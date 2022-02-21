@@ -4,10 +4,10 @@
 
 # global
 import math
-import torch as _torch
+import torch as torch
 
 
-def cos(x: _torch.Tensor) -> _torch.Tensor:
+def cos(x: torch.Tensor) -> torch.Tensor:
     if isinstance(x, float):
         return math.cos(x)
-    return _torch.cos(x)
+    return torch.cos(x)

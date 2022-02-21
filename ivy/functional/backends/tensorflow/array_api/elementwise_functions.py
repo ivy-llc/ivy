@@ -3,8 +3,8 @@
 
 
 # global
-import tensorflow as _tf
+import tensorflow as tf
 
 
-def cos(x: _tf.Tensor) -> _tf.Tensor:
-    return _tf.cos(x)
+def cos(x: tf.Tensor) -> tf.Tensor:
+    return tf.cos(x)
