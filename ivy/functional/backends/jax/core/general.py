@@ -3,6 +3,8 @@ Collection of Jax general functions, wrapped to fit Ivy syntax and signature.
 """
 
 # global
+from typing import Optional
+
 import jax as _jax
 import math as _math
 import numpy as _onp
@@ -86,7 +88,25 @@ def array(object_in, dtype=None, dev=None):
     return to_dev(_jnp.array(object_in, dtype=dtype_from_str(default_dtype(dtype, object_in))), default_device(dev))
 
 
-asarray = array
+def asarray(object_in, dtype: Optional[str] = None, dev: Optional[str] = None, copy: Optional[bool] = None):
+    if copy is None:
+        copy = False
+    if copy:
+        if dtype is None and isinstance(object_in, _jnp.ndarray):
+            return to_dev(object_in.copy(), dev)
+        if dtype is None and not isinstance(object_in, _jnp.ndarray):
+            return to_dev(_jnp.asarray(object_in).copy(), dev)
+        else:
+            dtype = dtype_to_str(default_dtype(dtype, object_in))
+            return to_dev(_jnp.asarray(object_in, dtype).copy(), dev)
+    else:
+        if dtype is None and isinstance(object_in, _jnp.ndarray):
+            return to_dev(object_in, dev)
+        if dtype is None and not isinstance(object_in, _jnp.ndarray):
+            return to_dev(_jnp.asarray(object_in), dev)
+        else:
+            dtype = dtype_to_str(default_dtype(dtype, object_in))
+            return to_dev(_jnp.asarray(object_in, dtype), dev)
 
 
 # noinspection PyUnresolvedReferences,PyProtectedMember
