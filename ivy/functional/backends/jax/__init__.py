@@ -30,6 +30,8 @@ use = ivy.framework_handler.ContextManager(sys.modules[__name__])
 
 # noinspection PyUnresolvedReferences,PyProtectedMember
 NativeArray = (_jax.interpreters.xla._DeviceArray, jaxlib.xla_extension.DeviceArray, Buffer)
+# noinspection PyUnresolvedReferences
+JaxArray = Union[jax.interpreters.xla._DeviceArray, jaxlib.xla_extension.DeviceArray, Buffer]
 # noinspection PyUnresolvedReferences,PyProtectedMember
 NativeVariable = _jax.interpreters.xla._DeviceArray
 # noinspection PyUnresolvedReferences
