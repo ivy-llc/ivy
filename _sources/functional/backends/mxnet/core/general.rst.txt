@@ -41,7 +41,6 @@ General
    general/indices_where.rst
    general/isnan.rst
    general/isinf.rst
-   general/isfinite.rst
    general/broadcast_to.rst
    general/squeeze.rst
    general/zeros.rst

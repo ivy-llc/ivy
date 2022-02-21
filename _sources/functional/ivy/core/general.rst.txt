@@ -59,7 +59,6 @@ General
    general/indices_where.rst
    general/isnan.rst
    general/isinf.rst
-   general/isfinite.rst
    general/value_is_nan.rst
    general/has_nans.rst
    general/reshape.rst

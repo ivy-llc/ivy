@@ -12,4 +12,5 @@ Elementwise functions
    :maxdepth: -1
    :caption: Elementwise functions
 
+   elementwise_functions/isfinite.rst
 
