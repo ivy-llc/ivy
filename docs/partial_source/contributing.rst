@@ -38,7 +38,7 @@ should adhere to the following type hint format:
 
 
     def my_func(x: Union[ivy.Array, ivy.NativeArray],
-                axes: Union[int, Tuple[int, ...], List[int, ...]],
+                axes: Union[int, Tuple[int], List[int]],
                 dtype: Optional[Union[ivy.Dtype, str]] = None,
                 dev: Optional[Union[ivy.Dev, str]] = None) \
             -> ivy.Array:
@@ -63,7 +63,7 @@ and for Ivy methods implemented as a composition of other Ivy methods such as :c
 just be converted to :code:`ivy.Array` instances before executing the Ivy implementation.
 
 As for the :code:`axes` arg, generally the `Array API`_ standard dictates that shapes, axes and other similar args should be
-of type :code:`Tuple[int, ...]` when representing a sequence, not :code:`List[int, ...]`. However, in order to make Ivy code
+of type :code:`Tuple[int]` when representing a sequence, not :code:`List[int]`. However, in order to make Ivy code
 less brittle, we accept both tuples and lists for such arguments. This does not break the standard, as the standard is only
 intended to define a subset of required function behaviour. The standard can be freely extended, as we are doing here.
 
