@@ -37,7 +37,7 @@ should adhere to the following type hint format:
 .. code-block:: python
 
 
-    def my_func(x: ivy.Array,
+    def my_func(x: Union[ivy.Array, ivy.NativeArray],
                 dtype: Optional[Union[ivy.Dtype, str]] = None,
                 dev: Optional[Union[ivy.Dev, str]] = None) \
             -> ivy.Array:
@@ -51,8 +51,17 @@ should adhere to the following type hint format:
         """
         return _cur_framework(x).my_func(x, dtype, dev)
 
-:code:`dtype` and :code:`dev` do not need to be added to all methods, these are just examples.
-For creation methods these should be added.
+Note that the input array has type :code:`Union[ivy.Array, ivy.NativeArray]` whereas the output array has type
+:code:`ivy.Array`. This is the case for all functions in the ivy API.
+We always return an :code:`ivy.Array` instance to ensure that any subsequent Ivy code is fully framework-agnostic, with
+all operators performed on the array being handled by Ivy, and not the backend framework. However, there is no need to
+prevent native arrays from being permitted in the input. For Ivy methods which wrap backend-specific implementations, the
+input would need to be converted to a native array (such as :code:`torch.Tensor`) anyway before calling the backend method,
+and for Ivy methods implemented as a composition of other Ivy methods such as :code:`ivy.lstm_update`, the native inputs can
+just be converted to :code:`ivy.Array` instances before executing the Ivy implementation.
+
+As for the other arguments in the example above, :code:`dtype` and :code:`dev` do not need to be added to all methods,
+these are just examples. These should be added to all creation methods though.
 
 All functions which adhere to the `Array API`_ standard should be placed in the submodule :code:`ivy.functional.ivy.array_api`,
 and should also be placed in the correct file in alignment with the categories used in the standard.
