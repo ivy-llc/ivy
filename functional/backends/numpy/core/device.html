@@ -201,71 +201,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="module-ivy.functional.backends.numpy.core.device">
-<span id="device"></span><h1>Device<a class="headerlink" href="#module-ivy.functional.backends.numpy.core.device" title="Permalink to this headline">¶</a></h1>
-<p>Collection of Numpy general functions, wrapped to fit Ivy syntax and signature.</p>
-<dl class="py class">
-<dt id="ivy.functional.backends.numpy.core.device.Profiler">
-<em class="property">class </em><code class="sig-prename descclassname">ivy.functional.backends.numpy.core.device.</code><code class="sig-name descname">Profiler</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">save_dir</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/ivy/functional/backends/numpy/core/device.html#Profiler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.backends.numpy.core.device.Profiler" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="../../../ivy/core/device/Profiler.html#ivy.functional.ivy.core.device.Profiler" title="ivy.functional.ivy.core.device.Profiler"><code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.functional.ivy.core.device.Profiler</span></code></a></p>
-<dl class="py method">
-<dt id="ivy.functional.backends.numpy.core.device.Profiler.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">save_dir</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/ivy/functional/backends/numpy/core/device.html#Profiler.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.backends.numpy.core.device.Profiler.__init__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt id="ivy.functional.backends.numpy.core.device.Profiler.start">
-<code class="sig-name descname">start</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/ivy/functional/backends/numpy/core/device.html#Profiler.start"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.backends.numpy.core.device.Profiler.start" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt id="ivy.functional.backends.numpy.core.device.Profiler.stop">
-<code class="sig-name descname">stop</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/ivy/functional/backends/numpy/core/device.html#Profiler.stop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.backends.numpy.core.device.Profiler.stop" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="py function">
-<dt id="ivy.functional.backends.numpy.core.device.clear_mem_on_dev">
-<code class="sig-prename descclassname">ivy.functional.backends.numpy.core.device.</code><code class="sig-name descname">clear_mem_on_dev</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dev</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ivy.functional.backends.numpy.core.device.clear_mem_on_dev" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt id="ivy.functional.backends.numpy.core.device.dev">
-<code class="sig-prename descclassname">ivy.functional.backends.numpy.core.device.</code><code class="sig-name descname">dev</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">as_str</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ivy.functional.backends.numpy.core.device.dev" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt id="ivy.functional.backends.numpy.core.device.dev_from_str">
-<code class="sig-prename descclassname">ivy.functional.backends.numpy.core.device.</code><code class="sig-name descname">dev_from_str</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dev</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ivy.functional.backends.numpy.core.device.dev_from_str" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt id="ivy.functional.backends.numpy.core.device.dev_to_str">
-<code class="sig-prename descclassname">ivy.functional.backends.numpy.core.device.</code><code class="sig-name descname">dev_to_str</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dev</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ivy.functional.backends.numpy.core.device.dev_to_str" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt id="ivy.functional.backends.numpy.core.device.gpu_is_available">
-<code class="sig-prename descclassname">ivy.functional.backends.numpy.core.device.</code><code class="sig-name descname">gpu_is_available</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ivy.functional.backends.numpy.core.device.gpu_is_available" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt id="ivy.functional.backends.numpy.core.device.num_gpus">
-<code class="sig-prename descclassname">ivy.functional.backends.numpy.core.device.</code><code class="sig-name descname">num_gpus</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ivy.functional.backends.numpy.core.device.num_gpus" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt id="ivy.functional.backends.numpy.core.device.to_dev">
-<code class="sig-prename descclassname">ivy.functional.backends.numpy.core.device.</code><code class="sig-name descname">to_dev</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">dev</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ivy.functional.backends.numpy.core.device.to_dev" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt id="ivy.functional.backends.numpy.core.device.tpu_is_available">
-<code class="sig-prename descclassname">ivy.functional.backends.numpy.core.device.</code><code class="sig-name descname">tpu_is_available</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ivy.functional.backends.numpy.core.device.tpu_is_available" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
+  <div class="section" id="device">
+<h1>Device<a class="headerlink" href="#device" title="Permalink to this headline">¶</a></h1>
 <div class="toctree-wrapper compound">
 <p class="caption"><span class="caption-text">Device</span></p>
 <ul>

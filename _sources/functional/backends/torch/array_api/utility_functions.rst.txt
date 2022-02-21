@@ -12,4 +12,5 @@ Utility functions
    :maxdepth: -1
    :caption: Utility functions
 
+   utility_functions/all.rst
 

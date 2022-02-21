@@ -203,7 +203,38 @@
             
   <div class="section" id="module-ivy.functional.ivy.array_api.utility_functions">
 <span id="utility-functions"></span><h1>Utility functions<a class="headerlink" href="#module-ivy.functional.ivy.array_api.utility_functions" title="Permalink to this headline">¶</a></h1>
+<dl class="py function">
+<dt id="ivy.functional.ivy.array_api.utility_functions.all">
+<code class="sig-prename descclassname">ivy.functional.ivy.array_api.utility_functions.</code><code class="sig-name descname">all</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">ivy.array.Array</span></em>, <em class="sig-param"><span class="n">axis</span><span class="p">:</span> <span class="n"><span class="p">[</span>typing.Union<span class="p">[</span>int<span class="p">, </span>typing.Tuple<span class="p">[</span>int<span class="p">, </span><span class="p">…</span><span class="p">]</span><span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">keepdims</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../../_modules/ivy/functional/ivy/array_api/utility_functions.html#all"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.array_api.utility_functions.all" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests whether all input array elements evaluate to True along a specified axis.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> – input array.</p></li>
+<li><p><strong>axis</strong> – axis or axes along which to perform a logical AND reduction. By default, a logical AND reduction must
+be performed over the entire array. If a tuple of integers, logical AND reductions must be performed over multiple
+axes. A valid axis must be an integer on the interval [-N, N), where N is the rank (number of dimensions) of x.
+If an axis is specified as a negative integer, the function must determine the axis along which to perform a
+reduction by counting backward from the last dimension (where -1 refers to the last dimension). If provided an
+invalid axis, the function must raise an exception. Default: None.</p></li>
+<li><p><strong>keepdims</strong> – If True, the reduced axes (dimensions) must be included in the result as singleton dimensions,
+and, accordingly, the result must be compatible with the input array (see Broadcasting). Otherwise, if False,
+the reduced axes (dimensions) must not be included in the result. Default is False.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>if a logical AND reduction was performed over the entire array, the returned array must be a
+zero-dimensional array containing the test result; otherwise, the returned array must be a
+non-zero-dimensional array containing the test results. The returned array must have a data type of bool.</p>
+</dd>
+</dl>
+</dd></dl>
+
 <div class="toctree-wrapper compound">
+<p class="caption"><span class="caption-text">Utility functions</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="utility_functions/all.html">all</a></li>
+</ul>
 </div>
 </div>
 

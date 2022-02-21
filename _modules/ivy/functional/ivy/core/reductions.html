@@ -355,24 +355,6 @@
 <span class="sd">    :return: The array with sums computed.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">operands</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="n">equation</span><span class="p">,</span> <span class="o">*</span><span class="n">operands</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="all"><a class="viewcode-back" href="../../../../../functional/ivy/core/reductions/all.html#ivy.functional.ivy.core.reductions.all">[docs]</a><span class="k">def</span> <span class="nf">all</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Tests whether all input array elements evaluate to True along a specified axis.</span>
-
-<span class="sd">    :param x: input array.</span>
-<span class="sd">    :param axis: axis or axes along which to perform a logical AND reduction. By default, a logical AND reduction must</span>
-<span class="sd">        be performed over the entire array. If a tuple of integers, logical AND reductions must be performed over multiple</span>
-<span class="sd">        axes. A valid axis must be an integer on the interval [-N, N), where N is the rank (number of dimensions) of x.</span>
-<span class="sd">        If an axis is specified as a negative integer, the function must determine the axis along which to perform a</span>
-<span class="sd">        reduction by counting backward from the last dimension (where -1 refers to the last dimension). If provided an</span>
-<span class="sd">        invalid axis, the function must raise an exception. Default: None.</span>
-<span class="sd">    :param  keepdims: If True, the reduced axes (dimensions) must be included in the result as singleton dimensions,</span>
-<span class="sd">        and, accordingly, the result must be compatible with the input array (see Broadcasting). Otherwise, if False,</span>
-<span class="sd">        the reduced axes (dimensions) must not be included in the result. Default is False.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">keepdims</span><span class="p">)</span></div>
 </pre></div>
 
            </div>
