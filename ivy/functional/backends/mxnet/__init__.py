@@ -56,3 +56,57 @@ def closest_valid_dtype(type):
 
 
 backend = 'mxnet'
+
+# Helpers #
+# --------#
+
+def _raise(ex):
+    raise ex
+
+
+def mxnet_init_context(dev):
+    dev = dev_to_str(dev)
+    if dev is None or dev.find("cpu") != -1:
+        mx_dev = "cpu"
+    elif dev.find("gpu") != -1:
+        mx_dev = "gpu"
+    else:
+        raise Exception("dev input {} not supported.".format(dev))
+    if dev.find(":") != -1:
+        mx_dev_id = int(dev[dev.find(":")+1:])
+    else:
+        mx_dev_id = 0
+    return mx.Context(mx_dev, mx_dev_id)
+
+
+def _scalar_or_flat_array_to_scalar(x):
+    return x if isinstance(x, Number) else (x.asscalar() if len(x.shape) == 0 else x)
+
+
+def _flat_array_to_1_dim_array(x):
+    return mx.nd.array([x.asscalar()]).astype(dtype(x)) if len(x.shape) == 0 else x
+
+
+def _1_dim_array_to_flat_array(x):
+    return mx.nd.array(x.asscalar(), dtype=x.dtype) if x.shape == (1,) else x
+
+
+def _handle_flat_arrays_in(fn):
+    return _handle_flat_arrays_in_out(fn, False)
+
+
+def _handle_flat_arrays_in_out(fn, include_out=True):
+    def wrapped_fn(*args, **kwargs):
+        expanded = False
+        def expand(x):
+            nonlocal expanded
+            expanded = True
+            return _flat_array_to_1_dim_array(x)
+
+        args_expanded = ivy.nested_map(args, lambda x: expand(x) if ivy.is_array(x) and len(x.shape) == 0 else x)
+        kwargs_expanded = ivy.nested_map(kwargs, lambda x: expand(x) if ivy.is_array(x) and len(x.shape) == 0 else x)
+        ret = fn(*args_expanded, **kwargs_expanded)
+        if expanded and include_out:
+            return ivy.nested_map(ret, lambda x: _1_dim_array_to_flat_array(x) if ivy.is_array(x) else x)
+        return ret
+    return wrapped_fn
