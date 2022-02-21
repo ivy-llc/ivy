@@ -24,7 +24,6 @@
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
@@ -220,36 +219,6 @@
             
   <div class="section" id="conv1dtranspose">
 <h1>Conv1DTranspose<a class="headerlink" href="#conv1dtranspose" title="Permalink to this headline">¶</a></h1>
-<dl class="py class">
-<dt id="ivy.stateful.layers.Conv1DTranspose">
-<em class="property">class </em><code class="sig-prename descclassname">ivy.stateful.layers.</code><code class="sig-name descname">Conv1DTranspose</code><span class="sig-paren">(</span><em class="sig-param">input_channels</em>, <em class="sig-param">output_channels</em>, <em class="sig-param">filter_size</em>, <em class="sig-param">strides</em>, <em class="sig-param">padding</em>, <em class="sig-param">weight_initializer=&lt;ivy.stateful.initializers.GlorotUniform object&gt;</em>, <em class="sig-param">bias_initializer=&lt;ivy.stateful.initializers.Zeros object&gt;</em>, <em class="sig-param">output_shape=None</em>, <em class="sig-param">data_format='NWC'</em>, <em class="sig-param">dilations=1</em>, <em class="sig-param">dev=None</em>, <em class="sig-param">v=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/stateful/layers.html#Conv1DTranspose"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.stateful.layers.Conv1DTranspose" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="../module/Module.html#ivy.stateful.module.Module" title="ivy.stateful.module.Module"><code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.stateful.module.Module</span></code></a></p>
-<dl class="py method">
-<dt id="ivy.stateful.layers.Conv1DTranspose.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param">input_channels</em>, <em class="sig-param">output_channels</em>, <em class="sig-param">filter_size</em>, <em class="sig-param">strides</em>, <em class="sig-param">padding</em>, <em class="sig-param">weight_initializer=&lt;ivy.stateful.initializers.GlorotUniform object&gt;</em>, <em class="sig-param">bias_initializer=&lt;ivy.stateful.initializers.Zeros object&gt;</em>, <em class="sig-param">output_shape=None</em>, <em class="sig-param">data_format='NWC'</em>, <em class="sig-param">dilations=1</em>, <em class="sig-param">dev=None</em>, <em class="sig-param">v=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/stateful/layers.html#Conv1DTranspose.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.stateful.layers.Conv1DTranspose.__init__" title="Permalink to this definition">¶</a></dt>
-<dd><p>1D transpose convolutional layer.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>input_channels</strong> (<em>int</em>) – Number of input channels for the layer.</p></li>
-<li><p><strong>output_channels</strong> (<em>int</em>) – Number of output channels for the layer.</p></li>
-<li><p><strong>filter_size</strong> (<em>int</em>) – Size of the convolutional filter.</p></li>
-<li><p><strong>strides</strong> (<em>int</em><em> or </em><em>sequence of ints</em>) – The stride of the sliding window for each dimension of input.</p></li>
-<li><p><strong>padding</strong> (<em>string</em><em> or </em><em>sequence of ints</em>) – “SAME” or “VALID” indicating the algorithm, or list indicating the per-dimension paddings.</p></li>
-<li><p><strong>weight_initializer</strong> (<em>ivy.Initializer</em><em>, </em><em>optional</em>) – Initializer for the weights. Default is GlorotUniform.</p></li>
-<li><p><strong>bias_initializer</strong> (<em>ivy.Initializer</em><em>, </em><em>optional</em>) – Initializer for the bias. Default is Zeros.</p></li>
-<li><p><strong>output_shape</strong> (<em>sequence of ints</em><em>, </em><em>needed for TensorFlow</em>) – Shape of the output</p></li>
-<li><p><strong>data_format</strong> (<em>string</em>) – “NWC” or “NCW”. Defaults to “NWC”.</p></li>
-<li><p><strong>dilations</strong> (<em>int</em><em> or </em><em>sequence of ints</em>) – The dilation factor for each dimension of input.</p></li>
-<li><p><strong>dev</strong> (<em>ivy.Device</em><em>, </em><em>optional</em>) – device on which to create the layer’s variables ‘cuda:0’, ‘cuda:1’, ‘cpu’ etc. Default is cpu.</p></li>
-<li><p><strong>v</strong> (<em>ivy container of variables</em><em>, </em><em>optional</em>) – the variables for each of the linear layer, as a container, constructed internally by default.</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-</dd></dl>
-
 <div class="line-block">
 <div class="line"><br /></div>
 <div class="line"><strong>Supported Frameworks:</strong></div>

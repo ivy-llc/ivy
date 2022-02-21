@@ -24,7 +24,6 @@
         <script src="../../../../_static/jquery.js"></script>
         <script src="../../../../_static/underscore.js"></script>
         <script src="../../../../_static/doctools.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../../_static/js/theme.js"></script>
 
@@ -203,28 +202,6 @@
             
   <div class="section" id="conv1d-transpose">
 <h1>conv1d_transpose<a class="headerlink" href="#conv1d-transpose" title="Permalink to this headline">¶</a></h1>
-<dl class="py function">
-<dt id="ivy.functional.ivy.nn.layers.conv1d_transpose">
-<code class="sig-prename descclassname">ivy.functional.ivy.nn.layers.</code><code class="sig-name descname">conv1d_transpose</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">filters</span></em>, <em class="sig-param"><span class="n">strides</span></em>, <em class="sig-param"><span class="n">padding</span></em>, <em class="sig-param"><span class="n">output_shape</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">data_format</span><span class="o">=</span><span class="default_value">'NWC'</span></em>, <em class="sig-param"><span class="n">dilations</span><span class="o">=</span><span class="default_value">1</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/ivy/functional/ivy/nn/layers.html#conv1d_transpose"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.nn.layers.conv1d_transpose" title="Permalink to this definition">¶</a></dt>
-<dd><p>Computes a 1-D transpose convolution given 3-D input x and filters arrays.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>array</em>) – Input image <em>[batch_size,w,d_in]</em>.</p></li>
-<li><p><strong>filters</strong> (<em>array</em>) – Convolution filters <em>[fw,d_in,d_out]</em>.</p></li>
-<li><p><strong>strides</strong> (<em>int</em><em> or </em><em>sequence of ints</em>) – The stride of the sliding window for each dimension of input.</p></li>
-<li><p><strong>padding</strong> (<em>string</em><em> or </em><em>sequence of ints</em>) – “SAME” or “VALID” indicating the algorithm, or list indicating the per-dimension paddings.</p></li>
-<li><p><strong>output_shape</strong> (<em>sequence of ints</em><em>, </em><em>needed for TensorFlow</em>) – Shape of the output</p></li>
-<li><p><strong>data_format</strong> (<em>string</em>) – “NWC” or “NCW”. Defaults to “NWC”.</p></li>
-<li><p><strong>dilations</strong> (<em>int</em><em> or </em><em>sequence of ints</em>) – The dilation factor for each dimension of input.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>The result of the transpose convolution operation.</p>
-</dd>
-</dl>
-</dd></dl>
-
 <div class="line-block">
 <div class="line"><br /></div>
 <div class="line"><strong>Supported Frameworks:</strong></div>

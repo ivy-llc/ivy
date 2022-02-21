@@ -24,7 +24,6 @@
         <script src="../../../../_static/jquery.js"></script>
         <script src="../../../../_static/underscore.js"></script>
         <script src="../../../../_static/doctools.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../../_static/js/theme.js"></script>
 
@@ -203,25 +202,6 @@
             
   <div class="section" id="ones">
 <h1>ones<a class="headerlink" href="#ones" title="Permalink to this headline">¶</a></h1>
-<dl class="py function">
-<dt id="ivy.functional.ivy.core.general.ones">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">ones</code><span class="sig-paren">(</span><em class="sig-param">shape: Iterable[int], dtype: [&lt;class 'ivy.Dtype'&gt;, &lt;class 'str'&gt;] = 'float32', dev: Optional[ivy.Device] = None</em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><a class="reference internal" href="../../../../_modules/ivy/functional/ivy/core/general.html#ones"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.core.general.ones" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns a new array of given shape and type, filled with ones.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>shape</strong> (<em>sequence of ints</em>) – Shape of the new array, e.g. (2, 3).</p></li>
-<li><p><strong>dtype</strong> – The desired data-type for the array in string format, i.e. ‘float32’ or ‘int64’.</p></li>
-</ul>
-</dd>
-</dl>
-<p>Default is ‘float32’.
-:type dtype: data-type string, optional
-:param dev: device on which to create the array ‘cuda:0’, ‘cuda:1’, ‘cpu’ etc..
-:type dev: ivy.Device
-:return: Tensor of ones with the given shape and dtype.</p>
-</dd></dl>
-
 <div class="line-block">
 <div class="line"><br /></div>
 <div class="line"><strong>Supported Frameworks:</strong></div>

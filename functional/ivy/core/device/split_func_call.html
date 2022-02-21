@@ -24,7 +24,6 @@
         <script src="../../../../_static/jquery.js"></script>
         <script src="../../../../_static/underscore.js"></script>
         <script src="../../../../_static/doctools.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../../_static/js/theme.js"></script>
 
@@ -203,38 +202,6 @@
             
   <div class="section" id="split-func-call">
 <h1>split_func_call<a class="headerlink" href="#split-func-call" title="Permalink to this headline">¶</a></h1>
-<dl class="py function">
-<dt id="ivy.functional.ivy.core.device.split_func_call">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">split_func_call</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">func</span><span class="p">:</span> <span class="n">Callable</span></em>, <em class="sig-param"><span class="n">inputs</span><span class="p">:</span> <span class="n">Iterable<span class="p">[</span>Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">, </span><a class="reference internal" href="../../../../container/Container.html#ivy.container.Container" title="ivy.container.Container">ivy.container.Container</a><span class="p">]</span><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">mode</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">max_chunk_size</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>int<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">chunk_size</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>int<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">input_axes</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>int<span class="p">, </span>Iterable<span class="p">[</span>int<span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">0</span></em>, <em class="sig-param"><span class="n">output_axes</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Union<span class="p">[</span>int<span class="p">, </span>Iterable<span class="p">[</span>int<span class="p">]</span><span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">stop_gradients</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">dev</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; Iterable<span class="p">[</span>Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">, </span><a class="reference internal" href="../../../../container/Container.html#ivy.container.Container" title="ivy.container.Container">ivy.container.Container</a><span class="p">]</span><span class="p">]</span><a class="reference internal" href="../../../../_modules/ivy/functional/ivy/core/device.html#split_func_call"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.core.device.split_func_call" title="Permalink to this definition">¶</a></dt>
-<dd><p>Call a function by splitting its inputs along a given axis, and calling the function in chunks, rather than feeding
-the entire input array at once. This can be useful to reduce memory usage of the device the arrays are on.
-:param func: The function to be called.
-:type func: callable
-:param inputs: A list of inputs to pass into the function.
-:type inputs: sequence of arrays
-:param mode: The mode by which to unify the return values, must be one of [ concat | mean | sum ]
-:type mode: str
-:param max_chunk_size: The maximum size of each of the chunks to be fed into the function.
-:type max_chunk_size: int
-:param chunk_size: The size of each of the chunks to be fed into the function. Specifying this arg overwrites the</p>
-<blockquote>
-<div><p>global split factor. Default is None.</p>
-</div></blockquote>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>input_axes</strong> (<em>int</em><em> or </em><em>sequence of ints</em><em>, </em><em>optional</em>) – The axes along which to split each of the inputs, before passing to the function. Default is 0.</p></li>
-<li><p><strong>output_axes</strong> (<em>int</em><em> or </em><em>sequence of ints</em><em>, </em><em>optional</em>) – The axes along which to concat each of the returned outputs. Default is same as fist input axis.</p></li>
-<li><p><strong>stop_gradients</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to stop the gradients for each computed return. Default is False.</p></li>
-<li><p><strong>dev</strong> (<em>Device</em><em>, </em><em>optional</em>) – The device to set the split factor for. Sets the default device by default.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>The return from the function, following input splitting and re-concattenation.</p>
-</dd>
-</dl>
-</dd></dl>
-
 <div class="line-block">
 <div class="line"><br /></div>
 <div class="line"><strong>Supported Frameworks:</strong></div>
