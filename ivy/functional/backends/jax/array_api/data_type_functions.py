@@ -12,7 +12,8 @@ import ivy
 JaxArray = Union[jax.interpreters.xla._DeviceArray, jaxlib.xla_extension.DeviceArray, Buffer]
 
 # noinspection PyShadowingBuiltins
-def iinfo(type: Union[jnp.dtype, str, JaxArray]) -> np.iinfo:
+def iinfo(type: Union[jnp.dtype, str, JaxArray])\
+        -> np.iinfo:
     return jnp.iinfo(ivy.dtype_from_str(type))
 
 
@@ -43,5 +44,6 @@ class Finfo:
 
 
 # noinspection PyShadowingBuiltins
-def finfo(type: Union[jnp.dtype, str, JaxArray]) -> Finfo:
+def finfo(type: Union[jnp.dtype, str, JaxArray])\
+        -> Finfo:
     return Finfo(jnp.finfo(ivy.dtype_from_str(type)))
