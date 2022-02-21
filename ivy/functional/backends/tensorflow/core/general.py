@@ -3,6 +3,8 @@ Collection of TensorFlow general functions, wrapped to fit Ivy syntax and signat
 """
 
 # global
+from typing import Optional
+
 import ivy
 _round = round
 import numpy as _np
@@ -63,7 +65,35 @@ def array(object_in, dtype=None, dev=None):
         return _tf.cast(tensor, dtype)
 
 
-asarray = array
+def asarray(object_in, dtype: Optional[str] = None, dev: Optional[str] = None, copy: Optional[bool] = None):
+    dev = default_device(dev)
+    if copy is None:
+        copy = False
+    with _tf.device(dev_from_str(dev)):
+        if copy:
+            if dtype is None and isinstance(object_in, _tf.Tensor):
+                return _tf.identity(object_in)
+            if dtype is None and not isinstance(object_in, _tf.Tensor):
+                return _tf.identity(_tf.convert_to_tensor(object_in))
+            else:
+                dtype = dtype_to_str(default_dtype(dtype, object_in))
+                try:
+                    tensor = _tf.convert_to_tensor(object_in, dtype=dtype)
+                except (TypeError, ValueError):
+                    tensor = _tf.convert_to_tensor(ivy.nested_map(object_in, lambda x: _tf.cast(x, dtype)), dtype=dtype)
+                return _tf.identity(_tf.cast(tensor, dtype))
+        else:
+            if dtype is None and isinstance(object_in, _tf.Tensor):
+                return object_in
+            if dtype is None and not isinstance(object_in, _tf.Tensor):
+                return _tf.convert_to_tensor(object_in)
+            else:
+                dtype = dtype_to_str(default_dtype(dtype, object_in))
+                try:
+                    tensor = _tf.convert_to_tensor(object_in, dtype=dtype)
+                except (TypeError, ValueError):
+                    tensor = _tf.convert_to_tensor(ivy.nested_map(object_in, lambda x: _tf.cast(x, dtype)), dtype=dtype)
+                return _tf.cast(tensor, dtype)
 
 
 def is_array(x, exclusive=False):
