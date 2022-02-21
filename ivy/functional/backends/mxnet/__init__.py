@@ -1,7 +1,6 @@
 # global
 import sys
 import mxnet as mx
-import numpy as np
 
 # local
 from . import array_api
@@ -54,40 +53,6 @@ def closest_valid_dtype(type):
                 'uint64': uint8,
                 'bfloat16': float16}[type_str]
     return type
-
-
-def iinfo(type):
-    return np.iinfo(dtype_from_str(type))
-
-
-class Finfo:
-
-    def __init__(self, mx_finfo):
-        self._mx_finfo = mx_finfo
-
-    @property
-    def bits(self):
-        return self._mx_finfo.bits
-
-    @property
-    def eps(self):
-        return float(self._mx_finfo.eps)
-
-    @property
-    def max(self):
-        return float(self._mx_finfo.max)
-
-    @property
-    def min(self):
-        return float(self._mx_finfo.min)
-
-    @property
-    def smallest_normal(self):
-        return float(self._mx_finfo.tiny)
-
-
-def finfo(type):
-    return Finfo(np.finfo(dtype_from_str(type)))
 
 
 backend = 'mxnet'
