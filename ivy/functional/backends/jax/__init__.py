@@ -2,7 +2,10 @@ import sys
 import ivy
 from jax.config import config
 config.update("jax_enable_x64", True)
+import jaxlib
 import jax as _jax
+import jax.numpy as jnp
+from typing import Union
 # noinspection PyPackageRequirements
 from jaxlib.xla_extension import Buffer
 
@@ -16,22 +19,13 @@ register_pytree_node(
     lambda a, c: ivy.Container(tree_unflatten(a, c))
 )
 
-# local
-from . import array_api
-from .array_api import *
-from . import array_builtins
-from .array_builtins import *
-from .core import *
-from . import nn
-from .nn import *
-
 # noinspection PyUnresolvedReferences
 use = ivy.framework_handler.ContextManager(sys.modules[__name__])
 
+# noinspection PyUnresolvedReferences
+JaxArray = Union[_jax.interpreters.xla._DeviceArray, jaxlib.xla_extension.DeviceArray, Buffer]
 # noinspection PyUnresolvedReferences,PyProtectedMember
 NativeArray = (_jax.interpreters.xla._DeviceArray, jaxlib.xla_extension.DeviceArray, Buffer)
-# noinspection PyUnresolvedReferences
-JaxArray = Union[jax.interpreters.xla._DeviceArray, jaxlib.xla_extension.DeviceArray, Buffer]
 # noinspection PyUnresolvedReferences,PyProtectedMember
 NativeVariable = _jax.interpreters.xla._DeviceArray
 # noinspection PyUnresolvedReferences
@@ -79,3 +73,12 @@ def closest_valid_dtype(type):
 
 
 backend = 'jax'
+
+# local
+from . import array_api
+from .array_api import *
+from . import array_builtins
+from .array_builtins import *
+from .core import *
+from . import nn
+from .nn import *

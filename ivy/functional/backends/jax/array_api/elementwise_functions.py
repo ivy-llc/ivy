@@ -1,11 +1,8 @@
 # global
-import jax
-import jaxlib
 import jax.numpy as jnp
-from typing import Union
-from jaxlib.xla_extension import Buffer
 
-JaxArray = Union[jax.interpreters.xla._DeviceArray, jaxlib.xla_extension.DeviceArray, Buffer]
+# local
+from ivy.functional.backends.jax import JaxArray
 
 def isfinite(x: JaxArray)\
         -> JaxArray:

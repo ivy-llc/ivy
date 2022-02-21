@@ -1,11 +1,9 @@
 # global
-import jax
-import jaxlib
 import jax.numpy as jnp
-from jaxlib.xla_extension import Buffer
 from typing import Union, Tuple, Optional, List
 
-JaxArray = Union[jax.interpreters.xla._DeviceArray, jaxlib.xla_extension.DeviceArray, Buffer]
+# local
+from ivy.functional.backends.jax import JaxArray
 
 
 # noinspection PyShadowingBuiltins
