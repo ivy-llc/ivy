@@ -4,6 +4,8 @@ Collection of Numpy general functions, wrapped to fit Ivy syntax and signature.
 
 # global
 import logging
+from typing import Optional
+
 import numpy as _np
 import math as _math
 from operator import mul as _mul
@@ -11,6 +13,8 @@ from functools import reduce as _reduce
 import multiprocessing as _multiprocessing
 
 # local
+import numpy as np
+
 import ivy
 from ivy.functional.ivy.core import default_dtype
 from ivy.functional.backends.numpy.core.device import _dev_callable
@@ -85,7 +89,25 @@ def array(object_in, dtype=None, dev=None):
     return _to_dev(_np.array(object_in, dtype=default_dtype(dtype, object_in)), dev)
 
 
-asarray = array
+def asarray(object_in, dtype: Optional[str] = None, dev: Optional[str] = None, copy: Optional[bool] = None):
+    if copy is None:
+        copy = False
+    if copy:
+        if dtype is None and isinstance(object_in, np.ndarray):
+            return _to_dev(np.copy(object_in),dev)
+        if dtype is None and not isinstance(object_in, np.ndarray):
+            return _to_dev(np.copy(np.asarray(object_in)), dev)
+        else:
+            dtype = dtype_to_str(default_dtype(dtype, object_in))
+            return _to_dev(np.copy(np.asarray(object_in, dtype)),dev)
+    else:
+        if dtype is None and isinstance(object_in, np.ndarray):
+            return _to_dev(object_in,dev)
+        if dtype is None and not isinstance(object_in, np.ndarray):
+            return _to_dev(np.asarray(object_in), dev)
+        else:
+            dtype = dtype_to_str(default_dtype(dtype, object_in))
+            return _to_dev(np.asarray(object_in, dtype),dev)
 
 
 def is_array(x, exclusive=False):
