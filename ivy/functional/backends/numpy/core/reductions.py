@@ -63,7 +63,3 @@ def reduce_max(x, axis=None, keepdims=False):
 
 def einsum(equation, *operands):
     return _np.asarray(_np.einsum(equation, *operands))
-
-
-def all(x, axis=None, keepdims=False):
-    return _np.asarray(_npa.all(_npa.asarray(x), axis=axis, keepdims=keepdims))

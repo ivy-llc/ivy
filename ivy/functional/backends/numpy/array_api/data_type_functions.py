@@ -7,7 +7,8 @@ import ivy
 
 
 # noinspection PyShadowingBuiltins
-def iinfo(type: Union[np.dtype, str, np.ndarray]) -> np.iinfo:
+def iinfo(type: Union[np.dtype, str, np.ndarray])\
+        -> np.iinfo:
     return np.iinfo(ivy.dtype_from_str(type))
 
 
@@ -38,5 +39,6 @@ class Finfo:
 
 
 # noinspection PyShadowingBuiltins
-def finfo(type: Union[np.dtype, str, np.ndarray]) -> Finfo:
+def finfo(type: Union[np.dtype, str, np.ndarray])\
+        -> Finfo:
     return Finfo(np.finfo(ivy.dtype_from_str(type)))
