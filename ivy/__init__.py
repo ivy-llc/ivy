@@ -50,9 +50,8 @@ from .debugger import set_debug_mode, set_breakpoint_debug_mode, set_exception_d
 from . import debugger
 from .graph_compiler import *
 from . import graph_compiler
-from ivy.functional.ivy.core import *
-from .functional.ivy import nn
-from ivy.functional.ivy.nn import *
+from . import functional
+from .functional import *
 from . import stateful
 from .stateful import *
 from . import verbosity
