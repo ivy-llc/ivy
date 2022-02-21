@@ -39,9 +39,10 @@ def asarray(object_in, dtype: Optional[str] = None, dev: Optional[str] = None, c
     dev = default_device(dev)
     if copy is None:
         copy = False
+    # torch.tensor() always copies data, detach() avoid copy
     if copy:
         if isinstance(object_in, np.ndarray):
-            return _torch.as_tensor(object_in, device=dev_from_str(dev))
+            return _torch.tensor(object_in, dtype=dtype, device=dev_from_str(dev))
         if dtype is None and isinstance(object_in, _torch.Tensor):
             return object_in.clone().detach().to(dev_from_str(dev))
         if dtype is None and not isinstance(object_in, _torch.Tensor):
@@ -51,7 +52,8 @@ def asarray(object_in, dtype: Optional[str] = None, dev: Optional[str] = None, c
             return _torch.tensor(object_in, dtype=dtype, device=dev_from_str(dev)).clone().detach().to(dev_from_str(dev))
     else:
         if isinstance(object_in, np.ndarray):
-            return _torch.tensor(object_in, dtype=dtype, device=dev_from_str(dev))
+            # if numpy array and want to avoid a copy, use torch.as_tensor()
+            return _torch.as_tensor(object_in, device=dev_from_str(dev))
         if dtype is None and isinstance(object_in, _torch.Tensor):
             return object_in.to(dev_from_str(dev))
         if dtype is None and not isinstance(object_in, _torch.Tensor):

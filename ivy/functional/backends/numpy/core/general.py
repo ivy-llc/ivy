@@ -90,24 +90,26 @@ def array(object_in, dtype=None, dev=None):
 
 
 def asarray(object_in, dtype: Optional[str] = None, dev: Optional[str] = None, copy: Optional[bool] = None):
+    # If copy=none then try using existing memory buffer
     if copy is None:
         copy = False
     if copy:
+        # No copy is performed if the input is already an ndarray
         if dtype is None and isinstance(object_in, np.ndarray):
-            return _to_dev(np.copy(object_in),dev)
+            return _to_dev(np.copy(object_in), dev)
         if dtype is None and not isinstance(object_in, np.ndarray):
             return _to_dev(np.copy(np.asarray(object_in)), dev)
         else:
             dtype = dtype_to_str(default_dtype(dtype, object_in))
-            return _to_dev(np.copy(np.asarray(object_in, dtype)),dev)
+            return _to_dev(np.copy(np.asarray(object_in, dtype)), dev)
     else:
         if dtype is None and isinstance(object_in, np.ndarray):
-            return _to_dev(object_in,dev)
+            return _to_dev(object_in, dev)
         if dtype is None and not isinstance(object_in, np.ndarray):
             return _to_dev(np.asarray(object_in), dev)
         else:
             dtype = dtype_to_str(default_dtype(dtype, object_in))
-            return _to_dev(np.asarray(object_in, dtype),dev)
+            return _to_dev(np.asarray(object_in, dtype), dev)
 
 
 def is_array(x, exclusive=False):

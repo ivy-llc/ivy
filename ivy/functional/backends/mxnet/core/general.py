@@ -127,7 +127,7 @@ def array(object_in, dtype=None, dev=None):
 
 
 def asarray(object_in, dtype: Optional[str] = None, dev: Optional[str] = None, copy: Optional[bool] = None):
-    #mxnet dont have asarray implementation
+    # mxnet don't have asarray implementation, haven't properly tested
     cont = _mxnet_init_context(default_device(dev))
     if copy is None:
         copy = False
@@ -143,7 +143,7 @@ def asarray(object_in, dtype: Optional[str] = None, dev: Optional[str] = None, c
         if dtype is None and isinstance(object_in, _mx.nd.NDArray):
             return object_in.as_in_context(cont)
         if dtype is None and not isinstance(object_in, _mx.nd.NDArray):
-            return  _mx.nd.array(object_in, cont, dtype=default_dtype(dtype, object_in))
+            return _mx.nd.array(object_in, cont, dtype=default_dtype(dtype, object_in))
         else:
             dtype = dtype_to_str(default_dtype(dtype, object_in))
             return _mx.nd.array(object_in, cont, dtype=default_dtype(dtype, object_in))
