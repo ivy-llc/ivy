@@ -1,5 +1,5 @@
+# global
 import sys
-import ivy
 from jax.config import config
 config.update("jax_enable_x64", True)
 import jaxlib
@@ -12,6 +12,9 @@ from jaxlib.xla_extension import Buffer
 # make ivy.Container compatible with jax pytree traversal
 from jax.tree_util import register_pytree_node
 from jax.tree_util import tree_flatten, tree_unflatten
+
+# local
+import ivy
 
 register_pytree_node(
     ivy.Container,
@@ -74,7 +77,8 @@ def closest_valid_dtype(type):
 
 backend = 'jax'
 
-# local
+
+# local sub-modules
 from . import array_api
 from .array_api import *
 from . import array_builtins
