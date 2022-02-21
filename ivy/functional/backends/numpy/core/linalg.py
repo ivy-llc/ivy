@@ -41,3 +41,19 @@ def vector_to_skew_symmetric_matrix(vector):
     row3 = _np.concatenate((-a2s, a1s, zs), -1)
     # BS x 3 x 3
     return _np.concatenate((row1, row2, row3), -2)
+
+
+def vector_norm(x, p=2, axis=None, keepdims=False):
+
+    np_normalized_vector_ = None
+
+    if axis == None:
+        np_normalized_vector_ =_np.linalg.norm(x.flatten(),p, axis,keepdims)
+
+    else:
+        np_normalized_vector_ =_np.linalg.norm(x,p, axis,keepdims)
+
+
+    if np_normalized_vector_.shape == tuple():
+        return _np.expand_dims(np_normalized_vector_, 0)
+    return np_normalized_vector_

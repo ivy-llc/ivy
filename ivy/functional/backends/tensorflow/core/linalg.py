@@ -53,3 +53,24 @@ def vector_to_skew_symmetric_matrix(vector):
     row3 = _tf.concat((-a2s, a1s, zs), -1)
     # BS x 3 x 3
     return _tf.concat((row1, row2, row3), -2)
+
+
+def vector_norm(x, p=2, axis=None, keepdims=False):
+
+    tn_normalized_vector_ = None
+
+    if p == -float('inf'):
+        tn_normalized_vector_ = _tf.reduce_min(_tf.abs(x), axis, keepdims)
+    elif p == -1:
+        tn_normalized_vector_ =_tf.reduce_sum(_tf.abs(x)**p, axis, keepdims)**(1./p)
+
+    elif p == 0:
+        tn_normalized_vector_ =_tf.reduce_sum(_tf.cast(x != 0, 'float32'), axis, keepdims).numpy()
+
+
+    else:
+        tn_normalized_vector_ =_tf.linalg.norm(x,p,axis,keepdims)
+
+    if tn_normalized_vector_.shape  == tuple():
+        return  _tf.expand_dims(tn_normalized_vector_, 0)
+    return tn_normalized_vector_
