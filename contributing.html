@@ -234,10 +234,11 @@ all methods.</p>
 <div class="section" id="ivy-api">
 <h2>Ivy API<a class="headerlink" href="#ivy-api" title="Permalink to this headline">¶</a></h2>
 <p>All function signatures for the Ivy API are defined in the <code class="code docutils literal notranslate"><span class="pre">ivy.functional.ivy</span></code> submodule. Functions written here
-should adhere to the following format:</p>
+should adhere to the following type hint format:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">my_func</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
             <span class="n">dtype</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-            <span class="n">dev</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dev</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+            <span class="n">dev</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dev</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> \
+        <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    My function does something cool.</span>
 
@@ -249,6 +250,8 @@ should adhere to the following format:</p>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">my_func</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dtype</span><span class="p">,</span> <span class="n">dev</span><span class="p">)</span>
 </pre></div>
 </div>
+<p><code class="code docutils literal notranslate"><span class="pre">dtype</span></code> and <code class="code docutils literal notranslate"><span class="pre">dev</span></code> do not need to be added to all methods, these are just examples.
+For creation methods these should be added.</p>
 <p>All functions which adhere to the <a class="reference external" href="https://data-apis.org/array-api/latest/">Array API</a> standard should be placed in the submodule <code class="code docutils literal notranslate"><span class="pre">ivy.functional.ivy.array_api</span></code>,
 and should also be placed in the correct file in alignment with the categories used in the standard.</p>
 </div>
@@ -257,7 +260,8 @@ and should also be placed in the correct file in alignment with the categories u
 <p>Code in the backend submodules such as <code class="code docutils literal notranslate"><span class="pre">ivy.functional.backends.torch</span></code> should then look something like:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">my_func</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span>
             <span class="n">dtype</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-            <span class="n">dev</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+            <span class="n">dev</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> \
+        <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
     <span class="n">dtype</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">dtype_from_str</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">default_dtype</span><span class="p">(</span><span class="n">dtype</span><span class="p">,</span> <span class="n">x</span><span class="p">))</span>
     <span class="n">dev</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">dev_from_str</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">default_dev</span><span class="p">(</span><span class="n">dev</span><span class="p">,</span> <span class="n">x</span><span class="p">))</span>
     <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">something_cool</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dtype</span><span class="p">,</span> <span class="n">dev</span><span class="p">)</span>
@@ -265,7 +269,7 @@ and should also be placed in the correct file in alignment with the categories u
 </div>
 <p>Specifically, we should use type hints for all arguments in the Ivy API and also the backend APIs. These type hints
 should be identical apart from all <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code>, <code class="code docutils literal notranslate"><span class="pre">ivy.Dtype</span></code> and <code class="code docutils literal notranslate"><span class="pre">ivy.Dev</span></code> types replaced by
-framework-specific types.</p>
+framework-specific types, in this case <code class="code docutils literal notranslate"><span class="pre">torch.Tensor</span></code>, <code class="code docutils literal notranslate"><span class="pre">torch.dtype</span></code> and <code class="code docutils literal notranslate"><span class="pre">torch.device</span></code>.</p>
 <p>The backend methods should not add a docstring, as this would be identical to the docstring provided in the Ivy API.</p>
 <p>All backend functions which adhere to the <a class="reference external" href="https://data-apis.org/array-api/latest/">Array API</a> standard should also be placed in submodules such as
 <code class="code docutils literal notranslate"><span class="pre">ivy.functional.backends.torch.array_api</span></code>, and should also be placed in the correct file in alignment with the
@@ -276,24 +280,20 @@ categories used in the standard.</p>
 <p>Array operators are defined in the <code class="code docutils literal notranslate"><span class="pre">ivy.array</span></code> submodule. Operators written here should adhere to the following format:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@_native_wrapper</span>
 <span class="k">def</span> <span class="fm">__pow__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">power</span><span class="p">):</span>
-    <span class="n">power</span> <span class="o">=</span> <span class="n">to_native</span><span class="p">(</span><span class="n">power</span><span class="p">)</span>
-    <span class="n">res</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">builtin_pow</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">power</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">res</span> <span class="ow">is</span> <span class="bp">NotImplemented</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">res</span>
-    <span class="k">return</span> <span class="n">to_ivy</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">builtin_pow</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">power</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>There is no need to write docstrings for these methods, as they should always defer to a method such as
-<code class="code docutils literal notranslate"><span class="pre">ivy.builtin_some_op</span></code>, which will itself have a docstring. The remaining code is essentially simple wrapper code
-around this builtin ivy method.</p>
+<p>There is no need to write docstrings or type hints for these methods, as they should always defer to a method such as
+<code class="code docutils literal notranslate"><span class="pre">ivy.builtin_some_op</span></code>, which will itself have a docstring and type hints.
+The remaining code is essentially simple wrapper code around this builtin ivy method.</p>
 <p>The associated ivy backend methods should be placed in the same file as the operators. For example, <code class="code docutils literal notranslate"><span class="pre">__pow__</span></code> is
 an arithmetic operator, and so this operator should be placed in the submodule <code class="code docutils literal notranslate"><span class="pre">ivy.array.array_api.arithmetic_operators</span></code>.
 The method <code class="code docutils literal notranslate"><span class="pre">ivy.builtin_pow</span></code> should also be placed in <code class="code docutils literal notranslate"><span class="pre">ivy.array.array_api.arithmetic_operators</span></code>.</p>
 <p>For most methods and backends these are very simple to implement, such as <code class="code docutils literal notranslate"><span class="pre">ivy.builtin_pow</span></code> below:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># noinspection PyShadowingBuiltins</span>
-<span class="k">def</span> <span class="nf">builtin_pow</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
-                <span class="n">other</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">])</span> \
-        <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]:</span>
+<span class="k">def</span> <span class="nf">builtin_pow</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
+                <span class="n">other</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">])</span> \
+        <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Calculates an implementation-dependent approximation of exponentiation by raising each element (the base) of an</span>
 <span class="sd">    array instance to the power of other_i (the exponent), where other_i is the corresponding element of the array other.</span>
@@ -313,7 +313,9 @@ such as this where more customization is needed, then we must simply redefine th
 in the associated backend submodule, in this case <code class="code docutils literal notranslate"><span class="pre">ivy.functional.backends.mxnet.array_builtins.array_api.arithmetic_operators</span></code>.</p>
 <p>The custom MXNet code is as follows, with the addition of an MXNet-specific function decorator to properly handle flat arrays:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@_handle_flat_arrays_in_out</span>
-<span class="k">def</span> <span class="nf">builtin_pow</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">builtin_pow</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">mx</span><span class="o">.</span><span class="n">ndarray</span><span class="o">.</span><span class="n">ndarray</span><span class="o">.</span><span class="n">NDArray</span><span class="p">,</span>
+                <span class="n">other</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">mx</span><span class="o">.</span><span class="n">ndarray</span><span class="o">.</span><span class="n">ndarray</span><span class="o">.</span><span class="n">NDArray</span><span class="p">])</span> \
+            <span class="o">-&gt;</span> <span class="n">mx</span><span class="o">.</span><span class="n">ndarray</span><span class="o">.</span><span class="n">ndarray</span><span class="o">.</span><span class="n">NDArray</span><span class="p">:</span>
     <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__pow__</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
 </pre></div>
 </div>
