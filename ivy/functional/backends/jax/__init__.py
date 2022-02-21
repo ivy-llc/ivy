@@ -4,8 +4,6 @@ from jax.config import config
 config.update("jax_enable_x64", True)
 import jax as _jax
 # noinspection PyPackageRequirements
-import jaxlib
-import jax.numpy as jnp
 from jaxlib.xla_extension import Buffer
 
 # make ivy.Container compatible with jax pytree traversal
@@ -76,40 +74,6 @@ def closest_valid_dtype(type):
                 'uint64': uint32,
                 'float64': float32}[type_str]
     return type
-
-
-def iinfo(type):
-    return jnp.iinfo(dtype_from_str(type))
-
-
-class Finfo:
-
-    def __init__(self, jnp_finfo):
-        self._jnp_finfo = jnp_finfo
-
-    @property
-    def bits(self):
-        return self._jnp_finfo.bits
-
-    @property
-    def eps(self):
-        return float(self._jnp_finfo.eps)
-
-    @property
-    def max(self):
-        return float(self._jnp_finfo.max)
-
-    @property
-    def min(self):
-        return float(self._jnp_finfo.min)
-
-    @property
-    def smallest_normal(self):
-        return float(self._jnp_finfo.tiny)
-
-
-def finfo(type):
-    return Finfo(jnp.finfo(dtype_from_str(type)))
 
 
 backend = 'jax'

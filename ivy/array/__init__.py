@@ -148,19 +148,11 @@ class Array(ArrayWithArrayAPI, ArrayWithDevice, ArrayWithGeneral, ArrayWithGradi
 
     @_native_wrapper
     def __pow__(self, power):
-        power = to_native(power)
-        res = ivy.builtin_pow(self._data, power)
-        if res is NotImplemented:
-            return res
-        return to_ivy(res)
+        return ivy.builtin_pow(self._data, power)
 
     @_native_wrapper
     def __rpow__(self, power):
-        power = to_native(power)
-        res = ivy.builtin_rpow(self._data, power)
-        if res is NotImplemented:
-            return res
-        return to_ivy(res)
+        return ivy.builtin_rpow(self._data, power)
 
     @_native_wrapper
     def __add__(self, other):
