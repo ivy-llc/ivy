@@ -74,7 +74,11 @@ def asarray(object_in, dtype: Optional[str] = None, dev: Optional[str] = None, c
             if dtype is None and isinstance(object_in, _tf.Tensor):
                 return _tf.identity(object_in)
             if dtype is None and not isinstance(object_in, _tf.Tensor):
-                return _tf.identity(_tf.convert_to_tensor(object_in))
+                try:
+                    return _tf.identity(_tf.convert_to_tensor(object_in))
+                except (TypeError, ValueError):
+                    dtype = dtype_to_str(default_dtype(dtype, object_in))
+                    return _tf.identity(_tf.convert_to_tensor(ivy.nested_map(object_in, lambda x: _tf.cast(x, dtype)), dtype=dtype))
             else:
                 dtype = dtype_to_str(default_dtype(dtype, object_in))
                 try:
@@ -86,7 +90,11 @@ def asarray(object_in, dtype: Optional[str] = None, dev: Optional[str] = None, c
             if dtype is None and isinstance(object_in, _tf.Tensor):
                 return object_in
             if dtype is None and not isinstance(object_in, _tf.Tensor):
-                return _tf.convert_to_tensor(object_in)
+                try:
+                    return _tf.convert_to_tensor(object_in)
+                except (TypeError, ValueError):
+                    dtype = dtype_to_str(default_dtype(dtype, object_in))
+                    return _tf.convert_to_tensor(ivy.nested_map(object_in, lambda x: _tf.cast(x, dtype)), dtype=dtype)
             else:
                 dtype = dtype_to_str(default_dtype(dtype, object_in))
                 try:
