@@ -68,7 +68,10 @@ less brittle, we accept both tuples and lists for such arguments. This does not 
 intended to define a subset of required function behaviour. The standard can be freely extended, as we are doing here.
 
 As for the other arguments in the example above, :code:`dtype` and :code:`dev` do not need to be added to all methods,
-these are just examples. These should be added to all creation methods though.
+these are just examples. These should be added to all creation methods though. Note that for both of these, the type is a
+:code:`Union` including :code:`str`. This is because, in order to remain fully framework agnostic, Ivy accepts string
+representations of devices and data types, such as :code:`"int32"`, :code:`"float32"`, :code:`"bool"`, :code:`"cpu"`,
+:code:`"gpu0"`, :code:`"gpu2"` etc.
 
 All functions which adhere to the `Array API`_ standard should be placed in the submodule :code:`ivy.functional.ivy.array_api`,
 and should also be placed in the correct file in alignment with the categories used in the standard.
