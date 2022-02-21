@@ -8,7 +8,7 @@ from ivy.framework_handler import current_framework as _cur_framework
 
 # noinspection PyShadowingBuiltins
 def all(x: Union[ivy.Array, ivy.NativeArray],
-        axis: Optional[Union[int, Tuple[int, ...], List[int, ...]]] = None,
+        axis: Optional[Union[int, Tuple[int], List[int]]] = None,
         keepdims: bool = False)\
         -> ivy.Array:
     """
