@@ -7,4 +7,7 @@ import jax.numpy as _jnp
 
 logical_and = _jnp.logical_and
 logical_or = _jnp.logical_or
-logical_not = _jnp.logical_not
+
+
+def logical_not(x: _jnp.ndarray) -> _jnp.ndarray:
+    return _jnp.logical_not(x)

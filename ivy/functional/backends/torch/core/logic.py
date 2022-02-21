@@ -14,5 +14,5 @@ def logical_or(x1, x2):
     return x1.type(_torch.bool) | x2.type(_torch.bool)
 
 
-def logical_not(x):
+def logical_not(x: _torch.Tensor) -> _torch.Tensor:
     return _torch.logical_not(x.type(_torch.bool))
