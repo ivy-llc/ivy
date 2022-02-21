@@ -31,7 +31,7 @@ Ivy API
 -------
 
 All function signatures for the Ivy API are defined in the :code:`ivy.functional.ivy` submodule. Functions written here
-should adhere to the following format:
+should adhere to the following type hint format:
 
 
 .. code-block:: python
@@ -39,7 +39,8 @@ should adhere to the following format:
 
     def my_func(x: ivy.Array,
                 dtype: Optional[Union[ivy.Dtype, str]] = None,
-                dev: Optional[Union[ivy.Dev, str]] = None):
+                dev: Optional[Union[ivy.Dev, str]] = None) \
+            -> ivy.Array:
         """
         My function does something cool.
 
@@ -49,6 +50,9 @@ should adhere to the following format:
         :return: a cooler array.
         """
         return _cur_framework(x).my_func(x, dtype, dev)
+
+:code:`dtype` and :code:`dev` do not need to be added to all methods, these are just examples.
+For creation methods these should be added.
 
 All functions which adhere to the `Array API`_ standard should be placed in the submodule :code:`ivy.functional.ivy.array_api`,
 and should also be placed in the correct file in alignment with the categories used in the standard.
@@ -64,14 +68,15 @@ Code in the backend submodules such as :code:`ivy.functional.backends.torch` sho
 
     def my_func(x: torch.Tensor,
                 dtype: Optional[Union[torch.dtype, str]] = None,
-                dev: Optional[Union[torch.device, str]] = None):
+                dev: Optional[Union[torch.device, str]] = None) \
+            -> torch.Tensor:
         dtype = ivy.dtype_from_str(ivy.default_dtype(dtype, x))
         dev = ivy.dev_from_str(ivy.default_dev(dev, x))
         return torch.something_cool(x, dtype, dev)
 
 Specifically, we should use type hints for all arguments in the Ivy API and also the backend APIs. These type hints
 should be identical apart from all :code:`ivy.Array`, :code:`ivy.Dtype` and :code:`ivy.Dev` types replaced by
-framework-specific types.
+framework-specific types, in this case :code:`torch.Tensor`, :code:`torch.dtype` and :code:`torch.device`.
 
 The backend methods should not add a docstring, as this would be identical to the docstring provided in the Ivy API.
 
@@ -90,15 +95,11 @@ Array operators are defined in the :code:`ivy.array` submodule. Operators writte
 
     @_native_wrapper
     def __pow__(self, power):
-        power = to_native(power)
-        res = ivy.builtin_pow(self._data, power)
-        if res is NotImplemented:
-            return res
-        return to_ivy(res)
+        return ivy.builtin_pow(self, power)
 
-There is no need to write docstrings for these methods, as they should always defer to a method such as
-:code:`ivy.builtin_some_op`, which will itself have a docstring. The remaining code is essentially simple wrapper code
-around this builtin ivy method.
+There is no need to write docstrings or type hints for these methods, as they should always defer to a method such as
+:code:`ivy.builtin_some_op`, which will itself have a docstring and type hints.
+The remaining code is essentially simple wrapper code around this builtin ivy method.
 
 The associated ivy backend methods should be placed in the same file as the operators. For example, :code:`__pow__` is
 an arithmetic operator, and so this operator should be placed in the submodule :code:`ivy.array.array_api.arithmetic_operators`.
@@ -109,9 +110,9 @@ For most methods and backends these are very simple to implement, such as :code:
 .. code-block:: python
 
     # noinspection PyShadowingBuiltins
-    def builtin_pow(self: Union[ivy.Array, ivy.NativeArray],
-                    other: Union[int, float, ivy.Array, ivy.NativeArray]) \
-            -> Union[ivy.Array, ivy.NativeArray]:
+    def builtin_pow(self: ivy.Array,
+                    other: Union[int, float, ivy.Array]) \
+            -> ivy.Array:
         """
         Calculates an implementation-dependent approximation of exponentiation by raising each element (the base) of an
         array instance to the power of other_i (the exponent), where other_i is the corresponding element of the array other.
@@ -134,7 +135,9 @@ The custom MXNet code is as follows, with the addition of an MXNet-specific func
 .. code-block:: python
 
     @_handle_flat_arrays_in_out
-    def builtin_pow(self, other):
+    def builtin_pow(self: mx.ndarray.ndarray.NDArray,
+                    other: Union[int, float, mx.ndarray.ndarray.NDArray]) \
+                -> mx.ndarray.ndarray.NDArray:
         return self.__pow__(other)
 
 Again, a docstring is not needed given that this is the same as the one provided in :code:`ivy.array.array_api.arithmetic_operators`.
