@@ -91,3 +91,6 @@ valid_dtype_strs = all_dtypes
 invalid_dtype_strs = ()
 
 backend = 'none'
+
+if 'IVY_BACKEND' in os.environ:
+    ivy.set_framework(os.environ['IVY_BACKEND'])
