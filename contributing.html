@@ -265,7 +265,10 @@ of type <code class="code docutils literal notranslate"><span class="pre">Tuple[
 less brittle, we accept both tuples and lists for such arguments. This does not break the standard, as the standard is only
 intended to define a subset of required function behaviour. The standard can be freely extended, as we are doing here.</p>
 <p>As for the other arguments in the example above, <code class="code docutils literal notranslate"><span class="pre">dtype</span></code> and <code class="code docutils literal notranslate"><span class="pre">dev</span></code> do not need to be added to all methods,
-these are just examples. These should be added to all creation methods though.</p>
+these are just examples. These should be added to all creation methods though. Note that for both of these, the type is a
+<code class="code docutils literal notranslate"><span class="pre">Union</span></code> including <code class="code docutils literal notranslate"><span class="pre">str</span></code>. This is because, in order to remain fully framework agnostic, Ivy accepts string
+representations of devices and data types, such as <code class="code docutils literal notranslate"><span class="pre">&quot;int32&quot;</span></code>, <code class="code docutils literal notranslate"><span class="pre">&quot;float32&quot;</span></code>, <code class="code docutils literal notranslate"><span class="pre">&quot;bool&quot;</span></code>, <code class="code docutils literal notranslate"><span class="pre">&quot;cpu&quot;</span></code>,
+<code class="code docutils literal notranslate"><span class="pre">&quot;gpu0&quot;</span></code>, <code class="code docutils literal notranslate"><span class="pre">&quot;gpu2&quot;</span></code> etc.</p>
 <p>All functions which adhere to the <a class="reference external" href="https://data-apis.org/array-api/latest/">Array API</a> standard should be placed in the submodule <code class="code docutils literal notranslate"><span class="pre">ivy.functional.ivy.array_api</span></code>,
 and should also be placed in the correct file in alignment with the categories used in the standard.</p>
 </div>
