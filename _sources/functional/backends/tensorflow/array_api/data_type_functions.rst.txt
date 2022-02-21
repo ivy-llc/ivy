@@ -12,4 +12,9 @@ Data type functions
    :maxdepth: -1
    :caption: Data type functions
 
+   data_type_functions/iinfo.rst
+   data_type_functions/finfo.rst
+   data_type_functions/Finfo:
+
+    def __init__.rst
 

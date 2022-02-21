@@ -23,8 +23,6 @@ Dtype
    dtype/convert_dtype.rst
    dtype/dtype_to_str.rst
    dtype/dtype_from_str.rst
-   dtype/iinfo.rst
-   dtype/finfo.rst
    dtype/default_dtype.rst
    dtype/set_default_dtype.rst
    dtype/unset_default_dtype.rst
