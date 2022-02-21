@@ -822,20 +822,6 @@ def isinf(x: Union[ivy.Array, ivy.NativeArray])\
     return _cur_framework(x).isinf(x)
 
 
-def isfinite(x: Union[ivy.Array, ivy.NativeArray])\
-        -> Union[ivy.Array, ivy.NativeArray]:
-    """
-    Tests each element x_i of the input array x to determine if finite (i.e., not NaN and not equal to positive
-    or negative infinity).
-
-    :param x: Input array.
-    :type x: array
-    :return: an array containing test results. An element out_i is True if x_i is finite and False otherwise.
-             The returned array must have a data type of bool.
-    """
-    return _cur_framework(x).isfinite(x)
-
-
 def value_is_nan(x: Union[ivy.Array, ivy.NativeArray, Number], include_infs: bool = True)\
         -> bool:
     """

@@ -9,7 +9,6 @@ from jaxlib.xla_extension import Buffer
 # local
 import ivy
 
-# noinspection PyUnresolvedReferences
 JaxArray = Union[jax.interpreters.xla._DeviceArray, jaxlib.xla_extension.DeviceArray, Buffer]
 
 # noinspection PyShadowingBuiltins
