@@ -24,6 +24,7 @@
         <script src="../../../../_static/jquery.js"></script>
         <script src="../../../../_static/underscore.js"></script>
         <script src="../../../../_static/doctools.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../../_static/js/theme.js"></script>
 
@@ -202,6 +203,26 @@
             
   <div class="section" id="random-normal">
 <h1>random_normal<a class="headerlink" href="#random-normal" title="Permalink to this headline">¶</a></h1>
+<dl class="py function">
+<dt id="ivy.functional.ivy.core.random.random_normal">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">random_normal</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">mean</span><span class="o">=</span><span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">std</span><span class="o">=</span><span class="default_value">1.0</span></em>, <em class="sig-param"><span class="n">shape</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">dev</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/ivy/functional/ivy/core/random.html#random_normal"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.core.random.random_normal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draws samples from a normal distribution.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mean</strong> (<em>float</em>) – The mean of the normal distribution to sample from. Default is 0.</p></li>
+<li><p><strong>std</strong> (<em>float</em>) – The standard deviation of the normal distribution to sample from. Default is 1.</p></li>
+<li><p><strong>shape</strong> – Output shape. If the given shape is, e.g., (m, n, k), then m * n * k samples are drawn.
+If size is None (default), a single value is returned.</p></li>
+<li><p><strong>dev</strong> (<em>ivy.Device</em>) – device on which to create the array ‘cuda:0’, ‘cuda:1’, ‘cpu’ etc.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Drawn samples from the parameterized uniform distribution.</p>
+</dd>
+</dl>
+</dd></dl>
+
 <div class="line-block">
 <div class="line"><br /></div>
 <div class="line"><strong>Supported Frameworks:</strong></div>

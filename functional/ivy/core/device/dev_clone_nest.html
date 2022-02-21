@@ -24,6 +24,7 @@
         <script src="../../../../_static/jquery.js"></script>
         <script src="../../../../_static/underscore.js"></script>
         <script src="../../../../_static/doctools.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../../_static/js/theme.js"></script>
 
@@ -202,6 +203,25 @@
             
   <div class="section" id="dev-clone-nest">
 <h1>dev_clone_nest<a class="headerlink" href="#dev-clone-nest" title="Permalink to this headline">¶</a></h1>
+<dl class="py function">
+<dt id="ivy.functional.ivy.core.device.dev_clone_nest">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">dev_clone_nest</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">args</span></em>, <em class="sig-param"><span class="n">kwargs</span></em>, <em class="sig-param"><span class="n">devs</span></em>, <em class="sig-param"><span class="n">max_depth</span><span class="o">=</span><span class="default_value">1</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/ivy/functional/ivy/core/device.html#dev_clone_nest"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.core.device.dev_clone_nest" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clone the input arguments across the specified devices.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>args</strong> (<em>list of any</em>) – The positional arguments to clone.</p></li>
+<li><p><strong>kwargs</strong> (<em>dict of any</em>) – The keyword arguments to clone.</p></li>
+<li><p><strong>devs</strong> (<em>sequence of strs</em>) – The devices to clone the arguments to.</p></li>
+<li><p><strong>max_depth</strong> (<em>int</em><em>, </em><em>optional</em>) – The maximum nested depth to reach. Default is 1. Increase this if the nest is deeper.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>arguments cloned to each of the target devices</p>
+</dd>
+</dl>
+</dd></dl>
+
 <div class="line-block">
 <div class="line"><br /></div>
 <div class="line"><strong>Supported Frameworks:</strong></div>

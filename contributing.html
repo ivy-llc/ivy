@@ -24,6 +24,7 @@
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -235,7 +236,7 @@ all methods.</p>
 <p>All function signatures for the Ivy API are defined in the <code class="code docutils literal notranslate"><span class="pre">ivy.functional.ivy</span></code> submodule. Functions written here
 should adhere to the following type hint format:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">my_func</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
-            <span class="n">axes</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">]],</span>
+            <span class="n">axes</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]],</span>
             <span class="n">dtype</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
             <span class="n">dev</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dev</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> \
         <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
@@ -260,7 +261,7 @@ input would need to be converted to a native array (such as <code class="code do
 and for Ivy methods implemented as a composition of other Ivy methods such as <code class="code docutils literal notranslate"><span class="pre">ivy.lstm_update</span></code>, the native inputs can
 just be converted to <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> instances before executing the Ivy implementation.</p>
 <p>As for the <code class="code docutils literal notranslate"><span class="pre">axes</span></code> arg, generally the <a class="reference external" href="https://data-apis.org/array-api/latest/">Array API</a> standard dictates that shapes, axes and other similar args should be
-of type <code class="code docutils literal notranslate"><span class="pre">Tuple[int,</span> <span class="pre">...]</span></code> when representing a sequence, not <code class="code docutils literal notranslate"><span class="pre">List[int,</span> <span class="pre">...]</span></code>. However, in order to make Ivy code
+of type <code class="code docutils literal notranslate"><span class="pre">Tuple[int]</span></code> when representing a sequence, not <code class="code docutils literal notranslate"><span class="pre">List[int]</span></code>. However, in order to make Ivy code
 less brittle, we accept both tuples and lists for such arguments. This does not break the standard, as the standard is only
 intended to define a subset of required function behaviour. The standard can be freely extended, as we are doing here.</p>
 <p>As for the other arguments in the example above, <code class="code docutils literal notranslate"><span class="pre">dtype</span></code> and <code class="code docutils literal notranslate"><span class="pre">dev</span></code> do not need to be added to all methods,

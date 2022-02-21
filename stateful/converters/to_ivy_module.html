@@ -24,6 +24,7 @@
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
@@ -209,6 +210,30 @@
             
   <div class="section" id="to-ivy-module">
 <h1>to_ivy_module<a class="headerlink" href="#to-ivy-module" title="Permalink to this headline">¶</a></h1>
+<dl class="py function">
+<dt id="ivy.stateful.converters.to_ivy_module">
+<code class="sig-prename descclassname">ivy.stateful.converters.</code><code class="sig-name descname">to_ivy_module</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">native_module</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">native_module_class</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">args</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">kwargs</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">dev</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">devs</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">inplace_update</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/stateful/converters.html#to_ivy_module"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.stateful.converters.to_ivy_module" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert an instance of a trainable module from a native framework into a trainable ivy.Module instance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>native_module</strong> (<em>native module instance</em><em>, </em><em>optional</em>) – The module in the native framework to convert, required if native_module_class is not given.
+Default is None.</p></li>
+<li><p><strong>native_module_class</strong> (<em>class</em><em>, </em><em>optional</em>) – The class of the native module, required if native_module is not given. Default is None.</p></li>
+<li><p><strong>args</strong> (<em>list of any</em>) – Positional arguments to pass to the native module class. Default is None.</p></li>
+<li><p><strong>kwargs</strong> (<em>dict of any</em>) – Key-word arguments to pass to the native module class. Default is None.</p></li>
+<li><p><strong>dev</strong> (<em>ivy.Device</em><em>, </em><em>optional</em>) – The device on which to create module variables. Default is None.</p></li>
+<li><p><strong>devs</strong> (<em>sequence of str</em><em>, </em><em>optional</em>) – The devices on which to create module variables. Default is None.</p></li>
+<li><p><strong>inplace_update</strong> (<em>bool</em><em>, </em><em>optional</em>) – For backends with dedicated variable classes, whether to update these inplace.
+Default is False.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The new trainable ivy.Module instance.</p>
+</dd>
+</dl>
+</dd></dl>
+
 <div class="line-block">
 <div class="line"><br /></div>
 <div class="line"><strong>Supported Frameworks:</strong></div>
