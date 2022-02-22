@@ -1,12 +1,12 @@
 # global
 import tensorflow as tf
-from typing import Union, Tuple, Optional, List
+from typing import Union, Tuple, Optional
 from tensorflow.python.types.core import Tensor
 
 
 # noinspection PyShadowingBuiltins
 def all(x: Tensor,
-        axis: Optional[Union[int, Tuple[int], List[int]]] = None,
+        axis: Optional[Union[int, Tuple[int, ...]]] = None,
         keepdims: bool = False)\
         -> Tensor:
     if axis is None:

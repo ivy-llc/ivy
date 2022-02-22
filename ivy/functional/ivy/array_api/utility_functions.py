@@ -1,5 +1,5 @@
 # global
-from typing import Union, Optional, Tuple, List
+from typing import Union, Tuple
 
 # local
 import ivy
@@ -7,10 +7,7 @@ from ivy.framework_handler import current_framework as _cur_framework
 
 
 # noinspection PyShadowingBuiltins
-def all(x: Union[ivy.Array, ivy.NativeArray],
-        axis: Optional[Union[int, Tuple[int], List[int]]] = None,
-        keepdims: bool = False)\
-        -> ivy.Array:
+def all(x: ivy.Array, axis: [Union[int, Tuple[int, ...]]] = None, keepdims: bool = False) -> ivy.Array:
     """
     Tests whether all input array elements evaluate to True along a specified axis.
 

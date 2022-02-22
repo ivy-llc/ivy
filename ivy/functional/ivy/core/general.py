@@ -901,7 +901,7 @@ def squeeze(x: Union[ivy.Array, ivy.NativeArray], axis: int = None)\
 
 # noinspection PyShadowingNames
 def zeros(shape: Iterable[int], dtype: ivy.Dtype = 'float32', dev: ivy.Device = None)\
-        -> Union[ivy.Array, ivy.NativeArray]:
+        -> ivy.Array:
     """
     Return a new array of given shape and type, filled with zeros.
 

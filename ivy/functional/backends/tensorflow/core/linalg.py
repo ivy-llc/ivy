@@ -5,6 +5,9 @@ Collection of TensorFlow linear algebra functions, wrapped to fit Ivy syntax and
 # global
 import tensorflow as _tf
 
+# local
+import ivy as _ivy
+
 
 # noinspection PyPep8Naming
 def svd(x):

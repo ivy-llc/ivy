@@ -3,6 +3,9 @@ Collection of MXNet general functions, wrapped to fit Ivy syntax and signature.
 """
 
 # global
+from ivy.functional.backends.mxnet import _1_dim_array_to_flat_array, _handle_flat_arrays_in_out
+from ivy.functional.backends.mxnet.core.general import _mxnet_init_context
+
 import ivy
 _round = round
 import logging

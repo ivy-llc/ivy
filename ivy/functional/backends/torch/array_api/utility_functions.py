@@ -1,11 +1,11 @@
 # global
 import torch
-from typing import Union, Optional, Tuple, List
+from typing import Union, Optional, Tuple
 
 
 # noinspection PyShadowingBuiltins
 def all(x: torch.Tensor,
-        axis: Optional[Union[int, Tuple[int], List[int]]] = None,
+        axis: Optional[Union[int, Tuple[int, ...]]] = None,
         keepdims: bool = False)\
         -> torch.Tensor:
     x = x.type(torch.bool)
