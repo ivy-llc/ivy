@@ -242,7 +242,7 @@ def test_cholesky(x, dtype, tensor_fn, dev, call):
 
 # cross
 @pytest.mark.parametrize(
-    "x1_x2_kw", [([1, 2, 3], [4, 5, 6], -1)])
+    "x1_x2_kw", [([1, 2, 3], [4, 5, 6], -1), ()])
 @pytest.mark.parametrize(
     "dtype", ['float32'])
 @pytest.mark.parametrize(
