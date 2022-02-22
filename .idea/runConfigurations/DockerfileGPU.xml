@@ -7,7 +7,7 @@
         <option name="command" value="" />
         <option name="containerName" value="ivy-gpu" />
         <option name="entrypoint" value="" />
-        <option name="commandLineOptions" value="--gpus all" />
+        <option name="commandLineOptions" value="" />
         <option name="sourceFilePath" value="DockerfileGPU" />
       </settings>
     </deployment>
