@@ -10,7 +10,7 @@ import math as _math
 import torch as _torch
 from operator import mul
 from torch.types import Number
-from functools import reduce as _reduce
+from functools import partial as _partial, reduce as _reduce
 from typing import List, Dict, Optional, Union
 
 # local
@@ -62,16 +62,20 @@ def dtype_bits(dtype_in):
         'float', ''))
 
 
-def equal(x1, x2):
+def _compare(x1, x2, op):
     x1_bits = dtype_bits(x1.dtype)
     if isinstance(x2, (int, float, bool)):
-        return x1 == x2
+        return op(x1, x2)
     x2_bits = dtype_bits(x2.dtype)
     if x1_bits > x2_bits:
         x2 = x2.type(x1.dtype)
     elif x2_bits > x1_bits:
         x1 = x1.type(x2.dtype)
-    return x1 == x2
+    return op(x1, x2)
+
+
+equal = _partial(_compare, op=lambda x1, x2: x1 == x2)
+less_equal = _partial(_compare, op=lambda x1, x2: x1 <= x2)
 
 
 def to_numpy(x) -> np.ndarray:

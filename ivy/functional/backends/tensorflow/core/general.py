@@ -12,6 +12,7 @@ from numbers import Number
 import tensorflow_probability as _tfp
 import multiprocessing as _multiprocessing
 from tensorflow.python.types.core import Tensor
+from functools import partial as _partial
 
 # local
 from ivy.functional.ivy.core import default_device, default_dtype
@@ -86,17 +87,27 @@ def dtype_bits(dtype_in):
         'float', ''))
 
 
-def equal(x1, x2):
+def _tf_cast(x, dtype):
+    try:
+        return _tf.cast(x, dtype)
+    except ValueError:
+        return x
+
+
+def _compare(x1, x2, op):
     x1_bits = dtype_bits(x1.dtype)
     if isinstance(x2, (int, float, bool)):
-        return x1 == x2
+        return op(x1, x2)
     x2_bits = dtype_bits(x2.dtype)
     if x1_bits > x2_bits:
-        x2 = _tf.cast(x2, x1.dtype)
+        x2 = _tf_cast(x2, x1.dtype)
     elif x2_bits > x1_bits:
-        x1 = _tf.cast(x1, x2.dtype)
-    return x1 == x2
+        x1 = _tf_cast(x1, x2.dtype)
+    return op(x1, x2)
 
+
+equal = _partial(_compare, op=lambda x1, x2: x1 == x2)
+less_equal = _partial(_compare, op=lambda x1, x2: x1 <= x2)
 
 to_numpy = lambda x: _np.asarray(_tf.convert_to_tensor(x))
 to_numpy.__name__ = 'to_numpy'

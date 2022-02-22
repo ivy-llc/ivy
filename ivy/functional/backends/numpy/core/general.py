@@ -95,6 +95,7 @@ def is_array(x, exclusive=False):
 
 
 equal = lambda x1, x2: x1 == x2
+less_equal = lambda x1, x2: x1 <= x2
 
 
 def dtype_bits(dtype_in):
@@ -105,6 +106,7 @@ def dtype_bits(dtype_in):
 
 
 equal.__name__ = 'equal'
+less_equal.__name__ = 'less_equal'
 copy_array = lambda x: x.copy()
 array_equal = _np.array_equal
 to_numpy = lambda x: x

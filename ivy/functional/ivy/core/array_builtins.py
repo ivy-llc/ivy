@@ -147,7 +147,7 @@ def builtin_lt(x, other):
 
 # noinspection PyShadowingBuiltins
 def builtin_le(x, other):
-    return x.__le__(other)
+    return ivy.less_equal(x, other)
 
 
 # noinspection PyShadowingBuiltins
