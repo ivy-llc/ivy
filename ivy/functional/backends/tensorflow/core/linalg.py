@@ -56,3 +56,9 @@ def vector_to_skew_symmetric_matrix(vector):
     row3 = _tf.concat((-a2s, a1s, zs), -1)
     # BS x 3 x 3
     return _tf.concat((row1, row2, row3), -2)
+
+
+def matrix_power(x, n):
+    # tensorflow doesn't have matrix_power,
+    # no elegant way to build the function at this layer.
+    return _tf.linalg.matrix_power(x, n)
