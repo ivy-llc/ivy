@@ -1,6 +1,5 @@
 from typing import Union
 
-import numpy as np
 import jax.numpy as jnp
 from jaxlib.xla_extension import Buffer
 import jax
