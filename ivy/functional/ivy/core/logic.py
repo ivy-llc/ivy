@@ -31,14 +31,3 @@ def logical_or(x1, x2):
     :return: Boolean result of the logical OR operation applied element-wise x1 and x2.
     """
     return _cur_framework(x1).logical_or(x1, x2)
-
-
-def logical_not(x: ivy.Array) -> ivy.Array:
-    """
-    Computes the truth value of NOT x element-wise.
-
-    :param x: Input array 1.
-    :type x: array
-    :return: Boolean result of the logical NOT operation applied element-wise to x.
-    """
-    return _cur_framework(x).logical_not(x)

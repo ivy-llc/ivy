@@ -7,6 +7,11 @@ from jaxlib.xla_extension import Buffer
 
 JaxArray = Union[jax.interpreters.xla._DeviceArray, jaxlib.xla_extension.DeviceArray, Buffer]
 
+
 def isfinite(x: JaxArray)\
         -> JaxArray:
     return jnp.isfinite(x)
+
+
+def logical_not(x: JaxArray) -> JaxArray:
+    return jnp.logical_not(x)
