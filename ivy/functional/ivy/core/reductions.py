@@ -84,7 +84,7 @@ def reduce_var(x, axis=None, keepdims=False):
     return _cur_framework(x).reduce_var(x, axis, keepdims)
 
 
-def reduce_std(x, axis=None, keepdims=False):
+def std(x, axis=None, keepdims=False):
     """
     Computes the arithmetic standard deviation along a given axis. The standard deviation is taken over
     the flattened array by default, otherwise over the specified axis.
