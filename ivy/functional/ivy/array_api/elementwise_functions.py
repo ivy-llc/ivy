@@ -16,7 +16,7 @@ def isfinite(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
     return _cur_framework(x).isfinite(x)
 
 
-def cos(x: ivy.Array) -> ivy.Array:
+def cos(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
     """
     Computes trigonometric cosine element-wise.
 
