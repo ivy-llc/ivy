@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # """
 # Collection of linear algebra Ivy functions.
 # """
@@ -138,7 +137,6 @@
 #     by all the frameworks.
 #     """
 #     return _cur_framework(x).qr(x, mode=mode)
-=======
 """
 Collection of linear algebra Ivy functions.
 """
@@ -250,6 +248,10 @@ def pinv(x, f=None):
     return _cur_framework(x, f=f).pinv(x)
 
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 0a428ebf5 (updated)
 def cross(a, b, /, axis, f=None):
     """
     Compute and return the cross product of 3-element vectors, it must have the same shape as b
@@ -267,7 +269,12 @@ def cross(a, b, /, axis, f=None):
     return _cur_framework(a, f=f).cross(a, b, axis)
 
 
+<<<<<<< HEAD
 def vector_to_skew_symmetric_matrix(vector, f=None):
+=======
+
+def vector_to_skew_symmetric_matrix(vector):
+>>>>>>> 0a428ebf5 (updated)
     """
     Given vector :math:`\mathbf{a}\in\mathbb{R}^3`, return associated skew-symmetric matrix
     :math:`[\mathbf{a}]_×\in\mathbb{R}^{3×3}` satisfying :math:`\mathbf{a}×\mathbf{b}=[\mathbf{a}]_×\mathbf{b}`.\n
@@ -282,7 +289,7 @@ def vector_to_skew_symmetric_matrix(vector, f=None):
     return _cur_framework(vector, f=f).vector_to_skew_symmetric_matrix(vector)
 
 
-def cholesky(x, f=None):
+def cholesky(x):
     """
     Computes the cholesky decomposition of the x matrix.
 
@@ -292,5 +299,4 @@ def cholesky(x, f=None):
     :type f: ml_framework, optional
     :return: cholesky decomposition of the matrix x.
     """
-    return _cur_framework(x, f=f).cholesky(x)
->>>>>>> 2db360550 (updated)
+    return _cur_framework(x).cholesky(x)

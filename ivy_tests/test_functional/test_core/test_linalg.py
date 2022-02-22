@@ -269,4 +269,4 @@ def test_cross(x1_x2_kw, dtype, tensor_fn, dev, call):
     # compilation test
     if not ivy.array_mode():
         helpers.assert_compilable(ivy.cross)
->
+
