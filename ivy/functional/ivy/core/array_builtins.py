@@ -167,7 +167,7 @@ def builtin_gt(x, other):
 
 # noinspection PyShadowingBuiltins
 def builtin_ge(x, other):
-    return x.__ge__(other)
+    return ivy.greater_equal(x, other)
 
 
 # noinspection PyShadowingBuiltins
