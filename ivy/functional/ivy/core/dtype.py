@@ -83,9 +83,6 @@ def cast(x: Union[ivy.Array, ivy.NativeArray], dtype: ivy.Dtype)\
 astype = cast
 
 
-astype = cast
-
-
 # Queries #
 # --------#
 
