@@ -102,7 +102,7 @@ def pinv(x):
 
 
 
-def cross(a, b, /, axis, f=None):
+def cross(a, b, /, axis):
     """
     Compute and return the cross product of 3-element vectors, it must have the same shape as b
     :param axis: the axis (dimension) of a and b containing the vector for which to compute the cross
@@ -116,7 +116,7 @@ def cross(a, b, /, axis, f=None):
     :type f: ml_framework, optional
     :return: an array that contains the cross products
     """
-    return _cur_framework(a, f=f).cross(a, b, axis)
+    return _cur_framework(a).cross(a, b, axis)
 
 
 
