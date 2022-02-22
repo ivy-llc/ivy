@@ -1,15 +1,10 @@
 # global
 import sys
 import mxnet as mx
+import numpy as np
 
 # local
-from . import array_api
-from .array_api import *
-from . import array_builtins
-from .array_builtins import *
-from .core import *
-from . import nn
-from .nn import *
+import ivy
 
 # noinspection PyUnresolvedReferences
 use = ivy.framework_handler.ContextManager(sys.modules[__name__])
@@ -110,3 +105,13 @@ def _handle_flat_arrays_in_out(fn, include_out=True):
             return ivy.nested_map(ret, lambda x: _1_dim_array_to_flat_array(x) if ivy.is_array(x) else x)
         return ret
     return wrapped_fn
+
+
+# local sub-modules
+from . import array_api
+from .array_api import *
+from . import array_builtins
+from .array_builtins import *
+from .core import *
+from . import nn
+from .nn import *

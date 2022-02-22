@@ -1,9 +1,10 @@
 # local
 import ivy
+from typing import Union
 from ivy.framework_handler import current_framework as _cur_framework
 
 
-def isfinite(x: ivy.Array) -> ivy.Array:
+def isfinite(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
     """
     Tests each element x_i of the input array x to determine if finite (i.e., not NaN and not equal to positive
     or negative infinity).
