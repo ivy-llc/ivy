@@ -1,3 +1,5 @@
+from . import array_builtins
+from .array_builtins import *
 from . import compilation
 from .compilation import *
 from . import device
