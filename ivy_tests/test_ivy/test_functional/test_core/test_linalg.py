@@ -211,7 +211,6 @@ def test_cholesky(x, dtype, tensor_fn, dev, call):
     assert ret.shape == x.shape
     # value test
     assert np.allclose(call(ivy.cholesky, x), ivy.functional.backends.numpy.cholesky(ivy.to_numpy(x)))
-<<<<<<< HEAD:ivy_tests/test_functional/test_core/test_linalg.py
     # compilation test
     if not ivy.array_mode():
         helpers.assert_compilable(ivy.cholesky)
