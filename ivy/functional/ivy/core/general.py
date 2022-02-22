@@ -1579,3 +1579,24 @@ def inplace_increment(x, val, f=None):
     :return: The variable following the in-place increment.
     """
     return _cur_framework(x).inplace_increment(x, val)
+
+
+def eye(n_rows, n_cols=None, *, k=0, dtype=None, device=None):
+    """
+    Returns a two-dimensional array with ones on the k h diagonal and zeros elsewhere.
+
+    Parameters
+    - n_rows (int): number of rows in the output array.
+    - n_cols (int, optional): number of columns in the output array. If None, the default number of columns in the
+      output array is equal to n_rows.
+    - k (int): index of the diagonal. A positive value refers to an upper diagonal, a negative value to a lower diagonal,
+      and 0 to the main diagonal.
+    - dtype (dtype, optional): output array data type. If dtype is None, the output array data type must be the default
+      floating-point data type.
+    - device (device, optional): device on which to place the created array.
+
+    Returns
+    - out (array): an array where all elements are equal to zero, except for the k h diagonal, whose values are equal
+      to one.
+    """
+    return _cur_framework().eye(n_rows, n_cols, k=k, dtype=dtype, device=device)

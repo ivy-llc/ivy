@@ -488,3 +488,7 @@ def inplace_increment(x, val):
 
 inplace_arrays_supported = lambda: False
 inplace_variables_supported = lambda: False
+
+
+def eye(n_rows, n_cols=None, *, k=0, dtype=None, device=None):
+    return to_dev(_jnp.eye(n_rows, n_cols, k, dtype), default_device(device))

@@ -713,3 +713,11 @@ def inplace_increment(x, val):
 
 inplace_arrays_supported = lambda: True
 inplace_variables_supported = lambda: True
+
+
+def eye(n_rows, n_cols=None, *, k=0, dtype=None, device=None):
+    if n_cols is None:
+        return _torch.eye(n_rows, dtype=dtype, device=device)
+    else:
+        return _torch.eye(n_rows, n_cols, dtype=dtype, device=device)
+

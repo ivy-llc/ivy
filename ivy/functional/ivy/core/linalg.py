@@ -97,3 +97,22 @@ def cholesky(x):
     :return: cholesky decomposition of the matrix x.
     """
     return _cur_framework(x).cholesky(x)
+
+
+def matrix_power(x, n):
+    """
+    Raises a square matrix (or a stack of square matrices) x to an integer power n.
+
+    Parameters
+    - x (array): input array having shape (..., M, M) and whose innermost two dimensions form square matrices. Should
+      have a floating-point data type.
+    - n (int): integer exponent.
+
+    Returns
+    - out (array): if n is equal to zero, an array containing the identity matrix for each square matrix. If n is less
+      than zero, an array containing the inverse of each square matrix raised to the absolute value of n, provided that
+      each square matrix is invertible. If n is greater than zero, an array containing the result of raising each square
+      matrix to the power n. The returned array must have the same shape as x and a floating-point data type determined
+      by Type Promotion Rules.
+    """
+    return _cur_framework(x).matrix_power(x, n)
