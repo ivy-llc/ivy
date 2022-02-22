@@ -49,12 +49,7 @@ def pinv(x):
                 return xT
 
 
-<<<<<<< HEAD
-cholesky = _mx.np.linalg.cholesky
-=======
 cholesky = lambda x: _mx.np.linalg.cholesky(x.as_np_ndarray()).as_nd_ndarray()
-
->>>>>>> ebf6012f6e5067767cb6e9c3ddd126e4ecd81921
 
 
 def cross(a, b, axis=-1):
