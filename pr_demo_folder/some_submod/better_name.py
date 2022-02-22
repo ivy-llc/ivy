@@ -1,5 +1,5 @@
 import numpy as np
 
 
-def as_np_array(x):
+def set_as_np_array(x):
     return np.asarray(x)
