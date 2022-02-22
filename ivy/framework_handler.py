@@ -8,8 +8,7 @@ from ivy import verbosity
 
 # local
 # noinspection PyProtectedMember
-from ivy.func_wrapper import _wrap_methods
-from ivy.array.array_mode_handler import array_mode_val
+from ivy.func_wrapper import _wrap_methods, _unwrap_methods
 
 
 framework_stack = []
@@ -71,13 +70,8 @@ def _determine_framework_from_args(args):
                 return importlib.import_module(module_name)
 
 
-def current_framework(*args, f=None, **kwargs):
-    """Priorities: framework > global_framework > input's framework."""
-
-    if f:
-        if verbosity.level > 0:
-            verbosity.cprint('Using provided framework: {}'.format(f))
-        return f
+def current_framework(*args, **kwargs):
+    """Priorities: global_framework > argument's framework."""
 
     if framework_stack:
         f = framework_stack[-1]
@@ -113,6 +107,9 @@ def set_framework(f):
     ivy_original_fn_dict.clear()
     for k, v in ivy_original_dict.items():
         if k not in f.__dict__:
+            if k in ivy.all_dtype_strs:
+                del ivy.__dict__[k]
+                continue
             f.__dict__[k] = v
         specific_v = f.__dict__[k]
         ivy.__dict__[k] = specific_v
@@ -121,11 +118,7 @@ def set_framework(f):
                 ivy_original_fn_dict[specific_v] = v
             except TypeError:
                 pass
-    # noinspection PyUnresolvedReferences
-    if array_mode_val and (not hasattr(ivy, 'wrapped') or not ivy.functional.core.wrapped):
-        _wrap_methods()
-        ivy.wrapped = True
-        f.wrapped = True
+    _wrap_methods()
     if verbosity.level > 0:
         verbosity.cprint(
             'framework stack: {}'.format(framework_stack))
@@ -152,19 +145,20 @@ def get_framework(f=None):
 
 
 def unset_framework():
+    _unwrap_methods()
     fw = None
     if framework_stack:
         fw = framework_stack.pop(-1)
         if fw.current_framework_str() == 'numpy':
             ivy.unset_default_device()
         f_dict = framework_stack[-1].__dict__ if framework_stack else ivy_original_dict
-        wrapped = f_dict['wrapped'] if 'wrapped' in f_dict else False
         for k, v in f_dict.items():
             ivy.__dict__[k] = v
-        ivy.wrapped = wrapped
     if verbosity.level > 0:
         verbosity.cprint(
             'framework stack: {}'.format(framework_stack))
+    if framework_stack:
+        _wrap_methods()
     return fw
 
 
