@@ -245,5 +245,4 @@ def test_cross(x1_x2_kw, dtype, tensor_fn, dev, call):
     # compilation test
     if not ivy.array_mode():
         helpers.assert_compilable(ivy.cross)
-=======
->>>>>>> ebf6012f6e5067767cb6e9c3ddd126e4ecd81921:ivy_tests/test_ivy/test_functional/test_core/test_linalg.py
+
