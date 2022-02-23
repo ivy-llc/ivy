@@ -5,6 +5,8 @@ Collection of TensorFlow linear algebra functions, wrapped to fit Ivy syntax and
 # global
 import tensorflow as _tf
 import ivy as _ivy
+from typing import Union, Tuple
+
 
 
 # noinspection PyPep8Naming

@@ -6,6 +6,8 @@ Collection of PyTorch linear algebra functions, wrapped to fit Ivy syntax and si
 import torch as _torch
 from typing import List
 import ivy as _ivy
+from typing import Union, Tuple
+
 
 
 # noinspection PyPep8Naming

@@ -8,6 +8,7 @@ import numpy as _np
 # local
 import ivy as _ivy
 from ivy.functional.backends.mxnet.core.general import matmul as _matmul
+from typing import Union, Tuple
 
 
 # noinspection PyPep8Naming

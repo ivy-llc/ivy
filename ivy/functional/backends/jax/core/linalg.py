@@ -5,6 +5,8 @@ Collection of Jax linear algebra functions, wrapped to fit Ivy syntax and signat
 # global
 import jax.numpy as _jnp
 import ivy as _ivy
+from typing import Union, Tuple
+
 
 
 def svd(x:_ivy.Array,full_matrices: bool = True) -> Union[_ivy.Array, Tuple[_ivy.Array]]:
