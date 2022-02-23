@@ -1,0 +1,5 @@
+pytest
+hypothesis>=6.31.1
+ndindex>=1.6
+regex
+removestar
