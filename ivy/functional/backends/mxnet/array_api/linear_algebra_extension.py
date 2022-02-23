@@ -3,7 +3,7 @@ import mxnet as mx
 from typing  import Union, Optional, Tuple, Literal
 
 # local
-inf = float("inf")
+from ivy import inf
  
 def vector_norm(x: mx.ndarray.ndarray.NDArray,
                 p: Union[int, float, Literal[inf, - inf]] = 2, 
