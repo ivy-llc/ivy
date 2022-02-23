@@ -140,13 +140,6 @@ def floor(x):
 def ceil(x):
     return _mx.nd.ceil(x)
 
-@_handle_flat_arrays_in_out
-def cosh(x):
-    return _mx.nd.cosh(x)
-
-@_handle_flat_arrays_in_out
-def tanh(x):
-    return _mx.nd.tanh(x)
 
 # noinspection PyShadowingBuiltins
 @_handle_flat_arrays_in_out

@@ -7,3 +7,7 @@ from ivy.functional.backends.jax import JaxArray
 def isfinite(x: JaxArray)\
         -> JaxArray:
     return jnp.isfinite(x)
+
+def cosh(x: JaxArray)\
+        -> JaxArray:
+    return jnp.cosh(x)

@@ -137,14 +137,6 @@ def ceil(x):
     return _torch.ceil(x)
 
 
-def cosh(x):
-    return _torch.cosh(x)
-
-
-def tanh(x):
-    return _torch.tanh(x)
-
-
 # noinspection PyShadowingBuiltins
 def abs(x):
     return _torch.abs(x)

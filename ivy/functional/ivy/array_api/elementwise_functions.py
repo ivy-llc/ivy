@@ -14,3 +14,13 @@ def isfinite(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
              The returned array must have a data type of bool.
     """
     return _cur_framework(x).isfinite(x)
+
+
+def cosh(x):
+    """
+    Returns a new array with the hyperbolic cosine of the elements of x.
+
+    :param x: Input array.
+    :return: A new array with the hyperbolic cosine of the elements of x.
+    """
+    return _cur_framework(x).cosh(x)
