@@ -1,4 +1,0 @@
-Ivy
-===
-
-Ivy library.

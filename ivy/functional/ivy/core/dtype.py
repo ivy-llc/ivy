@@ -13,9 +13,6 @@ from numbers import Number
 import ivy
 from ivy.framework_handler import current_framework as _cur_framework
 
-Finfo = None
-Iinfo = None
-
 default_dtype_stack = list()
 default_float_dtype_stack = list()
 default_int_dtype_stack = list()
@@ -226,31 +223,6 @@ def dtype_from_str(dtype_in: Union[ivy.Dtype, str])\
     :return: data type e.g. ivy.float32.
     """
     return _cur_framework(None).dtype_from_str(dtype_in)
-
-
-# Dtype Info #
-# -----------#
-
-# noinspection PyShadowingBuiltins
-def iinfo(type: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray]) -> Iinfo:
-    """
-    Machine limits for integer data types.
-
-    :param type: the kind of integer data-type about which to get information.
-    :return: out – object with the machine limits for integer data types.
-    """
-    return _cur_framework(None).iinfo(type)
-
-
-# noinspection PyShadowingBuiltins
-def finfo(type: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray]) -> Finfo:
-    """
-    Machine limits for floating-point data types.
-
-    :param type: the kind of floating-point data-type about which to get information.
-    :return: out – object with the machine limits for floating-point data types.
-    """
-    return _cur_framework(None).finfo(type)
 
 
 # Default Dtype #
