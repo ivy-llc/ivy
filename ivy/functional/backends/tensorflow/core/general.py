@@ -251,6 +251,8 @@ def isfinite(x):
 
 
 def sign(x):
+    if ivy.is_int_dtype(x):
+        return _tf.zeros_like(x, x.dtype)
     return _tf.math.sign(x)
 
 
