@@ -85,13 +85,3 @@ def test_is_float_dtype(dev, call, in_n_asarray_n_res):
     if asarray:
         x = ivy.array(x)
     assert ivy.is_float_dtype(x) is res
-
-
-# iinfo
-def test_iinfo(dev, call):
-    assert ivy.exists(ivy.iinfo)
-
-
-# finfo
-def test_finfo(dev, call):
-    assert ivy.exists(ivy.finfo)

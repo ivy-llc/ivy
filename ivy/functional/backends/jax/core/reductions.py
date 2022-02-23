@@ -63,9 +63,3 @@ def reduce_max(x, axis=None, keepdims=False):
 def einsum(equation, *operands):
     return _jnp.einsum(equation, *operands)
 
-
-def all(x, axis=None, keepdims=False):
-    return _jnp.all(x, axis, keepdims=keepdims)
-
-def any(x, axis=None, keepdims=False):
-    return _jnp.any(x, axis, keepdims=keepdims)

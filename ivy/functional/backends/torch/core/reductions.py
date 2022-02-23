@@ -72,32 +72,3 @@ def reduce_max(x, axis: Optional[List[int]] = None, keepdims: bool = False):
 
 def einsum(equation, *operands):
     return _torch.einsum(equation, *operands)
-
-
-def all(x, axis: Optional[List[int]] = None, keepdims: bool = False):
-    x = x.type(_torch.bool)
-    if axis is None:
-        num_dims = len(x.shape)
-        axis = list(range(num_dims))
-    if isinstance(axis, int):
-        return _torch.all(x, dim=axis, keepdim=keepdims)
-    dims = len(x.shape)
-    axis = [i%dims for i in axis]
-    axis.sort()
-    for i, a in enumerate(axis):
-        x = _torch.all(x, dim=a if keepdims else a - i, keepdim=keepdims)
-    return x
-
-def any(x, axis: Optional[List[int]] = None, keepdims: bool = False):
-    x = x.type(_torch.bool)
-    if axis is None:
-        num_dims = len(x.shape)
-        axis = list(range(num_dims))
-    if isinstance(axis, int):
-        return _torch.any(x, dim=axis, keepdim=keepdims)
-    dims = len(x.shape)
-    axis = [i%dims for i in axis]
-    axis.sort()
-    for i, a in enumerate(axis):
-        x = _torch.any(x, dim=a if keepdims else a - i, keepdim=keepdims)
-    return x
