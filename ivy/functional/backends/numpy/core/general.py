@@ -254,10 +254,6 @@ isnan = _np.isnan
 isinf = _np.isinf
 
 
-def isfinite(x):
-    return _np.isfinite(x)
-
-
 reshape = _np.reshape
 broadcast_to = _np.broadcast_to
 
@@ -290,9 +286,8 @@ def full(shape, fill_value, dtype=None, device=None):
 
 
 # noinspection PyShadowingNames
-def ones(shape, dtype='float32', dev=None):
-    dtype = 'bool_' if dtype == 'bool' else dtype
-    dtype = _np.__dict__[dtype]
+def ones(shape, dtype=None, dev=None):
+    dtype = dtype_from_str(default_dtype(dtype))
     return _to_dev(_np.ones(shape, dtype), dev)
 
 

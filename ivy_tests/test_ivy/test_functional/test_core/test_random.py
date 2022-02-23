@@ -43,9 +43,6 @@ def test_random_uniform(low, high, shape, dtype, tensor_fn, dev, call):
     ret_np = call(ivy.random_uniform, **kwargs, dev=dev)
     assert np.min((ret_np < (high if high else 1.)).astype(np.int32)) == 1
     assert np.min((ret_np > (low if low else 0.)).astype(np.int32)) == 1
-    # compilation test
-    if not ivy.array_mode() and call is not helpers.torch_call:
-        helpers.assert_compilable(ivy.random_uniform)
 
 
 # random_normal
@@ -80,9 +77,6 @@ def test_random_normal(mean, std, shape, dtype, tensor_fn, dev, call):
     ret_np = call(ivy.random_normal, **kwargs, dev=dev)
     assert np.min((ret_np > (ivy.default(mean, 0.) - 3*ivy.default(std, 1.))).astype(np.int32)) == 1
     assert np.min((ret_np < (ivy.default(mean, 0.) + 3*ivy.default(std, 1.))).astype(np.int32)) == 1
-    # compilation test
-    if not ivy.array_mode() and call is not helpers.torch_call:
-        helpers.assert_compilable(ivy.random_normal)
 
 
 # multinomial
@@ -109,9 +103,6 @@ def test_multinomial(probs, num_samples, replace, dtype, tensor_fn, dev, call):
     assert ivy.is_array(ret)
     # cardinality test
     assert ret.shape == tuple([batch_size] + [num_samples])
-    # compilation test
-    if not ivy.array_mode() and call is not helpers.torch_call:
-        helpers.assert_compilable(ivy.multinomial)
 
 
 # randint
@@ -140,9 +131,6 @@ def test_randint(low, high, shape, dtype, tensor_fn, dev, call):
     ret_np = call(ivy.randint, low_tnsr, high_tnsr, shape, dev=dev)
     assert np.min((ret_np < high).astype(np.int32)) == 1
     assert np.min((ret_np >= low).astype(np.int32)) == 1
-    # compilation test
-    if not ivy.array_mode() and call is not helpers.torch_call:
-        helpers.assert_compilable(ivy.randint)
 
 
 # seed
@@ -155,12 +143,6 @@ def test_randint(low, high, shape, dtype, tensor_fn, dev, call):
 def test_seed(seed_val, dtype, tensor_fn, dev, call):
     # smoke test
     ivy.seed(seed_val)
-    # compilation test
-    if call in [helpers.torch_call]:
-        # pytorch scripting does not support functions with None return
-        return
-    if not ivy.array_mode():
-        helpers.assert_compilable(ivy.seed)
 
 
 # shuffle
@@ -184,6 +166,4 @@ def test_shuffle(x, dtype, tensor_fn, dev, call):
     ivy.seed(0)
     second_shuffle = call(ivy.shuffle, x)
     assert np.array_equal(first_shuffle, second_shuffle)
-    # compilation test
-    if not ivy.array_mode():
-        helpers.assert_compilable(ivy.shuffle)
+

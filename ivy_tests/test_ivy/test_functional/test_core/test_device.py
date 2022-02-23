@@ -35,9 +35,6 @@ def test_dev(x, dtype, tensor_fn, dev, call):
     ret = ivy.dev(x)
     # type test
     assert isinstance(ret, ivy.Device)
-    # compilation test
-    if not ivy.array_mode():
-        helpers.assert_compilable(ivy.dev)
 
 
 # dev_to_str
@@ -57,9 +54,6 @@ def test_dev_to_str(x, dtype, tensor_fn, dev, call):
     ret = ivy.dev_to_str(dev)
     # type test
     assert isinstance(ret, str)
-    # compilation test
-    if not ivy.array_mode():
-        helpers.assert_compilable(ivy.dev_to_str)
 
 
 # dev_from_str
@@ -88,8 +82,6 @@ def test_dev_from_str(x, dtype, tensor_fn, dev, call):
     if call is helpers.torch_call:
         # pytorch scripting does not handle converting string to device
         return
-    if not ivy.array_mode():
-        helpers.assert_compilable(ivy.dev_from_str)
 
 
 # dev
@@ -128,8 +120,6 @@ def test_memory_on_dev(dev_to_check, dev, call):
     if call is helpers.torch_call:
         # global variables aren't supported for pytorch scripting
         pytest.skip()
-    if not ivy.array_mode():
-        helpers.assert_compilable(ivy.total_mem_on_dev)
 
 
 # Device Allocation #
@@ -181,12 +171,6 @@ def test_to_dev(x, dtype, tensor_fn, dev, call):
         assert dev_from_new_x.type == dev.type
     else:
         assert dev_from_new_x == dev
-    # compilation test
-    if call is helpers.torch_call:
-        # pytorch scripting does not handle converting string to device
-        return
-    if not ivy.array_mode():
-        helpers.assert_compilable(ivy.to_dev)
 
 
 # Function Splitting #

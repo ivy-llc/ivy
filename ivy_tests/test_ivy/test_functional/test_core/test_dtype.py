@@ -51,8 +51,6 @@ def test_cast(object_in, starting_dtype, target_dtype, dev, call):
     if call in [helpers.torch_call]:
         # pytorch scripting does not support .type() method
         return
-    if not ivy.array_mode():
-        helpers.assert_compilable(ivy.cast)
 
 
 # is_int_dtype
@@ -87,13 +85,3 @@ def test_is_float_dtype(dev, call, in_n_asarray_n_res):
     if asarray:
         x = ivy.array(x)
     assert ivy.is_float_dtype(x) is res
-
-
-# iinfo
-def test_iinfo(dev, call):
-    assert ivy.exists(ivy.iinfo)
-
-
-# finfo
-def test_finfo(dev, call):
-    assert ivy.exists(ivy.finfo)
