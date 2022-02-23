@@ -1,15 +1,11 @@
 # global
-import jax
-import jaxlib
 import numpy as np
 import jax.numpy as jnp
 from typing import Union
-from jaxlib.xla_extension import Buffer
 
 # local
 import ivy
-
-JaxArray = Union[jax.interpreters.xla._DeviceArray, jaxlib.xla_extension.DeviceArray, Buffer]
+from ivy.functional.backends.jax import JaxArray
 
 # noinspection PyShadowingBuiltins
 def iinfo(type: Union[jnp.dtype, str, JaxArray])\
