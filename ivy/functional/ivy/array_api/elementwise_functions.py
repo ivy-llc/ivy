@@ -9,7 +9,7 @@ def sinh(x: ivy.Array, /) -> ivy.Array:
 
         :param x: input array.
         :return: an array containing the hyperbolic sine of each element in x.
-        """
+    """
     if x.__contains__(float('NaN')):
         return float('NaN')
 
