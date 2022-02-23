@@ -1,10 +1,11 @@
+# global
 import sys
 import tensorflow as tf
+from tensorflow.python.types.core import Tensor
 from tensorflow.python.framework.dtypes import DType
 
-from .core import *
-from . import nn
-from .nn import *
+# local
+import ivy
 
 # noinspection PyUnresolvedReferences
 use = ivy.framework_handler.ContextManager(sys.modules[__name__])
@@ -34,7 +35,6 @@ all_dtypes = (int8, int16, int32, int64,
               uint8, uint16, uint32, uint64,
               bfloat16, float16, float32, float64)
 valid_dtypes = all_dtypes
-invalid_dtypes = ()
 
 all_dtype_strs = ('int8', 'int16', 'int32', 'int64',
                   'uint8', 'uint16', 'uint32', 'uint64',
@@ -42,36 +42,21 @@ all_dtype_strs = ('int8', 'int16', 'int32', 'int64',
 valid_dtype_strs = all_dtypes
 invalid_dtype_strs = ()
 
-iinfo = tf.experimental.numpy.iinfo
 
-class Finfo:
-
-    def __init__(self, tf_finfo):
-        self._tf_finfo = tf_finfo
-
-    @property
-    def bits(self):
-        return self._tf_finfo.bits
-
-    @property
-    def eps(self):
-        return float(self._tf_finfo.eps)
-
-    @property
-    def max(self):
-        return float(self._tf_finfo.max)
-
-    @property
-    def min(self):
-        return float(self._tf_finfo.min)
-
-    @property
-    def smallest_normal(self):
-        return float(self._tf_finfo.tiny)
-
-
-def finfo(datatype_in):
-    return Finfo(tf.experimental.numpy.finfo(datatype_in))
+def closest_valid_dtype(type):
+    if type is None:
+        return ivy.default_dtype()
+    return type
 
 
 backend = 'tensorflow'
+
+
+# local sub-modules
+from . import array_api
+from .array_api import *
+from . import array_builtins
+from .array_builtins import *
+from .core import *
+from . import nn
+from .nn import *

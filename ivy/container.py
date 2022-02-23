@@ -354,12 +354,12 @@ class Container(dict):
         if not ivy.exists(config):
             config = container0.config if isinstance(container0, Container) else {}
         if not isinstance(container0, dict):
-            equal_mat = ivy.equal(*containers, equality_matrix=True)
+            equal_mat = ivy.all_equal(*containers, equality_matrix=True)
             if not detect_value_diffs:
                 equal_mat = ivy.ones_like(equal_mat)
             if detect_shape_diffs:
-                shape_equal_mat = ivy.equal(*[c.shape if ivy.is_array(c) else None for c in containers],
-                                            equality_matrix=True)
+                shape_equal_mat = ivy.all_equal(*[c.shape if ivy.is_array(c) else None for c in containers],
+                                                equality_matrix=True)
                 equal_mat = ivy.logical_and(equal_mat, shape_equal_mat)
             # noinspection PyTypeChecker
             if ivy.reduce_min(ivy.cast(equal_mat, 'int32')) == 1:
@@ -738,10 +738,8 @@ class Container(dict):
         :type ivyh: handle to ivy module, optional
         :return: Container loaded from disk
         """
-        if ivy.array_mode():
-            return Container(_pickle.load(open(pickle_filepath, 'rb')),
-                             rebuild_child_containers=True, ivyh=ivyh).to_ivy()
-        return Container(_pickle.load(open(pickle_filepath, 'rb')), rebuild_child_containers=True, ivyh=ivyh)
+        return Container(_pickle.load(open(pickle_filepath, 'rb')),
+                         rebuild_child_containers=True, ivyh=ivyh).to_ivy()
 
     @staticmethod
     def from_disk_as_json(json_filepath, ivyh=None):
@@ -2177,10 +2175,7 @@ class Container(dict):
         :param pickle_filepath: Filepath for where to save the container to disk.
         :type pickle_filepath: str
         """
-        if ivy.array_mode():
-            _pickle.dump(self.to_native().to_dict(), open(pickle_filepath, 'wb'))
-        else:
-            _pickle.dump(self.to_dict(), open(pickle_filepath, 'wb'))
+        _pickle.dump(self.to_native().to_dict(), open(pickle_filepath, 'wb'))
 
     def to_jsonable(self, return_dict=None):
         """
@@ -3381,9 +3376,7 @@ class Container(dict):
         conts = list()
         for i in queue_idxs:
             if i not in self._loaded_containers_from_queues:
-                cont = Container(self._queues[i].get(timeout=self._queue_timeout), **self._config)
-                if ivy.array_mode():
-                    cont = cont.to_ivy()
+                cont = Container(self._queues[i].get(timeout=self._queue_timeout), **self._config).to_ivy()
                 self._loaded_containers_from_queues[i] = cont
             else:
                 cont = self._loaded_containers_from_queues[i]

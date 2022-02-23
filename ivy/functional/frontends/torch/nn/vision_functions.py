@@ -1,3 +1,0 @@
-"""
-PyTorch Vision Functions Frontend
-"""

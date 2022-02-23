@@ -1,3 +1,0 @@
-"""
-PyTorch Distance Functions Frontend
-"""
