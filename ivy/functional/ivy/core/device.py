@@ -97,7 +97,7 @@ def print_all_arrays_on_dev(dev):
 
 # Retreival #
 
-def dev(x: Union[ivy.Array, ivy.NativeArray], as_str: bool = False, f: ivy.Framework = None)\
+def dev(x: Union[ivy.Array, ivy.NativeArray], as_str: bool = False)\
         -> Union[ivy.Device, str]:
     """
     Get the native device handle for input array x.
@@ -106,59 +106,51 @@ def dev(x: Union[ivy.Array, ivy.NativeArray], as_str: bool = False, f: ivy.Frame
     :type x: array
     :param as_str: Whether or not to return the dev in string format. Default is False.
     :type as_str: bool, optional
-    :param f: Machine learning framework. Inferred from inputs if None.
-    :type f: ml_framework, optional
     :return: Device handle for the array, in native framework format.
     """
-    return _cur_framework(x, f=f).dev(x, as_str)
+    return _cur_framework(x).dev(x, as_str)
 
 
 # Conversions #
 
 # noinspection PyShadowingNames
-def dev_to_str(dev: [ivy.Device, str], f: ivy.Framework = None)\
+def dev_to_str(dev: [ivy.Device, str])\
         -> str:
     """
     Convert native data type to string representation.
 
     :param dev: The device handle to convert to string.
     :type dev: device handle
-    :param f: Machine learning framework. Inferred from inputs if None.
-    :type f: ml_framework, optional
     :return: Device string e.g. 'cuda:0'.
     """
-    return _cur_framework(f=f).dev_to_str(dev)
+    return _cur_framework().dev_to_str(dev)
 
 
 # noinspection PyShadowingNames
-def dev_from_str(dev: [ivy.Device, str], f: ivy.Framework = None)\
+def dev_from_str(dev: [ivy.Device, str])\
         -> ivy.Device:
     """
     Convert device string representation to native device type.
 
     :param dev: The device string to conver to native device handle.
     :type dev: Device
-    :param f: Machine learning framework. Inferred from inputs if None.
-    :type f: ml_framework, optional
     :return: Native device handle.
     """
-    return _cur_framework(f=f).dev_from_str(dev)
+    return _cur_framework().dev_from_str(dev)
 
 
 # Memory #
 
 # noinspection PyShadowingNames
-def clear_mem_on_dev(dev: ivy.Device, f: ivy.Framework = None)\
+def clear_mem_on_dev(dev: ivy.Device)\
         -> None:
     """
     Clear memory cache on target device.
 
     :param dev: The device string to conver to native device handle.
     :type dev: Device
-    :param f: Machine learning framework. Inferred from inputs if None.
-    :type f: ml_framework, optional
     """
-    return _cur_framework(None, f=f).clear_mem_on_dev(dev)
+    return _cur_framework(None).clear_mem_on_dev(dev)
 
 
 # noinspection PyShadowingNames
@@ -264,48 +256,38 @@ def dev_util(dev: ivy.Device)\
 
 # Availability #
 
-def gpu_is_available(f: ivy.Framework = None)\
-        -> bool:
+def gpu_is_available() -> bool:
     """
     Determine whether a GPU is available to use, with the backend framework.
 
-    :param f: Machine learning framework. Inferred from inputs if None.
-    :type f: ml_framework, optional
     :return: Boolean, as to whether a gpu is available.
     """
-    return _cur_framework(f=f).gpu_is_available()
+    return _cur_framework().gpu_is_available()
 
 
-def num_cpu_cores()\
-        -> int:
+def num_cpu_cores() -> int:
     """
     Determine the number of cores available in the cpu.
     """
     return psutil.cpu_count()
 
 
-def num_gpus(f: ivy.Framework = None)\
-        -> int:
+def num_gpus() -> int:
     """
     Determine the number of available GPUs, with the backend framework.
 
-    :param f: Machine learning framework. Inferred from inputs if None.
-    :type f: ml_framework, optional
     :return: Number of available GPUs.
     """
-    return _cur_framework(f=f).num_gpus()
+    return _cur_framework().num_gpus()
 
 
-def tpu_is_available(f: ivy.Framework = None)\
-        -> bool:
+def tpu_is_available() -> bool:
     """
     Determine whether a TPU is available to use, with the backend framework.
 
-    :param f: Machine learning framework. Inferred from inputs if None.
-    :type f: ml_framework, optional
     :return: Boolean, as to whether a tpu is available.
     """
-    return _cur_framework(f=f).tpu_is_available()
+    return _cur_framework().tpu_is_available()
 
 
 # Default Device #
@@ -352,7 +334,7 @@ def unset_default_device():
 # ------------------#
 
 # noinspection PyShadowingNames
-def to_dev(x: Union[ivy.Array, ivy.NativeArray], dev: ivy.Device = None, f: ivy.Framework = None)\
+def to_dev(x: Union[ivy.Array, ivy.NativeArray], dev: ivy.Device = None)\
         -> Union[ivy.Array, ivy.NativeArray]:
     """
     Move the input array x to the desired device, specified by device string.
@@ -361,11 +343,9 @@ def to_dev(x: Union[ivy.Array, ivy.NativeArray], dev: ivy.Device = None, f: ivy.
     :type x: array
     :param dev: device to move the array to 'cuda:0', 'cuda:1', 'cpu' etc. Keep same device if None.
     :type dev: Device, optional
-    :param f: Machine learning framework. Inferred from inputs if None.
-    :type f: ml_framework, optional
     :return: The array x, but now placed on the target device.
     """
-    return _cur_framework(x, f=f).to_dev(x, dev)
+    return _cur_framework(x).to_dev(x, dev)
 
 
 # Function Splitting #

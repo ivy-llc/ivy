@@ -14,7 +14,7 @@ import ivy
 
 def _to_native(x: Any)\
         -> Any:
-    return x.data if isinstance(x, ivy.Array) else x
+    return _to_native(x.data) if isinstance(x, ivy.Array) else x
 
 
 def _to_ivy(x: Any)\
