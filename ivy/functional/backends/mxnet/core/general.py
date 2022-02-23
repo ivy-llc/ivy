@@ -150,9 +150,6 @@ def abs(x):
 argmax = lambda x, axis=0: _mx.nd.argmax(x, axis)
 argmin = lambda x, axis=0: _mx.nd.argmin(x, axis)
 
-def argsort(x, axis=-1, descending=False, stable=True):
-    return _mx.nd.argsort(_mx.nd.array(x), axis=axis, is_ascend=descending)
-
 
 @_handle_flat_arrays_in_out
 def cast(x, dtype):

@@ -156,11 +156,6 @@ def argmin(x, axis: int = 0):
     return ret
 
 
-def argsort(x, axis=-1, descending=False, stable=True):
-        return _torch.argsort(x, dim=axis, descending=descending)
-
-
-
 def cast(x, dtype_in: str):
     dtype_val = dtype_from_str(dtype_in)
     return x.type(dtype_val)
