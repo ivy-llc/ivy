@@ -139,16 +139,6 @@ def acosh(x):
     return _cur_framework(x).acosh(x)
 
 
-def trunc(x):
-    """
-    Rounds each element x_i of the input array x to the integer-valued number that is closest to but no greater than x_i.
-
-    :param x: Input array.
-    :return: Aan array containing the rounded result for each element in x. The returned array must have the same data type as x.
-    """
-    return _cur_framework(x).trunc(x)
-
-
 def atanh(x):
     """
     Returns a new array with the inverse hyperbolic tangent of the elements of x.
