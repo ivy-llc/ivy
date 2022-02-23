@@ -18,14 +18,14 @@ def vector_norm(x: JaxArray,
                 keepdims: bool = False)\ 
                 -> JaxArray:
 
-    jnp_normalized_vector_ = None
+    jnp_normalized_vector = None
 
     if axis == None:
-       jnp_normalized_vector_ =jnp.linalg.norm(jnp.ravel(x),p,axis,keepdims)
+       jnp_normalized_vector = jnp.linalg.norm(jnp.ravel(x), p, axis, keepdims)
 
     else:
-        jnp_normalized_vector_ =jnp.linalg.norm(x,p,axis,keepdims)
+        jnp_normalized_vector = jnp.linalg.norm(x, p, axis, keepdims)
 
-    if jnp_normalized_vector_.shape  == tuple():
-        return  jnp.expand_dims(jnp_normalized_vector_, 0)
-    return jnp_normalized_vector_
+    if jnp_normalized_vector.shape  == tuple():
+        return  jnp.expand_dims(jnp_normalized_vector, 0)
+    return jnp_normalized_vector
