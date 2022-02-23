@@ -1,9 +1,9 @@
+# global
 import sys
 import torch as _torch
 
-from .core import *
-from . import nn
-from .nn import *
+# local
+import ivy
 
 # noinspection PyUnresolvedReferences
 use = ivy.framework_handler.ContextManager(sys.modules[__name__])
@@ -49,38 +49,14 @@ def closest_valid_dtype(type):
     return type
 
 
-def iinfo(type):
-    return _torch.iinfo(dtype_from_str(type))
-
-
-class Finfo:
-
-    def __init__(self, torch_finfo):
-        self._torch_finfo = torch_finfo
-
-    @property
-    def bits(self):
-        return self._torch_finfo.bits
-
-    @property
-    def eps(self):
-        return self._torch_finfo.eps
-
-    @property
-    def max(self):
-        return self._torch_finfo.max
-
-    @property
-    def min(self):
-        return self._torch_finfo.min
-
-    @property
-    def smallest_normal(self):
-        return self._torch_finfo.tiny
-
-
-def finfo(type):
-    return Finfo(_torch.finfo(dtype_from_str(type)))
-
-
 backend = 'torch'
+
+
+# local sub-modules
+from . import array_api
+from .array_api import *
+from . import array_builtins
+from .array_builtins import *
+from .core import *
+from . import nn
+from .nn import *

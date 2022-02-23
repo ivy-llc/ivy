@@ -389,10 +389,6 @@ def isinf(x):
     return _torch.isinf(x)
 
 
-def isfinite(x):
-    return _torch.isfinite(x)
-
-
 def reshape(x, newshape: List[int]):
     if isinstance(newshape, int):
         newshape = [newshape]

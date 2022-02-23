@@ -6,3 +6,4 @@
    why_ivy.rst
    using_ivy.rst
    training_a_network.rst
+   contributing.rst
