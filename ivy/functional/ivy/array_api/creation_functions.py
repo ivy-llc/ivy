@@ -9,7 +9,7 @@ from ivy.framework_handler import current_framework as _cur_framework
 def ones(shape: Union[int, Tuple[int, ...]],
          dtype: Optional[ivy.Dtype] = 'float32',
          device: Optional[ivy.Device] = None) \
-        -> Union[ivy.Array, ivy.NativeArray]:
+        -> ivy.Array:
     """
     Returns a new array of given shape and type, filled with ones.
 

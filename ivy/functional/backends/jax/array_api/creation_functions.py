@@ -16,6 +16,6 @@ JaxArray = Union[jax.interpreters.xla._DeviceArray, jaxlib.xla_extension.DeviceA
 # noinspection PyShadowingNames
 def ones(shape: Union[int, Tuple[int, ...]],
          dtype: Optional[jnp.dtype] = 'float32',
-         device = None) \
+         device: Optional[str] = None) \
         -> JaxArray:
     return to_dev(jnp.ones(shape, dtype_from_str(default_dtype(dtype))), default_device(device))
