@@ -4,9 +4,10 @@ Collection of Jax linear algebra functions, wrapped to fit Ivy syntax and signat
 
 # global
 import jax.numpy as _jnp
+import ivy as _ivy
 
 
-def svd(x:ivy.Array,full_matrices: bool = True) -> Union[ivy.Array, Tuple[ivy.Array]]:
+def svd(x:_ivy.Array,full_matrices: bool = True) -> Union[_ivy.Array, Tuple[_ivy.Array]]:
     U, D, VT=_jnp.linalg.svd(a, full_matrices=full_matrices)
     return U, D, VT
 

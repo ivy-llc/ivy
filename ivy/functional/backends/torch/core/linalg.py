@@ -5,10 +5,11 @@ Collection of PyTorch linear algebra functions, wrapped to fit Ivy syntax and si
 # global
 import torch as _torch
 from typing import List
+import ivy as _ivy
 
 
 # noinspection PyPep8Naming
-def svd(x:ivy.Array,full_matrices: bool = True) -> Union[ivy.Array, Tuple[ivy.Array]]:
+def svd(x:_ivy.Array,full_matrices: bool = True) -> Union[_ivy.Array, Tuple[_ivy.Array]]:
     U, D, V = _torch.linalg.svd(x, full_matrices=full_matrices)
     VT = _torch.transpose(V, -2, -1)
     return U, D, VT
