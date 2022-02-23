@@ -14,9 +14,10 @@ JaxArray = (_jax.interpreters.xla._DeviceArray, jaxlib.xla_extension.DeviceArray
 
 def vector_norm(x: JaxArray, 
                 p: Union[int, float, Literal[inf, - inf]] = 2, 
-                axis: Optional[Union[int, Tuple[int, ...]]] = None, 
-                keepdims: bool = False)\ 
-                -> JaxArray:
+                axis: Optional[Union[int, Tuple[int]]] = None, 
+                keepdims: bool = False)\
+                    -> JaxArray:
+                
 
     jnp_normalized_vector = None
 

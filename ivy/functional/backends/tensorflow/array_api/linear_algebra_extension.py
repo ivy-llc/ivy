@@ -4,7 +4,8 @@ from tensorflow.python.types.core import Tensor
 from typing  import Union, Optional, Tuple, Literal
 
 # local
-from ivy import ivy
+from ivy import inf
+
 
 
 def vector_norm(x: Tensor, 
