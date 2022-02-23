@@ -5,7 +5,7 @@ Collection of Numpy linear algebra functions, wrapped to fit Ivy syntax and sign
 # global
 import numpy as _np
 
-def svd(x,full_matrices: bool = True):
+def svd(x:ivy.Array,full_matrices: bool = True) -> Union[ivy.Array, Tuple[ivy.Array]]:
     U, D, VT=_np.linalg.svd(x, full_matrices=full_matrices)
     return U, D, VT
 

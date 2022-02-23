@@ -7,7 +7,7 @@ import tensorflow as _tf
 
 
 # noinspection PyPep8Naming
-def svd(x,full_matrices: bool = True):
+def svd(x:ivy.Array,full_matrices: bool = True) -> Union[ivy.Array, Tuple[ivy.Array]]:
     batch_shape = _tf.shape(x)[:-2]
     num_batch_dims = len(batch_shape)
     transpose_dims = list(range(num_batch_dims)) + [num_batch_dims + 1, num_batch_dims]

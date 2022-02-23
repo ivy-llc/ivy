@@ -6,7 +6,7 @@ Collection of Jax linear algebra functions, wrapped to fit Ivy syntax and signat
 import jax.numpy as _jnp
 
 
-def svd(x,full_matrices: bool = True):
+def svd(x:ivy.Array,full_matrices: bool = True) -> Union[ivy.Array, Tuple[ivy.Array]]:
     U, D, VT=_jnp.linalg.svd(a, full_matrices=full_matrices)
     return U, D, VT
 
