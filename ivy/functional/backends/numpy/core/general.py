@@ -253,9 +253,6 @@ def indices_where(x):
 isnan = _np.isnan
 isinf = _np.isinf
 
-def less(x1,x2):
-    return _np.less(x1,x2)
-
 
 reshape = _np.reshape
 broadcast_to = _np.broadcast_to

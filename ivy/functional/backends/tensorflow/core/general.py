@@ -274,15 +274,6 @@ def isinf(x):
         return _tf.zeros_like(x, _tf.bool)
     return _tf.math.is_inf(x)
 
-def less(x1,x2):
-    if hasattr(x1,'dtype') and hasattr(x2,'dtype'):
-        promoted_type = _tf.experimental.numpy.promote_types(x1.dtype,x2.dtype)
-        x1 = _tf.cast(x1,promoted_type)
-        x2 = _tf.cast(x2,promoted_type)
-    
-    return _tf.math.less(x1,x2)
-
-
 reshape = lambda x, newshape: _tf.reshape(x, (newshape,) if isinstance(newshape, int) else newshape)
 broadcast_to = _tf.broadcast_to
 
