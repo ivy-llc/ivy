@@ -275,12 +275,6 @@ def isinf(x):
     return _tf.math.is_inf(x)
 
 
-def isfinite(x):
-    if ivy.is_int_dtype(x):
-        return _tf.ones_like(x, _tf.bool)
-    return _tf.math.is_finite(x)
-
-
 reshape = lambda x, newshape: _tf.reshape(x, (newshape,) if isinstance(newshape, int) else newshape)
 broadcast_to = _tf.broadcast_to
 
@@ -314,10 +308,10 @@ def full(shape, fill_value, dtype=None, device=None):
 
 
 # noinspection PyShadowingNames
-def ones(shape, dtype='float32', dev=None):
-    dtype = _tf.__dict__[dtype]
-    dev = default_device(dev)
-    with _tf.device(dev_from_str(dev)):
+def ones(shape, dtype=None, dev=None):
+    dtype = dtype_from_str(default_dtype(dtype))
+    dev = dev_from_str(default_device(dev))
+    with _tf.device(dev):
         return _tf.ones(shape, dtype)
 
 

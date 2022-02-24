@@ -253,11 +253,6 @@ def indices_where(x):
 
 isnan = _jnp.isnan
 isinf = _jnp.isinf
-
-def isfinite(x):
-    return _jnp.isfinite(x)
-
-
 reshape = _jnp.reshape
 broadcast_to = _jnp.broadcast_to
 

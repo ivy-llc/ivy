@@ -113,13 +113,3 @@ def reduce_max(x, axis=None, keepdims=False):
 def einsum(equation, *operands):
     return _mx.np.einsum(equation, *[op.as_np_ndarray() for op in operands]).as_nd_ndarray()
 
-
-def all(x, axis=None, keepdims=False):
-    red_prod = reduce_prod(x, axis, keepdims)
-    is_flat = red_prod.shape == ()
-    if is_flat:
-        red_prod = _flat_array_to_1_dim_array(red_prod)
-    red_prod = red_prod.astype(_mx.np.bool_)
-    if is_flat:
-        return _1_dim_array_to_flat_array(red_prod)
-    return red_prod

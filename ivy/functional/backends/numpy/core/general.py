@@ -254,10 +254,6 @@ isnan = _np.isnan
 isinf = _np.isinf
 
 
-def isfinite(x):
-    return _np.isfinite(x)
-
-
 reshape = _np.reshape
 broadcast_to = _np.broadcast_to
 
