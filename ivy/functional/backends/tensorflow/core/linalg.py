@@ -35,11 +35,6 @@ def matrix_norm(x, p=2, axes=None, keepdims=False):
 inv = _tf.linalg.inv
 pinv = _tf.linalg.pinv
 
-
-def cross(a, b, axis=-1):
-    return _tf.linalg.cross(a, b)
-
-
 cholesky = _tf.linalg.cholesky
 
 

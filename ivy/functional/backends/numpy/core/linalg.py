@@ -25,8 +25,7 @@ inv = _np.linalg.inv
 pinv = _np.linalg.pinv
 
 
-def cross(a, b, axis=-1):
-    return _np.cross(a, b, axis=axis)
+
 
 
 cholesky = _np.linalg.cholesky
