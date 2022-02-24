@@ -26,8 +26,6 @@ pinv = _jnp.linalg.pinv
 cholesky = _jnp.linalg.cholesky
 
 
-def cross(a, b, axis=-1):
-    return _jnp.cross(a, b, axis=axis)
 
 
 def vector_to_skew_symmetric_matrix(vector):
