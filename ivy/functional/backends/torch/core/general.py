@@ -181,10 +181,6 @@ def argmin(x, axis: int = 0):
     return ret
 
 
-def argsort(x, axis: int = -1):
-    return _torch.argsort(x, axis)
-
-
 def cast(x, dtype_in: str):
     dtype_val = dtype_from_str(dtype_in)
     return x.type(dtype_val)
@@ -404,10 +400,6 @@ def isnan(x):
 
 def isinf(x):
     return _torch.isinf(x)
-
-
-def isfinite(x):
-    return _torch.isfinite(x)
 
 
 def reshape(x, newshape: List[int]):

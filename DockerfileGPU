@@ -98,9 +98,9 @@ RUN pip3 install pytest
 RUN apt-get install -y git
 RUN apt-get install -y python-opengl
 
-RUN pip install --upgrade "jax[cuda110]" -f https://storage.googleapis.com/jax-releases/jax_releases.html
+RUN pip install --upgrade "jax[cuda]" -f https://storage.googleapis.com/jax-releases/jax_releases.html
 # ToDo: work out why most recent jaxlib installs are not working
-RUN pip3 install --upgrade jaxlib==0.1.69+cuda110 -f https://storage.googleapis.com/jax-releases/jax_releases.html
+RUN pip3 install --upgrade "jaxlib[cuda]" -f https://storage.googleapis.com/jax-releases/jax_releases.html
 RUN pip3 install --upgrade torch-scatter -f https://pytorch-geometric.com/whl/torch-1.10.0+cu111.html
 
 # Ivy #

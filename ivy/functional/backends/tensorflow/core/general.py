@@ -176,9 +176,6 @@ def argmin(x, axis=0):
     return ret
 
 
-argsort = lambda x, axis=-1: _tf.argsort(x, axis)
-
-
 def cast(x, dtype):
     return _tf.cast(x, dtype_from_str(dtype))
 
@@ -311,12 +308,6 @@ def isinf(x):
     if ivy.is_int_dtype(x):
         return _tf.zeros_like(x, _tf.bool)
     return _tf.math.is_inf(x)
-
-
-def isfinite(x):
-    if ivy.is_int_dtype(x):
-        return _tf.ones_like(x, _tf.bool)
-    return _tf.math.is_finite(x)
 
 
 reshape = lambda x, newshape: _tf.reshape(x, (newshape,) if isinstance(newshape, int) else newshape)

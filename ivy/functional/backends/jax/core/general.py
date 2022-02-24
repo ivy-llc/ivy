@@ -168,9 +168,6 @@ def argmin(x, axis=0):
     return ret
 
 
-argsort = lambda x, axis=-1: _jnp.argsort(x, axis)
-
-
 def cast(x, dtype):
     return x.astype(dtype_from_str(dtype))
 
@@ -273,11 +270,6 @@ def indices_where(x):
 
 isnan = _jnp.isnan
 isinf = _jnp.isinf
-
-def isfinite(x):
-    return _jnp.isfinite(x)
-
-
 reshape = _jnp.reshape
 broadcast_to = _jnp.broadcast_to
 
