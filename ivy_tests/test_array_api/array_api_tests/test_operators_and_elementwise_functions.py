@@ -953,27 +953,7 @@ pytestmark = pytest.mark.ci
 #             assert bool(out_idx) == (scalar_type(x1_idx) >= scalar_type(x2_idx))
 #
 #
-@pytest.mark.parametrize("dtype", ivy.all_dtype_strs)
-@pytest.mark.parametrize("shape", ivy_tests.test_shapes)
-def test_isfinite(dtype, shape):
-    if ivy.invalid_dtype(dtype):
-        pytest.skip()
-    x = ivy.cast(ivy.random_uniform(0, 10, shape), dtype)
-    out = ivy.isfinite(x)
-    assert ivy.dtype(out, as_str=True) == 'bool'
-    assert out.shape == x.shape
-    if ivy.is_int_dtype(ivy.dtype(x)):
-        assert ivy.array_equal(out, ivy.ones(x.shape, dtype='bool'))
-    # Test that isfinite, isinf, and isnan are self-consistent.
-    inf = ivy.logical_or(ivy.isinf(x), ivy.isnan(x))
-    assert ivy.array_equal(out, ivy.logical_not(inf))
 
-    # Test the exact value by comparing to the math version
-    if ivy.is_float_dtype(x.dtype):
-        for idx in sh.ndindex(x.shape):
-            s = float(x[idx])
-            assert bool(out[idx]) == math.isfinite(s)
-#
 #
 # @given(xps.arrays(dtype=xps.numeric_dtypes(), shape=hh.shapes()))
 # def test_isinf(x):
