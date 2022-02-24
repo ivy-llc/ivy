@@ -1,10 +1,14 @@
+# global
+from typing import Union, Optional, Tuple, List
+
+
+# local
+import ivy
+from ivy.framework_handler import current_framework as _cur_framework
 
 
 
-
-
-
-
+# noinspection PyShadowingBuiltins
 def cross(x1: Union[ivy.Array, ivy.NativeArray], x2: Union[ivy.Array, ivy.NativeArray], /, *, axis: int = -1) -> ivy.Array:
     """
     Compute and return the cross product of 3-element vectors, it must have the same shape as b
@@ -17,4 +21,4 @@ def cross(x1: Union[ivy.Array, ivy.NativeArray], x2: Union[ivy.Array, ivy.Native
     :type x2: array
     :return: an array that contains the cross products
     """
-    return _cur_framework(a).cross(a, b, axis)
+    return _cur_framework(a).cross(x1, x2, axis)
