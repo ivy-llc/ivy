@@ -2,8 +2,13 @@
 Collection of builtin Ivy functions.
 """
 
+# global
+from typing import Union
 
-# noinspection PyShadowingBuiltins
+# local
+import ivy
+
+
 def builtin_dir(x):
     return x.__dir__()
 
@@ -44,8 +49,20 @@ def builtin_neg(x):
 
 
 # noinspection PyShadowingBuiltins
-def builtin_pow(x, power):
-    return x.__pow__(power)
+def builtin_pow(self: Union[ivy.Array, ivy.NativeArray],
+                other: Union[int, float, ivy.Array, ivy.NativeArray]) \
+        -> Union[ivy.Array, ivy.NativeArray]:
+    """
+    Calculates an implementation-dependent approximation of exponentiation by raising each element (the base) of an
+    array instance to the power of other_i (the exponent), where other_i is the corresponding element of the array other.
+
+    :param self: array instance whose elements correspond to the exponentiation base. Should have a numeric data type.
+    :param other: other array whose elements correspond to the exponentiation exponent. Must be compatible with x
+                    (see Broadcasting). Should have a numeric data type.
+    :return: an array containing the element-wise results. The returned array must have a data type determined by
+              Type Promotion Rules.
+    """
+    return self.__pow__(other)
 
 
 # noinspection PyShadowingBuiltins
