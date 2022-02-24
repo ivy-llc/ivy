@@ -4,7 +4,7 @@ from typing import  Union, Tuple, Optional
 
 # local
 from ivy.functional.ivy.core import default_dtype
-from ivy.functional.backends.numpy import dtype_from_str, _to_dev
+from ivy.functional.backends.numpy.core.general import dtype_from_str, _to_dev
 
 # noinspection PyShadowingNames
 def ones(shape: Union[int, Tuple[int, ...]],
