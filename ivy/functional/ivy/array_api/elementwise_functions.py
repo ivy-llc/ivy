@@ -14,3 +14,15 @@ def isfinite(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
              The returned array must have a data type of bool.
     """
     return _cur_framework(x).isfinite(x)
+
+
+def isnan(x: Union[ivy.Array, ivy.NativeArray])\
+        -> Union[ivy.Array, ivy.NativeArray]:
+    """
+    Returns boolean map at locations where the input is not a number (nan).
+
+    :param x: Input array.
+    :type x: array
+    :return: Boolean values for where the values of the array are nan.
+    """
+    return _cur_framework(x).isnan(x)

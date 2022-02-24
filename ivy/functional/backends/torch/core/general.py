@@ -369,10 +369,6 @@ def indices_where(x):
     return res
 
 
-def isnan(x):
-    return _torch.isnan(x)
-
-
 def isinf(x):
     return _torch.isinf(x)
 

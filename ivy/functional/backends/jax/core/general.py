@@ -248,9 +248,6 @@ def indices_where(x):
     return ret
 
 
-def isnan(x):
-    return _jnp.isnan(x)
-
 isinf = _jnp.isinf
 reshape = _jnp.reshape
 broadcast_to = _jnp.broadcast_to
