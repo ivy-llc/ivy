@@ -101,25 +101,6 @@ def pinv(x):
     return _cur_framework(x).pinv(x)
 
 
-
-def cross(a, b, /, axis):
-    """
-    Compute and return the cross product of 3-element vectors, it must have the same shape as b
-    :param axis: the axis (dimension) of a and b containing the vector for which to compute the cross
-    product default is -1
-    :type  axis: int
-    :param a: first input, should have a numeric data type
-    :type a: array 
-    :param b: second input, should have a numeric data type 
-    :type b: array
-    :param f: Machine learning framework. Inferred from inputs if None.
-    :type f: ml_framework, optional
-    :return: an array that contains the cross products
-    """
-    return _cur_framework(a).cross(a, b, axis)
-
-
-
 def vector_to_skew_symmetric_matrix(vector):
     """
     Given vector :math:`\mathbf{a}\in\mathbb{R}^3`, return associated skew-symmetric matrix
