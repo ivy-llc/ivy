@@ -55,8 +55,8 @@ def builtin_neg(x):
 
 # noinspection PyShadowingBuiltins
 @_handle_flat_arrays_in_out
-def builtin_pow(x, power):
-    return x.__pow__(power)
+def builtin_pow(self, other):
+    return self.__pow__(other)
 
 
 # noinspection PyShadowingBuiltins

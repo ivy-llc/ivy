@@ -436,20 +436,6 @@ def argmin(x: Union[ivy.Array, ivy.NativeArray], axis: int = 0)\
     return _cur_framework(x).argmin(x, axis)
 
 
-def argsort(x: Union[ivy.Array, ivy.NativeArray], axis: int = -1)\
-        -> Union[ivy.Array, ivy.NativeArray]:
-    """
-    Returns the indices of a tensor that give its sorted order along an axis.
-
-    :param x: Input array containing elements to argsort.
-    :type x: array
-    :param axis: Axis to perform the argsort, default is -1.
-    :type axis: int, optional
-    :return: The indices that would sort each slice of the given values along the given axis.
-    """
-    return _cur_framework(x).argsort(x, axis)
-
-
 # noinspection PyShadowingNames
 def arange(stop: Number, start: Number = 0, step: Number = 1, dtype: ivy.Dtype = None, dev: ivy.Device = None,
            ) -> Union[ivy.Array, ivy.NativeArray]:
@@ -820,20 +806,6 @@ def isinf(x: Union[ivy.Array, ivy.NativeArray])\
     :return: Boolean values for where the values of the array are inf.
     """
     return _cur_framework(x).isinf(x)
-
-
-def isfinite(x: Union[ivy.Array, ivy.NativeArray])\
-        -> Union[ivy.Array, ivy.NativeArray]:
-    """
-    Tests each element x_i of the input array x to determine if finite (i.e., not NaN and not equal to positive
-    or negative infinity).
-
-    :param x: Input array.
-    :type x: array
-    :return: an array containing test results. An element out_i is True if x_i is finite and False otherwise.
-             The returned array must have a data type of bool.
-    """
-    return _cur_framework(x).isfinite(x)
 
 
 def value_is_nan(x: Union[ivy.Array, ivy.NativeArray, Number], include_infs: bool = True)\

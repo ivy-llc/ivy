@@ -1,14 +1,11 @@
 # global
 import sys
 import tensorflow as tf
+from tensorflow.python.types.core import Tensor
 from tensorflow.python.framework.dtypes import DType
 
 # local
-from . import array_api
-from .array_api import *
-from .core import *
-from . import nn
-from .nn import *
+import ivy
 
 # noinspection PyUnresolvedReferences
 use = ivy.framework_handler.ContextManager(sys.modules[__name__])
@@ -52,38 +49,14 @@ def closest_valid_dtype(type):
     return type
 
 
-def iinfo(type):
-    return tf.experimental.numpy.iinfo(dtype_to_str(type))
-
-
-class Finfo:
-
-    def __init__(self, tf_finfo):
-        self._tf_finfo = tf_finfo
-
-    @property
-    def bits(self):
-        return self._tf_finfo.bits
-
-    @property
-    def eps(self):
-        return float(self._tf_finfo.eps)
-
-    @property
-    def max(self):
-        return float(self._tf_finfo.max)
-
-    @property
-    def min(self):
-        return float(self._tf_finfo.min)
-
-    @property
-    def smallest_normal(self):
-        return float(self._tf_finfo.tiny)
-
-
-def finfo(type):
-    return Finfo(tf.experimental.numpy.finfo(dtype_from_str(type)))
-
-
 backend = 'tensorflow'
+
+
+# local sub-modules
+from . import array_api
+from .array_api import *
+from . import array_builtins
+from .array_builtins import *
+from .core import *
+from . import nn
+from .nn import *
