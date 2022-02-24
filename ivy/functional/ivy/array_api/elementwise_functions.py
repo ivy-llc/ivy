@@ -11,19 +11,19 @@ def sinh(x: ivy.Array) -> ivy.Array:
     :return: an array containing the hyperbolic sine of each element in x. The returned array must have a
              floating-point data type determined by Type Promotion Rules.
     """
-    if x.__contains__(float('NaN')):
+    if float('NaN') in x:
         return float('NaN')
 
-    if x.__contains__(+0.0):
+    if (+0.0) in x:
         return +0.0
 
-    if x.__contains__(-0.0):
+    if (-0.0) in x:
         return -0.0
 
-    if x.__contains__(float('inf')):
+    if float('inf') in x:
         return float('inf')
 
-    if x.__contains__(float('-inf')):
+    if float('-inf') in x:
         return float('-inf')
 
     return _cur_framework(x).sinh(x)
