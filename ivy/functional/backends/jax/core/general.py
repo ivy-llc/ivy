@@ -148,9 +148,6 @@ def argmin(x, axis=0):
     return ret
 
 
-argsort = lambda x, axis=-1: _jnp.argsort(x, axis)
-
-
 def cast(x, dtype):
     return x.astype(dtype_from_str(dtype))
 
