@@ -12,3 +12,8 @@ def isfinite(x: Tensor)\
     if ivy.is_int_dtype(x):
         return tf.ones_like(x, tf.bool)
     return tf.math.is_finite(x)
+
+
+def atanh(x: Tensor)\
+        -> Tensor:
+    return tf.math.atanh(x)

@@ -139,16 +139,6 @@ def acosh(x):
     return _cur_framework(x).acosh(x)
 
 
-def atanh(x):
-    """
-    Returns a new array with the inverse hyperbolic tangent of the elements of x.
-
-    :param x: Input array.
-    :return: A new array with the inverse hyperbolic tangent of the elements of x.
-    """
-    return _cur_framework(x).atanh(x)
-
-
 def log(x):
     """
     Computes natural logarithm of x element-wise.

@@ -79,12 +79,6 @@ def acosh(x):
     return _torch.acosh(x)
 
 
-def atanh(x):
-    if isinstance(x, float):
-        return math.atanh(x)
-    return _torch.atanh(x)
-
-
 def log(x):
     if isinstance(x, float):
         return math.log(x)

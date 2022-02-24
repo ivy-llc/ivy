@@ -21,7 +21,6 @@ cosh = _np.cosh
 tanh = _np.tanh
 asinh = _np.arcsinh
 acosh = _np.arccosh
-atanh = _np.arctanh
 log = _np.log
 exp = _np.exp
 

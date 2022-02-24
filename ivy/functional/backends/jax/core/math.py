@@ -18,7 +18,6 @@ cosh = _jnp.cosh
 tanh = _jnp.tanh
 asinh = _jnp.arcsinh
 acosh = _jnp.arccosh
-atanh = _jnp.arctanh
 log = _jnp.log
 exp = _jnp.exp
 erf = _jax.scipy.special.erf
