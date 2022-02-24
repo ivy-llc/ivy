@@ -11,15 +11,14 @@ from typing import Union, Tuple
 
 
 def zeros(shape: Union[int, Tuple[int, ...]], *, dtype: ivy.Dtype = None, device: ivy.Device = None)\
-        -> ivy.Array:
-    """
+        -> Union[ivy.Array, ivy.NativeArray]:
+        """
     Return a new array of given shape and type, filled with zeros.
-    :param shape: Shape of the new array, e.g. (2, 3).
-    :type shape: sequence of ints
-    :param dtype: The desired data-type for the array in string format, i.e. 'float32' or 'int64'.
-    Default is 'float32'.
-    :type dtype: data-type string, optional
-    :param dev: device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc..
+    :param shape: output array shape.
+    :type shape: sequence of ints.
+    :param dtype: output array data type. If dtype is None, the output array data type must be the default floating-point data type. Default: None.
+    :type dtype: data-type string.
+    :param dev: device on which to place the created array. Default: None.
     :type dev: ivy.Device
     :return: an array containing zeros. .
     """
