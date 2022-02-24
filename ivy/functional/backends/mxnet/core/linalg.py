@@ -71,5 +71,8 @@ def vector_to_skew_symmetric_matrix(vector):
     return _mx.nd.concat(*(row1, row2, row3), dim=-2)
 
 
-def diagonal(x, offset=0, axis1=0, axis2=1):
+def diagonal(x: _mx.nd.NDArray,
+             offset: int = 0,
+             axis1: int = 0,
+             axis2: int = 1) -> _mx.nd.NDArray:
     return _mx.nd.diag(x, k=offset, axis1=axis1, axis2=axis2)
