@@ -5,8 +5,6 @@ Collection of TensorFlow math functions, wrapped to fit Ivy syntax and signature
 # global
 import tensorflow as _tf
 
-e = _tf.experimental.numpy.e
-pi = _tf.experimental.numpy.pi 
 sin = _tf.sin
 cos = _tf.cos
 tan = _tf.tan
