@@ -124,7 +124,10 @@ def cholesky(x):
     return _cur_framework(x).cholesky(x)
 
 
-def diagonal(x, offset=0, axis1=0, axis2=1):
+def diagonal(x: ivy.Array,
+             offset: int = 0,
+             axis1: int = 0,
+             axis2: int = 1) -> ivy.Array:
     """
     Returns the specified diagonal of a matrix `x`
 

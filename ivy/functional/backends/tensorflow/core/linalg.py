@@ -54,5 +54,8 @@ def vector_to_skew_symmetric_matrix(vector):
     return _tf.concat((row1, row2, row3), -2)
 
 
-def diagonal(x, offset=0, axis1=0, axis2=1):
+def diagonal(x: _tf.Tensor,
+             offset: int = 0,
+             axis1: int = 0,
+             axis2: int = 1) -> _tf.Tensor:
     return _tf.experimental.numpy.diagonal(x, offset, axis1=axis1, axis2=axis2)
