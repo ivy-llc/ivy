@@ -37,9 +37,13 @@ pinv = _tf.linalg.pinv
 cholesky = _tf.linalg.cholesky
 cross = _tf.linalg.cross
 
+<<<<<<< HEAD:ivy/functional/backends/tensorflow/core/linear_algebra.py
 
 def cross(a, b, axis=-1):
     return _tf.linalg.cross(a, b)
+=======
+cholesky = _tf.linalg.cholesky
+>>>>>>> 1e3b089d0 (worked on the cross method):ivy/functional/backends/tensorflow/core/linalg.py
 
 
 def vector_to_skew_symmetric_matrix(vector):
