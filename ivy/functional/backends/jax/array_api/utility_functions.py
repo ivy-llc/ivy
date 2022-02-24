@@ -12,3 +12,10 @@ def all(x: JaxArray,
         keepdims: bool = False)\
         -> JaxArray:
     return jnp.all(x, axis, keepdims=keepdims)
+
+
+def any(x: JaxArray,
+        axis: Optional[Union[int, Tuple[int], List[int]]] = None,
+        keepdims: bool = False)\
+        -> JaxArray:
+    return jnp.any(x, axis, keepdims=keepdims)
