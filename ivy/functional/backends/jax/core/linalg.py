@@ -23,11 +23,6 @@ def matrix_norm(x, p=2, axes=None, keepdims=False):
 
 inv = _jnp.linalg.inv
 pinv = _jnp.linalg.pinv
-
-
-def cross(a, b, axis=-1):
-    return _jnp.cross(a, b, axis=axis)
-
 cholesky = _jnp.linalg.cholesky
 
 
