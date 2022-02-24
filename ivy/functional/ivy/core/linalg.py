@@ -126,8 +126,8 @@ def cholesky(x):
 
 def diagonal(x: ivy.Array,
              offset: int = 0,
-             axis1: int = 0,
-             axis2: int = 1) -> ivy.Array:
+             axis1: int = -2,
+             axis2: int = -1) -> ivy.Array:
     """
     Returns the specified diagonal of a matrix `x`
 

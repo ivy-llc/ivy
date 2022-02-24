@@ -45,6 +45,6 @@ def vector_to_skew_symmetric_matrix(vector):
 
 def diagonal(x: _jnp.ndarray,
              offset: int = 0,
-             axis1: int = 0,
-             axis2: int = 1) -> _jnp.ndarray:
+             axis1: int = -2,
+             axis2: int = -1) -> _jnp.ndarray:
     return _jnp.diagonal(x, offset, axis1, axis2)

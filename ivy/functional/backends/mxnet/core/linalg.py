@@ -73,6 +73,6 @@ def vector_to_skew_symmetric_matrix(vector):
 
 def diagonal(x: _mx.nd.NDArray,
              offset: int = 0,
-             axis1: int = 0,
-             axis2: int = 1) -> _mx.nd.NDArray:
+             axis1: int = -2,
+             axis2: int = -1) -> _mx.nd.NDArray:
     return _mx.nd.diag(x, k=offset, axis1=axis1, axis2=axis2)

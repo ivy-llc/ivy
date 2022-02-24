@@ -57,6 +57,6 @@ def vector_to_skew_symmetric_matrix(vector):
 
 def diagonal(x: _torch.Tensor,
              offset: int = 0,
-             axis1: int = 0,
-             axis2: int = 1) -> _torch.Tensor:
+             axis1: int = -2,
+             axis2: int = -1) -> _torch.Tensor:
     return _torch.diagonal(x, offset=offset, dim1=axis1, dim2=axis2)
