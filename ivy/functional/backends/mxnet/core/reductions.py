@@ -112,4 +112,3 @@ def reduce_max(x, axis=None, keepdims=False):
 
 def einsum(equation, *operands):
     return _mx.np.einsum(equation, *[op.as_np_ndarray() for op in operands]).as_nd_ndarray()
-
