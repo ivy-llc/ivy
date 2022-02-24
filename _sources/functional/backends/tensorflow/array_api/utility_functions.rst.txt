@@ -13,4 +13,5 @@ Utility functions
    :caption: Utility functions
 
    utility_functions/all.rst
+   utility_functions/any.rst
 
