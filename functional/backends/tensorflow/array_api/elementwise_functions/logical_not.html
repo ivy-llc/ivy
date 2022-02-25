@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>ivy.functional.ivy.core.logic &mdash; Ivy 1.0 documentation</title>
+  <title>logical_not &mdash; Ivy 1.0 documentation</title>
   
 
   
@@ -103,8 +103,8 @@
 </ul>
 <p class="caption"><span class="caption-text">Functional</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../functional/backends.html">Backends</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../functional/ivy.html">Ivy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../backends.html">Backends</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../ivy.html">Ivy</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Graph compiler</span></p>
 <ul>
@@ -182,12 +182,14 @@
     
       <li><a href="../../../../../index.html">Docs</a> &raquo;</li>
         
-          <li><a href="../../../../index.html">Module code</a> &raquo;</li>
-        
-      <li>ivy.functional.ivy.core.logic</li>
+      <li>logical_not</li>
     
     
       <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../../../../_sources/functional/backends/tensorflow/array_api/elementwise_functions/logical_not.rst.txt" rel="nofollow"> View page source</a>
+          
         
       </li>
     
@@ -199,41 +201,15 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <h1>Source code for ivy.functional.ivy.core.logic</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">Collection of logic Ivy functions.</span>
-<span class="sd">&quot;&quot;&quot;</span>
+  <div class="section" id="logical-not">
+<h1>logical_not<a class="headerlink" href="#logical-not" title="Permalink to this headline">¶</a></h1>
+<div class="line-block">
+<div class="line"><br /></div>
+<div class="line"><strong>Supported Frameworks:</strong></div>
+</div>
+<p><a class="reference internal" href="../../../../../_images/empty.png"><img alt="empty" src="../../../../../_images/empty.png" style="width: 4%;" /></a> <a class="reference external" href="https://jax.readthedocs.io"><img alt="jax_logo" src="../../../../../_images/jax_logo.png" style="width: 14%;" /></a> <a class="reference internal" href="../../../../../_images/empty.png"><img alt="empty" src="../../../../../_images/empty.png" style="width: 4%;" /></a> <a class="reference external" href="https://www.tensorflow.org"><img alt="tf_logo" src="../../../../../_images/tensorflow_logo.png" style="width: 14%;" /></a> <a class="reference internal" href="../../../../../_images/empty.png"><img alt="empty" src="../../../../../_images/empty.png" style="width: 4%;" /></a> <a class="reference external" href="https://pytorch.org"><img alt="pytorch_logo" src="../../../../../_images/pytorch_logo.png" style="width: 14%;" /></a> <a class="reference internal" href="../../../../../_images/empty.png"><img alt="empty" src="../../../../../_images/empty.png" style="width: 4%;" /></a> <a class="reference external" href="https://mxnet.apache.org"><img alt="mxnet_logo" src="../../../../../_images/mxnet_logo.png" style="width: 14%;" /></a> <a class="reference internal" href="../../../../../_images/empty.png"><img alt="empty" src="../../../../../_images/empty.png" style="width: 4%;" /></a> <a class="reference external" href="https://numpy.org"><img alt="numpy_logo" src="../../../../../_images/numpy_logo.png" style="width: 14%;" /></a> <a class="reference internal" href="../../../../../_images/empty.png"><img alt="empty" src="../../../../../_images/empty.png" style="width: 4%;" /></a></p>
+</div>
 
-<span class="c1"># local</span>
-<span class="kn">import</span> <span class="nn">ivy</span>
-<span class="kn">from</span> <span class="nn">ivy.framework_handler</span> <span class="kn">import</span> <span class="n">current_framework</span> <span class="k">as</span> <span class="n">_cur_framework</span>
-
-
-<div class="viewcode-block" id="logical_and"><a class="viewcode-back" href="../../../../../functional/ivy/core/logic/logical_and.html#ivy.functional.ivy.core.logic.logical_and">[docs]</a><span class="k">def</span> <span class="nf">logical_and</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Computes the truth value of x1 AND x2 element-wise.</span>
-
-<span class="sd">    :param x1: Input array 1.</span>
-<span class="sd">    :type x1: array</span>
-<span class="sd">    :param x2: Input array 2.</span>
-<span class="sd">    :type x2: array</span>
-<span class="sd">    :return: Boolean result of the logical AND operation applied element-wise to x1 and x2.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x1</span><span class="p">)</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="logical_or"><a class="viewcode-back" href="../../../../../functional/ivy/core/logic/logical_or.html#ivy.functional.ivy.core.logic.logical_or">[docs]</a><span class="k">def</span> <span class="nf">logical_or</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Computes the truth value of x1 OR x2 element-wise.</span>
-
-<span class="sd">    :param x1: Input array 1.</span>
-<span class="sd">    :type x1: array</span>
-<span class="sd">    :param x2: Input array 2.</span>
-<span class="sd">    :type x2: array</span>
-<span class="sd">    :return: Boolean result of the logical OR operation applied element-wise x1 and x2.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x1</span><span class="p">)</span><span class="o">.</span><span class="n">logical_or</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">)</span></div>
-</pre></div>
 
            </div>
            

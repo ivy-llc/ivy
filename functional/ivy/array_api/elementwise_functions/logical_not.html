@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Elementwise functions &mdash; Ivy 1.0 documentation</title>
+  <title>logical_not &mdash; Ivy 1.0 documentation</title>
   
 
   
@@ -182,13 +182,13 @@
     
       <li><a href="../../../../index.html">Docs</a> &raquo;</li>
         
-      <li>Elementwise functions</li>
+      <li>logical_not</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../../../_sources/functional/backends/numpy/array_api/elementwise_functions.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../../../_sources/functional/ivy/array_api/elementwise_functions/logical_not.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -201,25 +201,27 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="module-ivy.functional.backends.numpy.array_api.elementwise_functions">
-<span id="elementwise-functions"></span><h1>Elementwise functions<a class="headerlink" href="#module-ivy.functional.backends.numpy.array_api.elementwise_functions" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="logical-not">
+<h1>logical_not<a class="headerlink" href="#logical-not" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
-<dt id="ivy.functional.backends.numpy.array_api.elementwise_functions.isfinite">
-<code class="sig-prename descclassname">ivy.functional.backends.numpy.array_api.elementwise_functions.</code><code class="sig-name descname">isfinite</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">numpy.ndarray</span></em><span class="sig-paren">)</span> &#x2192; numpy.ndarray<a class="reference internal" href="../../../../_modules/ivy/functional/backends/numpy/array_api/elementwise_functions.html#isfinite"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.backends.numpy.array_api.elementwise_functions.isfinite" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dt id="ivy.functional.ivy.array_api.elementwise_functions.logical_not">
+<code class="sig-prename descclassname">ivy.functional.ivy.array_api.elementwise_functions.</code><code class="sig-name descname">logical_not</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">ivy.array.Array</span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../../../_modules/ivy/functional/ivy/array_api/elementwise_functions.html#logical_not"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.array_api.elementwise_functions.logical_not" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the truth value of NOT x element-wise.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>x</strong> – Input array.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Boolean result of the logical NOT operation applied element-wise to x.</p>
+</dd>
+</dl>
+</dd></dl>
 
-<dl class="py function">
-<dt id="ivy.functional.backends.numpy.array_api.elementwise_functions.logical_not">
-<code class="sig-prename descclassname">ivy.functional.backends.numpy.array_api.elementwise_functions.</code><code class="sig-name descname">logical_not</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">numpy.ndarray</span></em><span class="sig-paren">)</span> &#x2192; numpy.ndarray<a class="reference internal" href="../../../../_modules/ivy/functional/backends/numpy/array_api/elementwise_functions.html#logical_not"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.backends.numpy.array_api.elementwise_functions.logical_not" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<div class="toctree-wrapper compound">
-<p class="caption"><span class="caption-text">Elementwise functions</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="elementwise_functions/isfinite.html">isfinite</a></li>
-<li class="toctree-l1"><a class="reference internal" href="elementwise_functions/logical_not.html">logical_not</a></li>
-</ul>
+<div class="line-block">
+<div class="line"><br /></div>
+<div class="line"><strong>Supported Frameworks:</strong></div>
 </div>
+<p><a class="reference internal" href="../../../../_images/empty.png"><img alt="empty" src="../../../../_images/empty.png" style="width: 4%;" /></a> <a class="reference external" href="https://jax.readthedocs.io"><img alt="jax_logo" src="../../../../_images/jax_logo.png" style="width: 14%;" /></a> <a class="reference internal" href="../../../../_images/empty.png"><img alt="empty" src="../../../../_images/empty.png" style="width: 4%;" /></a> <a class="reference external" href="https://www.tensorflow.org"><img alt="tf_logo" src="../../../../_images/tensorflow_logo.png" style="width: 14%;" /></a> <a class="reference internal" href="../../../../_images/empty.png"><img alt="empty" src="../../../../_images/empty.png" style="width: 4%;" /></a> <a class="reference external" href="https://pytorch.org"><img alt="pytorch_logo" src="../../../../_images/pytorch_logo.png" style="width: 14%;" /></a> <a class="reference internal" href="../../../../_images/empty.png"><img alt="empty" src="../../../../_images/empty.png" style="width: 4%;" /></a> <a class="reference external" href="https://mxnet.apache.org"><img alt="mxnet_logo" src="../../../../_images/mxnet_logo.png" style="width: 14%;" /></a> <a class="reference internal" href="../../../../_images/empty.png"><img alt="empty" src="../../../../_images/empty.png" style="width: 4%;" /></a> <a class="reference external" href="https://numpy.org"><img alt="numpy_logo" src="../../../../_images/numpy_logo.png" style="width: 14%;" /></a> <a class="reference internal" href="../../../../_images/empty.png"><img alt="empty" src="../../../../_images/empty.png" style="width: 4%;" /></a></p>
 </div>
 
 
