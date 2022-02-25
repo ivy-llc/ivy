@@ -114,7 +114,6 @@ def cholesky(x):
     return _cur_framework(x).cholesky(x)
 
 
-# noinspection PyShadowingBuiltins
 def cross(x1: Union[ivy.Array, ivy.NativeArray], x2: Union[ivy.Array, ivy.NativeArray], /, *,
           axis: Optional[int] = -1) -> ivy.Array:
     """
