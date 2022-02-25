@@ -1,11 +1,10 @@
 # global
 import tensorflow as tf
 from tensorflow.python.types.core import Tensor
-from typing  import Union, Optional, Tuple, Literal
+from typing import Union, Optional, Tuple, Literal
 
 # local
 from ivy import inf
-
 
 
 def vector_norm(x: Tensor, 
@@ -13,8 +12,6 @@ def vector_norm(x: Tensor,
                 axis: Optional[Union[int, Tuple[int]]] = None, 
                 keepdims: bool = False)\
                  -> Tensor:
-
-    tn_normalized_vector = None
 
     if p == -float('inf'):
         tn_normalized_vector = tf.reduce_min(tf.abs(x), axis, keepdims)
@@ -28,5 +25,5 @@ def vector_norm(x: Tensor,
         tn_normalized_vector = tf.linalg.norm(x,p,axis,keepdims)
 
     if tn_normalized_vector.shape  == tuple():
-        return  tf.expand_dims(tn_normalized_vector, 0)
+        return tf.expand_dims(tn_normalized_vector, 0)
     return tn_normalized_vector
