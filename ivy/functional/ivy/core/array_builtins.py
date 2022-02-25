@@ -99,8 +99,20 @@ def builtin_mul(x, other):
 def builtin_rmul(x, other):
     return x.__rmul__(other)
 
-def builtin_matmul(x, other):
-    return x.__matmul__(other)
+
+# noinspection PyShadowingBuiltins
+def builtin_matmul(self: Union[ivy.Array, ivy.NativeArray],
+                other: Union[int, float, ivy.Array, ivy.NativeArray]) \
+        -> Union[ivy.Array, ivy.NativeArray]:
+    """
+    Computes the matrix product.
+
+    :param self: array instance whose elements correspond to the exponentiation base. Should have a numeric data type.
+    :param other: other array. Should have a numeric data type. Must have at least one dimension
+    :return: an array containing the matrix multiplication. The returned array must have a data type determined by
+              Type Promotion Rules.
+    """
+    return self.__matmul__(other)
 
 # noinspection PyShadowingBuiltins
 def builtin_truediv(x, other):
