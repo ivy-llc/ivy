@@ -33,6 +33,16 @@ def isfinite(x: Union[ivy.Array, ivy.NativeArray])\
     return _cur_framework(x).isfinite(x)
 
 
+def asinh(x):
+    """
+    Calculates an implementation-dependent approximation to the inverse hyperbolic sine.
+
+    :param x: Input array.
+    :return: A new array containing the inverse hyperbolic sine of each element in x.
+    """
+    return _cur_framework(x).asinh(x)
+
+
 def cosh(x: Union[ivy.Array, ivy.NativeArray])\
         -> ivy.Array:
     """

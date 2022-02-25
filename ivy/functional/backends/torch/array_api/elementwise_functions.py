@@ -18,6 +18,13 @@ def isfinite(x: torch.Tensor) \
     return torch.isfinite(x)
 
 
+def asinh(x: torch.Tensor) \
+        -> Union[float, Tensor]:
+    if isinstance(x, float):
+        return math.asinh(x)
+    return torch.asinh(x)
+
+
 def cosh(x: torch.Tensor) \
         -> Union[float, Tensor]:
     if isinstance(x, float):
