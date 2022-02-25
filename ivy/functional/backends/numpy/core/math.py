@@ -10,7 +10,6 @@ except (ImportError, ModuleNotFoundError):
     _erf = None
 
 sin = _np.sin
-cos = _np.cos
 tan = _np.tan
 asin = _np.arcsin
 acos = _np.arccos

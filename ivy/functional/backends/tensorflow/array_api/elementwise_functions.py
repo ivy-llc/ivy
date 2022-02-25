@@ -6,6 +6,10 @@ from tensorflow.python.types.core import Tensor
 import ivy
 
 
+def bitwise_and(x1: Tensor, x2: Tensor) -> Tensor:
+    return tf.bitwise.bitwise_and(x1, x2)
+
+
 def isfinite(x: Tensor) \
         -> Tensor:
     if ivy.is_int_dtype(x):
@@ -16,3 +20,12 @@ def isfinite(x: Tensor) \
 def cosh(x: Tensor) \
         -> Tensor:
     return tf.cosh(x)
+
+
+def cos(x: Tensor) \
+        -> Tensor:
+    return tf.cos(x)
+
+
+def logical_not(x: Tensor) -> Tensor:
+    return tf.logical_not(tf.cast(x, tf.bool))
