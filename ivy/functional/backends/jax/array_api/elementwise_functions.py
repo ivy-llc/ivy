@@ -16,7 +16,6 @@ def isfinite(x: JaxArray)\
     return jnp.isfinite(x)
 
 
-
 def asinh(x: JaxArray)\
         -> JaxArray:
     return jnp.arcsinh(x)
