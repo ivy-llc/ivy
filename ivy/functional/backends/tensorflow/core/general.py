@@ -117,6 +117,7 @@ floor = _tf.floor
 ceil = _tf.math.ceil
 
 
+
 # noinspection PyShadowingBuiltins
 def abs(x):
     if 'uint' in dtype(x, as_str=True):
