@@ -1,12 +1,15 @@
 #global
-from typing import Union, Tuple
+from typing import Union, Tuple, Optional
 
 #local
 import ivy
 from ivy.framework_handler import current_framework as _cur_framework
 
 
-def roll(x: Union[ivy.Array, ivy.NativeArray], shift: Union[int, Tuple[int]], axis:Union[int, Tuple[int]]=None) -> Union[ivy.Array, ivy.NativeArray]:
+def roll(x: Union[ivy.Array, ivy.NativeArray],\
+    shift: Union[int, Tuple[int]],\
+    axis: Optional[Union[int, Tuple[int]]]=None)\
+     -> Union[ivy.Array, ivy.NativeArray]:
     """
     Rolls array elements along a specified axis. Array elements that roll beyond the last position are re-introduced at the first position. Array elements that roll beyond the first position are re-introduced at the last position.
 
