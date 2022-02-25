@@ -1611,4 +1611,3 @@ def inplace_increment(x, val, f=None):
     :return: The variable following the in-place increment.
     """
     return _cur_framework(x).inplace_increment(x, val)
-  
