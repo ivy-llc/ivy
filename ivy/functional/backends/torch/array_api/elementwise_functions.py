@@ -3,7 +3,9 @@ import torch
 import math
 
 
-def bitwise_and(x1: torch.Tensor, x2: torch.Tensor) -> torch.Tensor:
+def bitwise_and(x1: torch.Tensor,
+                x2: torch.Tensor)\
+        -> torch.Tensor:
     return torch.bitwise_and(x1, x2)
 
 
@@ -19,5 +21,6 @@ def cos(x: torch.Tensor)\
     return torch.cos(x)
 
 
-def logical_not(x: torch.Tensor) -> torch.Tensor:
+def logical_not(x: torch.Tensor)\
+        -> torch.Tensor:
     return torch.logical_not(x.type(torch.bool))
