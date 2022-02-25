@@ -436,20 +436,6 @@ def argmin(x: Union[ivy.Array, ivy.NativeArray], axis: int = 0)\
     return _cur_framework(x).argmin(x, axis)
 
 
-def argsort(x: Union[ivy.Array, ivy.NativeArray], axis: int = -1)\
-        -> Union[ivy.Array, ivy.NativeArray]:
-    """
-    Returns the indices of a tensor that give its sorted order along an axis.
-
-    :param x: Input array containing elements to argsort.
-    :type x: array
-    :param axis: Axis to perform the argsort, default is -1.
-    :type axis: int, optional
-    :return: The indices that would sort each slice of the given values along the given axis.
-    """
-    return _cur_framework(x).argsort(x, axis)
-
-
 # noinspection PyShadowingNames
 def arange(stop: Number, start: Number = 0, step: Number = 1, dtype: ivy.Dtype = None, dev: ivy.Device = None,
            ) -> Union[ivy.Array, ivy.NativeArray]:
@@ -899,22 +885,7 @@ def squeeze(x: Union[ivy.Array, ivy.NativeArray], axis: int = None)\
     return _cur_framework(x).squeeze(x, axis)
 
 
-# noinspection PyShadowingNames
-def zeros(shape: Iterable[int], dtype: ivy.Dtype = 'float32', dev: ivy.Device = None)\
-        -> Union[ivy.Array, ivy.NativeArray]:
-    """
-    Return a new array of given shape and type, filled with zeros.
 
-    :param shape: Shape of the new array, e.g. (2, 3).
-    :type shape: sequence of ints
-    :param dtype: The desired data-type for the array in string format, i.e. 'float32' or 'int64'.
-    Default is 'float32'.
-    :type dtype: data-type string, optional
-    :param dev: device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc..
-    :type dev: ivy.Device
-    :return: Tensor of zeros with the given shape and dtype.
-    """
-    return _cur_framework().zeros(shape, dtype, dev)
 
 
 # noinspection PyShadowingNames

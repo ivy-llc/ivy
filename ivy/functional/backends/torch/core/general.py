@@ -156,10 +156,6 @@ def argmin(x, axis: int = 0):
     return ret
 
 
-def argsort(x, axis: int = -1):
-    return _torch.argsort(x, axis)
-
-
 def cast(x, dtype_in: str):
     dtype_val = dtype_from_str(dtype_in)
     return x.type(dtype_val)
@@ -397,11 +393,6 @@ def squeeze(x, axis: Optional[int] = None):
     return _torch.squeeze(x, axis)
 
 
-# noinspection PyShadowingNames
-def zeros(shape: List[int], dtype: Union[ivy.Dtype, str] = None, dev: Optional[str] = None):
-    return _torch.zeros(
-        shape, dtype=dtype_from_str(default_dtype(dtype)),
-        device=dev_from_str(default_device(dev)))
 
 
 # noinspection PyShadowingNames
