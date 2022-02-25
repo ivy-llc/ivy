@@ -235,9 +235,18 @@
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
 
 
+<div class="viewcode-block" id="asinh"><a class="viewcode-back" href="../../../../../functional/ivy/array_api/elementwise_functions/asinh.html#ivy.functional.ivy.array_api.elementwise_functions.asinh">[docs]</a><span class="k">def</span> <span class="nf">asinh</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Calculates an implementation-dependent approximation to the inverse hyperbolic sine.</span>
+
+<span class="sd">    :param x: Input array.</span>
+<span class="sd">    :return: A new array containing the inverse hyperbolic sine of each element in x.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">asinh</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
+
+
 <div class="viewcode-block" id="sqrt"><a class="viewcode-back" href="../../../../../functional/ivy/array_api/elementwise_functions/sqrt.html#ivy.functional.ivy.array_api.elementwise_functions.sqrt">[docs]</a><span class="k">def</span> <span class="nf">sqrt</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">])</span>\
         <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Calculates the square root, having domain [0, +infinity] and codomain [0, +infinity], for each element x_i of the</span>
 <span class="sd">    input array x. After rounding, each result must be indistinguishable from the infinitely precise result (as required</span>

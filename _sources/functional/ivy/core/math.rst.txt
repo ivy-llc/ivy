@@ -21,7 +21,6 @@ Math
    math/sinh.rst
    math/cosh.rst
    math/tanh.rst
-   math/asinh.rst
    math/acosh.rst
    math/atanh.rst
    math/log.rst
