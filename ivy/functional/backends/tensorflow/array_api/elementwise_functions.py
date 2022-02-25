@@ -17,3 +17,7 @@ def isfinite(x: Tensor)\
 def cos(x: Tensor)\
         -> Tensor:
     return tf.cos(x)
+
+  
+def logical_not(x: Tensor) -> Tensor:
+    return tf.logical_not(tf.cast(x, tf.bool))

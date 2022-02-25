@@ -11,3 +11,7 @@ def isfinite(x: np.ndarray)\
 def cos(x: np.ndarray)\
         -> np.ndarray:
     return np.asarray(npa.cos(npa.asarray(x)))
+
+
+def logical_not(x: np.ndarray) -> np.ndarray:
+    return np.logical_not(x)

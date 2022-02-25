@@ -24,3 +24,13 @@ def cos(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
     :return: The cosine of x element-wise.
     """
     return _cur_framework(x).cos(x)
+
+
+def logical_not(x: ivy.Array) -> ivy.Array:
+    """
+    Computes the truth value of NOT x element-wise.
+
+    :param x: Input array.
+    :return: Boolean result of the logical NOT operation applied element-wise to x.
+    """
+    return _cur_framework(x).logical_not(x)
