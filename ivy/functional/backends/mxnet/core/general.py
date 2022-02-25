@@ -385,11 +385,7 @@ def squeeze(x, axis=None):
 
 
 # noinspection PyShadowingNames
-def zeros(shape, dtype='float32', dev=None):
-    cont = _mxnet_init_context(default_device(dev))
-    if len(shape) == 0 or 0 in shape:
-        return _1_dim_array_to_flat_array(_mx.nd.zeros((1,), ctx=cont).astype(dtype))
-    return _mx.nd.zeros(shape, ctx=cont).astype(dtype)
+
 
 
 def zeros_like(x, dtype=None, dev=None):
