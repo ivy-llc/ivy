@@ -24,6 +24,7 @@
         <script src="../../../../_static/jquery.js"></script>
         <script src="../../../../_static/underscore.js"></script>
         <script src="../../../../_static/doctools.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../../_static/js/theme.js"></script>
 
@@ -202,6 +203,28 @@
             
   <div class="section" id="dev-unify-nest">
 <h1>dev_unify_nest<a class="headerlink" href="#dev-unify-nest" title="Permalink to this headline">¶</a></h1>
+<dl class="py function">
+<dt id="ivy.functional.ivy.core.device.dev_unify_nest">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">dev_unify_nest</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">args</span><span class="p">:</span> <span class="n">Type<span class="p">[</span><a class="reference internal" href="../device.html#ivy.functional.ivy.core.device.MultiDev" title="ivy.functional.ivy.core.device.MultiDev">ivy.functional.ivy.core.device.MultiDev</a><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">kwargs</span><span class="p">:</span> <span class="n">Type<span class="p">[</span><a class="reference internal" href="../device.html#ivy.functional.ivy.core.device.MultiDev" title="ivy.functional.ivy.core.device.MultiDev">ivy.functional.ivy.core.device.MultiDev</a><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">dev</span></em>, <em class="sig-param"><span class="n">mode</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">max_depth</span><span class="o">=</span><span class="default_value">1</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/ivy/functional/ivy/core/device.html#dev_unify_nest"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.core.device.dev_unify_nest" title="Permalink to this definition">¶</a></dt>
+<dd><p>Unify the input nested arguments, which consist of sub-arrays spread across arbitrary devices, to unified arrays
+on the single target device.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>args</strong> (<a class="reference internal" href="../device.html#ivy.functional.ivy.core.device.MultiDev" title="ivy.functional.ivy.core.device.MultiDev"><em>MultiDev</em></a>) – The nested positional arguments to unify.</p></li>
+<li><p><strong>kwargs</strong> (<a class="reference internal" href="../device.html#ivy.functional.ivy.core.device.MultiDev" title="ivy.functional.ivy.core.device.MultiDev"><em>MultiDev</em></a>) – The nested keyword arguments to unify.</p></li>
+<li><p><strong>dev</strong> (<em>Device</em>) – The device to unify the nested arguments to.</p></li>
+<li><p><strong>mode</strong> (<em>str</em>) – The mode by which to unify, must be one of [ concat | mean | sum ]</p></li>
+<li><p><strong>axis</strong> (<em>int</em><em>, </em><em>optional</em>) – The axis along which to concattenate the sub-arrays. Default is 0.</p></li>
+<li><p><strong>max_depth</strong> (<em>int</em><em>, </em><em>optional</em>) – The maximum nested depth to reach. Default is 1. Increase this if the nest is deeper.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>nested arguments unified to the target device</p>
+</dd>
+</dl>
+</dd></dl>
+
 <div class="line-block">
 <div class="line"><br /></div>
 <div class="line"><strong>Supported Frameworks:</strong></div>

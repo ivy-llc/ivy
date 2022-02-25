@@ -24,6 +24,7 @@
         <script src="../../../../_static/jquery.js"></script>
         <script src="../../../../_static/underscore.js"></script>
         <script src="../../../../_static/doctools.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../../_static/js/theme.js"></script>
 
@@ -202,6 +203,23 @@
             
   <div class="section" id="dev-clone-array">
 <h1>dev_clone_array<a class="headerlink" href="#dev-clone-array" title="Permalink to this headline">¶</a></h1>
+<dl class="py function">
+<dt id="ivy.functional.ivy.core.device.dev_clone_array">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">dev_clone_array</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">devs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/ivy/functional/ivy/core/device.html#dev_clone_array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.core.device.dev_clone_array" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clone an array across the specified devices, returning a list of cloned arrays, each on a different device.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>array</em>) – The array to clone across devices.</p></li>
+<li><p><strong>devs</strong> (<em>sequence of strs</em>) – The devices to clone the array to.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>array cloned to each of the target devices</p>
+</dd>
+</dl>
+</dd></dl>
+
 <div class="line-block">
 <div class="line"><br /></div>
 <div class="line"><strong>Supported Frameworks:</strong></div>

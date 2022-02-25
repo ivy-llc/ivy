@@ -24,6 +24,7 @@
         <script src="../../../../_static/jquery.js"></script>
         <script src="../../../../_static/underscore.js"></script>
         <script src="../../../../_static/doctools.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../../_static/js/theme.js"></script>
 
@@ -202,6 +203,23 @@
             
   <div class="section" id="dev-clone-iter">
 <h1>dev_clone_iter<a class="headerlink" href="#dev-clone-iter" title="Permalink to this headline">¶</a></h1>
+<dl class="py function">
+<dt id="ivy.functional.ivy.core.device.dev_clone_iter">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">dev_clone_iter</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">xs</span></em>, <em class="sig-param"><span class="n">devs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/ivy/functional/ivy/core/device.html#dev_clone_iter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.core.device.dev_clone_iter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clone elements of the iterbale xs to each of the specified devices.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>xs</strong> (<em>iterable of any</em>) – The iterable of items to clone.</p></li>
+<li><p><strong>devs</strong> (<em>sequence of strs</em>) – The devices to clone each of the iterable elements to.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>iterable with each element cloned to each of the target devices</p>
+</dd>
+</dl>
+</dd></dl>
+
 <div class="line-block">
 <div class="line"><br /></div>
 <div class="line"><strong>Supported Frameworks:</strong></div>

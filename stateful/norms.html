@@ -24,6 +24,7 @@
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
@@ -205,8 +206,33 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="norms">
-<h1>Norms<a class="headerlink" href="#norms" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-ivy.stateful.norms">
+<span id="norms"></span><h1>Norms<a class="headerlink" href="#module-ivy.stateful.norms" title="Permalink to this headline">¶</a></h1>
+<p>Collection of Ivy normalization classes.</p>
+<dl class="py class">
+<dt id="ivy.stateful.norms.LayerNorm">
+<em class="property">class </em><code class="sig-prename descclassname">ivy.stateful.norms.</code><code class="sig-name descname">LayerNorm</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">normalized_shape</span></em>, <em class="sig-param"><span class="n">epsilon</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">elementwise_affine</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">new_std</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">dev</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">v</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/stateful/norms.html#LayerNorm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.stateful.norms.LayerNorm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="module/Module.html#ivy.stateful.module.Module" title="ivy.stateful.module.Module"><code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.stateful.module.Module</span></code></a></p>
+<dl class="py method">
+<dt id="ivy.stateful.norms.LayerNorm.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">normalized_shape</span></em>, <em class="sig-param"><span class="n">epsilon</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">elementwise_affine</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">new_std</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">dev</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">v</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/stateful/norms.html#LayerNorm.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.stateful.norms.LayerNorm.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class for applying Layer Normalization over a mini-batch of inputs</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>normalized_shape</strong> (<em>int</em><em> or </em><em>sequence of ints</em>) – Trailing shape to applying the normalization to.</p></li>
+<li><p><strong>epsilon</strong> (<em>float</em><em>, </em><em>optional</em>) – small constant to add to the denominator, use global ivy._MIN_BASE by default.</p></li>
+<li><p><strong>elementwise_affine</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to include learnable affine parameters, default is True.</p></li>
+<li><p><strong>new_std</strong> (<em>float</em><em>, </em><em>optional</em>) – The standard deviation of the new normalized values. Default is 1.</p></li>
+<li><p><strong>dev</strong> (<em>ivy.Device</em><em>, </em><em>optional</em>) – device on which to create the layer’s variables ‘cuda:0’, ‘cuda:1’, ‘cpu’ etc.</p></li>
+<li><p><strong>v</strong> (<em>ivy container of variables</em><em>, </em><em>optional</em>) – the variables for each submodule in the sequence, constructed internally by default.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
 <div class="toctree-wrapper compound">
 <p class="caption"><span class="caption-text">Norms</span></p>
 <ul>

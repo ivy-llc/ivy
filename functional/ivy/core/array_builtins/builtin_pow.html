@@ -24,6 +24,7 @@
         <script src="../../../../_static/jquery.js"></script>
         <script src="../../../../_static/underscore.js"></script>
         <script src="../../../../_static/doctools.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../../_static/js/theme.js"></script>
 
@@ -202,6 +203,26 @@
             
   <div class="section" id="builtin-pow">
 <h1>builtin_pow<a class="headerlink" href="#builtin-pow" title="Permalink to this headline">¶</a></h1>
+<dl class="py function">
+<dt id="ivy.functional.ivy.core.array_builtins.builtin_pow">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">builtin_pow</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">other</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>int<span class="p">, </span>float<span class="p">, </span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><a class="reference internal" href="../../../../_modules/ivy/functional/ivy/core/array_builtins.html#builtin_pow"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.core.array_builtins.builtin_pow" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates an implementation-dependent approximation of exponentiation by raising each element (the base) of an
+array instance to the power of other_i (the exponent), where other_i is the corresponding element of the array other.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – array instance whose elements correspond to the exponentiation base. Should have a numeric data type.</p></li>
+<li><p><strong>other</strong> – other array whose elements correspond to the exponentiation exponent. Must be compatible with x
+(see Broadcasting). Should have a numeric data type.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>an array containing the element-wise results. The returned array must have a data type determined by
+Type Promotion Rules.</p>
+</dd>
+</dl>
+</dd></dl>
+
 <div class="line-block">
 <div class="line"><br /></div>
 <div class="line"><strong>Supported Frameworks:</strong></div>

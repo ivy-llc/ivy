@@ -24,6 +24,7 @@
         <script src="../../../../_static/jquery.js"></script>
         <script src="../../../../_static/underscore.js"></script>
         <script src="../../../../_static/doctools.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../../_static/js/theme.js"></script>
 
@@ -202,6 +203,24 @@
             
   <div class="section" id="atan2">
 <h1>atan2<a class="headerlink" href="#atan2" title="Permalink to this headline">¶</a></h1>
+<dl class="py function">
+<dt id="ivy.functional.ivy.core.math.atan2">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">atan2</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x1</span></em>, <em class="sig-param"><span class="n">x2</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/ivy/functional/ivy/core/math.html#atan2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.core.math.atan2" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes element-wise arc tangent of x1/x2 choosing the quadrant correctly.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x1</strong> (<em>array</em>) – y-coordinates.</p></li>
+<li><p><strong>x2</strong> (<em>array</em>) – x-coordinates. If x1.shape != x2.shape, they must be broadcastable to a common shape
+(which becomes the shape of the output).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Array of angles in radians, in the range [-pi, pi].</p>
+</dd>
+</dl>
+</dd></dl>
+
 <div class="line-block">
 <div class="line"><br /></div>
 <div class="line"><strong>Supported Frameworks:</strong></div>

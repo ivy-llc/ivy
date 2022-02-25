@@ -24,6 +24,7 @@
         <script src="../../../_static/jquery.js"></script>
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/doctools.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
@@ -200,8 +201,263 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="layers">
-<h1>Layers<a class="headerlink" href="#layers" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-ivy.functional.ivy.nn.layers">
+<span id="layers"></span><h1>Layers<a class="headerlink" href="#module-ivy.functional.ivy.nn.layers" title="Permalink to this headline">¶</a></h1>
+<p>Collection of Ivy neural network layers in functional form.</p>
+<dl class="py function">
+<dt id="ivy.functional.ivy.nn.layers.conv1d">
+<code class="sig-prename descclassname">ivy.functional.ivy.nn.layers.</code><code class="sig-name descname">conv1d</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">filters</span></em>, <em class="sig-param"><span class="n">strides</span></em>, <em class="sig-param"><span class="n">padding</span></em>, <em class="sig-param"><span class="n">data_format</span><span class="o">=</span><span class="default_value">'NWC'</span></em>, <em class="sig-param"><span class="n">dilations</span><span class="o">=</span><span class="default_value">1</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/nn/layers.html#conv1d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.nn.layers.conv1d" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes a 1-D convolution given 3-D input x and filters arrays.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>array</em>) – Input image <em>[batch_size,w,d_in]</em>.</p></li>
+<li><p><strong>filters</strong> (<em>array</em>) – Convolution filters <em>[fw,d_in,d_out]</em>.</p></li>
+<li><p><strong>strides</strong> (<em>int</em><em> or </em><em>sequence of ints</em>) – The stride of the sliding window for each dimension of input.</p></li>
+<li><p><strong>padding</strong> (<em>string</em><em> or </em><em>sequence of ints</em>) – “SAME” or “VALID” indicating the algorithm, or list indicating the per-dimension paddings.</p></li>
+<li><p><strong>data_format</strong> (<em>string</em>) – “NWC” or “NCW”. Defaults to “NWC”.</p></li>
+<li><p><strong>dilations</strong> (<em>int</em><em> or </em><em>sequence of ints</em>) – The dilation factor for each dimension of input.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The result of the convolution operation.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.nn.layers.conv1d_transpose">
+<code class="sig-prename descclassname">ivy.functional.ivy.nn.layers.</code><code class="sig-name descname">conv1d_transpose</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">filters</span></em>, <em class="sig-param"><span class="n">strides</span></em>, <em class="sig-param"><span class="n">padding</span></em>, <em class="sig-param"><span class="n">output_shape</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">data_format</span><span class="o">=</span><span class="default_value">'NWC'</span></em>, <em class="sig-param"><span class="n">dilations</span><span class="o">=</span><span class="default_value">1</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/nn/layers.html#conv1d_transpose"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.nn.layers.conv1d_transpose" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes a 1-D transpose convolution given 3-D input x and filters arrays.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>array</em>) – Input image <em>[batch_size,w,d_in]</em>.</p></li>
+<li><p><strong>filters</strong> (<em>array</em>) – Convolution filters <em>[fw,d_in,d_out]</em>.</p></li>
+<li><p><strong>strides</strong> (<em>int</em><em> or </em><em>sequence of ints</em>) – The stride of the sliding window for each dimension of input.</p></li>
+<li><p><strong>padding</strong> (<em>string</em><em> or </em><em>sequence of ints</em>) – “SAME” or “VALID” indicating the algorithm, or list indicating the per-dimension paddings.</p></li>
+<li><p><strong>output_shape</strong> (<em>sequence of ints</em><em>, </em><em>needed for TensorFlow</em>) – Shape of the output</p></li>
+<li><p><strong>data_format</strong> (<em>string</em>) – “NWC” or “NCW”. Defaults to “NWC”.</p></li>
+<li><p><strong>dilations</strong> (<em>int</em><em> or </em><em>sequence of ints</em>) – The dilation factor for each dimension of input.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The result of the transpose convolution operation.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.nn.layers.conv2d">
+<code class="sig-prename descclassname">ivy.functional.ivy.nn.layers.</code><code class="sig-name descname">conv2d</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">filters</span></em>, <em class="sig-param"><span class="n">strides</span></em>, <em class="sig-param"><span class="n">padding</span></em>, <em class="sig-param"><span class="n">data_format</span><span class="o">=</span><span class="default_value">'NHWC'</span></em>, <em class="sig-param"><span class="n">dilations</span><span class="o">=</span><span class="default_value">1</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/nn/layers.html#conv2d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.nn.layers.conv2d" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes a 2-D convolution given 4-D input x and filters arrays.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>array</em>) – Input image <em>[batch_size,h,w,d_in]</em>.</p></li>
+<li><p><strong>filters</strong> (<em>array</em>) – Convolution filters <em>[fh,fw,d_in,d_out]</em>.</p></li>
+<li><p><strong>strides</strong> (<em>int</em><em> or </em><em>sequence of ints</em>) – The stride of the sliding window for each dimension of input.</p></li>
+<li><p><strong>padding</strong> (<em>string</em><em> or </em><em>sequence of ints</em>) – “SAME” or “VALID” indicating the algorithm, or list indicating the per-dimension paddings.</p></li>
+<li><p><strong>data_format</strong> (<em>string</em>) – “NHWC” or “NCHW”. Defaults to “NHWC”.</p></li>
+<li><p><strong>dilations</strong> (<em>int</em><em> or </em><em>sequence of ints</em>) – The dilation factor for each dimension of input.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The result of the convolution operation.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.nn.layers.conv2d_transpose">
+<code class="sig-prename descclassname">ivy.functional.ivy.nn.layers.</code><code class="sig-name descname">conv2d_transpose</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">filters</span></em>, <em class="sig-param"><span class="n">strides</span></em>, <em class="sig-param"><span class="n">padding</span></em>, <em class="sig-param"><span class="n">output_shape</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">data_format</span><span class="o">=</span><span class="default_value">'NHWC'</span></em>, <em class="sig-param"><span class="n">dilations</span><span class="o">=</span><span class="default_value">1</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/nn/layers.html#conv2d_transpose"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.nn.layers.conv2d_transpose" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes a 2-D transpose convolution given 4-D input x and filters arrays.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>array</em>) – Input image <em>[batch_size,h,w,d_in]</em>.</p></li>
+<li><p><strong>filters</strong> (<em>array</em>) – Convolution filters <em>[fh,fw,d_in,d_out]</em>.</p></li>
+<li><p><strong>strides</strong> (<em>int</em><em> or </em><em>sequence of ints</em>) – The stride of the sliding window for each dimension of input.</p></li>
+<li><p><strong>padding</strong> (<em>string</em><em> or </em><em>sequence of ints</em>) – “SAME” or “VALID” indicating the algorithm, or list indicating the per-dimension paddings.</p></li>
+<li><p><strong>output_shape</strong> (<em>sequence of ints</em><em>, </em><em>needed for TensorFlow</em>) – Shape of the output</p></li>
+<li><p><strong>data_format</strong> (<em>string</em>) – “NHWC” or “NCHW”. Defaults to “NHWC”.</p></li>
+<li><p><strong>dilations</strong> (<em>int</em><em> or </em><em>sequence of ints</em>) – The dilation factor for each dimension of input.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The result of the transpose convolution operation.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.nn.layers.conv3d">
+<code class="sig-prename descclassname">ivy.functional.ivy.nn.layers.</code><code class="sig-name descname">conv3d</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">filters</span></em>, <em class="sig-param"><span class="n">strides</span></em>, <em class="sig-param"><span class="n">padding</span></em>, <em class="sig-param"><span class="n">data_format</span><span class="o">=</span><span class="default_value">'NDHWC'</span></em>, <em class="sig-param"><span class="n">dilations</span><span class="o">=</span><span class="default_value">1</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/nn/layers.html#conv3d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.nn.layers.conv3d" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes a 3-D convolution given 5-D input x and filters arrays.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>array</em>) – Input volume <em>[batch_size,d,h,w,d_in]</em>.</p></li>
+<li><p><strong>filters</strong> (<em>array</em>) – Convolution filters <em>[fd,fh,fw,d_in,d_out]</em>.</p></li>
+<li><p><strong>strides</strong> (<em>sequence of ints</em>) – The stride of the sliding window for each dimension of input.</p></li>
+<li><p><strong>padding</strong> (<em>string</em><em> or </em><em>sequence of ints</em>) – “SAME” or “VALID” indicating the algorithm, or list indicating the per-dimension paddings.</p></li>
+<li><p><strong>data_format</strong> (<em>string</em>) – “NDHWC” or “NCDHW”. Defaults to “NDHWC”.</p></li>
+<li><p><strong>dilations</strong> (<em>int</em><em> or </em><em>sequence of ints</em>) – The dilation factor for each dimension of input.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The result of the convolution operation.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.nn.layers.conv3d_transpose">
+<code class="sig-prename descclassname">ivy.functional.ivy.nn.layers.</code><code class="sig-name descname">conv3d_transpose</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">filters</span></em>, <em class="sig-param"><span class="n">strides</span></em>, <em class="sig-param"><span class="n">padding</span></em>, <em class="sig-param"><span class="n">output_shape</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">data_format</span><span class="o">=</span><span class="default_value">'NDHWC'</span></em>, <em class="sig-param"><span class="n">dilations</span><span class="o">=</span><span class="default_value">1</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/nn/layers.html#conv3d_transpose"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.nn.layers.conv3d_transpose" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes a 3-D transpose convolution given 5-D input x and filters arrays.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>array</em>) – Input image <em>[batch_size,d,h,w,d_in]</em>.</p></li>
+<li><p><strong>filters</strong> (<em>array</em>) – Convolution filters <em>[fd,fh,fw,d_in,d_out]</em>.</p></li>
+<li><p><strong>strides</strong> (<em>int</em><em> or </em><em>sequence of ints</em>) – The stride of the sliding window for each dimension of input.</p></li>
+<li><p><strong>padding</strong> (<em>string</em><em> or </em><em>sequence of ints</em>) – “SAME” or “VALID” indicating the algorithm, or list indicating the per-dimension paddings.</p></li>
+<li><p><strong>output_shape</strong> (<em>sequence of ints</em><em>, </em><em>needed for TensorFlow</em>) – Shape of the output</p></li>
+<li><p><strong>data_format</strong> (<em>string</em>) – “NDHWC” or “NCDHW”. Defaults to “NDHWC”.</p></li>
+<li><p><strong>dilations</strong> (<em>int</em><em> or </em><em>sequence of ints</em>) – The dilation factor for each dimension of input.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The result of the transpose convolution operation.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.nn.layers.depthwise_conv2d">
+<code class="sig-prename descclassname">ivy.functional.ivy.nn.layers.</code><code class="sig-name descname">depthwise_conv2d</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">filters</span></em>, <em class="sig-param"><span class="n">strides</span></em>, <em class="sig-param"><span class="n">padding</span></em>, <em class="sig-param"><span class="n">data_format</span><span class="o">=</span><span class="default_value">'NHWC'</span></em>, <em class="sig-param"><span class="n">dilations</span><span class="o">=</span><span class="default_value">1</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/nn/layers.html#depthwise_conv2d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.nn.layers.depthwise_conv2d" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes a 2-D depthwise convolution given 4-D input x and filters arrays.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>array</em>) – Input image <em>[batch_size,h,w,d]</em>.</p></li>
+<li><p><strong>filters</strong> (<em>array</em>) – Convolution filters <em>[fh,fw,d]</em>.</p></li>
+<li><p><strong>strides</strong> (<em>int</em><em> or </em><em>sequence of ints</em>) – The stride of the sliding window for each dimension of input.</p></li>
+<li><p><strong>padding</strong> (<em>string</em><em> or </em><em>sequence of ints</em>) – “SAME” or “VALID” indicating the algorithm, or list indicating the per-dimension paddings.</p></li>
+<li><p><strong>data_format</strong> (<em>string</em>) – “NHWC” or “NCHW”. Defaults to “NHWC”.</p></li>
+<li><p><strong>dilations</strong> (<em>int</em><em> or </em><em>sequence of ints</em>) – The dilation factor for each dimension of input.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The result of the convolution operation.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.nn.layers.dropout">
+<code class="sig-prename descclassname">ivy.functional.ivy.nn.layers.</code><code class="sig-name descname">dropout</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">prob</span></em>, <em class="sig-param"><span class="n">scale</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/nn/layers.html#dropout"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.nn.layers.dropout" title="Permalink to this definition">¶</a></dt>
+<dd><p>Randomly zeroes some of the elements of the input tensor with probability p using samples from a Bernoull
+distribution.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>array</em>) – The input array x to perform dropout on.</p></li>
+<li><p><strong>prob</strong> (<em>float</em>) – The probability of zeroing out each array element.</p></li>
+<li><p><strong>scale</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to scale the output by 1/(1-prob), default is True.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Result array of the linear transformation. <em>[N,∗,out_features]</em></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.nn.layers.linear">
+<code class="sig-prename descclassname">ivy.functional.ivy.nn.layers.</code><code class="sig-name descname">linear</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">weight</span></em>, <em class="sig-param"><span class="n">bias</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/nn/layers.html#linear"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.nn.layers.linear" title="Permalink to this definition">¶</a></dt>
+<dd><p>Applies a linear transformation to the incoming data: y = x * t(weight) + bias. The operation also supports batching
+of the weight matrices. This is useful if a batch of different network parameters are to be represented.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>array</em>) – The input x compute linear transformation on. <em>[outer_batch_shape,inner_batch_shape,in_features]</em></p></li>
+<li><p><strong>weight</strong> (<em>array</em>) – The weight matrix. <em>[outer_batch_shape,out_features,in_features]</em></p></li>
+<li><p><strong>bias</strong> (<em>array</em><em>, </em><em>optional</em>) – The bias vector, default is None. <em>[outer_batch_shape,out_features]</em></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Result array of the linear transformation. <em>[outer_batch_shape,inner_batch_shape,out_features]</em></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.nn.layers.lstm_update">
+<code class="sig-prename descclassname">ivy.functional.ivy.nn.layers.</code><code class="sig-name descname">lstm_update</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">init_h</span></em>, <em class="sig-param"><span class="n">init_c</span></em>, <em class="sig-param"><span class="n">kernel</span></em>, <em class="sig-param"><span class="n">recurrent_kernel</span></em>, <em class="sig-param"><span class="n">bias</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">recurrent_bias</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/nn/layers.html#lstm_update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.nn.layers.lstm_update" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform long-short term memory update by unrolling time dimension of input array.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>array</em>) – input tensor of LSTM layer <em>[batch_shape, t, in]</em>.</p></li>
+<li><p><strong>init_h</strong> (<em>array</em>) – initial state tensor for the cell output <em>[batch_shape, out]</em>.</p></li>
+<li><p><strong>init_c</strong> (<em>array</em>) – initial state tensor for the cell hidden state <em>[batch_shape, out]</em>.</p></li>
+<li><p><strong>kernel</strong> (<em>array</em>) – weights for cell kernel <em>[in, 4 x out]</em>.</p></li>
+<li><p><strong>recurrent_kernel</strong> (<em>array</em>) – weights for cell recurrent kernel <em>[out, 4 x out]</em>.</p></li>
+<li><p><strong>bias</strong> (<em>array</em>) – bias for cell kernel <em>[4 x out]</em>.</p></li>
+<li><p><strong>recurrent_bias</strong> (<em>array</em>) – bias for cell recurrent kernel <em>[4 x out]</em>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>hidden state for all timesteps <em>[batch_shape,t,out]</em> and cell state for last timestep <em>[batch_shape,out]</em></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.nn.layers.multi_head_attention">
+<code class="sig-prename descclassname">ivy.functional.ivy.nn.layers.</code><code class="sig-name descname">multi_head_attention</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">scale</span></em>, <em class="sig-param"><span class="n">num_heads</span></em>, <em class="sig-param"><span class="n">context</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">mask</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_q_fn</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_kv_fn</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_out_fn</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_q_v</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_kv_v</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_out_v</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/nn/layers.html#multi_head_attention"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.nn.layers.multi_head_attention" title="Permalink to this definition">¶</a></dt>
+<dd><p>Applies multi-head attention to inputs x.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>array</em>) – The array to determine the queries from <em>[batch_shape,num_queries,x_feat_dim]</em>.</p></li>
+<li><p><strong>scale</strong> (<em>float</em>) – The value by which to scale the query-key similarity measure before softmax.</p></li>
+<li><p><strong>num_heads</strong> (<em>int</em>) – The number of attention heads to use.</p></li>
+<li><p><strong>context</strong> (<em>array</em><em>, </em><em>optional</em>) – The array to determine the keys and values from. Default is None.
+<em>[batch_shape,num_keys,cont_feat_dim]</em>.</p></li>
+<li><p><strong>mask</strong> (<em>array</em><em>, </em><em>optional</em>) – The mask to apply to the query-key values. Default is None. <em>[batch_shape,num_queries,num_keys]</em></p></li>
+<li><p><strong>to_q_fn</strong> (<em>callable</em>) – The function to compute queries from input x, returning queries
+<em>[batch_shape,num_queries,numheads×feat_dim]</em>.</p></li>
+<li><p><strong>to_kv_fn</strong> (<em>callable</em>) – The function to compute keys and values from the context.</p></li>
+<li><p><strong>to_out_fn</strong> (<em>callable</em>) – The function to compute the output from the scaled dot-product attention.</p></li>
+<li><p><strong>to_q_v</strong> (<em>variables array</em><em>, </em><em>optional</em>) – The variables for function to_q_fn. Default is None.</p></li>
+<li><p><strong>to_kv_v</strong> (<em>variables array</em><em>, </em><em>optional</em>) – The variables for function to_kv_fn. Default is None.</p></li>
+<li><p><strong>to_out_v</strong> (<em>variables array</em><em>, </em><em>optional</em>) – The variables for function to_out_fn. Default is None.</p></li>
+</ul>
+</dd>
+</dl>
+<p>:return The output following application of multi-head attention. <em>[batch_shape,num_queries,out_feat_dim]</em></p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.nn.layers.scaled_dot_product_attention">
+<code class="sig-prename descclassname">ivy.functional.ivy.nn.layers.</code><code class="sig-name descname">scaled_dot_product_attention</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">q</span></em>, <em class="sig-param"><span class="n">k</span></em>, <em class="sig-param"><span class="n">v</span></em>, <em class="sig-param"><span class="n">scale</span></em>, <em class="sig-param"><span class="n">mask</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/nn/layers.html#scaled_dot_product_attention"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.nn.layers.scaled_dot_product_attention" title="Permalink to this definition">¶</a></dt>
+<dd><p>Applies scaled dot product attention to inputs x using optional mask.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>q</strong> (<em>array</em>) – The queries <em>[batch_shape,num_queries,feat_dim]</em>.</p></li>
+<li><p><strong>k</strong> (<em>array</em>) – The keys <em>[batch_shape,num_keys,feat_dim]</em>.</p></li>
+<li><p><strong>v</strong> (<em>array</em>) – The values <em>[batch_shape,num_keys,feat_dim]</em>.</p></li>
+<li><p><strong>scale</strong> (<em>float</em>) – The value by which to scale the query-key pairs before softmax.</p></li>
+<li><p><strong>mask</strong> (<em>array</em><em>, </em><em>optional</em>) – The mask to apply to the query-key values. Default is None. <em>[batch_shape,num_queries,num_keys]</em></p></li>
+</ul>
+</dd>
+</dl>
+<p>:return The output following application of scaled dot-product attention. <em>[batch_shape,num_queries,feat_dim]</em></p>
+</dd></dl>
+
 <div class="toctree-wrapper compound">
 <p class="caption"><span class="caption-text">Layers</span></p>
 <ul>

@@ -24,6 +24,7 @@
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
@@ -209,8 +210,122 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="initializers">
-<h1>Initializers<a class="headerlink" href="#initializers" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-ivy.stateful.initializers">
+<span id="initializers"></span><h1>Initializers<a class="headerlink" href="#module-ivy.stateful.initializers" title="Permalink to this headline">¶</a></h1>
+<dl class="py class">
+<dt id="ivy.stateful.initializers.Constant">
+<em class="property">class </em><code class="sig-prename descclassname">ivy.stateful.initializers.</code><code class="sig-name descname">Constant</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">constant</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/stateful/initializers.html#Constant"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.stateful.initializers.Constant" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt id="ivy.stateful.initializers.Constant.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">constant</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/stateful/initializers.html#Constant.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.stateful.initializers.Constant.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ivy.stateful.initializers.Constant.create_variables">
+<code class="sig-name descname">create_variables</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">var_shape</span></em>, <em class="sig-param"><span class="n">dev</span></em>, <em class="sig-param"><span class="n">fan_out</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">fan_in</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/stateful/initializers.html#Constant.create_variables"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.stateful.initializers.Constant.create_variables" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create internal variables for the layer</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="ivy.stateful.initializers.FirstLayerSiren">
+<em class="property">class </em><code class="sig-prename descclassname">ivy.stateful.initializers.</code><code class="sig-name descname">FirstLayerSiren</code><a class="reference internal" href="../_modules/ivy/stateful/initializers.html#FirstLayerSiren"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.stateful.initializers.FirstLayerSiren" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#ivy.stateful.initializers.Uniform" title="ivy.stateful.initializers.Uniform"><code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.stateful.initializers.Uniform</span></code></a></p>
+<dl class="py method">
+<dt id="ivy.stateful.initializers.FirstLayerSiren.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/stateful/initializers.html#FirstLayerSiren.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.stateful.initializers.FirstLayerSiren.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="ivy.stateful.initializers.GlorotUniform">
+<em class="property">class </em><code class="sig-prename descclassname">ivy.stateful.initializers.</code><code class="sig-name descname">GlorotUniform</code><a class="reference internal" href="../_modules/ivy/stateful/initializers.html#GlorotUniform"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.stateful.initializers.GlorotUniform" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#ivy.stateful.initializers.Uniform" title="ivy.stateful.initializers.Uniform"><code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.stateful.initializers.Uniform</span></code></a></p>
+<dl class="py method">
+<dt id="ivy.stateful.initializers.GlorotUniform.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/stateful/initializers.html#GlorotUniform.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.stateful.initializers.GlorotUniform.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="ivy.stateful.initializers.KaimingNormal">
+<em class="property">class </em><code class="sig-prename descclassname">ivy.stateful.initializers.</code><code class="sig-name descname">KaimingNormal</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">mean</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">fan_mode</span><span class="o">=</span><span class="default_value">'fan_in'</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/stateful/initializers.html#KaimingNormal"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.stateful.initializers.KaimingNormal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt id="ivy.stateful.initializers.KaimingNormal.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">mean</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">fan_mode</span><span class="o">=</span><span class="default_value">'fan_in'</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/stateful/initializers.html#KaimingNormal.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.stateful.initializers.KaimingNormal.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ivy.stateful.initializers.KaimingNormal.create_variables">
+<code class="sig-name descname">create_variables</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">var_shape</span></em>, <em class="sig-param"><span class="n">dev</span></em>, <em class="sig-param"><span class="n">fan_out</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">fan_in</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">negative_slope</span><span class="o">=</span><span class="default_value">0.0</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/stateful/initializers.html#KaimingNormal.create_variables"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.stateful.initializers.KaimingNormal.create_variables" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create internal variables for the layer</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="ivy.stateful.initializers.Ones">
+<em class="property">class </em><code class="sig-prename descclassname">ivy.stateful.initializers.</code><code class="sig-name descname">Ones</code><a class="reference internal" href="../_modules/ivy/stateful/initializers.html#Ones"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.stateful.initializers.Ones" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#ivy.stateful.initializers.Constant" title="ivy.stateful.initializers.Constant"><code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.stateful.initializers.Constant</span></code></a></p>
+<dl class="py method">
+<dt id="ivy.stateful.initializers.Ones.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/stateful/initializers.html#Ones.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.stateful.initializers.Ones.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="ivy.stateful.initializers.Siren">
+<em class="property">class </em><code class="sig-prename descclassname">ivy.stateful.initializers.</code><code class="sig-name descname">Siren</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">w0</span><span class="o">=</span><span class="default_value">30</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/stateful/initializers.html#Siren"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.stateful.initializers.Siren" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#ivy.stateful.initializers.Uniform" title="ivy.stateful.initializers.Uniform"><code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.stateful.initializers.Uniform</span></code></a></p>
+<dl class="py method">
+<dt id="ivy.stateful.initializers.Siren.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">w0</span><span class="o">=</span><span class="default_value">30</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/stateful/initializers.html#Siren.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.stateful.initializers.Siren.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="ivy.stateful.initializers.Uniform">
+<em class="property">class </em><code class="sig-prename descclassname">ivy.stateful.initializers.</code><code class="sig-name descname">Uniform</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">numerator</span></em>, <em class="sig-param"><span class="n">fan_mode</span></em>, <em class="sig-param"><span class="n">power</span></em>, <em class="sig-param"><span class="n">gain</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/stateful/initializers.html#Uniform"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.stateful.initializers.Uniform" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt id="ivy.stateful.initializers.Uniform.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">numerator</span></em>, <em class="sig-param"><span class="n">fan_mode</span></em>, <em class="sig-param"><span class="n">power</span></em>, <em class="sig-param"><span class="n">gain</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/stateful/initializers.html#Uniform.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.stateful.initializers.Uniform.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ivy.stateful.initializers.Uniform.create_variables">
+<code class="sig-name descname">create_variables</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">var_shape</span></em>, <em class="sig-param"><span class="n">dev</span></em>, <em class="sig-param"><span class="n">fan_out</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">fan_in</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/stateful/initializers.html#Uniform.create_variables"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.stateful.initializers.Uniform.create_variables" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create internal variables for the layer</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="ivy.stateful.initializers.Zeros">
+<em class="property">class </em><code class="sig-prename descclassname">ivy.stateful.initializers.</code><code class="sig-name descname">Zeros</code><a class="reference internal" href="../_modules/ivy/stateful/initializers.html#Zeros"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.stateful.initializers.Zeros" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#ivy.stateful.initializers.Constant" title="ivy.stateful.initializers.Constant"><code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.stateful.initializers.Constant</span></code></a></p>
+<dl class="py method">
+<dt id="ivy.stateful.initializers.Zeros.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/stateful/initializers.html#Zeros.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.stateful.initializers.Zeros.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
+
+</dd></dl>
+
 <div class="toctree-wrapper compound">
 <p class="caption"><span class="caption-text">Initializers</span></p>
 <ul>
