@@ -260,11 +260,6 @@ expand_dims = _tf.expand_dims
 where = lambda condition, x1, x2: _tf.where(_tf.cast(condition, _tf.bool), x1, x2)
 indices_where = _tf.where
 
-def isnan(x):
-    if ivy.is_int_dtype(x):
-        return _tf.zeros_like(x, _tf.bool)
-    return _tf.math.is_nan(x)
-
 
 def isinf(x):
     if ivy.is_int_dtype(x):

@@ -784,18 +784,6 @@ def indices_where(x: Union[ivy.Array, ivy.NativeArray])\
     return _cur_framework(x).indices_where(x)
 
 
-def isnan(x: Union[ivy.Array, ivy.NativeArray])\
-        -> Union[ivy.Array, ivy.NativeArray]:
-    """
-    Returns boolean map at locations where the input is not a number (nan).
-
-    :param x: Input array.
-    :type x: array
-    :return: Boolean values for where the values of the array are nan.
-    """
-    return _cur_framework(x).isnan(x)
-
-
 def isinf(x: Union[ivy.Array, ivy.NativeArray])\
         -> Union[ivy.Array, ivy.NativeArray]:
     """
