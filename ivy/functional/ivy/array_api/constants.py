@@ -5,3 +5,6 @@ e = math.e
 
 pi = math.pi
 """ IEEE 754 floating-point representation of the mathematical constant e """
+
+nan = math.nan
+""" IEEE 754 floating-point representation of Not a Number (NaN). """
