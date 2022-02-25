@@ -1612,15 +1612,3 @@ def inplace_increment(x, val, f=None):
     """
     return _cur_framework(x).inplace_increment(x, val)
   
-def negative(x: Union[ivy.Array, ivy.NativeArray], f: ivy.Framework = None)\
-        -> Union[ivy.Array, ivy.NativeArray]:
-    """
-    Computes the numerical negative of each element
-    
-    :param x: Input array
-    :type x: array
-    :param f: Machine learning framework. Inferred from inputs is None.
-    :type f: ml_framework, optional
-    :return: an array containing the evaluated result for each element in x 
-    """
-    return _cur_framework(x, f=f).negative(x)

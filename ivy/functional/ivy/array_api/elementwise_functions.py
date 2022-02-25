@@ -24,3 +24,13 @@ def logical_not(x: ivy.Array) -> ivy.Array:
     :return: Boolean result of the logical NOT operation applied element-wise to x.
     """
     return _cur_framework(x).logical_not(x)
+
+def negative(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
+    """
+    Computes the numerical negative of each element
+    
+    :param x: Input array
+    :type x: array
+    :return: an array containing the evaluated result for each element in x 
+    """
+    return _cur_framework(x).negative(x)

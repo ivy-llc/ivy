@@ -727,8 +727,5 @@ def inplace_increment(x, val):
     x.data += val
     return x
 
-def negative(x):
-    return _torch.neg(x)
-
 inplace_arrays_supported = lambda: True
 inplace_variables_supported = lambda: True

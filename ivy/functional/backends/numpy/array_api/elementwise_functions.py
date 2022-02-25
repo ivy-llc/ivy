@@ -9,3 +9,6 @@ def isfinite(x: np.ndarray)\
 
 def logical_not(x: np.ndarray) -> np.ndarray:
     return np.logical_not(x)
+
+def negative(x: np.ndarray) -> np.ndarray:
+    return np.negative(x)

@@ -9,3 +9,6 @@ def isfinite(x: torch.Tensor)\
 
 def logical_not(x: torch.Tensor) -> torch.Tensor:
     return torch.logical_not(x.type(torch.bool))
+
+def negative(x: torch.Tensor) -> torch.Tensor:
+    return torch.neg(x)

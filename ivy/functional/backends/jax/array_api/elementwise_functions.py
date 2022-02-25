@@ -12,3 +12,7 @@ def isfinite(x: JaxArray)\
 
 def logical_not(x: JaxArray) -> JaxArray:
     return jnp.logical_not(x)
+
+
+def negative(x: JaxArray) -> JaxArray:
+    return jnp.negative(x)
