@@ -34,7 +34,6 @@ General
    general/isnan.rst
    general/isinf.rst
    general/squeeze.rst
-   general/zeros.rst
    general/zeros_like.rst
    general/full.rst
    general/ones.rst

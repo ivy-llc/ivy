@@ -12,4 +12,6 @@ Creation functions
    :maxdepth: -1
    :caption: Creation functions
 
+   creation_functions/zeros.rst
+   creation_functions/zeros.rst
 
