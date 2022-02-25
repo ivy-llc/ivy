@@ -225,22 +225,6 @@ def concatenate(xs, axis=-1):
     return _mx.nd.concat(*xs, dim=axis)
 
 
-def flip(x, axis=None, batch_shape=None):
-    num_dims = len(batch_shape) if batch_shape is not None else len(x.shape)
-    if not num_dims:
-        return x
-    if axis is None:
-        new_axis = list(range(num_dims))
-    else:
-        new_axis = axis
-    if type(new_axis) is int:
-        new_axis = [new_axis]
-    else:
-        new_axis = new_axis
-    new_axis = [item + num_dims if item < 0 else item for item in new_axis]
-    return _mx.nd.flip(x, new_axis)
-
-
 def stack(xs, axis=0):
     if xs[0].shape == ():
         return _mx.nd.reshape(_mx.nd.stack(*[_flat_array_to_1_dim_array(x) for x in xs], axis=axis), -1)
@@ -357,11 +341,6 @@ def indices_where(x):
 
 
 @_handle_flat_arrays_in_out
-def isnan(x):
-    return _mx.nd.contrib.isnan(x).astype('bool')
-
-
-@_handle_flat_arrays_in_out
 def isinf(x):
     return _mx.nd.contrib.isinf(x).astype('bool')
 
@@ -392,11 +371,7 @@ def squeeze(x, axis=None):
 
 
 # noinspection PyShadowingNames
-def zeros(shape, dtype='float32', dev=None):
-    cont = _mxnet_init_context(default_device(dev))
-    if len(shape) == 0 or 0 in shape:
-        return _1_dim_array_to_flat_array(_mx.nd.zeros((1,), ctx=cont).astype(dtype))
-    return _mx.nd.zeros(shape, ctx=cont).astype(dtype)
+
 
 
 def zeros_like(x, dtype=None, dev=None):
@@ -413,14 +388,6 @@ def full(shape, fill_value, dtype=None, device=None):
         return _1_dim_array_to_flat_array(
             _mx.nd.full((1,), fill_value, cont, dtype_from_str(default_dtype(dtype, fill_value))))
     return _mx.nd.full(shape, fill_value, cont, dtype_from_str(default_dtype(dtype, fill_value)))
-
-
-# noinspection PyShadowingNames
-def ones(shape, dtype='float32', dev=None):
-    cont = _mxnet_init_context(default_device(dev))
-    if len(shape) == 0:
-        return _1_dim_array_to_flat_array(_mx.nd.ones((1,), ctx=cont).astype(dtype))
-    return _mx.nd.ones(shape, ctx=cont).astype(dtype)
 
 
 def ones_like(x, dtype=None, dev=None):
