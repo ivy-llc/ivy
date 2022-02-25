@@ -138,9 +138,6 @@ def argmin(x, axis=0):
     return ret
 
 
-argsort = lambda x, axis=-1: _tf.argsort(x, axis)
-
-
 def cast(x, dtype):
     return _tf.cast(x, dtype_from_str(dtype))
 
@@ -286,11 +283,6 @@ def squeeze(x, axis=None):
     return _tf.squeeze(x, axis)
 
 
-# noinspection PyShadowingNames
-def zeros(shape, dtype=None, dev=None):
-    dev = default_device(dev)
-    with _tf.device(dev_from_str(dev)):
-        return _tf.zeros(shape, dtype_from_str(default_dtype(dtype)))
 
 
 # noinspection PyShadowingNames
@@ -304,14 +296,6 @@ def zeros_like(x, dtype=None, dev=None):
 def full(shape, fill_value, dtype=None, device=None):
     with _tf.device(dev_from_str(default_device(device))):
         return _tf.fill(shape, _tf.constant(fill_value, dtype=dtype_from_str(default_dtype(dtype, fill_value))))
-
-
-# noinspection PyShadowingNames
-def ones(shape, dtype=None, dev=None):
-    dtype = dtype_from_str(default_dtype(dtype))
-    dev = dev_from_str(default_device(dev))
-    with _tf.device(dev):
-        return _tf.ones(shape, dtype)
 
 
 # noinspection PyShadowingNames
