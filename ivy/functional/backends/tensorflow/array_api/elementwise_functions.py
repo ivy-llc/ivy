@@ -24,6 +24,11 @@ def asinh(x: Tensor) \
     return tf.asinh(x)
 
 
+def sqrt(x: Tensor)\
+    -> Tensor:
+    return tf.math.sqrt(x)
+
+
 def cosh(x: Tensor) \
         -> Tensor:
     return tf.cosh(x)
