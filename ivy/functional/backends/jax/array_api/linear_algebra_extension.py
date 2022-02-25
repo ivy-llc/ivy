@@ -9,6 +9,7 @@ from jaxlib.xla_extension import Buffer
 
 # local
 from ivy import inf
+
 JaxArray = (_jax.interpreters.xla._DeviceArray, jaxlib.xla_extension.DeviceArray, Buffer)
 
 
