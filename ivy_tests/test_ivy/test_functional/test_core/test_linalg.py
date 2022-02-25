@@ -209,3 +209,32 @@ def test_cholesky(x, dtype, tensor_fn, dev, call):
     assert ret.shape == x.shape
     # value test
     assert np.allclose(call(ivy.cholesky, x), ivy.functional.backends.numpy.cholesky(ivy.to_numpy(x)))
+
+# QR
+@pytest.mark.parametrize(
+    "data", [ ([[-1.0, 1.0, 3], [4, -5, 8], [9, 2, -3]], 3),
+           ([[[-1.0, 1.0, 3], [4, -5, 8], [9, 2, -3], [12, -2, 8]]], 3),
+     ])
+@pytest.mark.parametrize(
+    "mode", ['reduced', 'complete'])
+@pytest.mark.parametrize(
+    "dtype", ['float32'])
+@pytest.mark.parametrize(
+    "tensor_fn", [ivy.array, helpers.var_fn])
+def test_qr(data, mode, dtype, tensor_fn, dev, call):
+    # smoke test
+    x, rank = data
+    x = tensor_fn(x, dtype, dev)
+    Q, R = ivy.qr(x, mode)
+    # type test
+    assert ivy.is_array(Q)
+    assert ivy.is_array(R)
+    # cardinality test
+    if mode == "reduced":
+        assert Q.shape[-2] == x.shape[-2]
+        assert Q.shape[-1] == rank
+    if mode == "complete":
+        assert Q.shape[-2] == x.shape[-2]
+        assert Q.shape[-1] == x.shape[-2]
+    # value test
+    assert np.allclose(call(ivy.qr, x, mode)[0], ivy.functional.backends.numpy.qr(ivy.to_numpy(x), mode)[0])

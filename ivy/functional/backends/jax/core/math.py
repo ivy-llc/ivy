@@ -15,7 +15,6 @@ atan2 = _jnp.arctan2
 sinh = _jnp.sinh
 cosh = _jnp.cosh
 tanh = _jnp.tanh
-asinh = _jnp.arcsinh
 acosh = _jnp.arccosh
 atanh = _jnp.arctanh
 log = _jnp.log
