@@ -1,5 +1,3 @@
-from . import linalg
-from .linalg import *
 from . import constants
 from .constants import *
 from . import creation_functions
@@ -12,6 +10,8 @@ from . import elementwise_functions
 from .elementwise_functions import *
 from . import function_and_method_signatures
 from .function_and_method_signatures import *
+from . import linear_algebra as linalg
+from .linear_algebra import *
 from . import manipulation_functions
 from .manipulation_functions import *
 from . import searching_functions
