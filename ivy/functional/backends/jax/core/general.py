@@ -249,6 +249,7 @@ def indices_where(x):
 
 
 isinf = _jnp.isinf
+    
 reshape = _jnp.reshape
 broadcast_to = _jnp.broadcast_to
 
@@ -261,9 +262,6 @@ def squeeze(x, axis=None):
     return _jnp.squeeze(x, axis)
 
 
-# noinspection PyShadowingNames
-def zeros(shape, dtype=None, dev=None):
-    return to_dev(_jnp.zeros(shape, dtype_from_str(default_dtype(dtype))), default_device(dev))
 
 
 # noinspection PyShadowingNames
@@ -277,11 +275,6 @@ def zeros_like(x, dtype=None, dev=None):
 
 def full(shape, fill_value, dtype=None, device=None):
     return to_dev(_jnp.full(shape, fill_value, dtype_from_str(default_dtype(dtype, fill_value))), default_device(device))
-
-
-# noinspection PyShadowingNames
-def ones(shape, dtype=None, dev=None):
-    return to_dev(_jnp.ones(shape, dtype_from_str(default_dtype(dtype))), default_device(dev))
 
 
 # noinspection PyShadowingNames

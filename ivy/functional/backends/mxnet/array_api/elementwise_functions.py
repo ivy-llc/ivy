@@ -5,6 +5,10 @@ import mxnet as mx
 from ivy.functional.backends.mxnet import _handle_flat_arrays_in_out
 
 
+def bitwise_and(x1: mx.ndarray.ndarray.NDArray, x2: mx.ndarray.ndarray.NDArray) -> mx.nd.ndarray.NDArray:
+    return mx.numpy.bitwise_and(x1, x2)
+
+
 @_handle_flat_arrays_in_out
 def isfinite(x: mx.ndarray.ndarray.NDArray)\
         -> mx.ndarray.ndarray.NDArray:
@@ -17,3 +21,14 @@ def isnan(x: mx.ndarray.ndarray.NDArray)\
         -> mx.ndarray.ndarray.NDArray:
     return mx.nd.contrib.isnan(x).astype('bool')
 
+
+@_handle_flat_arrays_in_out
+def less(x1: mx.ndarray.ndarray.NDArray,x2: mx.ndarray.ndarray.NDArray)\
+        -> mx.ndarray.ndarray.NDArray:
+    return mx.nd.lesser(x1,x2).astype('bool')
+
+
+@_handle_flat_arrays_in_out
+def logical_not(x: mx.ndarray.ndarray.NDArray)\
+        -> mx.ndarray.ndarray.NDArray:
+    return mx.nd.logical_not(x)

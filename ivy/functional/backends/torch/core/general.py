@@ -372,7 +372,6 @@ def indices_where(x):
 def isinf(x):
     return _torch.isinf(x)
 
-
 def reshape(x, newshape: List[int]):
     if isinstance(newshape, int):
         newshape = [newshape]
@@ -389,11 +388,6 @@ def squeeze(x, axis: Optional[int] = None):
     return _torch.squeeze(x, axis)
 
 
-# noinspection PyShadowingNames
-def zeros(shape: List[int], dtype: Union[ivy.Dtype, str] = None, dev: Optional[str] = None):
-    return _torch.zeros(
-        shape, dtype=dtype_from_str(default_dtype(dtype)),
-        device=dev_from_str(default_device(dev)))
 
 
 # noinspection PyShadowingNames
@@ -419,13 +413,6 @@ def full(shape, fill_value, dtype=None, device=None):
     return _torch.full(
         ivy.shape_to_tuple(shape), fill_value, dtype=dtype_from_str(default_dtype(dtype, fill_value)),
         device=default_device(device))
-
-
-# noinspection PyShadowingNames
-def ones(shape: List[int], dtype: ivy.Dtype = 'float32', dev: Optional[str] = None):
-    dtype_val: _torch.dtype = dtype_from_str(dtype)
-    dev = default_device(dev)
-    return _torch.ones(shape, dtype=dtype_val, device=dev_from_str(dev))
 
 
 # noinspection PyShadowingNames
