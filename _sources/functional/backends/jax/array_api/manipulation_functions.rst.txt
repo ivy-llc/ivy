@@ -12,4 +12,5 @@ Manipulation functions
    :maxdepth: -1
    :caption: Manipulation functions
 
+   manipulation_functions/flip.rst
 

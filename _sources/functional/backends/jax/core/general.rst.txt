@@ -22,7 +22,6 @@ General
    general/linspace.rst
    general/logspace.rst
    general/concatenate.rst
-   general/flip.rst
    general/unstack.rst
    general/split.rst
    general/transpose.rst

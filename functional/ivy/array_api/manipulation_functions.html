@@ -203,7 +203,30 @@
             
   <div class="section" id="module-ivy.functional.ivy.array_api.manipulation_functions">
 <span id="manipulation-functions"></span><h1>Manipulation functions<a class="headerlink" href="#module-ivy.functional.ivy.array_api.manipulation_functions" title="Permalink to this headline">¶</a></h1>
+<dl class="py function">
+<dt id="ivy.functional.ivy.array_api.manipulation_functions.flip">
+<code class="sig-prename descclassname">ivy.functional.ivy.array_api.manipulation_functions.</code><code class="sig-name descname">flip</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">axis</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Union<span class="p">[</span>int<span class="p">, </span>Tuple<span class="p">[</span>int<span class="p">]</span><span class="p">, </span>List<span class="p">[</span>int<span class="p">]</span><span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../../_modules/ivy/functional/ivy/array_api/manipulation_functions.html#flip"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.array_api.manipulation_functions.flip" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reverses the order of elements in an array along the given axis. The shape of the array must be preserved.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> – input array.</p></li>
+<li><p><strong>axis</strong> – axis (or axes) along which to flip. If axis is None, the function must flip all input array axes.
+If axis is negative, the function must count from the last dimension. If provided more than one axis,
+the function must flip only the specified axes. Default: None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>an output array having the same data type and shape as x and whose elements, relative to x, are reordered.</p>
+</dd>
+</dl>
+</dd></dl>
+
 <div class="toctree-wrapper compound">
+<p class="caption"><span class="caption-text">Manipulation functions</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="manipulation_functions/flip.html">flip</a></li>
+</ul>
 </div>
 </div>
 
