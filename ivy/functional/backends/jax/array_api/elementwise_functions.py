@@ -5,6 +5,10 @@ import jax.numpy as jnp
 from ivy.functional.backends.jax import JaxArray
 
 
+def bitwise_and(x1: JaxArray, x2: JaxArray) -> JaxArray:
+    return jnp.bitwise_and(x1, x2)
+
+
 def isfinite(x: JaxArray)\
         -> JaxArray:
     return jnp.isfinite(x)
