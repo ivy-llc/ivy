@@ -10,6 +10,11 @@ def bitwise_and(x1: JaxArray,
         -> JaxArray:
     return jnp.bitwise_and(x1, x2)
 
+def bitwise_xor(x1: JaxArray,
+                x2: JaxArray)\
+        -> JaxArray:
+    return jnp.bitwise_xor(x1, x2)
+
 
 def isfinite(x: JaxArray)\
         -> JaxArray:

@@ -8,6 +8,12 @@ def bitwise_and(x1: np.ndarray,
         -> np.ndarray:
     return np.bitwise_and(x1, x2)
 
+def bitwise_xor(x1: np.ndarray,
+                x2: np.ndarray)\
+        -> np.ndarray:
+    return np.bitwise_xor(x1, x2)
+
+
 
 def sqrt(x: np.ndarray)\
         -> np.ndarray:
