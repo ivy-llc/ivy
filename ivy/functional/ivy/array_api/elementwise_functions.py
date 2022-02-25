@@ -33,9 +33,18 @@ def isfinite(x: Union[ivy.Array, ivy.NativeArray])\
     return _cur_framework(x).isfinite(x)
 
 
+def asinh(x):
+    """
+    Calculates an implementation-dependent approximation to the inverse hyperbolic sine.
+
+    :param x: Input array.
+    :return: A new array containing the inverse hyperbolic sine of each element in x.
+    """
+    return _cur_framework(x).asinh(x)
+
+
 def sqrt(x: Union[ivy.Array, ivy.NativeArray])\
         -> ivy.Array:
-
     """
     Calculates the square root, having domain [0, +infinity] and codomain [0, +infinity], for each element x_i of the
     input array x. After rounding, each result must be indistinguishable from the infinitely precise result (as required
