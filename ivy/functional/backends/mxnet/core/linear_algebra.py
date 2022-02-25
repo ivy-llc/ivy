@@ -70,16 +70,12 @@ def vector_to_skew_symmetric_matrix(vector):
     # BS x 3 x 3
     return _mx.nd.concat(*(row1, row2, row3), dim=-2)
 
-<<<<<<< HEAD
-<<<<<<< HEAD
+
 def qr(x, mode):
     return _mx.np.linalg.qr(x, mode=mode)
-=======
->>>>>>> 73aa9d374 (updated)
-=======
->>>>>>> dcea0be50 (Update linear_algebra.py)
 
-def cross(x1, x2):
+
+def cross(x1: mx.ndarray.ndarray.NDArray, x2: mx.ndarray.ndarray.NDArray) -> mx.ndarray.ndarray.NDArray: 
     a1 = x1[..., 0:1]
     a2 = x1[..., 1:2]
     a3 = x1[..., 2:3]
@@ -91,16 +87,4 @@ def cross(x1, x2):
     res3 = a1 * b2 - a2 * b1
     res = _mx.nd.concat(res1, res2, res3, dim=-1)
     return res
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-=======
->>>>>>> dcea0be50 (Update linear_algebra.py)
 
-
-def qr(x, mode):
-    return _mx.np.linalg.qr(x, mode=mode)
-<<<<<<< HEAD
->>>>>>> 73aa9d374 (updated)
-=======
->>>>>>> dcea0be50 (Update linear_algebra.py)
