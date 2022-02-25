@@ -138,9 +138,6 @@ def argmin(x, axis=0):
     return ret
 
 
-argsort = lambda x, axis=-1: _tf.argsort(x, axis)
-
-
 def cast(x, dtype):
     return _tf.cast(x, dtype_from_str(dtype))
 
