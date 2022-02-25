@@ -17,16 +17,6 @@ def sin(x):
     return _cur_framework(x).sin(x)
 
 
-def cos(x):
-    """
-    Computes trigonometric cosine element-wise.
-
-    :param x: Input array, in radians (2*pi radian equals 360 degrees).
-    :type x: array
-    :return: The cosine of x element-wise.
-    """
-    return _cur_framework(x).cos(x)
-
 
 def tan(x):
     """
@@ -193,3 +183,4 @@ def divide(x1, x2):
              determined by Type Promotion Rules.
     """
     return x1 / x2
+
