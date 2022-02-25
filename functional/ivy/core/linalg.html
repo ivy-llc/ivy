@@ -295,28 +295,6 @@ The size of the last two dimensions depends on the value of full_matrices.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="ivy.functional.ivy.core.linalg.vector_norm">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">vector_norm</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">p</span><span class="o">=</span><span class="default_value">2</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">keepdims</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/core/linalg.html#vector_norm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.core.linalg.vector_norm" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compute the vector p-norm.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>array</em>) – Input array.</p></li>
-<li><p><strong>p</strong> (<em>int</em><em> or </em><em>str</em><em>, </em><em>optional</em>) – Order of the norm. Default is 2.</p></li>
-<li><p><strong>axis</strong> (<em>int</em><em> or </em><em>sequence of ints</em><em>, </em><em>optional</em>) – If axis is an integer, it specifies the axis of x along which to compute the vector norms.
-Default is None, in which case the flattened array is considered.</p></li>
-<li><p><strong>keepdims</strong> (<em>bool</em><em>, </em><em>optional</em>) – If this is set to True, the axes which are normed over are left in the result as dimensions with
-size one. With this option the result will broadcast correctly against the original x.
-Default is False.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Vector norm of the array at specified axes.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
 <dt id="ivy.functional.ivy.core.linalg.vector_to_skew_symmetric_matrix">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">vector_to_skew_symmetric_matrix</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">vector</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/core/linalg.html#vector_to_skew_symmetric_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.core.linalg.vector_to_skew_symmetric_matrix" title="Permalink to this definition">¶</a></dt>
 <dd><p>Given vector <span class="math notranslate nohighlight">\(\mathbf{a}\in\mathbb{R}^3\)</span>, return associated skew-symmetric matrix
@@ -336,7 +314,6 @@ Default is False.</p></li>
 <p class="caption"><span class="caption-text">Linalg</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="linalg/svd.html">svd</a></li>
-<li class="toctree-l1"><a class="reference internal" href="linalg/vector_norm.html">vector_norm</a></li>
 <li class="toctree-l1"><a class="reference internal" href="linalg/matrix_norm.html">matrix_norm</a></li>
 <li class="toctree-l1"><a class="reference internal" href="linalg/inv.html">inv</a></li>
 <li class="toctree-l1"><a class="reference internal" href="linalg/pinv.html">pinv</a></li>

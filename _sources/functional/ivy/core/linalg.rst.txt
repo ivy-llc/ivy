@@ -13,7 +13,6 @@ Linalg
    :caption: Linalg
 
    linalg/svd.rst
-   linalg/vector_norm.rst
    linalg/matrix_norm.rst
    linalg/inv.rst
    linalg/pinv.rst
