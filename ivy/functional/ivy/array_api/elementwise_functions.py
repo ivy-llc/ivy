@@ -33,12 +33,24 @@ def isfinite(x: Union[ivy.Array, ivy.NativeArray])\
     return _cur_framework(x).isfinite(x)
 
 
-def asinh(x):
+def asinh(x: Union[ivy.Array, ivy.NativeArray])\
+        -> ivy.Array:
     """
-    Calculates an implementation-dependent approximation to the inverse hyperbolic sine.
+    Calculates an implementation-dependent approximation to the inverse hyperbolic sine, having domain
+    ``[-infinity, +infinity]`` and codomain ``[-infinity, +infinity]``, for each element ``x_i`` in the input array ``x``.
 
-    :param x: Input array.
-    :return: A new array containing the inverse hyperbolic sine of each element in x.
+    **Special cases**
+    For floating-point operands,
+    - If ``x_i`` is ``NaN``, the result is ``NaN``.
+    - If ``x_i`` is ``+0``, the result is ``+0``.
+    - If ``x_i`` is ``-0``, the result is ``-0``.
+    - If ``x_i`` is ``+infinity``, the result is ``+infinity``.
+    - If ``x_i`` is ``-infinity``, the result is ``-infinity``.
+
+    :param x: input array whose elements each represent the area of a hyperbolic sector. Should have a floating-point
+              data type.
+    :return: an array containing the inverse hyperbolic sine of each element in ``x``. The returned array must have a
+             floating-point data type determined by type-promotion.
     """
     return _cur_framework(x).asinh(x)
 
