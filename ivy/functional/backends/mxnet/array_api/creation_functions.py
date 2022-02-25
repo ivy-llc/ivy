@@ -7,7 +7,7 @@ from ivy import default_device
 from ivy.functional.backends.mxnet import _mxnet_init_context, _1_dim_array_to_flat_array
 
 
-def zeros(shape: Union[int, Tuple[int, ...]],
+def zeros(shape: Union[int, Tuple[int]],
           dtype: Optional[type] = None,
           device: Optional[mx.context.Context] = None) \
         -> mx.ndarray.ndarray.NDArray:
@@ -17,7 +17,7 @@ def zeros(shape: Union[int, Tuple[int, ...]],
     return mx.nd.zeros(shape, ctx=cont).astype(dtype)
 
 
-def ones(shape: Union[int, Tuple[int, ...]],
+def ones(shape: Union[int, Tuple[int]],
          dtype: Optional[mx.nd.dtype] = None,
          device: Optional[str] = None) \
         -> mx.ndarray.ndarray.NDArray:
