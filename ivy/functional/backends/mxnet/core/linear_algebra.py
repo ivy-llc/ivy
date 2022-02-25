@@ -26,6 +26,7 @@ def matrix_norm(x, p=2, axes=None, keepdims=False):
 
 inv = _mx.nd.linalg_inverse
 
+
 DET_THRESHOLD = 1e-12
 
 
