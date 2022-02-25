@@ -7,3 +7,6 @@ from ivy.functional.backends.jax import JaxArray
 def isfinite(x: JaxArray)\
         -> JaxArray:
     return jnp.isfinite(x)
+
+def sqrt(x: JaxArray) -> JaxArray:
+    return jnp.sqrt(x)
