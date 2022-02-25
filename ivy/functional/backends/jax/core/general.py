@@ -278,11 +278,6 @@ def full(shape, fill_value, dtype=None, device=None):
 
 
 # noinspection PyShadowingNames
-def ones(shape, dtype=None, dev=None):
-    return to_dev(_jnp.ones(shape, dtype_from_str(default_dtype(dtype))), default_device(dev))
-
-
-# noinspection PyShadowingNames
 def ones_like(x, dtype=None, dev=None):
     if dtype:
         dtype = _jnp.__dict__[dtype]

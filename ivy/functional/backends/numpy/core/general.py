@@ -280,12 +280,6 @@ def full(shape, fill_value, dtype=None, device=None):
 
 
 # noinspection PyShadowingNames
-def ones(shape, dtype=None, dev=None):
-    dtype = dtype_from_str(default_dtype(dtype))
-    return _to_dev(_np.ones(shape, dtype), dev)
-
-
-# noinspection PyShadowingNames
 def ones_like(x, dtype=None, dev=None):
     if dtype:
         dtype = 'bool_' if dtype == 'bool' else dtype
