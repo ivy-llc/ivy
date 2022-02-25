@@ -146,8 +146,6 @@ def ceil(x):
 def abs(x):
     return _mx.nd.abs(x)
 
-
-argmax = lambda x, axis=0, out=None, keepdims=False: _mx.nd.argmax(x, axis, out, keepdims)
 argmin = lambda x, axis=0: _mx.nd.argmin(x, axis)
 argsort = lambda x, axis=-1: _mx.nd.argsort(x, axis)
 
