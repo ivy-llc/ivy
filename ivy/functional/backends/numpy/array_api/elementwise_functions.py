@@ -14,6 +14,11 @@ def isfinite(x: np.ndarray)\
     return np.asarray(npa.isfinite(npa.asarray(x)))
 
 
+def isnan(x: np.ndarray)\
+        -> np.ndarray:
+    return np.isnan(x)
+
+
 def less(x1: np.ndarray,x2: np.ndarray)\
         -> np.ndarray:
     return np.less(x1,x2)
