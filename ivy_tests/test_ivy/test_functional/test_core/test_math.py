@@ -178,6 +178,7 @@ def test_cosh(x, dtype, tensor_fn, dev, call):
     x = tensor_fn(x, dtype, dev)
     ret = ivy.cosh(x)
     # type test
+    # type test
     assert ivy.is_array(ret)
     # cardinality test
     assert ret.shape == x.shape
