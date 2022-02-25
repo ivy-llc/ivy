@@ -1,7 +1,5 @@
 # global
-import math
 import torch
-from typing import Union
 
 
 def bitwise_and(x1: torch.Tensor,
@@ -16,23 +14,17 @@ def isfinite(x: torch.Tensor) \
 
 
 def asinh(x: torch.Tensor) \
-        -> Union[float, Tensor]:
-    if isinstance(x, float):
-        return math.asinh(x)
+        -> torch.Tensor:
     return torch.asinh(x)
 
 
 def sqrt(x: torch.Tensor)\
         -> torch.Tensor:
-    if isinstance(x, float):
-        return math.sqrt(x)
     return torch.sqrt(x)
 
 
 def cosh(x: torch.Tensor) \
-        -> Union[float, torch.Tensor]:
-    if isinstance(x, float):
-        return math.cosh(x)
+        -> torch.Tensor:
     return torch.cosh(x)
 
 
@@ -51,8 +43,6 @@ def less(x1: torch.Tensor, x2: torch.Tensor):
 
 def cos(x: torch.Tensor)\
         -> torch.Tensor:
-    if isinstance(x, float):
-        return math.cos(x)
     return torch.cos(x)
 
 
