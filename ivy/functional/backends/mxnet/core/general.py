@@ -404,14 +404,6 @@ def full(shape, fill_value, dtype=None, device=None):
     return _mx.nd.full(shape, fill_value, cont, dtype_from_str(default_dtype(dtype, fill_value)))
 
 
-# noinspection PyShadowingNames
-def ones(shape, dtype='float32', dev=None):
-    cont = _mxnet_init_context(default_device(dev))
-    if len(shape) == 0:
-        return _1_dim_array_to_flat_array(_mx.nd.ones((1,), ctx=cont).astype(dtype))
-    return _mx.nd.ones(shape, ctx=cont).astype(dtype)
-
-
 def ones_like(x, dtype=None, dev=None):
     if x.shape == ():
         return _mx.nd.array(1., ctx=_mxnet_init_context(default_device(dev)))
