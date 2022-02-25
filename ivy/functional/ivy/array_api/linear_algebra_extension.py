@@ -1,20 +1,17 @@
 # global
-from typing  import Union, Optional, Tuple, Literal
-
+from typing import Union, Optional, Tuple, Literal
 
 # local
 import ivy
 inf = float('inf')
 
 
-
 def vector_norm(x: Union[ivy.Array, ivy.NativeArray], 
-                p: Union[int, float, Literal[inf, - inf]] = 2, 
+                p: Union[int, float, Literal[inf, -inf]] = 2,
                 axis: Optional[Union[int, Tuple[int]]] = None, 
                 keepdims: bool = False)\
                     -> ivy.Array:
 
-                    
     """
     Compute the vector p-norm.
 
