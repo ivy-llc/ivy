@@ -13,7 +13,6 @@ Math
    :caption: Math
 
    math/sin.rst
-   math/cos.rst
    math/tan.rst
    math/asin.rst
    math/acos.rst

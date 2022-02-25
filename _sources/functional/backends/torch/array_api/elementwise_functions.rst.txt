@@ -13,5 +13,6 @@ Elementwise functions
    :caption: Elementwise functions
 
    elementwise_functions/isfinite.rst
+   elementwise_functions/cos.rst
    elementwise_functions/logical_not.rst
 
