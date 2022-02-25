@@ -132,8 +132,6 @@ floor = _jnp.floor
 ceil = _jnp.ceil
 # noinspection PyShadowingBuiltins
 abs = _jnp.absolute
-greater_equal = _jnp.greater_equal
-
 
 def argmax(x, axis=0):
     ret = _jnp.argmax(x, axis)

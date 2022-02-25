@@ -42,3 +42,8 @@ def cos(x: np.ndarray)\
 def logical_not(x: np.ndarray)\
         -> np.ndarray:
     return np.logical_not(x)
+
+
+def greater_equal(x: np.ndarray, y: np.ndarray)\
+        -> np.ndarray:
+    return np.greater_equal(x, y)

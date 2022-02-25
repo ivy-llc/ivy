@@ -145,16 +145,6 @@ def cast(x, dtype):
 
 astype = cast
 
-def greater_equal(x1,x2):
-    x1_bits = dtype_bits(x1.dtype)
-    if isinstance(x2, (int, float, bool)):
-        return _tf.greater_equal(x1,x2)
-    x2_bits = dtype_bits(x2.dtype)
-    if x1_bits > x2_bits:
-        x2 = _tf.cast(x2, x1.dtype)
-    elif x2_bits > x1_bits:
-        x1 = _tf.cast(x1, x2.dtype)
-    return _tf.greater_equal(x1,x2)
 
 
 # noinspection PyShadowingNames

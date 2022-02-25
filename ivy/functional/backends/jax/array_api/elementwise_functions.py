@@ -43,3 +43,8 @@ def cos(x: JaxArray)\
 def logical_not(x: JaxArray)\
         -> JaxArray:
     return jnp.logical_not(x)
+
+
+def greater_equal(x: JaxArray, y: JaxArray)\
+        -> JaxArray:
+    return jnp.greater_equal(x, y)
