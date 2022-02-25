@@ -1,4 +1,6 @@
+# global
 import tensorflow as tf
+from typing import Optional
 from tensorflow.python.types.core import Tensor
 
 def argmax(
@@ -6,4 +8,4 @@ def argmax(
     axis: Optional[int] = None,
     out: Optional[Tensor] = None
 ) -> Tensor:
-    return tf.argmax(x,axis=axis,output_type=out)
+    return tf.argmax(x, axis=axis, output_type=out)
