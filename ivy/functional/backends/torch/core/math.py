@@ -61,12 +61,6 @@ def tanh(x):
     return _torch.tanh(x)
 
 
-def asinh(x):
-    if isinstance(x, float):
-        return math.asinh(x)
-    return _torch.asinh(x)
-
-
 def acosh(x):
     if isinstance(x, float):
         return math.acosh(x)
