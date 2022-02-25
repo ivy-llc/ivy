@@ -12,4 +12,5 @@ Comparison operators
    :maxdepth: -1
    :caption: Comparison operators
 
+   comparison_operators/builtin_lt.rst
 

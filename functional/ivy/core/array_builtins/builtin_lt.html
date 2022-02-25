@@ -205,8 +205,14 @@
 <h1>builtin_lt<a class="headerlink" href="#builtin-lt" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
 <dt id="ivy.functional.ivy.core.array_builtins.builtin_lt">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">builtin_lt</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">other</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/ivy/functional/ivy/core/array_builtins.html#builtin_lt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.core.array_builtins.builtin_lt" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">builtin_lt</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">other</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>int<span class="p">, </span>float<span class="p">, </span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><a class="reference internal" href="../../../../_modules/ivy/functional/ivy/core/array_builtins.html#builtin_lt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.core.array_builtins.builtin_lt" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the truth value of self_i &lt; other_i for each element of an array instance with the respective element of the array other.</p>
+<p>Parameters
+self (array) : array instance. Should have a numeric data type.</p>
+<p>other (Union[int, float, array]) : other array. Must be compatible with self (see Broadcasting). Should have a numeric data type.</p>
+<p>Returns
+out (array) : an array containing the element-wise results. The returned array must have a data type of bool.</p>
+</dd></dl>
 
 <div class="line-block">
 <div class="line"><br /></div>
