@@ -314,11 +314,31 @@ element x2_i of the input array x2.</p>
 </dl>
 </dd></dl>
 
+<dl class="py function">
+<dt id="ivy.functional.ivy.array_api.elementwise_functions.sqrt">
+<code class="sig-prename descclassname">ivy.functional.ivy.array_api.elementwise_functions.</code><code class="sig-name descname">sqrt</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">ivy.array.Array</span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../../_modules/ivy/functional/ivy/array_api/elementwise_functions.html#sqrt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.array_api.elementwise_functions.sqrt" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the square root, having domain [0, +infinity] and codomain [0, +infinity], for each element x_i of the
+input array x. After rounding, each result must be indistinguishable from the infinitely precise result (as required</p>
+<blockquote>
+<div><p>by IEEE 754).</p>
+<dl class="field-list simple">
+<dt class="field-odd">param x</dt>
+<dd class="field-odd"><p>input array. Should have a floating-point data type.</p>
+</dd>
+<dt class="field-even">return</dt>
+<dd class="field-even"><p>an array containing the square root of each element in x. The returned array must have a floating-point</p>
+</dd>
+</dl>
+<p>data type determined by Type Promotion Rules.</p>
+</div></blockquote>
+</dd></dl>
+
 <div class="toctree-wrapper compound">
 <p class="caption"><span class="caption-text">Elementwise functions</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="elementwise_functions/bitwise_and.html">bitwise_and</a></li>
 <li class="toctree-l1"><a class="reference internal" href="elementwise_functions/isfinite.html">isfinite</a></li>
+<li class="toctree-l1"><a class="reference internal" href="elementwise_functions/sqrt.html">sqrt</a></li>
 <li class="toctree-l1"><a class="reference internal" href="elementwise_functions/cosh.html">cosh</a></li>
 <li class="toctree-l1"><a class="reference internal" href="elementwise_functions/isnan.html">isnan</a></li>
 <li class="toctree-l1"><a class="reference internal" href="elementwise_functions/less.html">less</a></li>
