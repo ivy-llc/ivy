@@ -69,3 +69,6 @@ def vector_to_skew_symmetric_matrix(vector):
     row3 = _mx.nd.concat(*(-a2s, a1s, zs), dim=-1)
     # BS x 3 x 3
     return _mx.nd.concat(*(row1, row2, row3), dim=-2)
+
+def qr(x, mode):
+    return _mx.np.linalg.qr(x, mode=mode)

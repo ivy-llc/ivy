@@ -5,7 +5,6 @@ Collection of math Ivy functions.
 # local
 from ivy.framework_handler import current_framework as _cur_framework
 
-
 def sin(x):
     """
     Computes trigonometric sine element-wise.
@@ -109,16 +108,6 @@ def tanh(x):
     return _cur_framework(x).tanh(x)
 
 
-def asinh(x):
-    """
-    Returns a new array with the inverse hyperbolic sine of the elements of x.
-
-    :param x: Input array.
-    :return: A new array with the inverse hyperbolic sine of the elements of x.
-    """
-    return _cur_framework(x).asinh(x)
-
-
 def acosh(x):
     """
     Returns a new array with the inverse hyperbolic cosine of the elements of x.
@@ -183,3 +172,4 @@ def divide(x1, x2):
              determined by Type Promotion Rules.
     """
     return x1 / x2
+

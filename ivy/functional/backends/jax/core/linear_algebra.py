@@ -41,3 +41,6 @@ def vector_to_skew_symmetric_matrix(vector):
     row3 = _jnp.concatenate((-a2s, a1s, zs), -1)
     # BS x 3 x 3
     return _jnp.concatenate((row1, row2, row3), -2)
+
+def qr(x, mode):
+    return _jnp.linalg.qr(x, mode=mode)
