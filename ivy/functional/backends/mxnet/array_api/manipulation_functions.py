@@ -19,3 +19,8 @@ def flip(x: mx.ndarray.ndarray.NDArray,
         new_axis = new_axis
     new_axis = [item + num_dims if item < 0 else item for item in new_axis]
     return mx.nd.flip(x, new_axis)
+
+def squeeze(x: mx.ndarray.ndarray.NDArray,
+             axis: Union[int, Tuple[int], List[int]])\
+             -> mx.ndarray.ndarray.NDArray:
+    return mx.nd.squeeze(x, axis)

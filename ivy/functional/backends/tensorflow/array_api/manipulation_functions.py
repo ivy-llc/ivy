@@ -20,3 +20,20 @@ def flip(x: Tensor,
         new_axis = new_axis
     new_axis = [item + num_dims if item < 0 else item for item in new_axis]
     return tf.reverse(x, new_axis)
+
+def squeeze(x: Tensor,
+             axis: Union[int, Tuple[int], List[int]])\
+             -> Tensor:
+
+    if axis is ():
+        return x
+    if isinstance(axis, int):
+        axis = [axis]
+    for ax in axis:
+        if x.shape[ax] > 1:
+            raise ValueError
+    if x.shape == ():
+        if axis is None or axis == 0 or axis == -1:
+            return x
+        raise Exception('tried to squeeze a zero-dimensional input by axis {}'.format(axis))
+    return tf.squeeze(x, axis)

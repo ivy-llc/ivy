@@ -20,3 +20,17 @@ def flip(x: Union[ivy.Array, ivy.NativeArray],
     """
 
     return _cur_framework(x).any(x, axis)
+
+
+def squeeze(x: ivy.Array,
+            axis: Union[int, Tuple[int], List[int]])\
+        -> ivy.Array:
+    """
+    Removes singleton dimensions (axes) from x.
+
+    :param x: input array.
+    :param axis: axis (or axes) to squeeze. If a specified axis has a size greater than one, a ValueError must be raised.
+    :return: an output array having the same data type and elements as x.
+    """
+
+    return _cur_framework(x).squeeze(x, axis)

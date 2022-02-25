@@ -366,12 +366,6 @@ def broadcast_to(x, new_shape):
     return x.expand(new_shape)
 
 
-def squeeze(x, axis: Optional[int] = None):
-    if axis is None:
-        return _torch.squeeze(x)
-    return _torch.squeeze(x, axis)
-
-
 
 
 # noinspection PyShadowingNames

@@ -237,19 +237,8 @@ def indices_where(x):
 
 
 isinf = _jnp.isinf
-    
 reshape = _jnp.reshape
 broadcast_to = _jnp.broadcast_to
-
-
-def squeeze(x, axis=None):
-    if x.shape == ():
-        if axis is None or axis == 0 or axis == -1:
-            return x
-        raise Exception('tried to squeeze a zero-dimensional input by axis {}'.format(axis))
-    return _jnp.squeeze(x, axis)
-
-
 
 
 # noinspection PyShadowingNames

@@ -12,3 +12,7 @@ def flip(x: JaxArray,
          -> JaxArray:
     return jnp.flip(x, axis=axis)
 
+def squeeze(x: JaxArray,
+             axis: Union[int, Tuple[int], List[int]])\
+             -> JaxArray:
+    return jnp.squeeze(x, axis=axis)

@@ -241,13 +241,6 @@ reshape = _np.reshape
 broadcast_to = _np.broadcast_to
 
 
-def squeeze(x, axis=None):
-    if x.shape == ():
-        if axis is None or axis == 0 or axis == -1:
-            return x
-        raise Exception('tried to squeeze a zero-dimensional input by axis {}'.format(axis))
-    return _np.squeeze(x, axis)
-
 
 
 
