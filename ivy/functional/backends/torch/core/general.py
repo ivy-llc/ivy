@@ -11,7 +11,7 @@ import torch as _torch
 from operator import mul
 from torch.types import Number
 from functools import reduce as _reduce
-from typing import List, Dict, Optional, Union
+from typing import List, Dict, Optional, Union, Tuple
 
 # local
 from ivy.functional.ivy.core import default_device, default_dtype
@@ -156,13 +156,13 @@ def argmin(x, axis: int = 0):
     return ret
 
 
-def min(x, axis = None, keepdims = False, device = None):
-    x = _torch.FloatTensor(x)
-    if axis == None:
-        return _torch.min(x)
-    else:
-        return _torch.min(input = x, dim = int(axis), keepdim = keepdims).values
-
+def min(x: _torch.Tensor,
+        axis: Union[int, Tuple[int]] = None,
+        keepdims: bool = False) \
+        -> _torch.Tensor:
+    if axis == (): return x
+    if not keepdims and not axis and axis !=0: return _torch.amin(input = x)
+    return _torch.amin(input = x, dim = axis, keepdim = keepdims)
 
 def argsort(x, axis: int = -1):
     return _torch.argsort(x, axis)

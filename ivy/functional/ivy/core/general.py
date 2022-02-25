@@ -436,22 +436,20 @@ def argmin(x: Union[ivy.Array, ivy.NativeArray], axis: int = 0)\
     return _cur_framework(x).argmin(x, axis)
 
 
-def min(x: Union[ivy.Array, ivy.NativeArray], axis: Union[int, Tuple[int]], keepdims: bool = False, f: ivy.Framework = None)\
-        -> Union[ivy.Array, ivy.NativeArray]:
+def min(x: Union[ivy.Array, ivy.NativeArray],
+        axis: Union[int, Tuple[int]] = None,
+        keepdims: bool = False,
+        f: ivy.Framework = None) \
+        -> ivy.Array:
     """
-    Return the minimum value of the input array x.
+    Calculates the minimum value of the input array x.
 
-    :param x: Input array containing elements to min.
-    :type x: array
-    :param axis: Axis or axes along which minimum values must be computed, default is None.
-    :type axis: [Union[int, Tuple[int, ...]]], optional
-    :param keepdims:
-    :type keepdims: bool, optional
-    :param f: Machine learning framework. Inferred from inputs if None.
-    :type f: ml_framework, optional
+    :param x: Input array. Should have a numeric data type.
+    :param axis: Axis or axes along which minimum values must be computed, default is None. Optional.
+    :param keepdims, optional axis or axes along which minimum values must be computed, default is None.
     :return: array containing minimum value.
     """
-    return _cur_framework(x, f=f).min(x, axis)
+    return _cur_framework(f = f).min(x, axis, keepdims, dev)
 
 
 def argsort(x: Union[ivy.Array, ivy.NativeArray], axis: int = -1, f: ivy.Framework = None)\
