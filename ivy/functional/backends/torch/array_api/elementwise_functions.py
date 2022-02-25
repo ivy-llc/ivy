@@ -1,6 +1,10 @@
 # global
+from typing import Union
+
 import torch
 import math
+
+from torch import Tensor
 
 
 def bitwise_and(x1: torch.Tensor,
@@ -9,9 +13,16 @@ def bitwise_and(x1: torch.Tensor,
     return torch.bitwise_and(x1, x2)
 
 
-def isfinite(x: torch.Tensor)\
+def isfinite(x: torch.Tensor) \
         -> torch.Tensor:
     return torch.isfinite(x)
+
+
+def cosh(x: torch.Tensor) \
+        -> Union[float, Tensor]:
+    if isinstance(x, float):
+        return math.cosh(x)
+    return torch.cosh(x)
 
 
 def isnan(x: torch.Tensor)\

@@ -49,18 +49,18 @@ DTYPE_TO_STR = {_jnp.dtype('int8'): 'int8',
                 _jnp.bool_: 'bool'}
 
 DTYPE_FROM_STR = {'int8': _jnp.dtype('int8'),
-                'int16': _jnp.dtype('int16'),
-                'int32': _jnp.dtype('int32'),
-                'int64': _jnp.dtype('int64'),
-                'uint8': _jnp.dtype('uint8'),
-                'uint16': _jnp.dtype('uint16'),
-                'uint32': _jnp.dtype('uint32'),
-                'uint64': _jnp.dtype('uint64'),
-                'bfloat16': _jnp.dtype('bfloat16'),
-                'float16': _jnp.dtype('float16'),
-                'float32': _jnp.dtype('float32'),
-                'float64': _jnp.dtype('float64'),
-                'bool': _jnp.dtype('bool')}
+                  'int16': _jnp.dtype('int16'),
+                  'int32': _jnp.dtype('int32'),
+                  'int64': _jnp.dtype('int64'),
+                  'uint8': _jnp.dtype('uint8'),
+                  'uint16': _jnp.dtype('uint16'),
+                  'uint32': _jnp.dtype('uint32'),
+                  'uint64': _jnp.dtype('uint64'),
+                  'bfloat16': _jnp.dtype('bfloat16'),
+                  'float16': _jnp.dtype('float16'),
+                  'float32': _jnp.dtype('float32'),
+                  'float64': _jnp.dtype('float64'),
+                  'bool': _jnp.dtype('bool')}
 
 
 # Helpers #
@@ -217,7 +217,7 @@ def split(x, num_or_size_splits=None, axis=0, with_remainder=False):
         num_chunks_int = _math.floor(num_chunks)
         remainder = num_chunks - num_chunks_int
         if remainder != 0:
-            num_or_size_splits = [num_or_size_splits]*num_chunks_int + [int(remainder*num_or_size_splits)]
+            num_or_size_splits = [num_or_size_splits] * num_chunks_int + [int(remainder * num_or_size_splits)]
     if isinstance(num_or_size_splits, (list, tuple)):
         num_or_size_splits = _jnp.cumsum(_jnp.array(num_or_size_splits[:-1]))
     return _jnp.split(x, num_or_size_splits, axis)
@@ -274,7 +274,8 @@ def zeros_like(x, dtype=None, dev=None):
 
 
 def full(shape, fill_value, dtype=None, device=None):
-    return to_dev(_jnp.full(shape, fill_value, dtype_from_str(default_dtype(dtype, fill_value))), default_device(device))
+    return to_dev(_jnp.full(shape, fill_value, dtype_from_str(default_dtype(dtype, fill_value))),
+                  default_device(device))
 
 
 # noinspection PyShadowingNames
@@ -314,7 +315,7 @@ def identity(n, dtype='float32', batch_shape=None, dev=None):
     if batch_shape is None:
         return_mat = mat
     else:
-        reshape_dims = [1]*len(batch_shape) + [n, n]
+        reshape_dims = [1] * len(batch_shape) + [n, n]
         tile_dims = list(batch_shape) + [1, 1]
         return_mat = _jnp.tile(_jnp.reshape(mat, reshape_dims), tile_dims)
     return to_dev(return_mat, default_device(dev))
@@ -340,13 +341,13 @@ def scatter_flat(indices, updates, size=None, tensor=None, reduction='sum', dev=
         target = target.at[indices].set(updates)
     elif reduction == 'min':
         if not target_given:
-            target = _jnp.ones([size], dtype=updates.dtype)*1e12
+            target = _jnp.ones([size], dtype=updates.dtype) * 1e12
         target = target.at[indices].min(updates)
         if not target_given:
             target = _jnp.where(target == 1e12, 0., target)
     elif reduction == 'max':
         if not target_given:
-            target = _jnp.ones([size], dtype=updates.dtype)*-1e12
+            target = _jnp.ones([size], dtype=updates.dtype) * -1e12
         target = target.at[indices].max(updates)
         if not target_given:
             target = _jnp.where(target == -1e12, 0., target)
@@ -376,13 +377,13 @@ def scatter_nd(indices, updates, shape=None, tensor=None, reduction='sum', dev=N
         target = target.at[indices_tuple].set(updates)
     elif reduction == 'min':
         if not target_given:
-            target = _jnp.ones(shape, dtype=updates.dtype)*1e12
+            target = _jnp.ones(shape, dtype=updates.dtype) * 1e12
         target = target.at[indices_tuple].min(updates)
         if not target_given:
             target = _jnp.where(target == 1e12, 0., target)
     elif reduction == 'max':
         if not target_given:
-            target = _jnp.ones(shape, dtype=updates.dtype)*-1e12
+            target = _jnp.ones(shape, dtype=updates.dtype) * -1e12
         target = target.at[indices_tuple].max(updates)
         if not target_given:
             target = _jnp.where(target == -1e12, 0., target)
@@ -409,8 +410,10 @@ def gather_nd(params, indices, dev=None):
     flat_params = _jnp.reshape(params, (-1,))
     new_shape = [1] * (len(indices_shape) - 1) + [num_index_dims]
     indices_scales = _jnp.reshape(result_dim_sizes[0:num_index_dims], new_shape)
-    indices_for_flat_tiled = _jnp.tile(_jnp.reshape(_jnp.sum(indices * indices_scales, -1, keepdims=True), (-1, 1)), (1, implicit_indices_factor))
-    implicit_indices = _jnp.tile(_jnp.expand_dims(_jnp.arange(implicit_indices_factor), 0), (indices_for_flat_tiled.shape[0], 1))
+    indices_for_flat_tiled = _jnp.tile(_jnp.reshape(_jnp.sum(indices * indices_scales, -1, keepdims=True), (-1, 1)),
+                                       (1, implicit_indices_factor))
+    implicit_indices = _jnp.tile(_jnp.expand_dims(_jnp.arange(implicit_indices_factor), 0),
+                                 (indices_for_flat_tiled.shape[0], 1))
     indices_for_flat = indices_for_flat_tiled + implicit_indices
     flat_indices_for_flat = _jnp.reshape(indices_for_flat, (-1,)).astype(_jnp.int32)
     flat_gather = _jnp.take(flat_params, flat_indices_for_flat, 0)
@@ -427,12 +430,12 @@ def linear_resample(x, num_samples, axis=-1):
     x_pre_size = _reduce(_mul, x_pre_shape) if x_pre_shape else 1
     num_pre_dims = len(x_pre_shape)
     num_vals = x.shape[axis]
-    x_post_shape = x_shape[axis+1:]
+    x_post_shape = x_shape[axis + 1:]
     x_post_size = _reduce(_mul, x_post_shape) if x_post_shape else 1
     num_post_dims = len(x_post_shape)
-    xp = _jnp.reshape(_jnp.arange(num_vals*x_pre_size*x_post_size), x_shape)
-    x_coords = _jnp.arange(num_samples) * ((num_vals-1)/(num_samples-1)) * x_post_size
-    x_coords = _jnp.reshape(x_coords, [1]*num_pre_dims + [num_samples] + [1]*num_post_dims)
+    xp = _jnp.reshape(_jnp.arange(num_vals * x_pre_size * x_post_size), x_shape)
+    x_coords = _jnp.arange(num_samples) * ((num_vals - 1) / (num_samples - 1)) * x_post_size
+    x_coords = _jnp.reshape(x_coords, [1] * num_pre_dims + [num_samples] + [1] * num_post_dims)
     x_coords = _jnp.broadcast_to(x_coords, x_pre_shape + [num_samples] + x_post_shape)
     slc = [slice(None)] * num_x_dims
     slc[axis] = slice(0, 1, 1)
@@ -463,7 +466,7 @@ def dtype_from_str(dtype_in):
     return DTYPE_FROM_STR[dtype_in]
 
 
-compile = lambda fn, dynamic=True, example_inputs=None, static_argnums=None, static_argnames=None:\
+compile = lambda fn, dynamic=True, example_inputs=None, static_argnums=None, static_argnames=None: \
     _jax.jit(fn, static_argnums=static_argnums, static_argnames=static_argnames)
 current_framework_str = lambda: 'jax'
 current_framework_str.__name__ = 'current_framework_str'

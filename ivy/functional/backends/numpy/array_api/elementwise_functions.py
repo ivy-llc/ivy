@@ -9,9 +9,14 @@ def bitwise_and(x1: np.ndarray,
     return np.bitwise_and(x1, x2)
 
 
-def isfinite(x: np.ndarray)\
+def isfinite(x: np.ndarray) \
         -> np.ndarray:
     return np.asarray(npa.isfinite(npa.asarray(x)))
+
+
+def cosh(x: np.ndarray)\
+        -> np.ndarray:
+    return np.asarray(npa.cosh(npa.asarray(x)))
 
 
 def isnan(x: np.ndarray)\
