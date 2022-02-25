@@ -71,7 +71,7 @@ def vector_to_skew_symmetric_matrix(vector):
     return _mx.nd.concat(*(row1, row2, row3), dim=-2)
 
 
-def cross(x1, x2):
+def cross(x1: mx.ndarray.ndarray.NDArray, x2: mx.ndarray.ndarray.NDArray) -> mx.ndarray.ndarray.NDArray: 
     a1 = x1[..., 0:1]
     a2 = x1[..., 1:2]
     a3 = x1[..., 2:3]
