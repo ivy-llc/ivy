@@ -21,7 +21,7 @@ def isfinite(x: np.ndarray) \
 
 def asinh(x: np.ndarray)\
         -> np.ndarray:
-    return np.asarray(np.arcsinh(npa.asarray(x)))
+    return np.arcsinh(x)
 
 
 def cosh(x: np.ndarray)\
