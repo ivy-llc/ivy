@@ -64,7 +64,6 @@ General
    general/broadcast_to.rst
    general/squeeze.rst
    general/zeros_like.rst
-   general/ones.rst
    general/ones_like.rst
    general/full.rst
    general/one_hot.rst
