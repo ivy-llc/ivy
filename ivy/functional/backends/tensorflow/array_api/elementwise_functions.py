@@ -6,7 +6,9 @@ from tensorflow.python.types.core import Tensor
 import ivy
 
 
-def bitwise_and(x1: Tensor, x2: Tensor) -> Tensor:
+def bitwise_and(x1: Tensor,
+                x2: Tensor)\
+        -> Tensor:
     return tf.bitwise.bitwise_and(x1, x2)
 
 
@@ -26,6 +28,7 @@ def cos(x: Tensor) \
         -> Tensor:
     return tf.cos(x)
 
-
-def logical_not(x: Tensor) -> Tensor:
+  
+def logical_not(x: Tensor)\
+        -> Tensor:
     return tf.logical_not(tf.cast(x, tf.bool))

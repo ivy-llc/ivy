@@ -5,7 +5,9 @@ import jax.numpy as jnp
 from ivy.functional.backends.jax import JaxArray
 
 
-def bitwise_and(x1: JaxArray, x2: JaxArray) -> JaxArray:
+def bitwise_and(x1: JaxArray,
+                x2: JaxArray)\
+        -> JaxArray:
     return jnp.bitwise_and(x1, x2)
 
 
@@ -24,6 +26,7 @@ def cos(x: JaxArray)\
     return jnp.cos(x)
 
 
-def logical_not(x: JaxArray) -> JaxArray:
+def logical_not(x: JaxArray)\
+        -> JaxArray:
     return jnp.logical_not(x)
 

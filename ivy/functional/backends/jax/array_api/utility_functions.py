@@ -14,6 +14,7 @@ def all(x: JaxArray,
     return jnp.all(x, axis, keepdims=keepdims)
 
 
+# noinspection PyShadowingBuiltins
 def any(x: JaxArray,
         axis: Optional[Union[int, Tuple[int], List[int]]] = None,
         keepdims: bool = False)\
