@@ -1,17 +1,18 @@
-# global
+# global
 import tensorflow as tf
 from typing import Tuple, Optional, Union
+from tensorflow.python.framework.dtypes import DType
 
 # local
-from ivy.functional.backends.tensorflow import dtype_from_str, dev_from_str
-from ivy.functional.ivy.core import default_device, default_dtype
+import ivy
+
 
 # noinspection PyShadowingNames
 def ones(shape: Union[int, Tuple[int, ...]],
-         dtype: Optional[tf.dtype] = 'float32',
+         dtype: Optional[DType] = None,
          device: Optional[str] = None) \
         -> tf.Tensor:
-    dtype = dtype_from_str(default_dtype(dtype))
-    dev = dev_from_str(default_device(device))
+    dtype = ivy.dtype_from_str(ivy.default_dtype(dtype))
+    dev = ivy.dev_from_str(ivy.default_device(device))
     with tf.device(dev):
         return tf.ones(shape, dtype)

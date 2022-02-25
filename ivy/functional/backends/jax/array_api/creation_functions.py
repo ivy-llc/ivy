@@ -1,21 +1,15 @@
 # global
-import jax
-import jaxlib
 import jax.numpy as jnp
-from jaxlib.xla_extension import Buffer
 from typing import Union, Optional, Tuple
 
 # local
 import ivy
-from ivy.functional.backends.jax import dtype_from_str
-from ivy.functional.backends.jax.core.device import to_dev
-from ivy.functional.ivy.core import default_device, default_dtype
+from ivy.functional.backends.jax import JaxArray
 
-JaxArray = Union[jax.interpreters.xla._DeviceArray, jaxlib.xla_extension.DeviceArray, Buffer]
 
 # noinspection PyShadowingNames
 def ones(shape: Union[int, Tuple[int, ...]],
-         dtype: Optional[jnp.dtype] = 'float32',
+         dtype: Optional[jnp.dtype] = None,
          device: Optional[str] = None) \
         -> JaxArray:
-    return to_dev(jnp.ones(shape, dtype_from_str(default_dtype(dtype))), default_device(device))
+    return ivy.to_dev(jnp.ones(shape, ivy.dtype_from_str(ivy.default_dtype(dtype))), ivy.default_device(device))

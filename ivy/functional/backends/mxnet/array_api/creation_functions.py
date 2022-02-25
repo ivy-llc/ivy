@@ -10,7 +10,7 @@ from ivy.functional.backends.mxnet import _1_dim_array_to_flat_array, _mxnet_ini
 
 # noinspection PyShadowingNames
 def ones(shape: Union[int, Tuple[int, ...]],
-         dtype: Optional[mx.nd.dtype] = 'float32',
+         dtype: Optional[mx.nd.dtype] = None,
          device: Optional[str] = None) \
         -> mx.ndarray.ndarray.NDArray:
     cont = _mxnet_init_context(default_device(device))

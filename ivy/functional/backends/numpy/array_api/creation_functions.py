@@ -8,7 +8,7 @@ from ivy.functional.backends.numpy.core.general import dtype_from_str, _to_dev
 
 # noinspection PyShadowingNames
 def ones(shape: Union[int, Tuple[int, ...]],
-         dtype: Optional[np.dtype] = 'float32',
+         dtype: Optional[np.dtype] = None,
          device: Optional[str] = None) \
         -> np.ndarray:
     dtype = dtype_from_str(default_dtype(dtype))
