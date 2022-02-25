@@ -33,8 +33,30 @@ def isfinite(x: Union[ivy.Array, ivy.NativeArray])\
     return _cur_framework(x).isfinite(x)
 
 
-def sqrt(x: ivy.Array) -> ivy.Array:
+def asinh(x: Union[ivy.Array, ivy.NativeArray])\
+        -> ivy.Array:
+    """
+    Calculates an implementation-dependent approximation to the inverse hyperbolic sine, having domain
+    ``[-infinity, +infinity]`` and codomain ``[-infinity, +infinity]``, for each element ``x_i`` in the input array ``x``.
 
+    **Special cases**
+    For floating-point operands,
+    - If ``x_i`` is ``NaN``, the result is ``NaN``.
+    - If ``x_i`` is ``+0``, the result is ``+0``.
+    - If ``x_i`` is ``-0``, the result is ``-0``.
+    - If ``x_i`` is ``+infinity``, the result is ``+infinity``.
+    - If ``x_i`` is ``-infinity``, the result is ``-infinity``.
+
+    :param x: input array whose elements each represent the area of a hyperbolic sector. Should have a floating-point
+              data type.
+    :return: an array containing the inverse hyperbolic sine of each element in ``x``. The returned array must have a
+             floating-point data type determined by type-promotion.
+    """
+    return _cur_framework(x).asinh(x)
+
+
+def sqrt(x: Union[ivy.Array, ivy.NativeArray])\
+        -> ivy.Array:
     """
     Calculates the square root, having domain [0, +infinity] and codomain [0, +infinity], for each element x_i of the
     input array x. After rounding, each result must be indistinguishable from the infinitely precise result (as required
@@ -59,7 +81,7 @@ def cosh(x: Union[ivy.Array, ivy.NativeArray])\
 
 
 def isnan(x: Union[ivy.Array, ivy.NativeArray])\
-        -> Union[ivy.Array, ivy.NativeArray]:
+        -> ivy.Array:
     """
     Returns boolean map at locations where the input is not a number (nan).
 
@@ -70,7 +92,8 @@ def isnan(x: Union[ivy.Array, ivy.NativeArray])\
     return _cur_framework(x).isnan(x)
 
 
-def less(x1: Union[ivy.Array, ivy.NativeArray],x2: Union[ivy.Array, ivy.NativeArray], f: ivy.Framework = None)\
+def less(x1: Union[ivy.Array, ivy.NativeArray],
+         x2: Union[ivy.Array, ivy.NativeArray])\
         -> ivy.Array:
     """
     Computes the truth value of x1_i < x2_i for each element x1_i of the input array x1 with the respective 
