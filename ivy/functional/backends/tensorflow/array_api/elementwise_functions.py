@@ -2,9 +2,12 @@
 import tensorflow as tf
 from tensorflow.python.types.core import Tensor
 
-
 # local
 import ivy
+
+
+def bitwise_and(x1: Tensor, x2: Tensor) -> Tensor:
+    return tf.bitwise.bitwise_and(x1, x2)
 
 
 def isfinite(x: Tensor)\
