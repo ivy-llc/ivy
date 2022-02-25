@@ -13,12 +13,6 @@ def sin(x):
     return _torch.sin(x)
 
 
-def cos(x):
-    if isinstance(x, float):
-        return math.cos(x)
-    return _torch.cos(x)
-
-
 def tan(x):
     if isinstance(x, float):
         return math.tan(x)
