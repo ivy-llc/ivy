@@ -6,7 +6,7 @@ import ivy
 from ivy.framework_handler import current_framework as _cur_framework
 
 
-def zeros(shape: Union[int, Tuple[int, ...], List[int, ...]],
+def zeros(shape: Union[int, Tuple[int], List[int]],
           dtype: Optional[ivy.Dtype] = None,
           device: Optional[ivy.Device] = None)\
         -> ivy.Array:
@@ -22,7 +22,7 @@ def zeros(shape: Union[int, Tuple[int, ...], List[int, ...]],
     return _cur_framework().zeros(shape, dtype, device)
 
 
-def ones(shape: Union[int, Tuple[int, ...], List[int, ...]],
+def ones(shape: Union[int, Tuple[int], List[int]],
          dtype: Optional[ivy.Dtype] = None,
          device: Optional[ivy.Device] = None) \
         -> ivy.Array:
