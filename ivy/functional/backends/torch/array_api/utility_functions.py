@@ -22,6 +22,7 @@ def all(x: torch.Tensor,
     return x
 
 
+# noinspection PyShadowingBuiltins
 def any(x: torch.Tensor,
         axis: Optional[Union[int, Tuple[int], List[int]]] = None,
         keepdims: bool = False)\
