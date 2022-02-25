@@ -19,6 +19,13 @@ def isfinite(x: Tensor)\
     return tf.math.is_finite(x)
 
 
+def isnan(x: Tensor)\
+        -> Tensor:
+    if ivy.is_int_dtype(x):
+        return tf.zeros_like(x, tf.bool)
+    return tf.math.is_nan(x)
+
+
 def less(x1: Tensor,x2: Tensor)\
         -> Tensor:
     if hasattr(x1,'dtype') and hasattr(x2,'dtype'):
