@@ -14,3 +14,13 @@ def isfinite(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
              The returned array must have a data type of bool.
     """
     return _cur_framework(x).isfinite(x)
+
+
+def logical_not(x: ivy.Array) -> ivy.Array:
+    """
+    Computes the truth value of NOT x element-wise.
+
+    :param x: Input array.
+    :return: Boolean result of the logical NOT operation applied element-wise to x.
+    """
+    return _cur_framework(x).logical_not(x)
