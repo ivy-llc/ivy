@@ -350,11 +350,6 @@ def indices_where(x):
 
 
 @_handle_flat_arrays_in_out
-def isnan(x):
-    return _mx.nd.contrib.isnan(x).astype('bool')
-
-
-@_handle_flat_arrays_in_out
 def isinf(x):
     return _mx.nd.contrib.isinf(x).astype('bool')
 

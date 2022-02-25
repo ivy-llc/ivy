@@ -20,6 +20,16 @@ def cosh(x: JaxArray)\
         -> JaxArray:
     return jnp.cosh(x)
 
+  
+def isnan(x: JaxArray)\
+        -> JaxArray:
+    return jnp.isnan(x)
+
+
+def less(x1: JaxArray,x2:JaxArray)\
+        -> JaxArray:
+    return jnp.less(x1,x2)
+
 
 def cos(x: JaxArray)\
         -> JaxArray:
@@ -29,4 +39,3 @@ def cos(x: JaxArray)\
 def logical_not(x: JaxArray)\
         -> JaxArray:
     return jnp.logical_not(x)
-
