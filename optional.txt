@@ -1,4 +1,4 @@
-h5py
+h5py==3.6.0
 pytest
 networkx
 matplotlib

@@ -4,6 +4,8 @@ Collection of TensorFlow linear algebra functions, wrapped to fit Ivy syntax and
 
 # global
 import tensorflow as _tf
+from tensorflow.python.types.core import Tensor
+from typing import Optional
 
 
 # noinspection PyPep8Naming
@@ -54,3 +56,7 @@ def vector_to_skew_symmetric_matrix(vector):
     row3 = _tf.concat((-a2s, a1s, zs), -1)
     # BS x 3 x 3
     return _tf.concat((row1, row2, row3), -2)
+
+
+def cross(x1: Tensor, x2: Tensor, /, *, axis: Optional[int] = -1) -> Tensor:
+    return _tf.linalg.cross(a=x1, b=x2)

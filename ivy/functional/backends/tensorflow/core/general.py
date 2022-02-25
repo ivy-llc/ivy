@@ -328,9 +328,6 @@ def one_hot(indices, depth, dev=None):
     return _tf.one_hot(indices, depth)
 
 
-cross = _tf.linalg.cross
-
-
 def matmul(x1, x2):
     # ToDo: add support for other input corner cases, like those explained in torch.matmul() docs
     x1_padded = False

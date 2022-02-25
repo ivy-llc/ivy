@@ -4,7 +4,8 @@ Collection of Numpy linear algebra functions, wrapped to fit Ivy syntax and sign
 
 # global
 import numpy as _np
-
+import numpy.array_api as npa
+from typing import Optional
 svd = _np.linalg.svd
 
 
@@ -23,10 +24,6 @@ def matrix_norm(x, p=2, axes=None, keepdims=False):
 
 inv = _np.linalg.inv
 pinv = _np.linalg.pinv
-
-
-
-
 
 cholesky = _np.linalg.cholesky
 
@@ -47,3 +44,8 @@ def vector_to_skew_symmetric_matrix(vector):
     row3 = _np.concatenate((-a2s, a1s, zs), -1)
     # BS x 3 x 3
     return _np.concatenate((row1, row2, row3), -2)
+
+
+# noinspection PyShadowingBuiltins
+def cross(x1: _np.ndarray, x2: _np.ndarray, /, *, axis: Optional[int] = -1) -> _np.ndarray:
+    return _np.asarray(npa.linalg.cross(_np.asarray(x1), _np.asarray(x2), axis=axis))
