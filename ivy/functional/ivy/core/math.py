@@ -4,7 +4,8 @@ Collection of math Ivy functions.
 
 # local
 from ivy.framework_handler import current_framework as _cur_framework
-
+def none(f = None):
+    return _cur_framework(None,f).nan
 
 def sin(x):
     """

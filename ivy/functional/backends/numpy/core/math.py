@@ -8,7 +8,7 @@ try:
     from scipy.special import erf as _erf
 except (ImportError, ModuleNotFoundError):
     _erf = None
-
+nan = _np.nan
 sin = _np.sin
 tan = _np.tan
 asin = _np.arcsin

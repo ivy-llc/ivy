@@ -6,7 +6,7 @@ Collection of PyTorch math functions, wrapped to fit Ivy syntax and signature.
 import math
 import torch as _torch
 
-
+nan = _torch.nan
 def sin(x):
     if isinstance(x, float):
         return math.sin(x)
