@@ -31,7 +31,6 @@ General
    general/constant_pad.rst
    general/zero_pad.rst
    general/swapaxes.rst
-   general/isnan.rst
    general/isinf.rst
    general/squeeze.rst
    general/zeros_like.rst

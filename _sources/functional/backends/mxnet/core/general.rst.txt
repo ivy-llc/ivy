@@ -39,7 +39,6 @@ General
    general/expand_dims.rst
    general/where.rst
    general/indices_where.rst
-   general/isnan.rst
    general/isinf.rst
    general/broadcast_to.rst
    general/squeeze.rst
