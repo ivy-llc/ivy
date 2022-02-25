@@ -177,18 +177,6 @@ def concatenate(xs, axis=-1):
     return _np.concatenate(xs, axis)
 
 
-def flip(x, axis=None, batch_shape=None):
-    num_dims = len(batch_shape) if batch_shape is not None else len(x.shape)
-    if not num_dims:
-        return x
-    if axis is None:
-        axis = list(range(num_dims))
-    if type(axis) is int:
-        axis = [axis]
-    axis = [item + num_dims if item < 0 else item for item in axis]
-    return _np.flip(x, axis)
-
-
 stack = _np.stack
 
 
