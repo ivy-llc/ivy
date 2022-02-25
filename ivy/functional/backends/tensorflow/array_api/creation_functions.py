@@ -26,3 +26,15 @@ def ones(shape: Union[int, Tuple[int]],
     dev = dev_from_str(default_device(device))
     with tf.device(dev):
         return tf.ones(shape, dtype)
+
+
+def eye(n_rows: int,
+        n_cols: Optional[int] = None,
+        k: Optional[int] = 0,
+        dtype: Optional[Dtype] = None,
+        device: Optional[str] = None) \
+        -> tf.Tensor:
+    dtype = dtype_from_str(default_dtype(dtype))
+    device = dev_from_str(default_device(device))
+    with tf.device(device):
+        return tf.eye(n_rows, n_cols, dtype=dtype)

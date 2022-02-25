@@ -41,7 +41,3 @@ def vector_to_skew_symmetric_matrix(vector):
     row3 = _np.concatenate((-a2s, a1s, zs), -1)
     # BS x 3 x 3
     return _np.concatenate((row1, row2, row3), -2)
-
-
-def matrix_power(x, n):
-    return _np.linalg.matrix_power(x, n)

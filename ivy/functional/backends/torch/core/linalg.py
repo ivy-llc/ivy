@@ -52,6 +52,3 @@ def vector_to_skew_symmetric_matrix(vector):
     # BS x 3 x 3
     return _torch.cat((row1, row2, row3), -2)
 
-
-def matrix_power(x, n):
-    return _torch.linalg.matrix_power(x, n)

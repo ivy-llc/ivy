@@ -26,3 +26,13 @@ def ones(shape: Union[int, Tuple[int]],
     if len(shape) == 0 or 0 in shape:
         return _1_dim_array_to_flat_array(mx.nd.ones((1,), ctx=cont).astype(dtype))
     return mx.nd.ones(shape, ctx=cont).astype(dtype)
+
+
+def eye(n_rows: int,
+        n_cols: Optional[int] = None,
+        k: Optional[int] = 0,
+        dtype: Optional[mx.nd.dtype] = None,
+        device: Optional[str] = None) \
+        -> mx.ndarray.ndarray.NDArray:
+    cont = _mxnet_init_context(default_device(device))
+    return mx.nd.eye(n_rows, n_cols, k, ctx=cont).astype(dtype)

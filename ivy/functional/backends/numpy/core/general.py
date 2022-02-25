@@ -499,7 +499,3 @@ def inplace_increment(x, val):
 
 inplace_arrays_supported = lambda: True
 inplace_variables_supported = lambda: True
-
-
-def eye(n_rows, n_cols=None, *, k=0, dtype=None, device=None):
-    return _to_dev(_np.eye(n_rows, n_cols, k, dtype), device)
