@@ -271,7 +271,6 @@ def isinf(x):
         return _tf.zeros_like(x, _tf.bool)
     return _tf.math.is_inf(x)
 
-
 reshape = lambda x, newshape: _tf.reshape(x, (newshape,) if isinstance(newshape, int) else newshape)
 broadcast_to = _tf.broadcast_to
 

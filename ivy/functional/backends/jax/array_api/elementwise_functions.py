@@ -16,6 +16,11 @@ def isfinite(x: JaxArray)\
     return jnp.isfinite(x)
 
 
+def less(x1: JaxArray,x2:JaxArray)\
+        -> JaxArray:
+    return jnp.less(x1,x2)
+
+
 def cos(x: JaxArray)\
         -> JaxArray:
     return jnp.cos(x)
