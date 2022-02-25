@@ -425,10 +425,6 @@ def one_hot(indices, depth: int, dev: Optional[str] = None):
     return _torch.nn.functional.one_hot(indices.type(_torch.int64), depth).to(dev_from_str(dev))
 
 
-def cross(x1, x2):
-    return _torch.cross(x1, x2)
-
-
 def matmul(x1, x2):
     return _torch.matmul(x1, x2)
 

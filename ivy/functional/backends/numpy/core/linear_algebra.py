@@ -4,7 +4,8 @@ Collection of Numpy linear algebra functions, wrapped to fit Ivy syntax and sign
 
 # global
 import numpy as _np
-
+import numpy.array_api as npa
+from typing import Optional
 svd = _np.linalg.svd
 
 
@@ -24,9 +25,6 @@ def matrix_norm(x, p=2, axes=None, keepdims=False):
 inv = _np.linalg.inv
 pinv = _np.linalg.pinv
 cholesky = _np.linalg.cholesky
-cross = _np.cross
-
-
 
 
 
@@ -49,3 +47,4 @@ def vector_to_skew_symmetric_matrix(vector):
 
 def qr(x, mode):
     return _np.linalg.qr(x, mode=mode)
+

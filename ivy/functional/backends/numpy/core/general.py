@@ -282,7 +282,6 @@ def one_hot(indices, depth, dev=None):
     return res.reshape(list(indices.shape) + [depth])
 
 
-cross = _np.cross
 matmul = lambda x1, x2: _np.matmul(x1, x2)
 cumsum = _np.cumsum
 
