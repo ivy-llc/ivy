@@ -12,7 +12,6 @@ WARN = False
 WARN_MSG = '\n'
 PRINT_MSG = '\n'
 
-
 def parse(str_in):
     str_in = str_in.replace('\n', '')
     if 'mod_name=' in str_in:
@@ -24,7 +23,6 @@ def parse(str_in):
     else:
         version = None
     return mod_name, version
-
 
 def test_imports(fname, assert_version, update_versions):
     global ERROR
@@ -93,7 +91,6 @@ def test_imports(fname, assert_version, update_versions):
         file_lines[line_num] = new_str
     with open(fname, 'w') as f:
         f.writelines(file_lines)
-
 
 def main(filepaths, assert_matching_versions, update_versions):
     for filepath in filepaths.replace(' ', '').split(','):
