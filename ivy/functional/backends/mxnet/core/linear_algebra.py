@@ -69,8 +69,11 @@ def vector_to_skew_symmetric_matrix(vector):
     # BS x 3 x 3
     return _mx.nd.concat(*(row1, row2, row3), dim=-2)
 
+<<<<<<< HEAD
 def qr(x, mode):
     return _mx.np.linalg.qr(x, mode=mode)
+=======
+>>>>>>> 73aa9d374 (updated)
 
 def cross(x1, x2):
     a1 = x1[..., 0:1]
@@ -84,3 +87,10 @@ def cross(x1, x2):
     res3 = a1 * b2 - a2 * b1
     res = _mx.nd.concat(res1, res2, res3, dim=-1)
     return res
+<<<<<<< HEAD
+=======
+
+
+def qr(x, mode):
+    return _mx.np.linalg.qr(x, mode=mode)
+>>>>>>> 73aa9d374 (updated)

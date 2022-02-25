@@ -52,3 +52,10 @@ def qr(x, mode):
 # noinspection PyShadowingBuiltins
 def cross(x1: JaxArray, x2: JaxArray, /, *, axis: Optional[int] = -1) -> JaxArray:
     return _jnp.cross(a=x1, b=x2, axis=axis)
+<<<<<<< HEAD
+=======
+
+
+def qr(x, mode):
+    return _jnp.linalg.qr(x, mode=mode)
+>>>>>>> 73aa9d374 (updated)
