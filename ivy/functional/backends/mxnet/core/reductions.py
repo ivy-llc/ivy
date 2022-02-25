@@ -7,7 +7,7 @@ import mxnet as _mx
 from numbers import Number
 
 # local
-from ivy.functional.backends.mxnet.core.general import _flat_array_to_1_dim_array, _1_dim_array_to_flat_array
+from ivy.functional.backends.mxnet import _flat_array_to_1_dim_array, _1_dim_array_to_flat_array
 
 
 def _handle_output(x, axis, keepdims, ret):

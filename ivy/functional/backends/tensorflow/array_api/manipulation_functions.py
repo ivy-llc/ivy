@@ -19,4 +19,8 @@ def flip(x: Tensor,
     else:
         new_axis = new_axis
     new_axis = [item + num_dims if item < 0 else item for item in new_axis]
+<<<<<<< HEAD
     return tf.reverse(x, new_axis)
+=======
+    return tf.reverse(x, new_axis)
+>>>>>>> 9226ae6a74de589836d2d18456437852123c3557

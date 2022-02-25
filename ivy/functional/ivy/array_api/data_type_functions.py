@@ -13,7 +13,8 @@ Iinfo = None
 # -----------#
 
 # noinspection PyShadowingBuiltins
-def iinfo(type: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray]) -> Iinfo:
+def iinfo(type: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray])\
+        -> Iinfo:
     """
     Machine limits for integer data types.
 
@@ -31,7 +32,8 @@ def iinfo(type: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray]) -> Iinfo:
 
 
 # noinspection PyShadowingBuiltins
-def finfo(type: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray]) -> Finfo:
+def finfo(type: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray])\
+        -> Finfo:
     """
     Machine limits for floating-point data types.
 
