@@ -1,6 +1,6 @@
 # global
 import mxnet as mx
-from typing import Tuple, Union, Optional
+from typing import Tuple, Union, Optional, Iterable
 
 # local
 from ivy import default_device

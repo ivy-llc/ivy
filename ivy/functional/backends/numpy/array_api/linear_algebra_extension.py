@@ -1,6 +1,6 @@
 # global
 import numpy as np
-from typing  import Union, Optional, Tuple, Literal
+from typing import Union, Optional, Tuple, Literal
 
 # local
 from ivy import inf
@@ -12,9 +12,7 @@ def vector_norm(x: np.ndarray,
                 keepdims: bool = False)\
                  -> np.ndarray:
 
-    np_normalized_vector = None
-
-    if axis == None:
+    if axis is None:
         np_normalized_vector = np.linalg.norm(x.flatten(),p, axis,keepdims)
 
     else:
