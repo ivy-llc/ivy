@@ -44,8 +44,6 @@ def _wrap_method(fn):
 
     if hasattr(fn, 'wrapped') and fn.wrapped:
         return fn
-    
-    
 
     def _method_wrapped(*args, **kwargs):
         native_args, native_kwargs = ivy.args_to_native(*args, **kwargs)
