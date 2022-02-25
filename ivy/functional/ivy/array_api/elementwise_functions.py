@@ -33,6 +33,17 @@ def isfinite(x: Union[ivy.Array, ivy.NativeArray])\
     return _cur_framework(x).isfinite(x)
 
 
+def cosh(x: Union[ivy.Array, ivy.NativeArray])\
+        -> ivy.Array:
+    """
+    Returns a new array with the hyperbolic cosine of the elements of x.
+
+    :param x: Input array.
+    :return: A new array with the hyperbolic cosine of the elements of x.
+    """
+    return _cur_framework(x).cosh(x)
+
+
 def isnan(x: Union[ivy.Array, ivy.NativeArray])\
         -> Union[ivy.Array, ivy.NativeArray]:
     """

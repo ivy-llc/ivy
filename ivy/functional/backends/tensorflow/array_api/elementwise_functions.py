@@ -12,11 +12,16 @@ def bitwise_and(x1: Tensor,
     return tf.bitwise.bitwise_and(x1, x2)
 
 
-def isfinite(x: Tensor)\
+def isfinite(x: Tensor) \
         -> Tensor:
     if ivy.is_int_dtype(x):
         return tf.ones_like(x, tf.bool)
     return tf.math.is_finite(x)
+
+
+def cosh(x: Tensor) \
+        -> Tensor:
+    return tf.cosh(x)
 
 
 def isnan(x: Tensor)\
