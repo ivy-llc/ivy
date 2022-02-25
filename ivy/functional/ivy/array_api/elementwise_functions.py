@@ -30,7 +30,6 @@ def isfinite(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
     return _cur_framework(x).isfinite(x)
 
 
-<<<<<<< HEAD
 def cosh(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
     """
     Returns a new array with the hyperbolic cosine of the elements of x.
@@ -39,7 +38,8 @@ def cosh(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
     :return: A new array with the hyperbolic cosine of the elements of x.
     """
     return _cur_framework(x).cosh(x)
-=======
+
+
 def cos(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
     """
     Computes trigonometric cosine element-wise.
@@ -58,4 +58,4 @@ def logical_not(x: ivy.Array) -> ivy.Array:
     :return: Boolean result of the logical NOT operation applied element-wise to x.
     """
     return _cur_framework(x).logical_not(x)
->>>>>>> upstream/master
+

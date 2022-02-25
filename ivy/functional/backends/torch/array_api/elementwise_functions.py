@@ -17,7 +17,9 @@ def isfinite(x: torch.Tensor) \
 
 
 def cosh(x: torch.Tensor) \
-        -> torch.Tensor:
+        -> Union[float, Tensor]:
+    if isinstance(x, float):
+        return math.cosh(x)
     return torch.cosh(x)
 
 

@@ -12,10 +12,9 @@ def isfinite(x: np.ndarray) \
     return np.asarray(npa.isfinite(npa.asarray(x)))
 
 
-def cosh(x: np.ndarray) \
+def cosh(x: np.ndarray)\
         -> np.ndarray:
-    return np.cosh(x)
-
+    return np.asarray(npa.cosh(npa.asarray(x)))
 
 def cos(x: np.ndarray)\
         -> np.ndarray:
