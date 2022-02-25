@@ -52,3 +52,6 @@ def vector_to_skew_symmetric_matrix(vector):
     # BS x 3 x 3
     return _torch.cat((row1, row2, row3), -2)
 
+
+def qr(x, mode):
+    return _torch.linalg.qr(x, mode=str(mode)) # str(mode) is required for JIT type inference

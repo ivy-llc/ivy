@@ -179,18 +179,6 @@ def concatenate(xs, axis=-1):
     return _jnp.concatenate(xs, axis)
 
 
-def flip(x, axis=None, batch_shape=None):
-    num_dims = len(batch_shape) if batch_shape is not None else len(x.shape)
-    if not num_dims:
-        return x
-    if isinstance(axis, list) or isinstance(axis, tuple):
-        if len(axis) == 1:
-            axis = axis[0]
-        else:
-            raise Exception('Jax does not support flip() across multiple indices')
-    return _jnp.flip(x, axis)
-
-
 stack = _jnp.stack
 
 

@@ -173,22 +173,6 @@ def concatenate(xs, axis=-1):
     return _tf.concat(xs, axis)
 
 
-def flip(x, axis=None, batch_shape=None):
-    num_dims = len(batch_shape) if batch_shape is not None else len(x.shape)
-    if not num_dims:
-        return x
-    if axis is None:
-        new_axis = list(range(num_dims))
-    else:
-        new_axis = axis
-    if type(new_axis) is int:
-        new_axis = [new_axis]
-    else:
-        new_axis = new_axis
-    new_axis = [item + num_dims if item < 0 else item for item in new_axis]
-    return _tf.reverse(x, new_axis)
-
-
 stack = _tf.stack
 
 
