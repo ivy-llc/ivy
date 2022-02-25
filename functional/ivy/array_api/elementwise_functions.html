@@ -24,7 +24,6 @@
         <script src="../../../_static/jquery.js"></script>
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/doctools.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
@@ -201,72 +200,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="module-ivy.functional.ivy.array_api.elementwise_functions">
-<span id="elementwise-functions"></span><h1>Elementwise functions<a class="headerlink" href="#module-ivy.functional.ivy.array_api.elementwise_functions" title="Permalink to this headline">¶</a></h1>
-<dl class="py function">
-<dt id="ivy.functional.ivy.array_api.elementwise_functions.bitwise_and">
-<code class="sig-prename descclassname">ivy.functional.ivy.array_api.elementwise_functions.</code><code class="sig-name descname">bitwise_and</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x1</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">x2</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../../_modules/ivy/functional/ivy/array_api/elementwise_functions.html#bitwise_and"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.array_api.elementwise_functions.bitwise_and" title="Permalink to this definition">¶</a></dt>
-<dd><p>Computes the bitwise AND of the underlying binary representation of each element x1_i of the input array x1 with
-the respective element x2_i of the input array x2.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>x1</strong> – first input array. Should have an integer or boolean data type.</p></li>
-<li><p><strong>x2</strong> – second input array. Must be compatible with x1 (see Broadcasting). Should have an integer or
-boolean data type.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>an array containing the element-wise results. The returned array must have a data type determined
-by Type Promotion Rules.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt id="ivy.functional.ivy.array_api.elementwise_functions.cos">
-<code class="sig-prename descclassname">ivy.functional.ivy.array_api.elementwise_functions.</code><code class="sig-name descname">cos</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../../_modules/ivy/functional/ivy/array_api/elementwise_functions.html#cos"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.array_api.elementwise_functions.cos" title="Permalink to this definition">¶</a></dt>
-<dd><p>Computes trigonometric cosine element-wise.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>x</strong> – Input array, in radians (2*pi radian equals 360 degrees).</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>The cosine of x element-wise.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt id="ivy.functional.ivy.array_api.elementwise_functions.isfinite">
-<code class="sig-prename descclassname">ivy.functional.ivy.array_api.elementwise_functions.</code><code class="sig-name descname">isfinite</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../../_modules/ivy/functional/ivy/array_api/elementwise_functions.html#isfinite"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.array_api.elementwise_functions.isfinite" title="Permalink to this definition">¶</a></dt>
-<dd><p>Tests each element x_i of the input array x to determine if finite (i.e., not NaN and not equal to positive
-or negative infinity).</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>x</strong> – input array. Should have a numeric data type.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>an array containing test results. An element out_i is True if x_i is finite and False otherwise.
-The returned array must have a data type of bool.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt id="ivy.functional.ivy.array_api.elementwise_functions.logical_not">
-<code class="sig-prename descclassname">ivy.functional.ivy.array_api.elementwise_functions.</code><code class="sig-name descname">logical_not</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">ivy.array.Array</span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../../_modules/ivy/functional/ivy/array_api/elementwise_functions.html#logical_not"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.array_api.elementwise_functions.logical_not" title="Permalink to this definition">¶</a></dt>
-<dd><p>Computes the truth value of NOT x element-wise.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>x</strong> – Input array.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Boolean result of the logical NOT operation applied element-wise to x.</p>
-</dd>
-</dl>
-</dd></dl>
-
+  <div class="section" id="elementwise-functions">
+<h1>Elementwise functions<a class="headerlink" href="#elementwise-functions" title="Permalink to this headline">¶</a></h1>
 <div class="toctree-wrapper compound">
 <p class="caption"><span class="caption-text">Elementwise functions</span></p>
 <ul>

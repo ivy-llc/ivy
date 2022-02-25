@@ -24,7 +24,6 @@
         <script src="../../../../_static/jquery.js"></script>
         <script src="../../../../_static/underscore.js"></script>
         <script src="../../../../_static/doctools.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../../_static/js/theme.js"></script>
 
@@ -203,31 +202,6 @@
             
   <div class="section" id="svd">
 <h1>svd<a class="headerlink" href="#svd" title="Permalink to this headline">¶</a></h1>
-<dl class="py function">
-<dt id="ivy.functional.ivy.core.linalg.svd">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">svd</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/ivy/functional/ivy/core/linalg.html#svd"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.core.linalg.svd" title="Permalink to this definition">¶</a></dt>
-<dd><p>Singular Value Decomposition.
-When x is a 2D array, it is factorized as u &#64; numpy.diag(s) &#64; vh = (u * s) &#64; vh, where u and vh are 2D unitary
-arrays and s is a 1D array of a’s singular values. When x is higher-dimensional, SVD is applied in batched mode.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>x</strong> (<em>array</em>) – Input array with number of dimensions &gt;= 2.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><p>u -&gt; { (…, M, M), (…, M, K) } array</p>
-<p>Unitary array(s). The first (number of dims - 2) dimensions have the same size as those of the input a.
-The size of the last two dimensions depends on the value of full_matrices.</p>
-<p>s -&gt; (…, K) array</p>
-<p>Vector(s) with the singular values, within each vector sorted in descending ord.
-The first (number of dims - 2) dimensions have the same size as those of the input a.</p>
-<p>vh -&gt; { (…, N, N), (…, K, N) } array</p>
-<p>Unitary array(s). The first (number of dims - 2) dimensions have the same size as those of the input a.
-The size of the last two dimensions depends on the value of full_matrices.</p>
-</p>
-</dd>
-</dl>
-</dd></dl>
-
 <div class="line-block">
 <div class="line"><br /></div>
 <div class="line"><strong>Supported Frameworks:</strong></div>

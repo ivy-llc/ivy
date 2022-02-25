@@ -24,7 +24,6 @@
         <script src="../../../../_static/jquery.js"></script>
         <script src="../../../../_static/underscore.js"></script>
         <script src="../../../../_static/doctools.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../../_static/js/theme.js"></script>
 
@@ -203,22 +202,6 @@
             
   <div class="section" id="vector-to-skew-symmetric-matrix">
 <h1>vector_to_skew_symmetric_matrix<a class="headerlink" href="#vector-to-skew-symmetric-matrix" title="Permalink to this headline">¶</a></h1>
-<dl class="py function">
-<dt id="ivy.functional.ivy.core.linalg.vector_to_skew_symmetric_matrix">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">vector_to_skew_symmetric_matrix</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">vector</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/ivy/functional/ivy/core/linalg.html#vector_to_skew_symmetric_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.core.linalg.vector_to_skew_symmetric_matrix" title="Permalink to this definition">¶</a></dt>
-<dd><p>Given vector <span class="math notranslate nohighlight">\(\mathbf{a}\in\mathbb{R}^3\)</span>, return associated skew-symmetric matrix
-<span class="math notranslate nohighlight">\([\mathbf{a}]_×\in\mathbb{R}^{3×3}\)</span> satisfying <span class="math notranslate nohighlight">\(\mathbf{a}×\mathbf{b}=[\mathbf{a}]_×\mathbf{b}\)</span>.</p>
-<p><a class="reference external" href="https://en.wikipedia.org/wiki/Skew-symmetric_matrix#Cross_product">[reference]</a></p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>vector</strong> (<em>array</em>) – Vector to convert <em>[batch_shape,3]</em>.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Skew-symmetric matrix <em>[batch_shape,3,3]</em>.</p>
-</dd>
-</dl>
-</dd></dl>
-
 <div class="line-block">
 <div class="line"><br /></div>
 <div class="line"><strong>Supported Frameworks:</strong></div>

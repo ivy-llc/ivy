@@ -24,7 +24,6 @@
         <script src="../../../../_static/jquery.js"></script>
         <script src="../../../../_static/underscore.js"></script>
         <script src="../../../../_static/doctools.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../../_static/js/theme.js"></script>
 
@@ -203,28 +202,6 @@
             
   <div class="section" id="lstm-update">
 <h1>lstm_update<a class="headerlink" href="#lstm-update" title="Permalink to this headline">¶</a></h1>
-<dl class="py function">
-<dt id="ivy.functional.ivy.nn.layers.lstm_update">
-<code class="sig-prename descclassname">ivy.functional.ivy.nn.layers.</code><code class="sig-name descname">lstm_update</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">init_h</span></em>, <em class="sig-param"><span class="n">init_c</span></em>, <em class="sig-param"><span class="n">kernel</span></em>, <em class="sig-param"><span class="n">recurrent_kernel</span></em>, <em class="sig-param"><span class="n">bias</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">recurrent_bias</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/ivy/functional/ivy/nn/layers.html#lstm_update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.nn.layers.lstm_update" title="Permalink to this definition">¶</a></dt>
-<dd><p>Perform long-short term memory update by unrolling time dimension of input array.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>array</em>) – input tensor of LSTM layer <em>[batch_shape, t, in]</em>.</p></li>
-<li><p><strong>init_h</strong> (<em>array</em>) – initial state tensor for the cell output <em>[batch_shape, out]</em>.</p></li>
-<li><p><strong>init_c</strong> (<em>array</em>) – initial state tensor for the cell hidden state <em>[batch_shape, out]</em>.</p></li>
-<li><p><strong>kernel</strong> (<em>array</em>) – weights for cell kernel <em>[in, 4 x out]</em>.</p></li>
-<li><p><strong>recurrent_kernel</strong> (<em>array</em>) – weights for cell recurrent kernel <em>[out, 4 x out]</em>.</p></li>
-<li><p><strong>bias</strong> (<em>array</em>) – bias for cell kernel <em>[4 x out]</em>.</p></li>
-<li><p><strong>recurrent_bias</strong> (<em>array</em>) – bias for cell recurrent kernel <em>[4 x out]</em>.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>hidden state for all timesteps <em>[batch_shape,t,out]</em> and cell state for last timestep <em>[batch_shape,out]</em></p>
-</dd>
-</dl>
-</dd></dl>
-
 <div class="line-block">
 <div class="line"><br /></div>
 <div class="line"><strong>Supported Frameworks:</strong></div>

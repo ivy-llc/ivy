@@ -24,7 +24,6 @@
         <script src="../../../../_static/jquery.js"></script>
         <script src="../../../../_static/underscore.js"></script>
         <script src="../../../../_static/doctools.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../../_static/js/theme.js"></script>
 
@@ -203,25 +202,6 @@
             
   <div class="section" id="ones">
 <h1>ones<a class="headerlink" href="#ones" title="Permalink to this headline">¶</a></h1>
-<dl class="py function">
-<dt id="ivy.functional.ivy.array_api.creation_functions.ones">
-<code class="sig-prename descclassname">ivy.functional.ivy.array_api.creation_functions.</code><code class="sig-name descname">ones</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">shape</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>int<span class="p">, </span>Tuple<span class="p">[</span>int<span class="p">, </span><span class="p">…</span><span class="p">]</span><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">dtype</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>ivy.Dtype<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">'float32'</span></em>, <em class="sig-param"><span class="n">device</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>ivy.Device<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../../../_modules/ivy/functional/ivy/array_api/creation_functions.html#ones"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.array_api.creation_functions.ones" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns a new array of given shape and type, filled with ones.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>shape</strong> (<em>iterable int</em><em> or </em><em>int</em>) – Shape of the new array, e.g. (2, 3).</p></li>
-<li><p><strong>dtype</strong> – The desired data-type for the array in string format, i.e. ‘float32’ or ‘int64’.</p></li>
-</ul>
-</dd>
-</dl>
-<p>Default is ‘float32’.
-:type dtype: data-type string, optional
-:param device: device on which to create the array ‘cuda:0’, ‘cuda:1’, ‘cpu’ etc..
-:type device: ivy.Device
-:return: Tensor of ones with the given shape and dtype.</p>
-</dd></dl>
-
 <div class="line-block">
 <div class="line"><br /></div>
 <div class="line"><strong>Supported Frameworks:</strong></div>

@@ -24,7 +24,6 @@
         <script src="../../../../_static/jquery.js"></script>
         <script src="../../../../_static/underscore.js"></script>
         <script src="../../../../_static/doctools.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../../_static/js/theme.js"></script>
 
@@ -203,27 +202,6 @@
             
   <div class="section" id="depthwise-conv2d">
 <h1>depthwise_conv2d<a class="headerlink" href="#depthwise-conv2d" title="Permalink to this headline">¶</a></h1>
-<dl class="py function">
-<dt id="ivy.functional.ivy.nn.layers.depthwise_conv2d">
-<code class="sig-prename descclassname">ivy.functional.ivy.nn.layers.</code><code class="sig-name descname">depthwise_conv2d</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">filters</span></em>, <em class="sig-param"><span class="n">strides</span></em>, <em class="sig-param"><span class="n">padding</span></em>, <em class="sig-param"><span class="n">data_format</span><span class="o">=</span><span class="default_value">'NHWC'</span></em>, <em class="sig-param"><span class="n">dilations</span><span class="o">=</span><span class="default_value">1</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/ivy/functional/ivy/nn/layers.html#depthwise_conv2d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.nn.layers.depthwise_conv2d" title="Permalink to this definition">¶</a></dt>
-<dd><p>Computes a 2-D depthwise convolution given 4-D input x and filters arrays.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>array</em>) – Input image <em>[batch_size,h,w,d]</em>.</p></li>
-<li><p><strong>filters</strong> (<em>array</em>) – Convolution filters <em>[fh,fw,d]</em>.</p></li>
-<li><p><strong>strides</strong> (<em>int</em><em> or </em><em>sequence of ints</em>) – The stride of the sliding window for each dimension of input.</p></li>
-<li><p><strong>padding</strong> (<em>string</em><em> or </em><em>sequence of ints</em>) – “SAME” or “VALID” indicating the algorithm, or list indicating the per-dimension paddings.</p></li>
-<li><p><strong>data_format</strong> (<em>string</em>) – “NHWC” or “NCHW”. Defaults to “NHWC”.</p></li>
-<li><p><strong>dilations</strong> (<em>int</em><em> or </em><em>sequence of ints</em>) – The dilation factor for each dimension of input.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>The result of the convolution operation.</p>
-</dd>
-</dl>
-</dd></dl>
-
 <div class="line-block">
 <div class="line"><br /></div>
 <div class="line"><strong>Supported Frameworks:</strong></div>

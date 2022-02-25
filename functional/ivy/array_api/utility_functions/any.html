@@ -24,7 +24,6 @@
         <script src="../../../../_static/jquery.js"></script>
         <script src="../../../../_static/underscore.js"></script>
         <script src="../../../../_static/doctools.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../../_static/js/theme.js"></script>
 
@@ -203,32 +202,6 @@
             
   <div class="section" id="any">
 <h1>any<a class="headerlink" href="#any" title="Permalink to this headline">¶</a></h1>
-<dl class="py function">
-<dt id="ivy.functional.ivy.array_api.utility_functions.any">
-<code class="sig-prename descclassname">ivy.functional.ivy.array_api.utility_functions.</code><code class="sig-name descname">any</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">axis</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Union<span class="p">[</span>int<span class="p">, </span>Tuple<span class="p">[</span>int<span class="p">]</span><span class="p">, </span>List<span class="p">[</span>int<span class="p">]</span><span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">keepdims</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../../../_modules/ivy/functional/ivy/array_api/utility_functions.html#any"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.array_api.utility_functions.any" title="Permalink to this definition">¶</a></dt>
-<dd><p>Tests whether any input array element evaluate to True along a specified axis.
-:param x: input array.
-:param axis: axis or axes along which to perform a logical OR reduction.
-By default, a logical OR reduction must be performed over the entire array.
-If a tuple of integers, logical OR reductions must be performed over multiple axes.
-A valid axis must be an integer on the interval [-N, N), where N is the rank (number of dimensions) of x.
-If an axis is specified as a negative integer, the function must determine the axis along which to perform a
-reduction by counting backward from the last dimension (where -1 refers to the last dimension).
-If provided an invalid axis, the function must raise an exception. Default: None.
-:param  keepdims: If True, the reduced axes (dimensions) must be included in the result as singleton dimensions,</p>
-<blockquote>
-<div><p>and, accordingly, the result must be compatible with the input array (see Broadcasting). Otherwise, if False,
-the reduced axes (dimensions) must not be included in the result. Default is False.</p>
-</div></blockquote>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>if a logical OR reduction was performed over the entire array, the returned array must be a</p>
-</dd>
-</dl>
-<p>zero-dimensional array containing the test result; otherwise, the returned array must be a
-non-zero-dimensional array containing the test results. The returned array must have a data type of bool.</p>
-</dd></dl>
-
 <div class="line-block">
 <div class="line"><br /></div>
 <div class="line"><strong>Supported Frameworks:</strong></div>

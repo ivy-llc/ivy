@@ -24,7 +24,6 @@
         <script src="../../../_static/jquery.js"></script>
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/doctools.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
@@ -201,115 +200,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="module-ivy.functional.ivy.core.linalg">
-<span id="linalg"></span><h1>Linalg<a class="headerlink" href="#module-ivy.functional.ivy.core.linalg" title="Permalink to this headline">¶</a></h1>
-<p>Collection of linear algebra Ivy functions.</p>
-<dl class="py function">
-<dt id="ivy.functional.ivy.core.linalg.cholesky">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">cholesky</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/core/linalg.html#cholesky"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.core.linalg.cholesky" title="Permalink to this definition">¶</a></dt>
-<dd><p>Computes the cholesky decomposition of the x matrix.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>x</strong> (<em>array</em>) – Matrix to be decomposed.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>cholesky decomposition of the matrix x.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt id="ivy.functional.ivy.core.linalg.inv">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">inv</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/core/linalg.html#inv"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.core.linalg.inv" title="Permalink to this definition">¶</a></dt>
-<dd><p>Computes the (multiplicative) inverse of x matrix.
-Given a square matrix x, returns the matrix x_inv satisfying dot(x, x_inv) = dot(x_inv, x) = eye(x.shape[0]).</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>x</strong> (<em>array</em>) – Matrix to be inverted.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>(Multiplicative) inverse of the matrix x.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt id="ivy.functional.ivy.core.linalg.matrix_norm">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">matrix_norm</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">p</span><span class="o">=</span><span class="default_value">2</span></em>, <em class="sig-param"><span class="n">axes</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">keepdims</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/core/linalg.html#matrix_norm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.core.linalg.matrix_norm" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compute the matrix p-norm.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>array</em>) – Input array.</p></li>
-<li><p><strong>p</strong> (<em>int</em><em> or </em><em>str</em><em>, </em><em>optional</em>) – Order of the norm. Default is 2.</p></li>
-<li><p><strong>axes</strong> (<em>sequence of ints</em><em>, </em><em>optional</em>) – The axes of x along which to compute the matrix norms.
-Default is None, in which case the last two dimensions are used.</p></li>
-<li><p><strong>keepdims</strong> (<em>bool</em><em>, </em><em>optional</em>) – If this is set to True, the axes which are normed over are left in the result as dimensions with
-size one. With this option the result will broadcast correctly against the original x.
-Default is False.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Matrix norm of the array at specified axes.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt id="ivy.functional.ivy.core.linalg.pinv">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">pinv</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/core/linalg.html#pinv"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.core.linalg.pinv" title="Permalink to this definition">¶</a></dt>
-<dd><p>Computes the pseudo inverse of x matrix.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>x</strong> (<em>array</em>) – Matrix to be pseudo inverted.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>pseudo inverse of the matrix x.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt id="ivy.functional.ivy.core.linalg.svd">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">svd</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/core/linalg.html#svd"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.core.linalg.svd" title="Permalink to this definition">¶</a></dt>
-<dd><p>Singular Value Decomposition.
-When x is a 2D array, it is factorized as u &#64; numpy.diag(s) &#64; vh = (u * s) &#64; vh, where u and vh are 2D unitary
-arrays and s is a 1D array of a’s singular values. When x is higher-dimensional, SVD is applied in batched mode.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>x</strong> (<em>array</em>) – Input array with number of dimensions &gt;= 2.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><p>u -&gt; { (…, M, M), (…, M, K) } array</p>
-<p>Unitary array(s). The first (number of dims - 2) dimensions have the same size as those of the input a.
-The size of the last two dimensions depends on the value of full_matrices.</p>
-<p>s -&gt; (…, K) array</p>
-<p>Vector(s) with the singular values, within each vector sorted in descending ord.
-The first (number of dims - 2) dimensions have the same size as those of the input a.</p>
-<p>vh -&gt; { (…, N, N), (…, K, N) } array</p>
-<p>Unitary array(s). The first (number of dims - 2) dimensions have the same size as those of the input a.
-The size of the last two dimensions depends on the value of full_matrices.</p>
-</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt id="ivy.functional.ivy.core.linalg.vector_to_skew_symmetric_matrix">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">vector_to_skew_symmetric_matrix</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">vector</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/core/linalg.html#vector_to_skew_symmetric_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.core.linalg.vector_to_skew_symmetric_matrix" title="Permalink to this definition">¶</a></dt>
-<dd><p>Given vector <span class="math notranslate nohighlight">\(\mathbf{a}\in\mathbb{R}^3\)</span>, return associated skew-symmetric matrix
-<span class="math notranslate nohighlight">\([\mathbf{a}]_×\in\mathbb{R}^{3×3}\)</span> satisfying <span class="math notranslate nohighlight">\(\mathbf{a}×\mathbf{b}=[\mathbf{a}]_×\mathbf{b}\)</span>.</p>
-<p><a class="reference external" href="https://en.wikipedia.org/wiki/Skew-symmetric_matrix#Cross_product">[reference]</a></p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>vector</strong> (<em>array</em>) – Vector to convert <em>[batch_shape,3]</em>.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Skew-symmetric matrix <em>[batch_shape,3,3]</em>.</p>
-</dd>
-</dl>
-</dd></dl>
-
+  <div class="section" id="linalg">
+<h1>Linalg<a class="headerlink" href="#linalg" title="Permalink to this headline">¶</a></h1>
 <div class="toctree-wrapper compound">
 <p class="caption"><span class="caption-text">Linalg</span></p>
 <ul>

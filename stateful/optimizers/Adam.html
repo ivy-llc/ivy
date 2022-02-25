@@ -24,7 +24,6 @@
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
@@ -214,50 +213,6 @@
             
   <div class="section" id="adam">
 <h1>Adam<a class="headerlink" href="#adam" title="Permalink to this headline">¶</a></h1>
-<dl class="py class">
-<dt id="ivy.stateful.optimizers.Adam">
-<em class="property">class </em><code class="sig-prename descclassname">ivy.stateful.optimizers.</code><code class="sig-name descname">Adam</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">lr</span><span class="o">=</span><span class="default_value">0.0001</span></em>, <em class="sig-param"><span class="n">beta1</span><span class="o">=</span><span class="default_value">0.9</span></em>, <em class="sig-param"><span class="n">beta2</span><span class="o">=</span><span class="default_value">0.999</span></em>, <em class="sig-param"><span class="n">epsilon</span><span class="o">=</span><span class="default_value">1e-07</span></em>, <em class="sig-param"><span class="n">inplace</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">stop_gradients</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">compile_on_next_step</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">dev</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/stateful/optimizers.html#Adam"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.stateful.optimizers.Adam" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="Optimizer.html#ivy.stateful.optimizers.Optimizer" title="ivy.stateful.optimizers.Optimizer"><code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.stateful.optimizers.Optimizer</span></code></a></p>
-<dl class="py method">
-<dt id="ivy.stateful.optimizers.Adam.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">lr</span><span class="o">=</span><span class="default_value">0.0001</span></em>, <em class="sig-param"><span class="n">beta1</span><span class="o">=</span><span class="default_value">0.9</span></em>, <em class="sig-param"><span class="n">beta2</span><span class="o">=</span><span class="default_value">0.999</span></em>, <em class="sig-param"><span class="n">epsilon</span><span class="o">=</span><span class="default_value">1e-07</span></em>, <em class="sig-param"><span class="n">inplace</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">stop_gradients</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">compile_on_next_step</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">dev</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/stateful/optimizers.html#Adam.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.stateful.optimizers.Adam.__init__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Construct an ADAM optimizer.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>lr</strong> (<em>float</em><em>, </em><em>optional</em>) – Learning rate, default is 1e-4.</p></li>
-<li><p><strong>beta1</strong> (<em>float</em><em>, </em><em>optional</em>) – gradient forgetting factor, default is 0.9</p></li>
-<li><p><strong>beta2</strong> (<em>float</em><em>, </em><em>optional</em>) – second moment of gradient forgetting factor, default is 0.999</p></li>
-<li><p><strong>epsilon</strong> (<em>float</em><em>, </em><em>optional</em>) – divisor during adam update, preventing division by zero, default is 1e-07</p></li>
-<li><p><strong>inplace</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to update the variables in-place, or to create new variable handles.
-This is only relevant for frameworks with stateful variables such as PyTorch.
-Default is True, provided the backend framework supports it.</p></li>
-<li><p><strong>stop_gradients</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to stop the gradients of the variables after each gradient step. Default is True.</p></li>
-<li><p><strong>compile_on_next_step</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to compile the optimizer on the next step. Default is False.</p></li>
-<li><p><strong>dev</strong> (<em>ivy.Device</em><em>, </em><em>optional</em>) – device on which to create the layer’s variables ‘cuda:0’, ‘cuda:1’, ‘cpu’ etc.</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt id="ivy.stateful.optimizers.Adam.set_state">
-<code class="sig-name descname">set_state</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">state</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/stateful/optimizers.html#Adam.set_state"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.stateful.optimizers.Adam.set_state" title="Permalink to this definition">¶</a></dt>
-<dd><p>Set state of the optimizer.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>state</strong> (<em>Ivy container of state tensors</em>) – Nested state to update.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt id="ivy.stateful.optimizers.Adam.state">
-<em class="property">property </em><code class="sig-name descname">state</code><a class="headerlink" href="#ivy.stateful.optimizers.Adam.state" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
 <div class="line-block">
 <div class="line"><br /></div>
 <div class="line"><strong>Supported Frameworks:</strong></div>
