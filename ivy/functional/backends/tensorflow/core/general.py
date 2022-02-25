@@ -284,11 +284,6 @@ def squeeze(x, axis=None):
     return _tf.squeeze(x, axis)
 
 
-# noinspection PyShadowingNames
-def zeros(shape, dtype=None, dev=None):
-    dev = default_device(dev)
-    with _tf.device(dev_from_str(dev)):
-        return _tf.zeros(shape, dtype_from_str(default_dtype(dtype)))
 
 
 # noinspection PyShadowingNames

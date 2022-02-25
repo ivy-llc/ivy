@@ -263,9 +263,6 @@ def squeeze(x, axis=None):
     return _np.squeeze(x, axis)
 
 
-# noinspection PyShadowingNames
-def zeros(shape, dtype=None, dev=None):
-    return _to_dev(_np.zeros(shape, dtype_from_str(default_dtype(dtype))), dev)
 
 
 # noinspection PyShadowingNames
