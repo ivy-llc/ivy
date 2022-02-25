@@ -17,6 +17,7 @@ def all(x: Tensor,
     return tf.reduce_all(tf.cast(x, tf.bool), axis=axis, keepdims=keepdims)
 
 
+# noinspection PyShadowingBuiltins
 def any(x: Tensor,
         axis: Optional[Union[int, Tuple[int], List[int]]] = None,
         keepdims: bool = False)\
