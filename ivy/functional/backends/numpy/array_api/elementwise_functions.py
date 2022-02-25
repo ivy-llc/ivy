@@ -14,6 +14,11 @@ def isfinite(x: np.ndarray)\
     return np.asarray(npa.isfinite(npa.asarray(x)))
 
 
+def less(x1: np.ndarray,x2: np.ndarray)\
+        -> np.ndarray:
+    return np.less(x1,x2)
+
+
 def cos(x: np.ndarray)\
         -> np.ndarray:
     return np.asarray(npa.cos(npa.asarray(x)))
