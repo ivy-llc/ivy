@@ -140,9 +140,6 @@ def argmin(x, axis=0):
     return ret
 
 
-argsort = lambda x, axis=-1: _np.asarray(_np.argsort(x, axis))
-
-
 def cast(x, dtype):
     return x.astype(dtype_from_str(dtype))
 
@@ -252,10 +249,6 @@ def indices_where(x):
 
 isnan = _np.isnan
 isinf = _np.isinf
-
-
-def isfinite(x):
-    return _np.isfinite(x)
 
 
 reshape = _np.reshape
