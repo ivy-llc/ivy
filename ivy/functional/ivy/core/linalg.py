@@ -60,6 +60,7 @@ def vector_norm(x, p=2, axis=None, keepdims=False):
     return ivy.reduce_sum(x_raised, axis, keepdims) ** (1 / p)
 
 
+
 def matrix_norm(x, p=2, axes=None, keepdims=False):
     """
     Compute the matrix p-norm.
