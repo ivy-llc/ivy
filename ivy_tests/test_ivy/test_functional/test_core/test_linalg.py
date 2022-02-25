@@ -239,4 +239,3 @@ def test_qr(data, mode, dtype, tensor_fn, dev, call):
         assert Q.shape[-1] == x.shape[-2]
     # value test
     assert np.allclose(call(ivy.qr, x, mode)[0], ivy.functional.backends.numpy.qr(ivy.to_numpy(x), mode)[0])
-
