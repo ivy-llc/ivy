@@ -421,13 +421,6 @@ def full(shape, fill_value, dtype=None, device=None):
 
 
 # noinspection PyShadowingNames
-def ones(shape: List[int], dtype: ivy.Dtype = 'float32', dev: Optional[str] = None):
-    dtype_val: _torch.dtype = dtype_from_str(dtype)
-    dev = default_device(dev)
-    return _torch.ones(shape, dtype=dtype_val, device=dev_from_str(dev))
-
-
-# noinspection PyShadowingNames
 def ones_like(x, dtype: Optional[str] = None, dev: Optional[str] = None):
     if dev is None:
         dev = _callable_dev(x)
