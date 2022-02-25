@@ -45,5 +45,9 @@ def vector_to_skew_symmetric_matrix(vector):
     return _np.concatenate((row1, row2, row3), -2)
 
 def qr(x, mode):
+<<<<<<< HEAD
     return _np.linalg.qr(x, mode=mode)
 
+=======
+    return _np.linalg.qr(x, mode=mode)
+>>>>>>> f03e5364c (updated)

@@ -27,8 +27,6 @@ pinv = _jnp.linalg.pinv
 cholesky = _jnp.linalg.cholesky
 
 
-
-
 def vector_to_skew_symmetric_matrix(vector):
     batch_shape = list(vector.shape[:-1])
     # BS x 3 x 1
@@ -52,10 +50,8 @@ def qr(x, mode):
 # noinspection PyShadowingBuiltins
 def cross(x1: JaxArray, x2: JaxArray, /, *, axis: Optional[int] = -1) -> JaxArray:
     return _jnp.cross(a=x1, b=x2, axis=axis)
-<<<<<<< HEAD
-=======
+
 
 
 def qr(x, mode):
     return _jnp.linalg.qr(x, mode=mode)
->>>>>>> 73aa9d374 (updated)
