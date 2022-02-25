@@ -243,6 +243,9 @@
     <span class="n">row3</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="o">-</span><span class="n">a2s</span><span class="p">,</span> <span class="n">a1s</span><span class="p">,</span> <span class="n">zs</span><span class="p">),</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
     <span class="c1"># BS x 3 x 3</span>
     <span class="k">return</span> <span class="n">_np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">row1</span><span class="p">,</span> <span class="n">row2</span><span class="p">,</span> <span class="n">row3</span><span class="p">),</span> <span class="o">-</span><span class="mi">2</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="qr"><a class="viewcode-back" href="../../../../../../functional/backends/numpy/core/linalg/qr.html#ivy.functional.backends.numpy.core.linalg.qr">[docs]</a><span class="k">def</span> <span class="nf">qr</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">mode</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">_np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">qr</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="n">mode</span><span class="p">)</span></div>
 </pre></div>
 
            </div>

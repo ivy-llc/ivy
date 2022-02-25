@@ -18,4 +18,5 @@ Linalg
    linalg/pinv.rst
    linalg/cholesky.rst
    linalg/vector_to_skew_symmetric_matrix.rst
+   linalg/qr.rst
 

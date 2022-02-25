@@ -299,6 +299,30 @@
 <span class="sd">    :return: cholesky decomposition of the matrix x.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">cholesky</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="qr"><a class="viewcode-back" href="../../../../../functional/ivy/core/linalg/qr.html#ivy.functional.ivy.core.linalg.qr">[docs]</a><span class="k">def</span> <span class="nf">qr</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;reduced&quot;</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Computes the qr decomposition of the x matrix.</span>
+
+<span class="sd">    :param x: Matrix to be decomposed.</span>
+<span class="sd">    :type x: array</span>
+<span class="sd">    :param mode: The option to choose between the full and reduced QR decomposition.</span>
+<span class="sd">    :type mode: str, optional</span>
+<span class="sd">    :param f: Machine learning framework. Inferred from inputs if None.</span>
+<span class="sd">    :type f: ml_framework, optional</span>
+<span class="sd">    :return: qr decomposition of the matrix x.</span>
+
+<span class="sd">    If x has shape (*, M, N) and considering K = min(M, N).</span>
+<span class="sd">    mode = &#39;reduced&#39; (default): Returns (Q, R) of shapes (*, M, K), (*, K, N) respectively.</span>
+<span class="sd">    mode = &#39;complete&#39;: Returns (Q, R) of shapes (*, M, M), (*, M, N) respectively.</span>
+<span class="sd">    mode = &#39;r&#39;: Computes only the reduced R. Returns (Q, R) with Q empty and R of shape (*, K, N).</span>
+
+<span class="sd">    Please note that different frameworks support different modes. For example: mode=&#39;raw&#39;</span>
+<span class="sd">    is supported in numpy but not in pytorch. Similarly, tensorflow doesn&#39;t support &#39;r&#39; mode.</span>
+<span class="sd">    The &#39;reduced&#39; and &#39;complete&#39; modes are sufficient for most of the use-cases and are supported</span>
+<span class="sd">    by all the frameworks.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">qr</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="n">mode</span><span class="p">)</span></div>
 </pre></div>
 
            </div>

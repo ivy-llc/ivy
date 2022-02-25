@@ -14,4 +14,5 @@ Linalg
 
    linalg/matrix_norm.rst
    linalg/vector_to_skew_symmetric_matrix.rst
+   linalg/qr.rst
 

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Linalg &mdash; Ivy 1.0 documentation</title>
+  <title>qr &mdash; Ivy 1.0 documentation</title>
   
 
   
@@ -182,13 +182,13 @@
     
       <li><a href="../../../../index.html">Docs</a> &raquo;</li>
         
-      <li>Linalg</li>
+      <li>qr</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../../../_sources/functional/backends/tensorflow/core/linalg.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../../../_sources/functional/ivy/core/linalg/qr.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -201,17 +201,39 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="linalg">
-<h1>Linalg<a class="headerlink" href="#linalg" title="Permalink to this headline">¶</a></h1>
-<div class="toctree-wrapper compound">
-<p class="caption"><span class="caption-text">Linalg</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="linalg/svd.html">svd</a></li>
-<li class="toctree-l1"><a class="reference internal" href="linalg/matrix_norm.html">matrix_norm</a></li>
-<li class="toctree-l1"><a class="reference internal" href="linalg/vector_to_skew_symmetric_matrix.html">vector_to_skew_symmetric_matrix</a></li>
-<li class="toctree-l1"><a class="reference internal" href="linalg/qr.html">qr</a></li>
+  <div class="section" id="qr">
+<h1>qr<a class="headerlink" href="#qr" title="Permalink to this headline">¶</a></h1>
+<dl class="py function">
+<dt id="ivy.functional.ivy.core.linalg.qr">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">qr</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">mode</span><span class="o">=</span><span class="default_value">'reduced'</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/ivy/functional/ivy/core/linalg.html#qr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.core.linalg.qr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the qr decomposition of the x matrix.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>array</em>) – Matrix to be decomposed.</p></li>
+<li><p><strong>mode</strong> (<em>str</em><em>, </em><em>optional</em>) – The option to choose between the full and reduced QR decomposition.</p></li>
+<li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
 </ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>qr decomposition of the matrix x.</p>
+</dd>
+</dl>
+<p>If x has shape (<em>, M, N) and considering K = min(M, N).
+mode = ‘reduced’ (default): Returns (Q, R) of shapes (</em>, M, K), (<em>, K, N) respectively.
+mode = ‘complete’: Returns (Q, R) of shapes (</em>, M, M), (<em>, M, N) respectively.
+mode = ‘r’: Computes only the reduced R. Returns (Q, R) with Q empty and R of shape (</em>, K, N).</p>
+<p>Please note that different frameworks support different modes. For example: mode=’raw’
+is supported in numpy but not in pytorch. Similarly, tensorflow doesn’t support ‘r’ mode.
+The ‘reduced’ and ‘complete’ modes are sufficient for most of the use-cases and are supported
+by all the frameworks.</p>
+</dd></dl>
+
+<div class="line-block">
+<div class="line"><br /></div>
+<div class="line"><strong>Supported Frameworks:</strong></div>
 </div>
+<p><a class="reference internal" href="../../../../_images/empty1.png"><img alt="empty" src="../../../../_images/empty1.png" style="width: 4%;" /></a> <a class="reference external" href="https://jax.readthedocs.io"><img alt="jax_logo" src="../../../../_images/jax_logo1.png" style="width: 14%;" /></a> <a class="reference internal" href="../../../../_images/empty1.png"><img alt="empty" src="../../../../_images/empty1.png" style="width: 4%;" /></a> <a class="reference external" href="https://www.tensorflow.org"><img alt="tf_logo" src="../../../../_images/tensorflow_logo1.png" style="width: 14%;" /></a> <a class="reference internal" href="../../../../_images/empty1.png"><img alt="empty" src="../../../../_images/empty1.png" style="width: 4%;" /></a> <a class="reference external" href="https://pytorch.org"><img alt="pytorch_logo" src="../../../../_images/pytorch_logo1.png" style="width: 14%;" /></a> <a class="reference internal" href="../../../../_images/empty1.png"><img alt="empty" src="../../../../_images/empty1.png" style="width: 4%;" /></a> <a class="reference external" href="https://mxnet.apache.org"><img alt="mxnet_logo" src="../../../../_images/mxnet_logo1.png" style="width: 14%;" /></a> <a class="reference internal" href="../../../../_images/empty1.png"><img alt="empty" src="../../../../_images/empty1.png" style="width: 4%;" /></a> <a class="reference external" href="https://numpy.org"><img alt="numpy_logo" src="../../../../_images/numpy_logo1.png" style="width: 14%;" /></a> <a class="reference internal" href="../../../../_images/empty1.png"><img alt="empty" src="../../../../_images/empty1.png" style="width: 4%;" /></a></p>
 </div>
 
 
