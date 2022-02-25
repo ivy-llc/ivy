@@ -1,0 +1,16 @@
+Linear algebra
+==============
+
+.. automodule:: ivy.functional.backends.torch.array_api.linear_algebra
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :maxdepth: -1
+   :caption: Linear algebra
+
+   linear_algebra/vector_norm.rst
+
