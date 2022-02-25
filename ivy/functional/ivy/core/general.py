@@ -784,18 +784,6 @@ def indices_where(x: Union[ivy.Array, ivy.NativeArray])\
     return _cur_framework(x).indices_where(x)
 
 
-def isnan(x: Union[ivy.Array, ivy.NativeArray])\
-        -> Union[ivy.Array, ivy.NativeArray]:
-    """
-    Returns boolean map at locations where the input is not a number (nan).
-
-    :param x: Input array.
-    :type x: array
-    :return: Boolean values for where the values of the array are nan.
-    """
-    return _cur_framework(x).isnan(x)
-
-
 def isinf(x: Union[ivy.Array, ivy.NativeArray])\
         -> Union[ivy.Array, ivy.NativeArray]:
     """
@@ -806,6 +794,7 @@ def isinf(x: Union[ivy.Array, ivy.NativeArray])\
     :return: Boolean values for where the values of the array are inf.
     """
     return _cur_framework(x).isinf(x)
+ 
 
 
 def value_is_nan(x: Union[ivy.Array, ivy.NativeArray, Number], include_infs: bool = True)\
@@ -885,25 +874,6 @@ def squeeze(x: Union[ivy.Array, ivy.NativeArray], axis: Union[int, Tuple[int]] =
     return _cur_framework(x).squeeze(x, axis)
 
 
-# noinspection PyShadowingNames
-def zeros(shape: Iterable[int], dtype: ivy.Dtype = 'float32', dev: ivy.Device = None)\
-        -> Union[ivy.Array, ivy.NativeArray]:
-    """
-    Return a new array of given shape and type, filled with zeros.
-
-    :param shape: Shape of the new array, e.g. (2, 3).
-    :type shape: sequence of ints
-    :param dtype: The desired data-type for the array in string format, i.e. 'float32' or 'int64'.
-    Default is 'float32'.
-    :type dtype: data-type string, optional
-    :param dev: device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc..
-    :type dev: ivy.Device
-    :return: Tensor of zeros with the given shape and dtype.
-    """
-    return _cur_framework().zeros(shape, dtype, dev)
-
-
-# noinspection PyShadowingNames
 def zeros_like(x: Union[ivy.Array, ivy.NativeArray], dtype: ivy.Dtype = None, dev: ivy.Device = None,
                ) -> Union[ivy.Array, ivy.NativeArray]:
     """
@@ -921,8 +891,7 @@ def zeros_like(x: Union[ivy.Array, ivy.NativeArray], dtype: ivy.Dtype = None, de
     return _cur_framework(x).zeros_like(x, dtype, dev)
 
 
-# noinspection PyShadowingNames
-def ones(shape: Iterable[int], dtype: [ivy.Dtype, str] = 'float32', dev: ivy.Device = None)\
+def ones(shape: Iterable[int], dtype: Union[ivy.Dtype, str] = 'float32', dev: ivy.Device = None)\
         -> Union[ivy.Array, ivy.NativeArray]:
     """
     Returns a new array of given shape and type, filled with ones.
@@ -939,7 +908,6 @@ def ones(shape: Iterable[int], dtype: [ivy.Dtype, str] = 'float32', dev: ivy.Dev
     return _cur_framework().ones(shape, dtype, dev)
 
 
-# noinspection PyShadowingNames
 def ones_like(x: Union[ivy.Array, ivy.NativeArray], dtype: ivy.Dtype = None, dev: ivy.Device = None,
               ) -> Union[ivy.Array, ivy.NativeArray]:
     """
