@@ -9,7 +9,7 @@ from ivy.functional.backends.tensorflow import Dtype
 from ivy import dev_from_str, default_device, dtype_from_str, default_dtype
 
 
-def zeros(shape: Union[int, Tuple[int, ...]],
+def zeros(shape: Union[int, Tuple[int]],
           dtype: Optional[Dtype] = None,
           device: Optional[str] = None) \
         -> Tensor:
@@ -18,7 +18,7 @@ def zeros(shape: Union[int, Tuple[int, ...]],
         return tf.zeros(shape, dtype_from_str(default_dtype(dtype)))
 
 
-def ones(shape: Union[int, Tuple[int, ...]],
+def ones(shape: Union[int, Tuple[int]],
          dtype: Optional[DType] = None,
          device: Optional[str] = None) \
         -> tf.Tensor:
