@@ -5,7 +5,7 @@ Collection of MXNet math functions, wrapped to fit Ivy syntax and signature.
 # global
 import mxnet as _mx
 import math as _math
-nan = _math.nan
+
 sin = lambda x: _math.sin(x) if isinstance(x, float) else _mx.nd.sin(x)
 cos = lambda x: _math.cos(x) if isinstance(x, float) else _mx.nd.cos(x)
 tan = lambda x: _math.tan(x) if isinstance(x, float) else _mx.nd.tan(x)
