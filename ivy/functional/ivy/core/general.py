@@ -806,6 +806,7 @@ def isinf(x: Union[ivy.Array, ivy.NativeArray])\
     :return: Boolean values for where the values of the array are inf.
     """
     return _cur_framework(x).isinf(x)
+ 
 
 
 def value_is_nan(x: Union[ivy.Array, ivy.NativeArray, Number], include_infs: bool = True)\
@@ -885,10 +886,6 @@ def squeeze(x: Union[ivy.Array, ivy.NativeArray], axis: int = None)\
     return _cur_framework(x).squeeze(x, axis)
 
 
-
-
-
-# noinspection PyShadowingNames
 def zeros_like(x: Union[ivy.Array, ivy.NativeArray], dtype: ivy.Dtype = None, dev: ivy.Device = None,
                ) -> Union[ivy.Array, ivy.NativeArray]:
     """
@@ -906,7 +903,23 @@ def zeros_like(x: Union[ivy.Array, ivy.NativeArray], dtype: ivy.Dtype = None, de
     return _cur_framework(x).zeros_like(x, dtype, dev)
 
 
-# noinspection PyShadowingNames
+def ones(shape: Iterable[int], dtype: Union[ivy.Dtype, str] = 'float32', dev: ivy.Device = None)\
+        -> Union[ivy.Array, ivy.NativeArray]:
+    """
+    Returns a new array of given shape and type, filled with ones.
+
+    :param shape: Shape of the new array, e.g. (2, 3).
+    :type shape: sequence of ints
+    :param dtype: The desired data-type for the array in string format, i.e. 'float32' or 'int64'.
+    Default is 'float32'.
+    :type dtype: data-type string, optional
+    :param dev: device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc..
+    :type dev: ivy.Device
+    :return: Tensor of ones with the given shape and dtype.
+    """
+    return _cur_framework().ones(shape, dtype, dev)
+
+
 def ones_like(x: Union[ivy.Array, ivy.NativeArray], dtype: ivy.Dtype = None, dev: ivy.Device = None,
               ) -> Union[ivy.Array, ivy.NativeArray]:
     """
