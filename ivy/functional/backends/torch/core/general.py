@@ -376,7 +376,6 @@ def isnan(x):
 def isinf(x):
     return _torch.isinf(x)
 
-
 def reshape(x, newshape: List[int]):
     if isinstance(newshape, int):
         newshape = [newshape]
