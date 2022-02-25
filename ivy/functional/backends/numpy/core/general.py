@@ -126,7 +126,6 @@ ceil = lambda x: _np.asarray(_np.ceil(x))
 abs = lambda x: _np.asarray(_np.absolute(x))
 greater_equal = lambda x,y: _np.greater_equal(x,y)
 
-
 def argmax(x, axis=0):
     ret = _np.asarray(_np.argmax(x, axis))
     if ret.shape == ():
@@ -139,9 +138,6 @@ def argmin(x, axis=0):
     if ret.shape == ():
         return ret.reshape(-1)
     return ret
-
-
-argsort = lambda x, axis=-1: _np.asarray(_np.argsort(x, axis))
 
 
 def cast(x, dtype):
@@ -180,18 +176,6 @@ def concatenate(xs, axis=-1):
     if xs[0].shape == ():
         return _np.concatenate([_np.expand_dims(x, 0) for x in xs], axis)
     return _np.concatenate(xs, axis)
-
-
-def flip(x, axis=None, batch_shape=None):
-    num_dims = len(batch_shape) if batch_shape is not None else len(x.shape)
-    if not num_dims:
-        return x
-    if axis is None:
-        axis = list(range(num_dims))
-    if type(axis) is int:
-        axis = [axis]
-    axis = [item + num_dims if item < 0 else item for item in axis]
-    return _np.flip(x, axis)
 
 
 stack = _np.stack
@@ -251,7 +235,6 @@ def indices_where(x):
     return res
 
 
-isnan = _np.isnan
 isinf = _np.isinf
 
 
@@ -267,9 +250,6 @@ def squeeze(x, axis=None):
     return _np.squeeze(x, axis)
 
 
-# noinspection PyShadowingNames
-def zeros(shape, dtype=None, dev=None):
-    return _to_dev(_np.zeros(shape, dtype_from_str(default_dtype(dtype))), dev)
 
 
 # noinspection PyShadowingNames
@@ -284,12 +264,6 @@ def zeros_like(x, dtype=None, dev=None):
 
 def full(shape, fill_value, dtype=None, device=None):
     return _to_dev(_np.full(shape, fill_value, dtype_from_str(default_dtype(dtype, fill_value))), device)
-
-
-# noinspection PyShadowingNames
-def ones(shape, dtype=None, dev=None):
-    dtype = dtype_from_str(default_dtype(dtype))
-    return _to_dev(_np.ones(shape, dtype), dev)
 
 
 # noinspection PyShadowingNames
