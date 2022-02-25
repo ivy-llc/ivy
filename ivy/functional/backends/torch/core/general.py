@@ -393,11 +393,6 @@ def squeeze(x, axis: Optional[int] = None):
     return _torch.squeeze(x, axis)
 
 
-# noinspection PyShadowingNames
-def zeros(shape: List[int], dtype: Union[ivy.Dtype, str] = None, dev: Optional[str] = None):
-    return _torch.zeros(
-        shape, dtype=dtype_from_str(default_dtype(dtype)),
-        device=dev_from_str(default_device(dev)))
 
 
 # noinspection PyShadowingNames
