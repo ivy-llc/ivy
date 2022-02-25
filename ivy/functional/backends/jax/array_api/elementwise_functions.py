@@ -16,6 +16,10 @@ def isfinite(x: JaxArray)\
     return jnp.isfinite(x)
 
 
+def sqrt(x: JaxArray) -> JaxArray:
+    return jnp.sqrt(x)
+
+
 def cosh(x: JaxArray)\
         -> JaxArray:
     return jnp.cosh(x)
