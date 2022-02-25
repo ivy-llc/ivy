@@ -59,3 +59,13 @@ def vector_to_skew_symmetric_matrix(vector):
 
 def cross(x1: Tensor, x2: Tensor, /, *, axis: Optional[int] = -1) -> Tensor:
     return _tf.linalg.cross(a=x1, b=x2)
+
+
+def qr(x, mode):
+    if mode=="reduced":
+        full_matrices = False
+    elif mode=="complete":
+        full_matrices = True
+    else:
+        raise Exception("Only 'reduced' and 'complete' qr modes are allowed for the tensorflow backend.")
+    return _tf.linalg.qr(x, full_matrices=full_matrices)
