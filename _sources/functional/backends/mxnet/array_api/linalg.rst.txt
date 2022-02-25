@@ -1,0 +1,8 @@
+Linalg
+======
+
+.. automodule:: ivy.functional.backends.mxnet.array_api.linalg
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:

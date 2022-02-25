@@ -1,0 +1,19 @@
+Linear algebra
+==============
+
+.. automodule:: ivy.functional.backends.tensorflow.core.linear_algebra
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :maxdepth: -1
+   :caption: Linear algebra
+
+   linear_algebra/svd.rst
+   linear_algebra/matrix_norm.rst
+   linear_algebra/vector_to_skew_symmetric_matrix.rst
+   linear_algebra/qr.rst
+
