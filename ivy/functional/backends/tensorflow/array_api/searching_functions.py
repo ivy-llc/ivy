@@ -7,6 +7,6 @@ from typing import Optional
 def argmax(
     x: Tensor,
     axis: Optional[int] = None,
-    out: Optional[int] = None
+    out: Optional[int] = tf.dtypes.int64
 ) -> Tensor:
     return tf.argmax(x, axis=axis, output_type=out)
