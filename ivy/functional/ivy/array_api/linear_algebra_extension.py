@@ -4,7 +4,7 @@ from typing  import Union, Optional, Tuple, Literal
 
 # local
 import ivy
-from ivy import inf
+inf = float('inf')
 
 
 
