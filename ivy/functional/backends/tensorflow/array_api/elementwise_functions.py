@@ -19,6 +19,11 @@ def isfinite(x: Tensor) \
     return tf.math.is_finite(x)
 
 
+def asinh(x: Tensor) \
+        -> Tensor:
+    return tf.asinh(x)
+
+
 def sqrt(x: Tensor)\
         -> Tensor:
     return tf.math.sqrt(x)
