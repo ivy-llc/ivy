@@ -242,8 +242,7 @@ isinf = _jnp.isinf
 def isfinite(x):
     return _jnp.isfinite(x)
 
-def sign(x):
-    return _jnp.sign(x)
+
 
 reshape = _jnp.reshape
 broadcast_to = _jnp.broadcast_to

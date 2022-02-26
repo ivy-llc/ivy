@@ -259,11 +259,6 @@ def isfinite(x):
     return _tf.math.is_finite(x)
 
 
-def sign(x):
-    if ivy.is_int_dtype(x):
-        return _tf.zeros_like(x, x.dtype)
-    return _tf.math.sign(x)
-
 
 reshape = lambda x, newshape: _tf.reshape(x, (newshape,) if isinstance(newshape, int) else newshape)
 broadcast_to = _tf.broadcast_to

@@ -5,7 +5,7 @@ from ivy.framework_handler import current_framework as _cur_framework
 
 
 def bitwise_and(x1: Union[ivy.Array, ivy.NativeArray],
-                x2: Union[ivy.Array, ivy.NativeArray])\
+                x2: Union[ivy.Array, ivy.NativeArray]) \
         -> ivy.Array:
     """
     Computes the bitwise AND of the underlying binary representation of each element x1_i of the input array x1 with
@@ -20,7 +20,7 @@ def bitwise_and(x1: Union[ivy.Array, ivy.NativeArray],
     return _cur_framework(x1, x2).bitwise_and(x1, x2)
 
 
-def isfinite(x: Union[ivy.Array, ivy.NativeArray])\
+def isfinite(x: Union[ivy.Array, ivy.NativeArray]) \
         -> ivy.Array:
     """
     Tests each element x_i of the input array x to determine if finite (i.e., not NaN and not equal to positive
@@ -33,7 +33,19 @@ def isfinite(x: Union[ivy.Array, ivy.NativeArray])\
     return _cur_framework(x).isfinite(x)
 
 
-def asinh(x: Union[ivy.Array, ivy.NativeArray])\
+def sign(x: ivy.Array) -> ivy.Array:
+    """
+    Returns an indication of the sign of a number for each element x_i of the input array x.
+
+    Parameters
+    ----------
+    :param x (array) – input array. Should have a numeric data type.
+    :return (array) - an array containing the evaluated result for each element in x. The returned array must have the same data type as x.
+    """
+    return _cur_framework(x).sign(x)
+
+
+def asinh(x: Union[ivy.Array, ivy.NativeArray]) \
         -> ivy.Array:
     """
     Calculates an implementation-dependent approximation to the inverse hyperbolic sine, having domain
@@ -55,7 +67,7 @@ def asinh(x: Union[ivy.Array, ivy.NativeArray])\
     return _cur_framework(x).asinh(x)
 
 
-def sqrt(x: Union[ivy.Array, ivy.NativeArray])\
+def sqrt(x: Union[ivy.Array, ivy.NativeArray]) \
         -> ivy.Array:
     """
     Calculates the square root, having domain [0, +infinity] and codomain [0, +infinity], for each element x_i of the
@@ -69,7 +81,7 @@ def sqrt(x: Union[ivy.Array, ivy.NativeArray])\
     return _cur_framework(x).sqrt(x)
 
 
-def cosh(x: Union[ivy.Array, ivy.NativeArray])\
+def cosh(x: Union[ivy.Array, ivy.NativeArray]) \
         -> ivy.Array:
     """
     Returns a new array with the hyperbolic cosine of the elements of x.
@@ -78,7 +90,6 @@ def cosh(x: Union[ivy.Array, ivy.NativeArray])\
     :return: A new array with the hyperbolic cosine of the elements of x.
     """
     return _cur_framework(x).cosh(x)
-
 
 def log2(x: Union[ivy.Array, ivy.NativeArray])\
         -> ivy.Array:
@@ -103,8 +114,10 @@ def isnan(x: Union[ivy.Array, ivy.NativeArray])\
     return _cur_framework(x).isnan(x)
 
 
+
+
 def less(x1: Union[ivy.Array, ivy.NativeArray],
-         x2: Union[ivy.Array, ivy.NativeArray])\
+         x2: Union[ivy.Array, ivy.NativeArray]) \
         -> ivy.Array:
     """
     Computes the truth value of x1_i < x2_i for each element x1_i of the input array x1 with the respective 
@@ -118,10 +131,10 @@ def less(x1: Union[ivy.Array, ivy.NativeArray],
     :type f: ml_framework, optional
     :return: an array containing the element-wise results. The returned array must have a data type of bool.
     """
-    return _cur_framework(x1,f=f).less(x1,x2)   
+    return _cur_framework(x1, f=f).less(x1, x2)
 
 
-def cos(x: Union[ivy.Array, ivy.NativeArray])\
+def cos(x: Union[ivy.Array, ivy.NativeArray]) \
         -> ivy.Array:
     """
     Computes trigonometric cosine element-wise.
@@ -132,7 +145,7 @@ def cos(x: Union[ivy.Array, ivy.NativeArray])\
     return _cur_framework(x).cos(x)
 
 
-def logical_not(x: Union[ivy.Array, ivy.NativeArray])\
+def logical_not(x: Union[ivy.Array, ivy.NativeArray]) \
         -> ivy.Array:
     """
     Computes the truth value of NOT x element-wise.

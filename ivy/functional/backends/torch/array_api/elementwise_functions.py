@@ -3,7 +3,7 @@ import torch
 
 
 def bitwise_and(x1: torch.Tensor,
-                x2: torch.Tensor)\
+                x2: torch.Tensor) \
         -> torch.Tensor:
     return torch.bitwise_and(x1, x2)
 
@@ -13,12 +13,17 @@ def isfinite(x: torch.Tensor) \
     return torch.isfinite(x)
 
 
+def sign(x: torch.Tensor) \
+        -> torch.Tensor:
+    return torch.sign(x)
+
+
 def asinh(x: torch.Tensor) \
         -> torch.Tensor:
     return torch.asinh(x)
 
 
-def sqrt(x: torch.Tensor)\
+def sqrt(x: torch.Tensor) \
         -> torch.Tensor:
     return torch.sqrt(x)
 
@@ -33,7 +38,7 @@ def log2(x: torch.Tensor) \
     return torch.log2(x)
 
 
-def isnan(x: torch.Tensor)\
+def isnan(x: torch.Tensor) \
         -> torch.Tensor:
     return torch.isnan(x)
 
@@ -46,11 +51,11 @@ def less(x1: torch.Tensor, x2: torch.Tensor):
     return torch.lt(x1, x2)
 
 
-def cos(x: torch.Tensor)\
+def cos(x: torch.Tensor) \
         -> torch.Tensor:
     return torch.cos(x)
 
 
-def logical_not(x: torch.Tensor)\
+def logical_not(x: torch.Tensor) \
         -> torch.Tensor:
     return torch.logical_not(x.type(torch.bool))

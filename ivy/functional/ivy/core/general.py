@@ -794,21 +794,6 @@ def isinf(x: Union[ivy.Array, ivy.NativeArray])\
     :return: Boolean values for where the values of the array are inf.
     """
     return _cur_framework(x).isinf(x)
- 
-
-def sign(x: Union[ivy.Array, ivy.NativeArray], f: ivy.Framework = None)\
-        -> Union[ivy.Array, ivy.NativeArray]:
-    """
-    Returns an indication of the sign of a number for each element x_i of the input array x.
-
-    Parameters
-    ----------
-    :param x (array) – input array. Should have a numeric data type.
-    :return (array) - an array containing the evaluated result for each element in x. The returned array must have the same data type as x.
-    :param f: Machine learning framework. Inferred from inputs if None.
-    :type f: ml_framework, optional
-        """
-    return _cur_framework(x, f=f).sign(x)
 
 
 
