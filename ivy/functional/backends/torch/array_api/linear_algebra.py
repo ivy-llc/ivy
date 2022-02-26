@@ -23,4 +23,4 @@ def vector_norm(x: torch.Tensor,
 def svd(x:torch.Tensor,full_matrices: bool = True) -> Union[torch.Tensor, Tuple[torch.Tensor,...]]:
     U, D, V = torch.linalg.svd(x, full_matrices=full_matrices)
     VT = torch.transpose(V, -2, -1)
-    return U, D, VT
+    return (U, D, VT)

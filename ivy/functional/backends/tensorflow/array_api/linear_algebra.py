@@ -37,4 +37,4 @@ def svd(x:Tensor,full_matrices: bool = True) -> Union[Tensor, Tuple[Tensor,...]]
     transpose_dims = list(range(num_batch_dims)) + [num_batch_dims + 1, num_batch_dims]
     D, U, V = tf.linalg.svd(x,full_matrices=full_matrices)
     VT = tf.transpose(V, transpose_dims)
-    return U, D, VT
+    return (U, D, VT)
