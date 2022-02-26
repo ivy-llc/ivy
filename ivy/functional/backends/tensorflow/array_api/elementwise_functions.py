@@ -39,6 +39,11 @@ def log2(x: Tensor) \
     return tf.experimental.numpy.log2(x)
 
 
+def log1p(x: Tensor) \
+        -> Tensor:
+    return tf.experimental.numpy.log1p(x)
+
+
 def isnan(x: Tensor)\
         -> Tensor:
     if ivy.is_int_dtype(x):

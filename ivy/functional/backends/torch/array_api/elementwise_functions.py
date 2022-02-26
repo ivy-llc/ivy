@@ -33,6 +33,11 @@ def log2(x: torch.Tensor) \
     return torch.log2(x)
 
 
+def log1p(x: torch.Tensor) \
+        -> torch.Tensor:
+    return torch.log1p(x)
+
+
 def isnan(x: torch.Tensor)\
         -> torch.Tensor:
     return torch.isnan(x)
