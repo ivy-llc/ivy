@@ -140,8 +140,6 @@ def argmin(x, axis=0):
     return ret
 
 
-<<<<<<< HEAD
-<<<<<<< HEAD
 def min(x: _np.ndarray,
         axis: Union[int, Tuple[int]] = None,
         keepdims: bool = False) \
@@ -149,10 +147,6 @@ def min(x: _np.ndarray,
     return _np.amin(a = x, axis = axis, keepdims = keepdims)
 
 
-=======
->>>>>>> parent of 6dd81b6d7 (Test of min function)
-=======
->>>>>>> parent of 6dd81b6d7 (Test of min function)
 argsort = lambda x, axis=-1: _np.asarray(_np.argsort(x, axis))
 
 
