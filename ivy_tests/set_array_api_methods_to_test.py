@@ -18,7 +18,7 @@ for fname in fnames:
     methods_to_test += [s for s in contents.split('\n') if ('#' not in s and s != '')]
 
 # prepend test_
-tests_to_run = ['test_' + method + ' and not ' + 'test_' + method + '_' for method in methods_to_test]
+tests_to_run = ['(test_' + method + ' and not ' + 'test_' + method + '_)' for method in methods_to_test]
 
 # save to file
 with open(os.path.join(this_dir, '.array_api_methods_to_test'), 'w+') as file:
