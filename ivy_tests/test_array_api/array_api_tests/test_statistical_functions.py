@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 import math
 from typing import Optional
 
@@ -295,6 +296,8 @@ def test_var(x, data):
     )
     # We can't easily test the result(s) as variance methods vary a lot
 =======
+=======
+>>>>>>> parent of 6dd81b6d7 (Test of min function)
 # import math
 # import pytest
 # from typing import Optional

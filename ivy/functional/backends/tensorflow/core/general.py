@@ -141,6 +141,7 @@ def argmin(x, axis=0):
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 def min(x: _tf.Tensor,
         axis: Union[int, Tuple[int]] = None,
         keepdims: bool = False) \
@@ -148,6 +149,8 @@ def min(x: _tf.Tensor,
     return _tf.math.reduce_min(x, axis = axis, keepdims = keepdims)
 
 
+=======
+>>>>>>> parent of 6dd81b6d7 (Test of min function)
 =======
 >>>>>>> parent of 6dd81b6d7 (Test of min function)
 argsort = lambda x, axis=-1: _tf.argsort(x, axis)

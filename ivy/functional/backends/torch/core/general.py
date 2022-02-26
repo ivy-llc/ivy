@@ -157,6 +157,7 @@ def argmin(x, axis: int = 0):
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 def min(x: _torch.Tensor,
         axis: Union[int, Tuple[int]] = None,
         keepdims: bool = False) \
@@ -165,6 +166,8 @@ def min(x: _torch.Tensor,
     if not keepdims and not axis and axis !=0: return _torch.amin(input = x)
     return _torch.amin(input = x, dim = axis, keepdim = keepdims)
 
+=======
+>>>>>>> parent of 6dd81b6d7 (Test of min function)
 =======
 >>>>>>> parent of 6dd81b6d7 (Test of min function)
 def argsort(x, axis: int = -1):
