@@ -1,0 +1,6 @@
+#__invert__
+#__and__
+#__or__
+#__xor__
+#__lshift__
+#__rshift__
