@@ -149,6 +149,7 @@ def argmin(x, axis=0):
     return ret
 
 
+<<<<<<< HEAD
 def min(x: _jnp.ndarray,
         axis: Union[int, Tuple[int]] = None,
         keepdims = False, device = None) \
@@ -156,6 +157,8 @@ def min(x: _jnp.ndarray,
     return _jnp.min(a = _jnp.asarray(x), axis = axis, keepdims = keepdims)
 
 
+=======
+>>>>>>> parent of 6dd81b6d7 (Test of min function)
 argsort = lambda x, axis=-1: _jnp.argsort(x, axis)
 
 

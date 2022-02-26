@@ -149,12 +149,6 @@ def abs(x):
 
 argmax = lambda x, axis=0: _mx.nd.argmax(x, axis)
 argmin = lambda x, axis=0: _mx.nd.argmin(x, axis)
-
-
-def min(x, axis = None, keepdims = False, device = None):
-    return _mx.nd.min(x, axis = axis, keepdims = keepdims)
-
-
 argsort = lambda x, axis=-1: _mx.nd.argsort(x, axis)
 
 

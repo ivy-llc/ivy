@@ -436,6 +436,7 @@ def argmin(x: Union[ivy.Array, ivy.NativeArray], axis: int = 0)\
     return _cur_framework(x).argmin(x, axis)
 
 
+<<<<<<< HEAD
 def min(x: Union[ivy.Array, ivy.NativeArray],
         axis: Union[int, Tuple[int]] = None,
         keepdims: bool = False,
@@ -452,6 +453,8 @@ def min(x: Union[ivy.Array, ivy.NativeArray],
     return _cur_framework(f = f).min(x, axis, keepdims, dev)
 
 
+=======
+>>>>>>> parent of 6dd81b6d7 (Test of min function)
 def argsort(x: Union[ivy.Array, ivy.NativeArray], axis: int = -1, f: ivy.Framework = None)\
         -> Union[ivy.Array, ivy.NativeArray]:
     """
