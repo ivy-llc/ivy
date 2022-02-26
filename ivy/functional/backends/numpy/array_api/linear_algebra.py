@@ -8,7 +8,7 @@ from ivy import inf
 
 # noinspection PyUnusedLocal,PyShadowingBuiltins
 def vector_norm(x: np.ndarray,
-                axis: Optional[Union[int, Tuple[int]]] = None, 
+                axis: Optional[Union[int, Tuple[int]]] = None,
                 keepdims: bool = False,
                 ord: Union[int, float, Literal[inf, - inf]] = 2)\
                  -> np.ndarray:
