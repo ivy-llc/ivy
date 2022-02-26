@@ -1,7 +1,7 @@
 #cholesky
 #cross
 #det
-#diagonal
+diagonal
 #eigh
 #eigvalsh
 #inv
