@@ -156,10 +156,6 @@ def argmin(x, axis: int = 0):
     return ret
 
 
-def argsort(x, axis: int = -1):
-    return _torch.argsort(x, axis)
-
-
 def cast(x, dtype_in: str):
     dtype_val = dtype_from_str(dtype_in)
     return x.type(dtype_val)
@@ -262,22 +258,6 @@ def concatenate(xs: List[_torch.Tensor], axis: int = -1):
     return _torch.cat(xs, axis)
 
 
-def flip(x, axis: Optional[List[int]] = None, batch_shape: Optional[List[int]] = None):
-    num_dims: int = len(batch_shape) if batch_shape is not None else len(x.shape)
-    if not num_dims:
-        return x
-    if axis is None:
-        new_axis: List[int] = list(range(num_dims))
-    else:
-        new_axis: List[int] = axis
-    if isinstance(new_axis, int):
-        new_axis = [new_axis]
-    else:
-        new_axis = new_axis
-    new_axis = [item + num_dims if item < 0 else item for item in new_axis]
-    return _torch.flip(x, new_axis)
-
-
 def stack(xs: List[_torch.Tensor], axis: int = 0):
     return _torch.stack(xs, axis)
 
@@ -373,13 +353,8 @@ def indices_where(x):
     return res
 
 
-def isnan(x):
-    return _torch.isnan(x)
-
-
 def isinf(x):
     return _torch.isinf(x)
-
 
 def reshape(x, newshape: List[int]):
     if isinstance(newshape, int):
@@ -397,11 +372,6 @@ def squeeze(x, axis: Optional[int] = None):
     return _torch.squeeze(x, axis)
 
 
-# noinspection PyShadowingNames
-def zeros(shape: List[int], dtype: Union[ivy.Dtype, str] = None, dev: Optional[str] = None):
-    return _torch.zeros(
-        shape, dtype=dtype_from_str(default_dtype(dtype)),
-        device=dev_from_str(default_device(dev)))
 
 
 # noinspection PyShadowingNames
@@ -427,13 +397,6 @@ def full(shape, fill_value, dtype=None, device=None):
     return _torch.full(
         ivy.shape_to_tuple(shape), fill_value, dtype=dtype_from_str(default_dtype(dtype, fill_value)),
         device=default_device(device))
-
-
-# noinspection PyShadowingNames
-def ones(shape: List[int], dtype: ivy.Dtype = 'float32', dev: Optional[str] = None):
-    dtype_val: _torch.dtype = dtype_from_str(dtype)
-    dev = default_device(dev)
-    return _torch.ones(shape, dtype=dtype_val, device=dev_from_str(dev))
 
 
 # noinspection PyShadowingNames

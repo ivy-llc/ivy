@@ -141,8 +141,21 @@ def builtin_bool(x):
 
 
 # noinspection PyShadowingBuiltins
-def builtin_lt(x, other):
-    return x.__lt__(other)
+def builtin_lt(self: Union[ivy.Array, ivy.NativeArray],
+                other: Union[int, float, ivy.Array, ivy.NativeArray]) \
+        -> Union[ivy.Array, ivy.NativeArray]:
+    """
+    Computes the truth value of self_i < other_i for each element of an array instance with the respective element of the array other.
+
+    Parameters
+    self (array) : array instance. Should have a numeric data type.
+
+    other (Union[int, float, array]) : other array. Must be compatible with self (see Broadcasting). Should have a numeric data type.
+
+    Returns
+    out (array) : an array containing the element-wise results. The returned array must have a data type of bool.
+    """
+    return self.__lt__(other)
 
 
 # noinspection PyShadowingBuiltins
