@@ -2,6 +2,57 @@ Contributing to Ivy
 ===================
 
 .. _`Array API`: https://data-apis.org/array-api/latest/
+.. _`tutorial series`: https://www.youtube.com/channel/UCGlkr-YCs3TjMVeOhbbULsw
+
+Array API Standardization
+-------------------------
+
+One of the key tasks currently underway is to update Ivy to conform to the `Array API`_ standard. The YouTube `tutorial series`_
+is the best starting reference for this task.
+
+A few points are made here. You should first check what methods are still available to work on. Methods are reserved by
+contributors in the community by creating an issue, and then commented with a link to this issue on one of the ToDo list issues,
+which has labels "ToDo" and "Array API". There are not many methods left to be worked on.
+
+As explained in the YouTube `tutorial series`_, you can test for each backend seperately by replacing
+:code:`array_module = None` with lines :code:`import ivy as array_module` and :code:`array_module.set_framework('torch')`
+for example.
+
+Once you have got the unit tests passing for each backend for your particular method, you should then make sure your changes have not
+inadvertently caused other unit tests to fail. First, uncomment your method in the folder
+:code:`ivy_tests/array_api_methods_to_test`, add back the line :code:`array_module = None`, and then verify all other flagged methods are passing without error as explained below.
+
+This is required for each backend framework :code:`numpy`, :code:`jax`,
+:code:`torch` and :code:`tensorflow`. You can test all of these tests locally by running
+:code:`./test_array_api.sh backend_name`, for example :code:`./test_array_api.sh torch` or
+:code:`./test_array_api.sh jax`.
+
+
+Keeping Your Fork Updated
+-------------------------
+
+There is a script in the root repo :code:`merge_with_upstream.sh`. To update your local fork to the upstream master
+branch, simply run :code:`./merge_with_upstream.sh name_of_your_branch`. If you are simply developing in master branch
+(the default is you haven't explicitly created any new branches), then simply run :code:`./merge_with_upstream.sh master`.
+
+If you are developing for pull requests (PRs), then it is common to create PR-specific branches. In this case, you would
+run :code:`./merge_with_upstream.sh name_of_your_pr_branch`.
+
+
+Creating Pull Requests
+----------------------
+
+Our process for responding to pull requests is simple. All newly created PRs will be reviewed by a member of the team,
+and then the PR will either be merged or changes will be requested. In order for us to look at the changes you have made,
+you will need to request a code review. We will then take another look, and either merge or request further changes.
+This process then will repeat until either the PR is closed by us or yourslef, or the PR is merged.
+
+If you make changes and do not request a code review, we will not check the changes. This is the case even if you
+comment on the PR. This simple process makes it much simpler for us to track where and when attention is needed.
+
+Finally, all PRs must give write access to Ivy maintainers of the branch. This can be done by checking a tickbox in the
+lower right corner of the PR. This will enable us to quickly fix conflicts, merge with upstream, and get things moving
+much more quickly without us needing to request very simple fixes from yourself.
 
 
 Submodule Design
