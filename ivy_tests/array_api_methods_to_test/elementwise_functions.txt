@@ -49,7 +49,7 @@ logical_not
 #sin
 #sinh
 #square
-sqrt
+#sqrt
 #subtract
 tan
 #tanh
