@@ -1,4 +1,4 @@
-name: test-array-api
+name: test-array-api-torch
 on: [push, pull_request]
 jobs:
   run-torch-array-api-tests:

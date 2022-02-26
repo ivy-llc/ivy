@@ -1,4 +1,4 @@
-name: test-array-api
+name: test-array-api-numpy
 on: [push, pull_request]
 jobs:
   run-numpy-array-api-tests:
