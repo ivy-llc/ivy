@@ -436,6 +436,42 @@ def argmin(x: Union[ivy.Array, ivy.NativeArray], axis: int = 0)\
     return _cur_framework(x).argmin(x, axis)
 
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+def min(x: Union[ivy.Array, ivy.NativeArray],
+        axis: Union[int, Tuple[int]] = None,
+        keepdims: bool = False,
+        f: ivy.Framework = None) \
+        -> ivy.Array:
+    """
+    Calculates the minimum value of the input array x.
+
+    :param x: Input array. Should have a numeric data type.
+    :param axis: Axis or axes along which minimum values must be computed, default is None. Optional.
+    :param keepdims, optional axis or axes along which minimum values must be computed, default is None.
+    :return: array containing minimum value.
+    """
+    return _cur_framework(f = f).min(x, axis, keepdims, dev)
+
+
+=======
+>>>>>>> parent of 6dd81b6d7 (Test of min function)
+=======
+>>>>>>> parent of 6dd81b6d7 (Test of min function)
+def argsort(x: Union[ivy.Array, ivy.NativeArray], axis: int = -1, f: ivy.Framework = None)\
+        -> Union[ivy.Array, ivy.NativeArray]:
+    """
+    Returns the indices of a tensor that give its sorted order along an axis.
+
+    :param x: Input array containing elements to argsort.
+    :type x: array
+    :param axis: Axis to perform the argsort, default is -1.
+    :type axis: int, optional
+    :return: The indices that would sort each slice of the given values along the given axis.
+    """
+    return _cur_framework(x).argsort(x, axis)
+
+
 # noinspection PyShadowingNames
 def arange(stop: Number, start: Number = 0, step: Number = 1, dtype: ivy.Dtype = None, dev: ivy.Device = None,
            ) -> Union[ivy.Array, ivy.NativeArray]:

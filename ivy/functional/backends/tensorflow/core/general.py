@@ -12,6 +12,7 @@ from numbers import Number
 import tensorflow_probability as _tfp
 import multiprocessing as _multiprocessing
 from tensorflow.python.types.core import Tensor
+from typing import Union, Tuple
 
 # local
 from ivy.functional.ivy.core import default_device, default_dtype
@@ -137,6 +138,22 @@ def argmin(x, axis=0):
     if ret.shape == ():
         return _tf.reshape(ret, (-1,))
     return ret
+
+
+<<<<<<< HEAD
+<<<<<<< HEAD
+def min(x: _tf.Tensor,
+        axis: Union[int, Tuple[int]] = None,
+        keepdims: bool = False) \
+        -> _tf.Tensor:
+    return _tf.math.reduce_min(x, axis = axis, keepdims = keepdims)
+
+
+=======
+>>>>>>> parent of 6dd81b6d7 (Test of min function)
+=======
+>>>>>>> parent of 6dd81b6d7 (Test of min function)
+argsort = lambda x, axis=-1: _tf.argsort(x, axis)
 
 
 def cast(x, dtype):
