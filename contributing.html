@@ -88,6 +88,7 @@
 <li class="toctree-l1"><a class="reference internal" href="training_a_network.html">Training a Network</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Contributing to Ivy</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#keeping-your-fork-updated">Keeping Your Fork Updated</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#creating-pull-requests">Creating Pull Requests</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#submodule-design">Submodule Design</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#ivy-api">Ivy API</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#backend-api">Backend API</a></li>
@@ -219,6 +220,18 @@ branch, simply run <code class="code docutils literal notranslate"><span class="
 (the default is you haven’t explicitly created any new branches), then simply run <code class="code docutils literal notranslate"><span class="pre">./merge_with_upstream.sh</span> <span class="pre">master</span></code>.</p>
 <p>If you are developing for pull requests (PRs), then it is common to create PR-specific branches. In this case, you would
 run <code class="code docutils literal notranslate"><span class="pre">./merge_with_upstream.sh</span> <span class="pre">name_of_your_pr_branch</span></code>.</p>
+</div>
+<div class="section" id="creating-pull-requests">
+<h2>Creating Pull Requests<a class="headerlink" href="#creating-pull-requests" title="Permalink to this headline">¶</a></h2>
+<p>Our process for responding to pull requests is simple. All newly created PRs will be reviewed by a member of the team,
+and then the PR will either be merged or changes will be requested. In order for us to look at the changes you have made,
+you will need to request a code review. We will then take another look, and either merge or request further changes.
+This process then will repeat until either the PR is closed by us or yourslef, or the PR is merged.</p>
+<p>If you make changes and do not request a code review, we will not check the changes. This is the case even if you
+comment on the PR. This simple process makes it much simpler for us to track where and when attention is needed.</p>
+<p>Finally, all PRs must give write access to Ivy maintainers of the branch. This can be done by checking a tickbox in the
+lower right corner of the PR. This will enable us to quickly fix conflicts, merge with upstream, and get things moving
+much more quickly without us needing to request very simple fixes from yourself.</p>
 </div>
 <div class="section" id="submodule-design">
 <h2>Submodule Design<a class="headerlink" href="#submodule-design" title="Permalink to this headline">¶</a></h2>
