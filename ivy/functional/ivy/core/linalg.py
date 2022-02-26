@@ -122,4 +122,3 @@ def cholesky(x):
     :return: cholesky decomposition of the matrix x.
     """
     return _cur_framework(x).cholesky(x)
-
