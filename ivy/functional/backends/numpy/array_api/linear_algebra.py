@@ -1,5 +1,6 @@
 # global
 import numpy as np
+import ivy as _ivy
 from typing import Union, Optional, Tuple, Literal
 
 # local
@@ -22,3 +23,8 @@ def vector_norm(x: np.ndarray,
     if np_normalized_vector.shape == tuple():
         return np.expand_dims(np_normalized_vector, 0)
     return np_normalized_vector
+
+
+def svd(x:Union[_ivy.Array,_ivy.NativeArray],full_matrices: bool = True) -> Union[_ivy.Array, Tuple[_ivy.Array,...]]:
+    U, D, VT=np.linalg.svd(x, full_matrices=full_matrices)
+    return U, D, VT

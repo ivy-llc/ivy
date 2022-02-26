@@ -10,12 +10,6 @@ from typing import Union, Tuple
 
 
 
-# noinspection PyPep8Naming
-def svd(x:Union[_ivy.Array,_ivy.NativeArray],full_matrices: bool = True) -> Union[_ivy.Array, Tuple[_ivy.Array,...]]:
-    U, D, V = _torch.linalg.svd(x, full_matrices=full_matrices)
-    VT = _torch.transpose(V, -2, -1)
-    return U, D, VT
-
 
 def matrix_norm(x, p=2, axes=None, keepdims=False):
     axes = [-2, -1] if axes is None else axes

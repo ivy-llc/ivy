@@ -11,10 +11,7 @@ from ivy.functional.backends.mxnet.core.general import matmul as _matmul
 from typing import Union, Tuple
 
 
-# noinspection PyPep8Naming
-def svd(x:Union[_ivy.Array,_ivy.NativeArray],full_matrices: bool = True) -> Union[_ivy.Array, Tuple[_ivy.Array,...]]:
-    U, D, VT=_np.linalg.svd(x, full_matrices=full_matrices)
-    return U, D, VT
+
 
 
 def matrix_norm(x, p=2, axes=None, keepdims=False):

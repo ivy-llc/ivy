@@ -5,6 +5,7 @@ from typing import Union, Optional, Tuple, Literal
 # local
 from ivy import inf
 from ivy.functional.backends.jax import JaxArray
+import ivy as _ivy
 
 
 # noinspection PyUnusedLocal,PyShadowingBuiltins
@@ -22,3 +23,7 @@ def vector_norm(x: JaxArray,
     if jnp_normalized_vector.shape == ():
         return jnp.expand_dims(jnp_normalized_vector, 0)
     return jnp_normalized_vector
+
+def svd(x:Union[_ivy.Array,_ivy.NativeArray],full_matrices: bool = True) -> Union[_ivy.Array, Tuple[_ivy.Array,...]]:
+    U, D, VT=jnp.linalg.svd(x, full_matrices=full_matrices)
+    return U, D, VT
