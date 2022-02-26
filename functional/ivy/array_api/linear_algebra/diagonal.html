@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Linear algebra &mdash; Ivy 1.0 documentation</title>
+  <title>diagonal &mdash; Ivy 1.0 documentation</title>
   
 
   
@@ -182,13 +182,13 @@
     
       <li><a href="../../../../index.html">Docs</a> &raquo;</li>
         
-      <li>Linear algebra</li>
+      <li>diagonal</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../../../_sources/functional/backends/numpy/array_api/linear_algebra.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../../../_sources/functional/ivy/array_api/linear_algebra/diagonal.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -201,15 +201,35 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="linear-algebra">
-<h1>Linear algebra<a class="headerlink" href="#linear-algebra" title="Permalink to this headline">¶</a></h1>
-<div class="toctree-wrapper compound">
-<p class="caption"><span class="caption-text">Linear algebra</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="linear_algebra/vector_norm.html">vector_norm</a></li>
-<li class="toctree-l1"><a class="reference internal" href="linear_algebra/diagonal.html">diagonal</a></li>
+  <div class="section" id="diagonal">
+<h1>diagonal<a class="headerlink" href="#diagonal" title="Permalink to this headline">¶</a></h1>
+<dl class="py function">
+<dt id="ivy.functional.ivy.array_api.linear_algebra.diagonal">
+<code class="sig-prename descclassname">ivy.functional.ivy.array_api.linear_algebra.</code><code class="sig-name descname">diagonal</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">ivy.array.Array</span></em>, <em class="sig-param"><span class="n">offset</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">0</span></em>, <em class="sig-param"><span class="n">axis1</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">- 2</span></em>, <em class="sig-param"><span class="n">axis2</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">- 1</span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../../../_modules/ivy/functional/ivy/array_api/linear_algebra.html#diagonal"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.array_api.linear_algebra.diagonal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the specified diagonal of a matrix <cite>x</cite></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>array</em>) – Matrix of dimensions (…., M, N)</p></li>
+<li><p><strong>offset</strong> (<em>int</em><em>, </em><em>optional</em>) – Offset of the diagonal. Default is 0.</p></li>
+<li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
+<li><p><strong>axis1</strong> (<em>int</em><em>, </em><em>optional</em>) – Axis of the matrix <cite>x</cite> along which the diagonal is extracted.
+Default is 0.</p></li>
+<li><p><strong>axis2</strong> (<em>int</em><em>, </em><em>optional</em>) – Axis of the matrix <cite>x</cite> along which the diagonal is extracted.
+Default is 1.</p></li>
 </ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Diagonal of the matrix x.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<div class="line-block">
+<div class="line"><br /></div>
+<div class="line"><strong>Supported Frameworks:</strong></div>
 </div>
+<p><a class="reference internal" href="../../../../_images/empty1.png"><img alt="empty" src="../../../../_images/empty1.png" style="width: 4%;" /></a> <a class="reference external" href="https://jax.readthedocs.io"><img alt="jax_logo" src="../../../../_images/jax_logo1.png" style="width: 14%;" /></a> <a class="reference internal" href="../../../../_images/empty1.png"><img alt="empty" src="../../../../_images/empty1.png" style="width: 4%;" /></a> <a class="reference external" href="https://www.tensorflow.org"><img alt="tf_logo" src="../../../../_images/tensorflow_logo1.png" style="width: 14%;" /></a> <a class="reference internal" href="../../../../_images/empty1.png"><img alt="empty" src="../../../../_images/empty1.png" style="width: 4%;" /></a> <a class="reference external" href="https://pytorch.org"><img alt="pytorch_logo" src="../../../../_images/pytorch_logo1.png" style="width: 14%;" /></a> <a class="reference internal" href="../../../../_images/empty1.png"><img alt="empty" src="../../../../_images/empty1.png" style="width: 4%;" /></a> <a class="reference external" href="https://mxnet.apache.org"><img alt="mxnet_logo" src="../../../../_images/mxnet_logo1.png" style="width: 14%;" /></a> <a class="reference internal" href="../../../../_images/empty1.png"><img alt="empty" src="../../../../_images/empty1.png" style="width: 4%;" /></a> <a class="reference external" href="https://numpy.org"><img alt="numpy_logo" src="../../../../_images/numpy_logo1.png" style="width: 14%;" /></a> <a class="reference internal" href="../../../../_images/empty1.png"><img alt="empty" src="../../../../_images/empty1.png" style="width: 4%;" /></a></p>
 </div>
 
 
