@@ -1,3 +1,2 @@
-from . import helpers
-
-test_shapes = ((), (1,), (2, 1), (1, 2, 3))
+from jax.config import config
+config.update("jax_enable_x64", True)

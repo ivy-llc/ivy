@@ -24,8 +24,7 @@ def variable_data(x):
 
 # noinspection PyShadowingNames
 def execute_with_gradients(func, xs, retain_grads=False):
-    if ivy.array_mode():
-        xs = xs.to_native()
+    xs = xs.to_native()
     func_ret = func(xs)
     if isinstance(func_ret, tuple):
         y = func_ret[0]
@@ -33,14 +32,12 @@ def execute_with_gradients(func, xs, retain_grads=False):
     else:
         y = func_ret
         rest = tuple()
-    if ivy.array_mode():
-        y = ivy.to_native(y)
+    y = ivy.to_native(y)
     x_grads_flat = list(_torch.autograd.grad([y], [v for k, v in xs.to_iterator()], retain_graph=retain_grads,
                                              create_graph=retain_grads))
     grads = xs.from_flat_list(x_grads_flat)
-    if ivy.array_mode():
-        grads = grads.to_ivy()
-        y = ivy.to_ivy(y)
+    grads = grads.to_ivy()
+    y = ivy.to_ivy(y)
     if not retain_grads:
         y = ivy.stop_gradient(y)
     return (y, grads, *rest)
