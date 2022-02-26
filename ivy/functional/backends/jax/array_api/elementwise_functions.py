@@ -50,6 +50,6 @@ def logical_not(x: JaxArray)\
     return jnp.logical_not(x)
 
 
-def greater_equal(x: JaxArray, y: JaxArray)\
+def greater_equal(x1: JaxArray, x2: JaxArray)\
         -> JaxArray:
-    return jnp.greater_equal(x, y)
+    return jnp.greater_equal(x1, x2)

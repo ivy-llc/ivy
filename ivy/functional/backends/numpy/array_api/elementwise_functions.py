@@ -49,6 +49,6 @@ def logical_not(x: np.ndarray)\
     return np.logical_not(x)
 
 
-def greater_equal(x: np.ndarray, y: np.ndarray)\
+def greater_equal(x1: np.ndarray, x2: np.ndarray)\
         -> np.ndarray:
-    return np.greater_equal(x, y)
+    return np.greater_equal(x1, x2)

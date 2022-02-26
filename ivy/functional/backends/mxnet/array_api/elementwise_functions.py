@@ -43,6 +43,6 @@ def logical_not(x: mx.ndarray.ndarray.NDArray)\
 
 
 @_handle_flat_arrays_in_out
-def greater_equal(x: mx.ndarray.ndarray.NDArray, y: mx.ndarray.ndarray.NDArray)\
+def greater_equal(x1: mx.ndarray.ndarray.NDArray, x2: mx.ndarray.ndarray.NDArray)\
         -> mx.ndarray.ndarray.NDArray:
-    return mx.nd.greater_equal(x, y)
+    return mx.nd.greater_equal(x1, x2)
