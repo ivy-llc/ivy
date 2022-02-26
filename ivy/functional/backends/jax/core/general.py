@@ -14,6 +14,7 @@ from functools import reduce as _reduce
 from jaxlib.xla_extension import Buffer
 import multiprocessing as _multiprocessing
 from haiku._src.data_structures import FlatMapping
+from typing import Tuple, Union
 
 # local
 import ivy
@@ -146,6 +147,13 @@ def argmin(x, axis=0):
     if ret.shape == ():
         return ret.reshape(-1)
     return ret
+
+
+def min(x: _jnp.ndarray,
+        axis: Union[int, Tuple[int]] = None,
+        keepdims = False, device = None) \
+        -> _jnp.ndarray:
+    return _jnp.min(a = _jnp.asarray(x), axis = axis, keepdims = keepdims)
 
 
 def cast(x, dtype):

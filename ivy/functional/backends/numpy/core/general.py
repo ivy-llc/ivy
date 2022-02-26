@@ -9,6 +9,7 @@ import math as _math
 from operator import mul as _mul
 from functools import reduce as _reduce
 import multiprocessing as _multiprocessing
+from typing import Tuple, Union
 
 # local
 import ivy
@@ -137,6 +138,13 @@ def argmin(x, axis=0):
     if ret.shape == ():
         return ret.reshape(-1)
     return ret
+
+
+def min(x: _np.ndarray,
+        axis: Union[int, Tuple[int]] = None,
+        keepdims: bool = False) \
+        -> _np.ndarray:
+    return _np.amin(a = x, axis = axis, keepdims = keepdims)
 
 
 def cast(x, dtype):
