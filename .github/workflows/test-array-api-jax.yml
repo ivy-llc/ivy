@@ -1,0 +1,17 @@
+name: test-array-api
+on: [push, pull_request]
+jobs:
+  run-jax-array-api-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout 🛎️Ivy
+        uses: actions/checkout@v2
+        with:
+          path: ivy
+          persist-credentials: false
+          submodules: 'recursive'
+
+      - name: Run JAX Tests
+        continue-on-error: true
+        run: |
+          docker run --rm --env IVY_BACKEND="jax" --env ARRAY_API_TESTS_MODULE="ivy" -v `pwd`/ivy:/ivy unifyai/ivy:latest python3 -m pytest ivy/ivy_tests/test_array_api --ci

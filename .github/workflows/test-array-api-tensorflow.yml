@@ -1,7 +1,7 @@
 name: test-array-api
 on: [push, pull_request]
 jobs:
-  run-nightly-tests:
+  run-tensorflow-array-api-tests:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout 🛎️Ivy
@@ -10,16 +10,6 @@ jobs:
           path: ivy
           persist-credentials: false
           submodules: 'recursive'
-
-      - name: Run JAX Tests
-        continue-on-error: true
-        run: |
-          docker run --rm --env IVY_BACKEND="jax" --env ARRAY_API_TESTS_MODULE="ivy" -v `pwd`/ivy:/ivy unifyai/ivy:latest python3 -m pytest ivy/ivy_tests/test_array_api --ci
-
-      - name: Run NumPy Tests
-        continue-on-error: true
-        run: |
-          docker run --rm --env IVY_BACKEND="numpy" --env ARRAY_API_TESTS_MODULE="ivy" -v `pwd`/ivy:/ivy unifyai/ivy:latest python3 -m pytest ivy/ivy_tests/test_array_api --ci
 
       - name: Run TensorFlow Tests
         continue-on-error: true
