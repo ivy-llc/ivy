@@ -13,4 +13,6 @@ jobs:
 
       - name: Run NumPy Tests
         run: |
-          docker run --rm --env IVY_BACKEND="numpy" --env ARRAY_API_TESTS_MODULE="ivy" -v `pwd`/ivy:/ivy unifyai/ivy:latest python3 -m pytest ivy/ivy_tests/test_array_api --ci
+          python3 ivy/ivy_tests/set_array_api_methods_to_test.py
+          export ARRAY_API_METHODS_TO_TEST=$(cat ivy/ivy_tests/.array_api_methods_to_test)
+          docker run --rm --env IVY_BACKEND="numpy" --env ARRAY_API_TESTS_MODULE="ivy" -v `pwd`/ivy:/ivy unifyai/ivy:latest python3 -m pytest ivy/ivy_tests/test_array_api --ci -k $ARRAY_API_METHODS_TO_TEST
