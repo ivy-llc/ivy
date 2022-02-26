@@ -7,7 +7,7 @@ asinh
 #atan
 #atan2
 #atanh
-bitwise_and
+#bitwise_and
 #bitwise_left_shift
 #bitwise_invert
 #bitwise_or
@@ -49,7 +49,7 @@ logical_not
 #sin
 #sinh
 #square
-sqrt
+#sqrt
 #subtract
 tan
 #tanh
