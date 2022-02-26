@@ -15,6 +15,22 @@ If you are developing for pull requests (PRs), then it is common to create PR-sp
 run :code:`./merge_with_upstream.sh name_of_your_pr_branch`.
 
 
+Creating Pull Requests
+----------------------
+
+Our process for responding to pull requests is simple. All newly created PRs will be reviewed by a member of the team,
+and then the PR will either be merged or changes will be requested. In order for us to look at the changes you have made,
+you will need to request a code review. We will then take another look, and either merge or request further changes.
+This process then will repeat until either the PR is closed by us or yourslef, or the PR is merged.
+
+If you make changes and do not request a code review, we will not check the changes. This is the case even if you
+comment on the PR. This simple process makes it much simpler for us to track where and when attention is needed.
+
+Finally, all PRs must give write access to Ivy maintainers of the branch. This can be done by checking a tickbox in the
+lower right corner of the PR. This will enable us to quickly fix conflicts, merge with upstream, and get things moving
+much more quickly without us needing to request very simple fixes from yourself.
+
+
 Submodule Design
 ----------------
 
