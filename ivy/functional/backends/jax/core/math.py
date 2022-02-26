@@ -6,6 +6,7 @@ Collection of Jax math functions, wrapped to fit Ivy syntax and signature.
 import jax as _jax
 import jax.numpy as _jnp
 
+
 sin = _jnp.sin
 tan = _jnp.tan
 asin = _jnp.arcsin
