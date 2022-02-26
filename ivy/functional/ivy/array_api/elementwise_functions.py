@@ -80,6 +80,17 @@ def cosh(x: Union[ivy.Array, ivy.NativeArray])\
     return _cur_framework(x).cosh(x)
 
 
+def log2(x: Union[ivy.Array, ivy.NativeArray])\
+        -> ivy.Array:
+    """
+    Calculates an implementation-dependent approximation to the base 2 logarithm.
+
+    :param x: Input array.
+    :return: A new array containing the evaluated base 2 logarithm for each element in x.
+    """
+    return _cur_framework(x).log2(x)
+
+
 def isnan(x: Union[ivy.Array, ivy.NativeArray])\
         -> ivy.Array:
     """
