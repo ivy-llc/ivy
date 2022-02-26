@@ -13,4 +13,6 @@ jobs:
 
       - name: Run Torch Tests
         run: |
-          docker run --rm --env IVY_BACKEND="torch" --env ARRAY_API_TESTS_MODULE="ivy" -v `pwd`/ivy:/ivy unifyai/ivy:latest python3 -m pytest ivy/ivy_tests/test_array_api -k 'not uint16 and not uint32 and not uint64' --ci
+          python3 ivy/ivy_tests/set_array_api_methods_to_test.py
+          export ARRAY_API_METHODS_TO_TEST=$(cat ivy/ivy_tests/.array_api_methods_to_test)
+          docker run --rm --env IVY_BACKEND="torch" --env ARRAY_API_TESTS_MODULE="ivy" -v `pwd`/ivy:/ivy unifyai/ivy:latest python3 -m pytest ivy/ivy_tests/test_array_api -k 'not uint16 and not uint32 and not uint64' --ci -k $ARRAY_API_METHODS_TO_TEST
