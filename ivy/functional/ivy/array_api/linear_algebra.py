@@ -1,8 +1,9 @@
 # global
-from typing import Union, Optional, Tuple, Literal
+from typing import Union, Optional, Tuple, Literal, Sequence
 
 # local
 import ivy
+from ivy.framework_handler import current_framework as _cur_framework
 inf = float('inf')
 
 
@@ -70,3 +71,11 @@ def vector_norm(x: Union[ivy.Array, ivy.NativeArray],
         return ivy.reduce_sum(ivy.cast(x != 0, 'float32'), axis, keepdims)
     x_raised = x ** ord
     return ivy.reduce_sum(x_raised, axis, keepdims) ** (1/ord)
+
+
+def tensordot(x1: Union[ivy.Array, ivy.NativeArray],
+              x2: Union[ivy.Array, ivy.NativeArray],
+              axes: Union[int, Tuple[Sequence[int], Sequence[int]]] = 2)\
+    -> ivy.Array:
+
+    return _cur_framework(x1, x2).tensordot(x1, x2, axes)

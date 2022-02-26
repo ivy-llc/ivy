@@ -1,6 +1,6 @@
 # global
 import numpy as np
-from typing import Union, Optional, Tuple, Literal
+from typing import Union, Optional, Tuple, Literal, Sequence
 
 # local
 from ivy import inf
@@ -22,3 +22,10 @@ def vector_norm(x: np.ndarray,
     if np_normalized_vector.shape == tuple():
         return np.expand_dims(np_normalized_vector, 0)
     return np_normalized_vector
+
+
+def tensordot(x1: np.ndarray, x2: np.ndarray,
+              axes: Union[int, Tuple[Sequence[int], Sequence[int]]] = 2)\
+    -> np.ndarray:
+
+    return np.tensordot(x1, x2, axes=axes)
