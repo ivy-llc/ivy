@@ -1,7 +1,7 @@
-name: test-ivy
+name: test-array-api
 on: [push, pull_request]
 jobs:
-  run-nightly-tests:
+  run-jax-array-api-tests:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout 🛎️Ivy
@@ -11,6 +11,7 @@ jobs:
           persist-credentials: false
           submodules: 'recursive'
 
-      - name: Run Tests
+      - name: Run JAX Tests
         run: |
-          docker run --rm -v `pwd`/ivy:/ivy unifyai/ivy:latest python3 -m pytest ivy/ivy_tests/test_ivy
+          cd ivy
+          ./test_array_api.sh jax
