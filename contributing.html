@@ -221,10 +221,13 @@ is the best starting reference for this task.</p>
 <p>A few points are made here. You should first check what methods are still available to work on. Methods are reserved by
 contributors in the community by creating an issue, and then commented with a link to this issue on one of the ToDo list issues,
 which has labels “ToDo” and “Array API”. There are not many methods left to be worked on.</p>
-<p>Once you have got the unit tests passing for your particular method, you should then make sure your changes have not
+<p>As explained in the YouTube <a class="reference external" href="https://www.youtube.com/channel/UCGlkr-YCs3TjMVeOhbbULsw">tutorial series</a>, you can test for each backend seperately by replacing
+<code class="code docutils literal notranslate"><span class="pre">array_module</span> <span class="pre">=</span> <span class="pre">None</span></code> with lines <code class="code docutils literal notranslate"><span class="pre">import</span> <span class="pre">ivy</span> <span class="pre">as</span> <span class="pre">array_module</span></code> and <code class="code docutils literal notranslate"><span class="pre">array_module.set_framework('torch')</span></code>
+for example.</p>
+<p>Once you have got the unit tests passing for each backend for your particular method, you should then make sure your changes have not
 inadvertently caused other unit tests to fail. First, uncomment your method in the folder
-<code class="code docutils literal notranslate"><span class="pre">ivy_tests/array_api_methods_to_test</span></code> and then verify all other flagged methods are passing without error.
-This is required for each backend framework <code class="code docutils literal notranslate"><span class="pre">numpy</span></code>, <code class="code docutils literal notranslate"><span class="pre">jax</span></code>,
+<code class="code docutils literal notranslate"><span class="pre">ivy_tests/array_api_methods_to_test</span></code>, add back the line <code class="code docutils literal notranslate"><span class="pre">array_module</span> <span class="pre">=</span> <span class="pre">None</span></code>, and then verify all other flagged methods are passing without error as explained below.</p>
+<p>This is required for each backend framework <code class="code docutils literal notranslate"><span class="pre">numpy</span></code>, <code class="code docutils literal notranslate"><span class="pre">jax</span></code>,
 <code class="code docutils literal notranslate"><span class="pre">torch</span></code> and <code class="code docutils literal notranslate"><span class="pre">tensorflow</span></code>. You can test all of these tests locally by running
 <code class="code docutils literal notranslate"><span class="pre">./test_array_api.sh</span> <span class="pre">backend_name</span></code>, for example <code class="code docutils literal notranslate"><span class="pre">./test_array_api.sh</span> <span class="pre">torch</span></code> or
 <code class="code docutils literal notranslate"><span class="pre">./test_array_api.sh</span> <span class="pre">jax</span></code>.</p>
