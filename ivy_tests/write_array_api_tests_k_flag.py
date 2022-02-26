@@ -19,6 +19,8 @@ for fname in fnames:
     tests_to_run += ['test_' + s for s in contents.split('\n') if ('#' not in s and s != '')]
     tests_to_skip += ['test_' + s[1:] for s in contents.split('\n') if '#' in s]
 
+# prune tests to skip
+tests_to_skip = [tts for tts in tests_to_skip if not max([tts in ttr for ttr in tests_to_run])]
 
 # save to file
 with open(os.path.join(this_dir, '.array_api_tests_k_flag'), 'w+') as file:
