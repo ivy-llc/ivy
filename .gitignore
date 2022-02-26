@@ -20,3 +20,4 @@ with_time_logs/
 *.ods
 *.json
 .hypothesis
+.array_api_methods_to_test
