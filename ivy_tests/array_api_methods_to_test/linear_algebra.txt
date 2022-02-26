@@ -1,7 +1,7 @@
 #cholesky
 #cross
 #det
-#diagonal
+diagonal
 #eigh
 #eigvalsh
 #inv
@@ -17,7 +17,7 @@
 #solve
 #svd
 #svdvals
-tensordot
+#tensordot
 #trace
 #vecdot
 vector_norm
