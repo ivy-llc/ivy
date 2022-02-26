@@ -24,8 +24,8 @@ def vector_norm(x: JaxArray,
     return jnp_normalized_vector
 
 
-def diagonal(x: jnp.ndarray,
+def diagonal(x: JaxArray,
              offset: int = 0,
              axis1: int = -2,
-             axis2: int = -1) -> jnp.ndarray:
+             axis2: int = -1) -> JaxArray:
     return jnp.diagonal(x, offset, axis1, axis2)
