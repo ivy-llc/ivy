@@ -87,6 +87,7 @@
 <li class="toctree-l1"><a class="reference internal" href="using_ivy.html">Using Ivy</a></li>
 <li class="toctree-l1"><a class="reference internal" href="training_a_network.html">Training a Network</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Contributing to Ivy</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#keeping-your-fork-updated">Keeping Your Fork Updated</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#submodule-design">Submodule Design</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#ivy-api">Ivy API</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#backend-api">Backend API</a></li>
@@ -211,6 +212,14 @@
             
   <div class="section" id="contributing-to-ivy">
 <h1>Contributing to Ivy<a class="headerlink" href="#contributing-to-ivy" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="keeping-your-fork-updated">
+<h2>Keeping Your Fork Updated<a class="headerlink" href="#keeping-your-fork-updated" title="Permalink to this headline">¶</a></h2>
+<p>There is a script in the root repo <code class="code docutils literal notranslate"><span class="pre">merge_with_upstream.sh</span></code>. To update your local fork to the upstream master
+branch, simply run <code class="code docutils literal notranslate"><span class="pre">./merge_with_upstream.sh</span> <span class="pre">name_of_your_branch</span></code>. If you are simply developing in master branch
+(the default is you haven’t explicitly created any new branches), then simply run <code class="code docutils literal notranslate"><span class="pre">./merge_with_upstream.sh</span> <span class="pre">master</span></code>.</p>
+<p>If you are developing for pull requests (PRs), then it is common to create PR-specific branches. In this case, you would
+run <code class="code docutils literal notranslate"><span class="pre">./merge_with_upstream.sh</span> <span class="pre">name_of_your_pr_branch</span></code>.</p>
+</div>
 <div class="section" id="submodule-design">
 <h2>Submodule Design<a class="headerlink" href="#submodule-design" title="Permalink to this headline">¶</a></h2>
 <p>Many already-implemented methods will need to be moved into new locations during various stages of refactoring.

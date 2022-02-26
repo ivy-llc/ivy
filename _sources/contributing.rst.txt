@@ -4,6 +4,17 @@ Contributing to Ivy
 .. _`Array API`: https://data-apis.org/array-api/latest/
 
 
+Keeping Your Fork Updated
+-------------------------
+
+There is a script in the root repo :code:`merge_with_upstream.sh`. To update your local fork to the upstream master
+branch, simply run :code:`./merge_with_upstream.sh name_of_your_branch`. If you are simply developing in master branch
+(the default is you haven't explicitly created any new branches), then simply run :code:`./merge_with_upstream.sh master`.
+
+If you are developing for pull requests (PRs), then it is common to create PR-specific branches. In this case, you would
+run :code:`./merge_with_upstream.sh name_of_your_pr_branch`.
+
+
 Submodule Design
 ----------------
 
