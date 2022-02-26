@@ -87,6 +87,7 @@
 <li class="toctree-l1"><a class="reference internal" href="using_ivy.html">Using Ivy</a></li>
 <li class="toctree-l1"><a class="reference internal" href="training_a_network.html">Training a Network</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Contributing to Ivy</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#array-api-standardization">Array API Standardization</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#keeping-your-fork-updated">Keeping Your Fork Updated</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#creating-pull-requests">Creating Pull Requests</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#submodule-design">Submodule Design</a></li>
@@ -213,6 +214,21 @@
             
   <div class="section" id="contributing-to-ivy">
 <h1>Contributing to Ivy<a class="headerlink" href="#contributing-to-ivy" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="array-api-standardization">
+<h2>Array API Standardization<a class="headerlink" href="#array-api-standardization" title="Permalink to this headline">¶</a></h2>
+<p>One of the key tasks currently underway is to update Ivy to conform to the <a class="reference external" href="https://data-apis.org/array-api/latest/">Array API</a> standard. The YouTube <a class="reference external" href="https://www.youtube.com/channel/UCGlkr-YCs3TjMVeOhbbULsw">tutorial series</a>
+is the best starting reference for this task.</p>
+<p>A few points are made here. You should first check what methods are still available to work on. Methods are reserved by
+contributors in the community by creating an issue, and then commented with a link to this issue on one of the ToDo list issues,
+which has labels “ToDo” and “Array API”. There are not many methods left to be worked on.</p>
+<p>Once you have got the unit tests passing for your particular method, you should then make sure your changes have not
+inadvertently caused other unit tests to fail. First, uncomment your method in the folder
+<code class="code docutils literal notranslate"><span class="pre">ivy_tests/array_api_methods_to_test</span></code> and then verify all other flagged methods are passing without error.
+This is required for each backend framework <code class="code docutils literal notranslate"><span class="pre">numpy</span></code>, <code class="code docutils literal notranslate"><span class="pre">jax</span></code>,
+<code class="code docutils literal notranslate"><span class="pre">torch</span></code> and <code class="code docutils literal notranslate"><span class="pre">tensorflow</span></code>. You can test all of these tests locally by running
+<code class="code docutils literal notranslate"><span class="pre">./test_array_api.sh</span> <span class="pre">backend_name</span></code>, for example <code class="code docutils literal notranslate"><span class="pre">./test_array_api.sh</span> <span class="pre">torch</span></code> or
+<code class="code docutils literal notranslate"><span class="pre">./test_array_api.sh</span> <span class="pre">jax</span></code>.</p>
+</div>
 <div class="section" id="keeping-your-fork-updated">
 <h2>Keeping Your Fork Updated<a class="headerlink" href="#keeping-your-fork-updated" title="Permalink to this headline">¶</a></h2>
 <p>There is a script in the root repo <code class="code docutils literal notranslate"><span class="pre">merge_with_upstream.sh</span></code>. To update your local fork to the upstream master
