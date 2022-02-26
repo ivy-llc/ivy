@@ -9,9 +9,19 @@ def bitwise_and(x1: np.ndarray,
     return np.bitwise_and(x1, x2)
 
 
+def sqrt(x: np.ndarray)\
+        -> np.ndarray:
+    return np.sqrt(x)
+
+
 def isfinite(x: np.ndarray) \
         -> np.ndarray:
     return np.asarray(npa.isfinite(npa.asarray(x)))
+
+
+def asinh(x: np.ndarray)\
+        -> np.ndarray:
+    return np.arcsinh(x)
 
 
 def cosh(x: np.ndarray)\
