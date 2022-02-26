@@ -14,9 +14,14 @@ A few points are made here. You should first check what methods are still availa
 contributors in the community by creating an issue, and then commented with a link to this issue on one of the ToDo list issues,
 which has labels "ToDo" and "Array API". There are not many methods left to be worked on.
 
-Once you have got the unit tests passing for your particular method, you should then make sure your changes have not
+As explained in the YouTube `tutorial series`_, you can test for each backend seperately by replacing
+:code:`array_module = None` with lines :code:`import ivy as array_module` and :code:`array_module.set_framework('torch')`
+for example.
+
+Once you have got the unit tests passing for each backend for your particular method, you should then make sure your changes have not
 inadvertently caused other unit tests to fail. First, uncomment your method in the folder
-:code:`ivy_tests/array_api_methods_to_test` and then verify all other flagged methods are passing without error.
+:code:`ivy_tests/array_api_methods_to_test`, add back the line :code:`array_module = None`, and then verify all other flagged methods are passing without error as explained below.
+
 This is required for each backend framework :code:`numpy`, :code:`jax`,
 :code:`torch` and :code:`tensorflow`. You can test all of these tests locally by running
 :code:`./test_array_api.sh backend_name`, for example :code:`./test_array_api.sh torch` or
