@@ -34,6 +34,11 @@ def cosh(x: Tensor) \
     return tf.cosh(x)
 
 
+def log2(x: Tensor) \
+        -> Tensor:
+    return tf.experimental.numpy.log2(x)
+
+
 def isnan(x: Tensor)\
         -> Tensor:
     if ivy.is_int_dtype(x):
