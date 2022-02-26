@@ -1,7 +1,7 @@
-max
-mean
-min
-prod
-std
-sum
-var
+#max
+#mean
+#min
+#prod
+#std
+#sum
+#var
