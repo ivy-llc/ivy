@@ -20,7 +20,7 @@ def vector_norm(x: torch.Tensor,
     return py_normalized_vector
 
 # noinspection PyPep8Naming
-def svd(x:Union[_ivy.Array,_ivy.NativeArray],full_matrices: bool = True) -> Union[_ivy.Array, Tuple[_ivy.Array,...]]:
+def svd(x:torch.Tensor,full_matrices: bool = True) -> Union[torch.Tensor, Tuple[torch.Tensor,...]]:
     U, D, V = torch.linalg.svd(x, full_matrices=full_matrices)
     VT = torch.transpose(V, -2, -1)
     return U, D, VT

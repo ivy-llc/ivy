@@ -25,6 +25,6 @@ def vector_norm(x: np.ndarray,
     return np_normalized_vector
 
 
-def svd(x:Union[_ivy.Array,_ivy.NativeArray],full_matrices: bool = True) -> Union[_ivy.Array, Tuple[_ivy.Array,...]]:
+def svd(x:np.ndarray,full_matrices: bool = True) -> Union[np.ndarray, Tuple[np.ndarray,...]]:
     U, D, VT=np.linalg.svd(x, full_matrices=full_matrices)
     return U, D, VT

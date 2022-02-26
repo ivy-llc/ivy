@@ -24,6 +24,6 @@ def vector_norm(x: JaxArray,
         return jnp.expand_dims(jnp_normalized_vector, 0)
     return jnp_normalized_vector
 
-def svd(x:Union[_ivy.Array,_ivy.NativeArray],full_matrices: bool = True) -> Union[_ivy.Array, Tuple[_ivy.Array,...]]:
+def svd(x:JaxArray,full_matrices: bool = True) -> Union[JaxArray, Tuple[JaxArray,...]]:
     U, D, VT=jnp.linalg.svd(x, full_matrices=full_matrices)
     return U, D, VT

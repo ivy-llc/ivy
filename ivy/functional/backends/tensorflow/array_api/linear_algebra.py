@@ -31,7 +31,7 @@ def vector_norm(x: Tensor,
     return tn_normalized_vector
 
 # noinspection PyPep8Naming
-def svd(x:Union[_ivy.Array,_ivy.NativeArray],full_matrices: bool = True) -> Union[_ivy.Array, Tuple[_ivy.Array,...]]:
+def svd(x:Tensor,full_matrices: bool = True) -> Union[Tensor, Tuple[Tensor,...]]:
     batch_shape = tf.shape(x)[:-2]
     num_batch_dims = len(batch_shape)
     transpose_dims = list(range(num_batch_dims)) + [num_batch_dims + 1, num_batch_dims]
