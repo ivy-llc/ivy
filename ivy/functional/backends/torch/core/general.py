@@ -11,7 +11,7 @@ import torch as _torch
 from operator import mul
 from torch.types import Number
 from functools import reduce as _reduce
-from typing import List, Dict, Optional, Union
+from typing import List, Dict, Optional, Union, Tuple
 
 # local
 from ivy.functional.ivy.core import default_device, default_dtype
@@ -154,6 +154,19 @@ def argmin(x, axis: int = 0):
     if ret.shape == ():
         return ret.reshape(-1)
     return ret
+
+
+def min(x: _torch.Tensor,
+        axis: Union[int, Tuple[int]] = None,
+        keepdims: bool = False) \
+        -> _torch.Tensor:
+    if axis == (): return x
+    if not keepdims and not axis and axis !=0: return _torch.amin(input = x)
+    return _torch.amin(input = x, dim = axis, keepdim = keepdims)
+
+
+def argsort(x, axis: int = -1):
+    return _torch.argsort(x, axis)
 
 
 def cast(x, dtype_in: str):
