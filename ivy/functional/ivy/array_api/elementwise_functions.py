@@ -33,7 +33,8 @@ def isfinite(x: Union[ivy.Array, ivy.NativeArray]) \
     return _cur_framework(x).isfinite(x)
 
 
-def sign(x: ivy.Array) -> ivy.Array:
+def sign(x: Union[ivy.Array, ivy.NativeArray]) \
+        -> ivy.Array:
     """
     Returns an indication of the sign of a number for each element x_i of the input array x.
 

@@ -21,9 +21,7 @@ def isfinite(x: Tensor) \
 
 def sign(x: Tensor) \
         -> Tensor:
-    if ivy.is_int_dtype(x):
-        return _tf.zeros_like(x, x.dtype)
-    return _tf.math.sign(x)
+    return tf.math.sign(x)
 
 
 def asinh(x: Tensor) \
