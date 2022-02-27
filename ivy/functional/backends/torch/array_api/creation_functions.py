@@ -21,3 +21,18 @@ def ones(shape: Union[int, Tuple[int]],
     dtype_val: torch.dtype = dtype_from_str(dtype)
     dev = default_device(device)
     return torch.ones(shape, dtype=dtype_val, device=dev_from_str(dev))
+
+
+def linspace(start: Union[int, float],
+             stop: Union[int, float],
+             num: int,
+             dtype: Optional[torch.dtype] = None,
+             device: Optional[Union[torch.device, str]] = None,
+             endpoint: bool = True) \
+             -> torch.Tensor:
+    dtype: torch.dtype = dtype_from_str(dtype)
+    device = default_device(device)
+    if endpoint:
+        return torch.linspace(start, stop, num, dtype=dtype, device=dev_from_str(device))
+    else:
+        return torch.linspace(start, stop, num+1, dtype=dtype, device=dev_from_str(device))[:-1]

@@ -153,8 +153,8 @@ def arange(stop, start=0, step=1, dtype=None, dev=None):
     with _tf.device(dev_from_str(dev)):
         return _tf.range(start, stop, delta=step, dtype=dtype)
 
-
-def linspace(start, stop, num, axis=None, dev=None):
+# Needed for logspace
+def linspace_non_standard(start, stop, num, axis=None, dev=None):
     if axis is None:
         axis = -1
     dev = default_device(dev)
@@ -162,8 +162,9 @@ def linspace(start, stop, num, axis=None, dev=None):
         return _tf.linspace(start, stop, num, axis=axis)
 
 
+# Dependent on nonstandard linspace implementation
 def logspace(start, stop, num, base=10., axis=None, dev=None):
-    power_seq = linspace(start, stop, num, axis, default_device(dev))
+    power_seq = linspace_non_standard(start, stop, num, axis, default_device(dev))
     return base ** power_seq
 
 

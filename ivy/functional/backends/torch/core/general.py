@@ -185,8 +185,8 @@ def _differentiable_linspace(start, stop, num, device):
     return res
 
 
-# noinspection PyUnboundLocalVariable,PyShadowingNames
-def linspace(start, stop, num, axis=None, dev=None):
+# Needed for logspace
+def linspace_non_standard(start, stop, num, axis=None, dev=None):
     num = num.detach().numpy().item() if isinstance(num, _torch.Tensor) else num
     start_is_array = isinstance(start, _torch.Tensor)
     stop_is_array = isinstance(stop, _torch.Tensor)
@@ -247,8 +247,9 @@ def linspace(start, stop, num, axis=None, dev=None):
     return res.to(dev_from_str(dev))
 
 
+# Dependent on nonstandard linspace implementation
 def logspace(start, stop, num, base=10., axis=None, dev=None):
-    power_seq = linspace(start, stop, num, axis, default_device(dev))
+    power_seq = linspace_non_standard(start, stop, num, axis, default_device(dev))
     return base ** power_seq
 
 

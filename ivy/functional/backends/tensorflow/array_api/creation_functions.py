@@ -26,3 +26,19 @@ def ones(shape: Union[int, Tuple[int]],
     dev = dev_from_str(default_device(device))
     with tf.device(dev):
         return tf.ones(shape, dtype)
+
+
+def linspace(start: Union[int, float],
+             stop: Union[int, float],
+             num: int,
+             dtype: Optional[Dtype] = None,
+             device: Optional[str] = None,
+             endpoint: bool = True) \
+             -> tf.Tensor:
+    dtype = dtype_from_str(default_dtype(dtype))
+    dev = dev_from_str(default_device(device))
+    with tf.device(dev):
+        if endpoint:
+            return tf.cast(tf.linspace(start, stop, num), dtype)
+        else:
+            return tf.cast(tf.linspace(start, stop, num+1), dtype)[:-1]
