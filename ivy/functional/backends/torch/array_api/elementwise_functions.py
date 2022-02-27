@@ -28,11 +28,6 @@ def cosh(x: torch.Tensor) \
     return torch.cosh(x)
 
 
-def log2(x: torch.Tensor) \
-        -> torch.Tensor:
-    return torch.log2(x)
-
-
 def isnan(x: torch.Tensor)\
         -> torch.Tensor:
     return torch.isnan(x)

@@ -5,6 +5,7 @@ Collection of math Ivy functions.
 # local
 from ivy.framework_handler import current_framework as _cur_framework
 
+
 def sin(x):
     """
     Computes trigonometric sine element-wise.

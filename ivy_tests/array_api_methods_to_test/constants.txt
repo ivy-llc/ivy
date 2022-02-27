@@ -1,4 +1,0 @@
-e
-pi
-#inf
-#nan

@@ -1,7 +1,0 @@
-#dtype
-#device
-#mT
-#ndim
-#shape
-#size
-#T
