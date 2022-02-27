@@ -109,15 +109,7 @@ def cosh(x):
     return _cur_framework(x).cosh(x)
 
 
-def tanh(x):
-    """
-    Returns a new array with the hyperbolic tangent of the elements of x.
-
-    :param x: Input array.
-    :return: A new array with the hyperbolic tangent of the elements of x.
-    """
-    return _cur_framework(x).tanh(x)
-
+ # SG. Remove tanh from here.
 
 def asinh(x):
     """
