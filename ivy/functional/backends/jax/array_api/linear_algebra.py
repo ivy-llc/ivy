@@ -27,5 +27,6 @@ def vector_norm(x: JaxArray,
 
 def svd(x:JaxArray,full_matrices: bool = True) -> Union[JaxArray, Tuple[JaxArray,...]]:
     results=namedtuple("svd", "U S Vh")
-    results=jnp.linalg.svd(x, full_matrices=full_matrices)
-    return results
+    U, D, VT=jnp.linalg.svd(x, full_matrices=full_matrices)
+    res=results(U, D, VT)
+    return res

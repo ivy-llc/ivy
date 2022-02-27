@@ -28,5 +28,6 @@ def vector_norm(x: np.ndarray,
 
 def svd(x:np.ndarray,full_matrices: bool = True) -> Union[np.ndarray, Tuple[np.ndarray,...]]:
     results=namedtuple("svd", "U S Vh")
-    results=np.linalg.svd(x, full_matrices=full_matrices)
-    return results
+    U, D, VT=np.linalg.svd(x, full_matrices=full_matrices)
+    res=results(U, D, VT)
+    return res

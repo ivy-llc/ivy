@@ -26,5 +26,5 @@ def svd(x:torch.Tensor,full_matrices: bool = True) -> Union[torch.Tensor, Tuple[
 
     U, D, V = torch.linalg.svd(x, full_matrices=full_matrices)
     VT = torch.transpose(V, -2, -1)
-    results=(U, D, VT)
-    return results
+    res=results(U, D, VT)
+    return res
