@@ -11,6 +11,7 @@ from functools import reduce as _reduce
 import multiprocessing as _multiprocessing
 
 # local
+import ivy
 from ivy.functional.ivy.core import default_dtype
 from ivy.functional.backends.numpy.core.device import _dev_callable
 
@@ -93,6 +94,17 @@ def is_array(x, exclusive=False):
     return False
 
 
+equal = lambda x1, x2: x1 == x2
+
+
+def dtype_bits(dtype_in):
+    dtype_str = dtype_to_str(dtype_in)
+    if 'bool' in dtype_str:
+        return 1
+    return int(dtype_str.replace('uint', '').replace('int', '').replace('bfloat', '').replace('float', ''))
+
+
+equal.__name__ = 'equal'
 copy_array = lambda x: x.copy()
 array_equal = _np.array_equal
 to_numpy = lambda x: x
@@ -113,7 +125,6 @@ floor = lambda x: _np.asarray(_np.floor(x))
 ceil = lambda x: _np.asarray(_np.ceil(x))
 abs = lambda x: _np.asarray(_np.absolute(x))
 
-
 def argmax(x, axis=0):
     ret = _np.asarray(_np.argmax(x, axis))
     if ret.shape == ():
@@ -128,11 +139,11 @@ def argmin(x, axis=0):
     return ret
 
 
-argsort = lambda x, axis=-1: _np.asarray(_np.argsort(x, axis))
-
-
 def cast(x, dtype):
     return x.astype(dtype_from_str(dtype))
+
+
+astype = cast
 
 
 # noinspection PyShadowingNames
@@ -164,18 +175,6 @@ def concatenate(xs, axis=-1):
     if xs[0].shape == ():
         return _np.concatenate([_np.expand_dims(x, 0) for x in xs], axis)
     return _np.concatenate(xs, axis)
-
-
-def flip(x, axis=None, batch_shape=None):
-    num_dims = len(batch_shape) if batch_shape is not None else len(x.shape)
-    if not num_dims:
-        return x
-    if axis is None:
-        axis = list(range(num_dims))
-    if type(axis) is int:
-        axis = [axis]
-    axis = [item + num_dims if item < 0 else item for item in axis]
-    return _np.flip(x, axis)
 
 
 stack = _np.stack
@@ -235,12 +234,7 @@ def indices_where(x):
     return res
 
 
-isnan = _np.isnan
 isinf = _np.isinf
-
-
-def isfinite(x):
-    return _np.isfinite(x)
 
 
 reshape = _np.reshape
@@ -255,9 +249,6 @@ def squeeze(x, axis=None):
     return _np.squeeze(x, axis)
 
 
-# noinspection PyShadowingNames
-def zeros(shape, dtype=None, dev=None):
-    return _to_dev(_np.zeros(shape, dtype_from_str(default_dtype(dtype))), dev)
 
 
 # noinspection PyShadowingNames
@@ -272,13 +263,6 @@ def zeros_like(x, dtype=None, dev=None):
 
 def full(shape, fill_value, dtype=None, device=None):
     return _to_dev(_np.full(shape, fill_value, dtype_from_str(default_dtype(dtype, fill_value))), device)
-
-
-# noinspection PyShadowingNames
-def ones(shape, dtype='float32', dev=None):
-    dtype = 'bool_' if dtype == 'bool' else dtype
-    dtype = _np.__dict__[dtype]
-    return _to_dev(_np.ones(shape, dtype), dev)
 
 
 # noinspection PyShadowingNames
@@ -329,43 +313,73 @@ def identity(n, dtype='float32', batch_shape=None, dev=None):
 meshgrid = lambda *xs, indexing='ij': _np.meshgrid(*xs, indexing=indexing)
 
 
-def scatter_flat(indices, updates, size, reduction='sum', dev=None):
+def scatter_flat(indices, updates, size=None, tensor=None, reduction='sum', dev=None):
+    target = tensor
+    target_given = ivy.exists(target)
+    if ivy.exists(size) and ivy.exists(target):
+        assert len(target.shape) == 1 and target.shape[0] == size
     if dev is None:
         dev = _dev_callable(updates)
     if reduction == 'sum':
-        target = _np.zeros([size], dtype=updates.dtype)
+        if not target_given:
+            target = _np.zeros([size], dtype=updates.dtype)
         _np.add.at(target, indices, updates)
+    elif reduction == 'replace':
+        if not target_given:
+            target = _np.zeros([size], dtype=updates.dtype)
+        target = _np.asarray(target).copy()
+        target.setflags(write=1)
+        target[indices] = updates
     elif reduction == 'min':
-        target = _np.ones([size], dtype=updates.dtype) * 1e12
+        if not target_given:
+            target = _np.ones([size], dtype=updates.dtype) * 1e12
         _np.minimum.at(target, indices, updates)
-        target = _np.where(target == 1e12, 0., target)
+        if not target_given:
+            target = _np.where(target == 1e12, 0., target)
     elif reduction == 'max':
-        target = _np.ones([size], dtype=updates.dtype) * -1e12
+        if not target_given:
+            target = _np.ones([size], dtype=updates.dtype) * -1e12
         _np.maximum.at(target, indices, updates)
-        target = _np.where(target == -1e12, 0., target)
+        if not target_given:
+            target = _np.where(target == -1e12, 0., target)
     else:
         raise Exception('reduction is {}, but it must be one of "sum", "min" or "max"'.format(reduction))
     return _to_dev(target, dev)
 
 
 # noinspection PyShadowingNames
-def scatter_nd(indices, updates, shape, reduction='sum', dev=None):
+def scatter_nd(indices, updates, shape=None, tensor=None, reduction='sum', dev=None):
+    target = tensor
+    target_given = ivy.exists(target)
+    if ivy.exists(shape) and ivy.exists(target):
+        assert ivy.shape_to_tuple(target.shape) == ivy.shape_to_tuple(shape)
     if dev is None:
         dev = _dev_callable(updates)
-    shape = list(shape)
+    shape = list(shape) if ivy.exists(shape) else list(tensor.shape)
     indices_flat = indices.reshape(-1, indices.shape[-1]).T
     indices_tuple = tuple(indices_flat) + (Ellipsis,)
     if reduction == 'sum':
-        target = _np.zeros(shape, dtype=updates.dtype)
+        if not target_given:
+            target = _np.zeros(shape, dtype=updates.dtype)
         _np.add.at(target, indices_tuple, updates)
+    elif reduction == 'replace':
+        if not target_given:
+            target = _np.zeros(shape, dtype=updates.dtype)
+        target = _np.asarray(target).copy()
+        target.setflags(write=1)
+        target[indices_tuple] = updates
     elif reduction == 'min':
-        target = _np.ones(shape, dtype=updates.dtype) * 1e12
+        if not target_given:
+            target = _np.ones(shape, dtype=updates.dtype) * 1e12
         _np.minimum.at(target, indices_tuple, updates)
-        target = _np.where(target == 1e12, 0., target)
+        if not target_given:
+            target = _np.where(target == 1e12, 0., target)
     elif reduction == 'max':
-        target = _np.ones(shape, dtype=updates.dtype) * -1e12
+        if not target_given:
+            target = _np.ones(shape, dtype=updates.dtype) * -1e12
         _np.maximum.at(target, indices_tuple, updates)
-        target = _np.where(target == -1e12, 0., target)
+        if not target_given:
+            target = _np.where(target == -1e12, 0., target)
     else:
         raise Exception('reduction is {}, but it must be one of "sum", "min" or "max"'.format(reduction))
     return _to_dev(target, dev)

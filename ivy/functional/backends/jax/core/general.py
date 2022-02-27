@@ -16,6 +16,7 @@ import multiprocessing as _multiprocessing
 from haiku._src.data_structures import FlatMapping
 
 # local
+import ivy
 from ivy.functional.ivy.core import default_device, default_dtype
 from ivy.functional.backends.jax.core.device import to_dev, dev as callable_dev
 
@@ -48,18 +49,18 @@ DTYPE_TO_STR = {_jnp.dtype('int8'): 'int8',
                 _jnp.bool_: 'bool'}
 
 DTYPE_FROM_STR = {'int8': _jnp.dtype('int8'),
-                'int16': _jnp.dtype('int16'),
-                'int32': _jnp.dtype('int32'),
-                'int64': _jnp.dtype('int64'),
-                'uint8': _jnp.dtype('uint8'),
-                'uint16': _jnp.dtype('uint16'),
-                'uint32': _jnp.dtype('uint32'),
-                'uint64': _jnp.dtype('uint64'),
-                'bfloat16': _jnp.dtype('bfloat16'),
-                'float16': _jnp.dtype('float16'),
-                'float32': _jnp.dtype('float32'),
-                'float64': _jnp.dtype('float64'),
-                'bool': _jnp.dtype('bool')}
+                  'int16': _jnp.dtype('int16'),
+                  'int32': _jnp.dtype('int32'),
+                  'int64': _jnp.dtype('int64'),
+                  'uint8': _jnp.dtype('uint8'),
+                  'uint16': _jnp.dtype('uint16'),
+                  'uint32': _jnp.dtype('uint32'),
+                  'uint64': _jnp.dtype('uint64'),
+                  'bfloat16': _jnp.dtype('bfloat16'),
+                  'float16': _jnp.dtype('float16'),
+                  'float32': _jnp.dtype('float32'),
+                  'float64': _jnp.dtype('float64'),
+                  'bool': _jnp.dtype('bool')}
 
 
 # Helpers #
@@ -102,6 +103,16 @@ def is_array(x, exclusive=False):
 
 copy_array = _jnp.array
 array_equal = _jnp.array_equal
+
+
+def dtype_bits(dtype_in):
+    dtype_str = dtype_to_str(dtype_in)
+    if 'bool' in dtype_str:
+        return 1
+    return int(dtype_str.replace('uint', '').replace('int', '').replace('bfloat', '').replace('float', ''))
+
+
+equal = lambda x1, x2: x1 == x2
 to_numpy = lambda x: _onp.asarray(_to_array(x))
 to_numpy.__name__ = 'to_numpy'
 to_scalar = lambda x: x if isinstance(x, Number) else _to_array(x).item()
@@ -137,11 +148,11 @@ def argmin(x, axis=0):
     return ret
 
 
-argsort = lambda x, axis=-1: _jnp.argsort(x, axis)
-
-
 def cast(x, dtype):
     return x.astype(dtype_from_str(dtype))
+
+
+astype = cast
 
 
 # noinspection PyShadowingNames
@@ -166,18 +177,6 @@ def concatenate(xs, axis=-1):
     if xs[0].shape == ():
         return _jnp.concatenate([_jnp.expand_dims(x, 0) for x in xs], axis)
     return _jnp.concatenate(xs, axis)
-
-
-def flip(x, axis=None, batch_shape=None):
-    num_dims = len(batch_shape) if batch_shape is not None else len(x.shape)
-    if not num_dims:
-        return x
-    if isinstance(axis, list) or isinstance(axis, tuple):
-        if len(axis) == 1:
-            axis = axis[0]
-        else:
-            raise Exception('Jax does not support flip() across multiple indices')
-    return _jnp.flip(x, axis)
 
 
 stack = _jnp.stack
@@ -206,7 +205,7 @@ def split(x, num_or_size_splits=None, axis=0, with_remainder=False):
         num_chunks_int = _math.floor(num_chunks)
         remainder = num_chunks - num_chunks_int
         if remainder != 0:
-            num_or_size_splits = [num_or_size_splits]*num_chunks_int + [int(remainder*num_or_size_splits)]
+            num_or_size_splits = [num_or_size_splits] * num_chunks_int + [int(remainder * num_or_size_splits)]
     if isinstance(num_or_size_splits, (list, tuple)):
         num_or_size_splits = _jnp.cumsum(_jnp.array(num_or_size_splits[:-1]))
     return _jnp.split(x, num_or_size_splits, axis)
@@ -237,13 +236,8 @@ def indices_where(x):
     return ret
 
 
-isnan = _jnp.isnan
 isinf = _jnp.isinf
-
-def isfinite(x):
-    return _jnp.isfinite(x)
-
-
+    
 reshape = _jnp.reshape
 broadcast_to = _jnp.broadcast_to
 
@@ -256,9 +250,6 @@ def squeeze(x, axis=None):
     return _jnp.squeeze(x, axis)
 
 
-# noinspection PyShadowingNames
-def zeros(shape, dtype=None, dev=None):
-    return to_dev(_jnp.zeros(shape, dtype_from_str(default_dtype(dtype))), default_device(dev))
 
 
 # noinspection PyShadowingNames
@@ -271,12 +262,8 @@ def zeros_like(x, dtype=None, dev=None):
 
 
 def full(shape, fill_value, dtype=None, device=None):
-    return to_dev(_jnp.full(shape, fill_value, dtype_from_str(default_dtype(dtype, fill_value))), default_device(device))
-
-
-# noinspection PyShadowingNames
-def ones(shape, dtype=None, dev=None):
-    return to_dev(_jnp.ones(shape, dtype_from_str(default_dtype(dtype))), default_device(dev))
+    return to_dev(_jnp.full(shape, fill_value, dtype_from_str(default_dtype(dtype, fill_value))),
+                  default_device(device))
 
 
 # noinspection PyShadowingNames
@@ -316,7 +303,7 @@ def identity(n, dtype='float32', batch_shape=None, dev=None):
     if batch_shape is None:
         return_mat = mat
     else:
-        reshape_dims = [1]*len(batch_shape) + [n, n]
+        reshape_dims = [1] * len(batch_shape) + [n, n]
         tile_dims = list(batch_shape) + [1, 1]
         return_mat = _jnp.tile(_jnp.reshape(mat, reshape_dims), tile_dims)
     return to_dev(return_mat, default_device(dev))
@@ -325,43 +312,69 @@ def identity(n, dtype='float32', batch_shape=None, dev=None):
 meshgrid = lambda *xs, indexing='ij': _jnp.meshgrid(*xs, indexing=indexing)
 
 
-def scatter_flat(indices, updates, size, reduction='sum', dev=None):
+def scatter_flat(indices, updates, size=None, tensor=None, reduction='sum', dev=None):
+    target = tensor
+    target_given = ivy.exists(target)
+    if ivy.exists(size) and ivy.exists(target):
+        assert len(target.shape) == 1 and target.shape[0] == size
     if dev is None:
         dev = callable_dev(updates)
     if reduction == 'sum':
-        target = _jnp.zeros([size], dtype=updates.dtype)
+        if not target_given:
+            target = _jnp.zeros([size], dtype=updates.dtype)
         target = target.at[indices].add(updates)
+    elif reduction == 'replace':
+        if not target_given:
+            target = _jnp.zeros([size], dtype=updates.dtype)
+        target = target.at[indices].set(updates)
     elif reduction == 'min':
-        target = _jnp.ones([size], dtype=updates.dtype)*1e12
+        if not target_given:
+            target = _jnp.ones([size], dtype=updates.dtype) * 1e12
         target = target.at[indices].min(updates)
-        target = _jnp.where(target == 1e12, 0., target)
+        if not target_given:
+            target = _jnp.where(target == 1e12, 0., target)
     elif reduction == 'max':
-        target = _jnp.ones([size], dtype=updates.dtype)*-1e12
+        if not target_given:
+            target = _jnp.ones([size], dtype=updates.dtype) * -1e12
         target = target.at[indices].max(updates)
-        target = _jnp.where(target == -1e12, 0., target)
+        if not target_given:
+            target = _jnp.where(target == -1e12, 0., target)
     else:
         raise Exception('reduction is {}, but it must be one of "sum", "min" or "max"'.format(reduction))
     return to_dev(target, dev)
 
 
 # noinspection PyShadowingNames
-def scatter_nd(indices, updates, shape, reduction='sum', dev=None):
+def scatter_nd(indices, updates, shape=None, tensor=None, reduction='sum', dev=None):
+    target = tensor
+    target_given = ivy.exists(target)
+    if ivy.exists(shape) and ivy.exists(target):
+        assert ivy.shape_to_tuple(target.shape) == ivy.shape_to_tuple(shape)
     if dev is None:
         dev = callable_dev(updates)
-    shape = list(shape)
+    shape = list(shape) if ivy.exists(shape) else list(tensor.shape)
     indices_flat = indices.reshape(-1, indices.shape[-1]).T
     indices_tuple = tuple(indices_flat) + (Ellipsis,)
     if reduction == 'sum':
-        target = _jnp.zeros(shape, dtype=updates.dtype)
+        if not target_given:
+            target = _jnp.zeros(shape, dtype=updates.dtype)
         target = target.at[indices_tuple].add(updates)
+    elif reduction == 'replace':
+        if not target_given:
+            target = _jnp.zeros(shape, dtype=updates.dtype)
+        target = target.at[indices_tuple].set(updates)
     elif reduction == 'min':
-        target = _jnp.ones(shape, dtype=updates.dtype)*1e12
+        if not target_given:
+            target = _jnp.ones(shape, dtype=updates.dtype) * 1e12
         target = target.at[indices_tuple].min(updates)
-        target = _jnp.where(target == 1e12, 0., target)
+        if not target_given:
+            target = _jnp.where(target == 1e12, 0., target)
     elif reduction == 'max':
-        target = _jnp.ones(shape, dtype=updates.dtype)*-1e12
+        if not target_given:
+            target = _jnp.ones(shape, dtype=updates.dtype) * -1e12
         target = target.at[indices_tuple].max(updates)
-        target = _jnp.where(target == -1e12, 0., target)
+        if not target_given:
+            target = _jnp.where(target == -1e12, 0., target)
     else:
         raise Exception('reduction is {}, but it must be one of "sum", "min" or "max"'.format(reduction))
     return to_dev(target, dev)
@@ -385,8 +398,10 @@ def gather_nd(params, indices, dev=None):
     flat_params = _jnp.reshape(params, (-1,))
     new_shape = [1] * (len(indices_shape) - 1) + [num_index_dims]
     indices_scales = _jnp.reshape(result_dim_sizes[0:num_index_dims], new_shape)
-    indices_for_flat_tiled = _jnp.tile(_jnp.reshape(_jnp.sum(indices * indices_scales, -1, keepdims=True), (-1, 1)), (1, implicit_indices_factor))
-    implicit_indices = _jnp.tile(_jnp.expand_dims(_jnp.arange(implicit_indices_factor), 0), (indices_for_flat_tiled.shape[0], 1))
+    indices_for_flat_tiled = _jnp.tile(_jnp.reshape(_jnp.sum(indices * indices_scales, -1, keepdims=True), (-1, 1)),
+                                       (1, implicit_indices_factor))
+    implicit_indices = _jnp.tile(_jnp.expand_dims(_jnp.arange(implicit_indices_factor), 0),
+                                 (indices_for_flat_tiled.shape[0], 1))
     indices_for_flat = indices_for_flat_tiled + implicit_indices
     flat_indices_for_flat = _jnp.reshape(indices_for_flat, (-1,)).astype(_jnp.int32)
     flat_gather = _jnp.take(flat_params, flat_indices_for_flat, 0)
@@ -403,12 +418,12 @@ def linear_resample(x, num_samples, axis=-1):
     x_pre_size = _reduce(_mul, x_pre_shape) if x_pre_shape else 1
     num_pre_dims = len(x_pre_shape)
     num_vals = x.shape[axis]
-    x_post_shape = x_shape[axis+1:]
+    x_post_shape = x_shape[axis + 1:]
     x_post_size = _reduce(_mul, x_post_shape) if x_post_shape else 1
     num_post_dims = len(x_post_shape)
-    xp = _jnp.reshape(_jnp.arange(num_vals*x_pre_size*x_post_size), x_shape)
-    x_coords = _jnp.arange(num_samples) * ((num_vals-1)/(num_samples-1)) * x_post_size
-    x_coords = _jnp.reshape(x_coords, [1]*num_pre_dims + [num_samples] + [1]*num_post_dims)
+    xp = _jnp.reshape(_jnp.arange(num_vals * x_pre_size * x_post_size), x_shape)
+    x_coords = _jnp.arange(num_samples) * ((num_vals - 1) / (num_samples - 1)) * x_post_size
+    x_coords = _jnp.reshape(x_coords, [1] * num_pre_dims + [num_samples] + [1] * num_post_dims)
     x_coords = _jnp.broadcast_to(x_coords, x_pre_shape + [num_samples] + x_post_shape)
     slc = [slice(None)] * num_x_dims
     slc[axis] = slice(0, 1, 1)
@@ -439,7 +454,7 @@ def dtype_from_str(dtype_in):
     return DTYPE_FROM_STR[dtype_in]
 
 
-compile = lambda fn, dynamic=True, example_inputs=None, static_argnums=None, static_argnames=None:\
+compile = lambda fn, dynamic=True, example_inputs=None, static_argnums=None, static_argnames=None: \
     _jax.jit(fn, static_argnums=static_argnums, static_argnames=static_argnames)
 current_framework_str = lambda: 'jax'
 current_framework_str.__name__ = 'current_framework_str'

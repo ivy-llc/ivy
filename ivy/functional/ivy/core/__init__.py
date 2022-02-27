@@ -1,3 +1,5 @@
+from . import array_builtins
+from .array_builtins import *
 from . import compilation
 from .compilation import *
 from . import device
@@ -10,7 +12,6 @@ from . import gradients
 from .gradients import *
 from . import image
 from .image import *
-from . import linalg
 from .linalg import *
 from . import logic
 from .logic import *
