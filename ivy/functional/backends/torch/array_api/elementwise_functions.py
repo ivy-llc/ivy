@@ -1,6 +1,5 @@
 # global
 import torch
-import math
 
 
 def bitwise_and(x1: torch.Tensor,

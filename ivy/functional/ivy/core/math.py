@@ -98,8 +98,6 @@ def cosh(x):
     return _cur_framework(x).cosh(x)
 
 
- # SG. Remove tanh from here.
-
 def acosh(x):
     """
     Returns a new array with the inverse hyperbolic cosine of the elements of x.
