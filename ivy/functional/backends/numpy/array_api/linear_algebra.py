@@ -2,6 +2,7 @@
 import numpy as np
 import ivy as _ivy
 from typing import Union, Optional, Tuple, Literal
+from collections import namedtuple
 
 # local
 from ivy import inf
@@ -26,5 +27,6 @@ def vector_norm(x: np.ndarray,
 
 
 def svd(x:np.ndarray,full_matrices: bool = True) -> Union[np.ndarray, Tuple[np.ndarray,...]]:
-    U, D, VT=np.linalg.svd(x, full_matrices=full_matrices)
-    return (U, D, VT)
+    results=namedtuple("svd", "U S Vh")
+    results=np.linalg.svd(x, full_matrices=full_matrices)
+    return results

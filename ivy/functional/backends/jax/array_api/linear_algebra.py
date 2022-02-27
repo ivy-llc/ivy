@@ -1,6 +1,7 @@
 # global
 import jax.numpy as jnp
 from typing import Union, Optional, Tuple, Literal
+from collections import namedtuple
 
 # local
 from ivy import inf
@@ -25,5 +26,6 @@ def vector_norm(x: JaxArray,
     return jnp_normalized_vector
 
 def svd(x:JaxArray,full_matrices: bool = True) -> Union[JaxArray, Tuple[JaxArray,...]]:
-    U, D, VT=jnp.linalg.svd(x, full_matrices=full_matrices)
-    return (U, D, VT)
+    results=namedtuple("svd", "U S Vh")
+    results=jnp.linalg.svd(x, full_matrices=full_matrices)
+    return results

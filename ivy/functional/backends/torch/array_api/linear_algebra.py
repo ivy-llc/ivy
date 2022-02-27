@@ -1,6 +1,7 @@
 # global
 import torch
 from typing import Union, Optional, Tuple, Literal
+from collections import namedtuple
 
 # local
 from ivy import inf
@@ -21,6 +22,9 @@ def vector_norm(x: torch.Tensor,
 
 # noinspection PyPep8Naming
 def svd(x:torch.Tensor,full_matrices: bool = True) -> Union[torch.Tensor, Tuple[torch.Tensor,...]]:
+    results=namedtuple("svd", "U S Vh")
+
     U, D, V = torch.linalg.svd(x, full_matrices=full_matrices)
     VT = torch.transpose(V, -2, -1)
-    return (U, D, VT)
+    results=(U, D, VT)
+    return results
