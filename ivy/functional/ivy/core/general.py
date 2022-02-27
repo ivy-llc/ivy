@@ -472,30 +472,6 @@ def arange(stop: Number, start: Number = 0, step: Number = 1, dtype: ivy.Dtype =
 
 
 # noinspection PyShadowingNames
-def linspace(start: Union[ivy.Array, ivy.NativeArray, Number], stop: Union[ivy.Array, ivy.NativeArray, Number],
-             num: int, axis: int = None, dev: ivy.Device = None)\
-        -> Union[ivy.Array, ivy.NativeArray]:
-    """
-    Generates a certain number of evenly-spaced values in an interval along a given axis.
-
-    See :math:`arange` that allows to specify the step size of evenly spaced values in an interval.
-
-    :param start: First entry in the range.
-    :type start: array
-    :param stop: Final entry in the range.
-    :type stop: array
-    :param num: Number of values to generate.
-    :type num: int
-    :param axis: Axis along which the operation is performed.
-    :type axis: int
-    :param dev: device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
-    :type dev: ivy.Device
-    :return: Tensor of evenly-spaced values.
-    """
-    return _cur_framework(start).linspace(start, stop, num, axis, dev)
-
-
-# noinspection PyShadowingNames
 def logspace(start: Union[ivy.Array, ivy.NativeArray, Number], stop: Union[ivy.Array, ivy.NativeArray, Number],
              num: int, base: float = 10., axis: int = None, dev: ivy.Device = None)\
         -> Union[ivy.Array, ivy.NativeArray]:
@@ -534,23 +510,6 @@ def concatenate(xs: Iterable[Union[ivy.Array, ivy.NativeArray]], axis: int = -1)
     :return: The concatenated array.
     """
     return _cur_framework(xs[0]).concatenate(xs, axis)
-
-
-def flip(x: Union[ivy.Array, ivy.NativeArray], axis: int = None, batch_shape: Iterable[int] = None,
-         ) -> Union[ivy.Array, ivy.NativeArray]:
-    """
-    Reverses the ord of elements in an array along the given axis.
-    The shape of the array is preserved, but the elements are reordered.
-
-    :param x: Input array.
-    :type x: array
-    :param axis: Axis or axes along which to flip over. The default, axis: int = None, will flip over all axes.
-    :type axis: None or int or sequence of ints, optional
-    :param batch_shape: Shape of batch. Inferred from inputs if None.
-    :type batch_shape: sequence of ints, optional
-    :return: An array with the entries of axis reversed.
-    """
-    return _cur_framework(x).flip(x, axis, batch_shape)
 
 
 def stack(xs: Iterable[Union[ivy.Array, ivy.NativeArray]], axis: int = 0)\

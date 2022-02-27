@@ -159,12 +159,6 @@ def arange(stop, start=0, step=1, dtype=None, dev=None):
     return res
 
 
-def linspace(start, stop, num, axis=None, dev=None):
-    if axis is None:
-        axis = -1
-    return _to_dev(_np.linspace(start, stop, num, axis=axis), dev)
-
-
 def logspace(start, stop, num, base=10., axis=None, dev=None):
     if axis is None:
         axis = -1
