@@ -23,9 +23,10 @@ def zeros(shape: Union[int, Tuple[int], List[int]],
         -> JaxArray:
     return to_dev(jnp.zeros(shape, dtype_from_str(default_dtype(dtype))), default_device(device))
 
-
+  
 def empty(shape: Union[int, Tuple[int], List[int]],
           dtype: Optional[jnp.dtype] = None,
           device: Optional[jaxlib.xla_extension.Device] = None) \
         -> JaxArray:
     return to_dev(jnp.empty(shape, dtype_from_str(default_dtype(dtype))), default_device(device))
+

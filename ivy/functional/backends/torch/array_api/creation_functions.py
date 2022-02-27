@@ -28,3 +28,4 @@ def empty(shape: Union[int, Tuple[int]],
           device: Optional[torch.device] = None) \
         -> Tensor:
     return torch.empty(shape, dtype=dtype_from_str(default_dtype(dtype)), device=dev_from_str(default_device(device)))
+

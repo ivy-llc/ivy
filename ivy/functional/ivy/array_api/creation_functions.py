@@ -49,3 +49,4 @@ def empty(shape: Union[int, Tuple[int],List[int]],
     :return: an uninitialized array having a specified shape
     """
     return _cur_framework().empty(shape, dtype, device)
+
