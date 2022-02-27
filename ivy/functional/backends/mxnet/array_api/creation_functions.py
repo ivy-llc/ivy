@@ -26,3 +26,16 @@ def ones(shape: Union[int, Tuple[int]],
     if len(shape) == 0 or 0 in shape:
         return _1_dim_array_to_flat_array(mx.nd.ones((1,), ctx=cont).astype(dtype))
     return mx.nd.ones(shape, ctx=cont).astype(dtype)
+
+
+def linspace(start: Union[int, float],
+             stop: Union[int, float],
+             num: int,
+             dtype: Optional[mx.nd.dtype] = None,
+             device: Optional[str] = None,
+             endpoint: bool = True) \
+             -> mx.ndarray.ndarray.NDArray:
+    cont = _mxnet_init_context(default_device(device))
+    if dtype is None:
+        dtype = mx.np.float32
+    return mx.np.linspace(start, stop, num, dtype=dtype, endpoint=endpoint, ctx=cont)

@@ -181,7 +181,8 @@ def _linspace(start, stop, num, cont):
     return ret
 
 
-def linspace(start, stop, num, axis=None, dev=None):
+# Needed for logspace
+def linspace_non_standard(start, stop, num, axis=None, dev=None):
     cont = _mxnet_init_context(default_device(dev))
     num = num.asnumpy()[0] if isinstance(num, _mx.nd.NDArray) else num
     start_is_array = isinstance(start, _mx.nd.NDArray)
@@ -208,8 +209,9 @@ def linspace(start, stop, num, axis=None, dev=None):
     return res
 
 
+# Dependent on nonstandard linspace implementation
 def logspace(start, stop, num, base=10., axis=None, dev=None):
-    power_seq = linspace(start, stop, num, axis, default_device(dev))
+    power_seq = linspace_non_standard(start, stop, num, axis, default_device(dev))
     return base ** power_seq
 
 

@@ -30,8 +30,6 @@ def linspace(start: Union[int, float],
              device: Optional[str] = None,
              endpoint: bool = True) \
              -> np.ndarray:
-
-
     if dtype is None:
         dtype = np.float32
     return _to_dev(np.linspace(np.longdouble(start), np.longdouble(stop), num, dtype=dtype, endpoint=endpoint), device)
