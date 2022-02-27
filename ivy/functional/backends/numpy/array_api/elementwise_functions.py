@@ -57,3 +57,7 @@ def cos(x: np.ndarray)\
 def logical_not(x: np.ndarray)\
         -> np.ndarray:
     return np.logical_not(x)
+
+def tanh(x: np.ndarray)\
+        -> np.ndarray:
+    return np.asarray(npa.tanh(npa.asarray(x)))

@@ -61,3 +61,7 @@ def cos(x: torch.Tensor)\
 def logical_not(x: torch.Tensor)\
         -> torch.Tensor:
     return torch.logical_not(x.type(torch.bool))
+
+def tanh(x: torch.Tensor) \
+        -> torch.Tensor:
+    return torch.tanh(x)

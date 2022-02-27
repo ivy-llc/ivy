@@ -60,3 +60,7 @@ def cos(x: JaxArray)\
 def logical_not(x: JaxArray)\
         -> JaxArray:
     return jnp.logical_not(x)
+
+def tanh(x: JaxArray)\
+        -> JaxArray:
+    return jnp.tanh(x)

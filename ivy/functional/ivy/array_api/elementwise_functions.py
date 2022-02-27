@@ -148,3 +148,16 @@ def logical_not(x: Union[ivy.Array, ivy.NativeArray])\
     :return: Boolean result of the logical NOT operation applied element-wise to x.
     """
     return _cur_framework(x).logical_not(x)
+
+
+def tanh(x: ivy.Array) -> ivy.Array:
+    """
+    Calculates an implementation-dependent approximation to the hyperbolic tangent,
+    having domain [-infinity, +infinity] and codomain [-1, +1], for each element x_i of the input array x.
+
+    :param x: input array whose elements each represent a hyperbolic angle. Should have a floating-point
+            data type.
+    :return: an array containing the hyperbolic tangent of each element in x. The returned array must
+            have a floating-point data type
+    """
+    return _cur_framework(x).tanh(x)
