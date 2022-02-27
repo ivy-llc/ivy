@@ -22,3 +22,8 @@ def vector_norm(x: JaxArray,
     if jnp_normalized_vector.shape == ():
         return jnp.expand_dims(jnp_normalized_vector, 0)
     return jnp_normalized_vector
+
+
+# noinspection PyShadowingBuiltins
+def cross(x1: JaxArray, x2: JaxArray, /, *, axis: Optional[int] = -1) -> JaxArray:
+    return jnp.cross(x1, x2, axis)

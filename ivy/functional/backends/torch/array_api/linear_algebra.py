@@ -17,3 +17,11 @@ def vector_norm(x: torch.Tensor,
         return torch.unsqueeze(py_normalized_vector, 0)
 
     return py_normalized_vector
+
+
+def cross(x1: torch.Tensor, x2: torch.Tensor, /, *, axis: Optional[int] = -1) -> torch.Tensor:
+    datatype = torch.promote_types(x1.dtype, x2.dtype)
+    if x1.dtype != x2.dtype:
+        x1 = torch.tensor(x1, dtype=datatype)
+        x2 = torch.tensor(x1, dtype=datatype)
+    return torch.cross(x1, x2, dim=axis)

@@ -44,8 +44,5 @@ def vector_to_skew_symmetric_matrix(vector):
     return _np.concatenate((row1, row2, row3), -2)
 
 
-# noinspection PyShadowingBuiltins
-def cross(x1: _np.ndarray, x2: _np.ndarray, /, *, axis: Optional[int] = -1) -> _np.ndarray:
-    return _np.asarray(npa.linalg.cross(_np.asarray(x1), _np.asarray(x2), axis=axis))
 def qr(x, mode):
     return _np.linalg.qr(x, mode=mode)

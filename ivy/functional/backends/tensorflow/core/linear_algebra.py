@@ -57,10 +57,6 @@ def vector_to_skew_symmetric_matrix(vector):
     return _tf.concat((row1, row2, row3), -2)
 
 
-def cross(x1: Tensor, x2: Tensor, /, *, axis: Optional[int] = -1) -> Tensor:
-    return _tf.linalg.cross(a=x1, b=x2)
-
-
 def qr(x, mode):
     if mode=="reduced":
         full_matrices = False

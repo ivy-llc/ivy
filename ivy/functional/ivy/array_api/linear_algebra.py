@@ -3,16 +3,16 @@ from typing import Union, Optional, Tuple, Literal
 
 # local
 import ivy
+from ivy.framework_handler import current_framework as _cur_framework
 inf = float('inf')
 
 
 # noinspection PyShadowingBuiltins
 def vector_norm(x: Union[ivy.Array, ivy.NativeArray],
-                axis: Optional[Union[int, Tuple[int]]] = None, 
+                axis: Optional[Union[int, Tuple[int]]] = None,
                 keepdims: bool = False,
-                ord: Union[int, float, Literal[inf, -inf]] = 2)\
+                ord: Union[int, float, Literal[inf, -inf]] = 2) \
         -> ivy.Array:
-
     """
     Computes the vector norm of a vector (or batch of vectors) x.
 
@@ -69,4 +69,24 @@ def vector_norm(x: Union[ivy.Array, ivy.NativeArray],
     elif ord == 0:
         return ivy.reduce_sum(ivy.cast(x != 0, 'float32'), axis, keepdims)
     x_raised = x ** ord
-    return ivy.reduce_sum(x_raised, axis, keepdims) ** (1/ord)
+    return ivy.reduce_sum(x_raised, axis, keepdims) ** (1 / ord)
+
+
+def cross(x1: Union[ivy.Array, ivy.NativeArray], x2: Union[ivy.Array, ivy.NativeArray], /, *,
+          axis: Optional[int] = -1) -> ivy.Array:
+    """
+    Returns the cross product of two (arrays of) vectors in R^3.
+    The cross product of x1 and x2 in R^3 is a vector perpendicular to both x1 and x2.
+    If x1 and x2 are arrays of vectors, the vectors are defined by the last axis of x1 and x2 by default which must have
+    dimension 3.
+
+    :param axis: the axis (dimension) of a and b containing the vector for which to compute the cross
+    product default is -1
+    :type  axis: int
+    :param x1: first input, should have a numeric data type
+    :type x1: array
+    :param x2: second input, should have a numeric data type
+    :type x2: array
+    :return: an array that contains the cross products
+    """
+    return _cur_framework(x1).cross(x1, x2, axis)

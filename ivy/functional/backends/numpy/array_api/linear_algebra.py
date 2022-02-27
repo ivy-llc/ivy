@@ -1,14 +1,13 @@
 # global
 import numpy as np
 from typing import Union, Optional, Tuple, Literal
-
 # local
 from ivy import inf
 
 
 # noinspection PyUnusedLocal,PyShadowingBuiltins
 def vector_norm(x: np.ndarray,
-                axis: Optional[Union[int, Tuple[int]]] = None, 
+                axis: Optional[Union[int, Tuple[int]]] = None,
                 keepdims: bool = False,
                 ord: Union[int, float, Literal[inf, - inf]] = 2)\
                  -> np.ndarray:
@@ -22,3 +21,8 @@ def vector_norm(x: np.ndarray,
     if np_normalized_vector.shape == tuple():
         return np.expand_dims(np_normalized_vector, 0)
     return np_normalized_vector
+
+
+# noinspection PyShadowingBuiltins
+def cross(x1: np.ndarray, x2: np.ndarray, /, *, axis: Optional[int] = -1) -> np.ndarray:
+    return np.asarray(np.cross(x1, x2, axis=axis))

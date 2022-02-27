@@ -9,7 +9,7 @@ from ivy import inf
 
 # noinspection PyUnusedLocal,PyShadowingBuiltins
 def vector_norm(x: Tensor,
-                axis: Optional[Union[int, Tuple[int]]] = None, 
+                axis: Optional[Union[int, Tuple[int]]] = None,
                 keepdims: bool = False,
                 ord: Union[int, float, Literal[inf, - inf]] = 2)\
                  -> Tensor:
@@ -28,3 +28,7 @@ def vector_norm(x: Tensor,
     if tn_normalized_vector.shape == tuple():
         return tf.expand_dims(tn_normalized_vector, 0)
     return tn_normalized_vector
+
+
+def cross(x1: Tensor, x2: Tensor, /, *, axis: Optional[int] = -1) -> Tensor:
+    return tf.linalg.cross(x1, x2)
