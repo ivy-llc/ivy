@@ -114,7 +114,7 @@ def less(x1: Union[ivy.Array, ivy.NativeArray],
     :param f: Machine learning framework. Inferred from inputs if None.
     :return: an array containing the element-wise results. The returned array must have a data type of bool.
     """
-    return _cur_framework(x1,f=f).less(x1,x2)   
+    return _cur_framework(x1).less(x1,x2)
 
 
 def cos(x: Union[ivy.Array, ivy.NativeArray])\
