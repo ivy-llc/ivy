@@ -29,6 +29,11 @@ def cosh(x: np.ndarray)\
     return np.asarray(npa.cosh(npa.asarray(x)))
 
 
+def log2(x: np.ndarray)\
+        -> np.ndarray:
+    return np.log2(x)
+
+
 def isnan(x: np.ndarray)\
         -> np.ndarray:
     return np.isnan(x)
