@@ -26,3 +26,9 @@ def ones(shape: Union[int, Tuple[int]],
     dev = dev_from_str(default_device(device))
     with tf.device(dev):
         return tf.ones(shape, dtype)
+
+
+def tril(x: tf.Tensor,
+         k: int = 0) \
+         -> tf.Tensor:
+    return tf.experimental.numpy.tril(x, k)
