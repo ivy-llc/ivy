@@ -11,8 +11,9 @@ inf = float('inf')
 def vector_norm(x: Union[ivy.Array, ivy.NativeArray],
                 axis: Optional[Union[int, Tuple[int]]] = None,
                 keepdims: bool = False,
-                ord: Union[int, float, Literal[inf, -inf]] = 2) \
+                ord: Union[int, float, Literal[inf, -inf]] = 2)\
         -> ivy.Array:
+
     """
     Computes the vector norm of a vector (or batch of vectors) x.
 
@@ -69,24 +70,28 @@ def vector_norm(x: Union[ivy.Array, ivy.NativeArray],
     elif ord == 0:
         return ivy.reduce_sum(ivy.cast(x != 0, 'float32'), axis, keepdims)
     x_raised = x ** ord
-    return ivy.reduce_sum(x_raised, axis, keepdims) ** (1 / ord)
+    return ivy.reduce_sum(x_raised, axis, keepdims) ** (1/ord)
 
 
-def cross(x1: Union[ivy.Array, ivy.NativeArray], x2: Union[ivy.Array, ivy.NativeArray], /, *,
-          axis: Optional[int] = -1) -> ivy.Array:
+def diagonal(x: ivy.Array,
+             offset: int = 0,
+             axis1: int = -2,
+             axis2: int = -1) -> ivy.Array:
     """
-    Returns the cross product of two (arrays of) vectors in R^3.
-    The cross product of x1 and x2 in R^3 is a vector perpendicular to both x1 and x2.
-    If x1 and x2 are arrays of vectors, the vectors are defined by the last axis of x1 and x2 by default which must have
-    dimension 3.
+    Returns the specified diagonal of a matrix `x`
 
-    :param axis: the axis (dimension) of a and b containing the vector for which to compute the cross
-    product default is -1
-    :type  axis: int
-    :param x1: first input, should have a numeric data type
-    :type x1: array
-    :param x2: second input, should have a numeric data type
-    :type x2: array
-    :return: an array that contains the cross products
+    :param x: Matrix of dimensions (...., M, N)
+    :type x: array
+    :param offset: Offset of the diagonal. Default is 0.
+    :type offset: int, optional
+    :param f: Machine learning framework. Inferred from inputs if None.
+    :type f: ml_framework, optional
+    :param axis1: Axis of the matrix `x` along which the diagonal is extracted.
+                    Default is 0.
+    :type axis1: int, optional
+    :param axis2: Axis of the matrix `x` along which the diagonal is extracted.
+                    Default is 1.
+    :type axis2: int, optional
+    :return: Diagonal of the matrix x.
     """
-    return _cur_framework(x1).cross(x1, x2, axis)
+    return _cur_framework(x).diagonal(x, offset, axis1=axis1, axis2=axis2)

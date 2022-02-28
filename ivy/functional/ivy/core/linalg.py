@@ -9,7 +9,7 @@ import ivy
 from ivy.framework_handler import current_framework as _cur_framework
 
 
-def svd(x):
+def svd(x, f=None):
     """
     Singular Value Decomposition.
     When x is a 2D array, it is factorized as u @ numpy.diag(s) @ vh = (u * s) @ vh, where u and vh are 2D unitary
@@ -17,6 +17,8 @@ def svd(x):
 
     :param x: Input array with number of dimensions >= 2.
     :type x: array
+    :param f: Machine learning framework. Inferred from inputs if None.
+    :type f: ml_framework, optional
     :return:
         u -> { (…, M, M), (…, M, K) } array \n
         Unitary array(s). The first (number of dims - 2) dimensions have the same size as those of the input a.
@@ -30,12 +32,11 @@ def svd(x):
         Unitary array(s). The first (number of dims - 2) dimensions have the same size as those of the input a.
         The size of the last two dimensions depends on the value of full_matrices.
     """
-    return _cur_framework(x).svd(x)
+    return _cur_framework(x, f=f).svd(x)
 
 
 
-
-def matrix_norm(x, p=2, axes=None, keepdims=False):
+def matrix_norm(x, p=2, axes=None, keepdims=False, f=None):
     """
     Compute the matrix p-norm.
 
@@ -50,32 +51,39 @@ def matrix_norm(x, p=2, axes=None, keepdims=False):
                      size one. With this option the result will broadcast correctly against the original x.
                      Default is False.
     :type keepdims: bool, optional
+    :param f: Machine learning framework. Inferred from inputs if None.
+    :type f: ml_framework, optional
     :return: Matrix norm of the array at specified axes.
     """
-    return _cur_framework(x).matrix_norm(x, p, axes, keepdims)
+    return _cur_framework(x, f=f).matrix_norm(x, p, axes, keepdims)
 
 
-def inv(x):
+def inv(x, f=None):
     """
     Computes the (multiplicative) inverse of x matrix.
     Given a square matrix x, returns the matrix x_inv satisfying dot(x, x_inv) = dot(x_inv, x) = eye(x.shape[0]).
 
     :param x: Matrix to be inverted.
     :type x: array
+    :param f: Machine learning framework. Inferred from inputs if None.
+    :type f: ml_framework, optional
     :return: (Multiplicative) inverse of the matrix x.
     """
-    return _cur_framework(x).inv(x)
+    return _cur_framework(x, f=f).inv(x)
 
 
-def pinv(x):
+def pinv(x, f=None):
     """
     Computes the pseudo inverse of x matrix.
 
     :param x: Matrix to be pseudo inverted.
     :type x: array
+    :param f: Machine learning framework. Inferred from inputs if None.
+    :type f: ml_framework, optional
     :return: pseudo inverse of the matrix x.
     """
-    return _cur_framework(x).pinv(x)
+    return _cur_framework(x, f=f).pinv(x)
+
 
 
 def vector_to_skew_symmetric_matrix(vector):
@@ -86,9 +94,11 @@ def vector_to_skew_symmetric_matrix(vector):
 
     :param vector: Vector to convert *[batch_shape,3]*.
     :type vector: array
+    :param f: Machine learning framework. Inferred from inputs if None.
+    :type f: ml_framework, optional
     :return: Skew-symmetric matrix *[batch_shape,3,3]*.
     """
-    return _cur_framework(vector).vector_to_skew_symmetric_matrix(vector)
+    return _cur_framework(vector, f=f).vector_to_skew_symmetric_matrix(vector)
 
 
 def cholesky(x):
@@ -97,31 +107,24 @@ def cholesky(x):
 
     :param x: Matrix to be decomposed.
     :type x: array
+    :param f: Machine learning framework. Inferred from inputs if None.
+    :type f: ml_framework, optional
     :return: cholesky decomposition of the matrix x.
     """
     return _cur_framework(x).cholesky(x)
 
 
-def qr(x, mode="reduced", f=None):
+def cross(x1: Union[ivy.Array, ivy.NativeArray], x2: Union[ivy.Array, ivy.NativeArray], /, *,
+          axis: Optional[int] = -1) -> ivy.Array:
     """
-    Computes the qr decomposition of the x matrix.
-
-    :param x: Matrix to be decomposed.
-    :type x: array
-    :param mode: The option to choose between the full and reduced QR decomposition.
-    :type mode: str, optional
-    :param f: Machine learning framework. Inferred from inputs if None.
-    :type f: ml_framework, optional
-    :return: qr decomposition of the matrix x.
-
-    If x has shape (*, M, N) and considering K = min(M, N).
-    mode = 'reduced' (default): Returns (Q, R) of shapes (*, M, K), (*, K, N) respectively.
-    mode = 'complete': Returns (Q, R) of shapes (*, M, M), (*, M, N) respectively.
-    mode = 'r': Computes only the reduced R. Returns (Q, R) with Q empty and R of shape (*, K, N).
-
-    Please note that different frameworks support different modes. For example: mode='raw'
-    is supported in numpy but not in pytorch. Similarly, tensorflow doesn't support 'r' mode.
-    The 'reduced' and 'complete' modes are sufficient for most of the use-cases and are supported
-    by all the frameworks.
+    Compute and return the cross product of 3-element vectors, it must have the same shape as b
+    :param axis: the axis (dimension) of a and b containing the vector for which to compute the cross
+    product default is -1
+    :type  axis: int
+    :param x1: first input, should have a numeric data type
+    :type x1: array
+    :param x2: second input, should have a numeric data type
+    :type x2: array
+    :return: an array that contains the cross products
     """
-    return _cur_framework(x).qr(x, mode=mode)
+    return _cur_framework(x1).cross(x1, x2, axis)

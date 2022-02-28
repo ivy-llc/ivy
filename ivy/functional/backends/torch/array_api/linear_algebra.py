@@ -5,6 +5,7 @@ from typing import Union, Optional, Tuple, Literal
 # local
 from ivy import inf
 
+
 def vector_norm(x: torch.Tensor,
                 p: Union[int, float, Literal[inf, - inf]] = 2,
                 axis: Optional[Union[int, Tuple[int]]] = None,
@@ -19,9 +20,8 @@ def vector_norm(x: torch.Tensor,
     return py_normalized_vector
 
 
-def cross(x1: torch.Tensor, x2: torch.Tensor, /, *, axis: Optional[int] = -1) -> torch.Tensor:
-    datatype = torch.promote_types(x1.dtype, x2.dtype)
-    if x1.dtype != x2.dtype:
-        x1 = torch.tensor(x1, dtype=datatype)
-        x2 = torch.tensor(x1, dtype=datatype)
-    return torch.cross(x1, x2, dim=axis)
+def diagonal(x: torch.Tensor,
+             offset: int = 0,
+             axis1: int = -2,
+             axis2: int = -1) -> torch.Tensor:
+    return torch.diagonal(x, offset=offset, dim1=axis1, dim2=axis2)

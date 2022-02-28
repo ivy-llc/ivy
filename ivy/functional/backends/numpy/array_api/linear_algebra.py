@@ -1,6 +1,7 @@
 # global
 import numpy as np
 from typing import Union, Optional, Tuple, Literal
+
 # local
 from ivy import inf
 
@@ -23,6 +24,8 @@ def vector_norm(x: np.ndarray,
     return np_normalized_vector
 
 
-# noinspection PyShadowingBuiltins
-def cross(x1: np.ndarray, x2: np.ndarray, /, *, axis: Optional[int] = -1) -> np.ndarray:
-    return np.asarray(np.cross(x1, x2, axis=axis))
+def diagonal(x: np.ndarray,
+             offset: int = 0,
+             axis1: int = -2,
+             axis2: int = -1) -> np.ndarray:
+    return np.diagonal(x, offset=offset, axis1=axis1, axis2=axis2)
