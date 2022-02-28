@@ -46,13 +46,9 @@ def less(x1: np.ndarray,x2: np.ndarray)\
 def floor_divide(x1: np.ndarray, x2: np.ndarray)\
         -> np.ndarray:
     if hasattr(x1, 'dtype') and hasattr(x2, 'dtype'):
-        print("x1 type:" + str(x1.dtype))
-        print("x2 type:" + str(x2.dtype))
         promoted_type = np.promote_types(x1.dtype,x2.dtype)
-        print("promoted type: " + str(promoted_type))
         x1 = x1.astype(promoted_type)
         x2 = x2.astype(promoted_type)
-
     return np.floor_divide(x1,x2)
 
 def cos(x: np.ndarray)\

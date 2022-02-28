@@ -144,9 +144,10 @@ def floor_divide(x1: Union[ivy.Array, ivy.NativeArray],
     :type x2: array
     :param f: Machine learning framework. Inferred from inputs if None.
     :type f: ml_framework, optional
-    :return: an array containing the element-wise results. The returned array must have a data type of bool.
+    :return: an array containing the element-wise results. The returned array must have a data type of the
+    dtype with safe encoding.
     """
-    return _cur_framework(x1).floor_divide(x1,x2)
+    return _cur_framework(x1, f=f).floor_divide(x1,x2)
 
 
 def logical_not(x: Union[ivy.Array, ivy.NativeArray])\
