@@ -85,35 +85,20 @@ def array(object_in, dtype=None, dev=None):
     return _to_dev(_np.array(object_in, dtype=default_dtype(dtype, object_in)), dev)
 
 
-def asarray(object_in, dtype= None, dev = None, copy = None):
+def asarray(object_in, dtype=None, dev=None, copy=None):
     # If copy=none then try using existing memory buffer
-    # if dtype is not None is isinstance(dtype, str):
-    #     # dtype = 'bool_' if dtype == 'bool' else dtype
-    #     dtype = DTYPE_FROM_STR[dtype]
-    # else:
-    #     dtype = default_dtype(dtype, object_in)
-    print(object_in, dtype)
     if copy is None:
         copy = False
     if copy:
-        # No copy is performed if the input is already an ndarray
-        if dtype is None and isinstance(object_in, _np.ndarray):
-            return _to_dev(_np.copy(object_in), dev)
-        if dtype is None and not isinstance(object_in, _np.ndarray):
-            dtype = dtype_to_str(default_dtype(dtype, object_in))
-            return _to_dev(_np.copy(_np.asarray(object_in, dtype=dtype)), dev)
-        else:
-            dtype = dtype_to_str(default_dtype(dtype, object_in))
-            return _to_dev(_np.copy(_np.asarray(object_in, dtype=dtype)), dev)
+        if dtype is None:
+            return _to_dev(_np.copy(_np.asarray(object_in)), dev)
+        dtype = dtype_to_str(default_dtype(dtype, object_in))
+        return _to_dev(_np.copy(_np.asarray(object_in, dtype=dtype)), dev)
     else:
-        if dtype is None and isinstance(object_in, _np.ndarray):
-            return _to_dev(object_in, dev)
-        if dtype is None and not isinstance(object_in, _np.ndarray):
-            dtype = dtype_to_str(default_dtype(dtype, object_in))
-            return _to_dev(_np.asarray(object_in, dtype=dtype), dev)
-        else:
-            dtype = dtype_to_str(default_dtype(dtype, object_in))
-            return _to_dev(_np.asarray(object_in, dtype=dtype), dev)
+        if dtype is None:
+            return _to_dev(_np.asarray(object_in), dev)
+        dtype = dtype_to_str(default_dtype(dtype, object_in))
+        return _to_dev(_np.asarray(object_in, dtype=dtype), dev)
 
 
 def is_array(x, exclusive=False):
