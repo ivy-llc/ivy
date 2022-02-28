@@ -26,7 +26,9 @@ def asinh(x: Tensor) \
 
 def sqrt(x: Tensor)\
         -> Tensor:
-    return tf.math.sqrt(x)
+    x_64 = tf.cast(x, tf.float64)
+    res = tf.cast(tf.sqrt(x_64), x.dtype)
+    return  res
 
 
 def cosh(x: Tensor) \
