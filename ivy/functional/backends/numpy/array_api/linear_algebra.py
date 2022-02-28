@@ -1,7 +1,7 @@
 # global
 import numpy as np
 from typing import Union, Optional, Tuple, Literal
-
+import numpy.array_api as npa
 # local
 from ivy import inf
 
@@ -29,3 +29,7 @@ def diagonal(x: np.ndarray,
              axis1: int = -2,
              axis2: int = -1) -> np.ndarray:
     return np.diagonal(x, offset=offset, axis1=axis1, axis2=axis2)
+
+
+def cross(x1: np.ndarray, x2: np.ndarray, /, *, axis: int = -1) -> np.ndarray:
+    return np.asarray(npa.linalg.cross(npa.asarray(x1), npa.asarray(x2), axis=axis))

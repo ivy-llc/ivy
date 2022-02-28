@@ -119,4 +119,3 @@ def qr(x, mode="reduced", f=None):
     by all the frameworks.
     """
     return _cur_framework(x).qr(x, mode=mode)
-    

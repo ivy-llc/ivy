@@ -35,3 +35,7 @@ def diagonal(x: tf.Tensor,
              axis1: int = -2,
              axis2: int = -1) -> tf.Tensor:
     return tf.experimental.numpy.diagonal(x, offset, axis1=axis1, axis2=axis2)
+
+
+def cross(x1: Tensor, x2: Tensor, axis: int = -1) -> Tensor:
+    return tf.linalg.cross(a=x1, b=x2)

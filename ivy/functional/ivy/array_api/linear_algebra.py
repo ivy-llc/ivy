@@ -4,6 +4,7 @@ from typing import Union, Optional, Tuple, Literal
 # local
 import ivy
 from ivy.framework_handler import current_framework as _cur_framework
+
 inf = float('inf')
 
 
@@ -11,9 +12,8 @@ inf = float('inf')
 def vector_norm(x: Union[ivy.Array, ivy.NativeArray],
                 axis: Optional[Union[int, Tuple[int]]] = None,
                 keepdims: bool = False,
-                ord: Union[int, float, Literal[inf, -inf]] = 2)\
+                ord: Union[int, float, Literal[inf, -inf]] = 2) \
         -> ivy.Array:
-
     """
     Computes the vector norm of a vector (or batch of vectors) x.
 
@@ -70,7 +70,7 @@ def vector_norm(x: Union[ivy.Array, ivy.NativeArray],
     elif ord == 0:
         return ivy.reduce_sum(ivy.cast(x != 0, 'float32'), axis, keepdims)
     x_raised = x ** ord
-    return ivy.reduce_sum(x_raised, axis, keepdims) ** (1/ord)
+    return ivy.reduce_sum(x_raised, axis, keepdims) ** (1 / ord)
 
 
 def diagonal(x: ivy.Array,
@@ -95,3 +95,18 @@ def diagonal(x: ivy.Array,
     :return: Diagonal of the matrix x.
     """
     return _cur_framework(x).diagonal(x, offset, axis1=axis1, axis2=axis2)
+
+def cross(x1: Union[ivy.Array, ivy.NativeArray], x2: Union[ivy.Array, ivy.NativeArray],
+          axis: Optional[int] = -1) -> ivy.Array:
+    """
+    Compute and return the cross product of 3-element vectors, it must have the same shape as b
+    :param axis: the axis (dimension) of a and b containing the vector for which to compute the cross
+    product default is -1
+    :type  axis: int
+    :param x1: first input, should have a numeric data type
+    :type x1: array
+    :param x2: second input, should have a numeric data type
+    :type x2: array
+    :return: an array that contains the cross products
+    """
+    return _cur_framework(x1).cross(x1, x2, axis)
