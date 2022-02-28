@@ -4,8 +4,7 @@ Collection of Jax linear algebra functions, wrapped to fit Ivy syntax and signat
 
 # global
 import jax.numpy as _jnp
-from ivy.functional.backends.jax import JaxArray
-from typing import Optional
+
 svd = _jnp.linalg.svd
 
 
@@ -26,7 +25,6 @@ inv = _jnp.linalg.inv
 pinv = _jnp.linalg.pinv
 cholesky = _jnp.linalg.cholesky
 
-
 def vector_to_skew_symmetric_matrix(vector):
     batch_shape = list(vector.shape[:-1])
     # BS x 3 x 1
@@ -43,21 +41,6 @@ def vector_to_skew_symmetric_matrix(vector):
     row3 = _jnp.concatenate((-a2s, a1s, zs), -1)
     # BS x 3 x 3
     return _jnp.concatenate((row1, row2, row3), -2)
-
-
-# noinspection PyShadowingBuiltins
-def cross(x1: JaxArray, x2: JaxArray, /, *, axis: Optional[int] = -1) -> JaxArray:
-    return _jnp.cross(a=x1, b=x2, axis=axis)
-
-
-def qr(x, mode):
-    return _jnp.linalg.qr(x, mode=mode)
-
-# noinspection PyShadowingBuiltins
-def cross(x1: JaxArray, x2: JaxArray, /, *, axis: Optional[int] = -1) -> JaxArray:
-    return _jnp.cross(a=x1, b=x2, axis=axis)
-
-
 
 def qr(x, mode):
     return _jnp.linalg.qr(x, mode=mode)
