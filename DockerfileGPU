@@ -1,4 +1,4 @@
-FROM ivydl/ivy:latest-gpu
+FROM unifyai/ivy:latest-gpu
 
 # Install Ivy
 RUN rm -rf ivy && \
