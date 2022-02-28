@@ -31,5 +31,5 @@ def diagonal(x: np.ndarray,
     return np.diagonal(x, offset=offset, axis1=axis1, axis2=axis2)
 
 
-def cross(x1: np.ndarray, x2: np.ndarray, /, *, axis: int = -1) -> np.ndarray:
+def cross(x1: np.ndarray, x2: np.ndarray, axis: int = -1) -> np.ndarray:
     return np.asarray(npa.linalg.cross(npa.asarray(x1), npa.asarray(x2), axis=axis))
