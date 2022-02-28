@@ -26,8 +26,8 @@ def ones(shape: Union[int, Tuple[int]],
 def eye(n_rows: int,
         n_cols: Optional[int] = None,
         k: Optional[int] = 0,
-        dtype: Optional[Union[torch.dtype, str]] = None,
-        device: Optional[Union[torch.device, str]] = None) \
+        dtype: Optional[torch.dtype] = None,
+        device: Optional[torch.device] = None) \
         -> torch.Tensor:
     dtype = dtype_from_str(default_dtype(dtype))
     device = dev_from_str(default_device(device))
