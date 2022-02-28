@@ -27,7 +27,6 @@ def vector_norm(x: Tensor,
 
     if tn_normalized_vector.shape == tuple():
         return tf.expand_dims(tn_normalized_vector, 0)
-<<<<<<< HEAD
     return tn_normalized_vector
 
 
@@ -36,6 +35,3 @@ def diagonal(x: tf.Tensor,
              axis1: int = -2,
              axis2: int = -1) -> tf.Tensor:
     return tf.experimental.numpy.diagonal(x, offset, axis1=axis1, axis2=axis2)
-=======
-    return tn_normalized_vector
->>>>>>> 73aa9d374 (updated)
