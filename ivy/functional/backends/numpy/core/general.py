@@ -92,7 +92,7 @@ def asarray(object_in, dtype= None, dev = None, copy = None):
     #     dtype = DTYPE_FROM_STR[dtype]
     # else:
     #     dtype = default_dtype(dtype, object_in)
-    dtype = dtype_to_str(default_dtype(dtype, object_in))
+    print(object_in, dtype)
     if copy is None:
         copy = False
     if copy:
@@ -100,15 +100,19 @@ def asarray(object_in, dtype= None, dev = None, copy = None):
         if dtype is None and isinstance(object_in, _np.ndarray):
             return _to_dev(_np.copy(object_in), dev)
         if dtype is None and not isinstance(object_in, _np.ndarray):
-            return _to_dev(_np.copy(_np.asarray(object_in)), dev)
+            dtype = dtype_to_str(default_dtype(dtype, object_in))
+            return _to_dev(_np.copy(_np.asarray(object_in, dtype=dtype)), dev)
         else:
+            dtype = dtype_to_str(default_dtype(dtype, object_in))
             return _to_dev(_np.copy(_np.asarray(object_in, dtype=dtype)), dev)
     else:
         if dtype is None and isinstance(object_in, _np.ndarray):
             return _to_dev(object_in, dev)
         if dtype is None and not isinstance(object_in, _np.ndarray):
-            return _to_dev(_np.asarray(object_in), dev)
+            dtype = dtype_to_str(default_dtype(dtype, object_in))
+            return _to_dev(_np.asarray(object_in, dtype=dtype), dev)
         else:
+            dtype = dtype_to_str(default_dtype(dtype, object_in))
             return _to_dev(_np.asarray(object_in, dtype=dtype), dev)
 
 
