@@ -26,7 +26,6 @@ def matrix_norm(x, p=2, axes=None, keepdims=False):
 
 inv = _mx.nd.linalg_inverse
 
-
 DET_THRESHOLD = 1e-12
 
 
@@ -53,6 +52,7 @@ def pinv(x):
 cholesky = lambda x: _mx.np.linalg.cholesky(x.as_np_ndarray()).as_nd_ndarray()
 
 
+
 def vector_to_skew_symmetric_matrix(vector):
     batch_shape = list(vector.shape[:-1])
     # BS x 3 x 1
@@ -69,7 +69,6 @@ def vector_to_skew_symmetric_matrix(vector):
     row3 = _mx.nd.concat(*(-a2s, a1s, zs), dim=-1)
     # BS x 3 x 3
     return _mx.nd.concat(*(row1, row2, row3), dim=-2)
-
 
 def qr(x, mode):
     return _mx.np.linalg.qr(x, mode=mode)
