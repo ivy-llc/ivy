@@ -4,8 +4,6 @@ Collection of TensorFlow linear algebra functions, wrapped to fit Ivy syntax and
 
 # global
 import tensorflow as _tf
-from tensorflow.python.types.core import Tensor
-from typing import Optional
 
 
 # noinspection PyPep8Naming
@@ -37,7 +35,6 @@ def matrix_norm(x, p=2, axes=None, keepdims=False):
 inv = _tf.linalg.inv
 pinv = _tf.linalg.pinv
 cholesky = _tf.linalg.cholesky
-
 
 def vector_to_skew_symmetric_matrix(vector):
     batch_shape = list(vector.shape[:-1])
