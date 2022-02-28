@@ -3,12 +3,13 @@ from typing import Union, Optional, Tuple, Literal
 
 # local
 import ivy
+from ivy.framework_handler import current_framework as _cur_framework
 inf = float('inf')
 
 
 # noinspection PyShadowingBuiltins
 def vector_norm(x: Union[ivy.Array, ivy.NativeArray],
-                axis: Optional[Union[int, Tuple[int]]] = None, 
+                axis: Optional[Union[int, Tuple[int]]] = None,
                 keepdims: bool = False,
                 ord: Union[int, float, Literal[inf, -inf]] = 2)\
         -> ivy.Array:
@@ -70,3 +71,27 @@ def vector_norm(x: Union[ivy.Array, ivy.NativeArray],
         return ivy.reduce_sum(ivy.cast(x != 0, 'float32'), axis, keepdims)
     x_raised = x ** ord
     return ivy.reduce_sum(x_raised, axis, keepdims) ** (1/ord)
+
+
+def diagonal(x: ivy.Array,
+             offset: int = 0,
+             axis1: int = -2,
+             axis2: int = -1) -> ivy.Array:
+    """
+    Returns the specified diagonal of a matrix `x`
+
+    :param x: Matrix of dimensions (...., M, N)
+    :type x: array
+    :param offset: Offset of the diagonal. Default is 0.
+    :type offset: int, optional
+    :param f: Machine learning framework. Inferred from inputs if None.
+    :type f: ml_framework, optional
+    :param axis1: Axis of the matrix `x` along which the diagonal is extracted.
+                    Default is 0.
+    :type axis1: int, optional
+    :param axis2: Axis of the matrix `x` along which the diagonal is extracted.
+                    Default is 1.
+    :type axis2: int, optional
+    :return: Diagonal of the matrix x.
+    """
+    return _cur_framework(x).diagonal(x, offset, axis1=axis1, axis2=axis2)
