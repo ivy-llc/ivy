@@ -62,6 +62,7 @@ Overview
 --------
 
 .. _docs: https://lets-unify.ai/ivy
+.. _Colabs: https://drive.google.com/drive/folders/16Oeu25GrQsEJh8w2B0kSrD93w4cWjJAM?usp=sharing
 
 **What is Ivy?**
 
@@ -70,6 +71,8 @@ Ivy wraps the functional APIs of existing frameworks.
 Framework-agnostic functions, libraries and layers can then be written using Ivy,
 with simultaneous support for all frameworks.
 Ivy currently supports Jax, TensorFlow, PyTorch, MXNet and Numpy. 
+
+Also check out our Google Colabs_ for interactive demos.
 
 **Ivy Libraries**
 
