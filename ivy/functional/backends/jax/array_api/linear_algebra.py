@@ -29,3 +29,8 @@ def diagonal(x: JaxArray,
              axis1: int = -2,
              axis2: int = -1) -> JaxArray:
     return jnp.diagonal(x, offset, axis1, axis2)
+
+
+# noinspection PyShadowingBuiltins
+def cross(x1: JaxArray, x2: JaxArray, axis: Optional[int] = -1) -> JaxArray:
+    return jnp.cross(x1, x2, axis)

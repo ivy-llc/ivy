@@ -25,3 +25,10 @@ def diagonal(x: torch.Tensor,
              axis1: int = -2,
              axis2: int = -1) -> torch.Tensor:
     return torch.diagonal(x, offset=offset, dim1=axis1, dim2=axis2)
+
+
+
+def cross(x1: torch.Tensor, x2: torch.Tensor, axis: int = -1) -> torch.Tensor:
+    return torch.cross(x1, x2, axis)
+
+
