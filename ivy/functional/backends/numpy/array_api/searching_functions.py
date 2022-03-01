@@ -8,5 +8,5 @@ def argmax(
     out: Optional[int] = None,
     keepdims: bool = False,
 ) -> np.ndarray:
-    return np.argmax(x,axis=axis,out=out, keepdims=keepdims)
-    
+    ret = np.argmax(x,axis=axis,keepdims=keepdims)
+    return ret

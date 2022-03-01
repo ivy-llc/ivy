@@ -6,9 +6,8 @@ from ivy.framework_handler import current_framework as _cur_framework
 def argmax(
     x: Union[ivy.Array, ivy.NativeArray], 
     axis: Optional[int] = None,
+    keepdims: Optional[bool] = False,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-    keepdims: Optional[bool] = False
-    
 ) -> ivy.Array:
     """
     Returns the indices of the maximum values along an axis.
