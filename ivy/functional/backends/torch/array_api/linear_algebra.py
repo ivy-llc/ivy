@@ -1,6 +1,6 @@
 # global
 import torch
-from typing import Union, Optional, Tuple, Literal
+from typing import Union, Optional, Tuple, Literal, List
 
 # local
 from ivy import inf
@@ -17,3 +17,19 @@ def vector_norm(x: torch.Tensor,
         return torch.unsqueeze(py_normalized_vector, 0)
 
     return py_normalized_vector
+
+
+def tensordot(x1: torch.Tensor, x2: torch.Tensor,
+              axes: Union[int, Tuple[List[int], List[int]]] = 2) \
+        -> torch.Tensor:
+
+    # find the type to promote to
+    dtype = torch.promote_types(x1.dtype, x2.dtype)
+    # type conversion to one that torch.tensordot can work with
+    x1, x2 = x1.type(torch.float32), x2.type(torch.float32)
+
+    # handle tensordot for axes==0
+    # otherwise call with axes
+    if axes == 0:
+        return (x1.reshape(x1.size() + (1,) * x2.dim()) * x2).type(dtype)
+    return torch.tensordot(x1, x2, dims=axes).type(dtype)
