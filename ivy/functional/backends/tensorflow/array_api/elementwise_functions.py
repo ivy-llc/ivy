@@ -45,11 +45,17 @@ def isnan(x: Tensor)\
         return tf.zeros_like(x, tf.bool)
     return tf.math.is_nan(x)
 
-
 def equal(x1: Tensor, x2: Tensor)\
         -> Tensor:
-    return tf.equal(x1, x2)
-
+    x1_bits = ivy.dtype_bits(x1.dtype)
+    if isinstance(x2, (int, float, bool)):
+        return x1 == x2
+    x2_bits = ivy.dtype_bits(x2.dtype)
+    if x1_bits > x2_bits:
+        x2 = tf.cast(x2, x1.dtype)
+    elif x2_bits > x1_bits:
+        x1 = tf.cast(x1, x2.dtype)
+    return x1 == x2
 
 def less(x1: Tensor, x2: Tensor)\
         -> Tensor:
