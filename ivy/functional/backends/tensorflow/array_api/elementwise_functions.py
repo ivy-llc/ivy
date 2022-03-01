@@ -49,8 +49,6 @@ def isnan(x: Tensor)\
 def equal(x1: Tensor, x2: Tensor)\
         -> Tensor:
     x1_bits = ivy.dtype_bits(x1.dtype)
-    if isinstance(x2, (int, float, bool)):
-        return x1 == x2
     x2_bits = ivy.dtype_bits(x2.dtype)
     if x1_bits > x2_bits:
         x2 = tf.cast(x2, x1.dtype)
