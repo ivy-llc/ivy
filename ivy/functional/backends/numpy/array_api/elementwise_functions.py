@@ -44,6 +44,11 @@ def less(x1: np.ndarray,x2: np.ndarray)\
     return np.less(x1,x2)
 
 
+def equal(x1: np.ndarray,x2: np.ndarray)\
+        -> np.ndarray:
+    return np.equal(x1,x2) 
+
+
 def cos(x: np.ndarray)\
         -> np.ndarray:
     return np.asarray(npa.cos(npa.asarray(x)))

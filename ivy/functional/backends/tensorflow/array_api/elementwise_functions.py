@@ -45,6 +45,13 @@ def isnan(x: Tensor)\
         return tf.zeros_like(x, tf.bool)
     return tf.math.is_nan(x)
 
+def equal(x1: Tensor, x2: Tensor)\
+        -> Tensor:
+    if hasattr(x1, 'dtype') and hasattr(x2, 'dtype'):
+        promoted_type = tf.experimental.numpy.promote_types(x1.dtype, x2.dtype)
+        x1 = tf.cast(x1, promoted_type)
+        x2 = tf.cast(x2, promoted_type)
+    return tf.equal(x1, x2)
 
 def less(x1: Tensor, x2: Tensor)\
         -> Tensor:

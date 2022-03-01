@@ -61,19 +61,6 @@ def dtype_bits(dtype_in):
     return int(dtype_str.replace('torch.', '').replace('uint', '').replace('int', '').replace('bfloat', '').replace(
         'float', ''))
 
-
-def equal(x1, x2):
-    x1_bits = dtype_bits(x1.dtype)
-    if isinstance(x2, (int, float, bool)):
-        return x1 == x2
-    x2_bits = dtype_bits(x2.dtype)
-    if x1_bits > x2_bits:
-        x2 = x2.type(x1.dtype)
-    elif x2_bits > x1_bits:
-        x1 = x1.type(x2.dtype)
-    return x1 == x2
-
-
 def to_numpy(x) -> np.ndarray:
     if isinstance(x, np.ndarray) or isinstance(x, (float, int, bool)):
         return x
