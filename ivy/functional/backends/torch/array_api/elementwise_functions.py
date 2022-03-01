@@ -43,7 +43,7 @@ def equal(x1: torch.Tensor, x2: torch.Tensor):
         promoted_type = torch.promote_types(x1.dtype, x2.dtype)
         x1 = x1.to(promoted_type)
         x2 = x2.to(promoted_type)
-    return torch.equal(x1, x2)
+    return x1 == x2
 
 
 def less(x1: torch.Tensor, x2: torch.Tensor):
