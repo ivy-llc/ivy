@@ -47,7 +47,7 @@ def less(x1: JaxArray,x2:JaxArray)\
 
 def equal(x1: JaxArray,x2:JaxArray)\
         -> JaxArray:
-    return jnp.equal(x1,x2)
+    return x1 == x2
 
 
 def cos(x: JaxArray)\
