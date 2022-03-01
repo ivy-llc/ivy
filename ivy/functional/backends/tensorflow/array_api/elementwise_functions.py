@@ -54,7 +54,7 @@ def equal(x1: Tensor, x2: Tensor)\
         x2 = tf.cast(x2, x1.dtype)
     elif x2_bits > x1_bits:
         x1 = tf.cast(x1, x2.dtype)
-    return x1 == x2
+    return tf.equal(x1, x2)
 
 
 def less(x1: Tensor, x2: Tensor)\

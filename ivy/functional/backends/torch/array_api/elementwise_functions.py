@@ -48,7 +48,7 @@ def equal(x1: torch.Tensor, x2: torch.Tensor)\
         x2 = x2.type(x1.dtype)
     elif x2_bits > x1_bits:
         x1 = x1.type(x2.dtype)
-    return x1 == x2
+    return torch.equal(x1, x2)
 
 
 def less(x1: torch.Tensor, x2: torch.Tensor):
