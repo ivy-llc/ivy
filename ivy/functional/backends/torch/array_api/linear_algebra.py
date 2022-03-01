@@ -5,6 +5,7 @@ from typing import Union, Optional, Tuple, Literal, List
 # local
 from ivy import inf
 
+
 def vector_norm(x: torch.Tensor,
                 p: Union[int, float, Literal[inf, - inf]] = 2,
                 axis: Optional[Union[int, Tuple[int]]] = None,
@@ -17,6 +18,13 @@ def vector_norm(x: torch.Tensor,
         return torch.unsqueeze(py_normalized_vector, 0)
 
     return py_normalized_vector
+
+
+def diagonal(x: torch.Tensor,
+             offset: int = 0,
+             axis1: int = -2,
+             axis2: int = -1) -> torch.Tensor:
+    return torch.diagonal(x, offset=offset, dim1=axis1, dim2=axis2)
 
 
 def tensordot(x1: torch.Tensor, x2: torch.Tensor,

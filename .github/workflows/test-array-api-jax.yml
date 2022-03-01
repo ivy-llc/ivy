@@ -1,4 +1,4 @@
-name: test-array-api
+name: test-array-api-jax
 on: [push, pull_request]
 jobs:
   run-jax-array-api-tests:
@@ -12,6 +12,6 @@ jobs:
           submodules: 'recursive'
 
       - name: Run JAX Tests
-        continue-on-error: true
         run: |
-          docker run --rm --env IVY_BACKEND="jax" --env ARRAY_API_TESTS_MODULE="ivy" -v `pwd`/ivy:/ivy unifyai/ivy:latest python3 -m pytest ivy/ivy_tests/test_array_api --ci
+          cd ivy
+          ./test_array_api.sh jax
