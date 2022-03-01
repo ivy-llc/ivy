@@ -43,14 +43,10 @@ def isnan(x: torch.Tensor)\
 def equal(x1: torch.Tensor, x2: torch.Tensor)\
         -> torch.Tensor:
     x1_bits = ivy.dtype_bits(x1.dtype)
-    print("x1_bits:", x1_bits)
     x2_bits = ivy.dtype_bits(x2.dtype)
-    print("x2_bits:", x2_bits)
     if x1_bits > x2_bits:
-        print("x1_bits is greater")
         x2 = x2.type(x1.dtype)
     elif x2_bits > x1_bits:
-        print("x2_bits is greater")
         x1 = x1.type(x2.dtype)
     return x1 == x2
 
