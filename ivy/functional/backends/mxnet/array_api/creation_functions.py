@@ -26,3 +26,12 @@ def ones(shape: Union[int, Tuple[int]],
     if len(shape) == 0 or 0 in shape:
         return _1_dim_array_to_flat_array(mx.nd.ones((1,), ctx=cont).astype(dtype))
     return mx.nd.ones(shape, ctx=cont).astype(dtype)
+
+def ones_like(x : mx.ndarray.ndarray.NDArray,
+              dtype : Optional[Union[type, str]] = None,
+              dev : Optional[Union[mx.context.Context, str]] = None) \
+        -> mx.ndarray.ndarray.NDArray:
+    if x.shape == ():
+        return mx.nd.array(1., ctx=_mxnet_init_context(default_device(dev)))
+    mx_ones = mx.nd.ones_like(x, ctx=_mxnet_init_context(default_device(dev)))
+    return mx_ones if dtype is None else mx_ones.astype(dtype)

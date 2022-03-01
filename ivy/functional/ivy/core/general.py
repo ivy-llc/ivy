@@ -908,19 +908,20 @@ def ones(shape: Iterable[int], dtype: Union[ivy.Dtype, str] = 'float32', dev: iv
     return _cur_framework().ones(shape, dtype, dev)
 
 
-def ones_like(x: Union[ivy.Array, ivy.NativeArray], dtype: ivy.Dtype = None, dev: ivy.Device = None,
-              ) -> Union[ivy.Array, ivy.NativeArray]:
+def ones_like(x: ivy.Array, dtype: ivy.Dtype = None, dev: ivy.Device = None,
+              ) -> ivy.Array:
     """
-    Returns an array of ones with the same shape and type as x, unless dtype provided which overrides.
+    Returns a new array filled with ones and having the same shape as an input array x.
 
-    :param x: The shape and data-type of a define these same attributes of the returned array.
+    :param x: Input array from which to derive the output array shape.
     :type x: array
-    :param dtype: The desired data-type for the array in string format, i.e. 'float32' or 'int64'.
-                    If not given, then the type of the original array is used.
+    :param dtype: Output array data type. If dtype is None, the output array data type must be inferred from x.
+    Default: None.
     :type dtype: data-type string, optional
-    :param dev: device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. Same as x if None.
+    :param dev: device on which to place the created array. If device is None, the output array device must be inferred from x.
+    Default: None.
     :type dev: ivy.Device, optional
-    :return: Tensor of zeros with the same shape and type as a, unless dtype provided which overrides.
+    :return: An array having the same shape as x and filled with ones.
     """
     return _cur_framework(x).ones_like(x, dtype, dev)
 
