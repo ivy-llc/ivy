@@ -48,6 +48,12 @@ def isnan(x: Tensor)\
 
 def equal(x1: Tensor, x2: Tensor)\
         -> Tensor:
+    if isinstance(x2, (int)):
+        return x1 == x2.int()
+    if isinstance(x2, (float)):
+        return x1 == x2.float()
+    if isinstance(x2, (bool)):
+        return x1 == x2.bool()
     x1_bits = ivy.dtype_bits(x1.dtype)
     x2_bits = ivy.dtype_bits(x2.dtype)
     if x1_bits > x2_bits:
