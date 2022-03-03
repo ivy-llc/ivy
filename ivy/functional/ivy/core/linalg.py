@@ -109,12 +109,12 @@ def qr(x, mode="reduced", f=None):
     :param f: Machine learning framework. Inferred from inputs if None.
     :type f: ml_framework, optional
     :return: qr decomposition of the matrix x.
-    
+
     If x has shape (*, M, N) and considering K = min(M, N).
     mode = 'reduced' (default): Returns (Q, R) of shapes (*, M, K), (*, K, N) respectively.
     mode = 'complete': Returns (Q, R) of shapes (*, M, M), (*, M, N) respectively.
     mode = 'r': Computes only the reduced R. Returns (Q, R) with Q empty and R of shape (*, K, N).
-    
+
     Please note that different frameworks support different modes. For example: mode='raw'
     is supported in numpy but not in pytorch. Similarly, tensorflow doesn't support 'r' mode.
     The 'reduced' and 'complete' modes are sufficient for most of the use-cases and are supported
