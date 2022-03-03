@@ -81,7 +81,7 @@ def vector_to_skew_symmetric_matrix(vector):
     Given vector :math:`\mathbf{a}\in\mathbb{R}^3`, return associated skew-symmetric matrix
     :math:`[\mathbf{a}]_×\in\mathbb{R}^{3×3}` satisfying :math:`\mathbf{a}×\mathbf{b}=[\mathbf{a}]_×\mathbf{b}`.\n
     `[reference] <https://en.wikipedia.org/wiki/Skew-symmetric_matrix#Cross_product>`_
-    
+
     :param vector: Vector to convert *[batch_shape,3]*.
     :type vector: array
     :return: Skew-symmetric matrix *[batch_shape,3,3]*.
@@ -109,10 +109,12 @@ def qr(x, mode="reduced", f=None):
     :param f: Machine learning framework. Inferred from inputs if None.
     :type f: ml_framework, optional
     :return: qr decomposition of the matrix x.
+    
     If x has shape (*, M, N) and considering K = min(M, N).
     mode = 'reduced' (default): Returns (Q, R) of shapes (*, M, K), (*, K, N) respectively.
     mode = 'complete': Returns (Q, R) of shapes (*, M, M), (*, M, N) respectively.
     mode = 'r': Computes only the reduced R. Returns (Q, R) with Q empty and R of shape (*, K, N).
+    
     Please note that different frameworks support different modes. For example: mode='raw'
     is supported in numpy but not in pytorch. Similarly, tensorflow doesn't support 'r' mode.
     The 'reduced' and 'complete' modes are sufficient for most of the use-cases and are supported
