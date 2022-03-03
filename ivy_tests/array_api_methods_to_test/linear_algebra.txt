@@ -1,4 +1,4 @@
-#cholesky
+cholesky
 #cross
 #det
 diagonal
