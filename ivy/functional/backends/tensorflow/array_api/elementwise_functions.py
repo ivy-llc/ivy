@@ -63,3 +63,10 @@ def cos(x: Tensor)\
 def logical_not(x: Tensor)\
         -> Tensor:
     return tf.logical_not(tf.cast(x, tf.bool))
+
+
+def divide(x1: Tensor,
+           x2: Tensor)\
+        -> Tensor:
+    return tf.divide(x1, x2)
+

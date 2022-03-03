@@ -52,3 +52,11 @@ def cos(x: np.ndarray)\
 def logical_not(x: np.ndarray)\
         -> np.ndarray:
     return np.logical_not(x)
+
+
+def divide(x1: np.ndarray,
+           x2: np.ndarray)\
+        -> np.ndarray:
+    return np.divide(x1, x2)
+
+

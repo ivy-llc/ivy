@@ -4,8 +4,9 @@ from typing import Union
 from ivy.framework_handler import current_framework as _cur_framework
 
 
+
 def bitwise_and(x1: Union[ivy.Array, ivy.NativeArray],
-                x2: Union[ivy.Array, ivy.NativeArray])\
+                x2: Union[ivy.Array, ivy.NativeArray]) \
         -> ivy.Array:
     """
     Computes the bitwise AND of the underlying binary representation of each element x1_i of the input array x1 with
@@ -20,7 +21,7 @@ def bitwise_and(x1: Union[ivy.Array, ivy.NativeArray],
     return _cur_framework(x1, x2).bitwise_and(x1, x2)
 
 
-def isfinite(x: Union[ivy.Array, ivy.NativeArray])\
+def isfinite(x: Union[ivy.Array, ivy.NativeArray]) \
         -> ivy.Array:
     """
     Tests each element x_i of the input array x to determine if finite (i.e., not NaN and not equal to positive
@@ -33,7 +34,7 @@ def isfinite(x: Union[ivy.Array, ivy.NativeArray])\
     return _cur_framework(x).isfinite(x)
 
 
-def asinh(x: Union[ivy.Array, ivy.NativeArray])\
+def asinh(x: Union[ivy.Array, ivy.NativeArray]) \
         -> ivy.Array:
     """
     Calculates an implementation-dependent approximation to the inverse hyperbolic sine, having domain
@@ -55,7 +56,7 @@ def asinh(x: Union[ivy.Array, ivy.NativeArray])\
     return _cur_framework(x).asinh(x)
 
 
-def sqrt(x: Union[ivy.Array, ivy.NativeArray])\
+def sqrt(x: Union[ivy.Array, ivy.NativeArray]) \
         -> ivy.Array:
     """
     Calculates the square root, having domain [0, +infinity] and codomain [0, +infinity], for each element x_i of the
@@ -69,7 +70,7 @@ def sqrt(x: Union[ivy.Array, ivy.NativeArray])\
     return _cur_framework(x).sqrt(x)
 
 
-def cosh(x: Union[ivy.Array, ivy.NativeArray])\
+def cosh(x: Union[ivy.Array, ivy.NativeArray]) \
         -> ivy.Array:
     """
     Returns a new array with the hyperbolic cosine of the elements of x.
@@ -80,7 +81,7 @@ def cosh(x: Union[ivy.Array, ivy.NativeArray])\
     return _cur_framework(x).cosh(x)
 
 
-def log2(x: Union[ivy.Array, ivy.NativeArray])\
+def log2(x: Union[ivy.Array, ivy.NativeArray]) \
         -> ivy.Array:
     """
     Calculates an implementation-dependent approximation to the base 2 logarithm.
@@ -91,7 +92,7 @@ def log2(x: Union[ivy.Array, ivy.NativeArray])\
     return _cur_framework(x).log2(x)
 
 
-def isnan(x: Union[ivy.Array, ivy.NativeArray])\
+def isnan(x: Union[ivy.Array, ivy.NativeArray]) \
         -> ivy.Array:
     """
     Returns boolean map at locations where the input is not a number (nan).
@@ -104,7 +105,7 @@ def isnan(x: Union[ivy.Array, ivy.NativeArray])\
 
 
 def less(x1: Union[ivy.Array, ivy.NativeArray],
-         x2: Union[ivy.Array, ivy.NativeArray])\
+         x2: Union[ivy.Array, ivy.NativeArray]) \
         -> ivy.Array:
     """
     Computes the truth value of x1_i < x2_i for each element x1_i of the input array x1 with the respective 
@@ -118,10 +119,10 @@ def less(x1: Union[ivy.Array, ivy.NativeArray],
     :type f: ml_framework, optional
     :return: an array containing the element-wise results. The returned array must have a data type of bool.
     """
-    return _cur_framework(x1,f=f).less(x1,x2)   
+    return _cur_framework(x1, f=f).less(x1, x2)
 
 
-def cos(x: Union[ivy.Array, ivy.NativeArray])\
+def cos(x: Union[ivy.Array, ivy.NativeArray]) \
         -> ivy.Array:
     """
     Computes trigonometric cosine element-wise.
@@ -132,7 +133,7 @@ def cos(x: Union[ivy.Array, ivy.NativeArray])\
     return _cur_framework(x).cos(x)
 
 
-def logical_not(x: Union[ivy.Array, ivy.NativeArray])\
+def logical_not(x: Union[ivy.Array, ivy.NativeArray]) \
         -> ivy.Array:
     """
     Computes the truth value of NOT x element-wise.
@@ -141,3 +142,53 @@ def logical_not(x: Union[ivy.Array, ivy.NativeArray])\
     :return: Boolean result of the logical NOT operation applied element-wise to x.
     """
     return _cur_framework(x).logical_not(x)
+
+
+def divide(x1: Union[ivy.Array, ivy.NativeArray],
+           x2: Union[ivy.Array, ivy.NativeArray]) \
+        -> ivy.Array:
+    """
+    Calculates the division for each element x1_i of the input array x1
+    with the respective element x2_i of the input array x2.
+
+    **special cases**
+    For floating-point operands,
+    - If either x1_i or x2_i is NaN, the result is NaN.
+    - If x1_i is either +infinity or -infinity and x2_i is either +infinity or -infinity, the result is NaN.
+    - If x1_i is either +0 or -0 and x2_i is either +0 or -0, the result is NaN.
+    - If x1_i is +0 and x2_i is greater than 0, the result is +0.
+    - If x1_i is -0 and x2_i is greater than 0, the result is -0.
+    - If x1_i is +0 and x2_i is less than 0, the result is -0.
+    - If x1_i is -0 and x2_i is less than 0, the result is +0.
+    - If x1_i is greater than 0 and x2_i is +0, the result is +infinity.
+    - If x1_i is greater than 0 and x2_i is -0, the result is -infinity.
+    - If x1_i is less than 0 and x2_i is +0, the result is -infinity.
+    - If x1_i is less than 0 and x2_i is -0, the result is +infinity.
+    - If x1_i is +infinity and x2_i is a positive (i.e., greater than 0) finite number, the result is +infinity.
+    - If x1_i is +infinity and x2_i is a negative (i.e., less than 0) finite number, the result is -infinity.
+    - If x1_i is -infinity and x2_i is a positive (i.e., greater than 0) finite number, the result is -infinity.
+    - If x1_i is -infinity and x2_i is a negative (i.e., less than 0) finite number, the result is +infinity.
+    - If x1_i is a positive (i.e., greater than 0) finite number and x2_i is +infinity, the result is +0.
+    - If x1_i is a positive (i.e., greater than 0) finite number and x2_i is -infinity, the result is -0.
+    - If x1_i is a negative (i.e., less than 0) finite number and x2_i is +infinity, the result is -0.
+    - If x1_i is a negative (i.e., less than 0) finite number and x2_i is -infinity, the result is +0.
+    - If x1_i and x2_i have the same mathematical sign and are both nonzero finite numbers,
+      the result has a positive mathematical sign.
+    - If x1_i and x2_i have different mathematical signs and are both nonzero finite numbers,
+      the result has a negative mathematical sign.
+    - If neither -infinity, +0, -0, nor NaN is involved, the quotient must be computed
+      and rounded to the nearest representable value according to IEEE 754-2019 and a supported rounding mode.
+    - If the magnitude is too large to represent,
+      the operation overflows and the result is an infinity of appropriate mathematical sign.
+    - If the magnitude is too small to represent,
+      the operation under-flows and the result is a zero of appropriate mathematical sign.
+
+    :params x1 (array): dividend input array. Should have a numeric data type.
+            x2 (array): divisor input array. Must be compatible with x1 (see Broadcasting).
+            Should have a numeric data type.
+
+    :return: an array containing the element-wise results.
+    The returned array must have a floating-point data type determined by Type Promotion Rules.
+    """
+
+    return _cur_framework(x1, x2).divide(x1, x2)
