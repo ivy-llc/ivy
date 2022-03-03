@@ -13,7 +13,7 @@ def vector_norm(x: Union[ivy.Array, ivy.NativeArray],
                 keepdims: bool = False,
                 ord: Union[int, float, Literal[inf, -inf]] = 2)\
         -> ivy.Array:
-  
+
     """
     Computes the vector norm of a vector (or batch of vectors) x.
 
