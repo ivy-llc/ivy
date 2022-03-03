@@ -30,6 +30,8 @@ def diagonal(x: JaxArray,
              axis2: int = -1) -> JaxArray:
     return jnp.diagonal(x, offset, axis1, axis2)
 
+
+
 def cholesky(x: JaxArray, 
              upper: bool = False)-> JaxArray:
     if not upper:

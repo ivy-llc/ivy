@@ -35,3 +35,11 @@ def diagonal(x: tf.Tensor,
              axis1: int = -2,
              axis2: int = -1) -> tf.Tensor:
     return tf.experimental.numpy.diagonal(x, offset, axis1=axis1, axis2=axis2)
+
+
+def cholesky(x: tf.Tensor,
+            upper: bool = False) -> tf.Tensor:
+    if not upper:
+        return tf.linalg.cholesky(x)
+    else:
+        return tf.linalg.cholesky(x.T).T
