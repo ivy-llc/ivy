@@ -1,8 +1,9 @@
 # global
+import mxnet.ndarray
 import numpy as np
 # noinspection PyPackageRequirements
 import mxnet as mx
-from typing import Union
+from typing import Union, Tuple
 
 # local
 import ivy
@@ -44,3 +45,7 @@ class Finfo:
 def finfo(type: Union[type, str, mx.ndarray.ndarray.NDArray])\
         -> Finfo:
     return Finfo(np.finfo(ivy.dtype_from_str(type)))
+
+
+def broadcast_to(x: mx.ndarray.ndarray.NDArray, shape: Tuple[int, ...]) -> mx.ndarray.ndarray.NDArray:
+    return mxnet.ndarray.broadcast_to(x, shape)
