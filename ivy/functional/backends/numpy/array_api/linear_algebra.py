@@ -36,4 +36,4 @@ def cholesky(x: np.ndarray,
     if not upper:
         return np.linalg.cholesky(x)
     else:
-        return np.linalg.cholesky(x.T).T
+        return np.linalg.cholesky(x).T.conj()

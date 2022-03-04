@@ -97,7 +97,7 @@ def diagonal(x: ivy.Array,
 
 
 def cholesky(x: ivy.Array, 
-             upper: bool = False)-> ivy.Array:
+             upper: bool = False) -> ivy.Array:
     """
     Computes the cholesky decomposition of the x matrix.
 

@@ -29,5 +29,7 @@ def diagonal(x: torch.Tensor,
 
 def cholesky(x: torch.Tensor,
             upper: bool = False) -> torch.Tensor:
-
-    return torch.cholesky(x,upper)
+    if not upper:
+        return torch.linalg.cholesky(x)
+    else:
+        return torch.linalg.cholesky(x).T.conj()

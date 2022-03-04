@@ -23,8 +23,8 @@ def diagonal(x: mx.nd.NDArray,
     return mx.nd.diag(x, k=offset, axis1=axis1, axis2=axis2)
 
 def cholesky(x: mx.nd.NDArray, 
-             upper: bool = False)-> mx.nd.NDArray:
+             upper: bool = False) -> mx.nd.NDArray:
     if not upper:
         return mx.np.linalg.cholesky(x)
     else:
-        return mx.np.linalg.cholesky(x.T).T
+        return mx.np.linalg.cholesky(x).T.conj()

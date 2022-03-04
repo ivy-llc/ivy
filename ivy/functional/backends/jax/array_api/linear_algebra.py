@@ -33,8 +33,8 @@ def diagonal(x: JaxArray,
 
 
 def cholesky(x: JaxArray, 
-             upper: bool = False)-> JaxArray:
+             upper: bool = False) -> JaxArray:
     if not upper:
         return jnp.linalg.cholesky(x)
     else:
-        return jnp.linalg.cholesky(x.T).T
+        return jnp.linalg.cholesky(x).T.conj()

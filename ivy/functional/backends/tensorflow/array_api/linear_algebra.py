@@ -42,4 +42,4 @@ def cholesky(x: tf.Tensor,
     if not upper:
         return tf.linalg.cholesky(x)
     else:
-        return tf.linalg.cholesky(x.T).T
+        return tf.linalg.cholesky(x).T.conj()
