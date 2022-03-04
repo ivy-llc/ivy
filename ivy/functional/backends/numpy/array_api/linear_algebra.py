@@ -1,7 +1,7 @@
 # global
 import numpy as np
 from typing import Union, Optional, Tuple, Literal
-
+from numpy import asarray_chkfinite, asarray, atleast_2d
 # local
 from ivy import inf
 
@@ -33,6 +33,23 @@ def diagonal(x: np.ndarray,
 
 def cholesky(x: np.ndarray,
             upper: bool = False) -> np.ndarray:
+    
+    a = asarray_chkfinite(x)
+    a = atleast_2d(a)
+
+    # Dimension check
+    if a.ndim != 2:
+        raise ValueError('Input array needs to be 2D but received '
+                         'a {}d-array.'.format(a.ndim))
+    # Squareness check
+    if a.shape[0] != a.shape[1]:
+        raise ValueError('Input array is expected to be square but has '
+                         'the shape: {}.'.format(a.shape))
+
+    # Quick return for square empty array
+    if a.size == 0:
+        return a.copy()
+
     if not upper:
         return np.linalg.cholesky(x)
     else:
