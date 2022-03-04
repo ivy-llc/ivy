@@ -24,6 +24,7 @@ def diagonal(x: mx.nd.NDArray,
 
 def cholesky(x: mx.nd.NDArray, 
              upper: bool = False) -> mx.nd.NDArray:
+
     if not upper:
         return mx.np.linalg.cholesky(x)
     else:
