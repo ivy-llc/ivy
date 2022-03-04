@@ -49,7 +49,7 @@ def pinv(x):
                 return xT
 
 
-cholesky = lambda x: _mx.np.linalg.cholesky(x.as_np_ndarray()).as_nd_ndarray()
+#cholesky = lambda x: _mx.np.linalg.cholesky(x.as_np_ndarray()).as_nd_ndarray()
 
 
 
