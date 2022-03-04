@@ -96,7 +96,7 @@ def diagonal(x: ivy.Array,
     return _cur_framework(x).diagonal(x, offset, axis1=axis1, axis2=axis2)
 
 
-def cholesky(x: ivy.Array, 
+def cholesky(x: Union[ivy.Array, ivy.NativeArray], 
              upper: bool = False) -> ivy.Array:
     """
     Computes the cholesky decomposition of the x matrix.
@@ -114,5 +114,4 @@ def cholesky(x: ivy.Array,
       and must have the same shape as x.
     :type out: array
     """
-
     return  _cur_framework(x).cholesky(x, upper)
