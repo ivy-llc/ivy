@@ -22,3 +22,10 @@ def vector_norm(x: JaxArray,
     if jnp_normalized_vector.shape == ():
         return jnp.expand_dims(jnp_normalized_vector, 0)
     return jnp_normalized_vector
+
+
+def diagonal(x: JaxArray,
+             offset: int = 0,
+             axis1: int = -2,
+             axis2: int = -1) -> JaxArray:
+    return jnp.diagonal(x, offset, axis1, axis2)
