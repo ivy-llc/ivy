@@ -19,4 +19,4 @@ def flip(x: Union[ivy.Array, ivy.NativeArray],
     :return: an output array having the same data type and shape as x and whose elements, relative to x, are reordered.
     """
 
-    return _cur_framework(x).any(x, axis)
+    return _cur_framework(x).flip(x, axis)
