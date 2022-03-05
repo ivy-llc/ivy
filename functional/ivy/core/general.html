@@ -743,25 +743,6 @@ Inserts a new axis that will appear at the axis position in the expanded array s
 </dd></dl>
 
 <dl class="py function">
-<dt id="ivy.functional.ivy.core.general.flip">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">flip</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">axis</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>int<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">batch_shape</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Iterable<span class="p">[</span>int<span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/core/general.html#flip"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.core.general.flip" title="Permalink to this definition">¶</a></dt>
-<dd><p>Reverses the ord of elements in an array along the given axis.
-The shape of the array is preserved, but the elements are reordered.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>array</em>) – Input array.</p></li>
-<li><p><strong>axis</strong> (<em>None</em><em> or </em><em>int</em><em> or </em><em>sequence of ints</em><em>, </em><em>optional</em>) – Axis or axes along which to flip over. The default, axis: int = None, will flip over all axes.</p></li>
-<li><p><strong>batch_shape</strong> (<em>sequence of ints</em><em>, </em><em>optional</em>) – Shape of batch. Inferred from inputs if None.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>An array with the entries of axis reversed.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
 <dt id="ivy.functional.ivy.core.general.floor">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">floor</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/core/general.html#floor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.core.general.floor" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns element-wise largest integer not greater than x.</p>
@@ -1797,7 +1778,6 @@ If not given, then the type of the original array is used.</p></li>
 <li class="toctree-l1"><a class="reference internal" href="general/linspace.html">linspace</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/logspace.html">logspace</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/concatenate.html">concatenate</a></li>
-<li class="toctree-l1"><a class="reference internal" href="general/flip.html">flip</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/stack.html">stack</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/unstack.html">unstack</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/split.html">split</a></li>
