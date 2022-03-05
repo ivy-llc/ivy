@@ -1,3 +1,0 @@
-"""
-PyTorch Convolution Functions Frontend
-"""

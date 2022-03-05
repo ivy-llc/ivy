@@ -1,3 +1,0 @@
-"""
-PyTorch Random Sampling Frontend
-"""

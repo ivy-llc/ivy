@@ -41,7 +41,6 @@ _MIN_BASE = 1e-5
 import ivy
 from .array import Array, Variable
 from .container import Container, MultiDevContainer
-from ivy.array.array_mode_handler import set_array_mode, unset_array_mode, array_mode, array_mode_val
 from .framework_handler import current_framework, get_framework, set_framework, unset_framework, framework_stack,\
     choose_random_framework, try_import_ivy_jax, try_import_ivy_tf, try_import_ivy_torch, try_import_ivy_mxnet,\
     try_import_ivy_numpy, clear_framework_stack
@@ -51,10 +50,8 @@ from .debugger import set_debug_mode, set_breakpoint_debug_mode, set_exception_d
 from . import debugger
 from .graph_compiler import *
 from . import graph_compiler
-from ivy.functional.ivy.core import *
-from .functional import frontends
-from .functional.ivy import nn
-from ivy.functional.ivy.nn import *
+from . import functional
+from .functional import *
 from . import stateful
 from .stateful import *
 from . import verbosity
@@ -77,6 +74,8 @@ float32 = 'float32'
 float64 = 'float64'
 # noinspection PyShadowingBuiltins
 bool = 'bool'
+nan = float('nan')
+inf = float('inf')
 
 all_dtypes = (int8, int16, int32, int64,
               uint8, uint16, uint32, uint64,
@@ -91,3 +90,6 @@ valid_dtype_strs = all_dtypes
 invalid_dtype_strs = ()
 
 backend = 'none'
+
+if 'IVY_BACKEND' in os.environ:
+    ivy.set_framework(os.environ['IVY_BACKEND'])
