@@ -22,3 +22,12 @@ def zeros(shape: Union[int, Tuple[int], List[int]],
           device: Optional[jaxlib.xla_extension.Device] = None) \
         -> JaxArray:
     return to_dev(jnp.zeros(shape, dtype_from_str(default_dtype(dtype))), default_device(device))
+
+
+def zeros_like(x: JaxArray,
+               dtype: Optional[jnp.dtype]=None,
+               device: Optional[jaxlib.xla_extension.Device] =None) \
+        -> JaxArray:
+    if not dtype:
+        dtype = x.dtype
+    return to_dev(jnp.zeros_like(x, dtype=dtype), default_device(device))

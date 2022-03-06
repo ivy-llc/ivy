@@ -250,17 +250,6 @@ def squeeze(x, axis=None):
     return _jnp.squeeze(x, axis)
 
 
-
-
-# noinspection PyShadowingNames
-def zeros_like(x, dtype=None, dev=None):
-    if dtype:
-        dtype = _jnp.__dict__[dtype]
-    else:
-        dtype = x.dtype
-    return to_dev(_jnp.zeros_like(x, dtype=dtype), default_device(dev))
-
-
 def full(shape, fill_value, dtype=None, device=None):
     return to_dev(_jnp.full(shape, fill_value, dtype_from_str(default_dtype(dtype, fill_value))),
                   default_device(device))

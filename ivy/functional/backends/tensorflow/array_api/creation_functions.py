@@ -18,6 +18,16 @@ def zeros(shape: Union[int, Tuple[int]],
         return tf.zeros(shape, dtype_from_str(default_dtype(dtype)))
 
 
+# noinspection PyShadowingNames
+def zeros_like(x: Tensor,
+               dtype: Optional[Dtype] =None,
+               device: Optional[str] =None)\
+            -> Tensor:
+    device = default_device(device)
+    with tf.device(dev_from_str(device)):
+        return tf.zeros_like(x, dtype=dtype)
+
+
 def ones(shape: Union[int, Tuple[int]],
          dtype: Optional[DType] = None,
          device: Optional[str] = None) \

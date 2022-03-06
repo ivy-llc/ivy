@@ -264,15 +264,6 @@ def squeeze(x, axis=None):
 
 
 
-
-# noinspection PyShadowingNames
-def zeros_like(x, dtype=None, dev=None):
-    dtype = _tf.__dict__[dtype] if dtype else dtype
-    dev = default_device(dev)
-    with _tf.device(dev_from_str(dev)):
-        return _tf.zeros_like(x, dtype=dtype)
-
-
 def full(shape, fill_value, dtype=None, device=None):
     with _tf.device(dev_from_str(default_device(device))):
         return _tf.fill(shape, _tf.constant(fill_value, dtype=dtype_from_str(default_dtype(dtype, fill_value))))
