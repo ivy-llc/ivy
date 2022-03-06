@@ -422,20 +422,6 @@ def argmax(x: Union[ivy.Array, ivy.NativeArray], axis: int = 0)\
     return _cur_framework(x).argmax(x, axis)
 
 
-def argmin(x: Union[ivy.Array, ivy.NativeArray], axis: int = 0)\
-        -> Union[ivy.Array, ivy.NativeArray]:
-    """
-    Returns the index with the smallest value across axes of an array.
-
-    :param x: Input array containing elements to argmin.
-    :type x: array
-    :param axis: Axis to perform the argmin, default is 0.
-    :type axis: int, optional
-    :return: Tensor containing the indices of the minimum values across the specified axis.
-    """
-    return _cur_framework(x).argmin(x, axis)
-
-
 # noinspection PyShadowingNames
 def arange(stop: Number, start: Number = 0, step: Number = 1, dtype: ivy.Dtype = None, dev: ivy.Device = None,
            ) -> Union[ivy.Array, ivy.NativeArray]:
