@@ -13,6 +13,11 @@ def isfinite(x: torch.Tensor) \
     return torch.isfinite(x)
 
 
+def isinf(x: torch.Tensor) \
+        -> torch.Tensor:
+    return torch.isinf(x)
+
+
 def asinh(x: torch.Tensor) \
         -> torch.Tensor:
     return torch.asinh(x)

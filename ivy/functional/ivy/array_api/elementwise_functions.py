@@ -33,6 +33,18 @@ def isfinite(x: Union[ivy.Array, ivy.NativeArray])\
     return _cur_framework(x).isfinite(x)
 
 
+def isinf(x: ivy.Array) -> ivy.Array:
+    """
+    Returns boolean map at locations where the input is +/- infinity (inf).
+
+    :param x: input array. Should have a numeric data type.
+    :type x: array
+    :return: Boolean values for where the values of the array are inf.
+    """
+    return _cur_framework(x).isinf(x)
+
+
+
 def asinh(x: Union[ivy.Array, ivy.NativeArray])\
         -> ivy.Array:
     """

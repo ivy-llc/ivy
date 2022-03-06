@@ -19,6 +19,12 @@ def isfinite(x: Tensor) \
     return tf.math.is_finite(x)
 
 
+def isinf(x: Tensor):
+    if ivy.is_int_dtype(x):
+        return tf.zeros_like(x, tf.bool)
+    return tf.math.is_inf(x)
+
+
 def asinh(x: Tensor) \
         -> Tensor:
     return tf.asinh(x)

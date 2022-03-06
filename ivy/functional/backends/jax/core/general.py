@@ -235,8 +235,6 @@ def indices_where(x):
     ret = _jnp.concatenate([_jnp.expand_dims(item, -1) for item in where_x], -1)
     return ret
 
-
-isinf = _jnp.isinf
     
 reshape = _jnp.reshape
 broadcast_to = _jnp.broadcast_to
