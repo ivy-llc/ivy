@@ -5,6 +5,10 @@ Collection of PyTorch linear algebra functions, wrapped to fit Ivy syntax and si
 # global
 import torch as _torch
 from typing import List
+from typing import Union, Tuple
+import ivy as _ivy
+from collections import namedtuple
+
 
 
 # noinspection PyPep8Naming
@@ -51,3 +55,13 @@ def vector_to_skew_symmetric_matrix(vector):
     row3 = _torch.cat((-a2s, a1s, zs), -1)
     # BS x 3 x 3
     return _torch.cat((row1, row2, row3), -2)
+
+def slogdet(x:Union[_ivy.Array,_ivy.NativeArray],full_matrices: bool = True) -> Union[_ivy.Array, Tuple[_ivy.Array,...]]:
+    results = namedtuple("slogdet", "sign logabsdet")
+    sign, logabsdet = _torch.linalg.slogdet(x)
+    res = results(sign, logabsdet)
+    return res
+
+def det(x:Union[_ivy.Array,_ivy.NativeArray],full_matrices: bool = True) -> Union[_ivy.Array, Tuple[_ivy.Array,...]]:
+    d = _torch.linalg.det(x)
+    return d

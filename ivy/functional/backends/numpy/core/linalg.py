@@ -4,6 +4,11 @@ Collection of Numpy linear algebra functions, wrapped to fit Ivy syntax and sign
 
 # global
 import numpy as _np
+import ivy as _ivy
+from typing import Union, Tuple
+from collections import namedtuple
+
+
 
 svd = _np.linalg.svd
 
@@ -25,6 +30,7 @@ inv = _np.linalg.inv
 pinv = _np.linalg.pinv
 cholesky = _np.linalg.cholesky
 
+
 def vector_to_skew_symmetric_matrix(vector):
     batch_shape = list(vector.shape[:-1])
     # BS x 3 x 1
@@ -41,3 +47,13 @@ def vector_to_skew_symmetric_matrix(vector):
     row3 = _np.concatenate((-a2s, a1s, zs), -1)
     # BS x 3 x 3
     return _np.concatenate((row1, row2, row3), -2)
+
+def slogdet(x:Union[_ivy.Array,_ivy.NativeArray],full_matrices: bool = True) -> Union[_ivy.Array, Tuple[_ivy.Array,...]]:
+    results = namedtuple("slogdet", "sign logabsdet")
+    sign, logabsdet = _np.linalg.slogdet(x)
+    res = results(sign, logabsdet)
+    return res
+
+def det(x:Union[_ivy.Array,_ivy.NativeArray],full_matrices: bool = True) -> Union[_ivy.Array, Tuple[_ivy.Array,...]]:
+    d = _np.linalg.det(x)
+    return d
