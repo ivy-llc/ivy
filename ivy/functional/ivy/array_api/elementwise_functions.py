@@ -20,6 +20,17 @@ def bitwise_and(x1: Union[ivy.Array, ivy.NativeArray],
     return _cur_framework(x1, x2).bitwise_and(x1, x2)
 
 
+def ceil(x: Union[ivy.Array, ivy.NativeArray])\
+        -> ivy.Array:
+    """
+    Returns element-wise smallest integer not less than x.
+
+    :param x: Input array to ceil.
+    :return: An array of the same shape and type as x, with the elements ceiled to integers.
+    """
+    return _cur_framework(x).ceil(x)
+
+
 def isfinite(x: Union[ivy.Array, ivy.NativeArray])\
         -> ivy.Array:
     """
