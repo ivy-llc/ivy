@@ -283,17 +283,12 @@
 <span class="sd">    Returns the specified diagonal of a matrix `x`</span>
 
 <span class="sd">    :param x: Matrix of dimensions (...., M, N)</span>
-<span class="sd">    :type x: array</span>
 <span class="sd">    :param offset: Offset of the diagonal. Default is 0.</span>
-<span class="sd">    :type offset: int, optional</span>
 <span class="sd">    :param f: Machine learning framework. Inferred from inputs if None.</span>
-<span class="sd">    :type f: ml_framework, optional</span>
 <span class="sd">    :param axis1: Axis of the matrix `x` along which the diagonal is extracted.</span>
 <span class="sd">                    Default is 0.</span>
-<span class="sd">    :type axis1: int, optional</span>
 <span class="sd">    :param axis2: Axis of the matrix `x` along which the diagonal is extracted.</span>
 <span class="sd">                    Default is 1.</span>
-<span class="sd">    :type axis2: int, optional</span>
 <span class="sd">    :return: Diagonal of the matrix x.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">diagonal</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">offset</span><span class="p">,</span> <span class="n">axis1</span><span class="o">=</span><span class="n">axis1</span><span class="p">,</span> <span class="n">axis2</span><span class="o">=</span><span class="n">axis2</span><span class="p">)</span></div>
