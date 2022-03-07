@@ -47,13 +47,10 @@ def less(x1: torch.Tensor, x2: torch.Tensor):
 
 def floor_divide(x1: torch.Tensor, x2: torch.Tensor):
     if hasattr(x1, 'dtype') and hasattr(x2, 'dtype'):
-        print("x1 type:"+x1.dtype)
-        print("x2 type:"+x2.dtype)
         promoted_type = torch.promote_types(x1.dtype, x2.dtype)
-        print("promoted type: "+promoted_type)
         x1 = x1.to(promoted_type)
         x2 = x2.to(promoted_type)
-    return torch.floor_divide(x1,x2)
+    return torch.floor_divide(x1, x2)
 
 def cos(x: torch.Tensor)\
         -> torch.Tensor:

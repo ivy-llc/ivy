@@ -42,11 +42,11 @@ def isnan(x: JaxArray)\
 
 def less(x1: JaxArray,x2:JaxArray)\
         -> JaxArray:
-    return jnp.less(x1,x2)
+    return jnp.less(x1, x2)
 
-# def floor_divide(x1:JaxArray,x2:JaxArray)\
-#     -> JaxArray:
-#     return jnp.floor_divide(x1,x2)
+def floor_divide(x1:JaxArray,x2:JaxArray)\
+    -> JaxArray:
+    return jnp.floor_divide(x1, x2)
 
 def cos(x: JaxArray)\
         -> JaxArray:

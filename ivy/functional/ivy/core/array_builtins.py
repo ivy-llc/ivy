@@ -112,6 +112,8 @@ def builtin_rtruediv(x, other):
 
 # noinspection PyShadowingBuiltins
 def builtin_floordiv(x, other):
+    if hasattr(x,'dtype') and hasattr(other,'dtype'):
+        promoted_type = ivy.cast(x,)
     return x.__floordiv__(other)
 
 
