@@ -138,11 +138,13 @@ def argmin(x, axis=0):
     return ret
 
 
+""" Moved to ivy/functional/backends/numpy/array_api/statistical_functions.py. Should be deleted here
 def min(x: _tf.Tensor,
         axis: Union[int, Tuple[int]] = None,
         keepdims: bool = False) \
         -> _tf.Tensor:
     return _tf.math.reduce_min(x, axis = axis, keepdims = keepdims)
+"""
 
 
 def cast(x, dtype):

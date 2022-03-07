@@ -152,6 +152,7 @@ def argmin(x, axis: int = 0):
     return ret
 
 
+""" Moved to ivy/functional/backends/torch/array_api/statistical_functions.py. Should be deleted here
 def min(x: _torch.Tensor,
         axis: Union[int, Tuple[int]] = None,
         keepdims: bool = False) \
@@ -159,6 +160,7 @@ def min(x: _torch.Tensor,
     if axis == (): return x
     if not keepdims and not axis and axis !=0: return _torch.amin(input = x)
     return _torch.amin(input = x, dim = axis, keepdim = keepdims)
+"""
 
 
 def cast(x, dtype_in: str):

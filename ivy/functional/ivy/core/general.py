@@ -423,12 +423,12 @@ def argmin(x: Union[ivy.Array, ivy.NativeArray], axis: int = 0)\
     """
     return _cur_framework(x).argmin(x, axis)
 
-
+""" Moved to ivy/functional/ivy/array-api/statistical_functions.py. Should be deleted here
 def min(x: Union[ivy.Array, ivy.NativeArray],
         axis: Union[int, Tuple[int]] = None,
         keepdims: bool = False) \
         -> ivy.Array:
-    """
+
     Return the minimum value of the input array x.
 
     :param x: Input array containing elements to min.
@@ -436,9 +436,9 @@ def min(x: Union[ivy.Array, ivy.NativeArray],
     :param keepdims, optional axis or axes along which minimum values must be computed, default is None.
     :param f: Machine learning framework. Inferred from inputs if None.
     :return: array containing minimum value.
-    """
-    return _cur_framework.min(x, axis, keepdims)
 
+    return _cur_framework.min(x, axis, keepdims)
+"""
 
 # noinspection PyShadowingNames
 def arange(stop: Number, start: Number = 0, step: Number = 1, dtype: ivy.Dtype = None, dev: ivy.Device = None,

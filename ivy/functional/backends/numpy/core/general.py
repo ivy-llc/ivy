@@ -139,11 +139,13 @@ def argmin(x, axis=0):
     return ret
 
 
+""" Moved to ivy/functional/backends/numpy/array_api/statistical_functions.py. Should be deleted here
 def min(x: _np.ndarray,
         axis: Union[int, Tuple[int]] = None,
         keepdims: bool = False) \
         -> _np.ndarray:
     return _np.amin(a = x, axis = axis, keepdims = keepdims)
+"""
 
 
 def cast(x, dtype):
