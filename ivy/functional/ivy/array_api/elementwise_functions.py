@@ -21,7 +21,19 @@ def bitwise_and(x1: Union[ivy.Array, ivy.NativeArray],
     return _cur_framework(x1, x2).bitwise_and(x1, x2)
 
 
-def isfinite(x: Union[ivy.Array, ivy.NativeArray]) \
+
+def ceil(x: Union[ivy.Array, ivy.NativeArray])\
+        -> ivy.Array:
+    """
+    Returns element-wise smallest integer not less than x.
+
+    :param x: Input array to ceil.
+    :return: An array of the same shape and type as x, with the elements ceiled to integers.
+    """
+    return _cur_framework(x).ceil(x)
+
+
+def isfinite(x: Union[ivy.Array, ivy.NativeArray])\
         -> ivy.Array:
     """
     Tests each element x_i of the input array x to determine if finite (i.e., not NaN and not equal to positive
@@ -98,7 +110,6 @@ def isnan(x: Union[ivy.Array, ivy.NativeArray]) \
     Returns boolean map at locations where the input is not a number (nan).
 
     :param x: Input array.
-    :type x: array
     :return: Boolean values for where the values of the array are nan.
     """
     return _cur_framework(x).isnan(x)
@@ -112,14 +123,13 @@ def less(x1: Union[ivy.Array, ivy.NativeArray],
     element x2_i of the input array x2.
 
     :param x1: Input array.
-    :type x1: array
     :param x2: Input array.
-    :type x2: array
     :param f: Machine learning framework. Inferred from inputs if None.
-    :type f: ml_framework, optional
     :return: an array containing the element-wise results. The returned array must have a data type of bool.
     """
-    return _cur_framework(x1, f=f).less(x1, x2)
+
+    return _cur_framework(x1).less(x1,x2)
+
 
 
 def cos(x: Union[ivy.Array, ivy.NativeArray]) \

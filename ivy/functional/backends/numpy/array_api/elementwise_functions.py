@@ -9,6 +9,11 @@ def bitwise_and(x1: np.ndarray,
     return np.bitwise_and(x1, x2)
 
 
+def ceil(x: np.ndarray)\
+        -> np.ndarray:
+    return np.asarray(npa.ceil(npa.asarray(x)))
+
+
 def sqrt(x: np.ndarray)\
         -> np.ndarray:
     return np.sqrt(x)
