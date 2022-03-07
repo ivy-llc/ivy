@@ -1,0 +1,13 @@
+#__iadd__
+#__isub__
+#__imul__
+#__itruediv__
+#__ifloordiv__
+#__ipow__
+#__imod__
+#__imatmul__
+#__iand__
+#__ior__
+#__ixor__
+#__ilshift__
+#__irshift__

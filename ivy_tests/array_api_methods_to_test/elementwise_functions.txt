@@ -31,7 +31,7 @@ less
 #less_equal
 #log
 #log1p
-#log2
+log2
 #log10
 #logaddexp
 #logical_and
@@ -49,7 +49,7 @@ logical_not
 #sin
 #sinh
 #square
-sqrt
+#sqrt
 #subtract
 tan
 #tanh
