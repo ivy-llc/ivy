@@ -108,7 +108,6 @@ def isnan(x: Union[ivy.Array, ivy.NativeArray])\
     Returns boolean map at locations where the input is not a number (nan).
 
     :param x: Input array.
-    :type x: array
     :return: Boolean values for where the values of the array are nan.
     """
     return _cur_framework(x).isnan(x)
@@ -122,14 +121,11 @@ def less(x1: Union[ivy.Array, ivy.NativeArray],
     element x2_i of the input array x2.
 
     :param x1: Input array.
-    :type x1: array
     :param x2: Input array.
-    :type x2: array
     :param f: Machine learning framework. Inferred from inputs if None.
-    :type f: ml_framework, optional
     :return: an array containing the element-wise results. The returned array must have a data type of bool.
     """
-    return _cur_framework(x1,f=f).less(x1,x2)   
+    return _cur_framework(x1).less(x1,x2)
 
 
 def cos(x: Union[ivy.Array, ivy.NativeArray])\
