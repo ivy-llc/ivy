@@ -46,6 +46,56 @@ If you are developing for pull requests (PRs), then it is common to create PR-sp
 run :code:`./merge_with_upstream.sh name_of_your_pr_branch`.
 
 
+ToDo List Issues
+----------------
+
+We make extensive use of ToDo list issues, which act as placeholders for tracking many related sub-tasks in a ToDo list.
+
+We have a clear process for contributors to engage with such ToDo lists:
+
+(a) Find a task to work on which (i) is not marked as completed with a tick (ii) does not have an issue created and
+(iii) is not mentioned in the comments.
+
+(b) Create a new issue with the title being just the name of the task you would like to work on.
+
+(c) comment on the ToDo list issue with a reference to this issue like so:
+
+- [ ] #Issue_number
+
+Your issue will then automatically be added to the ToDo list at some point, and the comment will be deleted.
+No need to wait for this to happen before progressing to stage d.
+
+(d) Start working on the task, and create a PR as soon as you have a full or partial solution, and then directly
+reference the issue in the pull request. If you have a partial solution, the Ivy team can help to guide you through
+the process of getting it working :)
+
+(e) Wait for us to review your PR. Once we have reviewed your PR we will either merge or request changes. Every time you
+respond to our requested changes you must re-request a review in order for us to re-engage with the PR.
+
+(e) Once the PR is in good shape, we will merge into master, and you then become and Ivy contributor!
+
+In order to keep our ToDo lists moving quickly, if your PR is not created within 72 hours of creating the issue, then
+the issue will be closed and the method will be made free for others in the community. Likewise, if we have requested
+changes on your PR, and you do not respond and request a new code review within 72 hours, then the PR and the associated
+issue will be closed, and the method will be freed for others in the community. Even if you do not make code changes,
+you should request a new code review to flag to us that our attention is again needed to further the discussion.
+
+The purpose of this is to ensure our ToDo lists remain accessible for all in the community to engage with, where
+priority is given to those who can engage on a more short-term basis. We want to avoid the situation where tasks are
+allocated but then are not acted upon for long periods of time, whilst preveting others in the community from working
+on these instead.
+
+Starting an issue and then being unable to complete it is not a problem from our side at all, we automatically close
+these just so we can keep our communuty engaged with these tasks :)
+
+Our automatic closing is obviously never a reflection on the quality of the PR or the developer who made it, or any
+reflection of hypothetical frustration we have for more delayed response times etc. Developers are of course very busy
+people, and sometimes there is not as much free time available as initially thought. Please don't take it personally
+if your issue or PR gets closed because of these time limits.
+
+Reach out to me on discord if at any point you believe this happened to you unfairly, and we will definitely
+investigate!
+
 Creating Pull Requests
 ----------------------
 
