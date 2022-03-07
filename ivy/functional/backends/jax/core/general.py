@@ -89,24 +89,21 @@ def array(object_in, dtype=None, dev=None):
 
 
 def asarray(object_in, dtype: Optional[str] = None, dev: Optional[str] = None, copy: Optional[bool] = None):
-    if copy is None:
-        copy = False
-    if copy:
-        if dtype is None and isinstance(object_in, _jnp.ndarray):
-            return to_dev(object_in.copy(), dev)
-        if dtype is None and not isinstance(object_in, _jnp.ndarray):
-            return to_dev(_jnp.asarray(object_in).copy(), dev)
+    if is_array(object_in) and dtype is None:
+        dtype = object_in.dtype
+    elif isinstance(object_in, (list, tuple, dict)) and len(object_in) != 0 and dtype is None:
+        # Temporary fix on type
+        # Because default_type() didn't return correct type for normal python array
+        if copy is True:
+            return to_dev((_jnp.asarray(object_in).copy()), dev)
         else:
-            dtype = dtype_to_str(default_dtype(dtype, object_in))
-            return to_dev(_jnp.asarray(object_in, dtype).copy(), dev)
-    else:
-        if dtype is None and isinstance(object_in, _jnp.ndarray):
-            return to_dev(object_in, dev)
-        if dtype is None and not isinstance(object_in, _jnp.ndarray):
             return to_dev(_jnp.asarray(object_in), dev)
-        else:
-            dtype = dtype_to_str(default_dtype(dtype, object_in))
-            return to_dev(_jnp.asarray(object_in, dtype), dev)
+    else:
+        dtype = default_dtype(dtype, object_in)
+    if copy is True:
+        return to_dev((_jnp.asarray(object_in, dtype=dtype).copy()), dev)
+    else:
+        return to_dev(_jnp.asarray(object_in, dtype=dtype), dev)
 
 
 # noinspection PyUnresolvedReferences,PyProtectedMember

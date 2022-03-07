@@ -65,10 +65,8 @@ def array(object_in, dtype=None, dev=None):
         return _tf.cast(tensor, dtype)
 
 
-def asarray(object_in, dtype: Optional[str] = None, dev: Optional[str] = None, copy: Optional[bool] = None):
+def asarray(object_in, dtype=None, dev=None, copy=None):
     dev = default_device(dev)
-    if copy is None:
-        copy = False
     with _tf.device(dev_from_str(dev)):
         if copy:
             if dtype is None and isinstance(object_in, _tf.Tensor):

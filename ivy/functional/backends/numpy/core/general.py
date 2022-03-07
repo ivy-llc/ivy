@@ -87,17 +87,20 @@ def array(object_in, dtype=None, dev=None):
 
 def asarray(object_in, dtype=None, dev=None, copy=None):
     # If copy=none then try using existing memory buffer
-    if copy is None:
-        copy = False
-    if copy:
-        if dtype is None:
+    if isinstance(object_in, _np.ndarray) and dtype is None:
+        dtype = object_in.dtype
+    elif isinstance(object_in, (list, tuple, dict)) and len(object_in) != 0 and dtype is None:
+        # Temporary fix on type
+        # Because default_type() didn't return correct type for normal python array
+        if copy is True:
             return _to_dev(_np.copy(_np.asarray(object_in)), dev)
-        dtype = dtype_to_str(default_dtype(dtype, object_in))
+        else:
+            return _to_dev(_np.asarray(object_in), dev)
+    else:
+        dtype = default_dtype(dtype, object_in)
+    if copy is True:
         return _to_dev(_np.copy(_np.asarray(object_in, dtype=dtype)), dev)
     else:
-        if dtype is None:
-            return _to_dev(_np.asarray(object_in), dev)
-        dtype = dtype_to_str(default_dtype(dtype, object_in))
         return _to_dev(_np.asarray(object_in, dtype=dtype), dev)
 
 
