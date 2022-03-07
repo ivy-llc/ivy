@@ -384,18 +384,6 @@ def floor(x: Union[ivy.Array, ivy.NativeArray])\
     return _cur_framework(x).floor(x)
 
 
-def ceil(x: Union[ivy.Array, ivy.NativeArray])\
-        -> Union[ivy.Array, ivy.NativeArray]:
-    """
-    Returns element-wise smallest integer not less than x.
-
-    :param x: Input array to ceil.
-    :type x: array
-    :return: An array of the same shape and type as x, with the elements ceiled to integers.
-    """
-    return _cur_framework(x).ceil(x)
-
-
 # noinspection PyShadowingBuiltins
 def abs(x: Union[ivy.Array, ivy.NativeArray])\
         -> Union[ivy.Array, ivy.NativeArray]:
@@ -550,23 +538,6 @@ def concatenate(xs: Iterable[Union[ivy.Array, ivy.NativeArray]], axis: int = -1)
     :return: The concatenated array.
     """
     return _cur_framework(xs[0]).concatenate(xs, axis)
-
-
-def flip(x: Union[ivy.Array, ivy.NativeArray], axis: int = None, batch_shape: Iterable[int] = None,
-         ) -> Union[ivy.Array, ivy.NativeArray]:
-    """
-    Reverses the ord of elements in an array along the given axis.
-    The shape of the array is preserved, but the elements are reordered.
-
-    :param x: Input array.
-    :type x: array
-    :param axis: Axis or axes along which to flip over. The default, axis: int = None, will flip over all axes.
-    :type axis: None or int or sequence of ints, optional
-    :param batch_shape: Shape of batch. Inferred from inputs if None.
-    :type batch_shape: sequence of ints, optional
-    :return: An array with the entries of axis reversed.
-    """
-    return _cur_framework(x).flip(x, axis, batch_shape)
 
 
 def stack(xs: Iterable[Union[ivy.Array, ivy.NativeArray]], axis: int = 0)\
