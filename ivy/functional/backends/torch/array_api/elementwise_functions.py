@@ -1,6 +1,8 @@
 # global
 import torch
 
+# local
+import ivy
 
 def bitwise_and(x1: torch.Tensor,
                 x2: torch.Tensor)\
@@ -43,6 +45,17 @@ def log2(x: torch.Tensor) \
 def isnan(x: torch.Tensor)\
         -> torch.Tensor:
     return torch.isnan(x)
+
+
+def equal(x1: torch.Tensor, x2: torch.Tensor)\
+        -> torch.Tensor:
+    x1_bits = ivy.dtype_bits(x1.dtype)
+    x2_bits = ivy.dtype_bits(x2.dtype)
+    if x1_bits > x2_bits:
+        x2 = x2.type(x1.dtype)
+    elif x2_bits > x1_bits:
+        x1 = x1.type(x2.dtype)
+    return x1 == x2
 
 
 def less(x1: torch.Tensor, x2: torch.Tensor):

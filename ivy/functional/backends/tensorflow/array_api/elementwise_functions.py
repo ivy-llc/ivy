@@ -53,6 +53,17 @@ def isnan(x: Tensor)\
     return tf.math.is_nan(x)
 
 
+def equal(x1: Tensor, x2: Tensor)\
+        -> Tensor:
+    x1_bits = ivy.dtype_bits(x1.dtype)
+    x2_bits = ivy.dtype_bits(x2.dtype)
+    if x1_bits > x2_bits:
+        x2 = tf.cast(x2, x1.dtype)
+    elif x2_bits > x1_bits:
+        x1 = tf.cast(x1, x2.dtype)
+    return x1 == x2
+
+
 def less(x1: Tensor, x2: Tensor)\
         -> Tensor:
     if hasattr(x1, 'dtype') and hasattr(x2, 'dtype'):

@@ -94,17 +94,12 @@ def is_array(x, exclusive=False):
     return False
 
 
-equal = lambda x1, x2: x1 == x2
-
-
 def dtype_bits(dtype_in):
     dtype_str = dtype_to_str(dtype_in)
     if 'bool' in dtype_str:
         return 1
     return int(dtype_str.replace('uint', '').replace('int', '').replace('bfloat', '').replace('float', ''))
 
-
-equal.__name__ = 'equal'
 copy_array = lambda x: x.copy()
 array_equal = _np.array_equal
 to_numpy = lambda x: x
