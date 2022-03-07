@@ -3,6 +3,7 @@ Contributing to Ivy
 
 .. _`Array API`: https://data-apis.org/array-api/latest/
 .. _`tutorial series`: https://www.youtube.com/channel/UCGlkr-YCs3TjMVeOhbbULsw
+.. _`source files`: https://github.com/data-apis/array-api/tree/main/spec/API_specification/signatures
 
 Array API Standardization
 -------------------------
@@ -27,6 +28,12 @@ This is required for each backend framework :code:`numpy`, :code:`jax`,
 :code:`./test_array_api.sh backend_name`, for example :code:`./test_array_api.sh torch` or
 :code:`./test_array_api.sh jax`.
 
+The docstrings for all methods in the Ivy API should be taken directly from the associated docstring in the Array API
+standard. Use the `source files`_ in the Array API repository rather than the website for copying, so that the
+formatting can be copied correctly. However, when defining our method in Ivy, we should remove the following arguments
+which appear in the standard to denote the optional inclusion of additional arguments by frameworks which adopt the
+standard :code:`*, \,`
+
 
 Keeping Your Fork Updated
 -------------------------
@@ -44,11 +51,16 @@ Creating Pull Requests
 
 Our process for responding to pull requests is simple. All newly created PRs will be reviewed by a member of the team,
 and then the PR will either be merged or changes will be requested. In order for us to look at the changes you have made,
-you will need to request a code review. We will then take another look, and either merge or request further changes.
+you will then need to request a code review once you have addressed our requested changes.
+We will then take another look, and either merge the PR or request further changes.
 This process then will repeat until either the PR is closed by us or yourslef, or the PR is merged.
 
-If you make changes and do not request a code review, we will not check the changes. This is the case even if you
-comment on the PR. This simple process makes it much simpler for us to track where and when attention is needed.
+If we request changes, you make those changes, but you do not request a code review, then we will not check the changes.
+This is the case even if you comment on the PR. This simple process makes it much simpler for us to track where and when
+attention is needed.
+
+Note that you cannot request a code review until you have already received at least one review from us. All new PRs will
+receive a code review, so just wait and we will check out and review your newly created PR as soon as possible!
 
 Finally, all PRs must give write access to Ivy maintainers of the branch. This can be done by checking a tickbox in the
 lower right corner of the PR. This will enable us to quickly fix conflicts, merge with upstream, and get things moving

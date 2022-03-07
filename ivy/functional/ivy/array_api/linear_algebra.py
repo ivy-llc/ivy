@@ -81,17 +81,12 @@ def diagonal(x: ivy.Array,
     Returns the specified diagonal of a matrix `x`
 
     :param x: Matrix of dimensions (...., M, N)
-    :type x: array
     :param offset: Offset of the diagonal. Default is 0.
-    :type offset: int, optional
     :param f: Machine learning framework. Inferred from inputs if None.
-    :type f: ml_framework, optional
     :param axis1: Axis of the matrix `x` along which the diagonal is extracted.
                     Default is 0.
-    :type axis1: int, optional
     :param axis2: Axis of the matrix `x` along which the diagonal is extracted.
                     Default is 1.
-    :type axis2: int, optional
     :return: Diagonal of the matrix x.
     """
     return _cur_framework(x).diagonal(x, offset, axis1=axis1, axis2=axis2)
