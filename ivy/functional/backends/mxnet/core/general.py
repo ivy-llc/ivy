@@ -158,11 +158,6 @@ def floor(x):
     return _mx.nd.floor(x)
 
 
-@_handle_flat_arrays_in_out
-def ceil(x):
-    return _mx.nd.ceil(x)
-
-
 # noinspection PyShadowingBuiltins
 @_handle_flat_arrays_in_out
 def abs(x):
