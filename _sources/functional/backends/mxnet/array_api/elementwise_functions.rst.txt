@@ -13,6 +13,7 @@ Elementwise functions
    :caption: Elementwise functions
 
    elementwise_functions/bitwise_and.rst
+   elementwise_functions/ceil.rst
    elementwise_functions/isfinite.rst
    elementwise_functions/sqrt.rst
    elementwise_functions/isnan.rst

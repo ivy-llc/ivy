@@ -20,7 +20,6 @@ General
    general/round.rst
    general/floormod.rst
    general/floor.rst
-   general/ceil.rst
    general/abs.rst
    general/cast.rst
    general/arange.rst
