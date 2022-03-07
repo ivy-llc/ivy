@@ -1,6 +1,6 @@
 #arange
 #asarray
-#empty
+empty
 #empty_like
 #eye
 #from_dlpack
