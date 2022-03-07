@@ -3,6 +3,7 @@ Contributing to Ivy
 
 .. _`Array API`: https://data-apis.org/array-api/latest/
 .. _`tutorial series`: https://www.youtube.com/channel/UCGlkr-YCs3TjMVeOhbbULsw
+.. _`source files`: https://github.com/data-apis/array-api/tree/main/spec/API_specification/signatures
 
 Array API Standardization
 -------------------------
@@ -26,6 +27,12 @@ This is required for each backend framework :code:`numpy`, :code:`jax`,
 :code:`torch` and :code:`tensorflow`. You can test all of these tests locally by running
 :code:`./test_array_api.sh backend_name`, for example :code:`./test_array_api.sh torch` or
 :code:`./test_array_api.sh jax`.
+
+The docstrings for all methods in the Ivy API should be taken directly from the associated docstring in the Array API
+standard. Use the `source files`_ in the Array API repository rather than the website for copying, so that the
+formatting can be copied correctly. However, when defining our method in Ivy, we should remove the following arguments
+which appear in the standard to denote the optional inclusion of additional arguments by frameworks which adopt the
+standard :code:`*, \,`
 
 
 Keeping Your Fork Updated
