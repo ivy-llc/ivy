@@ -12,6 +12,13 @@ def bitwise_and(x1: Tensor,
     return tf.bitwise.bitwise_and(x1, x2)
 
 
+def ceil(x: Tensor)\
+        -> Tensor:
+    if 'int' in str(x.dtype):
+        return x
+    return tf.math.ceil(x)
+
+
 def isfinite(x: Tensor) \
         -> Tensor:
     if ivy.is_int_dtype(x):
