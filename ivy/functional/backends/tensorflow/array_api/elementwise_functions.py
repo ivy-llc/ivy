@@ -1,4 +1,5 @@
 # global
+import tensorflow
 import tensorflow as tf
 from tensorflow.python.types.core import Tensor
 
@@ -26,9 +27,11 @@ def asinh(x: Tensor) \
 
 def sqrt(x: Tensor)\
         -> Tensor:
-    x_64 = tf.cast(x, tf.float64)
-    res = tf.cast(tf.sqrt(x_64), x.dtype)
-    return  res
+    if x.dtype == 'float32':
+        x_64 = tf.cast(x, tf.float64)
+        return tf.cast(tf.sqrt(x_64), x.dtype)
+    return  tf.math.sqrt(x)
+
 
 
 def cosh(x: Tensor) \
