@@ -26,3 +26,13 @@ def ones(shape: Union[int, Tuple[int]],
     dev = dev_from_str(default_device(device))
     with tf.device(dev):
         return tf.ones(shape, dtype)
+
+
+def ones(shape: Union[int, Tuple[int]],
+         dtype: Optional[DType] = None,
+         device: Optional[str] = None) \
+        -> tf.Tensor:
+    dtype = dtype_from_str(default_dtype(dtype))
+    dev = dev_from_str(default_device(device))
+    with tf.device(dev):
+        return tf.ones(shape, dtype)
