@@ -26,3 +26,12 @@ def ones(shape: Union[int, Tuple[int]],
     dev = dev_from_str(default_device(device))
     with tf.device(dev):
         return tf.ones(shape, dtype)
+
+def arange(start: Union[int, float], /, stop: Optional[Union[int, float]] = None, step: Union[int, float] = 1, *,
+           dtype: Optional[Dtype] = None,
+           device: Optional[str] = None)\
+               -> Tensor:
+    dtype = dtype_from_str(default_dtype(dtype))
+    dev = dev_from_str(default_device(device))
+    with tf.device(dev):
+        return tf.arange(stop, start, step, dtype)

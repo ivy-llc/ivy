@@ -21,3 +21,11 @@ def ones(shape: Union[int, Tuple[int]],
     dtype_val: torch.dtype = dtype_from_str(dtype)
     dev = default_device(device)
     return torch.ones(shape, dtype=dtype_val, device=dev_from_str(dev))
+
+
+def arange(start: Union[int, float], /, stop: Optional[Union[int, float]] = None, step: Union[int, float] = 1, *,
+           dtype: Optional[torch.dtype] = None,
+           device: Optional[torch.device] = None)\
+               -> torch.Tensor:
+    dev = default_device(device)
+    return torch.arange(stop, start, step, dtype=dtype_from_str(default_dtype(dtype)), device=dev_from_str(dev))

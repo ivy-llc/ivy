@@ -26,3 +26,10 @@ def ones(shape: Union[int, Tuple[int]],
     if len(shape) == 0 or 0 in shape:
         return _1_dim_array_to_flat_array(mx.nd.ones((1,), ctx=cont).astype(dtype))
     return mx.nd.ones(shape, ctx=cont).astype(dtype)
+
+
+def arange(start: Union[int, float], /, stop: Optional[Union[int, float]] = None, step: Union[int, float] = 1, *,
+           dtype: Optional[mx.nd.dtype] = None,
+           device: Optional[str(float)] = None)\
+               -> mx.ndarray.ndarray.NDArray:
+    return mx.nd.arange(start, stop, step, dtype, device)

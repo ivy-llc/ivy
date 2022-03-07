@@ -21,3 +21,8 @@ def ones(shape: Union[int, Tuple[int], List[int]],
         -> np.ndarray:
     dtype = dtype_from_str(default_dtype(dtype))
     return _to_dev(np.ones(shape, dtype), device)
+
+def arange(start: Union[int, float], /, stop: Optional[Union[int, float]] = None, step: Union[int, float] = 1, *,
+           dtype: Optional[np.dtype] = None, 
+           device: Optional[str] = None) -> np.ndarray:
+    return _to_dev(np.arange(start, stop, step), device)
