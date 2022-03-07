@@ -879,8 +879,10 @@ def ones(shape: Iterable[int], dtype: Union[ivy.Dtype, str] = 'float32', dev: iv
     return _cur_framework().ones(shape, dtype, dev)
 
 
-def ones_like(x: ivy.Array, dtype: ivy.Dtype = None, dev: ivy.Device = None,
-              ) -> ivy.Array:
+def ones_like(x: Union[ivy.Array, ivy.NativeArray],
+              dtype: Optional[Union[ivy.Dtype, str]] = None,
+              dev: Optional[Union[ivy.Device,str]] = None,)\
+        -> Union[ivy.Array, ivy.NativeArray]:
     """
     Returns a new array filled with ones and having the same shape as an input array x.
 
