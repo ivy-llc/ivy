@@ -28,4 +28,4 @@ def diagonal(x: torch.Tensor,
 
 
 def cross(x1: torch.Tensor, x2: torch.Tensor, axis: int = -1) -> torch.Tensor:
-    return torch.cross(x1, x2, axis)
+    return torch.cross(input=x1, other=x2, dim=axis)

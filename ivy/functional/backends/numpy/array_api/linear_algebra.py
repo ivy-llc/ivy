@@ -32,4 +32,4 @@ def diagonal(x: np.ndarray,
 
 
 def cross(x1: np.ndarray, x2: np.ndarray, axis: int = -1) -> np.ndarray:
-    return np.asarray(npa.linalg.cross(npa.asarray(x1), npa.asarray(x2), axis=axis))
+    return np.asarray(np.cross(x1, x2, axis=axis))
