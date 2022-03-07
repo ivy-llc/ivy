@@ -81,13 +81,33 @@ def builtin_radd(x, other):
 
 
 # noinspection PyShadowingBuiltins
-def builtin_sub(x, other):
-    return x.__sub__(other)
+def builtin_sub(self: Union[ivy.Array, ivy.NativeArray],
+                other: Union[int, float, ivy.Array, ivy.NativeArray]) \
+        -> Union[ivy.Array, ivy.NativeArray]:
+    """
+    Calculates the difference for each element self_i of the input array self with the respective element other_i of the
+    input array other.
+
+    :param self: First input array. Should have a numeric data type.
+    :param other: Second input array. Must be compatible with self. Should have a numeric data type.
+    :return: an array containing the element-wise differences.
+    """
+    return ivy.subtract(self, other)
 
 
 # noinspection PyShadowingBuiltins
-def builtin_rsub(x, other):
-    return x.__rsub__(other)
+def builtin_rsub(self: Union[ivy.Array, ivy.NativeArray],
+                other: Union[int, float, ivy.Array, ivy.NativeArray]) \
+        -> Union[ivy.Array, ivy.NativeArray]:
+    """
+    Calculates the difference for each element self_i of the input array self with the respective element other_i of the
+    input array other.
+
+    :param self: First input array. Should have a numeric data type.
+    :param other: Second input array. Must be compatible with self. Should have a numeric data type.
+    :return: an array containing the element-wise differences.
+    """
+    return self.__rsub__(other)
 
 
 # noinspection PyShadowingBuiltins

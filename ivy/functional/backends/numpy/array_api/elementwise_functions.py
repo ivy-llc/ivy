@@ -54,6 +54,16 @@ def cos(x: np.ndarray)\
     return np.asarray(npa.cos(npa.asarray(x)))
 
 
+def subtract(x1: np.ndarray,
+             x2: np.ndarray)\
+        -> np.ndarray:
+    if hasattr(x1, 'dtype') and hasattr(x2, 'dtype'):
+        promoted_type = np.promote_types(x1.dtype, x2.dtype)
+        x1 = x1.astype(promoted_type)
+        x2 = x2.astype(promoted_type)
+    return np.subtract(x1, x2)
+
+
 def logical_not(x: np.ndarray)\
         -> np.ndarray:
     return np.logical_not(x)

@@ -61,3 +61,13 @@ def cos(x: torch.Tensor)\
 def logical_not(x: torch.Tensor)\
         -> torch.Tensor:
     return torch.logical_not(x.type(torch.bool))
+
+
+def subtract(x1: torch.Tensor,
+                x2: torch.Tensor)\
+        -> torch.Tensor:
+    if hasattr(x1, 'dtype') and hasattr(x2, 'dtype'):
+        promoted_type = torch.promote_types(x1.dtype, x2.dtype)
+        x1 = x1.to(promoted_type)
+        x2 = x2.to(promoted_type)
+    return torch.subtract(x1, x2)
