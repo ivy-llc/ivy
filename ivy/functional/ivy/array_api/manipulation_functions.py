@@ -11,15 +11,17 @@ def flip(x: Union[ivy.Array, ivy.NativeArray],
         -> ivy.Array:
     """
     Reverses the order of elements in an array along the given axis. The shape of the array must be preserved.
+
     Parameters
     ----------
-    x: array
+    x:
         input array.
-    axis: Optional[Union[int, Tuple[int, ...]]]
+    axis:
         axis (or axes) along which to flip. If ``axis`` is ``None``, the function must flip all input array axes. If ``axis`` is negative, the function must count from the last dimension. If provided more than one axis, the function must flip only the specified axes. Default: ``None``.
+
     Returns
     -------
-    out: array
+    out:
         an output array having the same data type and shape as ``x`` and whose elements, relative to ``x``, are reordered.
     """
 
