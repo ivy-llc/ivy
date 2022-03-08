@@ -225,9 +225,13 @@ inadvertently caused other unit tests to fail. First, uncomment your method in t
 <code class="code docutils literal notranslate"><span class="pre">./test_array_api.sh</span> <span class="pre">jax</span></code>.</p>
 <p>The docstrings for all methods in the Ivy API should be taken directly from the associated docstring in the Array API
 standard. Use the <a class="reference external" href="https://github.com/data-apis/array-api/tree/main/spec/API_specification/signatures">source files</a> in the Array API repository rather than the website for copying, so that the
-formatting can be copied correctly. However, when defining our method in Ivy, we should remove the following arguments
-which appear in the standard to denote the optional inclusion of additional arguments by frameworks which adopt the
-standard <code class="code docutils literal notranslate"><span class="pre">*,</span> <span class="pre">\,</span></code></p>
+formatting can be copied correctly. Many Ivy methods still use the Sphinx documentation format, but these should be
+updated to now use the NumPy style, which is the same format used by all methods in the Array API Standard.
+However, when defining our method in Ivy, we should remove the following arguments which appear in the standard to
+denote the optional inclusion of additional arguments by frameworks which adopt the standard <code class="code docutils literal notranslate"><span class="pre">*,</span> <span class="pre">\,</span></code>.
+Additionally, we should remove all argument types from the docstrings. These are all defined using type-hints in the
+arguments already, and adding these also to the docstrings would create unecessary duplication. Our documentation
+builder adds the correct types to the online documentation dynamically using the type hints directly.</p>
 </div>
 <div class="section" id="keeping-your-fork-updated">
 <h2>Keeping Your Fork Updated<a class="headerlink" href="#keeping-your-fork-updated" title="Permalink to this headline">¶</a></h2>
@@ -326,11 +330,32 @@ should adhere to the following type hint format:</p>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    My function does something cool.</span>
 
-<span class="sd">    :param x: input array.</span>
-<span class="sd">    :param axes: the axes along which to perform the op.</span>
-<span class="sd">    :param dtype: array data type.</span>
-<span class="sd">    :param dev: the device on which to place the new array.</span>
-<span class="sd">    :return: a cooler array.</span>
+<span class="sd">    .. note::</span>
+<span class="sd">        This is an important note.</span>
+
+<span class="sd">    **Special Cases**</span>
+
+<span class="sd">    For this particular case,</span>
+
+<span class="sd">    - If ``x`` is ``NaN``, do something</span>
+<span class="sd">    - If ``y`` is ``-0``, do something else</span>
+<span class="sd">    - etc.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x:</span>
+<span class="sd">        input array. Should have a numeric data type.</span>
+<span class="sd">    axes:</span>
+<span class="sd">        the axes along which to perform the op.</span>
+<span class="sd">    dtype:</span>
+<span class="sd">        array data type.</span>
+<span class="sd">    dev:</span>
+<span class="sd">        the device on which to place the new array.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    out:</span>
+<span class="sd">        a cooler array.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">my_func</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dtype</span><span class="p">,</span> <span class="n">dev</span><span class="p">)</span>
 </pre></div>
@@ -398,11 +423,19 @@ The method <code class="code docutils literal notranslate"><span class="pre">ivy
 <span class="sd">    Calculates an implementation-dependent approximation of exponentiation by raising each element (the base) of an</span>
 <span class="sd">    array instance to the power of other_i (the exponent), where other_i is the corresponding element of the array other.</span>
 
-<span class="sd">    :param self: array instance whose elements correspond to the exponentiation base. Should have a numeric data type.</span>
-<span class="sd">    :param other: other array whose elements correspond to the exponentiation exponent. Must be compatible with x</span>
-<span class="sd">                    (see Broadcasting). Should have a numeric data type.</span>
-<span class="sd">    :return: an array containing the element-wise results. The returned array must have a data type determined by</span>
-<span class="sd">              Type Promotion Rules.</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    self:</span>
+<span class="sd">        array instance whose elements correspond to the exponentiation base. Should have a numeric data type.</span>
+<span class="sd">    other:</span>
+<span class="sd">        other array whose elements correspond to the exponentiation exponent. Must be compatible with x (see</span>
+<span class="sd">        Broadcasting). Should have a numeric data type.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    out:</span>
+<span class="sd">        an array containing the element-wise results. The returned array must have a data type determined by</span>
+<span class="sd">        Type Promotion Rules.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__pow__</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
 </pre></div>
