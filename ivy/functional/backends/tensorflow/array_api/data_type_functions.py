@@ -45,3 +45,8 @@ class Finfo:
 def finfo(type: Union[DType, str, Tensor])\
         -> Finfo:
     return Finfo(tf.experimental.numpy.finfo(ivy.dtype_from_str(type)))
+
+# noinspection PyShadowingBuiltins
+def astype(x: Tensor, dtype: DType)\
+    -> Tensor:
+    return astype(x, dtype)

@@ -42,3 +42,8 @@ class Finfo:
 def finfo(type: Union[torch.dtype, str, torch.Tensor])\
         -> Finfo:
     return Finfo(torch.finfo(ivy.dtype_from_str(type)))
+
+# noinspection PyShadowingBuiltins
+def astype(x: torch.Tensor, dtype: torch.dtype)\
+    -> terch.Tensor:
+    return(x, dtype)

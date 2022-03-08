@@ -43,3 +43,9 @@ class Finfo:
 def finfo(type: Union[jnp.dtype, str, JaxArray])\
         -> Finfo:
     return Finfo(jnp.finfo(ivy.dtype_from_str(type)))
+
+# noinspection PyShadowingBuiltins
+def astype(x: JaxArray, dtype: jnp.dtype)\
+    -> JaxArray:
+    return jnp.astype(x, dtype)
+

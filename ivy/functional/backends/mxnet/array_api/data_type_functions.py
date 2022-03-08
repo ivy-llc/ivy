@@ -44,3 +44,8 @@ class Finfo:
 def finfo(type: Union[type, str, mx.ndarray.ndarray.NDArray])\
         -> Finfo:
     return Finfo(np.finfo(ivy.dtype_from_str(type)))
+
+# noinspection PyShadowingBuiltins
+def astype(x: mx.ndarray.ndarray.NDArray, dtype: NDArray.dtype)\
+    -> mx.ndarray.ndarray.NDArray:
+    return astype(x, dtype)
