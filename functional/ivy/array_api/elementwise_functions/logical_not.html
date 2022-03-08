@@ -197,13 +197,17 @@
 <dl class="py function">
 <dt id="ivy.functional.ivy.array_api.elementwise_functions.logical_not">
 <code class="sig-prename descclassname">ivy.functional.ivy.array_api.elementwise_functions.</code><code class="sig-name descname">logical_not</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../../../_modules/ivy/functional/ivy/array_api/elementwise_functions.html#logical_not"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.array_api.elementwise_functions.logical_not" title="Permalink to this definition">¶</a></dt>
-<dd><p>Computes the truth value of NOT x element-wise.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>x</strong> – Input array.</p>
+<dd><p>Computes the logical NOT for each element <code class="docutils literal notranslate"><span class="pre">x_i</span></code> of the input array <code class="docutils literal notranslate"><span class="pre">x</span></code>.
+.. note:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>While this specification recommends that this function only accept input arrays having a boolean data type, specification-compliant array libraries may choose to accept input arrays having numeric data types. If non-boolean data types are supported, zeros must be considered the equivalent of ``False``, while non-zeros must be considered the equivalent of ``True``.
+</pre></div>
+</div>
+<dl class="simple">
+<dt>x: array</dt><dd><p>input array. Should have a boolean data type.</p>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Boolean result of the logical NOT operation applied element-wise to x.</p>
+</dl>
+<dl class="simple">
+<dt>out: array</dt><dd><p>an array containing the element-wise results. The returned array must have a data type of <code class="docutils literal notranslate"><span class="pre">bool</span></code>.</p>
 </dd>
 </dl>
 </dd></dl>

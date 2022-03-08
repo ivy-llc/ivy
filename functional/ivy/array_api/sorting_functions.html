@@ -197,18 +197,23 @@
 <dl class="py function">
 <dt id="ivy.functional.ivy.array_api.sorting_functions.argsort">
 <code class="sig-prename descclassname">ivy.functional.ivy.array_api.sorting_functions.</code><code class="sig-name descname">argsort</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">axis</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">- 1</span></em>, <em class="sig-param"><span class="n">descending</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">stable</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">True</span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../../_modules/ivy/functional/ivy/array_api/sorting_functions.html#argsort"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.array_api.sorting_functions.argsort" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the indices of a tensor that give its sorted order along an axis.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> – Input array containing elements to argsort.</p></li>
-<li><p><strong>axis</strong> – Axis to perform the argsort, default is -1.</p></li>
-<li><p><strong>descending</strong> – Sort order, default is False.</p></li>
-<li><p><strong>stable</strong> – Sort stability, default is True.</p></li>
-</ul>
+<dd><p>Returns the indices that sort an array <code class="docutils literal notranslate"><span class="pre">x</span></code> along a specified axis.
+Parameters
+———-
+x : array</p>
+<blockquote>
+<div><p>input array.</p>
+</div></blockquote>
+<dl class="simple">
+<dt>axis: int</dt><dd><p>axis along which to sort. If set to <code class="docutils literal notranslate"><span class="pre">-1</span></code>, the function must sort along the last axis. Default: <code class="docutils literal notranslate"><span class="pre">-1</span></code>.</p>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>The indices that would sort each slice of the given values along the given axis.</p>
+<dt>descending: bool</dt><dd><p>sort order. If <code class="docutils literal notranslate"><span class="pre">True</span></code>, the returned indices sort <code class="docutils literal notranslate"><span class="pre">x</span></code> in descending order (by value). If <code class="docutils literal notranslate"><span class="pre">False</span></code>, the returned indices sort <code class="docutils literal notranslate"><span class="pre">x</span></code> in ascending order (by value). Default: <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
+</dd>
+<dt>stable: bool</dt><dd><p>sort stability. If <code class="docutils literal notranslate"><span class="pre">True</span></code>, the returned indices must maintain the relative order of <code class="docutils literal notranslate"><span class="pre">x</span></code> values which compare as equal. If <code class="docutils literal notranslate"><span class="pre">False</span></code>, the returned indices may or may not maintain the relative order of <code class="docutils literal notranslate"><span class="pre">x</span></code> values which compare as equal (i.e., the relative order of <code class="docutils literal notranslate"><span class="pre">x</span></code> values which compare as equal is implementation-dependent). Default: <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>out<span class="classifier">array</span></dt><dd><p>an array of indices. The returned array must have the same shape as <code class="docutils literal notranslate"><span class="pre">x</span></code>. The returned array must have the default array index data type.</p>
 </dd>
 </dl>
 </dd></dl>

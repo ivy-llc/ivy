@@ -204,12 +204,16 @@
         <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Reverses the order of elements in an array along the given axis. The shape of the array must be preserved.</span>
-
-<span class="sd">    :param x: input array.</span>
-<span class="sd">    :param axis: axis (or axes) along which to flip. If axis is None, the function must flip all input array axes.</span>
-<span class="sd">        If axis is negative, the function must count from the last dimension. If provided more than one axis,</span>
-<span class="sd">        the function must flip only the specified axes. Default: None.</span>
-<span class="sd">    :return: an output array having the same data type and shape as x and whose elements, relative to x, are reordered.</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x: array</span>
+<span class="sd">        input array.</span>
+<span class="sd">    axis: Optional[Union[int, Tuple[int, ...]]]</span>
+<span class="sd">        axis (or axes) along which to flip. If ``axis`` is ``None``, the function must flip all input array axes. If ``axis`` is negative, the function must count from the last dimension. If provided more than one axis, the function must flip only the specified axes. Default: ``None``.</span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    out: array</span>
+<span class="sd">        an output array having the same data type and shape as ``x`` and whose elements, relative to ``x``, are reordered.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">flip</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="p">)</span></div>
