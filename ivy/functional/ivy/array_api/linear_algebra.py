@@ -16,15 +16,16 @@ def vector_norm(x: Union[ivy.Array, ivy.NativeArray],
 
     """
     Computes the vector norm of a vector (or batch of vectors) ``x``.
+
     Parameters
     ----------
-    x: array
+    x:
         input array. Should have a floating-point data type.
-    axis: Optional[Union[int, Tuple[int, ...]]]
+    axis:
         If an integer, ``axis`` specifies the axis (dimension) along which to compute vector norms. If an n-tuple, ``axis`` specifies the axes (dimensions) along which to compute batched vector norms. If ``None``, the vector norm must be computed over all array values (i.e., equivalent to computing the vector norm of a flattened array). Negative indices must be supported. Default: ``None``.
-    keepdims: bool
+    keepdims:
         If ``True``, the axes (dimensions) specified by ``axis`` must be included in the result as singleton dimensions, and, accordingly, the result must be compatible with the input array (see :ref:`broadcasting`). Otherwise, if ``False``, the axes (dimensions) specified by ``axis`` must not be included in the result. Default: ``False``.
-    ord: Union[int, float, Literal[inf, -inf]]
+    ord:
         order of the norm. The following mathematical norms must be supported:
         +------------------+----------------------------+
         | ord              | description                |
@@ -52,9 +53,10 @@ def vector_norm(x: Union[ivy.Array, ivy.NativeArray],
         | (int,float < 1)  | sum(abs(a)\*\*ord)\*\*(1./ord) |
         +------------------+--------------------------------+
         Default: ``2``.
+
     Returns
     -------
-    out: array
+    out:
         an array containing the vector norms. If ``axis`` is ``None``, the returned array must be a zero-dimensional array containing a vector norm. If ``axis`` is a scalar value (``int`` or ``float``), the returned array must have a rank which is one less than the rank of ``x``. If ``axis`` is a ``n``-tuple, the returned array must have a rank which is ``n`` less than the rank of ``x``. The returned array must have a floating-point data type determined by :ref:`type-promotion`.
     """
 
@@ -76,17 +78,24 @@ def diagonal(x: ivy.Array,
     Returns the specified diagonals of a matrix (or a stack of matrices) ``x``.
     Parameters
     ----------
-    x: array
+    x:
         input array having shape ``(..., M, N)`` and whose innermost two dimensions form ``MxN`` matrices.
-    offset: int
+    offset:
         offset specifying the off-diagonal relative to the main diagonal.
         - ``offset = 0``: the main diagonal.
         - ``offset > 0``: off-diagonal above the main diagonal.
         - ``offset < 0``: off-diagonal below the main diagonal.
         Default: `0`.
+    axis1:
+        axis to be used as the first axis of the 2-D sub-arrays from which the diagonals should be taken.
+        Defaults to first axis (0).
+    axis2:
+        axis to be used as the second axis of the 2-D sub-arrays from which the diagonals should be taken.
+        Defaults to second axis (1).
+
     Returns
     -------
-    out: array
+    out:
         an array containing the diagonals and whose shape is determined by removing the last two dimensions and appending a dimension equal to the size of the resulting diagonals. The returned array must have the same data type as ``x``.
     """
     return _cur_framework(x).diagonal(x, offset, axis1=axis1, axis2=axis2)
