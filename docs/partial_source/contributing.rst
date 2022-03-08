@@ -30,9 +30,13 @@ This is required for each backend framework :code:`numpy`, :code:`jax`,
 
 The docstrings for all methods in the Ivy API should be taken directly from the associated docstring in the Array API
 standard. Use the `source files`_ in the Array API repository rather than the website for copying, so that the
-formatting can be copied correctly. However, when defining our method in Ivy, we should remove the following arguments
-which appear in the standard to denote the optional inclusion of additional arguments by frameworks which adopt the
-standard :code:`*, \,`
+formatting can be copied correctly. Many Ivy methods still use the Sphinx documentation format, but these should be
+updated to now use the NumPy style, which is the same format used by all methods in the Array API Standard.
+However, when defining our method in Ivy, we should remove the following arguments which appear in the standard to
+denote the optional inclusion of additional arguments by frameworks which adopt the standard :code:`*, \,`.
+Additionally, we should remove all argument types from the docstrings. These are all defined using type-hints in the
+arguments already, and adding these also to the docstrings would create unecessary duplication. Our documentation
+builder adds the correct types to the online documentation dynamically using the type hints directly.
 
 
 Keeping Your Fork Updated
@@ -158,11 +162,32 @@ should adhere to the following type hint format:
         """
         My function does something cool.
 
-        :param x: input array.
-        :param axes: the axes along which to perform the op.
-        :param dtype: array data type.
-        :param dev: the device on which to place the new array.
-        :return: a cooler array.
+        .. note::
+            This is an important note.
+
+        **Special Cases**
+
+        For this particular case,
+
+        - If ``x`` is ``NaN``, do something
+        - If ``y`` is ``-0``, do something else
+        - etc.
+
+        Parameters
+        ----------
+        x:
+            input array. Should have a numeric data type.
+        axes:
+            the axes along which to perform the op.
+        dtype:
+            array data type.
+        dev:
+            the device on which to place the new array.
+
+        Returns
+        -------
+        out:
+            a cooler array.
         """
         return _cur_framework(x).my_func(x, dtype, dev)
 
@@ -249,11 +274,19 @@ For most methods and backends these are very simple to implement, such as :code:
         Calculates an implementation-dependent approximation of exponentiation by raising each element (the base) of an
         array instance to the power of other_i (the exponent), where other_i is the corresponding element of the array other.
 
-        :param self: array instance whose elements correspond to the exponentiation base. Should have a numeric data type.
-        :param other: other array whose elements correspond to the exponentiation exponent. Must be compatible with x
-                        (see Broadcasting). Should have a numeric data type.
-        :return: an array containing the element-wise results. The returned array must have a data type determined by
-                  Type Promotion Rules.
+        Parameters
+        ----------
+        self:
+            array instance whose elements correspond to the exponentiation base. Should have a numeric data type.
+        other:
+            other array whose elements correspond to the exponentiation exponent. Must be compatible with x (see
+            Broadcasting). Should have a numeric data type.
+
+        Returns
+        -------
+        out:
+            an array containing the element-wise results. The returned array must have a data type determined by
+            Type Promotion Rules.
         """
         return self.__pow__(other)
 
