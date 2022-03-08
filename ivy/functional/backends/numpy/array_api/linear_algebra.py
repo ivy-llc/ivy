@@ -1,7 +1,6 @@
 # global
 import numpy as np
 from typing import Union, Optional, Tuple, Literal
-from numpy import asarray_chkfinite, asarray, atleast_2d
 # local
 from ivy import inf
 
