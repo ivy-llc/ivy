@@ -12,12 +12,20 @@ def argsort(x: Union[ivy.Array, ivy.NativeArray],
             stable: bool = True)\
             -> ivy.Array:
     """
-    Returns the indices of a tensor that give its sorted order along an axis.
-
-    :param x: Input array containing elements to argsort.
-    :param axis: Axis to perform the argsort, default is -1.
-    :param descending: Sort order, default is False.
-    :param stable: Sort stability, default is True.
-    :return: The indices that would sort each slice of the given values along the given axis.
-    """
+   Returns the indices that sort an array ``x`` along a specified axis.
+   Parameters
+   ----------
+   x : array
+       input array.
+   axis: int
+       axis along which to sort. If set to ``-1``, the function must sort along the last axis. Default: ``-1``.
+   descending: bool
+       sort order. If ``True``, the returned indices sort ``x`` in descending order (by value). If ``False``, the returned indices sort ``x`` in ascending order (by value). Default: ``False``.
+   stable: bool
+       sort stability. If ``True``, the returned indices must maintain the relative order of ``x`` values which compare as equal. If ``False``, the returned indices may or may not maintain the relative order of ``x`` values which compare as equal (i.e., the relative order of ``x`` values which compare as equal is implementation-dependent). Default: ``True``.
+   Returns
+   -------
+   out : array
+       an array of indices. The returned array must have the same shape as ``x``. The returned array must have the default array index data type.
+   """
     return _cur_framework(x).argsort(x, axis, descending, stable)
