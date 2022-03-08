@@ -150,7 +150,7 @@ def logical_not(x: Union[ivy.Array, ivy.NativeArray])\
     return _cur_framework(x).logical_not(x)
 
 
-def tanh(x: ivy.Array) -> ivy.Array:
+def tanh(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
     """
     Calculates an implementation-dependent approximation to the hyperbolic tangent,
     having domain [-infinity, +infinity] and codomain [-1, +1], for each element x_i of the input array x.
