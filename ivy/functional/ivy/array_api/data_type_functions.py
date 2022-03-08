@@ -17,13 +17,15 @@ def iinfo(type: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray])\
         -> Iinfo:
     """
     Machine limits for integer data types.
+
     Parameters
     ----------
-    type: Union[dtype, array]
+    type:
         the kind of integer data-type about which to get information.
+
     Returns
     -------
-    out: iinfo object
+    out:
         a class with that encapsules the following attributes:
         - **bits**: *int*
           number of bits occupied by the type.
@@ -40,13 +42,15 @@ def finfo(type: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray])\
         -> Finfo:
     """
     Machine limits for floating-point data types.
+
     Parameters
     ----------
-    type: Union[dtype, array]
+    type:
         the kind of floating-point data-type about which to get information.
+
     Returns
     -------
-    out: finfo object
+    out:
         an object having the followng attributes:
         - **bits**: *int*
           number of bits occupied by the floating-point data type.
