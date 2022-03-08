@@ -1,10 +1,6 @@
 #global
 import torch
 
-#local
-from typing import Optional
-
-def det(A:torch.Tensor,
-        out:Optional[torch.Tensor]=None) \
+def det(A:torch.Tensor) \
     -> torch.Tensor:
-    return torch.linalg.det(A,out)
+    return torch.linalg.det(A)
