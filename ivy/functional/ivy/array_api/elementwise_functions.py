@@ -102,6 +102,18 @@ def log2(x: Union[ivy.Array, ivy.NativeArray])\
     return _cur_framework(x).log2(x)
 
 
+def log1p(x: Union[ivy.Array, ivy.NativeArray])\
+        -> ivy.Array:
+    """
+    Calculates an implementation-dependent approximation to log(1+x), where log refers to the natural (base e)
+    logarithm.
+
+    :param x: Input array.
+    :return: A new array containing the evaluated result for each element in x.
+    """
+    return _cur_framework(x).log1p(x)
+
+
 def isnan(x: Union[ivy.Array, ivy.NativeArray])\
         -> ivy.Array:
     """
