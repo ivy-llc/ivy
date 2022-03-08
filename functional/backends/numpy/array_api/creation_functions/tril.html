@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>ivy.functional.ivy.array_api.creation_functions &mdash; Ivy 1.0 documentation</title>
+  <title>tril &mdash; Ivy 1.0 documentation</title>
   
 
   
@@ -103,8 +103,8 @@
 </ul>
 <p class="caption"><span class="caption-text">Functional</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../functional/backends.html">Backends</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../functional/ivy.html">Ivy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../backends.html">Backends</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../ivy.html">Ivy</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Graph compiler</span></p>
 <ul>
@@ -182,12 +182,14 @@
     
       <li><a href="../../../../../index.html">Docs</a> &raquo;</li>
         
-          <li><a href="../../../../index.html">Module code</a> &raquo;</li>
-        
-      <li>ivy.functional.ivy.array_api.creation_functions</li>
+      <li>tril</li>
     
     
       <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../../../../_sources/functional/backends/numpy/array_api/creation_functions/tril.rst.txt" rel="nofollow"> View page source</a>
+          
         
       </li>
     
@@ -199,62 +201,20 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <h1>Source code for ivy.functional.ivy.array_api.creation_functions</h1><div class="highlight"><pre>
-<span></span><span class="c1"># global</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">List</span>
+  <div class="section" id="tril">
+<h1>tril<a class="headerlink" href="#tril" title="Permalink to this headline">¶</a></h1>
+<dl class="py function">
+<dt id="ivy.functional.backends.numpy.array_api.creation_functions.tril">
+<code class="sig-prename descclassname">ivy.functional.backends.numpy.array_api.creation_functions.</code><code class="sig-name descname">tril</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">numpy.ndarray</span></em>, <em class="sig-param"><span class="n">k</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">0</span></em><span class="sig-paren">)</span> &#x2192; numpy.ndarray<a class="reference internal" href="../../../../../_modules/ivy/functional/backends/numpy/array_api/creation_functions.html#tril"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.backends.numpy.array_api.creation_functions.tril" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
-<span class="c1"># local</span>
-<span class="kn">import</span> <span class="nn">ivy</span>
-<span class="kn">from</span> <span class="nn">ivy.framework_handler</span> <span class="kn">import</span> <span class="n">current_framework</span> <span class="k">as</span> <span class="n">_cur_framework</span>
+<div class="line-block">
+<div class="line"><br /></div>
+<div class="line"><strong>Supported Frameworks:</strong></div>
+</div>
+<p><a class="reference internal" href="../../../../../_images/empty.png"><img alt="empty" src="../../../../../_images/empty.png" style="width: 4%;" /></a> <a class="reference external" href="https://jax.readthedocs.io"><img alt="jax_logo" src="../../../../../_images/jax_logo.png" style="width: 14%;" /></a> <a class="reference internal" href="../../../../../_images/empty.png"><img alt="empty" src="../../../../../_images/empty.png" style="width: 4%;" /></a> <a class="reference external" href="https://www.tensorflow.org"><img alt="tf_logo" src="../../../../../_images/tensorflow_logo.png" style="width: 14%;" /></a> <a class="reference internal" href="../../../../../_images/empty.png"><img alt="empty" src="../../../../../_images/empty.png" style="width: 4%;" /></a> <a class="reference external" href="https://pytorch.org"><img alt="pytorch_logo" src="../../../../../_images/pytorch_logo.png" style="width: 14%;" /></a> <a class="reference internal" href="../../../../../_images/empty.png"><img alt="empty" src="../../../../../_images/empty.png" style="width: 4%;" /></a> <a class="reference external" href="https://mxnet.apache.org"><img alt="mxnet_logo" src="../../../../../_images/mxnet_logo.png" style="width: 14%;" /></a> <a class="reference internal" href="../../../../../_images/empty.png"><img alt="empty" src="../../../../../_images/empty.png" style="width: 4%;" /></a> <a class="reference external" href="https://numpy.org"><img alt="numpy_logo" src="../../../../../_images/numpy_logo.png" style="width: 14%;" /></a> <a class="reference internal" href="../../../../../_images/empty.png"><img alt="empty" src="../../../../../_images/empty.png" style="width: 4%;" /></a></p>
+</div>
 
-
-<div class="viewcode-block" id="zeros"><a class="viewcode-back" href="../../../../../functional/ivy/array_api/creation_functions/zeros.html#ivy.functional.ivy.array_api.creation_functions.zeros">[docs]</a><span class="k">def</span> <span class="nf">zeros</span><span class="p">(</span><span class="n">shape</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]],</span>
-          <span class="n">dtype</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-          <span class="n">device</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Device</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span>\
-        <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Return a new array of given shape and type, filled with zeros.</span>
-
-<span class="sd">    :param shape: output array shape.</span>
-<span class="sd">    :param dtype: output array data type. If dtype is None, the output array data type must be the default</span>
-<span class="sd">                  floating-point data type. Default: None.</span>
-<span class="sd">    :param device: device on which to place the created array. Default: None.</span>
-<span class="sd">    :return: an array containing zeros.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">()</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="p">,</span> <span class="n">device</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="ones"><a class="viewcode-back" href="../../../../../functional/ivy/array_api/creation_functions/ones.html#ivy.functional.ivy.array_api.creation_functions.ones">[docs]</a><span class="k">def</span> <span class="nf">ones</span><span class="p">(</span><span class="n">shape</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]],</span>
-         <span class="n">dtype</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-         <span class="n">device</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Device</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> \
-        <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Returns a new array of given shape and type, filled with ones.</span>
-
-<span class="sd">    :param shape: output array shape.</span>
-<span class="sd">    :param dtype: output array data type. If dtype is None, the output array data type must be the default</span>
-<span class="sd">                  floating-point data type. Default: None.</span>
-<span class="sd">    :param device: device on which to place the created array. Default: None.</span>
-<span class="sd">    :return: an array containing ones.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">()</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="p">,</span> <span class="n">device</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="tril"><a class="viewcode-back" href="../../../../../functional/ivy/array_api/creation_functions/tril.html#ivy.functional.ivy.array_api.creation_functions.tril">[docs]</a><span class="k">def</span> <span class="nf">tril</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
-         <span class="n">k</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> \
-         <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Returns the lower triangular part of a matrix (or a stack of matrices) x.</span>
-
-<span class="sd">    :param x: input array having shape (..., M, N) and whose innermost two dimensions form MxN matrices.</span>
-<span class="sd">    :param k: diagonal above which to zero elements. If k = 0, the diagonal is the main diagonal. If k &lt; 0,</span>
-<span class="sd">              the diagonal is below the main diagonal. If k &gt; 0, the diagonal is above the main diagonal. Default: 0.</span>
-<span class="sd">    :return: an array containing the lower triangular part(s). The returned array must have the same shape and</span>
-<span class="sd">             data type as x. All elements above the specified diagonal k must be zeroed.</span>
-<span class="sd">             The returned array should be allocated on the same device as x.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">tril</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span></div>
-</pre></div>
 
            </div>
            

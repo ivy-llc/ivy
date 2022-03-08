@@ -223,6 +223,26 @@ floating-point data type. Default: None.</p></li>
 </dd></dl>
 
 <dl class="py function">
+<dt id="ivy.functional.ivy.array_api.creation_functions.tril">
+<code class="sig-prename descclassname">ivy.functional.ivy.array_api.creation_functions.</code><code class="sig-name descname">tril</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">k</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">0</span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../../_modules/ivy/functional/ivy/array_api/creation_functions.html#tril"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.array_api.creation_functions.tril" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the lower triangular part of a matrix (or a stack of matrices) x.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> – input array having shape (…, M, N) and whose innermost two dimensions form MxN matrices.</p></li>
+<li><p><strong>k</strong> – diagonal above which to zero elements. If k = 0, the diagonal is the main diagonal. If k &lt; 0,
+the diagonal is below the main diagonal. If k &gt; 0, the diagonal is above the main diagonal. Default: 0.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>an array containing the lower triangular part(s). The returned array must have the same shape and
+data type as x. All elements above the specified diagonal k must be zeroed.
+The returned array should be allocated on the same device as x.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt id="ivy.functional.ivy.array_api.creation_functions.zeros">
 <code class="sig-prename descclassname">ivy.functional.ivy.array_api.creation_functions.</code><code class="sig-name descname">zeros</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">shape</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>int<span class="p">, </span>Tuple<span class="p">[</span>int<span class="p">]</span><span class="p">, </span>List<span class="p">[</span>int<span class="p">]</span><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">dtype</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>ivy.Dtype<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">device</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>ivy.Device<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../../_modules/ivy/functional/ivy/array_api/creation_functions.html#zeros"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.array_api.creation_functions.zeros" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a new array of given shape and type, filled with zeros.</p>
@@ -246,6 +266,7 @@ floating-point data type. Default: None.</p></li>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="creation_functions/zeros.html">zeros</a></li>
 <li class="toctree-l1"><a class="reference internal" href="creation_functions/ones.html">ones</a></li>
+<li class="toctree-l1"><a class="reference internal" href="creation_functions/tril.html">tril</a></li>
 </ul>
 </div>
 </div>

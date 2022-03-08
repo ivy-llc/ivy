@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Creation functions &mdash; Ivy 1.0 documentation</title>
+  <title>tril &mdash; Ivy 1.0 documentation</title>
   
 
   
@@ -182,13 +182,13 @@
     
       <li><a href="../../../../index.html">Docs</a> &raquo;</li>
         
-      <li>Creation functions</li>
+      <li>tril</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../../../_sources/functional/backends/torch/array_api/creation_functions.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../../../_sources/functional/ivy/array_api/creation_functions/tril.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -201,16 +201,33 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="creation-functions">
-<h1>Creation functions<a class="headerlink" href="#creation-functions" title="Permalink to this headline">¶</a></h1>
-<div class="toctree-wrapper compound">
-<p class="caption"><span class="caption-text">Creation functions</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="creation_functions/zeros.html">zeros</a></li>
-<li class="toctree-l1"><a class="reference internal" href="creation_functions/ones.html">ones</a></li>
-<li class="toctree-l1"><a class="reference internal" href="creation_functions/tril.html">tril</a></li>
+  <div class="section" id="tril">
+<h1>tril<a class="headerlink" href="#tril" title="Permalink to this headline">¶</a></h1>
+<dl class="py function">
+<dt id="ivy.functional.ivy.array_api.creation_functions.tril">
+<code class="sig-prename descclassname">ivy.functional.ivy.array_api.creation_functions.</code><code class="sig-name descname">tril</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">k</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">0</span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../../../_modules/ivy/functional/ivy/array_api/creation_functions.html#tril"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.array_api.creation_functions.tril" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the lower triangular part of a matrix (or a stack of matrices) x.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> – input array having shape (…, M, N) and whose innermost two dimensions form MxN matrices.</p></li>
+<li><p><strong>k</strong> – diagonal above which to zero elements. If k = 0, the diagonal is the main diagonal. If k &lt; 0,
+the diagonal is below the main diagonal. If k &gt; 0, the diagonal is above the main diagonal. Default: 0.</p></li>
 </ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>an array containing the lower triangular part(s). The returned array must have the same shape and
+data type as x. All elements above the specified diagonal k must be zeroed.
+The returned array should be allocated on the same device as x.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<div class="line-block">
+<div class="line"><br /></div>
+<div class="line"><strong>Supported Frameworks:</strong></div>
 </div>
+<p><a class="reference internal" href="../../../../_images/empty1.png"><img alt="empty" src="../../../../_images/empty1.png" style="width: 4%;" /></a> <a class="reference external" href="https://jax.readthedocs.io"><img alt="jax_logo" src="../../../../_images/jax_logo1.png" style="width: 14%;" /></a> <a class="reference internal" href="../../../../_images/empty1.png"><img alt="empty" src="../../../../_images/empty1.png" style="width: 4%;" /></a> <a class="reference external" href="https://www.tensorflow.org"><img alt="tf_logo" src="../../../../_images/tensorflow_logo1.png" style="width: 14%;" /></a> <a class="reference internal" href="../../../../_images/empty1.png"><img alt="empty" src="../../../../_images/empty1.png" style="width: 4%;" /></a> <a class="reference external" href="https://pytorch.org"><img alt="pytorch_logo" src="../../../../_images/pytorch_logo1.png" style="width: 14%;" /></a> <a class="reference internal" href="../../../../_images/empty1.png"><img alt="empty" src="../../../../_images/empty1.png" style="width: 4%;" /></a> <a class="reference external" href="https://mxnet.apache.org"><img alt="mxnet_logo" src="../../../../_images/mxnet_logo1.png" style="width: 14%;" /></a> <a class="reference internal" href="../../../../_images/empty1.png"><img alt="empty" src="../../../../_images/empty1.png" style="width: 4%;" /></a> <a class="reference external" href="https://numpy.org"><img alt="numpy_logo" src="../../../../_images/numpy_logo1.png" style="width: 14%;" /></a> <a class="reference internal" href="../../../../_images/empty1.png"><img alt="empty" src="../../../../_images/empty1.png" style="width: 4%;" /></a></p>
 </div>
 
 
