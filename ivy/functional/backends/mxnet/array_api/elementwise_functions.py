@@ -11,6 +11,12 @@ def bitwise_and(x1: mx.ndarray.ndarray.NDArray, x2: mx.ndarray.ndarray.NDArray) 
 
 
 @_handle_flat_arrays_in_out
+def ceil(x: mx.ndarray.ndarray.NDArray)\
+        -> mx.ndarray.ndarray.NDArray:
+    return mx.nd.ceil(x)
+
+
+@_handle_flat_arrays_in_out
 def isfinite(x: mx.ndarray.ndarray.NDArray)\
         -> mx.ndarray.ndarray.NDArray:
     # ToDo: remove float32 conversion once int8 and uint8 work correctly. Currently 0 returns 0 for these types.

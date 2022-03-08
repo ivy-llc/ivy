@@ -11,6 +11,13 @@ def bitwise_and(x1: JaxArray,
     return jnp.bitwise_and(x1, x2)
 
 
+def ceil(x: JaxArray)\
+        -> JaxArray:
+    if 'int' in str(x.dtype):
+        return x
+    return jnp.ceil(x)
+
+
 def isfinite(x: JaxArray)\
         -> JaxArray:
     return jnp.isfinite(x)
@@ -29,7 +36,12 @@ def cosh(x: JaxArray)\
         -> JaxArray:
     return jnp.cosh(x)
 
-  
+
+def log2(x: JaxArray)\
+        -> JaxArray:
+    return jnp.log2(x)
+
+
 def isnan(x: JaxArray)\
         -> JaxArray:
     return jnp.isnan(x)

@@ -8,6 +8,13 @@ def bitwise_and(x1: torch.Tensor,
     return torch.bitwise_and(x1, x2)
 
 
+def ceil(x: torch.Tensor)\
+        -> torch.Tensor:
+    if 'int' in str(x.dtype):
+        return x
+    return torch.ceil(x)
+
+
 def isfinite(x: torch.Tensor) \
         -> torch.Tensor:
     return torch.isfinite(x)
@@ -26,6 +33,11 @@ def sqrt(x: torch.Tensor)\
 def cosh(x: torch.Tensor) \
         -> torch.Tensor:
     return torch.cosh(x)
+
+
+def log2(x: torch.Tensor) \
+        -> torch.Tensor:
+    return torch.log2(x)
 
 
 def isnan(x: torch.Tensor)\

@@ -114,8 +114,6 @@ clip = _tf.clip_by_value
 round = _tf.round
 floormod = lambda x, y: x % y
 floor = _tf.floor
-ceil = _tf.math.ceil
-
 
 
 # noinspection PyShadowingBuiltins
