@@ -39,7 +39,7 @@ logical_not
 #logical_or
 #logical_xor
 #multiply
-#negative
+negative
 #not_equal
 #positive
 #pow
