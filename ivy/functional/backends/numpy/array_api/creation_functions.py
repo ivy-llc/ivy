@@ -33,3 +33,10 @@ def linspace(start: Union[int, float],
     if dtype is None:
         dtype = np.float32
     return _to_dev(np.linspace(np.longdouble(start), np.longdouble(stop), num, dtype=dtype, endpoint=endpoint), device)
+
+  
+def tril(x: np.ndarray,
+         k: int = 0) \
+         -> np.ndarray:
+    return np.tril(x, k)
+

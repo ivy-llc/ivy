@@ -39,3 +39,9 @@ def linspace(start: Union[int, float],
     if dtype is None:
         dtype = mx.np.float32
     return mx.np.linspace(start, stop, num, dtype=dtype, endpoint=endpoint, ctx=cont)
+
+ 
+def tril(x: mx.ndarray.ndarray.NDArray,
+         k: int = 0) \
+         -> mx.ndarray.ndarray.NDArray:
+    return mx.np.tril(x, k)

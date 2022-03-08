@@ -36,3 +36,10 @@ def linspace(start: Union[int, float],
         return torch.linspace(start, stop, num, dtype=dtype, device=dev_from_str(device))
     else:
         return torch.linspace(start, stop, num+1, dtype=dtype, device=dev_from_str(device))[:-1]
+
+      
+def tril(x: torch.Tensor,
+         k: int = 0) \
+         -> torch.Tensor:
+    return torch.tril(x, diagonal=k)
+

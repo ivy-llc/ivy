@@ -42,3 +42,10 @@ def linspace(start: Union[int, float],
             return tf.cast(tf.linspace(start, stop, num), dtype)
         else:
             return tf.cast(tf.linspace(start, stop, num+1), dtype)[:-1]
+
+          
+def tril(x: tf.Tensor,
+         k: int = 0) \
+         -> tf.Tensor:
+    return tf.experimental.numpy.tril(x, k)
+
