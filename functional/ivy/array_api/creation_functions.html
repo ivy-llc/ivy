@@ -197,21 +197,17 @@
 <dl class="py function">
 <dt id="ivy.functional.ivy.array_api.creation_functions.ones">
 <code class="sig-prename descclassname">ivy.functional.ivy.array_api.creation_functions.</code><code class="sig-name descname">ones</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">shape</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>int<span class="p">, </span>Tuple<span class="p">[</span>int<span class="p">]</span><span class="p">, </span>List<span class="p">[</span>int<span class="p">]</span><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">dtype</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>ivy.Dtype<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">device</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>ivy.Device<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../../_modules/ivy/functional/ivy/array_api/creation_functions.html#ones"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.array_api.creation_functions.ones" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns a new array having a specified <code class="docutils literal notranslate"><span class="pre">shape</span></code> and filled with ones.
-Parameters
-———-
-shape: Union[int, Tuple[int, …]]</p>
-<blockquote>
-<div><p>output array shape.</p>
-</div></blockquote>
+<dd><p>Returns a new array having a specified <code class="docutils literal notranslate"><span class="pre">shape</span></code> and filled with ones.</p>
 <dl class="simple">
-<dt>dtype: Optional[dtype]</dt><dd><p>output array data type. If <code class="docutils literal notranslate"><span class="pre">dtype</span></code> is <code class="docutils literal notranslate"><span class="pre">None</span></code>, the output array data type must be the default floating-point data type. Default: <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+<dt>shape:</dt><dd><p>output array shape.</p>
 </dd>
-<dt>device: Optional[device]</dt><dd><p>device on which to place the created array. Default: <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+<dt>dtype:</dt><dd><p>output array data type. If <code class="docutils literal notranslate"><span class="pre">dtype</span></code> is <code class="docutils literal notranslate"><span class="pre">None</span></code>, the output array data type must be the default floating-point data type. Default: <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+</dd>
+<dt>device:</dt><dd><p>device on which to place the created array. Default: <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
 </dd>
 </dl>
 <dl class="simple">
-<dt>out: array</dt><dd><p>an array containing ones.</p>
+<dt>out:</dt><dd><p>an array containing ones.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -220,18 +216,17 @@ shape: Union[int, Tuple[int, …]]</p>
 <dt id="ivy.functional.ivy.array_api.creation_functions.tril">
 <code class="sig-prename descclassname">ivy.functional.ivy.array_api.creation_functions.</code><code class="sig-name descname">tril</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">k</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">0</span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../../_modules/ivy/functional/ivy/array_api/creation_functions.html#tril"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.array_api.creation_functions.tril" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the lower triangular part of a matrix (or a stack of matrices) x.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> – input array having shape (…, M, N) and whose innermost two dimensions form MxN matrices.</p></li>
-<li><p><strong>k</strong> – diagonal above which to zero elements. If k = 0, the diagonal is the main diagonal. If k &lt; 0,
-the diagonal is below the main diagonal. If k &gt; 0, the diagonal is above the main diagonal. Default: 0.</p></li>
-</ul>
+<dl class="simple">
+<dt>x:</dt><dd><p>input array having shape (…, M, N) and whose innermost two dimensions form MxN matrices.</p>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>an array containing the lower triangular part(s). The returned array must have the same shape and
-data type as x. All elements above the specified diagonal k must be zeroed.
-The returned array should be allocated on the same device as x.</p>
+<dt>k:</dt><dd><p>diagonal above which to zero elements. If k = 0, the diagonal is the main diagonal. If k &lt; 0, the diagonal is
+below the main diagonal. If k &gt; 0, the diagonal is above the main diagonal. Default: 0.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>out:</dt><dd><p>an array containing the lower triangular part(s). The returned array must have the same shape and data type as
+x. All elements above the specified diagonal k must be zeroed. The returned array should be allocated on the
+same device as x.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -239,21 +234,17 @@ The returned array should be allocated on the same device as x.</p>
 <dl class="py function">
 <dt id="ivy.functional.ivy.array_api.creation_functions.zeros">
 <code class="sig-prename descclassname">ivy.functional.ivy.array_api.creation_functions.</code><code class="sig-name descname">zeros</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">shape</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>int<span class="p">, </span>Tuple<span class="p">[</span>int<span class="p">]</span><span class="p">, </span>List<span class="p">[</span>int<span class="p">]</span><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">dtype</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>ivy.Dtype<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">device</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>ivy.Device<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../../_modules/ivy/functional/ivy/array_api/creation_functions.html#zeros"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.array_api.creation_functions.zeros" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns a new array having a specified <code class="docutils literal notranslate"><span class="pre">shape</span></code> and filled with zeros.
-Parameters
-———-
-shape: Union[int, Tuple[int, …]]</p>
-<blockquote>
-<div><p>output array shape.</p>
-</div></blockquote>
+<dd><p>Returns a new array having a specified <code class="docutils literal notranslate"><span class="pre">shape</span></code> and filled with zeros.</p>
 <dl class="simple">
-<dt>dtype: Optional[dtype]</dt><dd><p>output array data type. If <code class="docutils literal notranslate"><span class="pre">dtype</span></code> is <code class="docutils literal notranslate"><span class="pre">None</span></code>, the output array data type must be the default floating-point data type. Default: <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+<dt>shape:</dt><dd><p>output array shape.</p>
 </dd>
-<dt>device: Optional[device]</dt><dd><p>device on which to place the created array. Default: <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+<dt>dtype:</dt><dd><p>output array data type. If <code class="docutils literal notranslate"><span class="pre">dtype</span></code> is <code class="docutils literal notranslate"><span class="pre">None</span></code>, the output array data type must be the default floating-point data type. Default: <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+</dd>
+<dt>device:</dt><dd><p>device on which to place the created array. Default: <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
 </dd>
 </dl>
 <dl class="simple">
-<dt>out: array</dt><dd><p>an array containing zeros.</p>
+<dt>out:</dt><dd><p>an array containing zeros.</p>
 </dd>
 </dl>
 </dd></dl>

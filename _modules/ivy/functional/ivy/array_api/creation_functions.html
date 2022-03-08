@@ -205,17 +205,19 @@
         <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns a new array having a specified ``shape`` and filled with zeros.</span>
+
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    shape: Union[int, Tuple[int, ...]]</span>
+<span class="sd">    shape:</span>
 <span class="sd">       output array shape.</span>
-<span class="sd">    dtype: Optional[dtype]</span>
+<span class="sd">    dtype:</span>
 <span class="sd">       output array data type. If ``dtype`` is ``None``, the output array data type must be the default floating-point data type. Default: ``None``.</span>
-<span class="sd">    device: Optional[device]</span>
+<span class="sd">    device:</span>
 <span class="sd">       device on which to place the created array. Default: ``None``.</span>
+
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    out: array</span>
+<span class="sd">    out:</span>
 <span class="sd">       an array containing zeros.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">()</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="p">,</span> <span class="n">device</span><span class="p">)</span></div>
@@ -227,17 +229,19 @@
         <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns a new array having a specified ``shape`` and filled with ones.</span>
+
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    shape: Union[int, Tuple[int, ...]]</span>
+<span class="sd">    shape:</span>
 <span class="sd">        output array shape.</span>
-<span class="sd">    dtype: Optional[dtype]</span>
+<span class="sd">    dtype:</span>
 <span class="sd">        output array data type. If ``dtype`` is ``None``, the output array data type must be the default floating-point data type. Default: ``None``.</span>
-<span class="sd">    device: Optional[device]</span>
+<span class="sd">    device:</span>
 <span class="sd">        device on which to place the created array. Default: ``None``.</span>
+
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    out: array</span>
+<span class="sd">    out:</span>
 <span class="sd">        an array containing ones.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">()</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="p">,</span> <span class="n">device</span><span class="p">)</span></div>
@@ -249,12 +253,20 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns the lower triangular part of a matrix (or a stack of matrices) x.</span>
 
-<span class="sd">    :param x: input array having shape (..., M, N) and whose innermost two dimensions form MxN matrices.</span>
-<span class="sd">    :param k: diagonal above which to zero elements. If k = 0, the diagonal is the main diagonal. If k &lt; 0,</span>
-<span class="sd">              the diagonal is below the main diagonal. If k &gt; 0, the diagonal is above the main diagonal. Default: 0.</span>
-<span class="sd">    :return: an array containing the lower triangular part(s). The returned array must have the same shape and</span>
-<span class="sd">             data type as x. All elements above the specified diagonal k must be zeroed.</span>
-<span class="sd">             The returned array should be allocated on the same device as x.</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x:</span>
+<span class="sd">        input array having shape (..., M, N) and whose innermost two dimensions form MxN matrices.</span>
+<span class="sd">    k:</span>
+<span class="sd">        diagonal above which to zero elements. If k = 0, the diagonal is the main diagonal. If k &lt; 0, the diagonal is</span>
+<span class="sd">        below the main diagonal. If k &gt; 0, the diagonal is above the main diagonal. Default: 0.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    out:</span>
+<span class="sd">        an array containing the lower triangular part(s). The returned array must have the same shape and data type as</span>
+<span class="sd">        x. All elements above the specified diagonal k must be zeroed. The returned array should be allocated on the</span>
+<span class="sd">        same device as x.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">tril</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span></div>
 </pre></div>
