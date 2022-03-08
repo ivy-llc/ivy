@@ -14,9 +14,9 @@ Class ArrayWithLinalg(abc.ABC):
     
     #vecdot 
     #values are taken for code purpose
-    vector_A = np.array([[2+3j]])
-    vector_B = np.array([[3+4j]])
-    vector_C = np.array([[4+5j]])
+    vector_A = ivy.array([[2+3j]])
+    vector_B = ivy.array([[3+4j]])
+    vector_C = ivy.array([[4+5j]])
     
     abc = ivy.dot(vector_A, vector_B, vector_C)
     print("Dot Product", abc)
