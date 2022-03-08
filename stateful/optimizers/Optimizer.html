@@ -108,15 +108,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../functional/backends.html">Backends</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../functional/ivy.html">Ivy</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Graph compiler</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../graph_compiler/compiler.html">Compiler</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../graph_compiler/globals.html">Globals</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../graph_compiler/graph.html">Graph</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../graph_compiler/helpers.html">Helpers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../graph_compiler/op_logging.html">Op logging</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../graph_compiler/param.html">Param</a></li>
-</ul>
 <p class="caption"><span class="caption-text">Stateful</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../activations.html">Activations</a></li>
@@ -241,16 +232,6 @@ raised during the compiled forward pass. Default is True.</p></li>
 </dd></dl>
 
 <dl class="py method">
-<dt id="ivy.stateful.optimizers.Optimizer.compile_graph">
-<code class="sig-name descname">compile_graph</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">v</span></em>, <em class="sig-param"><span class="n">grads</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">ignore_missing</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/stateful/optimizers.html#Optimizer.compile_graph"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.stateful.optimizers.Optimizer.compile_graph" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt id="ivy.stateful.optimizers.Optimizer.compile_on_next_step">
-<code class="sig-name descname">compile_on_next_step</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/stateful/optimizers.html#Optimizer.compile_on_next_step"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.stateful.optimizers.Optimizer.compile_on_next_step" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
 <dt id="ivy.stateful.optimizers.Optimizer.set_state">
 <em class="property">abstract </em><code class="sig-name descname">set_state</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">state</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/stateful/optimizers.html#Optimizer.set_state"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.stateful.optimizers.Optimizer.set_state" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set state of the optimizer.</p>
@@ -260,11 +241,6 @@ raised during the compiled forward pass. Default is True.</p></li>
 </dd>
 </dl>
 </dd></dl>
-
-<dl class="py method">
-<dt id="ivy.stateful.optimizers.Optimizer.show_graph">
-<code class="sig-name descname">show_graph</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">v</span></em>, <em class="sig-param"><span class="n">grads</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">ignore_missing</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/stateful/optimizers.html#Optimizer.show_graph"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.stateful.optimizers.Optimizer.show_graph" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
 
 <dl class="py method">
 <dt id="ivy.stateful.optimizers.Optimizer.step">

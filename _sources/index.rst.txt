@@ -373,18 +373,6 @@ Documentation Tree
 
 .. toctree::
    :maxdepth: -1
-   :caption: Graph compiler
-
-   graph_compiler/compiler.rst
-   graph_compiler/globals.rst
-   graph_compiler/graph.rst
-   graph_compiler/helpers.rst
-   graph_compiler/op_logging.rst
-   graph_compiler/param.rst
-
-
-.. toctree::
-   :maxdepth: -1
    :caption: Stateful
 
    stateful/activations.rst

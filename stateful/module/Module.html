@@ -108,15 +108,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../functional/backends.html">Backends</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../functional/ivy.html">Ivy</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Graph compiler</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../graph_compiler/compiler.html">Compiler</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../graph_compiler/globals.html">Globals</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../graph_compiler/graph.html">Graph</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../graph_compiler/helpers.html">Helpers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../graph_compiler/op_logging.html">Op logging</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../graph_compiler/param.html">Param</a></li>
-</ul>
 <p class="caption"><span class="caption-text">Stateful</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../activations.html">Activations</a></li>
@@ -264,16 +255,6 @@ raised during the compiled forward pass. Default is True.</p></li>
 <dd></dd></dl>
 
 <dl class="py method">
-<dt id="ivy.stateful.module.Module.compile_graph">
-<code class="sig-name descname">compile_graph</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="n">v</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">with_grads</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">stateful</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">arg_stateful_idxs</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">kwarg_stateful_idxs</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">include_generators</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/stateful/module.html#Module.compile_graph"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.stateful.module.Module.compile_graph" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt id="ivy.stateful.module.Module.compile_on_next_step">
-<code class="sig-name descname">compile_on_next_step</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/stateful/module.html#Module.compile_on_next_step"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.stateful.module.Module.compile_on_next_step" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
 <dt id="ivy.stateful.module.Module.get_mod_key">
 <code class="sig-name descname">get_mod_key</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">top_mod</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/stateful/module.html#Module.get_mod_key"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.stateful.module.Module.get_mod_key" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -300,11 +281,6 @@ raised during the compiled forward pass. Default is True.</p></li>
 :param weights_path: The hdf5 file for saving the weights.
 :type weights_path: string</p>
 </dd></dl>
-
-<dl class="py method">
-<dt id="ivy.stateful.module.Module.show_graph">
-<code class="sig-name descname">show_graph</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="n">v</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">with_grads</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">stateful</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">arg_stateful_idxs</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">kwarg_stateful_idxs</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">randomness_factor</span><span class="o">=</span><span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">save_to_disk</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">with_edge_labels</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">with_arg_labels</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">with_output_labels</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">output_connected_only</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">include_generators</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">fname</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/stateful/module.html#Module.show_graph"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.stateful.module.Module.show_graph" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
 
 <dl class="py method">
 <dt id="ivy.stateful.module.Module.show_mod_in_top_mod">

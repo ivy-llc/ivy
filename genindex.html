@@ -106,15 +106,6 @@
 <li class="toctree-l1"><a class="reference internal" href="functional/backends.html">Backends</a></li>
 <li class="toctree-l1"><a class="reference internal" href="functional/ivy.html">Ivy</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Graph compiler</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="graph_compiler/compiler.html">Compiler</a></li>
-<li class="toctree-l1"><a class="reference internal" href="graph_compiler/globals.html">Globals</a></li>
-<li class="toctree-l1"><a class="reference internal" href="graph_compiler/graph.html">Graph</a></li>
-<li class="toctree-l1"><a class="reference internal" href="graph_compiler/helpers.html">Helpers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="graph_compiler/op_logging.html">Op logging</a></li>
-<li class="toctree-l1"><a class="reference internal" href="graph_compiler/param.html">Param</a></li>
-</ul>
 <p class="caption"><span class="caption-text">Stateful</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="stateful/activations.html">Activations</a></li>
@@ -269,10 +260,6 @@
 </li>
         <li><a href="functional/ivy/core/gradients.html#ivy.functional.ivy.core.gradients.GradientTracking.__init__">(ivy.functional.ivy.core.gradients.GradientTracking method)</a>
 </li>
-        <li><a href="graph_compiler/graph.html#ivy.graph_compiler.graph.Graph.__init__">(ivy.graph_compiler.graph.Graph method)</a>
-</li>
-        <li><a href="graph_compiler/param.html#ivy.graph_compiler.param.Param.__init__">(ivy.graph_compiler.param.Param method)</a>
-</li>
         <li><a href="stateful/activations.html#ivy.stateful.activations.GEGLU.__init__">(ivy.stateful.activations.GEGLU method)</a>, <a href="stateful/activations/GEGLU.html#ivy.stateful.activations.GEGLU.__init__">[1]</a>
 </li>
         <li><a href="stateful/activations.html#ivy.stateful.activations.GELU.__init__">(ivy.stateful.activations.GELU method)</a>, <a href="stateful/activations/GELU.html#ivy.stateful.activations.GELU.__init__">[1]</a>
@@ -354,10 +341,6 @@
 </li>
       <li><a href="functional/ivy/core/gradients.html#ivy.functional.ivy.core.gradients.adam_update">adam_update() (in module ivy.functional.ivy.core.gradients)</a>, <a href="functional/ivy/core/gradients/adam_update.html#ivy.functional.ivy.core.gradients.adam_update">[1]</a>
 </li>
-      <li><a href="graph_compiler/graph.html#ivy.graph_compiler.graph.Graph.add_fn_to_dict">add_fn_to_dict() (ivy.graph_compiler.graph.Graph method)</a>
-</li>
-      <li><a href="graph_compiler/graph.html#ivy.graph_compiler.graph.Graph.add_param">add_param() (ivy.graph_compiler.graph.Graph method)</a>
-</li>
       <li><a href="functional/ivy/array_api/utility_functions.html#ivy.functional.ivy.array_api.utility_functions.all">all() (in module ivy.functional.ivy.array_api.utility_functions)</a>, <a href="functional/ivy/array_api/utility_functions/all.html#ivy.functional.ivy.array_api.utility_functions.all">[1]</a>
 </li>
       <li><a href="functional/ivy/core/general.html#ivy.functional.ivy.core.general.all_equal">all_equal() (in module ivy.functional.ivy.core.general)</a>, <a href="functional/ivy/core/general/all_equal.html#ivy.functional.ivy.core.general.all_equal">[1]</a>
@@ -424,10 +407,10 @@
 </li>
       <li><a href="array/array_api/inplace_operators.html#ivy.array.array_api.inplace_operators.ArrayWithArrayAPIInplaceOperators">ArrayWithArrayAPIInplaceOperators (class in ivy.array.array_api.inplace_operators)</a>, <a href="array/array_api/inplace_operators/ArrayWithArrayAPIInplaceOperators.html#ivy.array.array_api.inplace_operators.ArrayWithArrayAPIInplaceOperators">[1]</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="array/array_api/reflected_operators.html#ivy.array.array_api.reflected_operators.ArrayWithArrayAPIReflectedOperators">ArrayWithArrayAPIReflectedOperators (class in ivy.array.array_api.reflected_operators)</a>, <a href="array/array_api/reflected_operators/ArrayWithArrayAPIReflectedOperators.html#ivy.array.array_api.reflected_operators.ArrayWithArrayAPIReflectedOperators">[1]</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="array/device.html#ivy.array.device.ArrayWithDevice">ArrayWithDevice (class in ivy.array.device)</a>, <a href="array/device/ArrayWithDevice.html#ivy.array.device.ArrayWithDevice">[1]</a>
 </li>
       <li><a href="array/general.html#ivy.array.general.ArrayWithGeneral">ArrayWithGeneral (class in ivy.array.general)</a>, <a href="array/general/ArrayWithGeneral.html#ivy.array.general.ArrayWithGeneral">[1]</a>
@@ -674,22 +657,6 @@
         <li><a href="functional/ivy/core/compilation.html#ivy.functional.ivy.core.compilation.compile">(in module ivy.functional.ivy.core.compilation)</a>, <a href="functional/ivy/core/compilation/compile.html#ivy.functional.ivy.core.compilation.compile">[1]</a>
 </li>
       </ul></li>
-      <li><a href="graph_compiler/compiler.html#ivy.graph_compiler.compiler.compile_graph">compile_graph() (in module ivy.graph_compiler.compiler)</a>, <a href="graph_compiler/compiler/compile_graph.html#ivy.graph_compiler.compiler.compile_graph">[1]</a>
-
-      <ul>
-        <li><a href="stateful/module.html#ivy.stateful.module.Module.compile_graph">(ivy.stateful.module.Module method)</a>, <a href="stateful/module/Module.html#ivy.stateful.module.Module.compile_graph">[1]</a>
-</li>
-        <li><a href="stateful/optimizers.html#ivy.stateful.optimizers.Optimizer.compile_graph">(ivy.stateful.optimizers.Optimizer method)</a>, <a href="stateful/optimizers/Optimizer.html#ivy.stateful.optimizers.Optimizer.compile_graph">[1]</a>
-</li>
-      </ul></li>
-      <li><a href="stateful/module.html#ivy.stateful.module.Module.compile_on_next_step">compile_on_next_step() (ivy.stateful.module.Module method)</a>, <a href="stateful/module/Module.html#ivy.stateful.module.Module.compile_on_next_step">[1]</a>
-
-      <ul>
-        <li><a href="stateful/optimizers.html#ivy.stateful.optimizers.Optimizer.compile_on_next_step">(ivy.stateful.optimizers.Optimizer method)</a>, <a href="stateful/optimizers/Optimizer.html#ivy.stateful.optimizers.Optimizer.compile_on_next_step">[1]</a>
-</li>
-      </ul></li>
-      <li><a href="graph_compiler/graph.html#ivy.graph_compiler.graph.Graph.compiled">compiled() (ivy.graph_compiler.graph.Graph method)</a>
-</li>
       <li><a href="container.html#ivy.container.Container.concat">concat() (ivy.container.Container static method)</a>, <a href="container/Container.html#ivy.container.Container.concat">[1]</a>
 </li>
       <li><a href="functional/backends/numpy/core/general.html#ivy.functional.backends.numpy.core.general.concatenate">concatenate() (in module ivy.functional.backends.numpy.core.general)</a>, <a href="functional/backends/numpy/core/general/concatenate.html#ivy.functional.backends.numpy.core.general.concatenate">[1]</a>
@@ -699,8 +666,6 @@
 </li>
       </ul></li>
       <li><a href="container.html#ivy.container.Container.config">config() (ivy.container.Container property)</a>, <a href="container/Container.html#ivy.container.Container.config">[1]</a>
-</li>
-      <li><a href="graph_compiler/graph.html#ivy.graph_compiler.graph.Graph.connect">connect() (ivy.graph_compiler.graph.Graph method)</a>
 </li>
       <li><a href="stateful/initializers.html#ivy.stateful.initializers.Constant">Constant (class in ivy.stateful.initializers)</a>
 </li>
@@ -718,14 +683,14 @@
         <li><a href="functional/ivy/core/general.html#ivy.functional.ivy.core.general.container_types">(in module ivy.functional.ivy.core.general)</a>, <a href="functional/ivy/core/general/container_types.html#ivy.functional.ivy.core.general.container_types">[1]</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="container.html#ivy.container.Container.contains_sub_container">contains_sub_container() (ivy.container.Container method)</a>, <a href="container/Container.html#ivy.container.Container.contains_sub_container">[1]</a>
 </li>
       <li><a href="container.html#ivy.container.Container.contains_sub_structure">contains_sub_structure() (ivy.container.Container method)</a>, <a href="container/Container.html#ivy.container.Container.contains_sub_structure">[1]</a>
 </li>
       <li><a href="framework_handler.html#ivy.framework_handler.ContextManager">ContextManager (class in ivy.framework_handler)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="stateful/layers.html#ivy.stateful.layers.Conv1D">Conv1D (class in ivy.stateful.layers)</a>, <a href="stateful/layers/Conv1D.html#ivy.stateful.layers.Conv1D">[1]</a>
 </li>
       <li><a href="functional/ivy/nn/layers.html#ivy.functional.ivy.nn.layers.conv1d">conv1d() (in module ivy.functional.ivy.nn.layers)</a>, <a href="functional/ivy/nn/layers/conv1d.html#ivy.functional.ivy.nn.layers.conv1d">[1]</a>
@@ -770,8 +735,6 @@
         <li><a href="functional/ivy/core/math.html#ivy.functional.ivy.core.math.cosh">(in module ivy.functional.ivy.core.math)</a>, <a href="functional/ivy/core/math/cosh.html#ivy.functional.ivy.core.math.cosh">[1]</a>
 </li>
       </ul></li>
-      <li><a href="graph_compiler/param.html#ivy.graph_compiler.param.Param.count">count() (ivy.graph_compiler.param.Param property)</a>
-</li>
       <li><a href="verbosity.html#ivy.verbosity.cprint">cprint() (in module ivy.verbosity)</a>, <a href="verbosity/cprint.html#ivy.verbosity.cprint">[1]</a>
 </li>
       <li><a href="container.html#ivy.container.Container.create_if_absent">create_if_absent() (ivy.container.Container method)</a>, <a href="container/Container.html#ivy.container.Container.create_if_absent">[1]</a>
@@ -816,8 +779,6 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="functional/ivy/core/device.html#ivy.functional.ivy.core.device.DevManager.da_tune_step">da_tune_step() (ivy.functional.ivy.core.device.DevManager method)</a>
 </li>
-      <li><a href="graph_compiler/graph.html#ivy.graph_compiler.graph.Graph.debug_info">debug_info() (ivy.graph_compiler.graph.Graph method)</a>
-</li>
       <li><a href="debugger.html#ivy.debugger.debug_mode">debug_mode() (in module ivy.debugger)</a>, <a href="debugger/debug_mode.html#ivy.debugger.debug_mode">[1]</a>
 </li>
       <li><a href="container.html#ivy.container.Container.deep_copy">deep_copy() (ivy.container.Container method)</a>, <a href="container/Container.html#ivy.container.Container.deep_copy">[1]</a>
@@ -839,8 +800,6 @@
       <li><a href="functional/ivy/core/dtype.html#ivy.functional.ivy.core.dtype.DefaultFloatDtype">DefaultFloatDtype (class in ivy.functional.ivy.core.dtype)</a>
 </li>
       <li><a href="functional/ivy/core/dtype.html#ivy.functional.ivy.core.dtype.DefaultIntDtype">DefaultIntDtype (class in ivy.functional.ivy.core.dtype)</a>
-</li>
-      <li><a href="graph_compiler/param.html#ivy.graph_compiler.param.Param.depth">depth() (ivy.graph_compiler.param.Param property)</a>
 </li>
       <li><a href="functional/ivy/nn/layers.html#ivy.functional.ivy.nn.layers.depthwise_conv2d">depthwise_conv2d() (in module ivy.functional.ivy.nn.layers)</a>, <a href="functional/ivy/nn/layers/depthwise_conv2d.html#ivy.functional.ivy.nn.layers.depthwise_conv2d">[1]</a>
 </li>
@@ -886,14 +845,14 @@
       </ul></li>
       <li><a href="container.html#ivy.container.Container.dev_str">dev_str() (ivy.container.Container property)</a>, <a href="container/Container.html#ivy.container.Container.dev_str">[1]</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="functional/backends/numpy/core/device.html#ivy.functional.backends.numpy.core.device.dev_to_str">dev_to_str() (in module ivy.functional.backends.numpy.core.device)</a>
 
       <ul>
         <li><a href="functional/ivy/core/device.html#ivy.functional.ivy.core.device.dev_to_str">(in module ivy.functional.ivy.core.device)</a>, <a href="functional/ivy/core/device/dev_to_str.html#ivy.functional.ivy.core.device.dev_to_str">[1]</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="functional/ivy/core/device.html#ivy.functional.ivy.core.device.dev_unify">dev_unify() (in module ivy.functional.ivy.core.device)</a>, <a href="functional/ivy/core/device/dev_unify.html#ivy.functional.ivy.core.device.dev_unify">[1]</a>
 </li>
       <li><a href="functional/ivy/core/device.html#ivy.functional.ivy.core.device.dev_unify_array">dev_unify_array() (in module ivy.functional.ivy.core.device)</a>, <a href="functional/ivy/core/device/dev_unify_array.html#ivy.functional.ivy.core.device.dev_unify_array">[1]</a>
@@ -1122,8 +1081,6 @@
 </li>
       <li><a href="functional/ivy/nn/activations.html#ivy.functional.ivy.nn.activations.gelu">gelu() (in module ivy.functional.ivy.nn.activations)</a>, <a href="functional/ivy/nn/activations/gelu.html#ivy.functional.ivy.nn.activations.gelu">[1]</a>
 </li>
-      <li><a href="graph_compiler/param.html#ivy.graph_compiler.param.Param.get">get() (ivy.graph_compiler.param.Param method)</a>
-</li>
       <li><a href="functional/ivy/core/general.html#ivy.functional.ivy.core.general.get_all_arrays_in_memory">get_all_arrays_in_memory() (in module ivy.functional.ivy.core.general)</a>, <a href="functional/ivy/core/general/get_all_arrays_in_memory.html#ivy.functional.ivy.core.general.get_all_arrays_in_memory">[1]</a>
 </li>
       <li><a href="functional/ivy/core/device.html#ivy.functional.ivy.core.device.get_all_arrays_on_dev">get_all_arrays_on_dev() (in module ivy.functional.ivy.core.device)</a>, <a href="functional/ivy/core/device/get_all_arrays_on_dev.html#ivy.functional.ivy.core.device.get_all_arrays_on_dev">[1]</a>
@@ -1132,10 +1089,10 @@
 </li>
       <li><a href="stateful/layers.html#ivy.stateful.layers.LSTM.get_initial_state">get_initial_state() (ivy.stateful.layers.LSTM method)</a>, <a href="stateful/layers/LSTM.html#ivy.stateful.layers.LSTM.get_initial_state">[1]</a>
 </li>
-      <li><a href="functional/ivy/core/general.html#ivy.functional.ivy.core.general.get_min_base">get_min_base() (in module ivy.functional.ivy.core.general)</a>, <a href="functional/ivy/core/general/get_min_base.html#ivy.functional.ivy.core.general.get_min_base">[1]</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="functional/ivy/core/general.html#ivy.functional.ivy.core.general.get_min_base">get_min_base() (in module ivy.functional.ivy.core.general)</a>, <a href="functional/ivy/core/general/get_min_base.html#ivy.functional.ivy.core.general.get_min_base">[1]</a>
+</li>
       <li><a href="functional/ivy/core/general.html#ivy.functional.ivy.core.general.get_min_denominator">get_min_denominator() (in module ivy.functional.ivy.core.general)</a>, <a href="functional/ivy/core/general/get_min_denominator.html#ivy.functional.ivy.core.general.get_min_denominator">[1]</a>
 </li>
       <li><a href="stateful/module.html#ivy.stateful.module.Module.get_mod_key">get_mod_key() (ivy.stateful.module.Module method)</a>, <a href="stateful/module/Module.html#ivy.stateful.module.Module.get_mod_key">[1]</a>
@@ -1146,10 +1103,6 @@
         <li><a href="functional/ivy/core/general.html#ivy.functional.ivy.core.general.get_num_dims">(in module ivy.functional.ivy.core.general)</a>, <a href="functional/ivy/core/general/get_num_dims.html#ivy.functional.ivy.core.general.get_num_dims">[1]</a>
 </li>
       </ul></li>
-      <li><a href="graph_compiler/graph.html#ivy.graph_compiler.graph.Graph.get_param">get_param() (ivy.graph_compiler.graph.Graph method)</a>
-</li>
-      <li><a href="graph_compiler/graph.html#ivy.graph_compiler.graph.Graph.get_param_recursive">get_param_recursive() (ivy.graph_compiler.graph.Graph method)</a>
-</li>
       <li><a href="functional/ivy/core/general.html#ivy.functional.ivy.core.general.get_referrers_recursive">get_referrers_recursive() (in module ivy.functional.ivy.core.general)</a>, <a href="functional/ivy/core/general/get_referrers_recursive.html#ivy.functional.ivy.core.general.get_referrers_recursive">[1]</a>
 </li>
       <li><a href="stateful/initializers.html#ivy.stateful.initializers.GlorotUniform">GlorotUniform (class in ivy.stateful.initializers)</a>, <a href="stateful/initializers/GlorotUniform.html#ivy.stateful.initializers.GlorotUniform">[1]</a>
@@ -1169,8 +1122,6 @@
 </li>
       </ul></li>
       <li><a href="functional/ivy/core/gradients.html#ivy.functional.ivy.core.gradients.GradientTracking">GradientTracking (class in ivy.functional.ivy.core.gradients)</a>
-</li>
-      <li><a href="graph_compiler/graph.html#ivy.graph_compiler.graph.Graph">Graph (class in ivy.graph_compiler.graph)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -1220,10 +1171,6 @@
         <li><a href="functional/ivy/array_api/data_type_functions.html#ivy.functional.ivy.array_api.data_type_functions.iinfo">(in module ivy.functional.ivy.array_api.data_type_functions)</a>, <a href="functional/ivy/array_api/data_type_functions/iinfo.html#ivy.functional.ivy.array_api.data_type_functions.iinfo">[1]</a>
 </li>
       </ul></li>
-      <li><a href="graph_compiler/graph.html#ivy.graph_compiler.graph.Graph.include_generators">include_generators() (ivy.graph_compiler.graph.Graph property)</a>
-</li>
-      <li><a href="graph_compiler/graph.html#ivy.graph_compiler.graph.Graph.increment_param_count">increment_param_count() (ivy.graph_compiler.graph.Graph method)</a>
-</li>
       <li><a href="functional/ivy/core/nest.html#ivy.functional.ivy.core.nest.index_nest">index_nest() (in module ivy.functional.ivy.core.nest)</a>, <a href="functional/ivy/core/nest/index_nest.html#ivy.functional.ivy.core.nest.index_nest">[1]</a>
 </li>
       <li><a href="functional/backends/numpy/core/general.html#ivy.functional.backends.numpy.core.general.indices_where">indices_where() (in module ivy.functional.backends.numpy.core.general)</a>, <a href="functional/backends/numpy/core/general/indices_where.html#ivy.functional.backends.numpy.core.general.indices_where">[1]</a>
@@ -1277,8 +1224,6 @@
       <li><a href="functional/ivy/core/dtype.html#ivy.functional.ivy.core.dtype.is_float_dtype">is_float_dtype() (in module ivy.functional.ivy.core.dtype)</a>, <a href="functional/ivy/core/dtype/is_float_dtype.html#ivy.functional.ivy.core.dtype.is_float_dtype">[1]</a>
 </li>
       <li><a href="functional/ivy/core/dtype.html#ivy.functional.ivy.core.dtype.is_int_dtype">is_int_dtype() (in module ivy.functional.ivy.core.dtype)</a>, <a href="functional/ivy/core/dtype/is_int_dtype.html#ivy.functional.ivy.core.dtype.is_int_dtype">[1]</a>
-</li>
-      <li><a href="graph_compiler/param.html#ivy.graph_compiler.param.Param.is_var">is_var() (ivy.graph_compiler.param.Param property)</a>
 </li>
       <li><a href="functional/backends/numpy/core/gradients.html#ivy.functional.backends.numpy.core.gradients.is_variable">is_variable() (in module ivy.functional.backends.numpy.core.gradients)</a>, <a href="functional/backends/numpy/core/gradients/is_variable.html#ivy.functional.backends.numpy.core.gradients.is_variable">[1]</a>
 
@@ -1520,6 +1465,8 @@
         <li><a href="functional/backends/numpy/core/image.html#module-ivy.functional.backends.numpy.core.image">module</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     ivy.functional.backends.numpy.core.linear_algebra
 
@@ -1534,8 +1481,6 @@
         <li><a href="functional/backends/numpy/core/logic.html#module-ivy.functional.backends.numpy.core.logic">module</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     ivy.functional.backends.numpy.core.math
 
@@ -1803,48 +1748,6 @@
 </li>
       </ul></li>
       <li>
-    ivy.graph_compiler.compiler
-
-      <ul>
-        <li><a href="graph_compiler/compiler.html#module-ivy.graph_compiler.compiler">module</a>
-</li>
-      </ul></li>
-      <li>
-    ivy.graph_compiler.globals
-
-      <ul>
-        <li><a href="graph_compiler/globals.html#module-ivy.graph_compiler.globals">module</a>
-</li>
-      </ul></li>
-      <li>
-    ivy.graph_compiler.graph
-
-      <ul>
-        <li><a href="graph_compiler/graph.html#module-ivy.graph_compiler.graph">module</a>
-</li>
-      </ul></li>
-      <li>
-    ivy.graph_compiler.helpers
-
-      <ul>
-        <li><a href="graph_compiler/helpers.html#module-ivy.graph_compiler.helpers">module</a>
-</li>
-      </ul></li>
-      <li>
-    ivy.graph_compiler.op_logging
-
-      <ul>
-        <li><a href="graph_compiler/op_logging.html#module-ivy.graph_compiler.op_logging">module</a>
-</li>
-      </ul></li>
-      <li>
-    ivy.graph_compiler.param
-
-      <ul>
-        <li><a href="graph_compiler/param.html#module-ivy.graph_compiler.param">module</a>
-</li>
-      </ul></li>
-      <li>
     ivy.stateful.activations
 
       <ul>
@@ -1970,12 +1873,6 @@
       <li><a href="functional/ivy/array_api/elementwise_functions.html#ivy.functional.ivy.array_api.elementwise_functions.log1p">log1p() (in module ivy.functional.ivy.array_api.elementwise_functions)</a>, <a href="functional/ivy/array_api/elementwise_functions/log1p.html#ivy.functional.ivy.array_api.elementwise_functions.log1p">[1]</a>
 </li>
       <li><a href="functional/ivy/array_api/elementwise_functions.html#ivy.functional.ivy.array_api.elementwise_functions.log2">log2() (in module ivy.functional.ivy.array_api.elementwise_functions)</a>, <a href="functional/ivy/array_api/elementwise_functions/log2.html#ivy.functional.ivy.array_api.elementwise_functions.log2">[1]</a>
-</li>
-      <li><a href="graph_compiler/graph.html#ivy.graph_compiler.graph.Graph.log_all_ops">log_all_ops() (ivy.graph_compiler.graph.Graph method)</a>
-</li>
-      <li><a href="graph_compiler/globals.html#ivy.graph_compiler.globals.log_global_inference_abs_times">log_global_inference_abs_times() (in module ivy.graph_compiler.globals)</a>, <a href="graph_compiler/globals/log_global_inference_abs_times.html#ivy.graph_compiler.globals.log_global_inference_abs_times">[1]</a>
-</li>
-      <li><a href="graph_compiler/globals.html#ivy.graph_compiler.globals.log_global_inference_rel_times">log_global_inference_rel_times() (in module ivy.graph_compiler.globals)</a>, <a href="graph_compiler/globals/log_global_inference_rel_times.html#ivy.graph_compiler.globals.log_global_inference_rel_times">[1]</a>
 </li>
       <li><a href="functional/ivy/core/logic.html#ivy.functional.ivy.core.logic.logical_and">logical_and() (in module ivy.functional.ivy.core.logic)</a>, <a href="functional/ivy/core/logic/logical_and.html#ivy.functional.ivy.core.logic.logical_and">[1]</a>
 </li>
@@ -2211,18 +2108,6 @@
 </li>
         <li><a href="functional/ivy/nn/norms.html#module-ivy.functional.ivy.nn.norms">ivy.functional.ivy.nn.norms</a>
 </li>
-        <li><a href="graph_compiler/compiler.html#module-ivy.graph_compiler.compiler">ivy.graph_compiler.compiler</a>
-</li>
-        <li><a href="graph_compiler/globals.html#module-ivy.graph_compiler.globals">ivy.graph_compiler.globals</a>
-</li>
-        <li><a href="graph_compiler/graph.html#module-ivy.graph_compiler.graph">ivy.graph_compiler.graph</a>
-</li>
-        <li><a href="graph_compiler/helpers.html#module-ivy.graph_compiler.helpers">ivy.graph_compiler.helpers</a>
-</li>
-        <li><a href="graph_compiler/op_logging.html#module-ivy.graph_compiler.op_logging">ivy.graph_compiler.op_logging</a>
-</li>
-        <li><a href="graph_compiler/param.html#module-ivy.graph_compiler.param">ivy.graph_compiler.param</a>
-</li>
         <li><a href="stateful/activations.html#module-ivy.stateful.activations">ivy.stateful.activations</a>
 </li>
         <li><a href="stateful/converters.html#module-ivy.stateful.converters">ivy.stateful.converters</a>
@@ -2348,10 +2233,6 @@
 <h2 id="P">P</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="graph_compiler/param.html#ivy.graph_compiler.param.Param">Param (class in ivy.graph_compiler.param)</a>
-</li>
-      <li><a href="graph_compiler/graph.html#ivy.graph_compiler.graph.Graph.params_all_empty">params_all_empty() (ivy.graph_compiler.graph.Graph method)</a>
-</li>
       <li><a href="functional/ivy/core/device.html#ivy.functional.ivy.core.device.percent_used_mem_on_dev">percent_used_mem_on_dev() (in module ivy.functional.ivy.core.device)</a>, <a href="functional/ivy/core/device/percent_used_mem_on_dev.html#ivy.functional.ivy.core.device.percent_used_mem_on_dev">[1]</a>
 </li>
       <li><a href="functional/ivy/array_api/constants.html#ivy.functional.ivy.array_api.constants.pi">pi (in module ivy.functional.ivy.array_api.constants)</a>
@@ -2381,8 +2262,6 @@
       <li><a href="container.html#ivy.container.Container.prune_keys">prune_keys() (ivy.container.Container method)</a>, <a href="container/Container.html#ivy.container.Container.prune_keys">[1]</a>
 </li>
       <li><a href="container.html#ivy.container.Container.prune_keys_from_key_chains">prune_keys_from_key_chains() (ivy.container.Container method)</a>, <a href="container/Container.html#ivy.container.Container.prune_keys_from_key_chains">[1]</a>
-</li>
-      <li><a href="graph_compiler/param.html#ivy.graph_compiler.param.Param.ptype">ptype() (ivy.graph_compiler.param.Param property)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -2512,8 +2391,6 @@
 <h2 id="S">S</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="graph_compiler/graph.html#ivy.graph_compiler.graph.Graph.save_debug_info">save_debug_info() (ivy.graph_compiler.graph.Graph method)</a>
-</li>
       <li><a href="stateful/module.html#ivy.stateful.module.Module.save_weights">save_weights() (ivy.stateful.module.Module method)</a>, <a href="stateful/module/Module.html#ivy.stateful.module.Module.save_weights">[1]</a>
 </li>
       <li><a href="functional/ivy/nn/layers.html#ivy.functional.ivy.nn.layers.scaled_dot_product_attention">scaled_dot_product_attention() (in module ivy.functional.ivy.nn.layers)</a>, <a href="functional/ivy/nn/layers/scaled_dot_product_attention.html#ivy.functional.ivy.nn.layers.scaled_dot_product_attention">[1]</a>
@@ -2538,8 +2415,6 @@
       </ul></li>
       <li><a href="stateful/sequential.html#ivy.stateful.sequential.Sequential">Sequential (class in ivy.stateful.sequential)</a>, <a href="stateful/sequential/Sequential.html#ivy.stateful.sequential.Sequential">[1]</a>
 </li>
-      <li><a href="graph_compiler/param.html#ivy.graph_compiler.param.Param.set">set() (ivy.graph_compiler.param.Param method)</a>
-</li>
       <li><a href="container.html#ivy.container.Container.set_at_key_chain">set_at_key_chain() (ivy.container.Container method)</a>, <a href="container/Container.html#ivy.container.Container.set_at_key_chain">[1]</a>
 </li>
       <li><a href="container.html#ivy.container.Container.set_at_key_chains">set_at_key_chains() (ivy.container.Container method)</a>, <a href="container/Container.html#ivy.container.Container.set_at_key_chains">[1]</a>
@@ -2547,8 +2422,6 @@
       <li><a href="container.html#ivy.container.Container.set_at_keys">set_at_keys() (ivy.container.Container method)</a>, <a href="container/Container.html#ivy.container.Container.set_at_keys">[1]</a>
 </li>
       <li><a href="debugger.html#ivy.debugger.set_breakpoint_debug_mode">set_breakpoint_debug_mode() (in module ivy.debugger)</a>, <a href="debugger/set_breakpoint_debug_mode.html#ivy.debugger.set_breakpoint_debug_mode">[1]</a>
-</li>
-      <li><a href="graph_compiler/param.html#ivy.graph_compiler.param.Param.set_count">set_count() (ivy.graph_compiler.param.Param method)</a>
 </li>
       <li><a href="debugger.html#ivy.debugger.set_debug_mode">set_debug_mode() (in module ivy.debugger)</a>, <a href="debugger/set_debug_mode.html#ivy.debugger.set_debug_mode">[1]</a>
 </li>
@@ -2577,8 +2450,6 @@
       <li><a href="functional/ivy/core/nest.html#ivy.functional.ivy.core.nest.set_nest_at_index">set_nest_at_index() (in module ivy.functional.ivy.core.nest)</a>, <a href="functional/ivy/core/nest/set_nest_at_index.html#ivy.functional.ivy.core.nest.set_nest_at_index">[1]</a>
 </li>
       <li><a href="functional/ivy/core/nest.html#ivy.functional.ivy.core.nest.set_nest_at_indices">set_nest_at_indices() (in module ivy.functional.ivy.core.nest)</a>, <a href="functional/ivy/core/nest/set_nest_at_indices.html#ivy.functional.ivy.core.nest.set_nest_at_indices">[1]</a>
-</li>
-      <li><a href="graph_compiler/graph.html#ivy.graph_compiler.graph.Graph.set_param">set_param() (ivy.graph_compiler.graph.Graph method)</a>
 </li>
       <li><a href="functional/ivy/core/general.html#ivy.functional.ivy.core.general.set_queue_timeout">set_queue_timeout() (in module ivy.functional.ivy.core.general)</a>, <a href="functional/ivy/core/general/set_queue_timeout.html#ivy.functional.ivy.core.general.set_queue_timeout">[1]</a>
 </li>
@@ -2611,31 +2482,13 @@
 </li>
         <li><a href="functional/ivy/core/device.html#ivy.functional.ivy.core.device.MultiDevItem.shape">(ivy.functional.ivy.core.device.MultiDevItem property)</a>, <a href="functional/ivy/core/device/MultiDevItem.html#ivy.functional.ivy.core.device.MultiDevItem.shape">[1]</a>
 </li>
-        <li><a href="graph_compiler/param.html#ivy.graph_compiler.param.Param.shape">(ivy.graph_compiler.param.Param property)</a>
-</li>
       </ul></li>
       <li><a href="functional/ivy/core/general.html#ivy.functional.ivy.core.general.shape_to_tuple">shape_to_tuple() (in module ivy.functional.ivy.core.general)</a>, <a href="functional/ivy/core/general/shape_to_tuple.html#ivy.functional.ivy.core.general.shape_to_tuple">[1]</a>
 </li>
       <li><a href="container.html#ivy.container.Container.shapes">shapes() (ivy.container.Container property)</a>, <a href="container/Container.html#ivy.container.Container.shapes">[1]</a>
 </li>
       <li><a href="container.html#ivy.container.Container.show">show() (ivy.container.Container method)</a>, <a href="container/Container.html#ivy.container.Container.show">[1]</a>
-
-      <ul>
-        <li><a href="graph_compiler/graph.html#ivy.graph_compiler.graph.Graph.show">(ivy.graph_compiler.graph.Graph method)</a>
 </li>
-      </ul></li>
-      <li><a href="graph_compiler/graph.html#ivy.graph_compiler.graph.Graph.show_debug_info">show_debug_info() (ivy.graph_compiler.graph.Graph method)</a>
-</li>
-      <li><a href="graph_compiler/compiler.html#ivy.graph_compiler.compiler.show_graph">show_graph() (in module ivy.graph_compiler.compiler)</a>, <a href="graph_compiler/compiler/show_graph.html#ivy.graph_compiler.compiler.show_graph">[1]</a>
-
-      <ul>
-        <li><a href="stateful/module.html#ivy.stateful.module.Module.show_graph">(ivy.stateful.module.Module method)</a>, <a href="stateful/module/Module.html#ivy.stateful.module.Module.show_graph">[1]</a>
-</li>
-        <li><a href="stateful/optimizers.html#ivy.stateful.optimizers.Optimizer.show_graph">(ivy.stateful.optimizers.Optimizer method)</a>, <a href="stateful/optimizers/Optimizer.html#ivy.stateful.optimizers.Optimizer.show_graph">[1]</a>
-</li>
-      </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="stateful/module.html#ivy.stateful.module.Module.show_mod_in_top_mod">show_mod_in_top_mod() (ivy.stateful.module.Module method)</a>, <a href="stateful/module/Module.html#ivy.stateful.module.Module.show_mod_in_top_mod">[1]</a>
 </li>
       <li><a href="stateful/module.html#ivy.stateful.module.Module.show_structure">show_structure() (ivy.stateful.module.Module method)</a>, <a href="stateful/module/Module.html#ivy.stateful.module.Module.show_structure">[1]</a>
@@ -2652,6 +2505,8 @@
         <li><a href="container.html#ivy.container.Container.shuffle">(ivy.container.Container method)</a>, <a href="container/Container.html#ivy.container.Container.shuffle">[1]</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="container.html#ivy.container.Container.shuffle_h5_file">shuffle_h5_file() (ivy.container.Container static method)</a>, <a href="container/Container.html#ivy.container.Container.shuffle_h5_file">[1]</a>
 </li>
       <li><a href="functional/ivy/nn/activations.html#ivy.functional.ivy.nn.activations.sigmoid">sigmoid() (in module ivy.functional.ivy.nn.activations)</a>, <a href="functional/ivy/nn/activations/sigmoid.html#ivy.functional.ivy.nn.activations.sigmoid">[1]</a>
@@ -2912,10 +2767,10 @@
 </li>
       <li><a href="functional/ivy/core/dtype.html#ivy.functional.ivy.core.dtype.unset_default_float_dtype">unset_default_float_dtype() (in module ivy.functional.ivy.core.dtype)</a>, <a href="functional/ivy/core/dtype/unset_default_float_dtype.html#ivy.functional.ivy.core.dtype.unset_default_float_dtype">[1]</a>
 </li>
-      <li><a href="functional/ivy/core/dtype.html#ivy.functional.ivy.core.dtype.unset_default_int_dtype">unset_default_int_dtype() (in module ivy.functional.ivy.core.dtype)</a>, <a href="functional/ivy/core/dtype/unset_default_int_dtype.html#ivy.functional.ivy.core.dtype.unset_default_int_dtype">[1]</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="functional/ivy/core/dtype.html#ivy.functional.ivy.core.dtype.unset_default_int_dtype">unset_default_int_dtype() (in module ivy.functional.ivy.core.dtype)</a>, <a href="functional/ivy/core/dtype/unset_default_int_dtype.html#ivy.functional.ivy.core.dtype.unset_default_int_dtype">[1]</a>
+</li>
       <li><a href="framework_handler.html#ivy.framework_handler.unset_framework">unset_framework() (in module ivy.framework_handler)</a>, <a href="framework_handler/unset_framework.html#ivy.framework_handler.unset_framework">[1]</a>
 </li>
       <li><a href="functional/ivy/core/gradients.html#ivy.functional.ivy.core.gradients.unset_with_grads">unset_with_grads() (in module ivy.functional.ivy.core.gradients)</a>, <a href="functional/ivy/core/gradients/unset_with_grads.html#ivy.functional.ivy.core.gradients.unset_with_grads">[1]</a>
@@ -2929,8 +2784,6 @@
 </li>
       </ul></li>
       <li><a href="container.html#ivy.container.Container.update_config">update_config() (ivy.container.Container method)</a>, <a href="container/Container.html#ivy.container.Container.update_config">[1]</a>
-</li>
-      <li><a href="graph_compiler/graph.html#ivy.graph_compiler.graph.Graph.update_inference_times">update_inference_times() (ivy.graph_compiler.graph.Graph method)</a>
 </li>
       <li><a href="functional/ivy/core/device.html#ivy.functional.ivy.core.device.used_mem_on_dev">used_mem_on_dev() (in module ivy.functional.ivy.core.device)</a>, <a href="functional/ivy/core/device/used_mem_on_dev.html#ivy.functional.ivy.core.device.used_mem_on_dev">[1]</a>
 </li>
@@ -2986,16 +2839,14 @@
         <li><a href="functional/ivy/core/general.html#ivy.functional.ivy.core.general.where">(in module ivy.functional.ivy.core.general)</a>, <a href="functional/ivy/core/general/where.html#ivy.functional.ivy.core.general.where">[1]</a>
 </li>
       </ul></li>
-      <li><a href="graph_compiler/graph.html#ivy.graph_compiler.graph.Graph.with_array_caching">with_array_caching() (ivy.graph_compiler.graph.Graph property)</a>
-</li>
       <li><a href="container.html#ivy.container.Container.with_default_key_color">with_default_key_color() (ivy.container.Container method)</a>, <a href="container/Container.html#ivy.container.Container.with_default_key_color">[1]</a>
 </li>
       <li><a href="container.html#ivy.container.Container.with_entries_as_lists">with_entries_as_lists() (ivy.container.Container method)</a>, <a href="container/Container.html#ivy.container.Container.with_entries_as_lists">[1]</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="functional/ivy/core/gradients.html#ivy.functional.ivy.core.gradients.with_grads">with_grads() (in module ivy.functional.ivy.core.gradients)</a>, <a href="functional/ivy/core/gradients/with_grads.html#ivy.functional.ivy.core.gradients.with_grads">[1]</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="container.html#ivy.container.Container.with_ivy_backend">with_ivy_backend() (ivy.container.Container method)</a>, <a href="container/Container.html#ivy.container.Container.with_ivy_backend">[1]</a>
 </li>
       <li><a href="container.html#ivy.container.Container.with_key_length_limit">with_key_length_limit() (ivy.container.Container method)</a>, <a href="container/Container.html#ivy.container.Container.with_key_length_limit">[1]</a>

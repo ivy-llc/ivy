@@ -106,15 +106,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../functional/backends.html">Backends</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../functional/ivy.html">Ivy</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Graph compiler</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../graph_compiler/compiler.html">Compiler</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../graph_compiler/globals.html">Globals</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../graph_compiler/graph.html">Graph</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../graph_compiler/helpers.html">Helpers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../graph_compiler/op_logging.html">Op logging</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../graph_compiler/param.html">Param</a></li>
-</ul>
 <p class="caption"><span class="caption-text">Stateful</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../stateful/activations.html">Activations</a></li>
@@ -295,23 +286,6 @@
 
     <span class="c1"># Given #</span>
 
-<div class="viewcode-block" id="Optimizer.compile_graph"><a class="viewcode-back" href="../../../stateful/optimizers/Optimizer.html#ivy.stateful.optimizers.Optimizer.compile_graph">[docs]</a>    <span class="k">def</span> <span class="nf">compile_graph</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">grads</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ignore_missing</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="c1"># ToDo: add more options to this function, like in ivy.Module</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;compiling step for optimizer </span><span class="si">{}</span><span class="s1"> ...&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_compiled_step_fn</span> <span class="o">=</span> \
-            <span class="n">ivy</span><span class="o">.</span><span class="n">compile_graph</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_step_fn</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">default</span><span class="p">(</span><span class="n">grads</span><span class="p">,</span> <span class="n">v</span><span class="o">.</span><span class="n">deep_copy</span><span class="p">()),</span> <span class="n">ignore_missing</span><span class="p">,</span> <span class="n">stateful</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="p">],</span>
-                              <span class="n">name</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> step compiled!&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_compiled</span> <span class="o">=</span> <span class="kc">True</span></div>
-
-<div class="viewcode-block" id="Optimizer.show_graph"><a class="viewcode-back" href="../../../stateful/optimizers/Optimizer.html#ivy.stateful.optimizers.Optimizer.show_graph">[docs]</a>    <span class="k">def</span> <span class="nf">show_graph</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">grads</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ignore_missing</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="c1"># ToDo: add more options to this function, like in ivy.Module</span>
-        <span class="n">ivy</span><span class="o">.</span><span class="n">show_graph</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_step_fn</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">default</span><span class="p">(</span><span class="n">grads</span><span class="p">,</span> <span class="n">v</span><span class="o">.</span><span class="n">deep_copy</span><span class="p">()),</span> <span class="n">ignore_missing</span><span class="p">,</span> <span class="n">stateful</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="p">],</span>
-                       <span class="n">name</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span></div>
-
-<div class="viewcode-block" id="Optimizer.compile_on_next_step"><a class="viewcode-back" href="../../../stateful/optimizers/Optimizer.html#ivy.stateful.optimizers.Optimizer.compile_on_next_step">[docs]</a>    <span class="k">def</span> <span class="nf">compile_on_next_step</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_compile_on_next_step</span> <span class="o">=</span> <span class="kc">True</span></div>
-
 <div class="viewcode-block" id="Optimizer.step"><a class="viewcode-back" href="../../../stateful/optimizers/Optimizer.html#ivy.stateful.optimizers.Optimizer.step">[docs]</a>    <span class="k">def</span> <span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">grads</span><span class="p">,</span> <span class="n">ignore_missing</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Update nested variables container v from overriden private self._step</span>
@@ -325,19 +299,6 @@
 <span class="sd">        :type ignore_missing: bool, optional</span>
 <span class="sd">        :return: The updated variables, following update step.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compiled</span> <span class="ow">and</span> <span class="n">ivy</span><span class="o">.</span><span class="n">try_use_compiled</span><span class="p">:</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_count</span> <span class="o">+=</span> <span class="mi">1</span>
-                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compiled_step_fn</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">grads</span><span class="p">,</span> <span class="n">ignore_missing</span><span class="p">)</span>
-            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fallback_to_non_compiled</span><span class="p">:</span>
-                    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_step_fn</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">grads</span><span class="p">,</span> <span class="n">ignore_missing</span><span class="p">)</span>
-                <span class="k">raise</span> <span class="n">e</span>
-        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compile_on_next_step</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_initialized</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compiled</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">compile_graph</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">grads</span><span class="p">,</span> <span class="n">ignore_missing</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_compile_on_next_step</span> <span class="o">=</span> <span class="kc">False</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_count</span> <span class="o">+=</span> <span class="mi">1</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compiled_step_fn</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">grads</span><span class="p">,</span> <span class="n">ignore_missing</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_count</span> <span class="o">+=</span> <span class="mi">1</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_initialized</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_step_fn</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">grads</span><span class="p">,</span> <span class="n">ignore_missing</span><span class="p">)</span></div></div>
