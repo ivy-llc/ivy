@@ -52,3 +52,18 @@ def tril(x: Union[ivy.Array, ivy.NativeArray],
              The returned array should be allocated on the same device as x.
     """
     return _cur_framework(x).tril(x, k)
+
+
+def empty(shape: Union[int, Tuple[int],List[int]],
+          dtype: Optional[ivy.Dtype] = None,
+          device: Optional[ivy.Device] = None)\
+        -> ivy.Array:
+    """
+    Return a new array of given shape and type, filled with zeros.
+    :param shape: output array shape.
+    :param dtype: output array data type. If dtype is None, the output array data type must be the default
+                  floating-point data type. Default: None.
+    :param device: device on which to place the created array. Default: None.
+    :return: an uninitialized array having a specified shape
+    """
+    return _cur_framework().empty(shape, dtype, device)
