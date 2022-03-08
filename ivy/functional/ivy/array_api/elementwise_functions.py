@@ -30,7 +30,6 @@ def negative(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
     Computes the numerical negative of each element
     
     :param x: Input array
-    :type x: array
     :return: an array containing the evaluated result for each element in x 
     """
     return _cur_framework(x).negative(x)
