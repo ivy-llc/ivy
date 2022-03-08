@@ -1,7 +1,6 @@
 #global
 import tensorflow as tf
-from typing import Optional
 
-def det(x:tf.Tensor,name:Optional[str]=None) \
+def det(x:tf.Tensor) \
     -> tf.Tensor:
-    return tf.linalg.det(x,name)
+    return tf.linalg.det(x)
