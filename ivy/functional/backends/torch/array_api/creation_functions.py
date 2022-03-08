@@ -21,3 +21,10 @@ def ones(shape: Union[int, Tuple[int]],
     dtype_val: torch.dtype = dtype_from_str(dtype)
     dev = default_device(device)
     return torch.ones(shape, dtype=dtype_val, device=dev_from_str(dev))
+
+
+def tril(x: torch.Tensor,
+         k: int = 0) \
+         -> torch.Tensor:
+    return torch.tril(x, diagonal=k)
+

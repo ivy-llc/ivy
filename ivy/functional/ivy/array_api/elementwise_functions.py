@@ -20,6 +20,17 @@ def bitwise_and(x1: Union[ivy.Array, ivy.NativeArray],
     return _cur_framework(x1, x2).bitwise_and(x1, x2)
 
 
+def ceil(x: Union[ivy.Array, ivy.NativeArray])\
+        -> ivy.Array:
+    """
+    Returns element-wise smallest integer not less than x.
+
+    :param x: Input array to ceil.
+    :return: An array of the same shape and type as x, with the elements ceiled to integers.
+    """
+    return _cur_framework(x).ceil(x)
+
+
 def isfinite(x: Union[ivy.Array, ivy.NativeArray])\
         -> ivy.Array:
     """
@@ -91,13 +102,24 @@ def log2(x: Union[ivy.Array, ivy.NativeArray])\
     return _cur_framework(x).log2(x)
 
 
+def log1p(x: Union[ivy.Array, ivy.NativeArray])\
+        -> ivy.Array:
+    """
+    Calculates an implementation-dependent approximation to log(1+x), where log refers to the natural (base e)
+    logarithm.
+
+    :param x: Input array.
+    :return: A new array containing the evaluated result for each element in x.
+    """
+    return _cur_framework(x).log1p(x)
+
+
 def isnan(x: Union[ivy.Array, ivy.NativeArray])\
         -> ivy.Array:
     """
     Returns boolean map at locations where the input is not a number (nan).
 
     :param x: Input array.
-    :type x: array
     :return: Boolean values for where the values of the array are nan.
     """
     return _cur_framework(x).isnan(x)
@@ -111,14 +133,11 @@ def less(x1: Union[ivy.Array, ivy.NativeArray],
     element x2_i of the input array x2.
 
     :param x1: Input array.
-    :type x1: array
     :param x2: Input array.
-    :type x2: array
     :param f: Machine learning framework. Inferred from inputs if None.
-    :type f: ml_framework, optional
     :return: an array containing the element-wise results. The returned array must have a data type of bool.
     """
-    return _cur_framework(x1,f=f).less(x1,x2)   
+    return _cur_framework(x1).less(x1,x2)
 
 
 def cos(x: Union[ivy.Array, ivy.NativeArray])\
