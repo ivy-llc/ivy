@@ -148,15 +148,6 @@ def argmin(x, axis=0):
     return ret
 
 
-""" Moved to ivy/functional/backends/jax/array_api/statistical_functions.py. Should be deleted here
-def min(x: _jnp.ndarray,
-        axis: Union[int, Tuple[int]] = None,
-        keepdims = False, device = None) \
-        -> _jnp.ndarray:
-    return _jnp.min(a = _jnp.asarray(x), axis = axis, keepdims = keepdims)
-"""
-
-
 def cast(x, dtype):
     return x.astype(dtype_from_str(dtype))
 
