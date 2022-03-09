@@ -4,9 +4,6 @@ Collection of TensorFlow linear algebra functions, wrapped to fit Ivy syntax and
 
 # global
 import tensorflow as _tf
-from typing import Union, Tuple
-import ivy as _ivy
-from collections import namedtuple
 
 
 # noinspection PyPep8Naming
@@ -60,15 +57,7 @@ def vector_to_skew_symmetric_matrix(vector):
     return _tf.concat((row1, row2, row3), -2)
 
 
-def slogdet(x:Union[_ivy.Array,_ivy.NativeArray],full_matrices: bool = True) -> Union[_ivy.Array, Tuple[_ivy.Array,...]]:
-    results = namedtuple("slogdet", "sign logabsdet")
-    sign, logabsdet = _tf.linalg.slogdet(x)
-    res = results(sign, logabsdet)
-    return res
 
-def det(x:Union[_ivy.Array,_ivy.NativeArray],full_matrices: bool = True) -> Union[_ivy.Array, Tuple[_ivy.Array,...]]:
-    d = _tf.linalg.det(x)
-    return d
 def qr(x, mode):
     if mode=="reduced":
         full_matrices = False
