@@ -39,6 +39,11 @@ def log2(x: np.ndarray)\
     return np.log2(x)
 
 
+def log1p(x: np.ndarray)\
+        -> np.ndarray:
+    return np.log1p(x)
+
+
 def isnan(x: np.ndarray)\
         -> np.ndarray:
     return np.isnan(x)
