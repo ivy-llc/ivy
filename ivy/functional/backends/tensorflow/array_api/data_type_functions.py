@@ -1,18 +1,18 @@
 # global
 import numpy as np
 import tensorflow as tf
-from typing import Union, Tuple, List
+from typing import Union, Tuple, NamedTuple
 from tensorflow.python.types.core import Tensor
 from tensorflow.python.framework.dtypes import DType
 
 # local
 import ivy
 
-
 # noinspection PyShadowingBuiltins
 def iinfo(type: Union[DType, str, Tensor])\
         -> np.iinfo:
     return tf.experimental.numpy.iinfo(ivy.dtype_to_str(type))
+
 
 
 class Finfo:
@@ -48,4 +48,7 @@ def finfo(type: Union[DType, str, Tensor])\
 
 
 def broadcast_to(x: Tensor, shape: Tuple[int, ...]) -> Tensor:
-        return tf.broadcast_to(x, shape)
+    return tf.broadcast_to(x, shape)
+# if __name__ == "__main__":
+#     #tf.constant([1, 2, 3])
+#     broadcast_to(tf.constant([1, 2, 3]),[3,3])
