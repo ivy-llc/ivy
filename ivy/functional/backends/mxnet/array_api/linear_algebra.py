@@ -15,6 +15,10 @@ def vector_norm(x: mx.ndarray.ndarray.NDArray,
 
     return mx.np.linalg.norm(x, p, axis, keepdims)
 
+def outer(x1: mx.nd.NDArray,
+          x2: mx.nd.NDArray)\
+        -> mx.nd.NDArray:
+    return mx.outer(x1,x2)
 
 def diagonal(x: mx.nd.NDArray,
              offset: int = 0,
