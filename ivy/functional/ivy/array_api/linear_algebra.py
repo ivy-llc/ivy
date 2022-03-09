@@ -90,3 +90,15 @@ def diagonal(x: ivy.Array,
     :return: Diagonal of the matrix x.
     """
     return _cur_framework(x).diagonal(x, offset, axis1=axis1, axis2=axis2)
+
+def slodget(x):
+    """
+    Compute the sign and natural logarithm of the determinant of an array.
+
+    :param x: This is a 2D array, and it has to be square
+    :type x: Array
+    :return: slogdet() function returns two values - sign and the natural log of
+     the absolute value of the determinant of matrix x
+    """
+
+    return _cur_framework(x).slodget(x)

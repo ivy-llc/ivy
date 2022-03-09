@@ -3,7 +3,9 @@ import torch
 from typing import Union, Optional, Tuple, Literal
 
 # local
+import ivy as _ivy
 from ivy import inf
+from collections import namedtuple
 
 
 def vector_norm(x: torch.Tensor,
@@ -25,3 +27,13 @@ def diagonal(x: torch.Tensor,
              axis1: int = -2,
              axis2: int = -1) -> torch.Tensor:
     return torch.diagonal(x, offset=offset, dim1=axis1, dim2=axis2)
+
+def slogdet(x:Union[_ivy.Array,_ivy.NativeArray],full_matrices: bool = True) -> Union[_ivy.Array, Tuple[_ivy.Array,...]]:
+    results = namedtuple("slogdet", "sign logabsdet")
+    sign, logabsdet = torch.linalg.slogdet(x)
+    res = results(sign, logabsdet)
+    return res
+
+def det(x:Union[_ivy.Array,_ivy.NativeArray],full_matrices: bool = True) -> Union[_ivy.Array, Tuple[_ivy.Array,...]]:
+    d = torch.linalg.det(x)
+    return d
