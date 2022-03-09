@@ -49,6 +49,4 @@ def finfo(type: Union[DType, str, Tensor])\
 
 def broadcast_to(x: Tensor, shape: Tuple[int, ...]) -> Tensor:
     return tf.broadcast_to(x, shape)
-# if __name__ == "__main__":
-#     #tf.constant([1, 2, 3])
-#     broadcast_to(tf.constant([1, 2, 3]),[3,3])
+
