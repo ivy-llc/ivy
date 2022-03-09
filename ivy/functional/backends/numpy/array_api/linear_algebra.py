@@ -32,5 +32,5 @@ def diagonal(x: np.ndarray,
 
 
 def inv(x: np.ndarray, /) -> np.ndarray:
-    return np.linalg.inv(x)
+    return np.linalg.inv(x)1
 

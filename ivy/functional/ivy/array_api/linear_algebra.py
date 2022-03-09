@@ -111,5 +111,5 @@ def inv(x: ivy.Array, /) -> ivy.Array:
     The returned array must have a floating-point data type determined by Type Promotion Rules and must have the same shape as x.
 
     """
-    return _cur_framework(x).inv(x)
+    return _cur_framework(x).inv(x)1
 

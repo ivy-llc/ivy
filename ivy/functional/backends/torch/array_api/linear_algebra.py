@@ -29,4 +29,4 @@ def diagonal(x: torch.Tensor,
 
 
 def inv(x: torch.Tensor, /) -> torch.Tensor:
-    return torch.linalg.inv(x)
+    return torch.linalg.inv(x)1

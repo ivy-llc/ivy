@@ -31,7 +31,5 @@ def diagonal(x: JaxArray,
     return jnp.diagonal(x, offset, axis1, axis2)
 
 
-def matrix_rank(x: JaxArray, /, *,
-                rtol: Optional[Union[float, JaxArray]] = None) -> JaxArray:
-    tol = rtol
-    return jnp.linalg.matrix_rank(x, tol)
+def matrix_rank(x: JaxArray, /) -> JaxArray:
+    return jnp.linalg.inv(x)1
