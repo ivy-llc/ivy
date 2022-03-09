@@ -1,6 +1,6 @@
 #global
 import torch
 
-def det(A:torch.Tensor) \
+def det(x:torch.Tensor) \
     -> torch.Tensor:
-    return torch.linalg.det(A)
+    return torch.linalg.det(x)
