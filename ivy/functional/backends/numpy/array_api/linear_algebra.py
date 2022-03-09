@@ -10,7 +10,7 @@ from ivy import inf
 
 # noinspection PyUnusedLocal,PyShadowingBuiltins
 def vector_norm(x: np.ndarray,
-                axis: Optional[Union[int, Tuple[int]]] = None, 
+                axis: Optional[Union[int, Tuple[int]]] = None,
                 keepdims: bool = False,
                 ord: Union[int, float, Literal[inf, - inf]] = 2)\
                  -> np.ndarray:
@@ -31,3 +31,9 @@ def svd(x:np.ndarray,full_matrices: bool = True) -> Union[np.ndarray, Tuple[np.n
     U, D, VT=np.linalg.svd(x, full_matrices=full_matrices)
     res=results(U, D, VT)
     return res
+  
+def diagonal(x: np.ndarray,
+             offset: int = 0,
+             axis1: int = -2,
+             axis2: int = -1) -> np.ndarray:
+    return np.diagonal(x, offset=offset, axis1=axis1, axis2=axis2)

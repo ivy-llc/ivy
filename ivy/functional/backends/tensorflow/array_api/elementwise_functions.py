@@ -12,6 +12,13 @@ def bitwise_and(x1: Tensor,
     return tf.bitwise.bitwise_and(x1, x2)
 
 
+def ceil(x: Tensor)\
+        -> Tensor:
+    if 'int' in str(x.dtype):
+        return x
+    return tf.math.ceil(x)
+
+
 def isfinite(x: Tensor) \
         -> Tensor:
     if ivy.is_int_dtype(x):
@@ -32,6 +39,16 @@ def sqrt(x: Tensor)\
 def cosh(x: Tensor) \
         -> Tensor:
     return tf.cosh(x)
+
+
+def log2(x: Tensor) \
+        -> Tensor:
+    return tf.experimental.numpy.log2(x)
+
+
+def log1p(x: Tensor) \
+        -> Tensor:
+    return tf.experimental.numpy.log1p(x)
 
 
 def isnan(x: Tensor)\

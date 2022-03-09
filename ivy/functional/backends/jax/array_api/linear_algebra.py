@@ -30,3 +30,10 @@ def svd(x:JaxArray,full_matrices: bool = True) -> Union[JaxArray, Tuple[JaxArray
     U, D, VT=jnp.linalg.svd(x, full_matrices=full_matrices)
     res=results(U, D, VT)
     return res
+
+def diagonal(x: JaxArray,
+             offset: int = 0,
+             axis1: int = -2,
+             axis2: int = -1) -> JaxArray:
+    return jnp.diagonal(x, offset, axis1, axis2)
+

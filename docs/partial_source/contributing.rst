@@ -3,6 +3,7 @@ Contributing to Ivy
 
 .. _`Array API`: https://data-apis.org/array-api/latest/
 .. _`tutorial series`: https://www.youtube.com/channel/UCGlkr-YCs3TjMVeOhbbULsw
+.. _`source files`: https://github.com/data-apis/array-api/tree/main/spec/API_specification/signatures
 
 Array API Standardization
 -------------------------
@@ -27,6 +28,16 @@ This is required for each backend framework :code:`numpy`, :code:`jax`,
 :code:`./test_array_api.sh backend_name`, for example :code:`./test_array_api.sh torch` or
 :code:`./test_array_api.sh jax`.
 
+The docstrings for all methods in the Ivy API should be taken directly from the associated docstring in the Array API
+standard. Use the `source files`_ in the Array API repository rather than the website for copying, so that the
+formatting can be copied correctly. Many Ivy methods still use the Sphinx documentation format, but these should be
+updated to now use the NumPy style, which is the same format used by all methods in the Array API Standard.
+However, when defining our method in Ivy, we should remove the following arguments which appear in the standard to
+denote the optional inclusion of additional arguments by frameworks which adopt the standard :code:`*, \,`.
+Additionally, we should remove all argument types from the docstrings. These are all defined using type-hints in the
+arguments already, and adding these also to the docstrings would create unecessary duplication. Our documentation
+builder adds the correct types to the online documentation dynamically using the type hints directly.
+
 
 Keeping Your Fork Updated
 -------------------------
@@ -39,16 +50,71 @@ If you are developing for pull requests (PRs), then it is common to create PR-sp
 run :code:`./merge_with_upstream.sh name_of_your_pr_branch`.
 
 
+ToDo List Issues
+----------------
+
+We make extensive use of ToDo list issues, which act as placeholders for tracking many related sub-tasks in a ToDo list.
+
+We have a clear process for contributors to engage with such ToDo lists:
+
+(a) Find a task to work on which (i) is not marked as completed with a tick (ii) does not have an issue created and
+(iii) is not mentioned in the comments.
+
+(b) Create a new issue with the title being just the name of the task you would like to work on.
+
+(c) comment on the ToDo list issue with a reference to this issue like so:
+
+- [ ] #Issue_number
+
+Your issue will then automatically be added to the ToDo list at some point, and the comment will be deleted.
+No need to wait for this to happen before progressing to stage d.
+
+(d) Start working on the task, and create a PR as soon as you have a full or partial solution, and then directly
+reference the issue in the pull request. If you have a partial solution, the Ivy team can help to guide you through
+the process of getting it working :)
+
+(e) Wait for us to review your PR. Once we have reviewed your PR we will either merge or request changes. Every time you
+respond to our requested changes you must re-request a review in order for us to re-engage with the PR.
+
+(e) Once the PR is in good shape, we will merge into master, and you then become and Ivy contributor!
+
+In order to keep our ToDo lists moving quickly, if your PR is not created within 72 hours of creating the issue, then
+the issue will be closed and the method will be made free for others in the community. Likewise, if we have requested
+changes on your PR, and you do not respond and request a new code review within 72 hours, then the PR and the associated
+issue will be closed, and the method will be freed for others in the community. Even if you do not make code changes,
+you should request a new code review to flag to us that our attention is again needed to further the discussion.
+
+The purpose of this is to ensure our ToDo lists remain accessible for all in the community to engage with, where
+priority is given to those who can engage on a more short-term basis. We want to avoid the situation where tasks are
+allocated but then are not acted upon for long periods of time, whilst preveting others in the community from working
+on these instead.
+
+Starting an issue and then being unable to complete it is not a problem from our side at all, we automatically close
+these just so we can keep our communuty engaged with these tasks :)
+
+Our automatic closing is obviously never a reflection on the quality of the PR or the developer who made it, or any
+reflection of hypothetical frustration we have for more delayed response times etc. Developers are of course very busy
+people, and sometimes there is not as much free time available as initially thought. Please don't take it personally
+if your issue or PR gets closed because of these time limits.
+
+Reach out to me on discord if at any point you believe this happened to you unfairly, and we will definitely
+investigate!
+
 Creating Pull Requests
 ----------------------
 
 Our process for responding to pull requests is simple. All newly created PRs will be reviewed by a member of the team,
 and then the PR will either be merged or changes will be requested. In order for us to look at the changes you have made,
-you will need to request a code review. We will then take another look, and either merge or request further changes.
+you will then need to request a code review once you have addressed our requested changes.
+We will then take another look, and either merge the PR or request further changes.
 This process then will repeat until either the PR is closed by us or yourslef, or the PR is merged.
 
-If you make changes and do not request a code review, we will not check the changes. This is the case even if you
-comment on the PR. This simple process makes it much simpler for us to track where and when attention is needed.
+If we request changes, you make those changes, but you do not request a code review, then we will not check the changes.
+This is the case even if you comment on the PR. This simple process makes it much simpler for us to track where and when
+attention is needed.
+
+Note that you cannot request a code review until you have already received at least one review from us. All new PRs will
+receive a code review, so just wait and we will check out and review your newly created PR as soon as possible!
 
 Finally, all PRs must give write access to Ivy maintainers of the branch. This can be done by checking a tickbox in the
 lower right corner of the PR. This will enable us to quickly fix conflicts, merge with upstream, and get things moving
@@ -96,11 +162,32 @@ should adhere to the following type hint format:
         """
         My function does something cool.
 
-        :param x: input array.
-        :param axes: the axes along which to perform the op.
-        :param dtype: array data type.
-        :param dev: the device on which to place the new array.
-        :return: a cooler array.
+        .. note::
+            This is an important note.
+
+        **Special Cases**
+
+        For this particular case,
+
+        - If ``x`` is ``NaN``, do something
+        - If ``y`` is ``-0``, do something else
+        - etc.
+
+        Parameters
+        ----------
+        x:
+            input array. Should have a numeric data type.
+        axes:
+            the axes along which to perform the op.
+        dtype:
+            array data type.
+        dev:
+            the device on which to place the new array.
+
+        Returns
+        -------
+        out:
+            a cooler array.
         """
         return _cur_framework(x).my_func(x, dtype, dev)
 
@@ -187,11 +274,19 @@ For most methods and backends these are very simple to implement, such as :code:
         Calculates an implementation-dependent approximation of exponentiation by raising each element (the base) of an
         array instance to the power of other_i (the exponent), where other_i is the corresponding element of the array other.
 
-        :param self: array instance whose elements correspond to the exponentiation base. Should have a numeric data type.
-        :param other: other array whose elements correspond to the exponentiation exponent. Must be compatible with x
-                        (see Broadcasting). Should have a numeric data type.
-        :return: an array containing the element-wise results. The returned array must have a data type determined by
-                  Type Promotion Rules.
+        Parameters
+        ----------
+        self:
+            array instance whose elements correspond to the exponentiation base. Should have a numeric data type.
+        other:
+            other array whose elements correspond to the exponentiation exponent. Must be compatible with x (see
+            Broadcasting). Should have a numeric data type.
+
+        Returns
+        -------
+        out:
+            an array containing the element-wise results. The returned array must have a data type determined by
+            Type Promotion Rules.
         """
         return self.__pow__(other)
 
