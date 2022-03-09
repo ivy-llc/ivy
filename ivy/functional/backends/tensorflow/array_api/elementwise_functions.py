@@ -25,7 +25,12 @@ def isfinite(x: Tensor) \
         return tf.ones_like(x, tf.bool)
     return tf.math.is_finite(x)
 
+  
+def asin(x: Tensor) \
+        -> Tensor:
+    return tf.asin(x)
 
+  
 def asinh(x: Tensor) \
         -> Tensor:
     return tf.asinh(x)
