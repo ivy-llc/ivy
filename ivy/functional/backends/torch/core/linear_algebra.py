@@ -5,10 +5,6 @@ Collection of PyTorch linear algebra functions, wrapped to fit Ivy syntax and si
 # global
 import torch as _torch
 from typing import List
-from typing import Union, Tuple
-import ivy as _ivy
-from collections import namedtuple
-
 
 
 # noinspection PyPep8Naming
@@ -57,7 +53,6 @@ def vector_to_skew_symmetric_matrix(vector):
     row3 = _torch.cat((-a2s, a1s, zs), -1)
     # BS x 3 x 3
     return _torch.cat((row1, row2, row3), -2)
-
 
 def qr(x, mode):
     return _torch.linalg.qr(x, mode=str(mode)) # str(mode) is required for JIT type inference
