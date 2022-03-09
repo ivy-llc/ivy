@@ -22,7 +22,12 @@ def isfinite(x: JaxArray)\
         -> JaxArray:
     return jnp.isfinite(x)
 
+  
+def asin(x: JaxArray)\
+        -> JaxArray:
+    return jnp.asin(x)
 
+  
 def asinh(x: JaxArray)\
         -> JaxArray:
     return jnp.arcsinh(x)
