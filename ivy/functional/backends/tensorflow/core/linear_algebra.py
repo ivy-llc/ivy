@@ -5,6 +5,7 @@ Collection of TensorFlow linear algebra functions, wrapped to fit Ivy syntax and
 # global
 import tensorflow as _tf
 
+
 # noinspection PyPep8Naming
 def svd(x):
     batch_shape = _tf.shape(x)[:-2]
@@ -51,6 +52,7 @@ def vector_to_skew_symmetric_matrix(vector):
     row3 = _tf.concat((-a2s, a1s, zs), -1)
     # BS x 3 x 3
     return _tf.concat((row1, row2, row3), -2)
+
 
 def qr(x, mode):
     if mode=="reduced":
