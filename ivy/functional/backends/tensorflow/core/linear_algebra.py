@@ -36,9 +36,6 @@ inv = _tf.linalg.inv
 pinv = _tf.linalg.pinv
 cholesky = _tf.linalg.cholesky
 
-
-
-
 def vector_to_skew_symmetric_matrix(vector):
     batch_shape = list(vector.shape[:-1])
     # BS x 3 x 1
@@ -55,7 +52,6 @@ def vector_to_skew_symmetric_matrix(vector):
     row3 = _tf.concat((-a2s, a1s, zs), -1)
     # BS x 3 x 3
     return _tf.concat((row1, row2, row3), -2)
-
 
 
 def qr(x, mode):
