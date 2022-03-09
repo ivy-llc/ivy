@@ -32,4 +32,4 @@ def diagonal(x: JaxArray,
 
 
 def matrix_rank(x: JaxArray, /) -> JaxArray:
-    return jnp.linalg.inv(x)1
+    return jnp.linalg.inv(x)

@@ -24,4 +24,4 @@ def diagonal(x: mx.nd.NDArray,
 
 
 def matrix_rank(x: mx.nd.NDArray, /) -> mx.nd.NDArray:
-    return mx.nd.linalg.inverse(x)1
+    return mx.nd.linalg.inverse(x)
