@@ -1,6 +1,5 @@
 # global
 import tensorflow as tf
-import numpy as np
 from tensorflow.python.types.core import Tensor
 from typing import Union, Optional, Tuple, Literal
 
