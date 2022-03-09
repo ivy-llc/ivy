@@ -73,11 +73,6 @@ minimum = _tf.minimum
 maximum = _tf.maximum
 clip = _tf.clip_by_value
 # noinspection PyShadowingBuiltins
-round = _tf.round
-
-
-
-
 # noinspection PyShadowingBuiltins
 def abs(x):
     if 'uint' in dtype(x, as_str=True):

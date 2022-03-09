@@ -44,7 +44,7 @@ not_equal
 #positive
 #pow
 #remainder
-#round
+#round #depends on: remainder
 #sign
 sin
 sinh

@@ -191,7 +191,13 @@ def sinh(x: Tensor) \
         -> Tensor:
     return tf.sinh(x)  
 
- 
+
 def square(x: Tensor)\
         -> Tensor:
     return tf.math.square(x)
+
+def round(x: Tensor)\
+        -> Tensor:
+    if 'int' in str(x.dtype):
+        return x
+    return tf.round(x)

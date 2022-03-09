@@ -146,3 +146,7 @@ def sinh(x: np.ndarray)\
 def square(x: np.ndarray)\
         -> np.ndarray:
     return np.square(x)
+
+def round(x: np.ndarray)\
+        -> np.ndarray:
+    return np.asarray(npa.round(npa.asarray(x)))

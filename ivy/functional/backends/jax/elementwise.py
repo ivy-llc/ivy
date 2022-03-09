@@ -142,7 +142,7 @@ def not_equal(x1: JaxArray, x2: JaxArray)\
 def tanh(x: JaxArray)\
         -> JaxArray:
     return jnp.tanh(x)
-  
+
   
 def sinh(x: JaxArray)\
         -> JaxArray:
@@ -152,3 +152,10 @@ def sinh(x: JaxArray)\
 def square(x: JaxArray) \
         -> JaxArray:
     return jnp.square(x)
+
+
+def round(x: JaxArray)\
+        -> JaxArray:
+    if 'int' in str(x.dtype):
+        return x
+    return jnp.round(x)
