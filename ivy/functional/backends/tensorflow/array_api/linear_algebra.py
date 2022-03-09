@@ -30,6 +30,12 @@ def vector_norm(x: Tensor,
     return tn_normalized_vector
 
 
+def outer(x1: tf.Tensor,
+          x2: tf.Tensor)\
+        -> tf.Tensor:
+    return tf.Tensor.outer(x1,x2)
+
+
 def diagonal(x: tf.Tensor,
              offset: int = 0,
              axis1: int = -2,

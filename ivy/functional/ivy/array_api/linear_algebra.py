@@ -73,6 +73,13 @@ def vector_norm(x: Union[ivy.Array, ivy.NativeArray],
     return ivy.reduce_sum(x_raised, axis, keepdims) ** (1/ord)
 
 
+
+def outer(x1: Union[ivy.Array, ivy.NativeArray],
+        x2: Union[ivy.Array, ivy.NativeArray])\
+        -> ivy.Array:
+
+    return _cur_framework (x1 , x2).outer(x1,x2)
+
 def diagonal(x: ivy.Array,
              offset: int = 0,
              axis1: int = -2,
@@ -95,3 +102,8 @@ def diagonal(x: ivy.Array,
     :return: Diagonal of the matrix x.
     """
     return _cur_framework(x).diagonal(x, offset, axis1=axis1, axis2=axis2)
+
+
+
+
+
