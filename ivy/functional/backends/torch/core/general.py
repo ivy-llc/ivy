@@ -133,10 +133,6 @@ def floor(x):
     return _torch.floor(x)
 
 
-def ceil(x):
-    return _torch.ceil(x)
-
-
 # noinspection PyShadowingBuiltins
 def abs(x):
     return _torch.abs(x)
