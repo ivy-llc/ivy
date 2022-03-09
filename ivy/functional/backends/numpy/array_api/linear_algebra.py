@@ -3,6 +3,7 @@ import numpy as np
 from typing import Union, Optional, Tuple, Literal
 import numpy.array_api as npa
 # local
+import ivy
 from ivy import inf
 
 
@@ -32,4 +33,4 @@ def diagonal(x: np.ndarray,
 
 
 def cross(x1: np.ndarray, x2: np.ndarray, axis: int = -1) -> np.ndarray:
-    return np.asarray(np.cross(x1, x2, axis=axis))
+    return np.cross(x1, x2, axis=axis)

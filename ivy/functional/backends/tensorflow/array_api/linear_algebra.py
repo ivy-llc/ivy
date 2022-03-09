@@ -38,4 +38,4 @@ def diagonal(x: tf.Tensor,
 
 
 def cross(x1: Tensor, x2: Tensor, axis: int = -1) -> Tensor:
-    return tf.linalg.cross(a=x1, b=x2)#, axis=axis)
+    return tf.linalg.cross(x1, x2)
