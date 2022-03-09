@@ -8,7 +8,6 @@ import mxnet as _mx
 # local
 import ivy as _ivy
 from ivy.functional.backends.mxnet.core.general import matmul as _matmul
-from typing import Union, Tuple
 
 
 # noinspection PyPep8Naming
@@ -71,14 +70,6 @@ def vector_to_skew_symmetric_matrix(vector):
     # BS x 3 x 3
     return _mx.nd.concat(*(row1, row2, row3), dim=-2)
 
-def slogdet(x:Union[_ivy.Array,_ivy.NativeArray],full_matrices: bool = True) -> Union[_ivy.Array, Tuple[_ivy.Array,...]]:
-    results = namedtuple("slogdet", "sign logabsdet")
-    sign, logabsdet = _mx.linalg.slogdet(x)
-    res = results(sign, logabsdet)
-    return res
 
-def det(x:Union[_ivy.Array,_ivy.NativeArray],full_matrices: bool = True) -> Union[_ivy.Array, Tuple[_ivy.Array,...]]:
-    d = _mx.linalg.det(x)
-    return d
 def qr(x, mode):
     return _mx.np.linalg.qr(x, mode=mode)
