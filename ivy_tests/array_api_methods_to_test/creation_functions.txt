@@ -10,7 +10,7 @@ full
 #meshgrid
 ones
 #ones_like
-#tril
+tril
 #triu
 zeros
 #zeros_like
