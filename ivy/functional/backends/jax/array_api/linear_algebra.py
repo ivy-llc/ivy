@@ -29,3 +29,9 @@ def diagonal(x: JaxArray,
              axis1: int = -2,
              axis2: int = -1) -> JaxArray:
     return jnp.diagonal(x, offset, axis1, axis2)
+
+
+def matrix_rank(x: JaxArray, /, *,
+                rtol: Optional[Union[float, JaxArray]] = None) -> JaxArray:
+    tol = rtol
+    return jnp.linalg.matrix_rank(x, tol)

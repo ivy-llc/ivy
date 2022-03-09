@@ -95,3 +95,21 @@ def diagonal(x: ivy.Array,
     :return: Diagonal of the matrix x.
     """
     return _cur_framework(x).diagonal(x, offset, axis1=axis1, axis2=axis2)
+
+
+def inv(x: ivy.Array, /) -> ivy.Array:
+
+    """
+    Returns the multiplicative inverse of a square matrix (or a stack of square matrices) x.
+
+    Parameters
+    x (array) – input array having shape (..., M, M) and whose innermost two dimensions form square matrices.
+    Should have a floating-point data type.
+
+    Returns
+    out (array) – an array containing the multiplicative inverses.
+    The returned array must have a floating-point data type determined by Type Promotion Rules and must have the same shape as x.
+
+    """
+    return _cur_framework(x).inv(x)
+

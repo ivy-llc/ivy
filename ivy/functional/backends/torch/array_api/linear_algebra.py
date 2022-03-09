@@ -1,4 +1,5 @@
 # global
+import numpy as np
 import torch
 from typing import Union, Optional, Tuple, Literal
 
@@ -25,3 +26,7 @@ def diagonal(x: torch.Tensor,
              axis1: int = -2,
              axis2: int = -1) -> torch.Tensor:
     return torch.diagonal(x, offset=offset, dim1=axis1, dim2=axis2)
+
+
+def inv(x: torch.Tensor, /) -> torch.Tensor:
+    return torch.linalg.inv(x)
