@@ -1,5 +1,4 @@
 # global
-import numpy as np
 import torch
 from typing import Union, Optional, Tuple, Literal
 
