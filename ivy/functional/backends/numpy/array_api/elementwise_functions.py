@@ -69,8 +69,7 @@ def cos(x: np.ndarray)\
     return np.asarray(npa.cos(npa.asarray(x)))
 
 
-def subtract(x1: np.ndarray,
-             x2: np.ndarray)\
+def subtract(x1: np.ndarray, x2: np.ndarray)\
         -> np.ndarray:
     if hasattr(x1, 'dtype') and hasattr(x2, 'dtype'):
         promoted_type = np.promote_types(x1.dtype, x2.dtype)

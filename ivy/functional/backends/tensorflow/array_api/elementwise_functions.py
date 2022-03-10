@@ -72,7 +72,6 @@ def sqrt(x: Tensor)\
     return  tf.math.sqrt(x)
 
 
-
 def cosh(x: Tensor) \
         -> Tensor:
     return tf.cosh(x)

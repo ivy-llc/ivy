@@ -109,8 +109,7 @@ def sin(x: torch.Tensor)\
     return torch.sin(x)
 
   
-def subtract(x1: torch.Tensor,
-                x2: torch.Tensor)\
+def subtract(x1: torch.Tensor, x2: torch.Tensor)\
         -> torch.Tensor:
     if hasattr(x1, 'dtype') and hasattr(x2, 'dtype'):
         promoted_type = torch.promote_types(x1.dtype, x2.dtype)
