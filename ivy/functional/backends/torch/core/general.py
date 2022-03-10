@@ -133,21 +133,9 @@ def floor(x):
     return _torch.floor(x)
 
 
-def ceil(x):
-    return _torch.ceil(x)
-
-
 # noinspection PyShadowingBuiltins
 def abs(x):
     return _torch.abs(x)
-
-
-def argmax(x, axis: int = 0):
-    ret = _torch.argmax(x, axis)
-    if ret.shape == ():
-        return ret.reshape(-1)
-    return ret
-
 
 def argmin(x, axis: int = 0):
     ret = _torch.argmin(x, axis)
