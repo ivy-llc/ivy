@@ -5,13 +5,10 @@ Collection of PyTorch linear algebra functions, wrapped to fit Ivy syntax and si
 # global
 import torch as _torch
 from typing import List
+import ivy as _ivy
+from typing import Union, Tuple
 
 
-# noinspection PyPep8Naming
-def svd(x) -> List[_torch.Tensor]:
-    U, D, V = _torch.svd(x)
-    VT = _torch.transpose(V, -2, -1)
-    return U, D, VT
 
 
 def matrix_norm(x, p=2, axes=None, keepdims=False):

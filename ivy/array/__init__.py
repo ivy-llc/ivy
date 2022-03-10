@@ -275,11 +275,7 @@ class Array(ArrayWithArrayAPI, ArrayWithDevice, ArrayWithGeneral, ArrayWithGradi
 
     @_native_wrapper
     def __le__(self, other):
-        other = to_native(other)
-        res = ivy.builtin_le(self._data, other)
-        if res is NotImplemented:
-            return res
-        return to_ivy(res)
+        return ivy.less_equal(self._data, other)
 
     @_native_wrapper
     def __eq__(self, other):
