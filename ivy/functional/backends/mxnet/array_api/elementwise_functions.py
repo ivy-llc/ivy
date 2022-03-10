@@ -23,7 +23,8 @@ def isfinite(x: mx.ndarray.ndarray.NDArray)\
     return mx.nd.contrib.isfinite(x.astype('float32')).astype('bool')
 
 
-def sqrt(x: mx.ndarray.ndarray.NDArray) -> mx.ndarray.ndarray.NDArray:
+def sqrt(x: mx.ndarray.ndarray.NDArray)\
+        -> mx.ndarray.ndarray.NDArray:
     if isinstance(x, float):
         return math.sqrt(x)
     return mx.nd.sqrt(x)
