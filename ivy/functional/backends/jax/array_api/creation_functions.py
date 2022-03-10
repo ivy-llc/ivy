@@ -29,3 +29,10 @@ def tril(x: JaxArray,
          -> JaxArray:
     return jnp.tril(x, k)
 
+
+def empty(shape: Union[int, Tuple[int], List[int]],
+          dtype: Optional[jnp.dtype] = None,
+          device: Optional[jaxlib.xla_extension.Device] = None) \
+        -> JaxArray:
+    return to_dev(jnp.empty(shape, dtype_from_str(default_dtype(dtype))), default_device(device))
+
