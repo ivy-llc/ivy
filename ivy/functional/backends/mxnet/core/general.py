@@ -574,6 +574,5 @@ def inplace_increment(x, val):
     x += val
     return x
 
-
 inplace_arrays_supported = lambda: True
 inplace_variables_supported = lambda: True

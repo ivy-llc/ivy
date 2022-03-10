@@ -54,3 +54,9 @@ def sin(x: mx.ndarray.ndarray.NDArray)\
     if isinstance(x, float):
         return math.sin(x)
     return mx.nd.sin(x)
+
+
+@_handle_flat_arrays_in_out
+def negative(x: mx.ndarray.ndarray.NDArray)\
+        -> : mx.ndarray.ndarray.NDArray:
+    return mx.np.negative(x)
