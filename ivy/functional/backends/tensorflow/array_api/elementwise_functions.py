@@ -114,6 +114,11 @@ def logical_not(x: Tensor)\
     return tf.logical_not(tf.cast(x, tf.bool))
 
 
+def acosh(x: Tensor) \
+        -> Tensor:
+    return tf.acosh(x)
+
+  
 def sin(x: Tensor)\
         -> Tensor:
     return tf.sin(x)
