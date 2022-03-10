@@ -12,6 +12,9 @@ Elementwise functions
    :maxdepth: -1
    :caption: Elementwise functions
 
+   elementwise_functions/isfinite.rst
+   elementwise_functions/equal.rst
+   elementwise_functions/less_equal.rst
    elementwise_functions/bitwise_and.rst
    elementwise_functions/ceil.rst
    elementwise_functions/isfinite.rst

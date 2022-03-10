@@ -17,7 +17,6 @@ General
    general/copy_array.rst
    general/array_equal.rst
    general/dtype_bits.rst
-   general/equal.rst
    general/to_numpy.rst
    general/to_scalar.rst
    general/to_list.rst

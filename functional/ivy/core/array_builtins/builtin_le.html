@@ -196,8 +196,21 @@
 <h1>builtin_le<a class="headerlink" href="#builtin-le" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
 <dt id="ivy.functional.ivy.core.array_builtins.builtin_le">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">builtin_le</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">other</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/ivy/functional/ivy/core/array_builtins.html#builtin_le"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.core.array_builtins.builtin_le" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">builtin_le</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">other</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>int<span class="p">, </span>float<span class="p">, </span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><a class="reference internal" href="../../../../_modules/ivy/functional/ivy/core/array_builtins.html#builtin_le"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.core.array_builtins.builtin_le" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates elementwise truth values of x &lt;= other.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> – array instance of the first array.</p></li>
+<li><p><strong>other</strong> – other array whose elements should be compared to the first array. Must be compatible with x
+(see Broadcasting).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>an array containing the element-wise results. The returned array will have a boolean data type.</p>
+</dd>
+</dl>
+</dd></dl>
 
 <div class="line-block">
 <div class="line"><br /></div>
