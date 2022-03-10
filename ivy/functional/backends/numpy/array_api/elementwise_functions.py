@@ -9,6 +9,21 @@ def bitwise_and(x1: np.ndarray,
     return np.bitwise_and(x1, x2)
 
 
+def equal(x1: np.ndarray, x2: np.ndarray)\
+        -> np.ndarray:
+    return x1 == x2
+
+
+def less_equal(x1: np.ndarray, x2: np.ndarray)\
+        -> np.ndarray:
+    return x1 <= x2
+
+
+def ceil(x: np.ndarray)\
+        -> np.ndarray:
+    return np.asarray(npa.ceil(npa.asarray(x)))
+
+
 def sqrt(x: np.ndarray)\
         -> np.ndarray:
     return np.sqrt(x)
@@ -34,6 +49,11 @@ def log2(x: np.ndarray)\
     return np.log2(x)
 
 
+def log1p(x: np.ndarray)\
+        -> np.ndarray:
+    return np.log1p(x)
+
+
 def isnan(x: np.ndarray)\
         -> np.ndarray:
     return np.isnan(x)
@@ -54,9 +74,15 @@ def logical_not(x: np.ndarray)\
     return np.logical_not(x)
 
 
+
 def divide(x1: np.ndarray,
            x2: np.ndarray)\
         -> np.ndarray:
     return np.divide(x1, x2)
 
+
+
+def sin(x: np.ndarray)\
+        -> np.ndarray:
+    return np.asarray(npa.sin(npa.asarray(x)))
 
