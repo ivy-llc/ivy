@@ -78,3 +78,7 @@ def acosh(x: np.ndarray)\
         -> np.ndarray:
     return np.asarray(npa.acosh(npa.asarray(x)))
   
+
+def sin(x: np.ndarray)\
+        -> np.ndarray:
+    return np.asarray(npa.sin(npa.asarray(x)))

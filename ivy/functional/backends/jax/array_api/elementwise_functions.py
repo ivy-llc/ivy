@@ -38,7 +38,8 @@ def asinh(x: JaxArray)\
     return jnp.arcsinh(x)
 
 
-def sqrt(x: JaxArray) -> JaxArray:
+def sqrt(x: JaxArray)\
+        -> JaxArray:
     return jnp.sqrt(x)
 
 
@@ -80,3 +81,8 @@ def logical_not(x: JaxArray)\
 def acosh(x: JaxArray)\
         -> JaxArray:
     return jnp.arccosh(x)
+
+  
+def sin(x: JaxArray)\
+        -> JaxArray:
+    return jnp.sin(x)

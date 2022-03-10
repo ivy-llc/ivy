@@ -5,16 +5,6 @@ Collection of math Ivy functions.
 # local
 from ivy.framework_handler import current_framework as _cur_framework
 
-def sin(x):
-    """
-    Computes trigonometric sine element-wise.
-
-    :param x: Input array, in radians (2*pi radian equals 360 degrees).
-    :type x: array
-    :return: The sine of x element-wise.
-    """
-    return _cur_framework(x).sin(x)
-
 
 
 def tan(x):

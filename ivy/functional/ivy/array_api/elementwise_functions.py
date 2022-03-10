@@ -304,19 +304,46 @@ def logical_not(x: Union[ivy.Array, ivy.NativeArray])\
     return _cur_framework(x).logical_not(x)
 
 
-def acosh(x):
+def acosh(x: Union[ivy.Array, ivy.NativeArray])\
+        -> ivy.Array:
     """
-    Calculates an implementation-dependent approximation to the cosine, having domain ``(-infinity, +infinity)`` and codomain ``[-1, +1]``, for each element ``x_i`` of the input array ``x``. Each element ``x_i`` is assumed to be expressed in radians.
+    Calculates an implementation-dependent approximation to the inverse hyperbolic cosine, having domain ``[+1, +infinity]`` and codomain ``[+0, +infinity]``, for each element ``x_i`` of the input array ``x``.
+    
+    **Special cases**
+
+    For floating-point operands,
+    
+    - If ``x_i`` is ``NaN``, the result is ``NaN``.
+    - If ``x_i`` is less than ``1``, the result is ``NaN``.
+    - If ``x_i`` is ``1``, the result is ``+0``.
+    - If ``x_i`` is ``+infinity``, the result is ``+infinity``.
+    
+    Parameters
+    ----------
+    x:
+        input array whose elements each represent the area of a hyperbolic sector. Should have a floating-point data type.
+
+    Returns
+    -------
+    out:
+        an array containing the inverse hyperbolic cosine of each element in x. The returned array must have a floating-point data type determined by :ref:`type-promotion`.
+    """
+    return _cur_framework(x).acosh(x)
+    
+
+def sin(x: Union[ivy.Array, ivy.NativeArray])\
+        -> ivy.Array:
+    """
+    Calculates an implementation-dependent approximation to the sine, having domain ``(-infinity, +infinity)`` and codomain ``[-1, +1]``, for each element ``x_i`` of the input array ``x``. Each element ``x_i`` is assumed to be expressed in radians.
 
     **Special cases**
 
     For floating-point operands,
 
     - If ``x_i`` is ``NaN``, the result is ``NaN``.
-    - If ``x_i`` is ``+0``, the result is ``1``.
-    - If ``x_i`` is ``-0``, the result is ``1``.
-    - If ``x_i`` is ``+infinity``, the result is ``NaN``.
-    - If ``x_i`` is ``-infinity``, the result is ``NaN``.
+    - If ``x_i`` is ``+0``, the result is ``+0``.
+    - If ``x_i`` is ``-0``, the result is ``-0``.
+    - If ``x_i`` is either ``+infinity`` or ``-infinity``, the result is ``NaN``.
 
     Parameters
     ----------
@@ -326,6 +353,6 @@ def acosh(x):
     Returns
     -------
     out:
-        an array containing the inverse hyperbolic cosine of each element in ``x``. The returned array must have a floating-point data type determined by :ref:`type-promotion`.
+        an array containing the sine of each element in ``x``. The returned array must have a floating-point data type determined by :ref:`type-promotion`.
     """
-    return _cur_framework(x).acosh(x)
+    return _cur_framework(x).sin(x)

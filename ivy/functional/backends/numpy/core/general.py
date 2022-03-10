@@ -9,6 +9,7 @@ import math as _math
 from operator import mul as _mul
 from functools import reduce as _reduce
 import multiprocessing as _multiprocessing
+from typing import Tuple, Union
 
 # local
 import ivy
@@ -252,16 +253,6 @@ def zeros_like(x, dtype=None, dev=None):
 
 def full(shape, fill_value, dtype=None, device=None):
     return _to_dev(_np.full(shape, fill_value, dtype_from_str(default_dtype(dtype, fill_value))), device)
-
-
-# noinspection PyShadowingNames
-def ones_like(x, dtype=None, dev=None):
-    if dtype:
-        dtype = 'bool_' if dtype == 'bool' else dtype
-        dtype = _np.__dict__[dtype]
-    else:
-        dtype = x.dtype
-    return _to_dev(_np.ones_like(x, dtype=dtype), dev)
 
 
 # noinspection PyUnusedLocal
