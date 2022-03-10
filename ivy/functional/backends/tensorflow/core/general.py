@@ -258,14 +258,6 @@ def full(shape, fill_value, dtype=None, device=None):
         return _tf.fill(shape, _tf.constant(fill_value, dtype=dtype_from_str(default_dtype(dtype, fill_value))))
 
 
-# noinspection PyShadowingNames
-def ones_like(x, dtype=None, dev=None):
-    dtype = _tf.__dict__[dtype] if dtype else dtype
-    dev = default_device(dev)
-    with _tf.device(dev_from_str(dev)):
-        return _tf.ones_like(x, dtype=dtype)
-
-
 def one_hot(indices, depth, dev=None):
     dev = default_device(dev)
     if dev is not None:
