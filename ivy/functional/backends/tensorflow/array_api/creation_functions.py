@@ -36,3 +36,10 @@ def ones_like(x : Tensor,
     dev = default_device(dev)
     with tf.device(dev_from_str(dev)):
         return tf.ones_like(x, dtype=dtype)
+
+      
+def tril(x: tf.Tensor,
+         k: int = 0) \
+         -> tf.Tensor:
+    return tf.experimental.numpy.tril(x, k)
+

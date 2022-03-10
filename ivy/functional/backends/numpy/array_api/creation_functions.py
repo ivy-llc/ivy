@@ -35,3 +35,10 @@ def ones_like(x : np.ndarray,
         dtype = x.dtype
 
     return _to_dev(np.ones_like(x, dtype=dtype), dev)
+
+  
+def tril(x: np.ndarray,
+         k: int = 0) \
+         -> np.ndarray:
+    return np.tril(x, k)
+

@@ -46,3 +46,10 @@ def ones_like(x : torch.Tensor,
         return torch.ones_like(x, dtype= dtype, device=dev_from_str(dev))
 
     return torch.ones_like(x, device=dev_from_str(dev))
+
+  
+def tril(x: torch.Tensor,
+         k: int = 0) \
+         -> torch.Tensor:
+    return torch.tril(x, diagonal=k)
+
