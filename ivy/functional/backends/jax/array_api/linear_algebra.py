@@ -6,6 +6,9 @@ from typing import Union, Optional, Tuple, Literal
 from ivy import inf
 from ivy.functional.backends.jax import JaxArray
 
+def eigvalsh(x: JaxArray) -> JaxArray:
+    
+    return jnp.linalg.eigvalsh(x)
 
 # noinspection PyUnusedLocal,PyShadowingBuiltins
 def vector_norm(x: JaxArray,

@@ -5,6 +5,9 @@ from typing import Union, Optional, Tuple, Literal
 # local
 from ivy import inf
 
+def eigvalsh(x: np.ndarray) -> np.ndarray:
+
+    return np.linalg.eigvalsh(x)
 
 # noinspection PyUnusedLocal,PyShadowingBuiltins
 def vector_norm(x: np.ndarray,

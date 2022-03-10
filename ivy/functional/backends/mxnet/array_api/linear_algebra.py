@@ -6,7 +6,9 @@ from typing import Union, Optional, Tuple, Literal
 # local
 from ivy import inf
 
-
+def eigvalsh(x: mx.ndarray.ndarray.NDArray) -> mx.ndarray.ndarray.NDArray:
+    return mx.np.linalg.eigvalsh(x)
+    
 def vector_norm(x: mx.ndarray.ndarray.NDArray,
                 p: Union[int, float, Literal[inf, - inf]] = 2,
                 axis: Optional[Union[int, Tuple[int]]] = None,

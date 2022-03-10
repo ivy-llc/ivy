@@ -6,6 +6,8 @@ from typing import Union, Optional, Tuple, Literal
 # local
 from ivy import inf
 
+def eigvalsh(x: Tensor) -> Tensor:
+    return tf.linalg.eigvalsh(x)
 
 # noinspection PyUnusedLocal,PyShadowingBuiltins
 def vector_norm(x: Tensor,

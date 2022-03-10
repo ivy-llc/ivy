@@ -5,6 +5,9 @@ from typing import Union, Optional, Tuple, Literal
 # local
 from ivy import inf
 
+def eigvalsh(x: torch.Tensor) -> torch.Tensor:
+
+    return torch.linalg.eigvalsh(x)
 
 def vector_norm(x: torch.Tensor,
                 p: Union[int, float, Literal[inf, - inf]] = 2,

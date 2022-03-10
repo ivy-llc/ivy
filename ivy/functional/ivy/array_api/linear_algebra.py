@@ -6,6 +6,16 @@ import ivy
 from ivy.framework_handler import current_framework as _cur_framework
 inf = float('inf')
 
+def eigvalsh(x: Union[ivy.Array, ivy.NativeArray], /) -> ivy.Array:
+    """
+    Return the eigenvalues of a symmetric matrix (or a stack of symmetric matrices) x.
+    :param x: input array having shape (..., M, M) and whose innermost two dimensions for square matrices.
+              Must have floating-point data type.
+
+    :return: an array containing the computed eigenvalues. The returned array must have shape (..., M) and 
+             have the same data type as x.
+    """
+    return _cur_framework(x).eigvalsh(x)
 
 # noinspection PyShadowingBuiltins
 def vector_norm(x: Union[ivy.Array, ivy.NativeArray],
