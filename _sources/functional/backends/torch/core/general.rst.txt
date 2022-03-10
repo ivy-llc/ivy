@@ -30,7 +30,6 @@ General
    general/floormod.rst
    general/floor.rst
    general/abs.rst
-   general/argmax.rst
    general/argmin.rst
    general/cast.rst
    general/arange.rst

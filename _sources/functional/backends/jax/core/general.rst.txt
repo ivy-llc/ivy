@@ -15,7 +15,6 @@ General
    general/array.rst
    general/is_array.rst
    general/dtype_bits.rst
-   general/argmax.rst
    general/argmin.rst
    general/cast.rst
    general/arange.rst

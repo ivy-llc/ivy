@@ -261,23 +261,6 @@ Because of floating point overflow, this rule may result in the last element of 
 </dd></dl>
 
 <dl class="py function">
-<dt id="ivy.functional.ivy.core.general.argmax">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">argmax</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">axis</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">0</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/core/general.html#argmax"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.core.general.argmax" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the index with the largest value across axes of an array.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>array</em>) – Input array containing elements to argmax.</p></li>
-<li><p><strong>axis</strong> (<em>int</em><em>, </em><em>optional</em>) – Axis to perform the argmax, default is 0.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Tensor containing the indices of the maximum values across the specified axis.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
 <dt id="ivy.functional.ivy.core.general.argmin">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">argmin</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">axis</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">0</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/core/general.html#argmin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.core.general.argmin" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the index with the smallest value across axes of an array.</p>
@@ -1748,7 +1731,6 @@ If not given, then the type of the original array is used.</p></li>
 <li class="toctree-l1"><a class="reference internal" href="general/floormod.html">floormod</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/floor.html">floor</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/abs.html">abs</a></li>
-<li class="toctree-l1"><a class="reference internal" href="general/argmax.html">argmax</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/argmin.html">argmin</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/arange.html">arange</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/linspace.html">linspace</a></li>
