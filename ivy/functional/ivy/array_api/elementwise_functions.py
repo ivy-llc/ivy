@@ -332,7 +332,7 @@ def sin(x: Union[ivy.Array, ivy.NativeArray])\
 
   
 def subtract(x1: Union[ivy.Array, ivy.NativeArray],
-         x2: Union[ivy.Array, ivy.NativeArray])\
+             x2: Union[ivy.Array, ivy.NativeArray])\
         -> ivy.Array:
     """
     Calculates the difference for each element ``x1_i`` of the input array ``x1`` with the respective element ``x2_i``
