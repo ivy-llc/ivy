@@ -27,3 +27,10 @@ def tril(x: np.ndarray,
          k: int = 0) \
          -> np.ndarray:
     return np.tril(x, k)
+
+
+def empty(shape: Union[int, Tuple[int], List[int]],
+          dtype: Optional[np.dtype] = None,
+          device: Optional[str] = None) \
+        -> np.ndarray:
+    return _to_dev(np.empty(shape, dtype_from_str(default_dtype(dtype))), device)
