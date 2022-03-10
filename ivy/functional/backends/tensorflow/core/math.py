@@ -14,7 +14,6 @@ atan2 = _tf.atan2
 sinh = _tf.math.sinh
 cosh = _tf.math.cosh
 tanh = _tf.math.tanh
-acosh = _tf.math.acosh
 atanh = _tf.math.atanh
 log = _tf.math.log
 exp = _tf.math.exp
