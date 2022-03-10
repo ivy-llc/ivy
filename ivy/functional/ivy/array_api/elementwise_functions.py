@@ -33,6 +33,22 @@ def isfinite(x: Union[ivy.Array, ivy.NativeArray])\
     return _cur_framework(x).isfinite(x)
 
 
+def isinf(x: Union[ivy.Array, ivy.NativeArray])\
+        -> ivy.Array:
+    """
+    Tests each element x_i of the input array x to determine if equal to positive or negative infinity.
+    Parameters
+    ----------
+    x:
+        input array. Should have a numeric data type.
+    Returns
+    -------
+    out:
+        an array containing test results. An element out_i is True if x_i is either positive or negative infinity and False otherwise. The returned array must have a data type of bool.
+    """
+    return _cur_framework(x).isinf(x)
+
+
 def asinh(x: Union[ivy.Array, ivy.NativeArray])\
         -> ivy.Array:
     """

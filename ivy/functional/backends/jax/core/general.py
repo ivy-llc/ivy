@@ -236,8 +236,6 @@ def indices_where(x):
     return ret
 
 
-isinf = _jnp.isinf
-    
 reshape = _jnp.reshape
 broadcast_to = _jnp.broadcast_to
 
