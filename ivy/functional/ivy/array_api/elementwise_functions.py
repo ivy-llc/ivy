@@ -197,6 +197,34 @@ def log2(x: Union[ivy.Array, ivy.NativeArray])\
     return _cur_framework(x).log2(x)
 
 
+def log10(x: Union[ivy.Array, ivy.NativeArray])\
+        -> ivy.Array:
+    """
+    Calculates an implementation-dependent approximation to the base ``10`` logarithm, having domain ``[0, +infinity]`` and codomain ``[-infinity, +infinity]``, for each element ``x_i`` of the input array ``x``.
+
+    **Special cases**
+
+    For floating-point operands,
+
+    - If ``x_i`` is ``NaN``, the result is ``NaN``.
+    - If ``x_i`` is less than ``0``, the result is ``NaN``.
+    - If ``x_i`` is either ``+0`` or ``-0``, the result is ``-infinity``.
+    - If ``x_i`` is ``1``, the result is ``+0``.
+    - If ``x_i`` is ``+infinity``, the result is ``+infinity``.
+
+    Parameters
+    ----------
+    x:
+        input array. Should have a floating-point data type.
+
+    Returns
+    -------
+    out:
+        an array containing the evaluated base ``10`` logarithm for each element in ``x``. The returned array must have a floating-point data type determined by :ref:`type-promotion`.
+    """
+    return _cur_framework(x).log10(x)
+
+
 def log1p(x: Union[ivy.Array, ivy.NativeArray])\
         -> ivy.Array:
     """
