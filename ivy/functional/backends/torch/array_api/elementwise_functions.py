@@ -116,3 +116,7 @@ def subtract(x1: torch.Tensor, x2: torch.Tensor)\
         x1 = x1.to(promoted_type)
         x2 = x2.to(promoted_type)
     return torch.subtract(x1, x2)
+
+
+def negative(x: torch.Tensor) -> torch.Tensor:
+    return torch.neg(x)

@@ -351,3 +351,13 @@ def subtract(x1: Union[ivy.Array, ivy.NativeArray],
         an array containing the element-wise differences.
     """
     return _cur_framework(x1).subtract(x1, x2)
+
+
+def negative(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
+    """
+    Computes the numerical negative of each element
+    
+    :param x: Input array
+    :return: an array containing the evaluated result for each element in x 
+    """
+    return _cur_framework(x).negative(x)

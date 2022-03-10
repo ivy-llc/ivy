@@ -82,7 +82,11 @@ def sin(x: JaxArray)\
         -> JaxArray:
     return jnp.sin(x)
 
-  
+
+def negative(x: JaxArray) -> JaxArray:
+    return jnp.negative(x)
+
+
 def subtract(x1: JaxArray, x2: JaxArray)\
         -> JaxArray:
     if hasattr(x1, 'dtype') and hasattr(x2, 'dtype'):
@@ -90,3 +94,4 @@ def subtract(x1: JaxArray, x2: JaxArray)\
         x1 = x1.astype(promoted_type)
         x2 = x2.astype(promoted_type)
     return jnp.subtract(x1, x2)
+  
