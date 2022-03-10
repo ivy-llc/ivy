@@ -32,3 +32,12 @@ def tril(x: tf.Tensor,
          k: int = 0) \
          -> tf.Tensor:
     return tf.experimental.numpy.tril(x, k)
+
+
+def empty(shape: Union[int, Tuple[int]],
+          dtype: Optional[Dtype] = None,
+          device: Optional[str] = None) \
+        -> Tensor:
+    dev = default_device(device)
+    with tf.device(dev_from_str(dev)):
+        return tf.experimental.numpy.empty(shape, dtype_from_str(default_dtype(dtype)))
