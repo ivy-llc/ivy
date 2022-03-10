@@ -41,7 +41,4 @@ def logical_not(x: mx.ndarray.ndarray.NDArray) \
     return mx.nd.logical_not(x)
 
 
-def divide(x1: mx.ndarray.ndarray.NDArray,
-           x2: mx.ndarray.ndarray.NDArray) \
-        -> mx.nd.ndarray.NDArray:
-    return mx.nd.divide(x1, x2)
+

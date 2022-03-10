@@ -16,7 +16,7 @@ asinh
 #ceil
 cos
 cosh
-#divide
+divide
 #equal
 #exp
 #expm1
