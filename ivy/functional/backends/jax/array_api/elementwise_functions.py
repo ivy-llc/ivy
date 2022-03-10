@@ -38,7 +38,8 @@ def asinh(x: JaxArray)\
     return jnp.arcsinh(x)
 
 
-def sqrt(x: JaxArray) -> JaxArray:
+def sqrt(x: JaxArray)\
+        -> JaxArray:
     return jnp.sqrt(x)
 
 
