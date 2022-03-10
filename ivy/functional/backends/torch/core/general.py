@@ -145,13 +145,6 @@ def argmax(x, axis: int = 0):
     return ret
 
 
-def argmin(x, axis: int = 0):
-    ret = _torch.argmin(x, axis)
-    if ret.shape == ():
-        return ret.reshape(-1)
-    return ret
-
-
 def cast(x, dtype_in: str):
     dtype_val = dtype_from_str(dtype_in)
     return x.type(dtype_val)
