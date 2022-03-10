@@ -122,7 +122,7 @@ def reduce_min(x, axis=None, keepdims=False):
     return _cur_framework(x).reduce_min(x, axis, keepdims)
 
 
-def reduce_max(x, axis=None, keepdims=False):
+def max(x, axis=None, keepdims=False):
     """
     Computes the maximum value along the specified axis. The maximum is taken over the flattened array by default,
     otherwise over the specified axis.
@@ -138,7 +138,7 @@ def reduce_max(x, axis=None, keepdims=False):
     :type keepdims: bool, optional
     :return: The array with maxes computed.
     """
-    return _cur_framework(x).reduce_max(x, axis, keepdims)
+    return _cur_framework(x).max(x, axis, keepdims)
 
 
 def einsum(equation, *operands):

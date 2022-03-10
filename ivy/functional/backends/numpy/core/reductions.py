@@ -52,7 +52,7 @@ def reduce_min(x, axis=None, keepdims=False):
     return _np.asarray(_np.min(x, axis=axis, keepdims=keepdims))
 
 
-def reduce_max(x, axis=None, keepdims=False):
+def max(x, axis=None, keepdims=False):
     if axis is None:
         num_dims = len(x.shape)
         axis = tuple(range(num_dims))

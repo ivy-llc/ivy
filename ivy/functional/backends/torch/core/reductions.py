@@ -56,7 +56,7 @@ def reduce_min(x, axis: Optional[List[int]] = None, keepdims: bool = False):
     return x
 
 
-def reduce_max(x, axis: Optional[List[int]] = None, keepdims: bool = False):
+def max(x, axis: Optional[List[int]] = None, keepdims: bool = False):
     if axis is None:
         num_dims = len(x.shape)
         axis = list(range(num_dims))
