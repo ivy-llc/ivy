@@ -4,7 +4,7 @@ from typing import Union
 from ivy.framework_handler import current_framework as _cur_framework
 
 
-def bitwise_invert(x: ivy.Array) -> ivy.Array:
+def bitwise_invert(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
     """
     Inverts (flips) each bit for each element x_i of the input array x.
 
