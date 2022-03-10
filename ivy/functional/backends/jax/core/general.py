@@ -14,6 +14,7 @@ from functools import reduce as _reduce
 from jaxlib.xla_extension import Buffer
 import multiprocessing as _multiprocessing
 from haiku._src.data_structures import FlatMapping
+from typing import Tuple, Union
 
 # local
 import ivy
