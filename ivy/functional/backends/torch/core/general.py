@@ -11,7 +11,8 @@ import torch as _torch
 from operator import mul
 from torch.types import Number
 from functools import partial as _partial, reduce as _reduce
-from typing import List, Dict, Optional, Union
+from typing import List, Dict, Optional, Tuple, Union
+
 
 # local
 from ivy.functional.ivy.core import default_device, default_dtype

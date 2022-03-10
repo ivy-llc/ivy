@@ -9,6 +9,7 @@ import math as _math
 from operator import mul as _mul
 from functools import reduce as _reduce
 import multiprocessing as _multiprocessing
+from typing import Tuple, Union
 
 # local
 import ivy
