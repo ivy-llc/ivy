@@ -27,4 +27,7 @@ def diagonal(x: torch.Tensor,
 
 
 def cross(x1: torch.Tensor, x2: torch.Tensor, axis: int = -1) -> torch.Tensor:
+    promoted_type = torch.promote_types(x1.dtype, x2.dtype)
+    x1 = x1.to(promoted_type)
+    x2 = x2.to(promoted_type)
     return torch.cross(input=x1, other=x2, dim=axis)
