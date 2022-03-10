@@ -2,7 +2,7 @@ abs
 #acos
 #acosh
 #add
-#asin
+asin
 asinh
 #atan
 #atan2
