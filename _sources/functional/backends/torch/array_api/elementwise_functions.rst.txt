@@ -28,4 +28,5 @@ Elementwise functions
    elementwise_functions/cos.rst
    elementwise_functions/logical_not.rst
    elementwise_functions/sin.rst
+   elementwise_functions/negative.rst
 
