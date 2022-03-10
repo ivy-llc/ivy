@@ -104,7 +104,7 @@ def dtype_bits(dtype_in: Union[ivy.Dtype, str]) -> int:
     """
     Get the number of bits used for representing the input data type.
 
-    :param dtype_in: The data tpye to determine the number of bits for.
+    :param dtype_in: The data type to determine the number of bits for.
     :return: The number of bits used to represent the data type.
     """
     return _cur_framework(dtype_in).dtype_bits(dtype_in)
