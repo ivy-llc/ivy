@@ -46,7 +46,7 @@ logical_not
 #remainder
 #round
 #sign
-#sin
+sin
 #sinh
 #square
 #sqrt
