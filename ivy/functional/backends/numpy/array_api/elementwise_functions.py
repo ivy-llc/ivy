@@ -41,7 +41,12 @@ def isnan(x: np.ndarray)\
 
 def less(x1: np.ndarray,x2: np.ndarray)\
         -> np.ndarray:
-    return np.less(x1,x2)
+    return np.less(x1, x2)
+
+
+def greater(x1: np.ndarray, x2: np.ndarray)\
+        -> np.ndarray:
+    return np.greater(x1, x2)
 
 
 def cos(x: np.ndarray)\

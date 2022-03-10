@@ -174,7 +174,16 @@ def builtin_ne(x, other):
 
 
 # noinspection PyShadowingBuiltins
-def builtin_gt(x, other):
+def builtin_gt(x: Union[ivy.Array, ivy.NativeArray],
+               other: Union[int, float, ivy.Array, ivy.NativeArray]) \
+        -> Union[ivy.Array, ivy.NativeArray]:
+    """
+    Calculates elementwise truth values of x <= other.
+    :param x: array instance of the first array.
+    :param other: other array whose elements should be compared to the first array. Must be compatible with x
+                    (see Broadcasting).
+    :return: an array containing the element-wise results. The returned array will have a boolean data type.
+    """
     return x.__gt__(other)
 
 

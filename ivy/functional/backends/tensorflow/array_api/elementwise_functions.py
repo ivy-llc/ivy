@@ -55,6 +55,15 @@ def less(x1: Tensor, x2: Tensor)\
     return tf.math.less(x1, x2)
 
 
+def greater(x1: Tensor, x2: Tensor)\
+        -> Tensor:
+    if hasattr(x1, 'dtype') and hasattr(x2, 'dtype'):
+        promoted_type = tf.experimental.numpy.promote_types(x1.dtype, x2.dtype)
+        x1 = tf.cast(x1, promoted_type)
+        x2 = tf.cast(x2, promoted_type)
+    return tf.math.greater(x1, x2)
+
+
 def cos(x: Tensor)\
         -> Tensor:
     return tf.cos(x)
