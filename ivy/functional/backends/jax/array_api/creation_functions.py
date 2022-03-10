@@ -9,7 +9,7 @@ from ivy import dtype_from_str
 from ivy.functional.backends.jax import JaxArray
 from ivy.functional.backends.jax.core.device import to_dev
 from ivy.functional.ivy.core import default_device, default_dtype
-from jaxlib.xla_extension import Device
+from jaxlib.xla_extension import Device, DeviceArray
 
 
 def ones(shape: Union[int, Tuple[int], List[int]],
@@ -31,9 +31,11 @@ def full_like(x: JaxArray,
               fill_value: Union[int, float],
               dtype: Optional[jnp.dtype] = None,
               device: Optional[jaxlib.xla_extension.Device] = None) \
-        -> JaxArray:
-    if not dtype:
-        dtype = x.dtype
+        -> DeviceArray:
+    if dtype and str:
+        dtype = jnp.dtype(dtype)
+    else:
+        dtype = x.dtyp
     return to_dev(jnp.full_like(x, fill_value, dype=dtype_from_str(default_dtype(dtype, fill_value))),
                   default_device(device))
 

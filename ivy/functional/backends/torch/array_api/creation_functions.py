@@ -3,7 +3,6 @@ import torch
 from torch import Tensor
 from typing import Union, Tuple, Optional, Dict
 
-
 # local
 from ivy import dtype_from_str, default_dtype, dev_from_str, default_device
 from ivy.functional.backends.torch.core.device import _callable_dev
@@ -28,19 +27,28 @@ def ones(shape: Union[int, Tuple[int]],
 # noinspection DuplicatedCode
 def full_like(x: torch.Tensor, /,
               fill_value: Union[int, float],
-              dtype: Optional[torch.dtype] = None,
-              device: Optional[Union[torch.device, str, None]] = None) \
+              dtype: Optional[Union[torch.dtype, str]] = None,
+              device: Optional[Union[torch.device, str]] = None) \
         -> torch.Tensor:
     if device is None:
         device = _callable_dev(x)
-    if dtype is not None:
-        return torch.full_like(x, fill_value, dtype=dtype, device=dev_from_str(device))
-
-    return torch.full_like(x, fill_value, device=dev_from_str(device))
+    if dtype is not None and dtype is str:
+        type_dict: Dict[str, torch.dtype] = {'int8': torch.int8,
+                                             'int16': torch.int16,
+                                             'int32': torch.int32,
+                                             'int64': torch.int64,
+                                             'uint8': torch.uint8,
+                                             'bfloat16': torch.bfloat16,
+                                             'float16': torch.float16,
+                                             'float32': torch.float32,
+                                             'float64': torch.float64,
+                                             'bool': torch.bool}
+        return torch.full_like(x, fill_value, dtype=type_dict[default_dtype(dtype, fill_value)],
+                               device=default_device(device))
+    return torch.full_like(x, fill_value, dtype=dtype, device=default_device(device))
 
 
 def tril(x: torch.Tensor,
          k: int = 0) \
-         -> torch.Tensor:
+        -> torch.Tensor:
     return torch.tril(x, diagonal=k)
-

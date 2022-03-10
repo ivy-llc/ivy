@@ -58,28 +58,25 @@ def full_like(x: Union[ivy.Array, ivy.NativeArray], /,
               fill_value: Union[int, float], *,
               dtype: Optional[Union[ivy.Dtype, str]] = None,
               device: Optional[Union[ivy.Device, str]] = None,
-              ) -> Union[ivy.Array, ivy.NativeArray]:
+              ) -> ivy.Array:
     """
     Returns a new array filled with fill_value and having the same shape as an input array x.
 
     Parameters
-    x (array):
-     input array from which to derive the output array shape.
+    x:input array from which to derive the output array shape.
 
-    fill_value (Union[int, float]):
-    fill value.
+    fill_value: Scalar fill value
 
-    dtype (Optional[dtype]):
-    output array data type. If dtype is None, the output array data type must be inferred from x.
+    dtype:output array data type.
+    If dtype is None, the output array data type must be inferred from x.
     Default: None.
 
-    device (Optional[device]):
-    device on which to place the created array. If device is None,
-    the output array device must be inferred from x. Default: None.
+    device:device on which to place the created array.
+    If device is None,the output array device must be inferred from x.
+    Default: None.
 
     Returns
-    out (array):
-    an array having the same shape as x and where every element is equal to fill_value.
+    out:an array having the same shape as x and where every element is equal to fill_value.
     """
     return _cur_framework(x).full_like(x, fill_value, dtype=dtype, device=device)
 
