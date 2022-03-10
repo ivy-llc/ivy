@@ -290,3 +290,30 @@ def logical_not(x: Union[ivy.Array, ivy.NativeArray])\
         an array containing the element-wise results. The returned array must have a data type of ``bool``.
     """
     return _cur_framework(x).logical_not(x)
+
+
+def acosh(x):
+    """
+    Calculates an implementation-dependent approximation to the cosine, having domain ``(-infinity, +infinity)`` and codomain ``[-1, +1]``, for each element ``x_i`` of the input array ``x``. Each element ``x_i`` is assumed to be expressed in radians.
+
+    **Special cases**
+
+    For floating-point operands,
+
+    - If ``x_i`` is ``NaN``, the result is ``NaN``.
+    - If ``x_i`` is ``+0``, the result is ``1``.
+    - If ``x_i`` is ``-0``, the result is ``1``.
+    - If ``x_i`` is ``+infinity``, the result is ``NaN``.
+    - If ``x_i`` is ``-infinity``, the result is ``NaN``.
+
+    Parameters
+    ----------
+    x:
+        input array whose elements are each expressed in radians. Should have a floating-point data type.
+
+    Returns
+    -------
+    out:
+        an array containing the inverse hyperbolic cosine of each element in ``x``. The returned array must have a floating-point data type determined by :ref:`type-promotion`.
+    """
+    return _cur_framework(x).acosh(x)

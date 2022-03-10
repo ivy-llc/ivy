@@ -1,6 +1,6 @@
 abs
 #acos
-#acosh
+acosh
 #add
 #asin
 asinh

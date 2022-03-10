@@ -45,3 +45,12 @@ def less(x1: mx.ndarray.ndarray.NDArray,x2: mx.ndarray.ndarray.NDArray)\
 def logical_not(x: mx.ndarray.ndarray.NDArray)\
         -> mx.ndarray.ndarray.NDArray:
     return mx.nd.logical_not(x)
+
+
+@_handle_flat_arrays_in_out
+def acosh(x: mx.ndarray.ndarray.NDArray)\
+      -> mx.ndarray.ndarray.NDArray:
+    if isinstance(x, float):
+        return math.acosh(x)
+    else:
+        mx.nd.arccosh(x)
