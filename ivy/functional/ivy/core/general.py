@@ -395,21 +395,6 @@ def abs(x: Union[ivy.Array, ivy.NativeArray])\
     """
     return _cur_framework(x).abs(x)
 
-
-def argmax(x: Union[ivy.Array, ivy.NativeArray], axis: int = 0)\
-        -> Union[ivy.Array, ivy.NativeArray]:
-    """
-    Returns the index with the largest value across axes of an array.
-
-    :param x: Input array containing elements to argmax.
-    :type x: array
-    :param axis: Axis to perform the argmax, default is 0.
-    :type axis: int, optional
-    :return: Tensor containing the indices of the maximum values across the specified axis.
-    """
-    return _cur_framework(x).argmax(x, axis)
-
-
 def argmin(x: Union[ivy.Array, ivy.NativeArray], axis: int = 0)\
         -> Union[ivy.Array, ivy.NativeArray]:
     """

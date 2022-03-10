@@ -23,12 +23,23 @@ def isfinite(x: JaxArray)\
     return jnp.isfinite(x)
 
 
+def equal(x1: JaxArray, x2: JaxArray)\
+        -> JaxArray:
+    return x1 == x2
+
+
+def less_equal(x1: JaxArray, x2: JaxArray)\
+        -> JaxArray:
+    return x1 <= x2
+
+
 def asinh(x: JaxArray)\
         -> JaxArray:
     return jnp.arcsinh(x)
 
 
-def sqrt(x: JaxArray) -> JaxArray:
+def sqrt(x: JaxArray)\
+        -> JaxArray:
     return jnp.sqrt(x)
 
 
@@ -65,3 +76,8 @@ def cos(x: JaxArray)\
 def logical_not(x: JaxArray)\
         -> JaxArray:
     return jnp.logical_not(x)
+
+
+def sin(x: JaxArray)\
+        -> JaxArray:
+    return jnp.sin(x)
