@@ -104,6 +104,11 @@ def logical_not(x: torch.Tensor)\
     return torch.logical_not(x.type(torch.bool))
 
 
+def acosh(x: torch.Tensor) \
+        -> torch.Tensor:
+    return torch.acosh(x)
+
+  
 def sin(x: torch.Tensor)\
         -> torch.Tensor:
     return torch.sin(x)
