@@ -69,4 +69,4 @@ def logical_not(x: JaxArray)\
 
 def acosh(x: JaxArray)\
         -> JaxArray:
-    return jnp.acosh(x)
+    return jnp.arccosh(x)
