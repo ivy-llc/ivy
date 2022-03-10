@@ -257,15 +257,6 @@ def full(shape, fill_value, dtype=None, device=None):
                   default_device(device))
 
 
-# noinspection PyShadowingNames
-def ones_like(x, dtype=None, dev=None):
-    if dtype:
-        dtype = _jnp.__dict__[dtype]
-    else:
-        dtype = x.dtype
-    return to_dev(_jnp.ones_like(x, dtype=dtype), default_device(dev))
-
-
 # noinspection PyUnusedLocal
 def one_hot(indices, depth, dev=None):
     # from https://stackoverflow.com/questions/38592324/one-hot-encoding-using-numpy
