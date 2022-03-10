@@ -112,7 +112,6 @@ def dtype_bits(dtype_in):
     return int(dtype_str.replace('uint', '').replace('int', '').replace('bfloat', '').replace('float', ''))
 
 
-equal = lambda x1, x2: x1 == x2
 to_numpy = lambda x: _onp.asarray(_to_array(x))
 to_numpy.__name__ = 'to_numpy'
 to_scalar = lambda x: x if isinstance(x, Number) else _to_array(x).item()
@@ -131,14 +130,6 @@ floormod = lambda x, y: x % y
 floor = _jnp.floor
 # noinspection PyShadowingBuiltins
 abs = _jnp.absolute
-
-
-def argmax(x, axis=0):
-    ret = _jnp.argmax(x, axis)
-    if ret.shape == ():
-        return ret.reshape(-1)
-    return ret
-
 
 def argmin(x, axis=0):
     ret = _jnp.argmin(x, axis)

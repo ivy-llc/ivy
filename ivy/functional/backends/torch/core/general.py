@@ -10,7 +10,7 @@ import math as _math
 import torch as _torch
 from operator import mul
 from torch.types import Number
-from functools import reduce as _reduce
+from functools import partial as _partial, reduce as _reduce
 from typing import List, Dict, Optional, Union
 
 # local
@@ -60,18 +60,6 @@ def dtype_bits(dtype_in):
         return 1
     return int(dtype_str.replace('torch.', '').replace('uint', '').replace('int', '').replace('bfloat', '').replace(
         'float', ''))
-
-
-def equal(x1, x2):
-    x1_bits = dtype_bits(x1.dtype)
-    if isinstance(x2, (int, float, bool)):
-        return x1 == x2
-    x2_bits = dtype_bits(x2.dtype)
-    if x1_bits > x2_bits:
-        x2 = x2.type(x1.dtype)
-    elif x2_bits > x1_bits:
-        x1 = x1.type(x2.dtype)
-    return x1 == x2
 
 
 def to_numpy(x) -> np.ndarray:
@@ -136,14 +124,6 @@ def floor(x):
 # noinspection PyShadowingBuiltins
 def abs(x):
     return _torch.abs(x)
-
-
-def argmax(x, axis: int = 0):
-    ret = _torch.argmax(x, axis)
-    if ret.shape == ():
-        return ret.reshape(-1)
-    return ret
-
 
 def argmin(x, axis: int = 0):
     ret = _torch.argmin(x, axis)
