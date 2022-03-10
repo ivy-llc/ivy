@@ -15,7 +15,7 @@ diagonal
 #qr
 #slogdet
 #solve
-#svd
+svd
 #svdvals
 #tensordot
 #trace
