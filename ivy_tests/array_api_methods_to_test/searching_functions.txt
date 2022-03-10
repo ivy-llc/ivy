@@ -1,4 +1,4 @@
-#argmax
+argmax
 #argmin
 #nonzero
 #where
