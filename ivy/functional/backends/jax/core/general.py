@@ -132,14 +132,6 @@ floor = _jnp.floor
 # noinspection PyShadowingBuiltins
 abs = _jnp.absolute
 
-
-def argmax(x, axis=0):
-    ret = _jnp.argmax(x, axis)
-    if ret.shape == ():
-        return ret.reshape(-1)
-    return ret
-
-
 def argmin(x, axis=0):
     ret = _jnp.argmin(x, axis)
     if ret.shape == ():
