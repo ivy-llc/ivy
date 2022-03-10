@@ -73,6 +73,18 @@ def isfinite(x: Union[ivy.Array, ivy.NativeArray])\
     return _cur_framework(x).isfinite(x)
 
 
+def less_equal(x1: Union[ivy.Array, ivy.NativeArray], x2: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
+    """
+    Computes the truth value of x1_i <= x2_i for each element x1_i of the input array x1 with the respective
+    element x2_i of the input array x2.
+
+    :param x1: first input array. May have any data type.
+    :param x2: second input array. Must be compatible with x1 (with Broadcasting). May have any data type.
+    :return: an array containing the element-wise results. The returned array must have a data type of bool.
+    """
+    return _cur_framework(x1, x2).less_equal(x1, x2)
+
+
 def asinh(x: Union[ivy.Array, ivy.NativeArray])\
         -> ivy.Array:
     """
@@ -292,7 +304,34 @@ def logical_not(x: Union[ivy.Array, ivy.NativeArray])\
     return _cur_framework(x).logical_not(x)
 
 
-def subtract(x1: Union[ivy.Array, ivy.NativeArray],
+def sin(x: Union[ivy.Array, ivy.NativeArray])\
+        -> ivy.Array:
+    """
+    Calculates an implementation-dependent approximation to the sine, having domain ``(-infinity, +infinity)`` and codomain ``[-1, +1]``, for each element ``x_i`` of the input array ``x``. Each element ``x_i`` is assumed to be expressed in radians.
+
+    **Special cases**
+
+    For floating-point operands,
+
+    - If ``x_i`` is ``NaN``, the result is ``NaN``.
+    - If ``x_i`` is ``+0``, the result is ``+0``.
+    - If ``x_i`` is ``-0``, the result is ``-0``.
+    - If ``x_i`` is either ``+infinity`` or ``-infinity``, the result is ``NaN``.
+
+    Parameters
+    ----------
+    x:
+        input array whose elements are each expressed in radians. Should have a floating-point data type.
+
+    Returns
+    -------
+    out:
+        an array containing the sine of each element in ``x``. The returned array must have a floating-point data type determined by :ref:`type-promotion`.
+    """
+    return _cur_framework(x).sin(x)
+
+  
+  def subtract(x1: Union[ivy.Array, ivy.NativeArray],
          x2: Union[ivy.Array, ivy.NativeArray])\
         -> ivy.Array:
     """

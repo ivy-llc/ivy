@@ -4,8 +4,9 @@ Collection of Numpy linear algebra functions, wrapped to fit Ivy syntax and sign
 
 # global
 import numpy as _np
+import ivy as _ivy
+from typing import Union, Tuple
 
-svd = _np.linalg.svd
 
 
 def matrix_norm(x, p=2, axes=None, keepdims=False):
