@@ -329,3 +329,13 @@ def sin(x: Union[ivy.Array, ivy.NativeArray])\
         an array containing the sine of each element in ``x``. The returned array must have a floating-point data type determined by :ref:`type-promotion`.
     """
     return _cur_framework(x).sin(x)
+
+
+def negative(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
+    """
+    Computes the numerical negative of each element
+    
+    :param x: Input array
+    :return: an array containing the evaluated result for each element in x 
+    """
+    return _cur_framework(x).negative(x)

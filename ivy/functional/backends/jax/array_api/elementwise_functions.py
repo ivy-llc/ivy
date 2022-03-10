@@ -81,3 +81,7 @@ def logical_not(x: JaxArray)\
 def sin(x: JaxArray)\
         -> JaxArray:
     return jnp.sin(x)
+
+
+def negative(x: JaxArray) -> JaxArray:
+    return jnp.negative(x)

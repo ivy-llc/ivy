@@ -77,3 +77,7 @@ def logical_not(x: np.ndarray)\
 def sin(x: np.ndarray)\
         -> np.ndarray:
     return np.asarray(npa.sin(npa.asarray(x)))
+
+  
+def negative(x: np.ndarray) -> np.ndarray:
+    return np.negative(x)
