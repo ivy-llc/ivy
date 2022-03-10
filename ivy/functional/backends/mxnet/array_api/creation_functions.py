@@ -30,6 +30,17 @@ def ones(shape: Union[int, Tuple[int]],
     return mx.nd.ones(shape, ctx=cont).astype(dtype)
 
 
+
+def ones_like(x : mx.ndarray.ndarray.NDArray,
+              dtype : Optional[Union[type, str]] = None,
+              dev : Optional[Union[mx.context.Context, str]] = None) \
+        -> mx.ndarray.ndarray.NDArray:
+    if x.shape == ():
+        return mx.nd.array(1., ctx=_mxnet_init_context(default_device(dev)))
+    mx_ones = mx.nd.ones_like(x, ctx=_mxnet_init_context(default_device(dev)))
+    return mx_ones if dtype is None else mx_ones.astype(dtype)
+
+  
 def tril(x: mx.ndarray.ndarray.NDArray,
          k: int = 0) \
          -> mx.ndarray.ndarray.NDArray:
