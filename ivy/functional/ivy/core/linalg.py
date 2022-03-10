@@ -74,7 +74,6 @@ def cholesky(x):
     """
     return _cur_framework(x).cholesky(x)
 
-
 def qr(x, mode="reduced", f=None):
     """
     Computes the qr decomposition of the x matrix.
