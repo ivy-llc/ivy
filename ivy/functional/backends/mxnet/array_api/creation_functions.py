@@ -32,3 +32,4 @@ def tril(x: mx.ndarray.ndarray.NDArray,
          k: int = 0) \
          -> mx.ndarray.ndarray.NDArray:
     return mx.np.tril(x, k)
+
