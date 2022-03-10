@@ -9,5 +9,6 @@ def argmin(
     out : Optional[mx.ndarray.ndarray.NDArray] = None,
     keepdims: bool = False
     ) -> mx.ndarray.ndarray.NDArray:
-
-    return mx.nd.argmin(x,axis=axis,out=out, keepdims=keepdims) 
+    
+    ret = mx.nd.argmin(x,axis=axis,out=out, keepdims=keepdims)
+    return ret
