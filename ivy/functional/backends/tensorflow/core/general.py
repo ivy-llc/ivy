@@ -12,6 +12,7 @@ from numbers import Number
 import tensorflow_probability as _tfp
 import multiprocessing as _multiprocessing
 from tensorflow.python.types.core import Tensor
+from typing import Tuple, Union
 import typing as _typing
 
 # local
