@@ -7,7 +7,6 @@ import jax as _jax
 import jax.numpy as _jnp
 
 
-sin = _jnp.sin
 tan = _jnp.tan
 asin = _jnp.arcsin
 acos = _jnp.arccos
