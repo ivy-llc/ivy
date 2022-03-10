@@ -4,6 +4,16 @@ from typing import Union
 from ivy.framework_handler import current_framework as _cur_framework
 
 
+def bitwise_invert(x: ivy.Array) -> ivy.Array:
+    """
+    Inverts (flips) each bit for each element x_i of the input array x.
+
+    :param x: input array. Should have an integer or boolean data type
+    :return: an array containing the element-wise results. The returned array must have the same data type as x.
+    """
+    return _cur_framework(x).bitwise_invert(x)
+
+
 def bitwise_and(x1: Union[ivy.Array, ivy.NativeArray],
                 x2: Union[ivy.Array, ivy.NativeArray])\
         -> ivy.Array:

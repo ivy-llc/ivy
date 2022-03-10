@@ -2,6 +2,9 @@
 import torch
 
 
+def bitwise_invert(x: torch.Tensor) -> torch.Tensor:
+    return torch.bitwise_invert(x)
+
 def bitwise_and(x1: torch.Tensor,
                 x2: torch.Tensor)\
         -> torch.Tensor:
