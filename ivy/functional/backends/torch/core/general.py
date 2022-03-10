@@ -137,14 +137,6 @@ def floor(x):
 def abs(x):
     return _torch.abs(x)
 
-
-def argmax(x, axis: int = 0):
-    ret = _torch.argmax(x, axis)
-    if ret.shape == ():
-        return ret.reshape(-1)
-    return ret
-
-
 def argmin(x, axis: int = 0):
     ret = _torch.argmin(x, axis)
     if ret.shape == ():
