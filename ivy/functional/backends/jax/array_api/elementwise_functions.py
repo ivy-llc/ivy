@@ -42,6 +42,11 @@ def log2(x: JaxArray)\
     return jnp.log2(x)
 
 
+def log1p(x: JaxArray)\
+        -> JaxArray:
+    return jnp.log1p(x)
+
+
 def isnan(x: JaxArray)\
         -> JaxArray:
     return jnp.isnan(x)

@@ -22,3 +22,10 @@ def zeros(shape: Union[int, Tuple[int], List[int]],
           device: Optional[jaxlib.xla_extension.Device] = None) \
         -> JaxArray:
     return to_dev(jnp.zeros(shape, dtype_from_str(default_dtype(dtype))), default_device(device))
+
+
+def tril(x: JaxArray,
+         k: int = 0) \
+         -> JaxArray:
+    return jnp.tril(x, k)
+
