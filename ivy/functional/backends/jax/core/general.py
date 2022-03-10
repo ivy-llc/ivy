@@ -112,7 +112,6 @@ def dtype_bits(dtype_in):
     return int(dtype_str.replace('uint', '').replace('int', '').replace('bfloat', '').replace('float', ''))
 
 
-equal = lambda x1, x2: x1 == x2
 to_numpy = lambda x: _onp.asarray(_to_array(x))
 to_numpy.__name__ = 'to_numpy'
 to_scalar = lambda x: x if isinstance(x, Number) else _to_array(x).item()
