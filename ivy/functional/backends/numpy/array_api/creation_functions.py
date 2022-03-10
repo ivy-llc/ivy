@@ -23,6 +23,20 @@ def ones(shape: Union[int, Tuple[int], List[int]],
     return _to_dev(np.ones(shape, dtype), device)
 
 
+def ones_like(x : np.ndarray,
+              dtype : Optional[Union[np.dtype, str]] = None,
+              dev : Optional[str] = None) \
+        -> np.ndarray:
+
+    if dtype:
+        dtype = 'bool_' if dtype == 'bool' else dtype
+        dtype = np.dtype(dtype)
+    else:
+        dtype = x.dtype
+
+    return _to_dev(np.ones_like(x, dtype=dtype), dev)
+
+  
 def tril(x: np.ndarray,
          k: int = 0) \
          -> np.ndarray:
