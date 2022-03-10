@@ -13,12 +13,19 @@ Iinfo = None
 # -----------#
 
 # noinspection PyShadowingBuiltins
-def iinfo(type: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray]) -> Iinfo:
+def iinfo(type: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray])\
+        -> Iinfo:
     """
     Machine limits for integer data types.
 
-    :param type: the kind of integer data-type about which to get information.
-    :return: iinfo object.
+    Parameters
+    ----------
+    type:
+        the kind of integer data-type about which to get information.
+
+    Returns
+    -------
+    out:
         a class with that encapsules the following attributes:
         - **bits**: *int*
           number of bits occupied by the type.
@@ -31,12 +38,19 @@ def iinfo(type: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray]) -> Iinfo:
 
 
 # noinspection PyShadowingBuiltins
-def finfo(type: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray]) -> Finfo:
+def finfo(type: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray])\
+        -> Finfo:
     """
     Machine limits for floating-point data types.
 
-    :param type: the kind of floating-point data-type about which to get information.
-    :return: finfo object.
+    Parameters
+    ----------
+    type:
+        the kind of floating-point data-type about which to get information.
+
+    Returns
+    -------
+    out:
         an object having the followng attributes:
         - **bits**: *int*
           number of bits occupied by the floating-point data type.
