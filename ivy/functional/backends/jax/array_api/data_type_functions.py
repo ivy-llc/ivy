@@ -43,3 +43,8 @@ class Finfo:
 def finfo(type: Union[jnp.dtype, str, JaxArray])\
         -> Finfo:
     return Finfo(jnp.finfo(ivy.dtype_from_str(type)))
+
+
+def can_cast(from_: Union[jnp.dtype, str, JaxArray], to: Union[jnp.dtype, str])\
+        -> bool:
+    return jnp.can_cast(from_, to, casting='safe')

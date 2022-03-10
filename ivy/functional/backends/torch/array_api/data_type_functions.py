@@ -42,3 +42,8 @@ class Finfo:
 def finfo(type: Union[torch.dtype, str, torch.Tensor])\
         -> Finfo:
     return Finfo(torch.finfo(ivy.dtype_from_str(type)))
+
+
+def can_cast(from_: Union[torch.dtype, str, torch.Tensor], to: Union[torch.dtype, str])\
+        -> bool:
+    return torch.can_cast(ivy.dtype_from_str(from_), ivy.dtype_from_str(to))

@@ -44,3 +44,8 @@ class Finfo:
 def finfo(type: Union[type, str, mx.ndarray.ndarray.NDArray])\
         -> Finfo:
     return Finfo(np.finfo(ivy.dtype_from_str(type)))
+
+
+def can_cast(from_: Union[type, str, mx.ndarray.ndarray.NDArray], to: Union[type, str])\
+        -> bool:
+    return np.can_cast(from_, to, casting='safe')

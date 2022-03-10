@@ -64,3 +64,16 @@ def finfo(type: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray])\
           smallest positive floating-point number with full precision.
     """
     return _cur_framework(None).finfo(type)
+
+
+def can_cast(from_: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray], to: Union[ivy.Dtype, str])\
+        -> bool:
+    """
+        Determines if one data type can be cast to another data type.
+
+        :param from_: input data type or array from which to cast.
+        :param to: desired data type to be casted to.
+        :return: boolean object.
+            If the data type can be casted to another data type
+        """
+    return _cur_framework(None).finfo(from_, to)

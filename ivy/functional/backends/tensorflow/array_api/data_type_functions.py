@@ -45,3 +45,8 @@ class Finfo:
 def finfo(type: Union[DType, str, Tensor])\
         -> Finfo:
     return Finfo(tf.experimental.numpy.finfo(ivy.dtype_from_str(type)))
+
+
+def can_cast(from_: Union[DType, str, Tensor], to: Union[DType, str])\
+        -> bool:
+    return tf.experimental.numpy.can_cast(ivy.dtype_from_str(from_), ivy.dtype_from_str(to))
