@@ -46,10 +46,10 @@ negative
 #remainder
 #round
 #sign
-#sin
+sin
 #sinh
 #square
-#sqrt
+sqrt
 #subtract
 tan
 #tanh
