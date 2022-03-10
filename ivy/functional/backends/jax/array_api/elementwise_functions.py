@@ -78,6 +78,11 @@ def logical_not(x: JaxArray)\
     return jnp.logical_not(x)
 
 
+def acosh(x: JaxArray)\
+        -> JaxArray:
+    return jnp.arccosh(x)
+
+  
 def sin(x: JaxArray)\
         -> JaxArray:
     return jnp.sin(x)
