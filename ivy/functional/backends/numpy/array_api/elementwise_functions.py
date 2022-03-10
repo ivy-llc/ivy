@@ -77,3 +77,4 @@ def logical_not(x: np.ndarray)\
 def acosh(x: np.ndarray)\
         -> np.ndarray:
     return np.asarray(npa.acosh(npa.asarray(x)))
+  
