@@ -408,53 +408,6 @@ class Module(abc.ABC):
             print('self.top_mod must be initialized in order to show mod in top_mod,'
                   'but found\n\ntop_mod: {}'.format(self.top_mod))
 
-    def compile_graph(self, *args, v=None, with_grads=None, stateful=None, arg_stateful_idxs=None,
-                      kwarg_stateful_idxs=None, include_generators=True, **kwargs):
-        with_grads = ivy.with_grads(with_grads)
-        logging.info('compiling forward pass for network {} ...'.format(self))
-        stateful = ivy.default(stateful, self._stateful)
-        arg_stateful_idxs = ivy.default(arg_stateful_idxs, self._arg_stateful_idxs)
-        kwarg_stateful_idxs = ivy.default(kwarg_stateful_idxs, self._kwarg_stateful_idxs)
-        stateful = ivy.default(stateful, self._stateful)
-        if not self._built:
-            if self._build_mode == 'on_call':
-                self(*args, v=v, with_grads=with_grads, **kwargs)
-            elif self._build_mode == 'explicit':
-                self.build(*args, from_call=False, **kwargs)
-            elif self._build_mode == 'on_init':
-                raise Exception('ivy.Module constructor was called but module was not built despite '
-                                'on_init mode being set.')
-            else:
-                raise Exception('invalid build_mode, must be one of [ on_call | explicit | on_init ]')
-        kwargs['v'] = ivy.default(v, self.v)
-        kwargs['with_grads'] = with_grads
-        self._compiled_fn = ivy.compile_graph(
-            self._call, *args, **kwargs, stateful=stateful, arg_stateful_idxs=arg_stateful_idxs,
-            kwarg_stateful_idxs=kwarg_stateful_idxs, include_generators=include_generators, name=str(self))
-        logging.info('{} forward pass compiled!'.format(self))
-        self._compiled = True
-
-    def show_graph(self, *args, v=None, with_grads=None, stateful=None, arg_stateful_idxs=None,
-                   kwarg_stateful_idxs=None, randomness_factor=0., save_to_disk=False, with_edge_labels=True,
-                   with_arg_labels=True, with_output_labels=True, output_connected_only=True, include_generators=True,
-                   fname=None, **kwargs):
-        with_grads = ivy.with_grads(with_grads)
-        self(*args, v=v, with_grads=with_grads, **kwargs)  # for on call build modes
-        if not self._built:
-            self.build(*args, from_call=False, **kwargs)  # for explicit build modes
-        kwargs['v'] = ivy.default(v, self.v)
-        kwargs['with_grads'] = with_grads
-        ivy.show_graph(self._call, *args, **kwargs, stateful=stateful, arg_stateful_idxs=arg_stateful_idxs,
-                       kwarg_stateful_idxs=kwarg_stateful_idxs, randomness_factor=randomness_factor,
-                       save_to_disk=save_to_disk, with_edge_labels=with_edge_labels, with_arg_labels=with_arg_labels,
-                       with_output_labels=with_output_labels, output_connected_only=output_connected_only,
-                       include_generators=include_generators, fname=fname, name=str(self))
-
-    def compile_on_next_step(self):
-        if self._compiled:
-            raise Exception('This network is already compiled, cannot compile on next step.')
-        self._compile_on_next_step = True
-
     def _set_submod_flags(self, track_submod_rets, submod_depth, submods_to_track, track_submod_call_order,
                           expected_submod_rets):
         self._track_submod_rets = track_submod_rets
@@ -573,23 +526,6 @@ class Module(abc.ABC):
         with_grads = ivy.with_grads(with_grads)
         self.submod_rets = ivy.Container(alphabetical_keys=False, ivyh=ivy.functional.backends.numpy)
         self.submod_call_order = ivy.Container(alphabetical_keys=False, ivyh=ivy.functional.backends.numpy)
-        if self._compiled and ivy.try_use_compiled:
-            try:
-                return self._compiled_fn(*args, v=ivy.default(v, self.v), with_grads=with_grads, **kwargs)
-            except Exception as e:
-                if self._fallback_to_non_compiled:
-                    self._set_submod_flags(
-                        track_submod_rets, submod_depth, submods_to_track, track_submod_call_order,
-                        expected_submod_rets)
-                    ret = self._call(*args, v=v, with_grads=with_grads, **kwargs)
-                    self._unset_submod_flags()
-                    return ret
-                raise e
-        elif self._compile_on_next_step and not self._compiled:
-            self.compile_graph(*args, v=v, with_grads=with_grads, stateful=stateful,
-                               arg_stateful_idxs=arg_stateful_idxs, kwarg_stateful_idxs=kwarg_stateful_idxs, **kwargs)
-            self._compile_on_next_step = False
-            return self._compiled_fn(*args, v=ivy.default(v, self.v), with_grads=with_grads, **kwargs)
         self._set_submod_flags(
             track_submod_rets, submod_depth, submods_to_track, track_submod_call_order, expected_submod_rets)
         ret = self._call(*args, v=v, with_grads=with_grads, **kwargs)

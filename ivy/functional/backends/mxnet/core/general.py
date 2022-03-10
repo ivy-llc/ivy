@@ -136,18 +136,11 @@ def floor(x):
     return _mx.nd.floor(x)
 
 
-@_handle_flat_arrays_in_out
-def ceil(x):
-    return _mx.nd.ceil(x)
-
-
 # noinspection PyShadowingBuiltins
 @_handle_flat_arrays_in_out
 def abs(x):
     return _mx.nd.abs(x)
 
-
-argmax = lambda x, axis=0: _mx.nd.argmax(x, axis)
 argmin = lambda x, axis=0: _mx.nd.argmin(x, axis)
 
 

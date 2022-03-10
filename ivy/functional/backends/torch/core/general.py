@@ -10,7 +10,7 @@ import math as _math
 import torch as _torch
 from operator import mul
 from torch.types import Number
-from functools import reduce as _reduce
+from functools import partial as _partial, reduce as _reduce
 from typing import List, Dict, Optional, Union
 
 # local
@@ -73,6 +73,7 @@ def equal(x1, x2):
         x1 = x1.type(x2.dtype)
     return x1 == x2
 
+
 def to_numpy(x) -> np.ndarray:
     if isinstance(x, np.ndarray) or isinstance(x, (float, int, bool)):
         return x
@@ -132,21 +133,9 @@ def floor(x):
     return _torch.floor(x)
 
 
-def ceil(x):
-    return _torch.ceil(x)
-
-
 # noinspection PyShadowingBuiltins
 def abs(x):
     return _torch.abs(x)
-
-
-def argmax(x, axis: int = 0):
-    ret = _torch.argmax(x, axis)
-    if ret.shape == ():
-        return ret.reshape(-1)
-    return ret
-
 
 def argmin(x, axis: int = 0):
     ret = _torch.argmin(x, axis)
