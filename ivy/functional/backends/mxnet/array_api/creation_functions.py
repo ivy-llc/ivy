@@ -3,7 +3,9 @@ import mxnet as mx
 from typing import Tuple, Union, Optional, Iterable
 
 # local
-from ivy import default_device
+
+from ivy import default_device, dtype_from_str, default_dtype
+
 from ivy.functional.backends.mxnet import _mxnet_init_context, _1_dim_array_to_flat_array
 
 
@@ -32,3 +34,11 @@ def tril(x: mx.ndarray.ndarray.NDArray,
          k: int = 0) \
          -> mx.ndarray.ndarray.NDArray:
     return mx.np.tril(x, k)
+
+
+def empty(shape: Union[int, Tuple[int]],
+          dtype: Optional[type] = None,
+          device: Optional[mx.context.Context] = None) \
+        -> mx.ndarray.ndarray.NDArray:
+    cont = _mxnet_init_context(default_device(device))
+    return mx.nd.empty(shape, dtype_from_str(default_dtype(dtype)), cont)
