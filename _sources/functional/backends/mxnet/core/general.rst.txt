@@ -42,7 +42,6 @@ General
    general/squeeze.rst
    general/zeros_like.rst
    general/full.rst
-   general/ones_like.rst
    general/cross.rst
    general/matmul.rst
    general/cumprod.rst

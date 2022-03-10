@@ -1203,25 +1203,6 @@ Default is ‘float32’.</p></li>
 </dd></dl>
 
 <dl class="py function">
-<dt id="ivy.functional.ivy.core.general.ones_like">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">ones_like</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">dtype</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>ivy.Dtype<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">dev</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>ivy.Device<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/core/general.html#ones_like"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.core.general.ones_like" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns an array of ones with the same shape and type as x, unless dtype provided which overrides.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>array</em>) – The shape and data-type of a define these same attributes of the returned array.</p></li>
-<li><p><strong>dtype</strong> (<em>data-type string</em><em>, </em><em>optional</em>) – The desired data-type for the array in string format, i.e. ‘float32’ or ‘int64’.
-If not given, then the type of the original array is used.</p></li>
-<li><p><strong>dev</strong> (<em>ivy.Device</em><em>, </em><em>optional</em>) – device on which to create the array ‘cuda:0’, ‘cuda:1’, ‘cpu’ etc. Same as x if None.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Tensor of zeros with the same shape and type as a, unless dtype provided which overrides.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
 <dt id="ivy.functional.ivy.core.general.print_all_arrays_in_memory">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">print_all_arrays_in_memory</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/core/general.html#print_all_arrays_in_memory"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.core.general.print_all_arrays_in_memory" title="Permalink to this definition">¶</a></dt>
 <dd><p>Prints all arrays which are currently alive.</p>
@@ -1757,7 +1738,6 @@ If not given, then the type of the original array is used.</p></li>
 <li class="toctree-l1"><a class="reference internal" href="general/squeeze.html">squeeze</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/zeros_like.html">zeros_like</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/ones.html">ones</a></li>
-<li class="toctree-l1"><a class="reference internal" href="general/ones_like.html">ones_like</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/full.html">full</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/one_hot.html">one_hot</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/cross.html">cross</a></li>

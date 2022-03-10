@@ -28,7 +28,6 @@ General
    general/squeeze.rst
    general/zeros_like.rst
    general/full.rst
-   general/ones_like.rst
    general/one_hot.rst
    general/cumprod.rst
    general/identity.rst
