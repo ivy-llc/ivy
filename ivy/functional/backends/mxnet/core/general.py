@@ -143,8 +143,6 @@ def abs(x):
 
 
 argmax = lambda x, axis=0: _mx.nd.argmax(x, axis)
-argmin = lambda x, axis=0: _mx.nd.argmin(x, axis)
-
 
 @_handle_flat_arrays_in_out
 def cast(x, dtype):
