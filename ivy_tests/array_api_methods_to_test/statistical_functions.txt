@@ -1,6 +1,6 @@
 #max
 #mean
-#min
+min
 #prod
 #std
 #sum
