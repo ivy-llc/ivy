@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>argsort &mdash; Ivy 1.0 documentation</title>
+  <title>ivy.functional.ivy.array_api.statistical_functions &mdash; Ivy 1.0 documentation</title>
   
 
   
@@ -103,8 +103,8 @@
 </ul>
 <p class="caption"><span class="caption-text">Functional</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../backends.html">Backends</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../ivy.html">Ivy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../functional/backends.html">Backends</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../functional/ivy.html">Ivy</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Stateful</span></p>
 <ul>
@@ -173,14 +173,12 @@
     
       <li><a href="../../../../../index.html">Docs</a> &raquo;</li>
         
-      <li>argsort</li>
+          <li><a href="../../../../index.html">Module code</a> &raquo;</li>
+        
+      <li>ivy.functional.ivy.array_api.statistical_functions</li>
     
     
       <li class="wy-breadcrumbs-aside">
-        
-            
-            <a href="../../../../../_sources/functional/backends/torch/array_api/sorting_functions/argsort.rst.txt" rel="nofollow"> View page source</a>
-          
         
       </li>
     
@@ -192,15 +190,30 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="argsort">
-<h1>argsort<a class="headerlink" href="#argsort" title="Permalink to this headline">¶</a></h1>
-<div class="line-block">
-<div class="line"><br /></div>
-<div class="line"><strong>Supported Frameworks:</strong></div>
-</div>
-<p><a class="reference internal" href="../../../../../_images/empty1.png"><img alt="empty" src="../../../../../_images/empty1.png" style="width: 4%;" /></a> <a class="reference external" href="https://jax.readthedocs.io"><img alt="jax_logo" src="../../../../../_images/jax_logo1.png" style="width: 14%;" /></a> <a class="reference internal" href="../../../../../_images/empty1.png"><img alt="empty" src="../../../../../_images/empty1.png" style="width: 4%;" /></a> <a class="reference external" href="https://www.tensorflow.org"><img alt="tf_logo" src="../../../../../_images/tensorflow_logo1.png" style="width: 14%;" /></a> <a class="reference internal" href="../../../../../_images/empty1.png"><img alt="empty" src="../../../../../_images/empty1.png" style="width: 4%;" /></a> <a class="reference external" href="https://pytorch.org"><img alt="pytorch_logo" src="../../../../../_images/pytorch_logo1.png" style="width: 14%;" /></a> <a class="reference internal" href="../../../../../_images/empty1.png"><img alt="empty" src="../../../../../_images/empty1.png" style="width: 4%;" /></a> <a class="reference external" href="https://mxnet.apache.org"><img alt="mxnet_logo" src="../../../../../_images/mxnet_logo1.png" style="width: 14%;" /></a> <a class="reference internal" href="../../../../../_images/empty1.png"><img alt="empty" src="../../../../../_images/empty1.png" style="width: 4%;" /></a> <a class="reference external" href="https://numpy.org"><img alt="numpy_logo" src="../../../../../_images/numpy_logo1.png" style="width: 14%;" /></a> <a class="reference internal" href="../../../../../_images/empty1.png"><img alt="empty" src="../../../../../_images/empty1.png" style="width: 4%;" /></a></p>
-</div>
+  <h1>Source code for ivy.functional.ivy.array_api.statistical_functions</h1><div class="highlight"><pre>
+<span></span><span class="c1"># global</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Tuple</span>
 
+<span class="c1"># local</span>
+<span class="kn">import</span> <span class="nn">ivy</span>
+<span class="kn">from</span> <span class="nn">ivy.framework_handler</span> <span class="kn">import</span> <span class="n">current_framework</span> <span class="k">as</span> <span class="n">_cur_framework</span>
+
+
+<div class="viewcode-block" id="min"><a class="viewcode-back" href="../../../../../functional/ivy/array_api/statistical_functions/min.html#ivy.functional.ivy.array_api.statistical_functions.min">[docs]</a><span class="k">def</span> <span class="nf">min</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+        <span class="n">axis</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">keepdims</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> \
+        <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return the minimum value of the input array x.</span>
+
+<span class="sd">    :param x: Input array containing elements to min.</span>
+<span class="sd">    :param axis: Axis or axes along which minimum values must be computed, default is None.</span>
+<span class="sd">    :param keepdims, optional axis or axes along which minimum values must be computed, default is None.</span>
+<span class="sd">    :param f: Machine learning framework. Inferred from inputs if None.</span>
+<span class="sd">    :return: array containing minimum value.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_cur_framework</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">keepdims</span><span class="p">)</span></div>
+</pre></div>
 
            </div>
            

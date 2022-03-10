@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Statistical functions &mdash; Ivy 1.0 documentation</title>
+  <title>min &mdash; Ivy 1.0 documentation</title>
   
 
   
@@ -173,13 +173,13 @@
     
       <li><a href="../../../../index.html">Docs</a> &raquo;</li>
         
-      <li>Statistical functions</li>
+      <li>min</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../../../_sources/functional/backends/jax/array_api/statistical_functions.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../../../_sources/functional/ivy/array_api/statistical_functions/min.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -192,14 +192,30 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="statistical-functions">
-<h1>Statistical functions<a class="headerlink" href="#statistical-functions" title="Permalink to this headline">¶</a></h1>
-<div class="toctree-wrapper compound">
-<p class="caption"><span class="caption-text">Statistical functions</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="statistical_functions/min.html">min</a></li>
+  <div class="section" id="min">
+<h1>min<a class="headerlink" href="#min" title="Permalink to this headline">¶</a></h1>
+<dl class="py function">
+<dt id="ivy.functional.ivy.array_api.statistical_functions.min">
+<code class="sig-prename descclassname">ivy.functional.ivy.array_api.statistical_functions.</code><code class="sig-name descname">min</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">axis</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Union<span class="p">[</span>int<span class="p">, </span>Tuple<span class="p">[</span>int<span class="p">]</span><span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">keepdims</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../../../_modules/ivy/functional/ivy/array_api/statistical_functions.html#min"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.array_api.statistical_functions.min" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the minimum value of the input array x.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> – Input array containing elements to min.</p></li>
+<li><p><strong>axis</strong> – Axis or axes along which minimum values must be computed, default is None.</p></li>
 </ul>
+</dd>
+</dl>
+<p>:param keepdims, optional axis or axes along which minimum values must be computed, default is None.
+:param f: Machine learning framework. Inferred from inputs if None.
+:return: array containing minimum value.</p>
+</dd></dl>
+
+<div class="line-block">
+<div class="line"><br /></div>
+<div class="line"><strong>Supported Frameworks:</strong></div>
 </div>
+<p><a class="reference internal" href="../../../../_images/empty1.png"><img alt="empty" src="../../../../_images/empty1.png" style="width: 4%;" /></a> <a class="reference external" href="https://jax.readthedocs.io"><img alt="jax_logo" src="../../../../_images/jax_logo1.png" style="width: 14%;" /></a> <a class="reference internal" href="../../../../_images/empty1.png"><img alt="empty" src="../../../../_images/empty1.png" style="width: 4%;" /></a> <a class="reference external" href="https://www.tensorflow.org"><img alt="tf_logo" src="../../../../_images/tensorflow_logo1.png" style="width: 14%;" /></a> <a class="reference internal" href="../../../../_images/empty1.png"><img alt="empty" src="../../../../_images/empty1.png" style="width: 4%;" /></a> <a class="reference external" href="https://pytorch.org"><img alt="pytorch_logo" src="../../../../_images/pytorch_logo1.png" style="width: 14%;" /></a> <a class="reference internal" href="../../../../_images/empty1.png"><img alt="empty" src="../../../../_images/empty1.png" style="width: 4%;" /></a> <a class="reference external" href="https://mxnet.apache.org"><img alt="mxnet_logo" src="../../../../_images/mxnet_logo1.png" style="width: 14%;" /></a> <a class="reference internal" href="../../../../_images/empty1.png"><img alt="empty" src="../../../../_images/empty1.png" style="width: 4%;" /></a> <a class="reference external" href="https://numpy.org"><img alt="numpy_logo" src="../../../../_images/numpy_logo1.png" style="width: 14%;" /></a> <a class="reference internal" href="../../../../_images/empty1.png"><img alt="empty" src="../../../../_images/empty1.png" style="width: 4%;" /></a></p>
 </div>
 
 
