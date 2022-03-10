@@ -7,6 +7,7 @@ import gc
 import math
 import einops
 import inspect
+import importlib
 import numpy as np
 from numbers import Number
 from typing import Callable, Any, Union, List, Tuple, Dict, Iterable, Optional
@@ -976,7 +977,32 @@ def identity(n: int, dtype: ivy.Dtype = 'float32', batch_shape: Iterable[int] = 
     return _cur_framework().identity(n, dtype, batch_shape, dev)
 
 
+<<<<<<< HEAD
 def meshgrid(*xs: Iterable[Union[ivy.Array, ivy.NativeArray]], indexing: str = 'ij')\
+=======
+def prod(x: array, /, *, axis: Optional[Union[int, Tuple[int, ...]]] = None, dtype: Optional[ivy.Dtype] = None,
+         keepdims: bool = False, f: ivy.Framework = None) -> array:
+    """
+    Calculates the product of input array x elements.
+
+    :param x: Input array.
+    :type x: array
+    :param axis: Axis along which the product is computed. By default 0.
+    :type axis: int
+    "param dtype: data type of the returned array
+    "type dtype:
+    :param f: Machine learning framework. Inferred from inputs if None.
+    :type f: ml_framework, optional
+    :param keepdims: Whether the reduces axes be included
+    :type keepdims: bool
+    :return: Input array with multiplied all elements.
+    """
+
+    return _cur_framework(x, f=f).prod(x, axis, dtype, keepdims)
+
+
+def meshgrid(*xs: Iterable[Union[ivy.Array, ivy.NativeArray]], indexing: str = 'ij', f: ivy.Framework = None)\
+>>>>>>> 118aab1f095d6ff1f971408916b93ef7be7477c5
         -> Iterable[Union[ivy.Array, ivy.NativeArray]]:
     """
     Broadcasts parameters for evaluation on an N-D grid.
@@ -1517,4 +1543,8 @@ def inplace_increment(x, val, f=None):
     :type val: array
     :return: The variable following the in-place increment.
     """
+<<<<<<< HEAD
     return _cur_framework(x).inplace_increment(x, val)
+=======
+    return _cur_framework(x, f=f).inplace_increment(x, val)
+>>>>>>> 118aab1f095d6ff1f971408916b93ef7be7477c5
