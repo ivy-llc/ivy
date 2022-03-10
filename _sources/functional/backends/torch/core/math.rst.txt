@@ -12,7 +12,6 @@ Math
    :maxdepth: -1
    :caption: Math
 
-   math/sin.rst
    math/tan.rst
    math/asin.rst
    math/acos.rst

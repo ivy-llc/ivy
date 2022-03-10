@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Elementwise functions &mdash; Ivy 1.0 documentation</title>
+  <title>sin &mdash; Ivy 1.0 documentation</title>
   
 
   
@@ -173,13 +173,13 @@
     
       <li><a href="../../../../index.html">Docs</a> &raquo;</li>
         
-      <li>Elementwise functions</li>
+      <li>sin</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../../../_sources/functional/backends/jax/array_api/elementwise_functions.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../../../_sources/functional/ivy/array_api/elementwise_functions/sin.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -192,28 +192,35 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="elementwise-functions">
-<h1>Elementwise functions<a class="headerlink" href="#elementwise-functions" title="Permalink to this headline">¶</a></h1>
-<div class="toctree-wrapper compound">
-<p class="caption"><span class="caption-text">Elementwise functions</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="elementwise_functions/bitwise_and.html">bitwise_and</a></li>
-<li class="toctree-l1"><a class="reference internal" href="elementwise_functions/ceil.html">ceil</a></li>
-<li class="toctree-l1"><a class="reference internal" href="elementwise_functions/isfinite.html">isfinite</a></li>
-<li class="toctree-l1"><a class="reference internal" href="elementwise_functions/equal.html">equal</a></li>
-<li class="toctree-l1"><a class="reference internal" href="elementwise_functions/less_equal.html">less_equal</a></li>
-<li class="toctree-l1"><a class="reference internal" href="elementwise_functions/asinh.html">asinh</a></li>
-<li class="toctree-l1"><a class="reference internal" href="elementwise_functions/sqrt.html">sqrt</a></li>
-<li class="toctree-l1"><a class="reference internal" href="elementwise_functions/cosh.html">cosh</a></li>
-<li class="toctree-l1"><a class="reference internal" href="elementwise_functions/log2.html">log2</a></li>
-<li class="toctree-l1"><a class="reference internal" href="elementwise_functions/log1p.html">log1p</a></li>
-<li class="toctree-l1"><a class="reference internal" href="elementwise_functions/isnan.html">isnan</a></li>
-<li class="toctree-l1"><a class="reference internal" href="elementwise_functions/less.html">less</a></li>
-<li class="toctree-l1"><a class="reference internal" href="elementwise_functions/cos.html">cos</a></li>
-<li class="toctree-l1"><a class="reference internal" href="elementwise_functions/logical_not.html">logical_not</a></li>
-<li class="toctree-l1"><a class="reference internal" href="elementwise_functions/sin.html">sin</a></li>
+  <div class="section" id="sin">
+<h1>sin<a class="headerlink" href="#sin" title="Permalink to this headline">¶</a></h1>
+<dl class="py function">
+<dt id="ivy.functional.ivy.array_api.elementwise_functions.sin">
+<code class="sig-prename descclassname">ivy.functional.ivy.array_api.elementwise_functions.</code><code class="sig-name descname">sin</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../../../_modules/ivy/functional/ivy/array_api/elementwise_functions.html#sin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.array_api.elementwise_functions.sin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates an implementation-dependent approximation to the sine, having domain <code class="docutils literal notranslate"><span class="pre">(-infinity,</span> <span class="pre">+infinity)</span></code> and codomain <code class="docutils literal notranslate"><span class="pre">[-1,</span> <span class="pre">+1]</span></code>, for each element <code class="docutils literal notranslate"><span class="pre">x_i</span></code> of the input array <code class="docutils literal notranslate"><span class="pre">x</span></code>. Each element <code class="docutils literal notranslate"><span class="pre">x_i</span></code> is assumed to be expressed in radians.</p>
+<p><strong>Special cases</strong></p>
+<p>For floating-point operands,</p>
+<ul class="simple">
+<li><p>If <code class="docutils literal notranslate"><span class="pre">x_i</span></code> is <code class="docutils literal notranslate"><span class="pre">NaN</span></code>, the result is <code class="docutils literal notranslate"><span class="pre">NaN</span></code>.</p></li>
+<li><p>If <code class="docutils literal notranslate"><span class="pre">x_i</span></code> is <code class="docutils literal notranslate"><span class="pre">+0</span></code>, the result is <code class="docutils literal notranslate"><span class="pre">+0</span></code>.</p></li>
+<li><p>If <code class="docutils literal notranslate"><span class="pre">x_i</span></code> is <code class="docutils literal notranslate"><span class="pre">-0</span></code>, the result is <code class="docutils literal notranslate"><span class="pre">-0</span></code>.</p></li>
+<li><p>If <code class="docutils literal notranslate"><span class="pre">x_i</span></code> is either <code class="docutils literal notranslate"><span class="pre">+infinity</span></code> or <code class="docutils literal notranslate"><span class="pre">-infinity</span></code>, the result is <code class="docutils literal notranslate"><span class="pre">NaN</span></code>.</p></li>
 </ul>
+<dl class="simple">
+<dt>x:</dt><dd><p>input array whose elements are each expressed in radians. Should have a floating-point data type.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>out:</dt><dd><p>an array containing the sine of each element in <code class="docutils literal notranslate"><span class="pre">x</span></code>. The returned array must have a floating-point data type determined by <span class="xref std std-ref">type-promotion</span>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<div class="line-block">
+<div class="line"><br /></div>
+<div class="line"><strong>Supported Frameworks:</strong></div>
 </div>
+<p><a class="reference internal" href="../../../../_images/empty1.png"><img alt="empty" src="../../../../_images/empty1.png" style="width: 4%;" /></a> <a class="reference external" href="https://jax.readthedocs.io"><img alt="jax_logo" src="../../../../_images/jax_logo1.png" style="width: 14%;" /></a> <a class="reference internal" href="../../../../_images/empty1.png"><img alt="empty" src="../../../../_images/empty1.png" style="width: 4%;" /></a> <a class="reference external" href="https://www.tensorflow.org"><img alt="tf_logo" src="../../../../_images/tensorflow_logo1.png" style="width: 14%;" /></a> <a class="reference internal" href="../../../../_images/empty1.png"><img alt="empty" src="../../../../_images/empty1.png" style="width: 4%;" /></a> <a class="reference external" href="https://pytorch.org"><img alt="pytorch_logo" src="../../../../_images/pytorch_logo1.png" style="width: 14%;" /></a> <a class="reference internal" href="../../../../_images/empty1.png"><img alt="empty" src="../../../../_images/empty1.png" style="width: 4%;" /></a> <a class="reference external" href="https://mxnet.apache.org"><img alt="mxnet_logo" src="../../../../_images/mxnet_logo1.png" style="width: 14%;" /></a> <a class="reference internal" href="../../../../_images/empty1.png"><img alt="empty" src="../../../../_images/empty1.png" style="width: 4%;" /></a> <a class="reference external" href="https://numpy.org"><img alt="numpy_logo" src="../../../../_images/numpy_logo1.png" style="width: 14%;" /></a> <a class="reference internal" href="../../../../_images/empty1.png"><img alt="empty" src="../../../../_images/empty1.png" style="width: 4%;" /></a></p>
 </div>
 
 
