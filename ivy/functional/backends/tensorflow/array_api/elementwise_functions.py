@@ -51,6 +51,7 @@ def log1p(x: Tensor) \
     return tf.experimental.numpy.log1p(x)
 
 
+
 def isnan(x: Tensor)\
         -> Tensor:
     if ivy.is_int_dtype(x):
@@ -75,3 +76,9 @@ def cos(x: Tensor)\
 def logical_not(x: Tensor)\
         -> Tensor:
     return tf.logical_not(tf.cast(x, tf.bool))
+
+
+def add(x1: Tensor,
+        x2: Tensor)\
+        -> Tensor:
+    return tf.experimental.numpy.add(x1, x2)

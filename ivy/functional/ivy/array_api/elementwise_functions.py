@@ -290,3 +290,46 @@ def logical_not(x: Union[ivy.Array, ivy.NativeArray])\
         an array containing the element-wise results. The returned array must have a data type of ``bool``.
     """
     return _cur_framework(x).logical_not(x)
+
+
+
+def add(x1: Union[ivy.Array, ivy.NativeArray],
+        x2: Union[ivy.Array, ivy.NativeArray])\
+        -> ivy.Array:
+    """
+         Calculates the sum for each element x1_i of the input array x1 with the respective element x2_i of the input array x2.
+
+         **Special cases**
+
+         For floating-point operands,
+
+        If either x1_i or x2_i is NaN, the result is NaN.
+        If x1_i is +infinity and x2_i is -infinity, the result is NaN.
+        If x1_i is -infinity and x2_i is +infinity, the result is NaN.
+        If x1_i is +infinity and x2_i is +infinity, the result is +infinity.
+        If x1_i is -infinity and x2_i is -infinity, the result is -infinity.
+        If x1_i is +infinity and x2_i is a finite number, the result is +infinity.
+        If x1_i is -infinity and x2_i is a finite number, the result is -infinity.
+        If x1_i is a finite number and x2_i is +infinity, the result is +infinity.
+        If x1_i is a finite number and x2_i is -infinity, the result is -infinity.
+        If x1_i is -0 and x2_i is -0, the result is -0.
+        If x1_i is -0 and x2_i is +0, the result is +0.
+        If x1_i is +0 and x2_i is -0, the result is +0.
+        If x1_i is +0 and x2_i is +0, the result is +0.
+        If x1_i is either +0 or -0 and x2_i is a nonzero finite number, the result is x2_i.
+        If x1_i is a nonzero finite number and x2_i is either +0 or -0, the result is x1_i.
+        If x1_i is a nonzero finite number and x2_i is -x1_i, the result is +0.
+
+               In the remaining cases, when neither infinity, +0, -0, nor a NaN is involved, \
+               and the operands have the same mathematical sign or have different magnitudes,\
+               the sum must be computed and rounded to the nearest representable value \
+               according to IEEE 754-2019 and a supported round mode. \
+               If the magnitude is too large to represent, the operation overflows and \
+               the result is an infinity of appropriate mathematical sign
+
+        :param x1: x1 (array) – first input array. Should have a numeric data type.
+        :param x2: x2 (array) – second input array. Must be compatible with x1. Should have a numeric data type.
+        :return:  out (array) – an array containing the element-wise sums. \
+        The returned array must have a data type determined by Type Promotion Rules.
+    """
+    return _cur_framework(x1).less(x1,x2)
