@@ -130,13 +130,6 @@ def argmax(x, axis=0):
     return ret
 
 
-def argmin(x, axis=0):
-    ret = _tf.argmin(x, axis)
-    if ret.shape == ():
-        return _tf.reshape(ret, (-1,))
-    return ret
-
-
 def cast(x, dtype):
     return _tf.cast(x, dtype_from_str(dtype))
 
