@@ -3,8 +3,8 @@ import numpy as np
 import ivy as _ivy
 from typing import Union, Optional, Tuple, Literal
 from collections import namedtuple
-
 # local
+import ivy
 from ivy import inf
 
 
@@ -37,3 +37,7 @@ def diagonal(x: np.ndarray,
              axis1: int = -2,
              axis2: int = -1) -> np.ndarray:
     return np.diagonal(x, offset=offset, axis1=axis1, axis2=axis2)
+
+
+def cross(x1: np.ndarray, x2: np.ndarray, axis: int = -1) -> np.ndarray:
+    return np.cross(x1, x2, axis=axis)

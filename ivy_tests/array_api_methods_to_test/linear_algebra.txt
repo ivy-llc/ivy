@@ -1,5 +1,5 @@
 #cholesky
-#cross
+cross
 #det
 diagonal
 #eigh

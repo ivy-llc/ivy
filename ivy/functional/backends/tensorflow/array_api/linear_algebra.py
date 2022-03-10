@@ -48,3 +48,10 @@ def diagonal(x: tf.Tensor,
              axis1: int = -2,
              axis2: int = -1) -> tf.Tensor:
     return tf.experimental.numpy.diagonal(x, offset, axis1=axis1, axis2=axis2)
+
+
+def cross(x1: Tensor, x2: Tensor, axis: int = -1) -> Tensor:
+    promoted_type = tf.experimental.numpy.promote_types(x1.dtype, x2.dtype)
+    x1 = tf.cast(x1, promoted_type)
+    x2 = tf.cast(x2, promoted_type)
+    return tf.linalg.cross(x1, x2)

@@ -273,7 +273,6 @@ def one_hot(indices, depth, dev=None):
     return to_dev(res.reshape(list(indices.shape) + [depth]), default_device(dev))
 
 
-cross = _jnp.cross
 matmul = lambda x1, x2: _jnp.matmul(x1, x2)
 cumsum = _jnp.cumsum
 

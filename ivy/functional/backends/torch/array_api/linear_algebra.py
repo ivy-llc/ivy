@@ -11,9 +11,8 @@ import ivy as _ivy
 def vector_norm(x: torch.Tensor,
                 p: Union[int, float, Literal[inf, - inf]] = 2,
                 axis: Optional[Union[int, Tuple[int]]] = None,
-                keepdims: bool = False)\
+                keepdims: bool = False) \
         -> torch.Tensor:
-
     py_normalized_vector = torch.linalg.vector_norm(x, p, axis, keepdims)
 
     if py_normalized_vector.shape == ():
@@ -34,3 +33,10 @@ def diagonal(x: torch.Tensor,
              axis1: int = -2,
              axis2: int = -1) -> torch.Tensor:
     return torch.diagonal(x, offset=offset, dim1=axis1, dim2=axis2)
+
+
+def cross(x1: torch.Tensor, x2: torch.Tensor, axis: int = -1) -> torch.Tensor:
+    promoted_type = torch.promote_types(x1.dtype, x2.dtype)
+    x1 = x1.to(promoted_type)
+    x2 = x2.to(promoted_type)
+    return torch.cross(input=x1, other=x2, dim=axis)
