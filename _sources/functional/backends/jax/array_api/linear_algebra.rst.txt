@@ -13,5 +13,6 @@ Linear algebra
    :caption: Linear algebra
 
    linear_algebra/vector_norm.rst
+   linear_algebra/svd.rst
    linear_algebra/diagonal.rst
 

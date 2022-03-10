@@ -193,6 +193,7 @@
   <h1>Source code for ivy.functional.ivy.array_api.linear_algebra</h1><div class="highlight"><pre>
 <span></span><span class="c1"># global</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Literal</span>
+<span class="kn">from</span> <span class="nn">ivy.framework_handler</span> <span class="kn">import</span> <span class="n">current_framework</span> <span class="k">as</span> <span class="n">_cur_framework</span>
 
 <span class="c1"># local</span>
 <span class="kn">import</span> <span class="nn">ivy</span>
@@ -262,6 +263,29 @@
     <span class="n">x_raised</span> <span class="o">=</span> <span class="n">x</span> <span class="o">**</span> <span class="nb">ord</span>
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">reduce_sum</span><span class="p">(</span><span class="n">x_raised</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">keepdims</span><span class="p">)</span> <span class="o">**</span> <span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="nb">ord</span><span class="p">)</span></div>
 
+<div class="viewcode-block" id="svd"><a class="viewcode-back" href="../../../../../functional/ivy/array_api/linear_algebra/svd.html#ivy.functional.ivy.array_api.linear_algebra.svd">[docs]</a><span class="k">def</span> <span class="nf">svd</span><span class="p">(</span><span class="n">x</span><span class="p">:</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span><span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span><span class="n">full_matrices</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span><span class="o">...</span><span class="p">]]:</span>
+
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Singular Value Decomposition.</span>
+<span class="sd">    When x is a 2D array, it is factorized as u @ numpy.diag(s) @ vh = (u * s) @ vh, where u and vh are 2D unitary</span>
+<span class="sd">    arrays and s is a 1D array of a’s singular values. When x is higher-dimensional, SVD is applied in batched mode.</span>
+
+<span class="sd">    :param x: Input array with number of dimensions &gt;= 2.</span>
+<span class="sd">    :type x: array</span>
+<span class="sd">    :return:</span>
+<span class="sd">        u -&gt; { (…, M, M), (…, M, K) } array \n</span>
+<span class="sd">        Unitary array(s). The first (number of dims - 2) dimensions have the same size as those of the input a.</span>
+<span class="sd">        The size of the last two dimensions depends on the value of full_matrices.</span>
+
+<span class="sd">        s -&gt; (…, K) array \n</span>
+<span class="sd">        Vector(s) with the singular values, within each vector sorted in descending ord.</span>
+<span class="sd">        The first (number of dims - 2) dimensions have the same size as those of the input a.</span>
+
+<span class="sd">        vh -&gt; { (…, N, N), (…, K, N) } array \n</span>
+<span class="sd">        Unitary array(s). The first (number of dims - 2) dimensions have the same size as those of the input a.</span>
+<span class="sd">        The size of the last two dimensions depends on the value of full_matrices.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">svd</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">full_matrices</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="diagonal"><a class="viewcode-back" href="../../../../../functional/ivy/array_api/linear_algebra/diagonal.html#ivy.functional.ivy.array_api.linear_algebra.diagonal">[docs]</a><span class="k">def</span> <span class="nf">diagonal</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
              <span class="n">offset</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>

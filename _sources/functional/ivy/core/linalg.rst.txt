@@ -12,7 +12,6 @@ Linalg
    :maxdepth: -1
    :caption: Linalg
 
-   linalg/svd.rst
    linalg/matrix_norm.rst
    linalg/inv.rst
    linalg/pinv.rst

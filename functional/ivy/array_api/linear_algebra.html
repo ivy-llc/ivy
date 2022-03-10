@@ -225,6 +225,31 @@ Defaults to second axis (1).</p>
 </dd></dl>
 
 <dl class="py function">
+<dt id="ivy.functional.ivy.array_api.linear_algebra.svd">
+<code class="sig-prename descclassname">ivy.functional.ivy.array_api.linear_algebra.</code><code class="sig-name descname">svd</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">full_matrices</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">True</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>Tuple<span class="p">[</span>ivy.array.Array<span class="p">, </span><span class="p">…</span><span class="p">]</span><span class="p">]</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/array_api/linear_algebra.html#svd"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.array_api.linear_algebra.svd" title="Permalink to this definition">¶</a></dt>
+<dd><p>Singular Value Decomposition.
+When x is a 2D array, it is factorized as u &#64; numpy.diag(s) &#64; vh = (u * s) &#64; vh, where u and vh are 2D unitary
+arrays and s is a 1D array of a’s singular values. When x is higher-dimensional, SVD is applied in batched mode.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>x</strong> (<em>array</em>) – Input array with number of dimensions &gt;= 2.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><p>u -&gt; { (…, M, M), (…, M, K) } array</p>
+<p>Unitary array(s). The first (number of dims - 2) dimensions have the same size as those of the input a.
+The size of the last two dimensions depends on the value of full_matrices.</p>
+<p>s -&gt; (…, K) array</p>
+<p>Vector(s) with the singular values, within each vector sorted in descending ord.
+The first (number of dims - 2) dimensions have the same size as those of the input a.</p>
+<p>vh -&gt; { (…, N, N), (…, K, N) } array</p>
+<p>Unitary array(s). The first (number of dims - 2) dimensions have the same size as those of the input a.
+The size of the last two dimensions depends on the value of full_matrices.</p>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt id="ivy.functional.ivy.array_api.linear_algebra.vector_norm">
 <code class="sig-prename descclassname">ivy.functional.ivy.array_api.linear_algebra.</code><code class="sig-name descname">vector_norm</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">axis</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Union<span class="p">[</span>int<span class="p">, </span>Tuple<span class="p">[</span>int<span class="p">]</span><span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">keepdims</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">ord</span><span class="p">:</span> <span class="n">Union[int, float, Literal[inf, - inf]]</span> <span class="o">=</span> <span class="default_value">2</span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../../_modules/ivy/functional/ivy/array_api/linear_algebra.html#vector_norm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.array_api.linear_algebra.vector_norm" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes the vector norm of a vector (or batch of vectors) <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p>
@@ -274,6 +299,7 @@ Default: <code class="docutils literal notranslate"><span class="pre">2</span></
 <p class="caption"><span class="caption-text">Linear algebra</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="linear_algebra/vector_norm.html">vector_norm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="linear_algebra/svd.html">svd</a></li>
 <li class="toctree-l1"><a class="reference internal" href="linear_algebra/diagonal.html">diagonal</a></li>
 </ul>
 </div>

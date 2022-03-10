@@ -12,7 +12,6 @@ Linear algebra
    :maxdepth: -1
    :caption: Linear algebra
 
-   linear_algebra/svd.rst
    linear_algebra/matrix_norm.rst
    linear_algebra/inv.rst
    linear_algebra/pinv.rst
