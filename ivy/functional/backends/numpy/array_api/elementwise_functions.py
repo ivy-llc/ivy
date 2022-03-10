@@ -26,7 +26,15 @@ def isfinite(x: np.ndarray) \
   
 def asin(x: np.ndarray)\
         -> np.ndarray:
-    return np.arcsin(x)
+  
+    res1 = np.where(x>1)
+    res2 = np.where(x<-1)
+    x[res1] = 0
+    x[res2] = 0
+    a = np.arcsin(x)
+    a[res1] = None
+    a[res2] = None
+    return a
 
   
 def asinh(x: np.ndarray)\
