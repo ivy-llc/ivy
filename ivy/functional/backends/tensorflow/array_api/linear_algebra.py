@@ -11,12 +11,13 @@ from ivy import inf
 def vector_norm(x: Tensor,
                 axis: Optional[Union[int, Tuple[int]]] = None,
                 keepdims: bool = False,
-                ord: Union[int, float, Literal[inf, - inf]] = 2) \
-        -> Tensor:
+                ord: Union[int, float, Literal[inf, - inf]] = 2)\
+                 -> Tensor:
+
     if ord == -float('inf'):
         tn_normalized_vector = tf.reduce_min(tf.abs(x), axis, keepdims)
     elif ord == -1:
-        tn_normalized_vector = tf.reduce_sum(tf.abs(x) ** ord, axis, keepdims) ** (1. / ord)
+        tn_normalized_vector = tf.reduce_sum(tf.abs(x)**ord, axis, keepdims)**(1./ord)
 
     elif ord == 0:
         tn_normalized_vector = tf.reduce_sum(tf.cast(x != 0, 'float32'), axis, keepdims).numpy()
@@ -37,7 +38,7 @@ def diagonal(x: tf.Tensor,
 
 
 def cross(x1: Tensor, x2: Tensor, axis: int = -1) -> Tensor:
-    # promoted_type = tf.experimental.numpy.promote_types(x1.dtype, x2.dtype)
-    #   x1 = tf.cast(x1, promoted_type, name=None)
-    #   x2 = tf.cast(x2, promoted_type, name=None)
+    promoted_type = tf.experimental.numpy.promote_types(x1.dtype, x2.dtype)
+    x1 = tf.cast(x1, promoted_type)
+    x2 = tf.cast(x2, promoted_type)
     return tf.linalg.cross(x1, x2)
