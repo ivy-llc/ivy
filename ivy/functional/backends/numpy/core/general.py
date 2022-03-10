@@ -124,12 +124,6 @@ floormod = lambda x, y: _np.asarray(x % y)
 floor = lambda x: _np.asarray(_np.floor(x))
 abs = lambda x: _np.asarray(_np.absolute(x))
 
-def argmax(x, axis=0):
-    ret = _np.asarray(_np.argmax(x, axis))
-    if ret.shape == ():
-        return ret.reshape(-1)
-    return ret
-
 
 def argmin(x, axis=0):
     ret = _np.asarray(_np.argmin(x, axis))

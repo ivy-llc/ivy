@@ -141,8 +141,6 @@ def floor(x):
 def abs(x):
     return _mx.nd.abs(x)
 
-
-argmax = lambda x, axis=0: _mx.nd.argmax(x, axis)
 argmin = lambda x, axis=0: _mx.nd.argmin(x, axis)
 
 
