@@ -375,14 +375,6 @@ def full(shape, fill_value, dtype=None, device=None):
             _mx.nd.full((1,), fill_value, cont, dtype_from_str(default_dtype(dtype, fill_value))))
     return _mx.nd.full(shape, fill_value, cont, dtype_from_str(default_dtype(dtype, fill_value)))
 
-
-def ones_like(x, dtype=None, dev=None):
-    if x.shape == ():
-        return _mx.nd.array(1., ctx=_mxnet_init_context(default_device(dev)))
-    mx_ones = _mx.nd.ones_like(x, ctx=_mxnet_init_context(default_device(dev)))
-    return mx_ones if dtype is None else mx_ones.astype(dtype)
-
-
 # noinspection PyUnusedLocal
 one_hot = lambda indices, depth, dev=None: _mx.nd.one_hot(indices, depth)
 
