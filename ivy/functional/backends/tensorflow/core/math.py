@@ -6,7 +6,6 @@ Collection of TensorFlow math functions, wrapped to fit Ivy syntax and signature
 import tensorflow as _tf
 
 
-sin = _tf.sin
 tan = _tf.tan
 acos = _tf.acos
 atan = _tf.atan

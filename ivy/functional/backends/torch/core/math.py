@@ -7,12 +7,6 @@ import math
 import torch as _torch
 
 
-def sin(x):
-    if isinstance(x, float):
-        return math.sin(x)
-    return _torch.sin(x)
-
-
 def tan(x):
     if isinstance(x, float):
         return math.tan(x)
