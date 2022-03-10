@@ -107,3 +107,7 @@ def logical_not(x: torch.Tensor)\
 def sin(x: torch.Tensor)\
         -> torch.Tensor:
     return torch.sin(x)
+
+
+def negative(x: torch.Tensor) -> torch.Tensor:
+    return torch.neg(x)
