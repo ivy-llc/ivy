@@ -23,6 +23,7 @@ def ones(shape: Union[int, Tuple[int], List[int]],
     return _to_dev(np.ones(shape, dtype), device)
 
 
+# noinspection SpellCheckingInspection
 def full_like(x: np.ndarray,
               fill_value: Union[int, float],
               dtype: Optional[Union[np.dtype, str]] = None,

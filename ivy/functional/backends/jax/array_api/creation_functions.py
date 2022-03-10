@@ -35,8 +35,8 @@ def full_like(x: JaxArray,
     if dtype and str:
         dtype = jnp.dtype(dtype)
     else:
-        dtype = x.dtyp
-    return to_dev(jnp.full_like(x, fill_value, dype=dtype_from_str(default_dtype(dtype, fill_value))),
+        dtype = x.dtype
+    return to_dev(jnp.full_like(x, fill_value, dtype=dtype_from_str(default_dtype(dtype, fill_value))),
                   default_device(device))
 
 
