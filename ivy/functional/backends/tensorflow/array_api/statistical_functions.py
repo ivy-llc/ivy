@@ -16,14 +16,14 @@ def prod(x: _tf.Tensor,
          keepdims: bool = False)\
         -> _tf.Tensor:
 
-    if dtype == None and _np.issubdtype(x.dtype,_np.integer):
-        if _np.issubdtype(x.dtype,_np.signedinteger) and x.dtype in [_np.int8,_np.int16,_np.int32]:
-            dtype = _np.int32
-        elif _np.issubdtype(x.dtype,_np.unsignedinteger) and x.dtype in [_np.uint8,_np.uint16,_np.uint32]:
-            dtype = _np.uint32
-        elif x.dtype == _np.int64: 
-            dtype = _np.int64
-        else:
-            dtype = _np.uint64  
+
+    if x.dtype in [_np.int8,_np.int16,_np.int32]:
+        dtype = _np.int32
+    elif x.dtype in [_np.uint8,_np.uint16,_np.uint32]:
+        dtype = _np.uint32
+    elif x.dtype == _np.int64: 
+        dtype = _np.int64
+    else:
+        dtype = _np.uint64  
 
     return _tf.experimental.numpy.prod(x,axis,dtype,keepdims)
