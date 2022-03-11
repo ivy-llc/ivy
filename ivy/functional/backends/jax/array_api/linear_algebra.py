@@ -1,10 +1,12 @@
 # global
 import jax.numpy as jnp
 from typing import Union, Optional, Tuple, Literal
+from collections import namedtuple
 
 # local
 from ivy import inf
 from ivy.functional.backends.jax import JaxArray
+import ivy as _ivy
 
 
 # noinspection PyUnusedLocal,PyShadowingBuiltins
@@ -23,6 +25,11 @@ def vector_norm(x: JaxArray,
         return jnp.expand_dims(jnp_normalized_vector, 0)
     return jnp_normalized_vector
 
+def svd(x:JaxArray,full_matrices: bool = True) -> Union[JaxArray, Tuple[JaxArray,...]]:
+    results=namedtuple("svd", "U S Vh")
+    U, D, VT=jnp.linalg.svd(x, full_matrices=full_matrices)
+    res=results(U, D, VT)
+    return res
 
 def diagonal(x: JaxArray,
              offset: int = 0,
