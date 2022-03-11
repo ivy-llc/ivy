@@ -59,7 +59,7 @@ def _raise(ex):
     raise ex
 
 
-def mxnet_init_context(dev):
+def _mxnet_init_context(dev):
     dev = dev_to_str(dev)
     if dev is None or dev.find("cpu") != -1:
         mx_dev = "cpu"

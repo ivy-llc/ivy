@@ -13,7 +13,7 @@ diagonal
 #outer
 #pinv
 #qr
-#slogdet
+slogdet
 #solve
 svd
 #svdvals
