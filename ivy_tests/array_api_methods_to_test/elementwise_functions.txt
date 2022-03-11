@@ -52,5 +52,5 @@ sin
 sqrt
 #subtract
 tan
-#tanh
+tanh
 #trunc
