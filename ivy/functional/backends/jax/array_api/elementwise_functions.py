@@ -48,6 +48,11 @@ def cosh(x: JaxArray)\
     return jnp.cosh(x)
 
 
+def log10(x: JaxArray)\
+        -> JaxArray:
+    return jnp.log10(x)
+
+
 def log2(x: JaxArray)\
         -> JaxArray:
     return jnp.log2(x)
