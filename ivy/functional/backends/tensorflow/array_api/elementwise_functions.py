@@ -8,7 +8,11 @@ import ivy
 
 
 def bitwise_invert(x: Tensor) -> Tensor:
-    return tf.bitwise.bitwise_invert(x)
+    # if 'int' in str(x.dtype):
+    #     return x
+    if ivy.is_int_dtype(x):
+
+        return tf.bitwise.invert(x)
 
 
 def bitwise_and(x1: Tensor,

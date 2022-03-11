@@ -1,9 +1,11 @@
 # global
 import torch
-
+#local
+import ivy
 
 def bitwise_invert(x: torch.Tensor) -> torch.Tensor:
-    return torch.bitwise_invert(x)
+    #if ivy.is_int_dtype(x) or ivy.is_bool_dtype(x):
+        return torch.bitwise_not(x)
 
 def bitwise_and(x1: torch.Tensor,
                 x2: torch.Tensor)\
