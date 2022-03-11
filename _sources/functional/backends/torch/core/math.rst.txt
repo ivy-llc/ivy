@@ -19,7 +19,6 @@ Math
    math/atan2.rst
    math/sinh.rst
    math/cosh.rst
-   math/tanh.rst
    math/atanh.rst
    math/log.rst
    math/exp.rst

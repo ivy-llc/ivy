@@ -497,6 +497,7 @@
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">logical_not</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
 
 
+
 <div class="viewcode-block" id="acosh"><a class="viewcode-back" href="../../../../../functional/ivy/array_api/elementwise_functions/acosh.html#ivy.functional.ivy.array_api.elementwise_functions.acosh">[docs]</a><span class="k">def</span> <span class="nf">acosh</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">])</span>\
         <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -559,6 +560,18 @@
 <span class="sd">    :return: an array containing the evaluated result for each element in x </span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">negative</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="tanh"><a class="viewcode-back" href="../../../../../functional/ivy/array_api/elementwise_functions/tanh.html#ivy.functional.ivy.array_api.elementwise_functions.tanh">[docs]</a><span class="k">def</span> <span class="nf">tanh</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Calculates an implementation-dependent approximation to the hyperbolic tangent,</span>
+<span class="sd">    having domain [-infinity, +infinity] and codomain [-1, +1], for each element x_i of the input array x.</span>
+
+<span class="sd">    :param x: input array whose elements each represent a hyperbolic angle. Should have a floating-point</span>
+<span class="sd">            data type.</span>
+<span class="sd">    :return: an array containing the hyperbolic tangent of each element in x. The returned array must</span>
+<span class="sd">            have a floating-point data type</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">tanh</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
 </pre></div>
 
            </div>

@@ -225,6 +225,26 @@ Defaults to second axis (1).</p>
 </dd></dl>
 
 <dl class="py function">
+<dt id="ivy.functional.ivy.array_api.linear_algebra.slodget">
+<code class="sig-prename descclassname">ivy.functional.ivy.array_api.linear_algebra.</code><code class="sig-name descname">slodget</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../../_modules/ivy/functional/ivy/array_api/linear_algebra.html#slodget"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.array_api.linear_algebra.slodget" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the sign and natural logarithm of the determinant of an array.</p>
+<dl class="simple">
+<dt>x:</dt><dd><p>This is a 2D array, and it has to be square</p>
+</dd>
+</dl>
+<p>Out:</p>
+<blockquote>
+<div><dl>
+<dt>This function returns two values -</dt><dd><p>sign:
+A number representing the sign of the determinant.</p>
+<p>logdet:
+The natural log of the absolute value of the determinant.</p>
+</dd>
+</dl>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py function">
 <dt id="ivy.functional.ivy.array_api.linear_algebra.svd">
 <code class="sig-prename descclassname">ivy.functional.ivy.array_api.linear_algebra.</code><code class="sig-name descname">svd</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">full_matrices</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">True</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>Tuple<span class="p">[</span>ivy.array.Array<span class="p">, </span><span class="p">…</span><span class="p">]</span><span class="p">]</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/array_api/linear_algebra.html#svd"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.array_api.linear_algebra.svd" title="Permalink to this definition">¶</a></dt>
 <dd><p>Singular Value Decomposition.
@@ -301,6 +321,7 @@ Default: <code class="docutils literal notranslate"><span class="pre">2</span></
 <li class="toctree-l1"><a class="reference internal" href="linear_algebra/vector_norm.html">vector_norm</a></li>
 <li class="toctree-l1"><a class="reference internal" href="linear_algebra/svd.html">svd</a></li>
 <li class="toctree-l1"><a class="reference internal" href="linear_algebra/diagonal.html">diagonal</a></li>
+<li class="toctree-l1"><a class="reference internal" href="linear_algebra/slodget.html">slodget</a></li>
 </ul>
 </div>
 </div>

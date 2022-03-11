@@ -30,4 +30,5 @@ Elementwise functions
    elementwise_functions/acosh.rst
    elementwise_functions/sin.rst
    elementwise_functions/negative.rst
+   elementwise_functions/tanh.rst
 
