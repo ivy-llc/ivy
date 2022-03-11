@@ -6,9 +6,6 @@ from ivy.functional.backends.jax import JaxArray
 
 
 def bitwise_invert(x: JaxArray) -> JaxArray:
-    # if 'int'  in str(x.dtype):
-    #     return x
-    #return jnp.ceil(x)
     return jnp.bitwise_not(x)
 
 

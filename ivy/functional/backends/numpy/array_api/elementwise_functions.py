@@ -4,8 +4,6 @@ import numpy.array_api as npa
 
 
 def bitwise_invert(x: np.ndarray) -> np.ndarray:
-   #if x.dtype == bool or x.dtype == int:
-    #     raise TypeError("Only integer or boolean dtypes are allowed in bitwise_invert")
     return np.invert(x)
 
 
