@@ -3,10 +3,9 @@ import mxnet as mx
 from typing import Tuple, Union, Optional, Iterable
 
 # local
-
 from ivy import default_device, dtype_from_str, default_dtype
-
-from ivy.functional.backends.mxnet import _mxnet_init_context, _1_dim_array_to_flat_array
+from ivy.functional.backends.mxnet import _mxnet_init_context
+from ivy.functional.backends.mxnet import _1_dim_array_to_flat_array
 
 
 def zeros(shape: Union[int, Tuple[int]],
@@ -20,7 +19,7 @@ def zeros(shape: Union[int, Tuple[int]],
 
 
 def ones(shape: Union[int, Tuple[int]],
-         dtype: Optional[mx.nd.dtype] = None,
+         dtype: Optional[type] = None,
          device: Optional[str] = None) \
         -> mx.ndarray.ndarray.NDArray:
     cont = _mxnet_init_context(default_device(device))
@@ -28,7 +27,6 @@ def ones(shape: Union[int, Tuple[int]],
     if len(shape) == 0 or 0 in shape:
         return _1_dim_array_to_flat_array(mx.nd.ones((1,), ctx=cont).astype(dtype))
     return mx.nd.ones(shape, ctx=cont).astype(dtype)
-
 
 
 def ones_like(x : mx.ndarray.ndarray.NDArray,
