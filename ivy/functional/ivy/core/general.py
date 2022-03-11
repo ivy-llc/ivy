@@ -864,23 +864,6 @@ def ones(shape: Iterable[int], dtype: Union[ivy.Dtype, str] = 'float32', dev: iv
     return _cur_framework().ones(shape, dtype, dev)
 
 
-def ones_like(x: Union[ivy.Array, ivy.NativeArray], dtype: ivy.Dtype = None, dev: ivy.Device = None,
-              ) -> Union[ivy.Array, ivy.NativeArray]:
-    """
-    Returns an array of ones with the same shape and type as x, unless dtype provided which overrides.
-
-    :param x: The shape and data-type of a define these same attributes of the returned array.
-    :type x: array
-    :param dtype: The desired data-type for the array in string format, i.e. 'float32' or 'int64'.
-                    If not given, then the type of the original array is used.
-    :type dtype: data-type string, optional
-    :param dev: device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. Same as x if None.
-    :type dev: ivy.Device, optional
-    :return: Tensor of zeros with the same shape and type as a, unless dtype provided which overrides.
-    """
-    return _cur_framework(x).ones_like(x, dtype, dev)
-
-
 # noinspection PyShadowingNames
 def full(shape: Union[int, Tuple[int]], fill_value: Union[int, float], dtype: Optional[ivy.Dtype] = None,
          device: Optional[ivy.Device] = None):
