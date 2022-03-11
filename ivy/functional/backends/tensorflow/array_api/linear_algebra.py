@@ -35,3 +35,7 @@ def diagonal(x: tf.Tensor,
              axis1: int = -2,
              axis2: int = -1) -> tf.Tensor:
     return tf.experimental.numpy.diagonal(x, offset, axis1=axis1, axis2=axis2)
+
+def svdvals(x: tf.Tensor) \
+        -> tf.Tensor:
+    return tf.linalg.svd(x, compute_uv=False)

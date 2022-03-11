@@ -29,3 +29,7 @@ def diagonal(x: JaxArray,
              axis1: int = -2,
              axis2: int = -1) -> JaxArray:
     return jnp.diagonal(x, offset, axis1, axis2)
+
+def svdvals(x: JaxArray) \
+        -> JaxArray:
+    return jnp.linalg.svd(x, compute_uv=False)
