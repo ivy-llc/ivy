@@ -125,9 +125,6 @@ def diagonal(x: ivy.Array,
     return _cur_framework(x).diagonal(x, offset, axis1=axis1, axis2=axis2)
 
 
-
-
-
 def matmul(x1: ivy.Array, x2: ivy.Array) ->ivy.Array:
     """
     Computes the matrix product.
@@ -157,3 +154,28 @@ def matmul(x1: ivy.Array, x2: ivy.Array) ->ivy.Array:
         if x1 is an array having shape (..., M, K), x2 is an array having shape (..., L, N), and K != L.
     """
     return _cur_framework(x1).matmul(x1, x2)
+
+  
+def slodget(x: Union[ivy.Array, ivy.NativeArray],) \
+            -> ivy.Array:
+    """
+    Computes the sign and natural logarithm of the determinant of an array.
+
+    Parameters
+    ----------
+    x:
+        This is a 2D array, and it has to be square
+
+    Return
+    ----------
+    Out:
+
+        This function returns two values -
+            sign:
+            A number representing the sign of the determinant.
+
+            logdet:
+            The natural log of the absolute value of the determinant.
+
+    """
+    return _cur_framework(x).slodget(x)
