@@ -136,18 +136,11 @@ def floor(x):
     return _mx.nd.floor(x)
 
 
-@_handle_flat_arrays_in_out
-def ceil(x):
-    return _mx.nd.ceil(x)
-
-
 # noinspection PyShadowingBuiltins
 @_handle_flat_arrays_in_out
 def abs(x):
     return _mx.nd.abs(x)
 
-
-argmax = lambda x, axis=0: _mx.nd.argmax(x, axis)
 argmin = lambda x, axis=0: _mx.nd.argmin(x, axis)
 
 
@@ -382,14 +375,6 @@ def full(shape, fill_value, dtype=None, device=None):
             _mx.nd.full((1,), fill_value, cont, dtype_from_str(default_dtype(dtype, fill_value))))
     return _mx.nd.full(shape, fill_value, cont, dtype_from_str(default_dtype(dtype, fill_value)))
 
-
-def ones_like(x, dtype=None, dev=None):
-    if x.shape == ():
-        return _mx.nd.array(1., ctx=_mxnet_init_context(default_device(dev)))
-    mx_ones = _mx.nd.ones_like(x, ctx=_mxnet_init_context(default_device(dev)))
-    return mx_ones if dtype is None else mx_ones.astype(dtype)
-
-
 # noinspection PyUnusedLocal
 one_hot = lambda indices, depth, dev=None: _mx.nd.one_hot(indices, depth)
 
@@ -588,7 +573,6 @@ def inplace_increment(x, val):
         raise Exception('MXNet does not support inplace updates of 0-dimensional arrays')
     x += val
     return x
-
 
 inplace_arrays_supported = lambda: True
 inplace_variables_supported = lambda: True
