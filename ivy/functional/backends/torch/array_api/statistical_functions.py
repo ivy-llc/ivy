@@ -1,8 +1,7 @@
 # global
 torch_scatter = None
 import torch as _torch
-from torch import dtype
-from typing import Tuple, Union
+from typing import Tuple, Union, Optional
 
 
 def min(x: _torch.Tensor,
@@ -15,8 +14,19 @@ def min(x: _torch.Tensor,
 
 
 def prod(x: _torch.Tensor,
-         axis: Union[int, Tuple[int]] = None,
-         dtype: dtype = None,
+         axis: Optional[Union[int, Tuple[int]]] = None,
+         dtype: Optional[_torch.dtype] = None,
          keepdims: bool = False)\
         -> _torch.Tensor:
-    return _torch.prod(x,axis,dtype,keepdims)
+
+
+    if x.dtype in [_torch.int8,_torch.int16,_torch.int32]:
+        dtype = _torch.int32
+    elif x.dtype in [_torch.uint8,_torch.uint16,_torch.uint32]:
+        dtype = _torch.uint32
+    elif x.dtype == _torch.int64: 
+        dtype = _torch.int64
+    else:
+        dtype = _torch.uint64
+
+    return _torch.prod(input=x,dim=axis,dtype=dtype,keepdims=keepdims)
