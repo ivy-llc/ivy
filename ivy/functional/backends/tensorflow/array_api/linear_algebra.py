@@ -45,10 +45,11 @@ def svd(x:Tensor,full_matrices: bool = True) -> Union[Tensor, Tuple[Tensor,...]]
     res=results(U, D, VT)
     return res
 
+  
 def outer(x1: tf.Tensor,
           x2: tf.Tensor)\
         -> tf.Tensor:
-    return tf.Tensor.outer(x1,x2)
+    return tf.experimental.numpy.outer(x1, x2)
 
 
 def diagonal(x: tf.Tensor,
