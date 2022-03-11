@@ -20,11 +20,11 @@ def prod(x: _torch.Tensor,
         -> _torch.Tensor:
 
 
-    if x.dtype in [_torch.int8,_torch.int16,_torch.int32]:
+    if x.dtype == _torch.int8:
         dtype = _torch.int32
-    elif x.dtype in [_torch.uint8,_torch.uint16,_torch.uint32]:
+    elif x.dtype ==_torch.uint8:
         dtype = _torch.uint32
-    elif x.dtype == _torch.int64: 
+    elif x.dtype in [_torch.int64,_torch.int32]: 
         dtype = _torch.int64
     else:
         dtype = _torch.uint64
