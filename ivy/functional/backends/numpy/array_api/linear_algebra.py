@@ -6,6 +6,8 @@ from collections import namedtuple
 
 # local
 from ivy import inf
+import ivy as _ivy
+from collections import namedtuple
 
 
 # noinspection PyUnusedLocal,PyShadowingBuiltins
@@ -38,6 +40,11 @@ def diagonal(x: np.ndarray,
              axis2: int = -1) -> np.ndarray:
     return np.diagonal(x, offset=offset, axis1=axis1, axis2=axis2)
 
-def svdvals(x: np.ndarray) \
-        -> np.ndarray:
+def svdvals(x: np.ndarray) -> np.ndarray:
     return np.linalg.svd(x, compute_uv=False)
+
+def slogdet(x:Union[_ivy.Array,_ivy.NativeArray],full_matrices: bool = True) -> Union[_ivy.Array, Tuple[_ivy.Array,...]]:
+    results = namedtuple("slogdet", "sign logabsdet")
+    sign, logabsdet = np.linalg.slogdet(x)
+    res = results(sign, logabsdet)
+    return res

@@ -4,7 +4,9 @@ from typing import Union, Optional, Tuple, Literal
 from collections import namedtuple
 
 # local
+import ivy as _ivy
 from ivy import inf
+from collections import namedtuple
 import ivy as _ivy
 
 
@@ -35,6 +37,11 @@ def diagonal(x: torch.Tensor,
              axis2: int = -1) -> torch.Tensor:
     return torch.diagonal(x, offset=offset, dim1=axis1, dim2=axis2)
 
-def svdvals(x: torch.Tensor) \
-        -> torch.Tensor:
+def svdvals(x: torch.Tensor) -> torch.Tensor:
     return torch.linalg.svdvals(x)
+
+def slogdet(x:Union[_ivy.Array,_ivy.NativeArray],full_matrices: bool = True) -> Union[_ivy.Array, Tuple[_ivy.Array,...]]:
+    results = namedtuple("slogdet", "sign logabsdet")
+    sign, logabsdet = torch.linalg.slogdet(x)
+    res = results(sign, logabsdet)
+    return res
