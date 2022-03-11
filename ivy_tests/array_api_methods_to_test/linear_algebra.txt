@@ -5,7 +5,7 @@ diagonal
 #eigh
 #eigvalsh
 #inv
-#matmul
+matmul
 #matrix_norm
 #matrix_power
 #matrix_rank
