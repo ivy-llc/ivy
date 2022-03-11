@@ -49,12 +49,6 @@ def cosh(x):
     return _torch.cosh(x)
 
 
-def tanh(x):
-    if isinstance(x, float):
-        return math.tanh(x)
-    return _torch.tanh(x)
-
-
 def atanh(x):
     if isinstance(x, float):
         return math.atanh(x)
