@@ -67,5 +67,5 @@ def sin(x: mx.ndarray.ndarray.NDArray)\
 
 @_handle_flat_arrays_in_out
 def negative(x: mx.ndarray.ndarray.NDArray)\
-        -> : mx.ndarray.ndarray.NDArray:
+        -> mx.ndarray.ndarray.NDArray:
     return mx.np.negative(x)
