@@ -78,6 +78,11 @@ def cosh(x: Tensor) \
     return tf.cosh(x)
 
 
+def log10(x: Tensor) \
+        -> Tensor:
+    return tf.experimental.numpy.log10(x)
+
+
 def log2(x: Tensor) \
         -> Tensor:
     return tf.experimental.numpy.log2(x)
