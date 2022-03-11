@@ -14,4 +14,4 @@ def prod(x: _np.ndarray,
          dtype: _np.dtype = None,
          keepdims: bool = False)\
         -> _np.ndarray:
-    return _np.prod(x,axis,dtype,keepdims)
+    return _np.prod(a=x,axis=axis,dtype=dtype,keepdims=keepdims)
