@@ -16,6 +16,6 @@ def prod(x: _np.ndarray,
          dtype: _np.dtype = None,
          keepdims: bool = False)\
         -> _np.ndarray:
-    if dtype == None: 
-        dtype = dtype_from_str(default_dtype(x.dtype))
+    if x.dtype == _np.int8:
+        dtype = _np.int32
     return _np.prod(a=x,axis=axis,dtype=dtype,keepdims=keepdims)
