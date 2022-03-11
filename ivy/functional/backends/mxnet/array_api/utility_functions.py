@@ -3,7 +3,8 @@ import mxnet as mx
 from typing import Union, Tuple, Optional, List
 
 # local
-from ivy.functional.backends.mxnet import reduce_prod, _flat_array_to_1_dim_array, _1_dim_array_to_flat_array
+from ivy.functional.backends.mxnet.core.reductions import reduce_prod
+from ivy.functional.backends.mxnet import _flat_array_to_1_dim_array, _1_dim_array_to_flat_array
 
 
 # noinspection PyShadowingBuiltins
@@ -21,6 +22,7 @@ def all(x: mx.ndarray.ndarray.NDArray,
     return red_prod
 
 
+# noinspection PyShadowingBuiltins
 def any(x: mx.ndarray.ndarray.NDArray,
         axis: Optional[Union[int, Tuple[int], List[int]]] = None,
         keepdims: bool = False)\
