@@ -90,3 +90,8 @@ def sin(x: JaxArray)\
 
 def negative(x: JaxArray) -> JaxArray:
     return jnp.negative(x)
+
+
+def tanh(x: JaxArray)\
+        -> JaxArray:
+    return jnp.tanh(x)
