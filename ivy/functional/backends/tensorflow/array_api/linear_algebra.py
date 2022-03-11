@@ -2,9 +2,11 @@
 import tensorflow as tf
 from tensorflow.python.types.core import Tensor
 from typing import Union, Optional, Tuple, Literal
+from collections import namedtuple
 
 # local
 from ivy import inf
+import ivy as _ivy
 
 
 # noinspection PyUnusedLocal,PyShadowingBuiltins
@@ -29,6 +31,17 @@ def vector_norm(x: Tensor,
         return tf.expand_dims(tn_normalized_vector, 0)
     return tn_normalized_vector
 
+# noinspection PyPep8Naming
+def svd(x:Tensor,full_matrices: bool = True) -> Union[Tensor, Tuple[Tensor,...]]:
+    results=namedtuple("svd", "U S Vh")
+
+    batch_shape = tf.shape(x)[:-2]
+    num_batch_dims = len(batch_shape)
+    transpose_dims = list(range(num_batch_dims)) + [num_batch_dims + 1, num_batch_dims]
+    D, U, V = tf.linalg.svd(x,full_matrices=full_matrices)
+    VT = tf.transpose(V, transpose_dims)
+    res=results(U, D, VT)
+    return res
 
 def diagonal(x: tf.Tensor,
              offset: int = 0,
