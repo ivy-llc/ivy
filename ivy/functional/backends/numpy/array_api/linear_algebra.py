@@ -30,7 +30,7 @@ def vector_norm(x: np.ndarray,
 def outer(x1: np.ndarray,
           x2: np.ndarray)\
         -> np.ndarray:
-    return np.ndarray.outer(x1,x2)
+    return np.outer(x1, x2)
 
 def svd(x:np.ndarray,full_matrices: bool = True) -> Union[np.ndarray, Tuple[np.ndarray,...]]:
     results=namedtuple("svd", "U S Vh")
