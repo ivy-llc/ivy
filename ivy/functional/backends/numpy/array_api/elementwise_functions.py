@@ -86,3 +86,9 @@ def sin(x: np.ndarray)\
   
 def negative(x: np.ndarray) -> np.ndarray:
     return np.negative(x)
+
+
+def tanh(x: np.ndarray)\
+        -> np.ndarray:
+    return np.asarray(npa.tanh(npa.asarray(x)))
+
