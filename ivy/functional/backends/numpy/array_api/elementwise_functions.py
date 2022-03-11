@@ -82,7 +82,18 @@ def divide(x1: np.ndarray,
 
 
 
+def acosh(x: np.ndarray)\
+        -> np.ndarray:
+    return np.asarray(npa.acosh(npa.asarray(x)))
+  
+
+
 def sin(x: np.ndarray)\
         -> np.ndarray:
     return np.asarray(npa.sin(npa.asarray(x)))
+
+
+  
+def negative(x: np.ndarray) -> np.ndarray:
+    return np.negative(x)
 

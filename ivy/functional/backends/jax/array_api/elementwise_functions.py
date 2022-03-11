@@ -78,13 +78,20 @@ def logical_not(x: JaxArray)\
     return jnp.logical_not(x)
 
 
-
 def divide(x1: JaxArray, x2: JaxArray)\
         -> JaxArray:
     return jnp.divide(x1, x2)
 
+def acosh(x: JaxArray)\
+        -> JaxArray:
+    return jnp.arccosh(x)
 
+  
 def sin(x: JaxArray)\
         -> JaxArray:
     return jnp.sin(x)
- 
+
+
+def negative(x: JaxArray) -> JaxArray:
+    return jnp.negative(x)
+

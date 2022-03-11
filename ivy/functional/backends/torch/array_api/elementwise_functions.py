@@ -111,7 +111,19 @@ def divide(x1: torch.Tensor,
     return torch.divide(x1, x2)
 
 
+
+def acosh(x: torch.Tensor) \
+        -> torch.Tensor:
+    return torch.acosh(x)
+
+
+  
 def sin(x: torch.Tensor)\
         -> torch.Tensor:
     return torch.sin(x)
+
+
+
+def negative(x: torch.Tensor) -> torch.Tensor:
+    return torch.neg(x)
 
