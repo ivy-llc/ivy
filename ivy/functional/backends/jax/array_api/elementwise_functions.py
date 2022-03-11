@@ -4,8 +4,11 @@ import jax.numpy as jnp
 # local
 from ivy.functional.backends.jax import JaxArray
 
-def bitwise_invert(x: JaxArray) -> JaxArray:
+
+def bitwise_invert(x: JaxArray)\
+        -> JaxArray:
     return jnp.bitwise_not(x)
+
 
 def bitwise_and(x1: JaxArray,
                 x2: JaxArray)\

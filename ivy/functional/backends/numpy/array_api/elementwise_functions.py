@@ -3,7 +3,8 @@ import numpy as np
 import numpy.array_api as npa
 
 
-def bitwise_invert(x: np.ndarray) -> np.ndarray:
+def bitwise_invert(x: np.ndarray)\
+        -> np.ndarray:
     return np.invert(x)
 
 
