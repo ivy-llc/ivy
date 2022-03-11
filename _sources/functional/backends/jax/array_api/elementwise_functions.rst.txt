@@ -20,7 +20,6 @@ Elementwise functions
    elementwise_functions/asinh.rst
    elementwise_functions/sqrt.rst
    elementwise_functions/cosh.rst
-   elementwise_functions/log10.rst
    elementwise_functions/log2.rst
    elementwise_functions/log1p.rst
    elementwise_functions/isnan.rst
