@@ -79,6 +79,11 @@ def logical_not(x: np.ndarray)\
     return np.logical_not(x)
 
 
+def logical_or(x1: np.ndarray, x2: np.ndarray)\
+        -> np.ndarray:
+    return np.logical_or(x1, x2)
+
+
 def acosh(x: np.ndarray)\
         -> np.ndarray:
     return np.asarray(npa.acosh(npa.asarray(x)))
