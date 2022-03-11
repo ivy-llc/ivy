@@ -390,6 +390,29 @@ element x2_i of the input array x2.</p>
 </dd></dl>
 
 <dl class="py function">
+<dt id="ivy.functional.ivy.array_api.elementwise_functions.log10">
+<code class="sig-prename descclassname">ivy.functional.ivy.array_api.elementwise_functions.</code><code class="sig-name descname">log10</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../../_modules/ivy/functional/ivy/array_api/elementwise_functions.html#log10"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.array_api.elementwise_functions.log10" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates an implementation-dependent approximation to the base <code class="docutils literal notranslate"><span class="pre">10</span></code> logarithm, having domain <code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">+infinity]</span></code> and codomain <code class="docutils literal notranslate"><span class="pre">[-infinity,</span> <span class="pre">+infinity]</span></code>, for each element <code class="docutils literal notranslate"><span class="pre">x_i</span></code> of the input array <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p>
+<p><strong>Special cases</strong></p>
+<p>For floating-point operands,</p>
+<ul class="simple">
+<li><p>If <code class="docutils literal notranslate"><span class="pre">x_i</span></code> is <code class="docutils literal notranslate"><span class="pre">NaN</span></code>, the result is <code class="docutils literal notranslate"><span class="pre">NaN</span></code>.</p></li>
+<li><p>If <code class="docutils literal notranslate"><span class="pre">x_i</span></code> is less than <code class="docutils literal notranslate"><span class="pre">0</span></code>, the result is <code class="docutils literal notranslate"><span class="pre">NaN</span></code>.</p></li>
+<li><p>If <code class="docutils literal notranslate"><span class="pre">x_i</span></code> is either <code class="docutils literal notranslate"><span class="pre">+0</span></code> or <code class="docutils literal notranslate"><span class="pre">-0</span></code>, the result is <code class="docutils literal notranslate"><span class="pre">-infinity</span></code>.</p></li>
+<li><p>If <code class="docutils literal notranslate"><span class="pre">x_i</span></code> is <code class="docutils literal notranslate"><span class="pre">1</span></code>, the result is <code class="docutils literal notranslate"><span class="pre">+0</span></code>.</p></li>
+<li><p>If <code class="docutils literal notranslate"><span class="pre">x_i</span></code> is <code class="docutils literal notranslate"><span class="pre">+infinity</span></code>, the result is <code class="docutils literal notranslate"><span class="pre">+infinity</span></code>.</p></li>
+</ul>
+<dl class="simple">
+<dt>x:</dt><dd><p>input array. Should have a floating-point data type.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>out:</dt><dd><p>an array containing the evaluated base <code class="docutils literal notranslate"><span class="pre">10</span></code> logarithm for each element in <code class="docutils literal notranslate"><span class="pre">x</span></code>. The returned array must have a floating-point data type determined by <span class="xref std std-ref">type-promotion</span>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt id="ivy.functional.ivy.array_api.elementwise_functions.log1p">
 <code class="sig-prename descclassname">ivy.functional.ivy.array_api.elementwise_functions.</code><code class="sig-name descname">log1p</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../../_modules/ivy/functional/ivy/array_api/elementwise_functions.html#log1p"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.array_api.elementwise_functions.log1p" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates an implementation-dependent approximation to log(1+x), where log refers to the natural (base e)
@@ -441,6 +464,26 @@ logarithm.</p>
 </dl>
 <dl class="simple">
 <dt>out:</dt><dd><p>an array containing the element-wise results. The returned array must have a data type of <code class="docutils literal notranslate"><span class="pre">bool</span></code>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.array_api.elementwise_functions.logical_or">
+<code class="sig-prename descclassname">ivy.functional.ivy.array_api.elementwise_functions.</code><code class="sig-name descname">logical_or</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x1</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">x2</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../../_modules/ivy/functional/ivy/array_api/elementwise_functions.html#logical_or"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.array_api.elementwise_functions.logical_or" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the logical OR for each element <code class="docutils literal notranslate"><span class="pre">x1_i</span></code> of the input array <code class="docutils literal notranslate"><span class="pre">x1</span></code> with the respective element <code class="docutils literal notranslate"><span class="pre">x2_i</span></code> of the input array <code class="docutils literal notranslate"><span class="pre">x2</span></code>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>While this specification recommends that this function only accept input arrays having a boolean data type, specification-compliant array libraries may choose to accept input arrays having numeric data types. If non-boolean data types are supported, zeros must be considered the equivalent of <code class="docutils literal notranslate"><span class="pre">False</span></code>, while non-zeros must be considered the equivalent of <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p>
+</div>
+<dl class="simple">
+<dt>x1:</dt><dd><p>first input array. Should have a boolean data type.</p>
+</dd>
+<dt>x2:</dt><dd><p>second input array. Must be compatible with <code class="docutils literal notranslate"><span class="pre">x1</span></code> (see <span class="xref std std-ref">broadcasting</span>). Should have a boolean data type.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>out:</dt><dd><p>out (array) – an array containing the element-wise results. The returned array must have a data type of <code class="docutils literal notranslate"><span class="pre">bool</span></code>.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -532,11 +575,13 @@ have a floating-point data type</p>
 <li class="toctree-l1"><a class="reference internal" href="elementwise_functions/sqrt.html">sqrt</a></li>
 <li class="toctree-l1"><a class="reference internal" href="elementwise_functions/cosh.html">cosh</a></li>
 <li class="toctree-l1"><a class="reference internal" href="elementwise_functions/log2.html">log2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="elementwise_functions/log10.html">log10</a></li>
 <li class="toctree-l1"><a class="reference internal" href="elementwise_functions/log1p.html">log1p</a></li>
 <li class="toctree-l1"><a class="reference internal" href="elementwise_functions/isnan.html">isnan</a></li>
 <li class="toctree-l1"><a class="reference internal" href="elementwise_functions/less.html">less</a></li>
 <li class="toctree-l1"><a class="reference internal" href="elementwise_functions/cos.html">cos</a></li>
 <li class="toctree-l1"><a class="reference internal" href="elementwise_functions/logical_not.html">logical_not</a></li>
+<li class="toctree-l1"><a class="reference internal" href="elementwise_functions/logical_or.html">logical_or</a></li>
 <li class="toctree-l1"><a class="reference internal" href="elementwise_functions/acosh.html">acosh</a></li>
 <li class="toctree-l1"><a class="reference internal" href="elementwise_functions/sin.html">sin</a></li>
 <li class="toctree-l1"><a class="reference internal" href="elementwise_functions/negative.html">negative</a></li>
