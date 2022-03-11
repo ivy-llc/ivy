@@ -102,3 +102,6 @@ def tanh(x: np.ndarray)\
         -> np.ndarray:
     return np.asarray(npa.tanh(npa.asarray(x)))
 
+def floor_divide(x1: np.ndarray, x2: np.ndarray)\
+                -> np.ndarray:
+    return np.floor_divide(x1,x2)
