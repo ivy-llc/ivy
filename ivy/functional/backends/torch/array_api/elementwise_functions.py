@@ -118,7 +118,6 @@ def negative(x: torch.Tensor) -> torch.Tensor:
     return torch.neg(x)
 
 
-def tanh(x: torch.Tensor) \
-        -> torch.Tensor:
+def tanh(x: torch.Tensor) -> torch.Tensor:
     return torch.tanh(x)
 
