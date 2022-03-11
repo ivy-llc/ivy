@@ -101,6 +101,7 @@ def outer(x1: Union[ivy.Array, ivy.NativeArray],
 
     return _cur_framework (x1 , x2).outer(x1,x2)
 
+  
 def diagonal(x: ivy.Array,
              offset: int = 0,
              axis1: int = -2,
@@ -132,6 +133,26 @@ def diagonal(x: ivy.Array,
     return _cur_framework(x).diagonal(x, offset, axis1=axis1, axis2=axis2)
 
 
+def slodget(x: Union[ivy.Array, ivy.NativeArray],) \
+            -> ivy.Array:
+    """
+    Computes the sign and natural logarithm of the determinant of an array.
 
+    Parameters
+    ----------
+    x:
+        This is a 2D array, and it has to be square
 
+    Return
+    ----------
+    Out:
 
+        This function returns two values -
+            sign:
+            A number representing the sign of the determinant.
+
+            logdet:
+            The natural log of the absolute value of the determinant.
+
+    """
+    return _cur_framework(x).slodget(x)
