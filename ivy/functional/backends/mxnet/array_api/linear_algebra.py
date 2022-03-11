@@ -39,7 +39,3 @@ def slogdet(x:Union[_ivy.Array,_ivy.NativeArray],full_matrices: bool = True) -> 
     sign, logabsdet = mx.linalg.slogdet(x)
     res = results(sign, logabsdet)
     return res
-
-def det(x:Union[_ivy.Array,_ivy.NativeArray],full_matrices: bool = True) -> Union[_ivy.Array, Tuple[_ivy.Array,...]]:
-    d = mx.linalg.det(x)
-    return d
