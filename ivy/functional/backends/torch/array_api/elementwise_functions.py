@@ -8,6 +8,10 @@ import typing
 import ivy
 
 
+def bitwise_invert(x: torch.Tensor) -> torch.Tensor:
+    #if x.dtype in [int, bool]:
+     return torch.bitwise_not(x)
+
 def isfinite(x: Tensor)\
         -> Tensor:
     return torch.isfinite(x)
