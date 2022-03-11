@@ -37,12 +37,6 @@ def atan2(x, y):
     return _torch.atan2(x, y)
 
 
-def sinh(x):
-    if isinstance(x, float):
-        return math.sinh(x)
-    return _torch.sinh(x)
-
-
 def cosh(x):
     if isinstance(x, float):
         return math.cosh(x)
