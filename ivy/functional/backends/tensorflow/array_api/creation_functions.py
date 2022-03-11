@@ -26,3 +26,28 @@ def ones(shape: Union[int, Tuple[int]],
     dev = dev_from_str(default_device(device))
     with tf.device(dev):
         return tf.ones(shape, dtype)
+
+
+def ones_like(x : Tensor,
+              dtype: Optional[Union[DType, str, None]] = None,
+              dev: Optional[str] = None) \
+        -> Tensor:
+    dtype = tf.DType(dtype) if dtype is str else dtype
+    dev = default_device(dev)
+    with tf.device(dev_from_str(dev)):
+        return tf.ones_like(x, dtype=dtype)
+
+      
+def tril(x: tf.Tensor,
+         k: int = 0) \
+         -> tf.Tensor:
+    return tf.experimental.numpy.tril(x, k)
+
+
+def empty(shape: Union[int, Tuple[int]],
+          dtype: Optional[Dtype] = None,
+          device: Optional[str] = None) \
+        -> Tensor:
+    dev = default_device(device)
+    with tf.device(dev_from_str(dev)):
+        return tf.experimental.numpy.empty(shape, dtype_from_str(default_dtype(dtype)))

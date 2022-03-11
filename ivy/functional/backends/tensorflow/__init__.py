@@ -55,8 +55,6 @@ backend = 'tensorflow'
 # local sub-modules
 from . import array_api
 from .array_api import *
-from . import array_builtins
-from .array_builtins import *
 from .core import *
 from . import nn
 from .nn import *

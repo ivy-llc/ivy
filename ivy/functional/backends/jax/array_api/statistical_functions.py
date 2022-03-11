@@ -11,3 +11,10 @@ def var(x: JaxArray,
         keepdims: bool = False) -> JaxArray:
     ddof = int(correction)
     return jnp.var(x, axis=axis,ddof=ddof, keepdims=keepdims)
+
+
+def min(x: JaxArray,
+        axis: Union[int, Tuple[int]] = None,
+        keepdims = False, device = None) \
+        -> jnp.ndarray:
+    return jnp.min(a = jnp.asarray(x), axis = axis, keepdims = keepdims)

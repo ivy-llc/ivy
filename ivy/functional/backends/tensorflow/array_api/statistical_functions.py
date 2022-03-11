@@ -16,3 +16,10 @@ def var(x: Tensor,
 
     m = tf.reduce_mean(x, axis=axis, keepdims=True)
     return tf.reduce_mean(tf.square(x - m), axis=axis, keepdims=keepdims)
+
+
+def min(x: Tensor,
+        axis: Union[int, Tuple[int]] = None,
+        keepdims: bool = False) \
+        -> Tensor:
+    return tf.math.reduce_min(x, axis = axis, keepdims = keepdims)
