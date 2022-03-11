@@ -268,19 +268,6 @@ def one_hot(indices, depth, dev=None):
 
 cross = _tf.linalg.cross
 
-
-def matmul(x1, x2):
-    # ToDo: add support for other input corner cases, like those explained in torch.matmul() docs
-    x1_padded = False
-    if len(x1.shape) == 1:
-        x1 = _tf.expand_dims(x1, 0)
-        x1_padded = True
-    ret = _tf.matmul(x1, x2)
-    if x1_padded:
-        return ret[0]
-    return ret
-
-
 cumsum = _tf.cumsum
 cumprod = _tf.math.cumprod
 

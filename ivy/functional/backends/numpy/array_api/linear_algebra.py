@@ -37,3 +37,7 @@ def diagonal(x: np.ndarray,
              axis1: int = -2,
              axis2: int = -1) -> np.ndarray:
     return np.diagonal(x, offset=offset, axis1=axis1, axis2=axis2)
+
+def matmul(x1: np.ndarray,
+           x2: np.ndarray) -> np.ndarray:
+    return np.matmul(x1, x2)
