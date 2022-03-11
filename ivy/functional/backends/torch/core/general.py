@@ -10,8 +10,9 @@ import math as _math
 import torch as _torch
 from operator import mul
 from torch.types import Number
-from functools import reduce as _reduce
-from typing import List, Dict, Optional, Union
+from functools import partial as _partial, reduce as _reduce
+from typing import List, Dict, Optional, Tuple, Union
+
 
 # local
 from ivy.functional.ivy.core import default_device, default_dtype
@@ -78,18 +79,6 @@ def dtype_bits(dtype_in):
         'float', ''))
 
 
-def equal(x1, x2):
-    x1_bits = dtype_bits(x1.dtype)
-    if isinstance(x2, (int, float, bool)):
-        return x1 == x2
-    x2_bits = dtype_bits(x2.dtype)
-    if x1_bits > x2_bits:
-        x2 = x2.type(x1.dtype)
-    elif x2_bits > x1_bits:
-        x1 = x1.type(x2.dtype)
-    return x1 == x2
-
-
 def to_numpy(x) -> np.ndarray:
     if isinstance(x, np.ndarray) or isinstance(x, (float, int, bool)):
         return x
@@ -152,14 +141,6 @@ def floor(x):
 # noinspection PyShadowingBuiltins
 def abs(x):
     return _torch.abs(x)
-
-
-def argmax(x, axis: int = 0):
-    ret = _torch.argmax(x, axis)
-    if ret.shape == ():
-        return ret.reshape(-1)
-    return ret
-
 
 def argmin(x, axis: int = 0):
     ret = _torch.argmin(x, axis)
@@ -409,25 +390,6 @@ def full(shape, fill_value, dtype=None, device=None):
     return _torch.full(
         ivy.shape_to_tuple(shape), fill_value, dtype=dtype_from_str(default_dtype(dtype, fill_value)),
         device=default_device(device))
-
-
-# noinspection PyShadowingNames
-def ones_like(x, dtype: Optional[str] = None, dev: Optional[str] = None):
-    if dev is None:
-        dev = _callable_dev(x)
-    if dtype is not None:
-        type_dict: Dict[str, _torch.dtype] = {'int8': _torch.int8,
-            'int16': _torch.int16,
-            'int32': _torch.int32,
-            'int64': _torch.int64,
-            'uint8': _torch.uint8,
-            'bfloat16': _torch.bfloat16,
-            'float16': _torch.float16,
-            'float32': _torch.float32,
-            'float64': _torch.float64,
-            'bool': _torch.bool}
-        return _torch.ones_like(x, dtype=type_dict[dtype], device=dev_from_str(dev))
-    return _torch.ones_like(x, device=dev_from_str(dev))
 
 
 # noinspection PyUnresolvedReferences,PyShadowingNames
@@ -705,7 +667,6 @@ def inplace_decrement(x, val):
 def inplace_increment(x, val):
     x.data += val
     return x
-
 
 inplace_arrays_supported = lambda: True
 inplace_variables_supported = lambda: True

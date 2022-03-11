@@ -14,6 +14,8 @@ from numbers import Number
 import tensorflow_probability as _tfp
 import multiprocessing as _multiprocessing
 from tensorflow.python.types.core import Tensor
+from typing import Tuple, Union
+import typing as _typing
 
 # local
 from ivy.functional.ivy.core import default_device, default_dtype
@@ -122,18 +124,6 @@ def dtype_bits(dtype_in):
         'float', ''))
 
 
-def equal(x1, x2):
-    x1_bits = dtype_bits(x1.dtype)
-    if isinstance(x2, (int, float, bool)):
-        return x1 == x2
-    x2_bits = dtype_bits(x2.dtype)
-    if x1_bits > x2_bits:
-        x2 = _tf.cast(x2, x1.dtype)
-    elif x2_bits > x1_bits:
-        x1 = _tf.cast(x1, x2.dtype)
-    return x1 == x2
-
-
 to_numpy = lambda x: _np.asarray(_tf.convert_to_tensor(x))
 to_numpy.__name__ = 'to_numpy'
 to_scalar = lambda x: to_numpy(x).item()
@@ -157,14 +147,6 @@ def abs(x):
     if 'uint' in dtype(x, as_str=True):
         return x
     return _tf.abs(x)
-
-
-def argmax(x, axis=0):
-    ret = _tf.argmax(x, axis)
-    if ret.shape == ():
-        return _tf.reshape(ret, (-1,))
-    return ret
-
 
 def argmin(x, axis=0):
     ret = _tf.argmin(x, axis)
@@ -310,14 +292,6 @@ def zeros_like(x, dtype=None, dev=None):
 def full(shape, fill_value, dtype=None, device=None):
     with _tf.device(dev_from_str(default_device(device))):
         return _tf.fill(shape, _tf.constant(fill_value, dtype=dtype_from_str(default_dtype(dtype, fill_value))))
-
-
-# noinspection PyShadowingNames
-def ones_like(x, dtype=None, dev=None):
-    dtype = _tf.__dict__[dtype] if dtype else dtype
-    dev = default_device(dev)
-    with _tf.device(dev_from_str(dev)):
-        return _tf.ones_like(x, dtype=dtype)
 
 
 def one_hot(indices, depth, dev=None):
@@ -503,7 +477,6 @@ def inplace_increment(x, val):
         x.assign(x + val)
         return x
     raise Exception('TensorFlow does not support inplace operations on non-Variable tensors')
-
 
 inplace_arrays_supported = lambda: False
 inplace_variables_supported = lambda: True

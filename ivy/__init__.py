@@ -48,8 +48,6 @@ from . import framework_handler, func_wrapper
 from .debugger import set_debug_mode, set_breakpoint_debug_mode, set_exception_debug_mode, unset_debug_mode,\
     debug_mode, debug_mode_val
 from . import debugger
-from .graph_compiler import *
-from . import graph_compiler
 from . import functional
 from .functional import *
 from . import stateful
