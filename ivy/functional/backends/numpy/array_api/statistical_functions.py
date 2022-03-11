@@ -17,9 +17,9 @@ def prod(x: _np.ndarray,
          keepdims: bool = False)\
         -> _np.ndarray:
     if dtype == None and _np.issubdtype(x.dtype,_np.integer):
-        if x.dtype in [_np.int8,_np.int32]:
+        if x.dtype in [_np.int8,_np.int16,_np.int32]:
             dtype = _np.int32
-        elif x.dtype in [_np.uint8,_np.uint32]:
+        elif x.dtype in [_np.uint8,_np.uint16,_np.uint32]:
             dtype = _np.uint32
         elif x.dtype == _np.int64: 
             dtype = _np.int64
