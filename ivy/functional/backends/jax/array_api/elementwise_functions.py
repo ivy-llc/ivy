@@ -48,6 +48,11 @@ def cosh(x: JaxArray)\
     return jnp.cosh(x)
 
 
+def log10(x: JaxArray)\
+        -> JaxArray:
+    return jnp.log10(x)
+
+
 def log2(x: JaxArray)\
         -> JaxArray:
     return jnp.log2(x)
@@ -95,3 +100,8 @@ def sin(x: JaxArray)\
 
 def negative(x: JaxArray) -> JaxArray:
     return jnp.negative(x)
+
+
+def tanh(x: JaxArray)\
+        -> JaxArray:
+    return jnp.tanh(x)

@@ -78,6 +78,11 @@ def cosh(x: Tensor) \
     return tf.cosh(x)
 
 
+def log10(x: Tensor) \
+        -> Tensor:
+    return tf.experimental.numpy.log10(x)
+
+
 def log2(x: Tensor) \
         -> Tensor:
     return tf.experimental.numpy.log2(x)
@@ -133,3 +138,10 @@ def negative(x: Tensor) -> Tensor:
     if x.dtype in [tf.uint8, tf.uint16, tf.uint32, tf.uint64]:
         return tf.cast(tf.negative(tf.cast(x, tf.float32)), x.dtype)
     return tf.negative(x)
+
+
+def tanh(x: Tensor) \
+        -> Tensor:
+    return tf.tanh(x)
+
+

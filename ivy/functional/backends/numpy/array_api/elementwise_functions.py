@@ -44,6 +44,11 @@ def cosh(x: np.ndarray)\
     return np.asarray(npa.cosh(npa.asarray(x)))
 
 
+def log10(x: np.ndarray)\
+        -> np.ndarray:
+    return np.log10(x)
+
+
 def log2(x: np.ndarray)\
         -> np.ndarray:
     return np.log2(x)
@@ -91,3 +96,9 @@ def sin(x: np.ndarray)\
   
 def negative(x: np.ndarray) -> np.ndarray:
     return np.negative(x)
+
+
+def tanh(x: np.ndarray)\
+        -> np.ndarray:
+    return np.asarray(npa.tanh(npa.asarray(x)))
+
