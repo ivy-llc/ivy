@@ -116,6 +116,7 @@ class Array(ArrayWithArrayAPI, ArrayWithDevice, ArrayWithGeneral, ArrayWithGradi
 
     @_native_wrapper
     def __getitem__(self, query):
+        query = to_native(query)
         return to_ivy(self._data.__getitem__(query))
 
     @_native_wrapper
@@ -268,7 +269,7 @@ class Array(ArrayWithArrayAPI, ArrayWithDevice, ArrayWithGeneral, ArrayWithGradi
     @_native_wrapper
     def __lt__(self, other):
         other = to_native(other)
-        res = self._data.__lt__(other)
+        res = ivy.less(self._data, other)
         if res is NotImplemented:
             return res
         return to_ivy(res)
