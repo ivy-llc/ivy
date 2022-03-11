@@ -3,7 +3,6 @@ import tensorflow as tf
 from tensorflow.python.types.core import Tensor
 from typing import Union, Optional, Tuple, Literal
 from collections import namedtuple
-import numpy as np
 
 # local
 from ivy import inf
@@ -55,7 +54,7 @@ def diagonal(x: tf.Tensor,
 
 def matmul(x1: tf.Tensor,
            x2: tf.Tensor) -> tf.Tensor:
-    dtype_from = np.promote_types(x1.dtype.as_numpy_dtype, x2.dtype.as_numpy_dtype)
+    dtype_from = tf.experimental.numpy.promote_types(x1.dtype.as_numpy_dtype, x2.dtype.as_numpy_dtype)
     dtype_from = tf.as_dtype(dtype_from)
     if dtype_from.is_unsigned or dtype_from==tf.int8 or dtype_from==tf.int16:
         x1 = tf.cast(x1, tf.int64)
