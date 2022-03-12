@@ -4,16 +4,14 @@ Collection of MXNet linear algebra functions, wrapped to fit Ivy syntax and sign
 
 # global
 import mxnet as _mx
-
+import numpy as _np
 # local
 import ivy as _ivy
 from ivy.functional.backends.mxnet.core.general import matmul as _matmul
+from typing import Union, Tuple
 
 
-# noinspection PyPep8Naming
-def svd(x):
-    U, D, VT = _mx.nd.np.linalg.svd(x.as_np_ndarray())
-    return U.as_nd_ndarray(), D.as_nd_ndarray(), VT.as_nd_ndarray()
+
 
 
 def matrix_norm(x, p=2, axes=None, keepdims=False):

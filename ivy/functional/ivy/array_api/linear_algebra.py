@@ -1,5 +1,6 @@
 # global
 from typing import Union, Optional, Tuple, Literal
+from ivy.framework_handler import current_framework as _cur_framework
 
 # local
 import ivy
@@ -69,6 +70,29 @@ def vector_norm(x: Union[ivy.Array, ivy.NativeArray],
     x_raised = x ** ord
     return ivy.reduce_sum(x_raised, axis, keepdims) ** (1/ord)
 
+def svd(x:Union[ivy.Array,ivy.NativeArray],full_matrices: bool = True)->Union[ivy.Array, Tuple[ivy.Array,...]]:
+
+    """
+    Singular Value Decomposition.
+    When x is a 2D array, it is factorized as u @ numpy.diag(s) @ vh = (u * s) @ vh, where u and vh are 2D unitary
+    arrays and s is a 1D array of a’s singular values. When x is higher-dimensional, SVD is applied in batched mode.
+
+    :param x: Input array with number of dimensions >= 2.
+    :type x: array
+    :return:
+        u -> { (…, M, M), (…, M, K) } array \n
+        Unitary array(s). The first (number of dims - 2) dimensions have the same size as those of the input a.
+        The size of the last two dimensions depends on the value of full_matrices.
+
+        s -> (…, K) array \n
+        Vector(s) with the singular values, within each vector sorted in descending ord.
+        The first (number of dims - 2) dimensions have the same size as those of the input a.
+
+        vh -> { (…, N, N), (…, K, N) } array \n
+        Unitary array(s). The first (number of dims - 2) dimensions have the same size as those of the input a.
+        The size of the last two dimensions depends on the value of full_matrices.
+    """
+    return _cur_framework(x).svd(x,full_matrices)
 
 def diagonal(x: ivy.Array,
              offset: int = 0,
@@ -99,3 +123,27 @@ def diagonal(x: ivy.Array,
         an array containing the diagonals and whose shape is determined by removing the last two dimensions and appending a dimension equal to the size of the resulting diagonals. The returned array must have the same data type as ``x``.
     """
     return _cur_framework(x).diagonal(x, offset, axis1=axis1, axis2=axis2)
+
+def slodget(x: Union[ivy.Array, ivy.NativeArray],) \
+            -> ivy.Array:
+    """
+    Computes the sign and natural logarithm of the determinant of an array.
+
+    Parameters
+    ----------
+    x:
+        This is a 2D array, and it has to be square
+
+    Return
+    ----------
+    Out:
+
+        This function returns two values -
+            sign:
+            A number representing the sign of the determinant.
+
+            logdet:
+            The natural log of the absolute value of the determinant.
+
+    """
+    return _cur_framework(x).slodget(x)
