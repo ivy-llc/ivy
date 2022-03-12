@@ -9,6 +9,7 @@ import math as _math
 from operator import mul as _mul
 from functools import reduce as _reduce
 import multiprocessing as _multiprocessing
+from typing import Tuple, Union
 
 # local
 import ivy
@@ -94,9 +95,6 @@ def is_array(x, exclusive=False):
     return False
 
 
-equal = lambda x1, x2: x1 == x2
-
-
 def dtype_bits(dtype_in):
     dtype_str = dtype_to_str(dtype_in)
     if 'bool' in dtype_str:
@@ -104,7 +102,6 @@ def dtype_bits(dtype_in):
     return int(dtype_str.replace('uint', '').replace('int', '').replace('bfloat', '').replace('float', ''))
 
 
-equal.__name__ = 'equal'
 copy_array = lambda x: x.copy()
 array_equal = _np.array_equal
 to_numpy = lambda x: x
@@ -122,14 +119,7 @@ clip = lambda x, x_min, x_max: _np.asarray(_np.clip(x, x_min, x_max))
 round = lambda x: _np.asarray(_np.round(x))
 floormod = lambda x, y: _np.asarray(x % y)
 floor = lambda x: _np.asarray(_np.floor(x))
-ceil = lambda x: _np.asarray(_np.ceil(x))
 abs = lambda x: _np.asarray(_np.absolute(x))
-
-def argmax(x, axis=0):
-    ret = _np.asarray(_np.argmax(x, axis))
-    if ret.shape == ():
-        return ret.reshape(-1)
-    return ret
 
 
 def argmin(x, axis=0):
@@ -263,16 +253,6 @@ def zeros_like(x, dtype=None, dev=None):
 
 def full(shape, fill_value, dtype=None, device=None):
     return _to_dev(_np.full(shape, fill_value, dtype_from_str(default_dtype(dtype, fill_value))), device)
-
-
-# noinspection PyShadowingNames
-def ones_like(x, dtype=None, dev=None):
-    if dtype:
-        dtype = 'bool_' if dtype == 'bool' else dtype
-        dtype = _np.__dict__[dtype]
-    else:
-        dtype = x.dtype
-    return _to_dev(_np.ones_like(x, dtype=dtype), dev)
 
 
 # noinspection PyUnusedLocal
@@ -483,7 +463,6 @@ def inplace_decrement(x, val):
 def inplace_increment(x, val):
     x += val
     return x
-
 
 inplace_arrays_supported = lambda: True
 inplace_variables_supported = lambda: True

@@ -1,9 +1,13 @@
 # global
 import numpy as np
+import ivy as _ivy
 from typing import Union, Optional, Tuple, Literal
+from collections import namedtuple
 
 # local
 from ivy import inf
+import ivy as _ivy
+from collections import namedtuple
 
 
 # noinspection PyUnusedLocal,PyShadowingBuiltins
@@ -24,8 +28,20 @@ def vector_norm(x: np.ndarray,
     return np_normalized_vector
 
 
+def svd(x:np.ndarray,full_matrices: bool = True) -> Union[np.ndarray, Tuple[np.ndarray,...]]:
+    results=namedtuple("svd", "U S Vh")
+    U, D, VT=np.linalg.svd(x, full_matrices=full_matrices)
+    res=results(U, D, VT)
+    return res
+  
 def diagonal(x: np.ndarray,
              offset: int = 0,
              axis1: int = -2,
              axis2: int = -1) -> np.ndarray:
     return np.diagonal(x, offset=offset, axis1=axis1, axis2=axis2)
+
+def slogdet(x:Union[_ivy.Array,_ivy.NativeArray],full_matrices: bool = True) -> Union[_ivy.Array, Tuple[_ivy.Array,...]]:
+    results = namedtuple("slogdet", "sign logabsdet")
+    sign, logabsdet = np.linalg.slogdet(x)
+    res = results(sign, logabsdet)
+    return res

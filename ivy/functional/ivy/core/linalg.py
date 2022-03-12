@@ -7,30 +7,6 @@ import ivy
 from ivy.framework_handler import current_framework as _cur_framework
 
 
-def svd(x):
-    """
-    Singular Value Decomposition.
-    When x is a 2D array, it is factorized as u @ numpy.diag(s) @ vh = (u * s) @ vh, where u and vh are 2D unitary
-    arrays and s is a 1D array of a’s singular values. When x is higher-dimensional, SVD is applied in batched mode.
-
-    :param x: Input array with number of dimensions >= 2.
-    :type x: array
-    :return:
-        u -> { (…, M, M), (…, M, K) } array \n
-        Unitary array(s). The first (number of dims - 2) dimensions have the same size as those of the input a.
-        The size of the last two dimensions depends on the value of full_matrices.
-
-        s -> (…, K) array \n
-        Vector(s) with the singular values, within each vector sorted in descending ord.
-        The first (number of dims - 2) dimensions have the same size as those of the input a.
-
-        vh -> { (…, N, N), (…, K, N) } array \n
-        Unitary array(s). The first (number of dims - 2) dimensions have the same size as those of the input a.
-        The size of the last two dimensions depends on the value of full_matrices.
-    """
-    return _cur_framework(x).svd(x)
-
-
 
 
 def matrix_norm(x, p=2, axes=None, keepdims=False):
