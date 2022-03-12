@@ -21,6 +21,7 @@ def prod(x: _tf.Tensor,
         dtype = _tf.experimental.numpy.uint32
     elif x.dtype == _tf.int64: 
         dtype = _tf.int64
-    else:
+    elif x.dtype == _tf.uint64 :
         dtype = _tf.uint64
+        
     return _tf.experimental.numpy.prod(x,axis,dtype,keepdims)
