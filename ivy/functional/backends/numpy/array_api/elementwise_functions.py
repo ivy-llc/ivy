@@ -102,3 +102,7 @@ def tanh(x: np.ndarray)\
         -> np.ndarray:
     return np.asarray(npa.tanh(npa.asarray(x)))
 
+
+def square(x: np.ndarray)\
+        -> np.ndarray:
+    return np.square(x)
