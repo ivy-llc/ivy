@@ -4,7 +4,7 @@
 diagonal
 #eigh
 #eigvalsh
-#inv
+inv
 #matmul
 #matrix_norm
 #matrix_power
