@@ -104,6 +104,7 @@ def tanh(x: np.ndarray)\
 
 def floor_divide(x1: np.ndarray, x2: np.ndarray)\
                 -> np.ndarray:
+
     promoted_type = np.promote_types(x1.dtype,x2.dtype)
     x1=x1.astype(promoted_type)
     x2=x2.astype(promoted_type)
