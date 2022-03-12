@@ -440,4 +440,5 @@ def floor_divide(x1: Union[ivy.Array, ivy.NativeArray], x2: Union[ivy.Array, ivy
     :param x2: second input array. Must be compatible with x1 (with Broadcasting). Must have a numeric data type.
     :return: an array containing the element-wise results. The returned array must have a numeric data type.
     """
-    return _cur_framework(x1, x2).floor_divide(x1, x2)
+    res = _cur_framework(x1, x2).floor_divide(x1, x2)
+    return res

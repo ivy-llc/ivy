@@ -105,3 +105,7 @@ def negative(x: JaxArray) -> JaxArray:
 def tanh(x: JaxArray)\
         -> JaxArray:
     return jnp.tanh(x)
+
+def floor_divide(x1: JaxArray, x2: JaxArray)\
+                -> JaxArray:
+    return x1 // x2

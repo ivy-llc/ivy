@@ -144,4 +144,9 @@ def tanh(x: Tensor) \
         -> Tensor:
     return tf.tanh(x)
 
-
+def floor_divide(x1: Tensor, x2: Tensor)\
+                -> Tensor:
+    promoted_type = tf.experimental.numpy.promote_types(x1.dtype, x2.dtype)
+    x1 = tf.cast(x1, promoted_type)
+    x2 = tf.cast(x2, promoted_type)
+    return tf.math.floordiv(x1,x2)
