@@ -79,3 +79,7 @@ def tanh(x: mx.ndarray.ndarray.NDArray)\
     return mx.nd.tanh(x)
 
 
+@_handle_flat_arrays_in_out
+def square(x: mx.ndarray.ndarray.NDArray)\
+        -> mx.ndarray.ndarray.NDArray:
+    return mx.nd.square(x)
