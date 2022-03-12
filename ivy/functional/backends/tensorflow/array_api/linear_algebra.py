@@ -30,11 +30,22 @@ def vector_norm(x: Tensor,
     return tn_normalized_vector
 
 
+"""
 def outer(x1: tf.Tensor,
           x2: tf.Tensor)\
         -> tf.Tensor:
+    #M = tf.Tensor(x1, x2, axes=0)
+    #Not sure if the code in the # will work
     return tf.experimental.numpy.outer(x1, x2)
+"""
+#This is my code that was requested to be fixed
 
+
+def outer(x1: Tensor,
+          x2: Tensor) \
+        -> Tensor:
+    return tf.experimental.numpy.outer(x1, x2)
+#This is my fixed code but I am not sure if it works properly as i am not sure why the above code does not work
 
 def diagonal(x: tf.Tensor,
              offset: int = 0,
