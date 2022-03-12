@@ -1,7 +1,6 @@
 # global
 _round = round
 import tensorflow as _tf
-from tensorflow.experimental import numpy as _np
 from typing import Tuple, Union, Optional
 
 def min(x: _tf.Tensor,
@@ -19,7 +18,7 @@ def prod(x: _tf.Tensor,
     if x.dtype == _tf.int8:
         dtype = _tf.int32
     elif x.dtype ==_tf.uint8:
-        dtype = _tf.uint8
+        dtype = _tf.experimental.numpy.uint32
     elif x.dtype in [_tf.int64,_tf.int32]: 
         dtype = _tf.int64
     else:
