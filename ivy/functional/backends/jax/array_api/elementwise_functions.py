@@ -105,3 +105,8 @@ def negative(x: JaxArray) -> JaxArray:
 def tanh(x: JaxArray)\
         -> JaxArray:
     return jnp.tanh(x)
+  
+ 
+def square(x: JaxArray) \
+        -> JaxArray:
+    return jnp.square(x)
