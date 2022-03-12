@@ -10,12 +10,12 @@ diagonal
 #matrix_power
 #matrix_rank
 #matrix_transpose
-#outer
+outer
 #pinv
 #qr
-#slogdet
+slogdet
 #solve
-#svd
+svd
 #svdvals
 #tensordot
 #trace

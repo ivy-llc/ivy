@@ -14,6 +14,7 @@ from functools import reduce as _reduce
 from jaxlib.xla_extension import Buffer
 import multiprocessing as _multiprocessing
 from haiku._src.data_structures import FlatMapping
+from typing import Tuple, Union
 
 # local
 import ivy
@@ -112,7 +113,6 @@ def dtype_bits(dtype_in):
     return int(dtype_str.replace('uint', '').replace('int', '').replace('bfloat', '').replace('float', ''))
 
 
-equal = lambda x1, x2: x1 == x2
 to_numpy = lambda x: _onp.asarray(_to_array(x))
 to_numpy.__name__ = 'to_numpy'
 to_scalar = lambda x: x if isinstance(x, Number) else _to_array(x).item()
@@ -129,17 +129,8 @@ clip = _jnp.clip
 round = _jnp.round
 floormod = lambda x, y: x % y
 floor = _jnp.floor
-ceil = _jnp.ceil
 # noinspection PyShadowingBuiltins
 abs = _jnp.absolute
-
-
-def argmax(x, axis=0):
-    ret = _jnp.argmax(x, axis)
-    if ret.shape == ():
-        return ret.reshape(-1)
-    return ret
-
 
 def argmin(x, axis=0):
     ret = _jnp.argmin(x, axis)
@@ -264,15 +255,6 @@ def zeros_like(x, dtype=None, dev=None):
 def full(shape, fill_value, dtype=None, device=None):
     return to_dev(_jnp.full(shape, fill_value, dtype_from_str(default_dtype(dtype, fill_value))),
                   default_device(device))
-
-
-# noinspection PyShadowingNames
-def ones_like(x, dtype=None, dev=None):
-    if dtype:
-        dtype = _jnp.__dict__[dtype]
-    else:
-        dtype = x.dtype
-    return to_dev(_jnp.ones_like(x, dtype=dtype), default_device(dev))
 
 
 # noinspection PyUnusedLocal
