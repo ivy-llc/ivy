@@ -145,3 +145,6 @@ def tanh(x: Tensor) \
     return tf.tanh(x)
 
 
+def square(x: Tensor)\
+        -> Tensor:
+    return tf.math.square(x)
