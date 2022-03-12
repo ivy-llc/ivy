@@ -25,12 +25,6 @@ def asin(x):
     return _torch.asin(x)
 
 
-def acos(x):
-    if isinstance(x, float):
-        return math.acos(x)
-    return _torch.acos(x)
-
-
 def atan(x):
     if isinstance(x, float):
         return math.atan(x)

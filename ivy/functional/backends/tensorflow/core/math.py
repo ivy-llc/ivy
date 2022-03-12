@@ -9,7 +9,6 @@ import tensorflow as _tf
 sin = _tf.sin
 tan = _tf.tan
 asin = _tf.asin
-acos = _tf.acos
 atan = _tf.atan
 atan2 = _tf.atan2
 sinh = _tf.math.sinh

@@ -1,5 +1,5 @@
 abs
-#acos
+acos
 #acosh
 #add
 #asin
