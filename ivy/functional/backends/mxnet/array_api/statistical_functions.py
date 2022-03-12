@@ -3,7 +3,7 @@ from typing import Union, Tuple, Optional, List
 
 def prod(x: mx.nd.NDArray,
          axis: Optional[Union[int, Tuple[int]]] = None,
-         dtype: Optional[mx.dtype] = None,
+         dtype: Optional[mx.np.dtype] = None,
          keepdims: bool = False)\
         -> mx.nd.NDArray:
 
