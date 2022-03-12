@@ -8,7 +8,7 @@ from ivy.framework_handler import current_framework as _cur_framework
 
 def zeros(shape: Union[int, Tuple[int], List[int]],
           dtype: Optional[ivy.Dtype] = None,
-          device: Optional[ivy.Device] = None)\
+          device: Optional[ivy.Device] = None) \
         -> ivy.Array:
     """
     Returns a new array having a specified ``shape`` and filled with zeros.
@@ -33,7 +33,7 @@ def zeros(shape: Union[int, Tuple[int], List[int]],
 
 def ones(shape: Union[int, Tuple[int], List[int]],
          dtype: Optional[ivy.Dtype] = None,
-         device: Optional[ivy.Device] = None)\
+         device: Optional[ivy.Device] = None) \
         -> ivy.Array:
     """
     Returns a new array having a specified ``shape`` and filled with ones.
@@ -55,7 +55,7 @@ def ones(shape: Union[int, Tuple[int], List[int]],
     return _cur_framework().ones(shape, dtype, device)
 
 
-def ones_like( x: Union[ivy.Array, ivy.NativeArray],
+def ones_like(x: Union[ivy.Array, ivy.NativeArray],
               dtype: Optional[Union[ivy.Dtype, str]] = None,
               dev: Optional[Union[ivy.Device, str]] = None,
               ) -> Union[ivy.Array, ivy.NativeArray]:
@@ -74,7 +74,7 @@ def ones_like( x: Union[ivy.Array, ivy.NativeArray],
 
 def tril(x: Union[ivy.Array, ivy.NativeArray],
          k: int = 0) \
-         -> ivy.Array:
+        -> ivy.Array:
     """
     Returns the lower triangular part of a matrix (or a stack of matrices) x.
 
@@ -96,9 +96,9 @@ def tril(x: Union[ivy.Array, ivy.NativeArray],
     return _cur_framework(x).tril(x, k)
 
 
-def empty(shape: Union[int, Tuple[int],List[int]],
+def empty(shape: Union[int, Tuple[int], List[int]],
           dtype: Optional[ivy.Dtype] = None,
-          device: Optional[ivy.Device] = None)\
+          device: Optional[ivy.Device] = None) \
         -> ivy.Array:
     """
     Return a new array of given shape and type, filled with zeros.
@@ -109,3 +109,31 @@ def empty(shape: Union[int, Tuple[int],List[int]],
     :return: an uninitialized array having a specified shape
     """
     return _cur_framework().empty(shape, dtype, device)
+
+
+def asarray(x: Union[ivy.Array, ivy.NativeArray],
+            dtype: Optional[Union[ivy.Dtype, str]] = None,
+            dev: Optional[Union[ivy.Device, str]] = None,
+            ) -> ivy.NativeArray:
+    """
+    Converts the input to an array.
+
+    parameters
+    ----------
+
+    x:
+    Input data, in any form that can be converted to an array.
+    This includes lists, lists of tuples, tuples, tuples of tuples, tuples of lists and ndarrays
+
+    dtype:
+    data-type, optional
+    data-type is inferred from the input data
+
+    dev:
+    device on which to place the created array. Default: None.
+
+    Returns
+    --------
+    An array interpretation of x
+    """
+    return _cur_framework(x).asarray(x,dtype,dev)
