@@ -16,7 +16,9 @@ import multiprocessing as _multiprocessing
 
 # local
 from ivy.functional.ivy.core import default_device, default_dtype
-from ivy.functional.backends.mxnet.core.device import _callable_dev, dev_to_str
+from ivy.functional.backends.mxnet.core.device import _callable_dev
+from ivy.functional.backends.mxnet import _handle_flat_arrays_in_out, _mxnet_init_context,\
+    _scalar_or_flat_array_to_scalar, _handle_flat_arrays_in
 
 
 DTYPE_TO_STR = {_np.dtype('int8'): 'int8',
@@ -573,7 +575,6 @@ def inplace_increment(x, val):
         raise Exception('MXNet does not support inplace updates of 0-dimensional arrays')
     x += val
     return x
-
 
 inplace_arrays_supported = lambda: True
 inplace_variables_supported = lambda: True

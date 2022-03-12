@@ -78,6 +78,11 @@ def cosh(x: Tensor) \
     return tf.cosh(x)
 
 
+def log10(x: Tensor) \
+        -> Tensor:
+    return tf.experimental.numpy.log10(x)
+
+
 def log2(x: Tensor) \
         -> Tensor:
     return tf.experimental.numpy.log2(x)
@@ -114,6 +119,29 @@ def logical_not(x: Tensor)\
     return tf.logical_not(tf.cast(x, tf.bool))
 
 
+def logical_or(x1: Tensor, x2: Tensor)\
+        -> Tensor:
+    return tf.logical_or(tf.cast(x1, tf.bool), tf.cast(x2, tf.bool))
+
+
+def acosh(x: Tensor) \
+        -> Tensor:
+    return tf.acosh(x)
+
+  
 def sin(x: Tensor)\
         -> Tensor:
     return tf.sin(x)
+
+
+def negative(x: Tensor) -> Tensor:
+    if x.dtype in [tf.uint8, tf.uint16, tf.uint32, tf.uint64]:
+        return tf.cast(tf.negative(tf.cast(x, tf.float32)), x.dtype)
+    return tf.negative(x)
+
+
+def tanh(x: Tensor) \
+        -> Tensor:
+    return tf.tanh(x)
+
+

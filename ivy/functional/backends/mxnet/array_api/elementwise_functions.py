@@ -49,8 +49,33 @@ def logical_not(x: mx.ndarray.ndarray.NDArray)\
 
 
 @_handle_flat_arrays_in_out
+def acosh(x: mx.ndarray.ndarray.NDArray)\
+      -> mx.ndarray.ndarray.NDArray:
+    if isinstance(x, float):
+        return math.acosh(x)
+    else:
+        mx.nd.arccosh(x)
+        
+        
+@_handle_flat_arrays_in_out
 def sin(x: mx.ndarray.ndarray.NDArray)\
         -> mx.ndarray.ndarray.NDArray:
     if isinstance(x, float):
         return math.sin(x)
     return mx.nd.sin(x)
+
+
+@_handle_flat_arrays_in_out
+def negative(x: mx.ndarray.ndarray.NDArray)\
+        -> mx.ndarray.ndarray.NDArray:
+    return mx.np.negative(x)
+
+
+@_handle_flat_arrays_in_out
+def tanh(x: mx.ndarray.ndarray.NDArray)\
+        -> mx.ndarray.ndarray.NDArray:
+    if isinstance(x, float):
+        return math.tanh(x)
+    return mx.nd.tanh(x)
+
+

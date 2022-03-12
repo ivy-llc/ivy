@@ -71,6 +71,11 @@ def cosh(x: torch.Tensor) \
     return torch.cosh(x)
 
 
+def log10(x: torch.Tensor) \
+        -> torch.Tensor:
+    return torch.log10(x)
+
+
 def log2(x: torch.Tensor) \
         -> torch.Tensor:
     return torch.log2(x)
@@ -104,6 +109,25 @@ def logical_not(x: torch.Tensor)\
     return torch.logical_not(x.type(torch.bool))
 
 
+def logical_or(x1: torch.Tensor, x2: torch.Tensor)\
+        -> torch.Tensor:
+    return torch.logical_or(x1.type(torch.bool), x2.type(torch.bool))
+
+
+def acosh(x: torch.Tensor) \
+        -> torch.Tensor:
+    return torch.acosh(x)
+
+  
 def sin(x: torch.Tensor)\
         -> torch.Tensor:
     return torch.sin(x)
+
+
+def negative(x: torch.Tensor) -> torch.Tensor:
+    return torch.neg(x)
+
+
+def tanh(x: torch.Tensor) -> torch.Tensor:
+    return torch.tanh(x)
+

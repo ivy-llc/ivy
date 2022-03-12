@@ -98,16 +98,6 @@ def tanh(x):
     return _cur_framework(x).tanh(x)
 
 
-def acosh(x):
-    """
-    Returns a new array with the inverse hyperbolic cosine of the elements of x.
-
-    :param x: Input array.
-    :return: A new array with the inverse hyperbolic cosine of the elements of x.
-    """
-    return _cur_framework(x).acosh(x)
-
-
 def atanh(x):
     """
     Returns a new array with the inverse hyperbolic tangent of the elements of x.
