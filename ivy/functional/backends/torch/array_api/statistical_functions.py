@@ -27,4 +27,4 @@ def prod(x: _torch.Tensor,
     elif x.dtype in [_torch.int64,_torch.int32]: 
         dtype = _torch.int64
 
-    return _torch.prod(input=x,dtype=dtype,keepdims=keepdims)
+    return _torch.prod(input=x,dtype=dtype,keepdim=keepdims)
