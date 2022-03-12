@@ -15,11 +15,11 @@ def prod(x: _tf.Tensor,
          keepdims: bool = False)\
         -> _tf.Tensor:
 
-    if x.dtype in [ _tf.int8 , _tf.int16]:
+    if x.dtype in [ _tf.int8 , _tf.int16,_tf.int32]:
         dtype = _tf.int32
-    elif x.dtype in [_tf.uint8, _tf.uint16]:
+    elif x.dtype in [_tf.uint8, _tf.uint16,_tf.experimental.numpy.uint32]:
         dtype = _tf.experimental.numpy.uint32
-    elif x.dtype in [_tf.int64,_tf.int32]: 
+    elif x.dtype == _tf.int64: 
         dtype = _tf.int64
     else:
         dtype = _tf.uint64
