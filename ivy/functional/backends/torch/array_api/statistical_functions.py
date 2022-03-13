@@ -20,7 +20,7 @@ def prod(x: _torch.Tensor,
         -> _torch.Tensor:
 
     if dtype == None:
-        if x.dtype == _torch.int8:
+        if x.dtype in [_torch.int8 ,_torch.int16] :
             dtype = _torch.int32
         elif x.dtype == _torch.uint8:
             dtype = dtype_from_str('uint32')
