@@ -134,6 +134,11 @@ def sin(x: Tensor)\
     return tf.sin(x)
 
 
+def bitwise_right_shift(x1: Tensor, x2: Tensor)\
+        -> Tensor:
+    return tf.bitwise.right_shift(tf.cast(x1, tf.uint64), tf.cast(x2, tf.uint64))
+
+
 def negative(x: Tensor) -> Tensor:
     if x.dtype in [tf.uint8, tf.uint16, tf.uint32, tf.uint64]:
         return tf.cast(tf.negative(tf.cast(x, tf.float32)), x.dtype)

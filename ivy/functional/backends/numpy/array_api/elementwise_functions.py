@@ -93,7 +93,12 @@ def sin(x: np.ndarray)\
         -> np.ndarray:
     return np.asarray(npa.sin(npa.asarray(x)))
 
-  
+
+def bitwise_right_shift(x1: np.ndarray, x2: np.ndarray)\
+        -> np.ndarray:
+    return np.right_shift(x1, x2)
+
+
 def negative(x: np.ndarray) -> np.ndarray:
     return np.negative(x)
 
