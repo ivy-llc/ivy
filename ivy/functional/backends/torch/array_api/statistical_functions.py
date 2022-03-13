@@ -2,7 +2,6 @@
 torch_scatter = None
 import torch as _torch
 from typing import Tuple, Union, Optional
-import numpy as _np
 
 def min(x: _torch.Tensor,
         axis: Union[int, Tuple[int]] = None,
@@ -23,7 +22,7 @@ def prod(x: _torch.Tensor,
         if x.dtype == _torch.int8:
             dtype = _torch.int32
         elif x.dtype == _torch.uint8:
-            dtype = _np.uint32
+            dtype = _torch.uint8
         elif x.dtype in [_torch.int64,_torch.int32]: 
             dtype = _torch.int64
 
