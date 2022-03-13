@@ -2,7 +2,6 @@
 torch_scatter = None
 import torch as _torch
 from typing import Tuple, Union, Optional
-from ivy import dtype_from_str, default_dtype, dev_from_str, default_device
 
 def min(x: _torch.Tensor,
         axis: Union[int, Tuple[int]] = None,
