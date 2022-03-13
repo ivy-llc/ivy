@@ -7,7 +7,7 @@ from ivy.framework_handler import current_framework as _cur_framework
 
 
 def var(x: Union[ivy.Array, ivy.NativeArray],
-        axis: Optional[Union[int, Tuple[int], List[int]]] = None,
+        axis: Optional[Union[int, Tuple[int]]] = None,
         correction: Union[int, float] = 0.0,
         keepdims: bool = False) \
         -> ivy.Array:
