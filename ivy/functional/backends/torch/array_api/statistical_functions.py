@@ -28,4 +28,10 @@ def prod(x: _torch.Tensor,
 
     if axis == None:
         axis = x.dim()
+    elif type(axis) == tuple:
+        if len(axis) ==0:
+            axis = x.dim()
+        else:
+            x = _torch.Tensor([_torch.prod(input=x,dim=i,dtype=dtype,keepdim=keepdims) for i in axis])
+
     return _torch.prod(input=x,dim=axis,dtype=dtype,keepdim=keepdims)
