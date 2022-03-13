@@ -145,3 +145,6 @@ def tanh(x: Tensor) \
     return tf.tanh(x)
 
 
+def bitwise_or(x1: Tensor, x2: Tensor) \
+        -> Tensor:
+    return tf.bitwise.bitwise_or(x1, x2)

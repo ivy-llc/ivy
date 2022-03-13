@@ -78,4 +78,7 @@ def tanh(x: mx.ndarray.ndarray.NDArray)\
         return math.tanh(x)
     return mx.nd.tanh(x)
 
-
+@_handle_flat_arrays_in_out
+def bitwise_or(x1: mx.ndarray.ndarray.NDArray, x2: mx.ndarray.ndarray.NDArray) \
+        -> mx.nd.ndarray.NDArray:
+    return mx.numpy.bitwise_or(x1, x2)

@@ -131,3 +131,7 @@ def negative(x: torch.Tensor) -> torch.Tensor:
 def tanh(x: torch.Tensor) -> torch.Tensor:
     return torch.tanh(x)
 
+
+def bitwise_or(x1: torch.Tensor, x2: torch.Tensor) \
+        -> torch.Tensor:
+    return torch.bitwise_or(x1, x2)

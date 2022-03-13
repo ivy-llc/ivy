@@ -102,3 +102,7 @@ def tanh(x: np.ndarray)\
         -> np.ndarray:
     return np.asarray(npa.tanh(npa.asarray(x)))
 
+
+def bitwise_or(x1: np.ndarray , x2: np.ndarray) \
+        -> np.ndarray:
+    return np.bitwise_or(x1, x2)
