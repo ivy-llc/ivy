@@ -7,7 +7,8 @@ from tensorflow.python.types.core import Tensor
 def var(x: Tensor,
         axis: Optional[Union[int, Tuple[int]]] = None,
         correction: Union[int, float] = 0.0,
-        keepdims: bool = False) -> Tensor:
+        keepdims: bool = False) \
+        -> Tensor:
     m = tf.reduce_mean(x, axis=axis, keepdims=True)
     return tf.reduce_mean(tf.square(x - m), axis=axis, keepdims=keepdims)
 
