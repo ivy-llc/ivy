@@ -174,7 +174,7 @@ class Array(ArrayWithArrayAPI, ArrayWithDevice, ArrayWithGeneral, ArrayWithGradi
     @_native_wrapper
     def __sub__(self, other):
         other = to_native(other)
-        res = self._data.__sub__(other)
+        res = ivy.subtract(self._data, other)
         if res is NotImplemented:
             return res
         return to_ivy(res)
@@ -182,7 +182,7 @@ class Array(ArrayWithArrayAPI, ArrayWithDevice, ArrayWithGeneral, ArrayWithGradi
     @_native_wrapper
     def __rsub__(self, other):
         other = to_native(other)
-        res = self._data.__rsub__(other)
+        res = ivy.subtract(other, self._data)
         if res is NotImplemented:
             return res
         return to_ivy(res)

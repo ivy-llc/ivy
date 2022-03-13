@@ -440,6 +440,7 @@ def negative(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
     """
     return _cur_framework(x).negative(x)
 
+
 def tanh(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
     """
     Calculates an implementation-dependent approximation to the hyperbolic tangent,
