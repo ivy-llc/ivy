@@ -136,3 +136,28 @@ def det(x: ivy.Array) \
                dimensional array containing the determinant for each square matrix. The returned array must have the same data type as x.
     """
     return _cur_framework(x).det(x)
+ 
+
+def slodget(x: Union[ivy.Array, ivy.NativeArray],) \
+            -> ivy.Array:
+    """
+    Computes the sign and natural logarithm of the determinant of an array.
+
+    Parameters
+    ----------
+    x:
+        This is a 2D array, and it has to be square
+
+    Return
+    ----------
+    Out:
+
+        This function returns two values -
+            sign:
+            A number representing the sign of the determinant.
+
+            logdet:
+            The natural log of the absolute value of the determinant.
+
+    """
+    return _cur_framework(x).slodget(x)

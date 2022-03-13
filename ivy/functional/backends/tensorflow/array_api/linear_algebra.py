@@ -7,6 +7,8 @@ from collections import namedtuple
 # local
 from ivy import inf
 import ivy as _ivy
+from collections import namedtuple
+
 
 
 # noinspection PyUnusedLocal,PyShadowingBuiltins
@@ -53,3 +55,9 @@ def diagonal(x: tf.Tensor,
 def det(x:tf.Tensor) \
     -> tf.Tensor:
     return tf.linalg.det(x)
+
+def slogdet(x:Union[_ivy.Array,_ivy.NativeArray],full_matrices: bool = True) -> Union[_ivy.Array, Tuple[_ivy.Array,...]]:
+    results = namedtuple("slogdet", "sign logabsdet")
+    sign, logabsdet = tf.linalg.slogdet(x)
+    res = results(sign, logabsdet)
+    return res
