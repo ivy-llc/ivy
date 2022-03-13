@@ -1,13 +1,28 @@
-# global
-torch_scatter = None
-import torch as _torch
-from typing import Tuple, Union
+import torch
+from typing import Union, Optional, Tuple, List
 
 
-def min(x: _torch.Tensor,
+def var(x: torch.Tensor,
+        axis: Optional[Union[int, Tuple[int]]] = None,
+        correction: Union[int, float] = 0.0,
+        keepdims: bool = False) \
+        -> torch.Tensor:
+    if axis is None:
+        num_dims = len(x.shape)
+        axis = tuple(range(num_dims))
+    if isinstance(axis, int):
+        return torch.var(x, dim=axis, keepdim=keepdims)
+    dims = len(x.shape)
+    axis = tuple([i % dims for i in axis])
+    for i, a in enumerate(axis):
+        x = torch.var(x, dim=a if keepdims else a - i, keepdim=keepdims)
+    return x
+
+
+def min(x: torch.Tensor,
         axis: Union[int, Tuple[int]] = None,
         keepdims: bool = False) \
-        -> _torch.Tensor:
+        -> torch.Tensor:
     if axis == (): return x
-    if not keepdims and not axis and axis !=0: return _torch.amin(input = x)
-    return _torch.amin(input = x, dim = axis, keepdim = keepdims)
+    if not keepdims and not axis and axis !=0: return torch.amin(input = x)
+    return torch.amin(input = x, dim = axis, keepdim = keepdims)

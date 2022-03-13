@@ -131,3 +131,7 @@ def negative(x: torch.Tensor) -> torch.Tensor:
 def tanh(x: torch.Tensor) -> torch.Tensor:
     return torch.tanh(x)
 
+
+def square(x: torch.Tensor) \
+        -> torch.Tensor:
+    return torch.square(x)

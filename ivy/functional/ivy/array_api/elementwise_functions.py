@@ -429,3 +429,12 @@ def tanh(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
             have a floating-point data type
     """
     return _cur_framework(x).tanh(x)
+
+ 
+def square(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
+    """
+    each element x_i of the input array x.
+    :param x: Input array.
+    :return: an array containing the evaluated result for each element in x.
+    """
+    return _cur_framework(x).square(x)
