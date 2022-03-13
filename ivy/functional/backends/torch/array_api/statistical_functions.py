@@ -27,5 +27,5 @@ def prod(x: _torch.Tensor,
             dtype = _torch.int64
 
     if axis == None:
-        axis = 0
+        axis = x.dim()
     return _torch.prod(input=x,dim=axis,dtype=dtype,keepdim=keepdims)
