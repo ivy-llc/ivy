@@ -134,4 +134,5 @@ def tanh(x: torch.Tensor) -> torch.Tensor:
 
 def bitwise_or(x1: torch.Tensor, x2: torch.Tensor) \
         -> torch.Tensor:
+    x1, x2 = _cast_for_binary_op(x1, x2)
     return torch.bitwise_or(x1, x2)
