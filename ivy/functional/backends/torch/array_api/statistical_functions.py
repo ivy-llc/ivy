@@ -19,12 +19,12 @@ def prod(x: _torch.Tensor,
          keepdims: bool = False)\
         -> _torch.Tensor:
 
+    if dtype == None:
+        if x.dtype == _torch.int8:
+            dtype = _torch.int32
+        elif x.dtype ==_torch.uint8:
+            dtype = _torch.uint8
+        elif x.dtype in [_torch.int64,_torch.int32]: 
+            dtype = _torch.int64
 
-    if x.dtype == _torch.int8:
-        dtype = _torch.int32
-    elif x.dtype ==_torch.uint8:
-        dtype = _torch.uint8
-    elif x.dtype in [_torch.int64,_torch.int32]: 
-        dtype = _torch.int64
-
-    return _torch.prod(input=x,dtype=dtype,keepdim=keepdims)
+    return _torch.prod(input=x,dtype=dtype)
