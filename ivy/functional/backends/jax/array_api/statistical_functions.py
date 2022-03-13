@@ -8,7 +8,8 @@ from ivy.functional.backends.jax import JaxArray
 def var(x: JaxArray,
         axis: Optional[Union[int, Tuple[int]]] = None,
         correction: Union[int, float] = 0.0,
-        keepdims: bool = False) -> JaxArray:
+        keepdims: bool = False) \
+        -> JaxArray:
     return jnp.var(x, axis=axis,ddof=correction, keepdims=keepdims)
 
 
