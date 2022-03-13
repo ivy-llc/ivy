@@ -44,6 +44,11 @@ def cosh(x: np.ndarray)\
     return np.asarray(npa.cosh(npa.asarray(x)))
 
 
+def log10(x: np.ndarray)\
+        -> np.ndarray:
+    return np.log10(x)
+
+
 def log2(x: np.ndarray)\
         -> np.ndarray:
     return np.log2(x)
@@ -83,6 +88,11 @@ def logical_not(x: np.ndarray)\
     return np.logical_not(x)
 
 
+def logical_or(x1: np.ndarray, x2: np.ndarray)\
+        -> np.ndarray:
+    return np.logical_or(x1, x2)
+
+
 def acosh(x: np.ndarray)\
         -> np.ndarray:
     return np.asarray(npa.acosh(npa.asarray(x)))
@@ -95,3 +105,9 @@ def sin(x: np.ndarray)\
   
 def negative(x: np.ndarray) -> np.ndarray:
     return np.negative(x)
+
+
+def tanh(x: np.ndarray)\
+        -> np.ndarray:
+    return np.asarray(npa.tanh(npa.asarray(x)))
+

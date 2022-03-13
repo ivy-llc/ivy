@@ -37,3 +37,8 @@ def diagonal(x: JaxArray,
              axis2: int = -1) -> JaxArray:
     return jnp.diagonal(x, offset, axis1, axis2)
 
+def slogdet(x:Union[_ivy.Array,_ivy.NativeArray],full_matrices: bool = True) -> Union[_ivy.Array, Tuple[_ivy.Array,...]]:
+    results = namedtuple("slogdet", "sign logabsdet")
+    sign, logabsdet = jnp.linalg.slogdet(x)
+    res = results(sign, logabsdet)
+    return res
