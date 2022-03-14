@@ -20,11 +20,9 @@ def flip(x: mx.ndarray.ndarray.NDArray,
     new_axis = [item + num_dims if item < 0 else item for item in new_axis]
     return mx.nd.flip(x, new_axis)
 
-def stack(x: Union[mx.ndarray.ndarray.NDArray, Tuple[mx.ndarray.ndarray.NDArray], List[mx.ndarray.ndarray.NDArray]],
+def stack(x: Union[Tuple[mx.ndarray.ndarray.NDArray], List[mx.ndarray.ndarray.NDArray]],
           axis: Optional[int] = None)\
           -> mx.ndarray.ndarray.NDArray:
-    if x is mx.ndarray.ndarray.NDArray:
-        x = [x]
     if axis is None:
         new_axis = 0
     else:

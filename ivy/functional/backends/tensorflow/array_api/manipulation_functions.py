@@ -22,7 +22,7 @@ def flip(x: Tensor,
     return tf.reverse(x, new_axis)
 
 
-def stack(x: List[Tensor],
+def stack(x: Union[Tuple[Tensor], List[Tensor]],
           axis: Optional[int] = None)\
           -> Tensor:
     if axis is None:
