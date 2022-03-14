@@ -40,6 +40,12 @@ def diagonal(x: np.ndarray,
              axis2: int = -1) -> np.ndarray:
     return np.diagonal(x, offset=offset, axis1=axis1, axis2=axis2)
 
+
+def matmul(x1: np.ndarray,
+           x2: np.ndarray) -> np.ndarray:
+    return np.matmul(x1, x2)
+
+  
 def slogdet(x:Union[_ivy.Array,_ivy.NativeArray],full_matrices: bool = True) -> Union[_ivy.Array, Tuple[_ivy.Array,...]]:
     results = namedtuple("slogdet", "sign logabsdet")
     sign, logabsdet = np.linalg.slogdet(x)
