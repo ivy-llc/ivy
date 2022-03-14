@@ -12,3 +12,11 @@ def flip(x: JaxArray,
          -> JaxArray:
     return jnp.flip(x, axis=axis)
 
+def stack(x: Union[JaxArray, Tuple[JaxArray], List[JaxArray]],
+          axis: Optional[int] = None)\
+          -> JaxArray:
+    if x is JaxArray:
+        x = [x]
+    if axis is None:
+        axis = 0
+    return jnp.stack(x, axis=axis)
