@@ -20,3 +20,18 @@ def min(x: Union[ivy.Array, ivy.NativeArray],
     :return: array containing minimum value.
     """
     return _cur_framework.min(x, axis, keepdims)
+
+def max(x: Union[ivy.Array, ivy.NativeArray],
+        axis: Union[int, Tuple[int]] = None,
+        keepdims: bool = False) \
+        -> ivy.Array:
+    """
+    Return the maximum value of a given input array.
+
+    :param x: Input array containing elements.
+    :param axis: Axis or axes along which maximum values must be computed, default is None.
+    :param keepdims, optional axis or axes along which maximum values must be computed, default is None.
+    :param f: Machine learning framework. Inferred from inputs if None.
+    :return: array containing maximum value.
+    """
+    return _cur_framework.max(x, axis, keepdims)
