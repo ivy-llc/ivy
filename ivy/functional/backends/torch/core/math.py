@@ -7,12 +7,6 @@ import math
 import torch as _torch
 
 
-def sin(x):
-    if isinstance(x, float):
-        return math.sin(x)
-    return _torch.sin(x)
-
-
 def tan(x):
     if isinstance(x, float):
         return math.tan(x)
@@ -43,28 +37,10 @@ def atan2(x, y):
     return _torch.atan2(x, y)
 
 
-def sinh(x):
-    if isinstance(x, float):
-        return math.sinh(x)
-    return _torch.sinh(x)
-
-
 def cosh(x):
     if isinstance(x, float):
         return math.cosh(x)
     return _torch.cosh(x)
-
-
-def tanh(x):
-    if isinstance(x, float):
-        return math.tanh(x)
-    return _torch.tanh(x)
-
-
-def acosh(x):
-    if isinstance(x, float):
-        return math.acosh(x)
-    return _torch.acosh(x)
 
 
 def atanh(x):

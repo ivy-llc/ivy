@@ -4,8 +4,10 @@ Collection of Jax linear algebra functions, wrapped to fit Ivy syntax and signat
 
 # global
 import jax.numpy as _jnp
+import ivy as _ivy
+from typing import Union, Tuple
 
-svd = _jnp.linalg.svd
+
 
 
 def matrix_norm(x, p=2, axes=None, keepdims=False):

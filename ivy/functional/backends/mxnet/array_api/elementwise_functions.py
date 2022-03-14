@@ -23,7 +23,8 @@ def isfinite(x: mx.ndarray.ndarray.NDArray)\
     return mx.nd.contrib.isfinite(x.astype('float32')).astype('bool')
 
 
-def sqrt(x: mx.ndarray.ndarray.NDArray) -> mx.ndarray.ndarray.NDArray:
+def sqrt(x: mx.ndarray.ndarray.NDArray)\
+        -> mx.ndarray.ndarray.NDArray:
     if isinstance(x, float):
         return math.sqrt(x)
     return mx.nd.sqrt(x)
@@ -45,3 +46,42 @@ def less(x1: mx.ndarray.ndarray.NDArray,x2: mx.ndarray.ndarray.NDArray)\
 def logical_not(x: mx.ndarray.ndarray.NDArray)\
         -> mx.ndarray.ndarray.NDArray:
     return mx.nd.logical_not(x)
+
+
+@_handle_flat_arrays_in_out
+def acosh(x: mx.ndarray.ndarray.NDArray)\
+      -> mx.ndarray.ndarray.NDArray:
+    if isinstance(x, float):
+        return math.acosh(x)
+    else:
+        mx.nd.arccosh(x)
+        
+        
+@_handle_flat_arrays_in_out
+def sin(x: mx.ndarray.ndarray.NDArray)\
+        -> mx.ndarray.ndarray.NDArray:
+    if isinstance(x, float):
+        return math.sin(x)
+    return mx.nd.sin(x)
+
+
+@_handle_flat_arrays_in_out
+def negative(x: mx.ndarray.ndarray.NDArray)\
+        -> mx.ndarray.ndarray.NDArray:
+    return mx.np.negative(x)
+
+
+@_handle_flat_arrays_in_out
+def tanh(x: mx.ndarray.ndarray.NDArray)\
+        -> mx.ndarray.ndarray.NDArray:
+    if isinstance(x, float):
+        return math.tanh(x)
+    return mx.nd.tanh(x)
+
+
+@_handle_flat_arrays_in_out
+def sinh(x: mx.ndarray.ndarray.NDArray)\
+        -> mx.ndarray.ndarray.NDArray:
+    if isinstance(x, float):
+        return math.sinh(x)
+    return mx.nd.sinh(x)
