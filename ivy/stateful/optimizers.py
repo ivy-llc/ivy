@@ -93,23 +93,6 @@ class Optimizer(abc.ABC):
 
     # Given #
 
-    def compile_graph(self, v, grads=None, ignore_missing=False):
-        # ToDo: add more options to this function, like in ivy.Module
-        logging.info('compiling step for optimizer {} ...'.format(self))
-        self._compiled_step_fn = \
-            ivy.compile_graph(self._step_fn, v, ivy.default(grads, v.deep_copy()), ignore_missing, stateful=[self],
-                              name=str(self))
-        logging.info('{} step compiled!'.format(self))
-        self._compiled = True
-
-    def show_graph(self, v, grads=None, ignore_missing=False):
-        # ToDo: add more options to this function, like in ivy.Module
-        ivy.show_graph(self._step_fn, v, ivy.default(grads, v.deep_copy()), ignore_missing, stateful=[self],
-                       name=str(self))
-
-    def compile_on_next_step(self):
-        self._compile_on_next_step = True
-
     def step(self, v, grads, ignore_missing=False):
         """
         Update nested variables container v from overriden private self._step
@@ -123,19 +106,6 @@ class Optimizer(abc.ABC):
         :type ignore_missing: bool, optional
         :return: The updated variables, following update step.
         """
-        if self._compiled and ivy.try_use_compiled:
-            try:
-                self._count += 1
-                return self._compiled_step_fn(v, grads, ignore_missing)
-            except Exception as e:
-                if self._fallback_to_non_compiled:
-                    return self._step_fn(v, grads, ignore_missing)
-                raise e
-        elif self._compile_on_next_step and self._initialized and not self._compiled:
-            self.compile_graph(v, grads, ignore_missing)
-            self._compile_on_next_step = False
-            self._count += 1
-            return self._compiled_step_fn(v, grads, ignore_missing)
         self._count += 1
         self._initialized = True
         return self._step_fn(v, grads, ignore_missing)

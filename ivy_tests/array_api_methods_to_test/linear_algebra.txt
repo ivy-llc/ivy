@@ -13,9 +13,9 @@ diagonal
 #outer
 #pinv
 #qr
-#slogdet
+slogdet
 #solve
-#svd
+svd
 #svdvals
 #tensordot
 #trace
