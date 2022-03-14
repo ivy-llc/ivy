@@ -20,3 +20,14 @@ def flip(x: torch.Tensor,
         new_axis = new_axis
     new_axis = [item + num_dims if item < 0 else item for item in new_axis]
     return torch.flip(x, new_axis)
+
+def stack(x: Union[torch.Tensor, Tuple[torch.Tensor], List[torch.Tensor]],
+          dim: Optional[int] = None)\
+          -> torch.Tensor:
+    if x is torch.Tensor:
+        x = [x]
+    if dim is None:
+        new_dim = 0
+    else:
+        new_dim = dim
+    return torch.stack(x,dim=new_dim)
