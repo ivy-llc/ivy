@@ -55,7 +55,6 @@ General
    general/full.rst
    general/one_hot.rst
    general/cross.rst
-   general/matmul.rst
    general/cumsum.rst
    general/cumprod.rst
    general/identity.rst

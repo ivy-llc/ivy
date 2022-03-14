@@ -15,5 +15,6 @@ Linear algebra
    linear_algebra/vector_norm.rst
    linear_algebra/svd.rst
    linear_algebra/diagonal.rst
+   linear_algebra/matmul.rst
    linear_algebra/slodget.rst
 
