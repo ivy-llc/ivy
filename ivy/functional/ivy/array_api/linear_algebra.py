@@ -123,3 +123,63 @@ def diagonal(x: ivy.Array,
         an array containing the diagonals and whose shape is determined by removing the last two dimensions and appending a dimension equal to the size of the resulting diagonals. The returned array must have the same data type as ``x``.
     """
     return _cur_framework(x).diagonal(x, offset, axis1=axis1, axis2=axis2)
+
+
+def matmul(x1: Union[ivy.Array, ivy.NativeArray], 
+           x2: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
+    """
+    Computes the matrix product.
+    
+    Parameters
+    ----------
+    x1:
+        x1 (array) – first input array. Should have a numeric data type. Must have at least one dimension.
+
+    x2:
+        x2 (array) – second input array. Should have a numeric data type. Must have at least one dimension.
+
+    Returns
+    -------
+    out(array):
+        if both x1 and x2 are one-dimensional arrays having shape (N,), a zero-dimensional array containing the inner product as its only element.
+        if x1 is a two-dimensional array having shape (M, K) and x2 is a two-dimensional array having shape (K, N), a two-dimensional array containing the conventional matrix product and having shape (M, N).
+        if x1 is a one-dimensional array having shape (K,) and x2 is an array having shape (..., K, N), an array having shape (..., N) (i.e., prepended dimensions during vector-to-matrix promotion must be removed) and containing the conventional matrix product.
+        if x1 is an array having shape (..., M, K) and x2 is a one-dimensional array having shape (K,), an array having shape (..., M) (i.e., appended dimensions during vector-to-matrix promotion must be removed) and containing the conventional matrix product.
+        if x1 is a two-dimensional array having shape (M, K) and x2 is an array having shape (..., K, N), an array having shape (..., M, N) and containing the conventional matrix product for each stacked matrix.
+        if x1 is an array having shape (..., M, K) and x2 is a two-dimensional array having shape (K, N), an array having shape (..., M, N) and containing the conventional matrix product for each stacked matrix.
+        if either x1 or x2 has more than two dimensions, an array having a shape determined by Broadcasting shape(x1)[:-2] against shape(x2)[:-2] and containing the conventional matrix product for each stacked matrix.
+
+    Raises
+    ------
+        if either x1 or x2 is a zero-dimensional array.
+        if x1 is a one-dimensional array having shape (K,), x2 is a one-dimensional array having shape (L,), and K != L.
+        if x1 is a one-dimensional array having shape (K,), x2 is an array having shape (..., L, N), and K != L.
+        if x1 is an array having shape (..., M, K), x2 is a one-dimensional array having shape (L,), and K != L.
+        if x1 is an array having shape (..., M, K), x2 is an array having shape (..., L, N), and K != L.
+    """
+    return _cur_framework(x1).matmul(x1, x2)
+
+  
+def slodget(x: Union[ivy.Array, ivy.NativeArray],) \
+            -> ivy.Array:
+    """
+    Computes the sign and natural logarithm of the determinant of an array.
+
+    Parameters
+    ----------
+    x:
+        This is a 2D array, and it has to be square
+
+    Return
+    ----------
+    Out:
+
+        This function returns two values -
+            sign:
+            A number representing the sign of the determinant.
+
+            logdet:
+            The natural log of the absolute value of the determinant.
+
+    """
+    return _cur_framework(x).slodget(x)
