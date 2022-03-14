@@ -143,5 +143,8 @@ def negative(x: Tensor) -> Tensor:
 def tanh(x: Tensor) \
         -> Tensor:
     return tf.tanh(x)
-
-
+  
+  
+def sinh(x: Tensor) \
+        -> Tensor:
+    return tf.sinh(x)  
