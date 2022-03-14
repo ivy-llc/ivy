@@ -28,5 +28,5 @@ def stack(x: Union[Tuple[Tensor], List[Tensor]],
     if axis is None:
         new_axis = 0
     else:
-        new_axis = int(axis)
+        new_axis = axis
     return tf.stack(x, axis=new_axis)
