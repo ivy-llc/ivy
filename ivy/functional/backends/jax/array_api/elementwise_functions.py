@@ -114,3 +114,8 @@ def subtract(x1: JaxArray, x2: JaxArray)\
 def tanh(x: JaxArray)\
         -> JaxArray:
     return jnp.tanh(x)
+  
+  
+def sinh(x: JaxArray)\
+        -> JaxArray:
+    return jnp.sinh(x)
