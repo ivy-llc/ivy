@@ -4,16 +4,11 @@ Collection of TensorFlow linear algebra functions, wrapped to fit Ivy syntax and
 
 # global
 import tensorflow as _tf
+import ivy as _ivy
+from typing import Union, Tuple
 
 
-# noinspection PyPep8Naming
-def svd(x):
-    batch_shape = _tf.shape(x)[:-2]
-    num_batch_dims = len(batch_shape)
-    transpose_dims = list(range(num_batch_dims)) + [num_batch_dims + 1, num_batch_dims]
-    D, U, V = _tf.linalg.svd(x)
-    VT = _tf.transpose(V, transpose_dims)
-    return U, D, VT
+
 
 
 def matrix_norm(x, p=2, axes=None, keepdims=False):

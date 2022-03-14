@@ -59,7 +59,7 @@ def _raise(ex):
     raise ex
 
 
-def mxnet_init_context(dev):
+def _mxnet_init_context(dev):
     dev = dev_to_str(dev)
     if dev is None or dev.find("cpu") != -1:
         mx_dev = "cpu"
@@ -110,8 +110,6 @@ def _handle_flat_arrays_in_out(fn, include_out=True):
 # local sub-modules
 from . import array_api
 from .array_api import *
-from . import array_builtins
-from .array_builtins import *
 from .core import *
 from . import nn
 from .nn import *
