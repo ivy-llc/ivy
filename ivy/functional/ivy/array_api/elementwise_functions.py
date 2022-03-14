@@ -456,3 +456,28 @@ def sinh(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
         an array containing the hyperbolic sine of each element in ``x``. The returned array must have a floating-point data type determined by :ref:`type-promotion`.
     """
     return _cur_framework(x).sinh(x)
+
+
+def trunc(x: Union[ivy.Array, ivy.NativeArray])\
+        -> ivy.Array:
+    """
+    Rounds each element x_i of the input array x to the integer-valued number that is closest to but no greater than
+    x_i.
+
+
+    **Special cases**
+    - If ``x_i`` is already an integer-valued, the result is ``x_i``.
+
+    For floating-point operands,
+    - If ``x_i`` is ``+infinity``, the result is ``+infinity``.
+    - If ``x_i`` is ``-infinity``, the result is ``-infinity``.
+    - If ``x_i`` is ``+0``, the result is ``+0``.
+    - If ``x_i`` is ``-0``, the result is ``-0``.
+    - If ``x_i`` is ``NaN``, the result is ``NaN``.
+
+    :param x: input array. Should have a numeric data type.
+
+    :return: an array containing the values before the decimal point for each element ``x``. The returned array must have
+     the same data type as x.
+    """
+    return _cur_framework(x).trunc(x)

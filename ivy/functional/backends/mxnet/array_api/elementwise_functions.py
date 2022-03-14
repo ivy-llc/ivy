@@ -85,3 +85,9 @@ def sinh(x: mx.ndarray.ndarray.NDArray)\
     if isinstance(x, float):
         return math.sinh(x)
     return mx.nd.sinh(x)
+
+
+@_handle_flat_arrays_in_out
+def trunc(x: mx.ndarray.ndarray.NDArray)\
+        -> mx.nd.ndarray.NDArray:
+    return mx.np.trunc(x)

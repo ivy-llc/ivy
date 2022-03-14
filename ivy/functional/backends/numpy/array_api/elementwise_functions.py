@@ -106,3 +106,8 @@ def tanh(x: np.ndarray)\
 def sinh(x: np.ndarray)\
         -> np.ndarray:
     return np.asarray(npa.sinh(npa.asarray(x)))
+
+
+def trunc(x: np.ndarray) \
+        -> np.ndarray:
+    return np.asarray(npa.trunc(npa.asarray(x)))

@@ -3,6 +3,9 @@ import tensorflow as tf
 from tensorflow.python.types.core import Tensor
 import typing
 
+import numpy as np
+import numpy.array_api as npa
+
 # local
 import ivy
 
@@ -148,3 +151,9 @@ def tanh(x: Tensor) \
 def sinh(x: Tensor) \
         -> Tensor:
     return tf.sinh(x)  
+
+
+def trunc(x: Tensor)\
+        -> Tensor:
+    array = x.numpy()
+    return tf.convert_to_tensor(np.asarray(npa.trunc(npa.asarray(array))))

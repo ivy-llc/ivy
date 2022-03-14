@@ -110,3 +110,10 @@ def tanh(x: JaxArray)\
 def sinh(x: JaxArray)\
         -> JaxArray:
     return jnp.sinh(x)
+
+
+def trunc(x: JaxArray)\
+        -> JaxArray:
+    if 'int' in str(x.dtype):
+        return x
+    return jnp.trunc(x)

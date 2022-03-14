@@ -134,3 +134,10 @@ def tanh(x: torch.Tensor) -> torch.Tensor:
 
 def sinh(x: torch.Tensor) -> torch.Tensor:
     return torch.sinh(x)
+
+
+def trunc(x: torch.Tensor)\
+        -> torch.Tensor:
+    if 'int' in str(x.dtype):
+        return x
+    return torch.trunc(x)
