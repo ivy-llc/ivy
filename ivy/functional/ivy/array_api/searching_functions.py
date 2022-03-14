@@ -17,4 +17,4 @@ def argmax(
     :param keepdims(Optional):If this is set to True, the axes which are reduced are left in the result as dimensions with size one. With this option, the result will broadcast correctly against the array.
     :return: Array of indices into the array. It has the same shape as x.shape with the dimension along axis removed. If keepdims is set to True, then the size of axis will be 1 with the resulting array having same shape as x.shape.
     """
-    return _cur_framework(x).argmax(x,axis=axis,keepdims=keepdims,out=out)
+    return _cur_framework(x).argmax(x,axis,keepdims,out)
