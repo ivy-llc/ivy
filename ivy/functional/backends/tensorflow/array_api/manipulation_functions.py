@@ -20,3 +20,15 @@ def flip(x: Tensor,
         new_axis = new_axis
     new_axis = [item + num_dims if item < 0 else item for item in new_axis]
     return tf.reverse(x, new_axis)
+
+
+def stack(x: Union[Tensor, Tuple[Tensor], List[Tensor]],
+          axis: Optional[int] = None)\
+          -> Tensor:
+    if x is Tensor:
+        x = [x]
+    if axis is None:
+        new_axis = 0
+    else:
+        new_axis = axis
+    return tf.stack(x, new_axis)
