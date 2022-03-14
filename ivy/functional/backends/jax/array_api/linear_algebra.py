@@ -1,6 +1,7 @@
 # global
 import jax.numpy as jnp
 from typing import Union, Optional, Tuple, Literal
+from collections import namedtuple
 
 # local
 from ivy import inf
@@ -29,3 +30,10 @@ def diagonal(x: JaxArray,
              axis1: int = -2,
              axis2: int = -1) -> JaxArray:
     return jnp.diagonal(x, offset, axis1, axis2)
+
+
+def qr(x: JaxArray,
+       mode: str = 'reduced') -> namedtuple('qr', ['Q', 'R']):
+    res = namedtuple('qr', ['Q', 'R'])
+    q, r = jnp.linalg.qr(x, mode=mode)
+    return res(q, r)

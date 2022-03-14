@@ -27,3 +27,10 @@ def tril(x: np.ndarray,
          k: int = 0) \
          -> np.ndarray:
     return np.tril(x, k)
+
+
+def triu(x: np.ndarray,
+         k: int = 0) \
+         -> np.ndarray:
+    return np.triu(x, k)
+    

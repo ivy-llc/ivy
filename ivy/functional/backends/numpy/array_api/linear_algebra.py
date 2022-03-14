@@ -1,6 +1,7 @@
 # global
 import numpy as np
 from typing import Union, Optional, Tuple, Literal
+from collections import namedtuple
 
 # local
 from ivy import inf
@@ -29,3 +30,10 @@ def diagonal(x: np.ndarray,
              axis1: int = -2,
              axis2: int = -1) -> np.ndarray:
     return np.diagonal(x, offset=offset, axis1=axis1, axis2=axis2)
+
+
+def qr(x: np.ndarray,
+       mode: str = 'reduced') -> namedtuple('qr', ['Q', 'R']):
+    res = namedtuple('qr', ['Q', 'R'])
+    q, r = np.linalg.qr(x, mode=mode)
+    return res(q, r)

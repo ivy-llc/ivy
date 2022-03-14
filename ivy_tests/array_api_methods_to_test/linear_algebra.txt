@@ -12,7 +12,7 @@ diagonal
 #matrix_transpose
 #outer
 #pinv
-#qr
+qr
 #slogdet
 #solve
 #svd

@@ -29,3 +29,9 @@ def tril(x: JaxArray,
          -> JaxArray:
     return jnp.tril(x, k)
 
+
+def triu(x: JaxArray,
+         k: int = 0) \
+         -> JaxArray:
+    return jnp.triu(x, k)
+    
