@@ -9,7 +9,6 @@ def min(x: _jnp.ndarray,
         -> _jnp.ndarray:
     return _jnp.min(a = _jnp.asarray(x), axis = axis, keepdims = keepdims)
 
-# TODO: test
 def max(x: _jnp.ndarray,
         axis: Union[int, Tuple[int]] = None,
         keepdims = False, device = None) \

@@ -3,6 +3,5 @@
 min
 #prod
 #std
-# TODO: below should pass
 sum
 #var
