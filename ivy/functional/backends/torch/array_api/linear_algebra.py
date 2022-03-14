@@ -37,6 +37,16 @@ def diagonal(x: torch.Tensor,
              axis2: int = -1) -> torch.Tensor:
     return torch.diagonal(x, offset=offset, dim1=axis1, dim2=axis2)
 
+
+def matmul(x1: torch.Tensor,
+           x2: torch.Tensor) -> torch.Tensor:
+    dtype_from = torch.promote_types(x1.dtype, x2.dtype)
+    x1 = x1.type(dtype_from)
+    x2 = x2.type(dtype_from)
+    ret = torch.matmul(x1, x2)
+    return ret.type(dtype_from)
+
+  
 def slogdet(x:Union[_ivy.Array,_ivy.NativeArray],full_matrices: bool = True) -> Union[_ivy.Array, Tuple[_ivy.Array,...]]:
     results = namedtuple("slogdet", "sign logabsdet")
     sign, logabsdet = torch.linalg.slogdet(x)
