@@ -45,5 +45,7 @@ def slogdet(x: Union[_ivy.Array,_ivy.NativeArray],
     
     return res
 
-def trace(x: NDArray, offset: int = 0) -> mx.np.ndarray:
+def trace(x: NDArray,
+          offset: int = 0)\
+              -> mx.np.ndarray:
     return mx.np.trace(x, offset=offset)

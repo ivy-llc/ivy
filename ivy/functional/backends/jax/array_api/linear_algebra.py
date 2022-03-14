@@ -44,5 +44,7 @@ def slogdet(x:Union[_ivy.Array,_ivy.NativeArray],full_matrices: bool = True) -> 
     res = results(sign, logabsdet)
     return res
 
-def trace(x: JaxArray, offset: int = 0) -> JaxArray:
+def trace(x: JaxArray, 
+          offset: int = 0)\
+              -> JaxArray:
     return jax.numpy.trace(x, offset)

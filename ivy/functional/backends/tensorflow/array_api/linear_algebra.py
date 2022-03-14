@@ -57,5 +57,7 @@ def slogdet(x:Union[_ivy.Array,_ivy.NativeArray],full_matrices: bool = True) -> 
     res = results(sign, logabsdet)
     return res
 
-def trace(x: tf.Tensor, offset: int = 0) -> tf.Tensor:
+def trace(x: tf.Tensor,
+          offset: int = 0)\
+              -> tf.Tensor:
     return tf.trace(x, offset)

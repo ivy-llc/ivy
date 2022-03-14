@@ -46,5 +46,7 @@ def slogdet(x:Union[_ivy.Array,_ivy.NativeArray],full_matrices: bool = True) -> 
     res = results(sign, logabsdet)
     return res
 
-def trace(x: np.ndarray, offset: int = 0) -> np.ndarray:
+def trace(x: np.ndarray, 
+          offset: int = 0)\
+              -> np.ndarray:
     return np.trace(x, offset)
