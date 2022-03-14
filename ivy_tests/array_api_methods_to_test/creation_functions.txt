@@ -4,13 +4,13 @@
 #empty_like
 #eye
 #from_dlpack
-#full
+full
 full_like
 #linspace
 #meshgrid
-#ones
+ones
 #ones_like
-#tril
+tril
 #triu
-#zeros
+zeros
 #zeros_like
