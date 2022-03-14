@@ -7,7 +7,7 @@ def argmax(
     x: Union[ivy.Array, ivy.NativeArray], 
     axis: Optional[int] = None,
     keepdims: Optional[bool] = False,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None
 ) -> ivy.Array:
     """
     Returns the indices of the maximum values along an axis.
