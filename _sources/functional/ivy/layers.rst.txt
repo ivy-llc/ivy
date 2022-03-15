@@ -1,0 +1,27 @@
+Layers
+======
+
+.. automodule:: ivy.functional.ivy.layers
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :maxdepth: -1
+   :caption: Layers
+
+   layers/linear.rst
+   layers/dropout.rst
+   layers/scaled_dot_product_attention.rst
+   layers/multi_head_attention.rst
+   layers/conv1d.rst
+   layers/conv1d_transpose.rst
+   layers/conv2d.rst
+   layers/conv2d_transpose.rst
+   layers/depthwise_conv2d.rst
+   layers/conv3d.rst
+   layers/conv3d_transpose.rst
+   layers/lstm_update.rst
+

@@ -1,0 +1,16 @@
+Norms
+=====
+
+.. automodule:: ivy.functional.ivy.norms
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :maxdepth: -1
+   :caption: Norms
+
+   norms/layer_norm.rst
+

@@ -1,0 +1,334 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>ivy.functional.ivy.old.linalg &mdash; Ivy 1.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../../../" src="../../../../../_static/documentation_options.js"></script>
+        <script src="../../../../../_static/jquery.js"></script>
+        <script src="../../../../../_static/underscore.js"></script>
+        <script src="../../../../../_static/doctools.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../../_static/css/custom.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../../../index.html" class="icon icon-home"> Ivy
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../why_ivy.html">Why Ivy?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../using_ivy.html">Using Ivy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../training_a_network.html">Training a Network</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../contributing.html">Contributing to Ivy</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Array</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../array/array_api.html">Array api</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../array/conversions.html">Conversions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../array/device.html">Device</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../array/general.html">General</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../array/gradients.html">Gradients</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../array/image.html">Image</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../array/linalg.html">Linalg</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../array/logic.html">Logic</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../array/math.html">Math</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../array/meta.html">Meta</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../array/random.html">Random</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../array/reductions.html">Reductions</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Functional</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../functional/backends.html">Backends</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../functional/ivy.html">Ivy</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Stateful</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../stateful/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../stateful/converters.html">Converters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../stateful/initializers.html">Initializers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../stateful/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../stateful/module.html">Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../stateful/norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../stateful/optimizers.html">Optimizers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../stateful/sequential.html">Sequential</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Docs</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../ivy"">Ivy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../mech"">Ivy mech</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../vision"">Ivy vision</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../robot"">Ivy robot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../gym"">Ivy gym</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../memory"">Ivy memory</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../builder"">Ivy builder</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../models"">Ivy models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../ecosystem"">Ivy ecosystem</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">Ivy</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../../../index.html">Module code</a> &raquo;</li>
+        
+      <li>ivy.functional.ivy.old.linalg</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for ivy.functional.ivy.old.linalg</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Collection of linear algebra Ivy functions.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1"># local</span>
+<span class="kn">import</span> <span class="nn">ivy</span>
+<span class="kn">from</span> <span class="nn">ivy.framework_handler</span> <span class="kn">import</span> <span class="n">current_framework</span> <span class="k">as</span> <span class="n">_cur_framework</span>
+
+
+
+
+<div class="viewcode-block" id="matrix_norm"><a class="viewcode-back" href="../../../../../functional/ivy/old/linalg/matrix_norm.html#ivy.functional.ivy.old.linalg.matrix_norm">[docs]</a><span class="k">def</span> <span class="nf">matrix_norm</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Compute the matrix p-norm.</span>
+
+<span class="sd">    :param x: Input array.</span>
+<span class="sd">    :type x: array</span>
+<span class="sd">    :param p: Order of the norm. Default is 2.</span>
+<span class="sd">    :type p: int or str, optional</span>
+<span class="sd">    :param axes: The axes of x along which to compute the matrix norms.</span>
+<span class="sd">                 Default is None, in which case the last two dimensions are used.</span>
+<span class="sd">    :type axes: sequence of ints, optional</span>
+<span class="sd">    :param keepdims: If this is set to True, the axes which are normed over are left in the result as dimensions with</span>
+<span class="sd">                     size one. With this option the result will broadcast correctly against the original x.</span>
+<span class="sd">                     Default is False.</span>
+<span class="sd">    :type keepdims: bool, optional</span>
+<span class="sd">    :return: Matrix norm of the array at specified axes.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">matrix_norm</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">axes</span><span class="p">,</span> <span class="n">keepdims</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="inv"><a class="viewcode-back" href="../../../../../functional/ivy/old/linalg/inv.html#ivy.functional.ivy.old.linalg.inv">[docs]</a><span class="k">def</span> <span class="nf">inv</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Computes the (multiplicative) inverse of x matrix.</span>
+<span class="sd">    Given a square matrix x, returns the matrix x_inv satisfying dot(x, x_inv) = dot(x_inv, x) = eye(x.shape[0]).</span>
+
+<span class="sd">    :param x: Matrix to be inverted.</span>
+<span class="sd">    :type x: array</span>
+<span class="sd">    :return: (Multiplicative) inverse of the matrix x.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="pinv"><a class="viewcode-back" href="../../../../../functional/ivy/old/linalg/pinv.html#ivy.functional.ivy.old.linalg.pinv">[docs]</a><span class="k">def</span> <span class="nf">pinv</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Computes the pseudo inverse of x matrix.</span>
+
+<span class="sd">    :param x: Matrix to be pseudo inverted.</span>
+<span class="sd">    :type x: array</span>
+<span class="sd">    :return: pseudo inverse of the matrix x.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">pinv</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="vector_to_skew_symmetric_matrix"><a class="viewcode-back" href="../../../../../functional/ivy/old/linalg/vector_to_skew_symmetric_matrix.html#ivy.functional.ivy.old.linalg.vector_to_skew_symmetric_matrix">[docs]</a><span class="k">def</span> <span class="nf">vector_to_skew_symmetric_matrix</span><span class="p">(</span><span class="n">vector</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Given vector :math:`\mathbf{a}\in\mathbb{R}^3`, return associated skew-symmetric matrix</span>
+<span class="sd">    :math:`[\mathbf{a}]_×\in\mathbb{R}^{3×3}` satisfying :math:`\mathbf{a}×\mathbf{b}=[\mathbf{a}]_×\mathbf{b}`.\n</span>
+<span class="sd">    `[reference] &lt;https://en.wikipedia.org/wiki/Skew-symmetric_matrix#Cross_product&gt;`_</span>
+
+<span class="sd">    :param vector: Vector to convert *[batch_shape,3]*.</span>
+<span class="sd">    :type vector: array</span>
+<span class="sd">    :return: Skew-symmetric matrix *[batch_shape,3,3]*.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">vector</span><span class="p">)</span><span class="o">.</span><span class="n">vector_to_skew_symmetric_matrix</span><span class="p">(</span><span class="n">vector</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="cholesky"><a class="viewcode-back" href="../../../../../functional/ivy/old/linalg/cholesky.html#ivy.functional.ivy.old.linalg.cholesky">[docs]</a><span class="k">def</span> <span class="nf">cholesky</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Computes the cholesky decomposition of the x matrix.</span>
+
+<span class="sd">    :param x: Matrix to be decomposed.</span>
+<span class="sd">    :type x: array</span>
+<span class="sd">    :return: cholesky decomposition of the matrix x.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">cholesky</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="qr"><a class="viewcode-back" href="../../../../../functional/ivy/old/linalg/qr.html#ivy.functional.ivy.old.linalg.qr">[docs]</a><span class="k">def</span> <span class="nf">qr</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;reduced&quot;</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Computes the qr decomposition of the x matrix.</span>
+
+<span class="sd">    :param x: Matrix to be decomposed.</span>
+<span class="sd">    :type x: array</span>
+<span class="sd">    :param mode: The option to choose between the full and reduced QR decomposition.</span>
+<span class="sd">    :type mode: str, optional</span>
+<span class="sd">    :param f: Machine learning framework. Inferred from inputs if None.</span>
+<span class="sd">    :type f: ml_framework, optional</span>
+<span class="sd">    :return: qr decomposition of the matrix x.</span>
+
+<span class="sd">    If x has shape (*, M, N) and considering K = min(M, N).</span>
+<span class="sd">    mode = &#39;reduced&#39; (default): Returns (Q, R) of shapes (*, M, K), (*, K, N) respectively.</span>
+<span class="sd">    mode = &#39;complete&#39;: Returns (Q, R) of shapes (*, M, M), (*, M, N) respectively.</span>
+<span class="sd">    mode = &#39;r&#39;: Computes only the reduced R. Returns (Q, R) with Q empty and R of shape (*, K, N).</span>
+
+<span class="sd">    Please note that different frameworks support different modes. For example: mode=&#39;raw&#39;</span>
+<span class="sd">    is supported in numpy but not in pytorch. Similarly, tensorflow doesn&#39;t support &#39;r&#39; mode.</span>
+<span class="sd">    The &#39;reduced&#39; and &#39;complete&#39; modes are sufficient for most of the use-cases and are supported</span>
+<span class="sd">    by all the frameworks.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">qr</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="n">mode</span><span class="p">)</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Ivy Team
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

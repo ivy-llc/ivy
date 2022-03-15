@@ -1,0 +1,426 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Reductions &mdash; Ivy 1.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> Ivy
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../why_ivy.html">Why Ivy?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../using_ivy.html">Using Ivy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../training_a_network.html">Training a Network</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">Contributing to Ivy</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Array</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../array/array_api.html">Array api</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../array/conversions.html">Conversions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../array/device.html">Device</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../array/general.html">General</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../array/gradients.html">Gradients</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../array/image.html">Image</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../array/linalg.html">Linalg</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../array/logic.html">Logic</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../array/math.html">Math</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../array/meta.html">Meta</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../array/random.html">Random</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../array/reductions.html">Reductions</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Functional</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../backends.html">Backends</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ivy.html">Ivy</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Stateful</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/converters.html">Converters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/initializers.html">Initializers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/module.html">Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/optimizers.html">Optimizers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/sequential.html">Sequential</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Docs</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../ivy"">Ivy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../mech"">Ivy mech</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../vision"">Ivy vision</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../robot"">Ivy robot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../gym"">Ivy gym</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../memory"">Ivy memory</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../builder"">Ivy builder</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../models"">Ivy models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../ecosystem"">Ivy ecosystem</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Ivy</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+      <li>Reductions</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../../_sources/functional/ivy/old/reductions.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-ivy.functional.ivy.old.reductions">
+<span id="reductions"></span><h1>Reductions<a class="headerlink" href="#module-ivy.functional.ivy.old.reductions" title="Permalink to this headline">¶</a></h1>
+<p>Collection of reduction Ivy functions</p>
+<dl class="py function">
+<dt id="ivy.functional.ivy.old.reductions.einsum">
+<code class="sig-prename descclassname">ivy.functional.ivy.old.reductions.</code><code class="sig-name descname">einsum</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">equation</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">operands</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/old/reductions.html#einsum"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.old.reductions.einsum" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sums the product of the elements of the input operands along dimensions specified using a notation based on the
+Einstein summation convention.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>equation</strong> (<em>str</em>) – A str describing the contraction, in the same format as numpy.einsum.</p></li>
+<li><p><strong>operands</strong> (<em>seq of arrays</em>) – the inputs to contract (each one an ivy.Array), whose shapes should be consistent with equation.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The array with sums computed.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.old.reductions.reduce_max">
+<code class="sig-prename descclassname">ivy.functional.ivy.old.reductions.</code><code class="sig-name descname">reduce_max</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">keepdims</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/old/reductions.html#reduce_max"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.old.reductions.reduce_max" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the maximum value along the specified axis. The maximum is taken over the flattened array by default,
+otherwise over the specified axis.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>array</em>) – Array containing numbers whose max is desired.</p></li>
+<li><p><strong>axis</strong> (<em>int</em><em> or </em><em>sequence of ints</em>) – Axis or axes along which the maxes are computed. The default is to compute the max of the flattened
+array. If this is a tuple of ints, a max is performed over multiple axes, instead of a single axis
+or all the axes as before.</p></li>
+<li><p><strong>keepdims</strong> (<em>bool</em><em>, </em><em>optional</em>) – If this is set to True, the axes which are reduced are left in the result as dimensions with size
+one. With this option, the result will broadcast correctly against the input array.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The array with maxes computed.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.old.reductions.reduce_mean">
+<code class="sig-prename descclassname">ivy.functional.ivy.old.reductions.</code><code class="sig-name descname">reduce_mean</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">keepdims</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/old/reductions.html#reduce_mean"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.old.reductions.reduce_mean" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the arithmetic mean along a given axis.
+Returns the average of the array elements. The average is taken over the flattened array by default, otherwise over
+the specified axis.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>array</em>) – Array containing numbers whose mean is desired.</p></li>
+<li><p><strong>axis</strong> (<em>int</em><em> or </em><em>sequence of ints</em>) – Axis or axes along which the means are computed. The default is to compute the mean of the flattened
+array. If this is a tuple of ints, a mean is performed over multiple axes, instead of a single axis
+or all the axes as before.</p></li>
+<li><p><strong>keepdims</strong> (<em>bool</em><em>, </em><em>optional</em>) – If this is set to True, the axes which are reduced are left in the result as dimensions with size
+one. With this option, the result will broadcast correctly against the input array.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The array with means computed.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.old.reductions.reduce_min">
+<code class="sig-prename descclassname">ivy.functional.ivy.old.reductions.</code><code class="sig-name descname">reduce_min</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">keepdims</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/old/reductions.html#reduce_min"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.old.reductions.reduce_min" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the minimum value along the specified axis. The minimum is taken over the flattened array by default,
+otherwise over the specified axis.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>array</em>) – Array containing numbers whose min is desired.</p></li>
+<li><p><strong>axis</strong> (<em>int</em><em> or </em><em>sequence of ints</em>) – Axis or axes along which the mins are computed. The default is to compute the min of the flattened
+array. If this is a tuple of ints, a min is performed over multiple axes, instead of a single axis
+or all the axes as before.</p></li>
+<li><p><strong>keepdims</strong> (<em>bool</em><em>, </em><em>optional</em>) – If this is set to True, the axes which are reduced are left in the result as dimensions with size
+one. With this option, the result will broadcast correctly against the input array.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The array with mins computed.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.old.reductions.reduce_prod">
+<code class="sig-prename descclassname">ivy.functional.ivy.old.reductions.</code><code class="sig-name descname">reduce_prod</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">keepdims</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/old/reductions.html#reduce_prod"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.old.reductions.reduce_prod" title="Permalink to this definition">¶</a></dt>
+<dd><p>Multiplies array elements along a given axis.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>array</em>) – Elements to multiply.</p></li>
+<li><p><strong>axis</strong> (<em>int</em><em> or </em><em>sequence of ints</em>) – Axis or axes along which a multiplication is performed. The default, axis=None, will multiply all of
+the elements of the input array. If axis is negative it counts from the last to the first axis.
+If axis is a tuple of ints, a multiplication is performed on all of the axes specified in the tuple
+instead of a single axis or all the axes as before.</p></li>
+<li><p><strong>keepdims</strong> (<em>bool</em><em>, </em><em>optional</em>) – If this is set to True, the axes which are reduced are left in the result as dimensions with size
+one. With this option, the result will broadcast correctly against the input array.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The array with multiplications computed.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.old.reductions.reduce_std">
+<code class="sig-prename descclassname">ivy.functional.ivy.old.reductions.</code><code class="sig-name descname">reduce_std</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">keepdims</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/old/reductions.html#reduce_std"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.old.reductions.reduce_std" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the arithmetic standard deviation along a given axis. The standard deviation is taken over
+the flattened array by default, otherwise over the specified axis.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>array</em>) – Array containing numbers whose standard deviation is desired.</p></li>
+<li><p><strong>axis</strong> (<em>int</em><em> or </em><em>sequence of ints</em>) – Axis or axes along which the means are computed. The default is to compute the mean of the flattened
+array. If this is a tuple of ints, a mean is performed over multiple axes, instead of a single axis
+or all the axes as before.</p></li>
+<li><p><strong>keepdims</strong> (<em>bool</em><em>, </em><em>optional</em>) – If this is set to True, the axes which are reduced are left in the result as dimensions with size
+one. With this option, the result will broadcast correctly against the input array.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The array with standard deviations computed.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.old.reductions.reduce_sum">
+<code class="sig-prename descclassname">ivy.functional.ivy.old.reductions.</code><code class="sig-name descname">reduce_sum</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">keepdims</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/old/reductions.html#reduce_sum"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.old.reductions.reduce_sum" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes sum of array elements along a given axis.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>array</em>) – Elements to sum.</p></li>
+<li><p><strong>axis</strong> (<em>int</em><em> or </em><em>sequence of ints</em>) – Axis or axes along which a sum is performed. The default, axis=None, will sum all of the elements of
+the input array. If axis is negative it counts from the last to the first axis.
+If axis is a tuple of ints, a sum is performed on all of the axes specified in the tuple instead of
+a single axis or all the axes as before.</p></li>
+<li><p><strong>keepdims</strong> (<em>bool</em><em>, </em><em>optional</em>) – If this is set to True, the axes which are reduced are left in the result as dimensions with size
+one. With this option, the result will broadcast correctly against the input array.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The array with sums computed.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.old.reductions.reduce_var">
+<code class="sig-prename descclassname">ivy.functional.ivy.old.reductions.</code><code class="sig-name descname">reduce_var</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">keepdims</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/old/reductions.html#reduce_var"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.old.reductions.reduce_var" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the arithmetic variance along a given axis. The variance is taken over the flattened array by default,
+otherwise over the specified axis.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>array</em>) – Array containing numbers whose variance is desired.</p></li>
+<li><p><strong>axis</strong> (<em>int</em><em> or </em><em>sequence of ints</em>) – Axis or axes along which the means are computed. The default is to compute the mean of the flattened
+array. If this is a tuple of ints, a mean is performed over multiple axes, instead of a single axis
+or all the axes as before.</p></li>
+<li><p><strong>keepdims</strong> (<em>bool</em><em>, </em><em>optional</em>) – If this is set to True, the axes which are reduced are left in the result as dimensions with size
+one. With this option, the result will broadcast correctly against the input array.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The array with variances computed.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<div class="toctree-wrapper compound">
+<p class="caption"><span class="caption-text">Reductions</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="reductions/reduce_sum.html">reduce_sum</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reductions/reduce_prod.html">reduce_prod</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reductions/reduce_mean.html">reduce_mean</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reductions/reduce_var.html">reduce_var</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reductions/reduce_std.html">reduce_std</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reductions/reduce_min.html">reduce_min</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reductions/reduce_max.html">reduce_max</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reductions/einsum.html">einsum</a></li>
+</ul>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Ivy Team
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

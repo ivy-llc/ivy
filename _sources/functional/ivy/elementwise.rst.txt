@@ -1,0 +1,35 @@
+Elementwise
+===========
+
+.. automodule:: ivy.functional.ivy.elementwise
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :maxdepth: -1
+   :caption: Elementwise
+
+   elementwise/bitwise_and.rst
+   elementwise/ceil.rst
+   elementwise/isfinite.rst
+   elementwise/less_equal.rst
+   elementwise/asinh.rst
+   elementwise/sqrt.rst
+   elementwise/cosh.rst
+   elementwise/log2.rst
+   elementwise/log10.rst
+   elementwise/log1p.rst
+   elementwise/isnan.rst
+   elementwise/less.rst
+   elementwise/cos.rst
+   elementwise/logical_not.rst
+   elementwise/logical_or.rst
+   elementwise/acosh.rst
+   elementwise/sin.rst
+   elementwise/negative.rst
+   elementwise/tanh.rst
+   elementwise/sinh.rst
+

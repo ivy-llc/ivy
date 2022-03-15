@@ -1,0 +1,20 @@
+Creation
+========
+
+.. automodule:: ivy.functional.backends.mxnet.creation
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :maxdepth: -1
+   :caption: Creation
+
+   creation/zeros.rst
+   creation/ones.rst
+   creation/ones_like.rst
+   creation/tril.rst
+   creation/empty.rst
+

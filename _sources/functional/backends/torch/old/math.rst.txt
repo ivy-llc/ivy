@@ -1,0 +1,25 @@
+Math
+====
+
+.. automodule:: ivy.functional.backends.torch.old.math
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :maxdepth: -1
+   :caption: Math
+
+   math/tan.rst
+   math/asin.rst
+   math/acos.rst
+   math/atan.rst
+   math/atan2.rst
+   math/cosh.rst
+   math/atanh.rst
+   math/log.rst
+   math/exp.rst
+   math/erf.rst
+

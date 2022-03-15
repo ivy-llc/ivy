@@ -1,0 +1,26 @@
+Nest
+====
+
+.. automodule:: ivy.functional.ivy.old.nest
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :maxdepth: -1
+   :caption: Nest
+
+   nest/index_nest.rst
+   nest/set_nest_at_index.rst
+   nest/map_nest_at_index.rst
+   nest/multi_index_nest.rst
+   nest/set_nest_at_indices.rst
+   nest/map_nest_at_indices.rst
+   nest/nested_indices_where.rst
+   nest/all_nested_indices.rst
+   nest/map.rst
+   nest/nested_map.rst
+   nest/copy_nest.rst
+

@@ -1,0 +1,17 @@
+Activations
+===========
+
+.. automodule:: ivy.functional.backends.numpy.activations
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :maxdepth: -1
+   :caption: Activations
+
+   activations/gelu.rst
+   activations/softmax.rst
+

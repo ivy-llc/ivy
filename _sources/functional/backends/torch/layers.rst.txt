@@ -1,0 +1,22 @@
+Layers
+======
+
+.. automodule:: ivy.functional.backends.torch.layers
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :maxdepth: -1
+   :caption: Layers
+
+   layers/conv1d.rst
+   layers/conv1d_transpose.rst
+   layers/conv2d.rst
+   layers/conv2d_transpose.rst
+   layers/depthwise_conv2d.rst
+   layers/conv3d.rst
+   layers/conv3d_transpose.rst
+

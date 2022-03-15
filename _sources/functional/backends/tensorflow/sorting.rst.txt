@@ -1,0 +1,16 @@
+Sorting
+=======
+
+.. automodule:: ivy.functional.backends.tensorflow.sorting
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :maxdepth: -1
+   :caption: Sorting
+
+   sorting/argsort.rst
+

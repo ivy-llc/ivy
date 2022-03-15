@@ -1,0 +1,20 @@
+Data type
+=========
+
+.. automodule:: ivy.functional.backends.numpy.data_type
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :maxdepth: -1
+   :caption: Data type
+
+   data_type/iinfo.rst
+   data_type/finfo.rst
+   data_type/Finfo:
+
+    def __init__.rst
+

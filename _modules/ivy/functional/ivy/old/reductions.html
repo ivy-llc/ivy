@@ -1,0 +1,390 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>ivy.functional.ivy.old.reductions &mdash; Ivy 1.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../../../" src="../../../../../_static/documentation_options.js"></script>
+        <script src="../../../../../_static/jquery.js"></script>
+        <script src="../../../../../_static/underscore.js"></script>
+        <script src="../../../../../_static/doctools.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../../_static/css/custom.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../../../index.html" class="icon icon-home"> Ivy
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../why_ivy.html">Why Ivy?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../using_ivy.html">Using Ivy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../training_a_network.html">Training a Network</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../contributing.html">Contributing to Ivy</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Array</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../array/array_api.html">Array api</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../array/conversions.html">Conversions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../array/device.html">Device</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../array/general.html">General</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../array/gradients.html">Gradients</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../array/image.html">Image</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../array/linalg.html">Linalg</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../array/logic.html">Logic</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../array/math.html">Math</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../array/meta.html">Meta</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../array/random.html">Random</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../array/reductions.html">Reductions</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Functional</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../functional/backends.html">Backends</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../functional/ivy.html">Ivy</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Stateful</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../stateful/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../stateful/converters.html">Converters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../stateful/initializers.html">Initializers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../stateful/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../stateful/module.html">Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../stateful/norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../stateful/optimizers.html">Optimizers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../stateful/sequential.html">Sequential</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Docs</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../ivy"">Ivy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../mech"">Ivy mech</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../vision"">Ivy vision</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../robot"">Ivy robot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../gym"">Ivy gym</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../memory"">Ivy memory</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../builder"">Ivy builder</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../models"">Ivy models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../ecosystem"">Ivy ecosystem</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">Ivy</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../../../index.html">Module code</a> &raquo;</li>
+        
+      <li>ivy.functional.ivy.old.reductions</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for ivy.functional.ivy.old.reductions</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Collection of reduction Ivy functions</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1"># local</span>
+<span class="kn">import</span> <span class="nn">ivy</span>
+<span class="kn">from</span> <span class="nn">ivy.framework_handler</span> <span class="kn">import</span> <span class="n">current_framework</span> <span class="k">as</span> <span class="n">_cur_framework</span>
+
+
+<div class="viewcode-block" id="reduce_sum"><a class="viewcode-back" href="../../../../../functional/ivy/old/reductions/reduce_sum.html#ivy.functional.ivy.old.reductions.reduce_sum">[docs]</a><span class="k">def</span> <span class="nf">reduce_sum</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Computes sum of array elements along a given axis.</span>
+
+<span class="sd">    :param x: Elements to sum.</span>
+<span class="sd">    :type x: array</span>
+<span class="sd">    :param axis: Axis or axes along which a sum is performed. The default, axis=None, will sum all of the elements of</span>
+<span class="sd">                    the input array. If axis is negative it counts from the last to the first axis.</span>
+<span class="sd">                    If axis is a tuple of ints, a sum is performed on all of the axes specified in the tuple instead of</span>
+<span class="sd">                    a single axis or all the axes as before.</span>
+<span class="sd">    :type axis: int or sequence of ints</span>
+<span class="sd">    :param keepdims: If this is set to True, the axes which are reduced are left in the result as dimensions with size</span>
+<span class="sd">                        one. With this option, the result will broadcast correctly against the input array.</span>
+<span class="sd">    :type keepdims: bool, optional</span>
+<span class="sd">    :return: The array with sums computed.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">reduce_sum</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">keepdims</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="reduce_prod"><a class="viewcode-back" href="../../../../../functional/ivy/old/reductions/reduce_prod.html#ivy.functional.ivy.old.reductions.reduce_prod">[docs]</a><span class="k">def</span> <span class="nf">reduce_prod</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Multiplies array elements along a given axis.</span>
+
+<span class="sd">    :param x: Elements to multiply.</span>
+<span class="sd">    :type x: array</span>
+<span class="sd">    :param axis: Axis or axes along which a multiplication is performed. The default, axis=None, will multiply all of</span>
+<span class="sd">                 the elements of the input array. If axis is negative it counts from the last to the first axis.</span>
+<span class="sd">                 If axis is a tuple of ints, a multiplication is performed on all of the axes specified in the tuple</span>
+<span class="sd">                 instead of a single axis or all the axes as before.</span>
+<span class="sd">    :type axis: int or sequence of ints</span>
+<span class="sd">    :param keepdims: If this is set to True, the axes which are reduced are left in the result as dimensions with size</span>
+<span class="sd">                        one. With this option, the result will broadcast correctly against the input array.</span>
+<span class="sd">    :type keepdims: bool, optional</span>
+<span class="sd">    :return: The array with multiplications computed.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">reduce_prod</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">keepdims</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="reduce_mean"><a class="viewcode-back" href="../../../../../functional/ivy/old/reductions/reduce_mean.html#ivy.functional.ivy.old.reductions.reduce_mean">[docs]</a><span class="k">def</span> <span class="nf">reduce_mean</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Computes the arithmetic mean along a given axis.</span>
+<span class="sd">    Returns the average of the array elements. The average is taken over the flattened array by default, otherwise over</span>
+<span class="sd">    the specified axis.</span>
+
+<span class="sd">    :param x: Array containing numbers whose mean is desired.</span>
+<span class="sd">    :type x: array</span>
+<span class="sd">    :param axis: Axis or axes along which the means are computed. The default is to compute the mean of the flattened</span>
+<span class="sd">                    array. If this is a tuple of ints, a mean is performed over multiple axes, instead of a single axis</span>
+<span class="sd">                    or all the axes as before.</span>
+<span class="sd">    :type axis: int or sequence of ints</span>
+<span class="sd">    :param keepdims: If this is set to True, the axes which are reduced are left in the result as dimensions with size</span>
+<span class="sd">                        one. With this option, the result will broadcast correctly against the input array.</span>
+<span class="sd">    :type keepdims: bool, optional</span>
+<span class="sd">    :return: The array with means computed.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">reduce_mean</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">keepdims</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="reduce_var"><a class="viewcode-back" href="../../../../../functional/ivy/old/reductions/reduce_var.html#ivy.functional.ivy.old.reductions.reduce_var">[docs]</a><span class="k">def</span> <span class="nf">reduce_var</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Computes the arithmetic variance along a given axis. The variance is taken over the flattened array by default,</span>
+<span class="sd">    otherwise over the specified axis.</span>
+
+<span class="sd">    :param x: Array containing numbers whose variance is desired.</span>
+<span class="sd">    :type x: array</span>
+<span class="sd">    :param axis: Axis or axes along which the means are computed. The default is to compute the mean of the flattened</span>
+<span class="sd">                    array. If this is a tuple of ints, a mean is performed over multiple axes, instead of a single axis</span>
+<span class="sd">                    or all the axes as before.</span>
+<span class="sd">    :type axis: int or sequence of ints</span>
+<span class="sd">    :param keepdims: If this is set to True, the axes which are reduced are left in the result as dimensions with size</span>
+<span class="sd">                        one. With this option, the result will broadcast correctly against the input array.</span>
+<span class="sd">    :type keepdims: bool, optional</span>
+<span class="sd">    :return: The array with variances computed.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">reduce_var</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">keepdims</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="reduce_std"><a class="viewcode-back" href="../../../../../functional/ivy/old/reductions/reduce_std.html#ivy.functional.ivy.old.reductions.reduce_std">[docs]</a><span class="k">def</span> <span class="nf">reduce_std</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Computes the arithmetic standard deviation along a given axis. The standard deviation is taken over</span>
+<span class="sd">    the flattened array by default, otherwise over the specified axis.</span>
+
+<span class="sd">    :param x: Array containing numbers whose standard deviation is desired.</span>
+<span class="sd">    :type x: array</span>
+<span class="sd">    :param axis: Axis or axes along which the means are computed. The default is to compute the mean of the flattened</span>
+<span class="sd">                    array. If this is a tuple of ints, a mean is performed over multiple axes, instead of a single axis</span>
+<span class="sd">                    or all the axes as before.</span>
+<span class="sd">    :type axis: int or sequence of ints</span>
+<span class="sd">    :param keepdims: If this is set to True, the axes which are reduced are left in the result as dimensions with size</span>
+<span class="sd">                        one. With this option, the result will broadcast correctly against the input array.</span>
+<span class="sd">    :type keepdims: bool, optional</span>
+<span class="sd">    :return: The array with standard deviations computed.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">reduce_var</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">keepdims</span><span class="p">)</span> <span class="o">**</span> <span class="mf">0.5</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="reduce_min"><a class="viewcode-back" href="../../../../../functional/ivy/old/reductions/reduce_min.html#ivy.functional.ivy.old.reductions.reduce_min">[docs]</a><span class="k">def</span> <span class="nf">reduce_min</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Computes the minimum value along the specified axis. The minimum is taken over the flattened array by default,</span>
+<span class="sd">    otherwise over the specified axis.</span>
+
+<span class="sd">    :param x: Array containing numbers whose min is desired.</span>
+<span class="sd">    :type x: array</span>
+<span class="sd">    :param axis: Axis or axes along which the mins are computed. The default is to compute the min of the flattened</span>
+<span class="sd">                    array. If this is a tuple of ints, a min is performed over multiple axes, instead of a single axis</span>
+<span class="sd">                    or all the axes as before.</span>
+<span class="sd">    :type axis: int or sequence of ints</span>
+<span class="sd">    :param keepdims: If this is set to True, the axes which are reduced are left in the result as dimensions with size</span>
+<span class="sd">                        one. With this option, the result will broadcast correctly against the input array.</span>
+<span class="sd">    :type keepdims: bool, optional</span>
+<span class="sd">    :return: The array with mins computed.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">reduce_min</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">keepdims</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="reduce_max"><a class="viewcode-back" href="../../../../../functional/ivy/old/reductions/reduce_max.html#ivy.functional.ivy.old.reductions.reduce_max">[docs]</a><span class="k">def</span> <span class="nf">reduce_max</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Computes the maximum value along the specified axis. The maximum is taken over the flattened array by default,</span>
+<span class="sd">    otherwise over the specified axis.</span>
+
+<span class="sd">    :param x: Array containing numbers whose max is desired.</span>
+<span class="sd">    :type x: array</span>
+<span class="sd">    :param axis: Axis or axes along which the maxes are computed. The default is to compute the max of the flattened</span>
+<span class="sd">                    array. If this is a tuple of ints, a max is performed over multiple axes, instead of a single axis</span>
+<span class="sd">                    or all the axes as before.</span>
+<span class="sd">    :type axis: int or sequence of ints</span>
+<span class="sd">    :param keepdims: If this is set to True, the axes which are reduced are left in the result as dimensions with size</span>
+<span class="sd">                        one. With this option, the result will broadcast correctly against the input array.</span>
+<span class="sd">    :type keepdims: bool, optional</span>
+<span class="sd">    :return: The array with maxes computed.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">reduce_max</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">keepdims</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="einsum"><a class="viewcode-back" href="../../../../../functional/ivy/old/reductions/einsum.html#ivy.functional.ivy.old.reductions.einsum">[docs]</a><span class="k">def</span> <span class="nf">einsum</span><span class="p">(</span><span class="n">equation</span><span class="p">,</span> <span class="o">*</span><span class="n">operands</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Sums the product of the elements of the input operands along dimensions specified using a notation based on the</span>
+<span class="sd">    Einstein summation convention.</span>
+
+<span class="sd">    :param equation: A str describing the contraction, in the same format as numpy.einsum.</span>
+<span class="sd">    :type equation: str</span>
+<span class="sd">    :param operands: the inputs to contract (each one an ivy.Array), whose shapes should be consistent with equation.</span>
+<span class="sd">    :type operands: seq of arrays</span>
+<span class="sd">    :return: The array with sums computed.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">operands</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="n">equation</span><span class="p">,</span> <span class="o">*</span><span class="n">operands</span><span class="p">)</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Ivy Team
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

@@ -1,0 +1,702 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>ivy.functional.backends.numpy.old.general &mdash; Ivy 1.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../../../../" src="../../../../../../_static/documentation_options.js"></script>
+        <script src="../../../../../../_static/jquery.js"></script>
+        <script src="../../../../../../_static/underscore.js"></script>
+        <script src="../../../../../../_static/doctools.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../../../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../../../_static/css/custom.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../../../../index.html" class="icon icon-home"> Ivy
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../why_ivy.html">Why Ivy?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../using_ivy.html">Using Ivy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../training_a_network.html">Training a Network</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../contributing.html">Contributing to Ivy</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Array</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../array/array_api.html">Array api</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../array/conversions.html">Conversions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../array/device.html">Device</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../array/general.html">General</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../array/gradients.html">Gradients</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../array/image.html">Image</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../array/linalg.html">Linalg</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../array/logic.html">Logic</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../array/math.html">Math</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../array/meta.html">Meta</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../array/random.html">Random</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../array/reductions.html">Reductions</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Functional</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../functional/backends.html">Backends</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../functional/ivy.html">Ivy</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Stateful</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../stateful/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../stateful/converters.html">Converters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../stateful/initializers.html">Initializers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../stateful/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../stateful/module.html">Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../stateful/norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../stateful/optimizers.html">Optimizers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../stateful/sequential.html">Sequential</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Docs</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../../ivy"">Ivy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../../mech"">Ivy mech</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../../vision"">Ivy vision</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../../robot"">Ivy robot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../../gym"">Ivy gym</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../../memory"">Ivy memory</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../../builder"">Ivy builder</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../../models"">Ivy models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../../ecosystem"">Ivy ecosystem</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../../index.html">Ivy</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../../../../index.html">Module code</a> &raquo;</li>
+        
+      <li>ivy.functional.backends.numpy.old.general</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for ivy.functional.backends.numpy.old.general</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Collection of Numpy general functions, wrapped to fit Ivy syntax and signature.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1"># global</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">_np</span>
+<span class="kn">import</span> <span class="nn">math</span> <span class="k">as</span> <span class="nn">_math</span>
+<span class="kn">from</span> <span class="nn">operator</span> <span class="kn">import</span> <span class="n">mul</span> <span class="k">as</span> <span class="n">_mul</span>
+<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">reduce</span> <span class="k">as</span> <span class="n">_reduce</span>
+<span class="kn">import</span> <span class="nn">multiprocessing</span> <span class="k">as</span> <span class="nn">_multiprocessing</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
+
+<span class="c1"># local</span>
+<span class="kn">import</span> <span class="nn">ivy</span>
+<span class="kn">from</span> <span class="nn">ivy.functional.ivy.old</span> <span class="kn">import</span> <span class="n">default_dtype</span>
+<span class="kn">from</span> <span class="nn">ivy.functional.backends.numpy.old.device</span> <span class="kn">import</span> <span class="n">_dev_callable</span>
+
+
+<span class="n">DTYPE_TO_STR</span> <span class="o">=</span> <span class="p">{</span><span class="n">_np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;int8&#39;</span><span class="p">):</span> <span class="s1">&#39;int8&#39;</span><span class="p">,</span>
+                <span class="n">_np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;int16&#39;</span><span class="p">):</span> <span class="s1">&#39;int16&#39;</span><span class="p">,</span>
+                <span class="n">_np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;int32&#39;</span><span class="p">):</span> <span class="s1">&#39;int32&#39;</span><span class="p">,</span>
+                <span class="n">_np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;int64&#39;</span><span class="p">):</span> <span class="s1">&#39;int64&#39;</span><span class="p">,</span>
+                <span class="n">_np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;uint8&#39;</span><span class="p">):</span> <span class="s1">&#39;uint8&#39;</span><span class="p">,</span>
+                <span class="n">_np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;uint16&#39;</span><span class="p">):</span> <span class="s1">&#39;uint16&#39;</span><span class="p">,</span>
+                <span class="n">_np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;uint32&#39;</span><span class="p">):</span> <span class="s1">&#39;uint32&#39;</span><span class="p">,</span>
+                <span class="n">_np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;uint64&#39;</span><span class="p">):</span> <span class="s1">&#39;uint64&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;bfloat16&#39;</span><span class="p">:</span> <span class="s1">&#39;bfloat16&#39;</span><span class="p">,</span>
+                <span class="n">_np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;float16&#39;</span><span class="p">):</span> <span class="s1">&#39;float16&#39;</span><span class="p">,</span>
+                <span class="n">_np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;float32&#39;</span><span class="p">):</span> <span class="s1">&#39;float32&#39;</span><span class="p">,</span>
+                <span class="n">_np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;float64&#39;</span><span class="p">):</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span>
+                <span class="n">_np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;bool&#39;</span><span class="p">):</span> <span class="s1">&#39;bool&#39;</span><span class="p">,</span>
+
+                <span class="n">_np</span><span class="o">.</span><span class="n">int8</span><span class="p">:</span> <span class="s1">&#39;int8&#39;</span><span class="p">,</span>
+                <span class="n">_np</span><span class="o">.</span><span class="n">int16</span><span class="p">:</span> <span class="s1">&#39;int16&#39;</span><span class="p">,</span>
+                <span class="n">_np</span><span class="o">.</span><span class="n">int32</span><span class="p">:</span> <span class="s1">&#39;int32&#39;</span><span class="p">,</span>
+                <span class="n">_np</span><span class="o">.</span><span class="n">int64</span><span class="p">:</span> <span class="s1">&#39;int64&#39;</span><span class="p">,</span>
+                <span class="n">_np</span><span class="o">.</span><span class="n">uint8</span><span class="p">:</span> <span class="s1">&#39;uint8&#39;</span><span class="p">,</span>
+                <span class="n">_np</span><span class="o">.</span><span class="n">uint16</span><span class="p">:</span> <span class="s1">&#39;uint16&#39;</span><span class="p">,</span>
+                <span class="n">_np</span><span class="o">.</span><span class="n">uint32</span><span class="p">:</span> <span class="s1">&#39;uint32&#39;</span><span class="p">,</span>
+                <span class="n">_np</span><span class="o">.</span><span class="n">uint64</span><span class="p">:</span> <span class="s1">&#39;uint64&#39;</span><span class="p">,</span>
+                <span class="n">_np</span><span class="o">.</span><span class="n">float16</span><span class="p">:</span> <span class="s1">&#39;float16&#39;</span><span class="p">,</span>
+                <span class="n">_np</span><span class="o">.</span><span class="n">float32</span><span class="p">:</span> <span class="s1">&#39;float32&#39;</span><span class="p">,</span>
+                <span class="n">_np</span><span class="o">.</span><span class="n">float64</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span>
+                <span class="n">_np</span><span class="o">.</span><span class="n">bool_</span><span class="p">:</span> <span class="s1">&#39;bool&#39;</span><span class="p">}</span>
+
+<span class="n">DTYPE_FROM_STR</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;int8&#39;</span><span class="p">:</span> <span class="n">_np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;int8&#39;</span><span class="p">),</span>
+                <span class="s1">&#39;int16&#39;</span><span class="p">:</span> <span class="n">_np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;int16&#39;</span><span class="p">),</span>
+                <span class="s1">&#39;int32&#39;</span><span class="p">:</span> <span class="n">_np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;int32&#39;</span><span class="p">),</span>
+                <span class="s1">&#39;int64&#39;</span><span class="p">:</span> <span class="n">_np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;int64&#39;</span><span class="p">),</span>
+                <span class="s1">&#39;uint8&#39;</span><span class="p">:</span> <span class="n">_np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;uint8&#39;</span><span class="p">),</span>
+                <span class="s1">&#39;uint16&#39;</span><span class="p">:</span> <span class="n">_np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;uint16&#39;</span><span class="p">),</span>
+                <span class="s1">&#39;uint32&#39;</span><span class="p">:</span> <span class="n">_np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;uint32&#39;</span><span class="p">),</span>
+                <span class="s1">&#39;uint64&#39;</span><span class="p">:</span> <span class="n">_np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;uint64&#39;</span><span class="p">),</span>
+                <span class="s1">&#39;bfloat16&#39;</span><span class="p">:</span> <span class="s1">&#39;bfloat16&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;float16&#39;</span><span class="p">:</span> <span class="n">_np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;float16&#39;</span><span class="p">),</span>
+                <span class="s1">&#39;float32&#39;</span><span class="p">:</span> <span class="n">_np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;float32&#39;</span><span class="p">),</span>
+                <span class="s1">&#39;float64&#39;</span><span class="p">:</span> <span class="n">_np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;float64&#39;</span><span class="p">),</span>
+                <span class="s1">&#39;bool&#39;</span><span class="p">:</span> <span class="n">_np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;bool&#39;</span><span class="p">)}</span>
+
+
+<span class="c1"># Helpers #</span>
+<span class="c1"># --------#</span>
+
+<span class="k">def</span> <span class="nf">_to_dev</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dev</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">dev</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="s1">&#39;gpu&#39;</span> <span class="ow">in</span> <span class="n">dev</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;Native Numpy does not support GPU placement, consider using Jax instead&#39;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="s1">&#39;cpu&#39;</span> <span class="ow">in</span> <span class="n">dev</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;Invalid device specified, must be in the form [ &quot;cpu:idx&quot; | &quot;gpu:idx&quot; ],&#39;</span>
+                            <span class="s1">&#39;but found </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">dev</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">x</span>
+
+
+<span class="k">def</span> <span class="nf">_flat_array_to_1_dim_array</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">x</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="mi">1</span><span class="p">,))</span> <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">()</span> <span class="k">else</span> <span class="n">x</span>
+
+
+<span class="c1"># API #</span>
+<span class="c1"># ----#</span>
+
+<span class="c1"># noinspection PyShadowingNames</span>
+<div class="viewcode-block" id="array"><a class="viewcode-back" href="../../../../../../functional/backends/numpy/old/general/array.html#ivy.functional.backends.numpy.old.general.array">[docs]</a><span class="k">def</span> <span class="nf">array</span><span class="p">(</span><span class="n">object_in</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dev</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">_to_dev</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">object_in</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">default_dtype</span><span class="p">(</span><span class="n">dtype</span><span class="p">,</span> <span class="n">object_in</span><span class="p">)),</span> <span class="n">dev</span><span class="p">)</span></div>
+
+
+<span class="n">asarray</span> <span class="o">=</span> <span class="n">array</span>
+
+
+<div class="viewcode-block" id="is_array"><a class="viewcode-back" href="../../../../../../functional/backends/numpy/old/general/is_array.html#ivy.functional.backends.numpy.old.general.is_array">[docs]</a><span class="k">def</span> <span class="nf">is_array</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">exclusive</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">_np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">True</span>
+    <span class="k">return</span> <span class="kc">False</span></div>
+
+
+<div class="viewcode-block" id="dtype_bits"><a class="viewcode-back" href="../../../../../../functional/backends/numpy/old/general/dtype_bits.html#ivy.functional.backends.numpy.old.general.dtype_bits">[docs]</a><span class="k">def</span> <span class="nf">dtype_bits</span><span class="p">(</span><span class="n">dtype_in</span><span class="p">):</span>
+    <span class="n">dtype_str</span> <span class="o">=</span> <span class="n">dtype_to_str</span><span class="p">(</span><span class="n">dtype_in</span><span class="p">)</span>
+    <span class="k">if</span> <span class="s1">&#39;bool&#39;</span> <span class="ow">in</span> <span class="n">dtype_str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">1</span>
+    <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">dtype_str</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;uint&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;int&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;bfloat&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;float&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">))</span></div>
+
+
+<span class="n">copy_array</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="n">array_equal</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">array_equal</span>
+<span class="n">to_numpy</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span>
+<span class="n">to_numpy</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">=</span> <span class="s1">&#39;to_numpy&#39;</span>
+<span class="n">to_scalar</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+<span class="n">to_scalar</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">=</span> <span class="s1">&#39;to_scalar&#39;</span>
+<span class="n">to_list</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+<span class="n">to_list</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">=</span> <span class="s1">&#39;to_list&#39;</span>
+<span class="n">shape</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">as_tensor</span><span class="o">=</span><span class="kc">False</span><span class="p">:</span> <span class="n">_np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">x</span><span class="p">))</span> <span class="k">if</span> <span class="n">as_tensor</span> <span class="k">else</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span>
+<span class="n">shape</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">=</span> <span class="s1">&#39;shape&#39;</span>
+<span class="n">get_num_dims</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">as_tensor</span><span class="o">=</span><span class="kc">False</span><span class="p">:</span> <span class="n">_np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">x</span><span class="p">)))</span> <span class="k">if</span> <span class="n">as_tensor</span> <span class="k">else</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="n">minimum</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">minimum</span>
+<span class="n">maximum</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">maximum</span>
+<span class="n">clip</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">x_min</span><span class="p">,</span> <span class="n">x_max</span><span class="p">:</span> <span class="n">_np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">x_min</span><span class="p">,</span> <span class="n">x_max</span><span class="p">))</span>
+<span class="nb">round</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">_np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+<span class="n">floormod</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">_np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">x</span> <span class="o">%</span> <span class="n">y</span><span class="p">)</span>
+<span class="n">floor</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">_np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+<span class="nb">abs</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">_np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">absolute</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+
+
+<div class="viewcode-block" id="argmin"><a class="viewcode-back" href="../../../../../../functional/backends/numpy/old/general/argmin.html#ivy.functional.backends.numpy.old.general.argmin">[docs]</a><span class="k">def</span> <span class="nf">argmin</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+    <span class="n">ret</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">ret</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">():</span>
+        <span class="k">return</span> <span class="n">ret</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">ret</span></div>
+
+
+<div class="viewcode-block" id="cast"><a class="viewcode-back" href="../../../../../../functional/backends/numpy/old/general/cast.html#ivy.functional.backends.numpy.old.general.cast">[docs]</a><span class="k">def</span> <span class="nf">cast</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dtype</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">x</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">dtype_from_str</span><span class="p">(</span><span class="n">dtype</span><span class="p">))</span></div>
+
+
+<span class="n">astype</span> <span class="o">=</span> <span class="n">cast</span>
+
+
+<span class="c1"># noinspection PyShadowingNames</span>
+<div class="viewcode-block" id="arange"><a class="viewcode-back" href="../../../../../../functional/backends/numpy/old/general/arange.html#ivy.functional.backends.numpy.old.general.arange">[docs]</a><span class="k">def</span> <span class="nf">arange</span><span class="p">(</span><span class="n">stop</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dev</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">dtype</span><span class="p">:</span>
+        <span class="n">dtype</span> <span class="o">=</span> <span class="n">dtype_from_str</span><span class="p">(</span><span class="n">dtype</span><span class="p">)</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="n">_to_dev</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="n">step</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">),</span> <span class="n">dev</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">dtype</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">res</span><span class="o">.</span><span class="n">dtype</span> <span class="o">==</span> <span class="n">_np</span><span class="o">.</span><span class="n">float64</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">res</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">res</span><span class="o">.</span><span class="n">dtype</span> <span class="o">==</span> <span class="n">_np</span><span class="o">.</span><span class="n">int64</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">res</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">res</span></div>
+
+
+<div class="viewcode-block" id="linspace"><a class="viewcode-back" href="../../../../../../functional/backends/numpy/old/general/linspace.html#ivy.functional.backends.numpy.old.general.linspace">[docs]</a><span class="k">def</span> <span class="nf">linspace</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">num</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dev</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">axis</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">axis</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+    <span class="k">return</span> <span class="n">_to_dev</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">num</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">),</span> <span class="n">dev</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="logspace"><a class="viewcode-back" href="../../../../../../functional/backends/numpy/old/general/logspace.html#ivy.functional.backends.numpy.old.general.logspace">[docs]</a><span class="k">def</span> <span class="nf">logspace</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">num</span><span class="p">,</span> <span class="n">base</span><span class="o">=</span><span class="mf">10.</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dev</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">axis</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">axis</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+    <span class="k">return</span> <span class="n">_to_dev</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">logspace</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">num</span><span class="p">,</span> <span class="n">base</span><span class="o">=</span><span class="n">base</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">),</span> <span class="n">dev</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="concatenate"><a class="viewcode-back" href="../../../../../../functional/backends/numpy/old/general/concatenate.html#ivy.functional.backends.numpy.old.general.concatenate">[docs]</a><span class="k">def</span> <span class="nf">concatenate</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">xs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">():</span>
+        <span class="k">return</span> <span class="n">_np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">_np</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">xs</span><span class="p">],</span> <span class="n">axis</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">_np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">axis</span><span class="p">)</span></div>
+
+
+<span class="n">stack</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">stack</span>
+
+
+<div class="viewcode-block" id="unstack"><a class="viewcode-back" href="../../../../../../functional/backends/numpy/old/general/unstack.html#ivy.functional.backends.numpy.old.general.unstack">[docs]</a><span class="k">def</span> <span class="nf">unstack</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">():</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">x</span><span class="p">]</span>
+    <span class="n">x_split</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="n">axis</span><span class="p">],</span> <span class="n">axis</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">keepdims</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">x_split</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">_np</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">axis</span><span class="p">)</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">x_split</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="split"><a class="viewcode-back" href="../../../../../../functional/backends/numpy/old/general/split.html#ivy.functional.backends.numpy.old.general.split">[docs]</a><span class="k">def</span> <span class="nf">split</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">num_or_size_splits</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">with_remainder</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">():</span>
+        <span class="k">if</span> <span class="n">num_or_size_splits</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">num_or_size_splits</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;input array had no shape, but num_sections specified was </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">num_or_size_splits</span><span class="p">))</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">x</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">num_or_size_splits</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">num_or_size_splits</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="n">axis</span><span class="p">]</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">num_or_size_splits</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">and</span> <span class="n">with_remainder</span><span class="p">:</span>
+        <span class="n">num_chunks</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="n">axis</span><span class="p">]</span> <span class="o">/</span> <span class="n">num_or_size_splits</span>
+        <span class="n">num_chunks_int</span> <span class="o">=</span> <span class="n">_math</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">num_chunks</span><span class="p">)</span>
+        <span class="n">remainder</span> <span class="o">=</span> <span class="n">num_chunks</span> <span class="o">-</span> <span class="n">num_chunks_int</span>
+        <span class="k">if</span> <span class="n">remainder</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">num_or_size_splits</span> <span class="o">=</span> <span class="p">[</span><span class="n">num_or_size_splits</span><span class="p">]</span><span class="o">*</span><span class="n">num_chunks_int</span> <span class="o">+</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">remainder</span><span class="o">*</span><span class="n">num_or_size_splits</span><span class="p">)]</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">num_or_size_splits</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
+        <span class="n">num_or_size_splits</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">num_or_size_splits</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">_np</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">num_or_size_splits</span><span class="p">,</span> <span class="n">axis</span><span class="p">)</span></div>
+
+
+<span class="n">repeat</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">repeat</span>
+<span class="n">tile</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">tile</span>
+<span class="n">constant_pad</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">pad_width</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="mi">0</span><span class="p">:</span> <span class="n">_np</span><span class="o">.</span><span class="n">pad</span><span class="p">(</span><span class="n">_flat_array_to_1_dim_array</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">pad_width</span><span class="p">,</span> <span class="n">constant_values</span><span class="o">=</span><span class="n">value</span><span class="p">)</span>
+<span class="n">zero_pad</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">pad_width</span><span class="p">:</span> <span class="n">_np</span><span class="o">.</span><span class="n">pad</span><span class="p">(</span><span class="n">_flat_array_to_1_dim_array</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">pad_width</span><span class="p">)</span>
+<span class="n">swapaxes</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">swapaxes</span>
+
+
+<div class="viewcode-block" id="transpose"><a class="viewcode-back" href="../../../../../../functional/backends/numpy/old/general/transpose.html#ivy.functional.backends.numpy.old.general.transpose">[docs]</a><span class="k">def</span> <span class="nf">transpose</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">axes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">num_dims</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+        <span class="n">axes</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">num_dims</span><span class="p">))</span>
+        <span class="n">axes</span><span class="o">.</span><span class="n">reverse</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">_np</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axes</span><span class="p">)</span></div>
+
+
+<span class="n">expand_dims</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">expand_dims</span>
+<span class="n">where</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">condition</span><span class="p">,</span> <span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">:</span> <span class="n">_np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">condition</span><span class="p">,</span> <span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="indices_where"><a class="viewcode-back" href="../../../../../../functional/backends/numpy/old/general/indices_where.html#ivy.functional.backends.numpy.old.general.indices_where">[docs]</a><span class="k">def</span> <span class="nf">indices_where</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="n">where_x</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">where_x</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">_np</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="n">where_x</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">_np</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">where_x</span><span class="p">],</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">res</span></div>
+
+
+<span class="n">isinf</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">isinf</span>
+
+
+<span class="n">reshape</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">reshape</span>
+<span class="n">broadcast_to</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">broadcast_to</span>
+
+
+<div class="viewcode-block" id="squeeze"><a class="viewcode-back" href="../../../../../../functional/backends/numpy/old/general/squeeze.html#ivy.functional.backends.numpy.old.general.squeeze">[docs]</a><span class="k">def</span> <span class="nf">squeeze</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">():</span>
+        <span class="k">if</span> <span class="n">axis</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">axis</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">axis</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">x</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;tried to squeeze a zero-dimensional input by axis </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">axis</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">_np</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="p">)</span></div>
+
+
+
+
+<span class="c1"># noinspection PyShadowingNames</span>
+<div class="viewcode-block" id="zeros_like"><a class="viewcode-back" href="../../../../../../functional/backends/numpy/old/general/zeros_like.html#ivy.functional.backends.numpy.old.general.zeros_like">[docs]</a><span class="k">def</span> <span class="nf">zeros_like</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dev</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">dtype</span><span class="p">:</span>
+        <span class="n">dtype</span> <span class="o">=</span> <span class="s1">&#39;bool_&#39;</span> <span class="k">if</span> <span class="n">dtype</span> <span class="o">==</span> <span class="s1">&#39;bool&#39;</span> <span class="k">else</span> <span class="n">dtype</span>
+        <span class="n">dtype</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">dtype</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">dtype</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">dtype</span>
+    <span class="k">return</span> <span class="n">_to_dev</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">),</span> <span class="n">dev</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="full"><a class="viewcode-back" href="../../../../../../functional/backends/numpy/old/general/full.html#ivy.functional.backends.numpy.old.general.full">[docs]</a><span class="k">def</span> <span class="nf">full</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">fill_value</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">_to_dev</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">fill_value</span><span class="p">,</span> <span class="n">dtype_from_str</span><span class="p">(</span><span class="n">default_dtype</span><span class="p">(</span><span class="n">dtype</span><span class="p">,</span> <span class="n">fill_value</span><span class="p">))),</span> <span class="n">device</span><span class="p">)</span></div>
+
+
+<span class="c1"># noinspection PyUnusedLocal</span>
+<div class="viewcode-block" id="one_hot"><a class="viewcode-back" href="../../../../../../functional/backends/numpy/old/general/one_hot.html#ivy.functional.backends.numpy.old.general.one_hot">[docs]</a><span class="k">def</span> <span class="nf">one_hot</span><span class="p">(</span><span class="n">indices</span><span class="p">,</span> <span class="n">depth</span><span class="p">,</span> <span class="n">dev</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="c1"># from https://stackoverflow.com/questions/38592324/one-hot-encoding-using-numpy</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">depth</span><span class="p">)[</span><span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">indices</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)]</span>
+    <span class="k">return</span> <span class="n">res</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">indices</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">+</span> <span class="p">[</span><span class="n">depth</span><span class="p">])</span></div>
+
+
+<span class="n">cross</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">cross</span>
+<span class="n">cumsum</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">cumsum</span>
+
+
+<div class="viewcode-block" id="cumprod"><a class="viewcode-back" href="../../../../../../functional/backends/numpy/old/general/cumprod.html#ivy.functional.backends.numpy.old.general.cumprod">[docs]</a><span class="k">def</span> <span class="nf">cumprod</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">exclusive</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">exclusive</span><span class="p">:</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">swapaxes</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">_np</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">:]),</span> <span class="n">x</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]),</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">cumprod</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">_np</span><span class="o">.</span><span class="n">swapaxes</span><span class="p">(</span><span class="n">res</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">_np</span><span class="o">.</span><span class="n">cumprod</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="p">)</span></div>
+
+
+<span class="c1"># noinspection PyShadowingNames</span>
+<div class="viewcode-block" id="identity"><a class="viewcode-back" href="../../../../../../functional/backends/numpy/old/general/identity.html#ivy.functional.backends.numpy.old.general.identity">[docs]</a><span class="k">def</span> <span class="nf">identity</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;float32&#39;</span><span class="p">,</span> <span class="n">batch_shape</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dev</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="n">dtype</span> <span class="o">=</span> <span class="s1">&#39;bool_&#39;</span> <span class="k">if</span> <span class="n">dtype</span> <span class="o">==</span> <span class="s1">&#39;bool&#39;</span> <span class="k">else</span> <span class="n">dtype</span>
+    <span class="n">dtype</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">dtype</span><span class="p">]</span>
+    <span class="n">mat</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">identity</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">batch_shape</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">return_mat</span> <span class="o">=</span> <span class="n">mat</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">reshape_dims</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">batch_shape</span><span class="p">)</span> <span class="o">+</span> <span class="p">[</span><span class="n">n</span><span class="p">,</span> <span class="n">n</span><span class="p">]</span>
+        <span class="n">tile_dims</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">batch_shape</span><span class="p">)</span> <span class="o">+</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="n">return_mat</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">mat</span><span class="p">,</span> <span class="n">reshape_dims</span><span class="p">),</span> <span class="n">tile_dims</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">_to_dev</span><span class="p">(</span><span class="n">return_mat</span><span class="p">,</span> <span class="n">dev</span><span class="p">)</span></div>
+
+
+<span class="n">meshgrid</span> <span class="o">=</span> <span class="k">lambda</span> <span class="o">*</span><span class="n">xs</span><span class="p">,</span> <span class="n">indexing</span><span class="o">=</span><span class="s1">&#39;ij&#39;</span><span class="p">:</span> <span class="n">_np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="o">*</span><span class="n">xs</span><span class="p">,</span> <span class="n">indexing</span><span class="o">=</span><span class="n">indexing</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="scatter_flat"><a class="viewcode-back" href="../../../../../../functional/backends/numpy/old/general/scatter_flat.html#ivy.functional.backends.numpy.old.general.scatter_flat">[docs]</a><span class="k">def</span> <span class="nf">scatter_flat</span><span class="p">(</span><span class="n">indices</span><span class="p">,</span> <span class="n">updates</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tensor</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">reduction</span><span class="o">=</span><span class="s1">&#39;sum&#39;</span><span class="p">,</span> <span class="n">dev</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="n">target</span> <span class="o">=</span> <span class="n">tensor</span>
+    <span class="n">target_given</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">target</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">size</span><span class="p">)</span> <span class="ow">and</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">target</span><span class="p">):</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">target</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">target</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">size</span>
+    <span class="k">if</span> <span class="n">dev</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">dev</span> <span class="o">=</span> <span class="n">_dev_callable</span><span class="p">(</span><span class="n">updates</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">reduction</span> <span class="o">==</span> <span class="s1">&#39;sum&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">target_given</span><span class="p">:</span>
+            <span class="n">target</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="n">size</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">updates</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+        <span class="n">_np</span><span class="o">.</span><span class="n">add</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">indices</span><span class="p">,</span> <span class="n">updates</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">reduction</span> <span class="o">==</span> <span class="s1">&#39;replace&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">target_given</span><span class="p">:</span>
+            <span class="n">target</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="n">size</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">updates</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+        <span class="n">target</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">target</span><span class="p">)</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">target</span><span class="o">.</span><span class="n">setflags</span><span class="p">(</span><span class="n">write</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">target</span><span class="p">[</span><span class="n">indices</span><span class="p">]</span> <span class="o">=</span> <span class="n">updates</span>
+    <span class="k">elif</span> <span class="n">reduction</span> <span class="o">==</span> <span class="s1">&#39;min&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">target_given</span><span class="p">:</span>
+            <span class="n">target</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">ones</span><span class="p">([</span><span class="n">size</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">updates</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span> <span class="o">*</span> <span class="mf">1e12</span>
+        <span class="n">_np</span><span class="o">.</span><span class="n">minimum</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">indices</span><span class="p">,</span> <span class="n">updates</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">target_given</span><span class="p">:</span>
+            <span class="n">target</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">target</span> <span class="o">==</span> <span class="mf">1e12</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">reduction</span> <span class="o">==</span> <span class="s1">&#39;max&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">target_given</span><span class="p">:</span>
+            <span class="n">target</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">ones</span><span class="p">([</span><span class="n">size</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">updates</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span> <span class="o">*</span> <span class="o">-</span><span class="mf">1e12</span>
+        <span class="n">_np</span><span class="o">.</span><span class="n">maximum</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">indices</span><span class="p">,</span> <span class="n">updates</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">target_given</span><span class="p">:</span>
+            <span class="n">target</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">target</span> <span class="o">==</span> <span class="o">-</span><span class="mf">1e12</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;reduction is </span><span class="si">{}</span><span class="s1">, but it must be one of &quot;sum&quot;, &quot;min&quot; or &quot;max&quot;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">reduction</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">_to_dev</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">dev</span><span class="p">)</span></div>
+
+
+<span class="c1"># noinspection PyShadowingNames</span>
+<div class="viewcode-block" id="scatter_nd"><a class="viewcode-back" href="../../../../../../functional/backends/numpy/old/general/scatter_nd.html#ivy.functional.backends.numpy.old.general.scatter_nd">[docs]</a><span class="k">def</span> <span class="nf">scatter_nd</span><span class="p">(</span><span class="n">indices</span><span class="p">,</span> <span class="n">updates</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tensor</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">reduction</span><span class="o">=</span><span class="s1">&#39;sum&#39;</span><span class="p">,</span> <span class="n">dev</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="n">target</span> <span class="o">=</span> <span class="n">tensor</span>
+    <span class="n">target_given</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">target</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span> <span class="ow">and</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">target</span><span class="p">):</span>
+        <span class="k">assert</span> <span class="n">ivy</span><span class="o">.</span><span class="n">shape_to_tuple</span><span class="p">(</span><span class="n">target</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="n">ivy</span><span class="o">.</span><span class="n">shape_to_tuple</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">dev</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">dev</span> <span class="o">=</span> <span class="n">_dev_callable</span><span class="p">(</span><span class="n">updates</span><span class="p">)</span>
+    <span class="n">shape</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span> <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span> <span class="k">else</span> <span class="nb">list</span><span class="p">(</span><span class="n">tensor</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+    <span class="n">indices_flat</span> <span class="o">=</span> <span class="n">indices</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">indices</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">T</span>
+    <span class="n">indices_tuple</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">indices_flat</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="bp">Ellipsis</span><span class="p">,)</span>
+    <span class="k">if</span> <span class="n">reduction</span> <span class="o">==</span> <span class="s1">&#39;sum&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">target_given</span><span class="p">:</span>
+            <span class="n">target</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">updates</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+        <span class="n">_np</span><span class="o">.</span><span class="n">add</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">indices_tuple</span><span class="p">,</span> <span class="n">updates</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">reduction</span> <span class="o">==</span> <span class="s1">&#39;replace&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">target_given</span><span class="p">:</span>
+            <span class="n">target</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">updates</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+        <span class="n">target</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">target</span><span class="p">)</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">target</span><span class="o">.</span><span class="n">setflags</span><span class="p">(</span><span class="n">write</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">target</span><span class="p">[</span><span class="n">indices_tuple</span><span class="p">]</span> <span class="o">=</span> <span class="n">updates</span>
+    <span class="k">elif</span> <span class="n">reduction</span> <span class="o">==</span> <span class="s1">&#39;min&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">target_given</span><span class="p">:</span>
+            <span class="n">target</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">updates</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span> <span class="o">*</span> <span class="mf">1e12</span>
+        <span class="n">_np</span><span class="o">.</span><span class="n">minimum</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">indices_tuple</span><span class="p">,</span> <span class="n">updates</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">target_given</span><span class="p">:</span>
+            <span class="n">target</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">target</span> <span class="o">==</span> <span class="mf">1e12</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">reduction</span> <span class="o">==</span> <span class="s1">&#39;max&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">target_given</span><span class="p">:</span>
+            <span class="n">target</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">updates</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span> <span class="o">*</span> <span class="o">-</span><span class="mf">1e12</span>
+        <span class="n">_np</span><span class="o">.</span><span class="n">maximum</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">indices_tuple</span><span class="p">,</span> <span class="n">updates</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">target_given</span><span class="p">:</span>
+            <span class="n">target</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">target</span> <span class="o">==</span> <span class="o">-</span><span class="mf">1e12</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;reduction is </span><span class="si">{}</span><span class="s1">, but it must be one of &quot;sum&quot;, &quot;min&quot; or &quot;max&quot;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">reduction</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">_to_dev</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">dev</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="gather"><a class="viewcode-back" href="../../../../../../functional/backends/numpy/old/general/gather.html#ivy.functional.backends.numpy.old.general.gather">[docs]</a><span class="k">def</span> <span class="nf">gather</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">indices</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">dev</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">dev</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">dev</span> <span class="o">=</span> <span class="n">_dev_callable</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">_to_dev</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">take_along_axis</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">indices</span><span class="p">,</span> <span class="n">axis</span><span class="p">),</span> <span class="n">dev</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="gather_nd"><a class="viewcode-back" href="../../../../../../functional/backends/numpy/old/general/gather_nd.html#ivy.functional.backends.numpy.old.general.gather_nd">[docs]</a><span class="k">def</span> <span class="nf">gather_nd</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">indices</span><span class="p">,</span> <span class="n">dev</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">dev</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">dev</span> <span class="o">=</span> <span class="n">_dev_callable</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
+    <span class="n">indices_shape</span> <span class="o">=</span> <span class="n">indices</span><span class="o">.</span><span class="n">shape</span>
+    <span class="n">params_shape</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">shape</span>
+    <span class="n">num_index_dims</span> <span class="o">=</span> <span class="n">indices_shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">result_dim_sizes_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">_reduce</span><span class="p">(</span><span class="n">_mul</span><span class="p">,</span> <span class="n">params_shape</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:],</span> <span class="mi">1</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">params_shape</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)]</span> <span class="o">+</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">result_dim_sizes</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">result_dim_sizes_list</span><span class="p">)</span>
+    <span class="n">implicit_indices_factor</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">result_dim_sizes</span><span class="p">[</span><span class="n">num_index_dims</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">item</span><span class="p">())</span>
+    <span class="n">flat_params</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,))</span>
+    <span class="n">new_shape</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">indices_shape</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="p">[</span><span class="n">num_index_dims</span><span class="p">]</span>
+    <span class="n">indices_scales</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">result_dim_sizes</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">num_index_dims</span><span class="p">],</span> <span class="n">new_shape</span><span class="p">)</span>
+    <span class="n">indices_for_flat_tiled</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">indices</span> <span class="o">*</span> <span class="n">indices_scales</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">implicit_indices_factor</span><span class="p">))</span>
+    <span class="n">implicit_indices</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">implicit_indices_factor</span><span class="p">),</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="n">indices_for_flat_tiled</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">1</span><span class="p">))</span>
+    <span class="n">indices_for_flat</span> <span class="o">=</span> <span class="n">indices_for_flat_tiled</span> <span class="o">+</span> <span class="n">implicit_indices</span>
+    <span class="n">flat_indices_for_flat</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">indices_for_flat</span><span class="p">,</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,))</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+    <span class="n">flat_gather</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="n">flat_params</span><span class="p">,</span> <span class="n">flat_indices_for_flat</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="n">new_shape</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">indices_shape</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="n">params_shape</span><span class="p">[</span><span class="n">num_index_dims</span><span class="p">:])</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">flat_gather</span><span class="p">,</span> <span class="n">new_shape</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">_to_dev</span><span class="p">(</span><span class="n">res</span><span class="p">,</span> <span class="n">dev</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="linear_resample"><a class="viewcode-back" href="../../../../../../functional/backends/numpy/old/general/linear_resample.html#ivy.functional.backends.numpy.old.general.linear_resample">[docs]</a><span class="k">def</span> <span class="nf">linear_resample</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">num_samples</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">):</span>
+    <span class="n">x_shape</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+    <span class="n">num_x_dims</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">x_shape</span><span class="p">)</span>
+    <span class="n">axis</span> <span class="o">=</span> <span class="n">axis</span> <span class="o">%</span> <span class="n">num_x_dims</span>
+    <span class="n">x_pre_shape</span> <span class="o">=</span> <span class="n">x_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">axis</span><span class="p">]</span>
+    <span class="n">x_pre_size</span> <span class="o">=</span> <span class="n">_reduce</span><span class="p">(</span><span class="n">_mul</span><span class="p">,</span> <span class="n">x_pre_shape</span><span class="p">)</span> <span class="k">if</span> <span class="n">x_pre_shape</span> <span class="k">else</span> <span class="mi">1</span>
+    <span class="n">num_pre_dims</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">x_pre_shape</span><span class="p">)</span>
+    <span class="n">num_vals</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="n">axis</span><span class="p">]</span>
+    <span class="n">x_post_shape</span> <span class="o">=</span> <span class="n">x_shape</span><span class="p">[</span><span class="n">axis</span><span class="o">+</span><span class="mi">1</span><span class="p">:]</span>
+    <span class="n">x_post_size</span> <span class="o">=</span> <span class="n">_reduce</span><span class="p">(</span><span class="n">_mul</span><span class="p">,</span> <span class="n">x_post_shape</span><span class="p">)</span> <span class="k">if</span> <span class="n">x_post_shape</span> <span class="k">else</span> <span class="mi">1</span>
+    <span class="n">num_post_dims</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">x_post_shape</span><span class="p">)</span>
+    <span class="n">xp</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">num_vals</span><span class="o">*</span><span class="n">x_pre_size</span><span class="o">*</span><span class="n">x_post_size</span><span class="p">),</span> <span class="n">x_shape</span><span class="p">)</span>
+    <span class="n">x_coords</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">num_samples</span><span class="p">)</span> <span class="o">*</span> <span class="p">((</span><span class="n">num_vals</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">num_samples</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span> <span class="o">*</span> <span class="n">x_post_size</span>
+    <span class="n">x_coords</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">x_coords</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">num_pre_dims</span> <span class="o">+</span> <span class="p">[</span><span class="n">num_samples</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">num_post_dims</span><span class="p">)</span>
+    <span class="n">x_coords</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">broadcast_to</span><span class="p">(</span><span class="n">x_coords</span><span class="p">,</span> <span class="n">x_pre_shape</span> <span class="o">+</span> <span class="p">[</span><span class="n">num_samples</span><span class="p">]</span> <span class="o">+</span> <span class="n">x_post_shape</span><span class="p">)</span>
+    <span class="n">slc</span> <span class="o">=</span> <span class="p">[</span><span class="nb">slice</span><span class="p">(</span><span class="kc">None</span><span class="p">)]</span> <span class="o">*</span> <span class="n">num_x_dims</span>
+    <span class="n">slc</span><span class="p">[</span><span class="n">axis</span><span class="p">]</span> <span class="o">=</span> <span class="nb">slice</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">x_coords</span> <span class="o">=</span> <span class="n">x_coords</span> <span class="o">+</span> <span class="n">xp</span><span class="p">[</span><span class="nb">tuple</span><span class="p">(</span><span class="n">slc</span><span class="p">)]</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,))</span>
+    <span class="n">xp</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">xp</span><span class="p">,</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,))</span>
+    <span class="n">x_coords</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">x_coords</span><span class="p">,</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,))</span>
+    <span class="n">ret</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">interp</span><span class="p">(</span><span class="n">x_coords</span><span class="p">,</span> <span class="n">xp</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">_np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">ret</span><span class="p">,</span> <span class="n">x_pre_shape</span> <span class="o">+</span> <span class="p">[</span><span class="n">num_samples</span><span class="p">]</span> <span class="o">+</span> <span class="n">x_post_shape</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="dtype"><a class="viewcode-back" href="../../../../../../functional/backends/numpy/old/general/dtype.html#ivy.functional.backends.numpy.old.general.dtype">[docs]</a><span class="k">def</span> <span class="nf">dtype</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">as_str</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="n">dt</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">dtype</span>
+    <span class="k">if</span> <span class="n">as_str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">dtype_to_str</span><span class="p">(</span><span class="n">dt</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">dt</span></div>
+
+
+<div class="viewcode-block" id="dtype_to_str"><a class="viewcode-back" href="../../../../../../functional/backends/numpy/old/general/dtype_to_str.html#ivy.functional.backends.numpy.old.general.dtype_to_str">[docs]</a><span class="k">def</span> <span class="nf">dtype_to_str</span><span class="p">(</span><span class="n">dtype_in</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dtype_in</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">dtype_in</span>
+    <span class="k">return</span> <span class="n">DTYPE_TO_STR</span><span class="p">[</span><span class="n">dtype_in</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="dtype_from_str"><a class="viewcode-back" href="../../../../../../functional/backends/numpy/old/general/dtype_from_str.html#ivy.functional.backends.numpy.old.general.dtype_from_str">[docs]</a><span class="k">def</span> <span class="nf">dtype_from_str</span><span class="p">(</span><span class="n">dtype_in</span><span class="p">):</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dtype_in</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">dtype_in</span>
+    <span class="k">return</span> <span class="n">DTYPE_FROM_STR</span><span class="p">[</span><span class="n">dtype_in</span><span class="p">]</span></div>
+
+
+<span class="c1"># noinspection PyUnusedLocal</span>
+<div class="viewcode-block" id="compile"><a class="viewcode-back" href="../../../../../../functional/backends/numpy/old/general/compile.html#ivy.functional.backends.numpy.old.general.compile">[docs]</a><span class="k">def</span> <span class="nf">compile</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">dynamic</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">example_inputs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">static_argnums</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">static_argnames</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Numpy does not support compiling functions.</span><span class="se">\n</span><span class="s1">&#39;</span>
+                    <span class="s1">&#39;Now returning the unmodified function.&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">func</span></div>
+
+
+<span class="n">current_framework_str</span> <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="s1">&#39;numpy&#39;</span>
+<span class="n">current_framework_str</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">=</span> <span class="s1">&#39;current_framework_str&#39;</span>
+<span class="n">multiprocessing</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">context</span><span class="o">=</span><span class="kc">None</span><span class="p">:</span> <span class="n">_multiprocessing</span> <span class="k">if</span> <span class="n">context</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">_multiprocessing</span><span class="o">.</span><span class="n">get_context</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+<span class="n">container_types</span> <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="p">[]</span>
+
+
+<div class="viewcode-block" id="inplace_update"><a class="viewcode-back" href="../../../../../../functional/backends/numpy/old/general/inplace_update.html#ivy.functional.backends.numpy.old.general.inplace_update">[docs]</a><span class="k">def</span> <span class="nf">inplace_update</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
+    <span class="n">x</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">val</span>
+    <span class="k">return</span> <span class="n">x</span></div>
+
+
+<div class="viewcode-block" id="inplace_decrement"><a class="viewcode-back" href="../../../../../../functional/backends/numpy/old/general/inplace_decrement.html#ivy.functional.backends.numpy.old.general.inplace_decrement">[docs]</a><span class="k">def</span> <span class="nf">inplace_decrement</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
+    <span class="n">x</span> <span class="o">-=</span> <span class="n">val</span>
+    <span class="k">return</span> <span class="n">x</span></div>
+
+
+<div class="viewcode-block" id="inplace_increment"><a class="viewcode-back" href="../../../../../../functional/backends/numpy/old/general/inplace_increment.html#ivy.functional.backends.numpy.old.general.inplace_increment">[docs]</a><span class="k">def</span> <span class="nf">inplace_increment</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
+    <span class="n">x</span> <span class="o">+=</span> <span class="n">val</span>
+    <span class="k">return</span> <span class="n">x</span></div>
+
+<span class="n">inplace_arrays_supported</span> <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="kc">True</span>
+<span class="n">inplace_variables_supported</span> <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="kc">True</span>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Ivy Team
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

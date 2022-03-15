@@ -1,0 +1,16 @@
+Compilation
+===========
+
+.. automodule:: ivy.functional.ivy.old.compilation
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :maxdepth: -1
+   :caption: Compilation
+
+   compilation/compile.rst
+

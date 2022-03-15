@@ -1,0 +1,16 @@
+Manipulation
+============
+
+.. automodule:: ivy.functional.backends.mxnet.manipulation
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :maxdepth: -1
+   :caption: Manipulation
+
+   manipulation/flip.rst
+

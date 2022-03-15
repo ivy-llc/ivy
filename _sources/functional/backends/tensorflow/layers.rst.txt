@@ -1,0 +1,18 @@
+Layers
+======
+
+.. automodule:: ivy.functional.backends.tensorflow.layers
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :maxdepth: -1
+   :caption: Layers
+
+   layers/conv2d.rst
+   layers/depthwise_conv2d.rst
+   layers/conv3d.rst
+

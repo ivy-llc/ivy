@@ -1,0 +1,533 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Dtype &mdash; Ivy 1.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> Ivy
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../why_ivy.html">Why Ivy?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../using_ivy.html">Using Ivy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../training_a_network.html">Training a Network</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">Contributing to Ivy</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Array</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../array/array_api.html">Array api</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../array/conversions.html">Conversions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../array/device.html">Device</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../array/general.html">General</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../array/gradients.html">Gradients</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../array/image.html">Image</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../array/linalg.html">Linalg</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../array/logic.html">Logic</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../array/math.html">Math</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../array/meta.html">Meta</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../array/random.html">Random</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../array/reductions.html">Reductions</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Functional</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../backends.html">Backends</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ivy.html">Ivy</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Stateful</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/converters.html">Converters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/initializers.html">Initializers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/module.html">Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/optimizers.html">Optimizers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/sequential.html">Sequential</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Docs</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../ivy"">Ivy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../mech"">Ivy mech</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../vision"">Ivy vision</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../robot"">Ivy robot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../gym"">Ivy gym</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../memory"">Ivy memory</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../builder"">Ivy builder</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../models"">Ivy models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../ecosystem"">Ivy ecosystem</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Ivy</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+      <li>Dtype</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../../_sources/functional/ivy/old/dtype.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-ivy.functional.ivy.old.dtype">
+<span id="dtype"></span><h1>Dtype<a class="headerlink" href="#module-ivy.functional.ivy.old.dtype" title="Permalink to this headline">¶</a></h1>
+<p>Collection of dtype Ivy functions.</p>
+<dl class="py class">
+<dt id="ivy.functional.ivy.old.dtype.DefaultDtype">
+<em class="property">class </em><code class="sig-prename descclassname">ivy.functional.ivy.old.dtype.</code><code class="sig-name descname">DefaultDtype</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dtype</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/old/dtype.html#DefaultDtype"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.old.dtype.DefaultDtype" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt id="ivy.functional.ivy.old.dtype.DefaultDtype.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dtype</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/old/dtype.html#DefaultDtype.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.old.dtype.DefaultDtype.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="ivy.functional.ivy.old.dtype.DefaultFloatDtype">
+<em class="property">class </em><code class="sig-prename descclassname">ivy.functional.ivy.old.dtype.</code><code class="sig-name descname">DefaultFloatDtype</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">float_dtype</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/old/dtype.html#DefaultFloatDtype"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.old.dtype.DefaultFloatDtype" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt id="ivy.functional.ivy.old.dtype.DefaultFloatDtype.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">float_dtype</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/old/dtype.html#DefaultFloatDtype.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.old.dtype.DefaultFloatDtype.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="ivy.functional.ivy.old.dtype.DefaultIntDtype">
+<em class="property">class </em><code class="sig-prename descclassname">ivy.functional.ivy.old.dtype.</code><code class="sig-name descname">DefaultIntDtype</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">float_dtype</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/old/dtype.html#DefaultIntDtype"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.old.dtype.DefaultIntDtype" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt id="ivy.functional.ivy.old.dtype.DefaultIntDtype.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">float_dtype</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/old/dtype.html#DefaultIntDtype.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.old.dtype.DefaultIntDtype.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.old.dtype.astype">
+<code class="sig-prename descclassname">ivy.functional.ivy.old.dtype.</code><code class="sig-name descname">astype</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">dtype</span><span class="p">:</span> <span class="n">ivy.Dtype</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><a class="headerlink" href="#ivy.functional.ivy.old.dtype.astype" title="Permalink to this definition">¶</a></dt>
+<dd><p>Casts an array to a specified type.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>array</em>) – Input array containing elements to cast.</p></li>
+<li><p><strong>dtype</strong> (<em>data-type string</em>) – The desired data-type for the array in string format, i.e. ‘float32’ or ‘int64’.
+If not given, then the type will be determined as the minimum type required to hold the objects in the
+sequence.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A new array of the same shape as input array a, with data type given by dtype.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.old.dtype.cast">
+<code class="sig-prename descclassname">ivy.functional.ivy.old.dtype.</code><code class="sig-name descname">cast</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">dtype</span><span class="p">:</span> <span class="n">ivy.Dtype</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/old/dtype.html#cast"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.old.dtype.cast" title="Permalink to this definition">¶</a></dt>
+<dd><p>Casts an array to a specified type.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>array</em>) – Input array containing elements to cast.</p></li>
+<li><p><strong>dtype</strong> (<em>data-type string</em>) – The desired data-type for the array in string format, i.e. ‘float32’ or ‘int64’.
+If not given, then the type will be determined as the minimum type required to hold the objects in the
+sequence.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A new array of the same shape as input array a, with data type given by dtype.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.old.dtype.closest_valid_dtype">
+<code class="sig-prename descclassname">ivy.functional.ivy.old.dtype.</code><code class="sig-name descname">closest_valid_dtype</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">type</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Union<span class="p">[</span>ivy.Dtype<span class="p">, </span>str<span class="p">]</span><span class="p">]</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/old/dtype.html#closest_valid_dtype"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.old.dtype.closest_valid_dtype" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determines the closest valid datatype to the datatype passed as input.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>type</strong> – The data type for which to check the closest valid type for.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The closest valid data type as a native ivy.Dtype</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.old.dtype.convert_dtype">
+<code class="sig-prename descclassname">ivy.functional.ivy.old.dtype.</code><code class="sig-name descname">convert_dtype</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dtype_in</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.Dtype<span class="p">, </span>str<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">backend</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/old/dtype.html#convert_dtype"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.old.dtype.convert_dtype" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts a data type from one backend framework representation to another.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dtype_in</strong> (<em>data type</em>) – The data-type to convert, in the specified backend representation</p></li>
+<li><p><strong>backend</strong> (<em>str</em>) – The backend framework the dtype_in is represented in.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The data-type in the current ivy backend format</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.old.dtype.default_dtype">
+<code class="sig-prename descclassname">ivy.functional.ivy.old.dtype.</code><code class="sig-name descname">default_dtype</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dtype</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">item</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">as_str</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/old/dtype.html#default_dtype"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.old.dtype.default_dtype" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the input dtype if provided, otherwise return the global default dtype.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.old.dtype.default_float_dtype">
+<code class="sig-prename descclassname">ivy.functional.ivy.old.dtype.</code><code class="sig-name descname">default_float_dtype</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">float_dtype</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">as_str</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/old/dtype.html#default_float_dtype"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.old.dtype.default_float_dtype" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the input float dtype if provided, otherwise return the global default float dtype.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.old.dtype.default_int_dtype">
+<code class="sig-prename descclassname">ivy.functional.ivy.old.dtype.</code><code class="sig-name descname">default_int_dtype</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">int_dtype</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">as_str</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/old/dtype.html#default_int_dtype"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.old.dtype.default_int_dtype" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the input int dtype if provided, otherwise return the global default int dtype.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.old.dtype.dtype">
+<code class="sig-prename descclassname">ivy.functional.ivy.old.dtype.</code><code class="sig-name descname">dtype</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">as_str</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span> &#x2192; ivy.Dtype<a class="reference internal" href="../../../_modules/ivy/functional/ivy/old/dtype.html#dtype"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.old.dtype.dtype" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the data type for input array x.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>array</em>) – Tensor for which to get the data type.</p></li>
+<li><p><strong>as_str</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether or not to return the dtype in string format. Default is False.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Data type of the array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.old.dtype.dtype_bits">
+<code class="sig-prename descclassname">ivy.functional.ivy.old.dtype.</code><code class="sig-name descname">dtype_bits</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dtype_in</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.Dtype<span class="p">, </span>str<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; int<a class="reference internal" href="../../../_modules/ivy/functional/ivy/old/dtype.html#dtype_bits"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.old.dtype.dtype_bits" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the number of bits used for representing the input data type.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>dtype_in</strong> – The data type to determine the number of bits for.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The number of bits used to represent the data type.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.old.dtype.dtype_from_str">
+<code class="sig-prename descclassname">ivy.functional.ivy.old.dtype.</code><code class="sig-name descname">dtype_from_str</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dtype_in</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.Dtype<span class="p">, </span>str<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; ivy.Dtype<a class="reference internal" href="../../../_modules/ivy/functional/ivy/old/dtype.html#dtype_from_str"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.old.dtype.dtype_from_str" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert data type string representation to native data type.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>dtype_in</strong> (<em>str</em>) – The data type string to convert to native data type.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>data type e.g. ivy.float32.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.old.dtype.dtype_to_str">
+<code class="sig-prename descclassname">ivy.functional.ivy.old.dtype.</code><code class="sig-name descname">dtype_to_str</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dtype_in</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.Dtype<span class="p">, </span>str<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="../../../_modules/ivy/functional/ivy/old/dtype.html#dtype_to_str"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.old.dtype.dtype_to_str" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert native data type to string representation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>dtype_in</strong> (<em>data type</em>) – The data type to convert to string.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>data type string ‘float32’</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.old.dtype.invalid_dtype">
+<code class="sig-prename descclassname">ivy.functional.ivy.old.dtype.</code><code class="sig-name descname">invalid_dtype</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dtype_in</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Union<span class="p">[</span>ivy.Dtype<span class="p">, </span>str<span class="p">]</span><span class="p">]</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/old/dtype.html#invalid_dtype"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.old.dtype.invalid_dtype" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determines whether the provided data type is not support by the current framework.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>dtype_in</strong> – The data type for which to check for backend non-support</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Boolean, whether the data-type string is un-supported.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.old.dtype.is_float_dtype">
+<code class="sig-prename descclassname">ivy.functional.ivy.old.dtype.</code><code class="sig-name descname">is_float_dtype</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dtype_in</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.Dtype<span class="p">, </span>str<span class="p">, </span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">, </span>numbers.Number<span class="p">]</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/old/dtype.html#is_float_dtype"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.old.dtype.is_float_dtype" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determine whether the input data type is an float data-type.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>dtype_in</strong> – Datatype to test</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Whether or not the data type is a floating point data type</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.old.dtype.is_int_dtype">
+<code class="sig-prename descclassname">ivy.functional.ivy.old.dtype.</code><code class="sig-name descname">is_int_dtype</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dtype_in</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.Dtype<span class="p">, </span>str<span class="p">, </span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">, </span>numbers.Number<span class="p">]</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/old/dtype.html#is_int_dtype"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.old.dtype.is_int_dtype" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determine whether the input data type is an int data-type.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>dtype_in</strong> – Datatype to test</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Whether or not the data type is an integer data type</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.old.dtype.set_default_dtype">
+<code class="sig-prename descclassname">ivy.functional.ivy.old.dtype.</code><code class="sig-name descname">set_default_dtype</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dtype</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/old/dtype.html#set_default_dtype"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.old.dtype.set_default_dtype" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.old.dtype.set_default_float_dtype">
+<code class="sig-prename descclassname">ivy.functional.ivy.old.dtype.</code><code class="sig-name descname">set_default_float_dtype</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">float_dtype</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/old/dtype.html#set_default_float_dtype"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.old.dtype.set_default_float_dtype" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.old.dtype.set_default_int_dtype">
+<code class="sig-prename descclassname">ivy.functional.ivy.old.dtype.</code><code class="sig-name descname">set_default_int_dtype</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">int_dtype</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/old/dtype.html#set_default_int_dtype"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.old.dtype.set_default_int_dtype" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.old.dtype.unset_default_dtype">
+<code class="sig-prename descclassname">ivy.functional.ivy.old.dtype.</code><code class="sig-name descname">unset_default_dtype</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/old/dtype.html#unset_default_dtype"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.old.dtype.unset_default_dtype" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.old.dtype.unset_default_float_dtype">
+<code class="sig-prename descclassname">ivy.functional.ivy.old.dtype.</code><code class="sig-name descname">unset_default_float_dtype</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/old/dtype.html#unset_default_float_dtype"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.old.dtype.unset_default_float_dtype" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.old.dtype.unset_default_int_dtype">
+<code class="sig-prename descclassname">ivy.functional.ivy.old.dtype.</code><code class="sig-name descname">unset_default_int_dtype</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/old/dtype.html#unset_default_int_dtype"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.old.dtype.unset_default_int_dtype" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.old.dtype.valid_dtype">
+<code class="sig-prename descclassname">ivy.functional.ivy.old.dtype.</code><code class="sig-name descname">valid_dtype</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dtype_in</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Union<span class="p">[</span>ivy.Dtype<span class="p">, </span>str<span class="p">]</span><span class="p">]</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/old/dtype.html#valid_dtype"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.old.dtype.valid_dtype" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determines whether the provided data type is support by the current framework.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>dtype_in</strong> – The data type for which to check for backend support</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Boolean, whether or not the data-type string is supported.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<div class="toctree-wrapper compound">
+<p class="caption"><span class="caption-text">Dtype</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="dtype/cast.html">cast</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dtype/dtype.html">dtype</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dtype/dtype_bits.html">dtype_bits</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dtype/is_int_dtype.html">is_int_dtype</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dtype/is_float_dtype.html">is_float_dtype</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dtype/valid_dtype.html">valid_dtype</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dtype/invalid_dtype.html">invalid_dtype</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dtype/closest_valid_dtype.html">closest_valid_dtype</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dtype/convert_dtype.html">convert_dtype</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dtype/dtype_to_str.html">dtype_to_str</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dtype/dtype_from_str.html">dtype_from_str</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dtype/default_dtype.html">default_dtype</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dtype/set_default_dtype.html">set_default_dtype</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dtype/unset_default_dtype.html">unset_default_dtype</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dtype/default_float_dtype.html">default_float_dtype</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dtype/set_default_float_dtype.html">set_default_float_dtype</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dtype/unset_default_float_dtype.html">unset_default_float_dtype</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dtype/default_int_dtype.html">default_int_dtype</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dtype/set_default_int_dtype.html">set_default_int_dtype</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dtype/unset_default_int_dtype.html">unset_default_int_dtype</a></li>
+</ul>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Ivy Team
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

@@ -1,0 +1,18 @@
+Losses
+======
+
+.. automodule:: ivy.functional.ivy.losses
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :maxdepth: -1
+   :caption: Losses
+
+   losses/cross_entropy.rst
+   losses/binary_cross_entropy.rst
+   losses/sparse_cross_entropy.rst
+

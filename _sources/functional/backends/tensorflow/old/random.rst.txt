@@ -1,0 +1,19 @@
+Random
+======
+
+.. automodule:: ivy.functional.backends.tensorflow.old.random
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :maxdepth: -1
+   :caption: Random
+
+   random/random_uniform.rst
+   random/random_normal.rst
+   random/multinomial.rst
+   random/randint.rst
+
