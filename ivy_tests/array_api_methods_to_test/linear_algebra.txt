@@ -3,7 +3,7 @@
 #det
 diagonal
 #eigh
-#eigvalsh
+eigvalsh
 #inv
 #matmul
 #matrix_norm
