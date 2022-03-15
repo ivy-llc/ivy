@@ -228,6 +228,7 @@ def log10(x: Union[ivy.Array, ivy.NativeArray])\
 
 
 def log1p(x: Union[ivy.Array, ivy.NativeArray])\
+        -> ivy.Array:
     """
     Calculates an implementation-dependent approximation to log(1+x), where log refers to the natural (base e)
     logarithm.
@@ -386,9 +387,6 @@ def divide(x1: Union[ivy.Array, ivy.NativeArray],
     return _cur_framework(x1, x2).divide(x1, x2, dtype)
 
 
-<<<<<<< HEAD
-def acosh(x: Union[ivy.Array, ivy.NativeArray]) \
-=======
   
 def logical_or(x1: Union[ivy.Array, ivy.NativeArray], x2: Union[ivy.Array, ivy.NativeArray])\
         -> ivy.Array:
