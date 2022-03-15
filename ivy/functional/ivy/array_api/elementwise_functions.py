@@ -228,10 +228,8 @@ def log10(x: Union[ivy.Array, ivy.NativeArray])\
 
 
 def log1p(x: Union[ivy.Array, ivy.NativeArray])\
-<<<<<<< HEAD
         -> ivy.Array:
-=======
->>>>>>> b8db31b7ad97c2742f78a26d6cd7fec0ddc97c22
+
     """
     Calculates an implementation-dependent approximation to log(1+x), where log refers to the natural (base e)
     logarithm.
