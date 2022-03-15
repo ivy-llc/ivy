@@ -13,6 +13,11 @@ def isfinite(x: Tensor)\
     return torch.isfinite(x)
 
 
+def isinf(x: torch.Tensor) \
+        -> torch.Tensor:
+    return torch.isinf(x)
+
+
 def _cast_for_binary_op(x1: Tensor, x2: Tensor)\
         -> typing.Tuple[typing.Union[Tensor, int, float, bool], typing.Union[Tensor, int, float, bool]]:
     x1_bits = ivy.functional.backends.torch.old.general.dtype_bits(x1.dtype)
