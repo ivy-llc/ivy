@@ -6,6 +6,9 @@ Collection of Ivy activation functions.
 from ivy.framework_handler import current_framework as _cur_framework
 
 
+# Extra #
+# ------#
+
 def relu(x):
     """
     Applies the rectified linear unit function element-wise.

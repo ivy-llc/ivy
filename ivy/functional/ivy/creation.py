@@ -6,6 +6,9 @@ import ivy
 from ivy.framework_handler import current_framework as _cur_framework
 
 
+# Array API Standard #
+# -------------------#
+
 def zeros(shape: Union[int, Tuple[int], List[int]],
           dtype: Optional[ivy.Dtype] = None,
           device: Optional[ivy.Device] = None)\
@@ -133,3 +136,7 @@ def empty(shape: Union[int, Tuple[int],List[int]],
     :return: an uninitialized array having a specified shape
     """
     return _cur_framework().empty(shape, dtype, device)
+
+
+# Extra #
+# ------#
