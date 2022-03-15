@@ -23,12 +23,23 @@ def isfinite(x: JaxArray)\
     return jnp.isfinite(x)
 
 
+def equal(x1: JaxArray, x2: JaxArray)\
+        -> JaxArray:
+    return x1 == x2
+
+
+def less_equal(x1: JaxArray, x2: JaxArray)\
+        -> JaxArray:
+    return x1 <= x2
+
+
 def asinh(x: JaxArray)\
         -> JaxArray:
     return jnp.arcsinh(x)
 
 
-def sqrt(x: JaxArray) -> JaxArray:
+def sqrt(x: JaxArray)\
+        -> JaxArray:
     return jnp.sqrt(x)
 
 
@@ -37,9 +48,19 @@ def cosh(x: JaxArray)\
     return jnp.cosh(x)
 
 
+def log10(x: JaxArray)\
+        -> JaxArray:
+    return jnp.log10(x)
+
+
 def log2(x: JaxArray)\
         -> JaxArray:
     return jnp.log2(x)
+
+
+def log1p(x: JaxArray)\
+        -> JaxArray:
+    return jnp.log1p(x)
 
 
 def isnan(x: JaxArray)\
@@ -57,9 +78,38 @@ def cos(x: JaxArray)\
     return jnp.cos(x)
 
 
+def logical_or(x1: JaxArray, x2: JaxArray)\
+        -> JaxArray:
+    return jnp.logical_or(x1, x2)
+
+
 def logical_not(x: JaxArray)\
         -> JaxArray:
     return jnp.logical_not(x)
+
+
+def acosh(x: JaxArray) \
+        -> JaxArray:
+    return jnp.arccosh(x)
+
+
+def sin(x: JaxArray) \
+        -> JaxArray:
+    return jnp.sin(x)
+
+
+def negative(x: JaxArray) -> JaxArray:
+    return jnp.negative(x)
+
+
+def tanh(x: JaxArray) \
+        -> JaxArray:
+    return jnp.tanh(x)
+
+
+def sinh(x: JaxArray) \
+        -> JaxArray:
+    return jnp.sinh(x)
 
 
 def positive(x: JaxArray)\
