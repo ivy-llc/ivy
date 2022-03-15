@@ -7,7 +7,7 @@ import os
 import time
 
 # local
-from ivy.functional.ivy.old import Profiler as BaseProfiler
+from ivy.functional.ivy.device import Profiler as BaseProfiler
 
 
 dev = lambda x, as_str=False: 'cpu'

@@ -7,7 +7,7 @@ import os
 import jax as _jax
 
 # local
-from ivy.functional.ivy.old import Profiler as BaseProfiler
+from ivy.functional.ivy.device import Profiler as BaseProfiler
 
 
 # Helpers #
