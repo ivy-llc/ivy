@@ -99,6 +99,7 @@
 <li class="toctree-l2"><a class="reference internal" href="elementwise/bitwise_and.html">bitwise_and</a></li>
 <li class="toctree-l2"><a class="reference internal" href="elementwise/ceil.html">ceil</a></li>
 <li class="toctree-l2"><a class="reference internal" href="elementwise/isfinite.html">isfinite</a></li>
+<li class="toctree-l2"><a class="reference internal" href="elementwise/isinf.html">isinf</a></li>
 <li class="toctree-l2"><a class="reference internal" href="elementwise/less_equal.html">less_equal</a></li>
 <li class="toctree-l2"><a class="reference internal" href="elementwise/asinh.html">asinh</a></li>
 <li class="toctree-l2"><a class="reference internal" href="elementwise/sqrt.html">sqrt</a></li>
@@ -367,6 +368,22 @@
 </dl>
 <dl class="simple">
 <dt>out:</dt><dd><p>an array containing test results. An element <code class="docutils literal notranslate"><span class="pre">out_i</span></code> is <code class="docutils literal notranslate"><span class="pre">True</span></code> if <code class="docutils literal notranslate"><span class="pre">x_i</span></code> is finite and <code class="docutils literal notranslate"><span class="pre">False</span></code> otherwise. The returned array must have a data type of <code class="docutils literal notranslate"><span class="pre">bool</span></code>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.elementwise.isinf">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">isinf</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../_modules/ivy/functional/ivy/elementwise.html#isinf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.elementwise.isinf" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests each element x_i of the input array x to determine if equal to positive or negative infinity.
+Parameters
+———-
+x:</p>
+<blockquote>
+<div><p>input array. Should have a numeric data type.</p>
+</div></blockquote>
+<dl class="simple">
+<dt>out:</dt><dd><p>an array containing test results. An element out_i is True if x_i is either positive or negative infinity and False otherwise. The returned array must have a data type of bool.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -642,6 +659,7 @@ have a floating-point data type</p>
 <li class="toctree-l1"><a class="reference internal" href="elementwise/bitwise_and.html">bitwise_and</a></li>
 <li class="toctree-l1"><a class="reference internal" href="elementwise/ceil.html">ceil</a></li>
 <li class="toctree-l1"><a class="reference internal" href="elementwise/isfinite.html">isfinite</a></li>
+<li class="toctree-l1"><a class="reference internal" href="elementwise/isinf.html">isinf</a></li>
 <li class="toctree-l1"><a class="reference internal" href="elementwise/less_equal.html">less_equal</a></li>
 <li class="toctree-l1"><a class="reference internal" href="elementwise/asinh.html">asinh</a></li>
 <li class="toctree-l1"><a class="reference internal" href="elementwise/sqrt.html">sqrt</a></li>

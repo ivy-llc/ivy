@@ -15,6 +15,7 @@ Elementwise
    elementwise/bitwise_and.rst
    elementwise/ceil.rst
    elementwise/isfinite.rst
+   elementwise/isinf.rst
    elementwise/less_equal.rst
    elementwise/asinh.rst
    elementwise/sqrt.rst
