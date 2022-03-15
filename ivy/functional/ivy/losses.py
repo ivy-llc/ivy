@@ -6,6 +6,9 @@ Collection of Ivy loss functions.
 import ivy
 
 
+# Extra #
+# ------#
+
 def cross_entropy(true, pred, axis=-1, epsilon=1e-7):
     """
     Computes cross entropy between predicted and true discrete distrubtions.

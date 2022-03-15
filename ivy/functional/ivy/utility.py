@@ -6,6 +6,9 @@ import ivy
 from ivy.framework_handler import current_framework as _cur_framework
 
 
+# Array API Standard #
+# -------------------#
+
 # noinspection PyShadowingBuiltins
 def all(x: Union[ivy.Array, ivy.NativeArray],
         axis: Optional[Union[int, Tuple[int], List[int]]] = None,
@@ -66,3 +69,7 @@ def any(x: Union[ivy.Array, ivy.NativeArray],
         if a logical OR reduction was performed over the entire array, the returned array must be a zero-dimensional array containing the test result; otherwise, the returned array must be a non-zero-dimensional array containing the test results. The returned array must have a data type of ``bool``.
     """
     return _cur_framework(x).any(x, axis, keepdims)
+
+
+# Extra #
+# ------#

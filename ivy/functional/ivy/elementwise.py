@@ -1,8 +1,13 @@
+# global
+from typing import Union
+
 # local
 import ivy
-from typing import Union
 from ivy.framework_handler import current_framework as _cur_framework
 
+
+# Array API Standard #
+# -------------------#
 
 def bitwise_and(x1: Union[ivy.Array, ivy.NativeArray],
                 x2: Union[ivy.Array, ivy.NativeArray])\
@@ -478,3 +483,7 @@ def sinh(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
         an array containing the hyperbolic sine of each element in ``x``. The returned array must have a floating-point data type determined by :ref:`type-promotion`.
     """
     return _cur_framework(x).sinh(x)
+
+
+# Extra #
+# ------#
