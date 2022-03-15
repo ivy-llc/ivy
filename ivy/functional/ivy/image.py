@@ -10,6 +10,9 @@ from functools import reduce as _reduce
 from ivy.framework_handler import current_framework as _cur_framework
 
 
+# Extra #
+# ------#
+
 def stack_images(images, desired_aspect_ratio=(1, 1)):
     """
     Stacks a group of images into a combined windowed image, fitting the desired aspect ratio as closely as possible.

@@ -30,6 +30,10 @@ dev_handles = dict()
 split_factors = dict()
 max_chunk_sizes = dict()
 
+
+# Extra #
+# ------#
+
 class DefaultDevice:
     # noinspection PyShadowingNames
     def __init__(self, dev):
@@ -44,7 +48,6 @@ class DefaultDevice:
         return self
 
 # Helpers #
-# --------#
 
 # noinspection PyShadowingNames
 def _get_nvml_gpu_handle(dev):
@@ -58,9 +61,8 @@ def _get_nvml_gpu_handle(dev):
 
 
 # Device Queries #
-# ---------------#
 
-# Array Printing #
+# Array Printing
 
 # noinspection PyShadowingNames
 def get_all_arrays_on_dev(dev):
@@ -95,7 +97,7 @@ def print_all_arrays_on_dev(dev):
         print(type(arr), arr.shape)
 
 
-# Retreival #
+# Retreival
 
 def dev(x: Union[ivy.Array, ivy.NativeArray], as_str: bool = False)\
         -> Union[ivy.Device, str]:
@@ -111,7 +113,7 @@ def dev(x: Union[ivy.Array, ivy.NativeArray], as_str: bool = False)\
     return _cur_framework(x).dev(x, as_str)
 
 
-# Conversions #
+# Conversions
 
 # noinspection PyShadowingNames
 def dev_to_str(dev: [ivy.Device, str])\
@@ -139,7 +141,7 @@ def dev_from_str(dev: [ivy.Device, str])\
     return _cur_framework().dev_from_str(dev)
 
 
-# Memory #
+# Memory
 
 # noinspection PyShadowingNames
 def clear_mem_on_dev(dev: ivy.Device)\
@@ -232,7 +234,7 @@ def percent_used_mem_on_dev(dev: ivy.Device, process_specific=False)\
                         'but found {}'.format(dev))
 
 
-# Utilization #
+# Utilization
 
 # noinspection PyShadowingNames
 def dev_util(dev: ivy.Device)\
@@ -254,7 +256,7 @@ def dev_util(dev: ivy.Device)\
                         'but found {}'.format(dev))
 
 
-# Availability #
+# Availability
 
 def gpu_is_available() -> bool:
     """
@@ -291,7 +293,6 @@ def tpu_is_available() -> bool:
 
 
 # Default Device #
-# ---------------#
 
 # noinspection PyShadowingNames
 def _assert_dev_correct_formatting(dev):
@@ -331,7 +332,6 @@ def unset_default_device():
 
 
 # Device Allocation #
-# ------------------#
 
 # noinspection PyShadowingNames
 def to_dev(x: Union[ivy.Array, ivy.NativeArray], dev: ivy.Device = None)\
@@ -349,7 +349,6 @@ def to_dev(x: Union[ivy.Array, ivy.NativeArray], dev: ivy.Device = None)\
 
 
 # Function Splitting #
-# -------------------#
 
 # noinspection PyShadowingNames
 def split_factor(dev=None):
@@ -472,7 +471,6 @@ def split_func_call(func: Callable, inputs: Iterable[Union[Union[ivy.Array, ivy.
 
 
 # Multi-Device #
-# -------------#
 
 class MultiDev:
 
@@ -593,7 +591,6 @@ class MultiDevNest(MultiDevIter):
 
 
 # Device Distribution #
-# --------------------#
 
 class DevDistItem(MultiDevItem):
 
@@ -690,7 +687,6 @@ def dev_dist_nest(args, kwargs, devs: Union[Iterable[str], Dict[str, int]], axis
 
 
 # Device Cloning #
-# ---------------#
 
 class DevClonedItem(MultiDevItem):
 
@@ -777,7 +773,6 @@ def dev_clone_nest(args, kwargs, devs, max_depth=1):
 
 
 # Device Unification #
-# -------------------#
 
 # noinspection PyShadowingNames
 def _concat_unify_array(xs, dev, axis):
@@ -897,7 +892,6 @@ def dev_unify_nest(args: Type[MultiDev], kwargs: Type[MultiDev], dev, mode, axis
 
 
 # Device Mappers #
-# ---------------#
 
 class DevMapper(abc.ABC):
 
@@ -1027,7 +1021,6 @@ class DevMapperMultiProc(DevMapper):
 
 
 # Device Manager #
-# ---------------#
 
 class DevManager:
 
@@ -1437,7 +1430,6 @@ class DevManager:
 
 
 # Profiler #
-# ---------#
 
 class Profiler(abc.ABC):
 
