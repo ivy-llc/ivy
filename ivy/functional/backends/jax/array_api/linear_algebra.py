@@ -1,4 +1,5 @@
 # global
+import jax
 import jax.numpy as jnp
 from typing import Union, Optional, Tuple, Literal
 from collections import namedtuple
@@ -48,3 +49,8 @@ def slogdet(x:Union[_ivy.Array,_ivy.NativeArray],full_matrices: bool = True) -> 
     sign, logabsdet = jnp.linalg.slogdet(x)
     res = results(sign, logabsdet)
     return res
+
+def trace(x: JaxArray, 
+          offset: int = 0)\
+              -> JaxArray:
+    return jax.numpy.trace(x, offset)
