@@ -6,6 +6,10 @@ import ivy
 from ivy.framework_handler import current_framework as _cur_framework
 
 
+# Array API Standard #
+# -------------------#
+
+# noinspection PyShadowingBuiltins
 def min(x: Union[ivy.Array, ivy.NativeArray],
         axis: Union[int, Tuple[int]] = None,
         keepdims: bool = False) \
@@ -21,6 +25,8 @@ def min(x: Union[ivy.Array, ivy.NativeArray],
     """
     return _cur_framework.min(x, axis, keepdims)
 
+
+# noinspection PyShadowingBuiltins
 def max(x: Union[ivy.Array, ivy.NativeArray],
         axis: Union[int, Tuple[int]] = None,
         keepdims: bool = False) \
@@ -48,3 +54,7 @@ def max(x: Union[ivy.Array, ivy.NativeArray],
         if the maximum value was computed over the entire array, a zero-dimensional array containing the maximum value; otherwise, a non-zero-dimensional array containing the maximum values. The returned array must have the same data type as ``x``.
     """
     return _cur_framework.max(x, axis, keepdims)
+
+
+# Extra #
+# ------#

@@ -6,6 +6,9 @@ Collection of Ivy normalization functions.
 import ivy
 
 
+# Extra #
+# ------#
+
 # noinspection PyUnresolvedReferences
 def layer_norm(x, normalized_idxs, epsilon=None, scale=None, offset=None, new_std=None):
     """

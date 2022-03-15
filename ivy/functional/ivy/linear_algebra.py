@@ -1,13 +1,15 @@
 # global
 from typing import Union, Optional, Tuple, Literal
 from collections import namedtuple
-from ivy.framework_handler import current_framework as _cur_framework
 
 # local
 import ivy
 from ivy.framework_handler import current_framework as _cur_framework
 inf = float('inf')
 
+
+# Array API Standard #
+# -------------------#
 
 # noinspection PyShadowingBuiltins
 def vector_norm(x: Union[ivy.Array, ivy.NativeArray],
@@ -231,3 +233,7 @@ def trace(x: ivy.Array,
     """
 
     return _cur_framework(x).trace(x, offset)
+
+
+# Extra #
+# ------#
