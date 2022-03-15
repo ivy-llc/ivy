@@ -24,7 +24,6 @@
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
@@ -88,25 +87,23 @@
 <li class="toctree-l1"><a class="reference internal" href="../../training_a_network.html">Training a Network</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../contributing.html">Contributing to Ivy</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Array</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../array/array_api.html">Array api</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../array/conversions.html">Conversions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../array/device.html">Device</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../array/general.html">General</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../array/gradients.html">Gradients</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../array/image.html">Image</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../array/linalg.html">Linalg</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../array/logic.html">Logic</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../array/math.html">Math</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../array/meta.html">Meta</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../array/random.html">Random</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../array/reductions.html">Reductions</a></li>
-</ul>
 <p class="caption"><span class="caption-text">Functional</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../functional/backends.html">Backends</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../functional/ivy.html">Ivy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../functional/ivy/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../functional/ivy/constants.html">Constants</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../functional/ivy/creation.html">Creation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../functional/ivy/data_type.html">Data type</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../functional/ivy/elementwise.html">Elementwise</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../functional/ivy/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../functional/ivy/linear_algebra.html">Linear algebra</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../functional/ivy/losses.html">Losses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../functional/ivy/manipulation.html">Manipulation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../functional/ivy/norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../functional/ivy/searching.html">Searching</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../functional/ivy/set.html">Set</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../functional/ivy/sorting.html">Sorting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../functional/ivy/statistical.html">Statistical</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../functional/ivy/utility.html">Utility</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Stateful</span></p>
 <ul class="current">
@@ -202,23 +199,11 @@
             
   <div class="section" id="gelu">
 <h1>GELU<a class="headerlink" href="#gelu" title="Permalink to this headline">¶</a></h1>
-<dl class="py class">
-<dt id="ivy.stateful.activations.GELU">
-<em class="property">class </em><code class="sig-prename descclassname">ivy.stateful.activations.</code><code class="sig-name descname">GELU</code><a class="reference internal" href="../../_modules/ivy/stateful/activations.html#GELU"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.stateful.activations.GELU" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="../module/Module.html#ivy.stateful.module.Module" title="ivy.stateful.module.Module"><code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.stateful.module.Module</span></code></a></p>
-<dl class="py method">
-<dt id="ivy.stateful.activations.GELU.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/stateful/activations.html#GELU.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.stateful.activations.GELU.__init__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Applies the GELU activation function.</p>
-</dd></dl>
-
-</dd></dl>
-
 <div class="line-block">
 <div class="line"><br /></div>
 <div class="line"><strong>Supported Frameworks:</strong></div>
 </div>
-<p><a class="reference internal" href="../../_images/empty1.png"><img alt="empty" src="../../_images/empty1.png" style="width: 4%;" /></a> <a class="reference external" href="https://jax.readthedocs.io"><img alt="jax_logo" src="../../_images/jax_logo1.png" style="width: 14%;" /></a> <a class="reference internal" href="../../_images/empty1.png"><img alt="empty" src="../../_images/empty1.png" style="width: 4%;" /></a> <a class="reference external" href="https://www.tensorflow.org"><img alt="tf_logo" src="../../_images/tensorflow_logo1.png" style="width: 14%;" /></a> <a class="reference internal" href="../../_images/empty1.png"><img alt="empty" src="../../_images/empty1.png" style="width: 4%;" /></a> <a class="reference external" href="https://pytorch.org"><img alt="pytorch_logo" src="../../_images/pytorch_logo1.png" style="width: 14%;" /></a> <a class="reference internal" href="../../_images/empty1.png"><img alt="empty" src="../../_images/empty1.png" style="width: 4%;" /></a> <a class="reference external" href="https://mxnet.apache.org"><img alt="mxnet_logo" src="../../_images/mxnet_logo1.png" style="width: 14%;" /></a> <a class="reference internal" href="../../_images/empty1.png"><img alt="empty" src="../../_images/empty1.png" style="width: 4%;" /></a> <a class="reference external" href="https://numpy.org"><img alt="numpy_logo" src="../../_images/numpy_logo1.png" style="width: 14%;" /></a> <a class="reference internal" href="../../_images/empty1.png"><img alt="empty" src="../../_images/empty1.png" style="width: 4%;" /></a></p>
+<p><a class="reference internal" href="../../_images/empty.png"><img alt="empty" src="../../_images/empty.png" style="width: 4%;" /></a> <a class="reference external" href="https://jax.readthedocs.io"><img alt="jax_logo" src="../../_images/jax_logo.png" style="width: 14%;" /></a> <a class="reference internal" href="../../_images/empty.png"><img alt="empty" src="../../_images/empty.png" style="width: 4%;" /></a> <a class="reference external" href="https://www.tensorflow.org"><img alt="tf_logo" src="../../_images/tensorflow_logo.png" style="width: 14%;" /></a> <a class="reference internal" href="../../_images/empty.png"><img alt="empty" src="../../_images/empty.png" style="width: 4%;" /></a> <a class="reference external" href="https://pytorch.org"><img alt="pytorch_logo" src="../../_images/pytorch_logo.png" style="width: 14%;" /></a> <a class="reference internal" href="../../_images/empty.png"><img alt="empty" src="../../_images/empty.png" style="width: 4%;" /></a> <a class="reference external" href="https://mxnet.apache.org"><img alt="mxnet_logo" src="../../_images/mxnet_logo.png" style="width: 14%;" /></a> <a class="reference internal" href="../../_images/empty.png"><img alt="empty" src="../../_images/empty.png" style="width: 4%;" /></a> <a class="reference external" href="https://numpy.org"><img alt="numpy_logo" src="../../_images/numpy_logo.png" style="width: 14%;" /></a> <a class="reference internal" href="../../_images/empty.png"><img alt="empty" src="../../_images/empty.png" style="width: 4%;" /></a></p>
 </div>
 
 

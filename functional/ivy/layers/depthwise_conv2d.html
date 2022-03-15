@@ -24,7 +24,6 @@
         <script src="../../../_static/jquery.js"></script>
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/doctools.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
@@ -35,7 +34,9 @@
   <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
-    <link rel="search" title="Search" href="../../../search.html" /> 
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="conv3d" href="conv3d.html" />
+    <link rel="prev" title="conv2d_transpose" href="conv2d_transpose.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -86,25 +87,37 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../training_a_network.html">Training a Network</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">Contributing to Ivy</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Array</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../array/array_api.html">Array api</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../array/conversions.html">Conversions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../array/device.html">Device</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../array/general.html">General</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../array/gradients.html">Gradients</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../array/image.html">Image</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../array/linalg.html">Linalg</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../array/logic.html">Logic</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../array/math.html">Math</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../array/meta.html">Meta</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../array/random.html">Random</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../array/reductions.html">Reductions</a></li>
-</ul>
 <p class="caption"><span class="caption-text">Functional</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../backends.html">Backends</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../ivy.html">Ivy</a></li>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../constants.html">Constants</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../creation.html">Creation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../data_type.html">Data type</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../elementwise.html">Elementwise</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../layers.html">Layers</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="linear.html">linear</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dropout.html">dropout</a></li>
+<li class="toctree-l2"><a class="reference internal" href="scaled_dot_product_attention.html">scaled_dot_product_attention</a></li>
+<li class="toctree-l2"><a class="reference internal" href="multi_head_attention.html">multi_head_attention</a></li>
+<li class="toctree-l2"><a class="reference internal" href="conv1d.html">conv1d</a></li>
+<li class="toctree-l2"><a class="reference internal" href="conv1d_transpose.html">conv1d_transpose</a></li>
+<li class="toctree-l2"><a class="reference internal" href="conv2d.html">conv2d</a></li>
+<li class="toctree-l2"><a class="reference internal" href="conv2d_transpose.html">conv2d_transpose</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">depthwise_conv2d</a></li>
+<li class="toctree-l2"><a class="reference internal" href="conv3d.html">conv3d</a></li>
+<li class="toctree-l2"><a class="reference internal" href="conv3d_transpose.html">conv3d_transpose</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lstm_update.html">lstm_update</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../linear_algebra.html">Linear algebra</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../losses.html">Losses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../manipulation.html">Manipulation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../searching.html">Searching</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../set.html">Set</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../sorting.html">Sorting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../statistical.html">Statistical</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../utility.html">Utility</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Stateful</span></p>
 <ul>
@@ -173,6 +186,10 @@
     
       <li><a href="../../../index.html">Docs</a> &raquo;</li>
         
+          <li><a href="../../ivy.html">&lt;no title&gt;</a> &raquo;</li>
+        
+          <li><a href="../layers.html">Layers</a> &raquo;</li>
+        
       <li>depthwise_conv2d</li>
     
     
@@ -196,7 +213,7 @@
 <h1>depthwise_conv2d<a class="headerlink" href="#depthwise-conv2d" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
 <dt id="ivy.functional.ivy.layers.depthwise_conv2d">
-<code class="sig-prename descclassname">ivy.functional.ivy.layers.</code><code class="sig-name descname">depthwise_conv2d</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">filters</span></em>, <em class="sig-param"><span class="n">strides</span></em>, <em class="sig-param"><span class="n">padding</span></em>, <em class="sig-param"><span class="n">data_format</span><span class="o">=</span><span class="default_value">'NHWC'</span></em>, <em class="sig-param"><span class="n">dilations</span><span class="o">=</span><span class="default_value">1</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/layers.html#depthwise_conv2d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.layers.depthwise_conv2d" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">depthwise_conv2d</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">filters</span></em>, <em class="sig-param"><span class="n">strides</span></em>, <em class="sig-param"><span class="n">padding</span></em>, <em class="sig-param"><span class="n">data_format</span><span class="o">=</span><span class="default_value">'NHWC'</span></em>, <em class="sig-param"><span class="n">dilations</span><span class="o">=</span><span class="default_value">1</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/layers.html#depthwise_conv2d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.layers.depthwise_conv2d" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes a 2-D depthwise convolution given 4-D input x and filters arrays.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -219,7 +236,7 @@
 <div class="line"><br /></div>
 <div class="line"><strong>Supported Frameworks:</strong></div>
 </div>
-<p><a class="reference internal" href="../../../_images/empty1.png"><img alt="empty" src="../../../_images/empty1.png" style="width: 4%;" /></a> <a class="reference external" href="https://jax.readthedocs.io"><img alt="jax_logo" src="../../../_images/jax_logo1.png" style="width: 14%;" /></a> <a class="reference internal" href="../../../_images/empty1.png"><img alt="empty" src="../../../_images/empty1.png" style="width: 4%;" /></a> <a class="reference external" href="https://www.tensorflow.org"><img alt="tf_logo" src="../../../_images/tensorflow_logo1.png" style="width: 14%;" /></a> <a class="reference internal" href="../../../_images/empty1.png"><img alt="empty" src="../../../_images/empty1.png" style="width: 4%;" /></a> <a class="reference external" href="https://pytorch.org"><img alt="pytorch_logo" src="../../../_images/pytorch_logo1.png" style="width: 14%;" /></a> <a class="reference internal" href="../../../_images/empty1.png"><img alt="empty" src="../../../_images/empty1.png" style="width: 4%;" /></a> <a class="reference external" href="https://mxnet.apache.org"><img alt="mxnet_logo" src="../../../_images/mxnet_logo1.png" style="width: 14%;" /></a> <a class="reference internal" href="../../../_images/empty1.png"><img alt="empty" src="../../../_images/empty1.png" style="width: 4%;" /></a> <a class="reference external" href="https://numpy.org"><img alt="numpy_logo" src="../../../_images/numpy_logo1.png" style="width: 14%;" /></a> <a class="reference internal" href="../../../_images/empty1.png"><img alt="empty" src="../../../_images/empty1.png" style="width: 4%;" /></a></p>
+<p><a class="reference internal" href="../../../_images/empty.png"><img alt="empty" src="../../../_images/empty.png" style="width: 4%;" /></a> <a class="reference external" href="https://jax.readthedocs.io"><img alt="jax_logo" src="../../../_images/jax_logo.png" style="width: 14%;" /></a> <a class="reference internal" href="../../../_images/empty.png"><img alt="empty" src="../../../_images/empty.png" style="width: 4%;" /></a> <a class="reference external" href="https://www.tensorflow.org"><img alt="tf_logo" src="../../../_images/tensorflow_logo.png" style="width: 14%;" /></a> <a class="reference internal" href="../../../_images/empty.png"><img alt="empty" src="../../../_images/empty.png" style="width: 4%;" /></a> <a class="reference external" href="https://pytorch.org"><img alt="pytorch_logo" src="../../../_images/pytorch_logo.png" style="width: 14%;" /></a> <a class="reference internal" href="../../../_images/empty.png"><img alt="empty" src="../../../_images/empty.png" style="width: 4%;" /></a> <a class="reference external" href="https://mxnet.apache.org"><img alt="mxnet_logo" src="../../../_images/mxnet_logo.png" style="width: 14%;" /></a> <a class="reference internal" href="../../../_images/empty.png"><img alt="empty" src="../../../_images/empty.png" style="width: 4%;" /></a> <a class="reference external" href="https://numpy.org"><img alt="numpy_logo" src="../../../_images/numpy_logo.png" style="width: 14%;" /></a> <a class="reference internal" href="../../../_images/empty.png"><img alt="empty" src="../../../_images/empty.png" style="width: 4%;" /></a></p>
 </div>
 
 
@@ -227,6 +244,15 @@
            
           </div>
           <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="conv3d.html" class="btn btn-neutral float-right" title="conv3d" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="conv2d_transpose.html" class="btn btn-neutral float-left" title="conv2d_transpose" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
   
 
   <hr/>

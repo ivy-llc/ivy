@@ -24,7 +24,6 @@
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
@@ -88,25 +87,23 @@
 <li class="toctree-l1"><a class="reference internal" href="../../training_a_network.html">Training a Network</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../contributing.html">Contributing to Ivy</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Array</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../array/array_api.html">Array api</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../array/conversions.html">Conversions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../array/device.html">Device</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../array/general.html">General</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../array/gradients.html">Gradients</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../array/image.html">Image</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../array/linalg.html">Linalg</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../array/logic.html">Logic</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../array/math.html">Math</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../array/meta.html">Meta</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../array/random.html">Random</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../array/reductions.html">Reductions</a></li>
-</ul>
 <p class="caption"><span class="caption-text">Functional</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../functional/backends.html">Backends</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../functional/ivy.html">Ivy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../functional/ivy/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../functional/ivy/constants.html">Constants</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../functional/ivy/creation.html">Creation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../functional/ivy/data_type.html">Data type</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../functional/ivy/elementwise.html">Elementwise</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../functional/ivy/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../functional/ivy/linear_algebra.html">Linear algebra</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../functional/ivy/losses.html">Losses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../functional/ivy/manipulation.html">Manipulation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../functional/ivy/norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../functional/ivy/searching.html">Searching</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../functional/ivy/set.html">Set</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../functional/ivy/sorting.html">Sorting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../functional/ivy/statistical.html">Statistical</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../functional/ivy/utility.html">Utility</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Stateful</span></p>
 <ul class="current">
@@ -211,44 +208,11 @@
             
   <div class="section" id="multiheadattention">
 <h1>MultiHeadAttention<a class="headerlink" href="#multiheadattention" title="Permalink to this headline">¶</a></h1>
-<dl class="py class">
-<dt id="ivy.stateful.layers.MultiHeadAttention">
-<em class="property">class </em><code class="sig-prename descclassname">ivy.stateful.layers.</code><code class="sig-name descname">MultiHeadAttention</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">query_dim</span></em>, <em class="sig-param"><span class="n">num_heads</span><span class="o">=</span><span class="default_value">8</span></em>, <em class="sig-param"><span class="n">head_dim</span><span class="o">=</span><span class="default_value">64</span></em>, <em class="sig-param"><span class="n">dropout_rate</span><span class="o">=</span><span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">context_dim</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">scale</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">with_to_q_fn</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">with_to_kv_fn</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">with_to_out_fn</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">dev</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">v</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">build_mode</span><span class="o">=</span><span class="default_value">'on_init'</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/stateful/layers.html#MultiHeadAttention"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.stateful.layers.MultiHeadAttention" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="../module/Module.html#ivy.stateful.module.Module" title="ivy.stateful.module.Module"><code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.stateful.module.Module</span></code></a></p>
-<dl class="py method">
-<dt id="ivy.stateful.layers.MultiHeadAttention.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">query_dim</span></em>, <em class="sig-param"><span class="n">num_heads</span><span class="o">=</span><span class="default_value">8</span></em>, <em class="sig-param"><span class="n">head_dim</span><span class="o">=</span><span class="default_value">64</span></em>, <em class="sig-param"><span class="n">dropout_rate</span><span class="o">=</span><span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">context_dim</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">scale</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">with_to_q_fn</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">with_to_kv_fn</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">with_to_out_fn</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">dev</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">v</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">build_mode</span><span class="o">=</span><span class="default_value">'on_init'</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/stateful/layers.html#MultiHeadAttention.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.stateful.layers.MultiHeadAttention.__init__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Multi Head Attention layer.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>query_dim</strong> (<em>int</em>) – The dimension of the attention queries.</p></li>
-<li><p><strong>num_heads</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of attention heads. Default is 8.</p></li>
-<li><p><strong>head_dim</strong> (<em>int</em><em>, </em><em>optional</em>) – The dimension of each of the heads. Default is 64.</p></li>
-<li><p><strong>dropout_rate</strong> (<em>float</em><em>, </em><em>optional</em>) – The rate of dropout. Default is 0.</p></li>
-<li><p><strong>context_dim</strong> (<em>int</em><em>, </em><em>optional.</em>) – The dimension of the context array. Default is None, in which case the query dim is used.</p></li>
-<li><p><strong>scale</strong> (<em>float</em><em>, </em><em>optional</em>) – The value by which to scale the query-key similarity measure. Default is head_dim^-0.5</p></li>
-<li><p><strong>with_to_q_fn</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to include fully connected mapping from input x to queries. Default is True.</p></li>
-<li><p><strong>with_to_kv_fn</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to include fully connected mapping from input context to keys and values.
-Default is True.</p></li>
-<li><p><strong>with_to_out_fn</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to include fully connected mapping from output scaled dot-product attention to
-final output. Default is True.</p></li>
-<li><p><strong>dev</strong> (<em>ivy.Device</em><em>, </em><em>optional</em>) – device on which to create the layer’s variables ‘cuda:0’, ‘cuda:1’, ‘cpu’ etc. Default is cpu.</p></li>
-<li><p><strong>v</strong> (<em>ivy container of variables</em><em>, </em><em>optional</em>) – the variables for the attention layer, as a container, constructed internally by default.</p></li>
-<li><p><strong>build_mode</strong> (<em>str</em><em>, </em><em>optional</em>) – How the Module is built, either on initialization (now), explicitly by the user by calling
-build(), or the first time the __call__ method is run. Default is on initialization.</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-</dd></dl>
-
 <div class="line-block">
 <div class="line"><br /></div>
 <div class="line"><strong>Supported Frameworks:</strong></div>
 </div>
-<p><a class="reference internal" href="../../_images/empty1.png"><img alt="empty" src="../../_images/empty1.png" style="width: 4%;" /></a> <a class="reference external" href="https://jax.readthedocs.io"><img alt="jax_logo" src="../../_images/jax_logo1.png" style="width: 14%;" /></a> <a class="reference internal" href="../../_images/empty1.png"><img alt="empty" src="../../_images/empty1.png" style="width: 4%;" /></a> <a class="reference external" href="https://www.tensorflow.org"><img alt="tf_logo" src="../../_images/tensorflow_logo1.png" style="width: 14%;" /></a> <a class="reference internal" href="../../_images/empty1.png"><img alt="empty" src="../../_images/empty1.png" style="width: 4%;" /></a> <a class="reference external" href="https://pytorch.org"><img alt="pytorch_logo" src="../../_images/pytorch_logo1.png" style="width: 14%;" /></a> <a class="reference internal" href="../../_images/empty1.png"><img alt="empty" src="../../_images/empty1.png" style="width: 4%;" /></a> <a class="reference external" href="https://mxnet.apache.org"><img alt="mxnet_logo" src="../../_images/mxnet_logo1.png" style="width: 14%;" /></a> <a class="reference internal" href="../../_images/empty1.png"><img alt="empty" src="../../_images/empty1.png" style="width: 4%;" /></a> <a class="reference external" href="https://numpy.org"><img alt="numpy_logo" src="../../_images/numpy_logo1.png" style="width: 14%;" /></a> <a class="reference internal" href="../../_images/empty1.png"><img alt="empty" src="../../_images/empty1.png" style="width: 4%;" /></a></p>
+<p><a class="reference internal" href="../../_images/empty.png"><img alt="empty" src="../../_images/empty.png" style="width: 4%;" /></a> <a class="reference external" href="https://jax.readthedocs.io"><img alt="jax_logo" src="../../_images/jax_logo.png" style="width: 14%;" /></a> <a class="reference internal" href="../../_images/empty.png"><img alt="empty" src="../../_images/empty.png" style="width: 4%;" /></a> <a class="reference external" href="https://www.tensorflow.org"><img alt="tf_logo" src="../../_images/tensorflow_logo.png" style="width: 14%;" /></a> <a class="reference internal" href="../../_images/empty.png"><img alt="empty" src="../../_images/empty.png" style="width: 4%;" /></a> <a class="reference external" href="https://pytorch.org"><img alt="pytorch_logo" src="../../_images/pytorch_logo.png" style="width: 14%;" /></a> <a class="reference internal" href="../../_images/empty.png"><img alt="empty" src="../../_images/empty.png" style="width: 4%;" /></a> <a class="reference external" href="https://mxnet.apache.org"><img alt="mxnet_logo" src="../../_images/mxnet_logo.png" style="width: 14%;" /></a> <a class="reference internal" href="../../_images/empty.png"><img alt="empty" src="../../_images/empty.png" style="width: 4%;" /></a> <a class="reference external" href="https://numpy.org"><img alt="numpy_logo" src="../../_images/numpy_logo.png" style="width: 14%;" /></a> <a class="reference internal" href="../../_images/empty.png"><img alt="empty" src="../../_images/empty.png" style="width: 4%;" /></a></p>
 </div>
 
 

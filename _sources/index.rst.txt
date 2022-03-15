@@ -347,24 +347,6 @@ Documentation Tree
 
 .. toctree::
    :maxdepth: -1
-   :caption: Array
-
-   array/array_api.rst
-   array/conversions.rst
-   array/device.rst
-   array/general.rst
-   array/gradients.rst
-   array/image.rst
-   array/linalg.rst
-   array/logic.rst
-   array/math.rst
-   array/meta.rst
-   array/random.rst
-   array/reductions.rst
-
-
-.. toctree::
-   :maxdepth: -1
    :caption: Functional
 
    functional/backends.rst

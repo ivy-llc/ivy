@@ -24,7 +24,6 @@
         <script src="../../../_static/jquery.js"></script>
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/doctools.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
@@ -35,7 +34,9 @@
   <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
-    <link rel="search" title="Search" href="../../../search.html" /> 
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="Constants" href="../constants.html" />
+    <link rel="prev" title="softmax" href="softmax.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -86,25 +87,32 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../training_a_network.html">Training a Network</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">Contributing to Ivy</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Array</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../array/array_api.html">Array api</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../array/conversions.html">Conversions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../array/device.html">Device</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../array/general.html">General</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../array/gradients.html">Gradients</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../array/image.html">Image</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../array/linalg.html">Linalg</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../array/logic.html">Logic</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../array/math.html">Math</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../array/meta.html">Meta</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../array/random.html">Random</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../array/reductions.html">Reductions</a></li>
-</ul>
 <p class="caption"><span class="caption-text">Functional</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../backends.html">Backends</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../ivy.html">Ivy</a></li>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../activations.html">Activations</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="relu.html">relu</a></li>
+<li class="toctree-l2"><a class="reference internal" href="leaky_relu.html">leaky_relu</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gelu.html">gelu</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tanh.html">tanh</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sigmoid.html">sigmoid</a></li>
+<li class="toctree-l2"><a class="reference internal" href="softmax.html">softmax</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">softplus</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../constants.html">Constants</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../creation.html">Creation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../data_type.html">Data type</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../elementwise.html">Elementwise</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../linear_algebra.html">Linear algebra</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../losses.html">Losses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../manipulation.html">Manipulation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../searching.html">Searching</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../set.html">Set</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../sorting.html">Sorting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../statistical.html">Statistical</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../utility.html">Utility</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Stateful</span></p>
 <ul>
@@ -173,6 +181,10 @@
     
       <li><a href="../../../index.html">Docs</a> &raquo;</li>
         
+          <li><a href="../../ivy.html">&lt;no title&gt;</a> &raquo;</li>
+        
+          <li><a href="../activations.html">Activations</a> &raquo;</li>
+        
       <li>softplus</li>
     
     
@@ -196,7 +208,7 @@
 <h1>softplus<a class="headerlink" href="#softplus" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
 <dt id="ivy.functional.ivy.activations.softplus">
-<code class="sig-prename descclassname">ivy.functional.ivy.activations.</code><code class="sig-name descname">softplus</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/activations.html#softplus"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.activations.softplus" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">softplus</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/activations.html#softplus"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.activations.softplus" title="Permalink to this definition">¶</a></dt>
 <dd><p>Applies the softplus function element-wise.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -212,7 +224,7 @@
 <div class="line"><br /></div>
 <div class="line"><strong>Supported Frameworks:</strong></div>
 </div>
-<p><a class="reference internal" href="../../../_images/empty1.png"><img alt="empty" src="../../../_images/empty1.png" style="width: 4%;" /></a> <a class="reference external" href="https://jax.readthedocs.io"><img alt="jax_logo" src="../../../_images/jax_logo1.png" style="width: 14%;" /></a> <a class="reference internal" href="../../../_images/empty1.png"><img alt="empty" src="../../../_images/empty1.png" style="width: 4%;" /></a> <a class="reference external" href="https://www.tensorflow.org"><img alt="tf_logo" src="../../../_images/tensorflow_logo1.png" style="width: 14%;" /></a> <a class="reference internal" href="../../../_images/empty1.png"><img alt="empty" src="../../../_images/empty1.png" style="width: 4%;" /></a> <a class="reference external" href="https://pytorch.org"><img alt="pytorch_logo" src="../../../_images/pytorch_logo1.png" style="width: 14%;" /></a> <a class="reference internal" href="../../../_images/empty1.png"><img alt="empty" src="../../../_images/empty1.png" style="width: 4%;" /></a> <a class="reference external" href="https://mxnet.apache.org"><img alt="mxnet_logo" src="../../../_images/mxnet_logo1.png" style="width: 14%;" /></a> <a class="reference internal" href="../../../_images/empty1.png"><img alt="empty" src="../../../_images/empty1.png" style="width: 4%;" /></a> <a class="reference external" href="https://numpy.org"><img alt="numpy_logo" src="../../../_images/numpy_logo1.png" style="width: 14%;" /></a> <a class="reference internal" href="../../../_images/empty1.png"><img alt="empty" src="../../../_images/empty1.png" style="width: 4%;" /></a></p>
+<p><a class="reference internal" href="../../../_images/empty.png"><img alt="empty" src="../../../_images/empty.png" style="width: 4%;" /></a> <a class="reference external" href="https://jax.readthedocs.io"><img alt="jax_logo" src="../../../_images/jax_logo.png" style="width: 14%;" /></a> <a class="reference internal" href="../../../_images/empty.png"><img alt="empty" src="../../../_images/empty.png" style="width: 4%;" /></a> <a class="reference external" href="https://www.tensorflow.org"><img alt="tf_logo" src="../../../_images/tensorflow_logo.png" style="width: 14%;" /></a> <a class="reference internal" href="../../../_images/empty.png"><img alt="empty" src="../../../_images/empty.png" style="width: 4%;" /></a> <a class="reference external" href="https://pytorch.org"><img alt="pytorch_logo" src="../../../_images/pytorch_logo.png" style="width: 14%;" /></a> <a class="reference internal" href="../../../_images/empty.png"><img alt="empty" src="../../../_images/empty.png" style="width: 4%;" /></a> <a class="reference external" href="https://mxnet.apache.org"><img alt="mxnet_logo" src="../../../_images/mxnet_logo.png" style="width: 14%;" /></a> <a class="reference internal" href="../../../_images/empty.png"><img alt="empty" src="../../../_images/empty.png" style="width: 4%;" /></a> <a class="reference external" href="https://numpy.org"><img alt="numpy_logo" src="../../../_images/numpy_logo.png" style="width: 14%;" /></a> <a class="reference internal" href="../../../_images/empty.png"><img alt="empty" src="../../../_images/empty.png" style="width: 4%;" /></a></p>
 </div>
 
 
@@ -220,6 +232,15 @@
            
           </div>
           <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../constants.html" class="btn btn-neutral float-right" title="Constants" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="softmax.html" class="btn btn-neutral float-left" title="softmax" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
   
 
   <hr/>

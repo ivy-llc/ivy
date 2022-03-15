@@ -24,7 +24,6 @@
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
@@ -88,25 +87,23 @@
 <li class="toctree-l1"><a class="reference internal" href="../../training_a_network.html">Training a Network</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../contributing.html">Contributing to Ivy</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Array</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../array/array_api.html">Array api</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../array/conversions.html">Conversions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../array/device.html">Device</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../array/general.html">General</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../array/gradients.html">Gradients</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../array/image.html">Image</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../array/linalg.html">Linalg</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../array/logic.html">Logic</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../array/math.html">Math</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../array/meta.html">Meta</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../array/random.html">Random</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../array/reductions.html">Reductions</a></li>
-</ul>
 <p class="caption"><span class="caption-text">Functional</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../functional/backends.html">Backends</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../functional/ivy.html">Ivy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../functional/ivy/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../functional/ivy/constants.html">Constants</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../functional/ivy/creation.html">Creation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../functional/ivy/data_type.html">Data type</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../functional/ivy/elementwise.html">Elementwise</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../functional/ivy/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../functional/ivy/linear_algebra.html">Linear algebra</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../functional/ivy/losses.html">Losses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../functional/ivy/manipulation.html">Manipulation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../functional/ivy/norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../functional/ivy/searching.html">Searching</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../functional/ivy/set.html">Set</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../functional/ivy/sorting.html">Sorting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../functional/ivy/statistical.html">Statistical</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../functional/ivy/utility.html">Utility</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Stateful</span></p>
 <ul class="current">
@@ -205,51 +202,11 @@
             
   <div class="section" id="sgd">
 <h1>SGD<a class="headerlink" href="#sgd" title="Permalink to this headline">¶</a></h1>
-<dl class="py class">
-<dt id="ivy.stateful.optimizers.SGD">
-<em class="property">class </em><code class="sig-prename descclassname">ivy.stateful.optimizers.</code><code class="sig-name descname">SGD</code><span class="sig-paren">(</span><em class="sig-param">lr=&lt;function SGD.&lt;lambda&gt;&gt;</em>, <em class="sig-param">inplace=None</em>, <em class="sig-param">stop_gradients=True</em>, <em class="sig-param">compile_on_next_step=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/stateful/optimizers.html#SGD"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.stateful.optimizers.SGD" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="Optimizer.html#ivy.stateful.optimizers.Optimizer" title="ivy.stateful.optimizers.Optimizer"><code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.stateful.optimizers.Optimizer</span></code></a></p>
-<dl class="py method">
-<dt id="ivy.stateful.optimizers.SGD.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param">lr=&lt;function SGD.&lt;lambda&gt;&gt;</em>, <em class="sig-param">inplace=None</em>, <em class="sig-param">stop_gradients=True</em>, <em class="sig-param">compile_on_next_step=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/stateful/optimizers.html#SGD.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.stateful.optimizers.SGD.__init__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Construct a Stochastic-Gradient-Descent (SGD) optimizer.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>lr</strong> (<em>float</em><em>, </em><em>optional</em>) – Learning rate, default is 1e-4.</p></li>
-<li><p><strong>inplace</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to update the variables in-place, or to create new variable handles.
-This is only relevant for frameworks with stateful variables such as PyTorch.
-Default is True, provided the backend framework supports it.</p></li>
-<li><p><strong>stop_gradients</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to stop the gradients of the variables after each gradient step. Default is True.</p></li>
-<li><p><strong>compile_on_next_step</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to compile the optimizer on the next step. Default is False.</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt id="ivy.stateful.optimizers.SGD.set_state">
-<code class="sig-name descname">set_state</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">state</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/stateful/optimizers.html#SGD.set_state"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.stateful.optimizers.SGD.set_state" title="Permalink to this definition">¶</a></dt>
-<dd><p>Set state of the optimizer.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>state</strong> (<em>Ivy container of state tensors</em>) – Nested state to update.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt id="ivy.stateful.optimizers.SGD.state">
-<em class="property">property </em><code class="sig-name descname">state</code><a class="headerlink" href="#ivy.stateful.optimizers.SGD.state" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
 <div class="line-block">
 <div class="line"><br /></div>
 <div class="line"><strong>Supported Frameworks:</strong></div>
 </div>
-<p><a class="reference internal" href="../../_images/empty1.png"><img alt="empty" src="../../_images/empty1.png" style="width: 4%;" /></a> <a class="reference external" href="https://jax.readthedocs.io"><img alt="jax_logo" src="../../_images/jax_logo1.png" style="width: 14%;" /></a> <a class="reference internal" href="../../_images/empty1.png"><img alt="empty" src="../../_images/empty1.png" style="width: 4%;" /></a> <a class="reference external" href="https://www.tensorflow.org"><img alt="tf_logo" src="../../_images/tensorflow_logo1.png" style="width: 14%;" /></a> <a class="reference internal" href="../../_images/empty1.png"><img alt="empty" src="../../_images/empty1.png" style="width: 4%;" /></a> <a class="reference external" href="https://pytorch.org"><img alt="pytorch_logo" src="../../_images/pytorch_logo1.png" style="width: 14%;" /></a> <a class="reference internal" href="../../_images/empty1.png"><img alt="empty" src="../../_images/empty1.png" style="width: 4%;" /></a> <a class="reference external" href="https://mxnet.apache.org"><img alt="mxnet_logo" src="../../_images/mxnet_logo1.png" style="width: 14%;" /></a> <a class="reference internal" href="../../_images/empty1.png"><img alt="empty" src="../../_images/empty1.png" style="width: 4%;" /></a> <a class="reference external" href="https://numpy.org"><img alt="numpy_logo" src="../../_images/numpy_logo1.png" style="width: 14%;" /></a> <a class="reference internal" href="../../_images/empty1.png"><img alt="empty" src="../../_images/empty1.png" style="width: 4%;" /></a></p>
+<p><a class="reference internal" href="../../_images/empty.png"><img alt="empty" src="../../_images/empty.png" style="width: 4%;" /></a> <a class="reference external" href="https://jax.readthedocs.io"><img alt="jax_logo" src="../../_images/jax_logo.png" style="width: 14%;" /></a> <a class="reference internal" href="../../_images/empty.png"><img alt="empty" src="../../_images/empty.png" style="width: 4%;" /></a> <a class="reference external" href="https://www.tensorflow.org"><img alt="tf_logo" src="../../_images/tensorflow_logo.png" style="width: 14%;" /></a> <a class="reference internal" href="../../_images/empty.png"><img alt="empty" src="../../_images/empty.png" style="width: 4%;" /></a> <a class="reference external" href="https://pytorch.org"><img alt="pytorch_logo" src="../../_images/pytorch_logo.png" style="width: 14%;" /></a> <a class="reference internal" href="../../_images/empty.png"><img alt="empty" src="../../_images/empty.png" style="width: 4%;" /></a> <a class="reference external" href="https://mxnet.apache.org"><img alt="mxnet_logo" src="../../_images/mxnet_logo.png" style="width: 14%;" /></a> <a class="reference internal" href="../../_images/empty.png"><img alt="empty" src="../../_images/empty.png" style="width: 4%;" /></a> <a class="reference external" href="https://numpy.org"><img alt="numpy_logo" src="../../_images/numpy_logo.png" style="width: 14%;" /></a> <a class="reference internal" href="../../_images/empty.png"><img alt="empty" src="../../_images/empty.png" style="width: 4%;" /></a></p>
 </div>
 
 

@@ -24,7 +24,6 @@
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -87,25 +86,23 @@
 <li class="toctree-l1"><a class="reference internal" href="training_a_network.html">Training a Network</a></li>
 <li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing to Ivy</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Array</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="array/array_api.html">Array api</a></li>
-<li class="toctree-l1"><a class="reference internal" href="array/conversions.html">Conversions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="array/device.html">Device</a></li>
-<li class="toctree-l1"><a class="reference internal" href="array/general.html">General</a></li>
-<li class="toctree-l1"><a class="reference internal" href="array/gradients.html">Gradients</a></li>
-<li class="toctree-l1"><a class="reference internal" href="array/image.html">Image</a></li>
-<li class="toctree-l1"><a class="reference internal" href="array/linalg.html">Linalg</a></li>
-<li class="toctree-l1"><a class="reference internal" href="array/logic.html">Logic</a></li>
-<li class="toctree-l1"><a class="reference internal" href="array/math.html">Math</a></li>
-<li class="toctree-l1"><a class="reference internal" href="array/meta.html">Meta</a></li>
-<li class="toctree-l1"><a class="reference internal" href="array/random.html">Random</a></li>
-<li class="toctree-l1"><a class="reference internal" href="array/reductions.html">Reductions</a></li>
-</ul>
 <p class="caption"><span class="caption-text">Functional</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="functional/backends.html">Backends</a></li>
-<li class="toctree-l1"><a class="reference internal" href="functional/ivy.html">Ivy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="functional/ivy/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="functional/ivy/constants.html">Constants</a></li>
+<li class="toctree-l1"><a class="reference internal" href="functional/ivy/creation.html">Creation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="functional/ivy/data_type.html">Data type</a></li>
+<li class="toctree-l1"><a class="reference internal" href="functional/ivy/elementwise.html">Elementwise</a></li>
+<li class="toctree-l1"><a class="reference internal" href="functional/ivy/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="functional/ivy/linear_algebra.html">Linear algebra</a></li>
+<li class="toctree-l1"><a class="reference internal" href="functional/ivy/losses.html">Losses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="functional/ivy/manipulation.html">Manipulation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="functional/ivy/norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="functional/ivy/searching.html">Searching</a></li>
+<li class="toctree-l1"><a class="reference internal" href="functional/ivy/set.html">Set</a></li>
+<li class="toctree-l1"><a class="reference internal" href="functional/ivy/sorting.html">Sorting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="functional/ivy/statistical.html">Statistical</a></li>
+<li class="toctree-l1"><a class="reference internal" href="functional/ivy/utility.html">Utility</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Stateful</span></p>
 <ul>
@@ -504,63 +501,115 @@ and the best coding practices to get the most out of Ivy for your own codebases 
 </ul>
 </div>
 <div class="toctree-wrapper compound">
-<p class="caption"><span class="caption-text">Array</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="array/array_api.html">Array api</a></li>
-<li class="toctree-l1"><a class="reference internal" href="array/conversions.html">Conversions</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="array/conversions/to_ivy.html">to_ivy</a></li>
-<li class="toctree-l2"><a class="reference internal" href="array/conversions/args_to_ivy.html">args_to_ivy</a></li>
-<li class="toctree-l2"><a class="reference internal" href="array/conversions/to_native.html">to_native</a></li>
-<li class="toctree-l2"><a class="reference internal" href="array/conversions/args_to_native.html">args_to_native</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="array/device.html">Device</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="array/device/ArrayWithDevice.html">ArrayWithDevice</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="array/general.html">General</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="array/general/ArrayWithGeneral.html">ArrayWithGeneral</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="array/gradients.html">Gradients</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="array/gradients/ArrayWithGradients.html">ArrayWithGradients</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="array/image.html">Image</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="array/image/ArrayWithImage.html">ArrayWithImage</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="array/linalg.html">Linalg</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="array/linalg/ArrayWithLinalg.html">ArrayWithLinalg</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="array/logic.html">Logic</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="array/logic/ArrayWithLogic.html">ArrayWithLogic</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="array/math.html">Math</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="array/math/ArrayWithMath.html">ArrayWithMath</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="array/meta.html">Meta</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="array/meta/ArrayWithMeta.html">ArrayWithMeta</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="array/random.html">Random</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="array/random/ArrayWithRandom.html">ArrayWithRandom</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="array/reductions.html">Reductions</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="array/reductions/ArrayWithReductions.html">ArrayWithReductions</a></li>
-</ul>
-</li>
-</ul>
-</div>
-<div class="toctree-wrapper compound">
 <p class="caption"><span class="caption-text">Functional</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="functional/backends.html">Backends</a></li>
-<li class="toctree-l1"><a class="reference internal" href="functional/ivy.html">Ivy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="functional/ivy/activations.html">Activations</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="functional/ivy/activations/relu.html">relu</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional/ivy/activations/leaky_relu.html">leaky_relu</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional/ivy/activations/gelu.html">gelu</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional/ivy/activations/tanh.html">tanh</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional/ivy/activations/sigmoid.html">sigmoid</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional/ivy/activations/softmax.html">softmax</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional/ivy/activations/softplus.html">softplus</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="functional/ivy/constants.html">Constants</a><ul class="simple">
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="functional/ivy/creation.html">Creation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="functional/ivy/creation/zeros.html">zeros</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional/ivy/creation/ones.html">ones</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional/ivy/creation/ones_like.html">ones_like</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional/ivy/creation/tril.html">tril</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional/ivy/creation/empty.html">empty</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="functional/ivy/data_type.html">Data type</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="functional/ivy/data_type/iinfo.html">iinfo</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional/ivy/data_type/finfo.html">finfo</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="functional/ivy/elementwise.html">Elementwise</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="functional/ivy/elementwise/bitwise_and.html">bitwise_and</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional/ivy/elementwise/ceil.html">ceil</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional/ivy/elementwise/isfinite.html">isfinite</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional/ivy/elementwise/less_equal.html">less_equal</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional/ivy/elementwise/asinh.html">asinh</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional/ivy/elementwise/sqrt.html">sqrt</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional/ivy/elementwise/cosh.html">cosh</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional/ivy/elementwise/log2.html">log2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional/ivy/elementwise/log10.html">log10</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional/ivy/elementwise/log1p.html">log1p</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional/ivy/elementwise/isnan.html">isnan</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional/ivy/elementwise/less.html">less</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional/ivy/elementwise/cos.html">cos</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional/ivy/elementwise/logical_not.html">logical_not</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional/ivy/elementwise/logical_or.html">logical_or</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional/ivy/elementwise/acosh.html">acosh</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional/ivy/elementwise/sin.html">sin</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional/ivy/elementwise/negative.html">negative</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional/ivy/elementwise/tanh.html">tanh</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional/ivy/elementwise/sinh.html">sinh</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="functional/ivy/layers.html">Layers</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="functional/ivy/layers/linear.html">linear</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional/ivy/layers/dropout.html">dropout</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional/ivy/layers/scaled_dot_product_attention.html">scaled_dot_product_attention</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional/ivy/layers/multi_head_attention.html">multi_head_attention</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional/ivy/layers/conv1d.html">conv1d</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional/ivy/layers/conv1d_transpose.html">conv1d_transpose</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional/ivy/layers/conv2d.html">conv2d</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional/ivy/layers/conv2d_transpose.html">conv2d_transpose</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional/ivy/layers/depthwise_conv2d.html">depthwise_conv2d</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional/ivy/layers/conv3d.html">conv3d</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional/ivy/layers/conv3d_transpose.html">conv3d_transpose</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional/ivy/layers/lstm_update.html">lstm_update</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="functional/ivy/linear_algebra.html">Linear algebra</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="functional/ivy/linear_algebra/vector_norm.html">vector_norm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional/ivy/linear_algebra/svd.html">svd</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional/ivy/linear_algebra/diagonal.html">diagonal</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional/ivy/linear_algebra/matmul.html">matmul</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional/ivy/linear_algebra/slodget.html">slodget</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional/ivy/linear_algebra/trace.html">trace</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="functional/ivy/losses.html">Losses</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="functional/ivy/losses/cross_entropy.html">cross_entropy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional/ivy/losses/binary_cross_entropy.html">binary_cross_entropy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional/ivy/losses/sparse_cross_entropy.html">sparse_cross_entropy</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="functional/ivy/manipulation.html">Manipulation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="functional/ivy/manipulation/flip.html">flip</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="functional/ivy/norms.html">Norms</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="functional/ivy/norms/layer_norm.html">layer_norm</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="functional/ivy/searching.html">Searching</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="functional/ivy/searching/argmax.html">argmax</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="functional/ivy/set.html">Set</a><ul class="simple">
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="functional/ivy/sorting.html">Sorting</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="functional/ivy/sorting/argsort.html">argsort</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="functional/ivy/statistical.html">Statistical</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="functional/ivy/statistical/min.html">min</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="functional/ivy/utility.html">Utility</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="functional/ivy/utility/all.html">all</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional/ivy/utility/any.html">any</a></li>
+</ul>
+</li>
 </ul>
 </div>
 <div class="toctree-wrapper compound">

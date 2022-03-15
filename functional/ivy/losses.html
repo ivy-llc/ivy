@@ -24,7 +24,6 @@
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
@@ -35,7 +34,9 @@
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
-    <link rel="search" title="Search" href="../../search.html" /> 
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="cross_entropy" href="losses/cross_entropy.html" />
+    <link rel="prev" title="trace" href="linear_algebra/trace.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -86,25 +87,28 @@
 <li class="toctree-l1"><a class="reference internal" href="../../training_a_network.html">Training a Network</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../contributing.html">Contributing to Ivy</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Array</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../array/array_api.html">Array api</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../array/conversions.html">Conversions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../array/device.html">Device</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../array/general.html">General</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../array/gradients.html">Gradients</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../array/image.html">Image</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../array/linalg.html">Linalg</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../array/logic.html">Logic</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../array/math.html">Math</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../array/meta.html">Meta</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../array/random.html">Random</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../array/reductions.html">Reductions</a></li>
-</ul>
 <p class="caption"><span class="caption-text">Functional</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../backends.html">Backends</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../ivy.html">Ivy</a></li>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="constants.html">Constants</a></li>
+<li class="toctree-l1"><a class="reference internal" href="creation.html">Creation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data_type.html">Data type</a></li>
+<li class="toctree-l1"><a class="reference internal" href="elementwise.html">Elementwise</a></li>
+<li class="toctree-l1"><a class="reference internal" href="layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="linear_algebra.html">Linear algebra</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Losses</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="losses/cross_entropy.html">cross_entropy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="losses/binary_cross_entropy.html">binary_cross_entropy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="losses/sparse_cross_entropy.html">sparse_cross_entropy</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="manipulation.html">Manipulation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="searching.html">Searching</a></li>
+<li class="toctree-l1"><a class="reference internal" href="set.html">Set</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sorting.html">Sorting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="statistical.html">Statistical</a></li>
+<li class="toctree-l1"><a class="reference internal" href="utility.html">Utility</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Stateful</span></p>
 <ul>
@@ -173,6 +177,8 @@
     
       <li><a href="../../index.html">Docs</a> &raquo;</li>
         
+          <li><a href="../ivy.html">&lt;no title&gt;</a> &raquo;</li>
+        
       <li>Losses</li>
     
     
@@ -197,7 +203,7 @@
 <p>Collection of Ivy loss functions.</p>
 <dl class="py function">
 <dt id="ivy.functional.ivy.losses.binary_cross_entropy">
-<code class="sig-prename descclassname">ivy.functional.ivy.losses.</code><code class="sig-name descname">binary_cross_entropy</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">true</span></em>, <em class="sig-param"><span class="n">pred</span></em>, <em class="sig-param"><span class="n">epsilon</span><span class="o">=</span><span class="default_value">1e-07</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/losses.html#binary_cross_entropy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.losses.binary_cross_entropy" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">binary_cross_entropy</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">true</span></em>, <em class="sig-param"><span class="n">pred</span></em>, <em class="sig-param"><span class="n">epsilon</span><span class="o">=</span><span class="default_value">1e-07</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/losses.html#binary_cross_entropy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.losses.binary_cross_entropy" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes the binary cross entropy loss.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -215,7 +221,7 @@
 
 <dl class="py function">
 <dt id="ivy.functional.ivy.losses.cross_entropy">
-<code class="sig-prename descclassname">ivy.functional.ivy.losses.</code><code class="sig-name descname">cross_entropy</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">true</span></em>, <em class="sig-param"><span class="n">pred</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">- 1</span></em>, <em class="sig-param"><span class="n">epsilon</span><span class="o">=</span><span class="default_value">1e-07</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/losses.html#cross_entropy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.losses.cross_entropy" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">cross_entropy</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">true</span></em>, <em class="sig-param"><span class="n">pred</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">- 1</span></em>, <em class="sig-param"><span class="n">epsilon</span><span class="o">=</span><span class="default_value">1e-07</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/losses.html#cross_entropy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.losses.cross_entropy" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes cross entropy between predicted and true discrete distrubtions.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -234,7 +240,7 @@
 
 <dl class="py function">
 <dt id="ivy.functional.ivy.losses.sparse_cross_entropy">
-<code class="sig-prename descclassname">ivy.functional.ivy.losses.</code><code class="sig-name descname">sparse_cross_entropy</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">true</span></em>, <em class="sig-param"><span class="n">pred</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">- 1</span></em>, <em class="sig-param"><span class="n">epsilon</span><span class="o">=</span><span class="default_value">1e-07</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/losses.html#sparse_cross_entropy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.losses.sparse_cross_entropy" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">sparse_cross_entropy</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">true</span></em>, <em class="sig-param"><span class="n">pred</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">- 1</span></em>, <em class="sig-param"><span class="n">epsilon</span><span class="o">=</span><span class="default_value">1e-07</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/losses.html#sparse_cross_entropy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.losses.sparse_cross_entropy" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes sparse cross entropy between logits and labels.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -266,6 +272,15 @@
            
           </div>
           <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="losses/cross_entropy.html" class="btn btn-neutral float-right" title="cross_entropy" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="linear_algebra/trace.html" class="btn btn-neutral float-left" title="trace" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
   
 
   <hr/>

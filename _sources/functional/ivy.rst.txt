@@ -1,8 +1,23 @@
-Ivy
-===
 
-.. automodule:: ivy.functional.ivy
-    :members:
-    :special-members: __init__
-    :undoc-members:
-    :show-inheritance:
+
+.. toctree::
+   :maxdepth: -1
+   :caption: Ivy
+
+   ivy/old.rst
+   ivy/activations.rst
+   ivy/constants.rst
+   ivy/creation.rst
+   ivy/data_type.rst
+   ivy/elementwise.rst
+   ivy/layers.rst
+   ivy/linear_algebra.rst
+   ivy/losses.rst
+   ivy/manipulation.rst
+   ivy/norms.rst
+   ivy/searching.rst
+   ivy/set.rst
+   ivy/sorting.rst
+   ivy/statistical.rst
+   ivy/utility.rst
+
