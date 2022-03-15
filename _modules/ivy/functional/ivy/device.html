@@ -226,6 +226,10 @@
 <span class="n">split_factors</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
 <span class="n">max_chunk_sizes</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
 
+
+<span class="c1"># Extra #</span>
+<span class="c1"># ------#</span>
+
 <div class="viewcode-block" id="DefaultDevice"><a class="viewcode-back" href="../../../../functional/ivy/device.html#ivy.functional.ivy.device.DefaultDevice">[docs]</a><span class="k">class</span> <span class="nc">DefaultDevice</span><span class="p">:</span>
     <span class="c1"># noinspection PyShadowingNames</span>
 <div class="viewcode-block" id="DefaultDevice.__init__"><a class="viewcode-back" href="../../../../functional/ivy/device.html#ivy.functional.ivy.device.DefaultDevice.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dev</span><span class="p">):</span>
@@ -240,7 +244,6 @@
         <span class="k">return</span> <span class="bp">self</span></div>
 
 <span class="c1"># Helpers #</span>
-<span class="c1"># --------#</span>
 
 <span class="c1"># noinspection PyShadowingNames</span>
 <span class="k">def</span> <span class="nf">_get_nvml_gpu_handle</span><span class="p">(</span><span class="n">dev</span><span class="p">):</span>
@@ -254,9 +257,8 @@
 
 
 <span class="c1"># Device Queries #</span>
-<span class="c1"># ---------------#</span>
 
-<span class="c1"># Array Printing #</span>
+<span class="c1"># Array Printing</span>
 
 <span class="c1"># noinspection PyShadowingNames</span>
 <div class="viewcode-block" id="get_all_arrays_on_dev"><a class="viewcode-back" href="../../../../functional/ivy/device/get_all_arrays_on_dev.html#ivy.functional.ivy.device.get_all_arrays_on_dev">[docs]</a><span class="k">def</span> <span class="nf">get_all_arrays_on_dev</span><span class="p">(</span><span class="n">dev</span><span class="p">):</span>
@@ -291,7 +293,7 @@
         <span class="nb">print</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">arr</span><span class="p">),</span> <span class="n">arr</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span></div>
 
 
-<span class="c1"># Retreival #</span>
+<span class="c1"># Retreival</span>
 
 <div class="viewcode-block" id="dev"><a class="viewcode-back" href="../../../../functional/ivy/device/dev.html#ivy.functional.ivy.device.dev">[docs]</a><span class="k">def</span> <span class="nf">dev</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span> <span class="n">as_str</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>\
         <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Device</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
@@ -307,7 +309,7 @@
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">dev</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">as_str</span><span class="p">)</span></div>
 
 
-<span class="c1"># Conversions #</span>
+<span class="c1"># Conversions</span>
 
 <span class="c1"># noinspection PyShadowingNames</span>
 <div class="viewcode-block" id="dev_to_str"><a class="viewcode-back" href="../../../../functional/ivy/device/dev_to_str.html#ivy.functional.ivy.device.dev_to_str">[docs]</a><span class="k">def</span> <span class="nf">dev_to_str</span><span class="p">(</span><span class="n">dev</span><span class="p">:</span> <span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Device</span><span class="p">,</span> <span class="nb">str</span><span class="p">])</span>\
@@ -335,7 +337,7 @@
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">()</span><span class="o">.</span><span class="n">dev_from_str</span><span class="p">(</span><span class="n">dev</span><span class="p">)</span></div>
 
 
-<span class="c1"># Memory #</span>
+<span class="c1"># Memory</span>
 
 <span class="c1"># noinspection PyShadowingNames</span>
 <div class="viewcode-block" id="clear_mem_on_dev"><a class="viewcode-back" href="../../../../functional/ivy/device/clear_mem_on_dev.html#ivy.functional.ivy.device.clear_mem_on_dev">[docs]</a><span class="k">def</span> <span class="nf">clear_mem_on_dev</span><span class="p">(</span><span class="n">dev</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Device</span><span class="p">)</span>\
@@ -428,7 +430,7 @@
                         <span class="s1">&#39;but found </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">dev</span><span class="p">))</span></div>
 
 
-<span class="c1"># Utilization #</span>
+<span class="c1"># Utilization</span>
 
 <span class="c1"># noinspection PyShadowingNames</span>
 <div class="viewcode-block" id="dev_util"><a class="viewcode-back" href="../../../../functional/ivy/device/dev_util.html#ivy.functional.ivy.device.dev_util">[docs]</a><span class="k">def</span> <span class="nf">dev_util</span><span class="p">(</span><span class="n">dev</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Device</span><span class="p">)</span>\
@@ -450,7 +452,7 @@
                         <span class="s1">&#39;but found </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">dev</span><span class="p">))</span></div>
 
 
-<span class="c1"># Availability #</span>
+<span class="c1"># Availability</span>
 
 <div class="viewcode-block" id="gpu_is_available"><a class="viewcode-back" href="../../../../functional/ivy/device/gpu_is_available.html#ivy.functional.ivy.device.gpu_is_available">[docs]</a><span class="k">def</span> <span class="nf">gpu_is_available</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -487,7 +489,6 @@
 
 
 <span class="c1"># Default Device #</span>
-<span class="c1"># ---------------#</span>
 
 <span class="c1"># noinspection PyShadowingNames</span>
 <span class="k">def</span> <span class="nf">_assert_dev_correct_formatting</span><span class="p">(</span><span class="n">dev</span><span class="p">):</span>
@@ -527,7 +528,6 @@
 
 
 <span class="c1"># Device Allocation #</span>
-<span class="c1"># ------------------#</span>
 
 <span class="c1"># noinspection PyShadowingNames</span>
 <div class="viewcode-block" id="to_dev"><a class="viewcode-back" href="../../../../functional/ivy/device/to_dev.html#ivy.functional.ivy.device.to_dev">[docs]</a><span class="k">def</span> <span class="nf">to_dev</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span> <span class="n">dev</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Device</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span>\
@@ -545,7 +545,6 @@
 
 
 <span class="c1"># Function Splitting #</span>
-<span class="c1"># -------------------#</span>
 
 <span class="c1"># noinspection PyShadowingNames</span>
 <div class="viewcode-block" id="split_factor"><a class="viewcode-back" href="../../../../functional/ivy/device/split_factor.html#ivy.functional.ivy.device.split_factor">[docs]</a><span class="k">def</span> <span class="nf">split_factor</span><span class="p">(</span><span class="n">dev</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -668,7 +667,6 @@
 
 
 <span class="c1"># Multi-Device #</span>
-<span class="c1"># -------------#</span>
 
 <div class="viewcode-block" id="MultiDev"><a class="viewcode-back" href="../../../../functional/ivy/device.html#ivy.functional.ivy.device.MultiDev">[docs]</a><span class="k">class</span> <span class="nc">MultiDev</span><span class="p">:</span>
 
@@ -789,7 +787,6 @@
 
 
 <span class="c1"># Device Distribution #</span>
-<span class="c1"># --------------------#</span>
 
 <div class="viewcode-block" id="DevDistItem"><a class="viewcode-back" href="../../../../functional/ivy/device/DevDistItem.html#ivy.functional.ivy.device.DevDistItem">[docs]</a><span class="k">class</span> <span class="nc">DevDistItem</span><span class="p">(</span><span class="n">MultiDevItem</span><span class="p">):</span>
 
@@ -886,7 +883,6 @@
 
 
 <span class="c1"># Device Cloning #</span>
-<span class="c1"># ---------------#</span>
 
 <div class="viewcode-block" id="DevClonedItem"><a class="viewcode-back" href="../../../../functional/ivy/device/DevClonedItem.html#ivy.functional.ivy.device.DevClonedItem">[docs]</a><span class="k">class</span> <span class="nc">DevClonedItem</span><span class="p">(</span><span class="n">MultiDevItem</span><span class="p">):</span>
 
@@ -973,7 +969,6 @@
 
 
 <span class="c1"># Device Unification #</span>
-<span class="c1"># -------------------#</span>
 
 <span class="c1"># noinspection PyShadowingNames</span>
 <span class="k">def</span> <span class="nf">_concat_unify_array</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">dev</span><span class="p">,</span> <span class="n">axis</span><span class="p">):</span>
@@ -1093,7 +1088,6 @@
 
 
 <span class="c1"># Device Mappers #</span>
-<span class="c1"># ---------------#</span>
 
 <div class="viewcode-block" id="DevMapper"><a class="viewcode-back" href="../../../../functional/ivy/device/DevMapper.html#ivy.functional.ivy.device.DevMapper">[docs]</a><span class="k">class</span> <span class="nc">DevMapper</span><span class="p">(</span><span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">):</span>
 
@@ -1223,7 +1217,6 @@
 
 
 <span class="c1"># Device Manager #</span>
-<span class="c1"># ---------------#</span>
 
 <div class="viewcode-block" id="DevManager"><a class="viewcode-back" href="../../../../functional/ivy/device.html#ivy.functional.ivy.device.DevManager">[docs]</a><span class="k">class</span> <span class="nc">DevManager</span><span class="p">:</span>
 
@@ -1633,7 +1626,6 @@
 
 
 <span class="c1"># Profiler #</span>
-<span class="c1"># ---------#</span>
 
 <div class="viewcode-block" id="Profiler"><a class="viewcode-back" href="../../../../functional/ivy/device/Profiler.html#ivy.functional.ivy.device.Profiler">[docs]</a><span class="k">class</span> <span class="nc">Profiler</span><span class="p">(</span><span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">):</span>
 

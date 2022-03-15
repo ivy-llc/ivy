@@ -202,6 +202,10 @@
 <span class="kn">import</span> <span class="nn">ivy</span> <span class="k">as</span> <span class="nn">_ivy</span>
 <span class="kn">from</span> <span class="nn">ivy.framework_handler</span> <span class="kn">import</span> <span class="n">current_framework</span> <span class="k">as</span> <span class="n">_cur_framework</span>
 
+
+<span class="c1"># Extra #</span>
+<span class="c1"># ------#</span>
+
 <span class="n">with_grads_stack</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
 
 <div class="viewcode-block" id="GradientTracking"><a class="viewcode-back" href="../../../../functional/ivy/gradients.html#ivy.functional.ivy.gradients.GradientTracking">[docs]</a><span class="k">class</span> <span class="nc">GradientTracking</span><span class="p">:</span>
@@ -218,7 +222,6 @@
         <span class="k">return</span> <span class="bp">self</span></div>
 
 <span class="c1"># Gradient Mode #</span>
-<span class="c1"># --------------#</span>
 
 <span class="c1"># noinspection PyShadowingNames</span>
 <div class="viewcode-block" id="with_grads"><a class="viewcode-back" href="../../../../functional/ivy/gradients/with_grads.html#ivy.functional.ivy.gradients.with_grads">[docs]</a><span class="k">def</span> <span class="nf">with_grads</span><span class="p">(</span><span class="n">with_grads</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -248,7 +251,6 @@
 
 
 <span class="c1"># Variables #</span>
-<span class="c1"># ----------#</span>
 
 <div class="viewcode-block" id="variable"><a class="viewcode-back" href="../../../../functional/ivy/gradients/variable.html#ivy.functional.ivy.gradients.variable">[docs]</a><span class="k">def</span> <span class="nf">variable</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -303,7 +305,6 @@
 
 
 <span class="c1"># AutoGrad #</span>
-<span class="c1"># ---------#</span>
 
 <div class="viewcode-block" id="execute_with_gradients"><a class="viewcode-back" href="../../../../functional/ivy/gradients/execute_with_gradients.html#ivy.functional.ivy.gradients.execute_with_gradients">[docs]</a><span class="k">def</span> <span class="nf">execute_with_gradients</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">xs</span><span class="p">,</span> <span class="n">retain_grads</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -322,7 +323,6 @@
 
 
 <span class="c1"># Optimizer Steps #</span>
-<span class="c1"># ----------------#</span>
 
 <div class="viewcode-block" id="adam_step"><a class="viewcode-back" href="../../../../functional/ivy/gradients/adam_step.html#ivy.functional.ivy.gradients.adam_step">[docs]</a><span class="k">def</span> <span class="nf">adam_step</span><span class="p">(</span><span class="n">dcdws</span><span class="p">,</span> <span class="n">mw</span><span class="p">,</span> <span class="n">vw</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">beta1</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span> <span class="n">beta2</span><span class="o">=</span><span class="mf">0.999</span><span class="p">,</span> <span class="n">epsilon</span><span class="o">=</span><span class="mf">1e-7</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -356,7 +356,6 @@
 
 
 <span class="c1"># Optimizer Updates #</span>
-<span class="c1"># ------------------#</span>
 
 <div class="viewcode-block" id="optimizer_update"><a class="viewcode-back" href="../../../../functional/ivy/gradients/optimizer_update.html#ivy.functional.ivy.gradients.optimizer_update">[docs]</a><span class="k">def</span> <span class="nf">optimizer_update</span><span class="p">(</span><span class="n">ws</span><span class="p">,</span> <span class="n">effective_grads</span><span class="p">,</span> <span class="n">lr</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">stop_gradients</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
