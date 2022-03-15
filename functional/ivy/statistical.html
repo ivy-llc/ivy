@@ -104,6 +104,7 @@
 <li class="toctree-l1"><a class="reference internal" href="sorting.html">Sorting</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Statistical</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="statistical/min.html">min</a></li>
+<li class="toctree-l2"><a class="reference internal" href="statistical/max.html">max</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="utility.html">Utility</a></li>
@@ -199,6 +200,31 @@
   <div class="section" id="module-ivy.functional.ivy.statistical">
 <span id="statistical"></span><h1>Statistical<a class="headerlink" href="#module-ivy.functional.ivy.statistical" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
+<dt id="ivy.functional.ivy.statistical.max">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">max</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">axis</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Union<span class="p">[</span>int<span class="p">, </span>Tuple<span class="p">[</span>int<span class="p">]</span><span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">keepdims</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../_modules/ivy/functional/ivy/statistical.html#max"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.statistical.max" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the maximum value of the input array <code class="docutils literal notranslate"><span class="pre">x</span></code>.
+.. note:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>When the number of elements over which to compute the maximum value is zero, the maximum value is implementation-defined. Specification-compliant libraries may choose to raise an error, return a sentinel value (e.g., if ``x`` is a floating-point input array, return ``NaN``), or return the minimum possible value for the input array ``x`` data type (e.g., if ``x`` is a floating-point array, return ``-infinity``).
+</pre></div>
+</div>
+<p><strong>Special Cases</strong>
+For floating-point operands,
+-   If <code class="docutils literal notranslate"><span class="pre">x_i</span></code> is <code class="docutils literal notranslate"><span class="pre">NaN</span></code>, the maximum value is <code class="docutils literal notranslate"><span class="pre">NaN</span></code> (i.e., <code class="docutils literal notranslate"><span class="pre">NaN</span></code> values propagate).</p>
+<dl class="simple">
+<dt>x: </dt><dd><p>input array. Should have a numeric data type.</p>
+</dd>
+<dt>axis: </dt><dd><p>axis or axes along which maximum values must be computed. By default, the maximum value must be computed over the entire array. If a tuple of integers, maximum values must be computed over multiple axes. Default: <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+</dd>
+<dt>keepdims:</dt><dd><p>if <code class="docutils literal notranslate"><span class="pre">True</span></code>, the reduced axes (dimensions) must be included in the result as singleton dimensions, and, accordingly, the result must be compatible with the input array (see <span class="xref std std-ref">broadcasting</span>). Otherwise, if <code class="docutils literal notranslate"><span class="pre">False</span></code>, the reduced axes (dimensions) must not be included in the result. Default: <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>out: </dt><dd><p>if the maximum value was computed over the entire array, a zero-dimensional array containing the maximum value; otherwise, a non-zero-dimensional array containing the maximum values. The returned array must have the same data type as <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt id="ivy.functional.ivy.statistical.min">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">min</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">axis</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Union<span class="p">[</span>int<span class="p">, </span>Tuple<span class="p">[</span>int<span class="p">]</span><span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">keepdims</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../_modules/ivy/functional/ivy/statistical.html#min"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.statistical.min" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the minimum value of the input array x.</p>
@@ -219,6 +245,7 @@
 <p class="caption"><span class="caption-text">Statistical</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="statistical/min.html">min</a></li>
+<li class="toctree-l1"><a class="reference internal" href="statistical/max.html">max</a></li>
 </ul>
 </div>
 </div>

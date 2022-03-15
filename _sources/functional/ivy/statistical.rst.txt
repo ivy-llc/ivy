@@ -13,4 +13,5 @@ Statistical
    :caption: Statistical
 
    statistical/min.rst
+   statistical/max.rst
 
