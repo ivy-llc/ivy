@@ -12,12 +12,12 @@ matmul
 #matrix_transpose
 #outer
 #pinv
-#qr
+qr
 slogdet
 #solve
 svd
 #svdvals
 #tensordot
-#trace
+trace
 #vecdot
 vector_norm
