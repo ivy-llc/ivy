@@ -6,7 +6,7 @@ Collection of PyTorch general functions, wrapped to fit Ivy syntax and signature
 import os
 import importlib
 torch_scatter = None
-import torch as _torch
+import torch
 from typing import Optional
 from torch.profiler import ProfilerActivity
 from torch.profiler import profile as _profile
@@ -27,12 +27,12 @@ def dev(x, as_str=False):
 
 def to_dev(x, dev: Optional[str] = None):
     ret = x.to(dev_from_str(dev))
-    if isinstance(x, _torch.nn.Parameter):
-        return _torch.nn.Parameter(ret)
+    if isinstance(x, torch.nn.Parameter):
+        return torch.nn.Parameter(ret)
     return ret
 
 
-def dev_to_str(dev: _torch.device):
+def dev_to_str(dev: torch.device):
     if isinstance(dev, str):
         return dev
     dev_type, dev_idx = (dev.type, dev.index)
@@ -41,20 +41,20 @@ def dev_to_str(dev: _torch.device):
     return dev_type.replace('cuda', 'gpu') + (':' + (str(dev_idx) if dev_idx is not None else '0'))
 
 
-def dev_from_str(dev: Optional[str] = None) -> Optional[_torch.device]:
+def dev_from_str(dev: Optional[str] = None) -> Optional[torch.device]:
     if not isinstance(dev, str):
         return dev
-    return _torch.device(dev.replace('gpu', 'cuda'))
+    return torch.device(dev.replace('gpu', 'cuda'))
 
 
 def clear_mem_on_dev(dev):
     if 'gpu' in dev:
-        _torch.cuda.empty_cache()
+        torch.cuda.empty_cache()
 
 
 _callable_dev = dev
-gpu_is_available = _torch.cuda.is_available
-num_gpus = _torch.cuda.device_count
+gpu_is_available = torch.cuda.is_available
+num_gpus = torch.cuda.device_count
 
 
 # noinspection PyUnresolvedReferences

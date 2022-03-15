@@ -3,12 +3,12 @@ Collection of TensorFlow activation functions, wrapped to fit Ivy syntax and sig
 """
 
 # global
-import tensorflow as _tf
+import tensorflow as tf
 
-relu = _tf.nn.relu
-leaky_relu = _tf.nn.leaky_relu
-gelu = lambda x, approximate=True: _tf.nn.gelu(x, approximate)
-tanh = _tf.nn.tanh
-sigmoid = _tf.nn.sigmoid
-softmax = _tf.nn.softmax
-softplus = _tf.nn.softplus
+relu = tf.nn.relu
+leaky_relu = tf.nn.leaky_relu
+gelu = lambda x, approximate=True: tf.nn.gelu(x, approximate)
+tanh = tf.nn.tanh
+sigmoid = tf.nn.sigmoid
+softmax = tf.nn.softmax
+softplus = tf.nn.softplus

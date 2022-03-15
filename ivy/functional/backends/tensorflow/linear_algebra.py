@@ -6,7 +6,7 @@ from collections import namedtuple
 
 # local
 from ivy import inf
-import ivy as _ivy
+import ivy
 from collections import namedtuple
 
 
@@ -121,7 +121,7 @@ def matmul(x1: tf.Tensor,
     return ret
 
 
-def slogdet(x:Union[_ivy.Array,_ivy.NativeArray],full_matrices: bool = True) -> Union[_ivy.Array, Tuple[_ivy.Array,...]]:
+def slogdet(x:Union[ivy.Array,ivy.NativeArray],full_matrices: bool = True) -> Union[ivy.Array, Tuple[ivy.Array,...]]:
     results = namedtuple("slogdet", "sign logabsdet")
     sign, logabsdet = tf.linalg.slogdet(x)
     res = results(sign, logabsdet)
