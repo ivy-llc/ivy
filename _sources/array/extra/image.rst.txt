@@ -1,0 +1,16 @@
+Image
+=====
+
+.. automodule:: ivy.array.extra.image
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :maxdepth: -1
+   :caption: Image
+
+   image/ArrayWithImage.rst
+

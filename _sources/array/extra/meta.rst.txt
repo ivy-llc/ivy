@@ -1,0 +1,16 @@
+Meta
+====
+
+.. automodule:: ivy.array.extra.meta
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :maxdepth: -1
+   :caption: Meta
+
+   meta/ArrayWithMeta.rst
+

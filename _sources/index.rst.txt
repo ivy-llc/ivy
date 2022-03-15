@@ -350,6 +350,8 @@ Documentation Tree
    :caption: Array
 
    array/array_api.rst
+   array/extra.rst
+   array/standard.rst
    array/conversions.rst
    array/device.rst
    array/general.rst

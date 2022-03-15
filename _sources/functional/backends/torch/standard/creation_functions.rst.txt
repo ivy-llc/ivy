@@ -1,0 +1,20 @@
+Creation functions
+==================
+
+.. automodule:: ivy.functional.backends.torch.standard.creation_functions
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :maxdepth: -1
+   :caption: Creation functions
+
+   creation_functions/zeros.rst
+   creation_functions/ones.rst
+   creation_functions/ones_like.rst
+   creation_functions/tril.rst
+   creation_functions/empty.rst
+

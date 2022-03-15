@@ -1,0 +1,18 @@
+Image
+=====
+
+.. automodule:: ivy.functional.backends.numpy.extra.image
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :maxdepth: -1
+   :caption: Image
+
+   image/stack_images.rst
+   image/bilinear_resample.rst
+   image/gradient_image.rst
+

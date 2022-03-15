@@ -1,0 +1,32 @@
+Gradients
+=========
+
+.. automodule:: ivy.functional.ivy.extra.gradients
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :maxdepth: -1
+   :caption: Gradients
+
+   gradients/with_grads.rst
+   gradients/set_with_grads.rst
+   gradients/unset_with_grads.rst
+   gradients/variable.rst
+   gradients/is_variable.rst
+   gradients/variable_data.rst
+   gradients/stop_gradient.rst
+   gradients/execute_with_gradients.rst
+   gradients/adam_step.rst
+   gradients/optimizer_update.rst
+   gradients/gradient_descent_update.rst
+   gradients/lars_update.rst
+   gradients/adam_update.rst
+   gradients/lamb_update.rst
+   gradients/GradientTracking:
+    # noinspection PyShadowingNames
+    def __init__.rst
+

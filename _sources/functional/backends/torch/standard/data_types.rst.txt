@@ -1,0 +1,15 @@
+Data types
+==========
+
+.. automodule:: ivy.functional.backends.torch.standard.data_types
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :maxdepth: -1
+   :caption: Data types
+
+

@@ -1,0 +1,13 @@
+Neural Net
+==========
+
+
+.. toctree::
+   :maxdepth: -1
+   :caption: Neural net
+
+   neural_net/activations.rst
+   neural_net/layers.rst
+   neural_net/losses.rst
+   neural_net/norms.rst
+

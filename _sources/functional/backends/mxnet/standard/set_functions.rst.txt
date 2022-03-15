@@ -1,0 +1,15 @@
+Set functions
+=============
+
+.. automodule:: ivy.functional.backends.mxnet.standard.set_functions
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :maxdepth: -1
+   :caption: Set functions
+
+

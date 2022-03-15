@@ -1,0 +1,11 @@
+Functional
+==========
+
+
+.. toctree::
+   :maxdepth: -1
+   :caption: Functional
+
+   functional/backends.rst
+   functional/ivy.rst
+

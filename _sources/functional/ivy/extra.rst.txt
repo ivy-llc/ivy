@@ -1,0 +1,23 @@
+Extra
+=====
+
+
+.. toctree::
+   :maxdepth: -1
+   :caption: Extra
+
+   extra/compilation.rst
+   extra/device.rst
+   extra/dtype.rst
+   extra/general.rst
+   extra/gradients.rst
+   extra/image.rst
+   extra/linalg.rst
+   extra/logic.rst
+   extra/math.rst
+   extra/meta.rst
+   extra/multi_node.rst
+   extra/nest.rst
+   extra/random.rst
+   extra/reductions.rst
+

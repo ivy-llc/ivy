@@ -1,0 +1,109 @@
+General
+=======
+
+.. automodule:: ivy.functional.ivy.extra.general
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :maxdepth: -1
+   :caption: General
+
+   general/get_referrers_recursive.rst
+   general/array.rst
+   general/is_array.rst
+   general/copy_array.rst
+   general/array_equal.rst
+   general/arrays_equal.rst
+   general/all_equal.rst
+   general/equal.rst
+   general/to_numpy.rst
+   general/to_scalar.rst
+   general/to_list.rst
+   general/shape.rst
+   general/shape_to_tuple.rst
+   general/get_num_dims.rst
+   general/minimum.rst
+   general/maximum.rst
+   general/clip.rst
+   general/clip_vector_norm.rst
+   general/clip_matrix_norm.rst
+   general/round.rst
+   general/floormod.rst
+   general/floor.rst
+   general/abs.rst
+   general/argmin.rst
+   general/arange.rst
+   general/linspace.rst
+   general/logspace.rst
+   general/concatenate.rst
+   general/stack.rst
+   general/unstack.rst
+   general/split.rst
+   general/repeat.rst
+   general/tile.rst
+   general/constant_pad.rst
+   general/zero_pad.rst
+   general/fourier_encode.rst
+   general/swapaxes.rst
+   general/transpose.rst
+   general/expand_dims.rst
+   general/where.rst
+   general/indices_where.rst
+   general/isinf.rst
+   general/value_is_nan.rst
+   general/has_nans.rst
+   general/reshape.rst
+   general/broadcast_to.rst
+   general/squeeze.rst
+   general/zeros_like.rst
+   general/ones.rst
+   general/full.rst
+   general/one_hot.rst
+   general/cross.rst
+   general/matmul.rst
+   general/cumsum.rst
+   general/cumprod.rst
+   general/identity.rst
+   general/meshgrid.rst
+   general/scatter_flat.rst
+   general/scatter_nd.rst
+   general/gather.rst
+   general/gather_nd.rst
+   general/linear_resample.rst
+   general/exists.rst
+   general/default.rst
+   general/try_else_none.rst
+   general/arg_names.rst
+   general/match_kwargs.rst
+   general/cache_fn.rst
+   general/current_framework_str.rst
+   general/einops_rearrange.rst
+   general/einops_reduce.rst
+   general/einops_repeat.rst
+   general/get_min_denominator.rst
+   general/set_min_denominator.rst
+   general/stable_divide.rst
+   general/get_min_base.rst
+   general/set_min_base.rst
+   general/stable_pow.rst
+   general/multiprocessing.rst
+   general/set_queue_timeout.rst
+   general/queue_timeout.rst
+   general/tmp_dir.rst
+   general/set_tmp_dir.rst
+   general/get_all_arrays_in_memory.rst
+   general/num_arrays_in_memory.rst
+   general/print_all_arrays_in_memory.rst
+   general/container_types.rst
+   general/inplace_arrays_supported.rst
+   general/inplace_variables_supported.rst
+   general/supports_inplace.rst
+   general/assert_supports_inplace.rst
+   general/inplace_update.rst
+   general/inplace_decrement.rst
+   general/inplace_increment.rst
+

@@ -1,0 +1,17 @@
+Data type functions
+===================
+
+.. automodule:: ivy.functional.ivy.standard.data_type_functions
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :maxdepth: -1
+   :caption: Data type functions
+
+   data_type_functions/iinfo.rst
+   data_type_functions/finfo.rst
+

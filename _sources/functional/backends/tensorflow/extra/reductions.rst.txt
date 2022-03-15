@@ -1,0 +1,22 @@
+Reductions
+==========
+
+.. automodule:: ivy.functional.backends.tensorflow.extra.reductions
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :maxdepth: -1
+   :caption: Reductions
+
+   reductions/reduce_sum.rst
+   reductions/reduce_prod.rst
+   reductions/reduce_mean.rst
+   reductions/reduce_var.rst
+   reductions/reduce_min.rst
+   reductions/reduce_max.rst
+   reductions/einsum.rst
+

@@ -1,0 +1,77 @@
+General
+=======
+
+.. automodule:: ivy.functional.backends.torch.extra.general
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :maxdepth: -1
+   :caption: General
+
+   general/array.rst
+   general/is_array.rst
+   general/copy_array.rst
+   general/array_equal.rst
+   general/dtype_bits.rst
+   general/to_numpy.rst
+   general/to_scalar.rst
+   general/to_list.rst
+   general/shape.rst
+   general/get_num_dims.rst
+   general/minimum.rst
+   general/maximum.rst
+   general/clip.rst
+   general/round.rst
+   general/floormod.rst
+   general/floor.rst
+   general/abs.rst
+   general/argmin.rst
+   general/cast.rst
+   general/arange.rst
+   general/linspace.rst
+   general/logspace.rst
+   general/concatenate.rst
+   general/stack.rst
+   general/unstack.rst
+   general/split.rst
+   general/repeat.rst
+   general/tile.rst
+   general/constant_pad.rst
+   general/zero_pad.rst
+   general/swapaxes.rst
+   general/transpose.rst
+   general/expand_dims.rst
+   general/where.rst
+   general/indices_where.rst
+   general/isinf.rst
+   general/reshape.rst
+   general/broadcast_to.rst
+   general/squeeze.rst
+   general/zeros_like.rst
+   general/full.rst
+   general/one_hot.rst
+   general/cross.rst
+   general/cumsum.rst
+   general/cumprod.rst
+   general/identity.rst
+   general/meshgrid.rst
+   general/scatter_flat.rst
+   general/scatter_nd.rst
+   general/gather.rst
+   general/gather_nd.rst
+   general/linear_resample.rst
+   general/dtype.rst
+   general/dtype_to_str.rst
+   general/dtype_from_str.rst
+   general/compile.rst
+   general/current_framework_str.rst
+   general/multiprocessing.rst
+   general/container_types.rst
+   general/inplace_update.rst
+   general/inplace_decrement.rst
+   general/inplace_increment.rst
+

@@ -1,0 +1,16 @@
+Manipulation functions
+======================
+
+.. automodule:: ivy.functional.backends.tensorflow.standard.manipulation_functions
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :maxdepth: -1
+   :caption: Manipulation functions
+
+   manipulation_functions/flip.rst
+

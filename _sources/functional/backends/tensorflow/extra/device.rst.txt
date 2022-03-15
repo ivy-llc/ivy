@@ -1,0 +1,21 @@
+Device
+======
+
+.. automodule:: ivy.functional.backends.tensorflow.extra.device
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :maxdepth: -1
+   :caption: Device
+
+   device/dev.rst
+   device/to_dev.rst
+   device/dev_to_str.rst
+   device/dev_from_str.rst
+   device/tpu_is_available.rst
+   device/Profiler.rst
+

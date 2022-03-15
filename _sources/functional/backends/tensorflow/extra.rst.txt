@@ -1,0 +1,8 @@
+Extra
+=====
+
+.. automodule:: ivy.functional.backends.tensorflow.extra
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:

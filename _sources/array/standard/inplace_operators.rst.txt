@@ -1,0 +1,16 @@
+Inplace operators
+=================
+
+.. automodule:: ivy.array.standard.inplace_operators
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :maxdepth: -1
+   :caption: Inplace operators
+
+   inplace_operators/ArrayWithArrayAPIInplaceOperators.rst
+

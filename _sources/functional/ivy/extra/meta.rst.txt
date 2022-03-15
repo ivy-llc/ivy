@@ -1,0 +1,18 @@
+Meta
+====
+
+.. automodule:: ivy.functional.ivy.extra.meta
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :maxdepth: -1
+   :caption: Meta
+
+   meta/fomaml_step.rst
+   meta/reptile_step.rst
+   meta/maml_step.rst
+

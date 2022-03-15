@@ -1,0 +1,16 @@
+Linalg
+======
+
+.. automodule:: ivy.array.extra.linalg
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :maxdepth: -1
+   :caption: Linalg
+
+   linalg/ArrayWithLinalg.rst
+

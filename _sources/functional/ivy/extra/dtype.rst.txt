@@ -1,0 +1,44 @@
+Dtype
+=====
+
+.. automodule:: ivy.functional.ivy.extra.dtype
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :maxdepth: -1
+   :caption: Dtype
+
+   dtype/cast.rst
+   dtype/dtype.rst
+   dtype/dtype_bits.rst
+   dtype/is_int_dtype.rst
+   dtype/is_float_dtype.rst
+   dtype/valid_dtype.rst
+   dtype/invalid_dtype.rst
+   dtype/closest_valid_dtype.rst
+   dtype/convert_dtype.rst
+   dtype/dtype_to_str.rst
+   dtype/dtype_from_str.rst
+   dtype/default_dtype.rst
+   dtype/set_default_dtype.rst
+   dtype/unset_default_dtype.rst
+   dtype/default_float_dtype.rst
+   dtype/set_default_float_dtype.rst
+   dtype/unset_default_float_dtype.rst
+   dtype/default_int_dtype.rst
+   dtype/set_default_int_dtype.rst
+   dtype/unset_default_int_dtype.rst
+   dtype/DefaultDtype:
+    # noinspection PyShadowingNames
+    def __init__.rst
+   dtype/DefaultFloatDtype:
+    # noinspection PyShadowingNames
+    def __init__.rst
+   dtype/DefaultIntDtype:
+    # noinspection PyShadowingNames
+    def __init__.rst
+

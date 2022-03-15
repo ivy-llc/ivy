@@ -1,0 +1,16 @@
+Activations
+===========
+
+.. automodule:: ivy.functional.backends.jax.neural_net.activations
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :maxdepth: -1
+   :caption: Activations
+
+   activations/softmax.rst
+

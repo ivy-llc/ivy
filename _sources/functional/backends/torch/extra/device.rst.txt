@@ -1,0 +1,22 @@
+Device
+======
+
+.. automodule:: ivy.functional.backends.torch.extra.device
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :maxdepth: -1
+   :caption: Device
+
+   device/dev.rst
+   device/to_dev.rst
+   device/dev_to_str.rst
+   device/dev_from_str.rst
+   device/clear_mem_on_dev.rst
+   device/tpu_is_available.rst
+   device/Profiler.rst
+

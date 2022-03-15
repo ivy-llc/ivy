@@ -1,0 +1,8 @@
+Extra
+=====
+
+.. automodule:: ivy.functional.backends.numpy.extra
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:

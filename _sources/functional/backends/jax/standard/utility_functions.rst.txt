@@ -1,0 +1,17 @@
+Utility functions
+=================
+
+.. automodule:: ivy.functional.backends.jax.standard.utility_functions
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :maxdepth: -1
+   :caption: Utility functions
+
+   utility_functions/all.rst
+   utility_functions/any.rst
+

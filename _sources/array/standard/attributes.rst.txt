@@ -1,0 +1,16 @@
+Attributes
+==========
+
+.. automodule:: ivy.array.standard.attributes
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :maxdepth: -1
+   :caption: Attributes
+
+   attributes/ArrayWithArrayAPIAttributes.rst
+

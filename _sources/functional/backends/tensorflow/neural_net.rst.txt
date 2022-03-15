@@ -1,0 +1,8 @@
+Neural net
+==========
+
+.. automodule:: ivy.functional.backends.tensorflow.neural_net
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:

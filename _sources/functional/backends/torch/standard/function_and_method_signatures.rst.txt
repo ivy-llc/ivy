@@ -1,0 +1,15 @@
+Function and method signatures
+==============================
+
+.. automodule:: ivy.functional.backends.torch.standard.function_and_method_signatures
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :maxdepth: -1
+   :caption: Function and method signatures
+
+

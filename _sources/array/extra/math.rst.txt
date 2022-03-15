@@ -1,0 +1,16 @@
+Math
+====
+
+.. automodule:: ivy.array.extra.math
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :maxdepth: -1
+   :caption: Math
+
+   math/ArrayWithMath.rst
+

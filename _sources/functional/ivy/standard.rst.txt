@@ -1,0 +1,22 @@
+Standard
+========
+
+
+.. toctree::
+   :maxdepth: -1
+   :caption: Standard
+
+   standard/constants.rst
+   standard/creation_functions.rst
+   standard/data_type_functions.rst
+   standard/data_types.rst
+   standard/elementwise_functions.rst
+   standard/function_and_method_signatures.rst
+   standard/linear_algebra.rst
+   standard/manipulation_functions.rst
+   standard/searching_functions.rst
+   standard/set_functions.rst
+   standard/sorting_functions.rst
+   standard/statistical_functions.rst
+   standard/utility_functions.rst
+

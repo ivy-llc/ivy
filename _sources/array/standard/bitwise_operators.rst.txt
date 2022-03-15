@@ -1,0 +1,16 @@
+Bitwise operators
+=================
+
+.. automodule:: ivy.array.standard.bitwise_operators
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :maxdepth: -1
+   :caption: Bitwise operators
+
+   bitwise_operators/ArrayWithArrayAPIBitwiseOperators.rst
+

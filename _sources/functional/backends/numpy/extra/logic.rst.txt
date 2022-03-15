@@ -1,0 +1,15 @@
+Logic
+=====
+
+.. automodule:: ivy.functional.backends.numpy.extra.logic
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :maxdepth: -1
+   :caption: Logic
+
+
