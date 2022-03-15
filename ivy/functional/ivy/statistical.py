@@ -1,5 +1,5 @@
 # global
-from typing import Union, Tuple
+from typing import Union, Tuple, Optional
 
 # local
 import ivy
@@ -57,8 +57,8 @@ def max(x: Union[ivy.Array, ivy.NativeArray],
 
 
 def prod(x: Union[ivy.Array, ivy.NativeArray],
-         axis: Union[int, Tuple[int]] = None,
-         dtype: dtype = None,
+         axis: Optional[Union[int, Tuple[int]]] = None,
+         dtype: Optional[Union[ivy.Dtype, str]] = None,
          keepdims: bool = False)\
         -> ivy.Array:
     """

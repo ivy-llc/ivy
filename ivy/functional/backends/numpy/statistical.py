@@ -1,6 +1,6 @@
 # global
 import numpy as _np
-from typing import Tuple, Union
+from typing import Tuple, Union, Optional
 
 
 def min(x: _np.ndarray,
