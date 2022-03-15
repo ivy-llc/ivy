@@ -12,7 +12,7 @@ from torch.profiler import ProfilerActivity
 from torch.profiler import profile as _profile
 
 # local
-from ivy.functional.ivy.old import Profiler as BaseProfiler
+from ivy.functional.ivy.device import Profiler as BaseProfiler
 
 
 # API #

@@ -6,7 +6,7 @@ Collection of MXNet random functions, wrapped to fit Ivy syntax and signature.
 import mxnet as _mx
 
 # local
-from ivy.functional.ivy.old import default_device
+from ivy.functional.ivy.device import default_device
 # noinspection PyProtectedMember
 from ivy.functional.backends.mxnet import _mxnet_init_context
 # noinspection PyProtectedMember

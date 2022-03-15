@@ -9,7 +9,7 @@ import mxnet as _mx
 from mxnet import profiler as _profiler
 
 # local
-from ivy.functional.ivy.old import Profiler as BaseProfiler
+from ivy.functional.ivy.device import Profiler as BaseProfiler
 
 
 def dev(x, as_str=False):

@@ -8,7 +8,7 @@ import torch as _torch
 from typing import Optional, List
 
 # local
-from ivy.functional.ivy.old import default_device
+from ivy.functional.ivy.device import default_device
 
 
 def random_uniform(low: float = 0.0, high: float = 1.0, shape: Optional[List[int]] = None, dev: ivy.Device = None):
