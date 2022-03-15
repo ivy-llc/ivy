@@ -674,8 +674,8 @@ def fourier_encode(x: Union[ivy.Array, ivy.NativeArray], max_freq: Union[float, 
     cos_x = ivy.cos(x)
     if flatten:
         orig_x = x_in
-        sin_x = ivy.reshape(sin_x, [-1, num_bands * dim])
-        cos_x = ivy.reshape(cos_x, [-1, num_bands * dim])
+        sin_x = ivy.reshape(sin_x, [-1, num_bands*dim])
+        cos_x = ivy.reshape(cos_x, [-1, num_bands*dim])
     if concat:
         return ivy.concatenate([orig_x, sin_x, cos_x], -1)
     return sin_x, cos_x
