@@ -36,10 +36,10 @@ def _tf_cast(x: Tensor, dtype: tf.dtypes.DType) -> Tensor:
 
 def _cast_for_binary_op(x1: Tensor, x2: Tensor)\
         -> typing.Tuple[typing.Union[Tensor, int, float, bool], typing.Union[Tensor, int, float, bool]]:
-    x1_bits = ivy.functional.backends.tensorflow.core.general.dtype_bits(x1.dtype)
+    x1_bits = ivy.functional.backends.tensorflow.old.general.dtype_bits(x1.dtype)
     if isinstance(x2, (int, float, bool)):
         return x1, x2
-    x2_bits = ivy.functional.backends.tensorflow.core.general.dtype_bits(x2.dtype)
+    x2_bits = ivy.functional.backends.tensorflow.old.general.dtype_bits(x2.dtype)
     if x1_bits > x2_bits:
         x2 = _tf_cast(x2, x1.dtype)
     elif x2_bits > x1_bits:
