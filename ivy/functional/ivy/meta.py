@@ -3,8 +3,10 @@ import ivy
 from ivy.functional.ivy.gradients import gradient_descent_update
 
 
+# Extra #
+# ------#
+
 # Private #
-# --------#
 
 def _compute_cost_and_update_grads(cost_fn, order, batch, variables, outer_v, keep_outer_v,
                                    average_across_steps_or_final, all_grads, unique_outer, batched, num_tasks):
@@ -174,7 +176,6 @@ def _train_tasks(batch, inner_batch_fn, outer_batch_fn, inner_cost_fn, outer_cos
 
 
 # Public #
-# -------#
 
 # First Order
 
