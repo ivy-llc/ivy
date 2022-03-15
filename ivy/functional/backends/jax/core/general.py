@@ -265,7 +265,6 @@ def one_hot(indices, depth, dev=None):
 
 
 cross = _jnp.cross
-matmul = lambda x1, x2: _jnp.matmul(x1, x2)
 cumsum = _jnp.cumsum
 
 

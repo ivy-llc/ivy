@@ -131,6 +131,12 @@ def negative(x: torch.Tensor) -> torch.Tensor:
 def tanh(x: torch.Tensor) -> torch.Tensor:
     return torch.tanh(x)
 
+<<<<<<< HEAD
 def floor_divide(x1: torch.Tensor, x2: torch.Tensor)\
                 -> torch.Tensor:
     return x1 // x2
+=======
+
+def sinh(x: torch.Tensor) -> torch.Tensor:
+    return torch.sinh(x)
+>>>>>>> aa32385392a2c6ec4e1620becb357a8d54e2cb6f
