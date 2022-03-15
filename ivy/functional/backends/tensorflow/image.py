@@ -7,7 +7,7 @@ import math
 from functools import reduce as _reduce
 from operator import mul as _mul
 _tfa = None
-import tensorflow as _tf
+import tensorflow as tf
 
 # local
 from ivy.functional.backends import tensorflow as _ivy
@@ -43,16 +43,16 @@ def bilinear_resample(x, warp):
     batch_shape = list(batch_shape)
     input_image_dims = list(input_image_dims)
     batch_shape_product = _reduce(_mul, batch_shape, 1)
-    warp_flat = _tf.reshape(warp, [batch_shape_product] + [-1, 2])
-    mat_flat = _tf.reshape(x, [batch_shape_product] + input_image_dims + [-1])
+    warp_flat = tf.reshape(warp, [batch_shape_product] + [-1, 2])
+    mat_flat = tf.reshape(x, [batch_shape_product] + input_image_dims + [-1])
     global _tfa
     if _tfa is None:
         try:
-            import tensorflow_addons as _tfa
+            import tensorflow_addons as tfa
         except:
             raise Exception('Unable to import tensorflow_addons, verify this is correctly installed.')
     ret = _tfa.image.interpolate_bilinear(mat_flat, warp_flat, indexing='xy')
-    return _tf.reshape(ret, batch_shape + [-1, num_feats])
+    return tf.reshape(ret, batch_shape + [-1, num_feats])
 
 
 def gradient_image(x):
