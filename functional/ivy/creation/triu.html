@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>svd &mdash; Ivy 1.0 documentation</title>
+  <title>triu &mdash; Ivy 1.0 documentation</title>
   
 
   
@@ -35,8 +35,8 @@
   <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="diagonal" href="diagonal.html" />
-    <link rel="prev" title="vector_norm" href="vector_norm.html" /> 
+    <link rel="next" title="empty" href="empty.html" />
+    <link rel="prev" title="tril" href="tril.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -91,20 +91,19 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../activations.html">Activations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../constants.html">Constants</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../creation.html">Creation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../creation.html">Creation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="zeros.html">zeros</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ones.html">ones</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ones_like.html">ones_like</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tril.html">tril</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">triu</a></li>
+<li class="toctree-l2"><a class="reference internal" href="empty.html">empty</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="../data_type.html">Data type</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../elementwise.html">Elementwise</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../layers.html">Layers</a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="../linear_algebra.html">Linear algebra</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="vector_norm.html">vector_norm</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">svd</a></li>
-<li class="toctree-l2"><a class="reference internal" href="diagonal.html">diagonal</a></li>
-<li class="toctree-l2"><a class="reference internal" href="qr.html">qr</a></li>
-<li class="toctree-l2"><a class="reference internal" href="matmul.html">matmul</a></li>
-<li class="toctree-l2"><a class="reference internal" href="slodget.html">slodget</a></li>
-<li class="toctree-l2"><a class="reference internal" href="trace.html">trace</a></li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="../linear_algebra.html">Linear algebra</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../losses.html">Losses</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../manipulation.html">Manipulation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../norms.html">Norms</a></li>
@@ -183,15 +182,15 @@
         
           <li><a href="../../ivy.html">&lt;no title&gt;</a> &raquo;</li>
         
-          <li><a href="../linear_algebra.html">Linear algebra</a> &raquo;</li>
+          <li><a href="../creation.html">Creation</a> &raquo;</li>
         
-      <li>svd</li>
+      <li>triu</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../../_sources/functional/ivy/linear_algebra/svd.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../../_sources/functional/ivy/creation/triu.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -204,29 +203,23 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="svd">
-<h1>svd<a class="headerlink" href="#svd" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="triu">
+<h1>triu<a class="headerlink" href="#triu" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
-<dt id="ivy.functional.ivy.linear_algebra.svd">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">svd</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">full_matrices</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">True</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>Tuple<span class="p">[</span>ivy.array.Array<span class="p">, </span><span class="p">…</span><span class="p">]</span><span class="p">]</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/linear_algebra.html#svd"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.linear_algebra.svd" title="Permalink to this definition">¶</a></dt>
-<dd><p>Singular Value Decomposition.
-When x is a 2D array, it is factorized as u &#64; numpy.diag(s) &#64; vh = (u * s) &#64; vh, where u and vh are 2D unitary
-arrays and s is a 1D array of a’s singular values. When x is higher-dimensional, SVD is applied in batched mode.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>x</strong> (<em>array</em>) – Input array with number of dimensions &gt;= 2.</p>
+<dt id="ivy.functional.ivy.creation.triu">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">triu</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">k</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">0</span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../../_modules/ivy/functional/ivy/creation.html#triu"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.creation.triu" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the upper triangular part of a matrix (or a stack of matrices) x.</p>
+<dl class="simple">
+<dt>x:</dt><dd><p>input array having shape (…, M, N) and whose innermost two dimensions form MxN matrices.</p>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><p>u -&gt; { (…, M, M), (…, M, K) } array</p>
-<p>Unitary array(s). The first (number of dims - 2) dimensions have the same size as those of the input a.
-The size of the last two dimensions depends on the value of full_matrices.</p>
-<p>s -&gt; (…, K) array</p>
-<p>Vector(s) with the singular values, within each vector sorted in descending ord.
-The first (number of dims - 2) dimensions have the same size as those of the input a.</p>
-<p>vh -&gt; { (…, N, N), (…, K, N) } array</p>
-<p>Unitary array(s). The first (number of dims - 2) dimensions have the same size as those of the input a.
-The size of the last two dimensions depends on the value of full_matrices.</p>
-</p>
+<dt>k:</dt><dd><p>diagonal below which to zero elements. If k = 0, the diagonal is the main diagonal. If k &lt; 0, the diagonal is 
+below the main diagonal. If k &gt; 0, the diagonal is above the main diagonal. Default: 0.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>out:</dt><dd><p>an array containing the upper triangular part(s). The returned array must have the same shape and data type as 
+x. All elements below the specified diagonal k must be zeroed. The returned array should be allocated on the 
+same device as x.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -246,10 +239,10 @@ The size of the last two dimensions depends on the value of full_matrices.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="diagonal.html" class="btn btn-neutral float-right" title="diagonal" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="empty.html" class="btn btn-neutral float-right" title="empty" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="vector_norm.html" class="btn btn-neutral float-left" title="vector_norm" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="tril.html" class="btn btn-neutral float-left" title="tril" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

@@ -16,5 +16,6 @@ Creation
    creation/ones.rst
    creation/ones_like.rst
    creation/tril.rst
+   creation/triu.rst
    creation/empty.rst
 
