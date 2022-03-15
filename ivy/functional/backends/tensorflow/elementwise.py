@@ -160,3 +160,8 @@ def tanh(x: Tensor) \
 def sinh(x: Tensor) \
         -> Tensor:
     return tf.sinh(x)  
+
+ 
+def square(x: Tensor)\
+        -> Tensor:
+    return tf.math.square(x)
