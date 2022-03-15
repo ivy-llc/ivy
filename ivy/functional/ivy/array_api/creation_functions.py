@@ -55,7 +55,6 @@ def ones(shape: Union[int, Tuple[int], List[int]],
     return _cur_framework().ones(shape, dtype, device)
 
 
-<<<<<<< HEAD
 def full_like(x: Union[ivy.Array, ivy.NativeArray], /,
               fill_value: Union[int, float], *,
               dtype: Optional[Union[ivy.Dtype, str]] = None,
@@ -81,7 +80,7 @@ def full_like(x: Union[ivy.Array, ivy.NativeArray], /,
     out:an array having the same shape as x and where every element is equal to fill_value.
     """
     return _cur_framework(x).full_like(x, fill_value, dtype=dtype, device=device)
-=======
+
 def ones_like( x: Union[ivy.Array, ivy.NativeArray],
               dtype: Optional[Union[ivy.Dtype, str]] = None,
               dev: Optional[Union[ivy.Device, str]] = None,
@@ -97,7 +96,6 @@ def ones_like( x: Union[ivy.Array, ivy.NativeArray],
     :return: An array having the same shape as x and filled with ones.
     """
     return _cur_framework(x).ones_like(x, dtype, dev)
->>>>>>> upstream/master
 
 
 def tril(x: Union[ivy.Array, ivy.NativeArray],
