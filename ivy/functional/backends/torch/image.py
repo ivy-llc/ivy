@@ -4,7 +4,7 @@ Collection of PyTorch image functions, wrapped to fit Ivy syntax and signature.
 
 # global
 import math
-import torch as _torch
+import torch
 from operator import mul
 from functools import reduce
 from typing import List, Optional
@@ -13,7 +13,7 @@ from typing import List, Optional
 from ivy.functional.backends import torch as _ivy
 
 
-def stack_images(images: List[_torch.Tensor], desired_aspect_ratio: List[int] = (1, 1)):
+def stack_images(images: List[torch.Tensor], desired_aspect_ratio: List[int] = (1, 1)):
     num_images = len(images)
     if num_images == 0:
         raise Exception('At least 1 image must be provided')
@@ -31,9 +31,9 @@ def stack_images(images: List[_torch.Tensor], desired_aspect_ratio: List[int] = 
     image_rows = list()
     for i in range(stack_width_int):
         images_to_concat = images[i * stack_height_int:(i + 1) * stack_height_int]
-        images_to_concat += [_torch.zeros_like(images[0])] * (stack_height_int - len(images_to_concat))
-        image_rows.append(_torch.cat(images_to_concat, num_batch_dims))
-    return _torch.cat(image_rows, num_batch_dims + 1)
+        images_to_concat += [torch.zeros_like(images[0])] * (stack_height_int - len(images_to_concat))
+        image_rows.append(torch.cat(images_to_concat, num_batch_dims))
+    return torch.cat(image_rows, num_batch_dims + 1)
 
 
 # noinspection PyUnresolvedReferences
@@ -47,10 +47,10 @@ def bilinear_resample(x, warp):
     warp_flat = warp.view([batch_shape_product] + [-1, 1] + [2])
     warp_flat_x = 2 * warp_flat[..., 0:1] / (input_image_dims[1] - 1) - 1
     warp_flat_y = 2 * warp_flat[..., 1:2] / (input_image_dims[0] - 1) - 1
-    warp_flat_scaled = _torch.cat((warp_flat_x, warp_flat_y), -1)
+    warp_flat_scaled = torch.cat((warp_flat_x, warp_flat_y), -1)
     mat_flat = x.view([batch_shape_product] + input_image_dims + [-1])
     mat_flat_transposed = mat_flat.permute((0, 3, 1, 2))
-    interpolated_flat_transposed = _torch.nn.functional.grid_sample(mat_flat_transposed, warp_flat_scaled,
+    interpolated_flat_transposed = torch.nn.functional.grid_sample(mat_flat_transposed, warp_flat_scaled,
                                                                     align_corners=True)
     interpolated_flat = interpolated_flat_transposed.permute((0, 2, 3, 1))
     return interpolated_flat.view(batch_shape + [-1, num_feats])
@@ -73,8 +73,8 @@ def gradient_image(x, batch_shape: Optional[List[int]] = None, image_dims: Optio
     dx = x[..., :, 1:, :] - x[..., :, :-1, :]
     # BS x H x W x D
     # noinspection PyTypeChecker
-    dy = _ivy.concatenate((dy, _torch.zeros(batch_shape + [1, image_dims[1], num_dims], device=dev)), -3)
+    dy = _ivy.concatenate((dy, torch.zeros(batch_shape + [1, image_dims[1], num_dims], device=dev)), -3)
     # noinspection PyTypeChecker
-    dx = _ivy.concatenate((dx, _torch.zeros(batch_shape + [image_dims[0], 1, num_dims], device=dev)), -2)
+    dx = _ivy.concatenate((dx, torch.zeros(batch_shape + [image_dims[0], 1, num_dims], device=dev)), -2)
     # BS x H x W x D,    BS x H x W x D
     return dy, dx
