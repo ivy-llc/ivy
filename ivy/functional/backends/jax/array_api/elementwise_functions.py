@@ -1,7 +1,9 @@
 # global
 import jax.numpy as jnp
+from typing import Optional, Union
 
 # local
+import ivy
 from ivy.functional.backends.jax import JaxArray
 
 
@@ -78,9 +80,13 @@ def logical_not(x: JaxArray)\
     return jnp.logical_not(x)
 
 
-def divide(x1: JaxArray, x2: JaxArray)\
+def divide(x1: JaxArray,
+           x2: JaxArray,
+           dtype: Optional[Union[JaxArray.dtype, str]] = None)\
         -> JaxArray:
-    return jnp.divide(x1, x2)
+    dtype = ivy.dtype_from_str(ivy.default_dtype(dtype, x1, x2))
+    return jnp.divide(x1, x2, dtype)
+
 
 def acosh(x: JaxArray)\
         -> JaxArray:

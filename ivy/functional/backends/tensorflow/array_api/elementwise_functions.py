@@ -1,10 +1,11 @@
 # global
 import tensorflow as tf
 from tensorflow.python.types.core import Tensor
-import typing
+from typing import Optional, Union
 
 # local
 import ivy
+from ivy import dtype
 
 
 def bitwise_and(x1: Tensor,
@@ -114,12 +115,12 @@ def logical_not(x: Tensor)\
     return tf.logical_not(tf.cast(x, tf.bool))
 
 
-
 def divide(x1: Tensor,
-           x2: Tensor)\
+           x2: Tensor,
+           dtype: Optional[Union[Tensor.dtype, str]] = None) \
         -> Tensor:
-    return tf.divide(x1, x2)
-
+    dtype = ivy.dtype_from_str(ivy.default_dtype(dtype, x1, x2))
+    return tf.divide(x1, x2, dtype)
 
   
 def acosh(x: Tensor) \
