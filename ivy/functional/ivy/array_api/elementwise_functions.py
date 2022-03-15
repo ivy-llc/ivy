@@ -124,6 +124,7 @@ def less(x1: Union[ivy.Array, ivy.NativeArray],
     :param x2: Input array.
     :param f: Machine learning framework. Inferred from inputs if None.
     :return: an array containing the element-wise results. The returned array must have a data type of bool.
+
     """
     return _cur_framework(x1).less(x1,x2)
 
@@ -148,3 +149,14 @@ def logical_not(x: Union[ivy.Array, ivy.NativeArray])\
     :return: Boolean result of the logical NOT operation applied element-wise to x.
     """
     return _cur_framework(x).logical_not(x)
+
+
+def positive(x: Union[ivy.Array, ivy.NativeArray])\
+        -> ivy.Array:
+    """
+    Returns a new array with the positives of the elements of x.
+
+    :param x: Input array.
+    :return: A new array with the positives of the elements of x.
+    """
+    return _cur_framework(x).positive(x)

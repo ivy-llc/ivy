@@ -60,3 +60,8 @@ def cos(x: JaxArray)\
 def logical_not(x: JaxArray)\
         -> JaxArray:
     return jnp.logical_not(x)
+
+
+def positive(x: JaxArray)\
+        -> JaxArray:
+    return jnp.positive(x)
