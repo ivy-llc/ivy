@@ -9,3 +9,9 @@ def min(x: _tf.Tensor,
         keepdims: bool = False) \
         -> _tf.Tensor:
     return _tf.math.reduce_min(x, axis = axis, keepdims = keepdims)
+
+def max(x: _tf.Tensor,
+        axis: Union[int, Tuple[int]] = None,
+        keepdims: bool = False) \
+        -> _tf.Tensor:
+    return _tf.math.reduce_max(x, axis = axis, keepdims = keepdims)

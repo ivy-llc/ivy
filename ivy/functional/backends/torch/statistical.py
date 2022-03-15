@@ -11,3 +11,11 @@ def min(x: _torch.Tensor,
     if axis == (): return x
     if not keepdims and not axis and axis !=0: return _torch.amin(input = x)
     return _torch.amin(input = x, dim = axis, keepdim = keepdims)
+
+def max(x: _torch.Tensor,
+        axis: Union[int, Tuple[int]] = None,
+        keepdims: bool = False) \
+        -> _torch.Tensor:
+    if axis == (): return x
+    if not keepdims and not axis and axis !=0: return _torch.amax(input = x)
+    return _torch.amax(input = x, dim = axis, keepdim = keepdims)
