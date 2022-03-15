@@ -26,17 +26,26 @@ def vector_norm(x: JaxArray,
         return jnp.expand_dims(jnp_normalized_vector, 0)
     return jnp_normalized_vector
 
+
 def svd(x:JaxArray,full_matrices: bool = True) -> Union[JaxArray, Tuple[JaxArray,...]]:
     results=namedtuple("svd", "U S Vh")
     U, D, VT=jnp.linalg.svd(x, full_matrices=full_matrices)
     res=results(U, D, VT)
     return res
 
+
 def diagonal(x: JaxArray,
              offset: int = 0,
              axis1: int = -2,
              axis2: int = -1) -> JaxArray:
     return jnp.diagonal(x, offset, axis1, axis2)
+
+
+def qr(x: JaxArray,
+       mode: str = 'reduced') -> namedtuple('qr', ['Q', 'R']):
+    res = namedtuple('qr', ['Q', 'R'])
+    q, r = jnp.linalg.qr(x, mode=mode)
+    return res(q, r)
 
 
 def matmul(x1: JaxArray,
@@ -50,7 +59,8 @@ def slogdet(x:Union[_ivy.Array,_ivy.NativeArray],full_matrices: bool = True) -> 
     res = results(sign, logabsdet)
     return res
 
-def trace(x: JaxArray, 
+
+def trace(x: JaxArray,
           offset: int = 0)\
               -> JaxArray:
     return jax.numpy.trace(x, offset)
