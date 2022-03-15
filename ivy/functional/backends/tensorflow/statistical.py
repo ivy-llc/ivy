@@ -1,17 +1,17 @@
 # global
 _round = round
-import tensorflow as _tf
+import tensorflow as tf
 from typing import Tuple, Union
 
 
-def min(x: _tf.Tensor,
+def min(x: tf.Tensor,
         axis: Union[int, Tuple[int]] = None,
         keepdims: bool = False) \
-        -> _tf.Tensor:
-    return _tf.math.reduce_min(x, axis = axis, keepdims = keepdims)
+        -> tf.Tensor:
+    return tf.math.reduce_min(x, axis = axis, keepdims = keepdims)
 
-def max(x: _tf.Tensor,
+def max(x: tf.Tensor,
         axis: Union[int, Tuple[int]] = None,
         keepdims: bool = False) \
-        -> _tf.Tensor:
-    return _tf.math.reduce_max(x, axis = axis, keepdims = keepdims)
+        -> tf.Tensor:
+    return tf.math.reduce_max(x, axis = axis, keepdims = keepdims)
