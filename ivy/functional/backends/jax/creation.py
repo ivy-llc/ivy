@@ -6,7 +6,7 @@ from typing import Union, Optional, Tuple, List
 # local
 from ivy import dtype_from_str
 from ivy.functional.backends.jax import JaxArray
-from ivy.functional.backends.jax.old.device import to_dev
+from ivy.functional.backends.jax.device import to_dev
 from ivy.functional.ivy.old import default_device, default_dtype
 from jaxlib.xla_extension import Device, DeviceArray
 

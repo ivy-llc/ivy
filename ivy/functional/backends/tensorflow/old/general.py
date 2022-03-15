@@ -12,12 +12,10 @@ from numbers import Number
 import tensorflow_probability as _tfp
 import multiprocessing as _multiprocessing
 from tensorflow.python.types.core import Tensor
-from typing import Tuple, Union
-import typing as _typing
 
 # local
 from ivy.functional.ivy.old import default_device, default_dtype
-from ivy.functional.backends.tensorflow.old.device import _dev_callable, dev_from_str
+from ivy.functional.backends.tensorflow.device import _dev_callable, dev_from_str
 
 DTYPE_TO_STR = {_tf.int8: 'int8',
                 _tf.int16: 'int16',
