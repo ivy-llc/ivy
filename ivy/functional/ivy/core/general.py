@@ -395,7 +395,6 @@ def abs(x: Union[ivy.Array, ivy.NativeArray]) \
     """
     return _cur_framework(x).abs(x)
 
-<<<<<<< HEAD
 
 def argmax(x: Union[ivy.Array, ivy.NativeArray], axis: int = 0) \
         -> Union[ivy.Array, ivy.NativeArray]:
@@ -410,12 +409,8 @@ def argmax(x: Union[ivy.Array, ivy.NativeArray], axis: int = 0) \
     """
     return _cur_framework(x).argmax(x, axis)
 
-
-def argmin(x: Union[ivy.Array, ivy.NativeArray], axis: int = 0) \
-=======
 def argmin(x: Union[ivy.Array, ivy.NativeArray], axis: int = 0)\
->>>>>>> upstream/master
-        -> Union[ivy.Array, ivy.NativeArray]:
+        ->Union[ivy.Array, ivy.NativeArray]:
     """
     Returns the index with the smallest value across axes of an array.
 
