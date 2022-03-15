@@ -6,7 +6,7 @@ Collection of TensorFlow random functions, wrapped to fit Ivy syntax and signatu
 import tensorflow as _tf
 
 # local
-from ivy.functional.ivy.old import default_device
+from ivy.functional.ivy.device import default_device
 
 
 def random_uniform(low=0., high=1., shape=None, dev=None):

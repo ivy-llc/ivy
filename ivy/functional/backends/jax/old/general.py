@@ -17,7 +17,8 @@ from haiku._src.data_structures import FlatMapping
 
 # local
 import ivy
-from ivy.functional.ivy.old import default_device, default_dtype
+from ivy.functional.ivy.device import default_device
+from ivy.functional.ivy.old import default_dtype
 from ivy.functional.backends.jax.device import to_dev, dev as callable_dev
 
 DTYPE_TO_STR = {_jnp.dtype('int8'): 'int8',
