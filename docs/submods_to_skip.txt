@@ -1,0 +1,4 @@
+# submodules to skip entirely
+functional/backends
+functional/ivy/old
+array
