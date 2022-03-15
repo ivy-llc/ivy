@@ -148,3 +148,8 @@ def tanh(x: Tensor) \
 def sinh(x: Tensor) \
         -> Tensor:
     return tf.sinh(x)  
+
+
+def positive(x: Tensor)\
+        -> Tensor:
+    return tf.experimental.numpy.positive(x)

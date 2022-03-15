@@ -456,3 +456,14 @@ def sinh(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
         an array containing the hyperbolic sine of each element in ``x``. The returned array must have a floating-point data type determined by :ref:`type-promotion`.
     """
     return _cur_framework(x).sinh(x)
+
+
+def positive(x: Union[ivy.Array, ivy.NativeArray])\
+        -> ivy.Array:
+    """
+    Returns a new array with the positive value of each element in x.
+
+    :param x: Input array.
+    :return: A new array with the positive value of each element in x.
+    """
+    return _cur_framework(x).positive(x)

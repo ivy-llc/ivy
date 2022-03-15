@@ -110,3 +110,8 @@ def tanh(x: JaxArray)\
 def sinh(x: JaxArray)\
         -> JaxArray:
     return jnp.sinh(x)
+
+
+def positive(x: JaxArray)\
+        -> JaxArray:
+    return jnp.positive(x)

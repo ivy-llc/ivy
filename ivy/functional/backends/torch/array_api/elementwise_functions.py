@@ -134,3 +134,8 @@ def tanh(x: torch.Tensor) -> torch.Tensor:
 
 def sinh(x: torch.Tensor) -> torch.Tensor:
     return torch.sinh(x)
+
+
+def positive(x: torch.Tensor)\
+        -> torch.Tensor:
+    return torch.positive(x)
