@@ -17,4 +17,5 @@ Linear algebra
    linear_algebra/diagonal.rst
    linear_algebra/matmul.rst
    linear_algebra/slodget.rst
+   linear_algebra/trace.rst
 

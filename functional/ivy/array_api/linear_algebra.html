@@ -299,6 +299,26 @@ The size of the last two dimensions depends on the value of full_matrices.</p>
 </dd></dl>
 
 <dl class="py function">
+<dt id="ivy.functional.ivy.array_api.linear_algebra.trace">
+<code class="sig-prename descclassname">ivy.functional.ivy.array_api.linear_algebra.</code><code class="sig-name descname">trace</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">ivy.array.Array</span></em>, <em class="sig-param"><span class="n">offset</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">0</span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../../_modules/ivy/functional/ivy/array_api/linear_algebra.html#trace"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.array_api.linear_algebra.trace" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the sum of the diagonal of an array.</p>
+<dl class="simple">
+<dt>x:</dt><dd><p>This is an array.</p>
+</dd>
+</dl>
+<p>Out:</p>
+<blockquote>
+<div><dl class="simple">
+<dt>This function returns two values -</dt><dd><dl class="simple">
+<dt>sum:</dt><dd><p>The sum of the diagonals along an axis.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py function">
 <dt id="ivy.functional.ivy.array_api.linear_algebra.vector_norm">
 <code class="sig-prename descclassname">ivy.functional.ivy.array_api.linear_algebra.</code><code class="sig-name descname">vector_norm</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">axis</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Union<span class="p">[</span>int<span class="p">, </span>Tuple<span class="p">[</span>int<span class="p">]</span><span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">keepdims</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">ord</span><span class="p">:</span> <span class="n">Union[int, float, Literal[inf, - inf]]</span> <span class="o">=</span> <span class="default_value">2</span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../../_modules/ivy/functional/ivy/array_api/linear_algebra.html#vector_norm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.array_api.linear_algebra.vector_norm" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes the vector norm of a vector (or batch of vectors) <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p>
@@ -352,6 +372,7 @@ Default: <code class="docutils literal notranslate"><span class="pre">2</span></
 <li class="toctree-l1"><a class="reference internal" href="linear_algebra/diagonal.html">diagonal</a></li>
 <li class="toctree-l1"><a class="reference internal" href="linear_algebra/matmul.html">matmul</a></li>
 <li class="toctree-l1"><a class="reference internal" href="linear_algebra/slodget.html">slodget</a></li>
+<li class="toctree-l1"><a class="reference internal" href="linear_algebra/trace.html">trace</a></li>
 </ul>
 </div>
 </div>
