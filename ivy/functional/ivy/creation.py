@@ -96,6 +96,30 @@ def tril(x: Union[ivy.Array, ivy.NativeArray],
     return _cur_framework(x).tril(x, k)
 
 
+def triu(x: Union[ivy.Array, ivy.NativeArray],
+         k: int = 0) \
+         -> ivy.Array:
+    """
+    Returns the upper triangular part of a matrix (or a stack of matrices) x.
+
+    Parameters
+    ----------
+    x:
+        input array having shape (..., M, N) and whose innermost two dimensions form MxN matrices.
+    k:
+        diagonal below which to zero elements. If k = 0, the diagonal is the main diagonal. If k < 0, the diagonal is 
+        below the main diagonal. If k > 0, the diagonal is above the main diagonal. Default: 0.
+
+    Returns
+    -------
+    out:
+        an array containing the upper triangular part(s). The returned array must have the same shape and data type as 
+        x. All elements below the specified diagonal k must be zeroed. The returned array should be allocated on the 
+        same device as x.
+    """
+    return _cur_framework(x).triu(x, k)
+    
+
 def empty(shape: Union[int, Tuple[int],List[int]],
           dtype: Optional[ivy.Dtype] = None,
           device: Optional[ivy.Device] = None)\
