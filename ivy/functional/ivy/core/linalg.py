@@ -31,31 +31,6 @@ def svd(x):
     return _cur_framework(x).svd(x)
 
 
-def vector_norm(x, p=2, axis=None, keepdims=False):
-    """
-    Compute the vector p-norm.
-
-    :param x: Input array.
-    :type x: array
-    :param p: Order of the norm. Default is 2.
-    :type p: int or str, optional
-    :param axis: If axis is an integer, it specifies the axis of x along which to compute the vector norms.
-                 Default is None, in which case the flattened array is considered.
-    :type axis: int or sequence of ints, optional
-    :param keepdims: If this is set to True, the axes which are normed over are left in the result as dimensions with
-                     size one. With this option the result will broadcast correctly against the original x.
-                     Default is False.
-    :type keepdims: bool, optional
-    :return: Vector norm of the array at specified axes.
-    """
-    if p == -float('inf'):
-        return ivy.reduce_min(ivy.abs(x), axis, keepdims)
-    elif p == float('inf'):
-        return ivy.reduce_max(ivy.abs(x), axis, keepdims)
-    elif p == 0:
-        return ivy.reduce_sum(ivy.cast(x != 0, 'float32'), axis, keepdims)
-    x_raised = x ** p
-    return ivy.reduce_sum(x_raised, axis, keepdims) ** (1/p)
 
 
 def matrix_norm(x, p=2, axes=None, keepdims=False):
@@ -122,3 +97,27 @@ def cholesky(x):
     :return: cholesky decomposition of the matrix x.
     """
     return _cur_framework(x).cholesky(x)
+
+def qr(x, mode="reduced", f=None):
+    """
+    Computes the qr decomposition of the x matrix.
+
+    :param x: Matrix to be decomposed.
+    :type x: array
+    :param mode: The option to choose between the full and reduced QR decomposition.
+    :type mode: str, optional
+    :param f: Machine learning framework. Inferred from inputs if None.
+    :type f: ml_framework, optional
+    :return: qr decomposition of the matrix x.
+
+    If x has shape (*, M, N) and considering K = min(M, N).
+    mode = 'reduced' (default): Returns (Q, R) of shapes (*, M, K), (*, K, N) respectively.
+    mode = 'complete': Returns (Q, R) of shapes (*, M, M), (*, M, N) respectively.
+    mode = 'r': Computes only the reduced R. Returns (Q, R) with Q empty and R of shape (*, K, N).
+
+    Please note that different frameworks support different modes. For example: mode='raw'
+    is supported in numpy but not in pytorch. Similarly, tensorflow doesn't support 'r' mode.
+    The 'reduced' and 'complete' modes are sufficient for most of the use-cases and are supported
+    by all the frameworks.
+    """
+    return _cur_framework(x).qr(x, mode=mode)

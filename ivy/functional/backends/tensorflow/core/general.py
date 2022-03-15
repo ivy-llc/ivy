@@ -117,6 +117,7 @@ floor = _tf.floor
 ceil = _tf.math.ceil
 
 
+
 # noinspection PyShadowingBuiltins
 def abs(x):
     if 'uint' in dtype(x, as_str=True):
@@ -136,9 +137,6 @@ def argmin(x, axis=0):
     if ret.shape == ():
         return _tf.reshape(ret, (-1,))
     return ret
-
-
-argsort = lambda x, axis=-1: _tf.argsort(x, axis)
 
 
 def cast(x, dtype):
@@ -173,22 +171,6 @@ def concatenate(xs, axis=-1):
     if xs[0].shape == ():
         return _tf.concat([_tf.expand_dims(x, 0) for x in xs], axis)
     return _tf.concat(xs, axis)
-
-
-def flip(x, axis=None, batch_shape=None):
-    num_dims = len(batch_shape) if batch_shape is not None else len(x.shape)
-    if not num_dims:
-        return x
-    if axis is None:
-        new_axis = list(range(num_dims))
-    else:
-        new_axis = axis
-    if type(new_axis) is int:
-        new_axis = [new_axis]
-    else:
-        new_axis = new_axis
-    new_axis = [item + num_dims if item < 0 else item for item in new_axis]
-    return _tf.reverse(x, new_axis)
 
 
 stack = _tf.stack
@@ -263,17 +245,11 @@ expand_dims = _tf.expand_dims
 where = lambda condition, x1, x2: _tf.where(_tf.cast(condition, _tf.bool), x1, x2)
 indices_where = _tf.where
 
-def isnan(x):
-    if ivy.is_int_dtype(x):
-        return _tf.zeros_like(x, _tf.bool)
-    return _tf.math.is_nan(x)
-
 
 def isinf(x):
     if ivy.is_int_dtype(x):
         return _tf.zeros_like(x, _tf.bool)
     return _tf.math.is_inf(x)
-
 
 reshape = lambda x, newshape: _tf.reshape(x, (newshape,) if isinstance(newshape, int) else newshape)
 broadcast_to = _tf.broadcast_to
@@ -287,11 +263,6 @@ def squeeze(x, axis=None):
     return _tf.squeeze(x, axis)
 
 
-# noinspection PyShadowingNames
-def zeros(shape, dtype=None, dev=None):
-    dev = default_device(dev)
-    with _tf.device(dev_from_str(dev)):
-        return _tf.zeros(shape, dtype_from_str(default_dtype(dtype)))
 
 
 # noinspection PyShadowingNames
@@ -305,14 +276,6 @@ def zeros_like(x, dtype=None, dev=None):
 def full(shape, fill_value, dtype=None, device=None):
     with _tf.device(dev_from_str(default_device(device))):
         return _tf.fill(shape, _tf.constant(fill_value, dtype=dtype_from_str(default_dtype(dtype, fill_value))))
-
-
-# noinspection PyShadowingNames
-def ones(shape, dtype=None, dev=None):
-    dtype = dtype_from_str(default_dtype(dtype))
-    dev = dev_from_str(default_device(dev))
-    with _tf.device(dev):
-        return _tf.ones(shape, dtype)
 
 
 # noinspection PyShadowingNames

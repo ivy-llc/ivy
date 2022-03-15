@@ -1,0 +1,17 @@
+name: test-array-api-torch
+on: [push, pull_request]
+jobs:
+  run-torch-array-api-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout 🛎️Ivy
+        uses: actions/checkout@v2
+        with:
+          path: ivy
+          persist-credentials: false
+          submodules: 'recursive'
+
+      - name: Run Torch Tests
+        run: |
+          cd ivy
+          ./test_array_api.sh torch

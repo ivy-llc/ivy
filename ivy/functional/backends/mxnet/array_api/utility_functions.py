@@ -19,3 +19,10 @@ def all(x: mx.ndarray.ndarray.NDArray,
     if is_flat:
         return _1_dim_array_to_flat_array(red_prod)
     return red_prod
+
+
+def any(x: mx.ndarray.ndarray.NDArray,
+        axis: Optional[Union[int, Tuple[int], List[int]]] = None,
+        keepdims: bool = False)\
+        -> mx.ndarray.ndarray.NDArray:
+    return mx.nd.array(mx.nd.array(x).asnumpy().any(axis=axis, keepdims=keepdims))

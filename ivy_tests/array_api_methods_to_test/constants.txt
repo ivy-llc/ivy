@@ -1,0 +1,4 @@
+e
+pi
+#inf
+#nan

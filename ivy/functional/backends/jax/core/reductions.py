@@ -62,3 +62,4 @@ def reduce_max(x, axis=None, keepdims=False):
 
 def einsum(equation, *operands):
     return _jnp.einsum(equation, *operands)
+

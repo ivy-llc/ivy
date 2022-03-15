@@ -8,8 +8,8 @@ from . import gradients
 from .gradients import *
 from . import image
 from .image import *
-from . import linalg
-from .linalg import *
+from . import linear_algebra
+from .linear_algebra import *
 from . import logic
 from .logic import *
 from . import math

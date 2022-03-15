@@ -17,8 +17,3 @@ def logical_and(x1, x2):
 @_handle_flat_arrays_in_out
 def logical_or(x1, x2):
     return _mx.nd.logical_or(x1, x2)
-
-
-@_handle_flat_arrays_in_out
-def logical_not(x):
-    return _mx.nd.logical_not(x)
