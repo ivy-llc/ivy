@@ -3,9 +3,9 @@ Collection of Jax gradient functions, wrapped to fit Ivy syntax and signature.
 """
 
 # global
-import jax as _jax
-import jax.lax as _jlax
-import jaxlib as _jaxlib
+import jax
+import jax.lax as jlax
+import jaxlib as jaxlib
 from jaxlib.xla_extension import Buffer
 
 # local
@@ -20,7 +20,7 @@ variable = lambda x: x
 def is_variable(x, exclusive=False):
     if exclusive:
         return False
-    return isinstance(x, (_jax.interpreters.xla._DeviceArray, _jaxlib.xla_extension.DeviceArray, Buffer))
+    return isinstance(x, (jax.interpreters.xla._DeviceArray, jaxlib.xla_extension.DeviceArray, Buffer))
 
 
 variable_data = lambda x: x
@@ -37,7 +37,7 @@ def execute_with_gradients(func, xs, retain_grads=False):
         y = func_ret
         rest = tuple()
         grad_fn = lambda x_in: ivy.reshape(func(x_in), [])
-    grad_func = _jax.grad(grad_fn)
+    grad_func = jax.grad(grad_fn)
     grads = grad_func(xs)
     grads = Container(grads)
     grads = grads.to_ivy()
@@ -46,4 +46,4 @@ def execute_with_gradients(func, xs, retain_grads=False):
     return (y, grads, *rest)
 
 
-stop_gradient = lambda x, preserve_type=True: _jlax.stop_gradient(x)
+stop_gradient = lambda x, preserve_type=True: jlax.stop_gradient(x)
