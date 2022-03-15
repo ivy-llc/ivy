@@ -52,3 +52,8 @@ def slogdet(x:Union[_ivy.Array,_ivy.NativeArray],full_matrices: bool = True) -> 
     sign, logabsdet = torch.linalg.slogdet(x)
     res = results(sign, logabsdet)
     return res
+
+def trace(x: torch.Tensor,
+          offset: int = 0)\
+              -> torch.Tensor:
+    return torch.trace(x, offset)
