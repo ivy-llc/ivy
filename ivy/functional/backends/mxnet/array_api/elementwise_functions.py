@@ -85,4 +85,11 @@ def tanh(x: mx.ndarray.ndarray.NDArray)\
     return mx.nd.tanh(x)
 
 
+  
+@_handle_flat_arrays_in_out
+def sinh(x: mx.ndarray.ndarray.NDArray)\
+        -> mx.ndarray.ndarray.NDArray:
+    if isinstance(x, float):
+        return math.sinh(x)
+    return mx.nd.sinh(x)
 

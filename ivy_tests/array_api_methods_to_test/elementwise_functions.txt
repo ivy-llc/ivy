@@ -47,7 +47,7 @@ negative
 #round
 #sign
 sin
-#sinh
+sinh
 #square
 sqrt
 #subtract
