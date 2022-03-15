@@ -1,6 +1,6 @@
 # global
 import sys
-import torch as _torch
+import torch as torch
 
 # local
 import ivy
@@ -8,23 +8,23 @@ import ivy
 # noinspection PyUnresolvedReferences
 use = ivy.framework_handler.ContextManager(sys.modules[__name__])
 
-NativeArray = _torch.Tensor
-NativeVariable = _torch.Tensor
-Device = _torch.device
-Dtype = _torch.dtype
+NativeArray = torch.Tensor
+NativeVariable = torch.Tensor
+Device = torch.device
+Dtype = torch.dtype
 
 # data types
-int8 = _torch.int8
-int16 = _torch.int16
-int32 = _torch.int32
-int64 = _torch.int64
-uint8 = _torch.uint8
-bfloat16 = _torch.bfloat16
-float16 = _torch.float16
-float32 = _torch.float32
-float64 = _torch.float64
+int8 = torch.int8
+int16 = torch.int16
+int32 = torch.int32
+int64 = torch.int64
+uint8 = torch.uint8
+bfloat16 = torch.bfloat16
+float16 = torch.float16
+float32 = torch.float32
+float64 = torch.float64
 # noinspection PyShadowingBuiltins
-bool = _torch.bool
+bool = torch.bool
 
 all_dtypes = (int8, int16, int32, int64,
               uint8,

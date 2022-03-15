@@ -4,7 +4,7 @@ Collection of Jax device functions, wrapped to fit Ivy syntax and signature.
 
 # global
 import os
-import jax as _jax
+import jax
 
 # local
 from ivy.functional.ivy.device import Profiler as BaseProfiler
@@ -14,9 +14,9 @@ from ivy.functional.ivy.device import Profiler as BaseProfiler
 # --------#
 
 def _to_array(x):
-    if isinstance(x, _jax.interpreters.ad.JVPTracer):
+    if isinstance(x, jax.interpreters.ad.JVPTracer):
         return _to_array(x.primal)
-    elif isinstance(x, _jax.interpreters.partial_eval.DynamicJaxprTracer):
+    elif isinstance(x, jax.interpreters.partial_eval.DynamicJaxprTracer):
         return _to_array(x.aval)
     return x
 
@@ -25,7 +25,7 @@ def _to_array(x):
 # ----#
 
 def dev(x, as_str=False):
-    if isinstance(x, _jax.interpreters.partial_eval.DynamicJaxprTracer):
+    if isinstance(x, jax.interpreters.partial_eval.DynamicJaxprTracer):
         return None
     dv = _to_array(x).device_buffer.device()
     if as_str:
@@ -40,7 +40,7 @@ def to_dev(x, dev=None):
     if dev is not None:
         cur_dev = dev_to_str(_callable_dev(x))
         if cur_dev != dev:
-            x = _jax.device_put(x, dev_from_str(dev))
+            x = jax.device_put(x, dev_from_str(dev))
     return x
 
 
@@ -64,7 +64,7 @@ def dev_from_str(dev):
         idx = int(dev_split[1])
     else:
         idx = 0
-    return _jax.devices(dev)[idx]
+    return jax.devices(dev)[idx]
 
 
 clear_mem_on_dev = lambda dev: None
@@ -72,7 +72,7 @@ clear_mem_on_dev = lambda dev: None
 
 def _dev_is_available(base_dev):
     try:
-        _jax.devices(base_dev)
+        jax.devices(base_dev)
         return True
     except RuntimeError:
         return False
@@ -83,7 +83,7 @@ gpu_is_available = lambda: _dev_is_available('gpu')
 
 def num_gpus():
     try:
-        return len(_jax.devices('gpu'))
+        return len(jax.devices('gpu'))
     except RuntimeError:
         return 0
 
@@ -99,10 +99,10 @@ class Profiler(BaseProfiler):
         self._save_dir = os.path.join(self._save_dir, 'profile')
 
     def start(self):
-        _jax.profiler.start_trace(self._save_dir)
+        jax.profiler.start_trace(self._save_dir)
 
     def stop(self):
-        _jax.profiler.stop_trace()
+        jax.profiler.stop_trace()
 
     def __enter__(self):
         self.start()

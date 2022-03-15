@@ -4,8 +4,8 @@ Collection of Jax image functions, wrapped to fit Ivy syntax and signature.
 
 # global
 import math
-import jax as _jax
-import jax.numpy as _jnp
+import jax
+import jax.numpy as jnp
 from operator import mul as _mul
 from functools import reduce as _reduce
 
@@ -50,26 +50,26 @@ def bilinear_resample(x, warp):
     idx_size = _reduce(_mul, warp.shape[-3:-1], 1)
     batch_shape_flat = _reduce(_mul, batch_shape, 1)
     # B
-    batch_offsets = _jnp.arange(batch_shape_flat) * idx_size
+    batch_offsets = jnp.arange(batch_shape_flat) * idx_size
     # B x (HxW)
-    base_grid = _jnp.tile(_jnp.expand_dims(batch_offsets, 1), [1, idx_size])
+    base_grid = jnp.tile(jnp.expand_dims(batch_offsets, 1), [1, idx_size])
     # (BxHxW)
-    base = _jnp.reshape(base_grid, [-1])
+    base = jnp.reshape(base_grid, [-1])
     # (BxHxW) x D
-    data_flat = _jnp.reshape(x, [batch_shape_flat * height * width, -1])
+    data_flat = jnp.reshape(x, [batch_shape_flat * height * width, -1])
     # (BxHxW) x 2
-    warp_flat = _jnp.reshape(warp, [-1, 2])
-    warp_floored = (_jnp.floor(warp_flat)).astype(_jnp.int32)
-    bilinear_weights = warp_flat - _jnp.floor(warp_flat)
+    warp_flat = jnp.reshape(warp, [-1, 2])
+    warp_floored = (jnp.floor(warp_flat)).astype(jnp.int32)
+    bilinear_weights = warp_flat - jnp.floor(warp_flat)
     # (BxHxW)
     x0 = warp_floored[:, 0]
     x1 = x0 + 1
     y0 = warp_floored[:, 1]
     y1 = y0 + 1
-    x0 = _jnp.clip(x0, 0, max_x)
-    x1 = _jnp.clip(x1, 0, max_x)
-    y0 = _jnp.clip(y0, 0, max_y)
-    y1 = _jnp.clip(y1, 0, max_y)
+    x0 = jnp.clip(x0, 0, max_x)
+    x1 = jnp.clip(x1, 0, max_x)
+    y0 = jnp.clip(y0, 0, max_y)
+    y1 = jnp.clip(y1, 0, max_y)
     base_y0 = base + y0 * width
     base_y1 = base + y1 * width
     idx_a = base_y0 + x0
@@ -77,22 +77,22 @@ def bilinear_resample(x, warp):
     idx_c = base_y0 + x1
     idx_d = base_y1 + x1
     # (BxHxW) x D
-    Ia = _jnp.take(data_flat, idx_a, axis=0)
-    Ib = _jnp.take(data_flat, idx_b, axis=0)
-    Ic = _jnp.take(data_flat, idx_c, axis=0)
-    Id = _jnp.take(data_flat, idx_d, axis=0)
+    Ia = jnp.take(data_flat, idx_a, axis=0)
+    Ib = jnp.take(data_flat, idx_b, axis=0)
+    Ic = jnp.take(data_flat, idx_c, axis=0)
+    Id = jnp.take(data_flat, idx_d, axis=0)
     # (BxHxW)
     xw = bilinear_weights[:, 0]
     yw = bilinear_weights[:, 1]
     # (BxHxW) x 1
-    wa = _jnp.expand_dims((1 - xw) * (1 - yw), 1)
-    wb = _jnp.expand_dims((1 - xw) * yw, 1)
-    wc = _jnp.expand_dims(xw * (1 - yw), 1)
-    wd = _jnp.expand_dims(xw * yw, 1)
+    wa = jnp.expand_dims((1 - xw) * (1 - yw), 1)
+    wb = jnp.expand_dims((1 - xw) * yw, 1)
+    wc = jnp.expand_dims(xw * (1 - yw), 1)
+    wd = jnp.expand_dims(xw * yw, 1)
     # (BxHxW) x D
     resampled_flat = wa * Ia + wb * Ib + wc * Ic + wd * Id
     # B x H x W x D
-    return _jnp.reshape(resampled_flat, batch_shape + [-1, num_feats])
+    return jnp.reshape(resampled_flat, batch_shape + [-1, num_feats])
 
 
 def gradient_image(x):
@@ -109,8 +109,8 @@ def gradient_image(x):
     # BS x H x W-1 x D
     dx = x[..., :, 1:, :] - x[..., :, :-1, :]
     # BS x H x W x D
-    # _jax.device_put(x, dev_from_str(dev))
-    dy = _ivy.concatenate((dy, _jax.device_put(_jnp.zeros(batch_shape + [1, image_dims[1], num_dims]), dev)), -3)
-    dx = _ivy.concatenate((dx, _jax.device_put(_jnp.zeros(batch_shape + [image_dims[0], 1, num_dims]), dev)), -2)
+    # jax.device_put(x, dev_from_str(dev))
+    dy = _ivy.concatenate((dy, jax.device_put(jnp.zeros(batch_shape + [1, image_dims[1], num_dims]), dev)), -3)
+    dx = _ivy.concatenate((dx, jax.device_put(jnp.zeros(batch_shape + [image_dims[0], 1, num_dims]), dev)), -2)
     # BS x H x W x D,    BS x H x W x D
     return dy, dx
