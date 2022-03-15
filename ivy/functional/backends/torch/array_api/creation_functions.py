@@ -24,7 +24,6 @@ def ones(shape: Union[int, Tuple[int]],
     return torch.ones(shape, dtype=dtype_val, device=dev_from_str(dev))
 
 
-<<<<<<< HEAD
 # noinspection DuplicatedCode
 def full_like(x: torch.Tensor, /,
               fill_value: Union[int, float],
@@ -49,7 +48,6 @@ def full_like(x: torch.Tensor, /,
     return torch.full_like(x, fill_value, dtype=dtype, device=default_device(device))
 
 
-=======
 def ones_like(x : torch.Tensor,
               dtype: Optional[Union[torch.dtype, str]] = None,
               dev: Optional[Union[torch.device, str]] = None) \
@@ -73,14 +71,11 @@ def ones_like(x : torch.Tensor,
 
     return torch.ones_like(x, device=dev_from_str(dev))
 
-  
->>>>>>> upstream/master
+
 def tril(x: torch.Tensor,
          k: int = 0) \
         -> torch.Tensor:
     return torch.tril(x, diagonal=k)
-<<<<<<< HEAD
-=======
 
 
 def empty(shape: Union[int, Tuple[int]],
@@ -88,5 +83,3 @@ def empty(shape: Union[int, Tuple[int]],
           device: Optional[torch.device] = None) \
         -> Tensor:
     return torch.empty(shape, dtype=dtype_from_str(default_dtype(dtype)), device=dev_from_str(default_device(device)))
-
->>>>>>> upstream/master

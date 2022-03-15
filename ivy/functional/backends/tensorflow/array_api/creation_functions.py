@@ -28,7 +28,6 @@ def ones(shape: Union[int, Tuple[int]],
         return tf.ones(shape, dtype)
 
 
-<<<<<<< HEAD
 # noinspection SpellCheckingInspection
 def full_like(x: Tensor,
               fill_value: Union[int, float],
@@ -41,7 +40,6 @@ def full_like(x: Tensor,
         return tf.experimental.numpy.full_like(x, fill_value, dtype=dtype)
 
 
-=======
 def ones_like(x : Tensor,
               dtype: Optional[Union[DType, str, None]] = None,
               dev: Optional[str] = None) \
@@ -51,8 +49,7 @@ def ones_like(x : Tensor,
     with tf.device(dev_from_str(dev)):
         return tf.ones_like(x, dtype=dtype)
 
-      
->>>>>>> upstream/master
+
 def tril(x: tf.Tensor,
          k: int = 0) \
         -> tf.Tensor:
