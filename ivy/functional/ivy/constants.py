@@ -1,5 +1,10 @@
-# local
+# global
 import math
+
+
+# Array API Standard #
+# -------------------#
+
 e = math.e
 """ IEEE 754 floating-point representation of Euler's constant. """
 
@@ -8,3 +13,7 @@ pi = math.pi
 
 nan = math.nan
 """ IEEE 754 floating-point representation of Not a Number (NaN). """
+
+
+# Extra #
+# ------#

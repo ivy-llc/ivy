@@ -6,6 +6,9 @@ import ivy
 from ivy.framework_handler import current_framework as _cur_framework
 
 
+# Array API Standard #
+# -------------------#
+
 def argsort(x: Union[ivy.Array, ivy.NativeArray],
             axis: int = -1,
             descending: bool = False,
@@ -31,3 +34,7 @@ def argsort(x: Union[ivy.Array, ivy.NativeArray],
        an array of indices. The returned array must have the same shape as ``x``. The returned array must have the default array index data type.
    """
     return _cur_framework(x).argsort(x, axis, descending, stable)
+
+
+# Extra #
+# ------#

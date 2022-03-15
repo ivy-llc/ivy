@@ -10,8 +10,11 @@ import ivy
 from ivy.framework_handler import current_framework as _cur_framework
 
 
+# Extra #
+# ------#
+
+
 # Linear #
-# -------#
 
 def linear(x, weight, bias=None):
     """
@@ -50,7 +53,6 @@ def linear(x, weight, bias=None):
 
 
 # Dropout #
-# --------#
 
 def dropout(x, prob, scale=True):
     """
@@ -73,7 +75,6 @@ def dropout(x, prob, scale=True):
 
 
 # Attention #
-# ----------#
 
 def scaled_dot_product_attention(q, k, v, scale, mask=None):
     """
@@ -173,7 +174,6 @@ def multi_head_attention(x, scale, num_heads, context=None, mask=None, to_q_fn=N
 
 
 # Convolutions #
-# -------------#
 
 def conv1d(x, filters, strides, padding, data_format='NWC', dilations=1):
     """
@@ -330,7 +330,6 @@ def conv3d_transpose(x, filters, strides, padding, output_shape=None, data_forma
 
 
 # LSTM #
-# -----#
 
 def lstm_update(x, init_h, init_c, kernel, recurrent_kernel, bias=None, recurrent_bias=None):
     """

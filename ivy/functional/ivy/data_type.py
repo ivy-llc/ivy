@@ -5,12 +5,15 @@ from typing import Union
 import ivy
 from ivy.framework_handler import current_framework as _cur_framework
 
+
+# Array API Standard #
+# -------------------#
+
 Finfo = None
 Iinfo = None
 
 
 # Dtype Info #
-# -----------#
 
 # noinspection PyShadowingBuiltins
 def iinfo(type: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray])\
@@ -64,3 +67,7 @@ def finfo(type: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray])\
           smallest positive floating-point number with full precision.
     """
     return _cur_framework(None).finfo(type)
+
+
+# Extra #
+# ------#

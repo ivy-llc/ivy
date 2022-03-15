@@ -6,6 +6,9 @@ import ivy
 from ivy.framework_handler import current_framework as _cur_framework
 
 
+# Array API Standard #
+# -------------------#
+
 def flip(x: Union[ivy.Array, ivy.NativeArray],
         axis: Optional[Union[int, Tuple[int], List[int]]] = None)\
         -> ivy.Array:
@@ -26,3 +29,7 @@ def flip(x: Union[ivy.Array, ivy.NativeArray],
     """
 
     return _cur_framework(x).flip(x, axis)
+
+
+# Extra #
+# ------#
