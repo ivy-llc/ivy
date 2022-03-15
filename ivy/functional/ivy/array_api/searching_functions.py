@@ -7,14 +7,24 @@ def argmax(
     x: Union[ivy.Array, ivy.NativeArray], 
     axis: Optional[int] = None,
     keepdims: Optional[bool] = False,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None
 ) -> ivy.Array:
     """
-    Returns the indices of the maximum values along an axis.
-    :param x: input array.
-    :param axis(Optional): By default, the index is into the flattened array, otherwise along the specified axis.
-    :param out(Optional): If provided, the result will be inserted into this array. It should be of the appropriate shape and dtype.
-    :param keepdims(Optional):If this is set to True, the axes which are reduced are left in the result as dimensions with size one. With this option, the result will broadcast correctly against the array.
-    :return: Array of indices into the array. It has the same shape as x.shape with the dimension along axis removed. If keepdims is set to True, then the size of axis will be 1 with the resulting array having same shape as x.shape.
+    Returns the indices of the maximum values along a specified axis. When the maximum value occurs multiple times, only the indices corresponding to the first occurrence are returned.
+
+    Parameters
+    ----------
+    x:
+        input array. Should have a numeric data type.
+    axis:
+        axis along which to search. If None, the function must return the index of the maximum value of the flattened array. Default: None.
+    keepdims:
+        If this is set to True, the axes which are reduced are left in the result as dimensions with size one. With this option, the result will broadcast correctly against the array.
+    out:
+        If provided, the result will be inserted into this array. It should be of the appropriate shape and dtype.
+    
+    Returns
+    -------
+        if axis is None, a zero-dimensional array containing the index of the first occurrence of the maximum value; otherwise, a non-zero-dimensional array containing the indices of the maximum values. The returned array must have be the default array index data type.
     """
-    return _cur_framework(x).argmax(x)
+    return _cur_framework(x).argmax(x,axis,keepdims,out)
