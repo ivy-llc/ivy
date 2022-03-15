@@ -52,6 +52,19 @@ def diagonal(x: tf.Tensor,
     return tf.experimental.numpy.diagonal(x, offset, axis1=axis1, axis2=axis2)
 
 
+def qr(x: tf.Tensor,
+       mode: str = 'reduced') -> namedtuple('qr', ['Q', 'R']):
+    res = namedtuple('qr', ['Q', 'R'])
+    if mode == 'reduced':
+        q, r = tf.linalg.qr(x, full_matrices=False)
+        return res(q, r)
+    elif mode == 'complete':
+        q, r = tf.linalg.qr(x, full_matrices=True)
+        return res(q, r)
+    else:
+        raise Exception("Only 'reduced' and 'complete' qr modes are allowed for the tensorflow backend.")
+
+
 def matmul(x1: tf.Tensor,
            x2: tf.Tensor) -> tf.Tensor:
     dtype_from = tf.experimental.numpy.promote_types(x1.dtype.as_numpy_dtype, x2.dtype.as_numpy_dtype)
@@ -107,7 +120,7 @@ def matmul(x1: tf.Tensor,
 
     return ret
 
-  
+
 def slogdet(x:Union[_ivy.Array,_ivy.NativeArray],full_matrices: bool = True) -> Union[_ivy.Array, Tuple[_ivy.Array,...]]:
     results = namedtuple("slogdet", "sign logabsdet")
     sign, logabsdet = tf.linalg.slogdet(x)
@@ -119,4 +132,3 @@ def trace(x: tf.Tensor,
           offset: int = 0)\
               -> tf.Tensor:
     return tf.trace(x, offset)
-
