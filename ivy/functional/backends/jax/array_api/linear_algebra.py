@@ -31,6 +31,6 @@ def diagonal(x: JaxArray,
     return jnp.diagonal(x, offset, axis1, axis2)
 
 
-# noinspection PyUnusedLocal,PyShadowingBuiltins
+
 def inv(x: JaxArray, /) -> JaxArray:
     return jnp.linalg.inv(x)

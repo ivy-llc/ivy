@@ -23,6 +23,6 @@ def diagonal(x: mx.nd.NDArray,
     return mx.nd.diag(x, k=offset, axis1=axis1, axis2=axis2)
 
 
-# noinspection PyUnusedLocal,PyShadowingBuiltins
+
 def inv(x: mx.nd.NDArray, /) -> mx.nd.NDArray:
     return mx.nd.linalg.inverse(x)

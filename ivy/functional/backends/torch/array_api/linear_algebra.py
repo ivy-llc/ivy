@@ -27,6 +27,6 @@ def diagonal(x: torch.Tensor,
     return torch.diagonal(x, offset=offset, dim1=axis1, dim2=axis2)
 
 
-# noinspection PyUnusedLocal,PyShadowingBuiltins
+
 def inv(x: torch.Tensor, /) -> torch.Tensor:
     return torch.linalg.inv(x)
