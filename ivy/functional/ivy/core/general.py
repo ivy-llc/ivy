@@ -358,30 +358,30 @@ def round(x: Union[ivy.Array, ivy.NativeArray])\
     return _cur_framework(x).round(x)
 
 
-def floormod(x: Union[ivy.Array, ivy.NativeArray], y: Union[ivy.Array, ivy.NativeArray])\
-        -> Union[ivy.Array, ivy.NativeArray]:
-    """
-    Returns element-wise remainder of division.
+# def floormod(x: Union[ivy.Array, ivy.NativeArray], y: Union[ivy.Array, ivy.NativeArray])\
+#         -> Union[ivy.Array, ivy.NativeArray]:
+#     """
+#     Returns element-wise remainder of division.
+#
+#     :param x: Input array to floormod.
+#     :type x: array
+#     :param y: Denominator input for floormod.
+#     :type y: array
+#     :return: An array of the same shape and type as x, with the elements floor modded.
+#     """
+#     return _cur_framework(x).floormod(x, y)
 
-    :param x: Input array to floormod.
-    :type x: array
-    :param y: Denominator input for floormod.
-    :type y: array
-    :return: An array of the same shape and type as x, with the elements floor modded.
-    """
-    return _cur_framework(x).floormod(x, y)
 
-
-def floor(x: Union[ivy.Array, ivy.NativeArray])\
-        -> Union[ivy.Array, ivy.NativeArray]:
-    """
-    Returns element-wise largest integer not greater than x.
-
-    :param x: Input array to floor.
-    :type x: array
-    :return: An array of the same shape and type as x, with the elements floored to integers.
-    """
-    return _cur_framework(x).floor(x)
+# def floor(x: Union[ivy.Array, ivy.NativeArray])\
+#         -> Union[ivy.Array, ivy.NativeArray]:
+#     """
+#     Returns element-wise largest integer not greater than x.
+#
+#     :param x: Input array to floor.
+#     :type x: array
+#     :return: An array of the same shape and type as x, with the elements floored to integers.
+#     """
+#     return _cur_framework(x).floor(x)
 
 
 # noinspection PyShadowingBuiltins

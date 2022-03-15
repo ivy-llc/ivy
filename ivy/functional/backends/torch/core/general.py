@@ -114,12 +114,12 @@ def round(x):
     return _torch.round(x)
 
 
-def floormod(x, y):
-    return x % y
-
-
-def floor(x):
-    return _torch.floor(x)
+# def floormod(x, y):
+#     return x % y
+#
+#
+# def floor(x):
+#     return _torch.floor(x)
 
 
 # noinspection PyShadowingBuiltins

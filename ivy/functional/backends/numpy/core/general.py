@@ -117,8 +117,8 @@ minimum = _np.minimum
 maximum = _np.maximum
 clip = lambda x, x_min, x_max: _np.asarray(_np.clip(x, x_min, x_max))
 round = lambda x: _np.asarray(_np.round(x))
-floormod = lambda x, y: _np.asarray(x % y)
-floor = lambda x: _np.asarray(_np.floor(x))
+#floormod = lambda x, y: _np.asarray(x % y)
+#floor = lambda x: _np.asarray(_np.floor(x))
 abs = lambda x: _np.asarray(_np.absolute(x))
 
 

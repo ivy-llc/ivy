@@ -105,15 +105,14 @@ def negative(x: JaxArray) -> JaxArray:
 def tanh(x: JaxArray)\
         -> JaxArray:
     return jnp.tanh(x)
-<<<<<<< HEAD
 
 def floor_divide(x1: JaxArray, x2: JaxArray)\
                 -> JaxArray:
     return x1 // x2
-=======
+
   
   
 def sinh(x: JaxArray)\
         -> JaxArray:
     return jnp.sinh(x)
->>>>>>> aa32385392a2c6ec4e1620becb357a8d54e2cb6f
+
