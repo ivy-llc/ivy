@@ -1,15 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<module type="PYTHON_MODULE" version="4">
-  <component name="NewModuleRootManager">
-    <content url="file://$MODULE_DIR$" />
-    <orderEntry type="jdk" jdkName="Remote Python 3.8.10 Docker (unifyai/ivy:latest)" jdkType="Python SDK" />
-    <orderEntry type="sourceFolder" forTests="false" />
+<project version="4">
+  <component name="JavaScriptSettings">
+    <option name="languageLevel" value="ES6" />
   </component>
-  <component name="PyDocumentationSettings">
-    <option name="format" value="PLAIN" />
-    <option name="myDocStringFormat" value="Plain" />
-  </component>
-  <component name="TestRunnerService">
-    <option name="PROJECT_TEST_RUNNER" value="pytest" />
-  </component>
-</module>
+  <component name="ProjectRootManager" version="2" project-jdk-name="Remote Python 3.8.10 Docker (unifyai/ivy:latest)" project-jdk-type="Python SDK" />
+</project>
