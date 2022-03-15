@@ -109,3 +109,10 @@ def tanh(x: JaxArray)\
 def floor_divide(x1: JaxArray, x2: JaxArray)\
                 -> JaxArray:
     return x1 // x2
+
+  
+  
+def sinh(x: JaxArray)\
+        -> JaxArray:
+    return jnp.sinh(x)
+

@@ -109,3 +109,9 @@ def floor_divide(x1: np.ndarray, x2: np.ndarray)\
     x1=x1.astype(promoted_type)
     x2=x2.astype(promoted_type)
     return x1 // x2
+
+  
+def sinh(x: np.ndarray)\
+        -> np.ndarray:
+    return np.asarray(npa.sinh(npa.asarray(x)))
+

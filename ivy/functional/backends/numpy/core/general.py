@@ -117,8 +117,8 @@ minimum = _np.minimum
 maximum = _np.maximum
 clip = lambda x, x_min, x_max: _np.asarray(_np.clip(x, x_min, x_max))
 round = lambda x: _np.asarray(_np.round(x))
-floormod = lambda x, y: _np.asarray(x % y)
-floor = lambda x: _np.asarray(_np.floor(x))
+#floormod = lambda x, y: _np.asarray(x % y)
+#floor = lambda x: _np.asarray(_np.floor(x))
 abs = lambda x: _np.asarray(_np.absolute(x))
 
 
@@ -263,7 +263,6 @@ def one_hot(indices, depth, dev=None):
 
 
 cross = _np.cross
-matmul = lambda x1, x2: _np.matmul(x1, x2)
 cumsum = _np.cumsum
 
 

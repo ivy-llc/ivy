@@ -14,7 +14,6 @@ asin = _np.arcsin
 acos = _np.arccos
 atan = _np.arctan
 atan2 = _np.arctan2
-sinh = _np.sinh
 cosh = _np.cosh
 atanh = _np.arctanh
 log = _np.log

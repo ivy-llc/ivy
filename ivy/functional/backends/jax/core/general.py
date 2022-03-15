@@ -127,8 +127,8 @@ maximum = _jnp.maximum
 clip = _jnp.clip
 # noinspection PyShadowingBuiltins
 round = _jnp.round
-floormod = lambda x, y: x % y
-floor = _jnp.floor
+#floormod = lambda x, y: x % y
+#floor = _jnp.floor
 # noinspection PyShadowingBuiltins
 abs = _jnp.absolute
 
@@ -265,7 +265,6 @@ def one_hot(indices, depth, dev=None):
 
 
 cross = _jnp.cross
-matmul = lambda x1, x2: _jnp.matmul(x1, x2)
 cumsum = _jnp.cumsum
 
 

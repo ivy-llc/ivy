@@ -128,14 +128,14 @@ def round(x):
     return _mx.nd.round(x)
 
 
-@_handle_flat_arrays_in_out
-def floormod(x, y):
-    return x % y
-
-
-@_handle_flat_arrays_in_out
-def floor(x):
-    return _mx.nd.floor(x)
+# @_handle_flat_arrays_in_out
+# def floormod(x, y):
+#     return x % y
+#
+#
+# @_handle_flat_arrays_in_out
+# def floor(x):
+#     return _mx.nd.floor(x)
 
 
 # noinspection PyShadowingBuiltins

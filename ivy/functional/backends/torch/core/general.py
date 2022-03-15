@@ -114,12 +114,12 @@ def round(x):
     return _torch.round(x)
 
 
-def floormod(x, y):
-    return x % y
-
-
-def floor(x):
-    return _torch.floor(x)
+# def floormod(x, y):
+#     return x % y
+#
+#
+# def floor(x):
+#     return _torch.floor(x)
 
 
 # noinspection PyShadowingBuiltins
@@ -385,11 +385,6 @@ def one_hot(indices, depth: int, dev: Optional[str] = None):
 
 def cross(x1, x2):
     return _torch.cross(x1, x2)
-
-
-def matmul(x1, x2):
-    return _torch.matmul(x1, x2)
-
 
 def cumsum(x, axis: int = 0):
     return _torch.cumsum(x, axis)

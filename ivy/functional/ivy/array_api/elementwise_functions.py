@@ -442,3 +442,30 @@ def floor_divide(x1: Union[ivy.Array, ivy.NativeArray], x2: Union[ivy.Array, ivy
     """
     res = _cur_framework(x1, x2).floor_divide(x1, x2)
     return res
+
+  
+def sinh(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
+    """
+    Calculates an implementation-dependent approximation to the hyperbolic sine, having domain ``[-infinity, +infinity]`` and codomain ``[-infinity, +infinity]``, for each element ``x_i`` of the input array ``x``.
+    
+    **Special cases**
+    
+    For floating-point operands,
+    
+    - If ``x_i`` is ``NaN``, the result is ``NaN``.
+    - If ``x_i`` is ``+0``, the result is ``+0``.
+    - If ``x_i`` is ``-0``, the result is ``-0``.
+    - If ``x_i`` is ``+infinity``, the result is ``+infinity``.
+    - If ``x_i`` is ``-infinity``, the result is ``-infinity``.
+    
+    Parameters
+    ----------
+    x: 
+        input array whose elements each represent a hyperbolic angle. Should have a floating-point data type.
+    
+    Returns
+    -------
+    out:
+        an array containing the hyperbolic sine of each element in ``x``. The returned array must have a floating-point data type determined by :ref:`type-promotion`.
+    """
+    return _cur_framework(x).sinh(x)
