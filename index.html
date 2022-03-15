@@ -89,14 +89,20 @@
 <p class="caption"><span class="caption-text">Functional</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="functional/ivy/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="functional/ivy/compilation.html">Compilation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="functional/ivy/constants.html">Constants</a></li>
 <li class="toctree-l1"><a class="reference internal" href="functional/ivy/creation.html">Creation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="functional/ivy/data_type.html">Data type</a></li>
+<li class="toctree-l1"><a class="reference internal" href="functional/ivy/device.html">Device</a></li>
 <li class="toctree-l1"><a class="reference internal" href="functional/ivy/elementwise.html">Elementwise</a></li>
+<li class="toctree-l1"><a class="reference internal" href="functional/ivy/gradients.html">Gradients</a></li>
+<li class="toctree-l1"><a class="reference internal" href="functional/ivy/image.html">Image</a></li>
 <li class="toctree-l1"><a class="reference internal" href="functional/ivy/layers.html">Layers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="functional/ivy/linear_algebra.html">Linear algebra</a></li>
 <li class="toctree-l1"><a class="reference internal" href="functional/ivy/losses.html">Losses</a></li>
 <li class="toctree-l1"><a class="reference internal" href="functional/ivy/manipulation.html">Manipulation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="functional/ivy/meta.html">Meta</a></li>
+<li class="toctree-l1"><a class="reference internal" href="functional/ivy/nest.html">Nest</a></li>
 <li class="toctree-l1"><a class="reference internal" href="functional/ivy/norms.html">Norms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="functional/ivy/searching.html">Searching</a></li>
 <li class="toctree-l1"><a class="reference internal" href="functional/ivy/set.html">Set</a></li>
@@ -513,6 +519,10 @@ and the best coding practices to get the most out of Ivy for your own codebases 
 <li class="toctree-l2"><a class="reference internal" href="functional/ivy/activations/softplus.html">softplus</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="functional/ivy/compilation.html">Compilation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="functional/ivy/compilation/compile.html">compile</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="functional/ivy/constants.html">Constants</a><ul class="simple">
 </ul>
 </li>
@@ -528,6 +538,55 @@ and the best coding practices to get the most out of Ivy for your own codebases 
 <li class="toctree-l1"><a class="reference internal" href="functional/ivy/data_type.html">Data type</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="functional/ivy/data_type/iinfo.html">iinfo</a></li>
 <li class="toctree-l2"><a class="reference internal" href="functional/ivy/data_type/finfo.html">finfo</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="functional/ivy/device.html">Device</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="functional/ivy/device/get_all_arrays_on_dev.html">get_all_arrays_on_dev</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional/ivy/device/num_arrays_on_dev.html">num_arrays_on_dev</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional/ivy/device/print_all_arrays_on_dev.html">print_all_arrays_on_dev</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional/ivy/device/dev.html">dev</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional/ivy/device/dev_to_str.html">dev_to_str</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional/ivy/device/dev_from_str.html">dev_from_str</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional/ivy/device/clear_mem_on_dev.html">clear_mem_on_dev</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional/ivy/device/total_mem_on_dev.html">total_mem_on_dev</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional/ivy/device/used_mem_on_dev.html">used_mem_on_dev</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional/ivy/device/percent_used_mem_on_dev.html">percent_used_mem_on_dev</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional/ivy/device/dev_util.html">dev_util</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional/ivy/device/gpu_is_available.html">gpu_is_available</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional/ivy/device/num_cpu_cores.html">num_cpu_cores</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional/ivy/device/num_gpus.html">num_gpus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional/ivy/device/tpu_is_available.html">tpu_is_available</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional/ivy/device/default_device.html">default_device</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional/ivy/device/set_default_device.html">set_default_device</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional/ivy/device/unset_default_device.html">unset_default_device</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional/ivy/device/to_dev.html">to_dev</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional/ivy/device/split_factor.html">split_factor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional/ivy/device/set_split_factor.html">set_split_factor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional/ivy/device/split_func_call.html">split_func_call</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional/ivy/device/dev_dist_array.html">dev_dist_array</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional/ivy/device/dev_dist.html">dev_dist</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional/ivy/device/dev_dist_iter.html">dev_dist_iter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional/ivy/device/dev_dist_nest.html">dev_dist_nest</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional/ivy/device/dev_clone_array.html">dev_clone_array</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional/ivy/device/dev_clone.html">dev_clone</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional/ivy/device/dev_clone_iter.html">dev_clone_iter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional/ivy/device/dev_clone_nest.html">dev_clone_nest</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional/ivy/device/dev_unify_array.html">dev_unify_array</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional/ivy/device/dev_unify.html">dev_unify</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional/ivy/device/dev_unify_iter.html">dev_unify_iter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional/ivy/device/dev_unify_nest.html">dev_unify_nest</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional/ivy/device/MultiDevItem.html">MultiDevItem</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional/ivy/device/MultiDevIter.html">MultiDevIter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional/ivy/device/MultiDevNest.html">MultiDevNest</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional/ivy/device/DevDistItem.html">DevDistItem</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional/ivy/device/DevDistIter.html">DevDistIter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional/ivy/device/DevDistNest.html">DevDistNest</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional/ivy/device/DevClonedItem.html">DevClonedItem</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional/ivy/device/DevClonedIter.html">DevClonedIter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional/ivy/device/DevClonedNest.html">DevClonedNest</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional/ivy/device/DevMapper.html">DevMapper</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional/ivy/device/DevMapperMultiProc.html">DevMapperMultiProc</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional/ivy/device/Profiler.html">Profiler</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="functional/ivy/elementwise.html">Elementwise</a><ul>
@@ -552,6 +611,32 @@ and the best coding practices to get the most out of Ivy for your own codebases 
 <li class="toctree-l2"><a class="reference internal" href="functional/ivy/elementwise/negative.html">negative</a></li>
 <li class="toctree-l2"><a class="reference internal" href="functional/ivy/elementwise/tanh.html">tanh</a></li>
 <li class="toctree-l2"><a class="reference internal" href="functional/ivy/elementwise/sinh.html">sinh</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="functional/ivy/gradients.html">Gradients</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="functional/ivy/gradients/with_grads.html">with_grads</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional/ivy/gradients/set_with_grads.html">set_with_grads</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional/ivy/gradients/unset_with_grads.html">unset_with_grads</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional/ivy/gradients/variable.html">variable</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional/ivy/gradients/is_variable.html">is_variable</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional/ivy/gradients/variable_data.html">variable_data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional/ivy/gradients/stop_gradient.html">stop_gradient</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional/ivy/gradients/execute_with_gradients.html">execute_with_gradients</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional/ivy/gradients/adam_step.html">adam_step</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional/ivy/gradients/optimizer_update.html">optimizer_update</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional/ivy/gradients/gradient_descent_update.html">gradient_descent_update</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional/ivy/gradients/lars_update.html">lars_update</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional/ivy/gradients/adam_update.html">adam_update</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional/ivy/gradients/lamb_update.html">lamb_update</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="functional/ivy/image.html">Image</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="functional/ivy/image/stack_images.html">stack_images</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional/ivy/image/bilinear_resample.html">bilinear_resample</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional/ivy/image/gradient_image.html">gradient_image</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional/ivy/image/float_img_to_uint8_img.html">float_img_to_uint8_img</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional/ivy/image/uint8_img_to_float_img.html">uint8_img_to_float_img</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional/ivy/image/random_crop.html">random_crop</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="functional/ivy/layers.html">Layers</a><ul>
@@ -587,6 +672,26 @@ and the best coding practices to get the most out of Ivy for your own codebases 
 </li>
 <li class="toctree-l1"><a class="reference internal" href="functional/ivy/manipulation.html">Manipulation</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="functional/ivy/manipulation/flip.html">flip</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="functional/ivy/meta.html">Meta</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="functional/ivy/meta/fomaml_step.html">fomaml_step</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional/ivy/meta/reptile_step.html">reptile_step</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional/ivy/meta/maml_step.html">maml_step</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="functional/ivy/nest.html">Nest</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="functional/ivy/nest/index_nest.html">index_nest</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional/ivy/nest/set_nest_at_index.html">set_nest_at_index</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional/ivy/nest/map_nest_at_index.html">map_nest_at_index</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional/ivy/nest/multi_index_nest.html">multi_index_nest</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional/ivy/nest/set_nest_at_indices.html">set_nest_at_indices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional/ivy/nest/map_nest_at_indices.html">map_nest_at_indices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional/ivy/nest/nested_indices_where.html">nested_indices_where</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional/ivy/nest/all_nested_indices.html">all_nested_indices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional/ivy/nest/map.html">map</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional/ivy/nest/nested_map.html">nested_map</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional/ivy/nest/copy_nest.html">copy_nest</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="functional/ivy/norms.html">Norms</a><ul>

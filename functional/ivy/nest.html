@@ -1,0 +1,473 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Nest &mdash; Ivy 1.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="index_nest" href="nest/index_nest.html" />
+    <link rel="prev" title="maml_step" href="meta/maml_step.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> Ivy
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../why_ivy.html">Why Ivy?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../using_ivy.html">Using Ivy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../training_a_network.html">Training a Network</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contributing.html">Contributing to Ivy</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Functional</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="compilation.html">Compilation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="constants.html">Constants</a></li>
+<li class="toctree-l1"><a class="reference internal" href="creation.html">Creation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data_type.html">Data type</a></li>
+<li class="toctree-l1"><a class="reference internal" href="device.html">Device</a></li>
+<li class="toctree-l1"><a class="reference internal" href="elementwise.html">Elementwise</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gradients.html">Gradients</a></li>
+<li class="toctree-l1"><a class="reference internal" href="image.html">Image</a></li>
+<li class="toctree-l1"><a class="reference internal" href="layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="linear_algebra.html">Linear algebra</a></li>
+<li class="toctree-l1"><a class="reference internal" href="losses.html">Losses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="manipulation.html">Manipulation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="meta.html">Meta</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Nest</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="nest/index_nest.html">index_nest</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nest/set_nest_at_index.html">set_nest_at_index</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nest/map_nest_at_index.html">map_nest_at_index</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nest/multi_index_nest.html">multi_index_nest</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nest/set_nest_at_indices.html">set_nest_at_indices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nest/map_nest_at_indices.html">map_nest_at_indices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nest/nested_indices_where.html">nested_indices_where</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nest/all_nested_indices.html">all_nested_indices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nest/map.html">map</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nest/nested_map.html">nested_map</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nest/copy_nest.html">copy_nest</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="searching.html">Searching</a></li>
+<li class="toctree-l1"><a class="reference internal" href="set.html">Set</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sorting.html">Sorting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="statistical.html">Statistical</a></li>
+<li class="toctree-l1"><a class="reference internal" href="utility.html">Utility</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Stateful</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../stateful/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../stateful/converters.html">Converters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../stateful/initializers.html">Initializers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../stateful/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../stateful/module.html">Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../stateful/norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../stateful/optimizers.html">Optimizers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../stateful/sequential.html">Sequential</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Docs</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../ivy"">Ivy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../mech"">Ivy mech</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../vision"">Ivy vision</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../robot"">Ivy robot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../gym"">Ivy gym</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../memory"">Ivy memory</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../builder"">Ivy builder</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../models"">Ivy models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../ecosystem"">Ivy ecosystem</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Ivy</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../ivy.html">&lt;no title&gt;</a> &raquo;</li>
+        
+      <li>Nest</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/functional/ivy/nest.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-ivy.functional.ivy.nest">
+<span id="nest"></span><h1>Nest<a class="headerlink" href="#module-ivy.functional.ivy.nest" title="Permalink to this headline">¶</a></h1>
+<p>Collection of Ivy functions for nested objects.</p>
+<dl class="py function">
+<dt id="ivy.functional.ivy.nest.all_nested_indices">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">all_nested_indices</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">nest</span><span class="p">:</span> <span class="n">Iterable</span></em>, <em class="sig-param"><span class="n">include_nests</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">_index</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>List<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">_base</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">True</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>Iterable<span class="p">, </span>bool<span class="p">]</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/nest.html#all_nested_indices"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.nest.all_nested_indices" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks the leaf nodes of nested x via function fn, and returns all nest indices where the method evaluates as True.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>nest</strong> (<em>nest of any</em>) – The nest to check the leaves of.</p></li>
+<li><p><strong>include_nests</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to also include indices of the nests themselves, not only leaves. Default is False.</p></li>
+<li><p><strong>_index</strong> (<em>list of tuples of indices</em><em>, </em><em>do not set</em>) – The indices detected so far. None at the beginning. Used internally, do not set manually.</p></li>
+<li><p><strong>_base</strong> (<em>bool</em><em>, </em><em>do not set</em>) – Whether the current function call is the first function call in the recursive stack.
+Used internally, do not set manually.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A set of indices for the nest where the function evaluated as True.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.nest.copy_nest">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">copy_nest</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">nest</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">, </span>Iterable<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">include_derived</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">to_mutable</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">, </span>Iterable<span class="p">]</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/nest.html#copy_nest"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.nest.copy_nest" title="Permalink to this definition">¶</a></dt>
+<dd><p>Copies a nest deeply, but without copying leaves of the nest, only the nest lists, tuples and dicts are copied.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>nest</strong> (<em>nested</em>) – The nest to copy.</p></li>
+<li><p><strong>include_derived</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to also recursive for classes derived from tuple, list and dict. Default is False.</p></li>
+<li><p><strong>to_mutable</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to convert the nest to a mutable form, changing all tuples to lists. Default is False.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The copied nest.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.nest.index_nest">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">index_nest</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">nest</span></em>, <em class="sig-param"><span class="n">index</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/nest.html#index_nest"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.nest.index_nest" title="Permalink to this definition">¶</a></dt>
+<dd><p>Index a nested object, using a tuple of indices or keys in the case of dicts.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>nest</strong> (<em>nested</em>) – The nested object to index.</p></li>
+<li><p><strong>index</strong> (<em>tuple of indices</em>) – A tuple of indices for indexing.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.nest.map">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">map</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">fn</span><span class="p">:</span> <span class="n">Callable</span></em>, <em class="sig-param"><span class="n">constant</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Dict<span class="p">[</span>str<span class="p">, </span>Any<span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">unique</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Dict<span class="p">[</span>str<span class="p">, </span>Iterable<span class="p">[</span>Any<span class="p">]</span><span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">mean</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span> &#x2192; List<a class="reference internal" href="../../_modules/ivy/functional/ivy/nest.html#map"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.nest.map" title="Permalink to this definition">¶</a></dt>
+<dd><p>Applies a function on each item of an iterable x.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fn</strong> (<em>callable</em>) – The function to map onto x.</p></li>
+<li><p><strong>constant</strong> (<em>dict of any</em><em>, </em><em>optional</em>) – keyword arguments which remain constant between each function call. Default is None.</p></li>
+<li><p><strong>unique</strong> (<em>dict of iterables of any</em><em>, </em><em>optional</em>) – keyword arguments which are unique for each function call. Default is None.</p></li>
+<li><p><strong>mean</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to compute the mean across the return values, and return this mean. Default is False.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>x following the applicable of fn to each of it’s iterated items.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.nest.map_nest_at_index">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">map_nest_at_index</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">nest</span></em>, <em class="sig-param"><span class="n">index</span></em>, <em class="sig-param"><span class="n">fn</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/nest.html#map_nest_at_index"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.nest.map_nest_at_index" title="Permalink to this definition">¶</a></dt>
+<dd><p>Map a function to the value of a nested item at a specified index</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>nest</strong> (<em>nested</em>) – The nested object to update.</p></li>
+<li><p><strong>index</strong> (<em>tuple of indices</em>) – A tuple of indices for the index at which to update.</p></li>
+<li><p><strong>fn</strong> (<em>callable</em>) – The function to perform on the nest at the given index.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.nest.map_nest_at_indices">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">map_nest_at_indices</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">nest</span></em>, <em class="sig-param"><span class="n">indices</span></em>, <em class="sig-param"><span class="n">fn</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/nest.html#map_nest_at_indices"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.nest.map_nest_at_indices" title="Permalink to this definition">¶</a></dt>
+<dd><p>Map a function to the values of a nested item at the specified indices</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>nest</strong> (<em>nested</em>) – The nested object to update.</p></li>
+<li><p><strong>indices</strong> (<em>tuple of tuples of indices</em>) – A tuple of tuples of indices for the indices at which to update.</p></li>
+<li><p><strong>fn</strong> (<em>callable</em>) – The function to perform on the nest at the given index.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.nest.multi_index_nest">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">multi_index_nest</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">nest</span></em>, <em class="sig-param"><span class="n">indices</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/nest.html#multi_index_nest"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.nest.multi_index_nest" title="Permalink to this definition">¶</a></dt>
+<dd><p>Repeatedly index a nested object, using a tuple of tuples of indices or keys in the case of dicts.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>nest</strong> (<em>nested</em>) – The nested object to slice.</p></li>
+<li><p><strong>indices</strong> (<em>tuple of tuples of indices</em>) – A tuple of tuples of indices to apply.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.nest.nested_indices_where">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">nested_indices_where</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">nest</span><span class="p">:</span> <span class="n">Iterable</span></em>, <em class="sig-param"><span class="n">fn</span><span class="p">:</span> <span class="n">Callable</span></em>, <em class="sig-param"><span class="n">check_nests</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">_index</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>List<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">_base</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">True</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>Iterable<span class="p">, </span>bool<span class="p">]</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/nest.html#nested_indices_where"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.nest.nested_indices_where" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks the leaf nodes of nested x via function fn, and returns all nest indices where the method evaluates as True.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>nest</strong> (<em>nest of any</em>) – The nest to check the leaves of.</p></li>
+<li><p><strong>fn</strong> (<em>callable</em>) – The conditon function, returning True or False.</p></li>
+<li><p><strong>check_nests</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to also check the nests for the condition, not only nest leaves. Default is False.</p></li>
+<li><p><strong>_index</strong> (<em>list of tuples of indices</em><em>, </em><em>do not set</em>) – The indices detected so far. None at the beginning. Used internally, do not set manually.</p></li>
+<li><p><strong>_base</strong> (<em>bool</em><em>, </em><em>do not set</em>) – Whether the current function call is the first function call in the recursive stack.
+Used internally, do not set manually.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A set of indices for the nest where the function evaluated as True.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.nest.nested_map">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">nested_map</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">, </span>Iterable<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">fn</span><span class="p">:</span> <span class="n">Callable</span></em>, <em class="sig-param"><span class="n">include_derived</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">to_mutable</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">max_depth</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>int<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">depth</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">0</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">, </span>Iterable<span class="p">, </span>Dict<span class="p">]</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/nest.html#nested_map"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.nest.nested_map" title="Permalink to this definition">¶</a></dt>
+<dd><p>Applies a function on x in a nested manner, whereby all dicts, lists and tuples are traversed to their lowest
+leaves before applying the method and returning x. If x is not nested, the method is applied to x directly.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>any</em>) – The item to apply the mapped function to.</p></li>
+<li><p><strong>fn</strong> (<em>callable</em>) – The function to map onto x.</p></li>
+<li><p><strong>include_derived</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to also recursive for classes derived from tuple, list and dict. Default is False.</p></li>
+<li><p><strong>to_mutable</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to convert the nest to a mutable form, changing all tuples to lists. Default is False.</p></li>
+<li><p><strong>max_depth</strong> (<em>int</em><em>, </em><em>optional</em>) – The maximum nested depth to reach. Default is 1. Increase this if the nest is deeper.</p></li>
+<li><p><strong>depth</strong> (<em>int</em><em>, </em><em>used internally</em>) – Placeholder for tracking the recursive depth, do not yet this parameter.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>x following the applicable of fn to it’s nested leaves, or x itself if x is not nested.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.nest.set_nest_at_index">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">set_nest_at_index</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">nest</span></em>, <em class="sig-param"><span class="n">index</span></em>, <em class="sig-param"><span class="n">value</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/nest.html#set_nest_at_index"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.nest.set_nest_at_index" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the value of a nested item at a specified index</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>nest</strong> (<em>nested</em>) – The nested object to update.</p></li>
+<li><p><strong>index</strong> (<em>tuple of indices</em>) – A tuple of indices for the index at which to update.</p></li>
+<li><p><strong>value</strong> (<em>any</em>) – The new value for updating.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.nest.set_nest_at_indices">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">set_nest_at_indices</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">nest</span></em>, <em class="sig-param"><span class="n">indices</span></em>, <em class="sig-param"><span class="n">values</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/nest.html#set_nest_at_indices"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.nest.set_nest_at_indices" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the value of a nested item at specified indices with specified values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>nest</strong> (<em>nested</em>) – The nested object to update.</p></li>
+<li><p><strong>indices</strong> (<em>tuple of tuples of indices</em>) – A tuple of tuples of indices for the indices at which to update.</p></li>
+<li><p><strong>values</strong> (<em>sequence of any</em>) – The new values for updating.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<div class="toctree-wrapper compound">
+<p class="caption"><span class="caption-text">Nest</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="nest/index_nest.html">index_nest</a></li>
+<li class="toctree-l1"><a class="reference internal" href="nest/set_nest_at_index.html">set_nest_at_index</a></li>
+<li class="toctree-l1"><a class="reference internal" href="nest/map_nest_at_index.html">map_nest_at_index</a></li>
+<li class="toctree-l1"><a class="reference internal" href="nest/multi_index_nest.html">multi_index_nest</a></li>
+<li class="toctree-l1"><a class="reference internal" href="nest/set_nest_at_indices.html">set_nest_at_indices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="nest/map_nest_at_indices.html">map_nest_at_indices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="nest/nested_indices_where.html">nested_indices_where</a></li>
+<li class="toctree-l1"><a class="reference internal" href="nest/all_nested_indices.html">all_nested_indices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="nest/map.html">map</a></li>
+<li class="toctree-l1"><a class="reference internal" href="nest/nested_map.html">nested_map</a></li>
+<li class="toctree-l1"><a class="reference internal" href="nest/copy_nest.html">copy_nest</a></li>
+</ul>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="nest/index_nest.html" class="btn btn-neutral float-right" title="index_nest" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="meta/maml_step.html" class="btn btn-neutral float-left" title="maml_step" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Ivy Team
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

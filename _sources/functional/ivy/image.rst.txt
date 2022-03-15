@@ -1,0 +1,21 @@
+Image
+=====
+
+.. automodule:: ivy.functional.ivy.image
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :maxdepth: -1
+   :caption: Image
+
+   image/stack_images.rst
+   image/bilinear_resample.rst
+   image/gradient_image.rst
+   image/float_img_to_uint8_img.rst
+   image/uint8_img_to_float_img.rst
+   image/random_crop.rst
+

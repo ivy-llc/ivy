@@ -1,0 +1,70 @@
+Device
+======
+
+.. automodule:: ivy.functional.ivy.device
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :maxdepth: -1
+   :caption: Device
+
+   device/get_all_arrays_on_dev.rst
+   device/num_arrays_on_dev.rst
+   device/print_all_arrays_on_dev.rst
+   device/dev.rst
+   device/dev_to_str.rst
+   device/dev_from_str.rst
+   device/clear_mem_on_dev.rst
+   device/total_mem_on_dev.rst
+   device/used_mem_on_dev.rst
+   device/percent_used_mem_on_dev.rst
+   device/dev_util.rst
+   device/gpu_is_available.rst
+   device/num_cpu_cores.rst
+   device/num_gpus.rst
+   device/tpu_is_available.rst
+   device/default_device.rst
+   device/set_default_device.rst
+   device/unset_default_device.rst
+   device/to_dev.rst
+   device/split_factor.rst
+   device/set_split_factor.rst
+   device/split_func_call.rst
+   device/dev_dist_array.rst
+   device/dev_dist.rst
+   device/dev_dist_iter.rst
+   device/dev_dist_nest.rst
+   device/dev_clone_array.rst
+   device/dev_clone.rst
+   device/dev_clone_iter.rst
+   device/dev_clone_nest.rst
+   device/dev_unify_array.rst
+   device/dev_unify.rst
+   device/dev_unify_iter.rst
+   device/dev_unify_nest.rst
+   device/DefaultDevice:
+    # noinspection PyShadowingNames
+    def __init__.rst
+   device/MultiDev:
+
+    def __init__.rst
+   device/MultiDevItem.rst
+   device/MultiDevIter.rst
+   device/MultiDevNest.rst
+   device/DevDistItem.rst
+   device/DevDistIter.rst
+   device/DevDistNest.rst
+   device/DevClonedItem.rst
+   device/DevClonedIter.rst
+   device/DevClonedNest.rst
+   device/DevMapper.rst
+   device/DevMapperMultiProc.rst
+   device/DevManager:
+
+    def __init__.rst
+   device/Profiler.rst
+
