@@ -16,7 +16,6 @@ import ivy
 from ivy.functional.ivy.core import default_dtype
 from ivy.functional.backends.numpy.core.device import _dev_callable
 
-# noinspection DuplicatedCode
 DTYPE_TO_STR = {_np.dtype('int8'): 'int8',
                 _np.dtype('int16'): 'int16',
                 _np.dtype('int32'): 'int32',
