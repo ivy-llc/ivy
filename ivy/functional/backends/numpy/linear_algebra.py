@@ -41,6 +41,13 @@ def diagonal(x: np.ndarray,
     return np.diagonal(x, offset=offset, axis1=axis1, axis2=axis2)
 
 
+def qr(x: np.ndarray,
+       mode: str = 'reduced') -> namedtuple('qr', ['Q', 'R']):
+    res = namedtuple('qr', ['Q', 'R'])
+    q, r = np.linalg.qr(x, mode=mode)
+    return res(q, r)
+
+  
 def matmul(x1: np.ndarray,
            x2: np.ndarray) -> np.ndarray:
     return np.matmul(x1, x2)

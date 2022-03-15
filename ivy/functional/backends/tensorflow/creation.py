@@ -44,6 +44,12 @@ def tril(x: tf.Tensor,
     return tf.experimental.numpy.tril(x, k)
 
 
+def triu(x: tf.Tensor,
+         k: int = 0) \
+         -> tf.Tensor:
+    return tf.experimental.numpy.triu(x, k)
+    
+    
 def empty(shape: Union[int, Tuple[int]],
           dtype: Optional[Dtype] = None,
           device: Optional[str] = None) \

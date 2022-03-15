@@ -54,9 +54,14 @@ def tril(x: torch.Tensor,
     return torch.tril(x, diagonal=k)
 
 
+def triu(x: torch.Tensor,
+         k: int = 0) \
+         -> torch.Tensor:
+    return torch.triu(x, diagonal=k)
+    
+
 def empty(shape: Union[int, Tuple[int]],
           dtype: Optional[torch.dtype] = None,
           device: Optional[torch.device] = None) \
         -> Tensor:
     return torch.empty(shape, dtype=dtype_from_str(default_dtype(dtype)), device=dev_from_str(default_device(device)))
-
