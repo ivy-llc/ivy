@@ -48,7 +48,7 @@ negative
 #sign
 sin
 sinh
-#square
+square
 sqrt
 #subtract
 tan
