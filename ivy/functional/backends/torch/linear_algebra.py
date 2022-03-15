@@ -38,6 +38,19 @@ def diagonal(x: torch.Tensor,
     return torch.diagonal(x, offset=offset, dim1=axis1, dim2=axis2)
 
 
+def qr(x: torch.Tensor,
+       mode: str = 'reduced') -> namedtuple('qr', ['Q', 'R']):
+    res = namedtuple('qr', ['Q', 'R'])
+    if mode == 'reduced':
+        q, r = torch.qr(x, some=True)
+        return res(q, r)
+    elif mode == 'complete':
+        q, r = torch.qr(x, some=False)
+        return res(q, r)
+    else:
+        raise Exception("Only 'reduced' and 'complete' qr modes are allowed for the torch backend.")
+
+        
 def matmul(x1: torch.Tensor,
            x2: torch.Tensor) -> torch.Tensor:
     dtype_from = torch.promote_types(x1.dtype, x2.dtype)

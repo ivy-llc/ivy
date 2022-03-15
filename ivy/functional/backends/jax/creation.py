@@ -42,6 +42,12 @@ def tril(x: JaxArray,
          -> JaxArray:
     return jnp.tril(x, k)
 
+  
+def triu(x: JaxArray,
+         k: int = 0) \
+         -> JaxArray:
+    return jnp.triu(x, k)
+    
 
 def empty(shape: Union[int, Tuple[int], List[int]],
           dtype: Optional[jnp.dtype] = None,

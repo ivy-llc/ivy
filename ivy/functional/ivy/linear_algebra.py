@@ -1,5 +1,6 @@
 # global
 from typing import Union, Optional, Tuple, Literal
+from collections import namedtuple
 from ivy.framework_handler import current_framework as _cur_framework
 
 # local
@@ -125,6 +126,30 @@ def diagonal(x: ivy.Array,
     return _cur_framework(x).diagonal(x, offset, axis1=axis1, axis2=axis2)
 
 
+def qr(x: ivy.Array,
+       mode: str = 'reduced') -> namedtuple('qr', ['Q', 'R']):
+    """
+    Returns the qr decomposition x = QR of a full column rank matrix (or a stack of matrices), where Q is an orthonormal matrix (or a stack of matrices) and R is an upper-triangular matrix (or a stack of matrices).
+    Parameters
+    ----------
+    x:
+        input array having shape (..., M, N) and whose innermost two dimensions form MxN matrices of rank N. Should have a floating-point data type.
+    mode:
+        decomposition mode. Should be one of the following modes:
+        - 'reduced': compute only the leading K columns of q, such that q and r have dimensions (..., M, K) and (..., K, N), respectively, and where K = min(M, N).
+        - 'complete': compute q and r with dimensions (..., M, M) and (..., M, N), respectively.
+        Default: 'reduced'.
+    
+    Returns
+    -------
+    out:
+        a namedtuple (Q, R) whose
+        - first element must have the field name Q and must be an array whose shape depends on the value of mode and contain matrices with orthonormal columns. If mode is 'complete', the array must have shape (..., M, M). If mode is 'reduced', the array must have shape (..., M, K), where K = min(M, N). The first x.ndim-2 dimensions must have the same size as those of the input array x.
+        - second element must have the field name R and must be an array whose shape depends on the value of mode and contain upper-triangular matrices. If mode is 'complete', the array must have shape (..., M, N). If mode is 'reduced', the array must have shape (..., K, N), where K = min(M, N). The first x.ndim-2 dimensions must have the same size as those of the input x.
+    """
+    return _cur_framework(x).qr(x, mode)
+
+  
 def matmul(x1: Union[ivy.Array, ivy.NativeArray], 
            x2: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
     """
