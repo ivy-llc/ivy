@@ -195,12 +195,15 @@
 <span class="kn">import</span> <span class="nn">ivy</span>
 <span class="kn">from</span> <span class="nn">ivy.framework_handler</span> <span class="kn">import</span> <span class="n">current_framework</span> <span class="k">as</span> <span class="n">_cur_framework</span>
 
+
+<span class="c1"># Array API Standard #</span>
+<span class="c1"># -------------------#</span>
+
 <span class="n">Finfo</span> <span class="o">=</span> <span class="kc">None</span>
 <span class="n">Iinfo</span> <span class="o">=</span> <span class="kc">None</span>
 
 
 <span class="c1"># Dtype Info #</span>
-<span class="c1"># -----------#</span>
 
 <span class="c1"># noinspection PyShadowingBuiltins</span>
 <div class="viewcode-block" id="iinfo"><a class="viewcode-back" href="../../../../functional/ivy/data_type/iinfo.html#ivy.functional.ivy.data_type.iinfo">[docs]</a><span class="k">def</span> <span class="nf">iinfo</span><span class="p">(</span><span class="nb">type</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">])</span>\
@@ -254,6 +257,10 @@
 <span class="sd">          smallest positive floating-point number with full precision.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span><span class="o">.</span><span class="n">finfo</span><span class="p">(</span><span class="nb">type</span><span class="p">)</span></div>
+
+
+<span class="c1"># Extra #</span>
+<span class="c1"># ------#</span>
 </pre></div>
 
            </div>

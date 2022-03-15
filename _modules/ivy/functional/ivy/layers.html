@@ -200,8 +200,11 @@
 <span class="kn">from</span> <span class="nn">ivy.framework_handler</span> <span class="kn">import</span> <span class="n">current_framework</span> <span class="k">as</span> <span class="n">_cur_framework</span>
 
 
+<span class="c1"># Extra #</span>
+<span class="c1"># ------#</span>
+
+
 <span class="c1"># Linear #</span>
-<span class="c1"># -------#</span>
 
 <div class="viewcode-block" id="linear"><a class="viewcode-back" href="../../../../functional/ivy/layers/linear.html#ivy.functional.ivy.layers.linear">[docs]</a><span class="k">def</span> <span class="nf">linear</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">weight</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -240,7 +243,6 @@
 
 
 <span class="c1"># Dropout #</span>
-<span class="c1"># --------#</span>
 
 <div class="viewcode-block" id="dropout"><a class="viewcode-back" href="../../../../functional/ivy/layers/dropout.html#ivy.functional.ivy.layers.dropout">[docs]</a><span class="k">def</span> <span class="nf">dropout</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">prob</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -263,7 +265,6 @@
 
 
 <span class="c1"># Attention #</span>
-<span class="c1"># ----------#</span>
 
 <div class="viewcode-block" id="scaled_dot_product_attention"><a class="viewcode-back" href="../../../../functional/ivy/layers/scaled_dot_product_attention.html#ivy.functional.ivy.layers.scaled_dot_product_attention">[docs]</a><span class="k">def</span> <span class="nf">scaled_dot_product_attention</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">scale</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -363,7 +364,6 @@
 
 
 <span class="c1"># Convolutions #</span>
-<span class="c1"># -------------#</span>
 
 <div class="viewcode-block" id="conv1d"><a class="viewcode-back" href="../../../../functional/ivy/layers/conv1d.html#ivy.functional.ivy.layers.conv1d">[docs]</a><span class="k">def</span> <span class="nf">conv1d</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">filters</span><span class="p">,</span> <span class="n">strides</span><span class="p">,</span> <span class="n">padding</span><span class="p">,</span> <span class="n">data_format</span><span class="o">=</span><span class="s1">&#39;NWC&#39;</span><span class="p">,</span> <span class="n">dilations</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -520,7 +520,6 @@
 
 
 <span class="c1"># LSTM #</span>
-<span class="c1"># -----#</span>
 
 <div class="viewcode-block" id="lstm_update"><a class="viewcode-back" href="../../../../functional/ivy/layers/lstm_update.html#ivy.functional.ivy.layers.lstm_update">[docs]</a><span class="k">def</span> <span class="nf">lstm_update</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">init_h</span><span class="p">,</span> <span class="n">init_c</span><span class="p">,</span> <span class="n">kernel</span><span class="p">,</span> <span class="n">recurrent_kernel</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">recurrent_bias</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
