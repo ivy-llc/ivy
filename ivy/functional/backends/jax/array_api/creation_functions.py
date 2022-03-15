@@ -1,7 +1,6 @@
 # global
 import jaxlib
 import jax.numpy as jnp
-
 from typing import Union, Optional, Tuple, List
 
 # local
@@ -50,7 +49,6 @@ def ones_like(x : JaxArray,
         dtype = jnp.dtype(dtype)
     else:
         dtype = x.dtype
-
     return to_dev(jnp.ones_like(x, dtype=dtype), default_device(dev))
 
 

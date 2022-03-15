@@ -8,7 +8,7 @@ from ivy.framework_handler import current_framework as _cur_framework
 
 def zeros(shape: Union[int, Tuple[int], List[int]],
           dtype: Optional[ivy.Dtype] = None,
-          device: Optional[ivy.Device] = None) \
+          device: Optional[ivy.Device] = None)\
         -> ivy.Array:
     """
     Returns a new array having a specified ``shape`` and filled with zeros.
@@ -33,7 +33,7 @@ def zeros(shape: Union[int, Tuple[int], List[int]],
 
 def ones(shape: Union[int, Tuple[int], List[int]],
          dtype: Optional[ivy.Dtype] = None,
-         device: Optional[ivy.Device] = None) \
+         device: Optional[ivy.Device] = None)\
         -> ivy.Array:
     """
     Returns a new array having a specified ``shape`` and filled with ones.
