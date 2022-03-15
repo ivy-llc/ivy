@@ -1,24 +1,19 @@
+# global
+from typing import Union
+
+# local
 import ivy
-from ivy import Optional, Union, Tuple, List
+from ivy.framework_handler import current_framework as _cur_framework
 
 """
 Parameters
     ----------
     x:
         input array. Should have a numeric data type.
-    axes:
-        the axes along which to perform the op.
-    dtype:
-        array data type.
-    dev:
-        the device on which to place the new array.
 """
 
 
-def unique_inverse(x: Union[ivy.Array, ivy.NativeArray],
-                   axes: Union[int, Tuple[int], List[int]],
-                   dtype: Optional[Union[ivy.Dtype, str]] = None,
-                   dev: Optional[Union[ivy.Dev, str]] = None) \
+def unique_inverse(x: Union[ivy.Array, ivy.NativeArray]) \
         -> ivy.Tuple[ivy.Array, ivy.Array]:
 
-    return _cur_framework(x).my_func(x, dtype, dev)
+    return _cur_framework.unique_inverse(x)
