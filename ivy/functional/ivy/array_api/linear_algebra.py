@@ -183,3 +183,26 @@ def slodget(x: Union[ivy.Array, ivy.NativeArray],) \
 
     """
     return _cur_framework(x).slodget(x)
+
+def trace(x: ivy.Array,
+          offset: int = 0)\
+               -> ivy.Array:
+    """
+    Computes the sum of the diagonal of an array.
+
+    Parameters
+    ----------
+    x:
+        This is an array.
+
+    Return
+    ----------
+    Out:
+
+        This function returns two values -
+            sum:
+                The sum of the diagonals along an axis.
+
+    """
+
+    return _cur_framework(x).trace(x, offset)
