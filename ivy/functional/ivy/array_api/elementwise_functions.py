@@ -198,10 +198,6 @@ def log2(x: Union[ivy.Array, ivy.NativeArray]) \
     return _cur_framework(x).log2(x)
 
 
-<<<<<<< HEAD
-def log1p(x: Union[ivy.Array, ivy.NativeArray]) \
-=======
-
 def log10(x: Union[ivy.Array, ivy.NativeArray])\
         -> ivy.Array:
     """
@@ -232,8 +228,6 @@ def log10(x: Union[ivy.Array, ivy.NativeArray])\
 
 
 def log1p(x: Union[ivy.Array, ivy.NativeArray])\
->>>>>>> 8248dbebbd1731d6c25b7b992668f4f5debca270
-        -> ivy.Array:
     """
     Calculates an implementation-dependent approximation to log(1+x), where log refers to the natural (base e)
     logarithm.
@@ -421,7 +415,6 @@ def logical_or(x1: Union[ivy.Array, ivy.NativeArray], x2: Union[ivy.Array, ivy.N
 
   
 def acosh(x: Union[ivy.Array, ivy.NativeArray])\
->>>>>>> 8248dbebbd1731d6c25b7b992668f4f5debca270
         -> ivy.Array:
     """
     Calculates an implementation-dependent approximation to the inverse hyperbolic cosine, having domain ``[+1, +infinity]`` and codomain ``[+0, +infinity]``, for each element ``x_i`` of the input array ``x``.
