@@ -23,6 +23,11 @@ def isfinite(x: JaxArray)\
     return jnp.isfinite(x)
 
 
+def isinf(x: JaxArray)\
+        -> JaxArray:
+    return jnp.isinf(x)
+
+
 def equal(x1: JaxArray, x2: JaxArray)\
         -> JaxArray:
     return x1 == x2

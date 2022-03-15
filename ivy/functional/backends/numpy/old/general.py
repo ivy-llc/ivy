@@ -223,9 +223,6 @@ def indices_where(x):
     return res
 
 
-isinf = _np.isinf
-
-
 reshape = _np.reshape
 broadcast_to = _np.broadcast_to
 
