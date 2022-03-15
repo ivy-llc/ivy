@@ -1,7 +1,13 @@
-import ivy
+# global
 from typing import Union, Optional
+
+# local
+import ivy
 from ivy.framework_handler import current_framework as _cur_framework
 
+
+# Array API Standard #
+# -------------------#
 
 def argmax(
     x: Union[ivy.Array, ivy.NativeArray], 
@@ -28,3 +34,7 @@ def argmax(
         if axis is None, a zero-dimensional array containing the index of the first occurrence of the maximum value; otherwise, a non-zero-dimensional array containing the indices of the maximum values. The returned array must have be the default array index data type.
     """
     return _cur_framework(x).argmax(x,axis,keepdims,out)
+
+
+# Extra #
+# ------#
