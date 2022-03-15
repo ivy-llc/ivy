@@ -13,7 +13,7 @@ from typing import Callable, Any, Union, List, Tuple, Dict, Iterable, Optional
 
 # local
 import ivy
-from ivy.functional.ivy.old.device import dev
+from ivy.functional.ivy.device import dev
 from ivy.framework_handler import current_framework as _cur_framework
 
 FN_CACHE = dict()
