@@ -355,6 +355,28 @@ def logical_or(x1: Union[ivy.Array, ivy.NativeArray], x2: Union[ivy.Array, ivy.N
     return _cur_framework(x1, x2).logical_or(x1, x2)
 
 
+def logical_and(x1: ivy.Array, x2: ivy.Array)\
+       -> ivy.Array:
+    """
+    Computes the logical AND for each element x1_i of the input array x1 with the respective
+    element x2_i of the input array x2.
+
+    Parameters
+    ----------
+    x1:
+        first input array. Should have a boolean data type.
+    x2:
+        second input array. Must be compatible with x1.
+        Should have a boolean data type.
+    Returns
+    -------
+    out:
+        out (array) – an array containing the element-wise results.
+        The returned array must have a data type of bool.
+    """
+    return _cur_framework(x1, x2).logical_and(x1, x2)
+
+
 def acosh(x: Union[ivy.Array, ivy.NativeArray])\
         -> ivy.Array:
     """

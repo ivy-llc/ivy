@@ -124,6 +124,11 @@ def logical_or(x1: Tensor, x2: Tensor)\
     return tf.logical_or(tf.cast(x1, tf.bool), tf.cast(x2, tf.bool))
 
 
+def logical_and(x1: Tensor, x2: Tensor)\
+        -> Tensor:
+    return tf.logical_and(tf.cast(x1, tf.bool), tf.cast(x2, tf.bool))
+
+
 def acosh(x: Tensor) \
         -> Tensor:
     return tf.acosh(x)
