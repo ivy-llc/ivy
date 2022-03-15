@@ -53,8 +53,32 @@ backend = 'numpy'
 
 
 # local sub-modules
-from . import array_api
-from .array_api import *
-from .core import *
-from . import nn
-from .nn import *
+from . import activations
+from .activations import *
+from . import constants
+from .constants import *
+from . import creation
+from .creation import *
+from . import data_type
+from .data_type import *
+from . import elementwise
+from .elementwise import *
+from . import layers
+from .layers import *
+from . import linear_algebra
+from .linear_algebra import *
+from . import manipulation
+from .manipulation import *
+from . import searching
+from .searching import *
+from . import set
+from .set import *
+from . import sorting
+from .sorting import *
+from . import statistical
+from .statistical import *
+from . import utility
+from .utility import *
+
+from . import old
+from .old import *
