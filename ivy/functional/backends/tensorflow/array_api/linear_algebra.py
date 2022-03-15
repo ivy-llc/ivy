@@ -37,7 +37,7 @@ def diagonal(x: tf.Tensor,
     return tf.experimental.numpy.diagonal(x, offset, axis1=axis1, axis2=axis2)
 
 
-# noinspection PyUnusedLocal,PyShadowingBuiltins
+
 def inv(x: tf.Tensor, /) -> tf.Tensor:
     return tf.linalg.inv(x)
 
