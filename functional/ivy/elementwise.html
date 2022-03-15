@@ -109,6 +109,7 @@
 <li class="toctree-l2"><a class="reference internal" href="elementwise/cos.html">cos</a></li>
 <li class="toctree-l2"><a class="reference internal" href="elementwise/logical_not.html">logical_not</a></li>
 <li class="toctree-l2"><a class="reference internal" href="elementwise/logical_or.html">logical_or</a></li>
+<li class="toctree-l2"><a class="reference internal" href="elementwise/logical_and.html">logical_and</a></li>
 <li class="toctree-l2"><a class="reference internal" href="elementwise/acosh.html">acosh</a></li>
 <li class="toctree-l2"><a class="reference internal" href="elementwise/sin.html">sin</a></li>
 <li class="toctree-l2"><a class="reference internal" href="elementwise/negative.html">negative</a></li>
@@ -474,6 +475,25 @@ logarithm.</p>
 </dd></dl>
 
 <dl class="py function">
+<dt id="ivy.functional.ivy.elementwise.logical_and">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">logical_and</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x1</span><span class="p">:</span> <span class="n">ivy.array.Array</span></em>, <em class="sig-param"><span class="n">x2</span><span class="p">:</span> <span class="n">ivy.array.Array</span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../_modules/ivy/functional/ivy/elementwise.html#logical_and"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.elementwise.logical_and" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the logical AND for each element x1_i of the input array x1 with the respective
+element x2_i of the input array x2.</p>
+<dl class="simple">
+<dt>x1:</dt><dd><p>first input array. Should have a boolean data type.</p>
+</dd>
+<dt>x2:</dt><dd><p>second input array. Must be compatible with x1.
+Should have a boolean data type.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>out:</dt><dd><p>out (array) – an array containing the element-wise results.
+The returned array must have a data type of bool.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt id="ivy.functional.ivy.elementwise.logical_not">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">logical_not</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../_modules/ivy/functional/ivy/elementwise.html#logical_not"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.elementwise.logical_not" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes the logical NOT for each element <code class="docutils literal notranslate"><span class="pre">x_i</span></code> of the input array <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p>
@@ -628,6 +648,7 @@ have a floating-point data type</p>
 <li class="toctree-l1"><a class="reference internal" href="elementwise/cos.html">cos</a></li>
 <li class="toctree-l1"><a class="reference internal" href="elementwise/logical_not.html">logical_not</a></li>
 <li class="toctree-l1"><a class="reference internal" href="elementwise/logical_or.html">logical_or</a></li>
+<li class="toctree-l1"><a class="reference internal" href="elementwise/logical_and.html">logical_and</a></li>
 <li class="toctree-l1"><a class="reference internal" href="elementwise/acosh.html">acosh</a></li>
 <li class="toctree-l1"><a class="reference internal" href="elementwise/sin.html">sin</a></li>
 <li class="toctree-l1"><a class="reference internal" href="elementwise/negative.html">negative</a></li>
