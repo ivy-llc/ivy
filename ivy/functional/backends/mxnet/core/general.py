@@ -16,7 +16,9 @@ import multiprocessing as _multiprocessing
 
 # local
 from ivy.functional.ivy.core import default_device, default_dtype
-from ivy.functional.backends.mxnet.core.device import _callable_dev, dev_to_str
+from ivy.functional.backends.mxnet.core.device import _callable_dev
+from ivy.functional.backends.mxnet import _handle_flat_arrays_in_out, _mxnet_init_context,\
+    _scalar_or_flat_array_to_scalar, _handle_flat_arrays_in
 
 
 DTYPE_TO_STR = {_np.dtype('int8'): 'int8',
@@ -141,8 +143,6 @@ def floor(x):
 def abs(x):
     return _mx.nd.abs(x)
 
-
-argmax = lambda x, axis=0: _mx.nd.argmax(x, axis)
 argmin = lambda x, axis=0: _mx.nd.argmin(x, axis)
 
 
@@ -377,14 +377,6 @@ def full(shape, fill_value, dtype=None, device=None):
             _mx.nd.full((1,), fill_value, cont, dtype_from_str(default_dtype(dtype, fill_value))))
     return _mx.nd.full(shape, fill_value, cont, dtype_from_str(default_dtype(dtype, fill_value)))
 
-
-def ones_like(x, dtype=None, dev=None):
-    if x.shape == ():
-        return _mx.nd.array(1., ctx=_mxnet_init_context(default_device(dev)))
-    mx_ones = _mx.nd.ones_like(x, ctx=_mxnet_init_context(default_device(dev)))
-    return mx_ones if dtype is None else mx_ones.astype(dtype)
-
-
 # noinspection PyUnusedLocal
 one_hot = lambda indices, depth, dev=None: _mx.nd.one_hot(indices, depth)
 
@@ -583,7 +575,6 @@ def inplace_increment(x, val):
         raise Exception('MXNet does not support inplace updates of 0-dimensional arrays')
     x += val
     return x
-
 
 inplace_arrays_supported = lambda: True
 inplace_variables_supported = lambda: True

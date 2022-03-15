@@ -81,9 +81,12 @@ backend = 'jax'
 # local sub-modules
 from . import array_api
 from .array_api import *
+<<<<<<< HEAD
 from . import array_builtins
 from .array_builtins import *
 from . import core
+=======
+>>>>>>> upstream/master
 from .core import *
 from . import nn
 from .nn import *

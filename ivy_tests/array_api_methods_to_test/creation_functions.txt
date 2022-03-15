@@ -1,6 +1,6 @@
 #arange
 #asarray
-#empty
+empty
 #empty_like
 #eye
 #from_dlpack
@@ -8,9 +8,15 @@
 full_like
 #linspace
 #meshgrid
+<<<<<<< HEAD
 #ones
 #ones_like
 #tril
+=======
+ones
+ones_like
+tril
+>>>>>>> upstream/master
 #triu
 #zeros
 #zeros_like

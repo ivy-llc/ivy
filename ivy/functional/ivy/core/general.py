@@ -395,6 +395,7 @@ def abs(x: Union[ivy.Array, ivy.NativeArray]) \
     """
     return _cur_framework(x).abs(x)
 
+<<<<<<< HEAD
 
 def argmax(x: Union[ivy.Array, ivy.NativeArray], axis: int = 0) \
         -> Union[ivy.Array, ivy.NativeArray]:
@@ -411,6 +412,9 @@ def argmax(x: Union[ivy.Array, ivy.NativeArray], axis: int = 0) \
 
 
 def argmin(x: Union[ivy.Array, ivy.NativeArray], axis: int = 0) \
+=======
+def argmin(x: Union[ivy.Array, ivy.NativeArray], axis: int = 0)\
+>>>>>>> upstream/master
         -> Union[ivy.Array, ivy.NativeArray]:
     """
     Returns the index with the smallest value across axes of an array.
@@ -876,23 +880,6 @@ def ones(shape: Iterable[int], dtype: Union[ivy.Dtype, str] = 'float32', dev: iv
     :return: Tensor of ones with the given shape and dtype.
     """
     return _cur_framework().ones(shape, dtype, dev)
-
-
-def ones_like(x: Union[ivy.Array, ivy.NativeArray], dtype: ivy.Dtype = None, dev: ivy.Device = None,
-              ) -> Union[ivy.Array, ivy.NativeArray]:
-    """
-    Returns an array of ones with the same shape and type as x, unless dtype provided which overrides.
-
-    :param x: The shape and data-type of a define these same attributes of the returned array.
-    :type x: array
-    :param dtype: The desired data-type for the array in string format, i.e. 'float32' or 'int64'.
-                    If not given, then the type of the original array is used.
-    :type dtype: data-type string, optional
-    :param dev: device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. Same as x if None.
-    :type dev: ivy.Device, optional
-    :return: Tensor of zeros with the same shape and type as a, unless dtype provided which overrides.
-    """
-    return _cur_framework(x).ones_like(x, dtype, dev)
 
 
 # noinspection PyShadowingNames
