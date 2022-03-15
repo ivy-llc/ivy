@@ -4,12 +4,8 @@ from . import creation_functions
 from .creation_functions import *
 from . import data_type_functions
 from .data_type_functions import *
-from . import data_types
-from .data_types import *
 from . import elementwise_functions
 from .elementwise_functions import *
-from . import function_and_method_signatures
-from .function_and_method_signatures import *
 from . import linear_algebra as linalg
 from .linear_algebra import *
 from . import manipulation_functions
