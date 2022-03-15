@@ -70,15 +70,15 @@ def vector_norm(x: Union[ivy.Array, ivy.NativeArray],
     x_raised = x ** ord
     return ivy.reduce_sum(x_raised, axis, keepdims) ** (1/ord)
 
-def svd(x:Union[ivy.Array,ivy.NativeArray],full_matrices: bool = True)->Union[ivy.Array, Tuple[ivy.Array,...]]:
 
-<<<<<<< HEAD
+
+
 
 def outer(x1: Union[ivy.Array, ivy.NativeArray],
-        x2: Union[ivy.Array, ivy.NativeArray])\
+         x2: Union[ivy.Array, ivy.NativeArray])\
         -> ivy.Array:
 
-    return _cur_framework (x1 , x2).outer(x1,x2)
+    return _cur_framework (x1,x2).outer(x1,x2)
 """
 returns the outer product of two vectors x1 and x2.
 Parameters:
@@ -101,8 +101,8 @@ A location where the result is stored
 
 
 
-=======
-    """
+
+"""
     Singular Value Decomposition.
     When x is a 2D array, it is factorized as u @ numpy.diag(s) @ vh = (u * s) @ vh, where u and vh are 2D unitary
     arrays and s is a 1D array of a’s singular values. When x is higher-dimensional, SVD is applied in batched mode.
@@ -122,17 +122,12 @@ A location where the result is stored
         Unitary array(s). The first (number of dims - 2) dimensions have the same size as those of the input a.
         The size of the last two dimensions depends on the value of full_matrices.
     """
-    return _cur_framework(x).svd(x,full_matrices)
 
 
-def outer(x1: Union[ivy.Array, ivy.NativeArray],
-        x2: Union[ivy.Array, ivy.NativeArray])\
-        -> ivy.Array:
 
-    return _cur_framework (x1 , x2).outer(x1,x2)
 
-  
->>>>>>> 8a4995375774ae7ad8391f57e058214379972912
+
+
 def diagonal(x: ivy.Array,
              offset: int = 0,
              axis1: int = -2,
@@ -164,11 +159,7 @@ def diagonal(x: ivy.Array,
     return _cur_framework(x).diagonal(x, offset, axis1=axis1, axis2=axis2)
 
 
-<<<<<<< HEAD
 
-
-
-=======
 def slodget(x: Union[ivy.Array, ivy.NativeArray],) \
             -> ivy.Array:
     """
@@ -192,4 +183,4 @@ def slodget(x: Union[ivy.Array, ivy.NativeArray],) \
 
     """
     return _cur_framework(x).slodget(x)
->>>>>>> 8a4995375774ae7ad8391f57e058214379972912
+

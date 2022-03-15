@@ -38,11 +38,6 @@ def outer(x1: torch.Tensor,
     return torch.outer(x1, x2)
 
 
-def outer(x1: torch.Tensor,
-          x2: torch.Tensor)\
-        -> torch.Tensor:
-    return torch.Tensor.outer(x1,x2)
-
 
 def diagonal(x: torch.Tensor,
              offset: int = 0,

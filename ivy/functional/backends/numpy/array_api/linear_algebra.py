@@ -30,11 +30,10 @@ def vector_norm(x: np.ndarray,
 def outer(x1: np.ndarray,
           x2: np.ndarray)\
         -> np.ndarray:
-<<<<<<< HEAD
+
     return np.outer(x1,x2)
 
-=======
-    return np.outer(x1, x2)
+
 
 def svd(x:np.ndarray,full_matrices: bool = True) -> Union[np.ndarray, Tuple[np.ndarray,...]]:
     results=namedtuple("svd", "U S Vh")
@@ -42,7 +41,7 @@ def svd(x:np.ndarray,full_matrices: bool = True) -> Union[np.ndarray, Tuple[np.n
     res=results(U, D, VT)
     return res
   
->>>>>>> 8a4995375774ae7ad8391f57e058214379972912
+
 def diagonal(x: np.ndarray,
              offset: int = 0,
              axis1: int = -2,

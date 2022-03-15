@@ -25,10 +25,7 @@ def vector_norm(x: JaxArray,
         return jnp.expand_dims(jnp_normalized_vector, 0)
     return jnp_normalized_vector
 
-def outer(x1: JaxArray,
-          x2: JaxArray)\
-        -> JaxArray:
-    return jnp.outer(x1,x2)
+
 
 def outer(x1: JaxArray,
           x2: JaxArray)\
