@@ -4,7 +4,7 @@ Collection of PyTorch gradient functions, wrapped to fit Ivy syntax and signatur
 
 # global
 import ivy
-import torch as _torch
+import torch
 import warnings as _warnings
 
 
@@ -15,7 +15,7 @@ def variable(x):
 
 
 def is_variable(x, exclusive: bool = False):
-    return isinstance(x, _torch.Tensor) and x.requires_grad
+    return isinstance(x, torch.Tensor) and x.requires_grad
 
 
 def variable_data(x):
@@ -33,7 +33,7 @@ def execute_with_gradients(func, xs, retain_grads=False):
         y = func_ret
         rest = tuple()
     y = ivy.to_native(y)
-    x_grads_flat = list(_torch.autograd.grad([y], [v for k, v in xs.to_iterator()], retain_graph=retain_grads,
+    x_grads_flat = list(torch.autograd.grad([y], [v for k, v in xs.to_iterator()], retain_graph=retain_grads,
                                              create_graph=retain_grads))
     grads = xs.from_flat_list(x_grads_flat)
     grads = grads.to_ivy()

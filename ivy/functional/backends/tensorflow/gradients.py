@@ -3,7 +3,7 @@ Collection of TensorFlow gradient functions, wrapped to fit Ivy syntax and signa
 """
 
 # global
-import tensorflow as _tf
+import tensorflow as tf
 
 # local
 import ivy
@@ -11,12 +11,12 @@ from ivy.container import Container
 
 
 def variable(x):
-    with _tf.device('/' + ivy.dev(x, as_str=True).upper()):
-        return _tf.Variable(x, trainable=True)
+    with tf.device('/' + ivy.dev(x, as_str=True).upper()):
+        return tf.Variable(x, trainable=True)
 
 
 def is_variable(x, exclusive=False):
-    return isinstance(x, _tf.Variable)
+    return isinstance(x, tf.Variable)
 
 
 variable_data = lambda x: x.value()
@@ -24,7 +24,7 @@ variable_data = lambda x: x.value()
 
 def execute_with_gradients(func, xs, retain_grads=False):
     xs = xs.to_native()
-    with _tf.GradientTape(persistent=retain_grads, watch_accessed_variables=False) as tape:
+    with tf.GradientTape(persistent=retain_grads, watch_accessed_variables=False) as tape:
         tape.watch(xs)
         func_ret = func(xs)
     if isinstance(func_ret, tuple):
@@ -44,7 +44,7 @@ def execute_with_gradients(func, xs, retain_grads=False):
 
 def stop_gradient(x, preserve_type=True):
     is_var = is_variable(x)
-    x = _tf.stop_gradient(x)
+    x = tf.stop_gradient(x)
     if is_var and preserve_type:
         return variable(x)
     return x
