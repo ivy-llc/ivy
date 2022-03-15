@@ -8,21 +8,11 @@ full
 full_like
 #linspace
 #meshgrid
-<<<<<<< HEAD
-<<<<<<< HEAD
-#ones
-#ones_like
-#tril
-=======
 ones
 ones_like
 tril
->>>>>>> upstream/master
-=======
 ones
 #ones_like
-tril
->>>>>>> bf45e0c2426729e00d862c621fb818f2fa0b0a5f
 #triu
 zeros
 #zeros_like
