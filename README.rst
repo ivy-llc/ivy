@@ -10,8 +10,8 @@
     <a href="https://github.com/unifyai/ivy/actions?query=workflow%3Adocs">
         <img style="float: left; padding-right: 4px; padding-bottom: 4px;" src="https://img.shields.io/github/workflow/status/unifyai/ivy/docs?label=docs">
     </a>
-    <a href="https://github.com/unifyai/ivy/actions?query=workflow%3Anightly-tests">
-        <img style="float: left; padding-right: 4px; padding-bottom: 4px;" src="https://img.shields.io/github/workflow/status/unifyai/ivy/nightly-tests?label=tests">
+    <a href="https://github.com/unifyai/ivy/actions?query=workflow%3Atest-ivy">
+        <img style="float: left; padding-right: 4px; padding-bottom: 4px;" src="https://img.shields.io/github/workflow/status/unifyai/ivy/test-ivy?label=tests">
     </a>
     <a href="https://discord.gg/G4aR9Q7DTN">
         <img style="float: left; padding-right: 4px; padding-bottom: 4px;" src="https://img.shields.io/discord/799879767196958751?color=blue&label=%20&logo=discord&logoColor=white">
@@ -56,6 +56,7 @@ Overview
 --------
 
 .. _docs: https://lets-unify.ai/ivy
+.. _Colabs: https://drive.google.com/drive/folders/16Oeu25GrQsEJh8w2B0kSrD93w4cWjJAM?usp=sharing
 
 **What is Ivy?**
 
@@ -64,6 +65,8 @@ Ivy wraps the functional APIs of existing frameworks.
 Framework-agnostic functions, libraries and layers can then be written using Ivy,
 with simultaneous support for all frameworks.
 Ivy currently supports Jax, TensorFlow, PyTorch, MXNet and Numpy. Check out the docs_ for more info!
+
+Also check out our Google Colabs_ for interactive demos.
 
 **Ivy Libraries**
 
