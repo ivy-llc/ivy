@@ -25,6 +25,7 @@ def flip(x: Tensor,
 def stack(x: Union[Tuple[Tensor], List[Tensor]],
           axis: Optional[int] = None)\
           -> Tensor:
+    x = tf.cast(x, tf.uint8)
     if axis is None:
         new_axis = 0
     else:
