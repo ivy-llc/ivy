@@ -1,6 +1,6 @@
 # global
 import ivy
-from ivy.functional.ivy.old.gradients import gradient_descent_update
+from ivy.functional.ivy.gradients import gradient_descent_update
 
 
 # Private #
