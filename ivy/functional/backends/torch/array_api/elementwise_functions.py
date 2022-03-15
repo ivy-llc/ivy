@@ -121,7 +121,6 @@ def logical_or(x1: torch.Tensor, x2: torch.Tensor)\
     return torch.logical_or(x1.type(torch.bool), x2.type(torch.bool))
 
 
-
 def acosh(x: torch.Tensor) \
         -> torch.Tensor:
     return torch.acosh(x)
@@ -134,13 +133,11 @@ def sin(x: torch.Tensor) \
 
 def negative(x: torch.Tensor) -> torch.Tensor:
     return torch.neg(x)
-<<<<<<< HEAD
-=======
-
 
 
 def tanh(x: torch.Tensor) -> torch.Tensor:
     return torch.tanh(x)
 
 
->>>>>>> 8248dbebbd1731d6c25b7b992668f4f5debca270
+def sinh(x: torch.Tensor) -> torch.Tensor:
+    return torch.sinh(x)

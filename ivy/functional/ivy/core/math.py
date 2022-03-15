@@ -68,16 +68,6 @@ def atan2(x1, x2):
     return _cur_framework(x1).atan2(x1, x2)
 
 
-def sinh(x):
-    """
-    Returns a new array with the hyperbolic sine of the elements of x.
-
-    :param x: Input array.
-    :return: A new array with the hyperbolic sine of the elements of x.
-    """
-    return _cur_framework(x).sinh(x)
-
-
 def cosh(x):
     """
     Returns a new array with the hyperbolic cosine of the elements of x.
