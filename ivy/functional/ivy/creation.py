@@ -9,6 +9,32 @@ from ivy.framework_handler import current_framework as _cur_framework
 # Array API Standard #
 # -------------------#
 
+def asarray(x: Union[ivy.Array, ivy.NativeArray],
+             dtype: Optional[Union[ivy.Dtype, str]] = None,
+             dev: Optional[Union[ivy.Device, str]] = None,
+             ) -> ivy.Array:
+     """
+     Converts the input to an array.
+
+     Parameters
+     ----------
+     x:
+         input data, in any form that can be converted to an array.
+         This includes lists, lists of tuples, tuples, tuples of tuples, tuples of lists and ndarrays.
+
+     dtype:
+         datatype, optional. Datatype is inferred from the input data.
+
+     dev:
+         device on which to place the created array. Default: None.
+
+     Returns
+     --------
+     An array interpretation of x.
+     """
+     return _cur_framework(x).asarray(x, dtype, dev)
+
+
 def zeros(shape: Union[int, Tuple[int], List[int]],
           dtype: Optional[ivy.Dtype] = None,
           device: Optional[ivy.Device] = None)\
