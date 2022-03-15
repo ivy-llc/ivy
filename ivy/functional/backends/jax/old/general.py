@@ -14,12 +14,11 @@ from functools import reduce as _reduce
 from jaxlib.xla_extension import Buffer
 import multiprocessing as _multiprocessing
 from haiku._src.data_structures import FlatMapping
-from typing import Tuple, Union
 
 # local
 import ivy
 from ivy.functional.ivy.old import default_device, default_dtype
-from ivy.functional.backends.jax.old.device import to_dev, dev as callable_dev
+from ivy.functional.backends.jax.device import to_dev, dev as callable_dev
 
 DTYPE_TO_STR = {_jnp.dtype('int8'): 'int8',
                 _jnp.dtype('int16'): 'int16',
