@@ -1,0 +1,16 @@
+Searching
+=========
+
+.. automodule:: ivy.functional.backends.tensorflow.array_api.searching
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :maxdepth: -1
+   :caption: Searching
+
+   searching/argmax.rst
+

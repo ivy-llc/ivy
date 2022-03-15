@@ -1,0 +1,16 @@
+Manipulation
+============
+
+.. automodule:: ivy.functional.backends.jax.array_api.manipulation
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :maxdepth: -1
+   :caption: Manipulation
+
+   manipulation/flip.rst
+
