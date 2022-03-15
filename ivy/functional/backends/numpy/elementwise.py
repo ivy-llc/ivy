@@ -34,6 +34,11 @@ def isfinite(x: np.ndarray) \
     return np.asarray(npa.isfinite(npa.asarray(x)))
 
 
+def isinf(x: np.ndarray)\
+        -> np.ndarray:
+    return np.asarray(npa.isinf(npa.asarray(x)))
+
+
 def asinh(x: np.ndarray)\
         -> np.ndarray:
     return np.arcsinh(x)

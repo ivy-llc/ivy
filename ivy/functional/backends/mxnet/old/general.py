@@ -329,11 +329,6 @@ def indices_where(x):
     return res
 
 
-@_handle_flat_arrays_in_out
-def isinf(x):
-    return _mx.nd.contrib.isinf(x).astype('bool')
-
-
 reshape = lambda x, new_shape: x.reshape(new_shape)
 
 
