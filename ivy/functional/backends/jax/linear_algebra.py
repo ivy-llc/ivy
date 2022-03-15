@@ -7,7 +7,7 @@ from collections import namedtuple
 # local
 from ivy import inf
 from ivy.functional.backends.jax import JaxArray
-import ivy as _ivy
+import ivy
 
 
 # noinspection PyUnusedLocal,PyShadowingBuiltins
@@ -53,7 +53,7 @@ def matmul(x1: JaxArray,
     return jnp.matmul(x1, x2)
 
 
-def slogdet(x:Union[_ivy.Array,_ivy.NativeArray],full_matrices: bool = True) -> Union[_ivy.Array, Tuple[_ivy.Array,...]]:
+def slogdet(x:Union[ivy.Array,ivy.NativeArray],full_matrices: bool = True) -> Union[ivy.Array, Tuple[ivy.Array,...]]:
     results = namedtuple("slogdet", "sign logabsdet")
     sign, logabsdet = jnp.linalg.slogdet(x)
     res = results(sign, logabsdet)

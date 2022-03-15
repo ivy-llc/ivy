@@ -1,17 +1,17 @@
 # global
-import numpy as _np
+import numpy as np
 from typing import Tuple, Union
 
 
-def min(x: _np.ndarray,
+def min(x: np.ndarray,
         axis: Union[int, Tuple[int]] = None,
         keepdims: bool = False) \
-        -> _np.ndarray:
-    return _np.amin(a=x, axis=axis, keepdims=keepdims)
+        -> np.ndarray:
+    return np.amin(a=x, axis=axis, keepdims=keepdims)
 
 
-def max(x: _np.ndarray,
+def max(x: np.ndarray,
         axis: Union[int, Tuple[int]] = None,
         keepdims: bool = False) \
-        -> _np.ndarray:
-    return _np.amax(a=x, axis=axis, keepdims=keepdims)
+        -> np.ndarray:
+    return np.amax(a=x, axis=axis, keepdims=keepdims)
