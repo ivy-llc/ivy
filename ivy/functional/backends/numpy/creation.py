@@ -61,7 +61,7 @@ def empty(shape: Union[int, Tuple[int], List[int]],
 
 # noinspection PyShadowingNames
 def array(object_in, dtype=None, dev=None):
-    return _to_dev(_np.array(object_in, dtype=default_dtype(dtype, object_in)), dev)
+    return _to_dev(np.array(object_in, dtype=default_dtype(dtype, object_in)), dev)
 
 
 asarray = array
