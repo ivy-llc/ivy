@@ -1,0 +1,18 @@
+General
+=======
+
+.. automodule:: ivy.functional.ivy.general
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :maxdepth: -1
+   :caption: General
+
+   general/get_referrers_recursive.rst
+   general/is_array.rst
+   general/copy_array.rst
+

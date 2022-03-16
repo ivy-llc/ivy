@@ -94,6 +94,7 @@
 <li class="toctree-l1"><a class="reference internal" href="functional/ivy/data_type.html">Data type</a></li>
 <li class="toctree-l1"><a class="reference internal" href="functional/ivy/device.html">Device</a></li>
 <li class="toctree-l1"><a class="reference internal" href="functional/ivy/elementwise.html">Elementwise</a></li>
+<li class="toctree-l1"><a class="reference internal" href="functional/ivy/general.html">General</a></li>
 <li class="toctree-l1"><a class="reference internal" href="functional/ivy/gradients.html">Gradients</a></li>
 <li class="toctree-l1"><a class="reference internal" href="functional/ivy/image.html">Image</a></li>
 <li class="toctree-l1"><a class="reference internal" href="functional/ivy/layers.html">Layers</a></li>
@@ -282,6 +283,8 @@
 </li>
       <li><a href="functional/ivy/sorting.html#ivy.functional.ivy.sorting.argsort">argsort() (in module ivy.functional.ivy.sorting)</a>, <a href="functional/ivy/sorting/argsort.html#ivy.functional.ivy.sorting.argsort">[1]</a>
 </li>
+      <li><a href="functional/ivy/creation.html#ivy.functional.ivy.creation.array">array() (in module ivy.functional.ivy.creation)</a>, <a href="functional/ivy/creation/array.html#ivy.functional.ivy.creation.array">[1]</a>
+</li>
       <li><a href="container/Container.html#ivy.container.Container.arrays_as_lists">arrays_as_lists() (ivy.container.Container method)</a>
 </li>
       <li><a href="container/Container.html#ivy.container.Container.as_arrays">as_arrays() (ivy.container.Container method)</a>
@@ -297,6 +300,8 @@
       <li><a href="container/Container.html#ivy.container.Container.as_variables">as_variables() (ivy.container.Container method)</a>
 </li>
       <li><a href="container/Container.html#ivy.container.Container.as_zeros">as_zeros() (ivy.container.Container method)</a>
+</li>
+      <li><a href="functional/ivy/creation.html#ivy.functional.ivy.creation.asarray">asarray() (in module ivy.functional.ivy.creation)</a>
 </li>
       <li><a href="functional/ivy/elementwise.html#ivy.functional.ivy.elementwise.asinh">asinh() (in module ivy.functional.ivy.elementwise)</a>, <a href="functional/ivy/elementwise/asinh.html#ivy.functional.ivy.elementwise.asinh">[1]</a>
 </li>
@@ -378,10 +383,10 @@
 </li>
       <li><a href="framework_handler.html#ivy.framework_handler.ContextManager">ContextManager (class in ivy.framework_handler)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="functional/ivy/layers.html#ivy.functional.ivy.layers.conv1d">conv1d() (in module ivy.functional.ivy.layers)</a>, <a href="functional/ivy/layers/conv1d.html#ivy.functional.ivy.layers.conv1d">[1]</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="functional/ivy/layers.html#ivy.functional.ivy.layers.conv1d_transpose">conv1d_transpose() (in module ivy.functional.ivy.layers)</a>, <a href="functional/ivy/layers/conv1d_transpose.html#ivy.functional.ivy.layers.conv1d_transpose">[1]</a>
 </li>
       <li><a href="functional/ivy/layers.html#ivy.functional.ivy.layers.conv2d">conv2d() (in module ivy.functional.ivy.layers)</a>, <a href="functional/ivy/layers/conv2d.html#ivy.functional.ivy.layers.conv2d">[1]</a>
@@ -393,6 +398,8 @@
       <li><a href="functional/ivy/layers.html#ivy.functional.ivy.layers.conv3d_transpose">conv3d_transpose() (in module ivy.functional.ivy.layers)</a>, <a href="functional/ivy/layers/conv3d_transpose.html#ivy.functional.ivy.layers.conv3d_transpose">[1]</a>
 </li>
       <li><a href="container/Container.html#ivy.container.Container.copy">copy() (ivy.container.Container method)</a>
+</li>
+      <li><a href="functional/ivy/general/copy_array.html#ivy.functional.ivy.general.copy_array">copy_array() (in module ivy.functional.ivy.general)</a>
 </li>
       <li><a href="functional/ivy/nest.html#ivy.functional.ivy.nest.copy_nest">copy_nest() (in module ivy.functional.ivy.nest)</a>, <a href="functional/ivy/nest/copy_nest.html#ivy.functional.ivy.nest.copy_nest">[1]</a>
 </li>
@@ -711,13 +718,20 @@
         <li><a href="functional/ivy/device.html#module-ivy.functional.ivy.device">module</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     ivy.functional.ivy.elementwise
 
       <ul>
         <li><a href="functional/ivy/elementwise.html#module-ivy.functional.ivy.elementwise">module</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li>
+    ivy.functional.ivy.general
+
+      <ul>
+        <li><a href="functional/ivy/general.html#module-ivy.functional.ivy.general">module</a>
 </li>
       </ul></li>
       <li>
@@ -938,6 +952,8 @@
         <li><a href="functional/ivy/device.html#module-ivy.functional.ivy.device">ivy.functional.ivy.device</a>
 </li>
         <li><a href="functional/ivy/elementwise.html#module-ivy.functional.ivy.elementwise">ivy.functional.ivy.elementwise</a>
+</li>
+        <li><a href="functional/ivy/general.html#module-ivy.functional.ivy.general">ivy.functional.ivy.general</a>
 </li>
         <li><a href="functional/ivy/gradients.html#module-ivy.functional.ivy.gradients">ivy.functional.ivy.gradients</a>
 </li>
