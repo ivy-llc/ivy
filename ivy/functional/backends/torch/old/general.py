@@ -23,33 +23,10 @@ from ivy.functional.backends.torch.device import dev_from_str, _callable_dev
 # ----#
 
 
-# noinspection PyShadowingNames
-def array(object_in, dtype: Optional[str] = None, dev: Optional[str] = None):
-    dev = default_device(dev)
-    dtype = dtype_from_str(default_dtype(dtype, object_in))
-    if isinstance(object_in, np.ndarray):
-        return _torch.Tensor(object_in).to(dev_from_str(dev))
-    if dtype is not None:
-        return _torch.tensor(object_in, dtype=dtype, device=dev_from_str(dev))
-    elif isinstance(object_in, _torch.Tensor):
-        return object_in.to(dev_from_str(dev))
-    else:
-        return _torch.tensor(object_in, device=dev_from_str(dev))
 
 
-asarray = array
 
 
-def is_array(x, exclusive=False):
-    if isinstance(x, _torch.Tensor):
-        if exclusive and x.requires_grad:
-            return False
-        return True
-    return False
-
-
-def copy_array(x):
-    return x.clone()
 
 
 def array_equal(x0, x1):
