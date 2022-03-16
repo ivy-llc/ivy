@@ -1,6 +1,6 @@
 # global
 import jax.numpy as _jnp
-from typing import Tuple, Union
+from typing import Tuple, Union, Optional
 
 
 def min(x: _jnp.ndarray,
