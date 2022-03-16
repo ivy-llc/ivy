@@ -147,3 +147,21 @@ def slodget(x: Union[ivy.Array, ivy.NativeArray],) \
 
     """
     return _cur_framework(x).slodget(x)
+
+def svdvals(x: Union[ivy.Array, ivy.NativeArray],) \
+            -> ivy.Array:
+    """
+    Returns the singular values of a matrix (or a stack of matrices) ``x``.
+
+    Parameters
+    ----------
+    x:
+        input array having shape ``(..., M, N)`` and whose innermost two dimensions form ``MxN`` matrices.
+    Return
+    ----------
+    Out:
+        array with shape ``(..., K)`` that contains the vector(s) of singular values of length ``K``, where K = min(M, N).
+        The values are sorted in descending order by magnitude.
+
+    """
+    return _cur_framework(x).svdvals(x)
