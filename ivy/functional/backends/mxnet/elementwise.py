@@ -99,3 +99,9 @@ def sinh(x: mx.ndarray.ndarray.NDArray)\
     if isinstance(x, float):
         return math.sinh(x)
     return mx.nd.sinh(x)
+
+
+@_handle_flat_arrays_in_out
+def square(x: mx.ndarray.ndarray.NDArray)\
+        -> mx.ndarray.ndarray.NDArray:
+    return mx.nd.square(x)
