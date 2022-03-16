@@ -67,7 +67,7 @@ def empty(shape: Union[int, Tuple[int]],
     return torch.empty(shape, dtype=dtype_from_str(default_dtype(dtype)), device=dev_from_str(default_device(device)))
 
 
-def empty_like(x : torch.Tensor,
+def empty_like(x: torch.Tensor,
               dtype: Optional[Union[torch.dtype, str]] = None,
               dev: Optional[Union[torch.device, str]] = None) \
         -> torch.Tensor:
@@ -87,6 +87,5 @@ def empty_like(x : torch.Tensor,
         return torch.empty_like(x, dtype=type_dict[dtype], device=dev_from_str(dev))
     else:
         return torch.empty_like(x, dtype= dtype, device=dev_from_str(dev))
-
 
     return torch.empty_like(x, device=dev_from_str(dev))
