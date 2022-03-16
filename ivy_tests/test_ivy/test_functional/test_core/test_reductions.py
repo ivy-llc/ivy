@@ -45,6 +45,39 @@ def test_reduce_sum(x, axis, kd, dtype, tensor_fn, dev, call):
     assert np.allclose(call(ivy.reduce_sum, x), ivy.functional.backends.numpy.reduce_sum(ivy.to_numpy(x)))
 
 
+# reduce_std
+@pytest.mark.parametrize(
+    "x", [[1., 2., 3.], [[1., 2., 3.]]])
+@pytest.mark.parametrize(
+    "axis", [None, 0, -1, (0,), (-1,)])
+@pytest.mark.parametrize(
+    "kd", [True, False])
+@pytest.mark.parametrize(
+    "dtype", ['float32'])
+@pytest.mark.parametrize(
+    "tensor_fn", [ivy.array, helpers.var_fn])
+def test_reduce_std(x, axis, kd, dtype, tensor_fn, dev, call):
+    # smoke test
+    x = tensor_fn(x, dtype, dev)
+    ret = ivy.reduce_std(x, axis, kd)
+    # type test
+    assert ivy.is_array(ret)
+    # cardinality test
+    if axis is None:
+        expected_shape = [1]*len(x.shape) if kd else []
+    else:
+        axis_ = [axis] if isinstance(axis, int) else axis
+        axis_ = [item % len(x.shape) for item in axis_]
+        expected_shape = list(x.shape)
+        if kd:
+            expected_shape = [1 if i % len(x.shape) in axis_ else item for i, item in enumerate(expected_shape)]
+        else:
+            [expected_shape.pop(item) for item in axis_]
+    assert ret.shape == tuple(expected_shape)
+    # value test
+    assert np.allclose(call(ivy.reduce_std, x), ivy.functional.backends.numpy.reduce_var(ivy.to_numpy(x)) ** 0.5)
+
+
 # einsum
 @pytest.mark.parametrize(
     "eq_n_op_n_shp", [("ii", (np.arange(25).reshape(5, 5),), ()),
