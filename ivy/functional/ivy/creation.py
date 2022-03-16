@@ -98,6 +98,7 @@ def tril(x: Union[ivy.Array, ivy.NativeArray],
     """
     return _cur_framework(x).tril(x, k)
 
+
 def triu(x: Union[ivy.Array, ivy.NativeArray],
          k: int = 0) \
          -> ivy.Array:
@@ -150,4 +151,3 @@ def empty_like(x: Union[ivy.Array, ivy.NativeArray], dtype: ivy.Dtype = None, de
     :return: an array having the same shape as x and containing uninitialized data.
     """
     return _cur_framework(x).empty_like(x, dtype, dev)
-
