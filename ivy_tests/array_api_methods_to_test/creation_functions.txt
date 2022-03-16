@@ -13,4 +13,4 @@ ones
 #tril
 #triu
 zeros
-#zeros_like
+zeros_like
