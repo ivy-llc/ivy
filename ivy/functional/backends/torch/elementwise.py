@@ -132,6 +132,11 @@ def sin(x: torch.Tensor)\
 def negative(x: torch.Tensor) -> torch.Tensor:
     return torch.neg(x)
 
+def not_equal(x1: Tensor, x2: Tensor)\
+        -> Tensor:
+    x1, x2 = _cast_for_binary_op(x1, x2)
+    return torch.not_equal(x1, x2)
+
 
 def tanh(x: torch.Tensor) -> torch.Tensor:
     return torch.tanh(x)
