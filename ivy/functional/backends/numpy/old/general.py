@@ -80,34 +80,10 @@ def _flat_array_to_1_dim_array(x):
 # API #
 # ----#
 
-# noinspection PyShadowingNames
-def array(object_in, dtype=None, dev=None):
-    return _to_dev(_np.array(object_in, dtype=default_dtype(dtype, object_in)), dev)
 
 
-def asarray(object_in, dtype=None, dev=None, copy=None):
-    # If copy=none then try using existing memory buffer
-    if isinstance(object_in, _np.ndarray) and dtype is None:
-        dtype = object_in.dtype
-    elif isinstance(object_in, (list, tuple, dict)) and len(object_in) != 0 and dtype is None:
-        # Temporary fix on type
-        # Because default_type() didn't return correct type for normal python array
-        if copy is True:
-            return _to_dev(_np.copy(_np.asarray(object_in)), dev)
-        else:
-            return _to_dev(_np.asarray(object_in), dev)
-    else:
-        dtype = default_dtype(dtype, object_in)
-    if copy is True:
-        return _to_dev(_np.copy(_np.asarray(object_in, dtype=dtype)), dev)
-    else:
-        return _to_dev(_np.asarray(object_in, dtype=dtype), dev)
 
 
-def is_array(x, exclusive=False):
-    if isinstance(x, _np.ndarray):
-        return True
-    return False
 
 
 def dtype_bits(dtype_in):

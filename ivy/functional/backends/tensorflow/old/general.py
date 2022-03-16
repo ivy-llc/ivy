@@ -3,8 +3,6 @@ Collection of TensorFlow general functions, wrapped to fit Ivy syntax and signat
 """
 
 # global
-from typing import Optional
-
 import ivy
 _round = round
 import numpy as _np
@@ -52,66 +50,9 @@ DTYPE_FROM_STR = {'int8': _tf.int8,
 # API #
 # ----#
 
-# noinspection PyShadowingNames
-def array(object_in, dtype=None, dev=None):
-    dtype = dtype_from_str(default_dtype(dtype, object_in))
-    dev = default_device(dev)
-    with _tf.device(dev_from_str(dev)):
-        try:
-            tensor = _tf.convert_to_tensor(object_in, dtype=dtype)
-        except (TypeError, ValueError):
-            tensor = _tf.convert_to_tensor(ivy.nested_map(object_in, lambda x: _tf.cast(x, dtype)), dtype=dtype)
-        if dtype is None:
-            return tensor
-        return _tf.cast(tensor, dtype)
 
 
-def asarray(object_in, dtype=None, dev=None, copy=None):
-    dev = default_device(dev)
-    with _tf.device(dev_from_str(dev)):
-        if copy:
-            if dtype is None and isinstance(object_in, _tf.Tensor):
-                return _tf.identity(object_in)
-            if dtype is None and not isinstance(object_in, _tf.Tensor):
-                try:
-                    return _tf.identity(_tf.convert_to_tensor(object_in))
-                except (TypeError, ValueError):
-                    dtype = dtype_to_str(default_dtype(dtype, object_in))
-                    return _tf.identity(_tf.convert_to_tensor(ivy.nested_map(object_in, lambda x: _tf.cast(x, dtype)), dtype=dtype))
-            else:
-                dtype = dtype_to_str(default_dtype(dtype, object_in))
-                try:
-                    tensor = _tf.convert_to_tensor(object_in, dtype=dtype)
-                except (TypeError, ValueError):
-                    tensor = _tf.convert_to_tensor(ivy.nested_map(object_in, lambda x: _tf.cast(x, dtype)), dtype=dtype)
-                return _tf.identity(_tf.cast(tensor, dtype))
-        else:
-            if dtype is None and isinstance(object_in, _tf.Tensor):
-                return object_in
-            if dtype is None and not isinstance(object_in, _tf.Tensor):
-                try:
-                    return _tf.convert_to_tensor(object_in)
-                except (TypeError, ValueError):
-                    dtype = dtype_to_str(default_dtype(dtype, object_in))
-                    return _tf.convert_to_tensor(ivy.nested_map(object_in, lambda x: _tf.cast(x, dtype)), dtype=dtype)
-            else:
-                dtype = dtype_to_str(default_dtype(dtype, object_in))
-                try:
-                    tensor = _tf.convert_to_tensor(object_in, dtype=dtype)
-                except (TypeError, ValueError):
-                    tensor = _tf.convert_to_tensor(ivy.nested_map(object_in, lambda x: _tf.cast(x, dtype)), dtype=dtype)
-                return _tf.cast(tensor, dtype)
 
-
-def is_array(x, exclusive=False):
-    if isinstance(x, Tensor):
-        if exclusive and isinstance(x, _tf.Variable):
-            return False
-        return True
-    return False
-
-
-copy_array = _tf.identity
 array_equal = _tf.experimental.numpy.array_equal
 
 
@@ -139,6 +80,7 @@ clip = _tf.clip_by_value
 round = _tf.round
 floormod = lambda x, y: x % y
 floor = _tf.floor
+
 
 
 # noinspection PyShadowingBuiltins

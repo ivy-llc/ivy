@@ -5,6 +5,7 @@ from typing import Union, Tuple, Optional
 from tensorflow.python.framework.dtypes import DType
 
 # local
+import ivy
 from ivy.functional.backends.tensorflow import Dtype
 from ivy import dev_from_str, default_device, dtype_from_str, default_dtype
 
@@ -57,3 +58,23 @@ def empty(shape: Union[int, Tuple[int]],
     dev = default_device(device)
     with tf.device(dev_from_str(dev)):
         return tf.experimental.numpy.empty(shape, dtype_from_str(default_dtype(dtype)))
+
+
+# Extra #
+# ------#
+
+# noinspection PyShadowingNames
+def array(object_in, dtype=None, dev=None):
+    dtype = dtype_from_str(default_dtype(dtype, object_in))
+    dev = default_device(dev)
+    with tf.device(dev_from_str(dev)):
+        try:
+            tensor = tf.convert_to_tensor(object_in, dtype=dtype)
+        except (TypeError, ValueError):
+            tensor = tf.convert_to_tensor(ivy.nested_map(object_in, lambda x: tf.cast(x, dtype)), dtype=dtype)
+        if dtype is None:
+            return tensor
+        return tf.cast(tensor, dtype)
+
+
+asarray = array

@@ -3,8 +3,6 @@ Collection of Jax general functions, wrapped to fit Ivy syntax and signature.
 """
 
 # global
-from typing import Optional
-
 import jax as _jax
 import math as _math
 import numpy as _onp
@@ -84,42 +82,13 @@ def _to_array(x):
 # API #
 # ----#
 
-# noinspection PyShadowingNames
-def array(object_in, dtype=None, dev=None):
-    return to_dev(_jnp.array(object_in, dtype=dtype_from_str(default_dtype(dtype, object_in))), default_device(dev))
 
 
-def asarray(object_in, dtype: Optional[str] = None, dev: Optional[str] = None, copy: Optional[bool] = None):
-    if is_array(object_in) and dtype is None:
-        dtype = object_in.dtype
-    elif isinstance(object_in, (list, tuple, dict)) and len(object_in) != 0 and dtype is None:
-        # Temporary fix on type
-        # Because default_type() didn't return correct type for normal python array
-        if copy is True:
-            return to_dev((_jnp.asarray(object_in).copy()), dev)
-        else:
-            return to_dev(_jnp.asarray(object_in), dev)
-    else:
-        dtype = default_dtype(dtype, object_in)
-    if copy is True:
-        return to_dev((_jnp.asarray(object_in, dtype=dtype).copy()), dev)
-    else:
-        return to_dev(_jnp.asarray(object_in, dtype=dtype), dev)
 
 
-# noinspection PyUnresolvedReferences,PyProtectedMember
-def is_array(x, exclusive=False):
-    if exclusive:
-        return isinstance(x, (_jax.interpreters.xla._DeviceArray,
-                              _jaxlib.xla_extension.DeviceArray, Buffer))
-    return isinstance(x, (_jax.interpreters.xla._DeviceArray,
-                          _jaxlib.xla_extension.DeviceArray, Buffer,
-                          _jax.interpreters.ad.JVPTracer,
-                          _jax.core.ShapedArray,
-                          _jax.interpreters.partial_eval.DynamicJaxprTracer))
 
 
-copy_array = _jnp.array
+
 array_equal = _jnp.array_equal
 
 

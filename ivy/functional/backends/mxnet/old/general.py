@@ -3,8 +3,6 @@ Collection of MXNet general functions, wrapped to fit Ivy syntax and signature.
 """
 
 # global
-from typing import Optional
-
 import ivy
 _round = round
 import logging
@@ -69,43 +67,9 @@ DTYPE_FROM_STR = {'int8': _np.int8,
 # API #
 # ----#
 
-def array(object_in, dtype=None, dev=None):
-    cont = _mxnet_init_context(default_device(dev))
-    return _mx.nd.array(object_in, cont, dtype=default_dtype(dtype, object_in))
 
 
-def asarray(object_in, dtype: Optional[str] = None, dev: Optional[str] = None, copy: Optional[bool] = None):
-    # mxnet don't have asarray implementation, haven't properly tested
-    cont = _mxnet_init_context(default_device(dev))
-    if copy is None:
-        copy = False
-    if copy:
-        if dtype is None and isinstance(object_in, _mx.nd.NDArray):
-            return _mx.nd.array(object_in, cont).as_in_context(cont)
-        if dtype is None and not isinstance(object_in, _mx.nd.NDArray):
-            return _mx.nd.array(object_in, cont, dtype=default_dtype(dtype, object_in))
-        else:
-            dtype = dtype_to_str(default_dtype(dtype, object_in))
-            return _mx.nd.array(object_in, cont, dtype=default_dtype(dtype, object_in))
-    else:
-        if dtype is None and isinstance(object_in, _mx.nd.NDArray):
-            return object_in.as_in_context(cont)
-        if dtype is None and not isinstance(object_in, _mx.nd.NDArray):
-            return _mx.nd.array(object_in, cont, dtype=default_dtype(dtype, object_in))
-        else:
-            dtype = dtype_to_str(default_dtype(dtype, object_in))
-            return _mx.nd.array(object_in, cont, dtype=default_dtype(dtype, object_in))
 
-
-def is_array(x, exclusive=False):
-    if isinstance(x, _mx.ndarray.ndarray.NDArray):
-        if exclusive and x.grad is not None:
-            return False
-        return True
-    return False
-
-
-copy_array = lambda x: x.copy()
 
 
 @_handle_flat_arrays_in_out

@@ -658,84 +658,6 @@ def test_container_reduce_sum(dev, call):
     assert np.allclose(ivy.to_numpy(container_reduced_sum.b.d), np.array([18.]))
 
 
-def test_container_reduce_prod(dev, call):
-    dict_in = {'a': ivy.array([1., 2., 3.], dev=dev),
-               'b': {'c': ivy.array([2., 4., 6.], dev=dev), 'd': ivy.array([3., 6., 9.], dev=dev)}}
-    container = Container(dict_in)
-    container_reduced_prod = container.reduce_prod()
-    assert np.allclose(ivy.to_numpy(container_reduced_prod['a']), np.array([6.]))
-    assert np.allclose(ivy.to_numpy(container_reduced_prod.a), np.array([6.]))
-    assert np.allclose(ivy.to_numpy(container_reduced_prod['b']['c']), np.array([48.]))
-    assert np.allclose(ivy.to_numpy(container_reduced_prod.b.c), np.array([48.]))
-    assert np.allclose(ivy.to_numpy(container_reduced_prod['b']['d']), np.array([162.]))
-    assert np.allclose(ivy.to_numpy(container_reduced_prod.b.d), np.array([162.]))
-
-
-def test_container_reduce_mean(dev, call):
-    dict_in = {'a': ivy.array([1., 2., 3.], dev=dev),
-               'b': {'c': ivy.array([2., 4., 6.], dev=dev), 'd': ivy.array([3., 6., 9.], dev=dev)}}
-    container = Container(dict_in)
-    container_reduced_mean = container.reduce_mean()
-    assert np.allclose(ivy.to_numpy(container_reduced_mean['a']), np.array([2.]))
-    assert np.allclose(ivy.to_numpy(container_reduced_mean.a), np.array([2.]))
-    assert np.allclose(ivy.to_numpy(container_reduced_mean['b']['c']), np.array([4.]))
-    assert np.allclose(ivy.to_numpy(container_reduced_mean.b.c), np.array([4.]))
-    assert np.allclose(ivy.to_numpy(container_reduced_mean['b']['d']), np.array([6.]))
-    assert np.allclose(ivy.to_numpy(container_reduced_mean.b.d), np.array([6.]))
-
-
-def test_container_reduce_var(dev, call):
-    dict_in = {'a': ivy.array([1., 2., 3.], dev=dev),
-               'b': {'c': ivy.array([2., 4., 6.], dev=dev), 'd': ivy.array([3., 6., 9.], dev=dev)}}
-    container = Container(dict_in)
-    container_reduced_var = container.reduce_var()
-    assert np.allclose(ivy.to_numpy(container_reduced_var['a']), np.array([2 / 3]))
-    assert np.allclose(ivy.to_numpy(container_reduced_var.a), np.array([2 / 3]))
-    assert np.allclose(ivy.to_numpy(container_reduced_var['b']['c']), np.array([8 / 3]))
-    assert np.allclose(ivy.to_numpy(container_reduced_var.b.c), np.array([8 / 3]))
-    assert np.allclose(ivy.to_numpy(container_reduced_var['b']['d']), np.array([6.]))
-    assert np.allclose(ivy.to_numpy(container_reduced_var.b.d), np.array([6.]))
-
-
-def test_container_reduce_std(dev, call):
-    dict_in = {'a': ivy.array([1., 2., 3.], dev=dev),
-               'b': {'c': ivy.array([2., 4., 6.], dev=dev), 'd': ivy.array([3., 6., 9.], dev=dev)}}
-    container = Container(dict_in)
-    container_reduced_std = container.reduce_std()
-    assert np.allclose(ivy.to_numpy(container_reduced_std['a']), np.array([2 / 3]) ** 0.5)
-    assert np.allclose(ivy.to_numpy(container_reduced_std.a), np.array([2 / 3]) ** 0.5)
-    assert np.allclose(ivy.to_numpy(container_reduced_std['b']['c']), np.array([8 / 3]) ** 0.5)
-    assert np.allclose(ivy.to_numpy(container_reduced_std.b.c), np.array([8 / 3]) ** 0.5)
-    assert np.allclose(ivy.to_numpy(container_reduced_std['b']['d']), np.array([6.]) ** 0.5)
-    assert np.allclose(ivy.to_numpy(container_reduced_std.b.d), np.array([6.]) ** 0.5)
-
-
-def test_container_reduce_min(dev, call):
-    dict_in = {'a': ivy.array([1., 2., 3.], dev=dev),
-               'b': {'c': ivy.array([2., 4., 6.], dev=dev), 'd': ivy.array([3., 6., 9.], dev=dev)}}
-    container = Container(dict_in)
-    container_reduced_min = container.reduce_min()
-    assert np.allclose(ivy.to_numpy(container_reduced_min['a']), np.array([1.]))
-    assert np.allclose(ivy.to_numpy(container_reduced_min.a), np.array([1.]))
-    assert np.allclose(ivy.to_numpy(container_reduced_min['b']['c']), np.array([2.]))
-    assert np.allclose(ivy.to_numpy(container_reduced_min.b.c), np.array([2.]))
-    assert np.allclose(ivy.to_numpy(container_reduced_min['b']['d']), np.array([3.]))
-    assert np.allclose(ivy.to_numpy(container_reduced_min.b.d), np.array([3.]))
-
-
-def test_container_reduce_max(dev, call):
-    dict_in = {'a': ivy.array([1., 2., 3.], dev=dev),
-               'b': {'c': ivy.array([2., 4., 6.], dev=dev), 'd': ivy.array([3., 6., 9.], dev=dev)}}
-    container = Container(dict_in)
-    container_reduced_max = container.reduce_max()
-    assert np.allclose(ivy.to_numpy(container_reduced_max['a']), np.array([3.]))
-    assert np.allclose(ivy.to_numpy(container_reduced_max.a), np.array([3.]))
-    assert np.allclose(ivy.to_numpy(container_reduced_max['b']['c']), np.array([6.]))
-    assert np.allclose(ivy.to_numpy(container_reduced_max.b.c), np.array([6.]))
-    assert np.allclose(ivy.to_numpy(container_reduced_max['b']['d']), np.array([9.]))
-    assert np.allclose(ivy.to_numpy(container_reduced_max.b.d), np.array([9.]))
-
-
 def test_container_minimum(dev, call):
     container = Container({'a': ivy.array([1., 2., 3.], dev=dev),
                            'b': {'c': ivy.array([2., 4., 6.], dev=dev),
@@ -2329,8 +2251,8 @@ def test_container_shuffle(dev, call):
     # without key_chains specification
     container_shuffled = container.shuffle(0)
     data = ivy.array([1, 2, 3], dev=dev)
-    ivy.functional.ivy.old.random.seed()
-    shuffled_data = ivy.to_numpy(ivy.functional.ivy.old.random.shuffle(data))
+    ivy.functional.ivy.random.seed()
+    shuffled_data = ivy.to_numpy(ivy.functional.ivy.random.shuffle(data))
     assert (ivy.to_numpy(container_shuffled['a']) == shuffled_data).all()
     assert (ivy.to_numpy(container_shuffled.a) == shuffled_data).all()
     assert (ivy.to_numpy(container_shuffled['b']['c']) == shuffled_data).all()
@@ -2341,8 +2263,8 @@ def test_container_shuffle(dev, call):
     # with key_chains to apply
     container_shuffled = container.shuffle(0, ['a', 'b/c'])
     data = ivy.array([1, 2, 3], dev=dev)
-    ivy.functional.ivy.old.random.seed()
-    shuffled_data = ivy.to_numpy(ivy.functional.ivy.old.random.shuffle(data))
+    ivy.functional.ivy.random.seed()
+    shuffled_data = ivy.to_numpy(ivy.functional.ivy.random.shuffle(data))
     assert (ivy.to_numpy(container_shuffled['a']) == shuffled_data).all()
     assert (ivy.to_numpy(container_shuffled.a) == shuffled_data).all()
     assert (ivy.to_numpy(container_shuffled['b']['c']) == shuffled_data).all()
@@ -2353,8 +2275,8 @@ def test_container_shuffle(dev, call):
     # with key_chains to apply pruned
     container_shuffled = container.shuffle(0, ['a', 'b/c'], prune_unapplied=True)
     data = ivy.array([1, 2, 3], dev=dev)
-    ivy.functional.ivy.old.random.seed()
-    shuffled_data = ivy.to_numpy(ivy.functional.ivy.old.random.shuffle(data))
+    ivy.functional.ivy.random.seed()
+    shuffled_data = ivy.to_numpy(ivy.functional.ivy.random.shuffle(data))
     assert (ivy.to_numpy(container_shuffled['a']) == shuffled_data).all()
     assert (ivy.to_numpy(container_shuffled.a) == shuffled_data).all()
     assert (ivy.to_numpy(container_shuffled['b']['c']) == shuffled_data).all()
@@ -2364,8 +2286,8 @@ def test_container_shuffle(dev, call):
     # with key_chains to not apply pruned
     container_shuffled = container.shuffle(0, Container({'a': None, 'b': {'d': None}}), to_apply=False)
     data = ivy.array([1, 2, 3], dev=dev)
-    ivy.functional.ivy.old.random.seed()
-    shuffled_data = ivy.to_numpy(ivy.functional.ivy.old.random.shuffle(data))
+    ivy.functional.ivy.random.seed()
+    shuffled_data = ivy.to_numpy(ivy.functional.ivy.random.shuffle(data))
     assert (ivy.to_numpy(container_shuffled['a']) == ivy.to_numpy(data)).all()
     assert (ivy.to_numpy(container_shuffled.a) == ivy.to_numpy(data)).all()
     assert (ivy.to_numpy(container_shuffled['b']['c']) == shuffled_data).all()
@@ -2377,8 +2299,8 @@ def test_container_shuffle(dev, call):
     container_shuffled = container.shuffle(0, Container({'a': None, 'b': {'d': None}}), to_apply=False,
                                            prune_unapplied=True)
     data = ivy.array([1, 2, 3], dev=dev)
-    ivy.functional.ivy.old.random.seed()
-    shuffled_data = ivy.to_numpy(ivy.functional.ivy.old.random.shuffle(data))
+    ivy.functional.ivy.random.seed()
+    shuffled_data = ivy.to_numpy(ivy.functional.ivy.random.shuffle(data))
     assert 'a' not in container_shuffled
     assert (ivy.to_numpy(container_shuffled['b']['c']) == shuffled_data).all()
     assert (ivy.to_numpy(container_shuffled.b.c) == shuffled_data).all()
@@ -2390,8 +2312,8 @@ def test_container_shuffle(dev, call):
     container = Container(dict_in)
     container_shuffled = container.shuffle(0, map_sequences=True)
     data = ivy.array([1, 2, 3], dev=dev)
-    ivy.functional.ivy.old.random.seed()
-    shuffled_data = ivy.to_numpy(ivy.functional.ivy.old.random.shuffle(data))
+    ivy.functional.ivy.random.seed()
+    shuffled_data = ivy.to_numpy(ivy.functional.ivy.random.shuffle(data))
     assert (ivy.to_numpy(container_shuffled['a']) == shuffled_data).all()
     assert (ivy.to_numpy(container_shuffled.a) == shuffled_data).all()
     assert (ivy.to_numpy(container_shuffled['b'][0]) == shuffled_data).all()
