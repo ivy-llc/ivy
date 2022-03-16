@@ -24,7 +24,6 @@ def ones(shape: Union[int, Tuple[int]],
     return torch.ones(shape, dtype=dtype_val, device=dev_from_str(dev))
 
 
-# noinspection DuplicatedCode
 def full_like(x: torch.Tensor, /,
               fill_value: Union[int, float],
               dtype: Optional[Union[torch.dtype, str]] = None,
@@ -74,7 +73,7 @@ def ones_like(x : torch.Tensor,
 
 def tril(x: torch.Tensor,
          k: int = 0) \
-        -> torch.Tensor:
+         -> torch.Tensor:
     return torch.tril(x, diagonal=k)
 
 

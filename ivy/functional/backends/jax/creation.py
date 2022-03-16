@@ -26,7 +26,6 @@ def zeros(shape: Union[int, Tuple[int], List[int]],
     return to_dev(jnp.zeros(shape, dtype_from_str(default_dtype(dtype))), default_device(device))
 
 
-# noinspection SpellCheckingInspection
 def full_like(x: JaxArray,
               fill_value: Union[int, float],
               dtype: Optional[jnp.dtype] = None,
@@ -55,7 +54,7 @@ def ones_like(x : JaxArray,
 
 def tril(x: JaxArray,
          k: int = 0) \
-        -> JaxArray:
+         -> JaxArray:
     return jnp.tril(x, k)
 
   
