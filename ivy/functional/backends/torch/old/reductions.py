@@ -42,33 +42,5 @@ def reduce_var(x, axis: Optional[List[int]] = None, keepdims: bool = False):
     return _torch.var(x, dim=axis, unbiased=False, keepdim=keepdims)
 
 
-def reduce_min(x, axis: Optional[List[int]] = None, keepdims: bool = False):
-    if axis is None:
-        num_dims = len(x.shape)
-        axis = list(range(num_dims))
-    if isinstance(axis, int):
-        return _torch.min(x, dim=axis, keepdim=keepdims).values
-    dims = len(x.shape)
-    axis = [i%dims for i in axis]
-    axis.sort()
-    for i, a in enumerate(axis):
-        x = _torch.min(x, dim=a if keepdims else a - i, keepdim=keepdims).values
-    return x
-
-
-def reduce_max(x, axis: Optional[List[int]] = None, keepdims: bool = False):
-    if axis is None:
-        num_dims = len(x.shape)
-        axis = list(range(num_dims))
-    if isinstance(axis, int):
-        return _torch.max(x, dim=axis, keepdim=keepdims).values
-    dims = len(x.shape)
-    axis = [i%dims for i in axis]
-    axis.sort()
-    for i, a in enumerate(axis):
-        x = _torch.max(x, dim=a if keepdims else a - i, keepdim=keepdims).values
-    return x
-
-
 def einsum(equation, *operands):
     return _torch.einsum(equation, *operands)

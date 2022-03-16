@@ -4,6 +4,9 @@ import tensorflow as tf
 from typing import Tuple, Union
 
 
+# Array API Standard #
+# -------------------#
+
 def min(x: tf.Tensor,
         axis: Union[int, Tuple[int]] = None,
         keepdims: bool = False) \
@@ -15,3 +18,7 @@ def max(x: tf.Tensor,
         keepdims: bool = False) \
         -> tf.Tensor:
     return tf.math.reduce_max(x, axis = axis, keepdims = keepdims)
+
+    
+# Extra #
+# ------#
