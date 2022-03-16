@@ -658,6 +658,44 @@ def test_container_reduce_sum(dev, call):
     assert np.allclose(ivy.to_numpy(container_reduced_sum.b.d), np.array([18.]))
 
 
+def test_container_reduce_prod(dev, call):
+    dict_in = {'a': ivy.array([1., 2., 3.], dev=dev),
+               'b': {'c': ivy.array([2., 4., 6.], dev=dev), 'd': ivy.array([3., 6., 9.], dev=dev)}}
+    container = Container(dict_in)
+    container_reduced_prod = container.reduce_prod()
+    assert np.allclose(ivy.to_numpy(container_reduced_prod['a']), np.array([6.]))
+    assert np.allclose(ivy.to_numpy(container_reduced_prod.a), np.array([6.]))
+    assert np.allclose(ivy.to_numpy(container_reduced_prod['b']['c']), np.array([48.]))
+    assert np.allclose(ivy.to_numpy(container_reduced_prod.b.c), np.array([48.]))
+    assert np.allclose(ivy.to_numpy(container_reduced_prod['b']['d']), np.array([162.]))
+    assert np.allclose(ivy.to_numpy(container_reduced_prod.b.d), np.array([162.]))
+
+
+def test_container_reduce_mean(dev, call):
+    dict_in = {'a': ivy.array([1., 2., 3.], dev=dev),
+               'b': {'c': ivy.array([2., 4., 6.], dev=dev), 'd': ivy.array([3., 6., 9.], dev=dev)}}
+    container = Container(dict_in)
+    container_reduced_mean = container.reduce_mean()
+    assert np.allclose(ivy.to_numpy(container_reduced_mean['a']), np.array([2.]))
+    assert np.allclose(ivy.to_numpy(container_reduced_mean.a), np.array([2.]))
+    assert np.allclose(ivy.to_numpy(container_reduced_mean['b']['c']), np.array([4.]))
+    assert np.allclose(ivy.to_numpy(container_reduced_mean.b.c), np.array([4.]))
+    assert np.allclose(ivy.to_numpy(container_reduced_mean['b']['d']), np.array([6.]))
+    assert np.allclose(ivy.to_numpy(container_reduced_mean.b.d), np.array([6.]))
+
+
+def test_container_reduce_var(dev, call):
+    dict_in = {'a': ivy.array([1., 2., 3.], dev=dev),
+               'b': {'c': ivy.array([2., 4., 6.], dev=dev), 'd': ivy.array([3., 6., 9.], dev=dev)}}
+    container = Container(dict_in)
+    container_reduced_var = container.reduce_var()
+    assert np.allclose(ivy.to_numpy(container_reduced_var['a']), np.array([2 / 3]))
+    assert np.allclose(ivy.to_numpy(container_reduced_var.a), np.array([2 / 3]))
+    assert np.allclose(ivy.to_numpy(container_reduced_var['b']['c']), np.array([8 / 3]))
+    assert np.allclose(ivy.to_numpy(container_reduced_var.b.c), np.array([8 / 3]))
+    assert np.allclose(ivy.to_numpy(container_reduced_var['b']['d']), np.array([6.]))
+    assert np.allclose(ivy.to_numpy(container_reduced_var.b.d), np.array([6.]))
+
 
 def test_container_reduce_std(dev, call):
     dict_in = {'a': ivy.array([1., 2., 3.], dev=dev),
