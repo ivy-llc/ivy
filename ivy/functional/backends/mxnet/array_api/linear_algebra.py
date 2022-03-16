@@ -30,7 +30,7 @@ def svd(x:mx.ndarray.ndarray.NDArray,full_matrices: bool = True) -> Union[mx.nda
 def outer(x1: mx.nd.NDArray,
           x2: mx.nd.NDArray)\
         -> mx.nd.NDArray:
-    return mx.outer(x1,x2)
+    return mx.outer (x1,x2)
 
 def diagonal(x: mx.nd.NDArray,
              offset: int = 0,
