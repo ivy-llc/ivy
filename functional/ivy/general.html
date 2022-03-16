@@ -208,6 +208,42 @@
   <div class="section" id="module-ivy.functional.ivy.general">
 <span id="general"></span><h1>General<a class="headerlink" href="#module-ivy.functional.ivy.general" title="Permalink to this headline">¶</a></h1>
 <p>Collection of general Ivy functions.</p>
+<dl class="py function">
+<dt id="ivy.functional.ivy.general.copy_array">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">copy_array</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/general.html#copy_array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.general.copy_array" title="Permalink to this definition">¶</a></dt>
+<dd><p>Copy an array.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>x</strong> (<em>array</em>) – The array to copy</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A copy of the input array.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.general.get_referrers_recursive">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">get_referrers_recursive</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">item</span></em>, <em class="sig-param"><span class="n">depth</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">max_depth</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">seen_set</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">local_set</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/general.html#get_referrers_recursive"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.general.get_referrers_recursive" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.general.is_array">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">is_array</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Any</span></em>, <em class="sig-param"><span class="n">exclusive</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span> &#x2192; bool<a class="reference internal" href="../../_modules/ivy/functional/ivy/general.html#is_array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.general.is_array" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determines whether the input x is an Ivy Array.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>any</em>) – The input to check</p></li>
+<li><p><strong>exclusive</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to check if the data type is exclusively an array, rather than a variable or traced array.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Boolean, whether or not x is an array.</p>
+</dd>
+</dl>
+</dd></dl>
+
 <div class="toctree-wrapper compound">
 <p class="caption"><span class="caption-text">General</span></p>
 <ul>

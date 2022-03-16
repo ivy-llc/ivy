@@ -1,0 +1,308 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>ivy.functional.ivy.general &mdash; Ivy 1.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../../" src="../../../../_static/documentation_options.js"></script>
+        <script src="../../../../_static/jquery.js"></script>
+        <script src="../../../../_static/underscore.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="../../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/css/custom.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../../index.html" class="icon icon-home"> Ivy
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../why_ivy.html">Why Ivy?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../using_ivy.html">Using Ivy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../training_a_network.html">Training a Network</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../contributing.html">Contributing to Ivy</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Functional</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/compilation.html">Compilation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/constants.html">Constants</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/creation.html">Creation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/data_type.html">Data type</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/device.html">Device</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/elementwise.html">Elementwise</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/general.html">General</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/gradients.html">Gradients</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/image.html">Image</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/linear_algebra.html">Linear algebra</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/losses.html">Losses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/manipulation.html">Manipulation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/meta.html">Meta</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/nest.html">Nest</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/searching.html">Searching</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/set.html">Set</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/sorting.html">Sorting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/statistical.html">Statistical</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/utility.html">Utility</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Stateful</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/converters.html">Converters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/initializers.html">Initializers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/module.html">Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/optimizers.html">Optimizers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/sequential.html">Sequential</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Docs</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../ivy"">Ivy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../mech"">Ivy mech</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../vision"">Ivy vision</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../robot"">Ivy robot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../gym"">Ivy gym</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../memory"">Ivy memory</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../builder"">Ivy builder</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../models"">Ivy models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../ecosystem"">Ivy ecosystem</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">Ivy</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../../index.html">Module code</a> &raquo;</li>
+        
+      <li>ivy.functional.ivy.general</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for ivy.functional.ivy.general</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Collection of general Ivy functions.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1"># global</span>
+<span class="kn">import</span> <span class="nn">gc</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Optional</span>
+
+<span class="c1">#local</span>
+<span class="kn">import</span> <span class="nn">ivy</span>
+<span class="kn">from</span> <span class="nn">ivy.framework_handler</span> <span class="kn">import</span> <span class="n">current_framework</span> <span class="k">as</span> <span class="n">_cur_framework</span>
+
+<div class="viewcode-block" id="get_referrers_recursive"><a class="viewcode-back" href="../../../../functional/ivy/general/get_referrers_recursive.html#ivy.functional.ivy.general.get_referrers_recursive">[docs]</a><span class="k">def</span> <span class="nf">get_referrers_recursive</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">depth</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">max_depth</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">seen_set</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">local_set</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="n">seen_set</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">default</span><span class="p">(</span><span class="n">seen_set</span><span class="p">,</span> <span class="nb">set</span><span class="p">())</span>
+    <span class="n">local_set</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">default</span><span class="p">(</span><span class="n">local_set</span><span class="p">,</span> <span class="nb">set</span><span class="p">())</span>
+    <span class="n">ret_cont</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span>
+        <span class="nb">repr</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">item</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">),</span> <span class="n">alphabetical_keys</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">keyword_color_dict</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;repr&#39;</span><span class="p">:</span> <span class="s1">&#39;magenta&#39;</span><span class="p">})</span>
+    <span class="n">referrers</span> <span class="o">=</span> <span class="p">[</span><span class="n">ref</span> <span class="k">for</span> <span class="n">ref</span> <span class="ow">in</span> <span class="n">gc</span><span class="o">.</span><span class="n">get_referrers</span><span class="p">(</span><span class="n">item</span><span class="p">)</span> <span class="k">if</span>
+                 <span class="ow">not</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">ref</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span> <span class="ow">and</span>
+                      <span class="nb">min</span><span class="p">([</span><span class="n">k</span> <span class="ow">in</span> <span class="n">ref</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;depth&#39;</span><span class="p">,</span> <span class="s1">&#39;max_depth&#39;</span><span class="p">,</span> <span class="s1">&#39;seen_set&#39;</span><span class="p">,</span> <span class="s1">&#39;local_set&#39;</span><span class="p">]]))]</span>
+    <span class="n">local_set</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="nb">id</span><span class="p">(</span><span class="n">referrers</span><span class="p">)))</span>
+    <span class="k">for</span> <span class="n">ref</span> <span class="ow">in</span> <span class="n">referrers</span><span class="p">:</span>
+        <span class="n">ref_id</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="nb">id</span><span class="p">(</span><span class="n">ref</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">ref_id</span> <span class="ow">in</span> <span class="n">local_set</span> <span class="ow">or</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">ref</span><span class="p">,</span> <span class="s1">&#39;cell_contents&#39;</span><span class="p">):</span>
+            <span class="k">continue</span>
+        <span class="n">seen</span> <span class="o">=</span> <span class="n">ref_id</span> <span class="ow">in</span> <span class="n">seen_set</span>
+        <span class="n">seen_set</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">ref_id</span><span class="p">)</span>
+        <span class="n">refs_rec</span> <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="n">get_referrers_recursive</span><span class="p">(</span><span class="n">ref</span><span class="p">,</span> <span class="n">depth</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">max_depth</span><span class="p">,</span> <span class="n">seen_set</span><span class="p">,</span> <span class="n">local_set</span><span class="p">)</span>
+        <span class="n">this_repr</span> <span class="o">=</span> <span class="s1">&#39;tracked&#39;</span> <span class="k">if</span> <span class="n">seen</span> <span class="k">else</span> <span class="nb">str</span><span class="p">(</span><span class="n">ref</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">seen</span> <span class="ow">and</span> <span class="p">(</span><span class="ow">not</span> <span class="n">max_depth</span> <span class="ow">or</span> <span class="n">depth</span> <span class="o">&lt;</span> <span class="n">max_depth</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span>
+                <span class="nb">repr</span><span class="o">=</span><span class="n">this_repr</span><span class="p">,</span> <span class="n">alphabetical_keys</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">keyword_color_dict</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;repr&#39;</span><span class="p">:</span> <span class="s1">&#39;magenta&#39;</span><span class="p">})</span>
+            <span class="n">refs</span> <span class="o">=</span> <span class="n">refs_rec</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">refs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">val</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="n">this_repr</span>
+        <span class="n">ret_cont</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">ref_id</span><span class="p">)]</span> <span class="o">=</span> <span class="n">val</span>
+    <span class="k">return</span> <span class="n">ret_cont</span></div>
+
+
+<div class="viewcode-block" id="is_array"><a class="viewcode-back" href="../../../../functional/ivy/general/is_array.html#ivy.functional.ivy.general.is_array">[docs]</a><span class="k">def</span> <span class="nf">is_array</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">exclusive</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>\
+        <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Determines whether the input x is an Ivy Array.</span>
+
+<span class="sd">    :param x: The input to check</span>
+<span class="sd">    :type x: any</span>
+<span class="sd">    :param exclusive: Whether to check if the data type is exclusively an array, rather than a variable or traced array.</span>
+<span class="sd">    :type exclusive: bool, optional</span>
+<span class="sd">    :return: Boolean, whether or not x is an array.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">is_array</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">exclusive</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span></div>
+
+
+<span class="c1"># noinspection PyShadowingNames</span>
+<div class="viewcode-block" id="copy_array"><a class="viewcode-back" href="../../../../functional/ivy/general/copy_array.html#ivy.functional.ivy.general.copy_array">[docs]</a><span class="k">def</span> <span class="nf">copy_array</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">])</span>\
+        <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Copy an array.</span>
+
+<span class="sd">    :param x: The array to copy</span>
+<span class="sd">    :type x: array</span>
+<span class="sd">    :return: A copy of the input array.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">copy_array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Ivy Team
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
