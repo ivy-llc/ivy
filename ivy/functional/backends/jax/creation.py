@@ -55,3 +55,15 @@ def empty(shape: Union[int, Tuple[int], List[int]],
           device: Optional[jaxlib.xla_extension.Device] = None) \
         -> JaxArray:
     return to_dev(jnp.empty(shape, dtype_from_str(default_dtype(dtype))), default_device(device))
+
+def empty_like(x : JaxArray,
+              dtype: Optional[Union[jnp.dtype, str]]=None,
+              dev: Optional[Union[Device, str]] = None)\
+        -> DeviceArray:
+
+    if dtype and str:
+        dtype = jnp.dtype(dtype)
+    else:
+        dtype = x.dtype
+
+    return to_dev(jnp.empty_like(x, dtype=dtype), default_device(dev))

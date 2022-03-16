@@ -98,23 +98,6 @@ def tril(x: Union[ivy.Array, ivy.NativeArray],
     """
     return _cur_framework(x).tril(x, k)
 
-<<<<<<< HEAD:ivy/functional/ivy/array_api/creation_functions.py
-def empty_like(x: Union[ivy.Array, ivy.NativeArray], dtype: ivy.Dtype = None, dev: ivy.Device = None,
-               ) -> Union[ivy.Array, ivy.NativeArray]:
-    """
-    Returns an uninitialized array with the same shape as an input array x.
-
-    :param x:  input array from which to derive the output array shape.
-    :type x: array
-    :param dtype: output array data type. If dtype is None, the output array data type must be inferred from x. Default: None.
-    :type dtype: data-type string, optional
-    :param dev: device on which to place the created array. If device is None, the output array device must be inferred from x. Default: None.
-    :type dev: ivy.Device, optional
-    :return: an array having the same shape as x and containing uninitialized data.
-    """
-    return _cur_framework(x).empty_like(x, dtype, dev)
-=======
-
 def triu(x: Union[ivy.Array, ivy.NativeArray],
          k: int = 0) \
          -> ivy.Array:
@@ -153,7 +136,18 @@ def empty(shape: Union[int, Tuple[int],List[int]],
     """
     return _cur_framework().empty(shape, dtype, device)
 
+def empty_like(x: Union[ivy.Array, ivy.NativeArray], dtype: ivy.Dtype = None, dev: ivy.Device = None,
+               ) -> Union[ivy.Array, ivy.NativeArray]:
+    """
+    Returns an uninitialized array with the same shape as an input array x.
 
-# Extra #
-# ------#
->>>>>>> upstream/master:ivy/functional/ivy/creation.py
+    :param x:  input array from which to derive the output array shape.
+    :type x: array
+    :param dtype: output array data type. If dtype is None, the output array data type must be inferred from x. Default: None.
+    :type dtype: data-type string, optional
+    :param dev: device on which to place the created array. If device is None, the output array device must be inferred from x. Default: None.
+    :type dev: ivy.Device, optional
+    :return: an array having the same shape as x and containing uninitialized data.
+    """
+    return _cur_framework(x).empty_like(x, dtype, dev)
+

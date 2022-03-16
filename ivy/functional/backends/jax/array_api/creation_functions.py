@@ -6,8 +6,9 @@ from typing import Union, Optional, Tuple, List
 # local
 from ivy import dtype_from_str
 from ivy.functional.backends.jax import JaxArray
-from ivy.functional.backends.jax.core.device import to_dev
-from ivy.functional.ivy.core import default_device, default_dtype
+from ivy.functional.backends.jax.device import to_dev
+from ivy.functional.ivy.device import default_device
+from ivy.functional.ivy.old import default_dtype
 from jaxlib.xla_extension import Device, DeviceArray
 
 
@@ -40,4 +41,6 @@ def empty_like(x : JaxArray,
         dtype = jnp.dtype(dtype)
     else:
         dtype = x.dtype
+
     return to_dev(jnp.empty_like(x, dtype=dtype), default_device(dev))
+

@@ -5,7 +5,7 @@ from typing import Union, Tuple, Optional, Dict
 
 # local
 from ivy import dtype_from_str, default_dtype, dev_from_str, default_device
-from ivy.functional.backends.torch.core.device import _callable_dev
+from ivy.functional.backends.torch.device import _callable_dev
 
 def zeros(shape: Union[int, Tuple[int]],
           dtype: Optional[torch.dtype] = None,
@@ -28,7 +28,7 @@ def tril(x: torch.Tensor,
          -> torch.Tensor:
     return torch.tril(x, diagonal=k)
 
-
+# noinspection DuplicatedCode
 def empty_like(x : torch.Tensor,
               dtype: Optional[Union[torch.dtype, str]] = None,
               dev: Optional[Union[torch.device, str]] = None) \
@@ -50,4 +50,6 @@ def empty_like(x : torch.Tensor,
     else:
         return torch.empty_like(x, dtype= dtype, device=dev_from_str(dev))
 
+
     return torch.empty_like(x, device=dev_from_str(dev))
+

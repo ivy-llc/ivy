@@ -42,7 +42,18 @@ def tril(x: np.ndarray,
          -> np.ndarray:
     return np.tril(x, k)
 
-<<<<<<< HEAD:ivy/functional/backends/numpy/array_api/creation_functions.py
+def triu(x: np.ndarray,
+         k: int = 0) \
+         -> np.ndarray:
+    return np.triu(x, k)
+    
+
+def empty(shape: Union[int, Tuple[int], List[int]],
+          dtype: Optional[np.dtype] = None,
+          device: Optional[str] = None) \
+        -> np.ndarray:
+    return _to_dev(np.empty(shape, dtype_from_str(default_dtype(dtype))), device)
+
 def empty_like(x : np.ndarray,
               dtype : Optional[Union[np.dtype, str]] = None,
               dev : Optional[str] = None) \
@@ -55,17 +66,3 @@ def empty_like(x : np.ndarray,
         dtype = x.dtype
 
     return _to_dev(np.empty_like(x, dtype=dtype), dev)
-=======
-
-def triu(x: np.ndarray,
-         k: int = 0) \
-         -> np.ndarray:
-    return np.triu(x, k)
-    
-
-def empty(shape: Union[int, Tuple[int], List[int]],
-          dtype: Optional[np.dtype] = None,
-          device: Optional[str] = None) \
-        -> np.ndarray:
-    return _to_dev(np.empty(shape, dtype_from_str(default_dtype(dtype))), device)
->>>>>>> upstream/master:ivy/functional/backends/numpy/creation.py
