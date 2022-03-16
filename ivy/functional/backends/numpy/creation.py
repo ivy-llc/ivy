@@ -42,6 +42,7 @@ def tril(x: np.ndarray,
          -> np.ndarray:
     return np.tril(x, k)
 
+
 def triu(x: np.ndarray,
          k: int = 0) \
          -> np.ndarray:
@@ -54,7 +55,8 @@ def empty(shape: Union[int, Tuple[int], List[int]],
         -> np.ndarray:
     return _to_dev(np.empty(shape, dtype_from_str(default_dtype(dtype))), device)
 
-def empty_like(x : np.ndarray,
+
+def empty_like(x: np.ndarray,
               dtype : Optional[Union[np.dtype, str]] = None,
               dev : Optional[str] = None) \
         -> np.ndarray:
