@@ -134,11 +134,6 @@ def floormod(x, y):
     return x % y
 
 
-@_handle_flat_arrays_in_out
-# def floor(x):
-#     return _mx.nd.floor(x)
-
-
 # noinspection PyShadowingBuiltins
 @_handle_flat_arrays_in_out
 def abs(x):
