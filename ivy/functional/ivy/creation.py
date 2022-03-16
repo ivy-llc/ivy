@@ -140,3 +140,24 @@ def empty(shape: Union[int, Tuple[int],List[int]],
 
 # Extra #
 # ------#
+# noinspection PyShadowingNames
+def array(object_in: Union[List, ivy.Array, ivy.NativeArray], dtype: Union[ivy.Dtype, str] = None,
+          dev: ivy.Device = None) -> Union[ivy.Array, ivy.NativeArray]:
+    """
+    Creates an array.
+
+    :param object_in: An array_like object, which exposes the array interface,
+            an object whose __array__ method returns an array, or any (nested) sequence.
+    :type object_in: array
+    :param dtype: The desired data-type for the array in string format, i.e. 'float32' or 'int64'.
+        If not given, then the type will be determined as the minimum type required to hold the objects in the
+        sequence.
+    :type dtype: data-type string, optional
+    :param dev: device string on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc..
+    :type dev: ivy.Device
+    :return: An array object satisfying the specified requirements, in the form of the selected framework.
+    """
+    return _cur_framework(object_in).array(object_in, dtype, dev)
+
+
+asarray = array
