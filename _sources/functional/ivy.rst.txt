@@ -22,6 +22,7 @@
    ivy/meta.rst
    ivy/nest.rst
    ivy/norms.rst
+   ivy/random.rst
    ivy/searching.rst
    ivy/set.rst
    ivy/sorting.rst
