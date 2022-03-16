@@ -119,10 +119,6 @@ def floormod(x, y):
     return x % y
 
 
-# def floor(x):
-#     return _torch.floor(x)
-
-
 # noinspection PyShadowingBuiltins
 def abs(x):
     return _torch.abs(x)
