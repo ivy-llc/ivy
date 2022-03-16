@@ -23,6 +23,12 @@ def isfinite(x: mx.ndarray.ndarray.NDArray)\
     return mx.nd.contrib.isfinite(x.astype('float32')).astype('bool')
 
 
+@_handle_flat_arrays_in_out
+def isinf(x: mx.ndarray.ndarray.NDArray)\
+        -> mx.ndarray.ndarray.NDArray:
+    return mx.nd.contrib.isinf(x.astype('float32')).astype('bool')
+
+
 def sqrt(x: mx.ndarray.ndarray.NDArray)\
         -> mx.ndarray.ndarray.NDArray:
     if isinstance(x, float):

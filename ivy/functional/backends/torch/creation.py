@@ -5,7 +5,7 @@ from typing import Union, Tuple, Optional, Dict
 
 # local
 from ivy import dtype_from_str, default_dtype, dev_from_str, default_device
-from ivy.functional.backends.torch.old.device import _callable_dev
+from ivy.functional.backends.torch.device import _callable_dev
 
 
 def zeros(shape: Union[int, Tuple[int]],

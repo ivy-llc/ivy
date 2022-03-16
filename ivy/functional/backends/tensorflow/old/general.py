@@ -14,12 +14,11 @@ from numbers import Number
 import tensorflow_probability as _tfp
 import multiprocessing as _multiprocessing
 from tensorflow.python.types.core import Tensor
-from typing import Tuple, Union
-import typing as _typing
 
 # local
-from ivy.functional.ivy.old import default_device, default_dtype
-from ivy.functional.backends.tensorflow.old.device import _dev_callable, dev_from_str
+from ivy.functional.ivy.old import default_dtype
+from ivy.functional.ivy.device import default_device
+from ivy.functional.backends.tensorflow.device import _dev_callable, dev_from_str
 
 DTYPE_TO_STR = {_tf.int8: 'int8',
                 _tf.int16: 'int16',
@@ -262,11 +261,6 @@ where = lambda condition, x1, x2: _tf.where(_tf.cast(condition, _tf.bool), x1, x
 indices_where = _tf.where
 
 
-def isinf(x):
-    if ivy.is_int_dtype(x):
-        return _tf.zeros_like(x, _tf.bool)
-    return _tf.math.is_inf(x)
-
 reshape = lambda x, newshape: _tf.reshape(x, (newshape,) if isinstance(newshape, int) else newshape)
 broadcast_to = _tf.broadcast_to
 
@@ -277,8 +271,6 @@ def squeeze(x, axis=None):
             return x
         raise Exception('tried to squeeze a zero-dimensional input by axis {}'.format(axis))
     return _tf.squeeze(x, axis)
-
-
 
 
 # noinspection PyShadowingNames

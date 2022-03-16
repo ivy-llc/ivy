@@ -17,8 +17,9 @@ from functools import reduce as _reduce
 import multiprocessing as _multiprocessing
 
 # local
-from ivy.functional.ivy.old import default_device, default_dtype
-from ivy.functional.backends.mxnet.old.device import _callable_dev
+from ivy.functional.ivy.old import default_dtype
+from ivy.functional.ivy.device import default_device
+from ivy.functional.backends.mxnet.device import _callable_dev
 from ivy.functional.backends.mxnet import _handle_flat_arrays_in_out, _mxnet_init_context,\
     _scalar_or_flat_array_to_scalar, _handle_flat_arrays_in
 
@@ -348,11 +349,6 @@ def indices_where(x):
         return res
     res = _mx.nd.swapaxes(_mx.nd.unravel_index(flat_indices, x_shape), 0, 1)
     return res
-
-
-@_handle_flat_arrays_in_out
-def isinf(x):
-    return _mx.nd.contrib.isinf(x).astype('bool')
 
 
 reshape = lambda x, new_shape: x.reshape(new_shape)

@@ -10,13 +10,14 @@ import math as _math
 import torch as _torch
 from operator import mul
 from torch.types import Number
-from functools import partial as _partial, reduce as _reduce
-from typing import List, Dict, Optional, Tuple, Union
+from functools import reduce as _reduce
+from typing import List, Dict, Optional, Union
 
 
 # local
-from ivy.functional.ivy.old import default_device, default_dtype
-from ivy.functional.backends.torch.old.device import dev_from_str, _callable_dev
+from ivy.functional.ivy.old import default_dtype
+from ivy.functional.ivy.device import default_device
+from ivy.functional.backends.torch.device import dev_from_str, _callable_dev
 
 # API #
 # ----#
@@ -345,9 +346,6 @@ def indices_where(x):
     res = _torch.cat([_torch.unsqueeze(item, -1) for item in where_x], -1)
     return res
 
-
-def isinf(x):
-    return _torch.isinf(x)
 
 def reshape(x, newshape: List[int]):
     if isinstance(newshape, int):

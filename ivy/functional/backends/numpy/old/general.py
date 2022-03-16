@@ -9,12 +9,11 @@ import math as _math
 from operator import mul as _mul
 from functools import reduce as _reduce
 import multiprocessing as _multiprocessing
-from typing import Tuple, Union
 
 # local
 import ivy
 from ivy.functional.ivy.old import default_dtype
-from ivy.functional.backends.numpy.old.device import _dev_callable
+from ivy.functional.backends.numpy.device import _dev_callable
 
 
 DTYPE_TO_STR = {_np.dtype('int8'): 'int8',
@@ -238,9 +237,6 @@ def indices_where(x):
         return _np.expand_dims(where_x[0], -1)
     res = _np.concatenate([_np.expand_dims(item, -1) for item in where_x], -1)
     return res
-
-
-isinf = _np.isinf
 
 
 reshape = _np.reshape

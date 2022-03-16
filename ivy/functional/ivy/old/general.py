@@ -13,7 +13,7 @@ from typing import Callable, Any, Union, List, Tuple, Dict, Iterable, Optional
 
 # local
 import ivy
-from ivy.functional.ivy.old.device import dev
+from ivy.functional.ivy.device import dev
 from ivy.framework_handler import current_framework as _cur_framework
 
 FN_CACHE = dict()
@@ -735,19 +735,6 @@ def indices_where(x: Union[ivy.Array, ivy.NativeArray])\
     :return: Indices for where the boolean array is True.
     """
     return _cur_framework(x).indices_where(x)
-
-
-def isinf(x: Union[ivy.Array, ivy.NativeArray])\
-        -> Union[ivy.Array, ivy.NativeArray]:
-    """
-    Returns boolean map at locations where the input is +/- infinity (inf).
-
-    :param x: Input array.
-    :type x: array
-    :return: Boolean values for where the values of the array are inf.
-    """
-    return _cur_framework(x).isinf(x)
- 
 
 
 def value_is_nan(x: Union[ivy.Array, ivy.NativeArray, Number], include_infs: bool = True)\
