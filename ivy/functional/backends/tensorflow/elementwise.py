@@ -7,6 +7,11 @@ import typing
 import ivy
 
 
+def bitwise_invert(x: Tensor) \
+        -> Tensor:
+    return tf.bitwise.invert(x)
+
+
 def bitwise_and(x1: Tensor,
                 x2: Tensor)\
         -> Tensor:

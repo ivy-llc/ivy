@@ -7,6 +7,9 @@ import typing
 # local
 import ivy
 
+def bitwise_invert(x: torch.Tensor) \
+        -> torch.Tensor:
+    return torch.bitwise_not(x)
 
 def isfinite(x: Tensor)\
         -> Tensor:
