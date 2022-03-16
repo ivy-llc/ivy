@@ -44,17 +44,10 @@ def tril(x: mx.ndarray.ndarray.NDArray,
          -> mx.ndarray.ndarray.NDArray:
     return mx.np.tril(x, k)
 
-<<<<<<< HEAD:ivy/functional/backends/mxnet/creation.py
-<<<<<<< HEAD:ivy/functional/backends/mxnet/array_api/creation_functions.py
-=======
-
 def empty(shape: Union[int, Tuple[int]],
           dtype: Optional[type] = None,
           device: Optional[mx.context.Context] = None) \
         -> mx.ndarray.ndarray.NDArray:
     cont = _mxnet_init_context(default_device(device))
     return mx.nd.empty(shape, dtype_from_str(default_dtype(dtype)), cont)
->>>>>>> upstream/master:ivy/functional/backends/mxnet/creation.py
-=======
 
->>>>>>> 6a6ab840bfbf552942c72773afebd298a423ea6a:ivy/functional/backends/mxnet/array_api/creation_functions.py
