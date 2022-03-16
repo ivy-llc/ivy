@@ -710,32 +710,6 @@ def test_container_reduce_std(dev, call):
     assert np.allclose(ivy.to_numpy(container_reduced_std.b.d), np.array([6.]) ** 0.5)
 
 
-def test_container_reduce_min(dev, call):
-    dict_in = {'a': ivy.array([1., 2., 3.], dev=dev),
-               'b': {'c': ivy.array([2., 4., 6.], dev=dev), 'd': ivy.array([3., 6., 9.], dev=dev)}}
-    container = Container(dict_in)
-    container_reduced_min = container.reduce_min()
-    assert np.allclose(ivy.to_numpy(container_reduced_min['a']), np.array([1.]))
-    assert np.allclose(ivy.to_numpy(container_reduced_min.a), np.array([1.]))
-    assert np.allclose(ivy.to_numpy(container_reduced_min['b']['c']), np.array([2.]))
-    assert np.allclose(ivy.to_numpy(container_reduced_min.b.c), np.array([2.]))
-    assert np.allclose(ivy.to_numpy(container_reduced_min['b']['d']), np.array([3.]))
-    assert np.allclose(ivy.to_numpy(container_reduced_min.b.d), np.array([3.]))
-
-
-def test_container_reduce_max(dev, call):
-    dict_in = {'a': ivy.array([1., 2., 3.], dev=dev),
-               'b': {'c': ivy.array([2., 4., 6.], dev=dev), 'd': ivy.array([3., 6., 9.], dev=dev)}}
-    container = Container(dict_in)
-    container_reduced_max = container.reduce_max()
-    assert np.allclose(ivy.to_numpy(container_reduced_max['a']), np.array([3.]))
-    assert np.allclose(ivy.to_numpy(container_reduced_max.a), np.array([3.]))
-    assert np.allclose(ivy.to_numpy(container_reduced_max['b']['c']), np.array([6.]))
-    assert np.allclose(ivy.to_numpy(container_reduced_max.b.c), np.array([6.]))
-    assert np.allclose(ivy.to_numpy(container_reduced_max['b']['d']), np.array([9.]))
-    assert np.allclose(ivy.to_numpy(container_reduced_max.b.d), np.array([9.]))
-
-
 def test_container_minimum(dev, call):
     container = Container({'a': ivy.array([1., 2., 3.], dev=dev),
                            'b': {'c': ivy.array([2., 4., 6.], dev=dev),
