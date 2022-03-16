@@ -102,7 +102,7 @@ clip = _tf.clip_by_value
 # noinspection PyShadowingBuiltins
 round = _tf.round
 floormod = lambda x, y: x % y
-floor = _tf.floor
+# floor = _tf.floor
 
 
 # noinspection PyShadowingBuiltins

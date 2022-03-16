@@ -135,8 +135,8 @@ def floormod(x, y):
 
 
 @_handle_flat_arrays_in_out
-def floor(x):
-    return _mx.nd.floor(x)
+# def floor(x):
+#     return _mx.nd.floor(x)
 
 
 # noinspection PyShadowingBuiltins
