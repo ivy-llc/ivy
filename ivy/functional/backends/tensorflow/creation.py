@@ -43,6 +43,7 @@ def tril(x: tf.Tensor,
          -> tf.Tensor:
     return tf.experimental.numpy.tril(x, k)
 
+
 def triu(x: tf.Tensor,
          k: int = 0) \
          -> tf.Tensor:
@@ -57,7 +58,8 @@ def empty(shape: Union[int, Tuple[int]],
     with tf.device(dev_from_str(dev)):
         return tf.experimental.numpy.empty(shape, dtype_from_str(default_dtype(dtype)))
 
-def empty_like(x : Tensor,
+
+def empty_like(x: Tensor,
               dtype: Optional[Union[DType, str, None]] = None,
               dev: Optional[str] = None) \
         -> Tensor:
@@ -65,4 +67,3 @@ def empty_like(x : Tensor,
     dev = default_device(dev)
     with tf.device(dev_from_str(dev)):
         return tf.experimental.numpy.empty_like(x, dtype=dtype)
-
