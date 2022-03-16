@@ -103,44 +103,6 @@ def reduce_std(x, axis=None, keepdims=False):
     return ivy.array(ivy.reduce_var(x, axis, keepdims) ** 0.5)
 
 
-def reduce_min(x, axis=None, keepdims=False):
-    """
-    Computes the minimum value along the specified axis. The minimum is taken over the flattened array by default,
-    otherwise over the specified axis.
-
-    :param x: Array containing numbers whose min is desired.
-    :type x: array
-    :param axis: Axis or axes along which the mins are computed. The default is to compute the min of the flattened
-                    array. If this is a tuple of ints, a min is performed over multiple axes, instead of a single axis
-                    or all the axes as before.
-    :type axis: int or sequence of ints
-    :param keepdims: If this is set to True, the axes which are reduced are left in the result as dimensions with size
-                        one. With this option, the result will broadcast correctly against the input array.
-    :type keepdims: bool, optional
-    :return: The array with mins computed.
-    """
-    return _cur_framework(x).reduce_min(x, axis, keepdims)
-
-
-def reduce_max(x, axis=None, keepdims=False):
-    """
-    Computes the maximum value along the specified axis. The maximum is taken over the flattened array by default,
-    otherwise over the specified axis.
-
-    :param x: Array containing numbers whose max is desired.
-    :type x: array
-    :param axis: Axis or axes along which the maxes are computed. The default is to compute the max of the flattened
-                    array. If this is a tuple of ints, a max is performed over multiple axes, instead of a single axis
-                    or all the axes as before.
-    :type axis: int or sequence of ints
-    :param keepdims: If this is set to True, the axes which are reduced are left in the result as dimensions with size
-                        one. With this option, the result will broadcast correctly against the input array.
-    :type keepdims: bool, optional
-    :return: The array with maxes computed.
-    """
-    return _cur_framework(x).reduce_max(x, axis, keepdims)
-
-
 def einsum(equation, *operands):
     """
     Sums the product of the elements of the input operands along dimensions specified using a notation based on the
