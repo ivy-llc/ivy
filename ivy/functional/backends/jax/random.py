@@ -10,6 +10,10 @@ import jax.numpy as _jnp
 from ivy.functional.backends.jax.device import to_dev
 from ivy.functional.ivy.device import default_device
 
+
+# Extra #
+# ------#
+
 RNG = _jax.random.PRNGKey(0)
 
 
