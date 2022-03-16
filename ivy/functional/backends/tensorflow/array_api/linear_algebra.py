@@ -58,7 +58,8 @@ def slogdet(x:Union[_ivy.Array,_ivy.NativeArray],full_matrices: bool = True) -> 
     return res
   
 def tensordot(x1: Tensor, x2: Tensor,
-              axes: Union[int, Tuple[List[int], List[int]]] = 2) -> Tensor:
+              axes: Union[int, Tuple[List[int], List[int]]] = 2) \
+        -> Tensor:
 
     # find type to promote to
     dtype = tf.experimental.numpy.promote_types(x1.dtype, x2.dtype)
