@@ -4,4 +4,4 @@ min
 #prod
 #std
 #sum
-#var
+var
