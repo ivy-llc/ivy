@@ -14,3 +14,11 @@ def max(x: _jnp.ndarray,
         keepdims = False, device = None) \
         -> _jnp.ndarray:
     return _jnp.max(a = _jnp.asarray(x), axis = axis, keepdims = keepdims)
+
+
+def var(x: JaxArray,
+        axis: Optional[Union[int, Tuple[int]]] = None,
+        correction: Union[int, float] = 0.0,
+        keepdims: bool = False) \
+        -> JaxArray:
+    return jnp.var(x, axis=axis,ddof=correction, keepdims=keepdims)
