@@ -128,7 +128,6 @@ clip = _jnp.clip
 # noinspection PyShadowingBuiltins
 round = _jnp.round
 floormod = lambda x, y: x % y
-# floor = _jnp.floor
 # noinspection PyShadowingBuiltins
 abs = _jnp.absolute
 
