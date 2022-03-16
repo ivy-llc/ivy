@@ -118,6 +118,7 @@
 <li class="toctree-l2"><a class="reference internal" href="elementwise/negative.html">negative</a></li>
 <li class="toctree-l2"><a class="reference internal" href="elementwise/tanh.html">tanh</a></li>
 <li class="toctree-l2"><a class="reference internal" href="elementwise/sinh.html">sinh</a></li>
+<li class="toctree-l2"><a class="reference internal" href="elementwise/square.html">square</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="gradients.html">Gradients</a></li>
@@ -637,6 +638,14 @@ The returned array must have a data type of bool.</p>
 </dd></dl>
 
 <dl class="py function">
+<dt id="ivy.functional.ivy.elementwise.square">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">square</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../_modules/ivy/functional/ivy/elementwise.html#square"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.elementwise.square" title="Permalink to this definition">¶</a></dt>
+<dd><p>each element x_i of the input array x.
+:param x: Input array.
+:return: an array containing the evaluated result for each element in x.</p>
+</dd></dl>
+
+<dl class="py function">
 <dt id="ivy.functional.ivy.elementwise.tanh">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">tanh</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../_modules/ivy/functional/ivy/elementwise.html#tanh"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.elementwise.tanh" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates an implementation-dependent approximation to the hyperbolic tangent,
@@ -678,6 +687,7 @@ have a floating-point data type</p>
 <li class="toctree-l1"><a class="reference internal" href="elementwise/negative.html">negative</a></li>
 <li class="toctree-l1"><a class="reference internal" href="elementwise/tanh.html">tanh</a></li>
 <li class="toctree-l1"><a class="reference internal" href="elementwise/sinh.html">sinh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="elementwise/square.html">square</a></li>
 </ul>
 </div>
 </div>

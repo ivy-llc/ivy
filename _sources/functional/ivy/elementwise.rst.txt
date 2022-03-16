@@ -34,4 +34,5 @@ Elementwise
    elementwise/negative.rst
    elementwise/tanh.rst
    elementwise/sinh.rst
+   elementwise/square.rst
 
