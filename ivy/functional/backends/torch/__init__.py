@@ -1,6 +1,6 @@
 # global
 import sys
-import torch as _torch
+import torch as torch
 
 # local
 import ivy
@@ -8,23 +8,23 @@ import ivy
 # noinspection PyUnresolvedReferences
 use = ivy.framework_handler.ContextManager(sys.modules[__name__])
 
-NativeArray = _torch.Tensor
-NativeVariable = _torch.Tensor
-Device = _torch.device
-Dtype = _torch.dtype
+NativeArray = torch.Tensor
+NativeVariable = torch.Tensor
+Device = torch.device
+Dtype = torch.dtype
 
 # data types
-int8 = _torch.int8
-int16 = _torch.int16
-int32 = _torch.int32
-int64 = _torch.int64
-uint8 = _torch.uint8
-bfloat16 = _torch.bfloat16
-float16 = _torch.float16
-float32 = _torch.float32
-float64 = _torch.float64
+int8 = torch.int8
+int16 = torch.int16
+int32 = torch.int32
+int64 = torch.int64
+uint8 = torch.uint8
+bfloat16 = torch.bfloat16
+float16 = torch.float16
+float32 = torch.float32
+float64 = torch.float64
 # noinspection PyShadowingBuiltins
-bool = _torch.bool
+bool = torch.bool
 
 all_dtypes = (int8, int16, int32, int64,
               uint8,
@@ -53,10 +53,40 @@ backend = 'torch'
 
 
 # local sub-modules
-from . import array_api
-from .array_api import *
-from . import array_builtins
-from .array_builtins import *
-from .core import *
-from . import nn
-from .nn import *
+from . import activations
+from .activations import *
+from . import constants
+from .constants import *
+from . import converters
+from .converters import *
+from . import creation
+from .creation import *
+from . import data_type
+from .data_type import *
+from . import device
+from .device import *
+from . import elementwise
+from .elementwise import *
+from . import gradients
+from .gradients import *
+from . import image
+from .image import *
+from . import layers
+from .layers import *
+from . import linear_algebra as linalg
+from .linear_algebra import *
+from . import manipulation
+from .manipulation import *
+from . import searching
+from .searching import *
+from . import set
+from .set import *
+from . import sorting
+from .sorting import *
+from . import statistical
+from .statistical import *
+from . import utility
+from .utility import *
+
+from . import old
+from .old import *
