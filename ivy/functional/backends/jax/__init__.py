@@ -105,6 +105,8 @@ from . import linear_algebra as linalg
 from .linear_algebra import *
 from . import manipulation
 from .manipulation import *
+from . import random
+from .random import *
 from . import searching
 from .searching import *
 from . import set
