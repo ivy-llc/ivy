@@ -17,10 +17,10 @@ def max(x: _tf.Tensor,
     return _tf.math.reduce_max(x, axis = axis, keepdims = keepdims)
 
 
-def var(x: Tensor,
+def var(x: _tf.Tensor,
         axis: Optional[Union[int, Tuple[int]]] = None,
         correction: Union[int, float] = 0.0,
         keepdims: bool = False) \
-        -> Tensor:
+        -> _tf.Tensor:
     m = _tf.reduce_mean(x, axis=axis, keepdims=True)
     return _tf.reduce_mean(_tf.square(x - m), axis=axis, keepdims=keepdims)
