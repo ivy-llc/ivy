@@ -11,6 +11,6 @@ full_like
 ones
 ones_like
 tril
-#triu
+triu
 zeros
 #zeros_like
