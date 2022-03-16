@@ -1,8 +1,13 @@
+# global
+from typing import Union
+
 # local
 import ivy
-from typing import Union
 from ivy.framework_handler import current_framework as _cur_framework
 
+
+# Array API Standard #
+# -------------------#
 
 def bitwise_invert(x: Union[ivy.Array, ivy.NativeArray]) \
         -> ivy.Array:
@@ -24,7 +29,6 @@ def bitwise_invert(x: Union[ivy.Array, ivy.NativeArray]) \
     return _cur_framework(x).bitwise_invert(x)
 
 
-
 def bitwise_and(x1: Union[ivy.Array, ivy.NativeArray],
                 x2: Union[ivy.Array, ivy.NativeArray]) \
         -> ivy.Array:
@@ -44,8 +48,6 @@ def bitwise_and(x1: Union[ivy.Array, ivy.NativeArray],
         an array containing the element-wise results. The returned array must have a data type determined by :ref:`type-promotion`.
     """
     return _cur_framework(x1, x2).bitwise_and(x1, x2)
-
-
 
 
 def ceil(x: Union[ivy.Array, ivy.NativeArray]) \
@@ -94,6 +96,22 @@ def isfinite(x: Union[ivy.Array, ivy.NativeArray]) \
        an array containing test results. An element ``out_i`` is ``True`` if ``x_i`` is finite and ``False`` otherwise. The returned array must have a data type of ``bool``.
     """
     return _cur_framework(x).isfinite(x)
+
+
+def isinf(x: Union[ivy.Array, ivy.NativeArray]) \
+        -> ivy.Array:
+    """
+    Tests each element x_i of the input array x to determine if equal to positive or negative infinity.
+    Parameters
+    ----------
+    x:
+        input array. Should have a numeric data type.
+    Returns
+    -------
+    out:
+        an array containing test results. An element out_i is True if x_i is either positive or negative infinity and False otherwise. The returned array must have a data type of bool.
+    """
+    return _cur_framework(x).isinf(x)
 
 
 def less_equal(x1: Union[ivy.Array, ivy.NativeArray], x2: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
@@ -220,6 +238,34 @@ def log2(x: Union[ivy.Array, ivy.NativeArray]) \
     return _cur_framework(x).log2(x)
 
 
+def log10(x: Union[ivy.Array, ivy.NativeArray]) \
+        -> ivy.Array:
+    """
+    Calculates an implementation-dependent approximation to the base ``10`` logarithm, having domain ``[0, +infinity]`` and codomain ``[-infinity, +infinity]``, for each element ``x_i`` of the input array ``x``.
+
+    **Special cases**
+
+    For floating-point operands,
+
+    - If ``x_i`` is ``NaN``, the result is ``NaN``.
+    - If ``x_i`` is less than ``0``, the result is ``NaN``.
+    - If ``x_i`` is either ``+0`` or ``-0``, the result is ``-infinity``.
+    - If ``x_i`` is ``1``, the result is ``+0``.
+    - If ``x_i`` is ``+infinity``, the result is ``+infinity``.
+
+    Parameters
+    ----------
+    x:
+        input array. Should have a floating-point data type.
+
+    Returns
+    -------
+    out:
+        an array containing the evaluated base ``10`` logarithm for each element in ``x``. The returned array must have a floating-point data type determined by :ref:`type-promotion`.
+    """
+    return _cur_framework(x).log10(x)
+
+
 def log1p(x: Union[ivy.Array, ivy.NativeArray]) \
         -> ivy.Array:
     """
@@ -327,20 +373,65 @@ def logical_not(x: Union[ivy.Array, ivy.NativeArray]) \
     return _cur_framework(x).logical_not(x)
 
 
+def logical_or(x1: Union[ivy.Array, ivy.NativeArray], x2: Union[ivy.Array, ivy.NativeArray]) \
+        -> ivy.Array:
+    """
+    Computes the logical OR for each element ``x1_i`` of the input array ``x1`` with the respective element ``x2_i`` of the input array ``x2``.
+
+    .. note::
+       While this specification recommends that this function only accept input arrays having a boolean data type, specification-compliant array libraries may choose to accept input arrays having numeric data types. If non-boolean data types are supported, zeros must be considered the equivalent of ``False``, while non-zeros must be considered the equivalent of ``True``.
+
+    Parameters
+    ----------
+    x1:
+        first input array. Should have a boolean data type.
+    x2:
+        second input array. Must be compatible with ``x1`` (see :ref:`broadcasting`). Should have a boolean data type.
+
+    Returns
+    -------
+    out:
+        out (array) – an array containing the element-wise results. The returned array must have a data type of ``bool``.
+    """
+    return _cur_framework(x1, x2).logical_or(x1, x2)
+
+
+def logical_and(x1: ivy.Array, x2: ivy.Array) \
+        -> ivy.Array:
+    """
+    Computes the logical AND for each element x1_i of the input array x1 with the respective
+    element x2_i of the input array x2.
+
+    Parameters
+    ----------
+    x1:
+        first input array. Should have a boolean data type.
+    x2:
+        second input array. Must be compatible with x1.
+        Should have a boolean data type.
+    Returns
+    -------
+    out:
+        out (array) – an array containing the element-wise results.
+        The returned array must have a data type of bool.
+    """
+    return _cur_framework(x1, x2).logical_and(x1, x2)
+
+
 def acosh(x: Union[ivy.Array, ivy.NativeArray]) \
         -> ivy.Array:
     """
     Calculates an implementation-dependent approximation to the inverse hyperbolic cosine, having domain ``[+1, +infinity]`` and codomain ``[+0, +infinity]``, for each element ``x_i`` of the input array ``x``.
-    
+
     **Special cases**
 
     For floating-point operands,
-    
+
     - If ``x_i`` is ``NaN``, the result is ``NaN``.
     - If ``x_i`` is less than ``1``, the result is ``NaN``.
     - If ``x_i`` is ``1``, the result is ``+0``.
     - If ``x_i`` is ``+infinity``, the result is ``+infinity``.
-    
+
     Parameters
     ----------
     x:
@@ -384,8 +475,51 @@ def sin(x: Union[ivy.Array, ivy.NativeArray]) \
 def negative(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
     """
     Computes the numerical negative of each element
-    
+
     :param x: Input array
-    :return: an array containing the evaluated result for each element in x 
+    :return: an array containing the evaluated result for each element in x
     """
     return _cur_framework(x).negative(x)
+
+
+def tanh(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
+    """
+    Calculates an implementation-dependent approximation to the hyperbolic tangent,
+    having domain [-infinity, +infinity] and codomain [-1, +1], for each element x_i of the input array x.
+
+    :param x: input array whose elements each represent a hyperbolic angle. Should have a floating-point
+            data type.
+    :return: an array containing the hyperbolic tangent of each element in x. The returned array must
+            have a floating-point data type
+    """
+    return _cur_framework(x).tanh(x)
+
+
+def sinh(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
+    """
+    Calculates an implementation-dependent approximation to the hyperbolic sine, having domain ``[-infinity, +infinity]`` and codomain ``[-infinity, +infinity]``, for each element ``x_i`` of the input array ``x``.
+
+    **Special cases**
+
+    For floating-point operands,
+
+    - If ``x_i`` is ``NaN``, the result is ``NaN``.
+    - If ``x_i`` is ``+0``, the result is ``+0``.
+    - If ``x_i`` is ``-0``, the result is ``-0``.
+    - If ``x_i`` is ``+infinity``, the result is ``+infinity``.
+    - If ``x_i`` is ``-infinity``, the result is ``-infinity``.
+
+    Parameters
+    ----------
+    x:
+        input array whose elements each represent a hyperbolic angle. Should have a floating-point data type.
+
+    Returns
+    -------
+    out:
+        an array containing the hyperbolic sine of each element in ``x``. The returned array must have a floating-point data type determined by :ref:`type-promotion`.
+    """
+    return _cur_framework(x).sinh(x)
+
+# Extra #
+# ------#

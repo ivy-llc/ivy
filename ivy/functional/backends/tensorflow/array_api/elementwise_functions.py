@@ -6,7 +6,6 @@ import typing
 # local
 import ivy
 
-
 def bitwise_invert(x: Tensor) \
         -> Tensor:
     return tf.bitwise.invert(x)
@@ -32,6 +31,13 @@ def isfinite(x: Tensor) \
     return tf.math.is_finite(x)
 
 
+def isinf(x: Tensor) \
+        -> Tensor:
+    if ivy.is_int_dtype(x):
+        return tf.zeros_like(x, tf.bool)
+    return tf.math.is_inf(x)
+
+
 def _tf_cast(x: Tensor, dtype: tf.dtypes.DType) -> Tensor:
     try:
         return tf.cast(x, dtype)
@@ -41,10 +47,10 @@ def _tf_cast(x: Tensor, dtype: tf.dtypes.DType) -> Tensor:
 
 def _cast_for_binary_op(x1: Tensor, x2: Tensor) \
         -> typing.Tuple[typing.Union[Tensor, int, float, bool], typing.Union[Tensor, int, float, bool]]:
-    x1_bits = ivy.functional.backends.tensorflow.core.general.dtype_bits(x1.dtype)
+    x1_bits = ivy.functional.backends.tensorflow.old.general.dtype_bits(x1.dtype)
     if isinstance(x2, (int, float, bool)):
         return x1, x2
-    x2_bits = ivy.functional.backends.tensorflow.core.general.dtype_bits(x2.dtype)
+    x2_bits = ivy.functional.backends.tensorflow.old.general.dtype_bits(x2.dtype)
     if x1_bits > x2_bits:
         x2 = _tf_cast(x2, x1.dtype)
     elif x2_bits > x1_bits:
@@ -80,6 +86,11 @@ def sqrt(x: Tensor) \
 def cosh(x: Tensor) \
         -> Tensor:
     return tf.cosh(x)
+
+
+def log10(x: Tensor) \
+        -> Tensor:
+    return tf.experimental.numpy.log10(x)
 
 
 def log2(x: Tensor) \
@@ -118,6 +129,16 @@ def logical_not(x: Tensor) \
     return tf.logical_not(tf.cast(x, tf.bool))
 
 
+def logical_or(x1: Tensor, x2: Tensor) \
+        -> Tensor:
+    return tf.logical_or(tf.cast(x1, tf.bool), tf.cast(x2, tf.bool))
+
+
+def logical_and(x1: Tensor, x2: Tensor) \
+        -> Tensor:
+    return tf.logical_and(tf.cast(x1, tf.bool), tf.cast(x2, tf.bool))
+
+
 def acosh(x: Tensor) \
         -> Tensor:
     return tf.acosh(x)
@@ -132,3 +153,13 @@ def negative(x: Tensor) -> Tensor:
     if x.dtype in [tf.uint8, tf.uint16, tf.uint32, tf.uint64]:
         return tf.cast(tf.negative(tf.cast(x, tf.float32)), x.dtype)
     return tf.negative(x)
+
+
+def tanh(x: Tensor) \
+        -> Tensor:
+    return tf.tanh(x)
+
+
+def sinh(x: Tensor) \
+        -> Tensor:
+    return tf.sinh(x)
