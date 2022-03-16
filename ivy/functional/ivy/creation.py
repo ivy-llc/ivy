@@ -137,6 +137,7 @@ def empty(shape: Union[int, Tuple[int],List[int]],
     """
     return _cur_framework().empty(shape, dtype, device)
 
+
 def empty_like(x: Union[ivy.Array, ivy.NativeArray], dtype: ivy.Dtype = None, dev: ivy.Device = None,
                ) -> Union[ivy.Array, ivy.NativeArray]:
     """
