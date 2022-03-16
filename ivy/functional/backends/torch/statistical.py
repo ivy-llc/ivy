@@ -21,11 +21,11 @@ def max(x: _torch.Tensor,
     return _torch.amax(input = x, dim = axis, keepdim = keepdims)
 
 
-def var(x: torch.Tensor,
+def var(x: _torch.Tensor,
         axis: Optional[Union[int, Tuple[int]]] = None,
         correction: Union[int, float] = 0.0,
         keepdims: bool = False) \
-        -> torch.Tensor:
+        -> _torch.Tensor:
     if axis is None:
         num_dims = len(x.shape)
         axis = tuple(range(num_dims))
