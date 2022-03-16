@@ -51,3 +51,14 @@ def empty(shape: Union[int, Tuple[int]],
         -> mx.ndarray.ndarray.NDArray:
     cont = _mxnet_init_context(default_device(device))
     return mx.nd.empty(shape, dtype_from_str(default_dtype(dtype)), cont)
+
+
+# Extra #
+# ------#
+
+def array(object_in, dtype=None, dev=None):
+    cont = _mxnet_init_context(default_device(dev))
+    return _mx.nd.array(object_in, cont, dtype=default_dtype(dtype, object_in))
+
+
+asarray = array
