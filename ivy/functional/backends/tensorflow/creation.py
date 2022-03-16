@@ -5,6 +5,7 @@ from typing import Union, Tuple, Optional
 from tensorflow.python.framework.dtypes import DType
 
 # local
+import ivy
 from ivy.functional.backends.tensorflow import Dtype
 from ivy import dev_from_str, default_device, dtype_from_str, default_dtype
 
@@ -66,14 +67,14 @@ def empty(shape: Union[int, Tuple[int]],
 def array(object_in, dtype=None, dev=None):
     dtype = dtype_from_str(default_dtype(dtype, object_in))
     dev = default_device(dev)
-    with _tf.device(dev_from_str(dev)):
+    with tf.device(dev_from_str(dev)):
         try:
-            tensor = _tf.convert_to_tensor(object_in, dtype=dtype)
+            tensor = tf.convert_to_tensor(object_in, dtype=dtype)
         except (TypeError, ValueError):
-            tensor = _tf.convert_to_tensor(ivy.nested_map(object_in, lambda x: _tf.cast(x, dtype)), dtype=dtype)
+            tensor = tf.convert_to_tensor(ivy.nested_map(object_in, lambda x: tf.cast(x, dtype)), dtype=dtype)
         if dtype is None:
             return tensor
-        return _tf.cast(tensor, dtype)
+        return tf.cast(tensor, dtype)
 
 
 asarray = array
