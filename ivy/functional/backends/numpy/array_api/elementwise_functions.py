@@ -7,7 +7,6 @@ def bitwise_invert(x: np.ndarray)\
         -> np.ndarray:
     return np.invert(x)
 
-
 def bitwise_and(x1: np.ndarray,
                 x2: np.ndarray)\
         -> np.ndarray:
