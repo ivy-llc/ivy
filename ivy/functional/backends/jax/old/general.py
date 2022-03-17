@@ -203,7 +203,6 @@ def transpose(x, axes=None):
     return _jnp.transpose(x, axes)
 
 
-expand_dims = _jnp.expand_dims
 where = lambda condition, x1, x2: _jnp.where(condition, x1, x2)
 
 

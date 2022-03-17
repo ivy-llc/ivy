@@ -20,3 +20,9 @@ def flip(x: torch.Tensor,
         new_axis = new_axis
     new_axis = [item + num_dims if item < 0 else item for item in new_axis]
     return torch.flip(x, new_axis)
+
+
+def expand_dims(x: torch.Tensor,
+                axis: Optional[Union[int, Tuple[int], List[int]]] = None) \
+        -> torch.Tensor:
+    return torch.unsqueeze(x, axis)
