@@ -95,6 +95,7 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Creation</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="creation/zeros.html">zeros</a></li>
 <li class="toctree-l2"><a class="reference internal" href="creation/ones.html">ones</a></li>
+<li class="toctree-l2"><a class="reference internal" href="creation/full_like.html">full_like</a></li>
 <li class="toctree-l2"><a class="reference internal" href="creation/ones_like.html">ones_like</a></li>
 <li class="toctree-l2"><a class="reference internal" href="creation/tril.html">tril</a></li>
 <li class="toctree-l2"><a class="reference internal" href="creation/triu.html">triu</a></li>
@@ -274,6 +275,23 @@ sequence.</p></li>
 </dd></dl>
 
 <dl class="py function">
+<dt id="ivy.functional.ivy.creation.full_like">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">full_like</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="o">/</span></em>, <em class="sig-param"><span class="n">fill_value</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>int<span class="p">, </span>float<span class="p">]</span></span></em>, <em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">dtype</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Union<span class="p">[</span>ivy.Dtype<span class="p">, </span>str<span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">device</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Union<span class="p">[</span>ivy.Device<span class="p">, </span>str<span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../_modules/ivy/functional/ivy/creation.html#full_like"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.creation.full_like" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a new array filled with fill_value and having the same shape as an input array x.</p>
+<p>Parameters
+x:input array from which to derive the output array shape.</p>
+<p>fill_value: Scalar fill value</p>
+<p>dtype:output array data type.
+If dtype is None, the output array data type must be inferred from x.
+Default: None.</p>
+<p>device:device on which to place the created array.
+If device is None,the output array device must be inferred from x.
+Default: None.</p>
+<p>Returns
+out:an array having the same shape as x and where every element is equal to fill_value.</p>
+</dd></dl>
+
+<dl class="py function">
 <dt id="ivy.functional.ivy.creation.ones">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">ones</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">shape</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>int<span class="p">, </span>Tuple<span class="p">[</span>int<span class="p">]</span><span class="p">, </span>List<span class="p">[</span>int<span class="p">]</span><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">dtype</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>ivy.Dtype<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">device</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>ivy.Device<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../_modules/ivy/functional/ivy/creation.html#ones"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.creation.ones" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a new array having a specified <code class="docutils literal notranslate"><span class="pre">shape</span></code> and filled with ones.</p>
@@ -370,6 +388,7 @@ same device as x.</p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="creation/zeros.html">zeros</a></li>
 <li class="toctree-l1"><a class="reference internal" href="creation/ones.html">ones</a></li>
+<li class="toctree-l1"><a class="reference internal" href="creation/full_like.html">full_like</a></li>
 <li class="toctree-l1"><a class="reference internal" href="creation/ones_like.html">ones_like</a></li>
 <li class="toctree-l1"><a class="reference internal" href="creation/tril.html">tril</a></li>
 <li class="toctree-l1"><a class="reference internal" href="creation/triu.html">triu</a></li>

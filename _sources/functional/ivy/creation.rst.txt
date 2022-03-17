@@ -14,6 +14,7 @@ Creation
 
    creation/zeros.rst
    creation/ones.rst
+   creation/full_like.rst
    creation/ones_like.rst
    creation/tril.rst
    creation/triu.rst
