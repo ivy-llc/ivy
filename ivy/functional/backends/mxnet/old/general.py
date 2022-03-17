@@ -72,13 +72,7 @@ DTYPE_FROM_STR = {'int8': _np.int8,
 
 
 
-@_handle_flat_arrays_in_out
-def array_equal(x0, x1):
-    if ivy.dtype(x0, as_str=True) == 'bool':
-        x0 = x0.astype('int32')
-    if ivy.dtype(x1, as_str=True) == 'bool':
-        x1 = x1.astype('int32')
-    return _mx.nd.min(_mx.nd.broadcast_equal(x0, x1)) == 1
+
 
 
 def dtype_bits(dtype_in):
