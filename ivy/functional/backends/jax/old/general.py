@@ -319,7 +319,8 @@ def scatter_nd(indices, updates, shape=None, tensor=None, reduction='sum', dev=N
         if len(indices.shape) < 2:
             indices = _jnp.expand_dims(indices, -1)
     updates = [updates] if isinstance(updates, Number) else updates
-    updates = _jnp.array(updates, dtype=ivy.dtype(tensor, as_str=False))
+    updates = _jnp.array(updates, dtype=ivy.dtype(tensor, as_str=False) if ivy.exists(tensor)
+                         else ivy.default_dtype(item=updates))
 
     # handle Ellipsis
     if isinstance(indices, tuple) or indices is Ellipsis:
