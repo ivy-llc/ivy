@@ -13,7 +13,7 @@ asinh
 #bitwise_or
 #bitwise_right_shift
 #bitwise_xor
-#ceil
+#ceil # asarray not yet implemented correctly
 cos
 cosh
 #divide
