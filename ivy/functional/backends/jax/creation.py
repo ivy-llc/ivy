@@ -70,3 +70,12 @@ def empty(shape: Union[int, Tuple[int], List[int]],
         -> JaxArray:
     return to_dev(jnp.empty(shape, dtype_from_str(default_dtype(dtype))), default_device(device))
 
+
+# Extra #
+# ------#
+# noinspection PyShadowingNames
+def array(object_in, dtype=None, dev=None):
+    return to_dev(jnp.array(object_in, dtype=dtype_from_str(default_dtype(dtype, object_in))), default_device(dev))
+
+
+asarray = array
