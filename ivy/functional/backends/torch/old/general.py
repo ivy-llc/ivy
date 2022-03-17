@@ -10,45 +10,23 @@ import math as _math
 import torch as _torch
 from operator import mul
 from torch.types import Number
-from functools import partial as _partial, reduce as _reduce
-from typing import List, Dict, Optional, Tuple, Union
+from functools import reduce as _reduce
+from typing import List, Dict, Optional, Union
 
 
 # local
-from ivy.functional.ivy.old import default_device, default_dtype
-from ivy.functional.backends.torch.old.device import dev_from_str, _callable_dev
+from ivy.functional.ivy.old import default_dtype
+from ivy.functional.ivy.device import default_device
+from ivy.functional.backends.torch.device import dev_from_str, _callable_dev
 
 # API #
 # ----#
 
 
-# noinspection PyShadowingNames
-def array(object_in, dtype: Optional[str] = None, dev: Optional[str] = None):
-    dev = default_device(dev)
-    dtype = dtype_from_str(default_dtype(dtype, object_in))
-    if isinstance(object_in, np.ndarray):
-        return _torch.Tensor(object_in).to(dev_from_str(dev))
-    if dtype is not None:
-        return _torch.tensor(object_in, dtype=dtype, device=dev_from_str(dev))
-    elif isinstance(object_in, _torch.Tensor):
-        return object_in.to(dev_from_str(dev))
-    else:
-        return _torch.tensor(object_in, device=dev_from_str(dev))
 
 
-asarray = array
 
 
-def is_array(x, exclusive=False):
-    if isinstance(x, _torch.Tensor):
-        if exclusive and x.requires_grad:
-            return False
-        return True
-    return False
-
-
-def copy_array(x):
-    return x.clone()
 
 
 def array_equal(x0, x1):
@@ -329,9 +307,6 @@ def indices_where(x):
     res = _torch.cat([_torch.unsqueeze(item, -1) for item in where_x], -1)
     return res
 
-
-def isinf(x):
-    return _torch.isinf(x)
 
 def reshape(x, newshape: List[int]):
     if isinstance(newshape, int):

@@ -6,7 +6,7 @@ from collections import namedtuple
 
 # local
 from ivy import inf
-import ivy as _ivy
+import ivy
 from collections import namedtuple
 
 
@@ -33,6 +33,7 @@ def vector_norm(x: Tensor,
         return tf.expand_dims(tn_normalized_vector, 0)
     return tn_normalized_vector
 
+
 # noinspection PyPep8Naming
 def svd(x:Tensor,full_matrices: bool = True) -> Union[Tensor, Tuple[Tensor,...]]:
     results=namedtuple("svd", "U S Vh")
@@ -44,6 +45,7 @@ def svd(x:Tensor,full_matrices: bool = True) -> Union[Tensor, Tuple[Tensor,...]]
     VT = tf.transpose(V, transpose_dims)
     res=results(U, D, VT)
     return res
+
 
 def diagonal(x: tf.Tensor,
              offset: int = 0,
@@ -121,7 +123,11 @@ def matmul(x1: tf.Tensor,
     return ret
 
 
-def slogdet(x:Union[_ivy.Array,_ivy.NativeArray],full_matrices: bool = True) -> Union[_ivy.Array, Tuple[_ivy.Array,...]]:
+def svdvals(x: tf.Tensor) -> tf.Tensor:
+    return tf.linalg.svd(x, compute_uv=False)
+
+
+def slogdet(x:Union[ivy.Array,ivy.NativeArray],full_matrices: bool = True) -> Union[ivy.Array, Tuple[ivy.Array,...]]:
     results = namedtuple("slogdet", "sign logabsdet")
     sign, logabsdet = tf.linalg.slogdet(x)
     res = results(sign, logabsdet)

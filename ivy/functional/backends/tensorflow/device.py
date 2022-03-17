@@ -7,7 +7,7 @@ _round = round
 import tensorflow as _tf
 
 # local
-from ivy.functional.ivy.old import Profiler as BaseProfiler
+from ivy.functional.ivy.device import Profiler as BaseProfiler
 
 
 def _same_device(dev_a, dev_b):

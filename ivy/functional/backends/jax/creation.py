@@ -6,8 +6,9 @@ from typing import Union, Optional, Tuple, List
 # local
 from ivy import dtype_from_str
 from ivy.functional.backends.jax import JaxArray
-from ivy.functional.backends.jax.old.device import to_dev
-from ivy.functional.ivy.old import default_device, default_dtype
+from ivy.functional.backends.jax.device import to_dev
+from ivy.functional.ivy.device import default_device
+from ivy.functional.ivy.old import default_dtype
 from jaxlib.xla_extension import Device, DeviceArray
 
 
@@ -23,6 +24,20 @@ def zeros(shape: Union[int, Tuple[int], List[int]],
           device: Optional[jaxlib.xla_extension.Device] = None) \
         -> JaxArray:
     return to_dev(jnp.zeros(shape, dtype_from_str(default_dtype(dtype))), default_device(device))
+
+
+def full_like(x: JaxArray,
+              fill_value: Union[int, float],
+              dtype: Optional[jnp.dtype] = None,
+              device: Optional[jaxlib.xla_extension.Device] = None) \
+        -> DeviceArray:
+    if dtype and str:
+        dtype = jnp.dtype(dtype)
+    else:
+        dtype = x.dtype
+
+    return to_dev(jnp.full_like(x, fill_value, dtype=dtype_from_str(default_dtype(dtype, fill_value))),
+              default_device(device))
 
 
 def ones_like(x : JaxArray,
@@ -54,3 +69,13 @@ def empty(shape: Union[int, Tuple[int], List[int]],
           device: Optional[jaxlib.xla_extension.Device] = None) \
         -> JaxArray:
     return to_dev(jnp.empty(shape, dtype_from_str(default_dtype(dtype))), default_device(device))
+
+
+# Extra #
+# ------#
+# noinspection PyShadowingNames
+def array(object_in, dtype=None, dev=None):
+    return to_dev(jnp.array(object_in, dtype=dtype_from_str(default_dtype(dtype, object_in))), default_device(dev))
+
+
+asarray = array

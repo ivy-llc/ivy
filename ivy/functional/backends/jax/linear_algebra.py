@@ -7,7 +7,7 @@ from collections import namedtuple
 # local
 from ivy import inf
 from ivy.functional.backends.jax import JaxArray
-import ivy as _ivy
+import ivy
 
 
 # noinspection PyUnusedLocal,PyShadowingBuiltins
@@ -41,6 +41,10 @@ def diagonal(x: JaxArray,
     return jnp.diagonal(x, offset, axis1, axis2)
 
 
+def svdvals(x: JaxArray) -> JaxArray:
+    return jnp.linalg.svd(x, compute_uv=False)
+
+
 def qr(x: JaxArray,
        mode: str = 'reduced') -> namedtuple('qr', ['Q', 'R']):
     res = namedtuple('qr', ['Q', 'R'])
@@ -53,7 +57,7 @@ def matmul(x1: JaxArray,
     return jnp.matmul(x1, x2)
 
 
-def slogdet(x:Union[_ivy.Array,_ivy.NativeArray],full_matrices: bool = True) -> Union[_ivy.Array, Tuple[_ivy.Array,...]]:
+def slogdet(x:Union[ivy.Array,ivy.NativeArray],full_matrices: bool = True) -> Union[ivy.Array, Tuple[ivy.Array,...]]:
     results = namedtuple("slogdet", "sign logabsdet")
     sign, logabsdet = jnp.linalg.slogdet(x)
     res = results(sign, logabsdet)

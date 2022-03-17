@@ -23,6 +23,11 @@ def isfinite(x: JaxArray)\
     return jnp.isfinite(x)
 
 
+def isinf(x: JaxArray)\
+        -> JaxArray:
+    return jnp.isinf(x)
+
+
 def equal(x1: JaxArray, x2: JaxArray)\
         -> JaxArray:
     return x1 == x2
@@ -115,3 +120,8 @@ def tanh(x: JaxArray)\
 def sinh(x: JaxArray)\
         -> JaxArray:
     return jnp.sinh(x)
+
+
+def square(x: JaxArray) \
+        -> JaxArray:
+    return jnp.square(x)

@@ -9,6 +9,10 @@ from typing import Callable, Any, Union, Tuple, Iterable
 from ivy.framework_handler import current_framework as _cur_framework
 
 
+# Extra #
+# ------#
+
+# noinspection PyShadowingBuiltins
 def compile(func: Callable, dynamic: bool = True, example_inputs: Union[Any, Tuple[Any]] = None,
             static_argnums: Union[int, Iterable[int]] = None, static_argnames: Union[int, Iterable[int]] = None)\
         -> Callable:

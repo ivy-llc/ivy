@@ -6,6 +6,10 @@ Collection of gradient Ivy functions.
 import ivy as _ivy
 from ivy.framework_handler import current_framework as _cur_framework
 
+
+# Extra #
+# ------#
+
 with_grads_stack = list()
 
 class GradientTracking:
@@ -22,7 +26,6 @@ class GradientTracking:
         return self
 
 # Gradient Mode #
-# --------------#
 
 # noinspection PyShadowingNames
 def with_grads(with_grads=None):
@@ -52,7 +55,6 @@ def unset_with_grads():
 
 
 # Variables #
-# ----------#
 
 def variable(x):
     """
@@ -107,7 +109,6 @@ def stop_gradient(x, preserve_type=True):
 
 
 # AutoGrad #
-# ---------#
 
 def execute_with_gradients(func, xs, retain_grads=False):
     """
@@ -126,7 +127,6 @@ def execute_with_gradients(func, xs, retain_grads=False):
 
 
 # Optimizer Steps #
-# ----------------#
 
 def adam_step(dcdws, mw, vw, step, beta1=0.9, beta2=0.999, epsilon=1e-7):
     """
@@ -160,7 +160,6 @@ def adam_step(dcdws, mw, vw, step, beta1=0.9, beta2=0.999, epsilon=1e-7):
 
 
 # Optimizer Updates #
-# ------------------#
 
 def optimizer_update(ws, effective_grads, lr, inplace=None, stop_gradients=True):
     """

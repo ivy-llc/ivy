@@ -14,12 +14,12 @@ from functools import reduce as _reduce
 from jaxlib.xla_extension import Buffer
 import multiprocessing as _multiprocessing
 from haiku._src.data_structures import FlatMapping
-from typing import Tuple, Union
 
 # local
 import ivy
-from ivy.functional.ivy.old import default_device, default_dtype
-from ivy.functional.backends.jax.old.device import to_dev, dev as callable_dev
+from ivy.functional.ivy.device import default_device
+from ivy.functional.ivy.old import default_dtype
+from ivy.functional.backends.jax.device import to_dev, dev as callable_dev
 
 DTYPE_TO_STR = {_jnp.dtype('int8'): 'int8',
                 _jnp.dtype('int16'): 'int16',
@@ -82,27 +82,13 @@ def _to_array(x):
 # API #
 # ----#
 
-# noinspection PyShadowingNames
-def array(object_in, dtype=None, dev=None):
-    return to_dev(_jnp.array(object_in, dtype=dtype_from_str(default_dtype(dtype, object_in))), default_device(dev))
 
 
-asarray = array
 
 
-# noinspection PyUnresolvedReferences,PyProtectedMember
-def is_array(x, exclusive=False):
-    if exclusive:
-        return isinstance(x, (_jax.interpreters.xla._DeviceArray,
-                              _jaxlib.xla_extension.DeviceArray, Buffer))
-    return isinstance(x, (_jax.interpreters.xla._DeviceArray,
-                          _jaxlib.xla_extension.DeviceArray, Buffer,
-                          _jax.interpreters.ad.JVPTracer,
-                          _jax.core.ShapedArray,
-                          _jax.interpreters.partial_eval.DynamicJaxprTracer))
 
 
-copy_array = _jnp.array
+
 array_equal = _jnp.array_equal
 
 
@@ -227,8 +213,6 @@ def indices_where(x):
     return ret
 
 
-isinf = _jnp.isinf
-    
 reshape = _jnp.reshape
 broadcast_to = _jnp.broadcast_to
 

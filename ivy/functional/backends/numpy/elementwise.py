@@ -34,6 +34,11 @@ def isfinite(x: np.ndarray) \
     return np.asarray(npa.isfinite(npa.asarray(x)))
 
 
+def isinf(x: np.ndarray)\
+        -> np.ndarray:
+    return np.asarray(npa.isinf(npa.asarray(x)))
+
+
 def asinh(x: np.ndarray)\
         -> np.ndarray:
     return np.arcsinh(x)
@@ -111,3 +116,8 @@ def tanh(x: np.ndarray)\
 def sinh(x: np.ndarray)\
         -> np.ndarray:
     return np.asarray(npa.sinh(npa.asarray(x)))
+
+  
+def square(x: np.ndarray)\
+        -> np.ndarray:
+    return np.square(x)

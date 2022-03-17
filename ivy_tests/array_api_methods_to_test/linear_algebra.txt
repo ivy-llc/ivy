@@ -1,7 +1,7 @@
 #cholesky
 #cross
 #det
-diagonal
+#diagonal # fails non-determinstically for jax, due to +0 vs -0 inconsistencies
 #eigh
 #eigvalsh
 inv
@@ -15,8 +15,8 @@ inv
 #qr
 #slogdet
 #solve
-#svd
-#svdvals
+svd
+svdvals
 #tensordot
 #trace
 #vecdot

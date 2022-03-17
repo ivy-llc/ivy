@@ -12,12 +12,11 @@ from numbers import Number
 import tensorflow_probability as _tfp
 import multiprocessing as _multiprocessing
 from tensorflow.python.types.core import Tensor
-from typing import Tuple, Union
-import typing as _typing
 
 # local
-from ivy.functional.ivy.old import default_device, default_dtype
-from ivy.functional.backends.tensorflow.old.device import _dev_callable, dev_from_str
+from ivy.functional.ivy.old import default_dtype
+from ivy.functional.ivy.device import default_device
+from ivy.functional.backends.tensorflow.device import _dev_callable, dev_from_str
 
 DTYPE_TO_STR = {_tf.int8: 'int8',
                 _tf.int16: 'int16',
@@ -51,32 +50,9 @@ DTYPE_FROM_STR = {'int8': _tf.int8,
 # API #
 # ----#
 
-# noinspection PyShadowingNames
-def array(object_in, dtype=None, dev=None):
-    dtype = dtype_from_str(default_dtype(dtype, object_in))
-    dev = default_device(dev)
-    with _tf.device(dev_from_str(dev)):
-        try:
-            tensor = _tf.convert_to_tensor(object_in, dtype=dtype)
-        except (TypeError, ValueError):
-            tensor = _tf.convert_to_tensor(ivy.nested_map(object_in, lambda x: _tf.cast(x, dtype)), dtype=dtype)
-        if dtype is None:
-            return tensor
-        return _tf.cast(tensor, dtype)
 
 
-asarray = array
 
-
-def is_array(x, exclusive=False):
-    if isinstance(x, Tensor):
-        if exclusive and isinstance(x, _tf.Variable):
-            return False
-        return True
-    return False
-
-
-copy_array = _tf.identity
 array_equal = _tf.experimental.numpy.array_equal
 
 
@@ -104,6 +80,7 @@ clip = _tf.clip_by_value
 round = _tf.round
 floormod = lambda x, y: x % y
 floor = _tf.floor
+
 
 
 # noinspection PyShadowingBuiltins
@@ -226,11 +203,6 @@ where = lambda condition, x1, x2: _tf.where(_tf.cast(condition, _tf.bool), x1, x
 indices_where = _tf.where
 
 
-def isinf(x):
-    if ivy.is_int_dtype(x):
-        return _tf.zeros_like(x, _tf.bool)
-    return _tf.math.is_inf(x)
-
 reshape = lambda x, newshape: _tf.reshape(x, (newshape,) if isinstance(newshape, int) else newshape)
 broadcast_to = _tf.broadcast_to
 
@@ -241,8 +213,6 @@ def squeeze(x, axis=None):
             return x
         raise Exception('tried to squeeze a zero-dimensional input by axis {}'.format(axis))
     return _tf.squeeze(x, axis)
-
-
 
 
 # noinspection PyShadowingNames

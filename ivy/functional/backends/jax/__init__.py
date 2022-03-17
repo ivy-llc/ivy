@@ -89,14 +89,24 @@ from . import creation
 from .creation import *
 from . import data_type
 from .data_type import *
+from . import device
+from .device import *
 from . import elementwise
 from .elementwise import *
+from . import general
+from .general import *
+from . import gradients
+from .gradients import *
+from . import image
+from .image import *
 from . import layers
 from .layers import *
 from . import linear_algebra as linalg
 from .linear_algebra import *
 from . import manipulation
 from .manipulation import *
+from . import random
+from .random import *
 from . import searching
 from .searching import *
 from . import set

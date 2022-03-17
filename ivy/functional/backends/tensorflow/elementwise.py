@@ -27,6 +27,13 @@ def isfinite(x: Tensor) \
     return tf.math.is_finite(x)
 
 
+def isinf(x: Tensor) \
+        -> Tensor:
+    if ivy.is_int_dtype(x):
+        return tf.zeros_like(x, tf.bool)
+    return tf.math.is_inf(x)
+
+
 def _tf_cast(x: Tensor, dtype: tf.dtypes.DType) -> Tensor:
     try:
         return tf.cast(x, dtype)
@@ -153,3 +160,8 @@ def tanh(x: Tensor) \
 def sinh(x: Tensor) \
         -> Tensor:
     return tf.sinh(x)  
+
+ 
+def square(x: Tensor)\
+        -> Tensor:
+    return tf.math.square(x)
