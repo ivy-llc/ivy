@@ -3,7 +3,7 @@ import mxnet as mx
 from typing import Tuple, Union, Optional, Iterable
 
 # local
-from ivy import default_device, dtype_from_str, default_dtype
+from ivy import default_device, dtype_from_str, default_dtype, dtype_to_str
 from ivy.functional.backends.mxnet import _mxnet_init_context
 from ivy.functional.backends.mxnet import _1_dim_array_to_flat_array
 
@@ -61,4 +61,24 @@ def array(object_in, dtype=None, dev=None):
     return mx.nd.array(object_in, cont, dtype=default_dtype(dtype, object_in))
 
 
-asarray = array
+def asarray(object_in, dtype: Optional[str] = None, dev: Optional[str] = None, copy: Optional[bool] = None):
+    # mxnet don't have asarray implementation, haven't properly tested
+    cont = _mxnet_init_context(default_device(dev))
+    if copy is None:
+        copy = False
+    if copy:
+        if dtype is None and isinstance(object_in, mx.nd.NDArray):
+            return mx.nd.array(object_in, cont).as_in_context(cont)
+        if dtype is None and not isinstance(object_in, mx.nd.NDArray):
+            return mx.nd.array(object_in, cont, dtype=default_dtype(dtype, object_in))
+        else:
+            dtype = dtype_to_str(default_dtype(dtype, object_in))
+            return mx.nd.array(object_in, cont, dtype=default_dtype(dtype, object_in))
+    else:
+        if dtype is None and isinstance(object_in, mx.nd.NDArray):
+            return object_in.as_in_context(cont)
+        if dtype is None and not isinstance(object_in, mx.nd.NDArray):
+            return mx.nd.array(object_in, cont, dtype=default_dtype(dtype, object_in))
+        else:
+            dtype = dtype_to_str(default_dtype(dtype, object_in))
+            return mx.nd.array(object_in, cont, dtype=default_dtype(dtype, object_in))
