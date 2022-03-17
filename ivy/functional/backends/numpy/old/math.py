@@ -10,7 +10,6 @@ except (ImportError, ModuleNotFoundError):
     _erf = None
 
 tan = _np.tan
-asin = _np.arcsin
 acos = _np.arccos
 atan = _np.arctan
 atan2 = _np.arctan2

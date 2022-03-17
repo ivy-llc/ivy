@@ -8,7 +8,6 @@ import jax.numpy as _jnp
 
 
 tan = _jnp.tan
-asin = _jnp.arcsin
 acos = _jnp.arccos
 atan = _jnp.arctan
 atan2 = _jnp.arctan2
