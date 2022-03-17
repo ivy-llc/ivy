@@ -67,23 +67,9 @@ DTYPE_FROM_STR = {'int8': _np.int8,
 # API #
 # ----#
 
-def array(object_in, dtype=None, dev=None):
-    cont = _mxnet_init_context(default_device(dev))
-    return _mx.nd.array(object_in, cont, dtype=default_dtype(dtype, object_in))
 
 
-asarray = array
 
-
-def is_array(x, exclusive=False):
-    if isinstance(x, _mx.ndarray.ndarray.NDArray):
-        if exclusive and x.grad is not None:
-            return False
-        return True
-    return False
-
-
-copy_array = lambda x: x.copy()
 
 
 @_handle_flat_arrays_in_out
@@ -298,12 +284,6 @@ def transpose(x, axes=None):
         axes = list(range(num_dims))
         axes.reverse()
     return _mx.nd.transpose(x, axes)
-
-
-def expand_dims(x, axis):
-    if x.shape == ():
-        return _flat_array_to_1_dim_array(x)
-    return _mx.nd.expand_dims(x, axis)
 
 
 @_handle_flat_arrays_in_out

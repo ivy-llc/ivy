@@ -31,6 +31,7 @@ def svd(x:torch.Tensor,full_matrices: bool = True) -> Union[torch.Tensor, Tuple[
     res=results(U, D, VT)
     return res
 
+
   
 def outer(x1: torch.Tensor,
           x2: torch.Tensor)\
@@ -39,11 +40,16 @@ def outer(x1: torch.Tensor,
 
 
 
+
 def diagonal(x: torch.Tensor,
              offset: int = 0,
              axis1: int = -2,
              axis2: int = -1) -> torch.Tensor:
     return torch.diagonal(x, offset=offset, dim1=axis1, dim2=axis2)
+
+
+def svdvals(x: torch.Tensor) -> torch.Tensor:
+    return torch.linalg.svdvals(x)
 
 
 def qr(x: torch.Tensor,
@@ -67,12 +73,13 @@ def matmul(x1: torch.Tensor,
     ret = torch.matmul(x1, x2)
     return ret.type(dtype_from)
 
-  
+
 def slogdet(x:Union[_ivy.Array,_ivy.NativeArray],full_matrices: bool = True) -> Union[_ivy.Array, Tuple[_ivy.Array,...]]:
     results = namedtuple("slogdet", "sign logabsdet")
     sign, logabsdet = torch.linalg.slogdet(x)
     res = results(sign, logabsdet)
     return res
+
 
 def trace(x: torch.Tensor,
           offset: int = 0)\
