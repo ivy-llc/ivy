@@ -31,5 +31,21 @@ def flip(x: Union[ivy.Array, ivy.NativeArray],
     return _cur_framework(x).flip(x, axis)
 
 
+def expand_dims(x: Union[ivy.Array, ivy.NativeArray],
+                axis: Optional[Union[int, Tuple[int], List[int]]] = None) \
+        -> ivy.Array:
+    """
+    Expands the shape of an array.
+    Inserts a new axis that will appear at the axis position in the expanded array shape.
+
+    :param x: Input array.
+    :type x: array
+    :param axis: Position in the expanded axes where the new axis is placed.
+    :type axis: int
+    :return: array with the number of dimensions increased by onearray
+    """
+    return _cur_framework(x).expand_dims(x, axis)
+
+
 # Extra #
 # ------#
