@@ -336,6 +336,7 @@ def abs(x: Union[ivy.Array, ivy.NativeArray])\
     """
     return _cur_framework(x).abs(x)
 
+
 def argmin(x: Union[ivy.Array, ivy.NativeArray], axis: int = 0)\
         -> Union[ivy.Array, ivy.NativeArray]:
     """

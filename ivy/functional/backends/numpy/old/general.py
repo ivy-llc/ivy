@@ -15,7 +15,6 @@ import ivy
 from ivy.functional.ivy.old import default_dtype
 from ivy.functional.backends.numpy.device import _dev_callable
 
-
 DTYPE_TO_STR = {_np.dtype('int8'): 'int8',
                 _np.dtype('int16'): 'int16',
                 _np.dtype('int32'): 'int32',
