@@ -638,21 +638,6 @@ def transpose(x: Union[ivy.Array, ivy.NativeArray], axes: Iterable[int] = None)\
     return _cur_framework(x).transpose(x, axes)
 
 
-def expand_dims(x: Union[ivy.Array, ivy.NativeArray], axis: int)\
-        -> Union[ivy.Array, ivy.NativeArray]:
-    """
-    Expands the shape of an array.
-    Inserts a new axis that will appear at the axis position in the expanded array shape.
-
-    :param x: Input array.
-    :type x: array
-    :param axis: Position in the expanded axes where the new axis is placed.
-    :type axis: int
-    :return: array with the number of dimensions increased by onearray
-    """
-    return _cur_framework(x).expand_dims(x, axis)
-
-
 def where(condition: Union[ivy.Array, ivy.NativeArray], x1: Union[ivy.Array, ivy.NativeArray],
           x2: Union[ivy.Array, ivy.NativeArray])\
         -> Union[ivy.Array, ivy.NativeArray]:

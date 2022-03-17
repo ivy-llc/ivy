@@ -2,6 +2,8 @@
 import mxnet as mx
 from typing import Union, Tuple, Optional, List
 
+from ivy.functional.backends.mxnet import _flat_array_to_1_dim_array
+
 
 def flip(x: mx.ndarray.ndarray.NDArray,
          axis: Optional[Union[int, Tuple[int], List[int]]] = None)\
@@ -19,3 +21,11 @@ def flip(x: mx.ndarray.ndarray.NDArray,
         new_axis = new_axis
     new_axis = [item + num_dims if item < 0 else item for item in new_axis]
     return mx.nd.flip(x, new_axis)
+
+
+def expand_dims(x: mx.ndarray.ndarray.NDArray,
+                axis: Optional[Union[int, Tuple[int], List[int]]] = None) \
+        -> mx.ndarray.ndarray.NDArray:
+    if x.shape == ():
+        return _flat_array_to_1_dim_array(x)
+    return mx.nd.expand_dims(x, axis)
