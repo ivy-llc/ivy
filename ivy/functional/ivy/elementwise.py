@@ -77,6 +77,7 @@ def isfinite(x: Union[ivy.Array, ivy.NativeArray])\
     """
     return _cur_framework(x).isfinite(x)
 
+  
 def asin(x: Union[ivy.Array, ivy.NativeArray])\
         -> ivy.Array:
     """
@@ -104,6 +105,7 @@ def asin(x: Union[ivy.Array, ivy.NativeArray])\
     """
     return _cur_framework(x).asin(x)
 
+  
 def isinf(x: Union[ivy.Array, ivy.NativeArray])\
         -> ivy.Array:
     """
