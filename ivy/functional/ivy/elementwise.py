@@ -77,7 +77,35 @@ def isfinite(x: Union[ivy.Array, ivy.NativeArray])\
     """
     return _cur_framework(x).isfinite(x)
 
+  
+def asin(x: Union[ivy.Array, ivy.NativeArray])\
+        -> ivy.Array:
+    """
+    Calculates an implementation-dependent approximation of the principal value of the inverse sine, having domain ``[-1, +1]`` and codomain ``[-π/2, +π/2]`` for each element ``x_i`` of the input array ``x``. Each element-wise result is expressed in radians.
+    
+    **Special cases**
+    
+    For floating-point operands,
+    
+    - If ``x_i`` is ``NaN``, the result is ``NaN``.
+    - If ``x_i`` is greater than ``1``, the result is ``NaN``.
+    - If ``x_i`` is less than ``-1``, the result is ``NaN``.
+    - If ``x_i`` is ``+0``, the result is ``+0``.
+    - If ``x_i`` is ``-0``, the result is ``-0``.
+    
+    Parameters
+    ----------
+    x: array
+        input array. Should have a floating-point data type.
+        
+    Returns
+    -------
+    out: array
+        an array containing the inverse sine of each element in ``x``. The returned array must have a floating-point data type determined by :ref:`type-promotion`.
+    """
+    return _cur_framework(x).asin(x)
 
+  
 def isinf(x: Union[ivy.Array, ivy.NativeArray])\
         -> ivy.Array:
     """

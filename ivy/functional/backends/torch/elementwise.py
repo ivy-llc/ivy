@@ -61,6 +61,11 @@ def isfinite(x: torch.Tensor) \
     return torch.isfinite(x)
 
 
+def asin(x: torch.Tensor) \
+        -> torch.Tensor:
+    return torch.asin(x)
+  
+
 def asinh(x: torch.Tensor) \
         -> torch.Tensor:
     return torch.asinh(x)

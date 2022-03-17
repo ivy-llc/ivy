@@ -33,6 +33,11 @@ def isfinite(x: np.ndarray) \
         -> np.ndarray:
     return np.asarray(npa.isfinite(npa.asarray(x)))
 
+  
+def asin(x: np.ndarray)\
+        -> np.ndarray:
+    return np.arcsin(x)
+
 
 def isinf(x: np.ndarray)\
         -> np.ndarray:
