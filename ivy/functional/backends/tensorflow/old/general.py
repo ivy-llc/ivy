@@ -312,7 +312,8 @@ def scatter_nd(indices, updates, shape=None, tensor=None, reduction='sum', dev=N
 
     # handle numeric updates
     updates = _tf.constant([updates] if isinstance(updates, Number) else updates,
-                           dtype=ivy.dtype(tensor, as_str=False))
+                           dtype=ivy.dtype(tensor, as_str=False) if ivy.exists(tensor)
+                           else ivy.default_dtype(item=updates))
 
     # hanle non-tensor indices
     if indices == ():
