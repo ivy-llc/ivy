@@ -9,7 +9,7 @@ matmul
 #matrix_norm
 #matrix_power
 #matrix_rank
-#matrix_transpose
+matrix_transpose
 #outer
 #pinv
 qr
