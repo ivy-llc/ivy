@@ -4,11 +4,22 @@ Collection of general Ivy functions.
 
 # global
 import gc
+import math
+import einops
+import inspect
+import numpy as np
+from numbers import Number
 from typing import Callable, Any, Union, List, Tuple, Dict, Iterable, Optional
 
-#local
+# local
 import ivy
+from ivy.functional.ivy.device import dev
 from ivy.framework_handler import current_framework as _cur_framework
+
+FN_CACHE = dict()
+INF = float('inf')
+TIMEOUT = 15.0
+TMP_DIR = '/tmp'
 
 def get_referrers_recursive(item, depth=0, max_depth=None, seen_set=None, local_set=None):
     seen_set = ivy.default(seen_set, set())
@@ -132,3 +143,39 @@ def all_equal(*xs: Iterable[Any], equality_matrix: bool = False)\
         if not equality_fn(x0, x):
             return False
     return True
+
+
+def to_numpy(x: Union[ivy.Array, ivy.NativeArray])\
+        -> np.ndarray:
+    """
+    Converts array into a numpy array.
+
+    :param x: Input array.
+    :type x: array
+    :return: A numpy array.
+    """
+    return _cur_framework(x).to_numpy(x)
+
+
+def to_scalar(x: Union[ivy.Array, ivy.NativeArray])\
+        -> Number:
+    """
+    Converts an array with a single element into a scalar.
+
+    :param x: Input array with a single element.
+    :type x: array
+    :return: A scalar.
+    """
+    return _cur_framework(x).to_scalar(x)
+
+
+def to_list(x: Union[ivy.Array, ivy.NativeArray])\
+        -> List:
+    """
+    Creates a (possibly nested) list from input array.
+
+    :param x: Input array.
+    :type x: array
+    :return: A list representation of the input array.
+    """
+    return _cur_framework(x).to_list(x)

@@ -34,3 +34,25 @@ def copy_array(x):
 
 def array_equal(x0, x1):
     return _torch.equal(x0, x1)
+
+
+def to_numpy(x) -> np.ndarray:
+    if isinstance(x, np.ndarray) or isinstance(x, (float, int, bool)):
+        return x
+    elif _torch.is_tensor(x):
+        return x.detach().cpu().numpy()
+    raise ValueError('Expected a pytroch tensor.')
+
+
+def to_scalar(x) -> Union[float, int, bool]:
+    if isinstance(x, (float, int)):
+        return x
+    return x.item()
+
+
+def to_list(x):
+    if isinstance(x, np.ndarray):
+        return x.tolist()
+    elif _torch.is_tensor(x):
+        return x.detach().cpu().tolist()
+    raise ValueError('Expected a pytroch tensor.')
