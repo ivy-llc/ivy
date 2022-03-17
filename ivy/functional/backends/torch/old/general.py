@@ -19,15 +19,9 @@ from ivy.functional.ivy.old import default_dtype
 from ivy.functional.ivy.device import default_device
 from ivy.functional.backends.torch.device import dev_from_str, _callable_dev
 
+
 # API #
 # ----#
-
-
-
-
-
-
-
 
 def array_equal(x0, x1):
     return _torch.equal(x0, x1)
@@ -441,8 +435,53 @@ def scatter_flat(indices, updates, size: Optional[int] = None, tensor: Optional[
     return res
 
 
+def _parse_ellipsis(so, ndims):
+    pre = list()
+    for s in so:
+        if s is Ellipsis:
+            break
+        pre.append(s)
+    post = list()
+    for s in reversed(so):
+        if s is Ellipsis:
+            break
+        post.append(s)
+    return tuple(
+        pre +
+        [slice(None, None, None) for _ in range(ndims - len(pre) - len(post))] +
+        list(reversed(post))
+    )
+
+
 # noinspection PyShadowingNames
 def scatter_nd(indices, updates, shape=None, tensor=None, reduction='sum', dev=None):
+
+    # handle numeric updates
+    updates = _torch.tensor([updates] if isinstance(updates, (float, int, bool)) else updates,
+                            dtype=ivy.dtype(tensor, as_str=False))
+
+    # hanle non-tensor indices
+    if indices == ():
+        return updates
+    elif indices is Ellipsis or (isinstance(indices, tuple) and indices == (Ellipsis,)):
+        if updates.shape == () and ivy.exists(tensor) and tensor.shape == ():
+            return updates
+        shape = tensor.shape if ivy.exists(tensor) else updates.shape
+        indices = _torch.concat([_torch.unsqueeze(g, -1) for g in _torch.meshgrid(*[_torch.range(0, s) for s in shape])], -1)
+    elif isinstance(indices, (float, int, bool)):
+        indices = (indices,)
+    if isinstance(indices, tuple):
+        shape = tensor.shape if ivy.exists(tensor) else updates.shape
+        indices = _parse_ellipsis(indices, len(shape))
+        indices = _torch.concat([_torch.unsqueeze(g, -1) for g in _torch.meshgrid(
+            *[_torch.range(0, s) if idx is slice(None, None, None) else _torch.tensor(idx) % s
+              for s, idx in zip(shape, indices)])], -1)
+
+    # broadcast updates to indices
+    if updates.shape == ():
+        updates = _torch.broadcast_to(updates, indices.shape[:-1])
+
+    # implementation
     target = tensor
     target_given = ivy.exists(target)
     if ivy.exists(shape) and ivy.exists(target):
