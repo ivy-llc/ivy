@@ -12,6 +12,7 @@ Creation
    :maxdepth: -1
    :caption: Creation
 
+   creation/asarray.rst
    creation/zeros.rst
    creation/ones.rst
    creation/full_like.rst

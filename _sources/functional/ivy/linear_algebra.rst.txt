@@ -12,6 +12,7 @@ Linear algebra
    :maxdepth: -1
    :caption: Linear algebra
 
+   linear_algebra/matrix_transpose.rst
    linear_algebra/vector_norm.rst
    linear_algebra/svd.rst
    linear_algebra/diagonal.rst

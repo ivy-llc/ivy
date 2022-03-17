@@ -35,7 +35,7 @@
   <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="vector_norm" href="linear_algebra/vector_norm.html" />
+    <link rel="next" title="matrix_transpose" href="linear_algebra/matrix_transpose.html" />
     <link rel="prev" title="lstm_update" href="layers/lstm_update.html" /> 
 </head>
 
@@ -101,6 +101,7 @@
 <li class="toctree-l1"><a class="reference internal" href="image.html">Image</a></li>
 <li class="toctree-l1"><a class="reference internal" href="layers.html">Layers</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Linear algebra</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="linear_algebra/matrix_transpose.html">matrix_transpose</a></li>
 <li class="toctree-l2"><a class="reference internal" href="linear_algebra/vector_norm.html">vector_norm</a></li>
 <li class="toctree-l2"><a class="reference internal" href="linear_algebra/svd.html">svd</a></li>
 <li class="toctree-l2"><a class="reference internal" href="linear_algebra/diagonal.html">diagonal</a></li>
@@ -273,6 +274,22 @@ if x1 is an array having shape (…, M, K), x2 is an array having shape (…, L,
 </dd></dl>
 
 <dl class="py function">
+<dt id="ivy.functional.ivy.linear_algebra.matrix_transpose">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">matrix_transpose</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../_modules/ivy/functional/ivy/linear_algebra.html#matrix_transpose"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.linear_algebra.matrix_transpose" title="Permalink to this definition">¶</a></dt>
+<dd><p>Transposes a matrix (or a stack of matrices) <code class="docutils literal notranslate"><span class="pre">x</span></code>.
+Parameters
+———-
+x: array</p>
+<blockquote>
+<div><p>input array having shape <code class="docutils literal notranslate"><span class="pre">(...,</span> <span class="pre">M,</span> <span class="pre">N)</span></code> and whose innermost two dimensions form <code class="docutils literal notranslate"><span class="pre">MxN</span></code> matrices.</p>
+</div></blockquote>
+<dl class="simple">
+<dt>out: array</dt><dd><p>an array containing the transpose for each matrix and having shape <code class="docutils literal notranslate"><span class="pre">(...,</span> <span class="pre">N,</span> <span class="pre">M)</span></code>. The returned array must have the same data type as <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt id="ivy.functional.ivy.linear_algebra.qr">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">qr</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">ivy.array.Array</span></em>, <em class="sig-param"><span class="n">mode</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'reduced'</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="linear_algebra/qr.html#ivy.functional.ivy.linear_algebra.qr" title="ivy.functional.ivy.linear_algebra.qr">ivy.functional.ivy.linear_algebra.qr</a><a class="reference internal" href="../../_modules/ivy/functional/ivy/linear_algebra.html#qr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.linear_algebra.qr" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the qr decomposition x = QR of a full column rank matrix (or a stack of matrices), where Q is an orthonormal matrix (or a stack of matrices) and R is an upper-triangular matrix (or a stack of matrices).
@@ -426,6 +443,7 @@ Default: <code class="docutils literal notranslate"><span class="pre">2</span></
 <div class="toctree-wrapper compound">
 <p class="caption"><span class="caption-text">Linear algebra</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="linear_algebra/matrix_transpose.html">matrix_transpose</a></li>
 <li class="toctree-l1"><a class="reference internal" href="linear_algebra/vector_norm.html">vector_norm</a></li>
 <li class="toctree-l1"><a class="reference internal" href="linear_algebra/svd.html">svd</a></li>
 <li class="toctree-l1"><a class="reference internal" href="linear_algebra/diagonal.html">diagonal</a></li>
@@ -446,7 +464,7 @@ Default: <code class="docutils literal notranslate"><span class="pre">2</span></
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="linear_algebra/vector_norm.html" class="btn btn-neutral float-right" title="vector_norm" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="linear_algebra/matrix_transpose.html" class="btn btn-neutral float-right" title="matrix_transpose" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="layers/lstm_update.html" class="btn btn-neutral float-left" title="lstm_update" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>

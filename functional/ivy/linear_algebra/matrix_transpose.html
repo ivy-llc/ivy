@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>full_like &mdash; Ivy 1.0 documentation</title>
+  <title>matrix_transpose &mdash; Ivy 1.0 documentation</title>
   
 
   
@@ -35,8 +35,8 @@
   <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="ones_like" href="ones_like.html" />
-    <link rel="prev" title="ones" href="ones.html" /> 
+    <link rel="next" title="vector_norm" href="vector_norm.html" />
+    <link rel="prev" title="Linear algebra" href="../linear_algebra.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -92,18 +92,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../activations.html">Activations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../compilation.html">Compilation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../constants.html">Constants</a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="../creation.html">Creation</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="asarray.html">asarray</a></li>
-<li class="toctree-l2"><a class="reference internal" href="zeros.html">zeros</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ones.html">ones</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">full_like</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ones_like.html">ones_like</a></li>
-<li class="toctree-l2"><a class="reference internal" href="tril.html">tril</a></li>
-<li class="toctree-l2"><a class="reference internal" href="triu.html">triu</a></li>
-<li class="toctree-l2"><a class="reference internal" href="empty.html">empty</a></li>
-<li class="toctree-l2"><a class="reference internal" href="array.html">array</a></li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="../creation.html">Creation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../data_type.html">Data type</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../device.html">Device</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../elementwise.html">Elementwise</a></li>
@@ -111,7 +100,18 @@
 <li class="toctree-l1"><a class="reference internal" href="../gradients.html">Gradients</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../image.html">Image</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../layers.html">Layers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../linear_algebra.html">Linear algebra</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../linear_algebra.html">Linear algebra</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">matrix_transpose</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vector_norm.html">vector_norm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="svd.html">svd</a></li>
+<li class="toctree-l2"><a class="reference internal" href="diagonal.html">diagonal</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qr.html">qr</a></li>
+<li class="toctree-l2"><a class="reference internal" href="matmul.html">matmul</a></li>
+<li class="toctree-l2"><a class="reference internal" href="slodget.html">slodget</a></li>
+<li class="toctree-l2"><a class="reference internal" href="svdvals.html">svdvals</a></li>
+<li class="toctree-l2"><a class="reference internal" href="trace.html">trace</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="../losses.html">Losses</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../manipulation.html">Manipulation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../meta.html">Meta</a></li>
@@ -193,15 +193,15 @@
         
           <li><a href="../../ivy.html">&lt;no title&gt;</a> &raquo;</li>
         
-          <li><a href="../creation.html">Creation</a> &raquo;</li>
+          <li><a href="../linear_algebra.html">Linear algebra</a> &raquo;</li>
         
-      <li>full_like</li>
+      <li>matrix_transpose</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../../_sources/functional/ivy/creation/full_like.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../../_sources/functional/ivy/linear_algebra/matrix_transpose.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -214,23 +214,22 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="full-like">
-<h1>full_like<a class="headerlink" href="#full-like" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="matrix-transpose">
+<h1>matrix_transpose<a class="headerlink" href="#matrix-transpose" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
-<dt id="ivy.functional.ivy.creation.full_like">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">full_like</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="o">/</span></em>, <em class="sig-param"><span class="n">fill_value</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>int<span class="p">, </span>float<span class="p">]</span></span></em>, <em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">dtype</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Union<span class="p">[</span>ivy.Dtype<span class="p">, </span>str<span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">device</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Union<span class="p">[</span>ivy.Device<span class="p">, </span>str<span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../../_modules/ivy/functional/ivy/creation.html#full_like"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.creation.full_like" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns a new array filled with fill_value and having the same shape as an input array x.</p>
-<p>Parameters
-x:input array from which to derive the output array shape.</p>
-<p>fill_value: Scalar fill value</p>
-<p>dtype:output array data type.
-If dtype is None, the output array data type must be inferred from x.
-Default: None.</p>
-<p>device:device on which to place the created array.
-If device is None,the output array device must be inferred from x.
-Default: None.</p>
-<p>Returns
-out:an array having the same shape as x and where every element is equal to fill_value.</p>
+<dt id="ivy.functional.ivy.linear_algebra.matrix_transpose">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">matrix_transpose</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../../_modules/ivy/functional/ivy/linear_algebra.html#matrix_transpose"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.linear_algebra.matrix_transpose" title="Permalink to this definition">¶</a></dt>
+<dd><p>Transposes a matrix (or a stack of matrices) <code class="docutils literal notranslate"><span class="pre">x</span></code>.
+Parameters
+———-
+x: array</p>
+<blockquote>
+<div><p>input array having shape <code class="docutils literal notranslate"><span class="pre">(...,</span> <span class="pre">M,</span> <span class="pre">N)</span></code> and whose innermost two dimensions form <code class="docutils literal notranslate"><span class="pre">MxN</span></code> matrices.</p>
+</div></blockquote>
+<dl class="simple">
+<dt>out: array</dt><dd><p>an array containing the transpose for each matrix and having shape <code class="docutils literal notranslate"><span class="pre">(...,</span> <span class="pre">N,</span> <span class="pre">M)</span></code>. The returned array must have the same data type as <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <div class="line-block">
@@ -248,10 +247,10 @@ out:an array having the same shape as x and where every element is equal to fill
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="ones_like.html" class="btn btn-neutral float-right" title="ones_like" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="vector_norm.html" class="btn btn-neutral float-right" title="vector_norm" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="ones.html" class="btn btn-neutral float-left" title="ones" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="../linear_algebra.html" class="btn btn-neutral float-left" title="Linear algebra" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
