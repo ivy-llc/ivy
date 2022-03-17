@@ -96,18 +96,6 @@ def floor(x):
 def abs(x):
     return _torch.abs(x)
 
-<<<<<<< HEAD:ivy/functional/backends/torch/core/general.py
-
-def argmax(x, axis: int = 0):
-    ret = _torch.argmax(x, axis)
-=======
-def argmin(x, axis: int = 0):
-    ret = _torch.argmin(x, axis)
->>>>>>> 1b24beadbd673d6a9dd504e037c68547e5640627:ivy/functional/backends/torch/old/general.py
-    if ret.shape == ():
-        return ret.reshape(-1)
-    return ret
-
 
 def cast(x, dtype_in: str):
     dtype_val = dtype_from_str(dtype_in)
