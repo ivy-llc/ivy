@@ -16,7 +16,7 @@ qr
 slogdet
 #solve
 svd
-#svdvals
+svdvals
 #tensordot
 trace
 #vecdot
