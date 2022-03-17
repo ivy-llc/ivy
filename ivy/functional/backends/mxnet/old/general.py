@@ -124,13 +124,6 @@ def floor(x):
 def abs(x):
     return _mx.nd.abs(x)
 
-<<<<<<< HEAD:ivy/functional/backends/mxnet/core/general.py
-
-argmax = lambda x, axis=0: _mx.nd.argmax(x, axis)
-=======
-argmin = lambda x, axis=0: _mx.nd.argmin(x, axis)
-
->>>>>>> 1b24beadbd673d6a9dd504e037c68547e5640627:ivy/functional/backends/mxnet/old/general.py
 
 @_handle_flat_arrays_in_out
 def cast(x, dtype):
