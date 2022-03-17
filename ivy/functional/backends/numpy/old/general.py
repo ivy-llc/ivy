@@ -92,14 +92,8 @@ def dtype_bits(dtype_in):
     return int(dtype_str.replace('uint', '').replace('int', '').replace('bfloat', '').replace('float', ''))
 
 
-copy_array = lambda x: x.copy()
-array_equal = _np.array_equal
-to_numpy = lambda x: x
-to_numpy.__name__ = 'to_numpy'
-to_scalar = lambda x: x.item()
-to_scalar.__name__ = 'to_scalar'
-to_list = lambda x: x.tolist()
-to_list.__name__ = 'to_list'
+
+
 shape = lambda x, as_tensor=False: _np.asarray(_np.shape(x)) if as_tensor else x.shape
 shape.__name__ = 'shape'
 get_num_dims = lambda x, as_tensor=False: _np.asarray(len(_np.shape(x))) if as_tensor else len(x.shape)

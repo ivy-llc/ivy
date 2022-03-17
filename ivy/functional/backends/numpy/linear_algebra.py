@@ -9,6 +9,11 @@ import ivy
 from collections import namedtuple
 
 
+def matrix_transpose(x: np.ndarray)\
+        -> np.ndarray:
+    return np.swapaxes(x, -1, -2)
+
+
 # noinspection PyUnusedLocal,PyShadowingBuiltins
 def vector_norm(x: np.ndarray,
                 axis: Optional[Union[int, Tuple[int]]] = None,

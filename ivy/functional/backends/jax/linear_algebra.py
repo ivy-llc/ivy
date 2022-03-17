@@ -10,6 +10,11 @@ from ivy.functional.backends.jax import JaxArray
 import ivy
 
 
+def matrix_transpose(x: JaxArray)\
+        -> JaxArray:
+    return jnp.swapaxes(x, -1, -2)
+
+
 # noinspection PyUnusedLocal,PyShadowingBuiltins
 def vector_norm(x: JaxArray,
                 axis: Optional[Union[int, Tuple[int]]] = None, 

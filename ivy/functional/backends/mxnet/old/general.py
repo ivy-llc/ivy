@@ -72,13 +72,7 @@ DTYPE_FROM_STR = {'int8': _np.int8,
 
 
 
-@_handle_flat_arrays_in_out
-def array_equal(x0, x1):
-    if ivy.dtype(x0, as_str=True) == 'bool':
-        x0 = x0.astype('int32')
-    if ivy.dtype(x1, as_str=True) == 'bool':
-        x1 = x1.astype('int32')
-    return _mx.nd.min(_mx.nd.broadcast_equal(x0, x1)) == 1
+
 
 
 def dtype_bits(dtype_in):
@@ -91,12 +85,7 @@ def dtype_bits(dtype_in):
 
 equal = lambda x1, x2: x1 == x2
 equal.__name__ = 'equal'
-to_numpy = lambda x: x if isinstance(x, _np.ndarray) else (_np.array(x) if isinstance(x, (int, float)) else x.asnumpy())
-to_numpy.__name__ = 'to_numpy'
-to_scalar = lambda x: x if isinstance(x, Number) else x.asscalar().item()
-to_scalar.__name__ = 'to_scalar'
-to_list = lambda x: to_numpy(x).tolist()
-to_list.__name__ = 'to_list'
+
 shape = lambda x, as_tensor=False: _mx.nd.shape_array(x) if as_tensor else x.shape
 shape.__name__ = 'shape'
 get_num_dims = lambda x, as_tensor=False:\
