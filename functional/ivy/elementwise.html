@@ -113,6 +113,7 @@
 <li class="toctree-l2"><a class="reference internal" href="elementwise/less.html">less</a></li>
 <li class="toctree-l2"><a class="reference internal" href="elementwise/cos.html">cos</a></li>
 <li class="toctree-l2"><a class="reference internal" href="elementwise/logical_not.html">logical_not</a></li>
+<li class="toctree-l2"><a class="reference internal" href="elementwise/acos.html">acos</a></li>
 <li class="toctree-l2"><a class="reference internal" href="elementwise/logical_or.html">logical_or</a></li>
 <li class="toctree-l2"><a class="reference internal" href="elementwise/logical_and.html">logical_and</a></li>
 <li class="toctree-l2"><a class="reference internal" href="elementwise/acosh.html">acosh</a></li>
@@ -230,6 +231,28 @@
             
   <div class="section" id="module-ivy.functional.ivy.elementwise">
 <span id="elementwise"></span><h1>Elementwise<a class="headerlink" href="#module-ivy.functional.ivy.elementwise" title="Permalink to this headline">¶</a></h1>
+<dl class="py function">
+<dt id="ivy.functional.ivy.elementwise.acos">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">acos</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../_modules/ivy/functional/ivy/elementwise.html#acos"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.elementwise.acos" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates an implementation-dependent approximation of the principal value of the inverse cosine, having domain [-1, +1] and codomain [+0, +π], for each element x_i of the input array x. Each element-wise result is expressed in radians.</p>
+<p><strong>Special cases</strong></p>
+<p>For floating-point operands,</p>
+<ul class="simple">
+<li><p>If x_i is NaN, the result is NaN.</p></li>
+<li><p>If x_i is greater than 1, the result is NaN.</p></li>
+<li><p>If x_i is less than -1, the result is NaN.</p></li>
+<li><p>If x_i is 1, the result is +0.</p></li>
+</ul>
+<dl class="simple">
+<dt>x:</dt><dd><p>input array. Should have a floating-point data type.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>out:</dt><dd><p>an array containing the inverse cosine of each element in x. The returned array must have a floating-point data type determined by <span class="xref std std-ref">type-promotion</span>.</p>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py function">
 <dt id="ivy.functional.ivy.elementwise.acosh">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">acosh</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../_modules/ivy/functional/ivy/elementwise.html#acosh"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.elementwise.acosh" title="Permalink to this definition">¶</a></dt>
@@ -723,6 +746,7 @@ have a floating-point data type</p>
 <li class="toctree-l1"><a class="reference internal" href="elementwise/less.html">less</a></li>
 <li class="toctree-l1"><a class="reference internal" href="elementwise/cos.html">cos</a></li>
 <li class="toctree-l1"><a class="reference internal" href="elementwise/logical_not.html">logical_not</a></li>
+<li class="toctree-l1"><a class="reference internal" href="elementwise/acos.html">acos</a></li>
 <li class="toctree-l1"><a class="reference internal" href="elementwise/logical_or.html">logical_or</a></li>
 <li class="toctree-l1"><a class="reference internal" href="elementwise/logical_and.html">logical_and</a></li>
 <li class="toctree-l1"><a class="reference internal" href="elementwise/acosh.html">acosh</a></li>

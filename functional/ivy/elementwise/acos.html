@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>ceil &mdash; Ivy 1.0 documentation</title>
+  <title>acos &mdash; Ivy 1.0 documentation</title>
   
 
   
@@ -35,8 +35,8 @@
   <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="isfinite" href="isfinite.html" />
-    <link rel="prev" title="bitwise_and" href="bitwise_and.html" /> 
+    <link rel="next" title="logical_or" href="logical_or.html" />
+    <link rel="prev" title="logical_not" href="logical_not.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -98,7 +98,7 @@
 <li class="toctree-l1 current"><a class="reference internal" href="../elementwise.html">Elementwise</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="bitwise_invert.html">bitwise_invert</a></li>
 <li class="toctree-l2"><a class="reference internal" href="bitwise_and.html">bitwise_and</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">ceil</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ceil.html">ceil</a></li>
 <li class="toctree-l2"><a class="reference internal" href="isfinite.html">isfinite</a></li>
 <li class="toctree-l2"><a class="reference internal" href="asin.html">asin</a></li>
 <li class="toctree-l2"><a class="reference internal" href="isinf.html">isinf</a></li>
@@ -113,7 +113,7 @@
 <li class="toctree-l2"><a class="reference internal" href="less.html">less</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cos.html">cos</a></li>
 <li class="toctree-l2"><a class="reference internal" href="logical_not.html">logical_not</a></li>
-<li class="toctree-l2"><a class="reference internal" href="acos.html">acos</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">acos</a></li>
 <li class="toctree-l2"><a class="reference internal" href="logical_or.html">logical_or</a></li>
 <li class="toctree-l2"><a class="reference internal" href="logical_and.html">logical_and</a></li>
 <li class="toctree-l2"><a class="reference internal" href="acosh.html">acosh</a></li>
@@ -212,13 +212,13 @@
         
           <li><a href="../elementwise.html">Elementwise</a> &raquo;</li>
         
-      <li>ceil</li>
+      <li>acos</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../../_sources/functional/ivy/elementwise/ceil.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../../_sources/functional/ivy/elementwise/acos.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -231,30 +231,26 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="ceil">
-<h1>ceil<a class="headerlink" href="#ceil" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="acos">
+<h1>acos<a class="headerlink" href="#acos" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
-<dt id="ivy.functional.ivy.elementwise.ceil">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">ceil</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../../_modules/ivy/functional/ivy/elementwise.html#ceil"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.elementwise.ceil" title="Permalink to this definition">¶</a></dt>
-<dd><p>Rounds each element <code class="docutils literal notranslate"><span class="pre">x_i</span></code> of the input array <code class="docutils literal notranslate"><span class="pre">x</span></code> to the smallest (i.e., closest to <code class="docutils literal notranslate"><span class="pre">-infinity</span></code>) integer-valued number that is not less than <code class="docutils literal notranslate"><span class="pre">x_i</span></code>.</p>
+<dt id="ivy.functional.ivy.elementwise.acos">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">acos</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../../_modules/ivy/functional/ivy/elementwise.html#acos"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.elementwise.acos" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates an implementation-dependent approximation of the principal value of the inverse cosine, having domain [-1, +1] and codomain [+0, +π], for each element x_i of the input array x. Each element-wise result is expressed in radians.</p>
 <p><strong>Special cases</strong></p>
-<ul class="simple">
-<li><p>If <code class="docutils literal notranslate"><span class="pre">x_i</span></code> is already integer-valued, the result is <code class="docutils literal notranslate"><span class="pre">x_i</span></code>.</p></li>
-</ul>
 <p>For floating-point operands,</p>
 <ul class="simple">
-<li><p>If <code class="docutils literal notranslate"><span class="pre">x_i</span></code> is <code class="docutils literal notranslate"><span class="pre">+infinity</span></code>, the result is <code class="docutils literal notranslate"><span class="pre">+infinity</span></code>.</p></li>
-<li><p>If <code class="docutils literal notranslate"><span class="pre">x_i</span></code> is <code class="docutils literal notranslate"><span class="pre">-infinity</span></code>, the result is <code class="docutils literal notranslate"><span class="pre">-infinity</span></code>.</p></li>
-<li><p>If <code class="docutils literal notranslate"><span class="pre">x_i</span></code> is <code class="docutils literal notranslate"><span class="pre">+0</span></code>, the result is <code class="docutils literal notranslate"><span class="pre">+0</span></code>.</p></li>
-<li><p>If <code class="docutils literal notranslate"><span class="pre">x_i</span></code> is <code class="docutils literal notranslate"><span class="pre">-0</span></code>, the result is <code class="docutils literal notranslate"><span class="pre">-0</span></code>.</p></li>
-<li><p>If <code class="docutils literal notranslate"><span class="pre">x_i</span></code> is <code class="docutils literal notranslate"><span class="pre">NaN</span></code>, the result is <code class="docutils literal notranslate"><span class="pre">NaN</span></code>.</p></li>
+<li><p>If x_i is NaN, the result is NaN.</p></li>
+<li><p>If x_i is greater than 1, the result is NaN.</p></li>
+<li><p>If x_i is less than -1, the result is NaN.</p></li>
+<li><p>If x_i is 1, the result is +0.</p></li>
 </ul>
 <dl class="simple">
-<dt>x:</dt><dd><p>input array. Should have a numeric data type.</p>
+<dt>x:</dt><dd><p>input array. Should have a floating-point data type.</p>
 </dd>
 </dl>
 <dl class="simple">
-<dt>out:</dt><dd><p>an array containing the rounded result for each element in <code class="docutils literal notranslate"><span class="pre">x</span></code>. The returned array must have the same data type as <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p>
+<dt>out:</dt><dd><p>an array containing the inverse cosine of each element in x. The returned array must have a floating-point data type determined by <span class="xref std std-ref">type-promotion</span>.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -274,10 +270,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="isfinite.html" class="btn btn-neutral float-right" title="isfinite" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="logical_or.html" class="btn btn-neutral float-right" title="logical_or" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="bitwise_and.html" class="btn btn-neutral float-left" title="bitwise_and" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="logical_not.html" class="btn btn-neutral float-left" title="logical_not" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
