@@ -179,3 +179,43 @@ def to_list(x: Union[ivy.Array, ivy.NativeArray])\
     :return: A list representation of the input array.
     """
     return _cur_framework(x).to_list(x)
+
+def clip_vector_norm(x: Union[ivy.Array, ivy.NativeArray], max_norm: float, p: float = 2.0)\
+        -> Union[ivy.Array, ivy.NativeArray]:
+    """
+    Clips (limits) the vector p-norm of an array.
+
+    :param x: Input array containing elements to clip.
+    :type x: array
+    :param max_norm: The maximum value of the array norm.
+    :type max_norm: float
+    :param p: The p-value for computing the p-norm. Default is 2.
+    :type p: float, optional
+    :return: An array with the vector norm downscaled to the max norm if needed.
+    """
+    norm = ivy.vector_norm(x, p, keepdims=True)
+    ratio = ivy.stable_divide(max_norm, norm)
+    if ratio < 1:
+        return ratio * x
+    return x
+
+
+def clip_matrix_norm(x: Union[ivy.Array, ivy.NativeArray], max_norm: float, p: float = 2.0)\
+        -> Union[ivy.Array, ivy.NativeArray]:
+    """
+    Clips (limits) the matrix norm of an array.
+
+    :param x: Input array containing elements to clip.
+    :type x: array
+    :param max_norm: The maximum value of the array norm.
+    :type max_norm: float
+    :param p: The p-value for computing the p-norm. Default is 2.
+    :type p: float, optional
+    :return: An array with the matrix norm downscaled to the max norm if needed.
+    """
+    norms = ivy.matrix_norm(x, p, keepdims=True)
+    ratios = ivy.maximum(ivy.stable_divide(max_norm, norms), 1.)
+    return ratios * x
+
+
+
