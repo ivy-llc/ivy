@@ -119,18 +119,6 @@ floor = _jnp.floor
 # noinspection PyShadowingBuiltins
 abs = _jnp.absolute
 
-<<<<<<< HEAD:ivy/functional/backends/jax/core/general.py
-
-def argmax(x, axis=0):
-    ret = _jnp.argmax(x, axis)
-=======
-def argmin(x, axis=0):
-    ret = _jnp.argmin(x, axis)
->>>>>>> 1b24beadbd673d6a9dd504e037c68547e5640627:ivy/functional/backends/jax/old/general.py
-    if ret.shape == ():
-        return ret.reshape(-1)
-    return ret
-
 
 def cast(x, dtype):
     return x.astype(dtype_from_str(dtype))
