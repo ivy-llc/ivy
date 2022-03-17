@@ -9,6 +9,7 @@ import numpy as _np
 import math as _math
 import tensorflow as _tf
 from numbers import Number
+from collections import Iterable
 import tensorflow_probability as _tfp
 import multiprocessing as _multiprocessing
 from tensorflow.python.types.core import Tensor
@@ -288,8 +289,52 @@ def scatter_flat(indices, updates, size=None, tensor=None, reduction='sum', dev=
         return res
 
 
+def _parse_ellipsis(so, ndims):
+    pre = list()
+    for s in so:
+        if s is Ellipsis:
+            break
+        pre.append(s)
+    post = list()
+    for s in reversed(so):
+        if s is Ellipsis:
+            break
+        post.append(s)
+    return tuple(
+        pre +
+        [slice(None, None, None) for _ in range(ndims - len(pre) - len(post))] +
+        list(reversed(post))
+    )
+
+
 # noinspection PyShadowingNames
 def scatter_nd(indices, updates, shape=None, tensor=None, reduction='sum', dev=None):
+
+    # handle numeric updates
+    updates = _tf.constant([updates] if isinstance(updates, Number) else updates,
+                           dtype=ivy.dtype(tensor, as_str=False))
+
+    # hanle non-tensor indices
+    if indices == ():
+        return updates
+    elif indices is Ellipsis or (isinstance(indices, tuple) and indices == (Ellipsis,)):
+        if updates.shape == () and ivy.exists(tensor) and tensor.shape == ():
+            return updates
+        shape = tensor.shape if ivy.exists(tensor) else updates.shape
+        indices = _tf.concat([_tf.expand_dims(g, -1) for g in _tf.meshgrid(*[_tf.range(s) for s in shape])], -1)
+    elif isinstance(indices, Number):
+        indices = (indices,)
+    if isinstance(indices, tuple):
+        shape = tensor.shape if ivy.exists(tensor) else updates.shape
+        indices = _parse_ellipsis(indices, len(shape))
+        indices = _tf.concat([_tf.expand_dims(g, -1) for g in _tf.meshgrid(
+            *[_tf.range(s) if idx is slice(None, None, None) else idx % s for s, idx in zip(shape, indices)])], -1)
+
+    # broadcast updates to indices
+    if updates.shape == ():
+        updates = _tf.broadcast_to(updates, indices.shape[:-1])
+
+    # implementation
     target = tensor
     target_given = ivy.exists(target)
     if ivy.exists(shape) and ivy.exists(target):
