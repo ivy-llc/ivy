@@ -1,6 +1,6 @@
 abs
 #acos
-#acosh
+acosh
 #add
 asin
 asinh
@@ -13,7 +13,7 @@ asinh
 #bitwise_or
 #bitwise_right_shift
 #bitwise_xor
-ceil
+#ceil # asarray not yet implemented correctly
 cos
 cosh
 #divide
@@ -32,14 +32,14 @@ less
 #log
 log1p
 log2
-#log10
+log10
 #logaddexp
-#logical_and
+logical_and
 logical_not
-#logical_or
+logical_or
 #logical_xor
 #multiply
-#negative
+negative
 #not_equal
 #positive
 #pow
@@ -47,10 +47,10 @@ logical_not
 #round
 #sign
 sin
-#sinh
-#square
+sinh
+square
 sqrt
 #subtract
 tan
-#tanh
+tanh
 #trunc
