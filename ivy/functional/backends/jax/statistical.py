@@ -20,9 +20,9 @@ def prod(x: jnp.ndarray,
         -> jnp.ndarray:
 
     if dtype == None and jnp.issubdtype(x.dtype,jnp.integer):
-        if _jnp.issubdtype(x.dtype,_jnp.signedinteger) and x.dtype in [jnp.int8,jnp.int16,jnp.int32]:
+        if jnp.issubdtype(x.dtype,jnp.signedinteger) and x.dtype in [jnp.int8,jnp.int16,jnp.int32]:
             dtype = jnp.int32
-        elif _jnp.issubdtype(x.dtype,_jnp.unsignedinteger) and x.dtype in [jnp.uint8,jnp.uint16,jnp.uint32]:
+        elif jnp.issubdtype(x.dtype,jnp.unsignedinteger) and x.dtype in [jnp.uint8,jnp.uint16,jnp.uint32]:
             dtype = jnp.uint32
         elif x.dtype == jnp.int64: 
             dtype = jnp.int64
