@@ -46,3 +46,5 @@ def vector_to_skew_symmetric_matrix(vector):
 
 def qr(x, mode):
     return _jnp.linalg.qr(x, mode=mode)
+
+
