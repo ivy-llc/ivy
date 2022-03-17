@@ -13,4 +13,5 @@ Manipulation
    :caption: Manipulation
 
    manipulation/flip.rst
+   manipulation/expand_dims.rst
 

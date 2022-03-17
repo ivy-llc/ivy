@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>flip &mdash; Ivy 1.0 documentation</title>
+  <title>expand_dims &mdash; Ivy 1.0 documentation</title>
   
 
   
@@ -35,8 +35,8 @@
   <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="expand_dims" href="expand_dims.html" />
-    <link rel="prev" title="Manipulation" href="../manipulation.html" /> 
+    <link rel="next" title="Meta" href="../meta.html" />
+    <link rel="prev" title="flip" href="flip.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -103,8 +103,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../linear_algebra.html">Linear algebra</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../losses.html">Losses</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../manipulation.html">Manipulation</a><ul class="current">
-<li class="toctree-l2 current"><a class="current reference internal" href="#">flip</a></li>
-<li class="toctree-l2"><a class="reference internal" href="expand_dims.html">expand_dims</a></li>
+<li class="toctree-l2"><a class="reference internal" href="flip.html">flip</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">expand_dims</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../meta.html">Meta</a></li>
@@ -188,13 +188,13 @@
         
           <li><a href="../manipulation.html">Manipulation</a> &raquo;</li>
         
-      <li>flip</li>
+      <li>expand_dims</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../../_sources/functional/ivy/manipulation/flip.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../../_sources/functional/ivy/manipulation/expand_dims.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -207,20 +207,22 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="flip">
-<h1>flip<a class="headerlink" href="#flip" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="expand-dims">
+<h1>expand_dims<a class="headerlink" href="#expand-dims" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
-<dt id="ivy.functional.ivy.manipulation.flip">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">flip</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">axis</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Union<span class="p">[</span>int<span class="p">, </span>Tuple<span class="p">[</span>int<span class="p">]</span><span class="p">, </span>List<span class="p">[</span>int<span class="p">]</span><span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../../_modules/ivy/functional/ivy/manipulation.html#flip"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.manipulation.flip" title="Permalink to this definition">¶</a></dt>
-<dd><p>Reverses the order of elements in an array along the given axis. The shape of the array must be preserved.</p>
-<dl class="simple">
-<dt>x:</dt><dd><p>input array.</p>
+<dt id="ivy.functional.ivy.manipulation.expand_dims">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">expand_dims</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">axis</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Union<span class="p">[</span>int<span class="p">, </span>Tuple<span class="p">[</span>int<span class="p">]</span><span class="p">, </span>List<span class="p">[</span>int<span class="p">]</span><span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../../_modules/ivy/functional/ivy/manipulation.html#expand_dims"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.manipulation.expand_dims" title="Permalink to this definition">¶</a></dt>
+<dd><p>Expands the shape of an array.
+Inserts a new axis that will appear at the axis position in the expanded array shape.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>array</em>) – Input array.</p></li>
+<li><p><strong>axis</strong> (<em>int</em>) – Position in the expanded axes where the new axis is placed.</p></li>
+</ul>
 </dd>
-<dt>axis:</dt><dd><p>axis (or axes) along which to flip. If <code class="docutils literal notranslate"><span class="pre">axis</span></code> is <code class="docutils literal notranslate"><span class="pre">None</span></code>, the function must flip all input array axes. If <code class="docutils literal notranslate"><span class="pre">axis</span></code> is negative, the function must count from the last dimension. If provided more than one axis, the function must flip only the specified axes. Default: <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
-</dd>
-</dl>
-<dl class="simple">
-<dt>out:</dt><dd><p>an output array having the same data type and shape as <code class="docutils literal notranslate"><span class="pre">x</span></code> and whose elements, relative to <code class="docutils literal notranslate"><span class="pre">x</span></code>, are reordered.</p>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>array with the number of dimensions increased by onearray</p>
 </dd>
 </dl>
 </dd></dl>
@@ -240,10 +242,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="expand_dims.html" class="btn btn-neutral float-right" title="expand_dims" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="../meta.html" class="btn btn-neutral float-right" title="Meta" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="../manipulation.html" class="btn btn-neutral float-left" title="Manipulation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="flip.html" class="btn btn-neutral float-left" title="flip" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
