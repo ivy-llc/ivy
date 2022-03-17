@@ -50,32 +50,9 @@ DTYPE_FROM_STR = {'int8': _tf.int8,
 # API #
 # ----#
 
-# noinspection PyShadowingNames
-def array(object_in, dtype=None, dev=None):
-    dtype = dtype_from_str(default_dtype(dtype, object_in))
-    dev = default_device(dev)
-    with _tf.device(dev_from_str(dev)):
-        try:
-            tensor = _tf.convert_to_tensor(object_in, dtype=dtype)
-        except (TypeError, ValueError):
-            tensor = _tf.convert_to_tensor(ivy.nested_map(object_in, lambda x: _tf.cast(x, dtype)), dtype=dtype)
-        if dtype is None:
-            return tensor
-        return _tf.cast(tensor, dtype)
 
 
-asarray = array
 
-
-def is_array(x, exclusive=False):
-    if isinstance(x, Tensor):
-        if exclusive and isinstance(x, _tf.Variable):
-            return False
-        return True
-    return False
-
-
-copy_array = _tf.identity
 array_equal = _tf.experimental.numpy.array_equal
 
 
@@ -103,6 +80,7 @@ clip = _tf.clip_by_value
 round = _tf.round
 floormod = lambda x, y: x % y
 floor = _tf.floor
+
 
 
 # noinspection PyShadowingBuiltins
@@ -220,7 +198,6 @@ def swapaxes(x, axis0, axis1):
 
 
 transpose = _tf.transpose
-expand_dims = _tf.expand_dims
 where = lambda condition, x1, x2: _tf.where(_tf.cast(condition, _tf.bool), x1, x2)
 indices_where = _tf.where
 

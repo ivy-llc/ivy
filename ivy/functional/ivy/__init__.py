@@ -1,3 +1,6 @@
+from . import old
+from .old import *
+
 from . import activations
 from .activations import *
 from . import compilation
@@ -12,6 +15,8 @@ from . import device
 from .device import *
 from . import elementwise
 from .elementwise import *
+from . import general
+from .general import *
 from . import gradients
 from .gradients import *
 from . import image
@@ -30,6 +35,8 @@ from . import nest
 from .nest import *
 from . import norms
 from .norms import *
+from . import random
+from .random import *
 from . import searching
 from .searching import *
 from . import set
@@ -40,6 +47,3 @@ from . import statistical
 from .statistical import *
 from . import utility
 from .utility import *
-
-from . import old
-from .old import *

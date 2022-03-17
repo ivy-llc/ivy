@@ -15,3 +15,9 @@ def flip(x: np.ndarray,
         axis = [axis]
     axis = [item + num_dims if item < 0 else item for item in axis]
     return np.flip(x, axis)
+
+
+def expand_dims(x: np.ndarray,
+                axis: Optional[Union[int, Tuple[int], List[int]]] = None) \
+        -> np.ndarray:
+    return np.expand_dims(x, axis)

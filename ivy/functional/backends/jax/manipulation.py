@@ -12,3 +12,11 @@ def flip(x: JaxArray,
          -> JaxArray:
     return jnp.flip(x, axis=axis)
 
+
+def expand_dims(x: JaxArray,
+                axis: Optional[Union[int, Tuple[int], List[int]]] = None) \
+        -> JaxArray:
+    try:
+        return jnp.expand_dims(x, axis)
+    except ValueError as error:
+        raise IndexError(error)

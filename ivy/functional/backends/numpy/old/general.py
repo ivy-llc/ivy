@@ -15,7 +15,6 @@ import ivy
 from ivy.functional.ivy.old import default_dtype
 from ivy.functional.backends.numpy.device import _dev_callable
 
-
 DTYPE_TO_STR = {_np.dtype('int8'): 'int8',
                 _np.dtype('int16'): 'int16',
                 _np.dtype('int32'): 'int32',
@@ -80,18 +79,10 @@ def _flat_array_to_1_dim_array(x):
 # API #
 # ----#
 
-# noinspection PyShadowingNames
-def array(object_in, dtype=None, dev=None):
-    return _to_dev(_np.array(object_in, dtype=default_dtype(dtype, object_in)), dev)
 
 
-asarray = array
 
 
-def is_array(x, exclusive=False):
-    if isinstance(x, _np.ndarray):
-        return True
-    return False
 
 
 def dtype_bits(dtype_in):
@@ -211,7 +202,6 @@ def transpose(x, axes=None):
     return _np.transpose(x, axes)
 
 
-expand_dims = _np.expand_dims
 where = lambda condition, x1, x2: _np.where(condition, x1, x2)
 
 

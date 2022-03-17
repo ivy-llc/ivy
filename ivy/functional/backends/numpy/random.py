@@ -5,6 +5,10 @@ Collection of Numpy random functions, wrapped to fit Ivy syntax and signature.
 # global
 import numpy as _np
 
+
+# Extra #
+# ------#
+
 random_uniform = lambda low=0., high=1., shape=None, dev=None: _np.asarray(_np.random.uniform(low, high, shape))
 random_normal = lambda mean=0., std=1., shape=None, dev=None: _np.asarray(_np.random.normal(mean, std, shape))
 

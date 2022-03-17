@@ -58,6 +58,32 @@ def ones(shape: Union[int, Tuple[int], List[int]],
     return _cur_framework().ones(shape, dtype, device)
 
 
+def full_like(x: Union[ivy.Array, ivy.NativeArray], /,
+              fill_value: Union[int, float], *,
+              dtype: Optional[Union[ivy.Dtype, str]] = None,
+              device: Optional[Union[ivy.Device, str]] = None,
+              ) -> ivy.Array:
+    """
+    Returns a new array filled with fill_value and having the same shape as an input array x.
+
+    Parameters
+    x:input array from which to derive the output array shape.
+
+    fill_value: Scalar fill value
+
+    dtype:output array data type.
+    If dtype is None, the output array data type must be inferred from x.
+    Default: None.
+
+    device:device on which to place the created array.
+    If device is None,the output array device must be inferred from x.
+    Default: None.
+
+    Returns
+    out:an array having the same shape as x and where every element is equal to fill_value.
+    """
+    return _cur_framework(x).full_like(x, fill_value, dtype=dtype, device=device)
+
 def ones_like( x: Union[ivy.Array, ivy.NativeArray],
               dtype: Optional[Union[ivy.Dtype, str]] = None,
               dev: Optional[Union[ivy.Device, str]] = None,
@@ -77,7 +103,7 @@ def ones_like( x: Union[ivy.Array, ivy.NativeArray],
 
 def tril(x: Union[ivy.Array, ivy.NativeArray],
          k: int = 0) \
-         -> ivy.Array:
+        -> ivy.Array:
     """
     Returns the lower triangular part of a matrix (or a stack of matrices) x.
 
@@ -140,3 +166,24 @@ def empty(shape: Union[int, Tuple[int],List[int]],
 
 # Extra #
 # ------#
+# noinspection PyShadowingNames
+def array(object_in: Union[List, ivy.Array, ivy.NativeArray], dtype: Union[ivy.Dtype, str] = None,
+          dev: ivy.Device = None) -> Union[ivy.Array, ivy.NativeArray]:
+    """
+    Creates an array.
+
+    :param object_in: An array_like object, which exposes the array interface,
+            an object whose __array__ method returns an array, or any (nested) sequence.
+    :type object_in: array
+    :param dtype: The desired data-type for the array in string format, i.e. 'float32' or 'int64'.
+        If not given, then the type will be determined as the minimum type required to hold the objects in the
+        sequence.
+    :type dtype: data-type string, optional
+    :param dev: device string on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc..
+    :type dev: ivy.Device
+    :return: An array object satisfying the specified requirements, in the form of the selected framework.
+    """
+    return _cur_framework(object_in).array(object_in, dtype, dev)
+
+
+asarray = array
