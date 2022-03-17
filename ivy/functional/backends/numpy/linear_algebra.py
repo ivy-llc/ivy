@@ -32,12 +32,17 @@ def svd(x:np.ndarray,full_matrices: bool = True) -> Union[np.ndarray, Tuple[np.n
     U, D, VT=np.linalg.svd(x, full_matrices=full_matrices)
     res=results(U, D, VT)
     return res
-  
+
+
 def diagonal(x: np.ndarray,
              offset: int = 0,
              axis1: int = -2,
              axis2: int = -1) -> np.ndarray:
     return np.diagonal(x, offset=offset, axis1=axis1, axis2=axis2)
+
+
+def svdvals(x: np.ndarray) -> np.ndarray:
+    return np.linalg.svd(x, compute_uv=False)
 
 
 def qr(x: np.ndarray,
@@ -57,6 +62,7 @@ def slogdet(x:Union[ivy.Array,ivy.NativeArray],full_matrices: bool = True) -> Un
     sign, logabsdet = np.linalg.slogdet(x)
     res = results(sign, logabsdet)
     return res
+
 
 def trace(x: np.ndarray, 
           offset: int = 0)\
