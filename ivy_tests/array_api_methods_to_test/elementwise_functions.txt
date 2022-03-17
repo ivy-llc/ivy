@@ -1,8 +1,8 @@
 abs
-#acos
+#acos # depends on: greater
 acosh
 #add
-#asin # greater not yet implemented correctly
+#asin # depends on: greater
 asinh
 #atan
 #atan2
