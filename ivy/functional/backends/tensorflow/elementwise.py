@@ -9,10 +9,9 @@ import ivy
 
 def bitwise_invert(x: Tensor) \
         -> Tensor:
-    if 'int' not in str(x.dtype):
-        x = tf.cast(x, tf.int32)
-        return tf.cast(tf.bitwise.invert(x), tf.bool)
-    return tf.bitwise.invert(x)
+    if 'int' in str(x.dtype):
+        return tf.cast(tf.logical_not(tf.cast(x, tf.bool)), x.dtype)
+    return tf.logical_not(x)
 
 
 def bitwise_and(x1: Tensor,
