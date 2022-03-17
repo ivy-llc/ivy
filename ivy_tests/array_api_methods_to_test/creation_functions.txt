@@ -1,5 +1,5 @@
 #arange
-#asarray
+asarray
 empty
 #empty_like
 #eye

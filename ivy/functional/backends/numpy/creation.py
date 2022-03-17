@@ -76,4 +76,20 @@ def array(object_in, dtype=None, dev=None):
     return _to_dev(np.array(object_in, dtype=default_dtype(dtype, object_in)), dev)
 
 
-asarray = array
+def asarray(object_in, dtype=None, dev=None, copy=None):
+    # If copy=none then try using existing memory buffer
+    if isinstance(object_in, np.ndarray) and dtype is None:
+        dtype = object_in.dtype
+    elif isinstance(object_in, (list, tuple, dict)) and len(object_in) != 0 and dtype is None:
+        # Temporary fix on type
+        # Because default_type() didn't return correct type for normal python array
+        if copy is True:
+            return _to_dev(np.copy(np.asarray(object_in)), dev)
+        else:
+            return _to_dev(np.asarray(object_in), dev)
+    else:
+        dtype = default_dtype(dtype, object_in)
+    if copy is True:
+        return _to_dev(np.copy(np.asarray(object_in, dtype=dtype)), dev)
+    else:
+        return _to_dev(np.asarray(object_in, dtype=dtype), dev)
