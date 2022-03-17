@@ -28,3 +28,9 @@ def is_array(x, exclusive=False):
 
 copy_array = _tf.identity
 array_equal = _tf.experimental.numpy.array_equal
+to_numpy = lambda x: _np.asarray(_tf.convert_to_tensor(x))
+to_numpy.__name__ = 'to_numpy'
+to_scalar = lambda x: to_numpy(x).item()
+to_scalar.__name__ = 'to_scalar'
+to_list = lambda x: x.numpy().tolist()
+to_list.__name__ = 'to_list'
