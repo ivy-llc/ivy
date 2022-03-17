@@ -9,6 +9,24 @@ from ivy.framework_handler import current_framework as _cur_framework
 # Array API Standard #
 # -------------------#
 
+def bitwise_invert(x: Union[ivy.Array, ivy.NativeArray]) \
+        -> ivy.Array:
+    """
+    Inverts (flips) each bit for each element x_i of the input array x.
+
+    Parameters
+    ----------
+    x:
+        input array. Should have an integer or boolean data type.
+
+    Returns
+    -------
+    out:
+        an array containing the element-wise results. The returned array must have the same data type as x.
+    """
+    return _cur_framework(x).bitwise_invert(x)
+
+
 def bitwise_and(x1: Union[ivy.Array, ivy.NativeArray],
                 x2: Union[ivy.Array, ivy.NativeArray])\
         -> ivy.Array:
@@ -379,6 +397,33 @@ def logical_not(x: Union[ivy.Array, ivy.NativeArray])\
         an array containing the element-wise results. The returned array must have a data type of ``bool``.
     """
     return _cur_framework(x).logical_not(x)
+
+
+def acos(x: Union[ivy.Array, ivy.NativeArray])\
+        -> ivy.Array:
+    """
+    Calculates an implementation-dependent approximation of the principal value of the inverse cosine, having domain [-1, +1] and codomain [+0, +π], for each element x_i of the input array x. Each element-wise result is expressed in radians.
+
+    **Special cases**
+
+    For floating-point operands,
+
+    - If x_i is NaN, the result is NaN.
+    - If x_i is greater than 1, the result is NaN.
+    - If x_i is less than -1, the result is NaN.
+    - If x_i is 1, the result is +0.
+    
+    Parameters
+    ----------
+    x:
+        input array. Should have a floating-point data type.
+
+    Returns
+    -------
+    out:
+        an array containing the inverse cosine of each element in x. The returned array must have a floating-point data type determined by :ref:`type-promotion`.
+    """
+    return _cur_framework(x).acos(x)
 
 
 def logical_or(x1: Union[ivy.Array, ivy.NativeArray], x2: Union[ivy.Array, ivy.NativeArray])\

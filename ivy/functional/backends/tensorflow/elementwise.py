@@ -7,6 +7,13 @@ import typing
 import ivy
 
 
+def bitwise_invert(x: Tensor) \
+        -> Tensor:
+    if 'int' not in str(x.dtype):
+        return tf.logical_not(x)
+    return tf.bitwise.invert(x)
+
+
 def bitwise_and(x1: Tensor,
                 x2: Tensor)\
         -> Tensor:
@@ -130,6 +137,11 @@ def logical_not(x: Tensor)\
     return tf.logical_not(tf.cast(x, tf.bool))
 
 
+def acos(x: Tensor)\
+        -> Tensor:
+    return tf.acos(x)
+
+  
 def logical_or(x1: Tensor, x2: Tensor)\
         -> Tensor:
     return tf.logical_or(tf.cast(x1, tf.bool), tf.cast(x2, tf.bool))
