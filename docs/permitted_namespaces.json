@@ -1,4 +1,3 @@
 {
-  "ivy.core.": "ivy.",
-  "ivy.neural_net.": "ivy."
+  "ivy.functional.ivy.": "ivy."
 }
