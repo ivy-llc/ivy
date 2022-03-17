@@ -20,3 +20,9 @@ def expand_dims(x: JaxArray,
         return jnp.expand_dims(x, axis)
     except ValueError as error:
         raise IndexError(error)
+
+def permute_dims(x: JaxArray,
+                axes: Tuple[int,...]) \
+        -> JaxArray:
+    return jnp.transpose(x,axes)
+

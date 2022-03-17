@@ -29,3 +29,9 @@ def expand_dims(x: Tensor,
         return tf.expand_dims(x, axis)
     except tf.errors.InvalidArgumentError as error:
         raise IndexError(error)
+
+def permute_dims(x: Tensor,
+                axes: Tuple[int,...]) \
+        -> Tensor:
+    return tf.transpose(x,perm=axes)
+

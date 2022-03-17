@@ -26,3 +26,9 @@ def expand_dims(x: torch.Tensor,
                 axis: Optional[Union[int, Tuple[int], List[int]]] = None) \
         -> torch.Tensor:
     return torch.unsqueeze(x, axis)
+
+def permute_dims(x: torch.Tensor,
+                axes: Tuple[int,...]) \
+        -> torch.Tensor:
+    return torch.permute(x, axes)
+

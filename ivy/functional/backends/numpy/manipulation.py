@@ -21,3 +21,9 @@ def expand_dims(x: np.ndarray,
                 axis: Optional[Union[int, Tuple[int], List[int]]] = None) \
         -> np.ndarray:
     return np.expand_dims(x, axis)
+
+def permute_dims(x: np.ndarray,
+                axes: Tuple[int,...]) \
+        -> np.ndarray:
+    return np.transpose(x, axes)
+

@@ -15,10 +15,10 @@ import logging
 import nvidia_smi
 
 # noinspection PyUnresolvedReferences
-try:
-    nvidia_smi.nvmlInit()
-except nvidia_smi.NVMLError_LibraryNotFound:
-    pass
+# try:
+#     nvidia_smi.nvmlInit()
+# except nvidia_smi.NVMLError_LibraryNotFound:
+#     pass
 from typing import Union, Type, Callable, Iterable, Dict, Any
 
 # local
