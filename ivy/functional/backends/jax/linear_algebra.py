@@ -41,6 +41,10 @@ def diagonal(x: JaxArray,
     return jnp.diagonal(x, offset, axis1, axis2)
 
 
+def svdvals(x: JaxArray) -> JaxArray:
+    return jnp.linalg.svd(x, compute_uv=False)
+
+
 def qr(x: JaxArray,
        mode: str = 'reduced') -> namedtuple('qr', ['Q', 'R']):
     res = namedtuple('qr', ['Q', 'R'])
