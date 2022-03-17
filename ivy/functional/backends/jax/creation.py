@@ -52,6 +52,15 @@ def ones_like(x : JaxArray,
     return to_dev(jnp.ones_like(x, dtype=dtype), default_device(dev))
 
 
+def zeros_like(x: JaxArray,
+               dtype: Optional[jnp.dtype]=None,
+               device: Optional[jaxlib.xla_extension.Device] =None) \
+        -> JaxArray:
+    if not dtype:
+        dtype = x.dtype
+    return to_dev(jnp.zeros_like(x, dtype=dtype), default_device(device))
+
+
 def tril(x: JaxArray,
          k: int = 0) \
          -> JaxArray:

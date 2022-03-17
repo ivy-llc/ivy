@@ -72,6 +72,18 @@ def ones_like(x : torch.Tensor,
     return torch.ones_like(x, device=dev_from_str(dev))
 
 
+def zeros_like(x: torch.Tensor,
+               dtype: Optional[torch.dtype] = None,
+               device: Optional[Union[torch.device, str]] = None)\
+            -> torch.Tensor:
+    if device is None:
+        device = _callable_dev(x)
+    if dtype is not None:
+        return torch.zeros_like(x, dtype=dtype, device=dev_from_str(device))
+
+    return torch.zeros_like(x, device=dev_from_str(device))
+
+
 def tril(x: torch.Tensor,
          k: int = 0) \
          -> torch.Tensor:

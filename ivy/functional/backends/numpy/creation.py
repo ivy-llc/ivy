@@ -49,6 +49,17 @@ def ones_like(x : np.ndarray,
     return _to_dev(np.ones_like(x, dtype=dtype), dev)
 
 
+def zeros_like(x: np.ndarray,
+               dtype: Optional[np.dtype] =None,
+               dev:  Optional[str]  =None)\
+            -> np.ndarray:
+    if dtype:
+        dtype = 'bool_' if dtype == 'bool' else dtype
+    else:
+        dtype = x.dtype
+    return _to_dev(np.zeros_like(x, dtype=dtype), dev)
+
+
 def tril(x: np.ndarray,
          k: int = 0) \
          -> np.ndarray:
