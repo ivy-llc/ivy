@@ -7,7 +7,7 @@ from tensorflow.python.framework.dtypes import DType
 # local
 import ivy
 from ivy.functional.backends.tensorflow import Dtype
-from ivy import dev_from_str, default_device, dtype_from_str, default_dtype
+from ivy import dev_from_str, default_device, dtype_from_str, default_dtype, dtype_to_str
 
 
 def zeros(shape: Union[int, Tuple[int]],
@@ -88,4 +88,38 @@ def array(object_in, dtype=None, dev=None):
         return tf.cast(tensor, dtype)
 
 
-asarray = array
+def asarray(object_in, dtype=None, dev=None, copy=None):
+    dev = default_device(dev)
+    with tf.device(dev_from_str(dev)):
+        if copy:
+            if dtype is None and isinstance(object_in, tf.Tensor):
+                return tf.identity(object_in)
+            if dtype is None and not isinstance(object_in, tf.Tensor):
+                try:
+                    return tf.identity(tf.convert_to_tensor(object_in))
+                except (TypeError, ValueError):
+                    dtype = dtype_to_str(default_dtype(dtype, object_in))
+                    return tf.identity(tf.convert_to_tensor(ivy.nested_map(object_in, lambda x: tf.cast(x, dtype)), dtype=dtype))
+            else:
+                dtype = dtype_to_str(default_dtype(dtype, object_in))
+                try:
+                    tensor = tf.convert_to_tensor(object_in, dtype=dtype)
+                except (TypeError, ValueError):
+                    tensor = tf.convert_to_tensor(ivy.nested_map(object_in, lambda x: tf.cast(x, dtype)), dtype=dtype)
+                return tf.identity(tf.cast(tensor, dtype))
+        else:
+            if dtype is None and isinstance(object_in, tf.Tensor):
+                return object_in
+            if dtype is None and not isinstance(object_in, tf.Tensor):
+                try:
+                    return tf.convert_to_tensor(object_in)
+                except (TypeError, ValueError):
+                    dtype = dtype_to_str(default_dtype(dtype, object_in))
+                    return tf.convert_to_tensor(ivy.nested_map(object_in, lambda x: tf.cast(x, dtype)), dtype=dtype)
+            else:
+                dtype = dtype_to_str(default_dtype(dtype, object_in))
+                try:
+                    tensor = tf.convert_to_tensor(object_in, dtype=dtype)
+                except (TypeError, ValueError):
+                    tensor = tf.convert_to_tensor(ivy.nested_map(object_in, lambda x: tf.cast(x, dtype)), dtype=dtype)
+                return tf.cast(tensor, dtype)

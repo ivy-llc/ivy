@@ -9,8 +9,8 @@ from ivy.functional.backends.jax import JaxArray
 from ivy.functional.backends.jax.device import to_dev
 from ivy.functional.ivy.device import default_device
 from ivy.functional.ivy.old import default_dtype
-from jaxlib.xla_extension import Device, DeviceArray
-
+from jaxlib.xla_extension import Buffer, Device, DeviceArray
+from jax.interpreters.xla import _DeviceArray
 
 def ones(shape: Union[int, Tuple[int], List[int]],
          dtype: Optional[jnp.dtype] = None,
@@ -57,12 +57,12 @@ def tril(x: JaxArray,
          -> JaxArray:
     return jnp.tril(x, k)
 
-  
+
 def triu(x: JaxArray,
          k: int = 0) \
          -> JaxArray:
     return jnp.triu(x, k)
-    
+
 
 def empty(shape: Union[int, Tuple[int], List[int]],
           dtype: Optional[jnp.dtype] = None,
@@ -71,11 +71,27 @@ def empty(shape: Union[int, Tuple[int], List[int]],
     return to_dev(jnp.empty(shape, dtype_from_str(default_dtype(dtype))), default_device(device))
 
 
+def asarray(object_in, dtype: Optional[str] = None, dev: Optional[str] = None, copy: Optional[bool] = None):
+    if isinstance(object_in, (_DeviceArray, DeviceArray, Buffer)):
+        dtype = object_in.dtype
+    elif isinstance(object_in, (list, tuple, dict)) and len(object_in) != 0 and dtype is None:
+        # Temporary fix on type
+        # Because default_type() didn't return correct type for normal python array
+        if copy is True:
+            return to_dev((jnp.asarray(object_in).copy()), dev)
+        else:
+            return to_dev(jnp.asarray(object_in), dev)
+    else:
+        dtype = default_dtype(dtype, object_in)
+    if copy is True:
+        return to_dev((jnp.asarray(object_in, dtype=dtype).copy()), dev)
+    else:
+        return to_dev(jnp.asarray(object_in, dtype=dtype), dev)
+
+
 # Extra #
 # ------#
+
 # noinspection PyShadowingNames
 def array(object_in, dtype=None, dev=None):
     return to_dev(jnp.array(object_in, dtype=dtype_from_str(default_dtype(dtype, object_in))), default_device(dev))
-
-
-asarray = array
