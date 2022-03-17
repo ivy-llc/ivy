@@ -5,7 +5,7 @@ empty
 #eye
 #from_dlpack
 full
-#full_like
+full_like
 #linspace
 #meshgrid
 ones

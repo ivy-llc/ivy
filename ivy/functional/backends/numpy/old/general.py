@@ -15,7 +15,6 @@ import ivy
 from ivy.functional.ivy.old import default_dtype
 from ivy.functional.backends.numpy.device import _dev_callable
 
-
 DTYPE_TO_STR = {_np.dtype('int8'): 'int8',
                 _np.dtype('int16'): 'int16',
                 _np.dtype('int32'): 'int32',
@@ -203,7 +202,6 @@ def transpose(x, axes=None):
     return _np.transpose(x, axes)
 
 
-expand_dims = _np.expand_dims
 where = lambda condition, x1, x2: _np.where(condition, x1, x2)
 
 

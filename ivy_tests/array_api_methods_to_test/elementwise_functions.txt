@@ -2,7 +2,7 @@ abs
 #acos
 acosh
 #add
-#asin
+#asin # greater not yet implemented correctly
 asinh
 #atan
 #atan2
@@ -13,7 +13,7 @@ asinh
 #bitwise_or
 #bitwise_right_shift
 #bitwise_xor
-#ceil
+#ceil # depends on: asarray, remainder
 cos
 cosh
 #divide
