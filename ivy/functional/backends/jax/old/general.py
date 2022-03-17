@@ -9,6 +9,7 @@ import numpy as _onp
 import jax.numpy as _jnp
 import jaxlib as _jaxlib
 from numbers import Number
+from collections import Iterable
 from operator import mul as _mul
 from functools import reduce as _reduce
 from jaxlib.xla_extension import Buffer
@@ -310,6 +311,24 @@ def scatter_flat(indices, updates, size=None, tensor=None, reduction='sum', dev=
 
 # noinspection PyShadowingNames
 def scatter_nd(indices, updates, shape=None, tensor=None, reduction='sum', dev=None):
+
+    # parse numeric inputs
+    if indices not in [Ellipsis, ()] and not (isinstance(indices, Iterable) and Ellipsis in indices):
+        indices = [[indices]] if isinstance(indices, Number) else indices
+        indices = _jnp.array(indices)
+        if len(indices.shape) < 2:
+            indices = _jnp.expand_dims(indices, -1)
+    updates = [updates] if isinstance(updates, Number) else updates
+    updates = _jnp.array(updates, dtype=ivy.dtype(tensor, as_str=False))
+
+    # handle Ellipsis
+    if isinstance(indices, tuple) or indices is Ellipsis:
+        indices_tuple = indices
+    else:
+        indices_flat = indices.reshape(-1, indices.shape[-1]).T
+        indices_tuple = tuple(indices_flat) + (Ellipsis,)
+
+    # implementation
     target = tensor
     target_given = ivy.exists(target)
     if ivy.exists(shape) and ivy.exists(target):
@@ -317,8 +336,6 @@ def scatter_nd(indices, updates, shape=None, tensor=None, reduction='sum', dev=N
     if dev is None:
         dev = callable_dev(updates)
     shape = list(shape) if ivy.exists(shape) else list(tensor.shape)
-    indices_flat = indices.reshape(-1, indices.shape[-1]).T
-    indices_tuple = tuple(indices_flat) + (Ellipsis,)
     if reduction == 'sum':
         if not target_given:
             target = _jnp.zeros(shape, dtype=updates.dtype)
