@@ -16,7 +16,6 @@ def bitwise_invert(x: Union[ivy.Array, ivy.NativeArray]) \
 
     Parameters
     ----------
-
     x:
         input array. Should have an integer or boolean data type.
 
@@ -24,7 +23,6 @@ def bitwise_invert(x: Union[ivy.Array, ivy.NativeArray]) \
     -------
     out:
         an array containing the element-wise results. The returned array must have the same data type as x.
-
     """
     return _cur_framework(x).bitwise_invert(x)
 
