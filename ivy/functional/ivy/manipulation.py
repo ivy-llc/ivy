@@ -10,7 +10,7 @@ from ivy.framework_handler import current_framework as _cur_framework
 # -------------------#
 
 def flip(x: Union[ivy.Array, ivy.NativeArray],
-        axis: Optional[Union[int, Tuple[int], List[int]]] = None) \
+        axis: Optional[Union[int, Tuple[int], List[int]]] = None)\
         -> ivy.Array:
     """
     Reverses the order of elements in an array along the given axis. The shape of the array must be preserved.
