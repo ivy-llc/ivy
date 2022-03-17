@@ -90,18 +90,7 @@ def abs(x):
         return x
     return _tf.abs(x)
 
-<<<<<<< HEAD:ivy/functional/backends/tensorflow/core/general.py
-
-def argmax(x, axis=0):
-    ret = _tf.argmax(x, axis)
-=======
-def argmin(x, axis=0):
-    ret = _tf.argmin(x, axis)
->>>>>>> 1b24beadbd673d6a9dd504e037c68547e5640627:ivy/functional/backends/tensorflow/old/general.py
-    if ret.shape == ():
-        return _tf.reshape(ret, (-1,))
-    return ret
-
+  
 
 def cast(x, dtype):
     return _tf.cast(x, dtype_from_str(dtype))
