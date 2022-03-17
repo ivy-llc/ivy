@@ -9,7 +9,7 @@ import ivy
 
 def bitwise_invert(x: Tensor) \
         -> Tensor:
-    if x.dtype.is_bool:
+    if 'int' not in str(x.dtype):
         x = tf.cast(x, tf.int32)
     return tf.bitwise.invert(x)
 
