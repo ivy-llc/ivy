@@ -11,6 +11,22 @@ inf = float('inf')
 # Array API Standard #
 # -------------------#
 
+def matrix_transpose(x: Union[ivy.Array, ivy.NativeArray])\
+        -> ivy.Array:
+    """
+    Transposes a matrix (or a stack of matrices) ``x``.
+    Parameters
+    ----------
+    x: array
+        input array having shape ``(..., M, N)`` and whose innermost two dimensions form ``MxN`` matrices.
+    Returns
+    -------
+    out: array
+        an array containing the transpose for each matrix and having shape ``(..., N, M)``. The returned array must have the same data type as ``x``.
+    """
+    return _cur_framework(x).matrix_transpose(x)
+
+
 # noinspection PyShadowingBuiltins
 def vector_norm(x: Union[ivy.Array, ivy.NativeArray],
                 axis: Optional[Union[int, Tuple[int]]] = None,
