@@ -13,12 +13,6 @@ def tan(x):
     return _torch.tan(x)
 
 
-def asin(x):
-    if isinstance(x, float):
-        return math.asin(x)
-    return _torch.asin(x)
-
-
 def acos(x):
     if isinstance(x, float):
         return math.acos(x)
