@@ -30,18 +30,6 @@ def asin(x):
     return _cur_framework(x).asin(x)
 
 
-def acos(x):
-    """
-    Computes trigonometric inverse cosine element-wise.
-    The inverse of cos so that, if y = cos(x), then x = arccos(y).
-
-    :param x: x-coordinate on the unit circle. For real arguments, the domain is [-1, 1].
-    :type x: array
-    :return: The angle of the ray intersecting the unit circle at the given x-coordinate in radians [0, pi].
-    """
-    return _cur_framework(x).acos(x)
-
-
 def atan(x):
     """
     Computes trigonometric inverse tangent, element-wise.
