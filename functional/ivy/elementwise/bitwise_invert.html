@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>log1p &mdash; Ivy 1.0 documentation</title>
+  <title>bitwise_invert &mdash; Ivy 1.0 documentation</title>
   
 
   
@@ -35,8 +35,8 @@
   <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="isnan" href="isnan.html" />
-    <link rel="prev" title="log10" href="log10.html" /> 
+    <link rel="next" title="bitwise_and" href="bitwise_and.html" />
+    <link rel="prev" title="Elementwise" href="../elementwise.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -96,7 +96,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../data_type.html">Data type</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../device.html">Device</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../elementwise.html">Elementwise</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="bitwise_invert.html">bitwise_invert</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">bitwise_invert</a></li>
 <li class="toctree-l2"><a class="reference internal" href="bitwise_and.html">bitwise_and</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ceil.html">ceil</a></li>
 <li class="toctree-l2"><a class="reference internal" href="isfinite.html">isfinite</a></li>
@@ -108,7 +108,7 @@
 <li class="toctree-l2"><a class="reference internal" href="cosh.html">cosh</a></li>
 <li class="toctree-l2"><a class="reference internal" href="log2.html">log2</a></li>
 <li class="toctree-l2"><a class="reference internal" href="log10.html">log10</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">log1p</a></li>
+<li class="toctree-l2"><a class="reference internal" href="log1p.html">log1p</a></li>
 <li class="toctree-l2"><a class="reference internal" href="isnan.html">isnan</a></li>
 <li class="toctree-l2"><a class="reference internal" href="less.html">less</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cos.html">cos</a></li>
@@ -211,13 +211,13 @@
         
           <li><a href="../elementwise.html">Elementwise</a> &raquo;</li>
         
-      <li>log1p</li>
+      <li>bitwise_invert</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../../_sources/functional/ivy/elementwise/log1p.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../../_sources/functional/ivy/elementwise/bitwise_invert.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -230,19 +230,18 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="log1p">
-<h1>log1p<a class="headerlink" href="#log1p" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="bitwise-invert">
+<h1>bitwise_invert<a class="headerlink" href="#bitwise-invert" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
-<dt id="ivy.functional.ivy.elementwise.log1p">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">log1p</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../../_modules/ivy/functional/ivy/elementwise.html#log1p"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.elementwise.log1p" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculates an implementation-dependent approximation to log(1+x), where log refers to the natural (base e)
-logarithm.</p>
+<dt id="ivy.functional.ivy.elementwise.bitwise_invert">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">bitwise_invert</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../../_modules/ivy/functional/ivy/elementwise.html#bitwise_invert"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.elementwise.bitwise_invert" title="Permalink to this definition">¶</a></dt>
+<dd><p>Inverts (flips) each bit for each element x_i of the input array x.</p>
 <dl class="simple">
-<dt>x:</dt><dd><p>input array.</p>
+<dt>x:</dt><dd><p>input array. Should have an integer or boolean data type.</p>
 </dd>
 </dl>
 <dl class="simple">
-<dt>out:</dt><dd><p>a new array containing the evaluated result for each element in x.</p>
+<dt>out:</dt><dd><p>an array containing the element-wise results. The returned array must have the same data type as x.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -262,10 +261,10 @@ logarithm.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="isnan.html" class="btn btn-neutral float-right" title="isnan" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="bitwise_and.html" class="btn btn-neutral float-right" title="bitwise_and" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="log10.html" class="btn btn-neutral float-left" title="log10" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="../elementwise.html" class="btn btn-neutral float-left" title="Elementwise" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
