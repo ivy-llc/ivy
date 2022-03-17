@@ -1,7 +1,7 @@
 #cholesky
 #cross
 #det
-diagonal
+#diagonal # fails non-determinstically for jax, due to +0 vs -0 inconsistencies
 #eigh
 #eigvalsh
 #inv
