@@ -55,20 +55,20 @@ def logical_not(x: mx.ndarray.ndarray.NDArray)\
 
 
 @_handle_flat_arrays_in_out
-<<<<<<< HEAD:ivy/functional/backends/mxnet/array_api/elementwise_functions.py
 def acos(x: mx.ndarray.ndarray.NDArray)\
       -> mx.ndarray.ndarray.NDArray:
     if isinstance(x, float):
         return math.acos(x)
     else:
         mx.nd.arccos(x)
-=======
+
+
+@_handle_flat_arrays_in_out        
 def logical_and(x1: mx.ndarray.ndarray.NDArray,
                 x2: mx.ndarray.ndarray.NDArray,
                 dtype: ['bool'])\
         -> mx.ndarray.ndarray.NDArray:
     return mx.nd.logical_and(x1, x2, dtype).astype('bool')
->>>>>>> upstream/master:ivy/functional/backends/mxnet/elementwise.py
 
 
 @_handle_flat_arrays_in_out
