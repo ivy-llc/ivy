@@ -64,7 +64,7 @@ class Array(ArrayWithArrayAPI, ArrayWithDevice, ArrayWithGeneral, ArrayWithGradi
 
     @property
     def shape(self):
-        return self._shape
+        return tuple(self._shape)
 
     @property
     def dtype(self):
@@ -124,12 +124,6 @@ class Array(ArrayWithArrayAPI, ArrayWithDevice, ArrayWithGeneral, ArrayWithGradi
         try:
             self._data.__setitem__(query, val)
         except (AttributeError, TypeError):
-            query = [[query]] if isinstance(query, Number) else query
-            query = ivy.array(query)
-            if len(query.shape) < 2:
-                query = ivy.expand_dims(query, -1)
-            val = [val] if isinstance(val, Number) else val
-            val = ivy.array(val, dtype=ivy.dtype(self._data))
             self._data = ivy.scatter_nd(query, val, tensor=self._data, reduction='replace')
 
     @_native_wrapper

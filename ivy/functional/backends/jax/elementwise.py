@@ -5,6 +5,11 @@ import jax.numpy as jnp
 from ivy.functional.backends.jax import JaxArray
 
 
+def bitwise_invert(x: JaxArray)\
+        -> JaxArray:
+    return jnp.bitwise_not(x)
+
+
 def bitwise_and(x1: JaxArray,
                 x2: JaxArray)\
         -> JaxArray:
@@ -101,6 +106,11 @@ def logical_and(x1: JaxArray, x2: JaxArray)\
 def logical_not(x: JaxArray)\
         -> JaxArray:
     return jnp.logical_not(x)
+
+
+def acos(x: JaxArray)\
+        -> JaxArray:
+    return jnp.arccos(x)
 
 
 def acosh(x: JaxArray)\
