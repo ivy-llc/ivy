@@ -54,7 +54,7 @@ DTYPE_FROM_STR = {'int8': _tf.int8,
 
 
 
-array_equal = _tf.experimental.numpy.array_equal
+
 
 
 def dtype_bits(dtype_in):

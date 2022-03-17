@@ -16,6 +16,7 @@ from ivy.functional.ivy.old import default_dtype
 from ivy.functional.backends.numpy.device import _dev_callable
 
 copy_array = lambda x: x.copy()
+array_equal = _np.array_equal
 
 def is_array(x, exclusive=False):
     if isinstance(x, _np.ndarray):
