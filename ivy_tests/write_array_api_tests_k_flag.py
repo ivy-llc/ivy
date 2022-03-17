@@ -34,6 +34,9 @@ for fpath in fpaths:
     tests_to_run += ['test_' + s for s in contents if ('#' not in s and s != '')]
     tests_to_skip += ['test_' + s[1:].split(' ')[0] for s in contents if '#' in s]
 
+# temporary fix for wrongly added test, due to addition of positive method
+tests_to_skip += ['test_positive_definite_matrices']
+
 # prune tests to skip
 tests_to_skip = [tts for tts in tests_to_skip if not max([tts in ttr for ttr in tests_to_run])]
 
