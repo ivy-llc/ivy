@@ -30,3 +30,7 @@ def is_array(x, exclusive=False):
 
 def copy_array(x):
     return x.clone()
+
+
+def array_equal(x0, x1):
+    return _torch.equal(x0, x1)

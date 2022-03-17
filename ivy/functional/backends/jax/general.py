@@ -33,3 +33,4 @@ def is_array(x, exclusive=False):
                           _jax.interpreters.partial_eval.DynamicJaxprTracer))
 
 copy_array = _jnp.array
+array_equal = _jnp.array_equal
