@@ -90,7 +90,7 @@ def _to_array(x):
 
 
 
-array_equal = _jnp.array_equal
+
 
 
 def dtype_bits(dtype_in):
