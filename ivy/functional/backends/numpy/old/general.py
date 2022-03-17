@@ -202,7 +202,6 @@ def transpose(x, axes=None):
     return _np.transpose(x, axes)
 
 
-expand_dims = _np.expand_dims
 where = lambda condition, x1, x2: _np.where(condition, x1, x2)
 
 

@@ -294,10 +294,6 @@ def transpose(x, axes: List[int]):
     return x.permute(axes)
 
 
-def expand_dims(x, axis: int):
-    return _torch.unsqueeze(x, axis)
-
-
 def where(condition, x1, x2):
     return _torch.where(condition.type(_torch.bool), x1, x2)
 

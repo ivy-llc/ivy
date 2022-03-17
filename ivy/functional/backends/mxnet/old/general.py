@@ -286,12 +286,6 @@ def transpose(x, axes=None):
     return _mx.nd.transpose(x, axes)
 
 
-def expand_dims(x, axis):
-    if x.shape == ():
-        return _flat_array_to_1_dim_array(x)
-    return _mx.nd.expand_dims(x, axis)
-
-
 @_handle_flat_arrays_in_out
 def where(condition, x1, x2):
     x_shape = list(x1.shape)
