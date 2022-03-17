@@ -271,6 +271,7 @@
     <span class="n">x_raised</span> <span class="o">=</span> <span class="n">x</span> <span class="o">**</span> <span class="nb">ord</span>
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">reduce_sum</span><span class="p">(</span><span class="n">x_raised</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">keepdims</span><span class="p">)</span> <span class="o">**</span> <span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="nb">ord</span><span class="p">)</span></div>
 
+
 <div class="viewcode-block" id="svd"><a class="viewcode-back" href="../../../../functional/ivy/linear_algebra/svd.html#ivy.functional.ivy.linear_algebra.svd">[docs]</a><span class="k">def</span> <span class="nf">svd</span><span class="p">(</span><span class="n">x</span><span class="p">:</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span><span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span><span class="n">full_matrices</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span><span class="o">...</span><span class="p">]]:</span>
 
     <span class="sd">&quot;&quot;&quot;</span>
@@ -294,6 +295,7 @@
 <span class="sd">        The size of the last two dimensions depends on the value of full_matrices.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">svd</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">full_matrices</span><span class="p">)</span></div>
+
 
 <div class="viewcode-block" id="diagonal"><a class="viewcode-back" href="../../../../functional/ivy/linear_algebra/diagonal.html#ivy.functional.ivy.linear_algebra.diagonal">[docs]</a><span class="k">def</span> <span class="nf">diagonal</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
              <span class="n">offset</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
@@ -408,6 +410,26 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">slodget</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="svdvals"><a class="viewcode-back" href="../../../../functional/ivy/linear_algebra/svdvals.html#ivy.functional.ivy.linear_algebra.svdvals">[docs]</a><span class="k">def</span> <span class="nf">svdvals</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],)</span> \
+            <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns the singular values of a matrix (or a stack of matrices) ``x``.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x:</span>
+<span class="sd">        input array having shape ``(..., M, N)`` and whose innermost two dimensions form ``MxN`` matrices.</span>
+<span class="sd">    Return</span>
+<span class="sd">    ----------</span>
+<span class="sd">    Out:</span>
+<span class="sd">        array with shape ``(..., K)`` that contains the vector(s) of singular values of length ``K``, where K = min(M, N).</span>
+<span class="sd">        The values are sorted in descending order by magnitude.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">svdvals</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
+
 
 <div class="viewcode-block" id="trace"><a class="viewcode-back" href="../../../../functional/ivy/linear_algebra/trace.html#ivy.functional.ivy.linear_algebra.trace">[docs]</a><span class="k">def</span> <span class="nf">trace</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
           <span class="n">offset</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span>\

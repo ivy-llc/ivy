@@ -18,5 +18,6 @@ Linear algebra
    linear_algebra/qr.rst
    linear_algebra/matmul.rst
    linear_algebra/slodget.rst
+   linear_algebra/svdvals.rst
    linear_algebra/trace.rst
 
