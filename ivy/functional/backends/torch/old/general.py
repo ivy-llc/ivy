@@ -23,8 +23,6 @@ from ivy.functional.backends.torch.device import dev_from_str, _callable_dev
 # API #
 # ----#
 
-def array_equal(x0, x1):
-    return _torch.equal(x0, x1)
 
 
 def dtype_bits(dtype_in):

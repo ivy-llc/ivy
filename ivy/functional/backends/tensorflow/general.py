@@ -27,3 +27,4 @@ def is_array(x, exclusive=False):
 
 
 copy_array = _tf.identity
+array_equal = _tf.experimental.numpy.array_equal
