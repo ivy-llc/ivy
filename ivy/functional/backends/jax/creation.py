@@ -26,6 +26,20 @@ def zeros(shape: Union[int, Tuple[int], List[int]],
     return to_dev(jnp.zeros(shape, dtype_from_str(default_dtype(dtype))), default_device(device))
 
 
+def full_like(x: JaxArray,
+              fill_value: Union[int, float],
+              dtype: Optional[jnp.dtype] = None,
+              device: Optional[jaxlib.xla_extension.Device] = None) \
+        -> DeviceArray:
+    if dtype and str:
+        dtype = jnp.dtype(dtype)
+    else:
+        dtype = x.dtype
+
+    return to_dev(jnp.full_like(x, fill_value, dtype=dtype_from_str(default_dtype(dtype, fill_value))),
+              default_device(device))
+
+
 def ones_like(x : JaxArray,
               dtype: Optional[Union[jnp.dtype, str]]=None,
               dev: Optional[Union[Device, str]] = None)\
