@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>min &mdash; Ivy 1.0 documentation</title>
+  <title>prod &mdash; Ivy 1.0 documentation</title>
   
 
   
@@ -35,8 +35,8 @@
   <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="max" href="max.html" />
-    <link rel="prev" title="Statistical" href="../statistical.html" /> 
+    <link rel="next" title="Utility" href="../utility.html" />
+    <link rel="prev" title="max" href="max.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -111,9 +111,9 @@
 <li class="toctree-l1"><a class="reference internal" href="../set.html">Set</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../sorting.html">Sorting</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../statistical.html">Statistical</a><ul class="current">
-<li class="toctree-l2 current"><a class="current reference internal" href="#">min</a></li>
+<li class="toctree-l2"><a class="reference internal" href="min.html">min</a></li>
 <li class="toctree-l2"><a class="reference internal" href="max.html">max</a></li>
-<li class="toctree-l2"><a class="reference internal" href="prod.html">prod</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">prod</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../utility.html">Utility</a></li>
@@ -189,13 +189,13 @@
         
           <li><a href="../statistical.html">Statistical</a> &raquo;</li>
         
-      <li>min</li>
+      <li>prod</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../../_sources/functional/ivy/statistical/min.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../../_sources/functional/ivy/statistical/prod.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -208,23 +208,46 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="min">
-<h1>min<a class="headerlink" href="#min" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="prod">
+<h1>prod<a class="headerlink" href="#prod" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
-<dt id="ivy.functional.ivy.statistical.min">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">min</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">axis</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Union<span class="p">[</span>int<span class="p">, </span>Tuple<span class="p">[</span>int<span class="p">]</span><span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">keepdims</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../../_modules/ivy/functional/ivy/statistical.html#min"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.statistical.min" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the minimum value of the input array x.</p>
+<dt id="ivy.functional.ivy.statistical.prod">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">prod</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">axis</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Union<span class="p">[</span>int<span class="p">, </span>Tuple<span class="p">[</span>int<span class="p">]</span><span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">dtype</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Union<span class="p">[</span>ivy.Dtype<span class="p">, </span>str<span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">keepdims</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../../_modules/ivy/functional/ivy/statistical.html#prod"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.statistical.prod" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the product of input array x elements.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> – Input array containing elements to min.</p></li>
-<li><p><strong>axis</strong> – Axis or axes along which minimum values must be computed, default is None.</p></li>
+<li><p><strong>x</strong> (<em>array</em>) – input array. Should have a numeric data type.</p></li>
+<li><p><strong>axis</strong> (<em>Union</em><em>[</em><em>int</em><em>, </em><em>Tuple</em><em>[</em><em>int</em><em>, </em><em>..</em><em>]</em>) – axis or axes along which products must be computed. By default, the product must be
+computed over the entire array. If a tuple of integers, products must be computed over multiple axes. Default: None.</p></li>
+<li><p><strong>dtype</strong> (<em>dtype</em>) – <p>data type of the returned array. If None,
+if the default data type corresponding to the data type “kind” (integer or floating-point) of x has a smaller</p>
+<blockquote>
+<div><p>range of values than the data type of x (e.g., x has data type int64 and the default data type is int32,
+or x has data type uint64 and the default data type is int64), the returned array must have the same data type as x.</p>
+</div></blockquote>
+<p>if x has a floating-point data type, the returned array must have the default floating-point data type.
+if x has a signed integer data type (e.g., int16), the returned array must have the default integer data type.
+if x has an unsigned integer data type (e.g., uint16), the returned array must have an unsigned integer data type</p>
+<blockquote>
+<div><p>having the same number of bits as the default integer data type (e.g., if the default integer data type is int32, 
+the returned array must have a uint32 data type).</p>
+</div></blockquote>
+<p>If the data type (either specified or resolved) differs from the data type of x, the input array should be cast 
+to the specified data type before computing the product. Default: None.</p>
+</p></li>
+<li><p><strong>keepdims</strong> – if True, the reduced axes (dimensions) must be included in the result as singleton dimensions, and,</p></li>
 </ul>
 </dd>
 </dl>
-<p>:param keepdims, optional axis or axes along which minimum values must be computed, default is None.
-:param f: Machine learning framework. Inferred from inputs if None.
-:return: array containing minimum value.</p>
+<p>accordingly, the result must be compatible with the input array (see Broadcasting). Otherwise, if False, the reduced axes 
+(dimensions) must not be included in the result. Default: False.
+:type keepdims: bool</p>
+<p>Returns
+:return out: if the product was computed over the entire array, a zero-dimensional array containing the product; otherwise, 
+a non-zero-dimensional array containing the products. The returned array must have a data type as described by the dtype 
+parameter above.
+:type out: array</p>
 </dd></dl>
 
 <div class="line-block">
@@ -242,10 +265,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="max.html" class="btn btn-neutral float-right" title="max" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="../utility.html" class="btn btn-neutral float-right" title="Utility" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="../statistical.html" class="btn btn-neutral float-left" title="Statistical" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="max.html" class="btn btn-neutral float-left" title="max" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

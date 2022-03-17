@@ -14,4 +14,5 @@ Statistical
 
    statistical/min.rst
    statistical/max.rst
+   statistical/prod.rst
 
