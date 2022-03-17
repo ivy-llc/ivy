@@ -107,4 +107,20 @@ def array(object_in, dtype: Optional[str] = None, dev: Optional[str] = None):
     else:
         return torch.tensor(object_in, device=dev_from_str(dev))
 
-asarray = array
+def asarray(object_in, dtype: Optional[str] = None, dev: Optional[str] = None, copy: Optional[bool] = None):
+    dev = default_device(dev)
+    if isinstance(object_in, torch.Tensor) and dtype is None:
+        dtype = object_in.dtype
+    elif isinstance(object_in, (list, tuple, dict)) and len(object_in) != 0 and dtype is None:
+        # Temporary fix on type
+        # Because default_type() didn't return correct type for normal python array
+        if copy is True:
+            return torch.as_tensor(object_in).clone().detach().to(dev_from_str(dev))
+        else:
+            return torch.as_tensor(object_in).to(dev_from_str(dev))
+    else:
+        dtype = dtype_from_str(default_dtype(dtype, object_in))
+    if copy is True:
+        return torch.as_tensor(object_in, dtype=dtype).clone().detach().to(dev_from_str(dev))
+    else:
+        return torch.as_tensor(object_in, dtype=dtype).to(dev_from_str(dev))
