@@ -1,36 +1,43 @@
 # global
 _round = round
-import tensorflow as _tf
+import tensorflow as tf
 from typing import Tuple, Union, Optional
 
-def min(x: _tf.Tensor,
+
+# Array API Standard #
+# -------------------#
+
+def min(x: tf.Tensor,
         axis: Union[int, Tuple[int]] = None,
         keepdims: bool = False) \
-        -> _tf.Tensor:
-    return _tf.math.reduce_min(x, axis = axis, keepdims = keepdims)
+        -> tf.Tensor:
+    return tf.math.reduce_min(x, axis = axis, keepdims = keepdims)
 
 
-def prod(x: _tf.Tensor,
+def prod(x: tf.Tensor,
          axis: Optional[Union[int, Tuple[int]]] = None,
-         dtype: Optional[_tf.DType] = None,
+         dtype: Optional[tf.DType] = None,
          keepdims: bool = False)\
-        -> _tf.Tensor:
+        -> tf.Tensor:
     if dtype == None:
-        if x.dtype in [ _tf.int8 , _tf.int16,_tf.int32]:
-            dtype = _tf.int32
-        elif x.dtype in [ _tf.uint8,_tf.uint16,_tf.experimental.numpy.uint32]:
-            dtype = _tf.experimental.numpy.uint32
-        elif x.dtype == _tf.int64: 
-            dtype = _tf.int64
-        elif x.dtype == _tf.uint64 :
-            dtype = _tf.uint64
+        if x.dtype in [ tf.int8 , tf.int16,tf.int32]:
+            dtype = tf.int32
+        elif x.dtype in [ tf.uint8,tf.uint16,tf.experimental.numpy.uint32]:
+            dtype = tf.experimental.numpy.uint32
+        elif x.dtype == tf.int64: 
+            dtype = tf.int64
+        elif x.dtype == tf.uint64 :
+            dtype = tf.uint64
         
-    return _tf.experimental.numpy.prod(x,axis,dtype,keepdims)
+    return tf.experimental.numpy.prod(x,axis,dtype,keepdims)
 
 
-def max(x: _tf.Tensor,
+def max(x: tf.Tensor,
         axis: Union[int, Tuple[int]] = None,
         keepdims: bool = False) \
-        -> _tf.Tensor:
-    return _tf.math.reduce_max(x, axis = axis, keepdims = keepdims)
+        -> tf.Tensor:
+    return tf.math.reduce_max(x, axis = axis, keepdims = keepdims)
 
+    
+# Extra #
+# ------#

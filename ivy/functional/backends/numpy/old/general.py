@@ -80,18 +80,10 @@ def _flat_array_to_1_dim_array(x):
 # API #
 # ----#
 
-# noinspection PyShadowingNames
-def array(object_in, dtype=None, dev=None):
-    return _to_dev(_np.array(object_in, dtype=default_dtype(dtype, object_in)), dev)
 
 
-asarray = array
 
 
-def is_array(x, exclusive=False):
-    if isinstance(x, _np.ndarray):
-        return True
-    return False
 
 
 def dtype_bits(dtype_in):
