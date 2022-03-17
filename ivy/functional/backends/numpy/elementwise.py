@@ -4,7 +4,7 @@ import numpy.array_api as npa
 
 import typing
 
-import ivy.functional.backends.numpy.core.general
+import ivy.functional.backends.numpy.old.general
 
 def _cast_for_binary_op(x1: np.ndarray, x2: np.ndarray)\
         -> typing.Tuple[typing.Union[np.ndarray, int, float, bool], typing.Union[np.ndarray, int, float, bool]]:
