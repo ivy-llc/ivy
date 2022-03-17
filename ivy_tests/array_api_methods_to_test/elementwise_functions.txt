@@ -2,7 +2,7 @@ abs
 #acos
 acosh
 #add
-#asin
+#asin # greater not yet implemented correctly
 asinh
 #atan
 #atan2
