@@ -265,6 +265,71 @@
 <span class="sd">    :return: A copy of the input array.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">copy_array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="array_equal"><a class="viewcode-back" href="../../../../functional/ivy/general/array_equal.html#ivy.functional.ivy.general.array_equal">[docs]</a><span class="k">def</span> <span class="nf">array_equal</span><span class="p">(</span><span class="n">x0</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span> <span class="n">x1</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">])</span>\
+        <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Determines whether two input arrays are equal across all elements.</span>
+
+<span class="sd">    :param x0: The first input array to compare.</span>
+<span class="sd">    :type x0: array</span>
+<span class="sd">    :param x1: The second input array to compare.</span>
+<span class="sd">    :type x1: array</span>
+<span class="sd">    :return: Boolean, whether or not the input arrays are equal across all elements.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x0</span><span class="p">)</span><span class="o">.</span><span class="n">array_equal</span><span class="p">(</span><span class="n">x0</span><span class="p">,</span> <span class="n">x1</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="arrays_equal"><a class="viewcode-back" href="../../../../functional/ivy/general/arrays_equal.html#ivy.functional.ivy.general.arrays_equal">[docs]</a><span class="k">def</span> <span class="nf">arrays_equal</span><span class="p">(</span><span class="n">xs</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]])</span>\
+        <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Determines whether input arrays are equal across all elements.</span>
+
+<span class="sd">    :param xs: Sequence of arrays to compare for equality</span>
+<span class="sd">    :type xs: sequence of arrays</span>
+<span class="sd">    :return: Boolean, whether or not all of the input arrays are equal across all elements.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">x0</span> <span class="o">=</span> <span class="n">xs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">xs</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">array_equal</span><span class="p">(</span><span class="n">x0</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">return</span> <span class="kc">True</span></div>
+
+
+<div class="viewcode-block" id="all_equal"><a class="viewcode-back" href="../../../../functional/ivy/general/all_equal.html#ivy.functional.ivy.general.all_equal">[docs]</a><span class="k">def</span> <span class="nf">all_equal</span><span class="p">(</span><span class="o">*</span><span class="n">xs</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span> <span class="n">equality_matrix</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>\
+        <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]]:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Determines whether the inputs are all equal.</span>
+
+<span class="sd">    :param xs: inputs to compare.</span>
+<span class="sd">    :type xs: any</span>
+<span class="sd">    :param equality_matrix: Whether to return a matrix of equalities comparing each input with every other.</span>
+<span class="sd">                            Default is False.</span>
+<span class="sd">    :type equality_matrix: bool, optional</span>
+<span class="sd">    :return: Boolean, whether or not the inputs are equal, or matrix array of booleans if equality_matrix=True is set.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">equality_fn</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array_equal</span> <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_array</span><span class="p">(</span><span class="n">xs</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="k">else</span> <span class="k">lambda</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="n">a</span> <span class="o">==</span> <span class="n">b</span>
+    <span class="k">if</span> <span class="n">equality_matrix</span><span class="p">:</span>
+        <span class="n">num_arrays</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">xs</span><span class="p">)</span>
+        <span class="n">mat</span> <span class="o">=</span> <span class="p">[[</span><span class="kc">None</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_arrays</span><span class="p">)]</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_arrays</span><span class="p">)]</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">xa</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">xs</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">j_</span><span class="p">,</span> <span class="n">xb</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">xs</span><span class="p">[</span><span class="n">i</span><span class="p">:]):</span>
+                <span class="n">j</span> <span class="o">=</span> <span class="n">j_</span> <span class="o">+</span> <span class="n">i</span>
+                <span class="n">res</span> <span class="o">=</span> <span class="n">equality_fn</span><span class="p">(</span><span class="n">xa</span><span class="p">,</span> <span class="n">xb</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_array</span><span class="p">(</span><span class="n">res</span><span class="p">):</span>
+                    <span class="c1"># noinspection PyTypeChecker</span>
+                    <span class="n">res</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">to_scalar</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+                <span class="c1"># noinspection PyTypeChecker</span>
+                <span class="n">mat</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">res</span>
+                <span class="c1"># noinspection PyTypeChecker</span>
+                <span class="n">mat</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">res</span>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">mat</span><span class="p">)</span>
+    <span class="n">x0</span> <span class="o">=</span> <span class="n">xs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">xs</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">equality_fn</span><span class="p">(</span><span class="n">x0</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">return</span> <span class="kc">True</span></div>
 </pre></div>
 
            </div>

@@ -15,4 +15,7 @@ General
    general/get_referrers_recursive.rst
    general/is_array.rst
    general/copy_array.rst
+   general/array_equal.rst
+   general/arrays_equal.rst
+   general/all_equal.rst
 

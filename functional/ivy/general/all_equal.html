@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>is_array &mdash; Ivy 1.0 documentation</title>
+  <title>all_equal &mdash; Ivy 1.0 documentation</title>
   
 
   
@@ -35,8 +35,8 @@
   <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="copy_array" href="copy_array.html" />
-    <link rel="prev" title="get_referrers_recursive" href="get_referrers_recursive.html" /> 
+    <link rel="next" title="Gradients" href="../gradients.html" />
+    <link rel="prev" title="arrays_equal" href="arrays_equal.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -98,11 +98,11 @@
 <li class="toctree-l1"><a class="reference internal" href="../elementwise.html">Elementwise</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../general.html">General</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="get_referrers_recursive.html">get_referrers_recursive</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">is_array</a></li>
+<li class="toctree-l2"><a class="reference internal" href="is_array.html">is_array</a></li>
 <li class="toctree-l2"><a class="reference internal" href="copy_array.html">copy_array</a></li>
 <li class="toctree-l2"><a class="reference internal" href="array_equal.html">array_equal</a></li>
 <li class="toctree-l2"><a class="reference internal" href="arrays_equal.html">arrays_equal</a></li>
-<li class="toctree-l2"><a class="reference internal" href="all_equal.html">all_equal</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">all_equal</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../gradients.html">Gradients</a></li>
@@ -192,13 +192,13 @@
         
           <li><a href="../general.html">General</a> &raquo;</li>
         
-      <li>is_array</li>
+      <li>all_equal</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../../_sources/functional/ivy/general/is_array.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../../_sources/functional/ivy/general/all_equal.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -211,21 +211,22 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="is-array">
-<h1>is_array<a class="headerlink" href="#is-array" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="all-equal">
+<h1>all_equal<a class="headerlink" href="#all-equal" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
-<dt id="ivy.functional.ivy.general.is_array">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">is_array</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Any</span></em>, <em class="sig-param"><span class="n">exclusive</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span> &#x2192; bool<a class="reference internal" href="../../../_modules/ivy/functional/ivy/general.html#is_array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.general.is_array" title="Permalink to this definition">¶</a></dt>
-<dd><p>Determines whether the input x is an Ivy Array.</p>
+<dt id="ivy.functional.ivy.general.all_equal">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">all_equal</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">xs</span><span class="p">:</span> <span class="n">Iterable<span class="p">[</span>Any<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">equality_matrix</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>bool<span class="p">, </span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/general.html#all_equal"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.general.all_equal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determines whether the inputs are all equal.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>any</em>) – The input to check</p></li>
-<li><p><strong>exclusive</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to check if the data type is exclusively an array, rather than a variable or traced array.</p></li>
+<li><p><strong>xs</strong> (<em>any</em>) – inputs to compare.</p></li>
+<li><p><strong>equality_matrix</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to return a matrix of equalities comparing each input with every other.
+Default is False.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Boolean, whether or not x is an array.</p>
+<dd class="field-even"><p>Boolean, whether or not the inputs are equal, or matrix array of booleans if equality_matrix=True is set.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -245,10 +246,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="copy_array.html" class="btn btn-neutral float-right" title="copy_array" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="../gradients.html" class="btn btn-neutral float-right" title="Gradients" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="get_referrers_recursive.html" class="btn btn-neutral float-left" title="get_referrers_recursive" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="arrays_equal.html" class="btn btn-neutral float-left" title="arrays_equal" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
