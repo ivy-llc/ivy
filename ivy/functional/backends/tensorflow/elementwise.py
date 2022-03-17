@@ -11,6 +11,7 @@ def bitwise_invert(x: Tensor) \
         -> Tensor:
     if 'int' not in str(x.dtype):
         x = tf.cast(x, tf.int32)
+        return tf.cast(tf.bitwise.invert(x), tf.bool)
     return tf.bitwise.invert(x)
 
 
