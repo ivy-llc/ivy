@@ -92,8 +92,7 @@ def dtype_bits(dtype_in):
     return int(dtype_str.replace('uint', '').replace('int', '').replace('bfloat', '').replace('float', ''))
 
 
-copy_array = lambda x: x.copy()
-array_equal = _np.array_equal
+
 to_numpy = lambda x: x
 to_numpy.__name__ = 'to_numpy'
 to_scalar = lambda x: x.item()
