@@ -13,7 +13,7 @@ asinh
 #bitwise_or
 #bitwise_right_shift
 #bitwise_xor
-#ceil
+#ceil # asarray not yet implemented correctly
 cos
 cosh
 #divide
@@ -34,7 +34,7 @@ log1p
 log2
 log10
 #logaddexp
-#logical_and
+logical_and
 logical_not
 logical_or
 #logical_xor
@@ -47,8 +47,8 @@ negative
 #round
 #sign
 sin
-#sinh
-#square
+sinh
+square
 sqrt
 #subtract
 tan
