@@ -528,6 +528,19 @@
 
 <span class="c1"># Extra #</span>
 <span class="c1"># ------#</span>
+
+<div class="viewcode-block" id="vector_to_skew_symmetric_matrix"><a class="viewcode-back" href="../../../../functional/ivy/linear_algebra/vector_to_skew_symmetric_matrix.html#ivy.functional.ivy.linear_algebra.vector_to_skew_symmetric_matrix">[docs]</a><span class="k">def</span> <span class="nf">vector_to_skew_symmetric_matrix</span><span class="p">(</span><span class="n">vector</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">])</span>\
+        <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Given vector :math:`\mathbf{a}\in\mathbb{R}^3`, return associated skew-symmetric matrix</span>
+<span class="sd">    :math:`[\mathbf{a}]_×\in\mathbb{R}^{3×3}` satisfying :math:`\mathbf{a}×\mathbf{b}=[\mathbf{a}]_×\mathbf{b}`.\n</span>
+<span class="sd">    `[reference] &lt;https://en.wikipedia.org/wiki/Skew-symmetric_matrix#Cross_product&gt;`_</span>
+
+<span class="sd">    :param vector: Vector to convert *[batch_shape,3]*.</span>
+<span class="sd">    :type vector: array</span>
+<span class="sd">    :return: Skew-symmetric matrix *[batch_shape,3,3]*.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">vector</span><span class="p">)</span><span class="o">.</span><span class="n">vector_to_skew_symmetric_matrix</span><span class="p">(</span><span class="n">vector</span><span class="p">)</span></div>
 </pre></div>
 
            </div>

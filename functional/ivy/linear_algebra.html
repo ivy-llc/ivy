@@ -115,6 +115,7 @@
 <li class="toctree-l2"><a class="reference internal" href="linear_algebra/slodget.html">slodget</a></li>
 <li class="toctree-l2"><a class="reference internal" href="linear_algebra/svdvals.html">svdvals</a></li>
 <li class="toctree-l2"><a class="reference internal" href="linear_algebra/trace.html">trace</a></li>
+<li class="toctree-l2"><a class="reference internal" href="linear_algebra/vector_to_skew_symmetric_matrix.html">vector_to_skew_symmetric_matrix</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="losses.html">Losses</a></li>
@@ -510,6 +511,22 @@ Default: <code class="docutils literal notranslate"><span class="pre">2</span></
 </dl>
 </dd></dl>
 
+<dl class="py function">
+<dt id="ivy.functional.ivy.linear_algebra.vector_to_skew_symmetric_matrix">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">vector_to_skew_symmetric_matrix</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">vector</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../_modules/ivy/functional/ivy/linear_algebra.html#vector_to_skew_symmetric_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.linear_algebra.vector_to_skew_symmetric_matrix" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given vector <span class="math notranslate nohighlight">\(\mathbf{a}\in\mathbb{R}^3\)</span>, return associated skew-symmetric matrix
+<span class="math notranslate nohighlight">\([\mathbf{a}]_×\in\mathbb{R}^{3×3}\)</span> satisfying <span class="math notranslate nohighlight">\(\mathbf{a}×\mathbf{b}=[\mathbf{a}]_×\mathbf{b}\)</span>.</p>
+<p><a class="reference external" href="https://en.wikipedia.org/wiki/Skew-symmetric_matrix#Cross_product">[reference]</a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>vector</strong> (<em>array</em>) – Vector to convert <em>[batch_shape,3]</em>.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Skew-symmetric matrix <em>[batch_shape,3,3]</em>.</p>
+</dd>
+</dl>
+</dd></dl>
+
 <div class="toctree-wrapper compound">
 <p class="caption"><span class="caption-text">Linear algebra</span></p>
 <ul>
@@ -526,6 +543,7 @@ Default: <code class="docutils literal notranslate"><span class="pre">2</span></
 <li class="toctree-l1"><a class="reference internal" href="linear_algebra/slodget.html">slodget</a></li>
 <li class="toctree-l1"><a class="reference internal" href="linear_algebra/svdvals.html">svdvals</a></li>
 <li class="toctree-l1"><a class="reference internal" href="linear_algebra/trace.html">trace</a></li>
+<li class="toctree-l1"><a class="reference internal" href="linear_algebra/vector_to_skew_symmetric_matrix.html">vector_to_skew_symmetric_matrix</a></li>
 </ul>
 </div>
 </div>

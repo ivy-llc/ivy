@@ -25,4 +25,5 @@ Linear algebra
    linear_algebra/slodget.rst
    linear_algebra/svdvals.rst
    linear_algebra/trace.rst
+   linear_algebra/vector_to_skew_symmetric_matrix.rst
 
