@@ -7,7 +7,6 @@ import mxnet as _mx
 import numpy as _np
 # local
 import ivy as _ivy
-from ivy.functional.backends.mxnet.old.general import matmul as _matmul
 from typing import Union, Tuple
 
 
@@ -20,29 +19,6 @@ def matrix_norm(x, p=2, axes=None, keepdims=False):
         raise Exception('if specified, axes must be a length-2 sequence of ints,'
                         'but found {} of type {}'.format(axes, type(axes)))
     return _mx.nd.norm(x, p, axes, keepdims=keepdims)
-
-
-DET_THRESHOLD = 1e-12
-
-
-def pinv(x):
-    """
-    reference: https://help.matheass.eu/en/Pseudoinverse.html
-    """
-    x_dim, y_dim = x.shape[-2:]
-    if x_dim == y_dim and _mx.nd.sum(_mx.nd.linalg.det(x) > DET_THRESHOLD) > 0:
-        return inv(x)
-    else:
-        xT = _mx.nd.swapaxes(x, -1, -2)
-        xT_x = _ivy.to_native(_matmul(xT, x))
-        if _mx.nd.linalg.det(xT_x) > DET_THRESHOLD:
-            return _matmul(inv(xT_x), xT)
-        else:
-            x_xT = _ivy.to_native(_matmul(x, xT))
-            if _mx.nd.linalg.det(x_xT) > DET_THRESHOLD:
-                return _matmul(xT, inv(x_xT))
-            else:
-                return xT
 
 
 cholesky = lambda x: _mx.np.linalg.cholesky(x.as_np_ndarray()).as_nd_ndarray()
