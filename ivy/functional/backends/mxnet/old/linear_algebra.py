@@ -10,17 +10,6 @@ import ivy as _ivy
 from typing import Union, Tuple
 
 
-
-
-
-def matrix_norm(x, p=2, axes=None, keepdims=False):
-    axes = (-2, -1) if axes is None else axes
-    if isinstance(axes, int):
-        raise Exception('if specified, axes must be a length-2 sequence of ints,'
-                        'but found {} of type {}'.format(axes, type(axes)))
-    return _mx.nd.norm(x, p, axes, keepdims=keepdims)
-
-
 def vector_to_skew_symmetric_matrix(vector):
     batch_shape = list(vector.shape[:-1])
     # BS x 3 x 1
@@ -37,6 +26,3 @@ def vector_to_skew_symmetric_matrix(vector):
     row3 = _mx.nd.concat(*(-a2s, a1s, zs), dim=-1)
     # BS x 3 x 3
     return _mx.nd.concat(*(row1, row2, row3), dim=-2)
-
-def qr(x, mode):
-    return _mx.np.linalg.qr(x, mode=mode)
