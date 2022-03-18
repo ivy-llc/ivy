@@ -59,6 +59,13 @@ def ceil(x: torch.Tensor)\
     return torch.ceil(x)
 
 
+def floor(x: torch.Tensor)\
+        -> torch.Tensor:
+    if 'int' in str(x.dtype):
+        return x
+    return torch.floor(x)
+
+
 def isfinite(x: torch.Tensor) \
         -> torch.Tensor:
     return torch.isfinite(x)

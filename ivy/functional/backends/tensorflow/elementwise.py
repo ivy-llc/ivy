@@ -27,6 +27,13 @@ def ceil(x: Tensor)\
     return tf.math.ceil(x)
 
 
+def floor(x: Tensor)\
+        -> Tensor:
+    if 'int' in str(x.dtype):
+        return x
+    return tf.math.floor(x)
+
+
 def isfinite(x: Tensor) \
         -> Tensor:
     if ivy.is_int_dtype(x):
