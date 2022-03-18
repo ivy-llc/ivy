@@ -134,6 +134,11 @@ def negative(x: JaxArray) -> JaxArray:
     return jnp.negative(x)
 
 
+def not_equal(x1: JaxArray, x2: JaxArray)\
+        -> JaxArray:
+    return jnp.not_equal(x1, x2)
+
+
 def tanh(x: JaxArray)\
         -> JaxArray:
     return jnp.tanh(x)

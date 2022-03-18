@@ -176,6 +176,12 @@ def negative(x: Tensor) -> Tensor:
     return tf.negative(x)
 
 
+def not_equal(x1: Tensor, x2: Tensor)\
+        -> Tensor:
+    x1, x2 = _cast_for_binary_op(x1, x2)
+    return tf.math.not_equal(x1, x2)
+
+
 def tanh(x: Tensor) \
         -> Tensor:
     return tf.tanh(x)
