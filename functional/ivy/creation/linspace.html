@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>asarray &mdash; Ivy 1.0 documentation</title>
+  <title>linspace &mdash; Ivy 1.0 documentation</title>
   
 
   
@@ -36,8 +36,8 @@
   <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="zeros" href="zeros.html" />
-    <link rel="prev" title="Creation" href="../creation.html" /> 
+    <link rel="next" title="Data type" href="../data_type.html" />
+    <link rel="prev" title="array" href="array.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -94,7 +94,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../compilation.html">Compilation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../constants.html">Constants</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../creation.html">Creation</a><ul class="current">
-<li class="toctree-l2 current"><a class="current reference internal" href="#">asarray</a></li>
+<li class="toctree-l2"><a class="reference internal" href="asarray.html">asarray</a></li>
 <li class="toctree-l2"><a class="reference internal" href="zeros.html">zeros</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ones.html">ones</a></li>
 <li class="toctree-l2"><a class="reference internal" href="full_like.html">full_like</a></li>
@@ -103,7 +103,7 @@
 <li class="toctree-l2"><a class="reference internal" href="triu.html">triu</a></li>
 <li class="toctree-l2"><a class="reference internal" href="empty.html">empty</a></li>
 <li class="toctree-l2"><a class="reference internal" href="array.html">array</a></li>
-<li class="toctree-l2"><a class="reference internal" href="linspace.html">linspace</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">linspace</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../data_type.html">Data type</a></li>
@@ -197,13 +197,13 @@
         
           <li><a href="../creation.html">Creation</a> &raquo;</li>
         
-      <li>asarray</li>
+      <li>linspace</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../../_sources/functional/ivy/creation/asarray.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../../_sources/functional/ivy/creation/linspace.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -216,22 +216,27 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="asarray">
-<h1>asarray<a class="headerlink" href="#asarray" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="linspace">
+<h1>linspace<a class="headerlink" href="#linspace" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
-<dt id="ivy.functional.ivy.creation.asarray">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">asarray</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">dtype</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Union<span class="p">[</span>ivy.Dtype<span class="p">, </span>str<span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">dev</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Union<span class="p">[</span>ivy.Device<span class="p">, </span>str<span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../../_modules/ivy/functional/ivy/creation.html#asarray"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.creation.asarray" title="Permalink to this definition">¶</a></dt>
-<dd><p>Converts the input to an array.</p>
-<dl class="simple">
-<dt>x:</dt><dd><p>input data, in any form that can be converted to an array.
-This includes lists, lists of tuples, tuples, tuples of tuples, tuples of lists and ndarrays.</p>
+<dt id="ivy.functional.ivy.creation.linspace">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">linspace</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">start</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">, </span>int<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">stop</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">, </span>int<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">num</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">axis</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>int<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">dev</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>ivy.Device<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/creation.html#linspace"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.creation.linspace" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates a certain number of evenly-spaced values in an interval along a given axis.</p>
+<p>See <span class="math notranslate nohighlight">\(arange\)</span> that allows to specify the step size of evenly spaced values in an interval.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>start</strong> (<em>array</em>) – First entry in the range.</p></li>
+<li><p><strong>stop</strong> (<em>array</em>) – Final entry in the range.</p></li>
+<li><p><strong>num</strong> (<em>int</em>) – Number of values to generate.</p></li>
+<li><p><strong>axis</strong> (<em>int</em>) – Axis along which the operation is performed.</p></li>
+<li><p><strong>dev</strong> (<em>ivy.Device</em>) – device on which to create the array ‘cuda:0’, ‘cuda:1’, ‘cpu’ etc.</p></li>
+</ul>
 </dd>
-<dt>dtype:</dt><dd><p>datatype, optional. Datatype is inferred from the input data.</p>
-</dd>
-<dt>dev:</dt><dd><p>device on which to place the created array. Default: None.</p>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Tensor of evenly-spaced values.</p>
 </dd>
 </dl>
-<p>An array interpretation of x.</p>
 </dd></dl>
 
 <div class="line-block">
@@ -249,10 +254,10 @@ This includes lists, lists of tuples, tuples, tuples of tuples, tuples of lists 
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="zeros.html" class="btn btn-neutral float-right" title="zeros" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="../data_type.html" class="btn btn-neutral float-right" title="Data type" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="../creation.html" class="btn btn-neutral float-left" title="Creation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="array.html" class="btn btn-neutral float-left" title="array" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

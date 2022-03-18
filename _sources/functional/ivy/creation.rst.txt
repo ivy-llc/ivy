@@ -21,4 +21,5 @@ Creation
    creation/triu.rst
    creation/empty.rst
    creation/array.rst
+   creation/linspace.rst
 
