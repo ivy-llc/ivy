@@ -190,6 +190,21 @@ def empty(shape: Union[int, Tuple[int],List[int]],
     return _cur_framework().empty(shape, dtype, device)
 
 
+def empty_like(x: Union[ivy.Array, ivy.NativeArray], 
+               dtype: Optional[Union[ivy.Dtype, str]] = None, 
+               dev: Optional[Union[ivy.Device, str]] = None)\
+        -> ivy.Array:
+    """
+    Returns an uninitialized array with the same shape as an input array x.
+
+    :param x:  input array from which to derive the output array shape.
+    :param dtype: output array data type. If dtype is None, the output array data type must be inferred from x. Default: None.
+    :param dev: device on which to place the created array. If device is None, the output array device must be inferred from x. Default: None.
+    :return: an array having the same shape as x and containing uninitialized data.
+    """
+    return _cur_framework(x).empty_like(x, dtype, dev)
+
+
 # Extra #
 # ------#
 # noinspection PyShadowingNames

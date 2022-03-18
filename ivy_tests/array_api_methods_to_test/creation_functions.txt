@@ -1,7 +1,7 @@
 #arange
 asarray
 empty
-#empty_like
+empty_like
 #eye
 #from_dlpack
 full

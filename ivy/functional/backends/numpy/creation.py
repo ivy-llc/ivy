@@ -67,6 +67,21 @@ def empty(shape: Union[int, Tuple[int], List[int]],
         -> np.ndarray:
     return _to_dev(np.empty(shape, dtype_from_str(default_dtype(dtype))), device)
 
+
+def empty_like(x: np.ndarray,
+              dtype : Optional[Union[np.dtype, str]] = None,
+              dev : Optional[str] = None) \
+        -> np.ndarray:
+
+    if dtype:
+        dtype = 'bool_' if dtype == 'bool' else dtype
+        dtype = np.dtype(dtype)
+    else:
+        dtype = x.dtype
+
+    return _to_dev(np.empty_like(x, dtype=dtype), dev)
+
+  
 def linspace(start, stop, num, axis=None, dev=None):
     if axis is None:
         axis = -1
