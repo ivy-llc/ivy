@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>ceil &mdash; Ivy 1.0 documentation</title>
+  <title>sum &mdash; Ivy 1.0 documentation</title>
   
 
   
@@ -36,8 +36,8 @@
   <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="floor" href="floor.html" />
-    <link rel="prev" title="bitwise_and" href="bitwise_and.html" /> 
+    <link rel="next" title="Utility" href="../utility.html" />
+    <link rel="prev" title="prod" href="prod.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -96,39 +96,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../creation.html">Creation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../data_type.html">Data type</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../device.html">Device</a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="../elementwise.html">Elementwise</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="bitwise_invert.html">bitwise_invert</a></li>
-<li class="toctree-l2"><a class="reference internal" href="bitwise_and.html">bitwise_and</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">ceil</a></li>
-<li class="toctree-l2"><a class="reference internal" href="floor.html">floor</a></li>
-<li class="toctree-l2"><a class="reference internal" href="isfinite.html">isfinite</a></li>
-<li class="toctree-l2"><a class="reference internal" href="asin.html">asin</a></li>
-<li class="toctree-l2"><a class="reference internal" href="isinf.html">isinf</a></li>
-<li class="toctree-l2"><a class="reference internal" href="less_equal.html">less_equal</a></li>
-<li class="toctree-l2"><a class="reference internal" href="asinh.html">asinh</a></li>
-<li class="toctree-l2"><a class="reference internal" href="sqrt.html">sqrt</a></li>
-<li class="toctree-l2"><a class="reference internal" href="cosh.html">cosh</a></li>
-<li class="toctree-l2"><a class="reference internal" href="log2.html">log2</a></li>
-<li class="toctree-l2"><a class="reference internal" href="log10.html">log10</a></li>
-<li class="toctree-l2"><a class="reference internal" href="log1p.html">log1p</a></li>
-<li class="toctree-l2"><a class="reference internal" href="isnan.html">isnan</a></li>
-<li class="toctree-l2"><a class="reference internal" href="less.html">less</a></li>
-<li class="toctree-l2"><a class="reference internal" href="cos.html">cos</a></li>
-<li class="toctree-l2"><a class="reference internal" href="logical_not.html">logical_not</a></li>
-<li class="toctree-l2"><a class="reference internal" href="acos.html">acos</a></li>
-<li class="toctree-l2"><a class="reference internal" href="logical_or.html">logical_or</a></li>
-<li class="toctree-l2"><a class="reference internal" href="logical_and.html">logical_and</a></li>
-<li class="toctree-l2"><a class="reference internal" href="acosh.html">acosh</a></li>
-<li class="toctree-l2"><a class="reference internal" href="sin.html">sin</a></li>
-<li class="toctree-l2"><a class="reference internal" href="negative.html">negative</a></li>
-<li class="toctree-l2"><a class="reference internal" href="not_equal.html">not_equal</a></li>
-<li class="toctree-l2"><a class="reference internal" href="tanh.html">tanh</a></li>
-<li class="toctree-l2"><a class="reference internal" href="bitwise_or.html">bitwise_or</a></li>
-<li class="toctree-l2"><a class="reference internal" href="sinh.html">sinh</a></li>
-<li class="toctree-l2"><a class="reference internal" href="positive.html">positive</a></li>
-<li class="toctree-l2"><a class="reference internal" href="square.html">square</a></li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="../elementwise.html">Elementwise</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../general.html">General</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../gradients.html">Gradients</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../image.html">Image</a></li>
@@ -143,7 +111,13 @@
 <li class="toctree-l1"><a class="reference internal" href="../searching.html">Searching</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../set.html">Set</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../sorting.html">Sorting</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../statistical.html">Statistical</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../statistical.html">Statistical</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="min.html">min</a></li>
+<li class="toctree-l2"><a class="reference internal" href="max.html">max</a></li>
+<li class="toctree-l2"><a class="reference internal" href="prod.html">prod</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">sum</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="../utility.html">Utility</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Stateful</span></p>
@@ -215,15 +189,15 @@
         
           <li><a href="../../ivy.html">&lt;no title&gt;</a> &raquo;</li>
         
-          <li><a href="../elementwise.html">Elementwise</a> &raquo;</li>
+          <li><a href="../statistical.html">Statistical</a> &raquo;</li>
         
-      <li>ceil</li>
+      <li>sum</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../../_sources/functional/ivy/elementwise/ceil.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../../_sources/functional/ivy/statistical/sum.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -236,30 +210,29 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="ceil">
-<h1>ceil<a class="headerlink" href="#ceil" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="sum">
+<h1>sum<a class="headerlink" href="#sum" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
-<dt id="ivy.functional.ivy.elementwise.ceil">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">ceil</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../../_modules/ivy/functional/ivy/elementwise.html#ceil"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.elementwise.ceil" title="Permalink to this definition">¶</a></dt>
-<dd><p>Rounds each element <code class="docutils literal notranslate"><span class="pre">x_i</span></code> of the input array <code class="docutils literal notranslate"><span class="pre">x</span></code> to the smallest (i.e., closest to <code class="docutils literal notranslate"><span class="pre">-infinity</span></code>) integer-valued number that is not less than <code class="docutils literal notranslate"><span class="pre">x_i</span></code>.</p>
-<p><strong>Special cases</strong></p>
-<ul class="simple">
-<li><p>If <code class="docutils literal notranslate"><span class="pre">x_i</span></code> is already integer-valued, the result is <code class="docutils literal notranslate"><span class="pre">x_i</span></code>.</p></li>
-</ul>
-<p>For floating-point operands,</p>
-<ul class="simple">
-<li><p>If <code class="docutils literal notranslate"><span class="pre">x_i</span></code> is <code class="docutils literal notranslate"><span class="pre">+infinity</span></code>, the result is <code class="docutils literal notranslate"><span class="pre">+infinity</span></code>.</p></li>
-<li><p>If <code class="docutils literal notranslate"><span class="pre">x_i</span></code> is <code class="docutils literal notranslate"><span class="pre">-infinity</span></code>, the result is <code class="docutils literal notranslate"><span class="pre">-infinity</span></code>.</p></li>
-<li><p>If <code class="docutils literal notranslate"><span class="pre">x_i</span></code> is <code class="docutils literal notranslate"><span class="pre">+0</span></code>, the result is <code class="docutils literal notranslate"><span class="pre">+0</span></code>.</p></li>
-<li><p>If <code class="docutils literal notranslate"><span class="pre">x_i</span></code> is <code class="docutils literal notranslate"><span class="pre">-0</span></code>, the result is <code class="docutils literal notranslate"><span class="pre">-0</span></code>.</p></li>
-<li><p>If <code class="docutils literal notranslate"><span class="pre">x_i</span></code> is <code class="docutils literal notranslate"><span class="pre">NaN</span></code>, the result is <code class="docutils literal notranslate"><span class="pre">NaN</span></code>.</p></li>
-</ul>
+<dt id="ivy.functional.ivy.statistical.sum">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">sum</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">keepdims</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/statistical.html#sum"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.statistical.sum" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the sum of the input array x.</p>
 <dl class="simple">
 <dt>x:</dt><dd><p>input array. Should have a numeric data type.</p>
 </dd>
+<dt>axis:</dt><dd><p>axis or axes along which sums must be computed. By default, the sum must be computed over the entire array. If a tuple of integers, sums must be computed over multiple axes. Default: None.</p>
+</dd>
+<dt>dtype:</dt><dd><p>data type of the returned array. If None,</p>
+</dd>
 </dl>
+<p>if the default data type corresponding to the data type “kind” (integer or floating-point) of x has a smaller range of values than the data type of x (e.g., x has data type int64 and the default data type is int32, or x has data type uint64 and the default data type is int64), the returned array must have the same data type as x.</p>
+<p>if x has a floating-point data type, the returned array must have the default floating-point data type.</p>
+<p>if x has a signed integer data type (e.g., int16), the returned array must have the default integer data type.</p>
+<p>if x has an unsigned integer data type (e.g., uint16), the returned array must have an unsigned integer data type having the same number of bits as the default integer data type (e.g., if the default integer data type is int32, the returned array must have a uint32 data type).</p>
+<p>If the data type (either specified or resolved) differs from the data type of x, the input array should be cast to the specified data type before computing the sum. Default: None.    :return: The array with sums computed.</p>
 <dl class="simple">
-<dt>out:</dt><dd><p>an array containing the rounded result for each element in <code class="docutils literal notranslate"><span class="pre">x</span></code>. The returned array must have the same data type as <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p>
+<dt>out:</dt><dd><p>if the sum was computed over the entire array, a zero-dimensional array containing the sum;
+otherwise, an array containing the sums. The returned array must have a data type as described
+by the dtype parameter above</p>
 </dd>
 </dl>
 </dd></dl>
@@ -279,10 +252,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="floor.html" class="btn btn-neutral float-right" title="floor" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="../utility.html" class="btn btn-neutral float-right" title="Utility" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="bitwise_and.html" class="btn btn-neutral float-left" title="bitwise_and" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="prod.html" class="btn btn-neutral float-left" title="prod" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
