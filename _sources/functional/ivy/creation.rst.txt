@@ -20,6 +20,7 @@ Creation
    creation/tril.rst
    creation/triu.rst
    creation/empty.rst
+   creation/empty_like.rst
    creation/array.rst
    creation/linspace.rst
 
