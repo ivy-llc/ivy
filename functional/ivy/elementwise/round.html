@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>log1p &mdash; Ivy 1.0 documentation</title>
+  <title>round &mdash; Ivy 1.0 documentation</title>
   
 
   
@@ -36,8 +36,8 @@
   <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="isnan" href="isnan.html" />
-    <link rel="prev" title="log10" href="log10.html" /> 
+    <link rel="next" title="General" href="../general.html" />
+    <link rel="prev" title="square" href="square.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -110,7 +110,7 @@
 <li class="toctree-l2"><a class="reference internal" href="cosh.html">cosh</a></li>
 <li class="toctree-l2"><a class="reference internal" href="log2.html">log2</a></li>
 <li class="toctree-l2"><a class="reference internal" href="log10.html">log10</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">log1p</a></li>
+<li class="toctree-l2"><a class="reference internal" href="log1p.html">log1p</a></li>
 <li class="toctree-l2"><a class="reference internal" href="isnan.html">isnan</a></li>
 <li class="toctree-l2"><a class="reference internal" href="less.html">less</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cos.html">cos</a></li>
@@ -127,7 +127,7 @@
 <li class="toctree-l2"><a class="reference internal" href="sinh.html">sinh</a></li>
 <li class="toctree-l2"><a class="reference internal" href="positive.html">positive</a></li>
 <li class="toctree-l2"><a class="reference internal" href="square.html">square</a></li>
-<li class="toctree-l2"><a class="reference internal" href="round.html">round</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">round</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../general.html">General</a></li>
@@ -218,13 +218,13 @@
         
           <li><a href="../elementwise.html">Elementwise</a> &raquo;</li>
         
-      <li>log1p</li>
+      <li>round</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../../_sources/functional/ivy/elementwise/log1p.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../../_sources/functional/ivy/elementwise/round.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -237,19 +237,18 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="log1p">
-<h1>log1p<a class="headerlink" href="#log1p" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="round">
+<h1>round<a class="headerlink" href="#round" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
-<dt id="ivy.functional.ivy.elementwise.log1p">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">log1p</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../../_modules/ivy/functional/ivy/elementwise.html#log1p"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.elementwise.log1p" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculates an implementation-dependent approximation to log(1+x), where log refers to the natural (base e)
-logarithm.</p>
-<dl class="simple">
-<dt>x:</dt><dd><p>input array.</p>
+<dt id="ivy.functional.ivy.elementwise.round">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">round</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/elementwise.html#round"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.elementwise.round" title="Permalink to this definition">¶</a></dt>
+<dd><p>Rounds the values of an array to the nearest integer, element-wise.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>x</strong> (<em>array</em>) – Input array containing elements to round.</p>
 </dd>
-</dl>
-<dl class="simple">
-<dt>out:</dt><dd><p>a new array containing the evaluated result for each element in x.</p>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>An array of the same shape and type as x, with the elements rounded to integers.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -269,10 +268,10 @@ logarithm.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="isnan.html" class="btn btn-neutral float-right" title="isnan" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="../general.html" class="btn btn-neutral float-right" title="General" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="log10.html" class="btn btn-neutral float-left" title="log10" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="square.html" class="btn btn-neutral float-left" title="square" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
