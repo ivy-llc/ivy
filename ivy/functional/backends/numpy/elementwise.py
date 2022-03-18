@@ -2,21 +2,6 @@
 import numpy as np
 import numpy.array_api as npa
 
-import typing
-
-import ivy.functional.backends.numpy.old.general
-
-def _cast_for_binary_op(x1: np.ndarray, x2: np.ndarray)\
-        -> typing.Tuple[typing.Union[np.ndarray, int, float, bool], typing.Union[np.ndarray, int, float, bool]]:
-    x1_bits = ivy.functional.backends.numpy.core.general.dtype_bits(x1.dtype)
-    if isinstance(x2, (int, float, bool)):
-        return x1, x2
-    x2_bits = ivy.functional.backends.numpy.core.general.dtype_bits(x2.dtype)
-    if x1_bits > x2_bits:
-        x2 = x2.astype(x1.dtype)
-    elif x2_bits > x1_bits:
-        x1 = x1.astype(x2.dtype)
-    return x1, x2
 
 def bitwise_invert(x: np.ndarray)\
         -> np.ndarray:
@@ -152,17 +137,6 @@ def tanh(x: np.ndarray)\
         -> np.ndarray:
     return np.asarray(npa.tanh(npa.asarray(x)))
 
-
-def bitwise_or(x1: np.ndarray , x2: np.ndarray) \
-        -> np.ndarray:
-    if not isinstance(x2, np.ndarray):
-        x2 = np.asarray(x2, dtype=x1.dtype)
-    else:
-        dtype = np.promote_types(x1.dtype, x2.dtype)
-        x1 = x1.astype(dtype)
-        x2 = x2.astype(dtype)
-    return np.bitwise_or(x1, x2)
-    
   
 def sinh(x: np.ndarray)\
         -> np.ndarray:

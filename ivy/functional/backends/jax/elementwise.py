@@ -142,10 +142,6 @@ def not_equal(x1: JaxArray, x2: JaxArray)\
 def tanh(x: JaxArray)\
         -> JaxArray:
     return jnp.tanh(x)
-
-
-def bitwise_or(x1: JaxArray, x2: JaxArray) -> JaxArray:
-    return jnp.bitwise_or(x1, x2)
   
   
 def sinh(x: JaxArray)\
