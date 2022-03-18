@@ -42,3 +42,19 @@ to_scalar = lambda x: x if isinstance(x, Number) else x.asscalar().item()
 to_scalar.__name__ = 'to_scalar'
 to_list = lambda x: to_numpy(x).tolist()
 to_list.__name__ = 'to_list'
+
+@_handle_flat_arrays_in_out
+def floormod(x, y):
+    return x % y
+
+
+def logspace(start, stop, num, base=10., axis=None, dev=None):
+    power_seq = linspace(start, stop, num, axis, default_device(dev))
+
+
+def unstack(x, axis, keepdims=False):
+    if x.shape == ():
+        return [x]
+    num_outputs = x.shape[axis]
+    ret = _mx.nd.split(x, num_outputs, axis, squeeze_axis=not keepdims)
+    return ret if isinstance(ret, list) else [ret]
