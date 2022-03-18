@@ -97,7 +97,7 @@ def diagonal(x: ivy.Array,
     return _cur_framework(x).diagonal(x, offset, axis1=axis1, axis2=axis2)
 
 
-def inv(x: ivy.Array, /) -> ivy.Array:
+def inv(x: ivy.Array) -> ivy.Array:
 
     """
     Returns the multiplicative inverse of a square matrix (or a stack of square matrices) x.
