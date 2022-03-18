@@ -318,12 +318,9 @@ class Array(ArrayWithArrayAPI, ArrayWithDevice, ArrayWithGeneral, ArrayWithGradi
 
     @_native_wrapper
     def __or__(self, other):
-        other = to_native(other)
-        res = self._data.__or__(other)
-        if res is NotImplemented:
-            return res
-        return to_ivy(res)
+        return ivy.bitwise_or(self._data, other)
 
+        
     @_native_wrapper
     def __ror__(self, other):
         other = to_native(other)
