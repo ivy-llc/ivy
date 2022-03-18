@@ -142,6 +142,11 @@ def sinh(x: np.ndarray)\
         -> np.ndarray:
     return np.asarray(npa.sinh(npa.asarray(x)))
 
+
+def positive(x: np.ndarray)\
+        -> np.ndarray:
+    return np.positive(x)
+  
   
 def square(x: np.ndarray)\
         -> np.ndarray:
