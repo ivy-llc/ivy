@@ -1,7 +1,7 @@
 # global
 torch_scatter = None
 import torch as torch
-from typing import Tuple, Union, Optional
+from typing import List, Tuple, Union, Optional
 
 
 # Array API Standard #
@@ -17,6 +17,16 @@ def min(x: torch.Tensor,
     if not keepdims and not axis and axis != 0:
         return torch.amin(input = x)
     return torch.amin(input = x, dim = axis, keepdim = keepdims)
+
+
+def sum(x: torch.Tensor,
+        axis: Optional[List[int]] = None,
+        keepdims: bool = False)\
+        -> torch.Tensor:
+    if axis is None:
+        num_dims = len(x.shape)
+        axis = list(range(num_dims))
+    return torch.sum(x, dim=axis, keepdim=keepdims)
 
 
 def prod(x: torch.Tensor,
