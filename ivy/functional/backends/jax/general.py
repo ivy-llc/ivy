@@ -45,10 +45,6 @@ to_list.__name__ = 'to_list'
 
 
 
-def logspace(start, stop, num, base=10., axis=None, dev=None):
-    if axis is None:
-        axis = -1
-    return to_dev(_jnp.logspace(start, stop, num, base=base, axis=axis), default_device(dev))
 
 
 def unstack(x, axis, keepdims=False):

@@ -113,3 +113,9 @@ def linspace(start, stop, num, axis=None, dev=None):
 # noinspection PyShadowingNames
 def array(object_in, dtype=None, dev=None):
     return to_dev(jnp.array(object_in, dtype=dtype_from_str(default_dtype(dtype, object_in))), default_device(dev))
+
+
+def logspace(start, stop, num, base=10., axis=None, dev=None):
+    if axis is None:
+        axis = -1
+    return to_dev(jnp.logspace(start, stop, num, base=base, axis=axis), default_device(dev))
