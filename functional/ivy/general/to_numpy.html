@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>copy_array &mdash; Ivy 1.0 documentation</title>
+  <title>to_numpy &mdash; Ivy 1.0 documentation</title>
   
 
   
@@ -35,8 +35,8 @@
   <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="array_equal" href="array_equal.html" />
-    <link rel="prev" title="is_array" href="is_array.html" /> 
+    <link rel="next" title="to_scalar" href="to_scalar.html" />
+    <link rel="prev" title="all_equal" href="all_equal.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -99,11 +99,11 @@
 <li class="toctree-l1 current"><a class="reference internal" href="../general.html">General</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="get_referrers_recursive.html">get_referrers_recursive</a></li>
 <li class="toctree-l2"><a class="reference internal" href="is_array.html">is_array</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">copy_array</a></li>
+<li class="toctree-l2"><a class="reference internal" href="copy_array.html">copy_array</a></li>
 <li class="toctree-l2"><a class="reference internal" href="array_equal.html">array_equal</a></li>
 <li class="toctree-l2"><a class="reference internal" href="arrays_equal.html">arrays_equal</a></li>
 <li class="toctree-l2"><a class="reference internal" href="all_equal.html">all_equal</a></li>
-<li class="toctree-l2"><a class="reference internal" href="to_numpy.html">to_numpy</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">to_numpy</a></li>
 <li class="toctree-l2"><a class="reference internal" href="to_scalar.html">to_scalar</a></li>
 <li class="toctree-l2"><a class="reference internal" href="to_list.html">to_list</a></li>
 <li class="toctree-l2"><a class="reference internal" href="clip_vector_norm.html">clip_vector_norm</a></li>
@@ -197,13 +197,13 @@
         
           <li><a href="../general.html">General</a> &raquo;</li>
         
-      <li>copy_array</li>
+      <li>to_numpy</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../../_sources/functional/ivy/general/copy_array.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../../_sources/functional/ivy/general/to_numpy.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -216,18 +216,18 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="copy-array">
-<h1>copy_array<a class="headerlink" href="#copy-array" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="to-numpy">
+<h1>to_numpy<a class="headerlink" href="#to-numpy" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
-<dt id="ivy.functional.ivy.general.copy_array">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">copy_array</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/general.html#copy_array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.general.copy_array" title="Permalink to this definition">¶</a></dt>
-<dd><p>Copy an array.</p>
+<dt id="ivy.functional.ivy.general.to_numpy">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">to_numpy</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; numpy.ndarray<a class="reference internal" href="../../../_modules/ivy/functional/ivy/general.html#to_numpy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.general.to_numpy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts array into a numpy array.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>x</strong> (<em>array</em>) – The array to copy</p>
+<dd class="field-odd"><p><strong>x</strong> (<em>array</em>) – Input array.</p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>A copy of the input array.</p>
+<dd class="field-even"><p>A numpy array.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -247,10 +247,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="array_equal.html" class="btn btn-neutral float-right" title="array_equal" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="to_scalar.html" class="btn btn-neutral float-right" title="to_scalar" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="is_array.html" class="btn btn-neutral float-left" title="is_array" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="all_equal.html" class="btn btn-neutral float-left" title="all_equal" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

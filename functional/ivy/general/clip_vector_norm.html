@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>copy_array &mdash; Ivy 1.0 documentation</title>
+  <title>clip_vector_norm &mdash; Ivy 1.0 documentation</title>
   
 
   
@@ -35,8 +35,8 @@
   <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="array_equal" href="array_equal.html" />
-    <link rel="prev" title="is_array" href="is_array.html" /> 
+    <link rel="next" title="clip_matrix_norm" href="clip_matrix_norm.html" />
+    <link rel="prev" title="to_list" href="to_list.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -99,14 +99,14 @@
 <li class="toctree-l1 current"><a class="reference internal" href="../general.html">General</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="get_referrers_recursive.html">get_referrers_recursive</a></li>
 <li class="toctree-l2"><a class="reference internal" href="is_array.html">is_array</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">copy_array</a></li>
+<li class="toctree-l2"><a class="reference internal" href="copy_array.html">copy_array</a></li>
 <li class="toctree-l2"><a class="reference internal" href="array_equal.html">array_equal</a></li>
 <li class="toctree-l2"><a class="reference internal" href="arrays_equal.html">arrays_equal</a></li>
 <li class="toctree-l2"><a class="reference internal" href="all_equal.html">all_equal</a></li>
 <li class="toctree-l2"><a class="reference internal" href="to_numpy.html">to_numpy</a></li>
 <li class="toctree-l2"><a class="reference internal" href="to_scalar.html">to_scalar</a></li>
 <li class="toctree-l2"><a class="reference internal" href="to_list.html">to_list</a></li>
-<li class="toctree-l2"><a class="reference internal" href="clip_vector_norm.html">clip_vector_norm</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">clip_vector_norm</a></li>
 <li class="toctree-l2"><a class="reference internal" href="clip_matrix_norm.html">clip_matrix_norm</a></li>
 </ul>
 </li>
@@ -197,13 +197,13 @@
         
           <li><a href="../general.html">General</a> &raquo;</li>
         
-      <li>copy_array</li>
+      <li>clip_vector_norm</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../../_sources/functional/ivy/general/copy_array.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../../_sources/functional/ivy/general/clip_vector_norm.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -216,18 +216,22 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="copy-array">
-<h1>copy_array<a class="headerlink" href="#copy-array" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="clip-vector-norm">
+<h1>clip_vector_norm<a class="headerlink" href="#clip-vector-norm" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
-<dt id="ivy.functional.ivy.general.copy_array">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">copy_array</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/general.html#copy_array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.general.copy_array" title="Permalink to this definition">¶</a></dt>
-<dd><p>Copy an array.</p>
+<dt id="ivy.functional.ivy.general.clip_vector_norm">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">clip_vector_norm</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">max_norm</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">p</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">2.0</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/general.html#clip_vector_norm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.general.clip_vector_norm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clips (limits) the vector p-norm of an array.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>x</strong> (<em>array</em>) – The array to copy</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>array</em>) – Input array containing elements to clip.</p></li>
+<li><p><strong>max_norm</strong> (<em>float</em>) – The maximum value of the array norm.</p></li>
+<li><p><strong>p</strong> (<em>float</em><em>, </em><em>optional</em>) – The p-value for computing the p-norm. Default is 2.</p></li>
+</ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>A copy of the input array.</p>
+<dd class="field-even"><p>An array with the vector norm downscaled to the max norm if needed.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -247,10 +251,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="array_equal.html" class="btn btn-neutral float-right" title="array_equal" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="clip_matrix_norm.html" class="btn btn-neutral float-right" title="clip_matrix_norm" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="is_array.html" class="btn btn-neutral float-left" title="is_array" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="to_list.html" class="btn btn-neutral float-left" title="to_list" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
