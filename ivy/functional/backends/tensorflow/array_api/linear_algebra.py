@@ -38,6 +38,6 @@ def diagonal(x: tf.Tensor,
 
 
 
-def inv(x: tf.Tensor, /) -> tf.Tensor:
+def inv(x: tf.Tensor) -> tf.Tensor:
     return tf.linalg.inv(x)
 
