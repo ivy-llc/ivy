@@ -124,6 +124,7 @@
 <li class="toctree-l2"><a class="reference internal" href="elementwise/not_equal.html">not_equal</a></li>
 <li class="toctree-l2"><a class="reference internal" href="elementwise/tanh.html">tanh</a></li>
 <li class="toctree-l2"><a class="reference internal" href="elementwise/sinh.html">sinh</a></li>
+<li class="toctree-l2"><a class="reference internal" href="elementwise/positive.html">positive</a></li>
 <li class="toctree-l2"><a class="reference internal" href="elementwise/square.html">square</a></li>
 </ul>
 </li>
@@ -679,6 +680,20 @@ The returned array must have a data type of bool.</p>
 </dd></dl>
 
 <dl class="py function">
+<dt id="ivy.functional.ivy.elementwise.positive">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">positive</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../_modules/ivy/functional/ivy/elementwise.html#positive"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.elementwise.positive" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a new array with the positive value of each element in x.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>x</strong> – Input array.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A new array with the positive value of each element in x.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt id="ivy.functional.ivy.elementwise.sin">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">sin</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../_modules/ivy/functional/ivy/elementwise.html#sin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.elementwise.sin" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates an implementation-dependent approximation to the sine, having domain <code class="docutils literal notranslate"><span class="pre">(-infinity,</span> <span class="pre">+infinity)</span></code> and codomain <code class="docutils literal notranslate"><span class="pre">[-1,</span> <span class="pre">+1]</span></code>, for each element <code class="docutils literal notranslate"><span class="pre">x_i</span></code> of the input array <code class="docutils literal notranslate"><span class="pre">x</span></code>. Each element <code class="docutils literal notranslate"><span class="pre">x_i</span></code> is assumed to be expressed in radians.</p>
@@ -801,6 +816,7 @@ have a floating-point data type</p>
 <li class="toctree-l1"><a class="reference internal" href="elementwise/not_equal.html">not_equal</a></li>
 <li class="toctree-l1"><a class="reference internal" href="elementwise/tanh.html">tanh</a></li>
 <li class="toctree-l1"><a class="reference internal" href="elementwise/sinh.html">sinh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="elementwise/positive.html">positive</a></li>
 <li class="toctree-l1"><a class="reference internal" href="elementwise/square.html">square</a></li>
 </ul>
 </div>
