@@ -7,6 +7,9 @@ import typing
 # local
 import ivy
 
+def bitwise_invert(x: torch.Tensor) \
+        -> torch.Tensor:
+    return torch.bitwise_not(x)
 
 def isfinite(x: Tensor)\
         -> Tensor:
@@ -61,6 +64,11 @@ def isfinite(x: torch.Tensor) \
     return torch.isfinite(x)
 
 
+def asin(x: torch.Tensor) \
+        -> torch.Tensor:
+    return torch.asin(x)
+  
+
 def asinh(x: torch.Tensor) \
         -> torch.Tensor:
     return torch.asinh(x)
@@ -114,6 +122,11 @@ def logical_not(x: torch.Tensor)\
     return torch.logical_not(x.type(torch.bool))
 
 
+def acos(x: torch.Tensor)\
+        -> torch.Tensor:
+    return torch.acos(x)
+
+  
 def logical_or(x1: torch.Tensor, x2: torch.Tensor)\
         -> torch.Tensor:
     return torch.logical_or(x1.type(torch.bool), x2.type(torch.bool))
@@ -139,3 +152,8 @@ def tanh(x: torch.Tensor) -> torch.Tensor:
 
 def sinh(x: torch.Tensor) -> torch.Tensor:
     return torch.sinh(x)
+
+
+def square(x: torch.Tensor) \
+        -> torch.Tensor:
+    return torch.square(x)
