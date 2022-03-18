@@ -192,6 +192,12 @@ def sinh(x: Tensor) \
     return tf.sinh(x)  
 
 
+def bitwise_or(x1: Tensor, x2: Tensor) \
+        -> Tensor:
+    x1, x2 = _cast_for_binary_op(x1, x2)
+    return x1 | x2
+
+
 def positive(x: Tensor)\
         -> Tensor:
     return tf.experimental.numpy.positive(x)
