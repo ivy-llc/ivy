@@ -18,8 +18,12 @@ import multiprocessing as _multiprocessing
 from ivy.functional.ivy.old import default_dtype
 from ivy.functional.ivy.device import default_device
 from ivy.functional.backends.mxnet.device import _callable_dev
+from ivy.functional.backends.mxnet.general import unstack
 from ivy.functional.backends.mxnet import _handle_flat_arrays_in_out, _mxnet_init_context,\
     _scalar_or_flat_array_to_scalar, _handle_flat_arrays_in
+
+#temporary imports
+from ivy.functional.backends.mxnet.general import linspace
 
 
 DTYPE_TO_STR = {_np.dtype('int8'): 'int8',
@@ -67,32 +71,12 @@ DTYPE_FROM_STR = {'int8': _np.int8,
 # API #
 # ----#
 
-def array(object_in, dtype=None, dev=None):
-    cont = _mxnet_init_context(default_device(dev))
-    return _mx.nd.array(object_in, cont, dtype=default_dtype(dtype, object_in))
 
 
-asarray = array
 
 
-def is_array(x, exclusive=False):
-    if isinstance(x, _mx.ndarray.ndarray.NDArray):
-        if exclusive and x.grad is not None:
-            return False
-        return True
-    return False
 
 
-copy_array = lambda x: x.copy()
-
-
-@_handle_flat_arrays_in_out
-def array_equal(x0, x1):
-    if ivy.dtype(x0, as_str=True) == 'bool':
-        x0 = x0.astype('int32')
-    if ivy.dtype(x1, as_str=True) == 'bool':
-        x1 = x1.astype('int32')
-    return _mx.nd.min(_mx.nd.broadcast_equal(x0, x1)) == 1
 
 
 def dtype_bits(dtype_in):
@@ -105,12 +89,7 @@ def dtype_bits(dtype_in):
 
 equal = lambda x1, x2: x1 == x2
 equal.__name__ = 'equal'
-to_numpy = lambda x: x if isinstance(x, _np.ndarray) else (_np.array(x) if isinstance(x, (int, float)) else x.asnumpy())
-to_numpy.__name__ = 'to_numpy'
-to_scalar = lambda x: x if isinstance(x, Number) else x.asscalar().item()
-to_scalar.__name__ = 'to_scalar'
-to_list = lambda x: to_numpy(x).tolist()
-to_list.__name__ = 'to_list'
+
 shape = lambda x, as_tensor=False: _mx.nd.shape_array(x) if as_tensor else x.shape
 shape.__name__ = 'shape'
 get_num_dims = lambda x, as_tensor=False:\
@@ -128,10 +107,6 @@ def clip(x, x_min, x_max):
 def round(x):
     return _mx.nd.round(x)
 
-
-@_handle_flat_arrays_in_out
-def floormod(x, y):
-    return x % y
 
 
 # noinspection PyShadowingBuiltins
@@ -159,49 +134,6 @@ def arange(stop, start=0, step=1, dtype=None, dev=None):
     return _mx.nd.arange(start, stop, ctx=cont, step=step, dtype=dtype)
 
 
-def _linspace(start, stop, num, cont):
-    if num == 1:
-        return start
-    start = _mx.nd.array(start).reshape((1,)).astype('float32')
-    stop = _mx.nd.array(stop).reshape((1,)).astype('float32')
-    n_m_1 = _mx.nd.array(num - 1).reshape((1,)).astype('float32')
-    increment = (stop - start)/n_m_1
-    increment_tiled = _mx.nd.tile(increment, num - 1)
-    increments = increment_tiled * _mx.nd.array(_mx.nd.np.linspace(1, num - 1, num - 1).tolist(), ctx=cont)
-    ret = _mx.nd.concat(start, start + increments, dim=0)
-    return ret
-
-
-def linspace(start, stop, num, axis=None, dev=None):
-    cont = _mxnet_init_context(default_device(dev))
-    num = num.asnumpy()[0] if isinstance(num, _mx.nd.NDArray) else num
-    start_is_array = isinstance(start, _mx.nd.NDArray)
-    stop_is_array = isinstance(stop, _mx.nd.NDArray)
-    start_shape = []
-    if start_is_array:
-        start_shape = list(start.shape)
-        start = start.reshape((-1,))
-    if stop_is_array:
-        start_shape = list(stop.shape)
-        stop = stop.reshape((-1,))
-    if start_is_array and stop_is_array:
-        res = [_linspace(strt, stp, num, cont) for strt, stp in zip(start, stop)]
-    elif start_is_array and not stop_is_array:
-        res = [_linspace(strt, stop, num, cont) for strt in start]
-    elif not start_is_array and stop_is_array:
-        res = [_linspace(start, stp, num, cont) for stp in stop]
-    else:
-        return _linspace(start, stop, num, cont)
-    new_shape = start_shape + [num]
-    res = _mx.nd.concat(*res, dim=-1).reshape(new_shape)
-    if axis is not None:
-        res = _mx.nd.swapaxes(res, axis, -1)
-    return res
-
-
-def logspace(start, stop, num, base=10., axis=None, dev=None):
-    power_seq = linspace(start, stop, num, axis, default_device(dev))
-    return base ** power_seq
 
 
 @_handle_flat_arrays_in_out
@@ -215,12 +147,7 @@ def stack(xs, axis=0):
     return _mx.nd.stack(*xs, axis=axis)
 
 
-def unstack(x, axis, keepdims=False):
-    if x.shape == ():
-        return [x]
-    num_outputs = x.shape[axis]
-    ret = _mx.nd.split(x, num_outputs, axis, squeeze_axis=not keepdims)
-    return ret if isinstance(ret, list) else [ret]
+
 
 
 def split(x, num_or_size_splits=None, axis=0, with_remainder=False):
@@ -293,12 +220,6 @@ def transpose(x, axes=None):
         axes = list(range(num_dims))
         axes.reverse()
     return _mx.nd.transpose(x, axes)
-
-
-def expand_dims(x, axis):
-    if x.shape == ():
-        return _flat_array_to_1_dim_array(x)
-    return _mx.nd.expand_dims(x, axis)
 
 
 @_handle_flat_arrays_in_out

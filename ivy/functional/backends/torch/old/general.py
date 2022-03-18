@@ -19,41 +19,10 @@ from ivy.functional.ivy.old import default_dtype
 from ivy.functional.ivy.device import default_device
 from ivy.functional.backends.torch.device import dev_from_str, _callable_dev
 
+
 # API #
 # ----#
 
-
-# noinspection PyShadowingNames
-def array(object_in, dtype: Optional[str] = None, dev: Optional[str] = None):
-    dev = default_device(dev)
-    dtype = dtype_from_str(default_dtype(dtype, object_in))
-    if isinstance(object_in, np.ndarray):
-        return _torch.Tensor(object_in).to(dev_from_str(dev))
-    if dtype is not None:
-        return _torch.tensor(object_in, dtype=dtype, device=dev_from_str(dev))
-    elif isinstance(object_in, _torch.Tensor):
-        return object_in.to(dev_from_str(dev))
-    else:
-        return _torch.tensor(object_in, device=dev_from_str(dev))
-
-
-asarray = array
-
-
-def is_array(x, exclusive=False):
-    if isinstance(x, _torch.Tensor):
-        if exclusive and x.requires_grad:
-            return False
-        return True
-    return False
-
-
-def copy_array(x):
-    return x.clone()
-
-
-def array_equal(x0, x1):
-    return _torch.equal(x0, x1)
 
 
 def dtype_bits(dtype_in):
@@ -64,26 +33,7 @@ def dtype_bits(dtype_in):
         'float', ''))
 
 
-def to_numpy(x) -> np.ndarray:
-    if isinstance(x, np.ndarray) or isinstance(x, (float, int, bool)):
-        return x
-    elif _torch.is_tensor(x):
-        return x.detach().cpu().numpy()
-    raise ValueError('Expected a pytroch tensor.')
 
-
-def to_scalar(x) -> Union[float, int, bool]:
-    if isinstance(x, (float, int)):
-        return x
-    return x.item()
-
-
-def to_list(x):
-    if isinstance(x, np.ndarray):
-        return x.tolist()
-    elif _torch.is_tensor(x):
-        return x.detach().cpu().tolist()
-    raise ValueError('Expected a pytroch tensor.')
 
 
 def shape(x, as_tensor=False) -> Union[_torch.Tensor, List[int]]:
@@ -115,8 +65,6 @@ def round(x):
     return _torch.round(x)
 
 
-def floormod(x, y):
-    return x % y
 
 
 # noinspection PyShadowingBuiltins
@@ -148,82 +96,7 @@ def arange(stop: Number, start: Number = 0, step: Number = 1, dtype: Optional[st
         return _torch.arange(start, stop, step=step, device=dev_from_str(dev))
 
 
-def _differentiable_linspace(start, stop, num, device):
-    if num == 1:
-        return _torch.unsqueeze(start, 0)
-    n_m_1 = num - 1
-    increment = (stop - start) / n_m_1
-    increment_tiled = increment.repeat(n_m_1)
-    increments = increment_tiled * _torch.linspace(1, n_m_1, n_m_1, device=device)
-    res = _torch.cat((_torch.unsqueeze(_torch.tensor(start), 0), start + increments), 0)
-    return res
 
-
-# noinspection PyUnboundLocalVariable,PyShadowingNames
-def linspace(start, stop, num, axis=None, dev=None):
-    num = num.detach().numpy().item() if isinstance(num, _torch.Tensor) else num
-    start_is_array = isinstance(start, _torch.Tensor)
-    stop_is_array = isinstance(stop, _torch.Tensor)
-    linspace_method = _torch.linspace
-    dev = default_device(dev)
-    sos_shape = []
-    if start_is_array:
-        start_shape = list(start.shape)
-        sos_shape = start_shape
-        if num == 1:
-            return start.unsqueeze(axis).to(dev_from_str(dev))
-        start = start.reshape((-1,))
-        linspace_method = _differentiable_linspace if start.requires_grad else _torch.linspace
-    if stop_is_array:
-        stop_shape = list(stop.shape)
-        sos_shape = stop_shape
-        if num == 1:
-            return _torch.ones(stop_shape[:axis] + [1] + stop_shape[axis:], device=dev_from_str(dev)) * start
-        stop = stop.reshape((-1,))
-        linspace_method = _differentiable_linspace if stop.requires_grad else _torch.linspace
-    if start_is_array and stop_is_array:
-        if num < start.shape[0]:
-            start = start.unsqueeze(-1)
-            stop = stop.unsqueeze(-1)
-            diff = stop - start
-            inc = diff / (num-1)
-            res = [start]
-            res += [start + inc*i for i in range(1, num-1)]
-            res.append(stop)
-        else:
-            res = [linspace_method(strt, stp, num, device=dev_from_str(dev)) for strt, stp in zip(start, stop)]
-        _torch.cat(res, -1).reshape(start_shape + [num])
-    elif start_is_array and not stop_is_array:
-        if num < start.shape[0]:
-            start = start.unsqueeze(-1)
-            diff = stop - start
-            inc = diff / (num - 1)
-            res = [start]
-            res += [start + inc * i for i in range(1, num - 1)]
-            res.append(_torch.ones_like(start, device=dev_from_str(dev)) * stop)
-        else:
-            res = [linspace_method(strt, stop, num, device=dev_from_str(dev)) for strt in start]
-    elif not start_is_array and stop_is_array:
-        if num < stop.shape[0]:
-            stop = stop.unsqueeze(-1)
-            diff = stop - start
-            inc = diff / (num - 1)
-            res = [_torch.ones_like(stop, device=dev_from_str(dev)) * start]
-            res += [start + inc * i for i in range(1, num - 1)]
-            res.append(stop)
-        else:
-            res = [linspace_method(start, stp, num, device=dev_from_str(dev)) for stp in stop]
-    else:
-        return linspace_method(start, stop, num, device=dev_from_str(dev))
-    res = _torch.cat(res, -1).reshape(sos_shape + [num])
-    if axis is not None:
-        res = _torch.transpose(res, axis, -1)
-    return res.to(dev_from_str(dev))
-
-
-def logspace(start, stop, num, base=10., axis=None, dev=None):
-    power_seq = linspace(start, stop, num, axis, default_device(dev))
-    return base ** power_seq
 
 
 def concatenate(xs: List[_torch.Tensor], axis: int = -1):
@@ -235,14 +108,6 @@ def concatenate(xs: List[_torch.Tensor], axis: int = -1):
 def stack(xs: List[_torch.Tensor], axis: int = 0):
     return _torch.stack(xs, axis)
 
-
-def unstack(x, axis: int, keepdims: bool = False) -> List[_torch.Tensor]:
-    if x.shape == ():
-        return [x]
-    ret = list(_torch.unbind(x, axis))
-    if keepdims:
-        return [r.unsqueeze(axis) for r in ret]
-    return ret
 
 
 def split(x, num_or_size_splits: Optional[Union[int, List[int]]] = None, axis: int = 0, with_remainder: bool = False)\
@@ -311,10 +176,6 @@ def transpose(x, axes: List[int]):
         axes = list(range(num_dims))
         axes.reverse()
     return x.permute(axes)
-
-
-def expand_dims(x, axis: int):
-    return _torch.unsqueeze(x, axis)
 
 
 def where(condition, x1, x2):
@@ -464,8 +325,54 @@ def scatter_flat(indices, updates, size: Optional[int] = None, tensor: Optional[
     return res
 
 
+def _parse_ellipsis(so, ndims):
+    pre = list()
+    for s in so:
+        if s is Ellipsis:
+            break
+        pre.append(s)
+    post = list()
+    for s in reversed(so):
+        if s is Ellipsis:
+            break
+        post.append(s)
+    return tuple(
+        pre +
+        [slice(None, None, None) for _ in range(ndims - len(pre) - len(post))] +
+        list(reversed(post))
+    )
+
+
 # noinspection PyShadowingNames
 def scatter_nd(indices, updates, shape=None, tensor=None, reduction='sum', dev=None):
+
+    # handle numeric updates
+    updates = _torch.tensor([updates] if isinstance(updates, (float, int, bool)) else updates,
+                            dtype=ivy.dtype(tensor, as_str=False) if ivy.exists(tensor)
+                            else ivy.default_dtype(item=updates))
+
+    # hanle non-tensor indices
+    if indices == ():
+        return updates
+    elif indices is Ellipsis or (isinstance(indices, tuple) and indices == (Ellipsis,)):
+        if updates.shape == () and ivy.exists(tensor) and tensor.shape == ():
+            return updates
+        shape = tensor.shape if ivy.exists(tensor) else updates.shape
+        indices = _torch.concat([_torch.unsqueeze(g, -1) for g in _torch.meshgrid(*[_torch.range(0, s) for s in shape])], -1)
+    elif isinstance(indices, (float, int, bool)):
+        indices = (indices,)
+    if isinstance(indices, tuple):
+        shape = tensor.shape if ivy.exists(tensor) else updates.shape
+        indices = _parse_ellipsis(indices, len(shape))
+        indices = _torch.concat([_torch.unsqueeze(g, -1) for g in _torch.meshgrid(
+            *[_torch.range(0, s) if idx is slice(None, None, None) else _torch.tensor(idx) % s
+              for s, idx in zip(shape, indices)])], -1)
+
+    # broadcast updates to indices
+    if updates.shape == ():
+        updates = _torch.broadcast_to(updates, indices.shape[:-1])
+
+    # implementation
     target = tensor
     target_given = ivy.exists(target)
     if ivy.exists(shape) and ivy.exists(target):

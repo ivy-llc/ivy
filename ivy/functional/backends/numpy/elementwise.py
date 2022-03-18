@@ -3,6 +3,11 @@ import numpy as np
 import numpy.array_api as npa
 
 
+def bitwise_invert(x: np.ndarray)\
+        -> np.ndarray:
+    return np.invert(x)
+
+
 def bitwise_and(x1: np.ndarray,
                 x2: np.ndarray)\
         -> np.ndarray:
@@ -37,6 +42,11 @@ def sqrt(x: np.ndarray)\
 def isfinite(x: np.ndarray) \
         -> np.ndarray:
     return np.asarray(npa.isfinite(npa.asarray(x)))
+
+  
+def asin(x: np.ndarray)\
+        -> np.ndarray:
+    return np.arcsin(x)
 
 
 def isinf(x: np.ndarray)\
@@ -89,6 +99,11 @@ def logical_not(x: np.ndarray)\
     return np.logical_not(x)
 
 
+def acos(x: np.ndarray)\
+        -> np.ndarray:
+    return np.asarray(npa.acos(npa.asarray(x)))
+
+  
 def logical_or(x1: np.ndarray, x2: np.ndarray)\
         -> np.ndarray:
     return np.logical_or(x1, x2)

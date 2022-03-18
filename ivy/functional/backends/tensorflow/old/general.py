@@ -9,6 +9,7 @@ import numpy as _np
 import math as _math
 import tensorflow as _tf
 from numbers import Number
+from collections import Iterable
 import tensorflow_probability as _tfp
 import multiprocessing as _multiprocessing
 from tensorflow.python.types.core import Tensor
@@ -50,33 +51,10 @@ DTYPE_FROM_STR = {'int8': _tf.int8,
 # API #
 # ----#
 
-# noinspection PyShadowingNames
-def array(object_in, dtype=None, dev=None):
-    dtype = dtype_from_str(default_dtype(dtype, object_in))
-    dev = default_device(dev)
-    with _tf.device(dev_from_str(dev)):
-        try:
-            tensor = _tf.convert_to_tensor(object_in, dtype=dtype)
-        except (TypeError, ValueError):
-            tensor = _tf.convert_to_tensor(ivy.nested_map(object_in, lambda x: _tf.cast(x, dtype)), dtype=dtype)
-        if dtype is None:
-            return tensor
-        return _tf.cast(tensor, dtype)
 
 
-asarray = array
 
 
-def is_array(x, exclusive=False):
-    if isinstance(x, Tensor):
-        if exclusive and isinstance(x, _tf.Variable):
-            return False
-        return True
-    return False
-
-
-copy_array = _tf.identity
-array_equal = _tf.experimental.numpy.array_equal
 
 
 def dtype_bits(dtype_in):
@@ -87,12 +65,7 @@ def dtype_bits(dtype_in):
         'float', ''))
 
 
-to_numpy = lambda x: _np.asarray(_tf.convert_to_tensor(x))
-to_numpy.__name__ = 'to_numpy'
-to_scalar = lambda x: to_numpy(x).item()
-to_scalar.__name__ = 'to_scalar'
-to_list = lambda x: x.numpy().tolist()
-to_list.__name__ = 'to_list'
+
 shape = lambda x, as_tensor=False: _tf.shape(x) if as_tensor else tuple(x.shape)
 shape.__name__ = 'shape'
 get_num_dims = lambda x, as_tensor=False: _tf.shape(_tf.shape(x))[0] if as_tensor else int(_tf.shape(_tf.shape(x)))
@@ -101,7 +74,8 @@ maximum = _tf.maximum
 clip = _tf.clip_by_value
 # noinspection PyShadowingBuiltins
 round = _tf.round
-floormod = lambda x, y: x % y
+
+
 
 
 # noinspection PyShadowingBuiltins
@@ -132,17 +106,9 @@ def arange(stop, start=0, step=1, dtype=None, dev=None):
         return _tf.range(start, stop, delta=step, dtype=dtype)
 
 
-def linspace(start, stop, num, axis=None, dev=None):
-    if axis is None:
-        axis = -1
-    dev = default_device(dev)
-    with _tf.device(ivy.dev_from_str(dev)):
-        return _tf.linspace(start, stop, num, axis=axis)
 
 
-def logspace(start, stop, num, base=10., axis=None, dev=None):
-    power_seq = linspace(start, stop, num, axis, default_device(dev))
-    return base ** power_seq
+
 
 
 def concatenate(xs, axis=-1):
@@ -152,15 +118,6 @@ def concatenate(xs, axis=-1):
 
 
 stack = _tf.stack
-
-
-def unstack(x, axis, keepdims=False):
-    if x.shape == ():
-        return [x]
-    ret = _tf.unstack(x, axis=axis)
-    if keepdims:
-        return [_tf.expand_dims(r, axis) for r in ret]
-    return ret
 
 
 def split(x, num_or_size_splits=None, axis=0, with_remainder=False):
@@ -219,7 +176,6 @@ def swapaxes(x, axis0, axis1):
 
 
 transpose = _tf.transpose
-expand_dims = _tf.expand_dims
 where = lambda condition, x1, x2: _tf.where(_tf.cast(condition, _tf.bool), x1, x2)
 indices_where = _tf.where
 
@@ -310,8 +266,53 @@ def scatter_flat(indices, updates, size=None, tensor=None, reduction='sum', dev=
         return res
 
 
+def _parse_ellipsis(so, ndims):
+    pre = list()
+    for s in so:
+        if s is Ellipsis:
+            break
+        pre.append(s)
+    post = list()
+    for s in reversed(so):
+        if s is Ellipsis:
+            break
+        post.append(s)
+    return tuple(
+        pre +
+        [slice(None, None, None) for _ in range(ndims - len(pre) - len(post))] +
+        list(reversed(post))
+    )
+
+
 # noinspection PyShadowingNames
 def scatter_nd(indices, updates, shape=None, tensor=None, reduction='sum', dev=None):
+
+    # handle numeric updates
+    updates = _tf.constant([updates] if isinstance(updates, Number) else updates,
+                           dtype=ivy.dtype(tensor, as_str=False) if ivy.exists(tensor)
+                           else ivy.default_dtype(item=updates))
+
+    # hanle non-tensor indices
+    if indices == ():
+        return updates
+    elif indices is Ellipsis or (isinstance(indices, tuple) and indices == (Ellipsis,)):
+        if updates.shape == () and ivy.exists(tensor) and tensor.shape == ():
+            return updates
+        shape = tensor.shape if ivy.exists(tensor) else updates.shape
+        indices = _tf.concat([_tf.expand_dims(g, -1) for g in _tf.meshgrid(*[_tf.range(s) for s in shape])], -1)
+    elif isinstance(indices, Number):
+        indices = (indices,)
+    if isinstance(indices, tuple):
+        shape = tensor.shape if ivy.exists(tensor) else updates.shape
+        indices = _parse_ellipsis(indices, len(shape))
+        indices = _tf.concat([_tf.expand_dims(g, -1) for g in _tf.meshgrid(
+            *[_tf.range(s) if idx is slice(None, None, None) else idx % s for s, idx in zip(shape, indices)])], -1)
+
+    # broadcast updates to indices
+    if updates.shape == ():
+        updates = _tf.broadcast_to(updates, indices.shape[:-1])
+
+    # implementation
     target = tensor
     target_given = ivy.exists(target)
     if ivy.exists(shape) and ivy.exists(target):

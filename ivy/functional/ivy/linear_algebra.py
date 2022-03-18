@@ -11,6 +11,22 @@ inf = float('inf')
 # Array API Standard #
 # -------------------#
 
+def matrix_transpose(x: Union[ivy.Array, ivy.NativeArray])\
+        -> ivy.Array:
+    """
+    Transposes a matrix (or a stack of matrices) ``x``.
+    Parameters
+    ----------
+    x: array
+        input array having shape ``(..., M, N)`` and whose innermost two dimensions form ``MxN`` matrices.
+    Returns
+    -------
+    out: array
+        an array containing the transpose for each matrix and having shape ``(..., N, M)``. The returned array must have the same data type as ``x``.
+    """
+    return _cur_framework(x).matrix_transpose(x)
+
+
 # noinspection PyShadowingBuiltins
 def vector_norm(x: Union[ivy.Array, ivy.NativeArray],
                 axis: Optional[Union[int, Tuple[int]]] = None,
@@ -73,6 +89,7 @@ def vector_norm(x: Union[ivy.Array, ivy.NativeArray],
     x_raised = x ** ord
     return ivy.reduce_sum(x_raised, axis, keepdims) ** (1/ord)
 
+
 def svd(x:Union[ivy.Array,ivy.NativeArray],full_matrices: bool = True)->Union[ivy.Array, Tuple[ivy.Array,...]]:
 
     """
@@ -96,6 +113,7 @@ def svd(x:Union[ivy.Array,ivy.NativeArray],full_matrices: bool = True)->Union[iv
         The size of the last two dimensions depends on the value of full_matrices.
     """
     return _cur_framework(x).svd(x,full_matrices)
+
 
 def diagonal(x: ivy.Array,
              offset: int = 0,
@@ -210,6 +228,26 @@ def slodget(x: Union[ivy.Array, ivy.NativeArray],) \
 
     """
     return _cur_framework(x).slodget(x)
+
+
+def svdvals(x: Union[ivy.Array, ivy.NativeArray],) \
+            -> ivy.Array:
+    """
+    Returns the singular values of a matrix (or a stack of matrices) ``x``.
+    
+    Parameters
+    ----------
+    x:
+        input array having shape ``(..., M, N)`` and whose innermost two dimensions form ``MxN`` matrices.
+    Return
+    ----------
+    Out:
+        array with shape ``(..., K)`` that contains the vector(s) of singular values of length ``K``, where K = min(M, N).
+        The values are sorted in descending order by magnitude.
+
+    """
+    return _cur_framework(x).svdvals(x)
+
 
 def trace(x: ivy.Array,
           offset: int = 0)\

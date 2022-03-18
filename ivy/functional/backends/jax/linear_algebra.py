@@ -10,6 +10,11 @@ from ivy.functional.backends.jax import JaxArray
 import ivy
 
 
+def matrix_transpose(x: JaxArray)\
+        -> JaxArray:
+    return jnp.swapaxes(x, -1, -2)
+
+
 # noinspection PyUnusedLocal,PyShadowingBuiltins
 def vector_norm(x: JaxArray,
                 axis: Optional[Union[int, Tuple[int]]] = None, 
@@ -39,6 +44,10 @@ def diagonal(x: JaxArray,
              axis1: int = -2,
              axis2: int = -1) -> JaxArray:
     return jnp.diagonal(x, offset, axis1, axis2)
+
+
+def svdvals(x: JaxArray) -> JaxArray:
+    return jnp.linalg.svd(x, compute_uv=False)
 
 
 def qr(x: JaxArray,

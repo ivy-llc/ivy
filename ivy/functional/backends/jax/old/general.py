@@ -9,6 +9,7 @@ import numpy as _onp
 import jax.numpy as _jnp
 import jaxlib as _jaxlib
 from numbers import Number
+from collections import Iterable
 from operator import mul as _mul
 from functools import reduce as _reduce
 from jaxlib.xla_extension import Buffer
@@ -82,28 +83,14 @@ def _to_array(x):
 # API #
 # ----#
 
-# noinspection PyShadowingNames
-def array(object_in, dtype=None, dev=None):
-    return to_dev(_jnp.array(object_in, dtype=dtype_from_str(default_dtype(dtype, object_in))), default_device(dev))
 
 
-asarray = array
 
 
-# noinspection PyUnresolvedReferences,PyProtectedMember
-def is_array(x, exclusive=False):
-    if exclusive:
-        return isinstance(x, (_jax.interpreters.xla._DeviceArray,
-                              _jaxlib.xla_extension.DeviceArray, Buffer))
-    return isinstance(x, (_jax.interpreters.xla._DeviceArray,
-                          _jaxlib.xla_extension.DeviceArray, Buffer,
-                          _jax.interpreters.ad.JVPTracer,
-                          _jax.core.ShapedArray,
-                          _jax.interpreters.partial_eval.DynamicJaxprTracer))
 
 
-copy_array = _jnp.array
-array_equal = _jnp.array_equal
+
+
 
 
 def dtype_bits(dtype_in):
@@ -113,12 +100,7 @@ def dtype_bits(dtype_in):
     return int(dtype_str.replace('uint', '').replace('int', '').replace('bfloat', '').replace('float', ''))
 
 
-to_numpy = lambda x: _onp.asarray(_to_array(x))
-to_numpy.__name__ = 'to_numpy'
-to_scalar = lambda x: x if isinstance(x, Number) else _to_array(x).item()
-to_scalar.__name__ = 'to_scalar'
-to_list = lambda x: _to_array(x).tolist()
-to_list.__name__ = 'to_list'
+
 shape = lambda x, as_tensor=False: _jnp.asarray(_jnp.shape(x)) if as_tensor else x.shape
 shape.__name__ = 'shape'
 get_num_dims = lambda x, as_tensor=False: _jnp.asarray(len(_jnp.shape(x))) if as_tensor else len(x.shape)
@@ -127,7 +109,7 @@ maximum = _jnp.maximum
 clip = _jnp.clip
 # noinspection PyShadowingBuiltins
 round = _jnp.round
-floormod = lambda x, y: x % y
+
 # noinspection PyShadowingBuiltins
 abs = _jnp.absolute
 
@@ -151,16 +133,6 @@ def arange(stop, start=0, step=1, dtype=None, dev=None):
     return to_dev(_jnp.arange(start, stop, step=step, dtype=dtype), default_device(dev))
 
 
-def linspace(start, stop, num, axis=None, dev=None):
-    if axis is None:
-        axis = -1
-    return to_dev(_jnp.linspace(start, stop, num, axis=axis), default_device(dev))
-
-
-def logspace(start, stop, num, base=10., axis=None, dev=None):
-    if axis is None:
-        axis = -1
-    return to_dev(_jnp.logspace(start, stop, num, base=base, axis=axis), default_device(dev))
 
 
 def concatenate(xs, axis=-1):
@@ -172,15 +144,7 @@ def concatenate(xs, axis=-1):
 stack = _jnp.stack
 
 
-def unstack(x, axis, keepdims=False):
-    if x.shape == ():
-        return [x]
-    dim_size = x.shape[axis]
-    # ToDo: make this faster somehow, jnp.split is VERY slow for large dim_size
-    x_split = _jnp.split(x, dim_size, axis)
-    if keepdims:
-        return x_split
-    return [_jnp.squeeze(item, axis) for item in x_split]
+
 
 
 def split(x, num_or_size_splits=None, axis=0, with_remainder=False):
@@ -216,7 +180,6 @@ def transpose(x, axes=None):
     return _jnp.transpose(x, axes)
 
 
-expand_dims = _jnp.expand_dims
 where = lambda condition, x1, x2: _jnp.where(condition, x1, x2)
 
 
@@ -324,6 +287,25 @@ def scatter_flat(indices, updates, size=None, tensor=None, reduction='sum', dev=
 
 # noinspection PyShadowingNames
 def scatter_nd(indices, updates, shape=None, tensor=None, reduction='sum', dev=None):
+
+    # parse numeric inputs
+    if indices not in [Ellipsis, ()] and not (isinstance(indices, Iterable) and Ellipsis in indices):
+        indices = [[indices]] if isinstance(indices, Number) else indices
+        indices = _jnp.array(indices)
+        if len(indices.shape) < 2:
+            indices = _jnp.expand_dims(indices, -1)
+    updates = [updates] if isinstance(updates, Number) else updates
+    updates = _jnp.array(updates, dtype=ivy.dtype(tensor, as_str=False) if ivy.exists(tensor)
+                         else ivy.default_dtype(item=updates))
+
+    # handle Ellipsis
+    if isinstance(indices, tuple) or indices is Ellipsis:
+        indices_tuple = indices
+    else:
+        indices_flat = indices.reshape(-1, indices.shape[-1]).T
+        indices_tuple = tuple(indices_flat) + (Ellipsis,)
+
+    # implementation
     target = tensor
     target_given = ivy.exists(target)
     if ivy.exists(shape) and ivy.exists(target):
@@ -331,8 +313,6 @@ def scatter_nd(indices, updates, shape=None, tensor=None, reduction='sum', dev=N
     if dev is None:
         dev = callable_dev(updates)
     shape = list(shape) if ivy.exists(shape) else list(tensor.shape)
-    indices_flat = indices.reshape(-1, indices.shape[-1]).T
-    indices_tuple = tuple(indices_flat) + (Ellipsis,)
     if reduction == 'sum':
         if not target_given:
             target = _jnp.zeros(shape, dtype=updates.dtype)
