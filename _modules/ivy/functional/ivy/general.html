@@ -431,30 +431,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">floormod</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span></div>
 
-<span class="c1"># noinspection PyShadowingNames</span>
-<div class="viewcode-block" id="logspace"><a class="viewcode-back" href="../../../../functional/ivy/general/logspace.html#ivy.functional.ivy.general.logspace">[docs]</a><span class="k">def</span> <span class="nf">logspace</span><span class="p">(</span><span class="n">start</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">Number</span><span class="p">],</span> <span class="n">stop</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">Number</span><span class="p">],</span>
-             <span class="n">num</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">base</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">10.</span><span class="p">,</span> <span class="n">axis</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">dev</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Device</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span>\
-        <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Generates a certain number of evenly-spaced values in log space, in an interval along a given axis.</span>
 
-<span class="sd">    See :math:`arange` that allows to specify the step size of evenly spaced values in an interval.</span>
-
-<span class="sd">    :param start: First entry in the range.</span>
-<span class="sd">    :type start: array</span>
-<span class="sd">    :param stop: Final entry in the range.</span>
-<span class="sd">    :type stop: array</span>
-<span class="sd">    :param num: Number of values to generate.</span>
-<span class="sd">    :type num: int</span>
-<span class="sd">    :param base: The base of the log space. Default is 10.0</span>
-<span class="sd">    :type base: float, optional</span>
-<span class="sd">    :param axis: Axis along which the operation is performed.</span>
-<span class="sd">    :type axis: int</span>
-<span class="sd">    :param dev: device on which to create the array &#39;cuda:0&#39;, &#39;cuda:1&#39;, &#39;cpu&#39; etc.</span>
-<span class="sd">    :type dev: ivy.Device</span>
-<span class="sd">    :return: Tensor of evenly-spaced values.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">start</span><span class="p">)</span><span class="o">.</span><span class="n">logspace</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">num</span><span class="p">,</span> <span class="n">base</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">dev</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="unstack"><a class="viewcode-back" href="../../../../functional/ivy/general/unstack.html#ivy.functional.ivy.general.unstack">[docs]</a><span class="k">def</span> <span class="nf">unstack</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span> <span class="n">axis</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">keepdims</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>\
@@ -471,6 +448,8 @@
 <span class="sd">    :return: List of arrays, unpacked along specified dimensions.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">unstack</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">keepdims</span><span class="p">)</span></div>
+
+
 
 </pre></div>
 

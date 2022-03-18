@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>ceil &mdash; Ivy 1.0 documentation</title>
+  <title>logspace &mdash; Ivy 1.0 documentation</title>
   
 
   
@@ -36,8 +36,8 @@
   <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="floor" href="floor.html" />
-    <link rel="prev" title="bitwise_and" href="bitwise_and.html" /> 
+    <link rel="next" title="Data type" href="../data_type.html" />
+    <link rel="prev" title="array" href="array.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -93,42 +93,24 @@
 <li class="toctree-l1"><a class="reference internal" href="../activations.html">Activations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../compilation.html">Compilation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../constants.html">Constants</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../creation.html">Creation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../data_type.html">Data type</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../device.html">Device</a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="../elementwise.html">Elementwise</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="bitwise_invert.html">bitwise_invert</a></li>
-<li class="toctree-l2"><a class="reference internal" href="bitwise_and.html">bitwise_and</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">ceil</a></li>
-<li class="toctree-l2"><a class="reference internal" href="floor.html">floor</a></li>
-<li class="toctree-l2"><a class="reference internal" href="isfinite.html">isfinite</a></li>
-<li class="toctree-l2"><a class="reference internal" href="asin.html">asin</a></li>
-<li class="toctree-l2"><a class="reference internal" href="isinf.html">isinf</a></li>
-<li class="toctree-l2"><a class="reference internal" href="less_equal.html">less_equal</a></li>
-<li class="toctree-l2"><a class="reference internal" href="asinh.html">asinh</a></li>
-<li class="toctree-l2"><a class="reference internal" href="sqrt.html">sqrt</a></li>
-<li class="toctree-l2"><a class="reference internal" href="cosh.html">cosh</a></li>
-<li class="toctree-l2"><a class="reference internal" href="log2.html">log2</a></li>
-<li class="toctree-l2"><a class="reference internal" href="log10.html">log10</a></li>
-<li class="toctree-l2"><a class="reference internal" href="log1p.html">log1p</a></li>
-<li class="toctree-l2"><a class="reference internal" href="isnan.html">isnan</a></li>
-<li class="toctree-l2"><a class="reference internal" href="less.html">less</a></li>
-<li class="toctree-l2"><a class="reference internal" href="cos.html">cos</a></li>
-<li class="toctree-l2"><a class="reference internal" href="logical_not.html">logical_not</a></li>
-<li class="toctree-l2"><a class="reference internal" href="acos.html">acos</a></li>
-<li class="toctree-l2"><a class="reference internal" href="logical_or.html">logical_or</a></li>
-<li class="toctree-l2"><a class="reference internal" href="logical_and.html">logical_and</a></li>
-<li class="toctree-l2"><a class="reference internal" href="acosh.html">acosh</a></li>
-<li class="toctree-l2"><a class="reference internal" href="sin.html">sin</a></li>
-<li class="toctree-l2"><a class="reference internal" href="negative.html">negative</a></li>
-<li class="toctree-l2"><a class="reference internal" href="not_equal.html">not_equal</a></li>
-<li class="toctree-l2"><a class="reference internal" href="tanh.html">tanh</a></li>
-<li class="toctree-l2"><a class="reference internal" href="bitwise_or.html">bitwise_or</a></li>
-<li class="toctree-l2"><a class="reference internal" href="sinh.html">sinh</a></li>
-<li class="toctree-l2"><a class="reference internal" href="positive.html">positive</a></li>
-<li class="toctree-l2"><a class="reference internal" href="square.html">square</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../creation.html">Creation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="asarray.html">asarray</a></li>
+<li class="toctree-l2"><a class="reference internal" href="zeros.html">zeros</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ones.html">ones</a></li>
+<li class="toctree-l2"><a class="reference internal" href="full_like.html">full_like</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ones_like.html">ones_like</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tril.html">tril</a></li>
+<li class="toctree-l2"><a class="reference internal" href="triu.html">triu</a></li>
+<li class="toctree-l2"><a class="reference internal" href="empty.html">empty</a></li>
+<li class="toctree-l2"><a class="reference internal" href="empty_like.html">empty_like</a></li>
+<li class="toctree-l2"><a class="reference internal" href="linspace.html">linspace</a></li>
+<li class="toctree-l2"><a class="reference internal" href="array.html">array</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">logspace</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="../data_type.html">Data type</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../device.html">Device</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../elementwise.html">Elementwise</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../general.html">General</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../gradients.html">Gradients</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../image.html">Image</a></li>
@@ -215,15 +197,15 @@
         
           <li><a href="../../ivy.html">&lt;no title&gt;</a> &raquo;</li>
         
-          <li><a href="../elementwise.html">Elementwise</a> &raquo;</li>
+          <li><a href="../creation.html">Creation</a> &raquo;</li>
         
-      <li>ceil</li>
+      <li>logspace</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../../_sources/functional/ivy/elementwise/ceil.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../../_sources/functional/ivy/creation/logspace.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -236,30 +218,26 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="ceil">
-<h1>ceil<a class="headerlink" href="#ceil" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="logspace">
+<h1>logspace<a class="headerlink" href="#logspace" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
-<dt id="ivy.functional.ivy.elementwise.ceil">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">ceil</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../../_modules/ivy/functional/ivy/elementwise.html#ceil"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.elementwise.ceil" title="Permalink to this definition">¶</a></dt>
-<dd><p>Rounds each element <code class="docutils literal notranslate"><span class="pre">x_i</span></code> of the input array <code class="docutils literal notranslate"><span class="pre">x</span></code> to the smallest (i.e., closest to <code class="docutils literal notranslate"><span class="pre">-infinity</span></code>) integer-valued number that is not less than <code class="docutils literal notranslate"><span class="pre">x_i</span></code>.</p>
-<p><strong>Special cases</strong></p>
-<ul class="simple">
-<li><p>If <code class="docutils literal notranslate"><span class="pre">x_i</span></code> is already integer-valued, the result is <code class="docutils literal notranslate"><span class="pre">x_i</span></code>.</p></li>
+<dt id="ivy.functional.ivy.creation.logspace">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">logspace</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">start</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">, </span>int<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">stop</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">, </span>int<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">num</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">base</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">10.0</span></em>, <em class="sig-param"><span class="n">axis</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>int<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">dev</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>ivy.Device<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/creation.html#logspace"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.creation.logspace" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates a certain number of evenly-spaced values in log space, in an interval along a given axis.</p>
+<p>See <span class="math notranslate nohighlight">\(arange\)</span> that allows to specify the step size of evenly spaced values in an interval.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>start</strong> (<em>array</em>) – First entry in the range.</p></li>
+<li><p><strong>stop</strong> (<em>array</em>) – Final entry in the range.</p></li>
+<li><p><strong>num</strong> (<em>int</em>) – Number of values to generate.</p></li>
+<li><p><strong>base</strong> (<em>float</em><em>, </em><em>optional</em>) – The base of the log space. Default is 10.0</p></li>
+<li><p><strong>axis</strong> (<em>int</em>) – Axis along which the operation is performed.</p></li>
+<li><p><strong>dev</strong> (<em>ivy.Device</em>) – device on which to create the array ‘cuda:0’, ‘cuda:1’, ‘cpu’ etc.</p></li>
 </ul>
-<p>For floating-point operands,</p>
-<ul class="simple">
-<li><p>If <code class="docutils literal notranslate"><span class="pre">x_i</span></code> is <code class="docutils literal notranslate"><span class="pre">+infinity</span></code>, the result is <code class="docutils literal notranslate"><span class="pre">+infinity</span></code>.</p></li>
-<li><p>If <code class="docutils literal notranslate"><span class="pre">x_i</span></code> is <code class="docutils literal notranslate"><span class="pre">-infinity</span></code>, the result is <code class="docutils literal notranslate"><span class="pre">-infinity</span></code>.</p></li>
-<li><p>If <code class="docutils literal notranslate"><span class="pre">x_i</span></code> is <code class="docutils literal notranslate"><span class="pre">+0</span></code>, the result is <code class="docutils literal notranslate"><span class="pre">+0</span></code>.</p></li>
-<li><p>If <code class="docutils literal notranslate"><span class="pre">x_i</span></code> is <code class="docutils literal notranslate"><span class="pre">-0</span></code>, the result is <code class="docutils literal notranslate"><span class="pre">-0</span></code>.</p></li>
-<li><p>If <code class="docutils literal notranslate"><span class="pre">x_i</span></code> is <code class="docutils literal notranslate"><span class="pre">NaN</span></code>, the result is <code class="docutils literal notranslate"><span class="pre">NaN</span></code>.</p></li>
-</ul>
-<dl class="simple">
-<dt>x:</dt><dd><p>input array. Should have a numeric data type.</p>
 </dd>
-</dl>
-<dl class="simple">
-<dt>out:</dt><dd><p>an array containing the rounded result for each element in <code class="docutils literal notranslate"><span class="pre">x</span></code>. The returned array must have the same data type as <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Tensor of evenly-spaced values.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -279,10 +257,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="floor.html" class="btn btn-neutral float-right" title="floor" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="../data_type.html" class="btn btn-neutral float-right" title="Data type" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="bitwise_and.html" class="btn btn-neutral float-left" title="bitwise_and" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="array.html" class="btn btn-neutral float-left" title="array" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

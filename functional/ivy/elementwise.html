@@ -123,6 +123,7 @@
 <li class="toctree-l2"><a class="reference internal" href="elementwise/negative.html">negative</a></li>
 <li class="toctree-l2"><a class="reference internal" href="elementwise/not_equal.html">not_equal</a></li>
 <li class="toctree-l2"><a class="reference internal" href="elementwise/tanh.html">tanh</a></li>
+<li class="toctree-l2"><a class="reference internal" href="elementwise/bitwise_or.html">bitwise_or</a></li>
 <li class="toctree-l2"><a class="reference internal" href="elementwise/sinh.html">sinh</a></li>
 <li class="toctree-l2"><a class="reference internal" href="elementwise/positive.html">positive</a></li>
 <li class="toctree-l2"><a class="reference internal" href="elementwise/square.html">square</a></li>
@@ -351,6 +352,22 @@
 </dl>
 <dl class="simple">
 <dt>out:</dt><dd><p>an array containing the element-wise results. The returned array must have the same data type as x.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.elementwise.bitwise_or">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">bitwise_or</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x1</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">x2</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../_modules/ivy/functional/ivy/elementwise.html#bitwise_or"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.elementwise.bitwise_or" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the bitwise OR of the underlying binary representation of each element <code class="docutils literal notranslate"><span class="pre">x1_i</span></code> of the input array <code class="docutils literal notranslate"><span class="pre">x1</span></code> with the respective element <code class="docutils literal notranslate"><span class="pre">x2_i</span></code> of the input array <code class="docutils literal notranslate"><span class="pre">x2</span></code>.</p>
+<dl class="simple">
+<dt>x1:</dt><dd><p>first input array. Should have an integer or boolean data type.</p>
+</dd>
+<dt>x2:</dt><dd><p>second input array. Must be compatible with <code class="docutils literal notranslate"><span class="pre">x1</span></code> (see <span class="xref std std-ref">broadcasting</span>). Should have an integer or boolean data type.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>out:</dt><dd><p>an array containing the element-wise results. The returned array must have a data type determined by <span class="xref std std-ref">type-promotion</span>.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -815,6 +832,7 @@ have a floating-point data type</p>
 <li class="toctree-l1"><a class="reference internal" href="elementwise/negative.html">negative</a></li>
 <li class="toctree-l1"><a class="reference internal" href="elementwise/not_equal.html">not_equal</a></li>
 <li class="toctree-l1"><a class="reference internal" href="elementwise/tanh.html">tanh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="elementwise/bitwise_or.html">bitwise_or</a></li>
 <li class="toctree-l1"><a class="reference internal" href="elementwise/sinh.html">sinh</a></li>
 <li class="toctree-l1"><a class="reference internal" href="elementwise/positive.html">positive</a></li>
 <li class="toctree-l1"><a class="reference internal" href="elementwise/square.html">square</a></li>
