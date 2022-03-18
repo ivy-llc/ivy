@@ -10,6 +10,8 @@ from ivy.functional.backends.jax import JaxArray
 import ivy
 
 inv = jnp.linalg.inv
+pinv = jnp.linalg.pinv
+
 
 def matrix_transpose(x: JaxArray)\
         -> JaxArray:

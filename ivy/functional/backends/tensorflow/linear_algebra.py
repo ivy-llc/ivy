@@ -11,6 +11,7 @@ from collections import namedtuple
 
 
 inv = tf.linalg.inv
+pinv = tf.linalg.pinv
 
 
 def matrix_transpose(x: Tensor)\
