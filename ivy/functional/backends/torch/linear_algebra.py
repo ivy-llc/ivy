@@ -10,6 +10,19 @@ from collections import namedtuple
 import ivy as _ivy
 
 
+def inv(x):
+    return torch.inverse(x)
+
+
+def pinv(x):
+    return torch.pinverse(x)
+
+
+def matrix_transpose(x: torch.Tensor)\
+        -> torch.Tensor:
+    return torch.swapaxes(x, -1, -2)
+
+
 def vector_norm(x: torch.Tensor,
                 p: Union[int, float, Literal[inf, - inf]] = 2,
                 axis: Optional[Union[int, Tuple[int]]] = None,

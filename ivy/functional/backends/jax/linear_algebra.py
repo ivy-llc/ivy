@@ -9,6 +9,14 @@ from ivy import inf
 from ivy.functional.backends.jax import JaxArray
 import ivy
 
+inv = jnp.linalg.inv
+pinv = jnp.linalg.pinv
+
+
+def matrix_transpose(x: JaxArray)\
+        -> JaxArray:
+    return jnp.swapaxes(x, -1, -2)
+
 
 # noinspection PyUnusedLocal,PyShadowingBuiltins
 def vector_norm(x: JaxArray,

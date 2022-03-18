@@ -10,6 +10,14 @@ import ivy
 from collections import namedtuple
 
 
+inv = tf.linalg.inv
+pinv = tf.linalg.pinv
+
+
+def matrix_transpose(x: Tensor)\
+        -> Tensor:
+    return tf.experimental.numpy.swapaxes(x, -1, -2)
+
 
 # noinspection PyUnusedLocal,PyShadowingBuiltins
 def vector_norm(x: Tensor,

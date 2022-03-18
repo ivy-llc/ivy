@@ -11,6 +11,22 @@ inf = float('inf')
 # Array API Standard #
 # -------------------#
 
+def matrix_transpose(x: Union[ivy.Array, ivy.NativeArray])\
+        -> ivy.Array:
+    """
+    Transposes a matrix (or a stack of matrices) ``x``.
+    Parameters
+    ----------
+    x: array
+        input array having shape ``(..., M, N)`` and whose innermost two dimensions form ``MxN`` matrices.
+    Returns
+    -------
+    out: array
+        an array containing the transpose for each matrix and having shape ``(..., N, M)``. The returned array must have the same data type as ``x``.
+    """
+    return _cur_framework(x).matrix_transpose(x)
+
+
 # noinspection PyShadowingBuiltins
 def vector_norm(x: Union[ivy.Array, ivy.NativeArray],
                 axis: Optional[Union[int, Tuple[int]]] = None,
@@ -128,6 +144,29 @@ def diagonal(x: ivy.Array,
         an array containing the diagonals and whose shape is determined by removing the last two dimensions and appending a dimension equal to the size of the resulting diagonals. The returned array must have the same data type as ``x``.
     """
     return _cur_framework(x).diagonal(x, offset, axis1=axis1, axis2=axis2)
+
+
+def inv(x):
+    """
+    Computes the (multiplicative) inverse of x matrix.
+    Given a square matrix x, returns the matrix x_inv satisfying dot(x, x_inv) = dot(x_inv, x) = eye(x.shape[0]).
+
+    :param x: Matrix to be inverted.
+    :type x: array
+    :return: (Multiplicative) inverse of the matrix x.
+    """
+    return _cur_framework(x).inv(x)
+
+
+def pinv(x):
+    """
+    Computes the pseudo inverse of x matrix.
+
+    :param x: Matrix to be pseudo inverted.
+    :type x: array
+    :return: pseudo inverse of the matrix x.
+    """
+    return _cur_framework(x).pinv(x)
 
 
 def qr(x: ivy.Array,
