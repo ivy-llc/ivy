@@ -191,8 +191,8 @@ def empty(shape: Union[int, Tuple[int],List[int]],
 
 
 def empty_like(x: Union[ivy.Array, ivy.NativeArray], 
-               dtype: ivy.Dtype = None, 
-               dev: ivy.Device = None)\
+               dtype: Optional[Union[ivy.Dtype, str]] = None, 
+               dev: Optional[Union[ivy.Device, str]] = None)\
         -> ivy.Array:
     """
     Returns an uninitialized array with the same shape as an input array x.
