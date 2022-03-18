@@ -66,7 +66,6 @@ def floor(x: torch.Tensor)\
     return torch.floor(x)
 
 
-
 def isfinite(x: torch.Tensor) \
         -> torch.Tensor:
     return torch.isfinite(x)
