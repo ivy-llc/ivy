@@ -82,3 +82,45 @@ def asarray(object_in, dtype: Optional[str] = None, dev: Optional[str] = None, c
         else:
             dtype = dtype_to_str(default_dtype(dtype, object_in))
             return mx.nd.array(object_in, cont, dtype=default_dtype(dtype, object_in))
+
+
+def _linspace(start, stop, num, cont):
+    if num == 1:
+        return start
+    start = mx.nd.array(start).reshape((1,)).astype('float32')
+    stop = mx.nd.array(stop).reshape((1,)).astype('float32')
+    n_m_1 = mx.nd.array(num - 1).reshape((1,)).astype('float32')
+    increment = (stop - start)/n_m_1
+    increment_tiled = mx.nd.tile(increment, num - 1)
+    increments = increment_tiled * mx.nd.array(mx.nd.np.linspace(1, num - 1, num - 1).tolist(), ctx=cont)
+    ret = mx.nd.concat(start, start + increments, dim=0)
+    return ret
+
+
+def linspace(start, stop, num, axis=None, dev=None):
+    cont = _mxnet_init_context(default_device(dev))
+    num = num.asnumpy()[0] if isinstance(num, mx.nd.NDArray) else num
+    start_is_array = isinstance(start, mx.nd.NDArray)
+    stop_is_array = isinstance(stop, mx.nd.NDArray)
+    start_shape = []
+    if start_is_array:
+        start_shape = list(start.shape)
+        start = start.reshape((-1,))
+    if stop_is_array:
+        start_shape = list(stop.shape)
+        stop = stop.reshape((-1,))
+    if start_is_array and stop_is_array:
+        res = [_linspace(strt, stp, num, cont) for strt, stp in zip(start, stop)]
+    elif start_is_array and not stop_is_array:
+        res = [_linspace(strt, stop, num, cont) for strt in start]
+    elif not start_is_array and stop_is_array:
+        res = [_linspace(start, stp, num, cont) for stp in stop]
+    else:
+        return _linspace(start, stop, num, cont)
+    new_shape = start_shape + [num]
+    res = mx.nd.concat(*res, dim=-1).reshape(new_shape)
+    if axis is not None:
+        res = mx.nd.swapaxes(res, axis, -1)
+    return res
+
+    return base ** power_seq

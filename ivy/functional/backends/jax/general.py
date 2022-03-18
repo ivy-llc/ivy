@@ -12,6 +12,7 @@ from numbers import Number
 from operator import mul as _mul
 from functools import reduce as _reduce
 from jaxlib.xla_extension import Buffer
+
 import multiprocessing as _multiprocessing
 from haiku._src.data_structures import FlatMapping
 
