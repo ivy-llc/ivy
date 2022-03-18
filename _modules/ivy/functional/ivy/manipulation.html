@@ -198,7 +198,7 @@
             
   <h1>Source code for ivy.functional.ivy.manipulation</h1><div class="highlight"><pre>
 <span></span><span class="c1"># global</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">List</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Iterable</span>
 
 <span class="c1"># local</span>
 <span class="kn">import</span> <span class="nn">ivy</span>
@@ -248,6 +248,57 @@
 
 <span class="c1"># Extra #</span>
 <span class="c1"># ------#</span>
+
+
+<div class="viewcode-block" id="split"><a class="viewcode-back" href="../../../../functional/ivy/manipulation/split.html#ivy.functional.ivy.manipulation.split">[docs]</a><span class="k">def</span> <span class="nf">split</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span> <span class="n">num_or_size_splits</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">axis</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+          <span class="n">with_remainder</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Splits an array into multiple sub-arrays.</span>
+
+<span class="sd">    :param x: Tensor to be divided into sub-arrays.</span>
+<span class="sd">    :type x: array</span>
+<span class="sd">    :param num_or_size_splits: Number of equal arrays to divide the array into along the given axis if an integer.</span>
+<span class="sd">                               The size of each split element if a sequence of integers.</span>
+<span class="sd">                               Default is to divide into as many 1-dimensional arrays as the axis dimension.</span>
+<span class="sd">    :type num_or_size_splits: int, optional</span>
+<span class="sd">    :param axis: The axis along which to split, default is 0.</span>
+<span class="sd">    :type axis: int, optional</span>
+<span class="sd">    :param with_remainder: If the tensor does not split evenly, then store the last remainder entry. Default is False.</span>
+<span class="sd">    :type with_remainder: bool, optional</span>
+<span class="sd">    :return: A list of sub-arrays.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">num_or_size_splits</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">with_remainder</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="repeat"><a class="viewcode-back" href="../../../../functional/ivy/manipulation/repeat.html#ivy.functional.ivy.manipulation.repeat">[docs]</a><span class="k">def</span> <span class="nf">repeat</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span> <span class="n">repeats</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">int</span><span class="p">]],</span> <span class="n">axis</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span>\
+        <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Repeat values along a given dimension</span>
+
+<span class="sd">    :param x: Input array.</span>
+<span class="sd">    :type x: array</span>
+<span class="sd">    :param repeats: The number of repetitions for each element. repeats is broadcast to fit the shape of the given axis.</span>
+<span class="sd">    :type repeats: int or sequence of ints.</span>
+<span class="sd">    :param axis: The axis along which to repeat values.</span>
+<span class="sd">                  By default, use the flattened input array, and return a flat output array.</span>
+<span class="sd">    :type axis: int, optional</span>
+<span class="sd">    :return: The repeated output array.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">repeats</span><span class="p">,</span> <span class="n">axis</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="tile"><a class="viewcode-back" href="../../../../functional/ivy/manipulation/tile.html#ivy.functional.ivy.manipulation.tile">[docs]</a><span class="k">def</span> <span class="nf">tile</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span> <span class="n">reps</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span>\
+        <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Constructs an array by repeating x the number of times given by reps.</span>
+
+<span class="sd">    :param x: Input array.</span>
+<span class="sd">    :type x: array</span>
+<span class="sd">    :param reps: The number of repetitions of x along each axis.</span>
+<span class="sd">    :type reps: sequence of ints</span>
+<span class="sd">    :return: The tiled output array.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">reps</span><span class="p">)</span></div>
 </pre></div>
 
            </div>

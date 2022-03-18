@@ -42,5 +42,4 @@ Elementwise
    elementwise/sinh.rst
    elementwise/positive.rst
    elementwise/square.rst
-   elementwise/round.rst
 

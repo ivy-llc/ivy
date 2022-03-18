@@ -294,39 +294,6 @@
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">dtype</span><span class="p">,</span> <span class="n">keepdims</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="sum"><a class="viewcode-back" href="../../../../functional/ivy/statistical/sum.html#ivy.functional.ivy.statistical.sum">[docs]</a><span class="k">def</span> <span class="nf">sum</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Calculates the sum of the input array x.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    x:</span>
-<span class="sd">        input array. Should have a numeric data type.</span>
-<span class="sd">    axis:</span>
-<span class="sd">        axis or axes along which sums must be computed. By default, the sum must be computed over the entire array. If a tuple of integers, sums must be computed over multiple axes. Default: None.</span>
-<span class="sd">    dtype:</span>
-<span class="sd">        data type of the returned array. If None,</span>
-
-<span class="sd">    if the default data type corresponding to the data type “kind” (integer or floating-point) of x has a smaller range of values than the data type of x (e.g., x has data type int64 and the default data type is int32, or x has data type uint64 and the default data type is int64), the returned array must have the same data type as x.</span>
-
-<span class="sd">    if x has a floating-point data type, the returned array must have the default floating-point data type.</span>
-
-<span class="sd">    if x has a signed integer data type (e.g., int16), the returned array must have the default integer data type.</span>
-
-<span class="sd">    if x has an unsigned integer data type (e.g., uint16), the returned array must have an unsigned integer data type having the same number of bits as the default integer data type (e.g., if the default integer data type is int32, the returned array must have a uint32 data type).</span>
-
-<span class="sd">    If the data type (either specified or resolved) differs from the data type of x, the input array should be cast to the specified data type before computing the sum. Default: None.    :return: The array with sums computed.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    out:</span>
-<span class="sd">        if the sum was computed over the entire array, a zero-dimensional array containing the sum;</span>
-<span class="sd">        otherwise, an array containing the sums. The returned array must have a data type as described</span>
-<span class="sd">        by the dtype parameter above</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">keepdims</span><span class="p">)</span></div>
-
-
 <span class="c1"># Extra #</span>
 <span class="c1"># ------#</span>
 </pre></div>

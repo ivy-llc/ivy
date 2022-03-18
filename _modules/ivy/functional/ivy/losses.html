@@ -225,7 +225,7 @@
     <span class="n">pred</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">pred</span><span class="p">,</span> <span class="n">epsilon</span><span class="p">,</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">epsilon</span><span class="p">)</span>
     <span class="n">log_pred</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">pred</span><span class="p">)</span>
     <span class="c1"># noinspection PyUnresolvedReferences</span>
-    <span class="k">return</span> <span class="o">-</span><span class="n">ivy</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">log_pred</span> <span class="o">*</span> <span class="n">true</span><span class="p">,</span> <span class="n">axis</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="o">-</span><span class="n">ivy</span><span class="o">.</span><span class="n">reduce_sum</span><span class="p">(</span><span class="n">log_pred</span> <span class="o">*</span> <span class="n">true</span><span class="p">,</span> <span class="n">axis</span><span class="p">)</span></div>
 
 
 <span class="c1"># noinspection PyUnresolvedReferences</span>
