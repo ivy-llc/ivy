@@ -20,7 +20,7 @@ cosh
 #equal
 #exp
 #expm1
-#floor
+#floor # depends on: remainder
 #floor_divide
 #greater
 #greater_equal
@@ -40,8 +40,8 @@ logical_or
 #logical_xor
 #multiply
 negative
-#not_equal
 positive
+not_equal
 #pow
 #remainder
 #round

@@ -29,6 +29,11 @@ def ceil(x: np.ndarray)\
     return np.asarray(npa.ceil(npa.asarray(x)))
 
 
+def floor(x: np.ndarray)\
+        -> np.ndarray:
+    return np.asarray(npa.floor(npa.asarray(x)))
+
+
 def sqrt(x: np.ndarray)\
         -> np.ndarray:
     return np.sqrt(x)
@@ -121,6 +126,11 @@ def sin(x: np.ndarray)\
   
 def negative(x: np.ndarray) -> np.ndarray:
     return np.negative(x)
+
+
+def not_equal(x1: np.ndarray, x2: np.ndarray)\
+        -> np.ndarray:
+    return np.not_equal(x1, x2)
 
 
 def tanh(x: np.ndarray)\

@@ -92,14 +92,8 @@ def dtype_bits(dtype_in):
     return int(dtype_str.replace('uint', '').replace('int', '').replace('bfloat', '').replace('float', ''))
 
 
-copy_array = lambda x: x.copy()
-array_equal = _np.array_equal
-to_numpy = lambda x: x
-to_numpy.__name__ = 'to_numpy'
-to_scalar = lambda x: x.item()
-to_scalar.__name__ = 'to_scalar'
-to_list = lambda x: x.tolist()
-to_list.__name__ = 'to_list'
+
+
 shape = lambda x, as_tensor=False: _np.asarray(_np.shape(x)) if as_tensor else x.shape
 shape.__name__ = 'shape'
 get_num_dims = lambda x, as_tensor=False: _np.asarray(len(_np.shape(x))) if as_tensor else len(x.shape)
@@ -107,8 +101,7 @@ minimum = _np.minimum
 maximum = _np.maximum
 clip = lambda x, x_min, x_max: _np.asarray(_np.clip(x, x_min, x_max))
 round = lambda x: _np.asarray(_np.round(x))
-floormod = lambda x, y: _np.asarray(x % y)
-floor = lambda x: _np.asarray(_np.floor(x))
+
 abs = lambda x: _np.asarray(_np.absolute(x))
 
 
@@ -139,16 +132,6 @@ def arange(stop, start=0, step=1, dtype=None, dev=None):
     return res
 
 
-def linspace(start, stop, num, axis=None, dev=None):
-    if axis is None:
-        axis = -1
-    return _to_dev(_np.linspace(start, stop, num, axis=axis), dev)
-
-
-def logspace(start, stop, num, base=10., axis=None, dev=None):
-    if axis is None:
-        axis = -1
-    return _to_dev(_np.logspace(start, stop, num, base=base, axis=axis), dev)
 
 
 def concatenate(xs, axis=-1):
@@ -160,13 +143,6 @@ def concatenate(xs, axis=-1):
 stack = _np.stack
 
 
-def unstack(x, axis, keepdims=False):
-    if x.shape == ():
-        return [x]
-    x_split = _np.split(x, x.shape[axis], axis)
-    if keepdims:
-        return x_split
-    return [_np.squeeze(item, axis) for item in x_split]
 
 
 def split(x, num_or_size_splits=None, axis=0, with_remainder=False):

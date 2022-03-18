@@ -29,29 +29,6 @@ def matrix_norm(x, p=2, axes=None, keepdims=False):
     return _cur_framework(x).matrix_norm(x, p, axes, keepdims)
 
 
-def inv(x):
-    """
-    Computes the (multiplicative) inverse of x matrix.
-    Given a square matrix x, returns the matrix x_inv satisfying dot(x, x_inv) = dot(x_inv, x) = eye(x.shape[0]).
-
-    :param x: Matrix to be inverted.
-    :type x: array
-    :return: (Multiplicative) inverse of the matrix x.
-    """
-    return _cur_framework(x).inv(x)
-
-
-def pinv(x):
-    """
-    Computes the pseudo inverse of x matrix.
-
-    :param x: Matrix to be pseudo inverted.
-    :type x: array
-    :return: pseudo inverse of the matrix x.
-    """
-    return _cur_framework(x).pinv(x)
-
-
 def vector_to_skew_symmetric_matrix(vector):
     """
     Given vector :math:`\mathbf{a}\in\mathbb{R}^3`, return associated skew-symmetric matrix
@@ -64,15 +41,6 @@ def vector_to_skew_symmetric_matrix(vector):
     """
     return _cur_framework(vector).vector_to_skew_symmetric_matrix(vector)
 
-def cholesky(x):
-    """
-    Computes the cholesky decomposition of the x matrix.
-
-    :param x: Matrix to be decomposed.
-    :type x: array
-    :return: cholesky decomposition of the matrix x.
-    """
-    return _cur_framework(x).cholesky(x)
 
 def qr(x, mode="reduced", f=None):
     """
