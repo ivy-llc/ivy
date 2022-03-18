@@ -78,6 +78,36 @@ def ceil(x: Union[ivy.Array, ivy.NativeArray])\
     return _cur_framework(x).ceil(x)
 
 
+def floor(x: Union[ivy.Array, ivy.NativeArray])\
+        -> ivy.Array:
+    """
+    Rounds each element ``x_i`` of the input array ``x`` to the greatest (i.e., closest to ``+infinity``) integer-valued number that is not greater than ``x_i``.
+
+    **Special cases**
+
+    - If ``x_i`` is already integer-valued, the result is ``x_i``.
+
+    For floating-point operands,
+
+    - If ``x_i`` is ``+infinity``, the result is ``+infinity``.
+    - If ``x_i`` is ``-infinity``, the result is ``-infinity``.
+    - If ``x_i`` is ``+0``, the result is ``+0``.
+    - If ``x_i`` is ``-0``, the result is ``-0``.
+    - If ``x_i`` is ``NaN``, the result is ``NaN``.
+
+    Parameters
+    ----------
+    x:
+        input array. Should have a numeric data type.
+
+    Returns
+    -------
+    out:
+        an array containing the rounded result for each element in ``x``. The returned array must have the same data type as ``x``.
+    """
+    return _cur_framework(x).floor(x)
+
+
 def isfinite(x: Union[ivy.Array, ivy.NativeArray])\
         -> ivy.Array:
     """

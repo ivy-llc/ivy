@@ -29,6 +29,11 @@ def ceil(x: np.ndarray)\
     return np.asarray(npa.ceil(npa.asarray(x)))
 
 
+def floor(x: np.ndarray)\
+        -> np.ndarray:
+    return np.asarray(npa.floor(npa.asarray(x)))
+
+
 def sqrt(x: np.ndarray)\
         -> np.ndarray:
     return np.sqrt(x)
