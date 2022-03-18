@@ -1,6 +1,6 @@
 # global
 import numpy as np
-from typing import Union
+from typing import Union, Tuple
 
 # local
 import ivy
@@ -42,3 +42,7 @@ class Finfo:
 def finfo(type: Union[np.dtype, str, np.ndarray])\
         -> Finfo:
     return Finfo(np.finfo(ivy.dtype_from_str(type)))
+
+
+def broadcast_to(x: np.Array, shape: Tuple[int,...]) -> np.Array:
+    return np.broadcast_to(x,shape)

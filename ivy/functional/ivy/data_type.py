@@ -1,5 +1,5 @@
 # global
-from typing import Union
+from typing import Union, Tuple
 
 # local
 import ivy
@@ -67,6 +67,23 @@ def finfo(type: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray])\
           smallest positive floating-point number with full precision.
     """
     return _cur_framework(None).finfo(type)
+
+
+def broadcast_to(x: Union[ivy.Array,  ivy.NativeArray], shape: Tuple[int,...]) -> ivy.Array:
+    """
+
+     Broadcasts an array to a specified shape
+
+    :param x:  x (array) – array to broadcast.
+    :param shape: shape (Tuple[int, ...]) – array shape. Must be compatible with x (see Broadcasting). If \
+                  the array is incompatible with the specified shape, the function should raise an \
+                  exception.
+    :return: out (array) – an array having a specified shape. Must have the same data type as x.
+    """
+
+    return  _cur_framework(x).broadcast_to(x,shape)
+
+
 
 
 # Extra #
