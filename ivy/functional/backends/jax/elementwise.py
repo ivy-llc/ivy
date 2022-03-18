@@ -23,6 +23,13 @@ def ceil(x: JaxArray)\
     return jnp.ceil(x)
 
 
+def floor(x: JaxArray)\
+        -> JaxArray:
+    if 'int' in str(x.dtype):
+        return x
+    return jnp.floor(x)
+
+
 def isfinite(x: JaxArray)\
         -> JaxArray:
     return jnp.isfinite(x)
