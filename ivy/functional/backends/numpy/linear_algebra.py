@@ -9,6 +9,9 @@ import ivy
 from collections import namedtuple
 
 
+inv = np.linalg.inv
+
+
 def matrix_transpose(x: np.ndarray)\
         -> np.ndarray:
     return np.swapaxes(x, -1, -2)

@@ -22,8 +22,6 @@ def matrix_norm(x, p=2, axes=None, keepdims=False):
     return _mx.nd.norm(x, p, axes, keepdims=keepdims)
 
 
-inv = _mx.nd.linalg_inverse
-
 DET_THRESHOLD = 1e-12
 
 
