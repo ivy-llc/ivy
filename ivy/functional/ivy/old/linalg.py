@@ -41,15 +41,6 @@ def vector_to_skew_symmetric_matrix(vector):
     """
     return _cur_framework(vector).vector_to_skew_symmetric_matrix(vector)
 
-def cholesky(x):
-    """
-    Computes the cholesky decomposition of the x matrix.
-
-    :param x: Matrix to be decomposed.
-    :type x: array
-    :return: cholesky decomposition of the matrix x.
-    """
-    return _cur_framework(x).cholesky(x)
 
 def qr(x, mode="reduced", f=None):
     """

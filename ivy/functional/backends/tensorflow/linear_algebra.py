@@ -12,6 +12,7 @@ from collections import namedtuple
 
 inv = tf.linalg.inv
 pinv = tf.linalg.pinv
+cholesky = tf.linalg.cholesky
 
 
 def matrix_transpose(x: Tensor)\

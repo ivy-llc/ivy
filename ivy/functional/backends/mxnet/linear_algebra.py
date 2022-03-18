@@ -13,6 +13,7 @@ from ivy import inf
 import ivy as _ivy
 
 inv = mx.nd.linalg_inverse
+cholesky = lambda x: mx.np.linalg.cholesky(x.as_np_ndarray()).as_nd_ndarray()
 DET_THRESHOLD = 1e-12
 
 
