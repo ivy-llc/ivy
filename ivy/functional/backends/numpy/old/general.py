@@ -100,8 +100,6 @@ get_num_dims = lambda x, as_tensor=False: _np.asarray(len(_np.shape(x))) if as_t
 minimum = _np.minimum
 maximum = _np.maximum
 clip = lambda x, x_min, x_max: _np.asarray(_np.clip(x, x_min, x_max))
-round = lambda x: _np.asarray(_np.round(x))
-
 abs = lambda x: _np.asarray(_np.absolute(x))
 
 
