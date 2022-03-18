@@ -506,7 +506,7 @@ def has_nans(x: Union[ivy.Array, ivy.NativeArray], include_infs: bool = True)\
     :type include_infs: bool, optional
     :return: Boolean as to whether the array contains nans.
     """
-    return value_is_nan(ivy.reduce_sum(x), include_infs)
+    return value_is_nan(ivy.sum(x), include_infs)
 
 
 def reshape(x: Union[ivy.Array, ivy.NativeArray], newshape: Union[int, Iterable[int]])\
