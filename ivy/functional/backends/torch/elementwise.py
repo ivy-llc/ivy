@@ -181,3 +181,9 @@ def positive(x: torch.Tensor)\
 def square(x: torch.Tensor) \
         -> torch.Tensor:
     return torch.square(x)
+
+def round(x: torch.Tensor)\
+        -> torch.Tensor:
+    if 'int' in str(x.dtype):
+        return x
+    return torch.round(x)

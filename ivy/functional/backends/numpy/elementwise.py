@@ -153,6 +153,11 @@ def square(x: np.ndarray)\
     return np.square(x)
 
 
+def round(x: np.ndarray)\
+        -> np.ndarray:
+    return np.asarray(npa.round(npa.asarray(x)))
+
+
 def bitwise_or(x1: np.ndarray , x2: np.ndarray) \
         -> np.ndarray:
     if not isinstance(x2, np.ndarray):
