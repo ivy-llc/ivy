@@ -61,12 +61,6 @@ def clip(x, x_min, x_max):
 
 
 # noinspection PyShadowingBuiltins
-def round(x):
-    return _torch.round(x)
-
-
-
-
 # noinspection PyShadowingBuiltins
 def abs(x):
     return _torch.abs(x)
