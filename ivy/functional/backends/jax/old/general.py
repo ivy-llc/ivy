@@ -134,13 +134,6 @@ def arange(stop, start=0, step=1, dtype=None, dev=None):
     return to_dev(_jnp.arange(start, stop, step=step, dtype=dtype), default_device(dev))
 
 
-def linspace(start, stop, num, axis=None, dev=None):
-    if axis is None:
-        axis = -1
-    return to_dev(_jnp.linspace(start, stop, num, axis=axis), default_device(dev))
-
-
-
 
 
 def concatenate(xs, axis=-1):
