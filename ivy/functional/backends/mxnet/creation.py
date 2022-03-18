@@ -66,14 +66,13 @@ def tril(x: mx.ndarray.ndarray.NDArray,
          -> mx.ndarray.ndarray.NDArray:
     return mx.np.tril(x, k)
 
-
+  
 def empty(shape: Union[int, Tuple[int]],
           dtype: Optional[type] = None,
           device: Optional[mx.context.Context] = None) \
         -> mx.ndarray.ndarray.NDArray:
     cont = _mxnet_init_context(default_device(device))
     return mx.nd.empty(shape, dtype_from_str(default_dtype(dtype)), cont)
-
 
 
 def _linspace(start, stop, num, cont):
@@ -121,7 +120,3 @@ def linspace(start, stop, num, axis=None, dev=None):
 def array(object_in, dtype=None, dev=None):
     cont = _mxnet_init_context(default_device(dev))
     return mx.nd.array(object_in, cont, dtype=default_dtype(dtype, object_in))
-
-
-
-
