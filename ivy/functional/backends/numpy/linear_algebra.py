@@ -11,6 +11,7 @@ from collections import namedtuple
 
 inv = np.linalg.inv
 pinv = np.linalg.pinv
+cholesky = np.linalg.cholesky
 
 
 def matrix_transpose(x: np.ndarray)\

@@ -11,6 +11,7 @@ import ivy
 
 inv = jnp.linalg.inv
 pinv = jnp.linalg.pinv
+cholesky = jnp.linalg.cholesky
 
 
 def matrix_transpose(x: JaxArray)\

@@ -169,6 +169,17 @@ def pinv(x):
     return _cur_framework(x).pinv(x)
 
 
+def cholesky(x):
+    """
+    Computes the cholesky decomposition of the x matrix.
+
+    :param x: Matrix to be decomposed.
+    :type x: array
+    :return: cholesky decomposition of the matrix x.
+    """
+    return _cur_framework(x).cholesky(x)
+
+
 def qr(x: ivy.Array,
        mode: str = 'reduced') -> namedtuple('qr', ['Q', 'R']):
     """
