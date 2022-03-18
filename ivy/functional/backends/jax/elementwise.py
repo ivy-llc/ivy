@@ -149,6 +149,11 @@ def sinh(x: JaxArray)\
     return jnp.sinh(x)
 
 
+def positive(x: JaxArray)\
+        -> JaxArray:
+    return jnp.positive(x)
+
+    
 def square(x: JaxArray) \
         -> JaxArray:
     return jnp.square(x)
