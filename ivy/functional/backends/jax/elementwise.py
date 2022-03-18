@@ -146,8 +146,8 @@ def tanh(x: JaxArray)\
 
 def bitwise_or(x1: JaxArray, x2: JaxArray) -> JaxArray:
     return jnp.bitwise_or(x1, x2)
-  
-  
+
+
 def sinh(x: JaxArray)\
         -> JaxArray:
     return jnp.sinh(x)
@@ -161,3 +161,10 @@ def positive(x: JaxArray)\
 def square(x: JaxArray) \
         -> JaxArray:
     return jnp.square(x)
+
+
+def round(x: JaxArray)\
+        -> JaxArray:
+    if 'int' in str(x.dtype):
+        return x
+    return jnp.round(x)

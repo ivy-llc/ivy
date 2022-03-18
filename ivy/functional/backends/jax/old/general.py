@@ -108,8 +108,6 @@ minimum = _jnp.minimum
 maximum = _jnp.maximum
 clip = _jnp.clip
 # noinspection PyShadowingBuiltins
-round = _jnp.round
-
 # noinspection PyShadowingBuiltins
 abs = _jnp.absolute
 
