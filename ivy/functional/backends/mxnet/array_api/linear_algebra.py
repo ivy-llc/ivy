@@ -24,5 +24,5 @@ def diagonal(x: mx.nd.NDArray,
 
 
 
-def inv(x: mx.nd.NDArray, /) -> mx.nd.NDArray:
+def inv(x: mx.nd.NDArray) -> mx.nd.NDArray:
     return mx.nd.linalg.inverse(x)
