@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>matrix_transpose &mdash; Ivy 1.0 documentation</title>
+  <title>inv &mdash; Ivy 1.0 documentation</title>
   
 
   
@@ -36,8 +36,8 @@
   <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="vector_norm" href="vector_norm.html" />
-    <link rel="prev" title="Linear algebra" href="../linear_algebra.html" /> 
+    <link rel="next" title="qr" href="qr.html" />
+    <link rel="prev" title="diagonal" href="diagonal.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -102,11 +102,11 @@
 <li class="toctree-l1"><a class="reference internal" href="../image.html">Image</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../layers.html">Layers</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../linear_algebra.html">Linear algebra</a><ul class="current">
-<li class="toctree-l2 current"><a class="current reference internal" href="#">matrix_transpose</a></li>
+<li class="toctree-l2"><a class="reference internal" href="matrix_transpose.html">matrix_transpose</a></li>
 <li class="toctree-l2"><a class="reference internal" href="vector_norm.html">vector_norm</a></li>
 <li class="toctree-l2"><a class="reference internal" href="svd.html">svd</a></li>
 <li class="toctree-l2"><a class="reference internal" href="diagonal.html">diagonal</a></li>
-<li class="toctree-l2"><a class="reference internal" href="inv.html">inv</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">inv</a></li>
 <li class="toctree-l2"><a class="reference internal" href="qr.html">qr</a></li>
 <li class="toctree-l2"><a class="reference internal" href="matmul.html">matmul</a></li>
 <li class="toctree-l2"><a class="reference internal" href="slodget.html">slodget</a></li>
@@ -197,13 +197,13 @@
         
           <li><a href="../linear_algebra.html">Linear algebra</a> &raquo;</li>
         
-      <li>matrix_transpose</li>
+      <li>inv</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../../_sources/functional/ivy/linear_algebra/matrix_transpose.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../../_sources/functional/ivy/linear_algebra/inv.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -216,20 +216,19 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="matrix-transpose">
-<h1>matrix_transpose<a class="headerlink" href="#matrix-transpose" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="inv">
+<h1>inv<a class="headerlink" href="#inv" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
-<dt id="ivy.functional.ivy.linear_algebra.matrix_transpose">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">matrix_transpose</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../../_modules/ivy/functional/ivy/linear_algebra.html#matrix_transpose"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.linear_algebra.matrix_transpose" title="Permalink to this definition">¶</a></dt>
-<dd><p>Transposes a matrix (or a stack of matrices) <code class="docutils literal notranslate"><span class="pre">x</span></code>.
-Parameters
-———-
-x: array</p>
-<blockquote>
-<div><p>input array having shape <code class="docutils literal notranslate"><span class="pre">(...,</span> <span class="pre">M,</span> <span class="pre">N)</span></code> and whose innermost two dimensions form <code class="docutils literal notranslate"><span class="pre">MxN</span></code> matrices.</p>
-</div></blockquote>
-<dl class="simple">
-<dt>out: array</dt><dd><p>an array containing the transpose for each matrix and having shape <code class="docutils literal notranslate"><span class="pre">(...,</span> <span class="pre">N,</span> <span class="pre">M)</span></code>. The returned array must have the same data type as <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p>
+<dt id="ivy.functional.ivy.linear_algebra.inv">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">inv</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/linear_algebra.html#inv"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.linear_algebra.inv" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the (multiplicative) inverse of x matrix.
+Given a square matrix x, returns the matrix x_inv satisfying dot(x, x_inv) = dot(x_inv, x) = eye(x.shape[0]).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>x</strong> (<em>array</em>) – Matrix to be inverted.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(Multiplicative) inverse of the matrix x.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -249,10 +248,10 @@ x: array</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="vector_norm.html" class="btn btn-neutral float-right" title="vector_norm" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="qr.html" class="btn btn-neutral float-right" title="qr" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="../linear_algebra.html" class="btn btn-neutral float-left" title="Linear algebra" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="diagonal.html" class="btn btn-neutral float-left" title="diagonal" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
