@@ -29,17 +29,6 @@ def matrix_norm(x, p=2, axes=None, keepdims=False):
     return _cur_framework(x).matrix_norm(x, p, axes, keepdims)
 
 
-def pinv(x):
-    """
-    Computes the pseudo inverse of x matrix.
-
-    :param x: Matrix to be pseudo inverted.
-    :type x: array
-    :return: pseudo inverse of the matrix x.
-    """
-    return _cur_framework(x).pinv(x)
-
-
 def vector_to_skew_symmetric_matrix(vector):
     """
     Given vector :math:`\mathbf{a}\in\mathbb{R}^3`, return associated skew-symmetric matrix
