@@ -32,7 +32,7 @@ for fpath in fpaths:
     # update tests to run and skip
     contents = [line.replace('__', '') for line in contents.split('\n')]
     tests_to_run += ['test_' + s for s in contents if ('#' not in s and s != '')]
-    tests_to_skip += ['test_' + s[1:] for s in contents if '#' in s]
+    tests_to_skip += ['test_' + s[1:].split(' ')[0] for s in contents if '#' in s]
 
 # prune tests to skip
 tests_to_skip = [tts for tts in tests_to_skip if not max([tts in ttr for ttr in tests_to_run])]
