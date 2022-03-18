@@ -12,7 +12,7 @@ from typing import Union, Optional, Tuple, Literal
 from ivy import inf
 import ivy as _ivy
 
-
+inv = mx.nd.linalg_inverse
 
 def vector_norm(x: NDArray,
                 p: Union[int, float, Literal[inf, - inf]] = 2,
