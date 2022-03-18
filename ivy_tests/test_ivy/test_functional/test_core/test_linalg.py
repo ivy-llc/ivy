@@ -128,28 +128,6 @@ def test_matrix_norm(x_n_p_n_ax_n_kd, dtype, tensor_fn, dev, call):
     assert np.allclose(pred, np.linalg.norm(np.array(x_raw), **kwargs))
 
 
-# pinv
-@pytest.mark.parametrize(
-    "x", [[[1., 0.], [0., 1.], [1., 0.]], [[[1., 0.], [0., 1.], [1., 0.]]]])
-@pytest.mark.parametrize(
-    "dtype", ['float32'])
-@pytest.mark.parametrize(
-    "tensor_fn", [ivy.array, helpers.var_fn])
-def test_pinv(x, dtype, tensor_fn, dev, call):
-    if call in [helpers.tf_call, helpers.tf_graph_call] and 'cpu' in dev:
-        # tf.linalg.pinv segfaults when CUDA is installed, but array is on CPU
-        pytest.skip()
-    # smoke test
-    x = tensor_fn(x, dtype, dev)
-    ret = ivy.pinv(x)
-    # type test
-    assert ivy.is_array(ret)
-    # cardinality test
-    assert ret.shape == x.shape[:-2] + (x.shape[-1], x.shape[-2])
-    # value test
-    assert np.allclose(call(ivy.pinv, x), ivy.functional.backends.numpy.pinv(ivy.to_numpy(x)))
-
-
 # vector_to_skew_symmetric_matrix
 @pytest.mark.parametrize(
     "x", [[[[1., 2., 3.]], [[4., 5., 6.]], [[1., 2., 3.]], [[4., 5., 6.]], [[1., 2., 3.]]], [[1., 2., 3.]]])

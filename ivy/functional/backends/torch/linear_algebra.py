@@ -14,6 +14,10 @@ def inv(x):
     return torch.inverse(x)
 
 
+def pinv(x):
+    return torch.pinverse(x)
+
+
 def matrix_transpose(x: torch.Tensor)\
         -> torch.Tensor:
     return torch.swapaxes(x, -1, -2)
