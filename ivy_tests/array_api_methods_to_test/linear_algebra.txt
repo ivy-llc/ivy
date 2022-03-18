@@ -11,7 +11,6 @@ matmul
 #matrix_rank
 #matrix_transpose
 outer
-matrix_transpose
 #pinv
 qr
 slogdet
