@@ -107,12 +107,7 @@ def arange(stop, start=0, step=1, dtype=None, dev=None):
         return _tf.range(start, stop, delta=step, dtype=dtype)
 
 
-def linspace(start, stop, num, axis=None, dev=None):
-    if axis is None:
-        axis = -1
-    dev = default_device(dev)
-    with _tf.device(ivy.dev_from_str(dev)):
-        return _tf.linspace(start, stop, num, axis=axis)
+
 
 
 
