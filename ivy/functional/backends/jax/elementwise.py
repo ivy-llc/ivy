@@ -17,6 +17,9 @@ def ceil(x: JaxArray)\
         return x
     return jnp.ceil(x)
 
+def expm1(x: JaxArray)\
+        -> JaxArray:
+    return jnp.expm1(x)
 
 def isfinite(x: JaxArray)\
         -> JaxArray:

@@ -19,6 +19,9 @@ def ceil(x: Tensor)\
         return x
     return tf.math.ceil(x)
 
+def expm1(x: Tensor)\
+        -> Tensor:
+    return tf.math.expm1(x)
 
 def isfinite(x: Tensor) \
         -> Tensor:

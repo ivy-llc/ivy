@@ -28,6 +28,10 @@ def sqrt(x: np.ndarray)\
         -> np.ndarray:
     return np.sqrt(x)
 
+def expm1(x: np.ndarray)\
+        -> np.ndarray:
+    return np.expm1(x)
+
 
 def isfinite(x: np.ndarray) \
         -> np.ndarray:
