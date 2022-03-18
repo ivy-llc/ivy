@@ -44,6 +44,15 @@ def vector_norm(x: NDArray,
                 
     return mx.np.linalg.norm(x,p,axis,keepdims)
 
+
+def matrix_norm(x, p=2, axes=None, keepdims=False):
+    axes = (-2, -1) if axes is None else axes
+    if isinstance(axes, int):
+        raise Exception('if specified, axes must be a length-2 sequence of ints,'
+                        'but found {} of type {}'.format(axes, type(axes)))
+    return mx.nd.norm(x, p, axes, keepdims=keepdims)
+
+
 # noinspection PyPep8Naming
 def svd(x: NDArray, full_matrices: bool = True) -> Union[NDArray, Tuple[NDArray,...]]:
     results=namedtuple("svd", "U S Vh")
@@ -72,3 +81,7 @@ def trace(x: NDArray,
           offset: int = 0)\
               -> mx.np.ndarray:
     return mx.np.trace(x, offset=offset)
+
+
+def qr(x, mode):
+    return mx.np.linalg.qr(x, mode=mode)
