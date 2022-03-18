@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>cholesky &mdash; Ivy 1.0 documentation</title>
+  <title>matrix_norm &mdash; Ivy 1.0 documentation</title>
   
 
   
@@ -36,8 +36,8 @@
   <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="matrix_norm" href="matrix_norm.html" />
-    <link rel="prev" title="pinv" href="pinv.html" /> 
+    <link rel="next" title="qr" href="qr.html" />
+    <link rel="prev" title="cholesky" href="cholesky.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -108,8 +108,8 @@
 <li class="toctree-l2"><a class="reference internal" href="diagonal.html">diagonal</a></li>
 <li class="toctree-l2"><a class="reference internal" href="inv.html">inv</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pinv.html">pinv</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">cholesky</a></li>
-<li class="toctree-l2"><a class="reference internal" href="matrix_norm.html">matrix_norm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cholesky.html">cholesky</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">matrix_norm</a></li>
 <li class="toctree-l2"><a class="reference internal" href="qr.html">qr</a></li>
 <li class="toctree-l2"><a class="reference internal" href="matmul.html">matmul</a></li>
 <li class="toctree-l2"><a class="reference internal" href="slodget.html">slodget</a></li>
@@ -200,13 +200,13 @@
         
           <li><a href="../linear_algebra.html">Linear algebra</a> &raquo;</li>
         
-      <li>cholesky</li>
+      <li>matrix_norm</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../../_sources/functional/ivy/linear_algebra/cholesky.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../../_sources/functional/ivy/linear_algebra/matrix_norm.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -219,18 +219,26 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="cholesky">
-<h1>cholesky<a class="headerlink" href="#cholesky" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="matrix-norm">
+<h1>matrix_norm<a class="headerlink" href="#matrix-norm" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
-<dt id="ivy.functional.ivy.linear_algebra.cholesky">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">cholesky</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/linear_algebra.html#cholesky"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.linear_algebra.cholesky" title="Permalink to this definition">¶</a></dt>
-<dd><p>Computes the cholesky decomposition of the x matrix.</p>
+<dt id="ivy.functional.ivy.linear_algebra.matrix_norm">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">matrix_norm</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">p</span><span class="o">=</span><span class="default_value">2</span></em>, <em class="sig-param"><span class="n">axes</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">keepdims</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/linear_algebra.html#matrix_norm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.linear_algebra.matrix_norm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the matrix p-norm.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>x</strong> (<em>array</em>) – Matrix to be decomposed.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>array</em>) – Input array.</p></li>
+<li><p><strong>p</strong> (<em>int</em><em> or </em><em>str</em><em>, </em><em>optional</em>) – Order of the norm. Default is 2.</p></li>
+<li><p><strong>axes</strong> (<em>sequence of ints</em><em>, </em><em>optional</em>) – The axes of x along which to compute the matrix norms.
+Default is None, in which case the last two dimensions are used.</p></li>
+<li><p><strong>keepdims</strong> (<em>bool</em><em>, </em><em>optional</em>) – If this is set to True, the axes which are normed over are left in the result as dimensions with
+size one. With this option the result will broadcast correctly against the original x.
+Default is False.</p></li>
+</ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>cholesky decomposition of the matrix x.</p>
+<dd class="field-even"><p>Matrix norm of the array at specified axes.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -250,10 +258,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="matrix_norm.html" class="btn btn-neutral float-right" title="matrix_norm" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="qr.html" class="btn btn-neutral float-right" title="qr" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="pinv.html" class="btn btn-neutral float-left" title="pinv" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="cholesky.html" class="btn btn-neutral float-left" title="cholesky" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
