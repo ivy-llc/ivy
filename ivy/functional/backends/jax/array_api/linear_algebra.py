@@ -32,5 +32,5 @@ def diagonal(x: JaxArray,
 
 
 
-def inv(x: JaxArray, /) -> JaxArray:
+def inv(x: JaxArray) -> JaxArray:
     return jnp.linalg.inv(x)
