@@ -197,15 +197,17 @@ def eye(n_rows: int,
     device = dev_from_str(default_device(device))
     if n_cols is None:
         n_cols = n_rows
-    i = torch.eye(max(n_rows, n_cols), dtype=dtype, device=device)
-    res = torch.zeros(n_rows, n_cols, dtype=dtype, device=device)
+    i = torch.eye(n_rows, n_cols, dtype=dtype, device=device)
     if k == 0:
-        res = i[:n_rows, :n_cols]
+        return i
     elif -n_rows < k < 0:
-        res[-k:, :] = i[:n_rows + k, :n_cols]
+        return torch.concat([torch.zeros([-k, n_cols], dtype=dtype, device=device),
+                             i[:n_rows + k]], 0)
     elif 0 < k < n_cols:
-        res[:n_cols - k, :] = i[k:, :n_cols]
-    return res
+        return torch.concat([torch.zeros([n_rows, k], dtype=dtype, device=device),
+                             i[:n_cols - k]], 1)
+    else:
+        return torch.zeros([n_rows, n_cols], dtype=dtype, device=device)
 
 
 # Extra #

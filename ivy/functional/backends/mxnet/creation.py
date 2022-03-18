@@ -117,7 +117,7 @@ def linspace(start, stop, num, axis=None, dev=None):
 def eye(n_rows: int,
         n_cols: Optional[int] = None,
         k: Optional[int] = 0,
-        dtype: Optional[mx.nd.dtype] = None,
+        dtype: Optional[mx.nd.NDArray] = None,
         device: Optional[str] = None) \
         -> mx.ndarray.ndarray.NDArray:
     cont = _mxnet_init_context(default_device(device))

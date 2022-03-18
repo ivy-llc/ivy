@@ -100,15 +100,17 @@ def eye(n_rows: int,
     with tf.device(device):
         if n_cols is None:
             n_cols = n_rows
-        i = tf.eye(max(n_rows, n_cols), dtype=dtype)
-        res = tf.zeros((n_rows, n_cols), dtype=dtype)
+        i = tf.eye(n_rows, n_cols, dtype=dtype)
         if k == 0:
-            res = i[:n_rows, :n_cols]
+            return i
         elif -n_rows < k < 0:
-            res[-k:, :] = i[:n_rows+k, :n_cols]
+            return tf.concat([tf.zeros([-k, n_cols], dtype=dtype),
+                              i[:n_rows+k]], 0)
         elif 0 < k < n_cols:
-            res[:n_cols-k, :] = i[k:, :n_cols]
-        return res
+            return tf.concat([tf.zeros([n_rows, k], dtype=dtype),
+                              i[:n_cols-k]], 1)
+        else:
+            return tf.zeros([n_rows, n_cols], dtype=dtype)
 
 
 # Extra #
