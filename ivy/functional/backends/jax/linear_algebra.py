@@ -65,9 +65,9 @@ def qr(x: JaxArray,
     return res(q, r)
 
 
-def matmul(a1: JaxArray,
-           a2: JaxArray) -> JaxArray:
-    return jnp.matmul(a1, a2)
+def matmul(x1: JaxArray,
+           x2: JaxArray) -> JaxArray:
+    return jnp.matmul(x1, x2)
 
 
 def slogdet(x:Union[ivy.Array,ivy.NativeArray],full_matrices: bool = True) -> Union[ivy.Array, Tuple[ivy.Array,...]]:
