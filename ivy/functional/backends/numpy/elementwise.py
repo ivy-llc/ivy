@@ -128,6 +128,11 @@ def negative(x: np.ndarray) -> np.ndarray:
     return np.negative(x)
 
 
+def not_equal(x1: np.ndarray, x2: np.ndarray)\
+        -> np.ndarray:
+    return np.not_equal(x1, x2)
+
+
 def tanh(x: np.ndarray)\
         -> np.ndarray:
     return np.asarray(npa.tanh(npa.asarray(x)))
