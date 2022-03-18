@@ -9,19 +9,6 @@ import ivy as _ivy
 from typing import Union, Tuple
 
 
-
-
-def matrix_norm(x, p=2, axes=None, keepdims=False):
-    axes = [-2, -1] if axes is None else axes
-    if isinstance(axes, int):
-        raise Exception('if specified, axes must be a length-2 sequence of ints,'
-                        'but found {} of type {}'.format(axes, type(axes)))
-    ret = _torch.linalg.matrix_norm(x, ord=p, dim=axes, keepdim=keepdims)
-    if ret.shape == ():
-        return _torch.unsqueeze(ret, 0)
-    return ret
-
-
 def vector_to_skew_symmetric_matrix(vector):
     batch_shape = list(vector.shape[:-1])
     # BS x 3 x 1
@@ -38,6 +25,3 @@ def vector_to_skew_symmetric_matrix(vector):
     row3 = _torch.cat((-a2s, a1s, zs), -1)
     # BS x 3 x 3
     return _torch.cat((row1, row2, row3), -2)
-
-def qr(x, mode):
-    return _torch.linalg.qr(x, mode=str(mode)) # str(mode) is required for JIT type inference

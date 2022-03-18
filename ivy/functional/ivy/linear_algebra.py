@@ -180,6 +180,26 @@ def cholesky(x):
     return _cur_framework(x).cholesky(x)
 
 
+def matrix_norm(x, p=2, axes=None, keepdims=False):
+    """
+    Compute the matrix p-norm.
+
+    :param x: Input array.
+    :type x: array
+    :param p: Order of the norm. Default is 2.
+    :type p: int or str, optional
+    :param axes: The axes of x along which to compute the matrix norms.
+                 Default is None, in which case the last two dimensions are used.
+    :type axes: sequence of ints, optional
+    :param keepdims: If this is set to True, the axes which are normed over are left in the result as dimensions with
+                     size one. With this option the result will broadcast correctly against the original x.
+                     Default is False.
+    :type keepdims: bool, optional
+    :return: Matrix norm of the array at specified axes.
+    """
+    return _cur_framework(x).matrix_norm(x, p, axes, keepdims)
+
+
 def qr(x: ivy.Array,
        mode: str = 'reduced') -> namedtuple('qr', ['Q', 'R']):
     """
