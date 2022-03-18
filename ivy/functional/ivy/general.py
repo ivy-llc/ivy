@@ -232,30 +232,7 @@ def floormod(x: Union[ivy.Array, ivy.NativeArray], y: Union[ivy.Array, ivy.Nativ
     """
     return _cur_framework(x).floormod(x, y)
 
-# noinspection PyShadowingNames
-def logspace(start: Union[ivy.Array, ivy.NativeArray, Number], stop: Union[ivy.Array, ivy.NativeArray, Number],
-             num: int, base: float = 10., axis: int = None, dev: ivy.Device = None)\
-        -> Union[ivy.Array, ivy.NativeArray]:
-    """
-    Generates a certain number of evenly-spaced values in log space, in an interval along a given axis.
 
-    See :math:`arange` that allows to specify the step size of evenly spaced values in an interval.
-
-    :param start: First entry in the range.
-    :type start: array
-    :param stop: Final entry in the range.
-    :type stop: array
-    :param num: Number of values to generate.
-    :type num: int
-    :param base: The base of the log space. Default is 10.0
-    :type base: float, optional
-    :param axis: Axis along which the operation is performed.
-    :type axis: int
-    :param dev: device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
-    :type dev: ivy.Device
-    :return: Tensor of evenly-spaced values.
-    """
-    return _cur_framework(start).logspace(start, stop, num, base, axis, dev)
 
 
 def unstack(x: Union[ivy.Array, ivy.NativeArray], axis: int, keepdims: bool = False)\
@@ -272,4 +249,6 @@ def unstack(x: Union[ivy.Array, ivy.NativeArray], axis: int, keepdims: bool = Fa
     :return: List of arrays, unpacked along specified dimensions.
     """
     return _cur_framework(x).unstack(x, axis, keepdims)
+
+
 
