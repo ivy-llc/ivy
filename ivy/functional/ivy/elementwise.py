@@ -666,3 +666,14 @@ def square(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
   
 # Extra #
 # ------#
+def round(x: Union[ivy.Array, ivy.NativeArray])\
+        -> Union[ivy.Array, ivy.NativeArray]:
+    """
+    Rounds the values of an array to the nearest integer, element-wise.
+
+    :param x: Input array containing elements to round.
+    :type x: array
+    :return: An array of the same shape and type as x, with the elements rounded to integers.
+    """
+    return _cur_framework(x).round(x)
+
