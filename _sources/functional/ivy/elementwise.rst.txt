@@ -36,6 +36,7 @@ Elementwise
    elementwise/acosh.rst
    elementwise/sin.rst
    elementwise/negative.rst
+   elementwise/not_equal.rst
    elementwise/tanh.rst
    elementwise/sinh.rst
    elementwise/square.rst

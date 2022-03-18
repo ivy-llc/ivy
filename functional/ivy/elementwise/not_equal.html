@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>acos &mdash; Ivy 1.0 documentation</title>
+  <title>not_equal &mdash; Ivy 1.0 documentation</title>
   
 
   
@@ -36,8 +36,8 @@
   <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="logical_or" href="logical_or.html" />
-    <link rel="prev" title="logical_not" href="logical_not.html" /> 
+    <link rel="next" title="tanh" href="tanh.html" />
+    <link rel="prev" title="negative" href="negative.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -115,13 +115,13 @@
 <li class="toctree-l2"><a class="reference internal" href="less.html">less</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cos.html">cos</a></li>
 <li class="toctree-l2"><a class="reference internal" href="logical_not.html">logical_not</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">acos</a></li>
+<li class="toctree-l2"><a class="reference internal" href="acos.html">acos</a></li>
 <li class="toctree-l2"><a class="reference internal" href="logical_or.html">logical_or</a></li>
 <li class="toctree-l2"><a class="reference internal" href="logical_and.html">logical_and</a></li>
 <li class="toctree-l2"><a class="reference internal" href="acosh.html">acosh</a></li>
 <li class="toctree-l2"><a class="reference internal" href="sin.html">sin</a></li>
 <li class="toctree-l2"><a class="reference internal" href="negative.html">negative</a></li>
-<li class="toctree-l2"><a class="reference internal" href="not_equal.html">not_equal</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">not_equal</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tanh.html">tanh</a></li>
 <li class="toctree-l2"><a class="reference internal" href="sinh.html">sinh</a></li>
 <li class="toctree-l2"><a class="reference internal" href="square.html">square</a></li>
@@ -215,13 +215,13 @@
         
           <li><a href="../elementwise.html">Elementwise</a> &raquo;</li>
         
-      <li>acos</li>
+      <li>not_equal</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../../_sources/functional/ivy/elementwise/acos.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../../_sources/functional/ivy/elementwise/not_equal.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -234,26 +234,20 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="acos">
-<h1>acos<a class="headerlink" href="#acos" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="not-equal">
+<h1>not_equal<a class="headerlink" href="#not-equal" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
-<dt id="ivy.functional.ivy.elementwise.acos">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">acos</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../../_modules/ivy/functional/ivy/elementwise.html#acos"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.elementwise.acos" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculates an implementation-dependent approximation of the principal value of the inverse cosine, having domain [-1, +1] and codomain [+0, +π], for each element x_i of the input array x. Each element-wise result is expressed in radians.</p>
-<p><strong>Special cases</strong></p>
-<p>For floating-point operands,</p>
-<ul class="simple">
-<li><p>If x_i is NaN, the result is NaN.</p></li>
-<li><p>If x_i is greater than 1, the result is NaN.</p></li>
-<li><p>If x_i is less than -1, the result is NaN.</p></li>
-<li><p>If x_i is 1, the result is +0.</p></li>
-</ul>
+<dt id="ivy.functional.ivy.elementwise.not_equal">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">not_equal</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x1</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">x2</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../../_modules/ivy/functional/ivy/elementwise.html#not_equal"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.elementwise.not_equal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the truth value of <code class="docutils literal notranslate"><span class="pre">x1_i</span> <span class="pre">!=</span> <span class="pre">x2_i</span></code> for each element <code class="docutils literal notranslate"><span class="pre">x1_i</span></code> of the input array <code class="docutils literal notranslate"><span class="pre">x1</span></code> with the respective element <code class="docutils literal notranslate"><span class="pre">x2_i</span></code> of the input array <code class="docutils literal notranslate"><span class="pre">x2</span></code>.</p>
 <dl class="simple">
-<dt>x:</dt><dd><p>input array. Should have a floating-point data type.</p>
+<dt>x1:</dt><dd><p>first input array. Should have a numeric data type.</p>
+</dd>
+<dt>x2:</dt><dd><p>second input array. Must be compatible with <code class="docutils literal notranslate"><span class="pre">x1</span></code> (see <span class="xref std std-ref">broadcasting</span>). Should have a numeric data type.</p>
 </dd>
 </dl>
 <dl class="simple">
-<dt>out:</dt><dd><p>an array containing the inverse cosine of each element in x. The returned array must have a floating-point data type determined by <span class="xref std std-ref">type-promotion</span>.</p>
+<dt>out:</dt><dd><p>an array containing the element-wise results. The returned array must have a data type of <code class="docutils literal notranslate"><span class="pre">bool</span></code>.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -273,10 +267,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="logical_or.html" class="btn btn-neutral float-right" title="logical_or" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="tanh.html" class="btn btn-neutral float-right" title="tanh" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="logical_not.html" class="btn btn-neutral float-left" title="logical_not" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="negative.html" class="btn btn-neutral float-left" title="negative" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
