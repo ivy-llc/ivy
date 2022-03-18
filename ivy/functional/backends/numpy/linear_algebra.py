@@ -31,12 +31,11 @@ def vector_norm(x: np.ndarray,
         return np.expand_dims(np_normalized_vector, 0)
     return np_normalized_vector
 
+
 def outer(x1: np.ndarray,
           x2: np.ndarray)\
         -> np.ndarray:
-
-    return np.outer(x1,x2)
-
+    return np.outer(x1, x2)
 
 
 def svd(x:np.ndarray,full_matrices: bool = True) -> Union[np.ndarray, Tuple[np.ndarray,...]]:
