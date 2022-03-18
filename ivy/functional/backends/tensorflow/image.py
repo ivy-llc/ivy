@@ -6,7 +6,7 @@ Collection of TensorFlow image functions, wrapped to fit Ivy syntax and signatur
 import math
 from functools import reduce as _reduce
 from operator import mul as _mul
-_tfa = None
+tfa = None
 import tensorflow as tf
 
 # local
@@ -45,13 +45,13 @@ def bilinear_resample(x, warp):
     batch_shape_product = _reduce(_mul, batch_shape, 1)
     warp_flat = tf.reshape(warp, [batch_shape_product] + [-1, 2])
     mat_flat = tf.reshape(x, [batch_shape_product] + input_image_dims + [-1])
-    global _tfa
-    if _tfa is None:
+    global tfa
+    if tfa is None:
         try:
             import tensorflow_addons as tfa
         except:
             raise Exception('Unable to import tensorflow_addons, verify this is correctly installed.')
-    ret = _tfa.image.interpolate_bilinear(mat_flat, warp_flat, indexing='xy')
+    ret = tfa.image.interpolate_bilinear(mat_flat, warp_flat, indexing='xy')
     return tf.reshape(ret, batch_shape + [-1, num_feats])
 
 

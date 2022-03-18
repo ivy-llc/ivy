@@ -67,6 +67,8 @@ from . import device
 from .device import *
 from . import elementwise
 from .elementwise import *
+from . import general
+from .general import *
 from . import gradients
 from .gradients import *
 from . import image
@@ -77,6 +79,8 @@ from . import linear_algebra as linalg
 from .linear_algebra import *
 from . import manipulation
 from .manipulation import *
+from . import random
+from .random import *
 from . import searching
 from .searching import *
 from . import set

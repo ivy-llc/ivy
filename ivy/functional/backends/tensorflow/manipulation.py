@@ -20,3 +20,12 @@ def flip(x: Tensor,
         new_axis = new_axis
     new_axis = [item + num_dims if item < 0 else item for item in new_axis]
     return tf.reverse(x, new_axis)
+
+
+def expand_dims(x: Tensor,
+                axis: Optional[Union[int, Tuple[int], List[int]]] = None) \
+        -> Tensor:
+    try:
+        return tf.expand_dims(x, axis)
+    except tf.errors.InvalidArgumentError as error:
+        raise IndexError(error)
