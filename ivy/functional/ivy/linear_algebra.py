@@ -85,9 +85,9 @@ def vector_norm(x: Union[ivy.Array, ivy.NativeArray],
     elif ord == float('inf'):
         return ivy.reduce_max(ivy.abs(x), axis, keepdims)
     elif ord == 0:
-        return ivy.reduce_sum(ivy.cast(x != 0, 'float32'), axis, keepdims)
+        return ivy.sum(ivy.cast(x != 0, 'float32'), axis, keepdims)
     x_raised = x ** ord
-    return ivy.reduce_sum(x_raised, axis, keepdims) ** (1/ord)
+    return ivy.sum(x_raised, axis, keepdims) ** (1/ord)
 
 
 def svd(x:Union[ivy.Array,ivy.NativeArray],full_matrices: bool = True)->Union[ivy.Array, Tuple[ivy.Array,...]]:

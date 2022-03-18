@@ -95,5 +95,38 @@ def prod(x: Union[ivy.Array, ivy.NativeArray],
     return _cur_framework.prod(x, axis, dtype, keepdims)
 
 
+def sum(x, axis=None, keepdims=False):
+    """
+    Calculates the sum of the input array x.
+
+    Parameters
+    ----------
+    x:
+        input array. Should have a numeric data type.
+    axis:
+        axis or axes along which sums must be computed. By default, the sum must be computed over the entire array. If a tuple of integers, sums must be computed over multiple axes. Default: None.
+    dtype:
+        data type of the returned array. If None,
+
+    if the default data type corresponding to the data type “kind” (integer or floating-point) of x has a smaller range of values than the data type of x (e.g., x has data type int64 and the default data type is int32, or x has data type uint64 and the default data type is int64), the returned array must have the same data type as x.
+
+    if x has a floating-point data type, the returned array must have the default floating-point data type.
+
+    if x has a signed integer data type (e.g., int16), the returned array must have the default integer data type.
+
+    if x has an unsigned integer data type (e.g., uint16), the returned array must have an unsigned integer data type having the same number of bits as the default integer data type (e.g., if the default integer data type is int32, the returned array must have a uint32 data type).
+
+    If the data type (either specified or resolved) differs from the data type of x, the input array should be cast to the specified data type before computing the sum. Default: None.    :return: The array with sums computed.
+
+    Returns
+    -------
+    out:
+        if the sum was computed over the entire array, a zero-dimensional array containing the sum;
+        otherwise, an array containing the sums. The returned array must have a data type as described
+        by the dtype parameter above
+    """
+    return _cur_framework(x).sum(x, axis, keepdims)
+
+
 # Extra #
 # ------#
