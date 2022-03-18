@@ -86,24 +86,6 @@ astype = cast
 # Queries #
 # --------#
 
-def is_float_dtype(dtype_in: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray, Number]):
-    """
-    Determine whether the input data type is an float data-type.
-
-    :param dtype_in: Datatype to test
-    :return: Whether or not the data type is a floating point data type
-    """
-    if ivy.is_array(dtype_in):
-        dtype_in = ivy.dtype(dtype_in)
-    elif isinstance(dtype_in, np.ndarray):
-        return 'float' in dtype_in.dtype.name
-    elif isinstance(dtype_in, Number):
-        return True if isinstance(dtype_in, (float, np.floating)) else False
-    elif isinstance(dtype_in, (list, tuple, dict)):
-        return True if ivy.nested_indices_where(dtype_in, lambda x: isinstance(x, (float, np.floating))) else False
-    return 'float' in dtype_to_str(dtype_in)
-
-
 def valid_dtype(dtype_in: Union[ivy.Dtype, str, None]):
     """
     Determines whether the provided data type is support by the current framework.
@@ -157,18 +139,6 @@ def convert_dtype(dtype_in: Union[ivy.Dtype, str], backend: str):
         raise Exception('Invalid backend passed, must be one of {}'.format(valid_backends))
     ivy_backend = importlib.import_module('ivy.functional.backends.{}'.format(backend))
     return ivy.dtype_from_str(ivy_backend.dtype_to_str(dtype_in))
-
-
-def dtype_to_str(dtype_in: Union[ivy.Dtype, str])\
-        -> str:
-    """
-    Convert native data type to string representation.
-
-    :param dtype_in: The data type to convert to string.
-    :type dtype_in: data type
-    :return: data type string 'float32'
-    """
-    return _cur_framework(None).dtype_to_str(dtype_in)
 
 
 def dtype_from_str(dtype_in: Union[ivy.Dtype, str])\
