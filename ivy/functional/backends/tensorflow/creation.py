@@ -145,7 +145,7 @@ def eye(n_rows: int,
                               i[:n_rows+k]], 0)
         elif 0 < k < n_cols:
             return tf.concat([tf.zeros([n_rows, k], dtype=dtype),
-                              i[:, n_cols-k]], 1)
+                              i[:, :n_cols-k]], 1)
         else:
             return tf.zeros([n_rows, n_cols], dtype=dtype)
 
