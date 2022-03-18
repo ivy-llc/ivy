@@ -59,6 +59,13 @@ def ceil(x: torch.Tensor)\
     return torch.ceil(x)
 
 
+def floor(x: torch.Tensor)\
+        -> torch.Tensor:
+    if 'int' in str(x.dtype):
+        return x
+    return torch.floor(x)
+
+
 def isfinite(x: torch.Tensor) \
         -> torch.Tensor:
     return torch.isfinite(x)
@@ -146,6 +153,12 @@ def negative(x: torch.Tensor) -> torch.Tensor:
     return torch.neg(x)
 
 
+def not_equal(x1: Tensor, x2: Tensor)\
+        -> Tensor:
+    x1, x2 = _cast_for_binary_op(x1, x2)
+    return torch.not_equal(x1, x2)
+
+
 def tanh(x: torch.Tensor) -> torch.Tensor:
     return torch.tanh(x)
 
@@ -160,6 +173,11 @@ def sinh(x: torch.Tensor) -> torch.Tensor:
     return torch.sinh(x)
 
 
+def positive(x: torch.Tensor)\
+        -> torch.Tensor:
+    return torch.positive(x)
+
+    
 def square(x: torch.Tensor) \
         -> torch.Tensor:
     return torch.square(x)

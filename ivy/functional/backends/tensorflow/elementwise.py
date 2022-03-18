@@ -27,6 +27,13 @@ def ceil(x: Tensor)\
     return tf.math.ceil(x)
 
 
+def floor(x: Tensor)\
+        -> Tensor:
+    if 'int' in str(x.dtype):
+        return x
+    return tf.math.floor(x)
+
+
 def isfinite(x: Tensor) \
         -> Tensor:
     if ivy.is_int_dtype(x):
@@ -169,6 +176,12 @@ def negative(x: Tensor) -> Tensor:
     return tf.negative(x)
 
 
+def not_equal(x1: Tensor, x2: Tensor)\
+        -> Tensor:
+    x1, x2 = _cast_for_binary_op(x1, x2)
+    return tf.math.not_equal(x1, x2)
+
+
 def tanh(x: Tensor) \
         -> Tensor:
     return tf.tanh(x)
@@ -183,8 +196,13 @@ def bitwise_or(x1: Tensor, x2: Tensor) \
         -> Tensor:
     x1, x2 = _cast_for_binary_op(x1, x2)
     return x1 | x2
+
+  
+def positive(x: Tensor)\
+        -> Tensor:
+    return tf.experimental.numpy.positive(x) 
  
- 
+
 def square(x: Tensor)\
         -> Tensor:
     return tf.math.square(x)
