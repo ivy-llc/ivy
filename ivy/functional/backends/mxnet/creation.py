@@ -53,6 +53,16 @@ def empty(shape: Union[int, Tuple[int]],
     return mx.nd.empty(shape, dtype_from_str(default_dtype(dtype)), cont)
 
 
+def eye(n_rows: int,
+        n_cols: Optional[int] = None,
+        k: Optional[int] = 0,
+        dtype: Optional[mx.nd.dtype] = None,
+        device: Optional[str] = None) \
+        -> mx.ndarray.ndarray.NDArray:
+    cont = _mxnet_init_context(default_device(device))
+    return mx.nd.eye(n_rows, n_cols, k, ctx=cont).astype(dtype)
+
+
 # Extra #
 # ------#
 

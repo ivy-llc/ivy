@@ -91,6 +91,20 @@ def empty(shape: Union[int, Tuple[int]],
     return torch.empty(shape, dtype=dtype_from_str(default_dtype(dtype)), device=dev_from_str(default_device(device)))
 
 
+def eye(n_rows: int,
+        n_cols: Optional[int] = None,
+        k: Optional[int] = 0,
+        dtype: Optional[torch.dtype] = None,
+        device: Optional[torch.device] = None) \
+        -> torch.Tensor:
+    dtype = dtype_from_str(default_dtype(dtype))
+    device = dev_from_str(default_device(device))
+    if n_cols is None:
+        return torch.eye(n_rows, dtype=dtype, device=device)
+    else:
+        return torch.eye(n_rows, n_cols, dtype=dtype, device=device)
+
+
 # Extra #
 # ------#
 

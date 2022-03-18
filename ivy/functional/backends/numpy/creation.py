@@ -68,6 +68,16 @@ def empty(shape: Union[int, Tuple[int], List[int]],
     return _to_dev(np.empty(shape, dtype_from_str(default_dtype(dtype))), device)
 
 
+def eye(n_rows: int,
+        n_cols: Optional[int] = None,
+        k: Optional[int] = 0,
+        dtype: Optional[np.dtype] = None,
+        device: Optional[str] = None) \
+        -> np.ndarray:
+    dtype = dtype_from_str(default_dtype(dtype))
+    return _to_dev(np.eye(n_rows, n_cols, k, dtype), device)
+
+
 # Extra #
 # ------#
 
