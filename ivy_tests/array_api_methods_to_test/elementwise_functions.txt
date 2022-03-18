@@ -20,7 +20,7 @@ cosh
 #equal
 #exp
 #expm1
-#floor
+#floor # depends on: remainder
 #floor_divide
 #greater
 #greater_equal

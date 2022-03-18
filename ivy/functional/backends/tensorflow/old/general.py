@@ -75,7 +75,6 @@ clip = _tf.clip_by_value
 # noinspection PyShadowingBuiltins
 round = _tf.round
 
-floor = _tf.floor
 
 
 
