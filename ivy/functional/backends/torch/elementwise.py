@@ -163,10 +163,21 @@ def tanh(x: torch.Tensor) -> torch.Tensor:
     return torch.tanh(x)
 
 
+def bitwise_or(x1: torch.Tensor, x2: torch.Tensor) \
+        -> torch.Tensor:
+    x1, x2 = _cast_for_binary_op(x1, x2)
+    return torch.bitwise_or(x1, x2)
+
+
 def sinh(x: torch.Tensor) -> torch.Tensor:
     return torch.sinh(x)
 
 
+def positive(x: torch.Tensor)\
+        -> torch.Tensor:
+    return torch.positive(x)
+
+    
 def square(x: torch.Tensor) \
         -> torch.Tensor:
     return torch.square(x)
