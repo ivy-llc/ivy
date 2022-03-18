@@ -85,9 +85,9 @@ def vector_norm(x: Union[ivy.Array, ivy.NativeArray],
     elif ord == float('inf'):
         return ivy.reduce_max(ivy.abs(x), axis, keepdims)
     elif ord == 0:
-        return ivy.reduce_sum(ivy.cast(x != 0, 'float32'), axis, keepdims)
+        return ivy.sum(ivy.cast(x != 0, 'float32'), axis, keepdims)
     x_raised = x ** ord
-    return ivy.reduce_sum(x_raised, axis, keepdims) ** (1/ord)
+    return ivy.sum(x_raised, axis, keepdims) ** (1/ord)
 
 
 def svd(x:Union[ivy.Array,ivy.NativeArray],full_matrices: bool = True)->Union[ivy.Array, Tuple[ivy.Array,...]]:
@@ -167,6 +167,37 @@ def pinv(x):
     :return: pseudo inverse of the matrix x.
     """
     return _cur_framework(x).pinv(x)
+
+
+def cholesky(x):
+    """
+    Computes the cholesky decomposition of the x matrix.
+
+    :param x: Matrix to be decomposed.
+    :type x: array
+    :return: cholesky decomposition of the matrix x.
+    """
+    return _cur_framework(x).cholesky(x)
+
+
+def matrix_norm(x, p=2, axes=None, keepdims=False):
+    """
+    Compute the matrix p-norm.
+
+    :param x: Input array.
+    :type x: array
+    :param p: Order of the norm. Default is 2.
+    :type p: int or str, optional
+    :param axes: The axes of x along which to compute the matrix norms.
+                 Default is None, in which case the last two dimensions are used.
+    :type axes: sequence of ints, optional
+    :param keepdims: If this is set to True, the axes which are normed over are left in the result as dimensions with
+                     size one. With this option the result will broadcast correctly against the original x.
+                     Default is False.
+    :type keepdims: bool, optional
+    :return: Matrix norm of the array at specified axes.
+    """
+    return _cur_framework(x).matrix_norm(x, p, axes, keepdims)
 
 
 def qr(x: ivy.Array,
@@ -298,3 +329,16 @@ def trace(x: ivy.Array,
 
 # Extra #
 # ------#
+
+def vector_to_skew_symmetric_matrix(vector: Union[ivy.Array, ivy.NativeArray])\
+        -> ivy.Array:
+    """
+    Given vector :math:`\mathbf{a}\in\mathbb{R}^3`, return associated skew-symmetric matrix
+    :math:`[\mathbf{a}]_×\in\mathbb{R}^{3×3}` satisfying :math:`\mathbf{a}×\mathbf{b}=[\mathbf{a}]_×\mathbf{b}`.\n
+    `[reference] <https://en.wikipedia.org/wiki/Skew-symmetric_matrix#Cross_product>`_
+
+    :param vector: Vector to convert *[batch_shape,3]*.
+    :type vector: array
+    :return: Skew-symmetric matrix *[batch_shape,3,3]*.
+    """
+    return _cur_framework(vector).vector_to_skew_symmetric_matrix(vector)

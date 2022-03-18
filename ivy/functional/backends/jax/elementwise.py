@@ -143,12 +143,21 @@ def tanh(x: JaxArray)\
         -> JaxArray:
     return jnp.tanh(x)
 
-  
+
+def bitwise_or(x1: JaxArray, x2: JaxArray) -> JaxArray:
+    return jnp.bitwise_or(x1, x2)
+
+
 def sinh(x: JaxArray)\
         -> JaxArray:
     return jnp.sinh(x)
 
 
+def positive(x: JaxArray)\
+        -> JaxArray:
+    return jnp.positive(x)
+
+    
 def square(x: JaxArray) \
         -> JaxArray:
     return jnp.square(x)

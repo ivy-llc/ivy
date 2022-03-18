@@ -4,6 +4,7 @@ import functools
 from numbers import Number
 
 # local
+import ivy
 from . import array_api
 from .array_api import *
 from . import conversions
@@ -73,6 +74,12 @@ class Array(ArrayWithArrayAPI, ArrayWithDevice, ArrayWithGeneral, ArrayWithGradi
     @property
     def device(self):
         return self._device
+
+    # noinspection PyPep8Naming
+    @property
+    def T(self):
+        assert len(self._data.shape) == 2
+        return ivy.matrix_transpose(self._data)
 
     # Built-ins #
     # ----------#
@@ -318,12 +325,9 @@ class Array(ArrayWithArrayAPI, ArrayWithDevice, ArrayWithGeneral, ArrayWithGradi
 
     @_native_wrapper
     def __or__(self, other):
-        other = to_native(other)
-        res = self._data.__or__(other)
-        if res is NotImplemented:
-            return res
-        return to_ivy(res)
+        return ivy.bitwise_or(self._data, other)
 
+        
     @_native_wrapper
     def __ror__(self, other):
         other = to_native(other)
