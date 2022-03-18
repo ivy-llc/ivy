@@ -212,4 +212,26 @@ def array(object_in: Union[List, ivy.Array, ivy.NativeArray], dtype: Union[ivy.D
     return _cur_framework(object_in).array(object_in, dtype, dev)
 
 
-asarray = array
+# noinspection PyShadowingNames
+def linspace(start: Union[ivy.Array, ivy.NativeArray, int], stop: Union[ivy.Array, ivy.NativeArray, int],
+             num: int, axis: int = None, dev: ivy.Device = None)\
+        -> Union[ivy.Array, ivy.NativeArray]:
+    """
+    Generates a certain number of evenly-spaced values in an interval along a given axis.
+
+    See :math:`arange` that allows to specify the step size of evenly spaced values in an interval.
+
+    :param start: First entry in the range.
+    :type start: array
+    :param stop: Final entry in the range.
+    :type stop: array
+    :param num: Number of values to generate.
+    :type num: int
+    :param axis: Axis along which the operation is performed.
+    :type axis: int
+    :param dev: device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
+    :type dev: ivy.Device
+    :return: Tensor of evenly-spaced values.
+    """
+    return _cur_framework(start).linspace(start, stop, num, axis, dev)
+
