@@ -32,11 +32,6 @@ def is_array(x, exclusive=False):
         return True
     return False
 
-def logspace(start, stop, num, base=10., axis=None, dev=None):
-    if axis is None:
-        axis = -1
-    return to_dev(_np.logspace(start, stop, num, base=base, axis=axis), dev)
-
 
 def unstack(x, axis, keepdims=False):
     if x.shape == ():
