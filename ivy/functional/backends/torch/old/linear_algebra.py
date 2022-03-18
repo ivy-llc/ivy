@@ -22,10 +22,6 @@ def matrix_norm(x, p=2, axes=None, keepdims=False):
     return ret
 
 
-def pinv(x):
-    return _torch.pinverse(x)
-
-
 def cholesky(x):
     return _torch.linalg.cholesky(x)
 

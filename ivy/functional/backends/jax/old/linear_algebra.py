@@ -23,7 +23,6 @@ def matrix_norm(x, p=2, axes=None, keepdims=False):
     return ret
 
 
-pinv = _jnp.linalg.pinv
 cholesky = _jnp.linalg.cholesky
 
 def vector_to_skew_symmetric_matrix(vector):

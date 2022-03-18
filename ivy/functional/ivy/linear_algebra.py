@@ -158,6 +158,17 @@ def inv(x):
     return _cur_framework(x).inv(x)
 
 
+def pinv(x):
+    """
+    Computes the pseudo inverse of x matrix.
+
+    :param x: Matrix to be pseudo inverted.
+    :type x: array
+    :return: pseudo inverse of the matrix x.
+    """
+    return _cur_framework(x).pinv(x)
+
+
 def qr(x: ivy.Array,
        mode: str = 'reduced') -> namedtuple('qr', ['Q', 'R']):
     """
