@@ -40,8 +40,8 @@ logical_or
 #logical_xor
 #multiply
 negative
+positive
 not_equal
-#positive
 #pow
 #remainder
 #round
