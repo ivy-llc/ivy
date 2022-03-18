@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>trace &mdash; Ivy 1.0 documentation</title>
+  <title>pinv &mdash; Ivy 1.0 documentation</title>
   
 
   
@@ -36,8 +36,8 @@
   <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="Losses" href="../losses.html" />
-    <link rel="prev" title="svdvals" href="svdvals.html" /> 
+    <link rel="next" title="qr" href="qr.html" />
+    <link rel="prev" title="inv" href="inv.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -107,12 +107,12 @@
 <li class="toctree-l2"><a class="reference internal" href="svd.html">svd</a></li>
 <li class="toctree-l2"><a class="reference internal" href="diagonal.html">diagonal</a></li>
 <li class="toctree-l2"><a class="reference internal" href="inv.html">inv</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pinv.html">pinv</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">pinv</a></li>
 <li class="toctree-l2"><a class="reference internal" href="qr.html">qr</a></li>
 <li class="toctree-l2"><a class="reference internal" href="matmul.html">matmul</a></li>
 <li class="toctree-l2"><a class="reference internal" href="slodget.html">slodget</a></li>
 <li class="toctree-l2"><a class="reference internal" href="svdvals.html">svdvals</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">trace</a></li>
+<li class="toctree-l2"><a class="reference internal" href="trace.html">trace</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../losses.html">Losses</a></li>
@@ -198,13 +198,13 @@
         
           <li><a href="../linear_algebra.html">Linear algebra</a> &raquo;</li>
         
-      <li>trace</li>
+      <li>pinv</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../../_sources/functional/ivy/linear_algebra/trace.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../../_sources/functional/ivy/linear_algebra/pinv.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -217,26 +217,20 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="trace">
-<h1>trace<a class="headerlink" href="#trace" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="pinv">
+<h1>pinv<a class="headerlink" href="#pinv" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
-<dt id="ivy.functional.ivy.linear_algebra.trace">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">trace</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">ivy.array.Array</span></em>, <em class="sig-param"><span class="n">offset</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">0</span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../../_modules/ivy/functional/ivy/linear_algebra.html#trace"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.linear_algebra.trace" title="Permalink to this definition">¶</a></dt>
-<dd><p>Computes the sum of the diagonal of an array.</p>
-<dl class="simple">
-<dt>x:</dt><dd><p>This is an array.</p>
+<dt id="ivy.functional.ivy.linear_algebra.pinv">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">pinv</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/linear_algebra.html#pinv"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.linear_algebra.pinv" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the pseudo inverse of x matrix.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>x</strong> (<em>array</em>) – Matrix to be pseudo inverted.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>pseudo inverse of the matrix x.</p>
 </dd>
 </dl>
-<p>Out:</p>
-<blockquote>
-<div><dl class="simple">
-<dt>This function returns two values -</dt><dd><dl class="simple">
-<dt>sum:</dt><dd><p>The sum of the diagonals along an axis.</p>
-</dd>
-</dl>
-</dd>
-</dl>
-</div></blockquote>
 </dd></dl>
 
 <div class="line-block">
@@ -254,10 +248,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../losses.html" class="btn btn-neutral float-right" title="Losses" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="qr.html" class="btn btn-neutral float-right" title="qr" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="svdvals.html" class="btn btn-neutral float-left" title="svdvals" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="inv.html" class="btn btn-neutral float-left" title="inv" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
