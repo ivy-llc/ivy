@@ -18,6 +18,7 @@ Linear algebra
    linear_algebra/diagonal.rst
    linear_algebra/inv.rst
    linear_algebra/pinv.rst
+   linear_algebra/cholesky.rst
    linear_algebra/qr.rst
    linear_algebra/matmul.rst
    linear_algebra/slodget.rst
