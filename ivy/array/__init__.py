@@ -4,6 +4,7 @@ import functools
 from numbers import Number
 
 # local
+import ivy
 from . import array_api
 from .array_api import *
 from . import conversions
@@ -73,6 +74,12 @@ class Array(ArrayWithArrayAPI, ArrayWithDevice, ArrayWithGeneral, ArrayWithGradi
     @property
     def device(self):
         return self._device
+
+    # noinspection PyPep8Naming
+    @property
+    def T(self):
+        assert len(self._data.shape) == 2
+        return ivy.matrix_transpose(self._data)
 
     # Built-ins #
     # ----------#
