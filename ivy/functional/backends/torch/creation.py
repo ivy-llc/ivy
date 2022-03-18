@@ -224,7 +224,7 @@ def eye(n_rows: int,
                              i[:n_rows + k]], 0)
     elif 0 < k < n_cols:
         return torch.concat([torch.zeros([n_rows, k], dtype=dtype, device=device),
-                             i[:n_cols - k]], 1)
+                             i[:, n_cols - k]], 1)
     else:
         return torch.zeros([n_rows, n_cols], dtype=dtype, device=device)
 
