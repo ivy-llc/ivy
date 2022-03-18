@@ -31,6 +31,6 @@ def diagonal(x: np.ndarray,
     return np.diagonal(x, offset=offset, axis1=axis1, axis2=axis2)
 
 
-def inv(x: np.ndarray, /) -> np.ndarray:
+def inv(x: np.ndarray) -> np.ndarray:
     return np.linalg.inv(x)
 
