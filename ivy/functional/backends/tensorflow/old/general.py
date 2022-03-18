@@ -74,7 +74,7 @@ maximum = _tf.maximum
 clip = _tf.clip_by_value
 # noinspection PyShadowingBuiltins
 round = _tf.round
-floormod = lambda x, y: x % y
+
 floor = _tf.floor
 
 
@@ -115,9 +115,6 @@ def linspace(start, stop, num, axis=None, dev=None):
         return _tf.linspace(start, stop, num, axis=axis)
 
 
-def logspace(start, stop, num, base=10., axis=None, dev=None):
-    power_seq = linspace(start, stop, num, axis, default_device(dev))
-    return base ** power_seq
 
 
 def concatenate(xs, axis=-1):
@@ -127,15 +124,6 @@ def concatenate(xs, axis=-1):
 
 
 stack = _tf.stack
-
-
-def unstack(x, axis, keepdims=False):
-    if x.shape == ():
-        return [x]
-    ret = _tf.unstack(x, axis=axis)
-    if keepdims:
-        return [_tf.expand_dims(r, axis) for r in ret]
-    return ret
 
 
 def split(x, num_or_size_splits=None, axis=0, with_remainder=False):

@@ -65,10 +65,6 @@ def round(x):
     return _torch.round(x)
 
 
-def floormod(x, y):
-    return x % y
-
-
 def floor(x):
     return _torch.floor(x)
 
@@ -175,9 +171,6 @@ def linspace(start, stop, num, axis=None, dev=None):
     return res.to(dev_from_str(dev))
 
 
-def logspace(start, stop, num, base=10., axis=None, dev=None):
-    power_seq = linspace(start, stop, num, axis, default_device(dev))
-    return base ** power_seq
 
 
 def concatenate(xs: List[_torch.Tensor], axis: int = -1):
@@ -189,14 +182,6 @@ def concatenate(xs: List[_torch.Tensor], axis: int = -1):
 def stack(xs: List[_torch.Tensor], axis: int = 0):
     return _torch.stack(xs, axis)
 
-
-def unstack(x, axis: int, keepdims: bool = False) -> List[_torch.Tensor]:
-    if x.shape == ():
-        return [x]
-    ret = list(_torch.unbind(x, axis))
-    if keepdims:
-        return [r.unsqueeze(axis) for r in ret]
-    return ret
 
 
 def split(x, num_or_size_splits: Optional[Union[int, List[int]]] = None, axis: int = 0, with_remainder: bool = False)\

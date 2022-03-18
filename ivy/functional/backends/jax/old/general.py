@@ -109,7 +109,7 @@ maximum = _jnp.maximum
 clip = _jnp.clip
 # noinspection PyShadowingBuiltins
 round = _jnp.round
-floormod = lambda x, y: x % y
+
 floor = _jnp.floor
 # noinspection PyShadowingBuiltins
 abs = _jnp.absolute
@@ -140,10 +140,7 @@ def linspace(start, stop, num, axis=None, dev=None):
     return to_dev(_jnp.linspace(start, stop, num, axis=axis), default_device(dev))
 
 
-def logspace(start, stop, num, base=10., axis=None, dev=None):
-    if axis is None:
-        axis = -1
-    return to_dev(_jnp.logspace(start, stop, num, base=base, axis=axis), default_device(dev))
+
 
 
 def concatenate(xs, axis=-1):
@@ -155,15 +152,7 @@ def concatenate(xs, axis=-1):
 stack = _jnp.stack
 
 
-def unstack(x, axis, keepdims=False):
-    if x.shape == ():
-        return [x]
-    dim_size = x.shape[axis]
-    # ToDo: make this faster somehow, jnp.split is VERY slow for large dim_size
-    x_split = _jnp.split(x, dim_size, axis)
-    if keepdims:
-        return x_split
-    return [_jnp.squeeze(item, axis) for item in x_split]
+
 
 
 def split(x, num_or_size_splits=None, axis=0, with_remainder=False):

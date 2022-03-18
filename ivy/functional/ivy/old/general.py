@@ -312,20 +312,7 @@ def stack(xs: Iterable[Union[ivy.Array, ivy.NativeArray]], axis: int = 0)\
     return _cur_framework(xs[0]).stack(xs, axis)
 
 
-def unstack(x: Union[ivy.Array, ivy.NativeArray], axis: int, keepdims: bool = False)\
-        -> Union[ivy.Array, ivy.NativeArray]:
-    """
-    Unpacks the given dimension of a rank-R array into rank-(R-1) arrays.
 
-    :param x: Input array to unstack.
-    :type x: array
-    :param axis: Axis for which to unpack the array.
-    :type axis: int
-    :param keepdims: Whether to keep dimension 1 in the unstack dimensions. Default is False.
-    :type keepdims: bool, optional
-    :return: List of arrays, unpacked along specified dimensions.
-    """
-    return _cur_framework(x).unstack(x, axis, keepdims)
 
 
 def split(x: Union[ivy.Array, ivy.NativeArray], num_or_size_splits: Union[int, Iterable[int]] = None, axis: int = 0,

@@ -105,11 +105,6 @@ def round(x):
 
 
 @_handle_flat_arrays_in_out
-def floormod(x, y):
-    return x % y
-
-
-@_handle_flat_arrays_in_out
 def floor(x):
     return _mx.nd.floor(x)
 
@@ -178,9 +173,6 @@ def linspace(start, stop, num, axis=None, dev=None):
         res = _mx.nd.swapaxes(res, axis, -1)
     return res
 
-
-def logspace(start, stop, num, base=10., axis=None, dev=None):
-    power_seq = linspace(start, stop, num, axis, default_device(dev))
     return base ** power_seq
 
 
@@ -195,12 +187,7 @@ def stack(xs, axis=0):
     return _mx.nd.stack(*xs, axis=axis)
 
 
-def unstack(x, axis, keepdims=False):
-    if x.shape == ():
-        return [x]
-    num_outputs = x.shape[axis]
-    ret = _mx.nd.split(x, num_outputs, axis, squeeze_axis=not keepdims)
-    return ret if isinstance(ret, list) else [ret]
+
 
 
 def split(x, num_or_size_splits=None, axis=0, with_remainder=False):
