@@ -103,12 +103,6 @@ def clip(x, x_min, x_max):
     return _mx.nd.clip(_mx.nd.array(x), x_min, x_max)
 
 
-@_handle_flat_arrays_in_out
-def round(x):
-    return _mx.nd.round(x)
-
-
-
 # noinspection PyShadowingBuiltins
 @_handle_flat_arrays_in_out
 def abs(x):
