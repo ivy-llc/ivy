@@ -7,6 +7,28 @@ from ivy import default_device, dtype_from_str, default_dtype, dtype_to_str
 from ivy.functional.backends.mxnet import _mxnet_init_context
 from ivy.functional.backends.mxnet import _1_dim_array_to_flat_array
 
+def asarray(object_in, dtype: Optional[str] = None, dev: Optional[str] = None, copy: Optional[bool] = None):
+    # mxnet don't have asarray implementation, haven't properly tested
+    cont = _mxnet_init_context(default_device(dev))
+    if copy is None:
+        copy = False
+    if copy:
+        if dtype is None and isinstance(object_in, mx.nd.NDArray):
+            return mx.nd.array(object_in, cont).as_in_context(cont)
+        if dtype is None and not isinstance(object_in, mx.nd.NDArray):
+            return mx.nd.array(object_in, cont, dtype=default_dtype(dtype, object_in))
+        else:
+            dtype = dtype_to_str(default_dtype(dtype, object_in))
+            return mx.nd.array(object_in, cont, dtype=default_dtype(dtype, object_in))
+    else:
+        if dtype is None and isinstance(object_in, mx.nd.NDArray):
+            return object_in.as_in_context(cont)
+        if dtype is None and not isinstance(object_in, mx.nd.NDArray):
+            return mx.nd.array(object_in, cont, dtype=default_dtype(dtype, object_in))
+        else:
+            dtype = dtype_to_str(default_dtype(dtype, object_in))
+            return mx.nd.array(object_in, cont, dtype=default_dtype(dtype, object_in))
+
 
 def zeros(shape: Union[int, Tuple[int]],
           dtype: Optional[type] = None,
@@ -53,36 +75,6 @@ def empty(shape: Union[int, Tuple[int]],
     return mx.nd.empty(shape, dtype_from_str(default_dtype(dtype)), cont)
 
 
-# Extra #
-# ------#
-
-def array(object_in, dtype=None, dev=None):
-    cont = _mxnet_init_context(default_device(dev))
-    return mx.nd.array(object_in, cont, dtype=default_dtype(dtype, object_in))
-
-
-def asarray(object_in, dtype: Optional[str] = None, dev: Optional[str] = None, copy: Optional[bool] = None):
-    # mxnet don't have asarray implementation, haven't properly tested
-    cont = _mxnet_init_context(default_device(dev))
-    if copy is None:
-        copy = False
-    if copy:
-        if dtype is None and isinstance(object_in, mx.nd.NDArray):
-            return mx.nd.array(object_in, cont).as_in_context(cont)
-        if dtype is None and not isinstance(object_in, mx.nd.NDArray):
-            return mx.nd.array(object_in, cont, dtype=default_dtype(dtype, object_in))
-        else:
-            dtype = dtype_to_str(default_dtype(dtype, object_in))
-            return mx.nd.array(object_in, cont, dtype=default_dtype(dtype, object_in))
-    else:
-        if dtype is None and isinstance(object_in, mx.nd.NDArray):
-            return object_in.as_in_context(cont)
-        if dtype is None and not isinstance(object_in, mx.nd.NDArray):
-            return mx.nd.array(object_in, cont, dtype=default_dtype(dtype, object_in))
-        else:
-            dtype = dtype_to_str(default_dtype(dtype, object_in))
-            return mx.nd.array(object_in, cont, dtype=default_dtype(dtype, object_in))
-
 
 def _linspace(start, stop, num, cont):
     if num == 1:
@@ -123,4 +115,13 @@ def linspace(start, stop, num, axis=None, dev=None):
         res = mx.nd.swapaxes(res, axis, -1)
     return res
 
-    return base ** power_seq
+# Extra #
+# ------#
+
+def array(object_in, dtype=None, dev=None):
+    cont = _mxnet_init_context(default_device(dev))
+    return mx.nd.array(object_in, cont, dtype=default_dtype(dtype, object_in))
+
+
+
+
