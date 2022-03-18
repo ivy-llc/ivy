@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>finfo &mdash; Ivy 1.0 documentation</title>
+  <title>dtype_to_str &mdash; Ivy 1.0 documentation</title>
   
 
   
@@ -36,8 +36,8 @@
   <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="dtype" href="dtype.html" />
-    <link rel="prev" title="iinfo" href="iinfo.html" /> 
+    <link rel="next" title="is_int_dtype" href="is_int_dtype.html" />
+    <link rel="prev" title="dtype_bits" href="dtype_bits.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -96,10 +96,10 @@
 <li class="toctree-l1"><a class="reference internal" href="../creation.html">Creation</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../data_type.html">Data type</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="iinfo.html">iinfo</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">finfo</a></li>
+<li class="toctree-l2"><a class="reference internal" href="finfo.html">finfo</a></li>
 <li class="toctree-l2"><a class="reference internal" href="dtype.html">dtype</a></li>
 <li class="toctree-l2"><a class="reference internal" href="dtype_bits.html">dtype_bits</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dtype_to_str.html">dtype_to_str</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">dtype_to_str</a></li>
 <li class="toctree-l2"><a class="reference internal" href="is_int_dtype.html">is_int_dtype</a></li>
 </ul>
 </li>
@@ -193,13 +193,13 @@
         
           <li><a href="../data_type.html">Data type</a> &raquo;</li>
         
-      <li>finfo</li>
+      <li>dtype_to_str</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../../_sources/functional/ivy/data_type/finfo.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../../_sources/functional/ivy/data_type/dtype_to_str.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -212,32 +212,18 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="finfo">
-<h1>finfo<a class="headerlink" href="#finfo" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="dtype-to-str">
+<h1>dtype_to_str<a class="headerlink" href="#dtype-to-str" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
-<dt id="ivy.functional.ivy.data_type.finfo">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">finfo</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">type</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.Dtype<span class="p">, </span>str<span class="p">, </span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="../../../_modules/ivy/functional/ivy/data_type.html#finfo"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.data_type.finfo" title="Permalink to this definition">¶</a></dt>
-<dd><p>Machine limits for floating-point data types.</p>
-<dl class="simple">
-<dt>type:</dt><dd><p>the kind of floating-point data-type about which to get information.</p>
+<dt id="ivy.functional.ivy.data_type.dtype_to_str">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">dtype_to_str</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dtype_in</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.Dtype<span class="p">, </span>str<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="../../../_modules/ivy/functional/ivy/data_type.html#dtype_to_str"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.data_type.dtype_to_str" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert native data type to string representation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>dtype_in</strong> (<em>data type</em>) – The data type to convert to string.</p>
 </dd>
-</dl>
-<dl>
-<dt>out:</dt><dd><p>an object having the followng attributes:
-- <strong>bits</strong>: <em>int</em></p>
-<blockquote>
-<div><p>number of bits occupied by the floating-point data type.</p>
-</div></blockquote>
-<ul class="simple">
-<li><p><strong>eps</strong>: <em>float</em>
-difference between 1.0 and the next smallest representable floating-point number larger than 1.0 according to the IEEE-754 standard.</p></li>
-<li><p><strong>max</strong>: <em>float</em>
-largest representable number.</p></li>
-<li><p><strong>min</strong>: <em>float</em>
-smallest representable number.</p></li>
-<li><p><strong>smallest_normal</strong>: <em>float</em>
-smallest positive floating-point number with full precision.</p></li>
-</ul>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>data type string ‘float32’</p>
 </dd>
 </dl>
 </dd></dl>
@@ -257,10 +243,10 @@ smallest positive floating-point number with full precision.</p></li>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="dtype.html" class="btn btn-neutral float-right" title="dtype" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="is_int_dtype.html" class="btn btn-neutral float-right" title="is_int_dtype" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="iinfo.html" class="btn btn-neutral float-left" title="iinfo" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="dtype_bits.html" class="btn btn-neutral float-left" title="dtype_bits" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

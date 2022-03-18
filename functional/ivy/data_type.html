@@ -98,6 +98,9 @@
 <li class="toctree-l2"><a class="reference internal" href="data_type/iinfo.html">iinfo</a></li>
 <li class="toctree-l2"><a class="reference internal" href="data_type/finfo.html">finfo</a></li>
 <li class="toctree-l2"><a class="reference internal" href="data_type/dtype.html">dtype</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data_type/dtype_bits.html">dtype_bits</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data_type/dtype_to_str.html">dtype_to_str</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data_type/is_int_dtype.html">is_int_dtype</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="device.html">Device</a></li>
@@ -227,6 +230,34 @@
 </dd></dl>
 
 <dl class="py function">
+<dt id="ivy.functional.ivy.data_type.dtype_bits">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">dtype_bits</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dtype_in</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.Dtype<span class="p">, </span>str<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; int<a class="reference internal" href="../../_modules/ivy/functional/ivy/data_type.html#dtype_bits"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.data_type.dtype_bits" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the number of bits used for representing the input data type.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>dtype_in</strong> – The data type to determine the number of bits for.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The number of bits used to represent the data type.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.data_type.dtype_to_str">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">dtype_to_str</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dtype_in</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.Dtype<span class="p">, </span>str<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="../../_modules/ivy/functional/ivy/data_type.html#dtype_to_str"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.data_type.dtype_to_str" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert native data type to string representation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>dtype_in</strong> (<em>data type</em>) – The data type to convert to string.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>data type string ‘float32’</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt id="ivy.functional.ivy.data_type.finfo">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">finfo</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">type</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.Dtype<span class="p">, </span>str<span class="p">, </span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="../../_modules/ivy/functional/ivy/data_type.html#finfo"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.data_type.finfo" title="Permalink to this definition">¶</a></dt>
 <dd><p>Machine limits for floating-point data types.</p>
@@ -278,12 +309,29 @@ smallest representable number.</p></li>
 </dl>
 </dd></dl>
 
+<dl class="py function">
+<dt id="ivy.functional.ivy.data_type.is_int_dtype">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">is_int_dtype</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dtype_in</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.Dtype<span class="p">, </span>str<span class="p">, </span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">, </span>numbers.Number<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; bool<a class="reference internal" href="../../_modules/ivy/functional/ivy/data_type.html#is_int_dtype"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.data_type.is_int_dtype" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determine whether the input data type is an int data-type.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>dtype_in</strong> – Datatype to test</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Whether or not the data type is an integer data type</p>
+</dd>
+</dl>
+</dd></dl>
+
 <div class="toctree-wrapper compound">
 <p class="caption"><span class="caption-text">Data type</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="data_type/iinfo.html">iinfo</a></li>
 <li class="toctree-l1"><a class="reference internal" href="data_type/finfo.html">finfo</a></li>
 <li class="toctree-l1"><a class="reference internal" href="data_type/dtype.html">dtype</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data_type/dtype_bits.html">dtype_bits</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data_type/dtype_to_str.html">dtype_to_str</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data_type/is_int_dtype.html">is_int_dtype</a></li>
 </ul>
 </div>
 </div>

@@ -15,4 +15,7 @@ Data type
    data_type/iinfo.rst
    data_type/finfo.rst
    data_type/dtype.rst
+   data_type/dtype_bits.rst
+   data_type/dtype_to_str.rst
+   data_type/is_int_dtype.rst
 
