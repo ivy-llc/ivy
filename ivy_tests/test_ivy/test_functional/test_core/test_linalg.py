@@ -148,24 +148,6 @@ def test_vector_to_skew_symmetric_matrix(x, dtype, tensor_fn, dev, call):
                        ivy.functional.backends.numpy.vector_to_skew_symmetric_matrix(ivy.to_numpy(x)))
 
 
-# cholesky
-@pytest.mark.parametrize(
-    "x", [[[1.0, -1.0, 2.0], [-1.0, 5.0, -4.0], [2.0, -4.0, 6.0]], [[[1.0, -1.0, 2.0], [-1.0, 5.0, -4.0], [2.0, -4.0, 6.0]]]])
-@pytest.mark.parametrize(
-    "dtype", ['float32'])
-@pytest.mark.parametrize(
-    "tensor_fn", [ivy.array, helpers.var_fn])
-def test_cholesky(x, dtype, tensor_fn, dev, call):
-    # smoke test
-    x = tensor_fn(x, dtype, dev)
-    ret = ivy.cholesky(x)
-    # type test
-    assert ivy.is_array(ret)
-    # cardinality test
-    assert ret.shape == x.shape
-    # value test
-    assert np.allclose(call(ivy.cholesky, x), ivy.functional.backends.numpy.cholesky(ivy.to_numpy(x)))
-
 # QR
 # @pytest.mark.parametrize(
 #     "data", [ ([[-1.0, 1.0, 3], [4, -5, 8], [9, 2, -3]], 3),

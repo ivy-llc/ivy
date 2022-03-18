@@ -21,10 +21,6 @@ def matrix_norm(x, p=2, axes=None, keepdims=False):
     return _mx.nd.norm(x, p, axes, keepdims=keepdims)
 
 
-cholesky = lambda x: _mx.np.linalg.cholesky(x.as_np_ndarray()).as_nd_ndarray()
-
-
-
 def vector_to_skew_symmetric_matrix(vector):
     batch_shape = list(vector.shape[:-1])
     # BS x 3 x 1
