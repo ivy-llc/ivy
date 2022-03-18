@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>iinfo &mdash; Ivy 1.0 documentation</title>
+  <title>dtype &mdash; Ivy 1.0 documentation</title>
   
 
   
@@ -36,8 +36,8 @@
   <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="finfo" href="finfo.html" />
-    <link rel="prev" title="Data type" href="../data_type.html" /> 
+    <link rel="next" title="Device" href="../device.html" />
+    <link rel="prev" title="finfo" href="finfo.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -95,9 +95,9 @@
 <li class="toctree-l1"><a class="reference internal" href="../constants.html">Constants</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../creation.html">Creation</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../data_type.html">Data type</a><ul class="current">
-<li class="toctree-l2 current"><a class="current reference internal" href="#">iinfo</a></li>
+<li class="toctree-l2"><a class="reference internal" href="iinfo.html">iinfo</a></li>
 <li class="toctree-l2"><a class="reference internal" href="finfo.html">finfo</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dtype.html">dtype</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">dtype</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../device.html">Device</a></li>
@@ -190,13 +190,13 @@
         
           <li><a href="../data_type.html">Data type</a> &raquo;</li>
         
-      <li>iinfo</li>
+      <li>dtype</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../../_sources/functional/ivy/data_type/iinfo.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../../_sources/functional/ivy/data_type/dtype.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -209,28 +209,21 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="iinfo">
-<h1>iinfo<a class="headerlink" href="#iinfo" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="dtype">
+<h1>dtype<a class="headerlink" href="#dtype" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
-<dt id="ivy.functional.ivy.data_type.iinfo">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">iinfo</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">type</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.Dtype<span class="p">, </span>str<span class="p">, </span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="../../../_modules/ivy/functional/ivy/data_type.html#iinfo"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.data_type.iinfo" title="Permalink to this definition">¶</a></dt>
-<dd><p>Machine limits for integer data types.</p>
-<dl class="simple">
-<dt>type:</dt><dd><p>the kind of integer data-type about which to get information.</p>
-</dd>
-</dl>
-<dl>
-<dt>out:</dt><dd><p>a class with that encapsules the following attributes:
-- <strong>bits</strong>: <em>int</em></p>
-<blockquote>
-<div><p>number of bits occupied by the type.</p>
-</div></blockquote>
-<ul class="simple">
-<li><p><strong>max</strong>: <em>int</em>
-largest representable number.</p></li>
-<li><p><strong>min</strong>: <em>int</em>
-smallest representable number.</p></li>
+<dt id="ivy.functional.ivy.data_type.dtype">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">dtype</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">as_str</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span> &#x2192; ivy.Dtype<a class="reference internal" href="../../../_modules/ivy/functional/ivy/data_type.html#dtype"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.data_type.dtype" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the data type for input array x.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>array</em>) – Tensor for which to get the data type.</p></li>
+<li><p><strong>as_str</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether or not to return the dtype in string format. Default is False.</p></li>
 </ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Data type of the array</p>
 </dd>
 </dl>
 </dd></dl>
@@ -250,10 +243,10 @@ smallest representable number.</p></li>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="finfo.html" class="btn btn-neutral float-right" title="finfo" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="../device.html" class="btn btn-neutral float-right" title="Device" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="../data_type.html" class="btn btn-neutral float-left" title="Data type" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="finfo.html" class="btn btn-neutral float-left" title="finfo" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

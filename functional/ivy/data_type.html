@@ -97,6 +97,7 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Data type</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="data_type/iinfo.html">iinfo</a></li>
 <li class="toctree-l2"><a class="reference internal" href="data_type/finfo.html">finfo</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data_type/dtype.html">dtype</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="device.html">Device</a></li>
@@ -209,6 +210,23 @@
   <div class="section" id="module-ivy.functional.ivy.data_type">
 <span id="data-type"></span><h1>Data type<a class="headerlink" href="#module-ivy.functional.ivy.data_type" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
+<dt id="ivy.functional.ivy.data_type.dtype">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">dtype</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">as_str</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span> &#x2192; ivy.Dtype<a class="reference internal" href="../../_modules/ivy/functional/ivy/data_type.html#dtype"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.data_type.dtype" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the data type for input array x.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>array</em>) – Tensor for which to get the data type.</p></li>
+<li><p><strong>as_str</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether or not to return the dtype in string format. Default is False.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Data type of the array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt id="ivy.functional.ivy.data_type.finfo">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">finfo</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">type</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.Dtype<span class="p">, </span>str<span class="p">, </span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="../../_modules/ivy/functional/ivy/data_type.html#finfo"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.data_type.finfo" title="Permalink to this definition">¶</a></dt>
 <dd><p>Machine limits for floating-point data types.</p>
@@ -265,6 +283,7 @@ smallest representable number.</p></li>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="data_type/iinfo.html">iinfo</a></li>
 <li class="toctree-l1"><a class="reference internal" href="data_type/finfo.html">finfo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data_type/dtype.html">dtype</a></li>
 </ul>
 </div>
 </div>
