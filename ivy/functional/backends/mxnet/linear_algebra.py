@@ -5,7 +5,7 @@ import numpy as _np
 from collections import namedtuple
 from mxnet.ndarray.ndarray import NDArray
 from typing import Union, Optional, Tuple, Literal
-
+from ivy.functional.backends.mxnet.old.general import matmul as _matmul
 
 
 # local
@@ -13,6 +13,28 @@ from ivy import inf
 import ivy as _ivy
 
 inv = mx.nd.linalg_inverse
+DET_THRESHOLD = 1e-12
+
+
+def pinv(x):
+    """
+    reference: https://help.matheass.eu/en/Pseudoinverse.html
+    """
+    x_dim, y_dim = x.shape[-2:]
+    if x_dim == y_dim and mx.nd.sum(mx.nd.linalg.det(x) > DET_THRESHOLD) > 0:
+        return inv(x)
+    else:
+        xT = mx.nd.swapaxes(x, -1, -2)
+        xT_x = _ivy.to_native(_matmul(xT, x))
+        if mx.nd.linalg.det(xT_x) > DET_THRESHOLD:
+            return _matmul(inv(xT_x), xT)
+        else:
+            x_xT = _ivy.to_native(_matmul(x, xT))
+            if mx.nd.linalg.det(x_xT) > DET_THRESHOLD:
+                return _matmul(xT, inv(x_xT))
+            else:
+                return xT
+
 
 def vector_norm(x: NDArray,
                 p: Union[int, float, Literal[inf, - inf]] = 2,
