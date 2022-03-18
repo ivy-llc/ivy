@@ -22,7 +22,6 @@ def matrix_norm(x, p=2, axes=None, keepdims=False):
     return ret
 
 
-inv = _np.linalg.inv
 pinv = _np.linalg.pinv
 cholesky = _np.linalg.cholesky
 

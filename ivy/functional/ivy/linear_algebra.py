@@ -146,6 +146,18 @@ def diagonal(x: ivy.Array,
     return _cur_framework(x).diagonal(x, offset, axis1=axis1, axis2=axis2)
 
 
+def inv(x):
+    """
+    Computes the (multiplicative) inverse of x matrix.
+    Given a square matrix x, returns the matrix x_inv satisfying dot(x, x_inv) = dot(x_inv, x) = eye(x.shape[0]).
+
+    :param x: Matrix to be inverted.
+    :type x: array
+    :return: (Multiplicative) inverse of the matrix x.
+    """
+    return _cur_framework(x).inv(x)
+
+
 def qr(x: ivy.Array,
        mode: str = 'reduced') -> namedtuple('qr', ['Q', 'R']):
     """

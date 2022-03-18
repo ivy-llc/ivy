@@ -10,6 +10,10 @@ from collections import namedtuple
 import ivy as _ivy
 
 
+def inv(x):
+    return torch.inverse(x)
+
+
 def matrix_transpose(x: torch.Tensor)\
         -> torch.Tensor:
     return torch.swapaxes(x, -1, -2)
