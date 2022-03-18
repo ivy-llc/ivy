@@ -56,3 +56,21 @@ def to_list(x):
     elif _torch.is_tensor(x):
         return x.detach().cpu().tolist()
     raise ValueError('Expected a pytroch tensor.')
+
+
+def floormod(x, y):
+    return x % y
+
+
+def logspace(start, stop, num, base=10., axis=None, dev=None):
+    power_seq = linspace(start, stop, num, axis, default_device(dev))
+    return base ** power_seq
+
+
+def unstack(x, axis: int, keepdims: bool = False) -> List[_torch.Tensor]:
+    if x.shape == ():
+        return [x]
+    ret = list(_torch.unbind(x, axis))
+    if keepdims:
+        return [r.unsqueeze(axis) for r in ret]
+    return ret

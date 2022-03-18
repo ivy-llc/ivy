@@ -28,9 +28,24 @@ def is_array(x, exclusive=False):
 
 copy_array = _tf.identity
 array_equal = _tf.experimental.numpy.array_equal
+floormod = lambda x, y: x % y
 to_numpy = lambda x: _np.asarray(_tf.convert_to_tensor(x))
 to_numpy.__name__ = 'to_numpy'
 to_scalar = lambda x: to_numpy(x).item()
 to_scalar.__name__ = 'to_scalar'
 to_list = lambda x: x.numpy().tolist()
 to_list.__name__ = 'to_list'
+
+
+def logspace(start, stop, num, base=10., axis=None, dev=None):
+    power_seq = linspace(start, stop, num, axis, default_device(dev))
+    return base ** power_seq
+
+
+def unstack(x, axis, keepdims=False):
+    if x.shape == ():
+        return [x]
+    ret = _tf.unstack(x, axis=axis)
+    if keepdims:
+        return [_tf.expand_dims(r, axis) for r in ret]
+    return ret
