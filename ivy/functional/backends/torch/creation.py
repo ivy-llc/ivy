@@ -90,6 +90,77 @@ def empty(shape: Union[int, Tuple[int]],
         -> Tensor:
     return torch.empty(shape, dtype=dtype_from_str(default_dtype(dtype)), device=dev_from_str(default_device(device)))
 
+def _differentiable_linspace(start, stop, num, device):
+    if num == 1:
+        return torch.unsqueeze(start, 0)
+    n_m_1 = num - 1
+    increment = (stop - start) / n_m_1
+    increment_tiled = increment.repeat(n_m_1)
+    increments = increment_tiled * torch.linspace(1, n_m_1, n_m_1, device=device)
+    res = torch.cat((torch.unsqueeze(torch.tensor(start), 0), start + increments), 0)
+    return res
+
+
+# noinspection PyUnboundLocalVariable,PyShadowingNames
+def linspace(start, stop, num, axis=None, dev=None):
+    num = num.detach().numpy().item() if isinstance(num, torch.Tensor) else num
+    start_is_array = isinstance(start, torch.Tensor)
+    stop_is_array = isinstance(stop, torch.Tensor)
+    linspace_method = torch.linspace
+    dev = default_device(dev)
+    sos_shape = []
+    if start_is_array:
+        start_shape = list(start.shape)
+        sos_shape = start_shape
+        if num == 1:
+            return start.unsqueeze(axis).to(dev_from_str(dev))
+        start = start.reshape((-1,))
+        linspace_method = _differentiable_linspace if start.requires_grad else torch.linspace
+    if stop_is_array:
+        stop_shape = list(stop.shape)
+        sos_shape = stop_shape
+        if num == 1:
+            return torch.ones(stop_shape[:axis] + [1] + stop_shape[axis:], device=dev_from_str(dev)) * start
+        stop = stop.reshape((-1,))
+        linspace_method = _differentiable_linspace if stop.requires_grad else torch.linspace
+    if start_is_array and stop_is_array:
+        if num < start.shape[0]:
+            start = start.unsqueeze(-1)
+            stop = stop.unsqueeze(-1)
+            diff = stop - start
+            inc = diff / (num-1)
+            res = [start]
+            res += [start + inc*i for i in range(1, num-1)]
+            res.append(stop)
+        else:
+            res = [linspace_method(strt, stp, num, device=dev_from_str(dev)) for strt, stp in zip(start, stop)]
+        torch.cat(res, -1).reshape(start_shape + [num])
+    elif start_is_array and not stop_is_array:
+        if num < start.shape[0]:
+            start = start.unsqueeze(-1)
+            diff = stop - start
+            inc = diff / (num - 1)
+            res = [start]
+            res += [start + inc * i for i in range(1, num - 1)]
+            res.append(torch.ones_like(start, device=dev_from_str(dev)) * stop)
+        else:
+            res = [linspace_method(strt, stop, num, device=dev_from_str(dev)) for strt in start]
+    elif not start_is_array and stop_is_array:
+        if num < stop.shape[0]:
+            stop = stop.unsqueeze(-1)
+            diff = stop - start
+            inc = diff / (num - 1)
+            res = [torch.ones_like(stop, device=dev_from_str(dev)) * start]
+            res += [start + inc * i for i in range(1, num - 1)]
+            res.append(stop)
+        else:
+            res = [linspace_method(start, stp, num, device=dev_from_str(dev)) for stp in stop]
+    else:
+        return linspace_method(start, stop, num, device=dev_from_str(dev))
+    res = torch.cat(res, -1).reshape(sos_shape + [num])
+    if axis is not None:
+        res = torch.transpose(res, axis, -1)
+    return res.to(dev_from_str(dev))
 
 # Extra #
 # ------#
