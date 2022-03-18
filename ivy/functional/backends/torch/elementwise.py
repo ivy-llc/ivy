@@ -167,6 +167,11 @@ def sinh(x: torch.Tensor) -> torch.Tensor:
     return torch.sinh(x)
 
 
+def positive(x: torch.Tensor)\
+        -> torch.Tensor:
+    return torch.positive(x)
+
+    
 def square(x: torch.Tensor) \
         -> torch.Tensor:
     return torch.square(x)

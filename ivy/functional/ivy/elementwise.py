@@ -624,6 +624,17 @@ def sinh(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
     return _cur_framework(x).sinh(x)
 
 
+def positive(x: Union[ivy.Array, ivy.NativeArray])\
+        -> ivy.Array:
+    """
+    Returns a new array with the positive value of each element in x.
+
+    :param x: Input array.
+    :return: A new array with the positive value of each element in x.
+    """
+    return _cur_framework(x).positive(x)
+
+    
 def square(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
     """
     each element x_i of the input array x.
