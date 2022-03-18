@@ -277,6 +277,36 @@
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
 
 
+<div class="viewcode-block" id="floor"><a class="viewcode-back" href="../../../../functional/ivy/elementwise/floor.html#ivy.functional.ivy.elementwise.floor">[docs]</a><span class="k">def</span> <span class="nf">floor</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">])</span>\
+        <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Rounds each element ``x_i`` of the input array ``x`` to the greatest (i.e., closest to ``+infinity``) integer-valued number that is not greater than ``x_i``.</span>
+
+<span class="sd">    **Special cases**</span>
+
+<span class="sd">    - If ``x_i`` is already integer-valued, the result is ``x_i``.</span>
+
+<span class="sd">    For floating-point operands,</span>
+
+<span class="sd">    - If ``x_i`` is ``+infinity``, the result is ``+infinity``.</span>
+<span class="sd">    - If ``x_i`` is ``-infinity``, the result is ``-infinity``.</span>
+<span class="sd">    - If ``x_i`` is ``+0``, the result is ``+0``.</span>
+<span class="sd">    - If ``x_i`` is ``-0``, the result is ``-0``.</span>
+<span class="sd">    - If ``x_i`` is ``NaN``, the result is ``NaN``.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x:</span>
+<span class="sd">        input array. Should have a numeric data type.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    out:</span>
+<span class="sd">        an array containing the rounded result for each element in ``x``. The returned array must have the same data type as ``x``.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
+
+
 <div class="viewcode-block" id="isfinite"><a class="viewcode-back" href="../../../../functional/ivy/elementwise/isfinite.html#ivy.functional.ivy.elementwise.isfinite">[docs]</a><span class="k">def</span> <span class="nf">isfinite</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">])</span>\
         <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
