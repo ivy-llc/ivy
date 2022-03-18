@@ -108,7 +108,6 @@ def floor(x: Union[ivy.Array, ivy.NativeArray])\
     return _cur_framework(x).floor(x)
 
 
-
 def isfinite(x: Union[ivy.Array, ivy.NativeArray])\
         -> ivy.Array:
     """
