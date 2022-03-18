@@ -14,6 +14,20 @@ pinv = jnp.linalg.pinv
 cholesky = jnp.linalg.cholesky
 
 
+
+def matrix_norm(x, p=2, axes=None, keepdims=False):
+    axes = (-2, -1) if axes is None else axes
+    if isinstance(axes, int):
+        raise Exception('if specified, axes must be a length-2 sequence of ints,'
+                        'but found {} of type {}'.format(axes, type(axes)))
+    elif isinstance(axes, list):
+        axes = tuple(axes)
+    ret = jnp.linalg.norm(x, p, axes, keepdims)
+    if ret.shape == ():
+        return jnp.expand_dims(ret, 0)
+    return ret
+
+
 def matrix_transpose(x: JaxArray)\
         -> JaxArray:
     return jnp.swapaxes(x, -1, -2)
