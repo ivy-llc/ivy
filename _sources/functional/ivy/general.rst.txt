@@ -21,4 +21,9 @@ General
    general/to_numpy.rst
    general/to_scalar.rst
    general/to_list.rst
+   general/clip_vector_norm.rst
+   general/clip_matrix_norm.rst
+   general/floormod.rst
+   general/logspace.rst
+   general/unstack.rst
 
