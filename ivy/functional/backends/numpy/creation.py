@@ -67,6 +67,10 @@ def empty(shape: Union[int, Tuple[int], List[int]],
         -> np.ndarray:
     return _to_dev(np.empty(shape, dtype_from_str(default_dtype(dtype))), device)
 
+def linspace(start, stop, num, axis=None, dev=None):
+    if axis is None:
+        axis = -1
+    return _to_dev(np.linspace(start, stop, num, axis=axis), dev)
 
 # Extra #
 # ------#
