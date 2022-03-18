@@ -15,6 +15,7 @@ import ivy
 from ivy.functional.ivy.old import default_dtype
 from ivy.functional.backends.numpy.device import _dev_callable, to_dev
 
+
 copy_array = lambda x: x.copy()
 array_equal = _np.array_equal
 floormod = lambda x, y: _np.asarray(x % y)
