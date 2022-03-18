@@ -86,20 +86,6 @@ astype = cast
 # Queries #
 # --------#
 
-def dtype(x: Union[ivy.Array, ivy.NativeArray], as_str: bool = False)\
-        -> ivy.Dtype:
-    """
-    Get the data type for input array x.
-
-    :param x: Tensor for which to get the data type.
-    :type x: array
-    :param as_str: Whether or not to return the dtype in string format. Default is False.
-    :type as_str: bool, optional
-    :return: Data type of the array
-    """
-    return _cur_framework(x).dtype(x, as_str)
-
-
 def dtype_bits(dtype_in: Union[ivy.Dtype, str]) -> int:
     """
     Get the number of bits used for representing the input data type.
