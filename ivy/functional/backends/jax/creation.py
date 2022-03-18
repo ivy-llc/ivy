@@ -89,6 +89,11 @@ def asarray(object_in, dtype: Optional[str] = None, dev: Optional[str] = None, c
         return to_dev(jnp.asarray(object_in, dtype=dtype), dev)
 
 
+def linspace(start, stop, num, axis=None, dev=None):
+    if axis is None:
+        axis = -1
+    return to_dev(jnp.linspace(start, stop, num, axis=axis), default_device(dev))
+
 # Extra #
 # ------#
 

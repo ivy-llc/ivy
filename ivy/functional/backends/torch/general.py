@@ -11,6 +11,7 @@ import torch as _torch
 from operator import mul
 from torch.types import Number
 from functools import reduce as _reduce
+from ivy.functional.backends.torch import linspace
 from typing import List, Dict, Optional, Union
 
 
