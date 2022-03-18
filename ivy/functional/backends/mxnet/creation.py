@@ -120,3 +120,9 @@ def linspace(start, stop, num, axis=None, dev=None):
 def array(object_in, dtype=None, dev=None):
     cont = _mxnet_init_context(default_device(dev))
     return mx.nd.array(object_in, cont, dtype=default_dtype(dtype, object_in))
+
+
+def logspace(start, stop, num, base=10., axis=None, dev=None):
+    power_seq = linspace(start, stop, num, axis, default_device(dev))
+    return base ** power_seq
+
