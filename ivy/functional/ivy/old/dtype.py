@@ -86,34 +86,6 @@ astype = cast
 # Queries #
 # --------#
 
-def dtype_bits(dtype_in: Union[ivy.Dtype, str]) -> int:
-    """
-    Get the number of bits used for representing the input data type.
-
-    :param dtype_in: The data type to determine the number of bits for.
-    :return: The number of bits used to represent the data type.
-    """
-    return _cur_framework(dtype_in).dtype_bits(dtype_in)
-
-
-def is_int_dtype(dtype_in: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray, Number]):
-    """
-    Determine whether the input data type is an int data-type.
-
-    :param dtype_in: Datatype to test
-    :return: Whether or not the data type is an integer data type
-    """
-    if ivy.is_array(dtype_in):
-        dtype_in = ivy.dtype(dtype_in)
-    elif isinstance(dtype_in, np.ndarray):
-        return 'int' in dtype_in.dtype.name
-    elif isinstance(dtype_in, Number):
-        return True if isinstance(dtype_in, (int, np.integer)) and not isinstance(dtype_in, bool) else False
-    elif isinstance(dtype_in, (list, tuple, dict)):
-        return True if ivy.nested_indices_where(dtype_in, lambda x: isinstance(x, (int, np.integer))) else False
-    return 'int' in dtype_to_str(dtype_in)
-
-
 def is_float_dtype(dtype_in: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray, Number]):
     """
     Determine whether the input data type is an float data-type.
