@@ -11,10 +11,13 @@ from ivy.functional.backends.mxnet.old.general import matmul as _matmul
 # local
 from ivy import inf
 import ivy as _ivy
+DET_THRESHOLD = 1e-12
+
+# Array API Standard #
+# -------------------#
 
 inv = mx.nd.linalg_inverse
 cholesky = lambda x: mx.np.linalg.cholesky(x.as_np_ndarray()).as_nd_ndarray()
-DET_THRESHOLD = 1e-12
 
 
 def pinv(x):
@@ -85,3 +88,25 @@ def trace(x: NDArray,
 
 def qr(x, mode):
     return mx.np.linalg.qr(x, mode=mode)
+
+
+# Extra #
+# ------#
+
+def vector_to_skew_symmetric_matrix(vector: NDArray)\
+        -> NDArray:
+    batch_shape = list(vector.shape[:-1])
+    # BS x 3 x 1
+    vector_expanded = mx.nd.expand_dims(vector, -1)
+    # BS x 1 x 1
+    a1s = vector_expanded[..., 0:1, :]
+    a2s = vector_expanded[..., 1:2, :]
+    a3s = vector_expanded[..., 2:3, :]
+    # BS x 1 x 1
+    zs = mx.nd.zeros(batch_shape + [1, 1])
+    # BS x 1 x 3
+    row1 = mx.nd.concat(*(zs, -a3s, a2s), dim=-1)
+    row2 = mx.nd.concat(*(a3s, zs, -a1s), dim=-1)
+    row3 = mx.nd.concat(*(-a2s, a1s, zs), dim=-1)
+    # BS x 3 x 3
+    return mx.nd.concat(*(row1, row2, row3), dim=-2)
