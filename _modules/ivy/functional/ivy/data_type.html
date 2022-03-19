@@ -200,8 +200,9 @@
 <span></span><span class="c1"># global</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">importlib</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Tuple</span>
 <span class="kn">from</span> <span class="nn">numbers</span> <span class="kn">import</span> <span class="n">Number</span>
+
 
 <span class="c1"># local</span>
 <span class="kn">import</span> <span class="nn">ivy</span>
@@ -269,6 +270,21 @@
 <span class="sd">          smallest positive floating-point number with full precision.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span><span class="o">.</span><span class="n">finfo</span><span class="p">(</span><span class="nb">type</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="broadcast_to"><a class="viewcode-back" href="../../../../functional/ivy/data_type/broadcast_to.html#ivy.functional.ivy.data_type.broadcast_to">[docs]</a><span class="k">def</span> <span class="nf">broadcast_to</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>  <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span> <span class="n">shape</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span><span class="o">...</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">     Broadcasts an array to a specified shape</span>
+
+<span class="sd">    :param x:  x (array) – array to broadcast.</span>
+<span class="sd">    :param shape: shape (Tuple[int, ...]) – array shape. Must be compatible with x (see Broadcasting). If \</span>
+<span class="sd">                  the array is incompatible with the specified shape, the function should raise an \</span>
+<span class="sd">                  exception.</span>
+<span class="sd">    :return: out (array) – an array having a specified shape. Must have the same data type as x.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">return</span>  <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">broadcast_to</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">shape</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="dtype"><a class="viewcode-back" href="../../../../functional/ivy/data_type/dtype.html#ivy.functional.ivy.data_type.dtype">[docs]</a><span class="k">def</span> <span class="nf">dtype</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span> <span class="n">as_str</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>\

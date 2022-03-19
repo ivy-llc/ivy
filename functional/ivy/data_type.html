@@ -97,6 +97,7 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Data type</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="data_type/iinfo.html">iinfo</a></li>
 <li class="toctree-l2"><a class="reference internal" href="data_type/finfo.html">finfo</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data_type/broadcast_to.html">broadcast_to</a></li>
 <li class="toctree-l2"><a class="reference internal" href="data_type/dtype.html">dtype</a></li>
 <li class="toctree-l2"><a class="reference internal" href="data_type/dtype_bits.html">dtype_bits</a></li>
 <li class="toctree-l2"><a class="reference internal" href="data_type/dtype_to_str.html">dtype_to_str</a></li>
@@ -216,6 +217,25 @@
             
   <div class="section" id="module-ivy.functional.ivy.data_type">
 <span id="data-type"></span><h1>Data type<a class="headerlink" href="#module-ivy.functional.ivy.data_type" title="Permalink to this headline">¶</a></h1>
+<dl class="py function">
+<dt id="ivy.functional.ivy.data_type.broadcast_to">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">broadcast_to</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">shape</span><span class="p">:</span> <span class="n">Tuple<span class="p">[</span>int<span class="p">, </span><span class="p">…</span><span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../_modules/ivy/functional/ivy/data_type.html#broadcast_to"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.data_type.broadcast_to" title="Permalink to this definition">¶</a></dt>
+<dd><blockquote>
+<div><p>Broadcasts an array to a specified shape</p>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> – x (array) – array to broadcast.</p></li>
+<li><p><strong>shape</strong> – shape (Tuple[int, …]) – array shape. Must be compatible with x (see Broadcasting). If                   the array is incompatible with the specified shape, the function should raise an                   exception.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>out (array) – an array having a specified shape. Must have the same data type as x.</p>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py function">
 <dt id="ivy.functional.ivy.data_type.convert_dtype">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">convert_dtype</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dtype_in</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.Dtype<span class="p">, </span>str<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">backend</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span> &#x2192; ivy.Dtype<a class="reference internal" href="../../_modules/ivy/functional/ivy/data_type.html#convert_dtype"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.data_type.convert_dtype" title="Permalink to this definition">¶</a></dt>
@@ -391,6 +411,7 @@ smallest representable number.</p></li>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="data_type/iinfo.html">iinfo</a></li>
 <li class="toctree-l1"><a class="reference internal" href="data_type/finfo.html">finfo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data_type/broadcast_to.html">broadcast_to</a></li>
 <li class="toctree-l1"><a class="reference internal" href="data_type/dtype.html">dtype</a></li>
 <li class="toctree-l1"><a class="reference internal" href="data_type/dtype_bits.html">dtype_bits</a></li>
 <li class="toctree-l1"><a class="reference internal" href="data_type/dtype_to_str.html">dtype_to_str</a></li>
