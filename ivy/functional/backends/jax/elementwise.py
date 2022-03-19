@@ -23,6 +23,13 @@ def ceil(x: JaxArray)\
     return jnp.ceil(x)
 
 
+def floor(x: JaxArray)\
+        -> JaxArray:
+    if 'int' in str(x.dtype):
+        return x
+    return jnp.floor(x)
+
+
 def isfinite(x: JaxArray)\
         -> JaxArray:
     return jnp.isfinite(x)
@@ -127,6 +134,7 @@ def negative(x: JaxArray) -> JaxArray:
     return jnp.negative(x)
 
 
+
 def subtract(x1: JaxArray, x2: JaxArray)\
         -> JaxArray:
     if hasattr(x1, 'dtype') and hasattr(x2, 'dtype'):
@@ -136,16 +144,37 @@ def subtract(x1: JaxArray, x2: JaxArray)\
     return jnp.subtract(x1, x2)
   
 
+def not_equal(x1: JaxArray, x2: JaxArray)\
+        -> JaxArray:
+    return jnp.not_equal(x1, x2)
+
+
 def tanh(x: JaxArray)\
         -> JaxArray:
     return jnp.tanh(x)
-  
-  
+
+
+def bitwise_or(x1: JaxArray, x2: JaxArray) -> JaxArray:
+    return jnp.bitwise_or(x1, x2)
+
+
 def sinh(x: JaxArray)\
         -> JaxArray:
     return jnp.sinh(x)
 
 
+def positive(x: JaxArray)\
+        -> JaxArray:
+    return jnp.positive(x)
+
+    
 def square(x: JaxArray) \
         -> JaxArray:
     return jnp.square(x)
+
+
+def round(x: JaxArray)\
+        -> JaxArray:
+    if 'int' in str(x.dtype):
+        return x
+    return jnp.round(x)

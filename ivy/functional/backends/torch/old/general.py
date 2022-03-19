@@ -23,8 +23,6 @@ from ivy.functional.backends.torch.device import dev_from_str, _callable_dev
 # API #
 # ----#
 
-def array_equal(x0, x1):
-    return _torch.equal(x0, x1)
 
 
 def dtype_bits(dtype_in):
@@ -35,26 +33,7 @@ def dtype_bits(dtype_in):
         'float', ''))
 
 
-def to_numpy(x) -> np.ndarray:
-    if isinstance(x, np.ndarray) or isinstance(x, (float, int, bool)):
-        return x
-    elif _torch.is_tensor(x):
-        return x.detach().cpu().numpy()
-    raise ValueError('Expected a pytroch tensor.')
 
-
-def to_scalar(x) -> Union[float, int, bool]:
-    if isinstance(x, (float, int)):
-        return x
-    return x.item()
-
-
-def to_list(x):
-    if isinstance(x, np.ndarray):
-        return x.tolist()
-    elif _torch.is_tensor(x):
-        return x.detach().cpu().tolist()
-    raise ValueError('Expected a pytroch tensor.')
 
 
 def shape(x, as_tensor=False) -> Union[_torch.Tensor, List[int]]:
@@ -82,18 +61,6 @@ def clip(x, x_min, x_max):
 
 
 # noinspection PyShadowingBuiltins
-def round(x):
-    return _torch.round(x)
-
-
-def floormod(x, y):
-    return x % y
-
-
-def floor(x):
-    return _torch.floor(x)
-
-
 # noinspection PyShadowingBuiltins
 def abs(x):
     return _torch.abs(x)
@@ -123,82 +90,7 @@ def arange(stop: Number, start: Number = 0, step: Number = 1, dtype: Optional[st
         return _torch.arange(start, stop, step=step, device=dev_from_str(dev))
 
 
-def _differentiable_linspace(start, stop, num, device):
-    if num == 1:
-        return _torch.unsqueeze(start, 0)
-    n_m_1 = num - 1
-    increment = (stop - start) / n_m_1
-    increment_tiled = increment.repeat(n_m_1)
-    increments = increment_tiled * _torch.linspace(1, n_m_1, n_m_1, device=device)
-    res = _torch.cat((_torch.unsqueeze(_torch.tensor(start), 0), start + increments), 0)
-    return res
 
-
-# noinspection PyUnboundLocalVariable,PyShadowingNames
-def linspace(start, stop, num, axis=None, dev=None):
-    num = num.detach().numpy().item() if isinstance(num, _torch.Tensor) else num
-    start_is_array = isinstance(start, _torch.Tensor)
-    stop_is_array = isinstance(stop, _torch.Tensor)
-    linspace_method = _torch.linspace
-    dev = default_device(dev)
-    sos_shape = []
-    if start_is_array:
-        start_shape = list(start.shape)
-        sos_shape = start_shape
-        if num == 1:
-            return start.unsqueeze(axis).to(dev_from_str(dev))
-        start = start.reshape((-1,))
-        linspace_method = _differentiable_linspace if start.requires_grad else _torch.linspace
-    if stop_is_array:
-        stop_shape = list(stop.shape)
-        sos_shape = stop_shape
-        if num == 1:
-            return _torch.ones(stop_shape[:axis] + [1] + stop_shape[axis:], device=dev_from_str(dev)) * start
-        stop = stop.reshape((-1,))
-        linspace_method = _differentiable_linspace if stop.requires_grad else _torch.linspace
-    if start_is_array and stop_is_array:
-        if num < start.shape[0]:
-            start = start.unsqueeze(-1)
-            stop = stop.unsqueeze(-1)
-            diff = stop - start
-            inc = diff / (num-1)
-            res = [start]
-            res += [start + inc*i for i in range(1, num-1)]
-            res.append(stop)
-        else:
-            res = [linspace_method(strt, stp, num, device=dev_from_str(dev)) for strt, stp in zip(start, stop)]
-        _torch.cat(res, -1).reshape(start_shape + [num])
-    elif start_is_array and not stop_is_array:
-        if num < start.shape[0]:
-            start = start.unsqueeze(-1)
-            diff = stop - start
-            inc = diff / (num - 1)
-            res = [start]
-            res += [start + inc * i for i in range(1, num - 1)]
-            res.append(_torch.ones_like(start, device=dev_from_str(dev)) * stop)
-        else:
-            res = [linspace_method(strt, stop, num, device=dev_from_str(dev)) for strt in start]
-    elif not start_is_array and stop_is_array:
-        if num < stop.shape[0]:
-            stop = stop.unsqueeze(-1)
-            diff = stop - start
-            inc = diff / (num - 1)
-            res = [_torch.ones_like(stop, device=dev_from_str(dev)) * start]
-            res += [start + inc * i for i in range(1, num - 1)]
-            res.append(stop)
-        else:
-            res = [linspace_method(start, stp, num, device=dev_from_str(dev)) for stp in stop]
-    else:
-        return linspace_method(start, stop, num, device=dev_from_str(dev))
-    res = _torch.cat(res, -1).reshape(sos_shape + [num])
-    if axis is not None:
-        res = _torch.transpose(res, axis, -1)
-    return res.to(dev_from_str(dev))
-
-
-def logspace(start, stop, num, base=10., axis=None, dev=None):
-    power_seq = linspace(start, stop, num, axis, default_device(dev))
-    return base ** power_seq
 
 
 def concatenate(xs: List[_torch.Tensor], axis: int = -1):
@@ -211,51 +103,8 @@ def stack(xs: List[_torch.Tensor], axis: int = 0):
     return _torch.stack(xs, axis)
 
 
-def unstack(x, axis: int, keepdims: bool = False) -> List[_torch.Tensor]:
-    if x.shape == ():
-        return [x]
-    ret = list(_torch.unbind(x, axis))
-    if keepdims:
-        return [r.unsqueeze(axis) for r in ret]
-    return ret
 
 
-def split(x, num_or_size_splits: Optional[Union[int, List[int]]] = None, axis: int = 0, with_remainder: bool = False)\
-        -> List[_torch.Tensor]:
-    if x.shape == ():
-        if num_or_size_splits is not None and num_or_size_splits != 1:
-            raise Exception('input array had no shape, but num_sections specified was {}'.format(num_or_size_splits))
-        return [x]
-    dim_size: int = x.shape[axis]
-    if num_or_size_splits is None:
-        # noinspection PyUnboundLocalVariable
-        num_or_size_splits = 1
-    elif isinstance(num_or_size_splits, int):
-        if with_remainder:
-            num_chunks = x.shape[axis] / num_or_size_splits
-            num_chunks_int = _math.floor(num_chunks)
-            remainder = num_chunks - num_chunks_int
-            if remainder == 0:
-                num_or_size_splits = _torch.round(_torch.tensor(dim_size) / _torch.tensor(num_or_size_splits))
-            else:
-                num_or_size_splits = tuple([num_or_size_splits] * num_chunks_int + [int(remainder*num_or_size_splits)])
-        else:
-            num_or_size_splits = _torch.round(_torch.tensor(dim_size) / _torch.tensor(num_or_size_splits))
-    elif isinstance(num_or_size_splits, list):
-        num_or_size_splits = tuple(num_or_size_splits)
-    return list(_torch.split(x, num_or_size_splits, axis))
-
-
-def repeat(x, repeats: Union[int, List[int]], axis: int = None):
-    if len(x.shape) == 0 and axis in [0, -1]:
-        axis = None
-    return _torch.repeat_interleave(x, repeats, axis)
-
-
-def tile(x, reps):
-    if isinstance(reps, _torch.Tensor):
-        reps = reps.detach().cpu().numpy().tolist()
-    return x.repeat(reps)
 
 
 # noinspection PyUnresolvedReferences

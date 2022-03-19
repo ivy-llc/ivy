@@ -10,6 +10,21 @@ from collections import namedtuple
 import ivy as _ivy
 
 
+# Array API Standard #
+# -------------------#
+
+def inv(x):
+    return torch.inverse(x)
+
+
+def pinv(x):
+    return torch.pinverse(x)
+
+
+def cholesky(x):
+    return torch.linalg.cholesky(x)
+
+
 def matrix_transpose(x: torch.Tensor)\
         -> torch.Tensor:
     return torch.swapaxes(x, -1, -2)
@@ -27,6 +42,18 @@ def vector_norm(x: torch.Tensor,
         return torch.unsqueeze(py_normalized_vector, 0)
 
     return py_normalized_vector
+
+
+def matrix_norm(x, p=2, axes=None, keepdims=False):
+    axes = [-2, -1] if axes is None else axes
+    if isinstance(axes, int):
+        raise Exception('if specified, axes must be a length-2 sequence of ints,'
+                        'but found {} of type {}'.format(axes, type(axes)))
+    ret = torch.linalg.matrix_norm(x, ord=p, dim=axes, keepdim=keepdims)
+    if ret.shape == ():
+        return torch.unsqueeze(ret, 0)
+    return ret
+
 
 # noinspection PyPep8Naming
 def svd(x:torch.Tensor,full_matrices: bool = True) -> Union[torch.Tensor, Tuple[torch.Tensor,...]]:
@@ -81,3 +108,25 @@ def trace(x: torch.Tensor,
           offset: int = 0)\
               -> torch.Tensor:
     return torch.trace(x, offset)
+
+
+# Extra #
+# ------#
+
+def vector_to_skew_symmetric_matrix(vector: torch.Tensor)\
+        -> torch.Tensor:
+    batch_shape = list(vector.shape[:-1])
+    # BS x 3 x 1
+    vector_expanded = torch.unsqueeze(vector, -1)
+    # BS x 1 x 1
+    a1s = vector_expanded[..., 0:1, :]
+    a2s = vector_expanded[..., 1:2, :]
+    a3s = vector_expanded[..., 2:3, :]
+    # BS x 1 x 1
+    zs = torch.zeros(batch_shape + [1, 1], device=vector.device)
+    # BS x 1 x 3
+    row1 = torch.cat((zs, -a3s, a2s), -1)
+    row2 = torch.cat((a3s, zs, -a1s), -1)
+    row3 = torch.cat((-a2s, a1s, zs), -1)
+    # BS x 3 x 3
+    return torch.cat((row1, row2, row3), -2)

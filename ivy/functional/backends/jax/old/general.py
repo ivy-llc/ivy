@@ -90,7 +90,7 @@ def _to_array(x):
 
 
 
-array_equal = _jnp.array_equal
+
 
 
 def dtype_bits(dtype_in):
@@ -100,12 +100,7 @@ def dtype_bits(dtype_in):
     return int(dtype_str.replace('uint', '').replace('int', '').replace('bfloat', '').replace('float', ''))
 
 
-to_numpy = lambda x: _onp.asarray(_to_array(x))
-to_numpy.__name__ = 'to_numpy'
-to_scalar = lambda x: x if isinstance(x, Number) else _to_array(x).item()
-to_scalar.__name__ = 'to_scalar'
-to_list = lambda x: _to_array(x).tolist()
-to_list.__name__ = 'to_list'
+
 shape = lambda x, as_tensor=False: _jnp.asarray(_jnp.shape(x)) if as_tensor else x.shape
 shape.__name__ = 'shape'
 get_num_dims = lambda x, as_tensor=False: _jnp.asarray(len(_jnp.shape(x))) if as_tensor else len(x.shape)
@@ -113,9 +108,6 @@ minimum = _jnp.minimum
 maximum = _jnp.maximum
 clip = _jnp.clip
 # noinspection PyShadowingBuiltins
-round = _jnp.round
-floormod = lambda x, y: x % y
-floor = _jnp.floor
 # noinspection PyShadowingBuiltins
 abs = _jnp.absolute
 
@@ -139,16 +131,6 @@ def arange(stop, start=0, step=1, dtype=None, dev=None):
     return to_dev(_jnp.arange(start, stop, step=step, dtype=dtype), default_device(dev))
 
 
-def linspace(start, stop, num, axis=None, dev=None):
-    if axis is None:
-        axis = -1
-    return to_dev(_jnp.linspace(start, stop, num, axis=axis), default_device(dev))
-
-
-def logspace(start, stop, num, base=10., axis=None, dev=None):
-    if axis is None:
-        axis = -1
-    return to_dev(_jnp.logspace(start, stop, num, base=base, axis=axis), default_device(dev))
 
 
 def concatenate(xs, axis=-1):
@@ -160,37 +142,10 @@ def concatenate(xs, axis=-1):
 stack = _jnp.stack
 
 
-def unstack(x, axis, keepdims=False):
-    if x.shape == ():
-        return [x]
-    dim_size = x.shape[axis]
-    # ToDo: make this faster somehow, jnp.split is VERY slow for large dim_size
-    x_split = _jnp.split(x, dim_size, axis)
-    if keepdims:
-        return x_split
-    return [_jnp.squeeze(item, axis) for item in x_split]
 
 
-def split(x, num_or_size_splits=None, axis=0, with_remainder=False):
-    if x.shape == ():
-        if num_or_size_splits is not None and num_or_size_splits != 1:
-            raise Exception('input array had no shape, but num_sections specified was {}'.format(num_or_size_splits))
-        return [x]
-    if num_or_size_splits is None:
-        num_or_size_splits = x.shape[axis]
-    elif isinstance(num_or_size_splits, int) and with_remainder:
-        num_chunks = x.shape[axis] / num_or_size_splits
-        num_chunks_int = _math.floor(num_chunks)
-        remainder = num_chunks - num_chunks_int
-        if remainder != 0:
-            num_or_size_splits = [num_or_size_splits] * num_chunks_int + [int(remainder * num_or_size_splits)]
-    if isinstance(num_or_size_splits, (list, tuple)):
-        num_or_size_splits = _jnp.cumsum(_jnp.array(num_or_size_splits[:-1]))
-    return _jnp.split(x, num_or_size_splits, axis)
 
 
-repeat = _jnp.repeat
-tile = _jnp.tile
 constant_pad = lambda x, pad_width, value=0: _jnp.pad(_flat_array_to_1_dim_array(x), pad_width, constant_values=value)
 zero_pad = lambda x, pad_width: _jnp.pad(_flat_array_to_1_dim_array(x), pad_width, constant_values=0)
 swapaxes = _jnp.swapaxes

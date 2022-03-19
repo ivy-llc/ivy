@@ -17,6 +17,12 @@ def ceil(x: mx.ndarray.ndarray.NDArray)\
 
 
 @_handle_flat_arrays_in_out
+def floor(x: mx.ndarray.ndarray.NDArray)\
+        -> mx.ndarray.ndarray.NDArray:
+    return mx.nd.floor(x)
+
+
+@_handle_flat_arrays_in_out
 def isfinite(x: mx.ndarray.ndarray.NDArray)\
         -> mx.ndarray.ndarray.NDArray:
     # ToDo: remove float32 conversion once int8 and uint8 work correctly. Currently 0 returns 0 for these types.
@@ -109,6 +115,12 @@ def tanh(x: mx.ndarray.ndarray.NDArray)\
 
 
 @_handle_flat_arrays_in_out
+def bitwise_or(x1: mx.ndarray.ndarray.NDArray, x2: mx.ndarray.ndarray.NDArray) \
+        -> mx.nd.ndarray.NDArray:
+    return mx.numpy.bitwise_or(x1, x2)
+
+
+@_handle_flat_arrays_in_out
 def sinh(x: mx.ndarray.ndarray.NDArray)\
         -> mx.ndarray.ndarray.NDArray:
     if isinstance(x, float):
@@ -120,3 +132,8 @@ def sinh(x: mx.ndarray.ndarray.NDArray)\
 def square(x: mx.ndarray.ndarray.NDArray)\
         -> mx.ndarray.ndarray.NDArray:
     return mx.nd.square(x)
+
+@_handle_flat_arrays_in_out
+def round(x: mx.ndarray.ndarray.NDArray)\
+        -> mx.ndarray.ndarray.NDArray:
+    return mx.nd.round(x)
