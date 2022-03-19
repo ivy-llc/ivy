@@ -39,4 +39,6 @@ General
    general/einops_rearrange.rst
    general/einops_reduce.rst
    general/einops_repeat.rst
+   general/stable_divide.rst
+   general/stable_pow.rst
 
