@@ -66,7 +66,7 @@ def tril(x: mx.ndarray.ndarray.NDArray,
          -> mx.ndarray.ndarray.NDArray:
     return mx.np.tril(x, k)
 
-  
+
 def empty(shape: Union[int, Tuple[int]],
           dtype: Optional[type] = None,
           device: Optional[mx.context.Context] = None) \
@@ -113,6 +113,16 @@ def linspace(start, stop, num, axis=None, dev=None):
     if axis is not None:
         res = mx.nd.swapaxes(res, axis, -1)
     return res
+
+def eye(n_rows: int,
+        n_cols: Optional[int] = None,
+        k: Optional[int] = 0,
+        dtype: Optional[mx.nd.NDArray] = None,
+        device: Optional[str] = None) \
+        -> mx.ndarray.ndarray.NDArray:
+    cont = _mxnet_init_context(default_device(device))
+    return mx.nd.eye(n_rows, n_cols, k, ctx=cont).astype(dtype)
+
 
 # Extra #
 # ------#
