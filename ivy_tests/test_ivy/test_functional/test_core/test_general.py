@@ -2048,7 +2048,7 @@ def test_framework_setting_with_multiprocessing(dev, call):
         x_ = np.array([0., 1., 2.])
         for _ in range(1000):
             try:
-                ivy.reduce_mean(x_)
+                ivy.mean(x_)
             except TypeError:
                 out_queue.put(False)
                 return
@@ -2067,7 +2067,7 @@ def test_framework_setting_with_multiprocessing(dev, call):
     # start local original framework loop
     ivy.set_framework(fws)
     for _ in range(1000):
-        ivy.reduce_mean(x)
+        ivy.mean(x)
     ivy.unset_framework()
 
     worker.join()
