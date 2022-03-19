@@ -58,6 +58,8 @@ def unstack(x, axis, keepdims=False):
     return [_jnp.squeeze(item, axis) for item in x_split]
 
 
+def inplace_update(x, val):
+    raise Exception('Jax does not support inplace operations')
 
 inplace_arrays_supported = lambda: False
 inplace_variables_supported = lambda: False
