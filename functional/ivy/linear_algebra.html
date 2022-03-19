@@ -115,6 +115,7 @@
 <li class="toctree-l2"><a class="reference internal" href="linear_algebra/slodget.html">slodget</a></li>
 <li class="toctree-l2"><a class="reference internal" href="linear_algebra/svdvals.html">svdvals</a></li>
 <li class="toctree-l2"><a class="reference internal" href="linear_algebra/trace.html">trace</a></li>
+<li class="toctree-l2"><a class="reference internal" href="linear_algebra/det.html">det</a></li>
 <li class="toctree-l2"><a class="reference internal" href="linear_algebra/vector_to_skew_symmetric_matrix.html">vector_to_skew_symmetric_matrix</a></li>
 </ul>
 </li>
@@ -230,6 +231,22 @@
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>cholesky decomposition of the matrix x.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.linear_algebra.det">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">det</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">ivy.array.Array</span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../_modules/ivy/functional/ivy/linear_algebra.html#det"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.linear_algebra.det" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the determinant of a square matrix (or a stack of square matrices) x.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>x</strong> – input array having shape (…, M, M) and whose innermost two dimensions form square matrices. Should
+have a floating-point data type.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>:return<span class="classifier">if x is a two-dimensional array, a zero-dimensional array containing the determinant; otherwise, a non-zero</span></dt><dd><p>dimensional array containing the determinant for each square matrix. The returned array must have the same data type as x.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -543,6 +560,7 @@ Default: <code class="docutils literal notranslate"><span class="pre">2</span></
 <li class="toctree-l1"><a class="reference internal" href="linear_algebra/slodget.html">slodget</a></li>
 <li class="toctree-l1"><a class="reference internal" href="linear_algebra/svdvals.html">svdvals</a></li>
 <li class="toctree-l1"><a class="reference internal" href="linear_algebra/trace.html">trace</a></li>
+<li class="toctree-l1"><a class="reference internal" href="linear_algebra/det.html">det</a></li>
 <li class="toctree-l1"><a class="reference internal" href="linear_algebra/vector_to_skew_symmetric_matrix.html">vector_to_skew_symmetric_matrix</a></li>
 </ul>
 </div>

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>vector_norm &mdash; Ivy 1.0 documentation</title>
+  <title>det &mdash; Ivy 1.0 documentation</title>
   
 
   
@@ -36,8 +36,8 @@
   <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="svd" href="svd.html" />
-    <link rel="prev" title="matrix_transpose" href="matrix_transpose.html" /> 
+    <link rel="next" title="vector_to_skew_symmetric_matrix" href="vector_to_skew_symmetric_matrix.html" />
+    <link rel="prev" title="trace" href="trace.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -103,7 +103,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../layers.html">Layers</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../linear_algebra.html">Linear algebra</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="matrix_transpose.html">matrix_transpose</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">vector_norm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vector_norm.html">vector_norm</a></li>
 <li class="toctree-l2"><a class="reference internal" href="svd.html">svd</a></li>
 <li class="toctree-l2"><a class="reference internal" href="diagonal.html">diagonal</a></li>
 <li class="toctree-l2"><a class="reference internal" href="inv.html">inv</a></li>
@@ -115,7 +115,7 @@
 <li class="toctree-l2"><a class="reference internal" href="slodget.html">slodget</a></li>
 <li class="toctree-l2"><a class="reference internal" href="svdvals.html">svdvals</a></li>
 <li class="toctree-l2"><a class="reference internal" href="trace.html">trace</a></li>
-<li class="toctree-l2"><a class="reference internal" href="det.html">det</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">det</a></li>
 <li class="toctree-l2"><a class="reference internal" href="vector_to_skew_symmetric_matrix.html">vector_to_skew_symmetric_matrix</a></li>
 </ul>
 </li>
@@ -202,13 +202,13 @@
         
           <li><a href="../linear_algebra.html">Linear algebra</a> &raquo;</li>
         
-      <li>vector_norm</li>
+      <li>det</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../../_sources/functional/ivy/linear_algebra/vector_norm.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../../_sources/functional/ivy/linear_algebra/det.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -221,50 +221,20 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="vector-norm">
-<h1>vector_norm<a class="headerlink" href="#vector-norm" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="det">
+<h1>det<a class="headerlink" href="#det" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
-<dt id="ivy.functional.ivy.linear_algebra.vector_norm">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">vector_norm</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">axis</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Union<span class="p">[</span>int<span class="p">, </span>Tuple<span class="p">[</span>int<span class="p">]</span><span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">keepdims</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">ord</span><span class="p">:</span> <span class="n">Union[int, float, Literal[inf, - inf]]</span> <span class="o">=</span> <span class="default_value">2</span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../../_modules/ivy/functional/ivy/linear_algebra.html#vector_norm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.linear_algebra.vector_norm" title="Permalink to this definition">¶</a></dt>
-<dd><p>Computes the vector norm of a vector (or batch of vectors) <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p>
-<dl class="simple">
-<dt>x:</dt><dd><p>input array. Should have a floating-point data type.</p>
-</dd>
-<dt>axis:</dt><dd><p>If an integer, <code class="docutils literal notranslate"><span class="pre">axis</span></code> specifies the axis (dimension) along which to compute vector norms. If an n-tuple, <code class="docutils literal notranslate"><span class="pre">axis</span></code> specifies the axes (dimensions) along which to compute batched vector norms. If <code class="docutils literal notranslate"><span class="pre">None</span></code>, the vector norm must be computed over all array values (i.e., equivalent to computing the vector norm of a flattened array). Negative indices must be supported. Default: <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
-</dd>
-<dt>keepdims:</dt><dd><p>If <code class="docutils literal notranslate"><span class="pre">True</span></code>, the axes (dimensions) specified by <code class="docutils literal notranslate"><span class="pre">axis</span></code> must be included in the result as singleton dimensions, and, accordingly, the result must be compatible with the input array (see <span class="xref std std-ref">broadcasting</span>). Otherwise, if <code class="docutils literal notranslate"><span class="pre">False</span></code>, the axes (dimensions) specified by <code class="docutils literal notranslate"><span class="pre">axis</span></code> must not be included in the result. Default: <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
-</dd>
-<dt>ord:</dt><dd><p>order of the norm. The following mathematical norms must be supported:
-+——————+—————————-+
-| ord              | description                |
-+==================+============================+
-| 1                | L1-norm (Manhattan)        |
-+——————+—————————-+
-| 2                | L2-norm (Euclidean)        |
-+——————+—————————-+
-| inf              | infinity norm              |
-+——————+—————————-+
-| (int,float &gt;= 1) | p-norm                     |
-+——————+—————————-+
-The following non-mathematical “norms” must be supported:
-+——————+——————————–+
-| ord              | description                    |
-+==================+================================+
-| 0                | sum(a != 0)                    |
-+——————+——————————–+
-| -1               | 1./sum(1./abs(a))              |
-+——————+——————————–+
-| -2               | 1./sqrt(sum(1./abs(a)**2))   |
-+——————+——————————–+
-| -inf             | min(abs(a))                    |
-+——————+——————————–+
-| (int,float &lt; 1)  | sum(abs(a)**ord)**(1./ord) |
-+——————+——————————–+
-Default: <code class="docutils literal notranslate"><span class="pre">2</span></code>.</p>
+<dt id="ivy.functional.ivy.linear_algebra.det">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">det</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">ivy.array.Array</span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../../_modules/ivy/functional/ivy/linear_algebra.html#det"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.linear_algebra.det" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the determinant of a square matrix (or a stack of square matrices) x.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>x</strong> – input array having shape (…, M, M) and whose innermost two dimensions form square matrices. Should
+have a floating-point data type.</p>
 </dd>
 </dl>
 <dl class="simple">
-<dt>out:</dt><dd><p>an array containing the vector norms. If <code class="docutils literal notranslate"><span class="pre">axis</span></code> is <code class="docutils literal notranslate"><span class="pre">None</span></code>, the returned array must be a zero-dimensional array containing a vector norm. If <code class="docutils literal notranslate"><span class="pre">axis</span></code> is a scalar value (<code class="docutils literal notranslate"><span class="pre">int</span></code> or <code class="docutils literal notranslate"><span class="pre">float</span></code>), the returned array must have a rank which is one less than the rank of <code class="docutils literal notranslate"><span class="pre">x</span></code>. If <code class="docutils literal notranslate"><span class="pre">axis</span></code> is a <code class="docutils literal notranslate"><span class="pre">n</span></code>-tuple, the returned array must have a rank which is <code class="docutils literal notranslate"><span class="pre">n</span></code> less than the rank of <code class="docutils literal notranslate"><span class="pre">x</span></code>. The returned array must have a floating-point data type determined by <span class="xref std std-ref">type-promotion</span>.</p>
+<dt>:return<span class="classifier">if x is a two-dimensional array, a zero-dimensional array containing the determinant; otherwise, a non-zero</span></dt><dd><p>dimensional array containing the determinant for each square matrix. The returned array must have the same data type as x.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -284,10 +254,10 @@ Default: <code class="docutils literal notranslate"><span class="pre">2</span></
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="svd.html" class="btn btn-neutral float-right" title="svd" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="vector_to_skew_symmetric_matrix.html" class="btn btn-neutral float-right" title="vector_to_skew_symmetric_matrix" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="matrix_transpose.html" class="btn btn-neutral float-left" title="matrix_transpose" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="trace.html" class="btn btn-neutral float-left" title="trace" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

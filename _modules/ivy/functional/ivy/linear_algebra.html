@@ -526,6 +526,19 @@
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">offset</span><span class="p">)</span></div>
 
 
+<div class="viewcode-block" id="det"><a class="viewcode-back" href="../../../../functional/ivy/linear_algebra/det.html#ivy.functional.ivy.linear_algebra.det">[docs]</a><span class="k">def</span> <span class="nf">det</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">)</span> \
+    <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns the determinant of a square matrix (or a stack of square matrices) x.</span>
+
+<span class="sd">    :param x:  input array having shape (..., M, M) and whose innermost two dimensions form square matrices. Should</span>
+<span class="sd">               have a floating-point data type.</span>
+<span class="sd">    :return :  if x is a two-dimensional array, a zero-dimensional array containing the determinant; otherwise, a non-zero</span>
+<span class="sd">               dimensional array containing the determinant for each square matrix. The returned array must have the same data type as x.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">det</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
+
+
 <span class="c1"># Extra #</span>
 <span class="c1"># ------#</span>
 
