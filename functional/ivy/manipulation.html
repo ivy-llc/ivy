@@ -106,6 +106,7 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Manipulation</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="manipulation/flip.html">flip</a></li>
 <li class="toctree-l2"><a class="reference internal" href="manipulation/expand_dims.html">expand_dims</a></li>
+<li class="toctree-l2"><a class="reference internal" href="manipulation/permute_dims.html">permute_dims</a></li>
 <li class="toctree-l2"><a class="reference internal" href="manipulation/split.html">split</a></li>
 <li class="toctree-l2"><a class="reference internal" href="manipulation/repeat.html">repeat</a></li>
 <li class="toctree-l2"><a class="reference internal" href="manipulation/tile.html">tile</a></li>
@@ -246,6 +247,22 @@ Inserts a new axis that will appear at the axis position in the expanded array s
 </dd></dl>
 
 <dl class="py function">
+<dt id="ivy.functional.ivy.manipulation.permute_dims">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">permute_dims</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">axes</span><span class="p">:</span> <span class="n">Tuple<span class="p">[</span>int<span class="p">, </span><span class="p">…</span><span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../_modules/ivy/functional/ivy/manipulation.html#permute_dims"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.manipulation.permute_dims" title="Permalink to this definition">¶</a></dt>
+<dd><p>Permutes the axes (dimensions) of an array x.</p>
+<dl class="simple">
+<dt>x:</dt><dd><p>input array.</p>
+</dd>
+<dt>axes:</dt><dd><p>tuple containing a permutation of (0, 1, …, N-1) where N is the number of axes (dimensions) of x.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>out:</dt><dd><p>an array containing the axes permutation. The returned array must have the same data type as x.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt id="ivy.functional.ivy.manipulation.repeat">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">repeat</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">repeats</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>int<span class="p">, </span>Iterable<span class="p">[</span>int<span class="p">]</span><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">axis</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>int<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/manipulation.html#repeat"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.manipulation.repeat" title="Permalink to this definition">¶</a></dt>
 <dd><p>Repeat values along a given dimension</p>
@@ -307,6 +324,7 @@ Default is to divide into as many 1-dimensional arrays as the axis dimension.</p
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="manipulation/flip.html">flip</a></li>
 <li class="toctree-l1"><a class="reference internal" href="manipulation/expand_dims.html">expand_dims</a></li>
+<li class="toctree-l1"><a class="reference internal" href="manipulation/permute_dims.html">permute_dims</a></li>
 <li class="toctree-l1"><a class="reference internal" href="manipulation/split.html">split</a></li>
 <li class="toctree-l1"><a class="reference internal" href="manipulation/repeat.html">repeat</a></li>
 <li class="toctree-l1"><a class="reference internal" href="manipulation/tile.html">tile</a></li>
