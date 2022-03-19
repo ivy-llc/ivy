@@ -111,6 +111,10 @@
 <li class="toctree-l2"><a class="reference internal" href="general/clip_matrix_norm.html">clip_matrix_norm</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/floormod.html">floormod</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/unstack.html">unstack</a></li>
+<li class="toctree-l2"><a class="reference internal" href="general/fourier_encode.html">fourier_encode</a></li>
+<li class="toctree-l2"><a class="reference internal" href="general/value_is_nan.html">value_is_nan</a></li>
+<li class="toctree-l2"><a class="reference internal" href="general/has_nans.html">has_nans</a></li>
+<li class="toctree-l2"><a class="reference internal" href="general/exists.html">exists</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="gradients.html">Gradients</a></li>
@@ -320,6 +324,20 @@ Default is False.</p></li>
 </dd></dl>
 
 <dl class="py function">
+<dt id="ivy.functional.ivy.general.exists">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">exists</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Any</span></em><span class="sig-paren">)</span> &#x2192; bool<a class="reference internal" href="../../_modules/ivy/functional/ivy/general.html#exists"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.general.exists" title="Permalink to this definition">¶</a></dt>
+<dd><p>Simple check as to whether the input is None or not.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>x</strong> (<em>any</em>) – Input to check.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>True if x is not None, else False.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt id="ivy.functional.ivy.general.floormod">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">floormod</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">y</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/general.html#floormod"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.general.floormod" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns element-wise remainder of division.</p>
@@ -337,9 +355,47 @@ Default is False.</p></li>
 </dd></dl>
 
 <dl class="py function">
+<dt id="ivy.functional.ivy.general.fourier_encode">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">fourier_encode</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">max_freq</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>float<span class="p">, </span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">num_bands</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">4</span></em>, <em class="sig-param"><span class="n">linear</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">concat</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">True</span></em>, <em class="sig-param"><span class="n">flatten</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">, </span>Tuple<span class="p">]</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/general.html#fourier_encode"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.general.fourier_encode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Pads an array with fourier encodings.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>array</em>) – Input array to encode.</p></li>
+<li><p><strong>max_freq</strong> (<em>float</em>) – The maximum frequency of the encoding.</p></li>
+<li><p><strong>num_bands</strong> (<em>int</em><em>, </em><em>optional</em>) – The number of frequency bands for the encoding. Default is 4.</p></li>
+<li><p><strong>linear</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to space the frequency bands linearly as opposed to geometrically. Default is False.</p></li>
+<li><p><strong>concat</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to concatenate the position, sin and cos values, or return seperately. Default is True.</p></li>
+<li><p><strong>flatten</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to flatten the position dimension into the batch dimension. Default is False.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>New array with the final dimension expanded, and the encodings stored in this channel.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt id="ivy.functional.ivy.general.get_referrers_recursive">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">get_referrers_recursive</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">item</span></em>, <em class="sig-param"><span class="n">depth</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">max_depth</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">seen_set</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">local_set</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/general.html#get_referrers_recursive"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.general.get_referrers_recursive" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.general.has_nans">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">has_nans</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">include_infs</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">True</span></em><span class="sig-paren">)</span> &#x2192; bool<a class="reference internal" href="../../_modules/ivy/functional/ivy/general.html#has_nans"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.general.has_nans" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determine whether the array contains any nans, as well as infs or -infs if specified.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>array</em>) – Input array.</p></li>
+<li><p><strong>include_infs</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to include infs and -infs in the check. Default is True.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Boolean as to whether the array contains nans.</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt id="ivy.functional.ivy.general.is_array">
@@ -418,6 +474,21 @@ Default is False.</p></li>
 </dl>
 </dd></dl>
 
+<dl class="py function">
+<dt id="ivy.functional.ivy.general.value_is_nan">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">value_is_nan</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">, </span>numbers.Number<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">include_infs</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">True</span></em><span class="sig-paren">)</span> &#x2192; bool<a class="reference internal" href="../../_modules/ivy/functional/ivy/general.html#value_is_nan"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.general.value_is_nan" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determine whether the single valued array or scalar is of nan type</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>array</em>) – The input to check Input array.</p></li>
+<li><p><strong>include_infs</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to include infs and -infs in the check. Default is True.</p></li>
+</ul>
+</dd>
+</dl>
+<p>:return Boolean as to whether the input value is a nan or not.</p>
+</dd></dl>
+
 <div class="toctree-wrapper compound">
 <p class="caption"><span class="caption-text">General</span></p>
 <ul>
@@ -434,6 +505,10 @@ Default is False.</p></li>
 <li class="toctree-l1"><a class="reference internal" href="general/clip_matrix_norm.html">clip_matrix_norm</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/floormod.html">floormod</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/unstack.html">unstack</a></li>
+<li class="toctree-l1"><a class="reference internal" href="general/fourier_encode.html">fourier_encode</a></li>
+<li class="toctree-l1"><a class="reference internal" href="general/value_is_nan.html">value_is_nan</a></li>
+<li class="toctree-l1"><a class="reference internal" href="general/has_nans.html">has_nans</a></li>
+<li class="toctree-l1"><a class="reference internal" href="general/exists.html">exists</a></li>
 </ul>
 </div>
 </div>

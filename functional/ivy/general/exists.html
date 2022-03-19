@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>to_list &mdash; Ivy 1.0 documentation</title>
+  <title>exists &mdash; Ivy 1.0 documentation</title>
   
 
   
@@ -36,8 +36,8 @@
   <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="clip_vector_norm" href="clip_vector_norm.html" />
-    <link rel="prev" title="to_scalar" href="to_scalar.html" /> 
+    <link rel="next" title="Gradients" href="../gradients.html" />
+    <link rel="prev" title="has_nans" href="has_nans.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -106,7 +106,7 @@
 <li class="toctree-l2"><a class="reference internal" href="all_equal.html">all_equal</a></li>
 <li class="toctree-l2"><a class="reference internal" href="to_numpy.html">to_numpy</a></li>
 <li class="toctree-l2"><a class="reference internal" href="to_scalar.html">to_scalar</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">to_list</a></li>
+<li class="toctree-l2"><a class="reference internal" href="to_list.html">to_list</a></li>
 <li class="toctree-l2"><a class="reference internal" href="clip_vector_norm.html">clip_vector_norm</a></li>
 <li class="toctree-l2"><a class="reference internal" href="clip_matrix_norm.html">clip_matrix_norm</a></li>
 <li class="toctree-l2"><a class="reference internal" href="floormod.html">floormod</a></li>
@@ -114,7 +114,7 @@
 <li class="toctree-l2"><a class="reference internal" href="fourier_encode.html">fourier_encode</a></li>
 <li class="toctree-l2"><a class="reference internal" href="value_is_nan.html">value_is_nan</a></li>
 <li class="toctree-l2"><a class="reference internal" href="has_nans.html">has_nans</a></li>
-<li class="toctree-l2"><a class="reference internal" href="exists.html">exists</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">exists</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../gradients.html">Gradients</a></li>
@@ -204,13 +204,13 @@
         
           <li><a href="../general.html">General</a> &raquo;</li>
         
-      <li>to_list</li>
+      <li>exists</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../../_sources/functional/ivy/general/to_list.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../../_sources/functional/ivy/general/exists.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -223,18 +223,18 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="to-list">
-<h1>to_list<a class="headerlink" href="#to-list" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="exists">
+<h1>exists<a class="headerlink" href="#exists" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
-<dt id="ivy.functional.ivy.general.to_list">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">to_list</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; List<a class="reference internal" href="../../../_modules/ivy/functional/ivy/general.html#to_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.general.to_list" title="Permalink to this definition">¶</a></dt>
-<dd><p>Creates a (possibly nested) list from input array.</p>
+<dt id="ivy.functional.ivy.general.exists">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">exists</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Any</span></em><span class="sig-paren">)</span> &#x2192; bool<a class="reference internal" href="../../../_modules/ivy/functional/ivy/general.html#exists"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.general.exists" title="Permalink to this definition">¶</a></dt>
+<dd><p>Simple check as to whether the input is None or not.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>x</strong> (<em>array</em>) – Input array.</p>
+<dd class="field-odd"><p><strong>x</strong> (<em>any</em>) – Input to check.</p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>A list representation of the input array.</p>
+<dd class="field-even"><p>True if x is not None, else False.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -254,10 +254,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="clip_vector_norm.html" class="btn btn-neutral float-right" title="clip_vector_norm" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="../gradients.html" class="btn btn-neutral float-right" title="Gradients" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="to_scalar.html" class="btn btn-neutral float-left" title="to_scalar" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="has_nans.html" class="btn btn-neutral float-left" title="has_nans" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
