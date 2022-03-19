@@ -16,21 +16,7 @@ def _handle_output(x, axis, keepdims, ret):
     return ret
 
 
-def reduce_prod(x, axis=None, keepdims=False):
-    if axis is None:
-        num_dims = len(x.shape)
-        axis = tuple(range(num_dims))
-    elif isinstance(axis, Number):
-        axis = (axis,)
-    elif isinstance(axis, list):
-        axis = tuple(axis)
-    if x.shape == ():
-        x = _flat_array_to_1_dim_array(x)
-    ret = _mx.nd.prod(x, axis=axis, keepdims=keepdims)
-    return _handle_output(x, axis, keepdims, ret)
-
-
-def reduce_mean(x, axis=None, keepdims=False):
+def mean(x, axis=None, keepdims=False):
     if axis is None:
         num_dims = len(x.shape)
         axis = tuple(range(num_dims))
@@ -44,9 +30,9 @@ def reduce_mean(x, axis=None, keepdims=False):
     return _handle_output(x, axis, keepdims, ret)
 
 
-def reduce_var(x, axis=None, keepdims=False):
-    mean_of_x_sqrd = reduce_mean(x ** 2, axis, keepdims)
-    mean_of_x = reduce_mean(x, axis, keepdims)
+def var(x, axis=None, keepdims=False):
+    mean_of_x_sqrd = mean(x ** 2, axis, keepdims)
+    mean_of_x = mean(x, axis, keepdims)
     is_flat = mean_of_x.shape == ()
     if is_flat:
         mean_of_x_sqrd = _flat_array_to_1_dim_array(mean_of_x_sqrd)
@@ -56,9 +42,8 @@ def reduce_var(x, axis=None, keepdims=False):
         return _1_dim_array_to_flat_array(ret)
     return ret
 
-
 def reduce_std(x, axis=None, keepdims=False):
-    red_var = reduce_var(x, axis, keepdims)
+    red_var = var(x, axis, keepdims)
     is_flat = red_var.shape == ()
     if is_flat:
         red_var = _flat_array_to_1_dim_array(red_var)

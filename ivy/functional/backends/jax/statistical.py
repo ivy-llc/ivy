@@ -25,6 +25,24 @@ def sum(x: jnp.ndarray,
     return jnp.sum(x, axis=axis, keepdims=keepdims)
 
 
+def mean(x, axis=None, keepdims=False):
+    if axis is None:
+        num_dims = len(x.shape)
+        axis = tuple(range(num_dims))
+    elif isinstance(axis, list):
+        axis = tuple(axis)
+    return jnp.mean(x, axis=axis, keepdims=keepdims)
+
+
+def var(x, axis=None, keepdims=False):
+    if axis is None:
+        num_dims = len(x.shape)
+        axis = tuple(range(num_dims))
+    elif isinstance(axis, list):
+        axis = tuple(axis)
+    return jnp.var(x, axis=axis, keepdims=keepdims)
+
+
 def prod(x: jnp.ndarray,
          axis: Optional[Union[int, Tuple[int]]] = None,
          dtype: Optional[jnp.dtype] = None,
