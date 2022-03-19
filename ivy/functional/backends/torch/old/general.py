@@ -33,9 +33,6 @@ def dtype_bits(dtype_in):
         'float', ''))
 
 
-
-
-
 def shape(x, as_tensor=False) -> Union[_torch.Tensor, List[int]]:
     return _torch.tensor(x.shape) if as_tensor else x.shape
 
