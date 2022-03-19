@@ -2,7 +2,7 @@
 asarray
 empty
 empty_like
-#eye
+eye
 #from_dlpack
 full
 full_like
