@@ -1,7 +1,7 @@
 # global
 import numpy as np
 import tensorflow as tf
-from typing import Union
+from typing import Union, Tuple
 from tensorflow.python.types.core import Tensor
 from tensorflow.python.framework.dtypes import DType
 
@@ -45,3 +45,7 @@ class Finfo:
 def finfo(type: Union[DType, str, Tensor])\
         -> Finfo:
     return Finfo(tf.experimental.numpy.finfo(ivy.dtype_from_str(type)))
+
+
+def broadcast_to (x: Tensor, shape: Tuple[int, ...])-> Tensor:
+    return tf.broadcast_to(x, shape)
