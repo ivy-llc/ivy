@@ -7,15 +7,6 @@ import numpy as _np
 import numpy.array_api as _npa
 
 
-def sum(x, axis=None, keepdims=False):
-    if axis is None:
-        num_dims = len(x.shape)
-        axis = tuple(range(num_dims))
-    elif isinstance(axis, list):
-        axis = tuple(axis)
-    return _np.asarray(_np.sum(x, axis=axis, keepdims=keepdims))
-
-
 def reduce_prod(x, axis=None, keepdims=False):
     if axis is None:
         num_dims = len(x.shape)

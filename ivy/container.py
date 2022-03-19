@@ -1047,8 +1047,8 @@ class Container(dict):
         return not bool(_np.sum([v for k, v in self.as_bools(
             assert_is_bool, key_chains, to_apply, prune_unapplied, map_sequences).to_iterator()]))
 
-    def reduce_sum(self, axis=None, keepdims=False, key_chains=None, to_apply=True, prune_unapplied=False,
-                   map_sequences=False):
+    def sum(self, axis=None, keepdims=False, key_chains=None, to_apply=True, prune_unapplied=False,
+            map_sequences=False):
         """
         Computes sum of array elements along a given axis for all sub-arrays of container object.
 
