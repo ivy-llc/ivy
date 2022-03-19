@@ -93,6 +93,7 @@ def cast(x, dtype):
 astype = cast
 
 
+
 # noinspection PyShadowingNames
 def arange(stop, start=0, step=1, dtype=None, dev=None):
     dtype = _tf.__dict__[dtype] if dtype else dtype

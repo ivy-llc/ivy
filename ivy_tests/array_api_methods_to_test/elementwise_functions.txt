@@ -23,7 +23,7 @@ cosh
 #floor # depends on: remainder
 #floor_divide
 #greater
-#greater_equal
+greater_equal
 isfinite
 isinf
 isnan
