@@ -44,6 +44,24 @@ def prod(x: tf.Tensor,
     return tf.experimental.numpy.prod(x,axis,dtype,keepdims)
 
 
+def mean(x, axis=None, keepdims=False):
+    if axis is None:
+        num_dims = len(x.shape)
+        axis = tuple(range(num_dims))
+    elif isinstance(axis, list):
+        axis = tuple(axis)
+    return tf.reduce_mean(x, axis=axis, keepdims=keepdims)
+
+
+def var(x, axis=None, keepdims=False):
+    if axis is None:
+        num_dims = len(x.shape)
+        axis = tuple(range(num_dims))
+    elif isinstance(axis, list):
+        axis = tuple(axis)
+    return tf.math.reduce_variance(x, axis=axis, keepdims=keepdims)
+
+
 def max(x: tf.Tensor,
         axis: Union[int, Tuple[int]] = None,
         keepdims: bool = False) \
