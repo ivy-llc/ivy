@@ -652,43 +652,7 @@ def linear_resample(x: Union[ivy.Array, ivy.NativeArray], num_samples: int, axis
 
 
 
-def cache_fn(func: Callable)\
-        -> Callable:
-    """
-    Wrap a function, such that when cache=True is passed as an argument, a previously cached output is returned.
 
-    :param func: The function to wrap, whose output should be cached for later.
-    :type func: callable
-    :return: The newly cache wrapped function.
-    """
-
-    global FN_CACHE
-    if func not in FN_CACHE:
-        FN_CACHE[func] = dict()
-
-    def cached_fn(*args, **kwargs):
-        key = ''.join([str(i) + ', ' for i in args] + [' kw, '] + [str(i) + ', ' for i in sorted(kwargs.items())])
-        cache = FN_CACHE[func]
-        if key in cache:
-            return cache[key]
-        ret = func(*args, **kwargs)
-        cache[key] = ret
-        return ret
-
-    return cached_fn
-
-
-def current_framework_str()\
-        -> Union[str, None]:
-    """
-    Return the string of the current globally set framework. Returns None if no framework is set.
-
-    :return: The framework string.
-    """
-    fw = _cur_framework()
-    if fw is None:
-        return None
-    return fw.current_framework_str()
 
 
 def einops_rearrange(x: Union[ivy.Array, ivy.NativeArray], pattern: str, **axes_lengths: Dict[str, int])\
