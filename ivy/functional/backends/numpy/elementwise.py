@@ -29,6 +29,11 @@ def ceil(x: np.ndarray)\
     return np.asarray(npa.ceil(npa.asarray(x)))
 
 
+def floor(x: np.ndarray)\
+        -> np.ndarray:
+    return np.asarray(npa.floor(npa.asarray(x)))
+
+
 def sqrt(x: np.ndarray)\
         -> np.ndarray:
     return np.sqrt(x)
@@ -123,6 +128,11 @@ def negative(x: np.ndarray) -> np.ndarray:
     return np.negative(x)
 
 
+def not_equal(x1: np.ndarray, x2: np.ndarray)\
+        -> np.ndarray:
+    return np.not_equal(x1, x2)
+
+
 def tanh(x: np.ndarray)\
         -> np.ndarray:
     return np.asarray(npa.tanh(npa.asarray(x)))
@@ -132,7 +142,28 @@ def sinh(x: np.ndarray)\
         -> np.ndarray:
     return np.asarray(npa.sinh(npa.asarray(x)))
 
+
+def positive(x: np.ndarray)\
+        -> np.ndarray:
+    return np.positive(x)
+  
   
 def square(x: np.ndarray)\
         -> np.ndarray:
     return np.square(x)
+
+
+def round(x: np.ndarray)\
+        -> np.ndarray:
+    return np.asarray(npa.round(npa.asarray(x)))
+
+
+def bitwise_or(x1: np.ndarray , x2: np.ndarray) \
+        -> np.ndarray:
+    if not isinstance(x2, np.ndarray):
+        x2 = np.asarray(x2, dtype=x1.dtype)
+    else:
+        dtype = np.promote_types(x1.dtype, x2.dtype)
+        x1 = x1.astype(dtype)
+        x2 = x2.astype(dtype)
+    return np.bitwise_or(x1, x2)

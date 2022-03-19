@@ -16,6 +16,7 @@ from tensorflow.python.types.core import Tensor
 # local
 from ivy.functional.ivy.old import default_dtype
 from ivy.functional.ivy.device import default_device
+from ivy.functional.backends.tensorflow import linspace
 from ivy.functional.backends.tensorflow.device import _dev_callable, dev_from_str
 
 def is_array(x, exclusive=False):
@@ -27,3 +28,21 @@ def is_array(x, exclusive=False):
 
 
 copy_array = _tf.identity
+array_equal = _tf.experimental.numpy.array_equal
+floormod = lambda x, y: x % y
+to_numpy = lambda x: _np.asarray(_tf.convert_to_tensor(x))
+to_numpy.__name__ = 'to_numpy'
+to_scalar = lambda x: to_numpy(x).item()
+to_scalar.__name__ = 'to_scalar'
+to_list = lambda x: x.numpy().tolist()
+to_list.__name__ = 'to_list'
+
+
+
+def unstack(x, axis, keepdims=False):
+    if x.shape == ():
+        return [x]
+    ret = _tf.unstack(x, axis=axis)
+    if keepdims:
+        return [_tf.expand_dims(r, axis) for r in ret]
+    return ret

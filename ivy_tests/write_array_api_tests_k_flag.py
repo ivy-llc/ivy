@@ -2,21 +2,14 @@ import os
 
 this_dir = os.path.dirname(os.path.realpath(__file__))
 func_folder = os.path.join(this_dir, 'array_api_methods_to_test')
-array_folder = os.path.join(func_folder, 'array')
 
 # api function filepaths
 func_fnames = os.listdir(func_folder)
-func_fnames.remove('array')
 func_fnames.sort()
 func_fpaths = [os.path.join(func_folder, fname) for fname in func_fnames]
 
-# array function filepaths
-array_fnames = os.listdir(array_folder)
-array_fnames.sort()
-array_fpaths = [os.path.join(array_folder, fname) for fname in array_fnames]
-
 # all filepaths
-fpaths = func_fpaths + array_fpaths
+fpaths = func_fpaths
 
 # test lists
 tests_to_run = list()
@@ -33,6 +26,9 @@ for fpath in fpaths:
     contents = [line.replace('__', '') for line in contents.split('\n')]
     tests_to_run += ['test_' + s for s in contents if ('#' not in s and s != '')]
     tests_to_skip += ['test_' + s[1:].split(' ')[0] for s in contents if '#' in s]
+
+# temporary fix for wrongly added test, due to addition of positive method
+tests_to_skip += ['test_positive_definite_matrices']
 
 # prune tests to skip
 tests_to_skip = [tts for tts in tests_to_skip if not max([tts in ttr for ttr in tests_to_run])]
