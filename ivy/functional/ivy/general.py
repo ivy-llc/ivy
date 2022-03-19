@@ -324,7 +324,7 @@ def has_nans(x: Union[ivy.Array, ivy.NativeArray], include_infs: bool = True)\
     :type include_infs: bool, optional
     :return: Boolean as to whether the array contains nans.
     """
-    return value_is_nan(ivy.reduce_sum(x), include_infs)
+    return value_is_nan(ivy.sum(x), include_infs)
 
 
 def exists(x: Any)\
@@ -520,6 +520,46 @@ def einops_repeat(x: Union[ivy.Array, ivy.NativeArray], pattern: str, **axes_len
     return einops.repeat(x, pattern, **axes_lengths)
 
 
+def get_min_denominator()\
+        -> float:
+    """
+    Get the global minimum denominator used by ivy for numerically stable division.
+    """
+    # noinspection PyProtectedMember
+    return ivy._MIN_DENOMINATOR
+
+
+def set_min_denominator(val: float)\
+        -> None:
+    """
+    Set the global minimum denominator used by ivy for numerically stable division.
+
+    :param val: The new value to set the minimum denominator to.
+    :type val: float
+    """
+    ivy._MIN_DENOMINATOR = val
+
+
+
+
+def get_min_base()\
+        -> float:
+    """
+    Get the global minimum base used by ivy for numerically stable power raising.
+    """
+    # noinspection PyProtectedMember
+    return ivy._MIN_BASE
+
+
+def set_min_base(val: float)\
+        -> None:
+    """
+    Set the global minimum base used by ivy for numerically stable power raising.
+
+    :param val: The new value to set the minimum base to.
+    :type val: float
+    """
+    ivy._MIN_BASE = val
 
 def stable_divide(numerator: Any, denominator: Any, min_denominator: float = None) -> Any:
     """
