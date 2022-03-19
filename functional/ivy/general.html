@@ -144,6 +144,8 @@
 <li class="toctree-l2"><a class="reference internal" href="general/supports_inplace.html">supports_inplace</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/assert_supports_inplace.html">assert_supports_inplace</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/inplace_update.html">inplace_update</a></li>
+<li class="toctree-l2"><a class="reference internal" href="general/inplace_decrement.html">inplace_decrement</a></li>
+<li class="toctree-l2"><a class="reference internal" href="general/inplace_increment.html">inplace_increment</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="gradients.html">Gradients</a></li>
@@ -580,6 +582,40 @@ a key-value structure, and exposes public methods .keys(), .values() and items()
 </dd></dl>
 
 <dl class="py function">
+<dt id="ivy.functional.ivy.general.inplace_decrement">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">inplace_decrement</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">val</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/general.html#inplace_decrement"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.general.inplace_decrement" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform in-place decrement for the input variable.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>variable</em>) – The variable to decrement.</p></li>
+<li><p><strong>val</strong> (<em>array</em>) – The array to decrement the variable with.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The variable following the in-place decrement.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.general.inplace_increment">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">inplace_increment</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">val</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/general.html#inplace_increment"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.general.inplace_increment" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform in-place increment for the input variable.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>variable</em>) – The variable to increment.</p></li>
+<li><p><strong>val</strong> (<em>array</em>) – The array to increment the variable with.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The variable following the in-place increment.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt id="ivy.functional.ivy.general.inplace_update">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">inplace_update</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">val</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/general.html#inplace_update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.general.inplace_update" title="Permalink to this definition">¶</a></dt>
 <dd><p>Perform in-place update for the input variable.</p>
@@ -904,6 +940,8 @@ a key-value structure, and exposes public methods .keys(), .values() and items()
 <li class="toctree-l1"><a class="reference internal" href="general/supports_inplace.html">supports_inplace</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/assert_supports_inplace.html">assert_supports_inplace</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/inplace_update.html">inplace_update</a></li>
+<li class="toctree-l1"><a class="reference internal" href="general/inplace_decrement.html">inplace_decrement</a></li>
+<li class="toctree-l1"><a class="reference internal" href="general/inplace_increment.html">inplace_increment</a></li>
 </ul>
 </div>
 </div>
