@@ -46,3 +46,16 @@ def unstack(x, axis, keepdims=False):
     if keepdims:
         return [_tf.expand_dims(r, axis) for r in ret]
     return ret
+
+container_types = lambda: []
+
+
+def inplace_update(x, val):
+    if ivy.is_variable(x):
+        x.assign(val)
+        return x
+    raise Exception('TensorFlow does not support inplace operations on non-Variable tensors')
+
+
+inplace_arrays_supported = lambda: False
+inplace_variables_supported = lambda: True

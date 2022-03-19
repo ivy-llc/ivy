@@ -20,6 +20,18 @@ def max(x: np.ndarray,
     return np.amax(a=x, axis=axis, keepdims=keepdims)
 
 
+def sum(x: np.ndarray,
+             axis: Union[int,Tuple[int]] =None,
+            keepdims: bool = False)\
+                -> np.ndarray:
+    if axis is None:
+        num_dims = len(x.shape)
+        axis = tuple(range(num_dims))
+    elif isinstance(axis, list):
+        axis = tuple(axis)
+    return np.asarray(np.sum(x, axis=axis, keepdims=keepdims))
+
+
 def prod(x: np.ndarray,
          axis: Optional[Union[int, Tuple[int]]] = None,
          dtype: Optional[np.dtype] = None,

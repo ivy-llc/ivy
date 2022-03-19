@@ -126,3 +126,8 @@ def sinh(x: mx.ndarray.ndarray.NDArray)\
 def square(x: mx.ndarray.ndarray.NDArray)\
         -> mx.ndarray.ndarray.NDArray:
     return mx.nd.square(x)
+
+@_handle_flat_arrays_in_out
+def round(x: mx.ndarray.ndarray.NDArray)\
+        -> mx.ndarray.ndarray.NDArray:
+    return mx.nd.round(x)
