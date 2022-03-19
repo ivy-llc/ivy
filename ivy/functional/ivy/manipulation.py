@@ -47,6 +47,25 @@ def expand_dims(x: Union[ivy.Array, ivy.NativeArray],
     return _cur_framework(x).expand_dims(x, axis)
 
 
+def permute_dims(x: Union[ivy.Array, ivy.NativeArray],
+                 axes: Tuple[int,...])\
+        -> ivy.Array:
+    """
+    Permutes the axes (dimensions) of an array x.
+
+    Parameters
+    ----------
+    x:
+        input array.
+    axes:
+        tuple containing a permutation of (0, 1, ..., N-1) where N is the number of axes (dimensions) of x.
+
+    Returns
+    -------
+    out:
+        an array containing the axes permutation. The returned array must have the same data type as x.
+    """
+    return _cur_framework(x).permute_dims(x, axes)
 # Extra #
 # ------#
 

@@ -28,9 +28,11 @@ def expand_dims(x: torch.Tensor,
         -> torch.Tensor:
     return torch.unsqueeze(x, axis)
 
-
-# Extra #
-# ------#
+  
+def permute_dims(x: torch.Tensor,
+                axes: Tuple[int,...]) \
+        -> torch.Tensor:
+    return torch.permute(x, axes)
 
 
 def split(x, num_or_size_splits: Optional[Union[int, List[int]]] = None, axis: int = 0, with_remainder: bool = False)\
