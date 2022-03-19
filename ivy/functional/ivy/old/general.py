@@ -672,38 +672,7 @@ def multiprocessing(context: str = None):
     return _cur_framework().multiprocessing(context)
 
 
-def set_queue_timeout(timeout):
-    """
-    Set the global queue timeout values (in seconds). Default value without this function being called is 10 seconds.
 
-    :param timeout: The timeout to set in seconds.
-    :type timeout: float, optional
-    """
-    global TIMEOUT
-    TIMEOUT = timeout
-
-
-def queue_timeout():
-    """
-    Get the global queue timeout values (in seconds). Default value without this function being called is 10 seconds.
-    """
-    global TIMEOUT
-    return TIMEOUT
-
-
-def tmp_dir():
-    """
-    Return the directory for saving temporary files.
-    """
-    return TMP_DIR
-
-
-def set_tmp_dir(tmp_dr):
-    """
-    Set the directory for saving temporary files.
-    """
-    global TMP_DIR
-    TMP_DIR = tmp_dr
 
 
 
