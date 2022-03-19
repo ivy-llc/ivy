@@ -16,7 +16,7 @@ def _handle_output(x, axis, keepdims, ret):
     return ret
 
 
-def reduce_sum(x, axis=None, keepdims=False):
+def sum(x, axis=None, keepdims=False):
     if axis is None:
         num_dims = len(x.shape)
         axis = tuple(range(num_dims))
