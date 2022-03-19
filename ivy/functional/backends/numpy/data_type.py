@@ -44,5 +44,5 @@ def finfo(type: Union[np.dtype, str, np.ndarray])\
     return Finfo(np.finfo(ivy.dtype_from_str(type)))
 
 
-def broadcast_to(x: np.Array, shape: Tuple[int,...]) -> np.Array:
+def broadcast_to(x: np.ndarray, shape: Tuple[int,...]) -> np.ndarray:
     return np.broadcast_to(x,shape)
