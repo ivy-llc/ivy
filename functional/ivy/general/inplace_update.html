@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>get_all_arrays_in_memory &mdash; Ivy 1.0 documentation</title>
+  <title>inplace_update &mdash; Ivy 1.0 documentation</title>
   
 
   
@@ -36,8 +36,8 @@
   <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="num_arrays_in_memory" href="num_arrays_in_memory.html" />
-    <link rel="prev" title="stable_pow" href="stable_pow.html" /> 
+    <link rel="next" title="Gradients" href="../gradients.html" />
+    <link rel="prev" title="assert_supports_inplace" href="assert_supports_inplace.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -131,7 +131,7 @@
 <li class="toctree-l2"><a class="reference internal" href="set_min_base.html">set_min_base</a></li>
 <li class="toctree-l2"><a class="reference internal" href="stable_divide.html">stable_divide</a></li>
 <li class="toctree-l2"><a class="reference internal" href="stable_pow.html">stable_pow</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">get_all_arrays_in_memory</a></li>
+<li class="toctree-l2"><a class="reference internal" href="get_all_arrays_in_memory.html">get_all_arrays_in_memory</a></li>
 <li class="toctree-l2"><a class="reference internal" href="num_arrays_in_memory.html">num_arrays_in_memory</a></li>
 <li class="toctree-l2"><a class="reference internal" href="print_all_arrays_in_memory.html">print_all_arrays_in_memory</a></li>
 <li class="toctree-l2"><a class="reference internal" href="set_queue_timeout.html">set_queue_timeout</a></li>
@@ -143,7 +143,7 @@
 <li class="toctree-l2"><a class="reference internal" href="inplace_variables_supported.html">inplace_variables_supported</a></li>
 <li class="toctree-l2"><a class="reference internal" href="supports_inplace.html">supports_inplace</a></li>
 <li class="toctree-l2"><a class="reference internal" href="assert_supports_inplace.html">assert_supports_inplace</a></li>
-<li class="toctree-l2"><a class="reference internal" href="inplace_update.html">inplace_update</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">inplace_update</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../gradients.html">Gradients</a></li>
@@ -233,13 +233,13 @@
         
           <li><a href="../general.html">General</a> &raquo;</li>
         
-      <li>get_all_arrays_in_memory</li>
+      <li>inplace_update</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../../_sources/functional/ivy/general/get_all_arrays_in_memory.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../../_sources/functional/ivy/general/inplace_update.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -252,12 +252,23 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="get-all-arrays-in-memory">
-<h1>get_all_arrays_in_memory<a class="headerlink" href="#get-all-arrays-in-memory" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="inplace-update">
+<h1>inplace_update<a class="headerlink" href="#inplace-update" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
-<dt id="ivy.functional.ivy.general.get_all_arrays_in_memory">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">get_all_arrays_in_memory</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/general.html#get_all_arrays_in_memory"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.general.get_all_arrays_in_memory" title="Permalink to this definition">¶</a></dt>
-<dd><p>Gets all arrays which are currently alive.</p>
+<dt id="ivy.functional.ivy.general.inplace_update">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">inplace_update</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">val</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/general.html#inplace_update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.general.inplace_update" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform in-place update for the input variable.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>variable</em>) – The variable to update.</p></li>
+<li><p><strong>val</strong> (<em>array</em>) – The array to update the variable with.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The variable following the in-place update.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <div class="line-block">
@@ -275,10 +286,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="num_arrays_in_memory.html" class="btn btn-neutral float-right" title="num_arrays_in_memory" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="../gradients.html" class="btn btn-neutral float-right" title="Gradients" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="stable_pow.html" class="btn btn-neutral float-left" title="stable_pow" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="assert_supports_inplace.html" class="btn btn-neutral float-left" title="assert_supports_inplace" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
