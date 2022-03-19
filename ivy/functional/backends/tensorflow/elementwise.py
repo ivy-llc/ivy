@@ -98,7 +98,6 @@ def sqrt(x: Tensor)\
     return  tf.math.sqrt(x)
 
 
-
 def cosh(x: Tensor) \
         -> Tensor:
     return tf.cosh(x)
@@ -143,6 +142,15 @@ def cos(x: Tensor)\
 def logical_not(x: Tensor)\
         -> Tensor:
     return tf.logical_not(tf.cast(x, tf.bool))
+
+
+def greater_equal(x1: Tensor, x2: Tensor)\
+        -> Tensor:
+    if hasattr(x1, 'dtype') and hasattr(x2, 'dtype'):
+        promoted_type = tf.experimental.numpy.promote_types(x1.dtype, x2.dtype)
+        x1 = tf.cast(x1, promoted_type)
+        x2 = tf.cast(x2, promoted_type)
+    return tf.math.greater_equal(x1, x2)
 
 
 def acos(x: Tensor)\
