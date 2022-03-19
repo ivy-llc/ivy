@@ -114,6 +114,8 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Statistical</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="statistical/min.html">min</a></li>
 <li class="toctree-l2"><a class="reference internal" href="statistical/max.html">max</a></li>
+<li class="toctree-l2"><a class="reference internal" href="statistical/mean.html">mean</a></li>
+<li class="toctree-l2"><a class="reference internal" href="statistical/var.html">var</a></li>
 <li class="toctree-l2"><a class="reference internal" href="statistical/prod.html">prod</a></li>
 <li class="toctree-l2"><a class="reference internal" href="statistical/sum.html">sum</a></li>
 </ul>
@@ -236,6 +238,29 @@ For floating-point operands,
 </dd></dl>
 
 <dl class="py function">
+<dt id="ivy.functional.ivy.statistical.mean">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">mean</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">keepdims</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/statistical.html#mean"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.statistical.mean" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the arithmetic mean along a given axis.
+Returns the average of the array elements. The average is taken over the flattened array by default, otherwise over
+the specified axis.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>array</em>) – Array containing numbers whose mean is desired.</p></li>
+<li><p><strong>axis</strong> (<em>int</em><em> or </em><em>sequence of ints</em>) – Axis or axes along which the means are computed. The default is to compute the mean of the flattened
+array. If this is a tuple of ints, a mean is performed over multiple axes, instead of a single axis
+or all the axes as before.</p></li>
+<li><p><strong>keepdims</strong> (<em>bool</em><em>, </em><em>optional</em>) – If this is set to True, the axes which are reduced are left in the result as dimensions with size
+one. With this option, the result will broadcast correctly against the input array.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The array with means computed.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt id="ivy.functional.ivy.statistical.min">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">min</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">axis</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Union<span class="p">[</span>int<span class="p">, </span>Tuple<span class="p">[</span>int<span class="p">]</span><span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">keepdims</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../_modules/ivy/functional/ivy/statistical.html#min"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.statistical.min" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the minimum value of the input array x.</p>
@@ -317,11 +342,35 @@ by the dtype parameter above</p>
 </dl>
 </dd></dl>
 
+<dl class="py function">
+<dt id="ivy.functional.ivy.statistical.var">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">var</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">keepdims</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/statistical.html#var"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.statistical.var" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the arithmetic variance along a given axis. The variance is taken over the flattened array by default,
+otherwise over the specified axis.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>array</em>) – Array containing numbers whose variance is desired.</p></li>
+<li><p><strong>axis</strong> (<em>int</em><em> or </em><em>sequence of ints</em>) – Axis or axes along which the means are computed. The default is to compute the mean of the flattened
+array. If this is a tuple of ints, a mean is performed over multiple axes, instead of a single axis
+or all the axes as before.</p></li>
+<li><p><strong>keepdims</strong> (<em>bool</em><em>, </em><em>optional</em>) – If this is set to True, the axes which are reduced are left in the result as dimensions with size
+one. With this option, the result will broadcast correctly against the input array.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The array with variances computed.</p>
+</dd>
+</dl>
+</dd></dl>
+
 <div class="toctree-wrapper compound">
 <p class="caption"><span class="caption-text">Statistical</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="statistical/min.html">min</a></li>
 <li class="toctree-l1"><a class="reference internal" href="statistical/max.html">max</a></li>
+<li class="toctree-l1"><a class="reference internal" href="statistical/mean.html">mean</a></li>
+<li class="toctree-l1"><a class="reference internal" href="statistical/var.html">var</a></li>
 <li class="toctree-l1"><a class="reference internal" href="statistical/prod.html">prod</a></li>
 <li class="toctree-l1"><a class="reference internal" href="statistical/sum.html">sum</a></li>
 </ul>
