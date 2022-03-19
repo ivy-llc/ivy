@@ -146,3 +146,29 @@ def is_float_dtype(dtype_in: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray, N
     elif isinstance(dtype_in, (list, tuple, dict)):
         return True if ivy.nested_indices_where(dtype_in, lambda x: isinstance(x, (float, np.floating))) else False
     return 'float' in dtype_to_str(dtype_in)
+
+
+def valid_dtype(dtype_in: Union[ivy.Dtype, str, None])\
+        -> bool:
+    """
+    Determines whether the provided data type is support by the current framework.
+
+    :param dtype_in: The data type for which to check for backend support
+    :return: Boolean, whether or not the data-type string is supported.
+    """
+    if dtype_in is None:
+        return True
+    return ivy.dtype_to_str(dtype_in) in ivy.valid_dtype_strs
+
+
+def invalid_dtype(dtype_in: Union[ivy.Dtype, str, None])\
+        -> bool:
+    """
+    Determines whether the provided data type is not support by the current framework.
+
+    :param dtype_in: The data type for which to check for backend non-support
+    :return: Boolean, whether the data-type string is un-supported.
+    """
+    if dtype_in is None:
+        return False
+    return ivy.dtype_to_str(dtype_in) in ivy.invalid_dtype_strs
