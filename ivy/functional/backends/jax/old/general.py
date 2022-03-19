@@ -397,13 +397,3 @@ current_framework_str = lambda: 'jax'
 current_framework_str.__name__ = 'current_framework_str'
 multiprocessing = lambda context=None: _multiprocessing if context is None else _multiprocessing.get_context(context)
 
-
-
-
-
-def inplace_decrement(x, val):
-    raise Exception('Jax does not support inplace operations')
-
-
-def inplace_increment(x, val):
-    raise Exception('Jax does not support inplace operations')

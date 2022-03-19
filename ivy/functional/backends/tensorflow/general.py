@@ -59,3 +59,18 @@ def inplace_update(x, val):
 
 inplace_arrays_supported = lambda: False
 inplace_variables_supported = lambda: True
+
+
+def inplace_decrement(x, val):
+    if ivy.is_variable(x):
+        x.assign(x - val)
+        return x
+    raise Exception('TensorFlow does not support inplace operations on non-Variable tensors')
+
+
+def inplace_increment(x, val):
+    if ivy.is_variable(x):
+        x.assign(x + val)
+        return x
+    raise Exception('TensorFlow does not support inplace operations on non-Variable tensors')
+

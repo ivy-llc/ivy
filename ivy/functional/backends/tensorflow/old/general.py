@@ -364,22 +364,3 @@ compile = lambda fn, dynamic=True, example_inputs=None, static_argnums=None, sta
 current_framework_str = lambda: 'tensorflow'
 current_framework_str.__name__ = 'current_framework_str'
 multiprocessing = lambda context=None: _multiprocessing if context is None else _multiprocessing.get_context(context)
-
-
-
-
-
-
-def inplace_decrement(x, val):
-    if ivy.is_variable(x):
-        x.assign(x - val)
-        return x
-    raise Exception('TensorFlow does not support inplace operations on non-Variable tensors')
-
-
-def inplace_increment(x, val):
-    if ivy.is_variable(x):
-        x.assign(x + val)
-        return x
-    raise Exception('TensorFlow does not support inplace operations on non-Variable tensors')
-    
