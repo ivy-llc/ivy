@@ -24,8 +24,10 @@ def expand_dims(x: np.ndarray,
     return np.expand_dims(x, axis)
 
 
-# Extra #
-# ------#
+def permute_dims(x: np.ndarray,
+                axes: Tuple[int,...]) \
+        -> np.ndarray:
+    return np.transpose(x, axes)
 
 
 def split(x, num_or_size_splits=None, axis=0, with_remainder=False):
