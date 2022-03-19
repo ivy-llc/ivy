@@ -26,6 +26,9 @@ to_scalar = lambda x: x.item()
 to_scalar.__name__ = 'to_scalar'
 to_list = lambda x: x.tolist()
 to_list.__name__ = 'to_list'
+container_types = lambda: []
+inplace_arrays_supported = lambda: True
+inplace_variables_supported = lambda: True
 
 def is_array(x, exclusive=False):
     if isinstance(x, _np.ndarray):
@@ -40,3 +43,5 @@ def unstack(x, axis, keepdims=False):
     if keepdims:
         return x_split
     return [_np.squeeze(item, axis) for item in x_split]
+
+
