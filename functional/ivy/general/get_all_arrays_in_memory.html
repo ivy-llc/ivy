@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>to_numpy &mdash; Ivy 1.0 documentation</title>
+  <title>get_all_arrays_in_memory &mdash; Ivy 1.0 documentation</title>
   
 
   
@@ -36,8 +36,8 @@
   <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="to_scalar" href="to_scalar.html" />
-    <link rel="prev" title="all_equal" href="all_equal.html" /> 
+    <link rel="next" title="num_arrays_in_memory" href="num_arrays_in_memory.html" />
+    <link rel="prev" title="stable_pow" href="stable_pow.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -104,7 +104,7 @@
 <li class="toctree-l2"><a class="reference internal" href="array_equal.html">array_equal</a></li>
 <li class="toctree-l2"><a class="reference internal" href="arrays_equal.html">arrays_equal</a></li>
 <li class="toctree-l2"><a class="reference internal" href="all_equal.html">all_equal</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">to_numpy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="to_numpy.html">to_numpy</a></li>
 <li class="toctree-l2"><a class="reference internal" href="to_scalar.html">to_scalar</a></li>
 <li class="toctree-l2"><a class="reference internal" href="to_list.html">to_list</a></li>
 <li class="toctree-l2"><a class="reference internal" href="clip_vector_norm.html">clip_vector_norm</a></li>
@@ -131,7 +131,7 @@
 <li class="toctree-l2"><a class="reference internal" href="set_min_base.html">set_min_base</a></li>
 <li class="toctree-l2"><a class="reference internal" href="stable_divide.html">stable_divide</a></li>
 <li class="toctree-l2"><a class="reference internal" href="stable_pow.html">stable_pow</a></li>
-<li class="toctree-l2"><a class="reference internal" href="get_all_arrays_in_memory.html">get_all_arrays_in_memory</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">get_all_arrays_in_memory</a></li>
 <li class="toctree-l2"><a class="reference internal" href="num_arrays_in_memory.html">num_arrays_in_memory</a></li>
 <li class="toctree-l2"><a class="reference internal" href="print_all_arrays_in_memory.html">print_all_arrays_in_memory</a></li>
 </ul>
@@ -223,13 +223,13 @@
         
           <li><a href="../general.html">General</a> &raquo;</li>
         
-      <li>to_numpy</li>
+      <li>get_all_arrays_in_memory</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../../_sources/functional/ivy/general/to_numpy.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../../_sources/functional/ivy/general/get_all_arrays_in_memory.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -242,20 +242,12 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="to-numpy">
-<h1>to_numpy<a class="headerlink" href="#to-numpy" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="get-all-arrays-in-memory">
+<h1>get_all_arrays_in_memory<a class="headerlink" href="#get-all-arrays-in-memory" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
-<dt id="ivy.functional.ivy.general.to_numpy">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">to_numpy</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; numpy.ndarray<a class="reference internal" href="../../../_modules/ivy/functional/ivy/general.html#to_numpy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.general.to_numpy" title="Permalink to this definition">¶</a></dt>
-<dd><p>Converts array into a numpy array.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>x</strong> (<em>array</em>) – Input array.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>A numpy array.</p>
-</dd>
-</dl>
+<dt id="ivy.functional.ivy.general.get_all_arrays_in_memory">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">get_all_arrays_in_memory</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/general.html#get_all_arrays_in_memory"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.general.get_all_arrays_in_memory" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets all arrays which are currently alive.</p>
 </dd></dl>
 
 <div class="line-block">
@@ -273,10 +265,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="to_scalar.html" class="btn btn-neutral float-right" title="to_scalar" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="num_arrays_in_memory.html" class="btn btn-neutral float-right" title="num_arrays_in_memory" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="all_equal.html" class="btn btn-neutral float-left" title="all_equal" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="stable_pow.html" class="btn btn-neutral float-left" title="stable_pow" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

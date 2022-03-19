@@ -45,4 +45,7 @@ General
    general/set_min_base.rst
    general/stable_divide.rst
    general/stable_pow.rst
+   general/get_all_arrays_in_memory.rst
+   general/num_arrays_in_memory.rst
+   general/print_all_arrays_in_memory.rst
 
