@@ -36,4 +36,7 @@ General
    general/match_kwargs.rst
    general/cache_fn.rst
    general/current_framework_str.rst
+   general/einops_rearrange.rst
+   general/einops_reduce.rst
+   general/einops_repeat.rst
 

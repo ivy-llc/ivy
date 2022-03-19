@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>unstack &mdash; Ivy 1.0 documentation</title>
+  <title>einops_repeat &mdash; Ivy 1.0 documentation</title>
   
 
   
@@ -36,8 +36,8 @@
   <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="fourier_encode" href="fourier_encode.html" />
-    <link rel="prev" title="floormod" href="floormod.html" /> 
+    <link rel="next" title="Gradients" href="../gradients.html" />
+    <link rel="prev" title="einops_reduce" href="einops_reduce.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -110,7 +110,7 @@
 <li class="toctree-l2"><a class="reference internal" href="clip_vector_norm.html">clip_vector_norm</a></li>
 <li class="toctree-l2"><a class="reference internal" href="clip_matrix_norm.html">clip_matrix_norm</a></li>
 <li class="toctree-l2"><a class="reference internal" href="floormod.html">floormod</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">unstack</a></li>
+<li class="toctree-l2"><a class="reference internal" href="unstack.html">unstack</a></li>
 <li class="toctree-l2"><a class="reference internal" href="fourier_encode.html">fourier_encode</a></li>
 <li class="toctree-l2"><a class="reference internal" href="value_is_nan.html">value_is_nan</a></li>
 <li class="toctree-l2"><a class="reference internal" href="has_nans.html">has_nans</a></li>
@@ -124,7 +124,7 @@
 <li class="toctree-l2"><a class="reference internal" href="current_framework_str.html">current_framework_str</a></li>
 <li class="toctree-l2"><a class="reference internal" href="einops_rearrange.html">einops_rearrange</a></li>
 <li class="toctree-l2"><a class="reference internal" href="einops_reduce.html">einops_reduce</a></li>
-<li class="toctree-l2"><a class="reference internal" href="einops_repeat.html">einops_repeat</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">einops_repeat</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../gradients.html">Gradients</a></li>
@@ -214,13 +214,13 @@
         
           <li><a href="../general.html">General</a> &raquo;</li>
         
-      <li>unstack</li>
+      <li>einops_repeat</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../../_sources/functional/ivy/general/unstack.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../../_sources/functional/ivy/general/einops_repeat.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -233,22 +233,22 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="unstack">
-<h1>unstack<a class="headerlink" href="#unstack" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="einops-repeat">
+<h1>einops_repeat<a class="headerlink" href="#einops-repeat" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
-<dt id="ivy.functional.ivy.general.unstack">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">unstack</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">axis</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">keepdims</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/general.html#unstack"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.general.unstack" title="Permalink to this definition">¶</a></dt>
-<dd><p>Unpacks the given dimension of a rank-R array into rank-(R-1) arrays.</p>
+<dt id="ivy.functional.ivy.general.einops_repeat">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">einops_repeat</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">pattern</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">axes_lengths</span><span class="p">:</span> <span class="n">Dict<span class="p">[</span>str<span class="p">, </span>int<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/general.html#einops_repeat"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.general.einops_repeat" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform einops repeat operation on input array x.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>array</em>) – Input array to unstack.</p></li>
-<li><p><strong>axis</strong> (<em>int</em>) – Axis for which to unpack the array.</p></li>
-<li><p><strong>keepdims</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to keep dimension 1 in the unstack dimensions. Default is False.</p></li>
+<li><p><strong>x</strong> (<em>array</em>) – Input array to be repeated.</p></li>
+<li><p><strong>pattern</strong> (<em>str</em>) – Rearrangement pattern.</p></li>
+<li><p><strong>axes_lengths</strong> (<em>keyword parameter args</em>) – Any additional specifications for dimensions.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>List of arrays, unpacked along specified dimensions.</p>
+<dd class="field-even"><p>New array with einops.repeat having been applied.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -268,10 +268,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="fourier_encode.html" class="btn btn-neutral float-right" title="fourier_encode" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="../gradients.html" class="btn btn-neutral float-right" title="Gradients" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="floormod.html" class="btn btn-neutral float-left" title="floormod" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="einops_reduce.html" class="btn btn-neutral float-left" title="einops_reduce" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
