@@ -180,7 +180,11 @@ def cholesky(x):
     return _cur_framework(x).cholesky(x)
 
 
-def matrix_norm(x, p=2, axes=None, keepdims=False):
+def matrix_norm(x: Union[ivy.Array, ivy.NativeArray],
+                p: Union[int, float, Literal[inf, -inf]] = 2,
+                axes: Optional[Union[int, Tuple[int]]] = None,
+                keepdims: bool = False)\
+        -> ivy.Array:
     """
     Compute the matrix p-norm.
 
