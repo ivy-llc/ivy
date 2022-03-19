@@ -3,15 +3,23 @@ import torch
 from torch import Tensor
 import typing
 
-
 # local
 import ivy
+
+
+def bitwise_left_shift(x1: torch.Tensor,
+                       x2: torch.Tensor) \
+        -> torch.Tensor:
+    x1, x2 = _cast_for_binary_op(x1, x2)
+    return torch.bitwise_left_shift(x1, x2)
+
 
 def bitwise_invert(x: torch.Tensor) \
         -> torch.Tensor:
     return torch.bitwise_not(x)
 
-def isfinite(x: Tensor)\
+
+def isfinite(x: Tensor) \
         -> Tensor:
     return torch.isfinite(x)
 
@@ -21,7 +29,7 @@ def isinf(x: torch.Tensor) \
     return torch.isinf(x)
 
 
-def _cast_for_binary_op(x1: Tensor, x2: Tensor)\
+def _cast_for_binary_op(x1: Tensor, x2: Tensor) \
         -> typing.Tuple[typing.Union[Tensor, int, float, bool], typing.Union[Tensor, int, float, bool]]:
     x1_bits = ivy.functional.backends.torch.old.general.dtype_bits(x1.dtype)
     if isinstance(x2, (int, float, bool)):
@@ -34,25 +42,25 @@ def _cast_for_binary_op(x1: Tensor, x2: Tensor)\
     return x1, x2
 
 
-def equal(x1: Tensor, x2: Tensor)\
+def equal(x1: Tensor, x2: Tensor) \
         -> Tensor:
     x1, x2 = _cast_for_binary_op(x1, x2)
     return x1 == x2
 
 
-def less_equal(x1: Tensor, x2: Tensor)\
+def less_equal(x1: Tensor, x2: Tensor) \
         -> Tensor:
     x1, x2 = _cast_for_binary_op(x1, x2)
     return x1 <= x2
 
 
 def bitwise_and(x1: torch.Tensor,
-                x2: torch.Tensor)\
+                x2: torch.Tensor) \
         -> torch.Tensor:
     return torch.bitwise_and(x1, x2)
 
 
-def ceil(x: torch.Tensor)\
+def ceil(x: torch.Tensor) \
         -> torch.Tensor:
     if 'int' in str(x.dtype):
         return x
@@ -67,14 +75,14 @@ def isfinite(x: torch.Tensor) \
 def asin(x: torch.Tensor) \
         -> torch.Tensor:
     return torch.asin(x)
-  
+
 
 def asinh(x: torch.Tensor) \
         -> torch.Tensor:
     return torch.asinh(x)
 
 
-def sqrt(x: torch.Tensor)\
+def sqrt(x: torch.Tensor) \
         -> torch.Tensor:
     return torch.sqrt(x)
 
@@ -99,7 +107,7 @@ def log1p(x: torch.Tensor) \
     return torch.log1p(x)
 
 
-def isnan(x: torch.Tensor)\
+def isnan(x: torch.Tensor) \
         -> torch.Tensor:
     return torch.isnan(x)
 
@@ -112,22 +120,22 @@ def less(x1: torch.Tensor, x2: torch.Tensor):
     return torch.lt(x1, x2)
 
 
-def cos(x: torch.Tensor)\
+def cos(x: torch.Tensor) \
         -> torch.Tensor:
     return torch.cos(x)
 
 
-def logical_not(x: torch.Tensor)\
+def logical_not(x: torch.Tensor) \
         -> torch.Tensor:
     return torch.logical_not(x.type(torch.bool))
 
 
-def acos(x: torch.Tensor)\
+def acos(x: torch.Tensor) \
         -> torch.Tensor:
     return torch.acos(x)
 
-  
-def logical_or(x1: torch.Tensor, x2: torch.Tensor)\
+
+def logical_or(x1: torch.Tensor, x2: torch.Tensor) \
         -> torch.Tensor:
     return torch.logical_or(x1.type(torch.bool), x2.type(torch.bool))
 
@@ -136,8 +144,8 @@ def acosh(x: torch.Tensor) \
         -> torch.Tensor:
     return torch.acosh(x)
 
-  
-def sin(x: torch.Tensor)\
+
+def sin(x: torch.Tensor) \
         -> torch.Tensor:
     return torch.sin(x)
 
