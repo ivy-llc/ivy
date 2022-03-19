@@ -23,8 +23,10 @@ def expand_dims(x: JaxArray,
         raise IndexError(error)
 
 
-# Extra #
-# ------#
+def permute_dims(x: JaxArray,
+                axes: Tuple[int,...]) \
+        -> JaxArray:
+    return jnp.transpose(x,axes)
 
 
 def split(x, num_or_size_splits=None, axis=0, with_remainder=False):
@@ -47,3 +49,4 @@ def split(x, num_or_size_splits=None, axis=0, with_remainder=False):
 
 repeat = jnp.repeat
 tile = jnp.tile
+
