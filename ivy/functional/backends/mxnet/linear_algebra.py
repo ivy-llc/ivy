@@ -90,6 +90,11 @@ def qr(x, mode):
     return mx.np.linalg.qr(x, mode=mode)
 
 
+def det(x:mx.ndarray) \
+    -> mx.ndarray:
+    return mx.linalg.det(x)
+
+
 # Extra #
 # ------#
 

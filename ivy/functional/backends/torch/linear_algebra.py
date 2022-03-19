@@ -110,6 +110,11 @@ def trace(x: torch.Tensor,
     return torch.trace(x, offset)
 
 
+def det(A:torch.Tensor) \
+    -> torch.Tensor:
+    return torch.linalg.det(A)
+
+
 # Extra #
 # ------#
 
