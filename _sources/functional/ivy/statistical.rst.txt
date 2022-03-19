@@ -14,8 +14,6 @@ Statistical
 
    statistical/min.rst
    statistical/max.rst
-   statistical/mean.rst
-   statistical/var.rst
    statistical/prod.rst
    statistical/sum.rst
 

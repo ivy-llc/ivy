@@ -1413,32 +1413,6 @@ Default is True.</p></li>
 </dd></dl>
 
 <dl class="py method">
-<dt id="ivy.container.Container.mean">
-<code class="sig-name descname">mean</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">keepdims</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">key_chains</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_apply</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">prune_unapplied</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">map_sequences</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/container.html#Container.mean"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.container.Container.mean" title="Permalink to this definition">¶</a></dt>
-<dd><p>Computes mean of array elements along a given axis for all sub-arrays of container object.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>axis</strong> (<em>int</em><em> or </em><em>sequence of ints</em>) – Axis or axes along which a mean is performed. The default, axis=None, will mean all of the elements
-of the input array. If axis is negative it counts from the last to the first axis. If axis is a
-tuple of ints, a mean is performed on all of the axes specified in the tuple instead of a single
-axis or all the axes as before.</p></li>
-<li><p><strong>keepdims</strong> (<em>bool</em><em>, </em><em>optional</em>) – If this is set to True, the axes which are reduced are left in the result as dimensions with
-size one. With this option, the result will broadcast correctly against the input array.</p></li>
-<li><p><strong>key_chains</strong> (<em>list</em><em> or </em><em>dict of strs</em><em>, </em><em>optional</em>) – The key-chains to apply or not apply the method to. Default is None.</p></li>
-<li><p><strong>to_apply</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, the method will be applied to key_chains, otherwise key_chains will be skipped.
-Default is True.</p></li>
-<li><p><strong>prune_unapplied</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to prune key_chains for which the function was not applied. Default is False.</p></li>
-<li><p><strong>map_sequences</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to also map method to sequences (lists, tuples). Default is False.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Container object with all sub-array dimensions expanded along the axis.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
 <dt id="ivy.container.Container.minimum">
 <code class="sig-name descname">minimum</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">other</span></em>, <em class="sig-param"><span class="n">key_chains</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_apply</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">prune_unapplied</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">map_sequences</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/container.html#Container.minimum"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.container.Container.minimum" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes the elementwise minimum between this container and another container or number.</p>
@@ -1513,32 +1487,6 @@ rather than a variable or traced array.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>new container with updated values at the key chains, provided they existed before.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt id="ivy.container.Container.prod">
-<code class="sig-name descname">prod</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">keepdims</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">key_chains</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_apply</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">prune_unapplied</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">map_sequences</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/container.html#Container.prod"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.container.Container.prod" title="Permalink to this definition">¶</a></dt>
-<dd><p>Computes product of array elements along a given axis for all sub-arrays of container object.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>axis</strong> (<em>int</em><em> or </em><em>sequence of ints</em>) – Axis or axes along which a product is performed. The default, axis=None, will multiply all of the
-elements of the input array. If axis is negative it counts from the last to the first axis. If axis
-is a tuple of ints, a multiplication is performed on all of the axes specified in the tuple instead
-of a single axis or all the axes as before.</p></li>
-<li><p><strong>keepdims</strong> (<em>bool</em><em>, </em><em>optional</em>) – If this is set to True, the axes which are reduced are left in the result as dimensions with
-size one. With this option, the result will broadcast correctly against the input array.</p></li>
-<li><p><strong>key_chains</strong> (<em>list</em><em> or </em><em>dict of strs</em><em>, </em><em>optional</em>) – The key-chains to apply or not apply the method to. Default is None.</p></li>
-<li><p><strong>to_apply</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, the method will be applied to key_chains, otherwise key_chains will be skipped.
-Default is True.</p></li>
-<li><p><strong>prune_unapplied</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to prune key_chains for which the function was not applied. Default is False.</p></li>
-<li><p><strong>map_sequences</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to also map method to sequences (lists, tuples). Default is False.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Container object with all sub-array dimensions expanded along the axis.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1667,6 +1615,32 @@ Default is True.</p></li>
 </dd></dl>
 
 <dl class="py method">
+<dt id="ivy.container.Container.reduce_mean">
+<code class="sig-name descname">reduce_mean</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">keepdims</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">key_chains</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_apply</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">prune_unapplied</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">map_sequences</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/container.html#Container.reduce_mean"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.container.Container.reduce_mean" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes mean of array elements along a given axis for all sub-arrays of container object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>axis</strong> (<em>int</em><em> or </em><em>sequence of ints</em>) – Axis or axes along which a mean is performed. The default, axis=None, will mean all of the elements
+of the input array. If axis is negative it counts from the last to the first axis. If axis is a
+tuple of ints, a mean is performed on all of the axes specified in the tuple instead of a single
+axis or all the axes as before.</p></li>
+<li><p><strong>keepdims</strong> (<em>bool</em><em>, </em><em>optional</em>) – If this is set to True, the axes which are reduced are left in the result as dimensions with
+size one. With this option, the result will broadcast correctly against the input array.</p></li>
+<li><p><strong>key_chains</strong> (<em>list</em><em> or </em><em>dict of strs</em><em>, </em><em>optional</em>) – The key-chains to apply or not apply the method to. Default is None.</p></li>
+<li><p><strong>to_apply</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, the method will be applied to key_chains, otherwise key_chains will be skipped.
+Default is True.</p></li>
+<li><p><strong>prune_unapplied</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to prune key_chains for which the function was not applied. Default is False.</p></li>
+<li><p><strong>map_sequences</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to also map method to sequences (lists, tuples). Default is False.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Container object with all sub-array dimensions expanded along the axis.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt id="ivy.container.Container.reduce_min">
 <code class="sig-name descname">reduce_min</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">keepdims</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">key_chains</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_apply</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">prune_unapplied</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">map_sequences</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/container.html#Container.reduce_min"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.container.Container.reduce_min" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes min of array elements along a given axis for all sub-arrays of container object.</p>
@@ -1677,6 +1651,32 @@ Default is True.</p></li>
 of the input array. If axis is negative it counts from the last to the first axis. If axis is a
 tuple of ints, a min is performed on all of the axes specified in the tuple instead of a single
 axis or all the axes as before.</p></li>
+<li><p><strong>keepdims</strong> (<em>bool</em><em>, </em><em>optional</em>) – If this is set to True, the axes which are reduced are left in the result as dimensions with
+size one. With this option, the result will broadcast correctly against the input array.</p></li>
+<li><p><strong>key_chains</strong> (<em>list</em><em> or </em><em>dict of strs</em><em>, </em><em>optional</em>) – The key-chains to apply or not apply the method to. Default is None.</p></li>
+<li><p><strong>to_apply</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, the method will be applied to key_chains, otherwise key_chains will be skipped.
+Default is True.</p></li>
+<li><p><strong>prune_unapplied</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to prune key_chains for which the function was not applied. Default is False.</p></li>
+<li><p><strong>map_sequences</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to also map method to sequences (lists, tuples). Default is False.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Container object with all sub-array dimensions expanded along the axis.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ivy.container.Container.reduce_prod">
+<code class="sig-name descname">reduce_prod</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">keepdims</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">key_chains</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_apply</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">prune_unapplied</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">map_sequences</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/container.html#Container.reduce_prod"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.container.Container.reduce_prod" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes product of array elements along a given axis for all sub-arrays of container object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>axis</strong> (<em>int</em><em> or </em><em>sequence of ints</em>) – Axis or axes along which a product is performed. The default, axis=None, will multiply all of the
+elements of the input array. If axis is negative it counts from the last to the first axis. If axis
+is a tuple of ints, a multiplication is performed on all of the axes specified in the tuple instead
+of a single axis or all the axes as before.</p></li>
 <li><p><strong>keepdims</strong> (<em>bool</em><em>, </em><em>optional</em>) – If this is set to True, the axes which are reduced are left in the result as dimensions with
 size one. With this option, the result will broadcast correctly against the input array.</p></li>
 <li><p><strong>key_chains</strong> (<em>list</em><em> or </em><em>dict of strs</em><em>, </em><em>optional</em>) – The key-chains to apply or not apply the method to. Default is None.</p></li>
@@ -1714,6 +1714,32 @@ Default is True.</p></li>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>Container object with the standard deviation computed for all sub-arrays.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ivy.container.Container.reduce_var">
+<code class="sig-name descname">reduce_var</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">keepdims</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">key_chains</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_apply</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">prune_unapplied</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">map_sequences</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/container.html#Container.reduce_var"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.container.Container.reduce_var" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes variance of array elements along a given axis for all sub-arrays of container object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>axis</strong> (<em>int</em><em> or </em><em>sequence of ints</em>) – Axis or axes along which a var is performed. The default, axis=None, will var all of the elements
+of the input array. If axis is negative it counts from the last to the first axis. If axis is a
+tuple of ints, a var is performed on all of the axes specified in the tuple instead of a single
+axis or all the axes as before.</p></li>
+<li><p><strong>keepdims</strong> (<em>bool</em><em>, </em><em>optional</em>) – If this is set to True, the axes which are reduced are left in the result as dimensions with
+size one. With this option, the result will broadcast correctly against the input array.</p></li>
+<li><p><strong>key_chains</strong> (<em>list</em><em> or </em><em>dict of strs</em><em>, </em><em>optional</em>) – The key-chains to apply or not apply the method to. Default is None.</p></li>
+<li><p><strong>to_apply</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, the method will be applied to key_chains, otherwise key_chains will be skipped.
+Default is True.</p></li>
+<li><p><strong>prune_unapplied</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to prune key_chains for which the function was not applied. Default is False.</p></li>
+<li><p><strong>map_sequences</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to also map method to sequences (lists, tuples). Default is False.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Container object with the variance computed for all sub-arrays.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2373,32 +2399,6 @@ constructor to their original form.</p>
 <dt id="ivy.container.Container.update_config">
 <code class="sig-name descname">update_config</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">config</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/container.html#Container.update_config"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.container.Container.update_config" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
-
-<dl class="py method">
-<dt id="ivy.container.Container.var">
-<code class="sig-name descname">var</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">keepdims</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">key_chains</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_apply</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">prune_unapplied</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">map_sequences</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/container.html#Container.var"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.container.Container.var" title="Permalink to this definition">¶</a></dt>
-<dd><p>Computes variance of array elements along a given axis for all sub-arrays of container object.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>axis</strong> (<em>int</em><em> or </em><em>sequence of ints</em>) – Axis or axes along which a var is performed. The default, axis=None, will var all of the elements
-of the input array. If axis is negative it counts from the last to the first axis. If axis is a
-tuple of ints, a var is performed on all of the axes specified in the tuple instead of a single
-axis or all the axes as before.</p></li>
-<li><p><strong>keepdims</strong> (<em>bool</em><em>, </em><em>optional</em>) – If this is set to True, the axes which are reduced are left in the result as dimensions with
-size one. With this option, the result will broadcast correctly against the input array.</p></li>
-<li><p><strong>key_chains</strong> (<em>list</em><em> or </em><em>dict of strs</em><em>, </em><em>optional</em>) – The key-chains to apply or not apply the method to. Default is None.</p></li>
-<li><p><strong>to_apply</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, the method will be applied to key_chains, otherwise key_chains will be skipped.
-Default is True.</p></li>
-<li><p><strong>prune_unapplied</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to prune key_chains for which the function was not applied. Default is False.</p></li>
-<li><p><strong>map_sequences</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to also map method to sequences (lists, tuples). Default is False.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Container object with the variance computed for all sub-arrays.</p>
-</dd>
-</dl>
-</dd></dl>
 
 <dl class="py method">
 <dt id="ivy.container.Container.vector_norm">
