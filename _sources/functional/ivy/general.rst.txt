@@ -30,4 +30,8 @@ General
    general/has_nans.rst
    general/exists.rst
    general/default.rst
+   general/shape_to_tuple.rst
+   general/try_else_none.rst
+   general/arg_names.rst
+   general/match_kwargs.rst
 

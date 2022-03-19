@@ -116,6 +116,10 @@
 <li class="toctree-l2"><a class="reference internal" href="general/has_nans.html">has_nans</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/exists.html">exists</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/default.html">default</a></li>
+<li class="toctree-l2"><a class="reference internal" href="general/shape_to_tuple.html">shape_to_tuple</a></li>
+<li class="toctree-l2"><a class="reference internal" href="general/try_else_none.html">try_else_none</a></li>
+<li class="toctree-l2"><a class="reference internal" href="general/arg_names.html">arg_names</a></li>
+<li class="toctree-l2"><a class="reference internal" href="general/match_kwargs.html">match_kwargs</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="gradients.html">Gradients</a></li>
@@ -241,6 +245,12 @@ Default is False.</p></li>
 <dd class="field-even"><p>Boolean, whether or not the inputs are equal, or matrix array of booleans if equality_matrix=True is set.</p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.general.arg_names">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">arg_names</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">receiver</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/general.html#arg_names"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.general.arg_names" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the expected keyword arguments for a function or class constructor.</p>
 </dd></dl>
 
 <dl class="py function">
@@ -433,6 +443,38 @@ Default is False.</p></li>
 </dd></dl>
 
 <dl class="py function">
+<dt id="ivy.functional.ivy.general.match_kwargs">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">match_kwargs</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">kwargs</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">receivers</span></em>, <em class="sig-param"><span class="n">allow_duplicates</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/general.html#match_kwargs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.general.match_kwargs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Match keyword arguments to either class or function receivers.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>kwargs</strong> (<em>dict of any</em>) – Keyword arguments to match.</p></li>
+<li><p><strong>receivers</strong> (<em>callables and/or classes</em>) – Functions and/or classes to match the keyword arguments to.</p></li>
+<li><p><strong>allow_duplicates</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to allow one keyword argument to be used for multiple receivers. Default is False.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Sequence of keyword arguments split as best as possible.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.general.shape_to_tuple">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">shape_to_tuple</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">shape</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>int<span class="p">, </span>Tuple<span class="p">[</span>int<span class="p">]</span><span class="p">, </span>List<span class="p">[</span>int<span class="p">]</span><span class="p">]</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/general.html#shape_to_tuple"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.general.shape_to_tuple" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a tuple representation of the input shape.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>shape</strong> – The shape input to convert to tuple representation.</p>
+</dd>
+<dt class="field-even">Retrn</dt>
+<dd class="field-even"><p>The shape in tuple representation</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt id="ivy.functional.ivy.general.to_list">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">to_list</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; List<a class="reference internal" href="../../_modules/ivy/functional/ivy/general.html#to_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.general.to_list" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates a (possibly nested) list from input array.</p>
@@ -470,6 +512,17 @@ Default is False.</p></li>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>A scalar.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.general.try_else_none">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">try_else_none</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">fn</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/general.html#try_else_none"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.general.try_else_none" title="Permalink to this definition">¶</a></dt>
+<dd><p>Try and return the function, otherwise return None if an exception was raised during function execution.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>fn</strong> (<em>callable</em>) – Function to try and call and return.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -528,6 +581,10 @@ Default is False.</p></li>
 <li class="toctree-l1"><a class="reference internal" href="general/has_nans.html">has_nans</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/exists.html">exists</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/default.html">default</a></li>
+<li class="toctree-l1"><a class="reference internal" href="general/shape_to_tuple.html">shape_to_tuple</a></li>
+<li class="toctree-l1"><a class="reference internal" href="general/try_else_none.html">try_else_none</a></li>
+<li class="toctree-l1"><a class="reference internal" href="general/arg_names.html">arg_names</a></li>
+<li class="toctree-l1"><a class="reference internal" href="general/match_kwargs.html">match_kwargs</a></li>
 </ul>
 </div>
 </div>
