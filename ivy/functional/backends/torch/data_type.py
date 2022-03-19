@@ -1,6 +1,6 @@
 # global
 import torch
-from typing import Union
+from typing import Union, Tuple
 
 # local
 import ivy
@@ -42,3 +42,7 @@ class Finfo:
 def finfo(type: Union[torch.dtype, str, torch.Tensor])\
         -> Finfo:
     return Finfo(torch.finfo(ivy.dtype_from_str(type)))
+
+
+def broadcast_to(x: torch.Tensor, shape: Tuple[int,...]) -> torch.Tensor:
+    return torch.broadcast_to(x,shape)
