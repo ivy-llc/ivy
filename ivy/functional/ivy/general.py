@@ -388,6 +388,7 @@ def shape_to_tuple(shape: Union[int, Tuple[int], List[int]]):
     else:
         return tuple(shape)
 
+
 def try_else_none(fn):
     """
     Try and return the function, otherwise return None if an exception was raised during function execution.
@@ -428,3 +429,42 @@ def match_kwargs(kwargs, *receivers, allow_duplicates=False):
     if len(split_kwargs) == 1:
         return split_kwargs[0]
     return split_kwargs
+
+
+def cache_fn(func: Callable)\
+        -> Callable:
+    """
+    Wrap a function, such that when cache=True is passed as an argument, a previously cached output is returned.
+
+    :param func: The function to wrap, whose output should be cached for later.
+    :type func: callable
+    :return: The newly cache wrapped function.
+    """
+
+    global FN_CACHE
+    if func not in FN_CACHE:
+        FN_CACHE[func] = dict()
+
+    def cached_fn(*args, **kwargs):
+        key = ''.join([str(i) + ', ' for i in args] + [' kw, '] + [str(i) + ', ' for i in sorted(kwargs.items())])
+        cache = FN_CACHE[func]
+        if key in cache:
+            return cache[key]
+        ret = func(*args, **kwargs)
+        cache[key] = ret
+        return ret
+
+    return cached_fn
+
+
+def current_framework_str()\
+        -> Union[str, None]:
+    """
+    Return the string of the current globally set framework. Returns None if no framework is set.
+
+    :return: The framework string.
+    """
+    fw = _cur_framework()
+    if fw is None:
+        return None
+    return fw.current_framework_str()
