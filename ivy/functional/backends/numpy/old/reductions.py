@@ -7,7 +7,7 @@ import numpy as _np
 import numpy.array_api as _npa
 
 
-def reduce_sum(x, axis=None, keepdims=False):
+def sum(x, axis=None, keepdims=False):
     if axis is None:
         num_dims = len(x.shape)
         axis = tuple(range(num_dims))
