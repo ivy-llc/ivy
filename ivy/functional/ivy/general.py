@@ -684,3 +684,45 @@ def inplace_variables_supported(f=None):
     :return: Boolean, whether or not inplace variables are supported.
     """
     return _cur_framework().inplace_variables_supported()
+
+
+def supports_inplace(x):
+    """
+    Determine whether inplace operations are supported for the data type of x.
+
+    :param x: Input variable or array to check for inplace support for.
+    :type x: variable or array
+    :return: Boolean, whether or not inplace operations are supported for x.
+    """
+    if ivy.is_variable(x):
+        return ivy.inplace_variables_supported()
+    elif ivy.is_array(x):
+        return ivy.inplace_arrays_supported()
+    raise Exception('Input x must be either a variable or an array.')
+
+
+def assert_supports_inplace(x):
+    """
+    Asserts that inplace operations are supported for x, else raises exception.
+
+    :param x: Input variable or array to check for inplace support for.
+    :type x: variable or array
+    :return: True if support, raises exception otherwise
+    """
+    if not ivy.supports_inplace(x):
+        raise Exception('Inplace operations are not supported {} types with {} backend'.format(
+            type(x), ivy.current_framework_str()))
+    return True
+
+
+def inplace_update(x, val, f=None):
+    """
+    Perform in-place update for the input variable.
+
+    :param x: The variable to update.
+    :type x: variable
+    :param val: The array to update the variable with.
+    :type val: array
+    :return: The variable following the in-place update.
+    """
+    return _cur_framework(x).inplace_update(x, val)
