@@ -560,7 +560,7 @@
     <span class="k">if</span> <span class="n">stop_gradients</span><span class="p">:</span>
         <span class="n">cost</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">stop_gradient</span><span class="p">(</span><span class="n">cost</span><span class="p">,</span> <span class="n">preserve_type</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
     <span class="c1"># noinspection PyRedundantParentheses</span>
-    <span class="k">return</span> <span class="p">(</span><span class="n">cost</span><span class="p">,</span> <span class="n">grads</span><span class="o">.</span><span class="n">reduce_sum</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="o">*</span><span class="n">rets</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="p">(</span><span class="n">cost</span><span class="p">,</span> <span class="n">grads</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="o">*</span><span class="n">rets</span><span class="p">)</span></div>
 </pre></div>
 
            </div>
