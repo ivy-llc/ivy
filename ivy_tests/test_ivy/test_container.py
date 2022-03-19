@@ -644,6 +644,17 @@ def test_container_to_raw(dev, call):
     assert np.allclose(ivy.to_numpy(raw[1][0]), np.array([2]))
     assert np.allclose(ivy.to_numpy(raw[1][1]), np.array([3]))
 
+def test_container_sum(dev, call):
+    dict_in = {'a': ivy.array([1., 2., 3.], dev=dev),
+               'b': {'c': ivy.array([2., 4., 6.], dev=dev), 'd': ivy.array([3., 6., 9.], dev=dev)}}
+    container = Container(dict_in)
+    container_sum = container.sum()
+    assert np.allclose(ivy.to_numpy(container_sum['a']), np.array([6.]))
+    assert np.allclose(ivy.to_numpy(container_sum.a), np.array([6.]))
+    assert np.allclose(ivy.to_numpy(container_sum['b']['c']), np.array([12.]))
+    assert np.allclose(ivy.to_numpy(container_sum.b.c), np.array([12.]))
+    assert np.allclose(ivy.to_numpy(container_sum['b']['d']), np.array([18.]))
+    assert np.allclose(ivy.to_numpy(container_sum.b.d), np.array([18.]))
 
 def test_container_reduce_prod(dev, call):
     dict_in = {'a': ivy.array([1., 2., 3.], dev=dev),
