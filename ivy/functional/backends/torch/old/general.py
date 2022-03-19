@@ -489,9 +489,6 @@ def multiprocessing(context=None):
     return torch.multiprocessing.get_context(context)
 
 
-def container_types():
-    return []
-
 
 def inplace_update(x, val):
     x.data = val
@@ -507,5 +504,3 @@ def inplace_increment(x, val):
     x.data += val
     return x
 
-inplace_arrays_supported = lambda: True
-inplace_variables_supported = lambda: True

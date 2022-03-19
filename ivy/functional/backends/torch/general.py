@@ -70,3 +70,11 @@ def unstack(x, axis: int, keepdims: bool = False) -> List[_torch.Tensor]:
     if keepdims:
         return [r.unsqueeze(axis) for r in ret]
     return ret
+
+
+def container_types():
+    return []
+
+
+inplace_arrays_supported = lambda: True
+inplace_variables_supported = lambda: True
