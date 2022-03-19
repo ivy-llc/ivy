@@ -591,3 +591,33 @@ def stable_pow(base: Any, exponent: Any, min_base: float = None)\
     """
     # noinspection PyProtectedMember
     return (base + default(min_base, ivy._MIN_BASE)) ** exponent
+
+
+def get_all_arrays_in_memory():
+    """
+    Gets all arrays which are currently alive.
+    """
+    all_arrays = list()
+    for obj in gc.get_objects():
+        # noinspection PyBroadException
+        try:
+            if ivy.is_array(obj):
+                all_arrays.append(obj)
+        except Exception:
+            pass
+    return all_arrays
+
+
+def num_arrays_in_memory():
+    """
+    Returns the number of arrays which are currently alive.
+    """
+    return len(get_all_arrays_in_memory())
+
+
+def print_all_arrays_in_memory():
+    """
+    Prints all arrays which are currently alive.
+    """
+    for arr in get_all_arrays_in_memory():
+        print(type(arr), arr.shape)
