@@ -39,6 +39,10 @@ General
    general/einops_rearrange.rst
    general/einops_reduce.rst
    general/einops_repeat.rst
+   general/get_min_denominator.rst
+   general/set_min_denominator.rst
+   general/get_min_base.rst
+   general/set_min_base.rst
    general/stable_divide.rst
    general/stable_pow.rst
 

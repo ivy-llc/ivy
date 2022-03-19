@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>get_referrers_recursive &mdash; Ivy 1.0 documentation</title>
+  <title>set_min_denominator &mdash; Ivy 1.0 documentation</title>
   
 
   
@@ -36,8 +36,8 @@
   <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="is_array" href="is_array.html" />
-    <link rel="prev" title="General" href="../general.html" /> 
+    <link rel="next" title="get_min_base" href="get_min_base.html" />
+    <link rel="prev" title="get_min_denominator" href="get_min_denominator.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -98,7 +98,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../device.html">Device</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../elementwise.html">Elementwise</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../general.html">General</a><ul class="current">
-<li class="toctree-l2 current"><a class="current reference internal" href="#">get_referrers_recursive</a></li>
+<li class="toctree-l2"><a class="reference internal" href="get_referrers_recursive.html">get_referrers_recursive</a></li>
 <li class="toctree-l2"><a class="reference internal" href="is_array.html">is_array</a></li>
 <li class="toctree-l2"><a class="reference internal" href="copy_array.html">copy_array</a></li>
 <li class="toctree-l2"><a class="reference internal" href="array_equal.html">array_equal</a></li>
@@ -126,7 +126,7 @@
 <li class="toctree-l2"><a class="reference internal" href="einops_reduce.html">einops_reduce</a></li>
 <li class="toctree-l2"><a class="reference internal" href="einops_repeat.html">einops_repeat</a></li>
 <li class="toctree-l2"><a class="reference internal" href="get_min_denominator.html">get_min_denominator</a></li>
-<li class="toctree-l2"><a class="reference internal" href="set_min_denominator.html">set_min_denominator</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">set_min_denominator</a></li>
 <li class="toctree-l2"><a class="reference internal" href="get_min_base.html">get_min_base</a></li>
 <li class="toctree-l2"><a class="reference internal" href="set_min_base.html">set_min_base</a></li>
 <li class="toctree-l2"><a class="reference internal" href="stable_divide.html">stable_divide</a></li>
@@ -220,13 +220,13 @@
         
           <li><a href="../general.html">General</a> &raquo;</li>
         
-      <li>get_referrers_recursive</li>
+      <li>set_min_denominator</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../../_sources/functional/ivy/general/get_referrers_recursive.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../../_sources/functional/ivy/general/set_min_denominator.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -239,12 +239,18 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="get-referrers-recursive">
-<h1>get_referrers_recursive<a class="headerlink" href="#get-referrers-recursive" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="set-min-denominator">
+<h1>set_min_denominator<a class="headerlink" href="#set-min-denominator" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
-<dt id="ivy.functional.ivy.general.get_referrers_recursive">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">get_referrers_recursive</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">item</span></em>, <em class="sig-param"><span class="n">depth</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">max_depth</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">seen_set</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">local_set</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/general.html#get_referrers_recursive"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.general.get_referrers_recursive" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dt id="ivy.functional.ivy.general.set_min_denominator">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">set_min_denominator</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">val</span><span class="p">:</span> <span class="n">float</span></em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="../../../_modules/ivy/functional/ivy/general.html#set_min_denominator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.general.set_min_denominator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the global minimum denominator used by ivy for numerically stable division.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>val</strong> (<em>float</em>) – The new value to set the minimum denominator to.</p>
+</dd>
+</dl>
+</dd></dl>
 
 <div class="line-block">
 <div class="line"><br /></div>
@@ -261,10 +267,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="is_array.html" class="btn btn-neutral float-right" title="is_array" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="get_min_base.html" class="btn btn-neutral float-right" title="get_min_base" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="../general.html" class="btn btn-neutral float-left" title="General" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="get_min_denominator.html" class="btn btn-neutral float-left" title="get_min_denominator" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
