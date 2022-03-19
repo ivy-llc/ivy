@@ -9,6 +9,25 @@ from ivy import dtype_from_str, default_dtype, dev_from_str, default_device
 from ivy.functional.backends.torch.device import _callable_dev
 
 
+def asarray(object_in, dtype: Optional[str] = None, dev: Optional[str] = None, copy: Optional[bool] = None):
+    dev = default_device(dev)
+    if isinstance(object_in, torch.Tensor) and dtype is None:
+        dtype = object_in.dtype
+    elif isinstance(object_in, (list, tuple, dict)) and len(object_in) != 0 and dtype is None:
+        # Temporary fix on type
+        # Because default_type() didn't return correct type for normal python array
+        if copy is True:
+            return torch.as_tensor(object_in).clone().detach().to(dev_from_str(dev))
+        else:
+            return torch.as_tensor(object_in).to(dev_from_str(dev))
+    else:
+        dtype = dtype_from_str(default_dtype(dtype, object_in))
+    if copy is True:
+        return torch.as_tensor(object_in, dtype=dtype).clone().detach().to(dev_from_str(dev))
+    else:
+        return torch.as_tensor(object_in, dtype=dtype).to(dev_from_str(dev))
+
+
 def zeros(shape: Union[int, Tuple[int]],
           dtype: Optional[torch.dtype] = None,
           device: Optional[torch.device] = None) \
@@ -90,6 +109,31 @@ def empty(shape: Union[int, Tuple[int]],
         -> Tensor:
     return torch.empty(shape, dtype=dtype_from_str(default_dtype(dtype)), device=dev_from_str(default_device(device)))
 
+
+def empty_like(x: torch.Tensor,
+              dtype: Optional[Union[torch.dtype, str]] = None,
+              dev: Optional[Union[torch.device, str]] = None) \
+        -> torch.Tensor:
+    if dev is None:
+        dev = _callable_dev(x)
+    if dtype is not None and dtype is str:
+        type_dict: Dict[str, torch.dtype] = {'int8': torch.int8,
+            'int16': torch.int16,
+            'int32': torch.int32,
+            'int64': torch.int64,
+            'uint8': torch.uint8,
+            'bfloat16': torch.bfloat16,
+            'float16': torch.float16,
+            'float32': torch.float32,
+            'float64': torch.float64,
+            'bool': torch.bool}
+        return torch.empty_like(x, dtype=type_dict[dtype], device=dev_from_str(dev))
+    else:
+        return torch.empty_like(x, dtype= dtype, device=dev_from_str(dev))
+
+    return torch.empty_like(x, device=dev_from_str(dev))
+
+
 def _differentiable_linspace(start, stop, num, device):
     if num == 1:
         return torch.unsqueeze(start, 0)
@@ -162,6 +206,29 @@ def linspace(start, stop, num, axis=None, dev=None):
         res = torch.transpose(res, axis, -1)
     return res.to(dev_from_str(dev))
 
+def eye(n_rows: int,
+        n_cols: Optional[int] = None,
+        k: Optional[int] = 0,
+        dtype: Optional[torch.dtype] = None,
+        device: Optional[torch.device] = None) \
+        -> torch.Tensor:
+    dtype = dtype_from_str(default_dtype(dtype))
+    device = dev_from_str(default_device(device))
+    if n_cols is None:
+        n_cols = n_rows
+    i = torch.eye(n_rows, n_cols, dtype=dtype, device=device)
+    if k == 0:
+        return i
+    elif -n_rows < k < 0:
+        return torch.concat([torch.zeros([-k, n_cols], dtype=dtype, device=device),
+                             i[:n_rows + k]], 0)
+    elif 0 < k < n_cols:
+        return torch.concat([torch.zeros([n_rows, k], dtype=dtype, device=device),
+                             i[:, :n_cols - k]], 1)
+    else:
+        return torch.zeros([n_rows, n_cols], dtype=dtype, device=device)
+
+
 # Extra #
 # ------#
 
@@ -178,20 +245,7 @@ def array(object_in, dtype: Optional[str] = None, dev: Optional[str] = None):
     else:
         return torch.tensor(object_in, device=dev_from_str(dev))
 
-def asarray(object_in, dtype: Optional[str] = None, dev: Optional[str] = None, copy: Optional[bool] = None):
-    dev = default_device(dev)
-    if isinstance(object_in, torch.Tensor) and dtype is None:
-        dtype = object_in.dtype
-    elif isinstance(object_in, (list, tuple, dict)) and len(object_in) != 0 and dtype is None:
-        # Temporary fix on type
-        # Because default_type() didn't return correct type for normal python array
-        if copy is True:
-            return torch.as_tensor(object_in).clone().detach().to(dev_from_str(dev))
-        else:
-            return torch.as_tensor(object_in).to(dev_from_str(dev))
-    else:
-        dtype = dtype_from_str(default_dtype(dtype, object_in))
-    if copy is True:
-        return torch.as_tensor(object_in, dtype=dtype).clone().detach().to(dev_from_str(dev))
-    else:
-        return torch.as_tensor(object_in, dtype=dtype).to(dev_from_str(dev))
+
+def logspace(start, stop, num, base=10., axis=None, dev=None):
+    power_seq = linspace(start, stop, num, axis, default_device(dev))
+    return base ** power_seq

@@ -63,11 +63,6 @@ def floormod(x, y):
     return x % y
 
 
-def logspace(start, stop, num, base=10., axis=None, dev=None):
-    power_seq = linspace(start, stop, num, axis, default_device(dev))
-    return base ** power_seq
-
-
 def unstack(x, axis: int, keepdims: bool = False) -> List[_torch.Tensor]:
     if x.shape == ():
         return [x]
@@ -75,3 +70,28 @@ def unstack(x, axis: int, keepdims: bool = False) -> List[_torch.Tensor]:
     if keepdims:
         return [r.unsqueeze(axis) for r in ret]
     return ret
+
+
+def container_types():
+    return []
+
+
+def inplace_update(x, val):
+    x.data = val
+    return x
+
+
+inplace_arrays_supported = lambda: True
+inplace_variables_supported = lambda: True
+
+
+
+def inplace_decrement(x, val):
+    x.data -= val
+    return x
+
+
+def inplace_increment(x, val):
+    x.data += val
+    return x
+

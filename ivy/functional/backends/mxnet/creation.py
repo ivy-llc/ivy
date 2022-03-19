@@ -75,7 +75,6 @@ def empty(shape: Union[int, Tuple[int]],
     return mx.nd.empty(shape, dtype_from_str(default_dtype(dtype)), cont)
 
 
-
 def _linspace(start, stop, num, cont):
     if num == 1:
         return start
@@ -115,6 +114,16 @@ def linspace(start, stop, num, axis=None, dev=None):
         res = mx.nd.swapaxes(res, axis, -1)
     return res
 
+def eye(n_rows: int,
+        n_cols: Optional[int] = None,
+        k: Optional[int] = 0,
+        dtype: Optional[mx.nd.NDArray] = None,
+        device: Optional[str] = None) \
+        -> mx.ndarray.ndarray.NDArray:
+    cont = _mxnet_init_context(default_device(device))
+    return mx.nd.eye(n_rows, n_cols, k, ctx=cont).astype(dtype)
+
+
 # Extra #
 # ------#
 
@@ -123,5 +132,7 @@ def array(object_in, dtype=None, dev=None):
     return mx.nd.array(object_in, cont, dtype=default_dtype(dtype, object_in))
 
 
-
+def logspace(start, stop, num, base=10., axis=None, dev=None):
+    power_seq = linspace(start, stop, num, axis, default_device(dev))
+    return base ** power_seq
 

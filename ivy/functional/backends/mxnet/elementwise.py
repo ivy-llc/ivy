@@ -6,6 +6,10 @@ import math
 from ivy.functional.backends.mxnet import _handle_flat_arrays_in_out
 
 
+def bitwise_left_shift(x1: mx.ndarray.ndarray.NDArray, x2: mx.ndarray.ndarray.NDArray) -> mx.nd.ndarray.NDArray:
+    return mx.numpy.left_shift(x1, x2)
+  
+  
 def bitwise_and(x1: mx.ndarray.ndarray.NDArray, x2: mx.ndarray.ndarray.NDArray) -> mx.nd.ndarray.NDArray:
     return mx.numpy.bitwise_and(x1, x2)
 
@@ -14,6 +18,18 @@ def bitwise_and(x1: mx.ndarray.ndarray.NDArray, x2: mx.ndarray.ndarray.NDArray) 
 def ceil(x: mx.ndarray.ndarray.NDArray)\
         -> mx.ndarray.ndarray.NDArray:
     return mx.nd.ceil(x)
+
+
+@_handle_flat_arrays_in_out
+def floor(x: mx.ndarray.ndarray.NDArray)\
+        -> mx.ndarray.ndarray.NDArray:
+    return mx.nd.floor(x)
+
+
+@_handle_flat_arrays_in_out
+def greater_equal(x1: mx.ndarray.ndarray.NDArray, x2: mx.ndarray.ndarray.NDArray)\
+        -> mx.ndarray.ndarray.NDArray:
+    return mx.nd.greater_equal(x1, x2)
 
 
 @_handle_flat_arrays_in_out
@@ -103,6 +119,12 @@ def tanh(x: mx.ndarray.ndarray.NDArray)\
 
 
 @_handle_flat_arrays_in_out
+def bitwise_or(x1: mx.ndarray.ndarray.NDArray, x2: mx.ndarray.ndarray.NDArray) \
+        -> mx.nd.ndarray.NDArray:
+    return mx.numpy.bitwise_or(x1, x2)
+
+
+@_handle_flat_arrays_in_out
 def sinh(x: mx.ndarray.ndarray.NDArray)\
         -> mx.ndarray.ndarray.NDArray:
     if isinstance(x, float):
@@ -114,3 +136,8 @@ def sinh(x: mx.ndarray.ndarray.NDArray)\
 def square(x: mx.ndarray.ndarray.NDArray)\
         -> mx.ndarray.ndarray.NDArray:
     return mx.nd.square(x)
+
+@_handle_flat_arrays_in_out
+def round(x: mx.ndarray.ndarray.NDArray)\
+        -> mx.ndarray.ndarray.NDArray:
+    return mx.nd.round(x)

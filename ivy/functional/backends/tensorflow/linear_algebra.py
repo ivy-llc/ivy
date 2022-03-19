@@ -10,6 +10,14 @@ import ivy
 from collections import namedtuple
 
 
+# Array API Standard #
+# -------------------#
+
+inv = tf.linalg.inv
+pinv = tf.linalg.pinv
+cholesky = tf.linalg.cholesky
+
+
 def matrix_transpose(x: Tensor)\
         -> Tensor:
     return tf.experimental.numpy.swapaxes(x, -1, -2)
@@ -36,6 +44,22 @@ def vector_norm(x: Tensor,
     if tn_normalized_vector.shape == tuple():
         return tf.expand_dims(tn_normalized_vector, 0)
     return tn_normalized_vector
+
+
+def matrix_norm(x, p=2, axes=None, keepdims=False):
+    axes = (-2, -1) if axes is None else axes
+    if isinstance(axes, int):
+        raise Exception('if specified, axes must be a length-2 sequence of ints,'
+                        'but found {} of type {}'.format(axes, type(axes)))
+    if p == -float('inf'):
+        ret = tf.reduce_min(tf.reduce_sum(tf.abs(x), axis=axes[1], keepdims=True), axis=axes)
+    elif p == -1:
+        ret = tf.reduce_min(tf.reduce_sum(tf.abs(x), axis=axes[0], keepdims=True), axis=axes)
+    else:
+        ret = tf.linalg.norm(x, p, axes, keepdims)
+    if ret.shape == ():
+        return tf.expand_dims(ret, 0)
+    return ret
 
 
 # noinspection PyPep8Naming
@@ -142,3 +166,30 @@ def trace(x: tf.Tensor,
           offset: int = 0)\
               -> tf.Tensor:
     return tf.trace(x, offset)
+
+
+def det(x:tf.Tensor,name:Optional[str]=None) \
+    -> tf.Tensor:
+    return tf.linalg.det(x,name)
+
+
+# Extra #
+# ------#
+
+def vector_to_skew_symmetric_matrix(vector: Tensor)\
+        -> Tensor:
+    batch_shape = list(vector.shape[:-1])
+    # BS x 3 x 1
+    vector_expanded = tf.expand_dims(vector, -1)
+    # BS x 1 x 1
+    a1s = vector_expanded[..., 0:1, :]
+    a2s = vector_expanded[..., 1:2, :]
+    a3s = vector_expanded[..., 2:3, :]
+    # BS x 1 x 1
+    zs = tf.zeros(batch_shape + [1, 1])
+    # BS x 1 x 3
+    row1 = tf.concat((zs, -a3s, a2s), -1)
+    row2 = tf.concat((a3s, zs, -a1s), -1)
+    row3 = tf.concat((-a2s, a1s, zs), -1)
+    # BS x 3 x 3
+    return tf.concat((row1, row2, row3), -2)

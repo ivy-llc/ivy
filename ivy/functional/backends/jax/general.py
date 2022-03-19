@@ -44,11 +44,7 @@ to_list = lambda x: _to_array(x).tolist()
 to_list.__name__ = 'to_list'
 
 
-
-def logspace(start, stop, num, base=10., axis=None, dev=None):
-    if axis is None:
-        axis = -1
-    return to_dev(_jnp.logspace(start, stop, num, base=base, axis=axis), default_device(dev))
+container_types = lambda: [FlatMapping]
 
 
 def unstack(x, axis, keepdims=False):
@@ -60,3 +56,20 @@ def unstack(x, axis, keepdims=False):
     if keepdims:
         return x_split
     return [_jnp.squeeze(item, axis) for item in x_split]
+
+
+def inplace_update(x, val):
+    raise Exception('Jax does not support inplace operations')
+
+inplace_arrays_supported = lambda: False
+inplace_variables_supported = lambda: False
+
+
+
+
+def inplace_decrement(x, val):
+    raise Exception('Jax does not support inplace operations')
+
+
+def inplace_increment(x, val):
+    raise Exception('Jax does not support inplace operations')

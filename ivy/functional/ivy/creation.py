@@ -190,27 +190,42 @@ def empty(shape: Union[int, Tuple[int],List[int]],
     return _cur_framework().empty(shape, dtype, device)
 
 
-# Extra #
-# ------#
-# noinspection PyShadowingNames
-def array(object_in: Union[List, ivy.Array, ivy.NativeArray], dtype: Union[ivy.Dtype, str] = None,
-          dev: ivy.Device = None) -> Union[ivy.Array, ivy.NativeArray]:
+def empty_like(x: Union[ivy.Array, ivy.NativeArray],
+               dtype: Optional[Union[ivy.Dtype, str]] = None,
+               dev: Optional[Union[ivy.Device, str]] = None)\
+        -> ivy.Array:
     """
-    Creates an array.
+    Returns an uninitialized array with the same shape as an input array x.
 
-    :param object_in: An array_like object, which exposes the array interface,
-            an object whose __array__ method returns an array, or any (nested) sequence.
-    :type object_in: array
-    :param dtype: The desired data-type for the array in string format, i.e. 'float32' or 'int64'.
-        If not given, then the type will be determined as the minimum type required to hold the objects in the
-        sequence.
-    :type dtype: data-type string, optional
-    :param dev: device string on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc..
-    :type dev: ivy.Device
-    :return: An array object satisfying the specified requirements, in the form of the selected framework.
+    :param x:  input array from which to derive the output array shape.
+    :param dtype: output array data type. If dtype is None, the output array data type must be inferred from x. Default: None.
+    :param dev: device on which to place the created array. If device is None, the output array device must be inferred from x. Default: None.
+    :return: an array having the same shape as x and containing uninitialized data.
     """
-    return _cur_framework(object_in).array(object_in, dtype, dev)
+    return _cur_framework(x).empty_like(x, dtype, dev)
 
+
+def eye(n_rows: int,
+        n_cols: Optional[int] = None,
+        k: Optional[int] = 0,
+        dtype: Optional[ivy.Dtype] = None,
+        device: Optional[ivy.Device] = None) \
+        -> ivy.Array:
+    """
+    Returns a two-dimensional array with ones on the k h diagonal and zeros elsewhere.
+
+    Parameters
+    :param n_rows: number of rows in the output array.
+    :param n_cols: number of columns in the output array. If None, the default number of columns in the output array is
+                   equal to n_rows. Default: None.
+    :param k: index of the diagonal. A positive value refers to an upper diagonal, a negative value to a lower diagonal,
+              and 0 to the main diagonal. Default: 0.
+    :param dtype: output array data type. If dtype is None, the output array data type must be the default floating-
+                  point data type. Default: None.
+    :return: device on which to place the created array. Default: None.
+    :return: an array where all elements are equal to zero, except for the k h diagonal, whose values are equal to one.
+    """
+    return _cur_framework().eye(n_rows, n_cols, k, dtype, device)
 
 # noinspection PyShadowingNames
 def linspace(start: Union[ivy.Array, ivy.NativeArray, int], stop: Union[ivy.Array, ivy.NativeArray, int],
@@ -234,4 +249,53 @@ def linspace(start: Union[ivy.Array, ivy.NativeArray, int], stop: Union[ivy.Arra
     :return: Tensor of evenly-spaced values.
     """
     return _cur_framework(start).linspace(start, stop, num, axis, dev)
+
+
+# Extra #
+# ------#
+# noinspection PyShadowingNames
+def array(object_in: Union[List, ivy.Array, ivy.NativeArray], dtype: Union[ivy.Dtype, str] = None,
+          dev: ivy.Device = None) -> Union[ivy.Array, ivy.NativeArray]:
+    """
+    Creates an array.
+
+    :param object_in: An array_like object, which exposes the array interface,
+            an object whose __array__ method returns an array, or any (nested) sequence.
+    :type object_in: array
+    :param dtype: The desired data-type for the array in string format, i.e. 'float32' or 'int64'.
+        If not given, then the type will be determined as the minimum type required to hold the objects in the
+        sequence.
+    :type dtype: data-type string, optional
+    :param dev: device string on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc..
+    :type dev: ivy.Device
+    :return: An array object satisfying the specified requirements, in the form of the selected framework.
+    """
+    return _cur_framework(object_in).array(object_in, dtype, dev)
+
+
+# noinspection PyShadowingNames
+def logspace(start: Union[ivy.Array, ivy.NativeArray, int], stop: Union[ivy.Array, ivy.NativeArray, int],
+             num: int, base: float = 10., axis: int = None, dev: ivy.Device = None)\
+        -> Union[ivy.Array, ivy.NativeArray]:
+    """
+    Generates a certain number of evenly-spaced values in log space, in an interval along a given axis.
+
+    See :math:`arange` that allows to specify the step size of evenly spaced values in an interval.
+
+    :param start: First entry in the range.
+    :type start: array
+    :param stop: Final entry in the range.
+    :type stop: array
+    :param num: Number of values to generate.
+    :type num: int
+    :param base: The base of the log space. Default is 10.0
+    :type base: float, optional
+    :param axis: Axis along which the operation is performed.
+    :type axis: int
+    :param dev: device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
+    :type dev: ivy.Device
+    :return: Tensor of evenly-spaced values.
+    """
+    return _cur_framework(start).logspace(start, stop, num, base, axis, dev)
+
 
