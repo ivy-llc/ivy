@@ -368,18 +368,3 @@ multiprocessing = lambda context=None: _multiprocessing if context is None else 
 
 
 
-
-
-def inplace_decrement(x, val):
-    if ivy.is_variable(x):
-        x.assign(x - val)
-        return x
-    raise Exception('TensorFlow does not support inplace operations on non-Variable tensors')
-
-
-def inplace_increment(x, val):
-    if ivy.is_variable(x):
-        x.assign(x + val)
-        return x
-    raise Exception('TensorFlow does not support inplace operations on non-Variable tensors')
-

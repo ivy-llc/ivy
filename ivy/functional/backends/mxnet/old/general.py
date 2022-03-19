@@ -427,16 +427,4 @@ multiprocessing = lambda context=None: _multiprocessing if context is None else 
 
 
 
-def inplace_decrement(x, val):
-    if x.shape == ():
-        raise Exception('MXNet does not support inplace updates of 0-dimensional arrays')
-    x -= val
-    return x
-
-
-def inplace_increment(x, val):
-    if x.shape == ():
-        raise Exception('MXNet does not support inplace updates of 0-dimensional arrays')
-    x += val
-    return x
 

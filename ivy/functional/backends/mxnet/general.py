@@ -66,3 +66,17 @@ def inplace_update(x, val):
 
 inplace_arrays_supported = lambda: True
 inplace_variables_supported = lambda: True
+
+
+def inplace_decrement(x, val):
+    if x.shape == ():
+        raise Exception('MXNet does not support inplace updates of 0-dimensional arrays')
+    x -= val
+    return x
+
+
+def inplace_increment(x, val):
+    if x.shape == ():
+        raise Exception('MXNet does not support inplace updates of 0-dimensional arrays')
+    x += val
+    return x

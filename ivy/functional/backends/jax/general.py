@@ -63,3 +63,13 @@ def inplace_update(x, val):
 
 inplace_arrays_supported = lambda: False
 inplace_variables_supported = lambda: False
+
+
+
+
+def inplace_decrement(x, val):
+    raise Exception('Jax does not support inplace operations')
+
+
+def inplace_increment(x, val):
+    raise Exception('Jax does not support inplace operations')
