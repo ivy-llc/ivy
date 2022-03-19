@@ -66,17 +66,7 @@ def shape(x: Union[ivy.Array, ivy.NativeArray], as_array: bool = False)\
     return _cur_framework(x).shape(x, as_array)
 
 
-def shape_to_tuple(shape: Union[int, Tuple[int], List[int]]):
-    """
-    Returns a tuple representation of the input shape.
 
-    :param shape: The shape input to convert to tuple representation.
-    :retrn: The shape in tuple representation
-    """
-    if isinstance(shape, int):
-        return (shape,)
-    else:
-        return tuple(shape)
 
 
 def get_num_dims(x: Union[ivy.Array, ivy.NativeArray], as_array: bool = False) -> int:
@@ -659,46 +649,7 @@ def linear_resample(x: Union[ivy.Array, ivy.NativeArray], num_samples: int, axis
 
 
 
-def try_else_none(fn):
-    """
-    Try and return the function, otherwise return None if an exception was raised during function execution.
 
-    :param fn: Function to try and call and return.
-    :type fn: callable
-    """
-    return default(fn, None, True)
-
-
-def arg_names(receiver):
-    """
-    Get the expected keyword arguments for a function or class constructor.
-    """
-    return list(inspect.signature(receiver).parameters.keys())
-
-
-def match_kwargs(kwargs, *receivers, allow_duplicates=False):
-    """
-    Match keyword arguments to either class or function receivers.
-
-    :param kwargs: Keyword arguments to match.
-    :type kwargs: dict of any
-    :param receivers: Functions and/or classes to match the keyword arguments to.
-    :type receivers: callables and/or classes
-    :param allow_duplicates: Whether to allow one keyword argument to be used for multiple receivers. Default is False.
-    :type allow_duplicates: bool, optional
-    :return: Sequence of keyword arguments split as best as possible.
-    """
-    split_kwargs = list()
-    for receiver in receivers:
-        expected_kwargs = arg_names(receiver)
-        found_kwargs = {k: v for k, v in kwargs.items() if k in expected_kwargs}
-        if not allow_duplicates:
-            for k in found_kwargs.keys():
-                del kwargs[k]
-        split_kwargs.append(found_kwargs)
-    if len(split_kwargs) == 1:
-        return split_kwargs[0]
-    return split_kwargs
 
 
 def cache_fn(func: Callable)\
