@@ -1,5 +1,6 @@
 # global
 import numpy as np
+import importlib
 from typing import Union
 from numbers import Number
 
@@ -172,3 +173,21 @@ def invalid_dtype(dtype_in: Union[ivy.Dtype, str, None])\
     if dtype_in is None:
         return False
     return ivy.dtype_to_str(dtype_in) in ivy.invalid_dtype_strs
+
+
+def convert_dtype(dtype_in: Union[ivy.Dtype, str], backend: str)\
+        -> ivy.Dtype:
+    """
+    Converts a data type from one backend framework representation to another.
+
+    :param dtype_in: The data-type to convert, in the specified backend representation
+    :type dtype_in: data type
+    :param backend: The backend framework the dtype_in is represented in.
+    :type backend: str
+    :return: The data-type in the current ivy backend format
+    """
+    valid_backends = ['numpy', 'jax', 'tensorflow', 'torch', 'mxnet']
+    if backend not in valid_backends:
+        raise Exception('Invalid backend passed, must be one of {}'.format(valid_backends))
+    ivy_backend = importlib.import_module('ivy.functional.backends.{}'.format(backend))
+    return ivy.dtype_from_str(ivy_backend.dtype_to_str(dtype_in))
