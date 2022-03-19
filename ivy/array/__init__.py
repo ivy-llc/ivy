@@ -293,15 +293,8 @@ class Array(ArrayWithArrayAPI, ArrayWithDevice, ArrayWithGeneral, ArrayWithGradi
 
     @_native_wrapper
     def __gt__(self, other):
-<<<<<<< HEAD
         return ivy.greater(self._data, other)
-=======
-        other = to_native(other)
-        res = self._data.__gt__(other)
-        if res is NotImplemented:
-            return res
-        return to_ivy(res)
->>>>>>> upstream/master
+
 
     @_native_wrapper
     def __ge__(self, other):
