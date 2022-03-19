@@ -290,46 +290,7 @@ def zero_pad(x: Union[ivy.Array, ivy.NativeArray], pad_width: Iterable[Tuple[int
     return _cur_framework(x).zero_pad(x, pad_width)
 
 
-def fourier_encode(x: Union[ivy.Array, ivy.NativeArray], max_freq: Union[float, Union[ivy.Array, ivy.NativeArray]],
-                   num_bands: int = 4, linear: bool = False, concat: bool = True, flatten: bool = False)\
-        -> Union[ivy.Array, ivy.NativeArray, Tuple]:
-    """
-    Pads an array with fourier encodings.
 
-    :param x: Input array to encode.
-    :type x: array
-    :param max_freq: The maximum frequency of the encoding.
-    :type max_freq: float
-    :param num_bands: The number of frequency bands for the encoding. Default is 4.
-    :type num_bands: int, optional
-    :param linear: Whether to space the frequency bands linearly as opposed to geometrically. Default is False.
-    :type linear: bool, optional
-    :param concat: Whether to concatenate the position, sin and cos values, or return seperately. Default is True.
-    :type concat: bool, optional
-    :param flatten: Whether to flatten the position dimension into the batch dimension. Default is False.
-    :type flatten: bool, optional
-    :return: New array with the final dimension expanded, and the encodings stored in this channel.
-    """
-    x_in = x
-    dim = x.shape[-1]
-    x = ivy.expand_dims(x, -1)
-    orig_x = x
-    if linear:
-        scales = ivy.linspace(1., max_freq / 2, num_bands, dev=dev(x))
-    else:
-        scales = ivy.logspace(0., ivy.log(max_freq / 2) / math.log(10), num_bands, base=10, dev=dev(x))
-    scales = ivy.cast(scales, ivy.dtype(x))
-    scales = scales[(*((None,) * (len(x.shape) - len(scales.shape))), Ellipsis)]
-    x = x * scales * math.pi
-    sin_x = ivy.sin(x)
-    cos_x = ivy.cos(x)
-    if flatten:
-        orig_x = x_in
-        sin_x = ivy.reshape(sin_x, [-1, num_bands*dim])
-        cos_x = ivy.reshape(cos_x, [-1, num_bands*dim])
-    if concat:
-        return ivy.concatenate([orig_x, sin_x, cos_x], -1)
-    return sin_x, cos_x
 
 
 def swapaxes(x: Union[ivy.Array, ivy.NativeArray], axis0: int, axis1: int)\
@@ -389,39 +350,6 @@ def indices_where(x: Union[ivy.Array, ivy.NativeArray])\
     :return: Indices for where the boolean array is True.
     """
     return _cur_framework(x).indices_where(x)
-
-
-def value_is_nan(x: Union[ivy.Array, ivy.NativeArray, Number], include_infs: bool = True)\
-        -> bool:
-    """
-    Determine whether the single valued array or scalar is of nan type
-
-    :param x: The input to check Input array.
-    :type x: array
-    :param include_infs: Whether to include infs and -infs in the check. Default is True.
-    :type include_infs: bool, optional
-    :return Boolean as to whether the input value is a nan or not.
-    """
-    x_scalar = ivy.to_scalar(x) if ivy.is_array(x) else x
-    if not x_scalar == x_scalar:
-        return True
-    if include_infs and x_scalar == INF or x_scalar == -INF:
-        return True
-    return False
-
-
-def has_nans(x: Union[ivy.Array, ivy.NativeArray], include_infs: bool = True)\
-        -> bool:
-    """
-    Determine whether the array contains any nans, as well as infs or -infs if specified.
-
-    :param x: Input array.
-    :type x: array
-    :param include_infs: Whether to include infs and -infs in the check. Default is True.
-    :type include_infs: bool, optional
-    :return: Boolean as to whether the array contains nans.
-    """
-    return value_is_nan(ivy.sum(x), include_infs)
 
 
 def reshape(x: Union[ivy.Array, ivy.NativeArray], newshape: Union[int, Iterable[int]])\
@@ -729,56 +657,6 @@ def linear_resample(x: Union[ivy.Array, ivy.NativeArray], num_samples: int, axis
     """
     return _cur_framework(x).linear_resample(x, num_samples, axis)
 
-
-def exists(x: Any)\
-        -> bool:
-    """
-    Simple check as to whether the input is None or not.
-
-    :param x: Input to check.
-    :type x: any
-    :return: True if x is not None, else False.
-    """
-    return x is not None
-
-
-def default(x: Any, default_val: Any, catch_exceptions: bool = False, rev: bool = False, with_callable: bool = False)\
-        -> Any:
-    """
-    Returns x provided it exists (is not None), else returns default value.
-
-    :param x: Input which may or may not exist (be None).
-    :type x: value if catch_exceptions=False else callable
-    :param default_val: The default value.
-    :type default_val: any
-    :param catch_exceptions: Whether to catch exceptions from callable x. Default is False.
-    :type catch_exceptions: bool, optional
-    :param rev: Whether to reverse the input x and default_val. Default is False.
-    :type rev: bool, optional
-    :param with_callable: Whether either of the arguments might be callable functions. Default is False.
-    :type with_callable: bool, optional
-    :return: x if x exists (is not None), else default.
-    """
-    with_callable = catch_exceptions or with_callable
-    if rev:
-        tmp = x
-        x = default_val
-        default_val = tmp
-    if with_callable:
-        x_callable = callable(x)
-        default_callable = callable(default_val)
-    else:
-        x_callable = False
-        default_callable = False
-    if catch_exceptions:
-        # noinspection PyBroadException
-        try:
-            x = x() if x_callable else x
-        except Exception:
-            return default_val() if default_callable else default_val
-    else:
-        x = x() if x_callable else x
-    return x if exists(x) else default_val() if default_callable else default_val
 
 
 def try_else_none(fn):
