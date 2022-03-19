@@ -138,6 +138,9 @@
 <li class="toctree-l2"><a class="reference internal" href="general/queue_timeout.html">queue_timeout</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/tmp_dir.html">tmp_dir</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/set_tmp_dir.html">set_tmp_dir</a></li>
+<li class="toctree-l2"><a class="reference internal" href="general/container_types.html">container_types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="general/inplace_arrays_supported.html">inplace_arrays_supported</a></li>
+<li class="toctree-l2"><a class="reference internal" href="general/inplace_variables_supported.html">inplace_variables_supported</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="gradients.html">Gradients</a></li>
@@ -353,6 +356,13 @@ Default is False.</p></li>
 </dd></dl>
 
 <dl class="py function">
+<dt id="ivy.functional.ivy.general.container_types">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">container_types</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/general.html#container_types"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.general.container_types" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return all framework-specific types which should be hierarchically parsed in an ivy.Container. Such types must adopt
+a key-value structure, and exposes public methods .keys(), .values() and items().</p>
+</dd></dl>
+
+<dl class="py function">
 <dt id="ivy.functional.ivy.general.copy_array">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">copy_array</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/general.html#copy_array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.general.copy_array" title="Permalink to this definition">¶</a></dt>
 <dd><p>Copy an array.</p>
@@ -537,6 +547,28 @@ Default is False.</p></li>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>Boolean as to whether the array contains nans.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.general.inplace_arrays_supported">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">inplace_arrays_supported</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/general.html#inplace_arrays_supported"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.general.inplace_arrays_supported" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determine whether inplace arrays are supported for the current backend framework.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Boolean, whether or not inplace arrays are supported.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.general.inplace_variables_supported">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">inplace_variables_supported</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/general.html#inplace_variables_supported"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.general.inplace_variables_supported" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determine whether inplace variables are supported for the current backend framework.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Boolean, whether or not inplace variables are supported.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -818,6 +850,9 @@ Default is False.</p></li>
 <li class="toctree-l1"><a class="reference internal" href="general/queue_timeout.html">queue_timeout</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/tmp_dir.html">tmp_dir</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/set_tmp_dir.html">set_tmp_dir</a></li>
+<li class="toctree-l1"><a class="reference internal" href="general/container_types.html">container_types</a></li>
+<li class="toctree-l1"><a class="reference internal" href="general/inplace_arrays_supported.html">inplace_arrays_supported</a></li>
+<li class="toctree-l1"><a class="reference internal" href="general/inplace_variables_supported.html">inplace_variables_supported</a></li>
 </ul>
 </div>
 </div>

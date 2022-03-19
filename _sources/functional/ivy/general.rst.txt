@@ -52,4 +52,7 @@ General
    general/queue_timeout.rst
    general/tmp_dir.rst
    general/set_tmp_dir.rst
+   general/container_types.rst
+   general/inplace_arrays_supported.rst
+   general/inplace_variables_supported.rst
 

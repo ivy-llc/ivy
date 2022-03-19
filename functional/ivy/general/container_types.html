@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>set_queue_timeout &mdash; Ivy 1.0 documentation</title>
+  <title>container_types &mdash; Ivy 1.0 documentation</title>
   
 
   
@@ -36,8 +36,8 @@
   <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="queue_timeout" href="queue_timeout.html" />
-    <link rel="prev" title="print_all_arrays_in_memory" href="print_all_arrays_in_memory.html" /> 
+    <link rel="next" title="inplace_arrays_supported" href="inplace_arrays_supported.html" />
+    <link rel="prev" title="set_tmp_dir" href="set_tmp_dir.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -134,11 +134,11 @@
 <li class="toctree-l2"><a class="reference internal" href="get_all_arrays_in_memory.html">get_all_arrays_in_memory</a></li>
 <li class="toctree-l2"><a class="reference internal" href="num_arrays_in_memory.html">num_arrays_in_memory</a></li>
 <li class="toctree-l2"><a class="reference internal" href="print_all_arrays_in_memory.html">print_all_arrays_in_memory</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">set_queue_timeout</a></li>
+<li class="toctree-l2"><a class="reference internal" href="set_queue_timeout.html">set_queue_timeout</a></li>
 <li class="toctree-l2"><a class="reference internal" href="queue_timeout.html">queue_timeout</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tmp_dir.html">tmp_dir</a></li>
 <li class="toctree-l2"><a class="reference internal" href="set_tmp_dir.html">set_tmp_dir</a></li>
-<li class="toctree-l2"><a class="reference internal" href="container_types.html">container_types</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">container_types</a></li>
 <li class="toctree-l2"><a class="reference internal" href="inplace_arrays_supported.html">inplace_arrays_supported</a></li>
 <li class="toctree-l2"><a class="reference internal" href="inplace_variables_supported.html">inplace_variables_supported</a></li>
 </ul>
@@ -230,13 +230,13 @@
         
           <li><a href="../general.html">General</a> &raquo;</li>
         
-      <li>set_queue_timeout</li>
+      <li>container_types</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../../_sources/functional/ivy/general/set_queue_timeout.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../../_sources/functional/ivy/general/container_types.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -249,17 +249,13 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="set-queue-timeout">
-<h1>set_queue_timeout<a class="headerlink" href="#set-queue-timeout" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="container-types">
+<h1>container_types<a class="headerlink" href="#container-types" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
-<dt id="ivy.functional.ivy.general.set_queue_timeout">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">set_queue_timeout</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">timeout</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/general.html#set_queue_timeout"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.general.set_queue_timeout" title="Permalink to this definition">¶</a></dt>
-<dd><p>Set the global queue timeout values (in seconds). Default value without this function being called is 10 seconds.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>timeout</strong> (<em>float</em><em>, </em><em>optional</em>) – The timeout to set in seconds.</p>
-</dd>
-</dl>
+<dt id="ivy.functional.ivy.general.container_types">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">container_types</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/general.html#container_types"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.general.container_types" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return all framework-specific types which should be hierarchically parsed in an ivy.Container. Such types must adopt
+a key-value structure, and exposes public methods .keys(), .values() and items().</p>
 </dd></dl>
 
 <div class="line-block">
@@ -277,10 +273,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="queue_timeout.html" class="btn btn-neutral float-right" title="queue_timeout" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="inplace_arrays_supported.html" class="btn btn-neutral float-right" title="inplace_arrays_supported" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="print_all_arrays_in_memory.html" class="btn btn-neutral float-left" title="print_all_arrays_in_memory" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="set_tmp_dir.html" class="btn btn-neutral float-left" title="set_tmp_dir" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
