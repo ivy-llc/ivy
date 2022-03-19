@@ -490,13 +490,3 @@ def multiprocessing(context=None):
 
 
 
-
-def inplace_decrement(x, val):
-    x.data -= val
-    return x
-
-
-def inplace_increment(x, val):
-    x.data += val
-    return x
-

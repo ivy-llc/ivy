@@ -52,3 +52,13 @@ def unstack(x, axis, keepdims=False):
     return [_np.squeeze(item, axis) for item in x_split]
 
 
+def inplace_decrement(x, val):
+    x -= val
+    return x
+
+
+def inplace_increment(x, val):
+    x += val
+    return x
+
+
