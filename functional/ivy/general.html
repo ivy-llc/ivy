@@ -115,6 +115,7 @@
 <li class="toctree-l2"><a class="reference internal" href="general/value_is_nan.html">value_is_nan</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/has_nans.html">has_nans</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/exists.html">exists</a></li>
+<li class="toctree-l2"><a class="reference internal" href="general/default.html">default</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="gradients.html">Gradients</a></li>
@@ -324,6 +325,23 @@ Default is False.</p></li>
 </dd></dl>
 
 <dl class="py function">
+<dt id="ivy.functional.ivy.general.default">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">default</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Any</span></em>, <em class="sig-param"><span class="n">default_val</span><span class="p">:</span> <span class="n">Any</span></em>, <em class="sig-param"><span class="n">catch_exceptions</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">rev</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">with_callable</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span> &#x2192; Any<a class="reference internal" href="../../_modules/ivy/functional/ivy/general.html#default"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.general.default" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns x provided it exists (is not None), else returns default value.
+:param x: Input which may or may not exist (be None).
+:type x: value if catch_exceptions=False else callable
+:param default_val: The default value.
+:type default_val: any
+:param catch_exceptions: Whether to catch exceptions from callable x. Default is False.
+:type catch_exceptions: bool, optional
+:param rev: Whether to reverse the input x and default_val. Default is False.
+:type rev: bool, optional
+:param with_callable: Whether either of the arguments might be callable functions. Default is False.
+:type with_callable: bool, optional
+:return: x if x exists (is not None), else default.</p>
+</dd></dl>
+
+<dl class="py function">
 <dt id="ivy.functional.ivy.general.exists">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">exists</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Any</span></em><span class="sig-paren">)</span> &#x2192; bool<a class="reference internal" href="../../_modules/ivy/functional/ivy/general.html#exists"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.general.exists" title="Permalink to this definition">¶</a></dt>
 <dd><p>Simple check as to whether the input is None or not.</p>
@@ -509,6 +527,7 @@ Default is False.</p></li>
 <li class="toctree-l1"><a class="reference internal" href="general/value_is_nan.html">value_is_nan</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/has_nans.html">has_nans</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/exists.html">exists</a></li>
+<li class="toctree-l1"><a class="reference internal" href="general/default.html">default</a></li>
 </ul>
 </div>
 </div>

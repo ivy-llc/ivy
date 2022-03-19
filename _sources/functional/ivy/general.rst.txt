@@ -29,4 +29,5 @@ General
    general/value_is_nan.rst
    general/has_nans.rst
    general/exists.rst
+   general/default.rst
 

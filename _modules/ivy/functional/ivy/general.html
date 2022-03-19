@@ -538,7 +538,42 @@
     <span class="k">return</span> <span class="n">x</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span></div>
 
 
-
+<div class="viewcode-block" id="default"><a class="viewcode-back" href="../../../../functional/ivy/general/default.html#ivy.functional.ivy.general.default">[docs]</a><span class="k">def</span> <span class="nf">default</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">default_val</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">catch_exceptions</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">rev</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">with_callable</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>\
+        <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns x provided it exists (is not None), else returns default value.</span>
+<span class="sd">    :param x: Input which may or may not exist (be None).</span>
+<span class="sd">    :type x: value if catch_exceptions=False else callable</span>
+<span class="sd">    :param default_val: The default value.</span>
+<span class="sd">    :type default_val: any</span>
+<span class="sd">    :param catch_exceptions: Whether to catch exceptions from callable x. Default is False.</span>
+<span class="sd">    :type catch_exceptions: bool, optional</span>
+<span class="sd">    :param rev: Whether to reverse the input x and default_val. Default is False.</span>
+<span class="sd">    :type rev: bool, optional</span>
+<span class="sd">    :param with_callable: Whether either of the arguments might be callable functions. Default is False.</span>
+<span class="sd">    :type with_callable: bool, optional</span>
+<span class="sd">    :return: x if x exists (is not None), else default.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">with_callable</span> <span class="o">=</span> <span class="n">catch_exceptions</span> <span class="ow">or</span> <span class="n">with_callable</span>
+    <span class="k">if</span> <span class="n">rev</span><span class="p">:</span>
+        <span class="n">tmp</span> <span class="o">=</span> <span class="n">x</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">default_val</span>
+        <span class="n">default_val</span> <span class="o">=</span> <span class="n">tmp</span>
+    <span class="k">if</span> <span class="n">with_callable</span><span class="p">:</span>
+        <span class="n">x_callable</span> <span class="o">=</span> <span class="n">callable</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">default_callable</span> <span class="o">=</span> <span class="n">callable</span><span class="p">(</span><span class="n">default_val</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">x_callable</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">default_callable</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="k">if</span> <span class="n">catch_exceptions</span><span class="p">:</span>
+        <span class="c1"># noinspection PyBroadException</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">x</span><span class="p">()</span> <span class="k">if</span> <span class="n">x_callable</span> <span class="k">else</span> <span class="n">x</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">default_val</span><span class="p">()</span> <span class="k">if</span> <span class="n">default_callable</span> <span class="k">else</span> <span class="n">default_val</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">x</span><span class="p">()</span> <span class="k">if</span> <span class="n">x_callable</span> <span class="k">else</span> <span class="n">x</span>
+    <span class="k">return</span> <span class="n">x</span> <span class="k">if</span> <span class="n">exists</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">else</span> <span class="n">default_val</span><span class="p">()</span> <span class="k">if</span> <span class="n">default_callable</span> <span class="k">else</span> <span class="n">default_val</span></div>
 </pre></div>
 
            </div>
