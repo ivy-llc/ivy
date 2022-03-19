@@ -676,20 +676,6 @@ def set_min_denominator(val: float)\
     ivy._MIN_DENOMINATOR = val
 
 
-def stable_divide(numerator: Any, denominator: Any, min_denominator: float = None) -> Any:
-    """
-    Divide the numerator by the denominator, with min denominator added to the denominator for numerical stability.
-
-    :param numerator: The numerator of the division.
-    :type numerator: any valid numerator, including containers
-    :param denominator: The denominator of the division.
-    :type denominator: any valid denominator, including containers
-    :param min_denominator: The minimum denominator to use, use global ivy._MIN_DENOMINATOR by default.
-    :type min_denominator: float, optional
-    :return: The new item following the numerically stable division.
-    """
-    # noinspection PyProtectedMember
-    return numerator / (denominator + default(min_denominator, ivy._MIN_DENOMINATOR))
 
 
 def get_min_base()\
@@ -712,21 +698,7 @@ def set_min_base(val: float)\
     ivy._MIN_BASE = val
 
 
-def stable_pow(base: Any, exponent: Any, min_base: float = None)\
-        -> Any:
-    """
-    Raise the base by the power, with MIN_BASE added to the base when exponent > 1 for numerical stability.
 
-    :param base: The numerator of the division.
-    :type base: any valid numerator, including containers
-    :param exponent: The denominator of the division.
-    :type exponent: any valid denominator, including containers
-    :param min_base: The minimum base to use, use global ivy._MIN_BASE by default.
-    :type min_base: float, optional
-    :return: The new item following the numerically stable division.
-    """
-    # noinspection PyProtectedMember
-    return (base + default(min_base, ivy._MIN_BASE)) ** exponent
 
 
 def multiprocessing(context: str = None):
