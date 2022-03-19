@@ -213,3 +213,7 @@ def round(x: Tensor)\
     if 'int' in str(x.dtype):
         return x
     return tf.round(x)
+
+def abs(x: Tensor)\
+        -> Tensor:
+    return tf.math.abs(x)

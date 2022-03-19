@@ -187,3 +187,8 @@ def round(x: torch.Tensor)\
     if 'int' in str(x.dtype):
         return x
     return torch.round(x)
+
+
+def abs(x: torch.Tensor)\
+        -> torch.Tensor:
+    return torch.abs(x)
