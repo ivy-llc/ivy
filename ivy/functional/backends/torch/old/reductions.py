@@ -7,13 +7,6 @@ import torch as _torch
 from typing import Optional, List
 
 
-def sum(x, axis: Optional[List[int]] = None, keepdims: bool = False):
-    if axis is None:
-        num_dims = len(x.shape)
-        axis = list(range(num_dims))
-    return _torch.sum(x, dim=axis, keepdim=keepdims)
-
-
 def reduce_prod(x, axis: Optional[List[int]] = None, keepdims: bool = False):
     if axis is None:
         num_dims = len(x.shape)
