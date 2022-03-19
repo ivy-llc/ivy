@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>floormod &mdash; Ivy 1.0 documentation</title>
+  <title>cache_fn &mdash; Ivy 1.0 documentation</title>
   
 
   
@@ -36,8 +36,8 @@
   <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="unstack" href="unstack.html" />
-    <link rel="prev" title="clip_matrix_norm" href="clip_matrix_norm.html" /> 
+    <link rel="next" title="current_framework_str" href="current_framework_str.html" />
+    <link rel="prev" title="match_kwargs" href="match_kwargs.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -109,7 +109,7 @@
 <li class="toctree-l2"><a class="reference internal" href="to_list.html">to_list</a></li>
 <li class="toctree-l2"><a class="reference internal" href="clip_vector_norm.html">clip_vector_norm</a></li>
 <li class="toctree-l2"><a class="reference internal" href="clip_matrix_norm.html">clip_matrix_norm</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">floormod</a></li>
+<li class="toctree-l2"><a class="reference internal" href="floormod.html">floormod</a></li>
 <li class="toctree-l2"><a class="reference internal" href="unstack.html">unstack</a></li>
 <li class="toctree-l2"><a class="reference internal" href="fourier_encode.html">fourier_encode</a></li>
 <li class="toctree-l2"><a class="reference internal" href="value_is_nan.html">value_is_nan</a></li>
@@ -120,7 +120,7 @@
 <li class="toctree-l2"><a class="reference internal" href="try_else_none.html">try_else_none</a></li>
 <li class="toctree-l2"><a class="reference internal" href="arg_names.html">arg_names</a></li>
 <li class="toctree-l2"><a class="reference internal" href="match_kwargs.html">match_kwargs</a></li>
-<li class="toctree-l2"><a class="reference internal" href="cache_fn.html">cache_fn</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">cache_fn</a></li>
 <li class="toctree-l2"><a class="reference internal" href="current_framework_str.html">current_framework_str</a></li>
 </ul>
 </li>
@@ -211,13 +211,13 @@
         
           <li><a href="../general.html">General</a> &raquo;</li>
         
-      <li>floormod</li>
+      <li>cache_fn</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../../_sources/functional/ivy/general/floormod.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../../_sources/functional/ivy/general/cache_fn.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -230,21 +230,18 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="floormod">
-<h1>floormod<a class="headerlink" href="#floormod" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="cache-fn">
+<h1>cache_fn<a class="headerlink" href="#cache-fn" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
-<dt id="ivy.functional.ivy.general.floormod">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">floormod</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">y</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/general.html#floormod"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.general.floormod" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns element-wise remainder of division.</p>
+<dt id="ivy.functional.ivy.general.cache_fn">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">cache_fn</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">func</span><span class="p">:</span> <span class="n">Callable</span></em><span class="sig-paren">)</span> &#x2192; Callable<a class="reference internal" href="../../../_modules/ivy/functional/ivy/general.html#cache_fn"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.general.cache_fn" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wrap a function, such that when cache=True is passed as an argument, a previously cached output is returned.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>array</em>) – Input array to floormod.</p></li>
-<li><p><strong>y</strong> (<em>array</em>) – Denominator input for floormod.</p></li>
-</ul>
+<dd class="field-odd"><p><strong>func</strong> (<em>callable</em>) – The function to wrap, whose output should be cached for later.</p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>An array of the same shape and type as x, with the elements floor modded.</p>
+<dd class="field-even"><p>The newly cache wrapped function.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -264,10 +261,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="unstack.html" class="btn btn-neutral float-right" title="unstack" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="current_framework_str.html" class="btn btn-neutral float-right" title="current_framework_str" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="clip_matrix_norm.html" class="btn btn-neutral float-left" title="clip_matrix_norm" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="match_kwargs.html" class="btn btn-neutral float-left" title="match_kwargs" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

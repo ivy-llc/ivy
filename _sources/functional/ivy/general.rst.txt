@@ -34,4 +34,6 @@ General
    general/try_else_none.rst
    general/arg_names.rst
    general/match_kwargs.rst
+   general/cache_fn.rst
+   general/current_framework_str.rst
 

@@ -120,6 +120,8 @@
 <li class="toctree-l2"><a class="reference internal" href="general/try_else_none.html">try_else_none</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/arg_names.html">arg_names</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/match_kwargs.html">match_kwargs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="general/cache_fn.html">cache_fn</a></li>
+<li class="toctree-l2"><a class="reference internal" href="general/current_framework_str.html">current_framework_str</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="gradients.html">Gradients</a></li>
@@ -285,6 +287,20 @@ Default is False.</p></li>
 </dd></dl>
 
 <dl class="py function">
+<dt id="ivy.functional.ivy.general.cache_fn">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">cache_fn</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">func</span><span class="p">:</span> <span class="n">Callable</span></em><span class="sig-paren">)</span> &#x2192; Callable<a class="reference internal" href="../../_modules/ivy/functional/ivy/general.html#cache_fn"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.general.cache_fn" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wrap a function, such that when cache=True is passed as an argument, a previously cached output is returned.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>func</strong> (<em>callable</em>) – The function to wrap, whose output should be cached for later.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The newly cache wrapped function.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt id="ivy.functional.ivy.general.clip_matrix_norm">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">clip_matrix_norm</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">max_norm</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">p</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">2.0</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/general.html#clip_matrix_norm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.general.clip_matrix_norm" title="Permalink to this definition">¶</a></dt>
 <dd><p>Clips (limits) the matrix norm of an array.</p>
@@ -330,6 +346,17 @@ Default is False.</p></li>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>A copy of the input array.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.general.current_framework_str">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">current_framework_str</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; Optional<span class="p">[</span>str<span class="p">]</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/general.html#current_framework_str"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.general.current_framework_str" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the string of the current globally set framework. Returns None if no framework is set.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The framework string.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -585,6 +612,8 @@ Default is False.</p></li>
 <li class="toctree-l1"><a class="reference internal" href="general/try_else_none.html">try_else_none</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/arg_names.html">arg_names</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/match_kwargs.html">match_kwargs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="general/cache_fn.html">cache_fn</a></li>
+<li class="toctree-l1"><a class="reference internal" href="general/current_framework_str.html">current_framework_str</a></li>
 </ul>
 </div>
 </div>

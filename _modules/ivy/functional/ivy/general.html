@@ -587,6 +587,7 @@
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span></div>
 
+
 <div class="viewcode-block" id="try_else_none"><a class="viewcode-back" href="../../../../functional/ivy/general/try_else_none.html#ivy.functional.ivy.general.try_else_none">[docs]</a><span class="k">def</span> <span class="nf">try_else_none</span><span class="p">(</span><span class="n">fn</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Try and return the function, otherwise return None if an exception was raised during function execution.</span>
@@ -627,6 +628,45 @@
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">split_kwargs</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">split_kwargs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
     <span class="k">return</span> <span class="n">split_kwargs</span></div>
+
+
+<div class="viewcode-block" id="cache_fn"><a class="viewcode-back" href="../../../../functional/ivy/general/cache_fn.html#ivy.functional.ivy.general.cache_fn">[docs]</a><span class="k">def</span> <span class="nf">cache_fn</span><span class="p">(</span><span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">)</span>\
+        <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Wrap a function, such that when cache=True is passed as an argument, a previously cached output is returned.</span>
+
+<span class="sd">    :param func: The function to wrap, whose output should be cached for later.</span>
+<span class="sd">    :type func: callable</span>
+<span class="sd">    :return: The newly cache wrapped function.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">global</span> <span class="n">FN_CACHE</span>
+    <span class="k">if</span> <span class="n">func</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">FN_CACHE</span><span class="p">:</span>
+        <span class="n">FN_CACHE</span><span class="p">[</span><span class="n">func</span><span class="p">]</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">cached_fn</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">key</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;, &#39;</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">args</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="s1">&#39; kw, &#39;</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;, &#39;</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">items</span><span class="p">())])</span>
+        <span class="n">cache</span> <span class="o">=</span> <span class="n">FN_CACHE</span><span class="p">[</span><span class="n">func</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">cache</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">cache</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+        <span class="n">ret</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">cache</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">ret</span>
+        <span class="k">return</span> <span class="n">ret</span>
+
+    <span class="k">return</span> <span class="n">cached_fn</span></div>
+
+
+<div class="viewcode-block" id="current_framework_str"><a class="viewcode-back" href="../../../../functional/ivy/general/current_framework_str.html#ivy.functional.ivy.general.current_framework_str">[docs]</a><span class="k">def</span> <span class="nf">current_framework_str</span><span class="p">()</span>\
+        <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return the string of the current globally set framework. Returns None if no framework is set.</span>
+
+<span class="sd">    :return: The framework string.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">fw</span> <span class="o">=</span> <span class="n">_cur_framework</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">fw</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+    <span class="k">return</span> <span class="n">fw</span><span class="o">.</span><span class="n">current_framework_str</span><span class="p">()</span></div>
 </pre></div>
 
            </div>
