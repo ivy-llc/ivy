@@ -49,9 +49,6 @@ def equal(x1: Union[ivy.Array, ivy.NativeArray], x2: Union[ivy.Array, ivy.Native
     return _cur_framework(x1, x2).equal(x1, x2)
 
 
-
-
-
 def shape(x: Union[ivy.Array, ivy.NativeArray], as_array: bool = False)\
         -> Iterable[int]:
     """

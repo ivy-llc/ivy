@@ -129,6 +129,14 @@ def logical_not(x: torch.Tensor)\
     return torch.logical_not(x.type(torch.bool))
 
 
+def greater_equal(x1: torch.Tensor, x2: torch.Tensor):
+    if hasattr(x1, 'dtype') and hasattr(x2, 'dtype'):
+        promoted_type = torch.promote_types(x1.dtype, x2.dtype)
+        x1 = x1.to(promoted_type)
+        x2 = x2.to(promoted_type)
+    return torch.greater_equal(x1, x2)
+
+
 def acos(x: torch.Tensor)\
         -> torch.Tensor:
     return torch.acos(x)
@@ -181,6 +189,7 @@ def positive(x: torch.Tensor)\
 def square(x: torch.Tensor) \
         -> torch.Tensor:
     return torch.square(x)
+
 
 def round(x: torch.Tensor)\
         -> torch.Tensor:
