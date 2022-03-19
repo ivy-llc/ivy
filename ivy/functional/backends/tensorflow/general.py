@@ -46,3 +46,8 @@ def unstack(x, axis, keepdims=False):
     if keepdims:
         return [_tf.expand_dims(r, axis) for r in ret]
     return ret
+
+container_types = lambda: []
+
+inplace_arrays_supported = lambda: False
+inplace_variables_supported = lambda: True

@@ -48,7 +48,7 @@ to_list.__name__ = 'to_list'
 def floormod(x, y):
     return x % y
 
-
+container_types = lambda: []
 
 
 def unstack(x, axis, keepdims=False):
@@ -57,3 +57,7 @@ def unstack(x, axis, keepdims=False):
     num_outputs = x.shape[axis]
     ret = _mx.nd.split(x, num_outputs, axis, squeeze_axis=not keepdims)
     return ret if isinstance(ret, list) else [ret]
+
+
+inplace_arrays_supported = lambda: True
+inplace_variables_supported = lambda: True
