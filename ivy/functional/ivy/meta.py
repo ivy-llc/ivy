@@ -361,4 +361,4 @@ def maml_step(batch, inner_cost_fn, outer_cost_fn, variables, inner_grad_steps, 
     if stop_gradients:
         cost = ivy.stop_gradient(cost, preserve_type=False)
     # noinspection PyRedundantParentheses
-    return (cost, grads.reduce_sum(0), *rets)
+    return (cost, grads.sum(0), *rets)

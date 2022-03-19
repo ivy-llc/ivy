@@ -7,7 +7,7 @@ import ivy
 from ivy.framework_handler import current_framework as _cur_framework
 
 
-def reduce_sum(x, axis=None, keepdims=False):
+def sum(x, axis=None, keepdims=False):
     """
     Computes sum of array elements along a given axis.
 
@@ -23,7 +23,7 @@ def reduce_sum(x, axis=None, keepdims=False):
     :type keepdims: bool, optional
     :return: The array with sums computed.
     """
-    return _cur_framework(x).reduce_sum(x, axis, keepdims)
+    return _cur_framework(x).sum(x, axis, keepdims)
 
 
 def reduce_prod(x, axis=None, keepdims=False):
