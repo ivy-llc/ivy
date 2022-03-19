@@ -104,7 +104,7 @@ def _train_tasks_batched(batch, inner_batch_fn, outer_batch_fn, inner_cost_fn, o
                                            inner_grad_steps, inner_learning_rate, inner_optimization_step, order,
                                            average_across_steps, inner_v, keep_innver_v, outer_v, keep_outer_v, True,
                                            num_tasks, stop_gradients)
-    grads = grads.reduce_mean(0) if isinstance(grads, ivy.Container) else grads
+    grads = grads.mean(0) if isinstance(grads, ivy.Container) else grads
     if order == 1:
         if return_inner_v in ['all', True]:
             return cost, grads, updated_ivs
