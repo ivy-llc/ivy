@@ -49,9 +49,6 @@ def equal(x1: Union[ivy.Array, ivy.NativeArray], x2: Union[ivy.Array, ivy.Native
     return _cur_framework(x1, x2).equal(x1, x2)
 
 
-
-
-
 def shape(x: Union[ivy.Array, ivy.NativeArray], as_array: bool = False)\
         -> Iterable[int]:
     """
@@ -681,29 +678,3 @@ def multiprocessing(context: str = None):
 
 
 
-
-
-def inplace_decrement(x, val, f=None):
-    """
-    Perform in-place decrement for the input variable.
-
-    :param x: The variable to decrement.
-    :type x: variable
-    :param val: The array to decrement the variable with.
-    :type val: array
-    :return: The variable following the in-place decrement.
-    """
-    return _cur_framework(x).inplace_decrement(x, val)
-
-
-def inplace_increment(x, val, f=None):
-    """
-    Perform in-place increment for the input variable.
-
-    :param x: The variable to increment.
-    :type x: variable
-    :param val: The array to increment the variable with.
-    :type val: array
-    :return: The variable following the in-place increment.
-    """
-    return _cur_framework(x).inplace_increment(x, val)

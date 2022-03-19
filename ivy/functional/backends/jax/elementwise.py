@@ -50,6 +50,11 @@ def equal(x1: JaxArray, x2: JaxArray)\
     return x1 == x2
 
 
+def greater_equal(x1: JaxArray, x2: JaxArray)\
+        -> JaxArray:
+    return jnp.greater_equal(x1, x2)
+
+
 def less_equal(x1: JaxArray, x2: JaxArray)\
         -> JaxArray:
     return x1 <= x2

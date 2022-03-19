@@ -93,6 +93,7 @@ def cast(x, dtype):
 astype = cast
 
 
+
 # noinspection PyShadowingNames
 def arange(stop, start=0, step=1, dtype=None, dev=None):
     dtype = _tf.__dict__[dtype] if dtype else dtype
@@ -367,19 +368,4 @@ multiprocessing = lambda context=None: _multiprocessing if context is None else 
 
 
 
-
-
-
-def inplace_decrement(x, val):
-    if ivy.is_variable(x):
-        x.assign(x - val)
-        return x
-    raise Exception('TensorFlow does not support inplace operations on non-Variable tensors')
-
-
-def inplace_increment(x, val):
-    if ivy.is_variable(x):
-        x.assign(x + val)
-        return x
-    raise Exception('TensorFlow does not support inplace operations on non-Variable tensors')
 

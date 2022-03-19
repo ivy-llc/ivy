@@ -33,9 +33,6 @@ def dtype_bits(dtype_in):
         'float', ''))
 
 
-
-
-
 def shape(x, as_tensor=False) -> Union[_torch.Tensor, List[int]]:
     return _torch.tensor(x.shape) if as_tensor else x.shape
 
@@ -489,14 +486,4 @@ def multiprocessing(context=None):
     return torch.multiprocessing.get_context(context)
 
 
-
-
-def inplace_decrement(x, val):
-    x.data -= val
-    return x
-
-
-def inplace_increment(x, val):
-    x.data += val
-    return x
 
