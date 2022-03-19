@@ -345,6 +345,32 @@
     <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dtype_in</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)):</span>
         <span class="k">return</span> <span class="kc">True</span> <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">nested_indices_where</span><span class="p">(</span><span class="n">dtype_in</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">floating</span><span class="p">)))</span> <span class="k">else</span> <span class="kc">False</span>
     <span class="k">return</span> <span class="s1">&#39;float&#39;</span> <span class="ow">in</span> <span class="n">dtype_to_str</span><span class="p">(</span><span class="n">dtype_in</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="valid_dtype"><a class="viewcode-back" href="../../../../functional/ivy/data_type/valid_dtype.html#ivy.functional.ivy.data_type.valid_dtype">[docs]</a><span class="k">def</span> <span class="nf">valid_dtype</span><span class="p">(</span><span class="n">dtype_in</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">])</span>\
+        <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Determines whether the provided data type is support by the current framework.</span>
+
+<span class="sd">    :param dtype_in: The data type for which to check for backend support</span>
+<span class="sd">    :return: Boolean, whether or not the data-type string is supported.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">dtype_in</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">True</span>
+    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">dtype_to_str</span><span class="p">(</span><span class="n">dtype_in</span><span class="p">)</span> <span class="ow">in</span> <span class="n">ivy</span><span class="o">.</span><span class="n">valid_dtype_strs</span></div>
+
+
+<div class="viewcode-block" id="invalid_dtype"><a class="viewcode-back" href="../../../../functional/ivy/data_type/invalid_dtype.html#ivy.functional.ivy.data_type.invalid_dtype">[docs]</a><span class="k">def</span> <span class="nf">invalid_dtype</span><span class="p">(</span><span class="n">dtype_in</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">])</span>\
+        <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Determines whether the provided data type is not support by the current framework.</span>
+
+<span class="sd">    :param dtype_in: The data type for which to check for backend non-support</span>
+<span class="sd">    :return: Boolean, whether the data-type string is un-supported.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">dtype_in</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">dtype_to_str</span><span class="p">(</span><span class="n">dtype_in</span><span class="p">)</span> <span class="ow">in</span> <span class="n">ivy</span><span class="o">.</span><span class="n">invalid_dtype_strs</span></div>
 </pre></div>
 
            </div>
