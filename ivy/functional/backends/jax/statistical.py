@@ -14,7 +14,7 @@ def min(x: jnp.ndarray,
 
 
 def sum(x: jnp.ndarray,
-        axis= Union[int,Tuple[int]],
+        axis: Union[int,Tuple[int]] = None,
         keepdims: bool = False)\
             -> jnp.ndarray:
     if axis is None:
