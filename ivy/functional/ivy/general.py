@@ -468,3 +468,53 @@ def current_framework_str()\
     if fw is None:
         return None
     return fw.current_framework_str()
+
+
+def einops_rearrange(x: Union[ivy.Array, ivy.NativeArray], pattern: str, **axes_lengths: Dict[str, int])\
+        -> Union[ivy.Array, ivy.NativeArray]:
+    """
+    Perform einops rearrange operation on input array x.
+
+    :param x: Input array to be re-arranged.
+    :type x: array
+    :param pattern: Rearrangement pattern.
+    :type pattern: str
+    :param axes_lengths: Any additional specifications for dimensions.
+    :type axes_lengths: keyword parameter args
+    :return: New array with einops.rearrange having been applied.
+    """
+    return einops.rearrange(x, pattern, **axes_lengths)
+
+
+def einops_reduce(x: Union[ivy.Array, ivy.NativeArray], pattern: str, reduction: Union[str, Callable],
+                  **axes_lengths: Dict[str, int]) -> Union[ivy.Array, ivy.NativeArray]:
+    """
+    Perform einops reduce operation on input array x.
+
+    :param x: Input array to be reduced.
+    :type x: array
+    :param pattern: Reduction pattern.
+    :type pattern: str
+    :param reduction: One of available reductions ('min', 'max', 'sum', 'mean', 'prod'), or callable.
+    :type reduction: str or callable
+    :param axes_lengths: Any additional specifications for dimensions.
+    :type axes_lengths: keyword parameter args
+    :return: New array with einops.reduce having been applied.
+    """
+    return einops.reduce(x, pattern, reduction, **axes_lengths)
+
+
+def einops_repeat(x: Union[ivy.Array, ivy.NativeArray], pattern: str, **axes_lengths: Dict[str, int])\
+        -> Union[ivy.Array, ivy.NativeArray]:
+    """
+    Perform einops repeat operation on input array x.
+
+    :param x: Input array to be repeated.
+    :type x: array
+    :param pattern: Rearrangement pattern.
+    :type pattern: str
+    :param axes_lengths: Any additional specifications for dimensions.
+    :type axes_lengths: keyword parameter args
+    :return: New array with einops.repeat having been applied.
+    """
+    return einops.repeat(x, pattern, **axes_lengths)
