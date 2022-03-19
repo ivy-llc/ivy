@@ -33,26 +33,6 @@ def dtype_bits(dtype_in):
         'float', ''))
 
 
-def equal(x1, x2):
-    x1_bits = dtype_bits(x1.dtype)
-    if isinstance(x2, (int, float, bool)):
-        return x1 == x2
-    x2_bits = dtype_bits(x2.dtype)
-    if x1_bits > x2_bits:
-        x2 = x2.type(x1.dtype)
-    elif x2_bits > x1_bits:
-        x1 = x1.type(x2.dtype)
-    return x1 == x2
-
-
-def to_numpy(x) -> np.ndarray:
-    if isinstance(x, np.ndarray) or isinstance(x, (float, int, bool)):
-        return x
-    elif _torch.is_tensor(x):
-        return x.detach().cpu().numpy()
-    raise ValueError('Expected a pytroch tensor.')
-
-
 def shape(x, as_tensor=False) -> Union[_torch.Tensor, List[int]]:
     return _torch.tensor(x.shape) if as_tensor else x.shape
 
