@@ -4,6 +4,9 @@ import jax.numpy as jnp
 # local
 from ivy.functional.backends.jax import JaxArray
 
+def expm1(x: JaxArray)\
+        -> JaxArray:
+    return jnp.expm1(x)
 
 def bitwise_invert(x: JaxArray)\
         -> JaxArray:
