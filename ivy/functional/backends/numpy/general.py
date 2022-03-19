@@ -30,6 +30,13 @@ container_types = lambda: []
 inplace_arrays_supported = lambda: True
 inplace_variables_supported = lambda: True
 
+
+
+def inplace_update(x, val):
+    x.data = val
+    return x
+
+
 def is_array(x, exclusive=False):
     if isinstance(x, _np.ndarray):
         return True
