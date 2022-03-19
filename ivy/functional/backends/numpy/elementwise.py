@@ -167,3 +167,7 @@ def bitwise_or(x1: np.ndarray , x2: np.ndarray) \
         x1 = x1.astype(dtype)
         x2 = x2.astype(dtype)
     return np.bitwise_or(x1, x2)
+
+
+def logaddexp(x1: np.ndarray, x2: np.ndarray) -> np.ndarray:
+    return np.logaddexp(x1, x2)
