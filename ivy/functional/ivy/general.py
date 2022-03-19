@@ -251,4 +251,92 @@ def unstack(x: Union[ivy.Array, ivy.NativeArray], axis: int, keepdims: bool = Fa
     return _cur_framework(x).unstack(x, axis, keepdims)
 
 
+def fourier_encode(x: Union[ivy.Array, ivy.NativeArray], max_freq: Union[float, Union[ivy.Array, ivy.NativeArray]],
+                   num_bands: int = 4, linear: bool = False, concat: bool = True, flatten: bool = False)\
+        -> Union[ivy.Array, ivy.NativeArray, Tuple]:
+    """
+    Pads an array with fourier encodings.
+
+    :param x: Input array to encode.
+    :type x: array
+    :param max_freq: The maximum frequency of the encoding.
+    :type max_freq: float
+    :param num_bands: The number of frequency bands for the encoding. Default is 4.
+    :type num_bands: int, optional
+    :param linear: Whether to space the frequency bands linearly as opposed to geometrically. Default is False.
+    :type linear: bool, optional
+    :param concat: Whether to concatenate the position, sin and cos values, or return seperately. Default is True.
+    :type concat: bool, optional
+    :param flatten: Whether to flatten the position dimension into the batch dimension. Default is False.
+    :type flatten: bool, optional
+    :return: New array with the final dimension expanded, and the encodings stored in this channel.
+    """
+    x_in = x
+    dim = x.shape[-1]
+    x = ivy.expand_dims(x, -1)
+    orig_x = x
+    if linear:
+        scales = ivy.linspace(1., max_freq / 2, num_bands, dev=dev(x))
+    else:
+        scales = ivy.logspace(0., ivy.log(max_freq / 2) / math.log(10), num_bands, base=10, dev=dev(x))
+    scales = ivy.cast(scales, ivy.dtype(x))
+    scales = scales[(*((None,) * (len(x.shape) - len(scales.shape))), Ellipsis)]
+    x = x * scales * math.pi
+    sin_x = ivy.sin(x)
+    cos_x = ivy.cos(x)
+    if flatten:
+        orig_x = x_in
+        sin_x = ivy.reshape(sin_x, [-1, num_bands*dim])
+        cos_x = ivy.reshape(cos_x, [-1, num_bands*dim])
+    if concat:
+        return ivy.concatenate([orig_x, sin_x, cos_x], -1)
+    return sin_x, cos_x
+
+
+
+def value_is_nan(x: Union[ivy.Array, ivy.NativeArray, Number], include_infs: bool = True)\
+        -> bool:
+    """
+    Determine whether the single valued array or scalar is of nan type
+
+    :param x: The input to check Input array.
+    :type x: array
+    :param include_infs: Whether to include infs and -infs in the check. Default is True.
+    :type include_infs: bool, optional
+    :return Boolean as to whether the input value is a nan or not.
+    """
+    x_scalar = ivy.to_scalar(x) if ivy.is_array(x) else x
+    if not x_scalar == x_scalar:
+        return True
+    if include_infs and x_scalar == INF or x_scalar == -INF:
+        return True
+    return False
+
+
+def has_nans(x: Union[ivy.Array, ivy.NativeArray], include_infs: bool = True)\
+        -> bool:
+    """
+    Determine whether the array contains any nans, as well as infs or -infs if specified.
+
+    :param x: Input array.
+    :type x: array
+    :param include_infs: Whether to include infs and -infs in the check. Default is True.
+    :type include_infs: bool, optional
+    :return: Boolean as to whether the array contains nans.
+    """
+    return value_is_nan(ivy.reduce_sum(x), include_infs)
+
+
+def exists(x: Any)\
+        -> bool:
+    """
+    Simple check as to whether the input is None or not.
+
+    :param x: Input to check.
+    :type x: any
+    :return: True if x is not None, else False.
+    """
+    return x is not None
+
+
 
