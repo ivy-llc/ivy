@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>exists &mdash; Ivy 1.0 documentation</title>
+  <title>set_tmp_dir &mdash; Ivy 1.0 documentation</title>
   
 
   
@@ -36,8 +36,8 @@
   <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="default" href="default.html" />
-    <link rel="prev" title="has_nans" href="has_nans.html" /> 
+    <link rel="next" title="Gradients" href="../gradients.html" />
+    <link rel="prev" title="tmp_dir" href="tmp_dir.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -114,7 +114,7 @@
 <li class="toctree-l2"><a class="reference internal" href="fourier_encode.html">fourier_encode</a></li>
 <li class="toctree-l2"><a class="reference internal" href="value_is_nan.html">value_is_nan</a></li>
 <li class="toctree-l2"><a class="reference internal" href="has_nans.html">has_nans</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">exists</a></li>
+<li class="toctree-l2"><a class="reference internal" href="exists.html">exists</a></li>
 <li class="toctree-l2"><a class="reference internal" href="default.html">default</a></li>
 <li class="toctree-l2"><a class="reference internal" href="shape_to_tuple.html">shape_to_tuple</a></li>
 <li class="toctree-l2"><a class="reference internal" href="try_else_none.html">try_else_none</a></li>
@@ -137,7 +137,7 @@
 <li class="toctree-l2"><a class="reference internal" href="set_queue_timeout.html">set_queue_timeout</a></li>
 <li class="toctree-l2"><a class="reference internal" href="queue_timeout.html">queue_timeout</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tmp_dir.html">tmp_dir</a></li>
-<li class="toctree-l2"><a class="reference internal" href="set_tmp_dir.html">set_tmp_dir</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">set_tmp_dir</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../gradients.html">Gradients</a></li>
@@ -227,13 +227,13 @@
         
           <li><a href="../general.html">General</a> &raquo;</li>
         
-      <li>exists</li>
+      <li>set_tmp_dir</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../../_sources/functional/ivy/general/exists.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../../_sources/functional/ivy/general/set_tmp_dir.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -246,20 +246,12 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="exists">
-<h1>exists<a class="headerlink" href="#exists" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="set-tmp-dir">
+<h1>set_tmp_dir<a class="headerlink" href="#set-tmp-dir" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
-<dt id="ivy.functional.ivy.general.exists">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">exists</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Any</span></em><span class="sig-paren">)</span> &#x2192; bool<a class="reference internal" href="../../../_modules/ivy/functional/ivy/general.html#exists"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.general.exists" title="Permalink to this definition">¶</a></dt>
-<dd><p>Simple check as to whether the input is None or not.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>x</strong> (<em>any</em>) – Input to check.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>True if x is not None, else False.</p>
-</dd>
-</dl>
+<dt id="ivy.functional.ivy.general.set_tmp_dir">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">set_tmp_dir</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tmp_dr</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/general.html#set_tmp_dir"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.general.set_tmp_dir" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the directory for saving temporary files.</p>
 </dd></dl>
 
 <div class="line-block">
@@ -277,10 +269,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="default.html" class="btn btn-neutral float-right" title="default" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="../gradients.html" class="btn btn-neutral float-right" title="Gradients" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="has_nans.html" class="btn btn-neutral float-left" title="has_nans" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="tmp_dir.html" class="btn btn-neutral float-left" title="tmp_dir" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

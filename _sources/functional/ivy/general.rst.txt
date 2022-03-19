@@ -48,4 +48,8 @@ General
    general/get_all_arrays_in_memory.rst
    general/num_arrays_in_memory.rst
    general/print_all_arrays_in_memory.rst
+   general/set_queue_timeout.rst
+   general/queue_timeout.rst
+   general/tmp_dir.rst
+   general/set_tmp_dir.rst
 

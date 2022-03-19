@@ -134,6 +134,10 @@
 <li class="toctree-l2"><a class="reference internal" href="general/get_all_arrays_in_memory.html">get_all_arrays_in_memory</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/num_arrays_in_memory.html">num_arrays_in_memory</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/print_all_arrays_in_memory.html">print_all_arrays_in_memory</a></li>
+<li class="toctree-l2"><a class="reference internal" href="general/set_queue_timeout.html">set_queue_timeout</a></li>
+<li class="toctree-l2"><a class="reference internal" href="general/queue_timeout.html">queue_timeout</a></li>
+<li class="toctree-l2"><a class="reference internal" href="general/tmp_dir.html">tmp_dir</a></li>
+<li class="toctree-l2"><a class="reference internal" href="general/set_tmp_dir.html">set_tmp_dir</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="gradients.html">Gradients</a></li>
@@ -585,6 +589,12 @@ Default is False.</p></li>
 </dd></dl>
 
 <dl class="py function">
+<dt id="ivy.functional.ivy.general.queue_timeout">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">queue_timeout</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/general.html#queue_timeout"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.general.queue_timeout" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the global queue timeout values (in seconds). Default value without this function being called is 10 seconds.</p>
+</dd></dl>
+
+<dl class="py function">
 <dt id="ivy.functional.ivy.general.set_min_base">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">set_min_base</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">val</span><span class="p">:</span> <span class="n">float</span></em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="../../_modules/ivy/functional/ivy/general.html#set_min_base"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.general.set_min_base" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set the global minimum base used by ivy for numerically stable power raising.</p>
@@ -604,6 +614,23 @@ Default is False.</p></li>
 <dd class="field-odd"><p><strong>val</strong> (<em>float</em>) – The new value to set the minimum denominator to.</p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.general.set_queue_timeout">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">set_queue_timeout</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">timeout</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/general.html#set_queue_timeout"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.general.set_queue_timeout" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the global queue timeout values (in seconds). Default value without this function being called is 10 seconds.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>timeout</strong> (<em>float</em><em>, </em><em>optional</em>) – The timeout to set in seconds.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.general.set_tmp_dir">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">set_tmp_dir</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tmp_dr</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/general.html#set_tmp_dir"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.general.set_tmp_dir" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the directory for saving temporary files.</p>
 </dd></dl>
 
 <dl class="py function">
@@ -654,6 +681,12 @@ Default is False.</p></li>
 <dd class="field-even"><p>The new item following the numerically stable division.</p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.general.tmp_dir">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">tmp_dir</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/general.html#tmp_dir"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.general.tmp_dir" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the directory for saving temporary files.</p>
 </dd></dl>
 
 <dl class="py function">
@@ -781,6 +814,10 @@ Default is False.</p></li>
 <li class="toctree-l1"><a class="reference internal" href="general/get_all_arrays_in_memory.html">get_all_arrays_in_memory</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/num_arrays_in_memory.html">num_arrays_in_memory</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/print_all_arrays_in_memory.html">print_all_arrays_in_memory</a></li>
+<li class="toctree-l1"><a class="reference internal" href="general/set_queue_timeout.html">set_queue_timeout</a></li>
+<li class="toctree-l1"><a class="reference internal" href="general/queue_timeout.html">queue_timeout</a></li>
+<li class="toctree-l1"><a class="reference internal" href="general/tmp_dir.html">tmp_dir</a></li>
+<li class="toctree-l1"><a class="reference internal" href="general/set_tmp_dir.html">set_tmp_dir</a></li>
 </ul>
 </div>
 </div>
