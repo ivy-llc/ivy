@@ -32,9 +32,10 @@ def expand_dims(x: Tensor,
     except tf.errors.InvalidArgumentError as error:
         raise IndexError(error)
 
-
-# Extra #
-# ------#
+def permute_dims(x: Tensor,
+                axes: Tuple[int,...]) \
+        -> Tensor:
+    return tf.transpose(x,perm=axes)
 
 
 def split(x, num_or_size_splits=None, axis=0, with_remainder=False):
@@ -65,3 +66,4 @@ def tile(x, reps):
     if isinstance(reps, Tensor) and reps.shape == ():
         reps = tf.reshape(reps, (-1,))
     return tf.tile(x, reps)
+
