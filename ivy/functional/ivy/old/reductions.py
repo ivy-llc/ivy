@@ -77,3 +77,21 @@ def einsum(equation, *operands):
     :return: The array with sums computed.
     """
     return _cur_framework(operands[0]).einsum(equation, *operands)
+
+def reduce_prod(x, axis=None, keepdims=False):
+    """
+    Multiplies array elements along a given axis.
+
+    :param x: Elements to multiply.
+    :type x: array
+    :param axis: Axis or axes along which a multiplication is performed. The default, axis=None, will multiply all of
+                 the elements of the input array. If axis is negative it counts from the last to the first axis.
+                 If axis is a tuple of ints, a multiplication is performed on all of the axes specified in the tuple
+                 instead of a single axis or all the axes as before.
+    :type axis: int or sequence of ints
+    :param keepdims: If this is set to True, the axes which are reduced are left in the result as dimensions with size
+                        one. With this option, the result will broadcast correctly against the input array.
+    :type keepdims: bool, optional
+    :return: The array with multiplications computed.
+    """
+    return _cur_framework(x).reduce_prod(x, axis, keepdims)
