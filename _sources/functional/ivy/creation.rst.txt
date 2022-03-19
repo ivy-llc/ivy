@@ -21,6 +21,7 @@ Creation
    creation/triu.rst
    creation/empty.rst
    creation/empty_like.rst
+   creation/eye.rst
    creation/linspace.rst
    creation/array.rst
    creation/logspace.rst
