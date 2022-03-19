@@ -96,6 +96,11 @@ def trace(x: np.ndarray,
     return np.trace(x, offset)
 
 
+def det(x:np.array) \
+    -> np.array:
+    return np.linalg.det(x)
+
+
 # Extra #
 # ------#
 
