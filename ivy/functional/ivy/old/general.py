@@ -656,46 +656,6 @@ def linear_resample(x: Union[ivy.Array, ivy.NativeArray], num_samples: int, axis
 
 
 
-def get_min_denominator()\
-        -> float:
-    """
-    Get the global minimum denominator used by ivy for numerically stable division.
-    """
-    # noinspection PyProtectedMember
-    return ivy._MIN_DENOMINATOR
-
-
-def set_min_denominator(val: float)\
-        -> None:
-    """
-    Set the global minimum denominator used by ivy for numerically stable division.
-
-    :param val: The new value to set the minimum denominator to.
-    :type val: float
-    """
-    ivy._MIN_DENOMINATOR = val
-
-
-
-
-def get_min_base()\
-        -> float:
-    """
-    Get the global minimum base used by ivy for numerically stable power raising.
-    """
-    # noinspection PyProtectedMember
-    return ivy._MIN_BASE
-
-
-def set_min_base(val: float)\
-        -> None:
-    """
-    Set the global minimum base used by ivy for numerically stable power raising.
-
-    :param val: The new value to set the minimum base to.
-    :type val: float
-    """
-    ivy._MIN_BASE = val
 
 
 
