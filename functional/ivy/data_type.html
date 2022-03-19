@@ -104,6 +104,7 @@
 <li class="toctree-l2"><a class="reference internal" href="data_type/is_float_dtype.html">is_float_dtype</a></li>
 <li class="toctree-l2"><a class="reference internal" href="data_type/valid_dtype.html">valid_dtype</a></li>
 <li class="toctree-l2"><a class="reference internal" href="data_type/invalid_dtype.html">invalid_dtype</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data_type/convert_dtype.html">convert_dtype</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="device.html">Device</a></li>
@@ -215,6 +216,23 @@
             
   <div class="section" id="module-ivy.functional.ivy.data_type">
 <span id="data-type"></span><h1>Data type<a class="headerlink" href="#module-ivy.functional.ivy.data_type" title="Permalink to this headline">¶</a></h1>
+<dl class="py function">
+<dt id="ivy.functional.ivy.data_type.convert_dtype">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">convert_dtype</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dtype_in</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.Dtype<span class="p">, </span>str<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">backend</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span> &#x2192; ivy.Dtype<a class="reference internal" href="../../_modules/ivy/functional/ivy/data_type.html#convert_dtype"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.data_type.convert_dtype" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts a data type from one backend framework representation to another.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dtype_in</strong> (<em>data type</em>) – The data-type to convert, in the specified backend representation</p></li>
+<li><p><strong>backend</strong> (<em>str</em>) – The backend framework the dtype_in is represented in.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The data-type in the current ivy backend format</p>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py function">
 <dt id="ivy.functional.ivy.data_type.dtype">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">dtype</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">as_str</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span> &#x2192; ivy.Dtype<a class="reference internal" href="../../_modules/ivy/functional/ivy/data_type.html#dtype"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.data_type.dtype" title="Permalink to this definition">¶</a></dt>
@@ -380,6 +398,7 @@ smallest representable number.</p></li>
 <li class="toctree-l1"><a class="reference internal" href="data_type/is_float_dtype.html">is_float_dtype</a></li>
 <li class="toctree-l1"><a class="reference internal" href="data_type/valid_dtype.html">valid_dtype</a></li>
 <li class="toctree-l1"><a class="reference internal" href="data_type/invalid_dtype.html">invalid_dtype</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data_type/convert_dtype.html">convert_dtype</a></li>
 </ul>
 </div>
 </div>

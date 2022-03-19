@@ -21,4 +21,5 @@ Data type
    data_type/is_float_dtype.rst
    data_type/valid_dtype.rst
    data_type/invalid_dtype.rst
+   data_type/convert_dtype.rst
 
