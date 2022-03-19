@@ -389,10 +389,6 @@ multiprocessing = lambda context=None: _multiprocessing if context is None else 
 
 
 
-def inplace_update(x, val):
-    x.data = val
-    return x
-
 
 def inplace_decrement(x, val):
     x -= val
