@@ -655,3 +655,32 @@ def set_tmp_dir(tmp_dr):
     """
     global TMP_DIR
     TMP_DIR = tmp_dr
+
+def container_types():
+    """
+    Return all framework-specific types which should be hierarchically parsed in an ivy.Container. Such types must adopt
+    a key-value structure, and exposes public methods .keys(), .values() and items().
+    """
+    # noinspection PyBroadException
+    try:
+        return _cur_framework().container_types()
+    except ValueError:
+        return []
+
+
+def inplace_arrays_supported(f=None):
+    """
+    Determine whether inplace arrays are supported for the current backend framework.
+
+    :return: Boolean, whether or not inplace arrays are supported.
+    """
+    return _cur_framework().inplace_arrays_supported()
+
+
+def inplace_variables_supported(f=None):
+    """
+    Determine whether inplace variables are supported for the current backend framework.
+
+    :return: Boolean, whether or not inplace variables are supported.
+    """
+    return _cur_framework().inplace_variables_supported()
