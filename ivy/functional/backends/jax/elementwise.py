@@ -50,6 +50,11 @@ def equal(x1: JaxArray, x2: JaxArray)\
     return x1 == x2
 
 
+def greater_equal(x1: JaxArray, x2: JaxArray)\
+        -> JaxArray:
+    return jnp.greater_equal(x1, x2)
+
+
 def less_equal(x1: JaxArray, x2: JaxArray)\
         -> JaxArray:
     return x1 <= x2
@@ -142,13 +147,29 @@ def not_equal(x1: JaxArray, x2: JaxArray)\
 def tanh(x: JaxArray)\
         -> JaxArray:
     return jnp.tanh(x)
-  
-  
+
+
+def bitwise_or(x1: JaxArray, x2: JaxArray) -> JaxArray:
+    return jnp.bitwise_or(x1, x2)
+
+
 def sinh(x: JaxArray)\
         -> JaxArray:
     return jnp.sinh(x)
 
 
+def positive(x: JaxArray)\
+        -> JaxArray:
+    return jnp.positive(x)
+
+    
 def square(x: JaxArray) \
         -> JaxArray:
     return jnp.square(x)
+
+
+def round(x: JaxArray)\
+        -> JaxArray:
+    if 'int' in str(x.dtype):
+        return x
+    return jnp.round(x)

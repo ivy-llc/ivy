@@ -170,6 +170,19 @@ def isinf(x: Union[ivy.Array, ivy.NativeArray])\
     return _cur_framework(x).isinf(x)
 
 
+def greater_equal(x1: Union[ivy.Array, ivy.NativeArray], x2: Union[ivy.Array, ivy.NativeArray])\
+        -> ivy.Array:
+    """
+    Computes the truth value of x1_i >= x2_i for each element x1_i of the input array x1 with the respective
+    element x2_i of the input array x2.
+
+    :param x1: first input array. May have any data type.
+    :param x2: second input array. Must be compatible with x1 (with Broadcasting). May have any data type.
+    :return: an array containing the element-wise results. The returned array must have a data type of bool.
+    """
+    return _cur_framework(x1, x2).greater_equal(x1, x2)
+
+
 def less_equal(x1: Union[ivy.Array, ivy.NativeArray], x2: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
     """
     Computes the truth value of x1_i <= x2_i for each element x1_i of the input array x1 with the respective
@@ -596,7 +609,28 @@ def tanh(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
     """
     return _cur_framework(x).tanh(x)
 
-  
+
+def bitwise_or(x1: Union[ivy.Array, ivy.NativeArray],
+                x2: Union[ivy.Array, ivy.NativeArray]) \
+        -> ivy.Array:
+    """
+    Computes the bitwise OR of the underlying binary representation of each element ``x1_i`` of the input array ``x1`` with the respective element ``x2_i`` of the input array ``x2``.
+    
+    Parameters
+    ----------
+    x1:
+        first input array. Should have an integer or boolean data type.
+    x2:
+        second input array. Must be compatible with ``x1`` (see :ref:`broadcasting`). Should have an integer or boolean data type.
+    
+    Returns
+    -------
+    out:
+        an array containing the element-wise results. The returned array must have a data type determined by :ref:`type-promotion`.
+    """
+    return _cur_framework(x1, x2).bitwise_or(x1, x2)
+
+
 def sinh(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
     """
     Calculates an implementation-dependent approximation to the hyperbolic sine, having domain ``[-infinity, +infinity]`` and codomain ``[-infinity, +infinity]``, for each element ``x_i`` of the input array ``x``.
@@ -624,6 +658,17 @@ def sinh(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
     return _cur_framework(x).sinh(x)
 
 
+def positive(x: Union[ivy.Array, ivy.NativeArray])\
+        -> ivy.Array:
+    """
+    Returns a new array with the positive value of each element in x.
+
+    :param x: Input array.
+    :return: A new array with the positive value of each element in x.
+    """
+    return _cur_framework(x).positive(x)
+
+    
 def square(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
     """
     each element x_i of the input array x.
@@ -634,3 +679,14 @@ def square(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
   
 # Extra #
 # ------#
+def round(x: Union[ivy.Array, ivy.NativeArray])\
+        -> Union[ivy.Array, ivy.NativeArray]:
+    """
+    Rounds the values of an array to the nearest integer, element-wise.
+
+    :param x: Input array containing elements to round.
+    :type x: array
+    :return: An array of the same shape and type as x, with the elements rounded to integers.
+    """
+    return _cur_framework(x).round(x)
+

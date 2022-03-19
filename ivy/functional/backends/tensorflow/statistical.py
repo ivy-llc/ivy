@@ -14,6 +14,18 @@ def min(x: tf.Tensor,
     return tf.math.reduce_min(x, axis = axis, keepdims = keepdims)
 
 
+def sum(x: tf.Tensor,
+               axis: Optional[Union[int,Tuple[int]]] = None,
+               keepdims: bool = False)\
+                   -> tf.Tensor:
+    if axis is None:
+        num_dims = len(x.shape)
+        axis = tuple(range(num_dims))
+    elif isinstance(axis, list):
+        axis = tuple(axis)
+    return tf.reduce_sum(x, axis=axis, keepdims=keepdims)
+
+
 def prod(x: tf.Tensor,
          axis: Optional[Union[int, Tuple[int]]] = None,
          dtype: Optional[tf.DType] = None,

@@ -85,9 +85,9 @@ def vector_norm(x: Union[ivy.Array, ivy.NativeArray],
     elif ord == float('inf'):
         return ivy.reduce_max(ivy.abs(x), axis, keepdims)
     elif ord == 0:
-        return ivy.reduce_sum(ivy.cast(x != 0, 'float32'), axis, keepdims)
+        return ivy.sum(ivy.cast(x != 0, 'float32'), axis, keepdims)
     x_raised = x ** ord
-    return ivy.reduce_sum(x_raised, axis, keepdims) ** (1/ord)
+    return ivy.sum(x_raised, axis, keepdims) ** (1/ord)
 
 
 def svd(x:Union[ivy.Array,ivy.NativeArray],full_matrices: bool = True)->Union[ivy.Array, Tuple[ivy.Array,...]]:
@@ -327,5 +327,31 @@ def trace(x: ivy.Array,
     return _cur_framework(x).trace(x, offset)
 
 
+def det(x: ivy.Array) \
+    -> ivy.Array:
+    """
+    Returns the determinant of a square matrix (or a stack of square matrices) x.
+
+    :param x:  input array having shape (..., M, M) and whose innermost two dimensions form square matrices. Should
+               have a floating-point data type.
+    :return :  if x is a two-dimensional array, a zero-dimensional array containing the determinant; otherwise, a non-zero
+               dimensional array containing the determinant for each square matrix. The returned array must have the same data type as x.
+    """
+    return _cur_framework(x).det(x)
+
+
 # Extra #
 # ------#
+
+def vector_to_skew_symmetric_matrix(vector: Union[ivy.Array, ivy.NativeArray])\
+        -> ivy.Array:
+    """
+    Given vector :math:`\mathbf{a}\in\mathbb{R}^3`, return associated skew-symmetric matrix
+    :math:`[\mathbf{a}]_×\in\mathbb{R}^{3×3}` satisfying :math:`\mathbf{a}×\mathbf{b}=[\mathbf{a}]_×\mathbf{b}`.\n
+    `[reference] <https://en.wikipedia.org/wiki/Skew-symmetric_matrix#Cross_product>`_
+
+    :param vector: Vector to convert *[batch_shape,3]*.
+    :type vector: array
+    :return: Skew-symmetric matrix *[batch_shape,3,3]*.
+    """
+    return _cur_framework(vector).vector_to_skew_symmetric_matrix(vector)
