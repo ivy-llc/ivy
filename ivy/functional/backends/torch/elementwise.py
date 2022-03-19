@@ -11,7 +11,7 @@ def bitwise_left_shift(x1: torch.Tensor,
                        x2: torch.Tensor) \
         -> torch.Tensor:
     x1, x2 = _cast_for_binary_op(x1, x2)
-    return torch.bitwise_left_shift(x1, x2)
+    return torch.Tensor.bitwise_left_shift(x1, x2)
 
 
 def bitwise_invert(x: torch.Tensor) \
