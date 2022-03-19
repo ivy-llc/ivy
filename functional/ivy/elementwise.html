@@ -104,6 +104,7 @@
 <li class="toctree-l2"><a class="reference internal" href="elementwise/isfinite.html">isfinite</a></li>
 <li class="toctree-l2"><a class="reference internal" href="elementwise/asin.html">asin</a></li>
 <li class="toctree-l2"><a class="reference internal" href="elementwise/isinf.html">isinf</a></li>
+<li class="toctree-l2"><a class="reference internal" href="elementwise/greater_equal.html">greater_equal</a></li>
 <li class="toctree-l2"><a class="reference internal" href="elementwise/less_equal.html">less_equal</a></li>
 <li class="toctree-l2"><a class="reference internal" href="elementwise/asinh.html">asinh</a></li>
 <li class="toctree-l2"><a class="reference internal" href="elementwise/sqrt.html">sqrt</a></li>
@@ -472,6 +473,24 @@
 </dd></dl>
 
 <dl class="py function">
+<dt id="ivy.functional.ivy.elementwise.greater_equal">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">greater_equal</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x1</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">x2</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../_modules/ivy/functional/ivy/elementwise.html#greater_equal"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.elementwise.greater_equal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the truth value of x1_i &gt;= x2_i for each element x1_i of the input array x1 with the respective
+element x2_i of the input array x2.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x1</strong> – first input array. May have any data type.</p></li>
+<li><p><strong>x2</strong> – second input array. Must be compatible with x1 (with Broadcasting). May have any data type.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>an array containing the element-wise results. The returned array must have a data type of bool.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt id="ivy.functional.ivy.elementwise.isfinite">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">isfinite</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../_modules/ivy/functional/ivy/elementwise.html#isfinite"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.elementwise.isfinite" title="Permalink to this definition">¶</a></dt>
 <dd><p>Tests each element <code class="docutils literal notranslate"><span class="pre">x_i</span></code> of the input array <code class="docutils literal notranslate"><span class="pre">x</span></code> to determine if finite (i.e., not <code class="docutils literal notranslate"><span class="pre">NaN</span></code> and not equal to positive or negative infinity).</p>
@@ -828,6 +847,7 @@ have a floating-point data type</p>
 <li class="toctree-l1"><a class="reference internal" href="elementwise/isfinite.html">isfinite</a></li>
 <li class="toctree-l1"><a class="reference internal" href="elementwise/asin.html">asin</a></li>
 <li class="toctree-l1"><a class="reference internal" href="elementwise/isinf.html">isinf</a></li>
+<li class="toctree-l1"><a class="reference internal" href="elementwise/greater_equal.html">greater_equal</a></li>
 <li class="toctree-l1"><a class="reference internal" href="elementwise/less_equal.html">less_equal</a></li>
 <li class="toctree-l1"><a class="reference internal" href="elementwise/asinh.html">asinh</a></li>
 <li class="toctree-l1"><a class="reference internal" href="elementwise/sqrt.html">sqrt</a></li>

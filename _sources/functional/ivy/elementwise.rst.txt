@@ -19,6 +19,7 @@ Elementwise
    elementwise/isfinite.rst
    elementwise/asin.rst
    elementwise/isinf.rst
+   elementwise/greater_equal.rst
    elementwise/less_equal.rst
    elementwise/asinh.rst
    elementwise/sqrt.rst
