@@ -44,7 +44,7 @@ to_list = lambda x: _to_array(x).tolist()
 to_list.__name__ = 'to_list'
 
 
-
+container_types = lambda: [FlatMapping]
 
 
 def unstack(x, axis, keepdims=False):
@@ -56,3 +56,8 @@ def unstack(x, axis, keepdims=False):
     if keepdims:
         return x_split
     return [_jnp.squeeze(item, axis) for item in x_split]
+
+
+
+inplace_arrays_supported = lambda: False
+inplace_variables_supported = lambda: False
