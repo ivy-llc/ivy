@@ -172,11 +172,11 @@ def result_type(*arrays_and_dtypes: Union[ivy.Array, ivy.NativeArray, ivy.Dtype]
        If provided mixed dtypes (e.g., integer and floating-point), the returned dtype will be implementation-specific.
     Parameters
     ----------
-    arrays_and_dtypes: Union[array, dtype]
+    arrays_and_dtypes:
         an arbitrary number of input arrays and/or dtypes.
     Returns
     -------
-    out: dtype
+    out:
         the dtype resulting from an operation involving the input arrays and dtypes.
     """
     return _cur_framework(arrays_and_dtypes[0]).result_type(arrays_and_dtypes)
