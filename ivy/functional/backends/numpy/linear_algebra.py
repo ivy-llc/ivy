@@ -102,7 +102,7 @@ def det(x: np.array) \
 
 def cholesky(x: np.ndarray,
              upper: bool = False) -> np.ndarray:
-    if not upper:
+    if not upper or x.shape[0] == 0:
         return np.linalg.cholesky(x)
     else:
         return np.transpose(np.linalg.cholesky(np.transpose(x, axes=[x.shape[-1], x.shape[-2]])),
