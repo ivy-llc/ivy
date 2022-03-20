@@ -43,3 +43,13 @@ class Finfo:
 def finfo(type: Union[jnp.dtype, str, JaxArray])\
         -> Finfo:
     return Finfo(jnp.finfo(ivy.dtype_from_str(type)))
+
+
+def result_type(*arrays_and_dtypes: Union[JaxArray, jnp.dtype]) -> jnp.dtype:
+    if len(arrays_and_dtypes) <= 1:
+        return jnp.result_type(arrays_and_dtypes)
+
+    result = jnp.result_type(arrays_and_dtypes[0], arrays_and_dtypes[1])
+    for i in range(2, len(arrays_and_dtypes)):
+        result = jnp.result_type(result, arrays_and_dtypes[i])
+    return result

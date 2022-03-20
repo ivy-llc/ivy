@@ -146,3 +146,20 @@ def is_float_dtype(dtype_in: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray, N
     elif isinstance(dtype_in, (list, tuple, dict)):
         return True if ivy.nested_indices_where(dtype_in, lambda x: isinstance(x, (float, np.floating))) else False
     return 'float' in dtype_to_str(dtype_in)
+
+
+def result_type(*arrays_and_dtypes: Union[ivy.Array, ivy.NativeArray, ivy.Dtype]) -> ivy.Dtype:
+    """
+    Returns the dtype that results from applying the type promotion rules (see :ref:`type-promotion`) to the arguments.
+    .. note::
+       If provided mixed dtypes (e.g., integer and floating-point), the returned dtype will be implementation-specific.
+    Parameters
+    ----------
+    arrays_and_dtypes: Union[array, dtype]
+        an arbitrary number of input arrays and/or dtypes.
+    Returns
+    -------
+    out: dtype
+        the dtype resulting from an operation involving the input arrays and dtypes.
+    """
+    return _cur_framework(arrays_and_dtypes[0]).result_type(arrays_and_dtypes)
