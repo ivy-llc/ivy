@@ -44,5 +44,15 @@ def finfo(type: Union[np.dtype, str, np.ndarray])\
     return Finfo(np.finfo(ivy.dtype_from_str(type)))
 
 
+def result_type(*arrays_and_dtypes: Union[np.ndarray, np.dtype]) -> np.dtype:
+    if len(arrays_and_dtypes) <= 1:
+        return np.result_type(arrays_and_dtypes)
+
+    result = np.result_type(arrays_and_dtypes[0], arrays_and_dtypes[1])
+    for i in range(2, len(arrays_and_dtypes)):
+        result = np.result_type(result, arrays_and_dtypes[i])
+    return result
+
+  
 def broadcast_to(x: np.ndarray, shape: Tuple[int,...]) -> np.ndarray:
     return np.broadcast_to(x,shape)
