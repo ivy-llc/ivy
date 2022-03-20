@@ -221,3 +221,8 @@ def round(x: Tensor)\
     if 'int' in str(x.dtype):
         return x
     return tf.round(x)
+
+
+def logaddexp(x1: Tensor, x2: Tensor) -> Tensor:
+    x1, x2 = _cast_for_binary_op(x1, x2)
+    return tf.experimental.numpy.logaddexp(x1, x2)
