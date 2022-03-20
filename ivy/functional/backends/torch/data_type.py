@@ -44,5 +44,18 @@ def finfo(type: Union[torch.dtype, str, torch.Tensor])\
     return Finfo(torch.finfo(ivy.dtype_from_str(type)))
 
 
+def result_type(*arrays_and_dtypes: Union[torch.tensor, torch.dtype]) -> torch.dtype:
+    arrays_and_dtypes = list(arrays_and_dtypes)
+    for i in range(len(arrays_and_dtypes)):
+        if type(arrays_and_dtypes[i]) == torch.dtype:
+            arrays_and_dtypes[i] = torch.tensor([], dtype=arrays_and_dtypes[i])
+    if len(arrays_and_dtypes) == 1:
+        return arrays_and_dtypes[0].dtype
+    result = torch.result_type(arrays_and_dtypes[0], arrays_and_dtypes[1])
+    for i in range(2, len(arrays_and_dtypes)):
+        result = torch.result_type(torch.tensor([], dtype=result), arrays_and_dtypes[i])
+    return result
+
+  
 def broadcast_to(x: torch.Tensor, shape: Tuple[int,...]) -> torch.Tensor:
     return torch.broadcast_to(x,shape)
