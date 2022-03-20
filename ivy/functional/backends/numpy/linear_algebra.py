@@ -100,7 +100,13 @@ def det(x:np.array) \
     -> np.array:
     return np.linalg.det(x)
 
-
+def cholesky(x: np.ndarray,
+            upper: bool = False) -> np.ndarray:
+    if not upper:
+        return np.linalg.cholesky(x)
+    else:
+        return np.linalg.cholesky(x).T.conj()
+        
 # Extra #
 # ------#
 

@@ -114,7 +114,13 @@ def det(A:torch.Tensor) \
     -> torch.Tensor:
     return torch.linalg.det(A)
 
-
+def cholesky(x: torch.Tensor,
+            upper: bool = False) -> torch.Tensor:
+    if not upper:
+        return torch.linalg.cholesky(x)
+    else:
+        return torch.linalg.cholesky(x).T.conj()
+        
 # Extra #
 # ------#
 

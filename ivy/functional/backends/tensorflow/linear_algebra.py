@@ -172,7 +172,13 @@ def det(x:tf.Tensor,name:Optional[str]=None) \
     -> tf.Tensor:
     return tf.linalg.det(x,name)
 
-
+def cholesky(x: tf.Tensor,
+            upper: bool = False) -> tf.Tensor:
+    if not upper:
+        return tf.linalg.cholesky(x)
+    else:
+        return tf.linalg.cholesky(x).T.conj()
+        
 # Extra #
 # ------#
 
