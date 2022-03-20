@@ -102,13 +102,12 @@ def det(x: np.array) \
 
 def cholesky(x: np.ndarray,
              upper: bool = False) -> np.ndarray:
-    if not upper or x.shape[0]==0:
+    if not upper:
         return np.linalg.cholesky(x)
-    elif len(x.shape) >2:
-        return np.transpose(np.linalg.cholesky(np.transpose(x, axes=[len(x.shape)-1, len(x.shape)-2])),
-                            axes=[len(x.shape)-1, len(x.shape)-2])
     else:
-        return np.linalg.cholesky(x.T).T
+        axes = list(range(len(x.shape)-2))+[len(x.shape)-1, len(x.shape)-2]
+        return np.transpose(np.linalg.cholesky(np.transpose(x, axes=axes)),
+                            axes=axes)
 
 # Extra #
 # ------#
