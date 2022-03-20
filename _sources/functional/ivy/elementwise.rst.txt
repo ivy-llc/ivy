@@ -45,4 +45,5 @@ Elementwise
    elementwise/square.rst
    elementwise/logaddexp.rst
    elementwise/round.rst
+   elementwise/abs.rst
 

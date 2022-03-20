@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>bitwise_and &mdash; Ivy 1.0 documentation</title>
+  <title>abs &mdash; Ivy 1.0 documentation</title>
   
 
   
@@ -36,8 +36,8 @@
   <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="ceil" href="ceil.html" />
-    <link rel="prev" title="bitwise_invert" href="bitwise_invert.html" /> 
+    <link rel="next" title="General" href="../general.html" />
+    <link rel="prev" title="round" href="round.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -98,7 +98,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../device.html">Device</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../elementwise.html">Elementwise</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="bitwise_invert.html">bitwise_invert</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">bitwise_and</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bitwise_and.html">bitwise_and</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ceil.html">ceil</a></li>
 <li class="toctree-l2"><a class="reference internal" href="floor.html">floor</a></li>
 <li class="toctree-l2"><a class="reference internal" href="isfinite.html">isfinite</a></li>
@@ -130,7 +130,7 @@
 <li class="toctree-l2"><a class="reference internal" href="square.html">square</a></li>
 <li class="toctree-l2"><a class="reference internal" href="logaddexp.html">logaddexp</a></li>
 <li class="toctree-l2"><a class="reference internal" href="round.html">round</a></li>
-<li class="toctree-l2"><a class="reference internal" href="abs.html">abs</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">abs</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../general.html">General</a></li>
@@ -221,13 +221,13 @@
         
           <li><a href="../elementwise.html">Elementwise</a> &raquo;</li>
         
-      <li>bitwise_and</li>
+      <li>abs</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../../_sources/functional/ivy/elementwise/bitwise_and.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../../_sources/functional/ivy/elementwise/abs.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -240,20 +240,29 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="bitwise-and">
-<h1>bitwise_and<a class="headerlink" href="#bitwise-and" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="abs">
+<h1>abs<a class="headerlink" href="#abs" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
-<dt id="ivy.functional.ivy.elementwise.bitwise_and">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">bitwise_and</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x1</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">x2</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../../_modules/ivy/functional/ivy/elementwise.html#bitwise_and"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.elementwise.bitwise_and" title="Permalink to this definition">¶</a></dt>
-<dd><p>Computes the bitwise AND of the underlying binary representation of each element <code class="docutils literal notranslate"><span class="pre">x1_i</span></code> of the input array <code class="docutils literal notranslate"><span class="pre">x1</span></code> with the respective element <code class="docutils literal notranslate"><span class="pre">x2_i</span></code> of the input array <code class="docutils literal notranslate"><span class="pre">x2</span></code>.</p>
+<dt id="ivy.functional.ivy.elementwise.abs">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">abs</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../../_modules/ivy/functional/ivy/elementwise.html#abs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.elementwise.abs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the absolute value for each element <code class="docutils literal notranslate"><span class="pre">x_i</span></code> of the input array <code class="docutils literal notranslate"><span class="pre">x</span></code> (i.e., the element-wise result has the same magnitude as the respective element in <code class="docutils literal notranslate"><span class="pre">x</span></code> but has positive sign).</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>For signed integer data types, the absolute value of the minimum representable integer is implementation-dependent.</p>
+</div>
+<p><strong>Special Cases</strong></p>
+<p>For this particular case,</p>
+<ul class="simple">
+<li><p>If <code class="docutils literal notranslate"><span class="pre">x_i</span></code> is <code class="docutils literal notranslate"><span class="pre">NaN</span></code>, the result is <code class="docutils literal notranslate"><span class="pre">NaN</span></code>.</p></li>
+<li><p>If <code class="docutils literal notranslate"><span class="pre">x_i</span></code> is <code class="docutils literal notranslate"><span class="pre">-0</span></code>, the result is <code class="docutils literal notranslate"><span class="pre">+0</span></code>.</p></li>
+<li><p>If <code class="docutils literal notranslate"><span class="pre">x_i</span></code> is <code class="docutils literal notranslate"><span class="pre">-infinity</span></code>, the result is <code class="docutils literal notranslate"><span class="pre">+infinity</span></code>.</p></li>
+</ul>
 <dl class="simple">
-<dt>x1:</dt><dd><p>first input array. Should have an integer or boolean data type.</p>
-</dd>
-<dt>x2:</dt><dd><p>second input array. Must be compatible with <code class="docutils literal notranslate"><span class="pre">x1</span></code> (see <span class="xref std std-ref">broadcasting</span>). Should have an integer or boolean data type.</p>
+<dt>x:</dt><dd><p>input array. Should have a numeric data type.</p>
 </dd>
 </dl>
 <dl class="simple">
-<dt>out:</dt><dd><p>an array containing the element-wise results. The returned array must have a data type determined by <span class="xref std std-ref">type-promotion</span>.</p>
+<dt>out:</dt><dd><p>an array containing the absolute value of each element in <code class="docutils literal notranslate"><span class="pre">x</span></code>. The returned array must have the same data type as <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -273,10 +282,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="ceil.html" class="btn btn-neutral float-right" title="ceil" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="../general.html" class="btn btn-neutral float-right" title="General" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="bitwise_invert.html" class="btn btn-neutral float-left" title="bitwise_invert" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="round.html" class="btn btn-neutral float-left" title="round" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
