@@ -51,5 +51,23 @@ def prod(x: np.ndarray,
     return np.prod(a=x,axis=axis,dtype=dtype,keepdims=keepdims)
 
 
+def mean(x, axis=None, keepdims=False):
+    if axis is None:
+        num_dims = len(x.shape)
+        axis = tuple(range(num_dims))
+    elif isinstance(axis, list):
+        axis = tuple(axis)
+    return np.asarray(np.mean(x, axis=axis, keepdims=keepdims))
+
+
+def var(x, axis=None, keepdims=False):
+    if axis is None:
+        num_dims = len(x.shape)
+        axis = tuple(range(num_dims))
+    elif isinstance(axis, list):
+        axis = tuple(axis)
+    return np.asarray(np.var(x, axis=axis, keepdims=keepdims))
+
+
 # Extra #
 # ------#

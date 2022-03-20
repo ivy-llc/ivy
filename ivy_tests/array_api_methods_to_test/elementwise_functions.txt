@@ -23,7 +23,7 @@ cosh
 #floor # depends on: remainder
 #floor_divide
 #greater
-#greater_equal
+greater_equal
 isfinite
 isinf
 isnan
@@ -33,7 +33,7 @@ less
 log1p
 log2
 log10
-#logaddexp
+logaddexp
 logical_and
 logical_not
 logical_or

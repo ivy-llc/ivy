@@ -48,7 +48,7 @@ to_list.__name__ = 'to_list'
 def floormod(x, y):
     return x % y
 
-
+container_types = lambda: []
 
 
 def unstack(x, axis, keepdims=False):
@@ -57,3 +57,26 @@ def unstack(x, axis, keepdims=False):
     num_outputs = x.shape[axis]
     ret = _mx.nd.split(x, num_outputs, axis, squeeze_axis=not keepdims)
     return ret if isinstance(ret, list) else [ret]
+
+def inplace_update(x, val):
+    if x.shape == ():
+        raise Exception('MXNet does not support inplace updates of 0-dimensional arrays')
+    x[:] = val
+    return x
+
+inplace_arrays_supported = lambda: True
+inplace_variables_supported = lambda: True
+
+
+def inplace_decrement(x, val):
+    if x.shape == ():
+        raise Exception('MXNet does not support inplace updates of 0-dimensional arrays')
+    x -= val
+    return x
+
+
+def inplace_increment(x, val):
+    if x.shape == ():
+        raise Exception('MXNet does not support inplace updates of 0-dimensional arrays')
+    x += val
+    return x

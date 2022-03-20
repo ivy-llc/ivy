@@ -421,28 +421,10 @@ def compile(func, dynamic=True, example_inputs=None, static_argnums=None, static
 current_framework_str = lambda: 'mxnet'
 current_framework_str.__name__ = 'current_framework_str'
 multiprocessing = lambda context=None: _multiprocessing if context is None else _multiprocessing.get_context(context)
-container_types = lambda: []
 
 
-def inplace_update(x, val):
-    if x.shape == ():
-        raise Exception('MXNet does not support inplace updates of 0-dimensional arrays')
-    x[:] = val
-    return x
 
 
-def inplace_decrement(x, val):
-    if x.shape == ():
-        raise Exception('MXNet does not support inplace updates of 0-dimensional arrays')
-    x -= val
-    return x
 
 
-def inplace_increment(x, val):
-    if x.shape == ():
-        raise Exception('MXNet does not support inplace updates of 0-dimensional arrays')
-    x += val
-    return x
 
-inplace_arrays_supported = lambda: True
-inplace_variables_supported = lambda: True

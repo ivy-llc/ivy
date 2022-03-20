@@ -50,6 +50,11 @@ def equal(x1: JaxArray, x2: JaxArray)\
     return x1 == x2
 
 
+def greater_equal(x1: JaxArray, x2: JaxArray)\
+        -> JaxArray:
+    return jnp.greater_equal(x1, x2)
+
+
 def less_equal(x1: JaxArray, x2: JaxArray)\
         -> JaxArray:
     return x1 <= x2
@@ -168,3 +173,6 @@ def round(x: JaxArray)\
     if 'int' in str(x.dtype):
         return x
     return jnp.round(x)
+
+def logaddexp(x1: JaxArray, x2: JaxArray) -> JaxArray:
+    return jnp.logaddexp(x1, x2)

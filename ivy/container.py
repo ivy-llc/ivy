@@ -1047,8 +1047,8 @@ class Container(dict):
         return not bool(_np.sum([v for k, v in self.as_bools(
             assert_is_bool, key_chains, to_apply, prune_unapplied, map_sequences).to_iterator()]))
 
-    def reduce_sum(self, axis=None, keepdims=False, key_chains=None, to_apply=True, prune_unapplied=False,
-                   map_sequences=False):
+    def sum(self, axis=None, keepdims=False, key_chains=None, to_apply=True, prune_unapplied=False,
+            map_sequences=False):
         """
         Computes sum of array elements along a given axis for all sub-arrays of container object.
 
@@ -1071,11 +1071,11 @@ class Container(dict):
         :type map_sequences: bool, optional
         :return: Container object with all sub-array dimensions expanded along the axis.
         """
-        return self.map(lambda x, kc: self._ivy.reduce_sum(x, axis, keepdims) if self._ivy.is_array(x) else x,
+        return self.map(lambda x, kc: self._ivy.sum(x, axis, keepdims) if self._ivy.is_array(x) else x,
                         key_chains, to_apply, prune_unapplied, map_sequences)
 
-    def reduce_prod(self, axis=None, keepdims=False, key_chains=None, to_apply=True, prune_unapplied=False,
-                    map_sequences=False):
+    def prod(self, axis=None, keepdims=False, key_chains=None, to_apply=True, prune_unapplied=False,
+             map_sequences=False):
         """
         Computes product of array elements along a given axis for all sub-arrays of container object.
 
@@ -1098,11 +1098,11 @@ class Container(dict):
         :type map_sequences: bool, optional
         :return: Container object with all sub-array dimensions expanded along the axis.
         """
-        return self.map(lambda x, kc: self._ivy.reduce_prod(x, axis, keepdims) if self._ivy.is_array(x) else x,
+        return self.map(lambda x, kc: self._ivy.prod(x=x, axis=axis, keepdims=keepdims) if self._ivy.is_array(x) else x,
                         key_chains, to_apply, prune_unapplied, map_sequences)
 
-    def reduce_mean(self, axis=None, keepdims=False, key_chains=None, to_apply=True, prune_unapplied=False,
-                    map_sequences=False):
+    def mean(self, axis=None, keepdims=False, key_chains=None, to_apply=True, prune_unapplied=False,
+             map_sequences=False):
         """
         Computes mean of array elements along a given axis for all sub-arrays of container object.
 
@@ -1125,11 +1125,11 @@ class Container(dict):
         :type map_sequences: bool, optional
         :return: Container object with all sub-array dimensions expanded along the axis.
         """
-        return self.map(lambda x, kc: self._ivy.reduce_mean(x, axis, keepdims) if self._ivy.is_array(x) else x,
+        return self.map(lambda x, kc: self._ivy.mean(x, axis, keepdims) if self._ivy.is_array(x) else x,
                         key_chains, to_apply, prune_unapplied, map_sequences)
 
-    def reduce_var(self, axis=None, keepdims=False, key_chains=None, to_apply=True, prune_unapplied=False,
-                   map_sequences=False):
+    def var(self, axis=None, keepdims=False, key_chains=None, to_apply=True, prune_unapplied=False,
+            map_sequences=False):
         """
         Computes variance of array elements along a given axis for all sub-arrays of container object.
 
@@ -1152,7 +1152,7 @@ class Container(dict):
         :type map_sequences: bool, optional
         :return: Container object with the variance computed for all sub-arrays.
         """
-        return self.map(lambda x, kc: self._ivy.reduce_var(x, axis, keepdims) if self._ivy.is_array(x) else x,
+        return self.map(lambda x, kc: self._ivy.var(x, axis, keepdims) if self._ivy.is_array(x) else x,
                         key_chains, to_apply, prune_unapplied, map_sequences)
 
     def reduce_std(self, axis=None, keepdims=False, key_chains=None, to_apply=True, prune_unapplied=False,
@@ -1403,7 +1403,7 @@ class Container(dict):
                     'global_norm can only be computed for scalar p argument,'
                     'but found {} of type {}'.format(p, type(p)))
             return sum([v for k, v in
-                        self.map(lambda x, kc: self._ivy.reduce_sum(x ** p)).to_iterator()]) ** (1/p)
+                        self.map(lambda x, kc: self._ivy.sum(x ** p)).to_iterator()]) ** (1 / p)
         return self.map(lambda x, kc: self._ivy.vector_norm(x, p[kc] if p_is_container else p, axis, keepdims)
                         if self._ivy.is_array(x) else x, key_chains, to_apply, prune_unapplied, map_sequences)
 

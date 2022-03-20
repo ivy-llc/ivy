@@ -1,7 +1,9 @@
 # global
 import numpy as np
-from typing import Union
+import importlib
+from typing import Union, Tuple
 from numbers import Number
+
 
 # local
 import ivy
@@ -69,6 +71,21 @@ def finfo(type: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray])\
           smallest positive floating-point number with full precision.
     """
     return _cur_framework(None).finfo(type)
+
+
+def broadcast_to(x: Union[ivy.Array,  ivy.NativeArray], shape: Tuple[int,...]) -> ivy.Array:
+    """
+
+     Broadcasts an array to a specified shape
+
+    :param x:  x (array) – array to broadcast.
+    :param shape: shape (Tuple[int, ...]) – array shape. Must be compatible with x (see Broadcasting). If \
+                  the array is incompatible with the specified shape, the function should raise an \
+                  exception.
+    :return: out (array) – an array having a specified shape. Must have the same data type as x.
+    """
+
+    return  _cur_framework(x).broadcast_to(x,shape)
 
 
 def dtype(x: Union[ivy.Array, ivy.NativeArray], as_str: bool = False)\
@@ -163,3 +180,47 @@ def result_type(*arrays_and_dtypes: Union[ivy.Array, ivy.NativeArray, ivy.Dtype]
         the dtype resulting from an operation involving the input arrays and dtypes.
     """
     return _cur_framework(arrays_and_dtypes[0]).result_type(arrays_and_dtypes)
+
+  
+def valid_dtype(dtype_in: Union[ivy.Dtype, str, None])\
+        -> bool:
+    """
+    Determines whether the provided data type is support by the current framework.
+
+    :param dtype_in: The data type for which to check for backend support
+    :return: Boolean, whether or not the data-type string is supported.
+    """
+    if dtype_in is None:
+        return True
+    return ivy.dtype_to_str(dtype_in) in ivy.valid_dtype_strs
+
+
+def invalid_dtype(dtype_in: Union[ivy.Dtype, str, None])\
+        -> bool:
+    """
+    Determines whether the provided data type is not support by the current framework.
+
+    :param dtype_in: The data type for which to check for backend non-support
+    :return: Boolean, whether the data-type string is un-supported.
+    """
+    if dtype_in is None:
+        return False
+    return ivy.dtype_to_str(dtype_in) in ivy.invalid_dtype_strs
+
+
+def convert_dtype(dtype_in: Union[ivy.Dtype, str], backend: str)\
+        -> ivy.Dtype:
+    """
+    Converts a data type from one backend framework representation to another.
+
+    :param dtype_in: The data-type to convert, in the specified backend representation
+    :type dtype_in: data type
+    :param backend: The backend framework the dtype_in is represented in.
+    :type backend: str
+    :return: The data-type in the current ivy backend format
+    """
+    valid_backends = ['numpy', 'jax', 'tensorflow', 'torch', 'mxnet']
+    if backend not in valid_backends:
+        raise Exception('Invalid backend passed, must be one of {}'.format(valid_backends))
+    ivy_backend = importlib.import_module('ivy.functional.backends.{}'.format(backend))
+    return ivy.dtype_from_str(ivy_backend.dtype_to_str(dtype_in))
