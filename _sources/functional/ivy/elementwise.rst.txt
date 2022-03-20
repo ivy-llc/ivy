@@ -43,5 +43,6 @@ Elementwise
    elementwise/sinh.rst
    elementwise/positive.rst
    elementwise/square.rst
+   elementwise/logaddexp.rst
    elementwise/round.rst
 

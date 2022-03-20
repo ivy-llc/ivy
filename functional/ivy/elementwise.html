@@ -128,6 +128,7 @@
 <li class="toctree-l2"><a class="reference internal" href="elementwise/sinh.html">sinh</a></li>
 <li class="toctree-l2"><a class="reference internal" href="elementwise/positive.html">positive</a></li>
 <li class="toctree-l2"><a class="reference internal" href="elementwise/square.html">square</a></li>
+<li class="toctree-l2"><a class="reference internal" href="elementwise/logaddexp.html">logaddexp</a></li>
 <li class="toctree-l2"><a class="reference internal" href="elementwise/round.html">round</a></li>
 </ul>
 </li>
@@ -630,6 +631,27 @@ logarithm.</p>
 </dd></dl>
 
 <dl class="py function">
+<dt id="ivy.functional.ivy.elementwise.logaddexp">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">logaddexp</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x1</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">x2</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../_modules/ivy/functional/ivy/elementwise.html#logaddexp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.elementwise.logaddexp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the logarithm of the sum of exponentiations <code class="docutils literal notranslate"><span class="pre">log(exp(x1)</span> <span class="pre">+</span> <span class="pre">exp(x2))</span></code> for each element <code class="docutils literal notranslate"><span class="pre">x1_i</span></code> of the input array <code class="docutils literal notranslate"><span class="pre">x1</span></code> with the respective element <code class="docutils literal notranslate"><span class="pre">x2_i</span></code> of the input array <code class="docutils literal notranslate"><span class="pre">x2</span></code>.
+<strong>Special cases</strong>
+For floating-point operands,
+- If either <code class="docutils literal notranslate"><span class="pre">x1_i</span></code> or <code class="docutils literal notranslate"><span class="pre">x2_i</span></code> is <code class="docutils literal notranslate"><span class="pre">NaN</span></code>, the result is <code class="docutils literal notranslate"><span class="pre">NaN</span></code>.
+- If <code class="docutils literal notranslate"><span class="pre">x1_i</span></code> is <code class="docutils literal notranslate"><span class="pre">+infinity</span></code> and <code class="docutils literal notranslate"><span class="pre">x2_i</span></code> is not <code class="docutils literal notranslate"><span class="pre">NaN</span></code>, the result is <code class="docutils literal notranslate"><span class="pre">+infinity</span></code>.
+- If <code class="docutils literal notranslate"><span class="pre">x1_i</span></code> is not <code class="docutils literal notranslate"><span class="pre">NaN</span></code> and <code class="docutils literal notranslate"><span class="pre">x2_i</span></code> is <code class="docutils literal notranslate"><span class="pre">+infinity</span></code>, the result is <code class="docutils literal notranslate"><span class="pre">+infinity</span></code>.</p>
+<dl class="simple">
+<dt>x1: </dt><dd><p>first input array. Should have a floating-point data type.</p>
+</dd>
+<dt>x2: </dt><dd><p>second input array. Must be compatible with <code class="docutils literal notranslate"><span class="pre">x1</span></code> (see <span class="xref std std-ref">broadcasting</span>). Should have a floating-point data type.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>out: </dt><dd><p>an array containing the element-wise results. The returned array must have a floating-point data type determined by <span class="xref std std-ref">type-promotion</span>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt id="ivy.functional.ivy.elementwise.logical_and">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">logical_and</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x1</span><span class="p">:</span> <span class="n">ivy.array.Array</span></em>, <em class="sig-param"><span class="n">x2</span><span class="p">:</span> <span class="n">ivy.array.Array</span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../_modules/ivy/functional/ivy/elementwise.html#logical_and"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.elementwise.logical_and" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes the logical AND for each element x1_i of the input array x1 with the respective
@@ -871,6 +893,7 @@ have a floating-point data type</p>
 <li class="toctree-l1"><a class="reference internal" href="elementwise/sinh.html">sinh</a></li>
 <li class="toctree-l1"><a class="reference internal" href="elementwise/positive.html">positive</a></li>
 <li class="toctree-l1"><a class="reference internal" href="elementwise/square.html">square</a></li>
+<li class="toctree-l1"><a class="reference internal" href="elementwise/logaddexp.html">logaddexp</a></li>
 <li class="toctree-l1"><a class="reference internal" href="elementwise/round.html">round</a></li>
 </ul>
 </div>
