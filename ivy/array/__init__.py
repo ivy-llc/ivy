@@ -47,7 +47,7 @@ class Array(ArrayWithArrayAPI, ArrayWithDevice, ArrayWithGeneral, ArrayWithGradi
         assert ivy.is_array(data)
         self._data = data
         self._shape = data.shape
-        self._size = data.size
+        self._size = sum(self._data.shape)
         self._dtype = ivy.dtype(self._data)
         self._device = ivy.dev(data)
         self._dev_str = ivy.dev_to_str(self._device)
