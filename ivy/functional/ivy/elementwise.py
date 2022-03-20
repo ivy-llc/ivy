@@ -690,13 +690,13 @@ def logaddexp(x1: Union[ivy.Array, ivy.NativeArray], x2: Union[ivy.Array, ivy.Na
 
     Parameters
     ----------
-    x1: array
+    x1: 
         first input array. Should have a floating-point data type.
-    x2: array
+    x2: 
         second input array. Must be compatible with ``x1`` (see :ref:`broadcasting`). Should have a floating-point data type.
     Returns
     -------
-    out: array
+    out: 
         an array containing the element-wise results. The returned array must have a floating-point data type determined by :ref:`type-promotion`.
     """
 
