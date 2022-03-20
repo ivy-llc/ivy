@@ -2,6 +2,9 @@
 import numpy as np
 import numpy.array_api as npa
 
+def expm1(x: np.ndarray)\
+        -> np.ndarray:
+    return np.expm1(x)
 
 def bitwise_invert(x: np.ndarray)\
         -> np.ndarray:
