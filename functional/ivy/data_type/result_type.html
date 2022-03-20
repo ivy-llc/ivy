@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>is_float_dtype &mdash; Ivy 1.0 documentation</title>
+  <title>result_type &mdash; Ivy 1.0 documentation</title>
   
 
   
@@ -36,8 +36,8 @@
   <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="result_type" href="result_type.html" />
-    <link rel="prev" title="is_int_dtype" href="is_int_dtype.html" /> 
+    <link rel="next" title="valid_dtype" href="valid_dtype.html" />
+    <link rel="prev" title="is_float_dtype" href="is_float_dtype.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -102,8 +102,8 @@
 <li class="toctree-l2"><a class="reference internal" href="dtype_bits.html">dtype_bits</a></li>
 <li class="toctree-l2"><a class="reference internal" href="dtype_to_str.html">dtype_to_str</a></li>
 <li class="toctree-l2"><a class="reference internal" href="is_int_dtype.html">is_int_dtype</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">is_float_dtype</a></li>
-<li class="toctree-l2"><a class="reference internal" href="result_type.html">result_type</a></li>
+<li class="toctree-l2"><a class="reference internal" href="is_float_dtype.html">is_float_dtype</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">result_type</a></li>
 <li class="toctree-l2"><a class="reference internal" href="valid_dtype.html">valid_dtype</a></li>
 <li class="toctree-l2"><a class="reference internal" href="invalid_dtype.html">invalid_dtype</a></li>
 <li class="toctree-l2"><a class="reference internal" href="convert_dtype.html">convert_dtype</a></li>
@@ -199,13 +199,13 @@
         
           <li><a href="../data_type.html">Data type</a> &raquo;</li>
         
-      <li>is_float_dtype</li>
+      <li>result_type</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../../_sources/functional/ivy/data_type/is_float_dtype.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../../_sources/functional/ivy/data_type/result_type.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -218,18 +218,22 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="is-float-dtype">
-<h1>is_float_dtype<a class="headerlink" href="#is-float-dtype" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="result-type">
+<h1>result_type<a class="headerlink" href="#result-type" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
-<dt id="ivy.functional.ivy.data_type.is_float_dtype">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">is_float_dtype</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dtype_in</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.Dtype<span class="p">, </span>str<span class="p">, </span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">, </span>numbers.Number<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; bool<a class="reference internal" href="../../../_modules/ivy/functional/ivy/data_type.html#is_float_dtype"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.data_type.is_float_dtype" title="Permalink to this definition">¶</a></dt>
-<dd><p>Determine whether the input data type is an float data-type.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>dtype_in</strong> – Datatype to test</p>
+<dt id="ivy.functional.ivy.data_type.result_type">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">result_type</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">arrays_and_dtypes</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">, </span>ivy.Dtype<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; ivy.Dtype<a class="reference internal" href="../../../_modules/ivy/functional/ivy/data_type.html#result_type"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.data_type.result_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the dtype that results from applying the type promotion rules (see <span class="xref std std-ref">type-promotion</span>) to the arguments.
+.. note:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">If</span> <span class="n">provided</span> <span class="n">mixed</span> <span class="n">dtypes</span> <span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">g</span><span class="o">.</span><span class="p">,</span> <span class="n">integer</span> <span class="ow">and</span> <span class="n">floating</span><span class="o">-</span><span class="n">point</span><span class="p">),</span> <span class="n">the</span> <span class="n">returned</span> <span class="n">dtype</span> <span class="n">will</span> <span class="n">be</span> <span class="n">implementation</span><span class="o">-</span><span class="n">specific</span><span class="o">.</span>
+</pre></div>
+</div>
+<dl class="simple">
+<dt>arrays_and_dtypes:</dt><dd><p>an arbitrary number of input arrays and/or dtypes.</p>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Whether or not the data type is a floating point data type</p>
+</dl>
+<dl class="simple">
+<dt>out:</dt><dd><p>the dtype resulting from an operation involving the input arrays and dtypes.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -249,10 +253,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="result_type.html" class="btn btn-neutral float-right" title="result_type" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="valid_dtype.html" class="btn btn-neutral float-right" title="valid_dtype" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="is_int_dtype.html" class="btn btn-neutral float-left" title="is_int_dtype" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="is_float_dtype.html" class="btn btn-neutral float-left" title="is_float_dtype" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

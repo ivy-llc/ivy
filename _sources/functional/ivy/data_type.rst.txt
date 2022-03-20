@@ -20,6 +20,7 @@ Data type
    data_type/dtype_to_str.rst
    data_type/is_int_dtype.rst
    data_type/is_float_dtype.rst
+   data_type/result_type.rst
    data_type/valid_dtype.rst
    data_type/invalid_dtype.rst
    data_type/convert_dtype.rst
