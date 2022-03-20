@@ -106,7 +106,7 @@ def cholesky(x: JaxArray,
     if not upper:
         return jnp.linalg.cholesky(x)
     else:
-        return jnp.linalg.cholesky(x).T.conj()
+        return jnp.linalg.cholesky(x.T).T
 
 
 # Extra #
