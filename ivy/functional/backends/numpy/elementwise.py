@@ -174,6 +174,11 @@ def bitwise_or(x1: np.ndarray , x2: np.ndarray) \
     return np.bitwise_or(x1, x2)
 
 
+def bitwise_right_shift(x1: np.ndarray, x2: np.ndarray)\
+        -> np.ndarray:
+    return np.right_shift(x1, x2)
+    
+
 def logaddexp(x1: np.ndarray, x2: np.ndarray) -> np.ndarray:
     if not isinstance(x2, np.ndarray):
         x2 = np.asarray(x2, dtype=x1.dtype)

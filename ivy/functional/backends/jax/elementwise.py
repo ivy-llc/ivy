@@ -153,6 +153,11 @@ def bitwise_or(x1: JaxArray, x2: JaxArray) -> JaxArray:
     return jnp.bitwise_or(x1, x2)
 
 
+def bitwise_right_shift(x1: JaxArray, x2: JaxArray)\
+        -> JaxArray:
+    return jnp.right_shift(x1, x2)
+
+
 def sinh(x: JaxArray)\
         -> JaxArray:
     return jnp.sinh(x)

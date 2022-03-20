@@ -147,6 +147,11 @@ def logical_or(x1: torch.Tensor, x2: torch.Tensor)\
     return torch.logical_or(x1.type(torch.bool), x2.type(torch.bool))
 
 
+def bitwise_right_shift(x1: torch.Tensor, x2: torch.Tensor)\
+        -> torch.Tensor:
+    return torch.bitwise_right_shift(x1.type(torch.int), x2.type(torch.int))
+
+
 def acosh(x: torch.Tensor) \
         -> torch.Tensor:
     return torch.acosh(x)

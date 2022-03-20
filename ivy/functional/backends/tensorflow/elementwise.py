@@ -206,6 +206,11 @@ def bitwise_or(x1: Tensor, x2: Tensor) \
     return x1 | x2
 
 
+def bitwise_right_shift(x1: Tensor, x2: Tensor)\
+        -> Tensor:
+    return tf.bitwise.right_shift(tf.cast(x1, tf.uint64), tf.cast(x2, tf.uint64))
+
+
 def positive(x: Tensor)\
         -> Tensor:
     return tf.experimental.numpy.positive(x)
