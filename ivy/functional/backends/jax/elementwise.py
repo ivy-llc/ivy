@@ -135,11 +135,6 @@ def sin(x: JaxArray)\
     return jnp.sin(x)
 
 
-def bitwise_right_shift(x1: JaxArray, x2: JaxArray)\
-        -> JaxArray:
-    return jnp.right_shift(x1, x2)
-
-
 def negative(x: JaxArray) -> JaxArray:
     return jnp.negative(x)
 

@@ -323,6 +323,9 @@ class Array(ArrayWithArrayAPI, ArrayWithDevice, ArrayWithGeneral, ArrayWithGradi
     def __or__(self, other):
         return ivy.bitwise_or(self._data, other)
 
+    @_native_wrapper
+    def __rshift__(self, other):
+        return ivy.bitwise_right_shift(self._data, other)
         
     @_native_wrapper
     def __ror__(self, other):
