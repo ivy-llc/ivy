@@ -715,3 +715,32 @@ def round(x: Union[ivy.Array, ivy.NativeArray])\
     """
     return _cur_framework(x).round(x)
 
+
+def abs(x: Union[ivy.Array, ivy.NativeArray]) \
+        -> ivy.Array:
+    """
+    Calculates the absolute value for each element ``x_i`` of the input array ``x`` (i.e., the element-wise result has the same magnitude as the respective element in ``x`` but has positive sign).
+
+    .. note::
+        For signed integer data types, the absolute value of the minimum representable integer is implementation-dependent.
+
+    **Special Cases**
+
+    For this particular case,
+
+    - If ``x_i`` is ``NaN``, the result is ``NaN``.
+    - If ``x_i`` is ``-0``, the result is ``+0``.
+    - If ``x_i`` is ``-infinity``, the result is ``+infinity``.
+
+    Parameters
+    ----------
+    x:
+        input array. Should have a numeric data type.
+
+    Returns
+    -------
+    out:
+        an array containing the absolute value of each element in ``x``. The returned array must have the same data type as ``x``.
+    """
+    return _cur_framework(x).abs(x)
+
