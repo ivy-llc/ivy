@@ -104,10 +104,11 @@ def cholesky(x: np.ndarray,
              upper: bool = False) -> np.ndarray:
     if not upper or x.shape[0] == 0:
         return np.linalg.cholesky(x)
-    else:
+    elif len(x.shape) >2:
         return np.transpose(np.linalg.cholesky(np.transpose(x, axes=[x.shape[-1], x.shape[-2]])),
                             axes=[x.shape[-1], x.shape[-2]])
-
+    else:
+        return np.transpose(np.linalg.cholesky(np.transpose(x)))
 
 # Extra #
 # ------#
