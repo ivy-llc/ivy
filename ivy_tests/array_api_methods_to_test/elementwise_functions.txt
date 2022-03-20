@@ -33,7 +33,7 @@ less
 log1p
 log2
 log10
-#logaddexp
+logaddexp
 logical_and
 logical_not
 logical_or
