@@ -173,3 +173,6 @@ def round(x: JaxArray)\
     if 'int' in str(x.dtype):
         return x
     return jnp.round(x)
+
+def logaddexp(x1: JaxArray, x2: JaxArray) -> JaxArray:
+    return jnp.logaddexp(x1, x2)
