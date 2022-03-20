@@ -1,3 +1,4 @@
+
 # global
 import jax.numpy as jnp
 
@@ -178,4 +179,5 @@ def round(x: JaxArray)\
     return jnp.round(x)
 
 def logaddexp(x1: JaxArray, x2: JaxArray) -> JaxArray:
+
     return jnp.logaddexp(x1, x2)

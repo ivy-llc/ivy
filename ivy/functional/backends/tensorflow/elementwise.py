@@ -1,3 +1,4 @@
+
 # global
 import tensorflow as tf
 from tensorflow.python.types.core import Tensor

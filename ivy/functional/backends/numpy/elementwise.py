@@ -1,3 +1,4 @@
+
 # global
 import numpy as np
 import numpy.array_api as npa
@@ -185,3 +186,4 @@ def logaddexp(x1: np.ndarray, x2: np.ndarray) -> np.ndarray:
         x1 = x1.astype(dtype)
         x2 = x2.astype(dtype)
     return np.logaddexp(x1, x2)
+
