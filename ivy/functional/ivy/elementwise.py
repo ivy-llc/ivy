@@ -676,7 +676,32 @@ def square(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
     :return: an array containing the evaluated result for each element in x.
     """
     return _cur_framework(x).square(x)
-  
+
+
+def logaddexp(x1: Union[ivy.Array, ivy.NativeArray], x2: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
+    
+    """
+    Calculates the logarithm of the sum of exponentiations ``log(exp(x1) + exp(x2))`` for each element ``x1_i`` of the input array ``x1`` with the respective element ``x2_i`` of the input array ``x2``.
+    **Special cases**
+    For floating-point operands,
+    - If either ``x1_i`` or ``x2_i`` is ``NaN``, the result is ``NaN``.
+    - If ``x1_i`` is ``+infinity`` and ``x2_i`` is not ``NaN``, the result is ``+infinity``.
+    - If ``x1_i`` is not ``NaN`` and ``x2_i`` is ``+infinity``, the result is ``+infinity``.
+
+    Parameters
+    ----------
+    x1: 
+        first input array. Should have a floating-point data type.
+    x2: 
+        second input array. Must be compatible with ``x1`` (see :ref:`broadcasting`). Should have a floating-point data type.
+    Returns
+    -------
+    out: 
+        an array containing the element-wise results. The returned array must have a floating-point data type determined by :ref:`type-promotion`.
+    """
+
+    return _cur_framework(x1, x2).logaddexp(x1, x2)
+
 # Extra #
 # ------#
 def round(x: Union[ivy.Array, ivy.NativeArray])\
