@@ -100,7 +100,9 @@ def cholesky(x: mx.nd.NDArray,
     if not upper:
         return mx.np.linalg.cholesky(x)
     else:
-        return mx.np.linalg.cholesky(x).T.conj()
+        axes = list(range(len(x.shape) - 2)) + [len(x.shape) - 1, len(x.shape) - 2]
+        return mx.np.transpose(mx.np.linalg.cholesky(mx.np.transpose(x, axes=axes)),
+                        axes=axes)
         
 # Extra #
 # ------#

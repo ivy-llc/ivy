@@ -177,7 +177,9 @@ def cholesky(x: tf.Tensor,
     if not upper:
         return tf.linalg.cholesky(x)
     else:
-        return tf.linalg.cholesky(x).T.conj()
+        axes = list(range(len(x.shape) - 2)) + [len(x.shape) - 1, len(x.shape) - 2]
+        return tf.transpose(tf.linalg.cholesky(tf.transpose(x, perm=axes)),
+                            perm=axes)
         
 # Extra #
 # ------#

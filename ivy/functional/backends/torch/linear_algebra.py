@@ -119,7 +119,8 @@ def cholesky(x: torch.Tensor,
     if not upper:
         return torch.linalg.cholesky(x)
     else:
-        return torch.linalg.cholesky(x).T.conj()
+        return torch.transpose(torch.linalg.cholesky(torch.transpose(x, dim0=len(x.shape) - 1,dim1=len(x.shape) - 2)),
+                               dim0=len(x.shape) - 1, dim1=len(x.shape) - 2)
         
 # Extra #
 # ------#

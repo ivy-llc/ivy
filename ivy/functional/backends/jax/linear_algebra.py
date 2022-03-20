@@ -106,7 +106,9 @@ def cholesky(x: JaxArray,
     if not upper:
         return jnp.linalg.cholesky(x)
     else:
-        return jnp.linalg.cholesky(x.T).T
+        axes = list(range(len(x.shape) - 2)) + [len(x.shape) - 1, len(x.shape) - 2]
+        return jnp.transpose(jnp.linalg.cholesky(jnp.transpose(x, axes=axes)),
+                        axes=axes)
 
 
 # Extra #
