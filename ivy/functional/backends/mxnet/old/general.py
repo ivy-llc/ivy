@@ -277,34 +277,6 @@ def meshgrid(*xs, indexing='ij'):
     return tuple([item.as_nd_ndarray() for item in _mx.np.meshgrid(*xs_np, indexing=indexing)])
 
 
-# noinspection PyShadowingNames
-def scatter_flat(indices, updates, size=None, tensor=None, reduction='sum', dev=None):
-    if ivy.exists(tensor):
-        raise Exception('MXNet scatter_flat does not support scattering into an pre-existing tensor.')
-    if reduction == 'replace':
-        return _mx.nd.scatter_nd(updates, _mx.nd.expand_dims(indices, 0), [size]).copyto(_mxnet_init_context(default_device(dev)))
-    else:
-        raise Exception('MXNet scatter_flat currently only supports reduction mode "replace", but {} selected.'.
-                        format(reduction))
-
-
-# noinspection PyShadowingNames
-def scatter_nd(indices, updates, shape=None, tensor=None, reduction='sum', dev=None):
-    if ivy.exists(tensor):
-        raise Exception('MXNet scatter_flat does not support scattering into an pre-existing tensor.')
-    if dev is None:
-        dev = _callable_dev(indices)
-    shape = list(shape)
-    num_idx_dims = len(indices.shape)
-    transpose_order = [num_idx_dims-1] + list(range(num_idx_dims-1))
-    indices = _mx.nd.transpose(indices, transpose_order)
-    shape = shape if type(shape) is list else shape.asnumpy().astype(_np.int32).tolist()
-    if reduction == 'replace':
-        return _mx.nd.scatter_nd(updates, indices, shape).copyto(_mxnet_init_context(dev))
-    else:
-        raise Exception('MXNet scatter_nd currently only supports reduction mode "replace", but {} selected.'.
-                        format(reduction))
-
 
 def gather(params, indices, axis=-1, dev=None):
     if dev is None:

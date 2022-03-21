@@ -14,7 +14,8 @@ import multiprocessing as _multiprocessing
 import ivy
 from ivy.functional.ivy import default_dtype
 from ivy.functional.backends.numpy.device import _dev_callable
-
+#temporary
+from ivy.functional.backends.numpy.general import _to_dev
 DTYPE_TO_STR = {np.dtype('int8'): 'int8',
                 np.dtype('int16'): 'int16',
                 np.dtype('int32'): 'int32',
@@ -56,20 +57,6 @@ DTYPE_FROM_STR = {'int8': np.dtype('int8'),
                 'float64': np.dtype('float64'),
                 'bool': np.dtype('bool')}
 
-
-# Helpers #
-# --------#
-
-def _to_dev(x, dev):
-    if dev is not None:
-        if 'gpu' in dev:
-            raise Exception('Native Numpy does not support GPU placement, consider using Jax instead')
-        elif 'cpu' in dev:
-            pass
-        else:
-            raise Exception('Invalid device specified, must be in the form [ "cpu:idx" | "gpu:idx" ],'
-                            'but found {}'.format(dev))
-    return x
 
 
 
@@ -213,78 +200,6 @@ def identity(n, dtype='float32', batch_shape=None, dev=None):
 
 
 meshgrid = lambda *xs, indexing='ij': np.meshgrid(*xs, indexing=indexing)
-
-
-def scatter_flat(indices, updates, size=None, tensor=None, reduction='sum', dev=None):
-    target = tensor
-    target_given = ivy.exists(target)
-    if ivy.exists(size) and ivy.exists(target):
-        assert len(target.shape) == 1 and target.shape[0] == size
-    if dev is None:
-        dev = _dev_callable(updates)
-    if reduction == 'sum':
-        if not target_given:
-            target = np.zeros([size], dtype=updates.dtype)
-        np.add.at(target, indices, updates)
-    elif reduction == 'replace':
-        if not target_given:
-            target = np.zeros([size], dtype=updates.dtype)
-        target = np.asarray(target).copy()
-        target.setflags(write=1)
-        target[indices] = updates
-    elif reduction == 'min':
-        if not target_given:
-            target = np.ones([size], dtype=updates.dtype) * 1e12
-        np.minimum.at(target, indices, updates)
-        if not target_given:
-            target = np.where(target == 1e12, 0., target)
-    elif reduction == 'max':
-        if not target_given:
-            target = np.ones([size], dtype=updates.dtype) * -1e12
-        np.maximum.at(target, indices, updates)
-        if not target_given:
-            target = np.where(target == -1e12, 0., target)
-    else:
-        raise Exception('reduction is {}, but it must be one of "sum", "min" or "max"'.format(reduction))
-    return _to_dev(target, dev)
-
-
-# noinspection PyShadowingNames
-def scatter_nd(indices, updates, shape=None, tensor=None, reduction='sum', dev=None):
-    target = tensor
-    target_given = ivy.exists(target)
-    if ivy.exists(shape) and ivy.exists(target):
-        assert ivy.shape_to_tuple(target.shape) == ivy.shape_to_tuple(shape)
-    if dev is None:
-        dev = _dev_callable(updates)
-    shape = list(shape) if ivy.exists(shape) else list(tensor.shape)
-    indices_flat = indices.reshape(-1, indices.shape[-1]).T
-    indices_tuple = tuple(indices_flat) + (Ellipsis,)
-    if reduction == 'sum':
-        if not target_given:
-            target = np.zeros(shape, dtype=updates.dtype)
-        np.add.at(target, indices_tuple, updates)
-    elif reduction == 'replace':
-        if not target_given:
-            target = np.zeros(shape, dtype=updates.dtype)
-        target = np.asarray(target).copy()
-        target.setflags(write=1)
-        target[indices_tuple] = updates
-    elif reduction == 'min':
-        if not target_given:
-            target = np.ones(shape, dtype=updates.dtype) * 1e12
-        np.minimum.at(target, indices_tuple, updates)
-        if not target_given:
-            target = np.where(target == 1e12, 0., target)
-    elif reduction == 'max':
-        if not target_given:
-            target = np.ones(shape, dtype=updates.dtype) * -1e12
-        np.maximum.at(target, indices_tuple, updates)
-        if not target_given:
-            target = np.where(target == -1e12, 0., target)
-    else:
-        raise Exception('reduction is {}, but it must be one of "sum", "min" or "max"'.format(reduction))
-    return _to_dev(target, dev)
 
 
 def gather(params, indices, axis=-1, dev=None):
