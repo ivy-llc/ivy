@@ -15,7 +15,7 @@ import multiprocessing as _multiprocessing
 from tensorflow.python.types.core import Tensor
 
 # local
-from ivy.functional.ivy.old import default_dtype
+from ivy.functional.ivy import default_dtype
 from ivy.functional.ivy.device import default_device
 from ivy.functional.backends.tensorflow.device import _dev_callable, dev_from_str
 
@@ -117,29 +117,6 @@ stack = _tf.stack
 
 
 
-def constant_pad(x, pad_width, value=0):
-    if x.shape == ():
-        x = _tf.reshape(x, (-1,))
-    return _tf.pad(x, pad_width, constant_values=value)
-
-
-def zero_pad(x, pad_width):
-    if x.shape == ():
-        x = _tf.reshape(x, (-1,))
-    return _tf.pad(x, pad_width)
-
-
-def swapaxes(x, axis0, axis1):
-    x_shape = x.shape
-    num_dims = len(x_shape)
-    axis0 %= num_dims
-    axis1 %= num_dims
-    config = list(range(num_dims))
-    config.pop(axis0)
-    config.insert(axis0, axis1)
-    config.pop(axis1)
-    config.insert(axis1, axis0)
-    return _tf.transpose(x, config)
 
 
 transpose = _tf.transpose

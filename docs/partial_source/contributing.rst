@@ -4,6 +4,7 @@ Contributing to Ivy
 .. _`Array API`: https://data-apis.org/array-api/latest/
 .. _`tutorial series`: https://www.youtube.com/channel/UCGlkr-YCs3TjMVeOhbbULsw
 .. _`source files`: https://github.com/data-apis/array-api/tree/main/spec/API_specification/signatures
+.. _`__init__.py`: https://github.com/unifyai/ivy/blob/459f0aad972b71511014228dcd19928bb75d93ee/ivy/array/__init__.py#L43
 
 Array API Standardization
 -------------------------
@@ -38,6 +39,11 @@ denote positional-only and keyword-only arguments :code:`*, \,`.
 Additionally, we should remove all argument types from the docstrings. These are all defined using type-hints in the
 arguments already, and adding these also to the docstrings would create unecessary duplication. Our documentation
 builder adds the correct types to the online documentation dynamically using the type hints directly.
+
+Finally, aside from methods, the Array API Standard also defines properties which must be implemented for the array
+class. There are no unit tests which check for the existence of these properties, so you will not need to get any unit
+tests passing if working on an array property. You will need to modify the ivy.Array class defined in this `__init__.py`_
+file. Please see the :code:`dtype`, :code:`device`, :code:`shape` and :code:`T` properties for examples.
 
 
 Keeping Your Fork Updated

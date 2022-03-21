@@ -71,3 +71,6 @@ def max(x: jnp.ndarray,
 
 # Extra #
 # ------#
+
+def einsum(equation, *operands):
+    return jnp.einsum(equation, *operands)

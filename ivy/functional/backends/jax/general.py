@@ -19,7 +19,7 @@ from haiku._src.data_structures import FlatMapping
 # local
 import ivy
 from ivy.functional.ivy.device import default_device
-from ivy.functional.ivy.old import default_dtype
+from ivy.functional.ivy import default_dtype
 from ivy.functional.backends.jax.device import to_dev, _to_array, dev as callable_dev
 
 # noinspection PyUnresolvedReferences,PyProtectedMember
