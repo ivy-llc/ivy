@@ -159,8 +159,7 @@ def one_hot(indices, depth, dev=None):
 
 cross = _tf.linalg.cross
 
-cumsum = _tf.cumsum
-cumprod = _tf.math.cumprod
+
 
 
 # noinspection PyShadowingNames
@@ -174,122 +173,8 @@ def identity(n, dtype='float32', batch_shape=None, dev=None):
 meshgrid = lambda *xs, indexing='ij': _tf.meshgrid(*xs, indexing=indexing)
 
 
-# noinspection PyShadowingNames
-def scatter_flat(indices, updates, size=None, tensor=None, reduction='sum', dev=None):
-    target = tensor
-    target_given = ivy.exists(target)
-    if ivy.exists(size) and ivy.exists(target):
-        assert len(target.shape) == 1 and target.shape[0] == size
-    if dev is None:
-        dev = _dev_callable(updates)
-    dtype = updates.dtype
-    if reduction == 'sum':
-        if target_given:
-            return _tf.tensor_scatter_nd_add(tensor, _tf.expand_dims(indices, -1), updates)
-        return _tf.scatter_nd(_tf.expand_dims(indices, -1), updates, [size])
-    elif reduction == 'min':
-        if not target_given:
-            target = _tf.fill([size], _tf.cast(1e12, dtype))
-        res = _tf.tensor_scatter_nd_min(target, _tf.expand_dims(indices, -1), updates)
-        if not target_given:
-            res = _tf.where(res == 1e12, 0., res)
-    elif reduction == 'max':
-        if not target_given:
-            target = _tf.fill([size], _tf.cast(-1e12, dtype))
-        res = _tf.tensor_scatter_nd_max(target, _tf.expand_dims(indices, -1), updates)
-        if not target_given:
-            res = _tf.where(res == -1e12, 0., res)
-    elif reduction == 'replace':
-        if target_given:
-            res = _tf.tensor_scatter_nd_update(tensor, _tf.expand_dims(indices, -1), updates)
-        else:
-            res = _tf.tensor_scatter_nd_update(_tf.zeros([size]), _tf.expand_dims(indices, -1), updates)
-    else:
-        raise Exception('reduction is {}, but it must be one of "sum", "min" or "max"'.format(reduction))
-    with _tf.device(dev_from_str(dev)):
-        return res
 
 
-def _parse_ellipsis(so, ndims):
-    pre = list()
-    for s in so:
-        if s is Ellipsis:
-            break
-        pre.append(s)
-    post = list()
-    for s in reversed(so):
-        if s is Ellipsis:
-            break
-        post.append(s)
-    return tuple(
-        pre +
-        [slice(None, None, None) for _ in range(ndims - len(pre) - len(post))] +
-        list(reversed(post))
-    )
-
-
-# noinspection PyShadowingNames
-def scatter_nd(indices, updates, shape=None, tensor=None, reduction='sum', dev=None):
-
-    # handle numeric updates
-    updates = _tf.constant([updates] if isinstance(updates, Number) else updates,
-                           dtype=ivy.dtype(tensor, as_str=False) if ivy.exists(tensor)
-                           else ivy.default_dtype(item=updates))
-
-    # hanle non-tensor indices
-    if indices == ():
-        return updates
-    elif indices is Ellipsis or (isinstance(indices, tuple) and indices == (Ellipsis,)):
-        if updates.shape == () and ivy.exists(tensor) and tensor.shape == ():
-            return updates
-        shape = tensor.shape if ivy.exists(tensor) else updates.shape
-        indices = _tf.concat([_tf.expand_dims(g, -1) for g in _tf.meshgrid(*[_tf.range(s) for s in shape])], -1)
-    elif isinstance(indices, Number):
-        indices = (indices,)
-    if isinstance(indices, tuple):
-        shape = tensor.shape if ivy.exists(tensor) else updates.shape
-        indices = _parse_ellipsis(indices, len(shape))
-        indices = _tf.concat([_tf.expand_dims(g, -1) for g in _tf.meshgrid(
-            *[_tf.range(s) if idx is slice(None, None, None) else idx % s for s, idx in zip(shape, indices)])], -1)
-
-    # broadcast updates to indices
-    if updates.shape == ():
-        updates = _tf.broadcast_to(updates, indices.shape[:-1])
-
-    # implementation
-    target = tensor
-    target_given = ivy.exists(target)
-    if ivy.exists(shape) and ivy.exists(target):
-        assert ivy.shape_to_tuple(target.shape) == ivy.shape_to_tuple(shape)
-    if dev is None:
-        dev = _dev_callable(updates)
-    shape = list(shape) if ivy.exists(shape) else list(tensor.shape)
-    dtype = updates.dtype
-    if reduction == 'sum':
-        if target_given:
-            return _tf.tensor_scatter_nd_add(tensor, indices, updates)
-        return _tf.scatter_nd(indices, updates, shape)
-    elif reduction == 'min':
-        if not target_given:
-            target = _tf.fill(shape, _tf.cast(1e12, dtype))
-        res = _tf.tensor_scatter_nd_min(target, indices, updates)
-        if not target_given:
-            res = _tf.where(res == 1e12, 0., res)
-    elif reduction == 'max':
-        if not target_given:
-            target = _tf.fill(shape, _tf.cast(-1e12, dtype))
-        res = _tf.tensor_scatter_nd_max(target, indices, updates)
-        if not target_given:
-            res = _tf.where(res == -1e12, 0., res)
-    elif reduction == 'replace':
-        if target_given:
-            res = _tf.tensor_scatter_nd_update(tensor, indices, updates)
-        else:
-            res = _tf.tensor_scatter_nd_update(_tf.zeros(shape), indices, updates)
-    else:
-        raise Exception('reduction is {}, but it must be one of "sum", "min" or "max"'.format(reduction))
-    with _tf.device(dev_from_str(dev)):
-        return res
 
 
 def gather(params, indices, axis=-1, dev=None):

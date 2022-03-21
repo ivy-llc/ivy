@@ -141,12 +141,6 @@ def stack(xs, axis=0):
     return _mx.nd.stack(*xs, axis=axis)
 
 
-
-
-
-
-
-
 def transpose(x, axes=None):
     if axes is None:
         num_dims = len(x.shape)
@@ -264,17 +258,6 @@ def matmul(x1, x2):
     return res
 
 
-cumsum = lambda x, axis=0: _mx.nd.cumsum(x, axis if axis >= 0 else axis % len(x.shape))
-
-
-def cumprod(x, axis=0, exclusive=False):
-    array_stack = [_mx.nd.expand_dims(chunk, axis) for chunk in unstack(x, axis)]
-    if exclusive:
-        array_stack = [_mx.nd.ones_like(array_stack[0])] + array_stack[:-1]
-    new_array_list = [array_stack[0]]
-    for array_chunk in array_stack[1:]:
-        new_array_list.append(new_array_list[-1] * array_chunk)
-    return _mx.nd.concat(*new_array_list, dim=axis)
 
 
 def identity(n, dtype='float32', batch_shape=None, dev=None):
@@ -293,34 +276,6 @@ def meshgrid(*xs, indexing='ij'):
     xs_np = [x.as_np_ndarray() for x in xs]
     return tuple([item.as_nd_ndarray() for item in _mx.np.meshgrid(*xs_np, indexing=indexing)])
 
-
-# noinspection PyShadowingNames
-def scatter_flat(indices, updates, size=None, tensor=None, reduction='sum', dev=None):
-    if ivy.exists(tensor):
-        raise Exception('MXNet scatter_flat does not support scattering into an pre-existing tensor.')
-    if reduction == 'replace':
-        return _mx.nd.scatter_nd(updates, _mx.nd.expand_dims(indices, 0), [size]).copyto(_mxnet_init_context(default_device(dev)))
-    else:
-        raise Exception('MXNet scatter_flat currently only supports reduction mode "replace", but {} selected.'.
-                        format(reduction))
-
-
-# noinspection PyShadowingNames
-def scatter_nd(indices, updates, shape=None, tensor=None, reduction='sum', dev=None):
-    if ivy.exists(tensor):
-        raise Exception('MXNet scatter_flat does not support scattering into an pre-existing tensor.')
-    if dev is None:
-        dev = _callable_dev(indices)
-    shape = list(shape)
-    num_idx_dims = len(indices.shape)
-    transpose_order = [num_idx_dims-1] + list(range(num_idx_dims-1))
-    indices = _mx.nd.transpose(indices, transpose_order)
-    shape = shape if type(shape) is list else shape.asnumpy().astype(_np.int32).tolist()
-    if reduction == 'replace':
-        return _mx.nd.scatter_nd(updates, indices, shape).copyto(_mxnet_init_context(dev))
-    else:
-        raise Exception('MXNet scatter_nd currently only supports reduction mode "replace", but {} selected.'.
-                        format(reduction))
 
 
 def gather(params, indices, axis=-1, dev=None):
