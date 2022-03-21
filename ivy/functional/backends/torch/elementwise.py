@@ -6,6 +6,9 @@ import typing
 
 # local
 import ivy
+def expm1(x: Tensor)\
+        -> Tensor:
+    return torch.expm1(x)
 
 def bitwise_invert(x: torch.Tensor) \
         -> torch.Tensor:
