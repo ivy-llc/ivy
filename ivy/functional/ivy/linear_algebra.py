@@ -11,6 +11,22 @@ inf = float('inf')
 # Array API Standard #
 # -------------------#
 
+def matrix_transpose(x: Union[ivy.Array, ivy.NativeArray])\
+        -> ivy.Array:
+    """
+    Transposes a matrix (or a stack of matrices) ``x``.
+    Parameters
+    ----------
+    x: array
+        input array having shape ``(..., M, N)`` and whose innermost two dimensions form ``MxN`` matrices.
+    Returns
+    -------
+    out: array
+        an array containing the transpose for each matrix and having shape ``(..., N, M)``. The returned array must have the same data type as ``x``.
+    """
+    return _cur_framework(x).matrix_transpose(x)
+
+
 # noinspection PyShadowingBuiltins
 def vector_norm(x: Union[ivy.Array, ivy.NativeArray],
                 axis: Optional[Union[int, Tuple[int]]] = None,
@@ -69,9 +85,9 @@ def vector_norm(x: Union[ivy.Array, ivy.NativeArray],
     elif ord == float('inf'):
         return ivy.reduce_max(ivy.abs(x), axis, keepdims)
     elif ord == 0:
-        return ivy.reduce_sum(ivy.cast(x != 0, 'float32'), axis, keepdims)
+        return ivy.sum(ivy.cast(x != 0, 'float32'), axis, keepdims)
     x_raised = x ** ord
-    return ivy.reduce_sum(x_raised, axis, keepdims) ** (1/ord)
+    return ivy.sum(x_raised, axis, keepdims) ** (1/ord)
 
 
 def svd(x:Union[ivy.Array,ivy.NativeArray],full_matrices: bool = True)->Union[ivy.Array, Tuple[ivy.Array,...]]:
@@ -128,6 +144,60 @@ def diagonal(x: ivy.Array,
         an array containing the diagonals and whose shape is determined by removing the last two dimensions and appending a dimension equal to the size of the resulting diagonals. The returned array must have the same data type as ``x``.
     """
     return _cur_framework(x).diagonal(x, offset, axis1=axis1, axis2=axis2)
+
+
+def inv(x):
+    """
+    Computes the (multiplicative) inverse of x matrix.
+    Given a square matrix x, returns the matrix x_inv satisfying dot(x, x_inv) = dot(x_inv, x) = eye(x.shape[0]).
+
+    :param x: Matrix to be inverted.
+    :type x: array
+    :return: (Multiplicative) inverse of the matrix x.
+    """
+    return _cur_framework(x).inv(x)
+
+
+def pinv(x):
+    """
+    Computes the pseudo inverse of x matrix.
+
+    :param x: Matrix to be pseudo inverted.
+    :type x: array
+    :return: pseudo inverse of the matrix x.
+    """
+    return _cur_framework(x).pinv(x)
+
+
+def cholesky(x):
+    """
+    Computes the cholesky decomposition of the x matrix.
+
+    :param x: Matrix to be decomposed.
+    :type x: array
+    :return: cholesky decomposition of the matrix x.
+    """
+    return _cur_framework(x).cholesky(x)
+
+
+def matrix_norm(x, p=2, axes=None, keepdims=False):
+    """
+    Compute the matrix p-norm.
+
+    :param x: Input array.
+    :type x: array
+    :param p: Order of the norm. Default is 2.
+    :type p: int or str, optional
+    :param axes: The axes of x along which to compute the matrix norms.
+                 Default is None, in which case the last two dimensions are used.
+    :type axes: sequence of ints, optional
+    :param keepdims: If this is set to True, the axes which are normed over are left in the result as dimensions with
+                     size one. With this option the result will broadcast correctly against the original x.
+                     Default is False.
+    :type keepdims: bool, optional
+    :return: Matrix norm of the array at specified axes.
+    """
+    return _cur_framework(x).matrix_norm(x, p, axes, keepdims)
 
 
 def qr(x: ivy.Array,
@@ -278,5 +348,50 @@ def trace(x: ivy.Array,
     return _cur_framework(x).trace(x, offset)
 
 
+def det(x: ivy.Array) \
+    -> ivy.Array:
+    """
+    Returns the determinant of a square matrix (or a stack of square matrices) x.
+
+    :param x:  input array having shape (..., M, M) and whose innermost two dimensions form square matrices. Should
+               have a floating-point data type.
+    :return :  if x is a two-dimensional array, a zero-dimensional array containing the determinant; otherwise, a non-zero
+               dimensional array containing the determinant for each square matrix. The returned array must have the same data type as x.
+    """
+    return _cur_framework(x).det(x)
+
+def cholesky(x: Union[ivy.Array, ivy.NativeArray], 
+             upper: bool = False) -> ivy.Array:
+    """
+    Computes the cholesky decomposition of the x matrix.
+
+    :param x:  input array having shape (..., M, M) and whose innermost two dimensions form square symmetric
+     positive-definite matrices. Should have a floating-point data type.
+    :type x: array
+    :param upper:  If True, the result must be the upper-triangular Cholesky factor U. If False, the result
+     must be the lower-triangular Cholesky factor L. Default: False.
+    :type upper: bool
+    :return out: an array containing the Cholesky factors for each square matrix.
+     If upper is False, the returned array must contain lower-triangular matrices; otherwise,
+      the returned array must contain upper-triangular matrices. 
+      The returned array must have a floating-point data type determined by Type Promotion Rules 
+      and must have the same shape as x.
+    :type out: array
+    """
+    return  _cur_framework(x).cholesky(x, upper)
+    
 # Extra #
 # ------#
+
+def vector_to_skew_symmetric_matrix(vector: Union[ivy.Array, ivy.NativeArray])\
+        -> ivy.Array:
+    """
+    Given vector :math:`\mathbf{a}\in\mathbb{R}^3`, return associated skew-symmetric matrix
+    :math:`[\mathbf{a}]_×\in\mathbb{R}^{3×3}` satisfying :math:`\mathbf{a}×\mathbf{b}=[\mathbf{a}]_×\mathbf{b}`.\n
+    `[reference] <https://en.wikipedia.org/wiki/Skew-symmetric_matrix#Cross_product>`_
+
+    :param vector: Vector to convert *[batch_shape,3]*.
+    :type vector: array
+    :return: Skew-symmetric matrix *[batch_shape,3,3]*.
+    """
+    return _cur_framework(vector).vector_to_skew_symmetric_matrix(vector)

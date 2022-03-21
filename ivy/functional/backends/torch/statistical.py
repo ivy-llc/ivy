@@ -1,7 +1,7 @@
 # global
 torch_scatter = None
 import torch as torch
-from typing import Tuple, Union, Optional
+from typing import List, Tuple, Union, Optional
 
 
 # Array API Standard #
@@ -19,6 +19,16 @@ def min(x: torch.Tensor,
     return torch.amin(input = x, dim = axis, keepdim = keepdims)
 
 
+def sum(x: torch.Tensor,
+        axis: Optional[List[int]] = None,
+        keepdims: bool = False)\
+        -> torch.Tensor:
+    if axis is None:
+        num_dims = len(x.shape)
+        axis = list(range(num_dims))
+    return torch.sum(x, dim=axis, keepdim=keepdims)
+
+
 def prod(x: torch.Tensor,
          axis: Optional[Union[int, Tuple[int]]] = None,
          dtype: Optional[torch.dtype] = None,
@@ -34,15 +44,29 @@ def prod(x: torch.Tensor,
             dtype = torch.int64
 
     if axis is None:
-        axis = x.dim()
+        axis = x.dim()-1
     elif type(axis) == tuple:
         if len(axis) == 0:
-            axis = x.dim()
+            axis = x.dim()-1
         else:
             return torch.prod(torch.Tensor(
                 [torch.prod(input=x, dim=i, dtype=dtype, keepdim=keepdims) for i in axis]), dtype=dtype)
 
     return torch.prod(input=x, dim=axis, dtype=dtype, keepdim=keepdims)
+
+
+def mean(x, axis: Optional[List[int]] = None, keepdims: bool = False):
+    if axis is None:
+        num_dims = len(x.shape)
+        axis = list(range(num_dims))
+    return torch.mean(x, dim=axis, keepdim=keepdims)
+
+
+def var(x, axis: Optional[List[int]] = None, keepdims: bool = False):
+    if axis is None:
+        num_dims = len(x.shape)
+        axis = list(range(num_dims))
+    return torch.var(x, dim=axis, unbiased=False, keepdim=keepdims)
 
 
 # noinspection PyShadowingBuiltins
@@ -59,3 +83,6 @@ def max(x: torch.Tensor,
 
 # Extra #
 # ------#
+
+def einsum(equation, *operands):
+    return torch.einsum(equation, *operands)

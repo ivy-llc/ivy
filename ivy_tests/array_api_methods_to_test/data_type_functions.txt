@@ -1,7 +1,7 @@
 #astype
 #broadcast_arrays
-#broadcast_to
+broadcast_to
 #can_cast
 finfo
 iinfo
-#result_type
+result_type
