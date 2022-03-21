@@ -365,6 +365,24 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">keepdims</span><span class="p">)</span></div>
 
+<div class="viewcode-block" id="std"><a class="viewcode-back" href="../../../../functional/ivy/statistical/std.html#ivy.functional.ivy.statistical.std">[docs]</a><span class="k">def</span> <span class="nf">std</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Computes the arithmetic standard deviation along a given axis. The standard deviation is taken over</span>
+<span class="sd">    the flattened array by default, otherwise over the specified axis.</span>
+
+<span class="sd">    :param x: Array containing numbers whose standard deviation is desired.</span>
+<span class="sd">    :type x: array</span>
+<span class="sd">    :param axis: Axis or axes along which the means are computed. The default is to compute the mean of the flattened</span>
+<span class="sd">                    array. If this is a tuple of ints, a mean is performed over multiple axes, instead of a single axis</span>
+<span class="sd">                    or all the axes as before.</span>
+<span class="sd">    :type axis: int or sequence of ints</span>
+<span class="sd">    :param keepdims: If this is set to True, the axes which are reduced are left in the result as dimensions with size</span>
+<span class="sd">                        one. With this option, the result will broadcast correctly against the input array.</span>
+<span class="sd">    :type keepdims: bool, optional</span>
+<span class="sd">    :return: The array with standard deviations computed.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">var</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">keepdims</span><span class="p">)</span> <span class="o">**</span> <span class="mf">0.5</span><span class="p">)</span></div>
+
 
 <span class="c1"># Extra #</span>
 <span class="c1"># ------#</span>

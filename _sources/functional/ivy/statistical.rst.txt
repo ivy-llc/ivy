@@ -18,4 +18,5 @@ Statistical
    statistical/var.rst
    statistical/prod.rst
    statistical/sum.rst
+   statistical/std.rst
 
