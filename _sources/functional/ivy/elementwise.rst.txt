@@ -46,4 +46,15 @@ Elementwise
    elementwise/logaddexp.rst
    elementwise/round.rst
    elementwise/abs.rst
+   elementwise/tan.rst
+   elementwise/asin.rst
+   elementwise/atan.rst
+   elementwise/atan2.rst
+   elementwise/cosh.rst
+   elementwise/tanh.rst
+   elementwise/atanh.rst
+   elementwise/log.rst
+   elementwise/exp.rst
+   elementwise/divide.rst
+   elementwise/erf.rst
 
