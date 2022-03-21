@@ -1,3 +1,4 @@
+
 # global
 import tensorflow as tf
 from tensorflow.python.types.core import Tensor
@@ -5,6 +6,7 @@ import typing
 
 # local
 import ivy
+
 def expm1(x: Tensor)\
         -> Tensor:
     return tf.math.expm1(x)
@@ -233,4 +235,20 @@ def abs(x: Tensor)\
 def logaddexp(x1: Tensor, x2: Tensor) -> Tensor:
     x1, x2 = _cast_for_binary_op(x1, x2)
     return tf.experimental.numpy.logaddexp(x1, x2)
+
+
+tan = tf.tan
+atan = tf.atan
+atan2 = tf.atan2
+cosh = tf.math.cosh
+atanh = tf.math.atanh
+log = tf.math.log
+exp = tf.math.exp
+
+
+# Extra #
+# ------#
+
+
+erf = tf.math.erf
 
