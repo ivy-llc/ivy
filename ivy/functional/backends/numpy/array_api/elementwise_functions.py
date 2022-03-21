@@ -3,6 +3,11 @@ import numpy as np
 import numpy.array_api as npa
 
 
+def log(x: np.ndarray) \
+        -> np.ndarray:
+    return np.log(x)
+
+
 def bitwise_and(x1: np.ndarray,
                 x2: np.ndarray)\
         -> np.ndarray:

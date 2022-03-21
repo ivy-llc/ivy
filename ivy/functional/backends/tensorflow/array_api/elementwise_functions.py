@@ -6,6 +6,11 @@ from tensorflow.python.types.core import Tensor
 import ivy
 
 
+def log(x: Tensor) \
+        -> Tensor:
+    return tf.math.log(x)
+
+
 def bitwise_and(x1: Tensor,
                 x2: Tensor)\
         -> Tensor:

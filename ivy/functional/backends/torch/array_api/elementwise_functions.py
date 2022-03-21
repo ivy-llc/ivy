@@ -2,6 +2,11 @@
 import torch
 
 
+def log(x: torch.Tensor) \
+        -> torch.Tensor:
+    return torch.log(x)
+
+
 def bitwise_and(x1: torch.Tensor,
                 x2: torch.Tensor)\
         -> torch.Tensor:
