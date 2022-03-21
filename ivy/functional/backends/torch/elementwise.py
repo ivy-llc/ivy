@@ -197,6 +197,12 @@ def round(x: torch.Tensor)\
         return x
     return torch.round(x)
 
+
+def abs(x: torch.Tensor)\
+        -> torch.Tensor:
+    return torch.abs(x)
+
+  
 def logaddexp(x1: torch.Tensor, x2: torch.Tensor) -> torch.Tensor:
     x1, x2 = _cast_for_binary_op(x1, x2)
     return torch.logaddexp(x1, x2)

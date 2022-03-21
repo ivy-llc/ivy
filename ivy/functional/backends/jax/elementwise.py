@@ -174,5 +174,11 @@ def round(x: JaxArray)\
         return x
     return jnp.round(x)
 
+
+def abs(x: JaxArray)\
+        -> JaxArray:
+    return jnp.absolute(x)
+
+
 def logaddexp(x1: JaxArray, x2: JaxArray) -> JaxArray:
     return jnp.logaddexp(x1, x2)
