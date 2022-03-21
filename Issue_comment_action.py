@@ -1,4 +1,5 @@
 import os
+import re
 import sys
 import json
 
@@ -24,12 +25,15 @@ def main_issue_numbers(lst):
 
 
 def issue_in_comment(cmt_bd):
-    if cmt_bd.startswith('- [ ] #'):
-        return True
+    try:
+        issue_id = re.search("\D\d+", cmt_bd)
+        return True, issue_id.group(0)
+    except AttributeError:
+        return False, None
 
 
 def comment_title(cid):
-    x = command(f'gh issue view {int(cid[7:])} --json title')
+    x = command(f'gh issue view {int(cid[1:])} --json title')
     return x['title']
 
 
@@ -47,25 +51,26 @@ main_issue_ids = main_issue_numbers(command('gh issue list --label "Array API","
 
 if issue_number in main_issue_ids:
     main_issue = command(f'gh issue view {issue_number} --json number,title,body')
-    allocate_functions = carve_main_issue_body_functions(main_issue['body'])
-    non_allocate_functions = carve_main_issue_body_functions(main_issue['body'], False)
+    alocate_functions = carve_main_issue_body_functions(main_issue['body'])
+    non_alocate_functions = carve_main_issue_body_functions(main_issue['body'], False)
+    issue_in_cmt, issue_id = issue_in_comment(comment_body)
     print(f"New comment detected on: '{main_issue['title']}'")
     print(f"Comment body: '{comment_body}'")
 
-    if issue_in_comment(comment_body):
-        comment_issue_id = int(comment_body[7:])
-        comment_issue_title = comment_title(comment_body)
-        if comment_issue_title in non_allocate_functions:
+    if issue_in_cmt:
+        comment_issue_id = int(issue_id[1:])
+        comment_issue_title = comment_title(issue_id)
+        if comment_issue_title in non_alocate_functions:
             print('Function Free')
             # ToDo: Add Labels "Array API" "Single Function"
-            main_issue_body = main_issue['body'].replace(f'- [ ] {comment_issue_title}', comment_body)
+            main_issue_body = main_issue['body'].replace(f'- [ ] {comment_issue_title}', f'- [ ] #{issue_id[1:]}')
             command(f'gh issue edit {comment_issue_id} --add-label "Array API","Single Function" --add-assignee "{comment_author}"', save_output=False)
             command(f'gh issue edit {main_issue["number"]} --body "{main_issue_body}"', save_output=False)
-        elif (comment_issue_title not in non_allocate_functions) and (comment_issue_id not in allocate_functions):
+        elif (comment_issue_title not in non_alocate_functions) and (comment_issue_id not in alocate_functions):
             print('Function already allocated, closing issue.')
-            command(f'gh issue comment {comment_issue_id} --body "This issue is being closed because the function has already been taken, plase choose another function and recomment on the main issue."', save_output=False)
+            command(f'gh issue comment {comment_issue_id} --body "This issue is being closed because the function has already been taken, please choose another function and recommend on the main issue."', save_output=False)
             command(f'gh issue close {comment_issue_id}', save_output=False)
-        elif comment_issue_id in allocate_functions:
+        elif comment_issue_id in alocate_functions:
             print('Issue ID already in use...')
     else:
         # ToDo: Delete comment
