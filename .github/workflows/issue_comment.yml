@@ -19,7 +19,7 @@ jobs:
           pip install PyGithub
           python3 Issue_comment_action.py $ISSUE_NUMBER $COMMENT_NUMBER "$COMMENT_BODY" "$COMMENT_AUTHOR" "$GITHUB_TOKEN"
         env:
-          GITHUB_TOKEN: ${{ github.token }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           ISSUE_NUMBER: ${{ github.event.issue.number }}
           COMMENT_BODY: ${{ github.event.comment.body }}
           COMMENT_NUMBER: ${{ github.event.comment.id }}
