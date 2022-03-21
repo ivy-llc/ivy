@@ -99,6 +99,7 @@
 <li class="toctree-l2"><a class="reference internal" href="data_type/finfo.html">finfo</a></li>
 <li class="toctree-l2"><a class="reference internal" href="data_type/broadcast_to.html">broadcast_to</a></li>
 <li class="toctree-l2"><a class="reference internal" href="data_type/dtype.html">dtype</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data_type/cast.html">cast</a></li>
 <li class="toctree-l2"><a class="reference internal" href="data_type/dtype_bits.html">dtype_bits</a></li>
 <li class="toctree-l2"><a class="reference internal" href="data_type/dtype_to_str.html">dtype_to_str</a></li>
 <li class="toctree-l2"><a class="reference internal" href="data_type/dtype_from_str.html">dtype_from_str</a></li>
@@ -111,6 +112,7 @@
 <li class="toctree-l2"><a class="reference internal" href="data_type/unset_default_int_dtype.html">unset_default_int_dtype</a></li>
 <li class="toctree-l2"><a class="reference internal" href="data_type/set_default_float_dtype.html">set_default_float_dtype</a></li>
 <li class="toctree-l2"><a class="reference internal" href="data_type/unset_default_float_dtype.html">unset_default_float_dtype</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data_type/closest_valid_dtype.html">closest_valid_dtype</a></li>
 <li class="toctree-l2"><a class="reference internal" href="data_type/is_int_dtype.html">is_int_dtype</a></li>
 <li class="toctree-l2"><a class="reference internal" href="data_type/is_float_dtype.html">is_float_dtype</a></li>
 <li class="toctree-l2"><a class="reference internal" href="data_type/result_type.html">result_type</a></li>
@@ -265,6 +267,25 @@
 </dd></dl>
 
 <dl class="py function">
+<dt id="ivy.functional.ivy.data_type.astype">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">astype</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">dtype</span><span class="p">:</span> <span class="n">ivy.Dtype</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><a class="headerlink" href="#ivy.functional.ivy.data_type.astype" title="Permalink to this definition">¶</a></dt>
+<dd><p>Casts an array to a specified type.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>array</em>) – Input array containing elements to cast.</p></li>
+<li><p><strong>dtype</strong> (<em>data-type string</em>) – The desired data-type for the array in string format, i.e. ‘float32’ or ‘int64’.
+If not given, then the type will be determined as the minimum type required to hold the objects in the
+sequence.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A new array of the same shape as input array a, with data type given by dtype.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt id="ivy.functional.ivy.data_type.broadcast_to">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">broadcast_to</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">shape</span><span class="p">:</span> <span class="n">Tuple<span class="p">[</span>int<span class="p">, </span><span class="p">…</span><span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../_modules/ivy/functional/ivy/data_type.html#broadcast_to"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.data_type.broadcast_to" title="Permalink to this definition">¶</a></dt>
 <dd><blockquote>
@@ -279,6 +300,39 @@
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>out (array) – an array having a specified shape. Must have the same data type as x.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.data_type.cast">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">cast</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">dtype</span><span class="p">:</span> <span class="n">ivy.Dtype</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/data_type.html#cast"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.data_type.cast" title="Permalink to this definition">¶</a></dt>
+<dd><p>Casts an array to a specified type.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>array</em>) – Input array containing elements to cast.</p></li>
+<li><p><strong>dtype</strong> (<em>data-type string</em>) – The desired data-type for the array in string format, i.e. ‘float32’ or ‘int64’.
+If not given, then the type will be determined as the minimum type required to hold the objects in the
+sequence.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A new array of the same shape as input array a, with data type given by dtype.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.data_type.closest_valid_dtype">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">closest_valid_dtype</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">type</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Union<span class="p">[</span>ivy.Dtype<span class="p">, </span>str<span class="p">]</span><span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.Dtype<span class="p">, </span>str<span class="p">]</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/data_type.html#closest_valid_dtype"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.data_type.closest_valid_dtype" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determines the closest valid datatype to the datatype passed as input.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>type</strong> – The data type for which to check the closest valid type for.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The closest valid data type as a native ivy.Dtype</p>
 </dd>
 </dl>
 </dd></dl>
@@ -540,6 +594,7 @@ smallest representable number.</p></li>
 <li class="toctree-l1"><a class="reference internal" href="data_type/finfo.html">finfo</a></li>
 <li class="toctree-l1"><a class="reference internal" href="data_type/broadcast_to.html">broadcast_to</a></li>
 <li class="toctree-l1"><a class="reference internal" href="data_type/dtype.html">dtype</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data_type/cast.html">cast</a></li>
 <li class="toctree-l1"><a class="reference internal" href="data_type/dtype_bits.html">dtype_bits</a></li>
 <li class="toctree-l1"><a class="reference internal" href="data_type/dtype_to_str.html">dtype_to_str</a></li>
 <li class="toctree-l1"><a class="reference internal" href="data_type/dtype_from_str.html">dtype_from_str</a></li>
@@ -552,6 +607,7 @@ smallest representable number.</p></li>
 <li class="toctree-l1"><a class="reference internal" href="data_type/unset_default_int_dtype.html">unset_default_int_dtype</a></li>
 <li class="toctree-l1"><a class="reference internal" href="data_type/set_default_float_dtype.html">set_default_float_dtype</a></li>
 <li class="toctree-l1"><a class="reference internal" href="data_type/unset_default_float_dtype.html">unset_default_float_dtype</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data_type/closest_valid_dtype.html">closest_valid_dtype</a></li>
 <li class="toctree-l1"><a class="reference internal" href="data_type/is_int_dtype.html">is_int_dtype</a></li>
 <li class="toctree-l1"><a class="reference internal" href="data_type/is_float_dtype.html">is_float_dtype</a></li>
 <li class="toctree-l1"><a class="reference internal" href="data_type/result_type.html">result_type</a></li>

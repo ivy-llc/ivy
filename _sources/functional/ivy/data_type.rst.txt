@@ -16,6 +16,7 @@ Data type
    data_type/finfo.rst
    data_type/broadcast_to.rst
    data_type/dtype.rst
+   data_type/cast.rst
    data_type/dtype_bits.rst
    data_type/dtype_to_str.rst
    data_type/dtype_from_str.rst
@@ -28,6 +29,7 @@ Data type
    data_type/unset_default_int_dtype.rst
    data_type/set_default_float_dtype.rst
    data_type/unset_default_float_dtype.rst
+   data_type/closest_valid_dtype.rst
    data_type/is_int_dtype.rst
    data_type/is_float_dtype.rst
    data_type/result_type.rst
