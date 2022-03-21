@@ -56,3 +56,32 @@ def var(x, axis=None, keepdims=False):
     if is_flat:
         return _1_dim_array_to_flat_array(ret)
     return ret
+
+
+def min(x, axis=None, keepdims=False):
+    if axis is None:
+        num_dims = len(x.shape)
+        axis = tuple(range(num_dims))
+    elif isinstance(axis, Number):
+        axis = (axis,)
+    elif isinstance(axis, list):
+        axis = tuple(axis)
+    if x.shape == ():
+        x = _flat_array_to_1_dim_array(x)
+    ret = _mx.nd.min(x, axis=axis, keepdims=keepdims)
+    return _handle_output(x, axis, keepdims, ret)
+
+
+def max(x, axis=None, keepdims=False):
+    if axis is None:
+        num_dims = len(x.shape)
+        axis = tuple(range(num_dims))
+    elif isinstance(axis, Number):
+        axis = (axis,)
+    elif isinstance(axis, list):
+        axis = tuple(axis)
+    if x.shape == ():
+        x = _flat_array_to_1_dim_array(x)
+    ret = _mx.nd.max(x, axis=axis, keepdims=keepdims)
+    return _handle_output(x, axis, keepdims, ret)
+
