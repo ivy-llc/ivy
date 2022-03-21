@@ -186,22 +186,23 @@ def dtype_from_str(dtype_in: Union[ivy.Dtype, str])\
 
 
 # noinspection PyShadowingNames
-def _assert_dtype_correct_formatting(dtype):
+def _assert_dtype_correct_formatting(dtype: Union[ivy.Dtype, str]):
     assert 'int' in dtype or 'float' in dtype or 'bool' in dtype
 
 
 # noinspection PyShadowingNames
-def _assert_int_dtype_correct_formatting(dtype):
+def _assert_int_dtype_correct_formatting(dtype: Union[ivy.Dtype, str]):
     assert 'int' in dtype
 
 
 # noinspection PyShadowingNames
-def _assert_float_dtype_correct_formatting(dtype):
+def _assert_float_dtype_correct_formatting(dtype: Union[ivy.Dtype, str]):
     assert 'float' in dtype
 
 
 # noinspection PyShadowingNames
-def default_int_dtype(int_dtype=None, as_str=False):
+def default_int_dtype(int_dtype: Union[ivy.Dtype, str] = None, as_str: bool = False)\
+        -> Union[ivy.Dtype, str]:
     """
     Return the input int dtype if provided, otherwise return the global default int dtype.
     """
@@ -223,7 +224,8 @@ def default_int_dtype(int_dtype=None, as_str=False):
 
 
 # noinspection PyShadowingNames
-def default_float_dtype(float_dtype=None, as_str=False):
+def default_float_dtype(float_dtype: Union[ivy.Dtype, str] = None, as_str: bool = False)\
+        -> Union[ivy.Dtype, str]:
     """
     Return the input float dtype if provided, otherwise return the global default float dtype.
     """
@@ -245,7 +247,8 @@ def default_float_dtype(float_dtype=None, as_str=False):
 
 
 # noinspection PyShadowingNames
-def default_dtype(dtype=None, item=None, as_str=False):
+def default_dtype(dtype: Union[ivy.Dtype, str] = None, item=None, as_str: bool = False)\
+        -> Union[ivy.Dtype, str]:
     """
     Return the input dtype if provided, otherwise return the global default dtype.
     """
@@ -278,7 +281,7 @@ def default_dtype(dtype=None, item=None, as_str=False):
 
 
 # noinspection PyShadowingNames
-def set_default_dtype(dtype):
+def set_default_dtype(dtype: Union[ivy.Dtype, str]):
     dtype = ivy.dtype_to_str(dtype)
     _assert_dtype_correct_formatting(dtype)
     global default_dtype_stack
@@ -292,7 +295,7 @@ def unset_default_dtype():
 
 
 # noinspection PyShadowingNames
-def set_default_int_dtype(int_dtype):
+def set_default_int_dtype(int_dtype: Union[ivy.Dtype, str]):
     int_dtype = ivy.dtype_to_str(int_dtype)
     _assert_int_dtype_correct_formatting(int_dtype)
     global default_int_dtype_stack
@@ -306,7 +309,7 @@ def unset_default_int_dtype():
 
 
 # noinspection PyShadowingNames
-def set_default_float_dtype(float_dtype):
+def set_default_float_dtype(float_dtype: Union[ivy.Dtype, str]):
     float_dtype = ivy.dtype_to_str(float_dtype)
     _assert_float_dtype_correct_formatting(float_dtype)
     global default_float_dtype_stack
