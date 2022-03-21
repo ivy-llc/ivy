@@ -429,34 +429,6 @@ def matmul(x1: Union[ivy.Array, ivy.NativeArray], x2: Union[ivy.Array, ivy.Nativ
     return _cur_framework(x1).matmul(x1, x2)
 
 
-def cumsum(x: Union[ivy.Array, ivy.NativeArray], axis: int = 0)\
-        -> Union[ivy.Array, ivy.NativeArray]:
-    """
-    Returns the cumulative sum of the elements along a given axis.
-
-    :param x: Input array.
-    :type x: array
-    :param axis: Axis along which the cumulative sum is computed. By default 0.
-    :type axis: int
-    :return: Input array with cumulatively summed elements along axis.
-    """
-    return _cur_framework(x).cumsum(x, axis)
-
-
-def cumprod(x: Union[ivy.Array, ivy.NativeArray], axis: int = 0, exclusive: bool = False)\
-        -> Union[ivy.Array, ivy.NativeArray]:
-    """
-    Returns the cumulative product of the elements along a given axis.
-
-    :param x: Input array.
-    :type x: array
-    :param axis: Axis along which the cumulative product is computed. By default 0.
-    :type axis: int
-    :param exclusive: Whether to perform the cumprod exclusively. Defaults is False.
-    :type exclusive: bool, optional
-    :return: Input array with cumulatively multiplied elements along axis.
-    """
-    return _cur_framework(x).cumprod(x, axis, exclusive)
 
 
 # noinspection PyShadowingNames
