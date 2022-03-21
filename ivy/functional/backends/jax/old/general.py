@@ -19,7 +19,7 @@ from haiku._src.data_structures import FlatMapping
 # local
 import ivy
 from ivy.functional.ivy.device import default_device
-from ivy.functional.ivy.old import default_dtype
+from ivy.functional.ivy import default_dtype
 from ivy.functional.backends.jax.device import to_dev, dev as callable_dev
 
 DTYPE_TO_STR = {_jnp.dtype('int8'): 'int8',
@@ -68,8 +68,6 @@ DTYPE_FROM_STR = {'int8': _jnp.dtype('int8'),
 # Helpers #
 # --------#
 
-def _flat_array_to_1_dim_array(x):
-    return x.reshape((1,)) if x.shape == () else x
 
 
 def _to_array(x):
@@ -145,10 +143,6 @@ stack = _jnp.stack
 
 
 
-
-constant_pad = lambda x, pad_width, value=0: _jnp.pad(_flat_array_to_1_dim_array(x), pad_width, constant_values=value)
-zero_pad = lambda x, pad_width: _jnp.pad(_flat_array_to_1_dim_array(x), pad_width, constant_values=0)
-swapaxes = _jnp.swapaxes
 
 
 def transpose(x, axes=None):

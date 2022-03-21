@@ -1155,7 +1155,7 @@ class Container(dict):
         return self.map(lambda x, kc: self._ivy.var(x, axis, keepdims) if self._ivy.is_array(x) else x,
                         key_chains, to_apply, prune_unapplied, map_sequences)
 
-    def reduce_std(self, axis=None, keepdims=False, key_chains=None, to_apply=True, prune_unapplied=False,
+    def std(self, axis=None, keepdims=False, key_chains=None, to_apply=True, prune_unapplied=False,
                    map_sequences=False):
         """
         Computes standard deviation of array elements along a given axis for all sub-arrays of container object.
@@ -1179,7 +1179,7 @@ class Container(dict):
         :type map_sequences: bool, optional
         :return: Container object with the standard deviation computed for all sub-arrays.
         """
-        return self.map(lambda x, kc: self._ivy.reduce_std(x, axis, keepdims) if self._ivy.is_array(x) else x,
+        return self.map(lambda x, kc: self._ivy.std(x=x, axis=axis, keepdims=keepdims) if self._ivy.is_array(x) else x,
                         key_chains, to_apply, prune_unapplied, map_sequences)
 
     def reduce_min(self, axis=None, keepdims=False, key_chains=None, to_apply=True, prune_unapplied=False,
