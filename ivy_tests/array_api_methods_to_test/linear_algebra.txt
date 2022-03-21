@@ -1,4 +1,4 @@
-#cholesky
+cholesky
 #cross
 det
 #diagonal # fails non-determinstically for jax, due to +0 vs -0 inconsistencies
