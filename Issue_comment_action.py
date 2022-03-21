@@ -2,6 +2,7 @@ import os
 import re
 import sys
 import json
+from github import Github
 
 
 def command(cmd, save_output=True):
@@ -12,6 +13,7 @@ def command(cmd, save_output=True):
             os.system(cmd)
     except json.decoder.JSONDecodeError:
         print('Issue doesn\'t exist. Exiting process!')
+        delete_comment(token, issue_number, comment_number)
         exit()
 
 
@@ -45,10 +47,19 @@ def functions_titles(issues_ids):
     return [command(f'gh issue view {issue_id} --json title')['title'] for issue_id in issues_ids]
 
 
+def delete_comment(token, issue_number, comment_number):
+    g = Github(token)
+    repo = g.get_repo("unifyai/ivy")
+    issue_comment = repo.get_issue(issue_number).get_comment(comment_number)
+    issue_comment.delete()
+    print('Comment deleted!')
+
+
 issue_number = int(sys.argv[1])
 comment_number = int(sys.argv[2])
 comment_body = sys.argv[3]
 comment_author = sys.argv[4]
+token = sys.argv[-1]
 
 
 main_issue_ids = main_issue_numbers(command('gh issue list --label "Array API","ToDo" --json number'))
@@ -70,14 +81,18 @@ if issue_number in main_issue_ids:
             main_issue_body = main_issue['body'].replace(f'- [ ] {comment_issue_title}', f'- [ ] #{issue_id[1:]}')
             command(f'gh issue edit {comment_issue_id} --add-label "Array API","Single Function" --add-assignee "{comment_author}"', save_output=False)
             command(f'gh issue edit {main_issue["number"]} --body "{main_issue_body}"', save_output=False)
+            delete_comment(token, issue_number, comment_number)
         elif (comment_issue_title not in non_alocate_functions) and (comment_issue_id not in alocate_functions):
             print('Function already allocated, closing issue.')
             command(f'gh issue comment {comment_issue_id} --body "This issue is being closed because the function has already been taken, please choose another function and recommend on the main issue."', save_output=False)
             command(f'gh issue close {comment_issue_id}', save_output=False)
+            delete_comment(token, issue_number, comment_number)
         elif comment_issue_id in alocate_functions:
             print('Issue ID already in use...')
+            delete_comment(token, issue_number, comment_number)
     else:
         # ToDo: Delete comment
         print('Deleting comment! No issue found.')
+        delete_comment(token, issue_number, comment_number)
 else:
     print('Skipping step')
