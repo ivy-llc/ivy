@@ -62,7 +62,7 @@ if issue_number in main_issue_ids:
             command(f'gh issue edit {comment_issue_id} --add-label "Array API","Single Function" --add-assignee "{comment_author}"', save_output=False)
             command(f'gh issue edit {main_issue["number"]} --body "{main_issue_body}"', save_output=False)
         elif (comment_issue_title not in non_allocate_functions) and (comment_issue_id not in allocate_functions):
-            print('Function alreaddy allocated, closing issue.')
+            print('Function already allocated, closing issue.')
             command(f'gh issue comment {comment_issue_id} --body "This issue is being closed because the function has already been taken, plase choose another function and recomment on the main issue."', save_output=False)
             command(f'gh issue close {comment_issue_id}', save_output=False)
         elif comment_issue_id in allocate_functions:
