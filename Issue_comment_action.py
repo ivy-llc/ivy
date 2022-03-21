@@ -26,7 +26,7 @@ def main_issue_numbers(lst):
 
 def issue_in_comment(cmt_bd):
     try:
-        issue_id = re.search("#\d+", cmt_bd)
+        issue_id = re.search("[#/]\d+", cmt_bd)
         return True, issue_id.group(0)
     except AttributeError:
         return False, None
