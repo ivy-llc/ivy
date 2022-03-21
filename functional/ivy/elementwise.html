@@ -131,6 +131,17 @@
 <li class="toctree-l2"><a class="reference internal" href="elementwise/logaddexp.html">logaddexp</a></li>
 <li class="toctree-l2"><a class="reference internal" href="elementwise/round.html">round</a></li>
 <li class="toctree-l2"><a class="reference internal" href="elementwise/abs.html">abs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="elementwise/tan.html">tan</a></li>
+<li class="toctree-l2"><a class="reference internal" href="elementwise/asin.html">asin</a></li>
+<li class="toctree-l2"><a class="reference internal" href="elementwise/atan.html">atan</a></li>
+<li class="toctree-l2"><a class="reference internal" href="elementwise/atan2.html">atan2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="elementwise/cosh.html">cosh</a></li>
+<li class="toctree-l2"><a class="reference internal" href="elementwise/tanh.html">tanh</a></li>
+<li class="toctree-l2"><a class="reference internal" href="elementwise/atanh.html">atanh</a></li>
+<li class="toctree-l2"><a class="reference internal" href="elementwise/log.html">log</a></li>
+<li class="toctree-l2"><a class="reference internal" href="elementwise/exp.html">exp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="elementwise/divide.html">divide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="elementwise/erf.html">erf</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="general.html">General</a></li>
@@ -312,22 +323,13 @@
 <dl class="py function">
 <dt id="ivy.functional.ivy.elementwise.asin">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">asin</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../_modules/ivy/functional/ivy/elementwise.html#asin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.elementwise.asin" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculates an implementation-dependent approximation of the principal value of the inverse sine, having domain <code class="docutils literal notranslate"><span class="pre">[-1,</span> <span class="pre">+1]</span></code> and codomain <code class="docutils literal notranslate"><span class="pre">[-π/2,</span> <span class="pre">+π/2]</span></code> for each element <code class="docutils literal notranslate"><span class="pre">x_i</span></code> of the input array <code class="docutils literal notranslate"><span class="pre">x</span></code>. Each element-wise result is expressed in radians.</p>
-<p><strong>Special cases</strong></p>
-<p>For floating-point operands,</p>
-<ul class="simple">
-<li><p>If <code class="docutils literal notranslate"><span class="pre">x_i</span></code> is <code class="docutils literal notranslate"><span class="pre">NaN</span></code>, the result is <code class="docutils literal notranslate"><span class="pre">NaN</span></code>.</p></li>
-<li><p>If <code class="docutils literal notranslate"><span class="pre">x_i</span></code> is greater than <code class="docutils literal notranslate"><span class="pre">1</span></code>, the result is <code class="docutils literal notranslate"><span class="pre">NaN</span></code>.</p></li>
-<li><p>If <code class="docutils literal notranslate"><span class="pre">x_i</span></code> is less than <code class="docutils literal notranslate"><span class="pre">-1</span></code>, the result is <code class="docutils literal notranslate"><span class="pre">NaN</span></code>.</p></li>
-<li><p>If <code class="docutils literal notranslate"><span class="pre">x_i</span></code> is <code class="docutils literal notranslate"><span class="pre">+0</span></code>, the result is <code class="docutils literal notranslate"><span class="pre">+0</span></code>.</p></li>
-<li><p>If <code class="docutils literal notranslate"><span class="pre">x_i</span></code> is <code class="docutils literal notranslate"><span class="pre">-0</span></code>, the result is <code class="docutils literal notranslate"><span class="pre">-0</span></code>.</p></li>
-</ul>
-<dl class="simple">
-<dt>x: array</dt><dd><p>input array. Should have a floating-point data type.</p>
+<dd><p>Computes inverse sine element-wise.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>x</strong> (<em>array</em>) – y-coordinate on the unit circle.</p>
 </dd>
-</dl>
-<dl class="simple">
-<dt>out: array</dt><dd><p>an array containing the inverse sine of each element in <code class="docutils literal notranslate"><span class="pre">x</span></code>. The returned array must have a floating-point data type determined by <span class="xref std std-ref">type-promotion</span>.</p>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The inverse sine of each element in x, in radians and in the closed interval [-pi/2, pi/2].</p>
 </dd>
 </dl>
 </dd></dl>
@@ -351,6 +353,53 @@
 </dl>
 <dl class="simple">
 <dt>out:</dt><dd><p>an array containing the inverse hyperbolic sine of each element in <code class="docutils literal notranslate"><span class="pre">x</span></code>. The returned array must have a floating-point data type determined by <span class="xref std std-ref">type-promotion</span>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.elementwise.atan">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">atan</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../_modules/ivy/functional/ivy/elementwise.html#atan"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.elementwise.atan" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes trigonometric inverse tangent, element-wise.
+The inverse of tan, so that if y = tan(x) then x = arctan(y).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>x</strong> (<em>array</em>) – Input array.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Out has the same shape as x. Its real part is in [-pi/2, pi/2] (arctan(+/-inf) returns +/-pi/2).</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.elementwise.atan2">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">atan2</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x1</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">x2</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../_modules/ivy/functional/ivy/elementwise.html#atan2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.elementwise.atan2" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes element-wise arc tangent of x1/x2 choosing the quadrant correctly.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x1</strong> (<em>array</em>) – y-coordinates.</p></li>
+<li><p><strong>x2</strong> (<em>array</em>) – x-coordinates. If x1.shape != x2.shape, they must be broadcastable to a common shape
+(which becomes the shape of the output).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Array of angles in radians, in the range [-pi, pi].</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.elementwise.atanh">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">atanh</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../_modules/ivy/functional/ivy/elementwise.html#atanh"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.elementwise.atanh" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a new array with the inverse hyperbolic tangent of the elements of x.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>x</strong> – Input array.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A new array with the inverse hyperbolic tangent of the elements of x.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -453,22 +502,60 @@
 <dl class="py function">
 <dt id="ivy.functional.ivy.elementwise.cosh">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">cosh</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../_modules/ivy/functional/ivy/elementwise.html#cosh"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.elementwise.cosh" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculates an implementation-dependent approximation to the hyperbolic cosine, having domain <code class="docutils literal notranslate"><span class="pre">[-infinity,</span> <span class="pre">+infinity]</span></code> and codomain <code class="docutils literal notranslate"><span class="pre">[-infinity,</span> <span class="pre">+infinity]</span></code>, for each element <code class="docutils literal notranslate"><span class="pre">x_i</span></code> in the input array <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p>
-<p><strong>Special cases</strong></p>
-<p>For floating-point operands,</p>
-<ul class="simple">
-<li><p>If <code class="docutils literal notranslate"><span class="pre">x_i</span></code> is <code class="docutils literal notranslate"><span class="pre">NaN</span></code>, the result is <code class="docutils literal notranslate"><span class="pre">NaN</span></code>.</p></li>
-<li><p>If <code class="docutils literal notranslate"><span class="pre">x_i</span></code> is <code class="docutils literal notranslate"><span class="pre">+0</span></code>, the result is <code class="docutils literal notranslate"><span class="pre">1</span></code>.</p></li>
-<li><p>If <code class="docutils literal notranslate"><span class="pre">x_i</span></code> is <code class="docutils literal notranslate"><span class="pre">-0</span></code>, the result is <code class="docutils literal notranslate"><span class="pre">1</span></code>.</p></li>
-<li><p>If <code class="docutils literal notranslate"><span class="pre">x_i</span></code> is <code class="docutils literal notranslate"><span class="pre">+infinity</span></code>, the result is <code class="docutils literal notranslate"><span class="pre">+infinity</span></code>.</p></li>
-<li><p>If <code class="docutils literal notranslate"><span class="pre">x_i</span></code> is <code class="docutils literal notranslate"><span class="pre">-infinity</span></code>, the result is <code class="docutils literal notranslate"><span class="pre">+infinity</span></code>.</p></li>
-</ul>
-<dl class="simple">
-<dt>x:</dt><dd><p>input array whose elements each represent a hyperbolic angle. Should have a floating-point data type.</p>
+<dd><p>Returns a new array with the hyperbolic cosine of the elements of x.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>x</strong> – Input array.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A new array with the hyperbolic cosine of the elements of x.</p>
 </dd>
 </dl>
-<dl class="simple">
-<dt>out:</dt><dd><p>an array containing the hyperbolic cosine of each element in <code class="docutils literal notranslate"><span class="pre">x</span></code>. The returned array must have a floating-point data type determined by <span class="xref std std-ref">type-promotion</span>.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.elementwise.divide">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">divide</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x1</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">x2</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../_modules/ivy/functional/ivy/elementwise.html#divide"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.elementwise.divide" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the division for each element x1_i of the input array x1 with the respective element x2_i of the
+input array x2.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x1</strong> – dividend input array. Should have a numeric data type.</p></li>
+<li><p><strong>x2</strong> – divisor input array. Must be compatible with x1 (see Broadcasting). Should have a numeric data type.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>an array containing the element-wise results. The returned array must have a floating-point data type
+determined by Type Promotion Rules.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.elementwise.erf">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">erf</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/elementwise.html#erf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.elementwise.erf" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the Gauss error function of x element-wise.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>x</strong> (<em>array</em>) – Value to compute exponential for.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The Gauss error function of x.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.elementwise.exp">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">exp</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../_modules/ivy/functional/ivy/elementwise.html#exp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.elementwise.exp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes exponential of x element-wise.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>x</strong> (<em>array</em>) – Value to compute exponential for.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The exponential of each element of x.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -591,6 +678,20 @@ element x2_i of the input array x2.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>an array containing the element-wise results. The returned array must have a data type of bool.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.elementwise.log">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">log</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../_modules/ivy/functional/ivy/elementwise.html#log"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.elementwise.log" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes natural logarithm of x element-wise.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>x</strong> (<em>array</em>) – Value to compute log for.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The natural logarithm of each element of x.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -869,18 +970,30 @@ The returned array must have a data type of bool.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="ivy.functional.ivy.elementwise.tanh">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">tanh</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../_modules/ivy/functional/ivy/elementwise.html#tanh"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.elementwise.tanh" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculates an implementation-dependent approximation to the hyperbolic tangent,
-having domain [-infinity, +infinity] and codomain [-1, +1], for each element x_i of the input array x.</p>
+<dt id="ivy.functional.ivy.elementwise.tan">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">tan</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../_modules/ivy/functional/ivy/elementwise.html#tan"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.elementwise.tan" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes tangent element-wise.
+Equivalent to f.sin(x)/f.cos(x) element-wise.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>x</strong> – input array whose elements each represent a hyperbolic angle. Should have a floating-point
-data type.</p>
+<dd class="field-odd"><p><strong>x</strong> (<em>array</em>) – Input array, in radians (2*pi radian equals 360 degrees).</p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>an array containing the hyperbolic tangent of each element in x. The returned array must
-have a floating-point data type</p>
+<dd class="field-even"><p>The tangent of x element-wise.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.elementwise.tanh">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">tanh</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../_modules/ivy/functional/ivy/elementwise.html#tanh"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.elementwise.tanh" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a new array with the hyperbolic tangent of the elements of x.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>x</strong> – Input array.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A new array with the hyperbolic tangent of the elements of x.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -922,6 +1035,17 @@ have a floating-point data type</p>
 <li class="toctree-l1"><a class="reference internal" href="elementwise/logaddexp.html">logaddexp</a></li>
 <li class="toctree-l1"><a class="reference internal" href="elementwise/round.html">round</a></li>
 <li class="toctree-l1"><a class="reference internal" href="elementwise/abs.html">abs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="elementwise/tan.html">tan</a></li>
+<li class="toctree-l1"><a class="reference internal" href="elementwise/asin.html">asin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="elementwise/atan.html">atan</a></li>
+<li class="toctree-l1"><a class="reference internal" href="elementwise/atan2.html">atan2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="elementwise/cosh.html">cosh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="elementwise/tanh.html">tanh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="elementwise/atanh.html">atanh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="elementwise/log.html">log</a></li>
+<li class="toctree-l1"><a class="reference internal" href="elementwise/exp.html">exp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="elementwise/divide.html">divide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="elementwise/erf.html">erf</a></li>
 </ul>
 </div>
 </div>
