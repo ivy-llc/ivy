@@ -83,3 +83,6 @@ def max(x: torch.Tensor,
 
 # Extra #
 # ------#
+
+def einsum(equation, *operands):
+    return torch.einsum(equation, *operands)
