@@ -2,7 +2,7 @@
 import copy
 import functools
 from numbers import Number
-
+from operator import mul
 # local
 import ivy
 from . import array_api
@@ -47,7 +47,7 @@ class Array(ArrayWithArrayAPI, ArrayWithDevice, ArrayWithGeneral, ArrayWithGradi
         assert ivy.is_array(data)
         self._data = data
         self._shape = data.shape
-        self._size = sum(self._data.shape)
+        self._size = functools.reduce(mul,self._data.shape)
         self._dtype = ivy.dtype(self._data)
         self._device = ivy.dev(data)
         self._dev_str = ivy.dev_to_str(self._device)
@@ -320,11 +320,7 @@ class Array(ArrayWithArrayAPI, ArrayWithDevice, ArrayWithGeneral, ArrayWithGradi
 
     @_native_wrapper
     def __ge__(self, other):
-        other = to_native(other)
-        res = self._data.__ge__(other)
-        if res is NotImplemented:
-            return res
-        return to_ivy(res)
+        return ivy.greater_equal(self._data, other)
 
     @_native_wrapper
     def __and__(self, other):
