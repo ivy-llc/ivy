@@ -72,9 +72,6 @@ def _to_dev(x, dev):
     return x
 
 
-def _flat_array_to_1_dim_array(x):
-    return x.reshape((1,)) if x.shape == () else x
-
 
 # API #
 # ----#
@@ -141,11 +138,6 @@ def concatenate(xs, axis=-1):
 stack = _np.stack
 
 
-
-
-constant_pad = lambda x, pad_width, value=0: _np.pad(_flat_array_to_1_dim_array(x), pad_width, constant_values=value)
-zero_pad = lambda x, pad_width: _np.pad(_flat_array_to_1_dim_array(x), pad_width)
-swapaxes = _np.swapaxes
 
 
 def transpose(x, axes=None):
