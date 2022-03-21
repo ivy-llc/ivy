@@ -141,6 +141,11 @@ def acos(x: torch.Tensor)\
         -> torch.Tensor:
     return torch.acos(x)
 
+
+def logical_and(x1: torch.Tensor, x2: torch.Tensor)\
+        -> torch.Tensor:
+    return torch.logical_and(x1.type(torch.bool), x2.type(torch.bool))
+
   
 def logical_or(x1: torch.Tensor, x2: torch.Tensor)\
         -> torch.Tensor:
