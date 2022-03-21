@@ -102,6 +102,26 @@ def dtype(x: Union[ivy.Array, ivy.NativeArray], as_str: bool = False)\
     return _cur_framework(x).dtype(x, as_str)
 
 
+# noinspection PyShadowingNames
+def cast(x: Union[ivy.Array, ivy.NativeArray], dtype: ivy.Dtype)\
+        -> Union[ivy.Array, ivy.NativeArray]:
+    """
+    Casts an array to a specified type.
+
+    :param x: Input array containing elements to cast.
+    :type x: array
+    :param dtype: The desired data-type for the array in string format, i.e. 'float32' or 'int64'.
+            If not given, then the type will be determined as the minimum type required to hold the objects in the
+            sequence.
+    :type dtype: data-type string
+    :return: A new array of the same shape as input array a, with data type given by dtype.
+    """
+    return _cur_framework(x).cast(x, dtype)
+
+
+astype = cast
+
+
 # Extra #
 # ------#
 
@@ -320,6 +340,18 @@ def unset_default_float_dtype():
     global default_float_dtype_stack
     if default_float_dtype_stack:
         default_float_dtype_stack.pop(-1)
+
+
+# noinspection PyShadowingBuiltins
+def closest_valid_dtype(type: Union[ivy.Dtype, str, None])\
+        -> Union[ivy.Dtype, str]:
+    """
+    Determines the closest valid datatype to the datatype passed as input.
+
+    :param type: The data type for which to check the closest valid type for.
+    :return: The closest valid data type as a native ivy.Dtype
+    """
+    return _cur_framework(type).closest_valid_dtype(type)
 
 
 def is_int_dtype(dtype_in: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray, Number])\
