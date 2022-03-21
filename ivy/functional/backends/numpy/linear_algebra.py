@@ -8,7 +8,6 @@ from ivy import inf
 import ivy
 from collections import namedtuple
 
-
 # Array API Standard #
 # -------------------#
 
@@ -17,7 +16,7 @@ pinv = np.linalg.pinv
 cholesky = np.linalg.cholesky
 
 
-def matrix_transpose(x: np.ndarray)\
+def matrix_transpose(x: np.ndarray) \
         -> np.ndarray:
     return np.swapaxes(x, -1, -2)
 
@@ -26,9 +25,8 @@ def matrix_transpose(x: np.ndarray)\
 def vector_norm(x: np.ndarray,
                 axis: Optional[Union[int, Tuple[int]]] = None,
                 keepdims: bool = False,
-                ord: Union[int, float, Literal[inf, - inf]] = 2)\
-                 -> np.ndarray:
-
+                ord: Union[int, float, Literal[inf, - inf]] = 2) \
+        -> np.ndarray:
     if axis is None:
         np_normalized_vector = np.linalg.norm(x.flatten(), ord, axis, keepdims)
 
@@ -53,10 +51,10 @@ def matrix_norm(x, p=2, axes=None, keepdims=False):
     return ret
 
 
-def svd(x:np.ndarray,full_matrices: bool = True) -> Union[np.ndarray, Tuple[np.ndarray,...]]:
-    results=namedtuple("svd", "U S Vh")
-    U, D, VT=np.linalg.svd(x, full_matrices=full_matrices)
-    res=results(U, D, VT)
+def svd(x: np.ndarray, full_matrices: bool = True) -> Union[np.ndarray, Tuple[np.ndarray, ...]]:
+    results = namedtuple("svd", "U S Vh")
+    U, D, VT = np.linalg.svd(x, full_matrices=full_matrices)
+    res = results(U, D, VT)
     return res
 
 
@@ -77,34 +75,44 @@ def qr(x: np.ndarray,
     q, r = np.linalg.qr(x, mode=mode)
     return res(q, r)
 
-  
+
 def matmul(x1: np.ndarray,
            x2: np.ndarray) -> np.ndarray:
     return np.matmul(x1, x2)
 
-  
-def slogdet(x:Union[ivy.Array,ivy.NativeArray],full_matrices: bool = True) -> Union[ivy.Array, Tuple[ivy.Array,...]]:
+
+def slogdet(x: Union[ivy.Array, ivy.NativeArray], full_matrices: bool = True) -> Union[
+    ivy.Array, Tuple[ivy.Array, ...]]:
     results = namedtuple("slogdet", "sign logabsdet")
     sign, logabsdet = np.linalg.slogdet(x)
     res = results(sign, logabsdet)
     return res
 
 
-def trace(x: np.ndarray, 
-          offset: int = 0)\
-              -> np.ndarray:
+def trace(x: np.ndarray,
+          offset: int = 0) \
+        -> np.ndarray:
     return np.trace(x, offset)
 
 
-def det(x:np.array) \
-    -> np.array:
+def det(x: np.array) \
+        -> np.array:
     return np.linalg.det(x)
 
+
+def cholesky(x: np.ndarray,
+             upper: bool = False) -> np.ndarray:
+    if not upper:
+        return np.linalg.cholesky(x)
+    else:
+        axes = list(range(len(x.shape)-2))+[len(x.shape)-1, len(x.shape)-2]
+        return np.transpose(np.linalg.cholesky(np.transpose(x, axes=axes)),
+                            axes=axes)
 
 # Extra #
 # ------#
 
-def vector_to_skew_symmetric_matrix(vector: np.ndarray)\
+def vector_to_skew_symmetric_matrix(vector: np.ndarray) \
         -> np.ndarray:
     batch_shape = list(vector.shape[:-1])
     # BS x 3 x 1
