@@ -14,7 +14,7 @@ def min(x: jnp.ndarray,
 
 
 def sum(x: jnp.ndarray,
-        axis= Union[int,Tuple[int]],
+        axis: Union[int,Tuple[int]] = None,
         keepdims: bool = False)\
             -> jnp.ndarray:
     if axis is None:
@@ -23,6 +23,24 @@ def sum(x: jnp.ndarray,
     elif isinstance(axis, list):
         axis = tuple(axis)
     return jnp.sum(x, axis=axis, keepdims=keepdims)
+
+
+def mean(x, axis=None, keepdims=False):
+    if axis is None:
+        num_dims = len(x.shape)
+        axis = tuple(range(num_dims))
+    elif isinstance(axis, list):
+        axis = tuple(axis)
+    return jnp.mean(x, axis=axis, keepdims=keepdims)
+
+
+def var(x, axis=None, keepdims=False):
+    if axis is None:
+        num_dims = len(x.shape)
+        axis = tuple(range(num_dims))
+    elif isinstance(axis, list):
+        axis = tuple(axis)
+    return jnp.var(x, axis=axis, keepdims=keepdims)
 
 
 def prod(x: jnp.ndarray,
@@ -53,3 +71,6 @@ def max(x: jnp.ndarray,
 
 # Extra #
 # ------#
+
+def einsum(equation, *operands):
+    return jnp.einsum(equation, *operands)

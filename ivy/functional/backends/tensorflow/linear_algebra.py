@@ -168,6 +168,11 @@ def trace(x: tf.Tensor,
     return tf.trace(x, offset)
 
 
+def det(x:tf.Tensor,name:Optional[str]=None) \
+    -> tf.Tensor:
+    return tf.linalg.det(x,name)
+
+
 # Extra #
 # ------#
 

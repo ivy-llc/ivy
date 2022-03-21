@@ -97,6 +97,11 @@ def trace(x: JaxArray,
     return jax.numpy.trace(x, offset)
 
 
+def det(x:jnp.array) \
+    -> jnp.array:
+    return jnp.linalg.det(x)
+
+
 # Extra #
 # ------#
 

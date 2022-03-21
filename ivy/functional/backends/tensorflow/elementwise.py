@@ -144,6 +144,15 @@ def logical_not(x: Tensor)\
     return tf.logical_not(tf.cast(x, tf.bool))
 
 
+def greater_equal(x1: Tensor, x2: Tensor)\
+        -> Tensor:
+    if hasattr(x1, 'dtype') and hasattr(x2, 'dtype'):
+        promoted_type = tf.experimental.numpy.promote_types(x1.dtype, x2.dtype)
+        x1 = tf.cast(x1, promoted_type)
+        x2 = tf.cast(x2, promoted_type)
+    return tf.math.greater_equal(x1, x2)
+
+
 def acos(x: Tensor)\
         -> Tensor:
     return tf.acos(x)
@@ -221,3 +230,14 @@ def round(x: Tensor)\
     if 'int' in str(x.dtype):
         return x
     return tf.round(x)
+
+
+def abs(x: Tensor)\
+        -> Tensor:
+    return tf.math.abs(x)
+
+
+def logaddexp(x1: Tensor, x2: Tensor) -> Tensor:
+    x1, x2 = _cast_for_binary_op(x1, x2)
+    return tf.experimental.numpy.logaddexp(x1, x2)
+
