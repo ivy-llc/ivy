@@ -3,6 +3,10 @@ from ivy.functional.backends.mxnet.old.reductions import _handle_output
 import mxnet as mx
 from ivy.functional.backends.mxnet import _flat_array_to_1_dim_array, _1_dim_array_to_flat_array
 
+
+# Array API Standard #
+# -------------------#
+
 def sum(x, axis=None, keepdims=False):
     if axis is None:
         num_dims = len(x.shape)
@@ -96,3 +100,9 @@ def max(x, axis=None, keepdims=False):
     ret = _mx.nd.max(x, axis=axis, keepdims=keepdims)
     return _handle_output(x, axis, keepdims, ret)
 
+
+# Extra #
+# ------#
+
+def einsum(equation, *operands):
+    return mx.np.einsum(equation, *[op.as_np_ndarray() for op in operands]).as_nd_ndarray()

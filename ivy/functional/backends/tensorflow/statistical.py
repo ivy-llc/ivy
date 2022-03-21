@@ -71,3 +71,6 @@ def max(x: tf.Tensor,
     
 # Extra #
 # ------#
+
+def einsum(equation, *operands):
+    return tf.einsum(equation, *operands)
