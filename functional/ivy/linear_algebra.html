@@ -116,7 +116,6 @@
 <li class="toctree-l2"><a class="reference internal" href="linear_algebra/svdvals.html">svdvals</a></li>
 <li class="toctree-l2"><a class="reference internal" href="linear_algebra/trace.html">trace</a></li>
 <li class="toctree-l2"><a class="reference internal" href="linear_algebra/det.html">det</a></li>
-<li class="toctree-l2"><a class="reference internal" href="linear_algebra/cholesky.html">cholesky</a></li>
 <li class="toctree-l2"><a class="reference internal" href="linear_algebra/vector_to_skew_symmetric_matrix.html">vector_to_skew_symmetric_matrix</a></li>
 </ul>
 </li>
@@ -224,25 +223,14 @@
 <span id="linear-algebra"></span><h1>Linear algebra<a class="headerlink" href="#module-ivy.functional.ivy.linear_algebra" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
 <dt id="ivy.functional.ivy.linear_algebra.cholesky">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">cholesky</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">upper</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../_modules/ivy/functional/ivy/linear_algebra.html#cholesky"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.linear_algebra.cholesky" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">cholesky</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/linear_algebra.html#cholesky"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.linear_algebra.cholesky" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes the cholesky decomposition of the x matrix.</p>
-<dl class="field-list">
+<dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>array</em>) – input array having shape (…, M, M) and whose innermost two dimensions form square symmetric
-positive-definite matrices. Should have a floating-point data type.</p></li>
-<li><p><strong>upper</strong> (<em>bool</em>) – If True, the result must be the upper-triangular Cholesky factor U. If False, the result
-must be the lower-triangular Cholesky factor L. Default: False.</p></li>
-</ul>
+<dd class="field-odd"><p><strong>x</strong> (<em>array</em>) – Matrix to be decomposed.</p>
 </dd>
-<dt class="field-even">Return out</dt>
-<dd class="field-even"><p>an array containing the Cholesky factors for each square matrix.
-If upper is False, the returned array must contain lower-triangular matrices; otherwise,</p>
-<blockquote>
-<div><p>the returned array must contain upper-triangular matrices. 
-The returned array must have a floating-point data type determined by Type Promotion Rules 
-and must have the same shape as x.</p>
-</div></blockquote>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>cholesky decomposition of the matrix x.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -573,7 +561,6 @@ Default: <code class="docutils literal notranslate"><span class="pre">2</span></
 <li class="toctree-l1"><a class="reference internal" href="linear_algebra/svdvals.html">svdvals</a></li>
 <li class="toctree-l1"><a class="reference internal" href="linear_algebra/trace.html">trace</a></li>
 <li class="toctree-l1"><a class="reference internal" href="linear_algebra/det.html">det</a></li>
-<li class="toctree-l1"><a class="reference internal" href="linear_algebra/cholesky.html">cholesky</a></li>
 <li class="toctree-l1"><a class="reference internal" href="linear_algebra/vector_to_skew_symmetric_matrix.html">vector_to_skew_symmetric_matrix</a></li>
 </ul>
 </div>
