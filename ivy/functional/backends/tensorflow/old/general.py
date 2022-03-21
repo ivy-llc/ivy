@@ -159,8 +159,7 @@ def one_hot(indices, depth, dev=None):
 
 cross = _tf.linalg.cross
 
-cumsum = _tf.cumsum
-cumprod = _tf.math.cumprod
+
 
 
 # noinspection PyShadowingNames

@@ -74,3 +74,5 @@ def inplace_increment(x, val):
         return x
     raise Exception('TensorFlow does not support inplace operations on non-Variable tensors')
 
+cumsum = _tf.cumsum
+cumprod = _tf.math.cumprod
