@@ -79,7 +79,7 @@ if issue_number in main_issue_ids:
             print('Function Free')
             # ToDo: Add Labels "Array API" "Single Function"
             main_issue_body = main_issue['body'].replace(f'- [ ] {comment_issue_title}', f'- [ ] #{issue_id[1:]}')
-            command(f'gh issue edit {comment_issue_id} --add-label "Array API","Single Function" --add-assignee "{comment_author}"', save_output=False)
+            command(f'gh issue edit {comment_issue_id} --add-label "Array API","Single Function" --add-assignee {comment_author}', save_output=False)
             command(f'gh issue edit {main_issue["number"]} --body "{main_issue_body}"', save_output=False)
             delete_comment(token, issue_number, comment_number)
         elif (comment_issue_title not in non_alocate_functions) and (comment_issue_id not in alocate_functions):
