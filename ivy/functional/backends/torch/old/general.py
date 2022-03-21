@@ -178,17 +178,6 @@ def one_hot(indices, depth: int, dev: Optional[str] = None):
 def cross(x1, x2):
     return torch.cross(x1, x2)
 
-def cumsum(x, axis: int = 0):
-    return torch.cumsum(x, axis)
-
-
-def cumprod(x, axis: int = 0, exclusive: bool = False):
-    if exclusive:
-        x = torch.transpose(x, axis, -1)
-        x = torch.cat((torch.ones_like(x[..., -1:]), x[..., :-1]), -1)
-        res = torch.cumprod(x, -1)
-        return torch.transpose(res, axis, -1)
-    return torch.cumprod(x, axis)
 
 
 # noinspection PyShadowingNames
