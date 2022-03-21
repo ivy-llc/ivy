@@ -5,10 +5,14 @@ import json
 
 
 def command(cmd, save_output=True):
-    if save_output:
-        return json.loads(os.popen(cmd).read())
-    else:
-        os.system(cmd)
+    try:
+        if save_output:
+            return json.loads(os.popen(cmd).read())
+        else:
+            os.system(cmd)
+    except json.decoder.JSONDecodeError:
+        print('Issue doesn\'t exist. Exiting process!')
+        exit()
 
 
 def carve_main_issue_body_functions(main_issue_body, allocated=True):
