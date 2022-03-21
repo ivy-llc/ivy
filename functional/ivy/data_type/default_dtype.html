@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>broadcast_to &mdash; Ivy 1.0 documentation</title>
+  <title>default_dtype &mdash; Ivy 1.0 documentation</title>
   
 
   
@@ -36,8 +36,8 @@
   <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="dtype" href="dtype.html" />
-    <link rel="prev" title="finfo" href="finfo.html" /> 
+    <link rel="next" title="set_default_dtype" href="set_default_dtype.html" />
+    <link rel="prev" title="default_float_dtype" href="default_float_dtype.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -97,14 +97,14 @@
 <li class="toctree-l1 current"><a class="reference internal" href="../data_type.html">Data type</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="iinfo.html">iinfo</a></li>
 <li class="toctree-l2"><a class="reference internal" href="finfo.html">finfo</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">broadcast_to</a></li>
+<li class="toctree-l2"><a class="reference internal" href="broadcast_to.html">broadcast_to</a></li>
 <li class="toctree-l2"><a class="reference internal" href="dtype.html">dtype</a></li>
 <li class="toctree-l2"><a class="reference internal" href="dtype_bits.html">dtype_bits</a></li>
 <li class="toctree-l2"><a class="reference internal" href="dtype_to_str.html">dtype_to_str</a></li>
 <li class="toctree-l2"><a class="reference internal" href="dtype_from_str.html">dtype_from_str</a></li>
 <li class="toctree-l2"><a class="reference internal" href="default_int_dtype.html">default_int_dtype</a></li>
 <li class="toctree-l2"><a class="reference internal" href="default_float_dtype.html">default_float_dtype</a></li>
-<li class="toctree-l2"><a class="reference internal" href="default_dtype.html">default_dtype</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">default_dtype</a></li>
 <li class="toctree-l2"><a class="reference internal" href="set_default_dtype.html">set_default_dtype</a></li>
 <li class="toctree-l2"><a class="reference internal" href="unset_default_dtype.html">unset_default_dtype</a></li>
 <li class="toctree-l2"><a class="reference internal" href="set_default_int_dtype.html">set_default_int_dtype</a></li>
@@ -209,13 +209,13 @@
         
           <li><a href="../data_type.html">Data type</a> &raquo;</li>
         
-      <li>broadcast_to</li>
+      <li>default_dtype</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../../_sources/functional/ivy/data_type/broadcast_to.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../../_sources/functional/ivy/data_type/default_dtype.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -228,25 +228,12 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="broadcast-to">
-<h1>broadcast_to<a class="headerlink" href="#broadcast-to" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="default-dtype">
+<h1>default_dtype<a class="headerlink" href="#default-dtype" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
-<dt id="ivy.functional.ivy.data_type.broadcast_to">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">broadcast_to</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">shape</span><span class="p">:</span> <span class="n">Tuple<span class="p">[</span>int<span class="p">, </span><span class="p">…</span><span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../../_modules/ivy/functional/ivy/data_type.html#broadcast_to"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.data_type.broadcast_to" title="Permalink to this definition">¶</a></dt>
-<dd><blockquote>
-<div><p>Broadcasts an array to a specified shape</p>
-</div></blockquote>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> – x (array) – array to broadcast.</p></li>
-<li><p><strong>shape</strong> – shape (Tuple[int, …]) – array shape. Must be compatible with x (see Broadcasting). If                   the array is incompatible with the specified shape, the function should raise an                   exception.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>out (array) – an array having a specified shape. Must have the same data type as x.</p>
-</dd>
-</dl>
+<dt id="ivy.functional.ivy.data_type.default_dtype">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">default_dtype</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dtype</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Union<span class="p">[</span>ivy.Dtype<span class="p">, </span>str<span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">item</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">as_str</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.Dtype<span class="p">, </span>str<span class="p">]</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/data_type.html#default_dtype"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.data_type.default_dtype" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the input dtype if provided, otherwise return the global default dtype.</p>
 </dd></dl>
 
 <div class="line-block">
@@ -264,10 +251,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="dtype.html" class="btn btn-neutral float-right" title="dtype" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="set_default_dtype.html" class="btn btn-neutral float-right" title="set_default_dtype" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="finfo.html" class="btn btn-neutral float-left" title="finfo" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="default_float_dtype.html" class="btn btn-neutral float-left" title="default_float_dtype" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
