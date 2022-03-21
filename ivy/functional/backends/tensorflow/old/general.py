@@ -15,7 +15,7 @@ import multiprocessing as _multiprocessing
 from tensorflow.python.types.core import Tensor
 
 # local
-from ivy.functional.ivy.old import default_dtype
+from ivy.functional.ivy import default_dtype
 from ivy.functional.ivy.device import default_device
 from ivy.functional.backends.tensorflow.device import _dev_callable, dev_from_str
 
