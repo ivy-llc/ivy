@@ -145,3 +145,22 @@ def square(x: mx.ndarray.ndarray.NDArray)\
 def round(x: mx.ndarray.ndarray.NDArray)\
         -> mx.ndarray.ndarray.NDArray:
     return mx.nd.round(x)
+
+
+cos = lambda x: math.cos(x) if isinstance(x, float) else mx.nd.cos(x)
+tan = lambda x: math.tan(x) if isinstance(x, float) else mx.nd.tan(x)
+asin = lambda x: math.asin(x) if isinstance(x, float) else mx.nd.arcsin(x)
+atan = lambda x: math.atan(x) if isinstance(x, float) else mx.nd.arctan(x)
+atan2 = lambda x, y: math.atan2(x, y) if isinstance(x, float) else mx.np.arctan2(x.as_np_ndarray(), y.as_np_ndarray()).as_nd_ndarray()
+cosh = lambda x: math.cosh(x) if isinstance(x, float) else mx.nd.cosh(x)
+asinh = lambda x: math.asinh(x) if isinstance(x, float) else mx.nd.arcsinh(x)
+atanh = lambda x: math.atanh(x) if isinstance(x, float) else mx.nd.arctanh(x)
+log = lambda x: math.log(x) if isinstance(x, float) else mx.nd.log(x)
+exp = lambda x: math.exp(x) if isinstance(x, float) else mx.nd.exp(x)
+
+
+# Extra #
+# ------#
+
+
+erf = lambda x: math.erf(x) if isinstance(x, float) else mx.nd.erf(x)
