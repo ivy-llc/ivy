@@ -3,10 +3,6 @@ on:
     types:
       - created
 
-permissions:
-  contents: read
-  issues: write
-
 jobs:
   issue_commented:
     name: Issue comment
