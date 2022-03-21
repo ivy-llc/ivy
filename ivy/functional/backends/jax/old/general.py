@@ -198,16 +198,7 @@ def one_hot(indices, depth, dev=None):
 
 
 cross = _jnp.cross
-cumsum = _jnp.cumsum
 
-
-def cumprod(x, axis=0, exclusive=False):
-    if exclusive:
-        x = _jnp.swapaxes(x, axis, -1)
-        x = _jnp.concatenate((_jnp.ones_like(x[..., -1:]), x[..., :-1]), -1)
-        res = _jnp.cumprod(x, -1)
-        return _jnp.swapaxes(res, axis, -1)
-    return _jnp.cumprod(x, axis)
 
 
 # noinspection PyShadowingNames
@@ -225,90 +216,6 @@ def identity(n, dtype='float32', batch_shape=None, dev=None):
 
 meshgrid = lambda *xs, indexing='ij': _jnp.meshgrid(*xs, indexing=indexing)
 
-
-def scatter_flat(indices, updates, size=None, tensor=None, reduction='sum', dev=None):
-    target = tensor
-    target_given = ivy.exists(target)
-    if ivy.exists(size) and ivy.exists(target):
-        assert len(target.shape) == 1 and target.shape[0] == size
-    if dev is None:
-        dev = callable_dev(updates)
-    if reduction == 'sum':
-        if not target_given:
-            target = _jnp.zeros([size], dtype=updates.dtype)
-        target = target.at[indices].add(updates)
-    elif reduction == 'replace':
-        if not target_given:
-            target = _jnp.zeros([size], dtype=updates.dtype)
-        target = target.at[indices].set(updates)
-    elif reduction == 'min':
-        if not target_given:
-            target = _jnp.ones([size], dtype=updates.dtype) * 1e12
-        target = target.at[indices].min(updates)
-        if not target_given:
-            target = _jnp.where(target == 1e12, 0., target)
-    elif reduction == 'max':
-        if not target_given:
-            target = _jnp.ones([size], dtype=updates.dtype) * -1e12
-        target = target.at[indices].max(updates)
-        if not target_given:
-            target = _jnp.where(target == -1e12, 0., target)
-    else:
-        raise Exception('reduction is {}, but it must be one of "sum", "min" or "max"'.format(reduction))
-    return to_dev(target, dev)
-
-
-# noinspection PyShadowingNames
-def scatter_nd(indices, updates, shape=None, tensor=None, reduction='sum', dev=None):
-
-    # parse numeric inputs
-    if indices not in [Ellipsis, ()] and not (isinstance(indices, Iterable) and Ellipsis in indices):
-        indices = [[indices]] if isinstance(indices, Number) else indices
-        indices = _jnp.array(indices)
-        if len(indices.shape) < 2:
-            indices = _jnp.expand_dims(indices, -1)
-    updates = [updates] if isinstance(updates, Number) else updates
-    updates = _jnp.array(updates, dtype=ivy.dtype(tensor, as_str=False) if ivy.exists(tensor)
-                         else ivy.default_dtype(item=updates))
-
-    # handle Ellipsis
-    if isinstance(indices, tuple) or indices is Ellipsis:
-        indices_tuple = indices
-    else:
-        indices_flat = indices.reshape(-1, indices.shape[-1]).T
-        indices_tuple = tuple(indices_flat) + (Ellipsis,)
-
-    # implementation
-    target = tensor
-    target_given = ivy.exists(target)
-    if ivy.exists(shape) and ivy.exists(target):
-        assert ivy.shape_to_tuple(target.shape) == ivy.shape_to_tuple(shape)
-    if dev is None:
-        dev = callable_dev(updates)
-    shape = list(shape) if ivy.exists(shape) else list(tensor.shape)
-    if reduction == 'sum':
-        if not target_given:
-            target = _jnp.zeros(shape, dtype=updates.dtype)
-        target = target.at[indices_tuple].add(updates)
-    elif reduction == 'replace':
-        if not target_given:
-            target = _jnp.zeros(shape, dtype=updates.dtype)
-        target = target.at[indices_tuple].set(updates)
-    elif reduction == 'min':
-        if not target_given:
-            target = _jnp.ones(shape, dtype=updates.dtype) * 1e12
-        target = target.at[indices_tuple].min(updates)
-        if not target_given:
-            target = _jnp.where(target == 1e12, 0., target)
-    elif reduction == 'max':
-        if not target_given:
-            target = _jnp.ones(shape, dtype=updates.dtype) * -1e12
-        target = target.at[indices_tuple].max(updates)
-        if not target_given:
-            target = _jnp.where(target == -1e12, 0., target)
-    else:
-        raise Exception('reduction is {}, but it must be one of "sum", "min" or "max"'.format(reduction))
-    return to_dev(target, dev)
 
 
 def gather(params, indices, axis=-1, dev=None):
