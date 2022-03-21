@@ -114,7 +114,14 @@ def det(A:torch.Tensor) \
     -> torch.Tensor:
     return torch.linalg.det(A)
 
-
+def cholesky(x: torch.Tensor,
+            upper: bool = False) -> torch.Tensor:
+    if not upper:
+        return torch.linalg.cholesky(x)
+    else:
+        return torch.transpose(torch.linalg.cholesky(torch.transpose(x, dim0=len(x.shape) - 1,dim1=len(x.shape) - 2)),
+                               dim0=len(x.shape) - 1, dim1=len(x.shape) - 2)
+        
 # Extra #
 # ------#
 
