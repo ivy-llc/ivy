@@ -443,8 +443,7 @@ def logical_not(x: Union[ivy.Array, ivy.NativeArray])\
 
 
 def divide(x1: Union[ivy.Array, ivy.NativeArray],
-           x2: Union[ivy.Array, ivy.NativeArray],
-           dtype: Optional[Union[ivy.Dtype, str]] = None) \
+           x2: Union[ivy.Array, ivy.NativeArray]) \
         -> ivy.Array:
     """
     Calculates the division for each element x1_i of the input array x1
@@ -491,7 +490,7 @@ def divide(x1: Union[ivy.Array, ivy.NativeArray],
     The returned array must have a floating-point data type determined by Type Promotion Rules.
     """
 
-    return _cur_framework(x1, x2).divide(x1, x2, dtype)
+    return _cur_framework(x1, x2).divide(x1, x2)
 
 
 

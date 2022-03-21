@@ -121,11 +121,9 @@ def logical_not(x: JaxArray)\
 
 
 def divide(x1: JaxArray,
-           x2: JaxArray,
-           dtype: Optional[Union[JaxArray.dtype, str]] = None)\
+           x2: JaxArray)\
         -> JaxArray:
-    dtype = ivy.dtype_from_str(ivy.default_dtype(dtype, x1, x2))
-    return jnp.divide(x1, x2, dtype)
+    return jnp.divide(x1, x2)
 
 
 def acos(x: JaxArray)\

@@ -145,11 +145,9 @@ def logical_not(x: Tensor)\
 
 
 def divide(x1: Tensor,
-           x2: Tensor,
-           dtype: Optional[Union[Tensor.dtype, str]] = None) \
+           x2: Tensor)\
         -> Tensor:
-    dtype = ivy.dtype_from_str(ivy.default_dtype(dtype, x1, x2))
-    return tf.divide(x1, x2, dtype)
+    return tf.divide(x1, x2)
 
 
 def greater_equal(x1: Tensor, x2: Tensor)\

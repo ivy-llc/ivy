@@ -130,11 +130,9 @@ def logical_not(x: torch.Tensor)\
 
 
 def divide(x1: torch.Tensor,
-           x2: torch.Tensor,
-           dtype: Optional[Union[torch.dtype, str]] = None) \
+           x2: torch.Tensor) \
         -> torch.Tensor:
-    dtype = ivy.dtype_from_str(ivy.default_dtype(dtype, x1, x2))
-    return torch.divide(x1, x2, dtype)
+    return torch.divide(x1, x2)
 
 
 def greater_equal(x1: torch.Tensor, x2: torch.Tensor):

@@ -105,11 +105,9 @@ def logical_not(x: np.ndarray)\
 
 
 def divide(x1: np.ndarray,
-           x2: np.ndarray,
-           dtype: Optional[Union[np.dtype, str]] = None) \
+           x2: np.ndarray)\
         -> np.ndarray:
-    dtype = ivy.dtype_from_str(ivy.default_dtype(dtype, x1, x2))
-    return np.divide(x1, x2, dtype)
+    return np.divide(x1, x2)
 
 
 
