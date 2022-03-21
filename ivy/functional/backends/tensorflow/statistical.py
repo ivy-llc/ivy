@@ -16,7 +16,6 @@ def max(x: _tf.Tensor,
         -> _tf.Tensor:
     return _tf.math.reduce_max(x, axis = axis, keepdims = keepdims)
 
-
 def var(x: _tf.Tensor,
         axis: Optional[Union[int, Tuple[int]]] = None,
         correction: Union[int, float] = 0.0,
