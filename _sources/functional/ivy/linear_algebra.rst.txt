@@ -26,6 +26,5 @@ Linear algebra
    linear_algebra/svdvals.rst
    linear_algebra/trace.rst
    linear_algebra/det.rst
-   linear_algebra/cholesky.rst
    linear_algebra/vector_to_skew_symmetric_matrix.rst
 

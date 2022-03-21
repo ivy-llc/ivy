@@ -131,17 +131,6 @@
 <li class="toctree-l2"><a class="reference internal" href="logaddexp.html">logaddexp</a></li>
 <li class="toctree-l2"><a class="reference internal" href="round.html">round</a></li>
 <li class="toctree-l2"><a class="reference internal" href="abs.html">abs</a></li>
-<li class="toctree-l2"><a class="reference internal" href="tan.html">tan</a></li>
-<li class="toctree-l2"><a class="reference internal" href="asin.html">asin</a></li>
-<li class="toctree-l2"><a class="reference internal" href="atan.html">atan</a></li>
-<li class="toctree-l2"><a class="reference internal" href="atan2.html">atan2</a></li>
-<li class="toctree-l2"><a class="reference internal" href="cosh.html">cosh</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">tanh</a></li>
-<li class="toctree-l2"><a class="reference internal" href="atanh.html">atanh</a></li>
-<li class="toctree-l2"><a class="reference internal" href="log.html">log</a></li>
-<li class="toctree-l2"><a class="reference internal" href="exp.html">exp</a></li>
-<li class="toctree-l2"><a class="reference internal" href="divide.html">divide</a></li>
-<li class="toctree-l2"><a class="reference internal" href="erf.html">erf</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../general.html">General</a></li>
@@ -256,13 +245,16 @@
 <dl class="py function">
 <dt id="ivy.functional.ivy.elementwise.tanh">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">tanh</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../../_modules/ivy/functional/ivy/elementwise.html#tanh"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.elementwise.tanh" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns a new array with the hyperbolic tangent of the elements of x.</p>
+<dd><p>Calculates an implementation-dependent approximation to the hyperbolic tangent,
+having domain [-infinity, +infinity] and codomain [-1, +1], for each element x_i of the input array x.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>x</strong> – Input array.</p>
+<dd class="field-odd"><p><strong>x</strong> – input array whose elements each represent a hyperbolic angle. Should have a floating-point
+data type.</p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>A new array with the hyperbolic tangent of the elements of x.</p>
+<dd class="field-even"><p>an array containing the hyperbolic tangent of each element in x. The returned array must
+have a floating-point data type</p>
 </dd>
 </dl>
 </dd></dl>
