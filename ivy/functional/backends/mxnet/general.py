@@ -11,7 +11,7 @@ from functools import reduce as _reduce
 import multiprocessing as _multiprocessing
 
 # local
-from ivy.functional.ivy.old import default_dtype
+from ivy.functional.ivy import default_dtype
 from ivy.functional.ivy.device import default_device
 from ivy.functional.backends.mxnet.device import _callable_dev
 from ivy.functional.backends.mxnet import linspace
