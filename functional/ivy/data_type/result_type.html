@@ -24,7 +24,6 @@
         <script src="../../../_static/jquery.js"></script>
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/doctools.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
@@ -230,24 +229,6 @@
             
   <div class="section" id="result-type">
 <h1>result_type<a class="headerlink" href="#result-type" title="Permalink to this headline">¶</a></h1>
-<dl class="py function">
-<dt id="ivy.functional.ivy.data_type.result_type">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">result_type</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">arrays_and_dtypes</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">, </span>ivy.Dtype<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; ivy.Dtype<a class="reference internal" href="../../../_modules/ivy/functional/ivy/data_type.html#result_type"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.data_type.result_type" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the dtype that results from applying the type promotion rules (see <span class="xref std std-ref">type-promotion</span>) to the arguments.
-.. note:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">If</span> <span class="n">provided</span> <span class="n">mixed</span> <span class="n">dtypes</span> <span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">g</span><span class="o">.</span><span class="p">,</span> <span class="n">integer</span> <span class="ow">and</span> <span class="n">floating</span><span class="o">-</span><span class="n">point</span><span class="p">),</span> <span class="n">the</span> <span class="n">returned</span> <span class="n">dtype</span> <span class="n">will</span> <span class="n">be</span> <span class="n">implementation</span><span class="o">-</span><span class="n">specific</span><span class="o">.</span>
-</pre></div>
-</div>
-<dl class="simple">
-<dt>arrays_and_dtypes:</dt><dd><p>an arbitrary number of input arrays and/or dtypes.</p>
-</dd>
-</dl>
-<dl class="simple">
-<dt>out:</dt><dd><p>the dtype resulting from an operation involving the input arrays and dtypes.</p>
-</dd>
-</dl>
-</dd></dl>
-
 <div class="line-block">
 <div class="line"><br /></div>
 <div class="line"><strong>Supported Frameworks:</strong></div>

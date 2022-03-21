@@ -24,7 +24,6 @@
         <script src="../../../_static/jquery.js"></script>
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/doctools.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
@@ -220,25 +219,6 @@
             
   <div class="section" id="linear">
 <h1>linear<a class="headerlink" href="#linear" title="Permalink to this headline">¶</a></h1>
-<dl class="py function">
-<dt id="ivy.functional.ivy.layers.linear">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">linear</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">weight</span></em>, <em class="sig-param"><span class="n">bias</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/layers.html#linear"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.layers.linear" title="Permalink to this definition">¶</a></dt>
-<dd><p>Applies a linear transformation to the incoming data: y = x * t(weight) + bias. The operation also supports batching
-of the weight matrices. This is useful if a batch of different network parameters are to be represented.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>array</em>) – The input x compute linear transformation on. <em>[outer_batch_shape,inner_batch_shape,in_features]</em></p></li>
-<li><p><strong>weight</strong> (<em>array</em>) – The weight matrix. <em>[outer_batch_shape,out_features,in_features]</em></p></li>
-<li><p><strong>bias</strong> (<em>array</em><em>, </em><em>optional</em>) – The bias vector, default is None. <em>[outer_batch_shape,out_features]</em></p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Result array of the linear transformation. <em>[outer_batch_shape,inner_batch_shape,out_features]</em></p>
-</dd>
-</dl>
-</dd></dl>
-
 <div class="line-block">
 <div class="line"><br /></div>
 <div class="line"><strong>Supported Frameworks:</strong></div>

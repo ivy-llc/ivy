@@ -24,7 +24,6 @@
         <script src="../../../_static/jquery.js"></script>
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/doctools.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
@@ -210,32 +209,6 @@
             
   <div class="section" id="all">
 <h1>all<a class="headerlink" href="#all" title="Permalink to this headline">¶</a></h1>
-<dl class="py function">
-<dt id="ivy.functional.ivy.utility.all">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">all</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">axis</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Union<span class="p">[</span>int<span class="p">, </span>Tuple<span class="p">[</span>int<span class="p">]</span><span class="p">, </span>List<span class="p">[</span>int<span class="p">]</span><span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">keepdims</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../../_modules/ivy/functional/ivy/utility.html#all"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.utility.all" title="Permalink to this definition">¶</a></dt>
-<dd><p>Tests whether all input array elements evaluate to <code class="docutils literal notranslate"><span class="pre">True</span></code> along a specified axis.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Positive infinity, negative infinity, and NaN must evaluate to <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p>
-</div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>If <code class="docutils literal notranslate"><span class="pre">x</span></code> is an empty array or the size of the axis (dimension) along which to evaluate elements is zero, the test result must be <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p>
-</div>
-<dl class="simple">
-<dt>x:</dt><dd><p>input array.</p>
-</dd>
-<dt>axis:</dt><dd><p>axis or axes along which to perform a logical AND reduction. By default, a logical AND reduction must be performed over the entire array. If a tuple of integers, logical AND reductions must be performed over multiple axes. A valid <code class="docutils literal notranslate"><span class="pre">axis</span></code> must be an integer on the interval <code class="docutils literal notranslate"><span class="pre">[-N,</span> <span class="pre">N)</span></code>, where <code class="docutils literal notranslate"><span class="pre">N</span></code> is the rank (number of dimensions) of <code class="docutils literal notranslate"><span class="pre">x</span></code>. If an <code class="docutils literal notranslate"><span class="pre">axis</span></code> is specified as a negative integer, the function must determine the axis along which to perform a reduction by counting backward from the last dimension (where <code class="docutils literal notranslate"><span class="pre">-1</span></code> refers to the last dimension). If provided an invalid <code class="docutils literal notranslate"><span class="pre">axis</span></code>, the function must raise an exception. Default: <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
-</dd>
-<dt>keepdims:</dt><dd><p>If <code class="docutils literal notranslate"><span class="pre">True</span></code>, the reduced axes (dimensions) must be included in the result as singleton dimensions, and, accordingly, the result must be compatible with the input array (see <span class="xref std std-ref">broadcasting</span>). Otherwise, if <code class="docutils literal notranslate"><span class="pre">False</span></code>, the reduced axes (dimensions) must not be included in the result. Default: <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
-</dd>
-</dl>
-<dl class="simple">
-<dt>out:</dt><dd><p>if a logical AND reduction was performed over the entire array, the returned array must be a zero-dimensional array containing the test result; otherwise, the returned array must be a non-zero-dimensional array containing the test results. The returned array must have a data type of <code class="docutils literal notranslate"><span class="pre">bool</span></code>.</p>
-</dd>
-</dl>
-</dd></dl>
-
 <div class="line-block">
 <div class="line"><br /></div>
 <div class="line"><strong>Supported Frameworks:</strong></div>

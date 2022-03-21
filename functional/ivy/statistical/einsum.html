@@ -24,7 +24,6 @@
         <script src="../../../_static/jquery.js"></script>
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/doctools.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
@@ -216,24 +215,6 @@
             
   <div class="section" id="einsum">
 <h1>einsum<a class="headerlink" href="#einsum" title="Permalink to this headline">¶</a></h1>
-<dl class="py function">
-<dt id="ivy.functional.ivy.statistical.einsum">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">einsum</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">equation</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">operands</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/statistical.html#einsum"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.statistical.einsum" title="Permalink to this definition">¶</a></dt>
-<dd><p>Sums the product of the elements of the input operands along dimensions specified using a notation based on the
-Einstein summation convention.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>equation</strong> (<em>str</em>) – A str describing the contraction, in the same format as numpy.einsum.</p></li>
-<li><p><strong>operands</strong> (<em>seq of arrays</em>) – the inputs to contract (each one an ivy.Array), whose shapes should be consistent with equation.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>The array with sums computed.</p>
-</dd>
-</dl>
-</dd></dl>
-
 <div class="line-block">
 <div class="line"><br /></div>
 <div class="line"><strong>Supported Frameworks:</strong></div>

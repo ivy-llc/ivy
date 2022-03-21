@@ -24,7 +24,6 @@
         <script src="../../../_static/jquery.js"></script>
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/doctools.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
@@ -216,31 +215,6 @@
             
   <div class="section" id="sum">
 <h1>sum<a class="headerlink" href="#sum" title="Permalink to this headline">¶</a></h1>
-<dl class="py function">
-<dt id="ivy.functional.ivy.statistical.sum">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">sum</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">keepdims</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/statistical.html#sum"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.statistical.sum" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculates the sum of the input array x.</p>
-<dl class="simple">
-<dt>x:</dt><dd><p>input array. Should have a numeric data type.</p>
-</dd>
-<dt>axis:</dt><dd><p>axis or axes along which sums must be computed. By default, the sum must be computed over the entire array. If a tuple of integers, sums must be computed over multiple axes. Default: None.</p>
-</dd>
-<dt>dtype:</dt><dd><p>data type of the returned array. If None,</p>
-</dd>
-</dl>
-<p>if the default data type corresponding to the data type “kind” (integer or floating-point) of x has a smaller range of values than the data type of x (e.g., x has data type int64 and the default data type is int32, or x has data type uint64 and the default data type is int64), the returned array must have the same data type as x.</p>
-<p>if x has a floating-point data type, the returned array must have the default floating-point data type.</p>
-<p>if x has a signed integer data type (e.g., int16), the returned array must have the default integer data type.</p>
-<p>if x has an unsigned integer data type (e.g., uint16), the returned array must have an unsigned integer data type having the same number of bits as the default integer data type (e.g., if the default integer data type is int32, the returned array must have a uint32 data type).</p>
-<p>If the data type (either specified or resolved) differs from the data type of x, the input array should be cast to the specified data type before computing the sum. Default: None.    :return: The array with sums computed.</p>
-<dl class="simple">
-<dt>out:</dt><dd><p>if the sum was computed over the entire array, a zero-dimensional array containing the sum;
-otherwise, an array containing the sums. The returned array must have a data type as described
-by the dtype parameter above</p>
-</dd>
-</dl>
-</dd></dl>
-
 <div class="line-block">
 <div class="line"><br /></div>
 <div class="line"><strong>Supported Frameworks:</strong></div>

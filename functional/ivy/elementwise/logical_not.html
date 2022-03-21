@@ -24,7 +24,6 @@
         <script src="../../../_static/jquery.js"></script>
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/doctools.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
@@ -242,24 +241,6 @@
             
   <div class="section" id="logical-not">
 <h1>logical_not<a class="headerlink" href="#logical-not" title="Permalink to this headline">¶</a></h1>
-<dl class="py function">
-<dt id="ivy.functional.ivy.elementwise.logical_not">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">logical_not</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../../_modules/ivy/functional/ivy/elementwise.html#logical_not"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.elementwise.logical_not" title="Permalink to this definition">¶</a></dt>
-<dd><p>Computes the logical NOT for each element <code class="docutils literal notranslate"><span class="pre">x_i</span></code> of the input array <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>While this specification recommends that this function only accept input arrays having a boolean data type, specification-compliant array libraries may choose to accept input arrays having numeric data types. If non-boolean data types are supported, zeros must be considered the equivalent of <code class="docutils literal notranslate"><span class="pre">False</span></code>, while non-zeros must be considered the equivalent of <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p>
-</div>
-<dl class="simple">
-<dt>x:</dt><dd><p>input array. Should have a boolean data type.</p>
-</dd>
-</dl>
-<dl class="simple">
-<dt>out:</dt><dd><p>an array containing the element-wise results. The returned array must have a data type of <code class="docutils literal notranslate"><span class="pre">bool</span></code>.</p>
-</dd>
-</dl>
-</dd></dl>
-
 <div class="line-block">
 <div class="line"><br /></div>
 <div class="line"><strong>Supported Frameworks:</strong></div>

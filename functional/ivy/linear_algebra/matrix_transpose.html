@@ -24,7 +24,6 @@
         <script src="../../../_static/jquery.js"></script>
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/doctools.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
@@ -223,22 +222,6 @@
             
   <div class="section" id="matrix-transpose">
 <h1>matrix_transpose<a class="headerlink" href="#matrix-transpose" title="Permalink to this headline">¶</a></h1>
-<dl class="py function">
-<dt id="ivy.functional.ivy.linear_algebra.matrix_transpose">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">matrix_transpose</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../../_modules/ivy/functional/ivy/linear_algebra.html#matrix_transpose"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.linear_algebra.matrix_transpose" title="Permalink to this definition">¶</a></dt>
-<dd><p>Transposes a matrix (or a stack of matrices) <code class="docutils literal notranslate"><span class="pre">x</span></code>.
-Parameters
-———-
-x: array</p>
-<blockquote>
-<div><p>input array having shape <code class="docutils literal notranslate"><span class="pre">(...,</span> <span class="pre">M,</span> <span class="pre">N)</span></code> and whose innermost two dimensions form <code class="docutils literal notranslate"><span class="pre">MxN</span></code> matrices.</p>
-</div></blockquote>
-<dl class="simple">
-<dt>out: array</dt><dd><p>an array containing the transpose for each matrix and having shape <code class="docutils literal notranslate"><span class="pre">(...,</span> <span class="pre">N,</span> <span class="pre">M)</span></code>. The returned array must have the same data type as <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p>
-</dd>
-</dl>
-</dd></dl>
-
 <div class="line-block">
 <div class="line"><br /></div>
 <div class="line"><strong>Supported Frameworks:</strong></div>

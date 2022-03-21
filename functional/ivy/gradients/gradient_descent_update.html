@@ -24,7 +24,6 @@
         <script src="../../../_static/jquery.js"></script>
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/doctools.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
@@ -222,29 +221,6 @@
             
   <div class="section" id="gradient-descent-update">
 <h1>gradient_descent_update<a class="headerlink" href="#gradient-descent-update" title="Permalink to this headline">¶</a></h1>
-<dl class="py function">
-<dt id="ivy.functional.ivy.gradients.gradient_descent_update">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">gradient_descent_update</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ws</span></em>, <em class="sig-param"><span class="n">dcdws</span></em>, <em class="sig-param"><span class="n">lr</span></em>, <em class="sig-param"><span class="n">inplace</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">stop_gradients</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/gradients.html#gradient_descent_update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.gradients.gradient_descent_update" title="Permalink to this definition">¶</a></dt>
-<dd><p>Update weights ws of some function, given the derivatives of some cost c with respect to ws, [dc/dw for w in ws].</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>ws</strong> (<em>Ivy container</em>) – Weights of the function to be updated.</p></li>
-<li><p><strong>dcdws</strong> (<em>Ivy container</em>) – Derivates of the cost c with respect to the weights ws, [dc/dw for w in ws].</p></li>
-<li><p><strong>lr</strong> (<em>float</em><em> or </em><em>container of layer-wise rates.</em>) – Learning rate(s), the rate(s) at which the weights should be updated relative to the gradient.</p></li>
-<li><p><strong>inplace</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to perform the operation inplace, for backends which support inplace variable updates,
-and handle gradients behind the scenes such as PyTorch. If the update step should form part of a
-computation graph (i.e. higher order optimization), then this should be set to False.
-Default is True, provided the backend framework supports it.</p></li>
-<li><p><strong>stop_gradients</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to stop the gradients of the variables after each gradient step. Default is True.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>The new function weights ws_new, following the gradient descent updates.</p>
-</dd>
-</dl>
-</dd></dl>
-
 <div class="line-block">
 <div class="line"><br /></div>
 <div class="line"><strong>Supported Frameworks:</strong></div>

@@ -24,7 +24,6 @@
         <script src="../../../_static/jquery.js"></script>
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/doctools.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
@@ -220,25 +219,6 @@
             
   <div class="section" id="dropout">
 <h1>dropout<a class="headerlink" href="#dropout" title="Permalink to this headline">¶</a></h1>
-<dl class="py function">
-<dt id="ivy.functional.ivy.layers.dropout">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">dropout</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">prob</span></em>, <em class="sig-param"><span class="n">scale</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/layers.html#dropout"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.layers.dropout" title="Permalink to this definition">¶</a></dt>
-<dd><p>Randomly zeroes some of the elements of the input tensor with probability p using samples from a Bernoull
-distribution.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>array</em>) – The input array x to perform dropout on.</p></li>
-<li><p><strong>prob</strong> (<em>float</em>) – The probability of zeroing out each array element.</p></li>
-<li><p><strong>scale</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to scale the output by 1/(1-prob), default is True.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Result array of the linear transformation. <em>[N,∗,out_features]</em></p>
-</dd>
-</dl>
-</dd></dl>
-
 <div class="line-block">
 <div class="line"><br /></div>
 <div class="line"><strong>Supported Frameworks:</strong></div>

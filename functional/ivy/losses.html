@@ -24,7 +24,6 @@
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
@@ -207,65 +206,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="module-ivy.functional.ivy.losses">
-<span id="losses"></span><h1>Losses<a class="headerlink" href="#module-ivy.functional.ivy.losses" title="Permalink to this headline">¶</a></h1>
-<p>Collection of Ivy loss functions.</p>
-<dl class="py function">
-<dt id="ivy.functional.ivy.losses.binary_cross_entropy">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">binary_cross_entropy</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">true</span></em>, <em class="sig-param"><span class="n">pred</span></em>, <em class="sig-param"><span class="n">epsilon</span><span class="o">=</span><span class="default_value">1e-07</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/losses.html#binary_cross_entropy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.losses.binary_cross_entropy" title="Permalink to this definition">¶</a></dt>
-<dd><p>Computes the binary cross entropy loss.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>true</strong> (<em>array</em>) – true labels</p></li>
-<li><p><strong>pred</strong> (<em>array</em>) – Predicted labels</p></li>
-<li><p><strong>epsilon</strong> (<em>float</em><em>, </em><em>optional</em>) – small constant to add to log functions, default is 1e-7</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>The binary cross entropy loss array.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt id="ivy.functional.ivy.losses.cross_entropy">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">cross_entropy</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">true</span></em>, <em class="sig-param"><span class="n">pred</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">- 1</span></em>, <em class="sig-param"><span class="n">epsilon</span><span class="o">=</span><span class="default_value">1e-07</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/losses.html#cross_entropy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.losses.cross_entropy" title="Permalink to this definition">¶</a></dt>
-<dd><p>Computes cross entropy between predicted and true discrete distrubtions.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>true</strong> (<em>array</em>) – True labels</p></li>
-<li><p><strong>pred</strong> (<em>array</em>) – predicted labels.</p></li>
-<li><p><strong>axis</strong> (<em>int</em><em>, </em><em>optional</em>) – The class dimension, default is -1.</p></li>
-<li><p><strong>epsilon</strong> (<em>float</em><em>, </em><em>optional</em>) – small constant to add to log functions, default is 1e-7</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>The cross entropy loss</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt id="ivy.functional.ivy.losses.sparse_cross_entropy">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">sparse_cross_entropy</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">true</span></em>, <em class="sig-param"><span class="n">pred</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">- 1</span></em>, <em class="sig-param"><span class="n">epsilon</span><span class="o">=</span><span class="default_value">1e-07</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/losses.html#sparse_cross_entropy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.losses.sparse_cross_entropy" title="Permalink to this definition">¶</a></dt>
-<dd><p>Computes sparse cross entropy between logits and labels.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>true</strong> (<em>array</em>) – True labels as logits.</p></li>
-<li><p><strong>pred</strong> (<em>array</em>) – predicted labels as logits.</p></li>
-<li><p><strong>axis</strong> (<em>int</em><em>, </em><em>optional</em>) – The class dimension, default is -1.</p></li>
-<li><p><strong>epsilon</strong> (<em>float</em><em>, </em><em>optional</em>) – small constant to add to log functions, default is 1e-7</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>The sparse cross entropy loss</p>
-</dd>
-</dl>
-</dd></dl>
-
+  <div class="section" id="losses">
+<h1>Losses<a class="headerlink" href="#losses" title="Permalink to this headline">¶</a></h1>
 <div class="toctree-wrapper compound">
 <p class="caption"><span class="caption-text">Losses</span></p>
 <ul>

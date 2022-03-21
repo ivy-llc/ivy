@@ -24,7 +24,6 @@
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
@@ -205,28 +204,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="module-ivy.functional.ivy.sorting">
-<span id="sorting"></span><h1>Sorting<a class="headerlink" href="#module-ivy.functional.ivy.sorting" title="Permalink to this headline">¶</a></h1>
-<dl class="py function">
-<dt id="ivy.functional.ivy.sorting.argsort">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">argsort</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">axis</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">- 1</span></em>, <em class="sig-param"><span class="n">descending</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">stable</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">True</span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../_modules/ivy/functional/ivy/sorting.html#argsort"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.sorting.argsort" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the indices that sort an array <code class="docutils literal notranslate"><span class="pre">x</span></code> along a specified axis.</p>
-<dl class="simple">
-<dt>x:</dt><dd><p>input array.</p>
-</dd>
-<dt>axis:</dt><dd><p>axis along which to sort. If set to <code class="docutils literal notranslate"><span class="pre">-1</span></code>, the function must sort along the last axis. Default: <code class="docutils literal notranslate"><span class="pre">-1</span></code>.</p>
-</dd>
-<dt>descending:</dt><dd><p>sort order. If <code class="docutils literal notranslate"><span class="pre">True</span></code>, the returned indices sort <code class="docutils literal notranslate"><span class="pre">x</span></code> in descending order (by value). If <code class="docutils literal notranslate"><span class="pre">False</span></code>, the returned indices sort <code class="docutils literal notranslate"><span class="pre">x</span></code> in ascending order (by value). Default: <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
-</dd>
-<dt>stable:</dt><dd><p>sort stability. If <code class="docutils literal notranslate"><span class="pre">True</span></code>, the returned indices must maintain the relative order of <code class="docutils literal notranslate"><span class="pre">x</span></code> values which compare as equal. If <code class="docutils literal notranslate"><span class="pre">False</span></code>, the returned indices may or may not maintain the relative order of <code class="docutils literal notranslate"><span class="pre">x</span></code> values which compare as equal (i.e., the relative order of <code class="docutils literal notranslate"><span class="pre">x</span></code> values which compare as equal is implementation-dependent). Default: <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p>
-</dd>
-</dl>
-<dl class="simple">
-<dt>out:</dt><dd><p>an array of indices. The returned array must have the same shape as <code class="docutils literal notranslate"><span class="pre">x</span></code>. The returned array must have the default array index data type.</p>
-</dd>
-</dl>
-</dd></dl>
-
+  <div class="section" id="sorting">
+<h1>Sorting<a class="headerlink" href="#sorting" title="Permalink to this headline">¶</a></h1>
 <div class="toctree-wrapper compound">
 <p class="caption"><span class="caption-text">Sorting</span></p>
 <ul>

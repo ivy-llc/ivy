@@ -24,7 +24,6 @@
         <script src="../../../_static/jquery.js"></script>
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/doctools.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
@@ -223,35 +222,6 @@
             
   <div class="section" id="matmul">
 <h1>matmul<a class="headerlink" href="#matmul" title="Permalink to this headline">¶</a></h1>
-<dl class="py function">
-<dt id="ivy.functional.ivy.linear_algebra.matmul">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">matmul</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x1</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">x2</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../../_modules/ivy/functional/ivy/linear_algebra.html#matmul"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.linear_algebra.matmul" title="Permalink to this definition">¶</a></dt>
-<dd><p>Computes the matrix product.</p>
-<dl class="simple">
-<dt>x1:</dt><dd><p>x1 (array) – first input array. Should have a numeric data type. Must have at least one dimension.</p>
-</dd>
-<dt>x2:</dt><dd><p>x2 (array) – second input array. Should have a numeric data type. Must have at least one dimension.</p>
-</dd>
-</dl>
-<dl class="simple">
-<dt>out(array):</dt><dd><p>if both x1 and x2 are one-dimensional arrays having shape (N,), a zero-dimensional array containing the inner product as its only element.
-if x1 is a two-dimensional array having shape (M, K) and x2 is a two-dimensional array having shape (K, N), a two-dimensional array containing the conventional matrix product and having shape (M, N).
-if x1 is a one-dimensional array having shape (K,) and x2 is an array having shape (…, K, N), an array having shape (…, N) (i.e., prepended dimensions during vector-to-matrix promotion must be removed) and containing the conventional matrix product.
-if x1 is an array having shape (…, M, K) and x2 is a one-dimensional array having shape (K,), an array having shape (…, M) (i.e., appended dimensions during vector-to-matrix promotion must be removed) and containing the conventional matrix product.
-if x1 is a two-dimensional array having shape (M, K) and x2 is an array having shape (…, K, N), an array having shape (…, M, N) and containing the conventional matrix product for each stacked matrix.
-if x1 is an array having shape (…, M, K) and x2 is a two-dimensional array having shape (K, N), an array having shape (…, M, N) and containing the conventional matrix product for each stacked matrix.
-if either x1 or x2 has more than two dimensions, an array having a shape determined by Broadcasting shape(x1)[:-2] against shape(x2)[:-2] and containing the conventional matrix product for each stacked matrix.</p>
-</dd>
-</dl>
-<blockquote>
-<div><p>if either x1 or x2 is a zero-dimensional array.
-if x1 is a one-dimensional array having shape (K,), x2 is a one-dimensional array having shape (L,), and K != L.
-if x1 is a one-dimensional array having shape (K,), x2 is an array having shape (…, L, N), and K != L.
-if x1 is an array having shape (…, M, K), x2 is a one-dimensional array having shape (L,), and K != L.
-if x1 is an array having shape (…, M, K), x2 is an array having shape (…, L, N), and K != L.</p>
-</div></blockquote>
-</dd></dl>
-
 <div class="line-block">
 <div class="line"><br /></div>
 <div class="line"><strong>Supported Frameworks:</strong></div>

@@ -24,7 +24,6 @@
         <script src="../../../_static/jquery.js"></script>
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/doctools.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
@@ -223,31 +222,6 @@
             
   <div class="section" id="qr">
 <h1>qr<a class="headerlink" href="#qr" title="Permalink to this headline">¶</a></h1>
-<dl class="py function">
-<dt id="ivy.functional.ivy.linear_algebra.qr">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">qr</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">ivy.array.Array</span></em>, <em class="sig-param"><span class="n">mode</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'reduced'</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#ivy.functional.ivy.linear_algebra.qr" title="ivy.functional.ivy.linear_algebra.qr">ivy.functional.ivy.linear_algebra.qr</a><a class="reference internal" href="../../../_modules/ivy/functional/ivy/linear_algebra.html#qr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.linear_algebra.qr" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the qr decomposition x = QR of a full column rank matrix (or a stack of matrices), where Q is an orthonormal matrix (or a stack of matrices) and R is an upper-triangular matrix (or a stack of matrices).
-Parameters
-———-
-x:</p>
-<blockquote>
-<div><p>input array having shape (…, M, N) and whose innermost two dimensions form MxN matrices of rank N. Should have a floating-point data type.</p>
-</div></blockquote>
-<dl class="simple">
-<dt>mode:</dt><dd><p>decomposition mode. Should be one of the following modes:
-- ‘reduced’: compute only the leading K columns of q, such that q and r have dimensions (…, M, K) and (…, K, N), respectively, and where K = min(M, N).
-- ‘complete’: compute q and r with dimensions (…, M, M) and (…, M, N), respectively.
-Default: ‘reduced’.</p>
-</dd>
-</dl>
-<dl class="simple">
-<dt>out:</dt><dd><p>a namedtuple (Q, R) whose
-- first element must have the field name Q and must be an array whose shape depends on the value of mode and contain matrices with orthonormal columns. If mode is ‘complete’, the array must have shape (…, M, M). If mode is ‘reduced’, the array must have shape (…, M, K), where K = min(M, N). The first x.ndim-2 dimensions must have the same size as those of the input array x.
-- second element must have the field name R and must be an array whose shape depends on the value of mode and contain upper-triangular matrices. If mode is ‘complete’, the array must have shape (…, M, N). If mode is ‘reduced’, the array must have shape (…, K, N), where K = min(M, N). The first x.ndim-2 dimensions must have the same size as those of the input x.</p>
-</dd>
-</dl>
-</dd></dl>
-
 <div class="line-block">
 <div class="line"><br /></div>
 <div class="line"><strong>Supported Frameworks:</strong></div>
