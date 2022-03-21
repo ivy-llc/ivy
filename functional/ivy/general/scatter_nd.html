@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>unstack &mdash; Ivy 1.0 documentation</title>
+  <title>scatter_nd &mdash; Ivy 1.0 documentation</title>
   
 
   
@@ -36,8 +36,8 @@
   <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="fourier_encode" href="fourier_encode.html" />
-    <link rel="prev" title="floormod" href="floormod.html" /> 
+    <link rel="next" title="Gradients" href="../gradients.html" />
+    <link rel="prev" title="scatter_flat" href="scatter_flat.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -110,7 +110,7 @@
 <li class="toctree-l2"><a class="reference internal" href="clip_vector_norm.html">clip_vector_norm</a></li>
 <li class="toctree-l2"><a class="reference internal" href="clip_matrix_norm.html">clip_matrix_norm</a></li>
 <li class="toctree-l2"><a class="reference internal" href="floormod.html">floormod</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">unstack</a></li>
+<li class="toctree-l2"><a class="reference internal" href="unstack.html">unstack</a></li>
 <li class="toctree-l2"><a class="reference internal" href="fourier_encode.html">fourier_encode</a></li>
 <li class="toctree-l2"><a class="reference internal" href="value_is_nan.html">value_is_nan</a></li>
 <li class="toctree-l2"><a class="reference internal" href="has_nans.html">has_nans</a></li>
@@ -149,7 +149,7 @@
 <li class="toctree-l2"><a class="reference internal" href="cumsum.html">cumsum</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cumprod.html">cumprod</a></li>
 <li class="toctree-l2"><a class="reference internal" href="scatter_flat.html">scatter_flat</a></li>
-<li class="toctree-l2"><a class="reference internal" href="scatter_nd.html">scatter_nd</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">scatter_nd</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../gradients.html">Gradients</a></li>
@@ -239,13 +239,13 @@
         
           <li><a href="../general.html">General</a> &raquo;</li>
         
-      <li>unstack</li>
+      <li>scatter_nd</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../../_sources/functional/ivy/general/unstack.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../../_sources/functional/ivy/general/scatter_nd.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -258,22 +258,26 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="unstack">
-<h1>unstack<a class="headerlink" href="#unstack" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="scatter-nd">
+<h1>scatter_nd<a class="headerlink" href="#scatter-nd" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
-<dt id="ivy.functional.ivy.general.unstack">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">unstack</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">axis</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">keepdims</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/general.html#unstack"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.general.unstack" title="Permalink to this definition">¶</a></dt>
-<dd><p>Unpacks the given dimension of a rank-R array into rank-(R-1) arrays.</p>
+<dt id="ivy.functional.ivy.general.scatter_nd">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">scatter_nd</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">indices</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">updates</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">shape</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Iterable<span class="p">[</span>int<span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">tensor</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">reduction</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'sum'</span></em>, <em class="sig-param"><span class="n">dev</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>ivy.Device<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/general.html#scatter_nd"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.general.scatter_nd" title="Permalink to this definition">¶</a></dt>
+<dd><p>Scatter updates into a new array according to indices.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>array</em>) – Input array to unstack.</p></li>
-<li><p><strong>axis</strong> (<em>int</em>) – Axis for which to unpack the array.</p></li>
-<li><p><strong>keepdims</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to keep dimension 1 in the unstack dimensions. Default is False.</p></li>
+<li><p><strong>indices</strong> (<em>array</em>) – Indices for the new values to occupy.</p></li>
+<li><p><strong>updates</strong> (<em>array</em>) – Values for the new array to hold.</p></li>
+<li><p><strong>shape</strong> (<em>sequence of ints</em>) – The shape of the result. Default is None, in which case tensor argument must be provided.</p></li>
+<li><p><strong>tensor</strong> – The tensor in which to scatter the results, default is None, in which case the shape arg is used to
+scatter into a zeros array.</p></li>
+<li><p><strong>reduction</strong> (<em>str</em>) – The reduction method for the scatter, one of ‘sum’, ‘min’, ‘max’ or ‘replace’</p></li>
+<li><p><strong>dev</strong> (<em>ivy.Device</em><em>, </em><em>optional</em>) – device on which to create the array ‘cuda:0’, ‘cuda:1’, ‘cpu’ etc. Same as updates if None.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>List of arrays, unpacked along specified dimensions.</p>
+<dd class="field-even"><p>New array of given shape, with the values scattered at the indices.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -293,10 +297,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="fourier_encode.html" class="btn btn-neutral float-right" title="fourier_encode" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="../gradients.html" class="btn btn-neutral float-right" title="Gradients" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="floormod.html" class="btn btn-neutral float-left" title="floormod" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="scatter_flat.html" class="btn btn-neutral float-left" title="scatter_flat" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
