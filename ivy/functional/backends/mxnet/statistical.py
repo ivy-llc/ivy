@@ -58,6 +58,17 @@ def var(x, axis=None, keepdims=False):
     return ret
 
 
+def std(x, axis=None, keepdims=False):
+    red_var = var(x, axis, keepdims)
+    is_flat = red_var.shape == ()
+    if is_flat:
+        red_var = _flat_array_to_1_dim_array(red_var)
+    red_std = red_var ** 0.5
+    if is_flat:
+        return _1_dim_array_to_flat_array(red_std)
+    return red_std
+
+
 def min(x, axis=None, keepdims=False):
     if axis is None:
         num_dims = len(x.shape)
