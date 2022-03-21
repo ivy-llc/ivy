@@ -16,7 +16,7 @@ from typing import List, Dict, Optional, Union
 
 
 # local
-from ivy.functional.ivy.old import default_dtype
+from ivy.functional.ivy import default_dtype
 from ivy.functional.ivy.device import default_device
 from ivy.functional.backends.torch.device import dev_from_str, _callable_dev
 
