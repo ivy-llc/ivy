@@ -43,7 +43,7 @@ comment_body = sys.argv[3]
 comment_author = sys.argv[4]
 
 
-main_issue_ids = main_issue_numbers(command('gh issue list --label "ToDo" --json number'))
+main_issue_ids = main_issue_numbers(command('gh issue list --label "Array API","ToDo" --json number'))
 
 if issue_number in main_issue_ids:
     main_issue = command(f'gh issue view {issue_number} --json number,title,body')
