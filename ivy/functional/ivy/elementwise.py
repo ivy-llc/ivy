@@ -1,3 +1,4 @@
+ 
 
 # global
 from typing import Union
@@ -9,7 +10,6 @@ from ivy.framework_handler import current_framework as _cur_framework
 
 # Array API Standard #
 # -------------------#
-
 def expm1(x: Union[ivy.Array, ivy.NativeArray])\
         -> ivy.Array:
     """
@@ -880,7 +880,7 @@ def divide(x1: Union[ivy.Array, ivy.NativeArray], x2: Union[ivy.Array, ivy.Nativ
     :return: an array containing the element-wise results. The returned array must have a floating-point data type
              determined by Type Promotion Rules.
     """
-    return _cur_framework(x1).divide(x1, x2)
+    pass
 
 
 # Extra #
@@ -897,3 +897,5 @@ def erf(x: Union[ivy.Array, ivy.NativeArray])\
     :return: The Gauss error function of x.
     """
     return _cur_framework(x).erf(x)
+
+
