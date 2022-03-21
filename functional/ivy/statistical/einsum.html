@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>mean &mdash; Ivy 1.0 documentation</title>
+  <title>einsum &mdash; Ivy 1.0 documentation</title>
   
 
   
@@ -36,8 +36,8 @@
   <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="var" href="var.html" />
-    <link rel="prev" title="max" href="max.html" /> 
+    <link rel="next" title="Utility" href="../utility.html" />
+    <link rel="prev" title="std" href="std.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -114,12 +114,12 @@
 <li class="toctree-l1 current"><a class="reference internal" href="../statistical.html">Statistical</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="min.html">min</a></li>
 <li class="toctree-l2"><a class="reference internal" href="max.html">max</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">mean</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mean.html">mean</a></li>
 <li class="toctree-l2"><a class="reference internal" href="var.html">var</a></li>
 <li class="toctree-l2"><a class="reference internal" href="prod.html">prod</a></li>
 <li class="toctree-l2"><a class="reference internal" href="sum.html">sum</a></li>
 <li class="toctree-l2"><a class="reference internal" href="std.html">std</a></li>
-<li class="toctree-l2"><a class="reference internal" href="einsum.html">einsum</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">einsum</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../utility.html">Utility</a></li>
@@ -195,13 +195,13 @@
         
           <li><a href="../statistical.html">Statistical</a> &raquo;</li>
         
-      <li>mean</li>
+      <li>einsum</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../../_sources/functional/ivy/statistical/mean.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../../_sources/functional/ivy/statistical/einsum.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -214,27 +214,22 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="mean">
-<h1>mean<a class="headerlink" href="#mean" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="einsum">
+<h1>einsum<a class="headerlink" href="#einsum" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
-<dt id="ivy.functional.ivy.statistical.mean">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">mean</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">keepdims</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/statistical.html#mean"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.statistical.mean" title="Permalink to this definition">¶</a></dt>
-<dd><p>Computes the arithmetic mean along a given axis.
-Returns the average of the array elements. The average is taken over the flattened array by default, otherwise over
-the specified axis.</p>
+<dt id="ivy.functional.ivy.statistical.einsum">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">einsum</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">equation</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">operands</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/statistical.html#einsum"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.statistical.einsum" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sums the product of the elements of the input operands along dimensions specified using a notation based on the
+Einstein summation convention.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>array</em>) – Array containing numbers whose mean is desired.</p></li>
-<li><p><strong>axis</strong> (<em>int</em><em> or </em><em>sequence of ints</em>) – Axis or axes along which the means are computed. The default is to compute the mean of the flattened
-array. If this is a tuple of ints, a mean is performed over multiple axes, instead of a single axis
-or all the axes as before.</p></li>
-<li><p><strong>keepdims</strong> (<em>bool</em><em>, </em><em>optional</em>) – If this is set to True, the axes which are reduced are left in the result as dimensions with size
-one. With this option, the result will broadcast correctly against the input array.</p></li>
+<li><p><strong>equation</strong> (<em>str</em>) – A str describing the contraction, in the same format as numpy.einsum.</p></li>
+<li><p><strong>operands</strong> (<em>seq of arrays</em>) – the inputs to contract (each one an ivy.Array), whose shapes should be consistent with equation.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>The array with means computed.</p>
+<dd class="field-even"><p>The array with sums computed.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -254,10 +249,10 @@ one. With this option, the result will broadcast correctly against the input arr
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="var.html" class="btn btn-neutral float-right" title="var" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="../utility.html" class="btn btn-neutral float-right" title="Utility" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="max.html" class="btn btn-neutral float-left" title="max" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="std.html" class="btn btn-neutral float-left" title="std" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

@@ -386,6 +386,19 @@
 
 <span class="c1"># Extra #</span>
 <span class="c1"># ------#</span>
+
+<div class="viewcode-block" id="einsum"><a class="viewcode-back" href="../../../../functional/ivy/statistical/einsum.html#ivy.functional.ivy.statistical.einsum">[docs]</a><span class="k">def</span> <span class="nf">einsum</span><span class="p">(</span><span class="n">equation</span><span class="p">,</span> <span class="o">*</span><span class="n">operands</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Sums the product of the elements of the input operands along dimensions specified using a notation based on the</span>
+<span class="sd">    Einstein summation convention.</span>
+
+<span class="sd">    :param equation: A str describing the contraction, in the same format as numpy.einsum.</span>
+<span class="sd">    :type equation: str</span>
+<span class="sd">    :param operands: the inputs to contract (each one an ivy.Array), whose shapes should be consistent with equation.</span>
+<span class="sd">    :type operands: seq of arrays</span>
+<span class="sd">    :return: The array with sums computed.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">operands</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="n">equation</span><span class="p">,</span> <span class="o">*</span><span class="n">operands</span><span class="p">)</span></div>
 </pre></div>
 
            </div>

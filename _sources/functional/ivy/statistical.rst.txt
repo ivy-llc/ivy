@@ -19,4 +19,5 @@ Statistical
    statistical/prod.rst
    statistical/sum.rst
    statistical/std.rst
+   statistical/einsum.rst
 
