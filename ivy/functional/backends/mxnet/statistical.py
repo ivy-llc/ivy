@@ -1,7 +1,7 @@
 from numbers import Number
 from ivy.functional.backends.mxnet.old.reductions import _handle_output
 import mxnet as mx
-from ivy.functional.backends.mxnet import _flat_array_to_1_dim_array
+from ivy.functional.backends.mxnet import _flat_array_to_1_dim_array, _1_dim_array_to_flat_array
 
 def sum(x, axis=None, keepdims=False):
     if axis is None:
