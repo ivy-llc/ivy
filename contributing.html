@@ -237,6 +237,10 @@ denote positional-only and keyword-only arguments <code class="code docutils lit
 <p>Additionally, we should remove all argument types from the docstrings. These are all defined using type-hints in the
 arguments already, and adding these also to the docstrings would create unecessary duplication. Our documentation
 builder adds the correct types to the online documentation dynamically using the type hints directly.</p>
+<p>Finally, aside from methods, the Array API Standard also defines properties which must be implemented for the array
+class. There are no unit tests which check for the existence of these properties, so you will not need to get any unit
+tests passing if working on an array property. You will need to modify the ivy.Array class defined in this <a class="reference external" href="https://github.com/unifyai/ivy/blob/459f0aad972b71511014228dcd19928bb75d93ee/ivy/array/__init__.py#L43">__init__.py</a>
+file. Please see the <code class="code docutils literal notranslate"><span class="pre">dtype</span></code>, <code class="code docutils literal notranslate"><span class="pre">device</span></code>, <code class="code docutils literal notranslate"><span class="pre">shape</span></code> and <code class="code docutils literal notranslate"><span class="pre">T</span></code> properties for examples.</p>
 </div>
 <div class="section" id="keeping-your-fork-updated">
 <h2>Keeping Your Fork Updated<a class="headerlink" href="#keeping-your-fork-updated" title="Permalink to this headline">¶</a></h2>
