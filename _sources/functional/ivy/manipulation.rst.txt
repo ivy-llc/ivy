@@ -18,4 +18,7 @@ Manipulation
    manipulation/split.rst
    manipulation/repeat.rst
    manipulation/tile.rst
+   manipulation/constant_pad.rst
+   manipulation/zero_pad.rst
+   manipulation/swapaxes.rst
 
