@@ -24,6 +24,7 @@
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
@@ -218,8 +219,331 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="linear-algebra">
-<h1>Linear algebra<a class="headerlink" href="#linear-algebra" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-ivy.functional.ivy.linear_algebra">
+<span id="linear-algebra"></span><h1>Linear algebra<a class="headerlink" href="#module-ivy.functional.ivy.linear_algebra" title="Permalink to this headline">¶</a></h1>
+<dl class="py function">
+<dt id="ivy.functional.ivy.linear_algebra.cholesky">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">cholesky</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/linear_algebra.html#cholesky"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.linear_algebra.cholesky" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the cholesky decomposition of the x matrix.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>x</strong> (<em>array</em>) – Matrix to be decomposed.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>cholesky decomposition of the matrix x.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.linear_algebra.det">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">det</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">ivy.array.Array</span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../_modules/ivy/functional/ivy/linear_algebra.html#det"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.linear_algebra.det" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the determinant of a square matrix (or a stack of square matrices) x.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>x</strong> – input array having shape (…, M, M) and whose innermost two dimensions form square matrices. Should
+have a floating-point data type.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>:return<span class="classifier">if x is a two-dimensional array, a zero-dimensional array containing the determinant; otherwise, a non-zero</span></dt><dd><p>dimensional array containing the determinant for each square matrix. The returned array must have the same data type as x.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.linear_algebra.diagonal">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">diagonal</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">ivy.array.Array</span></em>, <em class="sig-param"><span class="n">offset</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">0</span></em>, <em class="sig-param"><span class="n">axis1</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">- 2</span></em>, <em class="sig-param"><span class="n">axis2</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">- 1</span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../_modules/ivy/functional/ivy/linear_algebra.html#diagonal"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.linear_algebra.diagonal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the specified diagonals of a matrix (or a stack of matrices) <code class="docutils literal notranslate"><span class="pre">x</span></code>.
+Parameters
+———-
+x:</p>
+<blockquote>
+<div><p>input array having shape <code class="docutils literal notranslate"><span class="pre">(...,</span> <span class="pre">M,</span> <span class="pre">N)</span></code> and whose innermost two dimensions form <code class="docutils literal notranslate"><span class="pre">MxN</span></code> matrices.</p>
+</div></blockquote>
+<dl class="simple">
+<dt>offset:</dt><dd><p>offset specifying the off-diagonal relative to the main diagonal.
+- <code class="docutils literal notranslate"><span class="pre">offset</span> <span class="pre">=</span> <span class="pre">0</span></code>: the main diagonal.
+- <code class="docutils literal notranslate"><span class="pre">offset</span> <span class="pre">&gt;</span> <span class="pre">0</span></code>: off-diagonal above the main diagonal.
+- <code class="docutils literal notranslate"><span class="pre">offset</span> <span class="pre">&lt;</span> <span class="pre">0</span></code>: off-diagonal below the main diagonal.
+Default: <cite>0</cite>.</p>
+</dd>
+<dt>axis1:</dt><dd><p>axis to be used as the first axis of the 2-D sub-arrays from which the diagonals should be taken.
+Defaults to first axis (0).</p>
+</dd>
+<dt>axis2:</dt><dd><p>axis to be used as the second axis of the 2-D sub-arrays from which the diagonals should be taken.
+Defaults to second axis (1).</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>out:</dt><dd><p>an array containing the diagonals and whose shape is determined by removing the last two dimensions and appending a dimension equal to the size of the resulting diagonals. The returned array must have the same data type as <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.linear_algebra.inv">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">inv</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/linear_algebra.html#inv"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.linear_algebra.inv" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the (multiplicative) inverse of x matrix.
+Given a square matrix x, returns the matrix x_inv satisfying dot(x, x_inv) = dot(x_inv, x) = eye(x.shape[0]).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>x</strong> (<em>array</em>) – Matrix to be inverted.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(Multiplicative) inverse of the matrix x.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.linear_algebra.matmul">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">matmul</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x1</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">x2</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../_modules/ivy/functional/ivy/linear_algebra.html#matmul"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.linear_algebra.matmul" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the matrix product.</p>
+<dl class="simple">
+<dt>x1:</dt><dd><p>x1 (array) – first input array. Should have a numeric data type. Must have at least one dimension.</p>
+</dd>
+<dt>x2:</dt><dd><p>x2 (array) – second input array. Should have a numeric data type. Must have at least one dimension.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>out(array):</dt><dd><p>if both x1 and x2 are one-dimensional arrays having shape (N,), a zero-dimensional array containing the inner product as its only element.
+if x1 is a two-dimensional array having shape (M, K) and x2 is a two-dimensional array having shape (K, N), a two-dimensional array containing the conventional matrix product and having shape (M, N).
+if x1 is a one-dimensional array having shape (K,) and x2 is an array having shape (…, K, N), an array having shape (…, N) (i.e., prepended dimensions during vector-to-matrix promotion must be removed) and containing the conventional matrix product.
+if x1 is an array having shape (…, M, K) and x2 is a one-dimensional array having shape (K,), an array having shape (…, M) (i.e., appended dimensions during vector-to-matrix promotion must be removed) and containing the conventional matrix product.
+if x1 is a two-dimensional array having shape (M, K) and x2 is an array having shape (…, K, N), an array having shape (…, M, N) and containing the conventional matrix product for each stacked matrix.
+if x1 is an array having shape (…, M, K) and x2 is a two-dimensional array having shape (K, N), an array having shape (…, M, N) and containing the conventional matrix product for each stacked matrix.
+if either x1 or x2 has more than two dimensions, an array having a shape determined by Broadcasting shape(x1)[:-2] against shape(x2)[:-2] and containing the conventional matrix product for each stacked matrix.</p>
+</dd>
+</dl>
+<blockquote>
+<div><p>if either x1 or x2 is a zero-dimensional array.
+if x1 is a one-dimensional array having shape (K,), x2 is a one-dimensional array having shape (L,), and K != L.
+if x1 is a one-dimensional array having shape (K,), x2 is an array having shape (…, L, N), and K != L.
+if x1 is an array having shape (…, M, K), x2 is a one-dimensional array having shape (L,), and K != L.
+if x1 is an array having shape (…, M, K), x2 is an array having shape (…, L, N), and K != L.</p>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.linear_algebra.matrix_norm">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">matrix_norm</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">p</span><span class="o">=</span><span class="default_value">2</span></em>, <em class="sig-param"><span class="n">axes</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">keepdims</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/linear_algebra.html#matrix_norm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.linear_algebra.matrix_norm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the matrix p-norm.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>array</em>) – Input array.</p></li>
+<li><p><strong>p</strong> (<em>int</em><em> or </em><em>str</em><em>, </em><em>optional</em>) – Order of the norm. Default is 2.</p></li>
+<li><p><strong>axes</strong> (<em>sequence of ints</em><em>, </em><em>optional</em>) – The axes of x along which to compute the matrix norms.
+Default is None, in which case the last two dimensions are used.</p></li>
+<li><p><strong>keepdims</strong> (<em>bool</em><em>, </em><em>optional</em>) – If this is set to True, the axes which are normed over are left in the result as dimensions with
+size one. With this option the result will broadcast correctly against the original x.
+Default is False.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Matrix norm of the array at specified axes.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.linear_algebra.matrix_transpose">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">matrix_transpose</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../_modules/ivy/functional/ivy/linear_algebra.html#matrix_transpose"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.linear_algebra.matrix_transpose" title="Permalink to this definition">¶</a></dt>
+<dd><p>Transposes a matrix (or a stack of matrices) <code class="docutils literal notranslate"><span class="pre">x</span></code>.
+Parameters
+———-
+x: array</p>
+<blockquote>
+<div><p>input array having shape <code class="docutils literal notranslate"><span class="pre">(...,</span> <span class="pre">M,</span> <span class="pre">N)</span></code> and whose innermost two dimensions form <code class="docutils literal notranslate"><span class="pre">MxN</span></code> matrices.</p>
+</div></blockquote>
+<dl class="simple">
+<dt>out: array</dt><dd><p>an array containing the transpose for each matrix and having shape <code class="docutils literal notranslate"><span class="pre">(...,</span> <span class="pre">N,</span> <span class="pre">M)</span></code>. The returned array must have the same data type as <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.linear_algebra.pinv">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">pinv</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/linear_algebra.html#pinv"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.linear_algebra.pinv" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the pseudo inverse of x matrix.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>x</strong> (<em>array</em>) – Matrix to be pseudo inverted.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>pseudo inverse of the matrix x.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.linear_algebra.qr">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">qr</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">ivy.array.Array</span></em>, <em class="sig-param"><span class="n">mode</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'reduced'</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="linear_algebra/qr.html#ivy.functional.ivy.linear_algebra.qr" title="ivy.functional.ivy.linear_algebra.qr">ivy.functional.ivy.linear_algebra.qr</a><a class="reference internal" href="../../_modules/ivy/functional/ivy/linear_algebra.html#qr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.linear_algebra.qr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the qr decomposition x = QR of a full column rank matrix (or a stack of matrices), where Q is an orthonormal matrix (or a stack of matrices) and R is an upper-triangular matrix (or a stack of matrices).
+Parameters
+———-
+x:</p>
+<blockquote>
+<div><p>input array having shape (…, M, N) and whose innermost two dimensions form MxN matrices of rank N. Should have a floating-point data type.</p>
+</div></blockquote>
+<dl class="simple">
+<dt>mode:</dt><dd><p>decomposition mode. Should be one of the following modes:
+- ‘reduced’: compute only the leading K columns of q, such that q and r have dimensions (…, M, K) and (…, K, N), respectively, and where K = min(M, N).
+- ‘complete’: compute q and r with dimensions (…, M, M) and (…, M, N), respectively.
+Default: ‘reduced’.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>out:</dt><dd><p>a namedtuple (Q, R) whose
+- first element must have the field name Q and must be an array whose shape depends on the value of mode and contain matrices with orthonormal columns. If mode is ‘complete’, the array must have shape (…, M, M). If mode is ‘reduced’, the array must have shape (…, M, K), where K = min(M, N). The first x.ndim-2 dimensions must have the same size as those of the input array x.
+- second element must have the field name R and must be an array whose shape depends on the value of mode and contain upper-triangular matrices. If mode is ‘complete’, the array must have shape (…, M, N). If mode is ‘reduced’, the array must have shape (…, K, N), where K = min(M, N). The first x.ndim-2 dimensions must have the same size as those of the input x.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.linear_algebra.slodget">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">slodget</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../_modules/ivy/functional/ivy/linear_algebra.html#slodget"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.linear_algebra.slodget" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the sign and natural logarithm of the determinant of an array.</p>
+<dl class="simple">
+<dt>x:</dt><dd><p>This is a 2D array, and it has to be square</p>
+</dd>
+</dl>
+<p>Out:</p>
+<blockquote>
+<div><dl>
+<dt>This function returns two values -</dt><dd><p>sign:
+A number representing the sign of the determinant.</p>
+<p>logdet:
+The natural log of the absolute value of the determinant.</p>
+</dd>
+</dl>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.linear_algebra.svd">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">svd</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">full_matrices</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">True</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>Tuple<span class="p">[</span>ivy.array.Array<span class="p">, </span><span class="p">…</span><span class="p">]</span><span class="p">]</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/linear_algebra.html#svd"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.linear_algebra.svd" title="Permalink to this definition">¶</a></dt>
+<dd><p>Singular Value Decomposition.
+When x is a 2D array, it is factorized as u &#64; numpy.diag(s) &#64; vh = (u * s) &#64; vh, where u and vh are 2D unitary
+arrays and s is a 1D array of a’s singular values. When x is higher-dimensional, SVD is applied in batched mode.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>x</strong> (<em>array</em>) – Input array with number of dimensions &gt;= 2.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><p>u -&gt; { (…, M, M), (…, M, K) } array</p>
+<p>Unitary array(s). The first (number of dims - 2) dimensions have the same size as those of the input a.
+The size of the last two dimensions depends on the value of full_matrices.</p>
+<p>s -&gt; (…, K) array</p>
+<p>Vector(s) with the singular values, within each vector sorted in descending ord.
+The first (number of dims - 2) dimensions have the same size as those of the input a.</p>
+<p>vh -&gt; { (…, N, N), (…, K, N) } array</p>
+<p>Unitary array(s). The first (number of dims - 2) dimensions have the same size as those of the input a.
+The size of the last two dimensions depends on the value of full_matrices.</p>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.linear_algebra.svdvals">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">svdvals</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../_modules/ivy/functional/ivy/linear_algebra.html#svdvals"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.linear_algebra.svdvals" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the singular values of a matrix (or a stack of matrices) <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p>
+<dl class="simple">
+<dt>x:</dt><dd><p>input array having shape <code class="docutils literal notranslate"><span class="pre">(...,</span> <span class="pre">M,</span> <span class="pre">N)</span></code> and whose innermost two dimensions form <code class="docutils literal notranslate"><span class="pre">MxN</span></code> matrices.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Out:</dt><dd><p>array with shape <code class="docutils literal notranslate"><span class="pre">(...,</span> <span class="pre">K)</span></code> that contains the vector(s) of singular values of length <code class="docutils literal notranslate"><span class="pre">K</span></code>, where K = min(M, N).
+The values are sorted in descending order by magnitude.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.linear_algebra.trace">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">trace</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">ivy.array.Array</span></em>, <em class="sig-param"><span class="n">offset</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">0</span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../_modules/ivy/functional/ivy/linear_algebra.html#trace"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.linear_algebra.trace" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the sum of the diagonal of an array.</p>
+<dl class="simple">
+<dt>x:</dt><dd><p>This is an array.</p>
+</dd>
+</dl>
+<p>Out:</p>
+<blockquote>
+<div><dl class="simple">
+<dt>This function returns two values -</dt><dd><dl class="simple">
+<dt>sum:</dt><dd><p>The sum of the diagonals along an axis.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.linear_algebra.vector_norm">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">vector_norm</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">axis</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Union<span class="p">[</span>int<span class="p">, </span>Tuple<span class="p">[</span>int<span class="p">]</span><span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">keepdims</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">ord</span><span class="p">:</span> <span class="n">Union[int, float, Literal[inf, - inf]]</span> <span class="o">=</span> <span class="default_value">2</span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../_modules/ivy/functional/ivy/linear_algebra.html#vector_norm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.linear_algebra.vector_norm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the vector norm of a vector (or batch of vectors) <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p>
+<dl class="simple">
+<dt>x:</dt><dd><p>input array. Should have a floating-point data type.</p>
+</dd>
+<dt>axis:</dt><dd><p>If an integer, <code class="docutils literal notranslate"><span class="pre">axis</span></code> specifies the axis (dimension) along which to compute vector norms. If an n-tuple, <code class="docutils literal notranslate"><span class="pre">axis</span></code> specifies the axes (dimensions) along which to compute batched vector norms. If <code class="docutils literal notranslate"><span class="pre">None</span></code>, the vector norm must be computed over all array values (i.e., equivalent to computing the vector norm of a flattened array). Negative indices must be supported. Default: <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+</dd>
+<dt>keepdims:</dt><dd><p>If <code class="docutils literal notranslate"><span class="pre">True</span></code>, the axes (dimensions) specified by <code class="docutils literal notranslate"><span class="pre">axis</span></code> must be included in the result as singleton dimensions, and, accordingly, the result must be compatible with the input array (see <span class="xref std std-ref">broadcasting</span>). Otherwise, if <code class="docutils literal notranslate"><span class="pre">False</span></code>, the axes (dimensions) specified by <code class="docutils literal notranslate"><span class="pre">axis</span></code> must not be included in the result. Default: <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
+</dd>
+<dt>ord:</dt><dd><p>order of the norm. The following mathematical norms must be supported:
++——————+—————————-+
+| ord              | description                |
++==================+============================+
+| 1                | L1-norm (Manhattan)        |
++——————+—————————-+
+| 2                | L2-norm (Euclidean)        |
++——————+—————————-+
+| inf              | infinity norm              |
++——————+—————————-+
+| (int,float &gt;= 1) | p-norm                     |
++——————+—————————-+
+The following non-mathematical “norms” must be supported:
++——————+——————————–+
+| ord              | description                    |
++==================+================================+
+| 0                | sum(a != 0)                    |
++——————+——————————–+
+| -1               | 1./sum(1./abs(a))              |
++——————+——————————–+
+| -2               | 1./sqrt(sum(1./abs(a)**2))   |
++——————+——————————–+
+| -inf             | min(abs(a))                    |
++——————+——————————–+
+| (int,float &lt; 1)  | sum(abs(a)**ord)**(1./ord) |
++——————+——————————–+
+Default: <code class="docutils literal notranslate"><span class="pre">2</span></code>.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>out:</dt><dd><p>an array containing the vector norms. If <code class="docutils literal notranslate"><span class="pre">axis</span></code> is <code class="docutils literal notranslate"><span class="pre">None</span></code>, the returned array must be a zero-dimensional array containing a vector norm. If <code class="docutils literal notranslate"><span class="pre">axis</span></code> is a scalar value (<code class="docutils literal notranslate"><span class="pre">int</span></code> or <code class="docutils literal notranslate"><span class="pre">float</span></code>), the returned array must have a rank which is one less than the rank of <code class="docutils literal notranslate"><span class="pre">x</span></code>. If <code class="docutils literal notranslate"><span class="pre">axis</span></code> is a <code class="docutils literal notranslate"><span class="pre">n</span></code>-tuple, the returned array must have a rank which is <code class="docutils literal notranslate"><span class="pre">n</span></code> less than the rank of <code class="docutils literal notranslate"><span class="pre">x</span></code>. The returned array must have a floating-point data type determined by <span class="xref std std-ref">type-promotion</span>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.linear_algebra.vector_to_skew_symmetric_matrix">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">vector_to_skew_symmetric_matrix</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">vector</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../_modules/ivy/functional/ivy/linear_algebra.html#vector_to_skew_symmetric_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.linear_algebra.vector_to_skew_symmetric_matrix" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given vector <span class="math notranslate nohighlight">\(\mathbf{a}\in\mathbb{R}^3\)</span>, return associated skew-symmetric matrix
+<span class="math notranslate nohighlight">\([\mathbf{a}]_×\in\mathbb{R}^{3×3}\)</span> satisfying <span class="math notranslate nohighlight">\(\mathbf{a}×\mathbf{b}=[\mathbf{a}]_×\mathbf{b}\)</span>.</p>
+<p><a class="reference external" href="https://en.wikipedia.org/wiki/Skew-symmetric_matrix#Cross_product">[reference]</a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>vector</strong> (<em>array</em>) – Vector to convert <em>[batch_shape,3]</em>.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Skew-symmetric matrix <em>[batch_shape,3,3]</em>.</p>
+</dd>
+</dl>
+</dd></dl>
+
 <div class="toctree-wrapper compound">
 <p class="caption"><span class="caption-text">Linear algebra</span></p>
 <ul>

@@ -24,6 +24,7 @@
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
@@ -212,8 +213,170 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="manipulation">
-<h1>Manipulation<a class="headerlink" href="#manipulation" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-ivy.functional.ivy.manipulation">
+<span id="manipulation"></span><h1>Manipulation<a class="headerlink" href="#module-ivy.functional.ivy.manipulation" title="Permalink to this headline">¶</a></h1>
+<dl class="py function">
+<dt id="ivy.functional.ivy.manipulation.constant_pad">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">constant_pad</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">pad_width</span><span class="p">:</span> <span class="n">Iterable<span class="p">[</span>Tuple<span class="p">[</span>int<span class="p">]</span><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">value</span><span class="p">:</span> <span class="n">numbers.Number</span> <span class="o">=</span> <span class="default_value">0</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/manipulation.html#constant_pad"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.manipulation.constant_pad" title="Permalink to this definition">¶</a></dt>
+<dd><p>Pads an array with a constant value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>array</em>) – Input array to pad.</p></li>
+<li><p><strong>pad_width</strong> (<em>sequence of tuples of ints</em>) – Number of values padded to the edges of each axis.
+Specified as ((before_1, after_1), … (before_N, after_N)), where N is number of axes of x.</p></li>
+<li><p><strong>value</strong> (<em>float</em><em> or </em><em>int</em><em>, </em><em>default zero</em>) – The constant value to pad the array with.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Padded array of rank equal to x with shape increased according to pad_width.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.manipulation.expand_dims">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">expand_dims</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">axis</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Union<span class="p">[</span>int<span class="p">, </span>Tuple<span class="p">[</span>int<span class="p">]</span><span class="p">, </span>List<span class="p">[</span>int<span class="p">]</span><span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../_modules/ivy/functional/ivy/manipulation.html#expand_dims"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.manipulation.expand_dims" title="Permalink to this definition">¶</a></dt>
+<dd><p>Expands the shape of an array.
+Inserts a new axis that will appear at the axis position in the expanded array shape.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>array</em>) – Input array.</p></li>
+<li><p><strong>axis</strong> (<em>int</em>) – Position in the expanded axes where the new axis is placed.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>array with the number of dimensions increased by onearray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.manipulation.flip">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">flip</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">axis</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Union<span class="p">[</span>int<span class="p">, </span>Tuple<span class="p">[</span>int<span class="p">]</span><span class="p">, </span>List<span class="p">[</span>int<span class="p">]</span><span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../_modules/ivy/functional/ivy/manipulation.html#flip"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.manipulation.flip" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reverses the order of elements in an array along the given axis. The shape of the array must be preserved.</p>
+<dl class="simple">
+<dt>x:</dt><dd><p>input array.</p>
+</dd>
+<dt>axis:</dt><dd><p>axis (or axes) along which to flip. If <code class="docutils literal notranslate"><span class="pre">axis</span></code> is <code class="docutils literal notranslate"><span class="pre">None</span></code>, the function must flip all input array axes. If <code class="docutils literal notranslate"><span class="pre">axis</span></code> is negative, the function must count from the last dimension. If provided more than one axis, the function must flip only the specified axes. Default: <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>out:</dt><dd><p>an output array having the same data type and shape as <code class="docutils literal notranslate"><span class="pre">x</span></code> and whose elements, relative to <code class="docutils literal notranslate"><span class="pre">x</span></code>, are reordered.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.manipulation.permute_dims">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">permute_dims</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">axes</span><span class="p">:</span> <span class="n">Tuple<span class="p">[</span>int<span class="p">, </span><span class="p">…</span><span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../_modules/ivy/functional/ivy/manipulation.html#permute_dims"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.manipulation.permute_dims" title="Permalink to this definition">¶</a></dt>
+<dd><p>Permutes the axes (dimensions) of an array x.</p>
+<dl class="simple">
+<dt>x:</dt><dd><p>input array.</p>
+</dd>
+<dt>axes:</dt><dd><p>tuple containing a permutation of (0, 1, …, N-1) where N is the number of axes (dimensions) of x.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>out:</dt><dd><p>an array containing the axes permutation. The returned array must have the same data type as x.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.manipulation.repeat">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">repeat</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">repeats</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>int<span class="p">, </span>Iterable<span class="p">[</span>int<span class="p">]</span><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">axis</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>int<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/manipulation.html#repeat"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.manipulation.repeat" title="Permalink to this definition">¶</a></dt>
+<dd><p>Repeat values along a given dimension</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>array</em>) – Input array.</p></li>
+<li><p><strong>repeats</strong> (<em>int</em><em> or </em><em>sequence of ints.</em>) – The number of repetitions for each element. repeats is broadcast to fit the shape of the given axis.</p></li>
+<li><p><strong>axis</strong> (<em>int</em><em>, </em><em>optional</em>) – The axis along which to repeat values.
+By default, use the flattened input array, and return a flat output array.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The repeated output array.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.manipulation.split">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">split</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">num_or_size_splits</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Union<span class="p">[</span>int<span class="p">, </span>Iterable<span class="p">[</span>int<span class="p">]</span><span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">axis</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">0</span></em>, <em class="sig-param"><span class="n">with_remainder</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/manipulation.html#split"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.manipulation.split" title="Permalink to this definition">¶</a></dt>
+<dd><p>Splits an array into multiple sub-arrays.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>array</em>) – Tensor to be divided into sub-arrays.</p></li>
+<li><p><strong>num_or_size_splits</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of equal arrays to divide the array into along the given axis if an integer.
+The size of each split element if a sequence of integers.
+Default is to divide into as many 1-dimensional arrays as the axis dimension.</p></li>
+<li><p><strong>axis</strong> (<em>int</em><em>, </em><em>optional</em>) – The axis along which to split, default is 0.</p></li>
+<li><p><strong>with_remainder</strong> (<em>bool</em><em>, </em><em>optional</em>) – If the tensor does not split evenly, then store the last remainder entry. Default is False.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A list of sub-arrays.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.manipulation.swapaxes">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">swapaxes</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">axis0</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">axis1</span><span class="p">:</span> <span class="n">int</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/manipulation.html#swapaxes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.manipulation.swapaxes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Interchange two axes of an array.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>array</em>) – Input array.</p></li>
+<li><p><strong>axis0</strong> (<em>int</em>) – First axis to be swapped.</p></li>
+<li><p><strong>axis1</strong> (<em>int</em>) – Second axis to be swapped.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>x with its axes permuted.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.manipulation.tile">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">tile</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">reps</span><span class="p">:</span> <span class="n">Iterable<span class="p">[</span>int<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/manipulation.html#tile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.manipulation.tile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Constructs an array by repeating x the number of times given by reps.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>array</em>) – Input array.</p></li>
+<li><p><strong>reps</strong> (<em>sequence of ints</em>) – The number of repetitions of x along each axis.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The tiled output array.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.manipulation.zero_pad">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">zero_pad</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">pad_width</span><span class="p">:</span> <span class="n">Iterable<span class="p">[</span>Tuple<span class="p">[</span>int<span class="p">]</span><span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/manipulation.html#zero_pad"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.manipulation.zero_pad" title="Permalink to this definition">¶</a></dt>
+<dd><p>Pads an array with zeros.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>array</em>) – Input array to pad.</p></li>
+<li><p><strong>pad_width</strong> (<em>sequence of tuples of ints</em>) – Number of values padded to the edges of each axis.
+Specified as ((before_1, after_1), … (before_N, after_N)), where N is number of axes of x.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Padded array of rank equal to x with shape increased according to pad_width.</p>
+</dd>
+</dl>
+</dd></dl>
+
 <div class="toctree-wrapper compound">
 <p class="caption"><span class="caption-text">Manipulation</span></p>
 <ul>

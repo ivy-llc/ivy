@@ -24,6 +24,7 @@
         <script src="../../../_static/jquery.js"></script>
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/doctools.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
@@ -241,6 +242,29 @@
             
   <div class="section" id="asinh">
 <h1>asinh<a class="headerlink" href="#asinh" title="Permalink to this headline">¶</a></h1>
+<dl class="py function">
+<dt id="ivy.functional.ivy.elementwise.asinh">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">asinh</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../../_modules/ivy/functional/ivy/elementwise.html#asinh"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.elementwise.asinh" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates an implementation-dependent approximation to the inverse hyperbolic sine, having domain <code class="docutils literal notranslate"><span class="pre">[-infinity,</span> <span class="pre">+infinity]</span></code> and codomain <code class="docutils literal notranslate"><span class="pre">[-infinity,</span> <span class="pre">+infinity]</span></code>, for each element <code class="docutils literal notranslate"><span class="pre">x_i</span></code> in the input array <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p>
+<p><strong>Special cases</strong></p>
+<p>For floating-point operands,</p>
+<ul class="simple">
+<li><p>If <code class="docutils literal notranslate"><span class="pre">x_i</span></code> is <code class="docutils literal notranslate"><span class="pre">NaN</span></code>, the result is <code class="docutils literal notranslate"><span class="pre">NaN</span></code>.</p></li>
+<li><p>If <code class="docutils literal notranslate"><span class="pre">x_i</span></code> is <code class="docutils literal notranslate"><span class="pre">+0</span></code>, the result is <code class="docutils literal notranslate"><span class="pre">+0</span></code>.</p></li>
+<li><p>If <code class="docutils literal notranslate"><span class="pre">x_i</span></code> is <code class="docutils literal notranslate"><span class="pre">-0</span></code>, the result is <code class="docutils literal notranslate"><span class="pre">-0</span></code>.</p></li>
+<li><p>If <code class="docutils literal notranslate"><span class="pre">x_i</span></code> is <code class="docutils literal notranslate"><span class="pre">+infinity</span></code>, the result is <code class="docutils literal notranslate"><span class="pre">+infinity</span></code>.</p></li>
+<li><p>If <code class="docutils literal notranslate"><span class="pre">x_i</span></code> is <code class="docutils literal notranslate"><span class="pre">-infinity</span></code>, the result is <code class="docutils literal notranslate"><span class="pre">-infinity</span></code>.</p></li>
+</ul>
+<dl class="simple">
+<dt>x:</dt><dd><p>input array whose elements each represent the area of a hyperbolic sector. Should have a floating-point data type.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>out:</dt><dd><p>an array containing the inverse hyperbolic sine of each element in <code class="docutils literal notranslate"><span class="pre">x</span></code>. The returned array must have a floating-point data type determined by <span class="xref std std-ref">type-promotion</span>.</p>
+</dd>
+</dl>
+</dd></dl>
+
 <div class="line-block">
 <div class="line"><br /></div>
 <div class="line"><strong>Supported Frameworks:</strong></div>

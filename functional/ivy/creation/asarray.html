@@ -24,6 +24,7 @@
         <script src="../../../_static/jquery.js"></script>
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/doctools.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
@@ -220,6 +221,22 @@
             
   <div class="section" id="asarray">
 <h1>asarray<a class="headerlink" href="#asarray" title="Permalink to this headline">¶</a></h1>
+<dl class="py function">
+<dt id="ivy.functional.ivy.creation.asarray">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">asarray</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">dtype</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Union<span class="p">[</span>ivy.Dtype<span class="p">, </span>str<span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">dev</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Union<span class="p">[</span>ivy.Device<span class="p">, </span>str<span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../../_modules/ivy/functional/ivy/creation.html#asarray"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.creation.asarray" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts the input to an array.</p>
+<dl class="simple">
+<dt>x:</dt><dd><p>input data, in any form that can be converted to an array.
+This includes lists, lists of tuples, tuples, tuples of tuples, tuples of lists and ndarrays.</p>
+</dd>
+<dt>dtype:</dt><dd><p>datatype, optional. Datatype is inferred from the input data.</p>
+</dd>
+<dt>dev:</dt><dd><p>device on which to place the created array. Default: None.</p>
+</dd>
+</dl>
+<p>An array interpretation of x.</p>
+</dd></dl>
+
 <div class="line-block">
 <div class="line"><br /></div>
 <div class="line"><strong>Supported Frameworks:</strong></div>

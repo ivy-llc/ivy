@@ -24,6 +24,7 @@
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
@@ -210,8 +211,116 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="activations">
-<h1>Activations<a class="headerlink" href="#activations" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-ivy.functional.ivy.activations">
+<span id="activations"></span><h1>Activations<a class="headerlink" href="#module-ivy.functional.ivy.activations" title="Permalink to this headline">¶</a></h1>
+<p>Collection of Ivy activation functions.</p>
+<dl class="py function">
+<dt id="ivy.functional.ivy.activations.gelu">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">gelu</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">approximate</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/activations.html#gelu"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.activations.gelu" title="Permalink to this definition">¶</a></dt>
+<dd><p>Applies the Gaussian error linear unit (GELU) activation function.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>array</em>) – Input array.</p></li>
+<li><p><strong>approximate</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to approximate, default is True.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The input array with leaky relu applied element-wise.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.activations.leaky_relu">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">leaky_relu</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">alpha</span><span class="o">=</span><span class="default_value">0.2</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/activations.html#leaky_relu"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.activations.leaky_relu" title="Permalink to this definition">¶</a></dt>
+<dd><p>Applies the leaky rectified linear unit function element-wise.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>array</em>) – Input array.</p></li>
+<li><p><strong>alpha</strong> (<em>float</em>) – Negative slope for ReLU</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The input array with leaky relu applied element-wise.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.activations.relu">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">relu</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/activations.html#relu"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.activations.relu" title="Permalink to this definition">¶</a></dt>
+<dd><p>Applies the rectified linear unit function element-wise.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>x</strong> (<em>array</em>) – Input array.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The input array with relu applied element-wise.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.activations.sigmoid">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">sigmoid</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/activations.html#sigmoid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.activations.sigmoid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Applies the sigmoid function element-wise.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>x</strong> (<em>array</em>) – Input array.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The input array with sigmoid applied element-wise.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.activations.softmax">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">softmax</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">- 1</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/activations.html#softmax"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.activations.softmax" title="Permalink to this definition">¶</a></dt>
+<dd><p>Applies the softmax function element-wise.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>array</em>) – Input array.</p></li>
+<li><p><strong>axis</strong> (<em>int</em><em>, </em><em>optional</em>) – The dimension softmax would be performed on. The default is -1 which indicates the last dimension.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The input array with softmax applied element-wise.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.activations.softplus">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">softplus</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/activations.html#softplus"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.activations.softplus" title="Permalink to this definition">¶</a></dt>
+<dd><p>Applies the softplus function element-wise.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>x</strong> (<em>array</em>) – Input array.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The input array with softplus applied element-wise.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.activations.tanh">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">tanh</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/activations.html#tanh"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.activations.tanh" title="Permalink to this definition">¶</a></dt>
+<dd><p>Applies the tangent hyperbolic function element-wise.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>x</strong> (<em>array</em>) – Input array.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The input array with tanh applied element-wise.</p>
+</dd>
+</dl>
+</dd></dl>
+
 <div class="toctree-wrapper compound">
 <p class="caption"><span class="caption-text">Activations</span></p>
 <ul>
