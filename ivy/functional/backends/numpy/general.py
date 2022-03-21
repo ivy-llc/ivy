@@ -12,7 +12,7 @@ import multiprocessing as _multiprocessing
 
 # local
 import ivy
-from ivy.functional.ivy.old import default_dtype
+from ivy.functional.ivy import default_dtype
 from ivy.functional.backends.numpy.device import _dev_callable, to_dev
 
 

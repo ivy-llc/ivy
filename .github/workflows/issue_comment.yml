@@ -1,0 +1,25 @@
+on:
+  issue_comment:
+    types:
+      - created
+jobs:
+  issue_commented:
+    name: Issue comment
+    if: ${{ !github.event.issue.pull_request }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checks
+        uses: actions/checkout@v2
+        with:
+          path: contributor-automations
+          persist-credentials: false
+      - name: Issue Comment Check
+        run: |
+          cd contributor-automations
+          python3 Issue_comment_action.py $ISSUE_NUMBER $COMMENT_NUMBER "$COMMENT_BODY" "$COMMENT_AUTHOR"
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          COMMENT_BODY: ${{ github.event.comment.body }}
+          COMMENT_NUMBER: ${{ github.event.comment.id }}
+          COMMENT_AUTHOR: ${{ github.event.comment.user.login }}
