@@ -71,3 +71,6 @@ def var(x, axis=None, keepdims=False):
 
 # Extra #
 # ------#
+
+def einsum(equation, *operands):
+    return np.asarray(np.einsum(equation, *operands))

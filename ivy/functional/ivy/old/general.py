@@ -245,55 +245,6 @@ def stack(xs: Iterable[Union[ivy.Array, ivy.NativeArray]], axis: int = 0)\
 
 
 
-def constant_pad(x: Union[ivy.Array, ivy.NativeArray], pad_width: Iterable[Tuple[int]], value: Number = 0)\
-        -> Union[ivy.Array, ivy.NativeArray]:
-    """
-    Pads an array with a constant value.
-
-    :param x: Input array to pad.
-    :type x: array
-    :param pad_width: Number of values padded to the edges of each axis.
-                      Specified as ((before_1, after_1), … (before_N, after_N)), where N is number of axes of x.
-    :type pad_width: sequence of tuples of ints
-    :param value: The constant value to pad the array with.
-    :type value: float or int, default zero
-    :return: Padded array of rank equal to x with shape increased according to pad_width.
-    """
-    return _cur_framework(x).constant_pad(x, pad_width, value)
-
-
-def zero_pad(x: Union[ivy.Array, ivy.NativeArray], pad_width: Iterable[Tuple[int]])\
-        -> Union[ivy.Array, ivy.NativeArray]:
-    """
-    Pads an array with zeros.
-
-    :param x: Input array to pad.
-    :type x: array
-    :param pad_width: Number of values padded to the edges of each axis.
-                      Specified as ((before_1, after_1), … (before_N, after_N)), where N is number of axes of x.
-    :type pad_width: sequence of tuples of ints
-    :return: Padded array of rank equal to x with shape increased according to pad_width.
-    """
-    return _cur_framework(x).zero_pad(x, pad_width)
-
-
-
-
-
-def swapaxes(x: Union[ivy.Array, ivy.NativeArray], axis0: int, axis1: int)\
-        -> Union[ivy.Array, ivy.NativeArray]:
-    """
-    Interchange two axes of an array.
-
-    :param x: Input array.
-    :type x: array
-    :param axis0: First axis to be swapped.
-    :type axis0: int
-    :param axis1: Second axis to be swapped.
-    :type axis1: int
-    :return: x with its axes permuted.
-    """
-    return _cur_framework(x).swapaxes(x, axis0, axis1)
 
 
 def transpose(x: Union[ivy.Array, ivy.NativeArray], axes: Iterable[int] = None)\
