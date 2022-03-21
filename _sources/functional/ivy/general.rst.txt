@@ -60,4 +60,6 @@ General
    general/inplace_update.rst
    general/inplace_decrement.rst
    general/inplace_increment.rst
+   general/cumsum.rst
+   general/cumprod.rst
 

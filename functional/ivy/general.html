@@ -146,6 +146,8 @@
 <li class="toctree-l2"><a class="reference internal" href="general/inplace_update.html">inplace_update</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/inplace_decrement.html">inplace_decrement</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/inplace_increment.html">inplace_increment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="general/cumsum.html">cumsum</a></li>
+<li class="toctree-l2"><a class="reference internal" href="general/cumprod.html">cumprod</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="gradients.html">Gradients</a></li>
@@ -391,6 +393,41 @@ a key-value structure, and exposes public methods .keys(), .values() and items()
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>A copy of the input array.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.general.cumprod">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">cumprod</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">axis</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">0</span></em>, <em class="sig-param"><span class="n">exclusive</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/general.html#cumprod"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.general.cumprod" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the cumulative product of the elements along a given axis.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>array</em>) – Input array.</p></li>
+<li><p><strong>axis</strong> (<em>int</em>) – Axis along which the cumulative product is computed. By default 0.</p></li>
+<li><p><strong>exclusive</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to perform the cumprod exclusively. Defaults is False.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Input array with cumulatively multiplied elements along axis.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.general.cumsum">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">cumsum</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">axis</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">0</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/general.html#cumsum"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.general.cumsum" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the cumulative sum of the elements along a given axis.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>array</em>) – Input array.</p></li>
+<li><p><strong>axis</strong> (<em>int</em>) – Axis along which the cumulative sum is computed. By default 0.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Input array with cumulatively summed elements along axis.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -942,6 +979,8 @@ a key-value structure, and exposes public methods .keys(), .values() and items()
 <li class="toctree-l1"><a class="reference internal" href="general/inplace_update.html">inplace_update</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/inplace_decrement.html">inplace_decrement</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/inplace_increment.html">inplace_increment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="general/cumsum.html">cumsum</a></li>
+<li class="toctree-l1"><a class="reference internal" href="general/cumprod.html">cumprod</a></li>
 </ul>
 </div>
 </div>
