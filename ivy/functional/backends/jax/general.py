@@ -64,6 +64,16 @@ def inplace_update(x, val):
 inplace_arrays_supported = lambda: False
 inplace_variables_supported = lambda: False
 
+cumsum = _jnp.cumsum
+
+
+def cumprod(x, axis=0, exclusive=False):
+    if exclusive:
+        x = _jnp.swapaxes(x, axis, -1)
+        x = _jnp.concatenate((_jnp.ones_like(x[..., -1:]), x[..., :-1]), -1)
+        res = _jnp.cumprod(x, -1)
+        return _jnp.swapaxes(res, axis, -1)
+    return _jnp.cumprod(x, axis)
 
 
 
