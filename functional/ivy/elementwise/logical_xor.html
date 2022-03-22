@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>log2 &mdash; Ivy 1.0 documentation</title>
+  <title>logical_xor &mdash; Ivy 1.0 documentation</title>
   
 
   
@@ -36,8 +36,8 @@
   <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="log10" href="log10.html" />
-    <link rel="prev" title="log" href="log.html" /> 
+    <link rel="next" title="logical_or" href="logical_or.html" />
+    <link rel="prev" title="acos" href="acos.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -111,7 +111,7 @@
 <li class="toctree-l2"><a class="reference internal" href="sqrt.html">sqrt</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cosh.html">cosh</a></li>
 <li class="toctree-l2"><a class="reference internal" href="log.html">log</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">log2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="log2.html">log2</a></li>
 <li class="toctree-l2"><a class="reference internal" href="log10.html">log10</a></li>
 <li class="toctree-l2"><a class="reference internal" href="log1p.html">log1p</a></li>
 <li class="toctree-l2"><a class="reference internal" href="isnan.html">isnan</a></li>
@@ -119,7 +119,7 @@
 <li class="toctree-l2"><a class="reference internal" href="cos.html">cos</a></li>
 <li class="toctree-l2"><a class="reference internal" href="logical_not.html">logical_not</a></li>
 <li class="toctree-l2"><a class="reference internal" href="acos.html">acos</a></li>
-<li class="toctree-l2"><a class="reference internal" href="logical_xor.html">logical_xor</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">logical_xor</a></li>
 <li class="toctree-l2"><a class="reference internal" href="logical_or.html">logical_or</a></li>
 <li class="toctree-l2"><a class="reference internal" href="logical_and.html">logical_and</a></li>
 <li class="toctree-l2"><a class="reference internal" href="acosh.html">acosh</a></li>
@@ -235,13 +235,13 @@
         
           <li><a href="../elementwise.html">Elementwise</a> &raquo;</li>
         
-      <li>log2</li>
+      <li>logical_xor</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../../_sources/functional/ivy/elementwise/log2.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../../_sources/functional/ivy/elementwise/logical_xor.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -254,27 +254,24 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="log2">
-<h1>log2<a class="headerlink" href="#log2" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="logical-xor">
+<h1>logical_xor<a class="headerlink" href="#logical-xor" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
-<dt id="ivy.functional.ivy.elementwise.log2">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">log2</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../../_modules/ivy/functional/ivy/elementwise.html#log2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.elementwise.log2" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculates an implementation-dependent approximation to the base <code class="docutils literal notranslate"><span class="pre">2</span></code> logarithm, having domain <code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">+infinity]</span></code> and codomain <code class="docutils literal notranslate"><span class="pre">[-infinity,</span> <span class="pre">+infinity]</span></code>, for each element <code class="docutils literal notranslate"><span class="pre">x_i</span></code> of the input array <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p>
-<p><strong>Special cases</strong></p>
-<p>For floating-point operands,</p>
-<ul class="simple">
-<li><p>If <code class="docutils literal notranslate"><span class="pre">x_i</span></code> is <code class="docutils literal notranslate"><span class="pre">NaN</span></code>, the result is <code class="docutils literal notranslate"><span class="pre">NaN</span></code>.</p></li>
-<li><p>If <code class="docutils literal notranslate"><span class="pre">x_i</span></code> is less than <code class="docutils literal notranslate"><span class="pre">0</span></code>, the result is <code class="docutils literal notranslate"><span class="pre">NaN</span></code>.</p></li>
-<li><p>If <code class="docutils literal notranslate"><span class="pre">x_i</span></code> is either <code class="docutils literal notranslate"><span class="pre">+0</span></code> or <code class="docutils literal notranslate"><span class="pre">-0</span></code>, the result is <code class="docutils literal notranslate"><span class="pre">-infinity</span></code>.</p></li>
-<li><p>If <code class="docutils literal notranslate"><span class="pre">x_i</span></code> is <code class="docutils literal notranslate"><span class="pre">1</span></code>, the result is <code class="docutils literal notranslate"><span class="pre">+0</span></code>.</p></li>
-<li><p>If <code class="docutils literal notranslate"><span class="pre">x_i</span></code> is <code class="docutils literal notranslate"><span class="pre">+infinity</span></code>, the result is <code class="docutils literal notranslate"><span class="pre">+infinity</span></code>.</p></li>
-</ul>
+<dt id="ivy.functional.ivy.elementwise.logical_xor">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">logical_xor</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x1</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">x2</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../../_modules/ivy/functional/ivy/elementwise.html#logical_xor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.elementwise.logical_xor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the bitwise XOR of the underlying binary representation of each element <code class="docutils literal notranslate"><span class="pre">x1_i</span></code> of the input array <code class="docutils literal notranslate"><span class="pre">x1</span></code> with the respective element <code class="docutils literal notranslate"><span class="pre">x2_i</span></code> of the input array <code class="docutils literal notranslate"><span class="pre">x2</span></code>.
+Parameters
+———-
+x1: array</p>
+<blockquote>
+<div><p>first input array. Should have an integer or boolean data type.</p>
+</div></blockquote>
 <dl class="simple">
-<dt>x:</dt><dd><p>input array. Should have a floating-point data type.</p>
+<dt>x2: array</dt><dd><p>second input array. Must be compatible with <code class="docutils literal notranslate"><span class="pre">x1</span></code> (see <span class="xref std std-ref">broadcasting</span>). Should have an integer or boolean data type.</p>
 </dd>
 </dl>
 <dl class="simple">
-<dt>out:</dt><dd><p>an array containing the evaluated base <code class="docutils literal notranslate"><span class="pre">2</span></code> logarithm for each element in <code class="docutils literal notranslate"><span class="pre">x</span></code>. The returned array must have a floating-point data type determined by <span class="xref std std-ref">type-promotion</span>.</p>
+<dt>out: array</dt><dd><p>an array containing the element-wise results. The returned array must have a data type determined by <span class="xref std std-ref">type-promotion</span>.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -294,10 +291,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="log10.html" class="btn btn-neutral float-right" title="log10" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="logical_or.html" class="btn btn-neutral float-right" title="logical_or" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="log.html" class="btn btn-neutral float-left" title="log" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="acos.html" class="btn btn-neutral float-left" title="acos" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
