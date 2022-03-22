@@ -8,7 +8,7 @@ from ivy import dtype_from_str
 from ivy.functional.backends.jax import JaxArray
 from ivy.functional.backends.jax.device import to_dev
 from ivy.functional.ivy.device import default_device
-from ivy.functional.ivy.old import default_dtype
+from ivy.functional.ivy import default_dtype
 from jaxlib.xla_extension import Buffer, Device, DeviceArray
 from jax.interpreters.xla import _DeviceArray
 
@@ -71,6 +71,19 @@ def empty(shape: Union[int, Tuple[int], List[int]],
     return to_dev(jnp.empty(shape, dtype_from_str(default_dtype(dtype))), default_device(device))
 
 
+def empty_like(x: JaxArray,
+              dtype: Optional[Union[jnp.dtype, str]]=None,
+              dev: Optional[Union[Device, str]] = None)\
+        -> DeviceArray:
+
+    if dtype and str:
+        dtype = jnp.dtype(dtype)
+    else:
+        dtype = x.dtype
+
+    return to_dev(jnp.empty_like(x, dtype=dtype), default_device(dev))
+
+
 def asarray(object_in, dtype: Optional[str] = None, dev: Optional[str] = None, copy: Optional[bool] = None):
     if isinstance(object_in, (_DeviceArray, DeviceArray, Buffer)):
         dtype = object_in.dtype
@@ -89,9 +102,31 @@ def asarray(object_in, dtype: Optional[str] = None, dev: Optional[str] = None, c
         return to_dev(jnp.asarray(object_in, dtype=dtype), dev)
 
 
+def linspace(start, stop, num, axis=None, dev=None):
+    if axis is None:
+        axis = -1
+    return to_dev(jnp.linspace(start, stop, num, axis=axis), default_device(dev))
+
+def eye(n_rows: int,
+        n_cols: Optional[int] = None,
+        k: Optional[int] = 0,
+        dtype: Optional[jnp.dtype] = None,
+        device: Optional[jaxlib.xla_extension.Device] = None) \
+        -> JaxArray:
+    dtype = dtype_from_str(default_dtype(dtype))
+    device = default_device(device)
+    return to_dev(jnp.eye(n_rows, n_cols, k, dtype), device)
+
+
 # Extra #
 # ------#
 
 # noinspection PyShadowingNames
 def array(object_in, dtype=None, dev=None):
     return to_dev(jnp.array(object_in, dtype=dtype_from_str(default_dtype(dtype, object_in))), default_device(dev))
+
+
+def logspace(start, stop, num, base=10., axis=None, dev=None):
+    if axis is None:
+        axis = -1
+    return to_dev(jnp.logspace(start, stop, num, base=base, axis=axis), default_device(dev))
