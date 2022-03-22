@@ -9,6 +9,7 @@ Debugger
 
 
 .. toctree::
+   :hidden:
    :maxdepth: -1
    :caption: Debugger
 

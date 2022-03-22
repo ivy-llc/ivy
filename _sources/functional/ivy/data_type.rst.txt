@@ -9,6 +9,7 @@ Data type
 
 
 .. toctree::
+   :hidden:
    :maxdepth: -1
    :caption: Data type
 

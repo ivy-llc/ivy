@@ -9,6 +9,7 @@ Device
 
 
 .. toctree::
+   :hidden:
    :maxdepth: -1
    :caption: Device
 

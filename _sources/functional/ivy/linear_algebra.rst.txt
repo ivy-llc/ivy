@@ -9,6 +9,7 @@ Linear algebra
 
 
 .. toctree::
+   :hidden:
    :maxdepth: -1
    :caption: Linear algebra
 

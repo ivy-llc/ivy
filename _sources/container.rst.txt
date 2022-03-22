@@ -9,6 +9,7 @@ Container
 
 
 .. toctree::
+   :hidden:
    :maxdepth: -1
    :caption: Container
 

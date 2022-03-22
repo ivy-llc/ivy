@@ -9,6 +9,7 @@ Layers
 
 
 .. toctree::
+   :hidden:
    :maxdepth: -1
    :caption: Layers
 

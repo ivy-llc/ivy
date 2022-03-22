@@ -9,6 +9,7 @@ Framework handler
 
 
 .. toctree::
+   :hidden:
    :maxdepth: -1
    :caption: Framework handler
 

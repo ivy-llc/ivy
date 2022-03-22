@@ -9,6 +9,7 @@ Func wrapper
 
 
 .. toctree::
+   :hidden:
    :maxdepth: -1
    :caption: Func wrapper
 

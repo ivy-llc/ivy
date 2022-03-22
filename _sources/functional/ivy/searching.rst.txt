@@ -9,6 +9,7 @@ Searching
 
 
 .. toctree::
+   :hidden:
    :maxdepth: -1
    :caption: Searching
 
