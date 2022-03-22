@@ -7,6 +7,12 @@ from ivy import inf
 
 
 # noinspection PyUnusedLocal,PyShadowingBuiltins
+
+def eig(x: np.ndarray)\
+   -> np.ndarray:
+  return np.linalg.eig(x)
+
+
 def vector_norm(x: np.ndarray,
                 axis: Optional[Union[int, Tuple[int]]] = None,
                 keepdims: bool = False,
