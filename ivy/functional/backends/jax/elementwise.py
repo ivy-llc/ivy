@@ -81,6 +81,11 @@ def log10(x: JaxArray)\
     return jnp.log10(x)
 
 
+def log(x: JaxArray)\
+        -> JaxArray:
+    return jnp.log(x)
+
+
 def log2(x: JaxArray)\
         -> JaxArray:
     return jnp.log2(x)

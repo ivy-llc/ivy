@@ -29,7 +29,7 @@ isinf
 isnan
 less
 #less_equal
-#log
+log
 log1p
 log2
 log10
