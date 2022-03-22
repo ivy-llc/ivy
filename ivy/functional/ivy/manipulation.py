@@ -1,6 +1,6 @@
 # global
 from typing import Union, Optional, Tuple, List, Iterable
-
+from numbers import Number
 # local
 import ivy
 from ivy.framework_handler import current_framework as _cur_framework
@@ -45,6 +45,27 @@ def expand_dims(x: Union[ivy.Array, ivy.NativeArray],
     :return: array with the number of dimensions increased by onearray
     """
     return _cur_framework(x).expand_dims(x, axis)
+
+
+def permute_dims(x: Union[ivy.Array, ivy.NativeArray],
+                 axes: Tuple[int,...])\
+        -> ivy.Array:
+    """
+    Permutes the axes (dimensions) of an array x.
+
+    Parameters
+    ----------
+    x:
+        input array.
+    axes:
+        tuple containing a permutation of (0, 1, ..., N-1) where N is the number of axes (dimensions) of x.
+
+    Returns
+    -------
+    out:
+        an array containing the axes permutation. The returned array must have the same data type as x.
+    """
+    return _cur_framework(x).permute_dims(x, axes)
 
 
 # Extra #
@@ -100,3 +121,51 @@ def tile(x: Union[ivy.Array, ivy.NativeArray], reps: Iterable[int])\
     :return: The tiled output array.
     """
     return _cur_framework(x).tile(x, reps)
+
+
+def constant_pad(x: Union[ivy.Array, ivy.NativeArray], pad_width: Iterable[Tuple[int]], value: Number = 0)\
+        -> Union[ivy.Array, ivy.NativeArray]:
+    """
+    Pads an array with a constant value.
+
+    :param x: Input array to pad.
+    :type x: array
+    :param pad_width: Number of values padded to the edges of each axis.
+                      Specified as ((before_1, after_1), … (before_N, after_N)), where N is number of axes of x.
+    :type pad_width: sequence of tuples of ints
+    :param value: The constant value to pad the array with.
+    :type value: float or int, default zero
+    :return: Padded array of rank equal to x with shape increased according to pad_width.
+    """
+    return _cur_framework(x).constant_pad(x, pad_width, value)
+
+
+def zero_pad(x: Union[ivy.Array, ivy.NativeArray], pad_width: Iterable[Tuple[int]])\
+        -> Union[ivy.Array, ivy.NativeArray]:
+    """
+    Pads an array with zeros.
+
+    :param x: Input array to pad.
+    :type x: array
+    :param pad_width: Number of values padded to the edges of each axis.
+                      Specified as ((before_1, after_1), … (before_N, after_N)), where N is number of axes of x.
+    :type pad_width: sequence of tuples of ints
+    :return: Padded array of rank equal to x with shape increased according to pad_width.
+    """
+    return _cur_framework(x).zero_pad(x, pad_width)
+
+
+def swapaxes(x: Union[ivy.Array, ivy.NativeArray], axis0: int, axis1: int)\
+        -> Union[ivy.Array, ivy.NativeArray]:
+    """
+    Interchange two axes of an array.
+
+    :param x: Input array.
+    :type x: array
+    :param axis0: First axis to be swapped.
+    :type axis0: int
+    :param axis1: Second axis to be swapped.
+    :type axis1: int
+    :return: x with its axes permuted.
+    """
+    return _cur_framework(x).swapaxes(x, axis0, axis1)

@@ -3,7 +3,7 @@ import mxnet as mx
 import math
 import numpy as np
 from typing import Union, Tuple, Optional, List
-from ivy.functional.backends.mxnet import _flat_array_to_1_dim_array, _handle_flat_arrays_in_out
+from ivy.functional.backends.mxnet import _flat_array_to_1_dim_array, _handle_flat_arrays_in_out, _handle_flat_arrays_in
 
 def flip(x: mx.ndarray.ndarray.NDArray,
          axis: Optional[Union[int, Tuple[int], List[int]]] = None)\
@@ -71,3 +71,29 @@ def tile(x, reps):
     if isinstance(reps, mx.nd.ndarray.NDArray):
         reps = reps.asnumpy().tolist()
     return mx.nd.tile(_flat_array_to_1_dim_array(x), reps)
+
+
+@_handle_flat_arrays_in
+def constant_pad(x, pad_width, value=0):
+    if isinstance(pad_width, mx.ndarray.ndarray.NDArray):
+        pad_width = pad_width.asnumpy().tolist()
+    x_shape = list(x.shape)
+    num_dims = len(x_shape)
+    if num_dims > 3:
+        raise Exception('Invalid inputs. Pad for mxnet only supports inputs with 3 dimensions or smaller.')
+    num_dims_to_add = 4 - num_dims
+    new_shape = tuple([1] * num_dims_to_add + x_shape)
+    mat_expanded_dims = mx.nd.reshape(x, new_shape)
+    pad_width_flat = [0]*num_dims_to_add*2 + [item for sublist in pad_width for item in sublist]
+    pad_expanded_dims = mx.nd.pad(mat_expanded_dims, mode="constant", pad_width=tuple(pad_width_flat),
+                                   constant_value=value)
+    new_shape = [orig_dim + pad_width_item[0] + pad_width_item[1] for orig_dim, pad_width_item in zip(x_shape, pad_width)]
+    res = mx.nd.reshape(pad_expanded_dims, tuple(new_shape))
+    return res
+
+
+def zero_pad(x, pad_width):
+    return constant_pad(x, pad_width, 0)
+
+
+swapaxes = mx.nd.swapaxes

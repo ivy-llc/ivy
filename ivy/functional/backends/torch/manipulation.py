@@ -1,6 +1,7 @@
 # global
 import torch
 import math
+from numbers import Number
 from typing import Union, Optional, Tuple, List
 
 
@@ -27,6 +28,13 @@ def expand_dims(x: torch.Tensor,
                 axis: Optional[Union[int, Tuple[int], List[int]]] = None) \
         -> torch.Tensor:
     return torch.unsqueeze(x, axis)
+
+  
+def permute_dims(x: torch.Tensor,
+                axes: Tuple[int,...]) \
+        -> torch.Tensor:
+    return torch.permute(x, axes)
+
 
 
 # Extra #
@@ -69,3 +77,27 @@ def tile(x, reps):
     if isinstance(reps, torch.Tensor):
         reps = reps.detach().cpu().numpy().tolist()
     return x.repeat(reps)
+
+
+
+
+# noinspection PyUnresolvedReferences
+def constant_pad(x, pad_width: List[List[int]], value: Number = 0.):
+    if x.shape == ():
+        x = x.unsqueeze(0)
+    if isinstance(pad_width, torch.Tensor):
+        pad_width = pad_width.detach().cpu().numpy().tolist()
+    pad_width.reverse()
+    pad_width_flat: List[int] = list()
+    for pad_width_sec in pad_width:
+        for item in pad_width_sec:
+            pad_width_flat.append(item)
+    return torch.nn.functional.pad(x, pad_width_flat, mode='constant', value=value)
+
+
+def zero_pad(x, pad_width: List[List[int]]):
+    return constant_pad(x, pad_width, 0.)
+
+
+def swapaxes(x, axis0: int, axis1: int):
+    return torch.transpose(x, axis0, axis1)

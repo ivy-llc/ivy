@@ -327,6 +327,38 @@ def trace(x: ivy.Array,
     return _cur_framework(x).trace(x, offset)
 
 
+def det(x: ivy.Array) \
+    -> ivy.Array:
+    """
+    Returns the determinant of a square matrix (or a stack of square matrices) x.
+
+    :param x:  input array having shape (..., M, M) and whose innermost two dimensions form square matrices. Should
+               have a floating-point data type.
+    :return :  if x is a two-dimensional array, a zero-dimensional array containing the determinant; otherwise, a non-zero
+               dimensional array containing the determinant for each square matrix. The returned array must have the same data type as x.
+    """
+    return _cur_framework(x).det(x)
+
+def cholesky(x: Union[ivy.Array, ivy.NativeArray], 
+             upper: bool = False) -> ivy.Array:
+    """
+    Computes the cholesky decomposition of the x matrix.
+
+    :param x:  input array having shape (..., M, M) and whose innermost two dimensions form square symmetric
+     positive-definite matrices. Should have a floating-point data type.
+    :type x: array
+    :param upper:  If True, the result must be the upper-triangular Cholesky factor U. If False, the result
+     must be the lower-triangular Cholesky factor L. Default: False.
+    :type upper: bool
+    :return out: an array containing the Cholesky factors for each square matrix.
+     If upper is False, the returned array must contain lower-triangular matrices; otherwise,
+      the returned array must contain upper-triangular matrices. 
+      The returned array must have a floating-point data type determined by Type Promotion Rules 
+      and must have the same shape as x.
+    :type out: array
+    """
+    return  _cur_framework(x).cholesky(x, upper)
+    
 # Extra #
 # ------#
 
