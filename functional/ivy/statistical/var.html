@@ -36,8 +36,8 @@
   <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="prod" href="prod.html" />
-    <link rel="prev" title="mean" href="mean.html" /> 
+    <link rel="next" title="mean" href="mean.html" />
+    <link rel="prev" title="max" href="max.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -114,8 +114,8 @@
 <li class="toctree-l1 current"><a class="reference internal" href="../statistical.html">Statistical</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="min.html">min</a></li>
 <li class="toctree-l2"><a class="reference internal" href="max.html">max</a></li>
-<li class="toctree-l2"><a class="reference internal" href="mean.html">mean</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">var</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mean.html">mean</a></li>
 <li class="toctree-l2"><a class="reference internal" href="prod.html">prod</a></li>
 <li class="toctree-l2"><a class="reference internal" href="sum.html">sum</a></li>
 <li class="toctree-l2"><a class="reference internal" href="std.html">std</a></li>
@@ -218,24 +218,13 @@
 <h1>var<a class="headerlink" href="#var" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
 <dt id="ivy.functional.ivy.statistical.var">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">var</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">keepdims</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/statistical.html#var"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.statistical.var" title="Permalink to this definition">¶</a></dt>
-<dd><p>Computes the arithmetic variance along a given axis. The variance is taken over the flattened array by default,
-otherwise over the specified axis.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>array</em>) – Array containing numbers whose variance is desired.</p></li>
-<li><p><strong>axis</strong> (<em>int</em><em> or </em><em>sequence of ints</em>) – Axis or axes along which the means are computed. The default is to compute the mean of the flattened
-array. If this is a tuple of ints, a mean is performed over multiple axes, instead of a single axis
-or all the axes as before.</p></li>
-<li><p><strong>keepdims</strong> (<em>bool</em><em>, </em><em>optional</em>) – If this is set to True, the axes which are reduced are left in the result as dimensions with size
-one. With this option, the result will broadcast correctly against the input array.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>The array with variances computed.</p>
-</dd>
-</dl>
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">var</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">axis</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Union<span class="p">[</span>int<span class="p">, </span>Tuple<span class="p">[</span>int<span class="p">]</span><span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">correction</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>int<span class="p">, </span>float<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">keepdims</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../../_modules/ivy/functional/ivy/statistical.html#var"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.statistical.var" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the variance of the input array x.
+:param x: input array
+:param axis: axis or axes along which variances must be computed. By default, the variance must be computed over the entire array
+:param correction: degrees of freedom adjustment
+:param keepdims: Default: False
+:return: The returned array must have the same data type as x.</p>
 </dd></dl>
 
 <div class="line-block">
@@ -253,10 +242,10 @@ one. With this option, the result will broadcast correctly against the input arr
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="prod.html" class="btn btn-neutral float-right" title="prod" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="mean.html" class="btn btn-neutral float-right" title="mean" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="mean.html" class="btn btn-neutral float-left" title="mean" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="max.html" class="btn btn-neutral float-left" title="max" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
