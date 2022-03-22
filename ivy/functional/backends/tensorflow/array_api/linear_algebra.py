@@ -8,6 +8,12 @@ from ivy import inf
 
 
 # noinspection PyUnusedLocal,PyShadowingBuiltins
+
+def eig(x: tf.tensor)\
+  -> tf.tensor:
+  return tf.linalg.eig(x, compute=False)
+
+
 def vector_norm(x: Tensor,
                 axis: Optional[Union[int, Tuple[int]]] = None,
                 keepdims: bool = False,
