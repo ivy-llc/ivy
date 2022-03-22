@@ -184,17 +184,6 @@ def bitwise_or(x1: np.ndarray , x2: np.ndarray) \
     return np.bitwise_or(x1, x2)
 
 
-def bitwise_xor(x1: np.ndarray , x2: np.ndarray) \
-        -> np.ndarray:
-    if not isinstance(x2, np.ndarray):
-        x2 = np.asarray(x2, dtype=x1.dtype)
-    else:
-        dtype = np.promote_types(x1.dtype, x2.dtype)
-        x1 = x1.astype(dtype)
-        x2 = x2.astype(dtype)
-    return np.bitwise_xor(x1, x2)
-
-
 def abs(x: np.ndarray)\
         -> np.ndarray:
     return np.absolute(x)

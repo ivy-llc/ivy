@@ -187,12 +187,6 @@ def bitwise_or(x1: torch.Tensor, x2: torch.Tensor) \
     return torch.bitwise_or(x1, x2)
 
 
-def bitwise_xor(x1: torch.Tensor,
-                x2: torch.Tensor)\
-        -> torch.Tensor:
-    return torch.bitwise_xor(x1, x2)
-
-
 def sinh(x: torch.Tensor) -> torch.Tensor:
     return torch.sinh(x)
 
