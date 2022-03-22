@@ -206,6 +206,12 @@ def bitwise_or(x1: Tensor, x2: Tensor) \
     return x1 | x2
 
 
+def bitwise_xor(x1: Tensor,
+                x2: Tensor)\
+        -> Tensor:
+    return tf.bitwise.bitwise_xor(x1, x2)
+
+
 def positive(x: Tensor)\
         -> Tensor:
     return tf.experimental.numpy.positive(x)

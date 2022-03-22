@@ -154,6 +154,11 @@ def bitwise_or(x1: JaxArray, x2: JaxArray) -> JaxArray:
     return jnp.bitwise_or(x1, x2)
 
 
+def bitwise_xor(x1: JaxArray, x2: JaxArray) -> JaxArray:
+    return jnp.bitwise_xor(x1, x2)
+
+
+
 def sinh(x: JaxArray)\
         -> JaxArray:
     return jnp.sinh(x)
