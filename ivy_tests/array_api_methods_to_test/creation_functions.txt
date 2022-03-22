@@ -1,16 +1,16 @@
 #arange
-#asarray
-#empty
-#empty_like
-#eye
+asarray
+empty
+empty_like
+#eye # fails non-determinstically for jax, possibly due to +0 vs -0 inconsistencies
 #from_dlpack
 full
-#full_like
+full_like
 #linspace
 #meshgrid
 ones
-#ones_like
-#tril
-#triu
+ones_like
+tril
+triu
 zeros
 #zeros_like

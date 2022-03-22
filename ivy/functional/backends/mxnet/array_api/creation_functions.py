@@ -28,8 +28,19 @@ def ones(shape: Union[int, Tuple[int]],
     return mx.nd.ones(shape, ctx=cont).astype(dtype)
 
 
+<<<<<<< HEAD
 def arange(start: Union[int, float], /, stop: Optional[Union[int, float]] = None, step: Union[int, float] = 1, *,
            dtype: Optional[mx.nd.dtype] = None,
            device: Optional[str(float)] = None)\
                -> mx.ndarray.ndarray.NDArray:
     return mx.nd.arange(start, stop, step, dtype, device)
+=======
+def eye(n_rows: int,
+        n_cols: Optional[int] = None,
+        k: Optional[int] = 0,
+        dtype: Optional[mx.nd.dtype] = None,
+        device: Optional[str] = None) \
+        -> mx.ndarray.ndarray.NDArray:
+    cont = _mxnet_init_context(default_device(device))
+    return mx.nd.eye(n_rows, n_cols, k, ctx=cont).astype(dtype)
+>>>>>>> b02cd3aa9982e7619e5b819364f843296a4d8a09
