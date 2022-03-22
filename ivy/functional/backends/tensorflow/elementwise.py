@@ -10,7 +10,7 @@ import ivy
 def expm1(x: Tensor)\
         -> Tensor:
     return tf.math.expm1(x)
-
+  
 def bitwise_invert(x: Tensor) \
         -> Tensor:
     if 'int' not in str(x.dtype):
@@ -110,6 +110,11 @@ def cosh(x: Tensor) \
 def log10(x: Tensor) \
         -> Tensor:
     return tf.experimental.numpy.log10(x)
+
+
+def log(x: Tensor)\
+        -> Tensor:
+    return tf.math.log(x)
 
 
 def log2(x: Tensor) \

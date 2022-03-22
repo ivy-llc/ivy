@@ -1,4 +1,4 @@
-
+  
 # global
 import numpy as np
 import numpy.array_api as npa
@@ -81,6 +81,11 @@ def cosh(x: np.ndarray)\
 def log10(x: np.ndarray)\
         -> np.ndarray:
     return np.log10(x)
+
+
+def log(x: np.ndarray)\
+        -> np.ndarray:
+    return np.log(x)
 
 
 def log2(x: np.ndarray)\

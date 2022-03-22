@@ -1,4 +1,4 @@
-
+  
 # global
 import torch
 from torch import Tensor
@@ -7,7 +7,6 @@ import typing
 
 # local
 import ivy
-
 
 def expm1(x: Tensor)\
         -> Tensor:
@@ -100,6 +99,11 @@ def cosh(x: torch.Tensor) \
 def log10(x: torch.Tensor) \
         -> torch.Tensor:
     return torch.log10(x)
+
+
+def log(x: torch.Tensor)\
+        -> torch.Tensor:
+    return torch.log(x)
 
 
 def log2(x: torch.Tensor) \

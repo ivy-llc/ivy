@@ -833,3 +833,39 @@ def scatter_nd(indices: Union[ivy.Array, ivy.NativeArray], updates: Union[ivy.Ar
     """
     return _cur_framework(indices).scatter_nd(indices, updates, shape, tensor, reduction, dev)
 
+
+# noinspection PyShadowingNames
+def gather(params: Union[ivy.Array, ivy.NativeArray], indices: Union[ivy.Array, ivy.NativeArray], axis: int = -1,
+           dev: ivy.Device = None) -> Union[ivy.Array, ivy.NativeArray]:
+    """
+    Gather slices from params at axis according to indices.
+
+    :param params: The array from which to gather values.
+    :type params: array
+    :param indices: Index array.
+    :type indices: array
+    :param axis: The axis from which to gather from. Default is -1.
+    :type axis: int, optional
+    :param dev: device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. Same as x if None.
+    :type dev: ivy.Device, optional
+    :return: New array with the values gathered at the specified indices along the specified axis.
+    """
+    return _cur_framework(params).gather(params, indices, axis, dev)
+
+
+# noinspection PyShadowingNames
+def gather_nd(params: Union[ivy.Array, ivy.NativeArray], indices: Union[ivy.Array, ivy.NativeArray],
+              dev: ivy.Device = None) -> Union[ivy.Array, ivy.NativeArray]:
+    """
+    Gather slices from params into a array with shape specified by indices.
+
+    :param params: The array from which to gather values.
+    :type params: array
+    :param indices: Index array.
+    :type indices: array
+    :param dev: device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. Same as x if None.
+    :type dev: ivy.Device, optional
+    :return: New array of given shape, with the values gathered at the indices.
+    """
+    return _cur_framework(params).gather_nd(params, indices, dev)
+

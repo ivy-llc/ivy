@@ -9,7 +9,7 @@ from ivy.functional.backends.jax import JaxArray
 def expm1(x: JaxArray)\
         -> JaxArray:
     return jnp.expm1(x)
-
+  
 def bitwise_invert(x: JaxArray)\
         -> JaxArray:
     return jnp.bitwise_not(x)
@@ -83,6 +83,11 @@ def cosh(x: JaxArray)\
 def log10(x: JaxArray)\
         -> JaxArray:
     return jnp.log10(x)
+
+
+def log(x: JaxArray)\
+        -> JaxArray:
+    return jnp.log(x)
 
 
 def log2(x: JaxArray)\
@@ -203,3 +208,4 @@ exp = jnp.exp
 
 
 erf = jax.scipy.special.erf
+
