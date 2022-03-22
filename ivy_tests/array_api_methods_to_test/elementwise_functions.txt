@@ -37,7 +37,7 @@ log10
 logical_and
 logical_not
 logical_or
-#logical_xor
+logical_xor
 #multiply
 negative
 positive
