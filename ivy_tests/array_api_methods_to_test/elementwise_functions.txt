@@ -1,4 +1,4 @@
-#abs
+abs
 #acos # depends on: greater
 acosh
 #add
@@ -14,8 +14,8 @@ bitwise_invert
 #bitwise_right_shift
 #bitwise_xor
 #ceil # depends on: asarray, remainder
-#cos
-#cosh
+cos
+cosh
 #divide
 #equal
 #exp
@@ -49,8 +49,8 @@ positive
 sin
 sinh
 square
-#sqrt
+sqrt
 #subtract
-#tan
-#tanh
+tan
+tanh
 #trunc
