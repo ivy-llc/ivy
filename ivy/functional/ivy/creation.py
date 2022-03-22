@@ -9,6 +9,32 @@ from ivy.framework_handler import current_framework as _cur_framework
 # Array API Standard #
 # -------------------#
 
+def asarray(x: Union[ivy.Array, ivy.NativeArray],
+             dtype: Optional[Union[ivy.Dtype, str]] = None,
+             dev: Optional[Union[ivy.Device, str]] = None,
+             ) -> ivy.Array:
+     """
+     Converts the input to an array.
+
+     Parameters
+     ----------
+     x:
+         input data, in any form that can be converted to an array.
+         This includes lists, lists of tuples, tuples, tuples of tuples, tuples of lists and ndarrays.
+
+     dtype:
+         datatype, optional. Datatype is inferred from the input data.
+
+     dev:
+         device on which to place the created array. Default: None.
+
+     Returns
+     --------
+     An array interpretation of x.
+     """
+     return _cur_framework(x).asarray(x, dtype, dev)
+
+
 def zeros(shape: Union[int, Tuple[int], List[int]],
           dtype: Optional[ivy.Dtype] = None,
           device: Optional[ivy.Device] = None)\
@@ -58,6 +84,32 @@ def ones(shape: Union[int, Tuple[int], List[int]],
     return _cur_framework().ones(shape, dtype, device)
 
 
+def full_like(x: Union[ivy.Array, ivy.NativeArray], /,
+              fill_value: Union[int, float], *,
+              dtype: Optional[Union[ivy.Dtype, str]] = None,
+              device: Optional[Union[ivy.Device, str]] = None,
+              ) -> ivy.Array:
+    """
+    Returns a new array filled with fill_value and having the same shape as an input array x.
+
+    Parameters
+    x:input array from which to derive the output array shape.
+
+    fill_value: Scalar fill value
+
+    dtype:output array data type.
+    If dtype is None, the output array data type must be inferred from x.
+    Default: None.
+
+    device:device on which to place the created array.
+    If device is None,the output array device must be inferred from x.
+    Default: None.
+
+    Returns
+    out:an array having the same shape as x and where every element is equal to fill_value.
+    """
+    return _cur_framework(x).full_like(x, fill_value, dtype=dtype, device=device)
+
 def ones_like( x: Union[ivy.Array, ivy.NativeArray],
               dtype: Optional[Union[ivy.Dtype, str]] = None,
               dev: Optional[Union[ivy.Device, str]] = None,
@@ -77,7 +129,7 @@ def ones_like( x: Union[ivy.Array, ivy.NativeArray],
 
 def tril(x: Union[ivy.Array, ivy.NativeArray],
          k: int = 0) \
-         -> ivy.Array:
+        -> ivy.Array:
     """
     Returns the lower triangular part of a matrix (or a stack of matrices) x.
 
@@ -138,6 +190,67 @@ def empty(shape: Union[int, Tuple[int],List[int]],
     return _cur_framework().empty(shape, dtype, device)
 
 
+def empty_like(x: Union[ivy.Array, ivy.NativeArray],
+               dtype: Optional[Union[ivy.Dtype, str]] = None,
+               dev: Optional[Union[ivy.Device, str]] = None)\
+        -> ivy.Array:
+    """
+    Returns an uninitialized array with the same shape as an input array x.
+
+    :param x:  input array from which to derive the output array shape.
+    :param dtype: output array data type. If dtype is None, the output array data type must be inferred from x. Default: None.
+    :param dev: device on which to place the created array. If device is None, the output array device must be inferred from x. Default: None.
+    :return: an array having the same shape as x and containing uninitialized data.
+    """
+    return _cur_framework(x).empty_like(x, dtype, dev)
+
+
+def eye(n_rows: int,
+        n_cols: Optional[int] = None,
+        k: Optional[int] = 0,
+        dtype: Optional[ivy.Dtype] = None,
+        device: Optional[ivy.Device] = None) \
+        -> ivy.Array:
+    """
+    Returns a two-dimensional array with ones on the k h diagonal and zeros elsewhere.
+
+    Parameters
+    :param n_rows: number of rows in the output array.
+    :param n_cols: number of columns in the output array. If None, the default number of columns in the output array is
+                   equal to n_rows. Default: None.
+    :param k: index of the diagonal. A positive value refers to an upper diagonal, a negative value to a lower diagonal,
+              and 0 to the main diagonal. Default: 0.
+    :param dtype: output array data type. If dtype is None, the output array data type must be the default floating-
+                  point data type. Default: None.
+    :return: device on which to place the created array. Default: None.
+    :return: an array where all elements are equal to zero, except for the k h diagonal, whose values are equal to one.
+    """
+    return _cur_framework().eye(n_rows, n_cols, k, dtype, device)
+
+# noinspection PyShadowingNames
+def linspace(start: Union[ivy.Array, ivy.NativeArray, int], stop: Union[ivy.Array, ivy.NativeArray, int],
+             num: int, axis: int = None, dev: ivy.Device = None)\
+        -> Union[ivy.Array, ivy.NativeArray]:
+    """
+    Generates a certain number of evenly-spaced values in an interval along a given axis.
+
+    See :math:`arange` that allows to specify the step size of evenly spaced values in an interval.
+
+    :param start: First entry in the range.
+    :type start: array
+    :param stop: Final entry in the range.
+    :type stop: array
+    :param num: Number of values to generate.
+    :type num: int
+    :param axis: Axis along which the operation is performed.
+    :type axis: int
+    :param dev: device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
+    :type dev: ivy.Device
+    :return: Tensor of evenly-spaced values.
+    """
+    return _cur_framework(start).linspace(start, stop, num, axis, dev)
+
+
 # Extra #
 # ------#
 # noinspection PyShadowingNames
@@ -160,4 +273,29 @@ def array(object_in: Union[List, ivy.Array, ivy.NativeArray], dtype: Union[ivy.D
     return _cur_framework(object_in).array(object_in, dtype, dev)
 
 
-asarray = array
+# noinspection PyShadowingNames
+def logspace(start: Union[ivy.Array, ivy.NativeArray, int], stop: Union[ivy.Array, ivy.NativeArray, int],
+             num: int, base: float = 10., axis: int = None, dev: ivy.Device = None)\
+        -> Union[ivy.Array, ivy.NativeArray]:
+    """
+    Generates a certain number of evenly-spaced values in log space, in an interval along a given axis.
+
+    See :math:`arange` that allows to specify the step size of evenly spaced values in an interval.
+
+    :param start: First entry in the range.
+    :type start: array
+    :param stop: Final entry in the range.
+    :type stop: array
+    :param num: Number of values to generate.
+    :type num: int
+    :param base: The base of the log space. Default is 10.0
+    :type base: float, optional
+    :param axis: Axis along which the operation is performed.
+    :type axis: int
+    :param dev: device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
+    :type dev: ivy.Device
+    :return: Tensor of evenly-spaced values.
+    """
+    return _cur_framework(start).logspace(start, stop, num, base, axis, dev)
+
+

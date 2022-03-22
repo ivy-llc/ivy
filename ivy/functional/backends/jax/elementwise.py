@@ -1,8 +1,14 @@
 # global
+import jax
 import jax.numpy as jnp
 
 # local
 from ivy.functional.backends.jax import JaxArray
+
+
+def bitwise_invert(x: JaxArray)\
+        -> JaxArray:
+    return jnp.bitwise_not(x)
 
 
 def bitwise_and(x1: JaxArray,
@@ -18,10 +24,22 @@ def ceil(x: JaxArray)\
     return jnp.ceil(x)
 
 
+def floor(x: JaxArray)\
+        -> JaxArray:
+    if 'int' in str(x.dtype):
+        return x
+    return jnp.floor(x)
+
+
 def isfinite(x: JaxArray)\
         -> JaxArray:
     return jnp.isfinite(x)
 
+  
+def asin(x: JaxArray)\
+        -> JaxArray:
+    return jnp.arcsin(x)
+  
 
 def isinf(x: JaxArray)\
         -> JaxArray:
@@ -31,6 +49,11 @@ def isinf(x: JaxArray)\
 def equal(x1: JaxArray, x2: JaxArray)\
         -> JaxArray:
     return x1 == x2
+
+
+def greater_equal(x1: JaxArray, x2: JaxArray)\
+        -> JaxArray:
+    return jnp.greater_equal(x1, x2)
 
 
 def less_equal(x1: JaxArray, x2: JaxArray)\
@@ -98,6 +121,11 @@ def logical_not(x: JaxArray)\
     return jnp.logical_not(x)
 
 
+def acos(x: JaxArray)\
+        -> JaxArray:
+    return jnp.arccos(x)
+
+
 def acosh(x: JaxArray)\
         -> JaxArray:
     return jnp.arccosh(x)
@@ -112,16 +140,62 @@ def negative(x: JaxArray) -> JaxArray:
     return jnp.negative(x)
 
 
+def not_equal(x1: JaxArray, x2: JaxArray)\
+        -> JaxArray:
+    return jnp.not_equal(x1, x2)
+
+
 def tanh(x: JaxArray)\
         -> JaxArray:
     return jnp.tanh(x)
-  
-  
+
+
+def bitwise_or(x1: JaxArray, x2: JaxArray) -> JaxArray:
+    return jnp.bitwise_or(x1, x2)
+
+
 def sinh(x: JaxArray)\
         -> JaxArray:
     return jnp.sinh(x)
 
 
+def positive(x: JaxArray)\
+        -> JaxArray:
+    return jnp.positive(x)
+
+    
 def square(x: JaxArray) \
         -> JaxArray:
     return jnp.square(x)
+
+
+def round(x: JaxArray)\
+        -> JaxArray:
+    if 'int' in str(x.dtype):
+        return x
+    return jnp.round(x)
+
+
+def abs(x: JaxArray)\
+        -> JaxArray:
+    return jnp.absolute(x)
+
+
+def logaddexp(x1: JaxArray, x2: JaxArray) -> JaxArray:
+    return jnp.logaddexp(x1, x2)
+
+
+tan = jnp.tan
+atan = jnp.arctan
+atan2 = jnp.arctan2
+cosh = jnp.cosh
+atanh = jnp.arctanh
+log = jnp.log
+exp = jnp.exp
+
+
+# Extra #
+# ------#
+
+
+erf = jax.scipy.special.erf

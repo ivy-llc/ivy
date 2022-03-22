@@ -2,8 +2,9 @@
 import copy
 import functools
 from numbers import Number
-
+from operator import mul
 # local
+import ivy
 from . import array_api
 from .array_api import *
 from . import conversions
@@ -46,6 +47,8 @@ class Array(ArrayWithArrayAPI, ArrayWithDevice, ArrayWithGeneral, ArrayWithGradi
         assert ivy.is_array(data)
         self._data = data
         self._shape = data.shape
+
+        self._size = functools.reduce(mul,self._data.shape) if len(self._data.shape) >0 else 0 
         self._dtype = ivy.dtype(self._data)
         self._device = ivy.dev(data)
         self._dev_str = ivy.dev_to_str(self._device)
@@ -64,7 +67,7 @@ class Array(ArrayWithArrayAPI, ArrayWithDevice, ArrayWithGeneral, ArrayWithGradi
 
     @property
     def shape(self):
-        return self._shape
+        return tuple(self._shape)
 
     @property
     def dtype(self):
@@ -74,6 +77,30 @@ class Array(ArrayWithArrayAPI, ArrayWithDevice, ArrayWithGeneral, ArrayWithGradi
     def device(self):
         return self._device
 
+    # noinspection PyPep8Naming
+    @property
+    def T(self):
+        assert len(self._data.shape) == 2
+        return ivy.matrix_transpose(self._data)
+
+    @property
+    def size(self):
+        """
+        Number of elements in an array.
+        
+        .. note::
+           This must equal the product of the array's dimensions.
+        
+        Returns
+        -------
+        out: Optional[int]
+            number of elements in an array. The returned value must be ``None`` if and only if one or more array dimensions are unknown.
+        
+        
+        .. note::
+           For array libraries having graph-based computational models, an array may have unknown dimensions due to data-dependent operations.
+        """
+        return self._size
     # Built-ins #
     # ----------#
 
@@ -124,12 +151,6 @@ class Array(ArrayWithArrayAPI, ArrayWithDevice, ArrayWithGeneral, ArrayWithGradi
         try:
             self._data.__setitem__(query, val)
         except (AttributeError, TypeError):
-            query = [[query]] if isinstance(query, Number) else query
-            query = ivy.array(query)
-            if len(query.shape) < 2:
-                query = ivy.expand_dims(query, -1)
-            val = [val] if isinstance(val, Number) else val
-            val = ivy.array(val, dtype=ivy.dtype(self._data))
             self._data = ivy.scatter_nd(query, val, tensor=self._data, reduction='replace')
 
     @_native_wrapper
@@ -288,11 +309,7 @@ class Array(ArrayWithArrayAPI, ArrayWithDevice, ArrayWithGeneral, ArrayWithGradi
 
     @_native_wrapper
     def __ne__(self, other):
-        other = to_native(other)
-        res = self._data.__ne__(other)
-        if res is NotImplemented:
-            return res
-        return to_ivy(res)
+        return ivy.not_equal(self._data, other)
 
     @_native_wrapper
     def __gt__(self, other):
@@ -304,11 +321,7 @@ class Array(ArrayWithArrayAPI, ArrayWithDevice, ArrayWithGeneral, ArrayWithGradi
 
     @_native_wrapper
     def __ge__(self, other):
-        other = to_native(other)
-        res = self._data.__ge__(other)
-        if res is NotImplemented:
-            return res
-        return to_ivy(res)
+        return ivy.greater_equal(self._data, other)
 
     @_native_wrapper
     def __and__(self, other):
@@ -328,12 +341,9 @@ class Array(ArrayWithArrayAPI, ArrayWithDevice, ArrayWithGeneral, ArrayWithGradi
 
     @_native_wrapper
     def __or__(self, other):
-        other = to_native(other)
-        res = self._data.__or__(other)
-        if res is NotImplemented:
-            return res
-        return to_ivy(res)
+        return ivy.bitwise_or(self._data, other)
 
+        
     @_native_wrapper
     def __ror__(self, other):
         other = to_native(other)
