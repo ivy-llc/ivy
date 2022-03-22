@@ -54,4 +54,3 @@ sqrt
 tan
 tanh
 #trunc
-
