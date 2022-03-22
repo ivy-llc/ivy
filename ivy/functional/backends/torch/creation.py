@@ -133,7 +133,7 @@ def empty_like(x: torch.Tensor,
 
     return torch.empty_like(x, device=dev_from_str(dev))
 
-  
+
 def _differentiable_linspace(start, stop, num, device):
     if num == 1:
         return torch.unsqueeze(start, 0)
@@ -205,6 +205,29 @@ def linspace(start, stop, num, axis=None, dev=None):
     if axis is not None:
         res = torch.transpose(res, axis, -1)
     return res.to(dev_from_str(dev))
+
+def eye(n_rows: int,
+        n_cols: Optional[int] = None,
+        k: Optional[int] = 0,
+        dtype: Optional[torch.dtype] = None,
+        device: Optional[torch.device] = None) \
+        -> torch.Tensor:
+    dtype = dtype_from_str(default_dtype(dtype))
+    device = dev_from_str(default_device(device))
+    if n_cols is None:
+        n_cols = n_rows
+    i = torch.eye(n_rows, n_cols, dtype=dtype, device=device)
+    if k == 0:
+        return i
+    elif -n_rows < k < 0:
+        return torch.concat([torch.zeros([-k, n_cols], dtype=dtype, device=device),
+                             i[:n_rows + k]], 0)
+    elif 0 < k < n_cols:
+        return torch.concat([torch.zeros([n_rows, k], dtype=dtype, device=device),
+                             i[:, :n_cols - k]], 1)
+    else:
+        return torch.zeros([n_rows, n_cols], dtype=dtype, device=device)
+
 
 # Extra #
 # ------#

@@ -245,55 +245,6 @@ def stack(xs: Iterable[Union[ivy.Array, ivy.NativeArray]], axis: int = 0)\
 
 
 
-def constant_pad(x: Union[ivy.Array, ivy.NativeArray], pad_width: Iterable[Tuple[int]], value: Number = 0)\
-        -> Union[ivy.Array, ivy.NativeArray]:
-    """
-    Pads an array with a constant value.
-
-    :param x: Input array to pad.
-    :type x: array
-    :param pad_width: Number of values padded to the edges of each axis.
-                      Specified as ((before_1, after_1), … (before_N, after_N)), where N is number of axes of x.
-    :type pad_width: sequence of tuples of ints
-    :param value: The constant value to pad the array with.
-    :type value: float or int, default zero
-    :return: Padded array of rank equal to x with shape increased according to pad_width.
-    """
-    return _cur_framework(x).constant_pad(x, pad_width, value)
-
-
-def zero_pad(x: Union[ivy.Array, ivy.NativeArray], pad_width: Iterable[Tuple[int]])\
-        -> Union[ivy.Array, ivy.NativeArray]:
-    """
-    Pads an array with zeros.
-
-    :param x: Input array to pad.
-    :type x: array
-    :param pad_width: Number of values padded to the edges of each axis.
-                      Specified as ((before_1, after_1), … (before_N, after_N)), where N is number of axes of x.
-    :type pad_width: sequence of tuples of ints
-    :return: Padded array of rank equal to x with shape increased according to pad_width.
-    """
-    return _cur_framework(x).zero_pad(x, pad_width)
-
-
-
-
-
-def swapaxes(x: Union[ivy.Array, ivy.NativeArray], axis0: int, axis1: int)\
-        -> Union[ivy.Array, ivy.NativeArray]:
-    """
-    Interchange two axes of an array.
-
-    :param x: Input array.
-    :type x: array
-    :param axis0: First axis to be swapped.
-    :type axis0: int
-    :param axis1: Second axis to be swapped.
-    :type axis1: int
-    :return: x with its axes permuted.
-    """
-    return _cur_framework(x).swapaxes(x, axis0, axis1)
 
 
 def transpose(x: Union[ivy.Array, ivy.NativeArray], axes: Iterable[int] = None)\
@@ -478,34 +429,6 @@ def matmul(x1: Union[ivy.Array, ivy.NativeArray], x2: Union[ivy.Array, ivy.Nativ
     return _cur_framework(x1).matmul(x1, x2)
 
 
-def cumsum(x: Union[ivy.Array, ivy.NativeArray], axis: int = 0)\
-        -> Union[ivy.Array, ivy.NativeArray]:
-    """
-    Returns the cumulative sum of the elements along a given axis.
-
-    :param x: Input array.
-    :type x: array
-    :param axis: Axis along which the cumulative sum is computed. By default 0.
-    :type axis: int
-    :return: Input array with cumulatively summed elements along axis.
-    """
-    return _cur_framework(x).cumsum(x, axis)
-
-
-def cumprod(x: Union[ivy.Array, ivy.NativeArray], axis: int = 0, exclusive: bool = False)\
-        -> Union[ivy.Array, ivy.NativeArray]:
-    """
-    Returns the cumulative product of the elements along a given axis.
-
-    :param x: Input array.
-    :type x: array
-    :param axis: Axis along which the cumulative product is computed. By default 0.
-    :type axis: int
-    :param exclusive: Whether to perform the cumprod exclusively. Defaults is False.
-    :type exclusive: bool, optional
-    :return: Input array with cumulatively multiplied elements along axis.
-    """
-    return _cur_framework(x).cumprod(x, axis, exclusive)
 
 
 # noinspection PyShadowingNames
@@ -542,55 +465,6 @@ def meshgrid(*xs: Iterable[Union[ivy.Array, ivy.NativeArray]], indexing: str = '
     """
     return _cur_framework().meshgrid(*xs, indexing=indexing)
 
-
-# noinspection PyShadowingNames
-def scatter_flat(indices: Union[ivy.Array, ivy.NativeArray], updates: Union[ivy.Array, ivy.NativeArray],
-                 size: Optional[int] = None, tensor: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-                 reduction: str = 'sum', dev: ivy.Device = None)\
-        -> Union[ivy.Array, ivy.NativeArray]:
-    """
-    Scatter flat updates into a new flat array according to flat indices.
-
-    :param indices: Indices for the new values to occupy.
-    :type indices: array
-    :param updates: Values for the new array to hold.
-    :type updates: array
-    :param size: The size of the result.
-    :type size: int
-    :param tensor: The tensor in which to scatter the results, default is None, in which case the size is used to
-                    scatter into a zeros array.
-    :param reduction: The reduction method for the scatter, one of 'sum', 'min', 'max' or 'replace'
-    :type reduction: str
-    :param dev: device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. Same as updates if None.
-    :type dev: ivy.Device, optional
-    :return: New array of given shape, with the values scattered at the indices.
-    """
-    return _cur_framework(indices).scatter_flat(indices, updates, size, tensor, reduction, dev)
-
-
-# noinspection PyShadowingNames
-def scatter_nd(indices: Union[ivy.Array, ivy.NativeArray], updates: Union[ivy.Array, ivy.NativeArray],
-               shape: Optional[Iterable[int]] = None, tensor: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-               reduction: str = 'sum', dev: ivy.Device = None)\
-        -> Union[ivy.Array, ivy.NativeArray]:
-    """
-    Scatter updates into a new array according to indices.
-
-    :param indices: Indices for the new values to occupy.
-    :type indices: array
-    :param updates: Values for the new array to hold.
-    :type updates: array
-    :param shape: The shape of the result. Default is None, in which case tensor argument must be provided.
-    :type shape: sequence of ints
-    :param tensor: The tensor in which to scatter the results, default is None, in which case the shape arg is used to
-                    scatter into a zeros array.
-    :param reduction: The reduction method for the scatter, one of 'sum', 'min', 'max' or 'replace'
-    :type reduction: str
-    :param dev: device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. Same as updates if None.
-    :type dev: ivy.Device, optional
-    :return: New array of given shape, with the values scattered at the indices.
-    """
-    return _cur_framework(indices).scatter_nd(indices, updates, shape, tensor, reduction, dev)
 
 
 # noinspection PyShadowingNames
@@ -667,14 +541,4 @@ def multiprocessing(context: str = None):
     :return: Multiprocessing module
     """
     return _cur_framework().multiprocessing(context)
-
-
-
-
-
-
-
-
-
-
 

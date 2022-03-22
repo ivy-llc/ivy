@@ -38,6 +38,11 @@ def permute_dims(x: Tensor,
     return tf.transpose(x,perm=axes)
 
 
+
+# Extra #
+# ------#
+
+
 def split(x, num_or_size_splits=None, axis=0, with_remainder=False):
     if x.shape == ():
         if num_or_size_splits is not None and num_or_size_splits != 1:
@@ -77,4 +82,29 @@ def stack(x: Union[Tuple[Tensor], List[Tensor]],
     else:
         new_axis = axis
     return tf.stack(x, axis=new_axis)
+
+
+def constant_pad(x, pad_width, value=0):
+    if x.shape == ():
+        x = tf.reshape(x, (-1,))
+    return tf.pad(x, pad_width, constant_values=value)
+
+
+def zero_pad(x, pad_width):
+    if x.shape == ():
+        x = tf.reshape(x, (-1,))
+    return tf.pad(x, pad_width)
+
+
+def swapaxes(x, axis0, axis1):
+    x_shape = x.shape
+    num_dims = len(x_shape)
+    axis0 %= num_dims
+    axis1 %= num_dims
+    config = list(range(num_dims))
+    config.pop(axis0)
+    config.insert(axis0, axis1)
+    config.pop(axis1)
+    config.insert(axis1, axis0)
+    return tf.transpose(x, config)
 
