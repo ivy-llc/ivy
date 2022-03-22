@@ -108,6 +108,11 @@ def log10(x: Tensor) \
     return tf.experimental.numpy.log10(x)
 
 
+def log(x: Tensor)\
+        -> Tensor:
+    return tf.math.log(x)
+
+
 def log2(x: Tensor) \
         -> Tensor:
     return tf.experimental.numpy.log2(x)
