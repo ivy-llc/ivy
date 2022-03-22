@@ -326,9 +326,6 @@ def trace(x: ivy.Array,
 
     return _cur_framework(x).trace(x, offset)
 
-
-<<<<<<< HEAD
-
 def vecdot(x1: Union[ivy.Array, ivy.NativeArray], 
         x2: Union[ivy.Array, ivy.NativeArray], axis: int = -1)  \
         -> ivy.Array:
@@ -352,7 +349,7 @@ def vecdot(x1: Union[ivy.Array, ivy.NativeArray],
     """
 
     return _cur_framework(x1).vecdot(x1, x2)
-=======
+
 def det(x: ivy.Array) \
     -> ivy.Array:
     """
@@ -385,7 +382,6 @@ def cholesky(x: Union[ivy.Array, ivy.NativeArray],
     """
     return  _cur_framework(x).cholesky(x, upper)
     
->>>>>>> 94d1e051c313ed3ca6f9d79dffa66bb864ab7de8
 # Extra #
 # ------#
 
