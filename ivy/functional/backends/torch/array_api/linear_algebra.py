@@ -6,6 +6,12 @@ from typing import Union, Optional, Tuple, Literal
 from ivy import inf
 
 
+def eig(x: torch.tensor)\
+  -> torch.tensor:
+  return torch.linalg.eig(x)
+
+
+
 def vector_norm(x: torch.Tensor,
                 p: Union[int, float, Literal[inf, - inf]] = 2,
                 axis: Optional[Union[int, Tuple[int]]] = None,
