@@ -49,9 +49,6 @@ def equal(x1: Union[ivy.Array, ivy.NativeArray], x2: Union[ivy.Array, ivy.Native
     return _cur_framework(x1, x2).equal(x1, x2)
 
 
-
-
-
 def shape(x: Union[ivy.Array, ivy.NativeArray], as_array: bool = False)\
         -> Iterable[int]:
     """
@@ -248,55 +245,6 @@ def stack(xs: Iterable[Union[ivy.Array, ivy.NativeArray]], axis: int = 0)\
 
 
 
-def constant_pad(x: Union[ivy.Array, ivy.NativeArray], pad_width: Iterable[Tuple[int]], value: Number = 0)\
-        -> Union[ivy.Array, ivy.NativeArray]:
-    """
-    Pads an array with a constant value.
-
-    :param x: Input array to pad.
-    :type x: array
-    :param pad_width: Number of values padded to the edges of each axis.
-                      Specified as ((before_1, after_1), … (before_N, after_N)), where N is number of axes of x.
-    :type pad_width: sequence of tuples of ints
-    :param value: The constant value to pad the array with.
-    :type value: float or int, default zero
-    :return: Padded array of rank equal to x with shape increased according to pad_width.
-    """
-    return _cur_framework(x).constant_pad(x, pad_width, value)
-
-
-def zero_pad(x: Union[ivy.Array, ivy.NativeArray], pad_width: Iterable[Tuple[int]])\
-        -> Union[ivy.Array, ivy.NativeArray]:
-    """
-    Pads an array with zeros.
-
-    :param x: Input array to pad.
-    :type x: array
-    :param pad_width: Number of values padded to the edges of each axis.
-                      Specified as ((before_1, after_1), … (before_N, after_N)), where N is number of axes of x.
-    :type pad_width: sequence of tuples of ints
-    :return: Padded array of rank equal to x with shape increased according to pad_width.
-    """
-    return _cur_framework(x).zero_pad(x, pad_width)
-
-
-
-
-
-def swapaxes(x: Union[ivy.Array, ivy.NativeArray], axis0: int, axis1: int)\
-        -> Union[ivy.Array, ivy.NativeArray]:
-    """
-    Interchange two axes of an array.
-
-    :param x: Input array.
-    :type x: array
-    :param axis0: First axis to be swapped.
-    :type axis0: int
-    :param axis1: Second axis to be swapped.
-    :type axis1: int
-    :return: x with its axes permuted.
-    """
-    return _cur_framework(x).swapaxes(x, axis0, axis1)
 
 
 def transpose(x: Union[ivy.Array, ivy.NativeArray], axes: Iterable[int] = None)\
@@ -481,34 +429,6 @@ def matmul(x1: Union[ivy.Array, ivy.NativeArray], x2: Union[ivy.Array, ivy.Nativ
     return _cur_framework(x1).matmul(x1, x2)
 
 
-def cumsum(x: Union[ivy.Array, ivy.NativeArray], axis: int = 0)\
-        -> Union[ivy.Array, ivy.NativeArray]:
-    """
-    Returns the cumulative sum of the elements along a given axis.
-
-    :param x: Input array.
-    :type x: array
-    :param axis: Axis along which the cumulative sum is computed. By default 0.
-    :type axis: int
-    :return: Input array with cumulatively summed elements along axis.
-    """
-    return _cur_framework(x).cumsum(x, axis)
-
-
-def cumprod(x: Union[ivy.Array, ivy.NativeArray], axis: int = 0, exclusive: bool = False)\
-        -> Union[ivy.Array, ivy.NativeArray]:
-    """
-    Returns the cumulative product of the elements along a given axis.
-
-    :param x: Input array.
-    :type x: array
-    :param axis: Axis along which the cumulative product is computed. By default 0.
-    :type axis: int
-    :param exclusive: Whether to perform the cumprod exclusively. Defaults is False.
-    :type exclusive: bool, optional
-    :return: Input array with cumulatively multiplied elements along axis.
-    """
-    return _cur_framework(x).cumprod(x, axis, exclusive)
 
 
 # noinspection PyShadowingNames
@@ -546,90 +466,6 @@ def meshgrid(*xs: Iterable[Union[ivy.Array, ivy.NativeArray]], indexing: str = '
     return _cur_framework().meshgrid(*xs, indexing=indexing)
 
 
-# noinspection PyShadowingNames
-def scatter_flat(indices: Union[ivy.Array, ivy.NativeArray], updates: Union[ivy.Array, ivy.NativeArray],
-                 size: Optional[int] = None, tensor: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-                 reduction: str = 'sum', dev: ivy.Device = None)\
-        -> Union[ivy.Array, ivy.NativeArray]:
-    """
-    Scatter flat updates into a new flat array according to flat indices.
-
-    :param indices: Indices for the new values to occupy.
-    :type indices: array
-    :param updates: Values for the new array to hold.
-    :type updates: array
-    :param size: The size of the result.
-    :type size: int
-    :param tensor: The tensor in which to scatter the results, default is None, in which case the size is used to
-                    scatter into a zeros array.
-    :param reduction: The reduction method for the scatter, one of 'sum', 'min', 'max' or 'replace'
-    :type reduction: str
-    :param dev: device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. Same as updates if None.
-    :type dev: ivy.Device, optional
-    :return: New array of given shape, with the values scattered at the indices.
-    """
-    return _cur_framework(indices).scatter_flat(indices, updates, size, tensor, reduction, dev)
-
-
-# noinspection PyShadowingNames
-def scatter_nd(indices: Union[ivy.Array, ivy.NativeArray], updates: Union[ivy.Array, ivy.NativeArray],
-               shape: Optional[Iterable[int]] = None, tensor: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-               reduction: str = 'sum', dev: ivy.Device = None)\
-        -> Union[ivy.Array, ivy.NativeArray]:
-    """
-    Scatter updates into a new array according to indices.
-
-    :param indices: Indices for the new values to occupy.
-    :type indices: array
-    :param updates: Values for the new array to hold.
-    :type updates: array
-    :param shape: The shape of the result. Default is None, in which case tensor argument must be provided.
-    :type shape: sequence of ints
-    :param tensor: The tensor in which to scatter the results, default is None, in which case the shape arg is used to
-                    scatter into a zeros array.
-    :param reduction: The reduction method for the scatter, one of 'sum', 'min', 'max' or 'replace'
-    :type reduction: str
-    :param dev: device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. Same as updates if None.
-    :type dev: ivy.Device, optional
-    :return: New array of given shape, with the values scattered at the indices.
-    """
-    return _cur_framework(indices).scatter_nd(indices, updates, shape, tensor, reduction, dev)
-
-
-# noinspection PyShadowingNames
-def gather(params: Union[ivy.Array, ivy.NativeArray], indices: Union[ivy.Array, ivy.NativeArray], axis: int = -1,
-           dev: ivy.Device = None) -> Union[ivy.Array, ivy.NativeArray]:
-    """
-    Gather slices from params at axis according to indices.
-
-    :param params: The array from which to gather values.
-    :type params: array
-    :param indices: Index array.
-    :type indices: array
-    :param axis: The axis from which to gather from. Default is -1.
-    :type axis: int, optional
-    :param dev: device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. Same as x if None.
-    :type dev: ivy.Device, optional
-    :return: New array with the values gathered at the specified indices along the specified axis.
-    """
-    return _cur_framework(params).gather(params, indices, axis, dev)
-
-
-# noinspection PyShadowingNames
-def gather_nd(params: Union[ivy.Array, ivy.NativeArray], indices: Union[ivy.Array, ivy.NativeArray],
-              dev: ivy.Device = None) -> Union[ivy.Array, ivy.NativeArray]:
-    """
-    Gather slices from params into a array with shape specified by indices.
-
-    :param params: The array from which to gather values.
-    :type params: array
-    :param indices: Index array.
-    :type indices: array
-    :param dev: device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. Same as x if None.
-    :type dev: ivy.Device, optional
-    :return: New array of given shape, with the values gathered at the indices.
-    """
-    return _cur_framework(params).gather_nd(params, indices, dev)
 
 
 def linear_resample(x: Union[ivy.Array, ivy.NativeArray], num_samples: int, axis: int = -1)\
@@ -671,106 +507,3 @@ def multiprocessing(context: str = None):
     """
     return _cur_framework().multiprocessing(context)
 
-
-
-
-
-
-
-
-def container_types():
-    """
-    Return all framework-specific types which should be hierarchically parsed in an ivy.Container. Such types must adopt
-    a key-value structure, and exposes public methods .keys(), .values() and items().
-    """
-    # noinspection PyBroadException
-    try:
-        return _cur_framework().container_types()
-    except ValueError:
-        return []
-
-
-def inplace_arrays_supported(f=None):
-    """
-    Determine whether inplace arrays are supported for the current backend framework.
-
-    :return: Boolean, whether or not inplace arrays are supported.
-    """
-    return _cur_framework().inplace_arrays_supported()
-
-
-def inplace_variables_supported(f=None):
-    """
-    Determine whether inplace variables are supported for the current backend framework.
-
-    :return: Boolean, whether or not inplace variables are supported.
-    """
-    return _cur_framework().inplace_variables_supported()
-
-
-def supports_inplace(x):
-    """
-    Determine whether inplace operations are supported for the data type of x.
-
-    :param x: Input variable or array to check for inplace support for.
-    :type x: variable or array
-    :return: Boolean, whether or not inplace operations are supported for x.
-    """
-    if ivy.is_variable(x):
-        return ivy.inplace_variables_supported()
-    elif ivy.is_array(x):
-        return ivy.inplace_arrays_supported()
-    raise Exception('Input x must be either a variable or an array.')
-
-
-def assert_supports_inplace(x):
-    """
-    Asserts that inplace operations are supported for x, else raises exception.
-
-    :param x: Input variable or array to check for inplace support for.
-    :type x: variable or array
-    :return: True if support, raises exception otherwise
-    """
-    if not ivy.supports_inplace(x):
-        raise Exception('Inplace operations are not supported {} types with {} backend'.format(
-            type(x), ivy.current_framework_str()))
-    return True
-
-
-def inplace_update(x, val, f=None):
-    """
-    Perform in-place update for the input variable.
-
-    :param x: The variable to update.
-    :type x: variable
-    :param val: The array to update the variable with.
-    :type val: array
-    :return: The variable following the in-place update.
-    """
-    return _cur_framework(x).inplace_update(x, val)
-
-
-def inplace_decrement(x, val, f=None):
-    """
-    Perform in-place decrement for the input variable.
-
-    :param x: The variable to decrement.
-    :type x: variable
-    :param val: The array to decrement the variable with.
-    :type val: array
-    :return: The variable following the in-place decrement.
-    """
-    return _cur_framework(x).inplace_decrement(x, val)
-
-
-def inplace_increment(x, val, f=None):
-    """
-    Perform in-place increment for the input variable.
-
-    :param x: The variable to increment.
-    :type x: variable
-    :param val: The array to increment the variable with.
-    :type val: array
-    :return: The variable following the in-place increment.
-    """
-    return _cur_framework(x).inplace_increment(x, val)

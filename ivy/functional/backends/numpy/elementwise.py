@@ -2,6 +2,11 @@
 import numpy as np
 import numpy.array_api as npa
 
+try:
+    from scipy.special import erf
+except (ImportError, ModuleNotFoundError):
+    erf = None
+
 
 def bitwise_invert(x: np.ndarray)\
         -> np.ndarray:
@@ -17,6 +22,11 @@ def bitwise_and(x1: np.ndarray,
 def equal(x1: np.ndarray, x2: np.ndarray)\
         -> np.ndarray:
     return x1 == x2
+
+
+def greater_equal(x1: np.ndarray, x2: np.ndarray)\
+        -> np.ndarray:
+    return np.greater_equal(x1, x2)
 
 
 def less_equal(x1: np.ndarray, x2: np.ndarray)\
@@ -67,6 +77,11 @@ def cosh(x: np.ndarray)\
 def log10(x: np.ndarray)\
         -> np.ndarray:
     return np.log10(x)
+
+
+def log(x: np.ndarray)\
+        -> np.ndarray:
+    return np.log(x)
 
 
 def log2(x: np.ndarray)\
@@ -172,3 +187,38 @@ def bitwise_or(x1: np.ndarray , x2: np.ndarray) \
 def trunc(x: np.ndarray) \
         -> np.ndarray:
     return np.asarray(npa.trunc(npa.asarray(x)))
+
+
+def abs(x: np.ndarray)\
+        -> np.ndarray:
+    return np.absolute(x)
+
+  
+def logaddexp(x1: np.ndarray, x2: np.ndarray) -> np.ndarray:
+    if not isinstance(x2, np.ndarray):
+        x2 = np.asarray(x2, dtype=x1.dtype)
+    else:
+        dtype = np.promote_types(x1.dtype, x2.dtype)
+        x1 = x1.astype(dtype)
+        x2 = x2.astype(dtype)
+    return np.logaddexp(x1, x2)
+
+
+tan = np.tan
+atan = np.arctan
+atan2 = np.arctan2
+cosh = np.cosh
+atanh = np.arctanh
+log = np.log
+exp = np.exp
+
+
+# Extra #
+# ------#
+
+
+def erf(x: np.ndarray)\
+        -> np.ndarray:
+    if erf is None:
+        raise Exception('scipy must be installed in order to call ivy.erf with a numpy backend.')
+    return erf(x)

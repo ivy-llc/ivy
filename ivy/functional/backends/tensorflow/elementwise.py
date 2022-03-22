@@ -101,7 +101,6 @@ def sqrt(x: Tensor)\
     return  tf.math.sqrt(x)
 
 
-
 def cosh(x: Tensor) \
         -> Tensor:
     return tf.cosh(x)
@@ -110,6 +109,11 @@ def cosh(x: Tensor) \
 def log10(x: Tensor) \
         -> Tensor:
     return tf.experimental.numpy.log10(x)
+
+
+def log(x: Tensor)\
+        -> Tensor:
+    return tf.math.log(x)
 
 
 def log2(x: Tensor) \
@@ -146,6 +150,15 @@ def cos(x: Tensor)\
 def logical_not(x: Tensor)\
         -> Tensor:
     return tf.logical_not(tf.cast(x, tf.bool))
+
+
+def greater_equal(x1: Tensor, x2: Tensor)\
+        -> Tensor:
+    if hasattr(x1, 'dtype') and hasattr(x2, 'dtype'):
+        promoted_type = tf.experimental.numpy.promote_types(x1.dtype, x2.dtype)
+        x1 = tf.cast(x1, promoted_type)
+        x2 = tf.cast(x2, promoted_type)
+    return tf.math.greater_equal(x1, x2)
 
 
 def acos(x: Tensor)\
@@ -222,3 +235,29 @@ def trunc(x: Tensor)\
         -> Tensor:
     array = x.numpy()
     return tf.convert_to_tensor(np.asarray(npa.trunc(npa.asarray(array))))
+
+
+def abs(x: Tensor)\
+        -> Tensor:
+    return tf.math.abs(x)
+
+
+def logaddexp(x1: Tensor, x2: Tensor) -> Tensor:
+    x1, x2 = _cast_for_binary_op(x1, x2)
+    return tf.experimental.numpy.logaddexp(x1, x2)
+
+
+tan = tf.tan
+atan = tf.atan
+atan2 = tf.atan2
+cosh = tf.math.cosh
+atanh = tf.math.atanh
+log = tf.math.log
+exp = tf.math.exp
+
+
+# Extra #
+# ------#
+
+
+erf = tf.math.erf

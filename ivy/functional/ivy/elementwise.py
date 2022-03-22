@@ -170,6 +170,19 @@ def isinf(x: Union[ivy.Array, ivy.NativeArray])\
     return _cur_framework(x).isinf(x)
 
 
+def greater_equal(x1: Union[ivy.Array, ivy.NativeArray], x2: Union[ivy.Array, ivy.NativeArray])\
+        -> ivy.Array:
+    """
+    Computes the truth value of x1_i >= x2_i for each element x1_i of the input array x1 with the respective
+    element x2_i of the input array x2.
+
+    :param x1: first input array. May have any data type.
+    :param x2: second input array. Must be compatible with x1 (with Broadcasting). May have any data type.
+    :return: an array containing the element-wise results. The returned array must have a data type of bool.
+    """
+    return _cur_framework(x1, x2).greater_equal(x1, x2)
+
+
 def less_equal(x1: Union[ivy.Array, ivy.NativeArray], x2: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
     """
     Computes the truth value of x1_i <= x2_i for each element x1_i of the input array x1 with the respective
@@ -264,6 +277,29 @@ def cosh(x: Union[ivy.Array, ivy.NativeArray])\
     """
 
     return _cur_framework(x).cosh(x)
+
+
+def log(x: Union[ivy.Array, ivy.NativeArray])\
+        -> ivy.Array:
+    """
+    Calculates an implementation-dependent approximation to the natural (base ``e``) logarithm, having domain ``[0, +infinity]`` and codomain ``[-infinity, +infinity]``, for each element ``x_i`` of the input array ``x``.
+    **Special cases**
+    For floating-point operands,
+    - If ``x_i`` is ``NaN``, the result is ``NaN``.
+    - If ``x_i`` is less than ``0``, the result is ``NaN``.
+    - If ``x_i`` is either ``+0`` or ``-0``, the result is ``-infinity``.
+    - If ``x_i`` is ``1``, the result is ``+0``.
+    - If ``x_i`` is ``+infinity``, the result is ``+infinity``.
+    Parameters
+    ----------
+    x: array
+        input array. Should have a floating-point data type.
+    Returns
+    -------
+    out: array
+        an array containing the evaluated natural logarithm for each element in ``x``. The returned array must have a floating-point data type determined by :ref:`type-promotion`.
+    """
+    return _cur_framework(x).log(x)
 
 
 def log2(x: Union[ivy.Array, ivy.NativeArray])\
@@ -664,8 +700,32 @@ def square(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
     """
     return _cur_framework(x).square(x)
 
-# Extra #
-# ------#
+
+def logaddexp(x1: Union[ivy.Array, ivy.NativeArray], x2: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
+    
+    """
+    Calculates the logarithm of the sum of exponentiations ``log(exp(x1) + exp(x2))`` for each element ``x1_i`` of the input array ``x1`` with the respective element ``x2_i`` of the input array ``x2``.
+    **Special cases**
+    For floating-point operands,
+    - If either ``x1_i`` or ``x2_i`` is ``NaN``, the result is ``NaN``.
+    - If ``x1_i`` is ``+infinity`` and ``x2_i`` is not ``NaN``, the result is ``+infinity``.
+    - If ``x1_i`` is not ``NaN`` and ``x2_i`` is ``+infinity``, the result is ``+infinity``.
+
+    Parameters
+    ----------
+    x1: 
+        first input array. Should have a floating-point data type.
+    x2: 
+        second input array. Must be compatible with ``x1`` (see :ref:`broadcasting`). Should have a floating-point data type.
+    Returns
+    -------
+    out: 
+        an array containing the element-wise results. The returned array must have a floating-point data type determined by :ref:`type-promotion`.
+    """
+
+    return _cur_framework(x1, x2).logaddexp(x1, x2)
+
+
 def round(x: Union[ivy.Array, ivy.NativeArray])\
         -> Union[ivy.Array, ivy.NativeArray]:
     """
@@ -676,7 +736,6 @@ def round(x: Union[ivy.Array, ivy.NativeArray])\
     :return: An array of the same shape and type as x, with the elements rounded to integers.
     """
     return _cur_framework(x).round(x)
-
 
 
 def trunc(x: Union[ivy.Array, ivy.NativeArray])\
@@ -702,3 +761,162 @@ def trunc(x: Union[ivy.Array, ivy.NativeArray])\
      the same data type as x.
     """
     return _cur_framework(x).trunc(x)
+
+
+def abs(x: Union[ivy.Array, ivy.NativeArray]) \
+        -> ivy.Array:
+    """
+    Calculates the absolute value for each element ``x_i`` of the input array ``x`` (i.e., the element-wise result has the same magnitude as the respective element in ``x`` but has positive sign).
+
+    .. note::
+        For signed integer data types, the absolute value of the minimum representable integer is implementation-dependent.
+
+    **Special Cases**
+
+    For this particular case,
+
+    - If ``x_i`` is ``NaN``, the result is ``NaN``.
+    - If ``x_i`` is ``-0``, the result is ``+0``.
+    - If ``x_i`` is ``-infinity``, the result is ``+infinity``.
+
+    Parameters
+    ----------
+    x:
+        input array. Should have a numeric data type.
+
+    Returns
+    -------
+    out:
+        an array containing the absolute value of each element in ``x``. The returned array must have the same data type as ``x``.
+    """
+    return _cur_framework(x).abs(x)
+
+
+def tan(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
+    """
+    Computes tangent element-wise.
+    Equivalent to f.sin(x)/f.cos(x) element-wise.
+
+    :param x: Input array, in radians (2*pi radian equals 360 degrees).
+    :type x: array
+    :return: The tangent of x element-wise.
+    """
+    return _cur_framework(x).tan(x)
+
+
+def asin(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
+    """
+    Computes inverse sine element-wise.
+
+    :param x: y-coordinate on the unit circle.
+    :type x: array
+    :return: The inverse sine of each element in x, in radians and in the closed interval [-pi/2, pi/2].
+    """
+    return _cur_framework(x).asin(x)
+
+
+def atan(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
+    """
+    Computes trigonometric inverse tangent, element-wise.
+    The inverse of tan, so that if y = tan(x) then x = arctan(y).
+
+    :param x: Input array.
+    :type x: array
+    :return: Out has the same shape as x. Its real part is in [-pi/2, pi/2] (arctan(+/-inf) returns +/-pi/2).
+    """
+    return _cur_framework(x).atan(x)
+
+
+def atan2(x1: Union[ivy.Array, ivy.NativeArray], x2: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
+    """
+    Computes element-wise arc tangent of x1/x2 choosing the quadrant correctly.
+
+    :param x1: y-coordinates.
+    :type x1: array
+    :param x2: x-coordinates. If x1.shape != x2.shape, they must be broadcastable to a common shape
+                    (which becomes the shape of the output).
+    :type x2: array
+    :return: Array of angles in radians, in the range [-pi, pi].
+    """
+    return _cur_framework(x1).atan2(x1, x2)
+
+
+def cosh(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
+    """
+    Returns a new array with the hyperbolic cosine of the elements of x.
+
+    :param x: Input array.
+    :return: A new array with the hyperbolic cosine of the elements of x.
+    """
+    return _cur_framework(x).cosh(x)
+
+
+def tanh(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
+    """
+    Returns a new array with the hyperbolic tangent of the elements of x.
+
+    :param x: Input array.
+    :return: A new array with the hyperbolic tangent of the elements of x.
+    """
+    return _cur_framework(x).tanh(x)
+
+
+def atanh(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
+    """
+    Returns a new array with the inverse hyperbolic tangent of the elements of x.
+
+    :param x: Input array.
+    :return: A new array with the inverse hyperbolic tangent of the elements of x.
+    """
+    return _cur_framework(x).atanh(x)
+
+
+def log(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
+    """
+    Computes natural logarithm of x element-wise.
+
+    :param x: Value to compute log for.
+    :type x: array
+    :return: The natural logarithm of each element of x.
+    """
+    return _cur_framework(x).log(x)
+
+
+def exp(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
+    """
+    Computes exponential of x element-wise.
+
+    :param x: Value to compute exponential for.
+    :type x: array
+    :return: The exponential of each element of x.
+    """
+    return _cur_framework(x).exp(x)
+
+
+def divide(x1: Union[ivy.Array, ivy.NativeArray], x2: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
+    """
+    Calculates the division for each element x1_i of the input array x1 with the respective element x2_i of the
+    input array x2.
+
+    :param x1: dividend input array. Should have a numeric data type.
+    :param x2: divisor input array. Must be compatible with x1 (see Broadcasting). Should have a numeric data type.
+    :return: an array containing the element-wise results. The returned array must have a floating-point data type
+             determined by Type Promotion Rules.
+    """
+    return x1 / x2
+
+
+# Extra #
+# ------#
+
+
+def erf(x: Union[ivy.Array, ivy.NativeArray])\
+        -> Union[ivy.Array, ivy.NativeArray]:
+    """
+    Computes the Gauss error function of x element-wise.
+
+    :param x: Value to compute exponential for.
+    :type x: array
+    :return: The Gauss error function of x.
+    """
+    return _cur_framework(x).erf(x)
