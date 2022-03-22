@@ -59,6 +59,11 @@ def asin(x: np.ndarray)\
     return np.arcsin(x)
 
 
+def atan(x: np.ndarray)\
+        -> np.ndarray:
+    return np.arctan(x)
+
+
 def isinf(x: np.ndarray)\
         -> np.ndarray:
     return np.asarray(npa.isinf(npa.asarray(x)))

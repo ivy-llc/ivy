@@ -28,7 +28,7 @@ def bitwise_invert(x: Union[ivy.Array, ivy.NativeArray]) \
 
 
 def bitwise_and(x1: Union[ivy.Array, ivy.NativeArray],
-                x2: Union[ivy.Array, ivy.NativeArray])\
+                x2: Union[ivy.Array, ivy.NativeArray]) \
         -> ivy.Array:
     """
     Computes the bitwise AND of the underlying binary representation of each element ``x1_i`` of the input array ``x1`` with the respective element ``x2_i`` of the input array ``x2``.
@@ -48,7 +48,7 @@ def bitwise_and(x1: Union[ivy.Array, ivy.NativeArray],
     return _cur_framework(x1, x2).bitwise_and(x1, x2)
 
 
-def ceil(x: Union[ivy.Array, ivy.NativeArray])\
+def ceil(x: Union[ivy.Array, ivy.NativeArray]) \
         -> ivy.Array:
     """
     Rounds each element ``x_i`` of the input array ``x`` to the smallest (i.e., closest to ``-infinity``) integer-valued number that is not less than ``x_i``.
@@ -78,7 +78,7 @@ def ceil(x: Union[ivy.Array, ivy.NativeArray])\
     return _cur_framework(x).ceil(x)
 
 
-def floor(x: Union[ivy.Array, ivy.NativeArray])\
+def floor(x: Union[ivy.Array, ivy.NativeArray]) \
         -> ivy.Array:
     """
     Rounds each element ``x_i`` of the input array ``x`` to the greatest (i.e., closest to ``+infinity``) integer-valued number that is not greater than ``x_i``.
@@ -108,7 +108,7 @@ def floor(x: Union[ivy.Array, ivy.NativeArray])\
     return _cur_framework(x).floor(x)
 
 
-def isfinite(x: Union[ivy.Array, ivy.NativeArray])\
+def isfinite(x: Union[ivy.Array, ivy.NativeArray]) \
         -> ivy.Array:
     """
     Tests each element ``x_i`` of the input array ``x`` to determine if finite (i.e., not ``NaN`` and not equal to positive or negative infinity).
@@ -125,8 +125,8 @@ def isfinite(x: Union[ivy.Array, ivy.NativeArray])\
     """
     return _cur_framework(x).isfinite(x)
 
-  
-def asin(x: Union[ivy.Array, ivy.NativeArray])\
+
+def asin(x: Union[ivy.Array, ivy.NativeArray]) \
         -> ivy.Array:
     """
     Calculates an implementation-dependent approximation of the principal value of the inverse sine, having domain ``[-1, +1]`` and codomain ``[-π/2, +π/2]`` for each element ``x_i`` of the input array ``x``. Each element-wise result is expressed in radians.
@@ -153,8 +153,31 @@ def asin(x: Union[ivy.Array, ivy.NativeArray])\
     """
     return _cur_framework(x).asin(x)
 
-  
-def isinf(x: Union[ivy.Array, ivy.NativeArray])\
+
+def atan(x: Union[ivy.Array, ivy.NativeArray]) \
+        -> ivy.Array:
+    """
+    Calculates an implementation-dependent approximation of the principal value of the inverse tangent, having domain ``[-infinity, +infinity]`` and codomain ``[-π/2, +π/2]``, for each element ``x_i`` of the input array ``x``. Each element-wise result is expressed in radians.
+    **Special cases**
+    For floating-point operands,
+    - If ``x_i`` is ``NaN``, the result is ``NaN``.
+    - If ``x_i`` is ``+0``, the result is ``+0``.
+    - If ``x_i`` is ``-0``, the result is ``-0``.
+    - If ``x_i`` is ``+infinity``, the result is an implementation-dependent approximation to ``+π/2``.
+    - If ``x_i`` is ``-infinity``, the result is an implementation-dependent approximation to ``-π/2``.
+    Parameters
+    ----------
+    x: array
+        input array. Should have a floating-point data type.
+    Returns
+    -------
+    out: array
+        an array containing the inverse tangent of each element in ``x``. The returned array must have a floating-point data type determined by :ref:`type-promotion`.
+    """
+    return _cur_framework(x).atan(x)
+
+
+def isinf(x: Union[ivy.Array, ivy.NativeArray]) \
         -> ivy.Array:
     """
     Tests each element x_i of the input array x to determine if equal to positive or negative infinity.
@@ -170,7 +193,7 @@ def isinf(x: Union[ivy.Array, ivy.NativeArray])\
     return _cur_framework(x).isinf(x)
 
 
-def greater_equal(x1: Union[ivy.Array, ivy.NativeArray], x2: Union[ivy.Array, ivy.NativeArray])\
+def greater_equal(x1: Union[ivy.Array, ivy.NativeArray], x2: Union[ivy.Array, ivy.NativeArray]) \
         -> ivy.Array:
     """
     Computes the truth value of x1_i >= x2_i for each element x1_i of the input array x1 with the respective
@@ -195,7 +218,7 @@ def less_equal(x1: Union[ivy.Array, ivy.NativeArray], x2: Union[ivy.Array, ivy.N
     return _cur_framework(x1, x2).less_equal(x1, x2)
 
 
-def asinh(x: Union[ivy.Array, ivy.NativeArray])\
+def asinh(x: Union[ivy.Array, ivy.NativeArray]) \
         -> ivy.Array:
     """
     Calculates an implementation-dependent approximation to the inverse hyperbolic sine, having domain ``[-infinity, +infinity]`` and codomain ``[-infinity, +infinity]``, for each element ``x_i`` in the input array ``x``.
@@ -223,7 +246,7 @@ def asinh(x: Union[ivy.Array, ivy.NativeArray])\
     return _cur_framework(x).asinh(x)
 
 
-def sqrt(x: Union[ivy.Array, ivy.NativeArray])\
+def sqrt(x: Union[ivy.Array, ivy.NativeArray]) \
         -> ivy.Array:
     """
     Calculates the square root, having domain ``[0, +infinity]`` and codomain ``[0, +infinity]``, for each element ``x_i`` of the input array ``x``. After rounding, each result must be indistinguishable from the infinitely precise result (as required by IEEE 754).
@@ -250,7 +273,7 @@ def sqrt(x: Union[ivy.Array, ivy.NativeArray])\
     return _cur_framework(x).sqrt(x)
 
 
-def cosh(x: Union[ivy.Array, ivy.NativeArray])\
+def cosh(x: Union[ivy.Array, ivy.NativeArray]) \
         -> ivy.Array:
     """
     Calculates an implementation-dependent approximation to the hyperbolic cosine, having domain ``[-infinity, +infinity]`` and codomain ``[-infinity, +infinity]``, for each element ``x_i`` in the input array ``x``.
@@ -279,7 +302,7 @@ def cosh(x: Union[ivy.Array, ivy.NativeArray])\
     return _cur_framework(x).cosh(x)
 
 
-def log2(x: Union[ivy.Array, ivy.NativeArray])\
+def log2(x: Union[ivy.Array, ivy.NativeArray]) \
         -> ivy.Array:
     """
     Calculates an implementation-dependent approximation to the base ``2`` logarithm, having domain ``[0, +infinity]`` and codomain ``[-infinity, +infinity]``, for each element ``x_i`` of the input array ``x``.
@@ -307,7 +330,7 @@ def log2(x: Union[ivy.Array, ivy.NativeArray])\
     return _cur_framework(x).log2(x)
 
 
-def log10(x: Union[ivy.Array, ivy.NativeArray])\
+def log10(x: Union[ivy.Array, ivy.NativeArray]) \
         -> ivy.Array:
     """
     Calculates an implementation-dependent approximation to the base ``10`` logarithm, having domain ``[0, +infinity]`` and codomain ``[-infinity, +infinity]``, for each element ``x_i`` of the input array ``x``.
@@ -335,7 +358,7 @@ def log10(x: Union[ivy.Array, ivy.NativeArray])\
     return _cur_framework(x).log10(x)
 
 
-def log1p(x: Union[ivy.Array, ivy.NativeArray])\
+def log1p(x: Union[ivy.Array, ivy.NativeArray]) \
         -> ivy.Array:
     """
     Calculates an implementation-dependent approximation to log(1+x), where log refers to the natural (base e)
@@ -354,7 +377,7 @@ def log1p(x: Union[ivy.Array, ivy.NativeArray])\
     return _cur_framework(x).log1p(x)
 
 
-def isnan(x: Union[ivy.Array, ivy.NativeArray])\
+def isnan(x: Union[ivy.Array, ivy.NativeArray]) \
         -> ivy.Array:
     """
     Tests each element ``x_i`` of the input array ``x`` to determine whether the element is ``NaN``.
@@ -373,7 +396,7 @@ def isnan(x: Union[ivy.Array, ivy.NativeArray])\
 
 
 def less(x1: Union[ivy.Array, ivy.NativeArray],
-         x2: Union[ivy.Array, ivy.NativeArray])\
+         x2: Union[ivy.Array, ivy.NativeArray]) \
         -> ivy.Array:
     """
     Computes the truth value of ``x1_i < x2_i`` for each element ``x1_i`` of the input array ``x1`` with the respective element ``x2_i`` of the input array ``x2``.
@@ -390,10 +413,10 @@ def less(x1: Union[ivy.Array, ivy.NativeArray],
     out:
         an array containing the element-wise results. The returned array must have a data type of ``bool``.
     """
-    return _cur_framework(x1).less(x1,x2)
+    return _cur_framework(x1).less(x1, x2)
 
 
-def cos(x: Union[ivy.Array, ivy.NativeArray])\
+def cos(x: Union[ivy.Array, ivy.NativeArray]) \
         -> ivy.Array:
     """
     Calculates an implementation-dependent approximation to the cosine, having domain ``(-infinity, +infinity)`` and codomain ``[-1, +1]``, for each element ``x_i`` of the input array ``x``. Each element ``x_i`` is assumed to be expressed in radians.
@@ -421,7 +444,7 @@ def cos(x: Union[ivy.Array, ivy.NativeArray])\
     return _cur_framework(x).cos(x)
 
 
-def logical_not(x: Union[ivy.Array, ivy.NativeArray])\
+def logical_not(x: Union[ivy.Array, ivy.NativeArray]) \
         -> ivy.Array:
     """
     Computes the logical NOT for each element ``x_i`` of the input array ``x``.
@@ -442,7 +465,7 @@ def logical_not(x: Union[ivy.Array, ivy.NativeArray])\
     return _cur_framework(x).logical_not(x)
 
 
-def acos(x: Union[ivy.Array, ivy.NativeArray])\
+def acos(x: Union[ivy.Array, ivy.NativeArray]) \
         -> ivy.Array:
     """
     Calculates an implementation-dependent approximation of the principal value of the inverse cosine, having domain [-1, +1] and codomain [+0, +π], for each element x_i of the input array x. Each element-wise result is expressed in radians.
@@ -469,7 +492,7 @@ def acos(x: Union[ivy.Array, ivy.NativeArray])\
     return _cur_framework(x).acos(x)
 
 
-def logical_or(x1: Union[ivy.Array, ivy.NativeArray], x2: Union[ivy.Array, ivy.NativeArray])\
+def logical_or(x1: Union[ivy.Array, ivy.NativeArray], x2: Union[ivy.Array, ivy.NativeArray]) \
         -> ivy.Array:
     """
     Computes the logical OR for each element ``x1_i`` of the input array ``x1`` with the respective element ``x2_i`` of the input array ``x2``.
@@ -492,8 +515,8 @@ def logical_or(x1: Union[ivy.Array, ivy.NativeArray], x2: Union[ivy.Array, ivy.N
     return _cur_framework(x1, x2).logical_or(x1, x2)
 
 
-def logical_and(x1: ivy.Array, x2: ivy.Array)\
-       -> ivy.Array:
+def logical_and(x1: ivy.Array, x2: ivy.Array) \
+        -> ivy.Array:
     """
     Computes the logical AND for each element x1_i of the input array x1 with the respective
     element x2_i of the input array x2.
@@ -514,7 +537,7 @@ def logical_and(x1: ivy.Array, x2: ivy.Array)\
     return _cur_framework(x1, x2).logical_and(x1, x2)
 
 
-def acosh(x: Union[ivy.Array, ivy.NativeArray])\
+def acosh(x: Union[ivy.Array, ivy.NativeArray]) \
         -> ivy.Array:
     """
     Calculates an implementation-dependent approximation to the inverse hyperbolic cosine, having domain ``[+1, +infinity]`` and codomain ``[+0, +infinity]``, for each element ``x_i`` of the input array ``x``.
@@ -539,9 +562,9 @@ def acosh(x: Union[ivy.Array, ivy.NativeArray])\
         an array containing the inverse hyperbolic cosine of each element in x. The returned array must have a floating-point data type determined by :ref:`type-promotion`.
     """
     return _cur_framework(x).acosh(x)
-    
 
-def sin(x: Union[ivy.Array, ivy.NativeArray])\
+
+def sin(x: Union[ivy.Array, ivy.NativeArray]) \
         -> ivy.Array:
     """
     Calculates an implementation-dependent approximation to the sine, having domain ``(-infinity, +infinity)`` and codomain ``[-1, +1]``, for each element ``x_i`` of the input array ``x``. Each element ``x_i`` is assumed to be expressed in radians.
@@ -611,7 +634,7 @@ def tanh(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
 
 
 def bitwise_or(x1: Union[ivy.Array, ivy.NativeArray],
-                x2: Union[ivy.Array, ivy.NativeArray]) \
+               x2: Union[ivy.Array, ivy.NativeArray]) \
         -> ivy.Array:
     """
     Computes the bitwise OR of the underlying binary representation of each element ``x1_i`` of the input array ``x1`` with the respective element ``x2_i`` of the input array ``x2``.
@@ -658,7 +681,7 @@ def sinh(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
     return _cur_framework(x).sinh(x)
 
 
-def positive(x: Union[ivy.Array, ivy.NativeArray])\
+def positive(x: Union[ivy.Array, ivy.NativeArray]) \
         -> ivy.Array:
     """
     Returns a new array with the positive value of each element in x.
@@ -668,7 +691,7 @@ def positive(x: Union[ivy.Array, ivy.NativeArray])\
     """
     return _cur_framework(x).positive(x)
 
-    
+
 def square(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
     """
     each element x_i of the input array x.
@@ -679,7 +702,6 @@ def square(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
 
 
 def logaddexp(x1: Union[ivy.Array, ivy.NativeArray], x2: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
-    
     """
     Calculates the logarithm of the sum of exponentiations ``log(exp(x1) + exp(x2))`` for each element ``x1_i`` of the input array ``x1`` with the respective element ``x2_i`` of the input array ``x2``.
     **Special cases**
@@ -703,7 +725,7 @@ def logaddexp(x1: Union[ivy.Array, ivy.NativeArray], x2: Union[ivy.Array, ivy.Na
     return _cur_framework(x1, x2).logaddexp(x1, x2)
 
 
-def round(x: Union[ivy.Array, ivy.NativeArray])\
+def round(x: Union[ivy.Array, ivy.NativeArray]) \
         -> Union[ivy.Array, ivy.NativeArray]:
     """
     Rounds the values of an array to the nearest integer, element-wise.
@@ -862,7 +884,7 @@ def divide(x1: Union[ivy.Array, ivy.NativeArray], x2: Union[ivy.Array, ivy.Nativ
 # ------#
 
 
-def erf(x: Union[ivy.Array, ivy.NativeArray])\
+def erf(x: Union[ivy.Array, ivy.NativeArray]) \
         -> Union[ivy.Array, ivy.NativeArray]:
     """
     Computes the Gauss error function of x element-wise.
@@ -872,4 +894,3 @@ def erf(x: Union[ivy.Array, ivy.NativeArray])\
     :return: The Gauss error function of x.
     """
     return _cur_framework(x).erf(x)
-

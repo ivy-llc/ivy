@@ -39,7 +39,12 @@ def isfinite(x: JaxArray)\
 def asin(x: JaxArray)\
         -> JaxArray:
     return jnp.arcsin(x)
-  
+
+
+def atan(x: JaxArray)\
+        -> JaxArray:
+    return jnp.arctan(x)
+
 
 def isinf(x: JaxArray)\
         -> JaxArray:
