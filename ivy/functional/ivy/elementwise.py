@@ -9,6 +9,30 @@ from ivy.framework_handler import current_framework as _cur_framework
 # Array API Standard #
 # -------------------#
 
+def expm1(x: Union[ivy.Array, ivy.NativeArray])\
+        -> ivy.Array:
+    """
+    Calculates an implementation-dependent approximation to ``exp(x)-1``, having domain ``[-infinity, +infinity]`` and codomain ``[-1, +infinity]``, for each element ``x_i`` of the input array ``x``.
+    .. note::
+       The purpose of this function is to calculate ``exp(x)-1.0`` more accurately when `x` is close to zero. Accordingly, conforming implementations should avoid implementing this function as simply ``exp(x)-1.0``. See FDLIBM, or some other IEEE 754-2019 compliant mathematical library, for a potential reference implementation.
+    **Special cases**
+    For floating-point operands,
+    - If ``x_i`` is ``NaN``, the result is ``NaN``.
+    - If ``x_i`` is ``+0``, the result is ``+0``.
+    - If ``x_i`` is ``-0``, the result is ``-0``.
+    - If ``x_i`` is ``+infinity``, the result is ``+infinity``.
+    - If ``x_i`` is ``-infinity``, the result is ``-1``.
+    Parameters
+    ----------
+    x: array
+        input array. Should have a numeric data type.
+    Returns
+    -------
+    out: array
+        an array containing the evaluated result for each element in ``x``. The returned array must have a floating-point data type determined by :ref:`type-promotion`.
+    """
+    return _cur_framework(x).expm1(x)
+  
 def bitwise_invert(x: Union[ivy.Array, ivy.NativeArray]) \
         -> ivy.Array:
     """
@@ -913,4 +937,3 @@ def erf(x: Union[ivy.Array, ivy.NativeArray])\
     :return: The Gauss error function of x.
     """
     return _cur_framework(x).erf(x)
-
