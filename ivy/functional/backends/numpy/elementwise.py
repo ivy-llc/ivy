@@ -1,3 +1,4 @@
+
 # global
 import numpy as np
 import numpy.array_api as npa
@@ -7,7 +8,10 @@ try:
 except (ImportError, ModuleNotFoundError):
     _erf = None
 
-
+def expm1(x: np.ndarray)\
+        -> np.ndarray:
+    return np.expm1(x)
+  
 def bitwise_invert(x: np.ndarray)\
         -> np.ndarray:
     return np.invert(x)
