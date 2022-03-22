@@ -1,4 +1,4 @@
-abs
+#abs
 #acos # depends on: greater
 acosh
 #add
@@ -14,8 +14,8 @@ bitwise_invert
 #bitwise_right_shift
 #bitwise_xor
 #ceil # depends on: asarray, remainder
-cos
-cosh
+#cos
+#cosh
 #divide
 #equal
 #exp
@@ -30,9 +30,9 @@ isnan
 less
 #less_equal
 #log
-log1p
-log2
-log10
+#log1p
+#log2
+#log10
 #logaddexp
 logical_and
 logical_not
@@ -49,8 +49,8 @@ not_equal
 sin
 sinh
 square
-sqrt
+#sqrt
 #subtract
-tan
-tanh
+#tan
+#tanh
 #trunc
