@@ -8,6 +8,12 @@ from ivy.functional.backends.jax import JaxArray
 
 
 # noinspection PyUnusedLocal,PyShadowingBuiltins
+
+def eig(x: JaxArray)\
+   ->jnp.ndarray:
+  return jax.linalg.eig(x)
+
+
 def vector_norm(x: JaxArray,
                 axis: Optional[Union[int, Tuple[int]]] = None, 
                 keepdims: bool = False,
