@@ -3,9 +3,9 @@ import numpy as np
 import numpy.array_api as npa
 
 try:
-    from scipy.special import erf
+    from scipy.special import erf as _erf
 except (ImportError, ModuleNotFoundError):
-    erf = None
+    _erf = None
 
 
 def bitwise_invert(x: np.ndarray)\
@@ -77,6 +77,11 @@ def cosh(x: np.ndarray)\
 def log10(x: np.ndarray)\
         -> np.ndarray:
     return np.log10(x)
+
+
+def log(x: np.ndarray)\
+        -> np.ndarray:
+    return np.log(x)
 
 
 def log2(x: np.ndarray)\
@@ -212,8 +217,7 @@ exp = np.exp
 # ------#
 
 
-def erf(x: np.ndarray)\
-        -> np.ndarray:
-    if erf is None:
+def erf(x):
+    if _erf is None:
         raise Exception('scipy must be installed in order to call ivy.erf with a numpy backend.')
-    return erf(x)
+    return _erf(x)
