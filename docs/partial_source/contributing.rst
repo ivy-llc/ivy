@@ -1,9 +1,10 @@
-Contributing to Ivy
-===================
+Contributing
+============
 
 .. _`Array API`: https://data-apis.org/array-api/latest/
 .. _`tutorial series`: https://www.youtube.com/channel/UCGlkr-YCs3TjMVeOhbbULsw
 .. _`source files`: https://github.com/data-apis/array-api/tree/main/spec/API_specification/signatures
+.. _`__init__.py`: https://github.com/unifyai/ivy/blob/459f0aad972b71511014228dcd19928bb75d93ee/ivy/array/__init__.py#L43
 
 Array API Standardization
 -------------------------
@@ -12,8 +13,8 @@ One of the key tasks currently underway is to update Ivy to conform to the `Arra
 is the best starting reference for this task.
 
 A few points are made here. You should first check what methods are still available to work on. Methods are reserved by
-contributors in the community by creating an issue, and then commented with a link to this issue on one of the ToDo list issues,
-which has labels "ToDo" and "Array API". There are not many methods left to be worked on.
+contributors in the community by creating an issue, and then commenting with a link to this issue on one of the ToDo list issues,
+which has labels "ToDo" and "Array API".
 
 As explained in the YouTube `tutorial series`_, you can test for each backend seperately by replacing
 :code:`array_module = None` with lines :code:`import ivy as array_module` and :code:`array_module.set_framework('torch')`
@@ -33,10 +34,16 @@ standard. Use the `source files`_ in the Array API repository rather than the we
 formatting can be copied correctly. Many Ivy methods still use the Sphinx documentation format, but these should be
 updated to now use the NumPy style, which is the same format used by all methods in the Array API Standard.
 However, when defining our method in Ivy, we should remove the following arguments which appear in the standard to
-denote the optional inclusion of additional arguments by frameworks which adopt the standard :code:`*, \,`.
+denote positional-only and keyword-only arguments :code:`*, \,`.
+
 Additionally, we should remove all argument types from the docstrings. These are all defined using type-hints in the
 arguments already, and adding these also to the docstrings would create unecessary duplication. Our documentation
 builder adds the correct types to the online documentation dynamically using the type hints directly.
+
+Finally, aside from methods, the Array API Standard also defines properties which must be implemented for the array
+class. There are no unit tests which check for the existence of these properties, so you will not need to get any unit
+tests passing if working on an array property. You will need to modify the ivy.Array class defined in this `__init__.py`_
+file. Please see the :code:`dtype`, :code:`device`, :code:`shape` and :code:`T` properties for examples.
 
 
 Keeping Your Fork Updated
@@ -44,7 +51,7 @@ Keeping Your Fork Updated
 
 There is a script in the root repo :code:`merge_with_upstream.sh`. To update your local fork to the upstream master
 branch, simply run :code:`./merge_with_upstream.sh name_of_your_branch`. If you are simply developing in master branch
-(the default is you haven't explicitly created any new branches), then simply run :code:`./merge_with_upstream.sh master`.
+(the default if you haven't explicitly created any new branches), then simply run :code:`./merge_with_upstream.sh master`.
 
 If you are developing for pull requests (PRs), then it is common to create PR-specific branches. In this case, you would
 run :code:`./merge_with_upstream.sh name_of_your_pr_branch`.
@@ -211,8 +218,8 @@ these are just examples. These should be added to all creation methods though. N
 representations of devices and data types, such as :code:`"int32"`, :code:`"float32"`, :code:`"bool"`, :code:`"cpu"`,
 :code:`"gpu0"`, :code:`"gpu2"` etc.
 
-All functions which adhere to the `Array API`_ standard should be placed in the submodule :code:`ivy.functional.ivy.array_api`,
-and should also be placed in the correct file in alignment with the categories used in the standard.
+All functions which adhere to the `Array API`_ standard should be placed in the correct file in alignment with the
+categories used in the standard.
 
 
 Backend API
@@ -237,6 +244,5 @@ framework-specific types, in this case :code:`torch.Tensor`, :code:`torch.dtype`
 
 The backend methods should not add a docstring, as this would be identical to the docstring provided in the Ivy API.
 
-All backend functions which adhere to the `Array API`_ standard should also be placed in submodules such as
-:code:`ivy.functional.backends.torch.array_api`, and should also be placed in the correct file in alignment with the
+All backend functions which adhere to the `Array API`_ standard should also be placed in the correct file in alignment with the
 categories used in the standard.
