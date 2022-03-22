@@ -492,6 +492,24 @@ def acos(x: Union[ivy.Array, ivy.NativeArray])\
     return _cur_framework(x).acos(x)
 
 
+def logical_xor(x1: Union[ivy.Array, ivy.NativeArray], x2: Union[ivy.Array, ivy.NativeArray]) \
+        -> ivy.Array:
+    """
+    Computes the bitwise XOR of the underlying binary representation of each element ``x1_i`` of the input array ``x1`` with the respective element ``x2_i`` of the input array ``x2``.
+    Parameters
+    ----------
+    x1: array
+        first input array. Should have an integer or boolean data type.
+    x2: array
+        second input array. Must be compatible with ``x1`` (see :ref:`broadcasting`). Should have an integer or boolean data type.
+    Returns
+    -------
+    out: array
+        an array containing the element-wise results. The returned array must have a data type determined by :ref:`type-promotion`.
+    """
+    return _cur_framework(x1, x2).logical_xor(x1, x2)
+
+
 def logical_or(x1: Union[ivy.Array, ivy.NativeArray], x2: Union[ivy.Array, ivy.NativeArray])\
         -> ivy.Array:
     """

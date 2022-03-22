@@ -61,6 +61,14 @@ def less(x1: mx.ndarray.ndarray.NDArray,x2: mx.ndarray.ndarray.NDArray)\
 
 
 @_handle_flat_arrays_in_out
+def logical_xor(x1: mx.ndarray.ndarray.NDArray,
+                x2: mx.ndarray.ndarray.NDArray,
+                dtype: ['bool']) \
+        -> mx.ndarray.ndarray.NDArray:
+    return mx.nd.logical_xor(x1, x2, dtype).astype('bool')
+
+
+@_handle_flat_arrays_in_out
 def logical_not(x: mx.ndarray.ndarray.NDArray)\
         -> mx.ndarray.ndarray.NDArray:
     return mx.nd.logical_not(x)
