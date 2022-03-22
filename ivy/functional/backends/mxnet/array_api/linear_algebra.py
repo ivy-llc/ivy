@@ -6,6 +6,10 @@ from typing import Union, Optional, Tuple, Literal
 # local
 from ivy import inf
 
+def eig(x: mx.ndarray)\
+  ->mx.ndarray:
+  return mx.linalg.eig(x)
+
 
 def vector_norm(x: mx.ndarray.ndarray.NDArray,
                 p: Union[int, float, Literal[inf, - inf]] = 2,
