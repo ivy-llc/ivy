@@ -1,3 +1,4 @@
+
 # global
 import numpy as np
 import numpy.array_api as npa
@@ -7,7 +8,10 @@ try:
 except (ImportError, ModuleNotFoundError):
     _erf = None
 
-
+def expm1(x: np.ndarray)\
+        -> np.ndarray:
+    return np.expm1(x)
+  
 def bitwise_invert(x: np.ndarray)\
         -> np.ndarray:
     return np.invert(x)
@@ -118,6 +122,11 @@ def acos(x: np.ndarray)\
         -> np.ndarray:
     return np.asarray(npa.acos(npa.asarray(x)))
 
+
+def logical_xor(x1: np.ndarray, x2: np.ndarray) \
+        -> np.ndarray:
+    return np.logical_xor(x1, x2)
+
   
 def logical_or(x1: np.ndarray, x2: np.ndarray)\
         -> np.ndarray:
@@ -216,4 +225,3 @@ def erf(x):
     if _erf is None:
         raise Exception('scipy must be installed in order to call ivy.erf with a numpy backend.')
     return _erf(x)
-

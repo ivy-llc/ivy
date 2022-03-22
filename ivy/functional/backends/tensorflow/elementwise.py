@@ -1,4 +1,3 @@
-
 # global
 import tensorflow as tf
 from tensorflow.python.types.core import Tensor
@@ -10,7 +9,7 @@ import ivy
 def expm1(x: Tensor)\
         -> Tensor:
     return tf.math.expm1(x)
-  
+
 def bitwise_invert(x: Tensor) \
         -> Tensor:
     if 'int' not in str(x.dtype):
@@ -165,6 +164,11 @@ def greater_equal(x1: Tensor, x2: Tensor)\
 def acos(x: Tensor)\
         -> Tensor:
     return tf.acos(x)
+
+
+def logical_xor(x1: Tensor, x2: Tensor) \
+        -> Tensor:
+    return tf.math.logical_xor(tf.cast(x1, tf.bool), tf.cast(x2, tf.bool))
 
   
 def logical_or(x1: Tensor, x2: Tensor)\

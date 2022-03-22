@@ -1,4 +1,4 @@
-
+ 
 # global
 import jax
 import jax.numpy as jnp
@@ -113,6 +113,11 @@ def less(x1: JaxArray,x2:JaxArray)\
 def cos(x: JaxArray)\
         -> JaxArray:
     return jnp.cos(x)
+
+
+def logical_xor(x1: JaxArray, x2: JaxArray) \
+        -> JaxArray:
+    return jnp.logical_xor(x1, x2)
 
 
 def logical_or(x1: JaxArray, x2: JaxArray)\
