@@ -79,6 +79,11 @@ def log10(x: np.ndarray)\
     return np.log10(x)
 
 
+def log(x: np.ndarray)\
+        -> np.ndarray:
+    return np.log(x)
+
+
 def log2(x: np.ndarray)\
         -> np.ndarray:
     return np.log2(x)
