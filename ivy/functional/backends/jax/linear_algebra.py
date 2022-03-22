@@ -7,7 +7,34 @@ from collections import namedtuple
 # local
 from ivy import inf
 from ivy.functional.backends.jax import JaxArray
-import ivy as _ivy
+import ivy
+
+
+# Array API Standard #
+# -------------------#
+
+inv = jnp.linalg.inv
+pinv = jnp.linalg.pinv
+cholesky = jnp.linalg.cholesky
+
+
+
+def matrix_norm(x, p=2, axes=None, keepdims=False):
+    axes = (-2, -1) if axes is None else axes
+    if isinstance(axes, int):
+        raise Exception('if specified, axes must be a length-2 sequence of ints,'
+                        'but found {} of type {}'.format(axes, type(axes)))
+    elif isinstance(axes, list):
+        axes = tuple(axes)
+    ret = jnp.linalg.norm(x, p, axes, keepdims)
+    if ret.shape == ():
+        return jnp.expand_dims(ret, 0)
+    return ret
+
+
+def matrix_transpose(x: JaxArray)\
+        -> JaxArray:
+    return jnp.swapaxes(x, -1, -2)
 
 
 # noinspection PyUnusedLocal,PyShadowingBuiltins
@@ -41,6 +68,10 @@ def diagonal(x: JaxArray,
     return jnp.diagonal(x, offset, axis1, axis2)
 
 
+def svdvals(x: JaxArray) -> JaxArray:
+    return jnp.linalg.svd(x, compute_uv=False)
+
+
 def qr(x: JaxArray,
        mode: str = 'reduced') -> namedtuple('qr', ['Q', 'R']):
     res = namedtuple('qr', ['Q', 'R'])
@@ -53,7 +84,7 @@ def matmul(x1: JaxArray,
     return jnp.matmul(x1, x2)
 
 
-def slogdet(x:Union[_ivy.Array,_ivy.NativeArray],full_matrices: bool = True) -> Union[_ivy.Array, Tuple[_ivy.Array,...]]:
+def slogdet(x:Union[ivy.Array,ivy.NativeArray],full_matrices: bool = True) -> Union[ivy.Array, Tuple[ivy.Array,...]]:
     results = namedtuple("slogdet", "sign logabsdet")
     sign, logabsdet = jnp.linalg.slogdet(x)
     res = results(sign, logabsdet)
@@ -64,3 +95,40 @@ def trace(x: JaxArray,
           offset: int = 0)\
               -> JaxArray:
     return jax.numpy.trace(x, offset)
+
+
+def det(x:jnp.array) \
+    -> jnp.array:
+    return jnp.linalg.det(x)
+
+def cholesky(x: JaxArray, 
+             upper: bool = False) -> JaxArray:
+    if not upper:
+        return jnp.linalg.cholesky(x)
+    else:
+        axes = list(range(len(x.shape) - 2)) + [len(x.shape) - 1, len(x.shape) - 2]
+        return jnp.transpose(jnp.linalg.cholesky(jnp.transpose(x, axes=axes)),
+                        axes=axes)
+
+
+# Extra #
+# ------#
+
+def vector_to_skew_symmetric_matrix(vector: JaxArray)\
+        -> JaxArray:
+    batch_shape = list(vector.shape[:-1])
+    # BS x 3 x 1
+    vector_expanded = jnp.expand_dims(vector, -1)
+    # BS x 1 x 1
+    a1s = vector_expanded[..., 0:1, :]
+    a2s = vector_expanded[..., 1:2, :]
+    a3s = vector_expanded[..., 2:3, :]
+    # BS x 1 x 1
+    zs = jnp.zeros(batch_shape + [1, 1])
+    # BS x 1 x 3
+    row1 = jnp.concatenate((zs, -a3s, a2s), -1)
+    row2 = jnp.concatenate((a3s, zs, -a1s), -1)
+    row3 = jnp.concatenate((-a2s, a1s, zs), -1)
+    # BS x 3 x 3
+    return jnp.concatenate((row1, row2, row3), -2)
+

@@ -56,6 +56,7 @@ def max(x: Union[ivy.Array, ivy.NativeArray],
     return _cur_framework.max(x, axis, keepdims)
 
 
+
 def var(x: Union[ivy.Array, ivy.NativeArray],
         axis: Optional[Union[int, Tuple[int]]] = None,
         correction: Union[int, float] = 0.0,
@@ -71,5 +72,128 @@ def var(x: Union[ivy.Array, ivy.NativeArray],
     """
     return _cur_framework(x).var(x, axis, correction, keepdims)
 
+def mean(x, axis=None, keepdims=False):
+    """
+    Computes the arithmetic mean along a given axis.
+    Returns the average of the array elements. The average is taken over the flattened array by default, otherwise over
+    the specified axis.
+
+    :param x: Array containing numbers whose mean is desired.
+    :type x: array
+    :param axis: Axis or axes along which the means are computed. The default is to compute the mean of the flattened
+                    array. If this is a tuple of ints, a mean is performed over multiple axes, instead of a single axis
+                    or all the axes as before.
+    :type axis: int or sequence of ints
+    :param keepdims: If this is set to True, the axes which are reduced are left in the result as dimensions with size
+                        one. With this option, the result will broadcast correctly against the input array.
+    :type keepdims: bool, optional
+    :return: The array with means computed.
+    """
+    return _cur_framework(x).mean(x, axis, keepdims)
+
+
+def prod(x: Union[ivy.Array, ivy.NativeArray],
+         axis: Optional[Union[int, Tuple[int]]] = None,
+         dtype: Optional[Union[ivy.Dtype, str]] = None,
+         keepdims: bool = False)\
+        -> ivy.Array:
+    """
+    Calculates the product of input array x elements.
+
+    :param x: input array. Should have a numeric data type.
+    :type x: array
+    :param axis: axis or axes along which products must be computed. By default, the product must be
+     computed over the entire array. If a tuple of integers, products must be computed over multiple axes. Default: None.
+    :type axis: Union[int, Tuple[int, ...]
+    :param dtype: data type of the returned array. If None,
+        if the default data type corresponding to the data type “kind” (integer or floating-point) of x has a smaller 
+         range of values than the data type of x (e.g., x has data type int64 and the default data type is int32,
+         or x has data type uint64 and the default data type is int64), the returned array must have the same data type as x.
+        if x has a floating-point data type, the returned array must have the default floating-point data type.
+        if x has a signed integer data type (e.g., int16), the returned array must have the default integer data type.
+        if x has an unsigned integer data type (e.g., uint16), the returned array must have an unsigned integer data type
+         having the same number of bits as the default integer data type (e.g., if the default integer data type is int32, 
+         the returned array must have a uint32 data type).
+        If the data type (either specified or resolved) differs from the data type of x, the input array should be cast 
+        to the specified data type before computing the product. Default: None.
+    :type dtype: dtype
+    :param keepdims: if True, the reduced axes (dimensions) must be included in the result as singleton dimensions, and, 
+    accordingly, the result must be compatible with the input array (see Broadcasting). Otherwise, if False, the reduced axes 
+    (dimensions) must not be included in the result. Default: False.
+    :type keepdims: bool
+
+    Returns
+    :return out: if the product was computed over the entire array, a zero-dimensional array containing the product; otherwise, 
+    a non-zero-dimensional array containing the products. The returned array must have a data type as described by the dtype 
+    parameter above.
+    :type out: array
+    """
+    return _cur_framework.prod(x, axis, dtype, keepdims)
+
+
+def sum(x, axis=None, keepdims=False):
+    """
+    Calculates the sum of the input array x.
+
+    Parameters
+    ----------
+    x:
+        input array. Should have a numeric data type.
+    axis:
+        axis or axes along which sums must be computed. By default, the sum must be computed over the entire array. If a tuple of integers, sums must be computed over multiple axes. Default: None.
+    dtype:
+        data type of the returned array. If None,
+
+    if the default data type corresponding to the data type “kind” (integer or floating-point) of x has a smaller range of values than the data type of x (e.g., x has data type int64 and the default data type is int32, or x has data type uint64 and the default data type is int64), the returned array must have the same data type as x.
+
+    if x has a floating-point data type, the returned array must have the default floating-point data type.
+
+    if x has a signed integer data type (e.g., int16), the returned array must have the default integer data type.
+
+    if x has an unsigned integer data type (e.g., uint16), the returned array must have an unsigned integer data type having the same number of bits as the default integer data type (e.g., if the default integer data type is int32, the returned array must have a uint32 data type).
+
+    If the data type (either specified or resolved) differs from the data type of x, the input array should be cast to the specified data type before computing the sum. Default: None.    :return: The array with sums computed.
+
+    Returns
+    -------
+    out:
+        if the sum was computed over the entire array, a zero-dimensional array containing the sum;
+        otherwise, an array containing the sums. The returned array must have a data type as described
+        by the dtype parameter above
+    """
+    return _cur_framework(x).sum(x, axis, keepdims)
+
+def std(x, axis=None, keepdims=False):
+    """
+    Computes the arithmetic standard deviation along a given axis. The standard deviation is taken over
+    the flattened array by default, otherwise over the specified axis.
+
+    :param x: Array containing numbers whose standard deviation is desired.
+    :type x: array
+    :param axis: Axis or axes along which the means are computed. The default is to compute the mean of the flattened
+                    array. If this is a tuple of ints, a mean is performed over multiple axes, instead of a single axis
+                    or all the axes as before.
+    :type axis: int or sequence of ints
+    :param keepdims: If this is set to True, the axes which are reduced are left in the result as dimensions with size
+                        one. With this option, the result will broadcast correctly against the input array.
+    :type keepdims: bool, optional
+    :return: The array with standard deviations computed.
+    """
+    return ivy.array(ivy.var(x, axis, keepdims) ** 0.5)
+
+
 # Extra #
 # ------#
+
+def einsum(equation, *operands):
+    """
+    Sums the product of the elements of the input operands along dimensions specified using a notation based on the
+    Einstein summation convention.
+
+    :param equation: A str describing the contraction, in the same format as numpy.einsum.
+    :type equation: str
+    :param operands: the inputs to contract (each one an ivy.Array), whose shapes should be consistent with equation.
+    :type operands: seq of arrays
+    :return: The array with sums computed.
+    """
+    return _cur_framework(operands[0]).einsum(equation, *operands)

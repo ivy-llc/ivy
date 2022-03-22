@@ -4,7 +4,7 @@ Collection of Numpy image functions, wrapped to fit Ivy syntax and signature.
 
 # global
 import math
-import numpy as _np
+import numpy as np
 
 # local
 from ivy.functional.backends import numpy as _ivy
@@ -44,29 +44,29 @@ def bilinear_resample(x, warp):
     height, width = input_image_dims
     max_x = width - 1
     max_y = height - 1
-    idx_size = _np.prod(_np.asarray(_ivy.shape(warp)[-3:-1]))
-    batch_shape_flat = int(_np.prod(_np.asarray(batch_shape)))
+    idx_size = np.prod(np.asarray(_ivy.shape(warp)[-3:-1]))
+    batch_shape_flat = int(np.prod(np.asarray(batch_shape)))
     # B
-    batch_offsets = _np.arange(batch_shape_flat) * idx_size
+    batch_offsets = np.arange(batch_shape_flat) * idx_size
     # B x (HxW)
-    base_grid = _np.tile(_np.expand_dims(batch_offsets, 1), [1, idx_size])
+    base_grid = np.tile(np.expand_dims(batch_offsets, 1), [1, idx_size])
     # (BxHxW)
-    base = _np.reshape(base_grid, [-1])
+    base = np.reshape(base_grid, [-1])
     # (BxHxW) x D
-    data_flat = _np.reshape(x, [batch_shape_flat * height * width, -1])
+    data_flat = np.reshape(x, [batch_shape_flat * height * width, -1])
     # (BxHxW) x 2
-    warp_flat = _np.reshape(warp, [-1, 2])
-    warp_floored = (_np.floor(warp_flat)).astype(_np.int32)
-    bilinear_weights = warp_flat - _np.floor(warp_flat)
+    warp_flat = np.reshape(warp, [-1, 2])
+    warp_floored = (np.floor(warp_flat)).astype(np.int32)
+    bilinear_weights = warp_flat - np.floor(warp_flat)
     # (BxHxW)
     x0 = warp_floored[:, 0]
     x1 = x0 + 1
     y0 = warp_floored[:, 1]
     y1 = y0 + 1
-    x0 = _np.clip(x0, 0, max_x)
-    x1 = _np.clip(x1, 0, max_x)
-    y0 = _np.clip(y0, 0, max_y)
-    y1 = _np.clip(y1, 0, max_y)
+    x0 = np.clip(x0, 0, max_x)
+    x1 = np.clip(x1, 0, max_x)
+    y0 = np.clip(y0, 0, max_y)
+    y1 = np.clip(y1, 0, max_y)
     base_y0 = base + y0 * width
     base_y1 = base + y1 * width
     idx_a = base_y0 + x0
@@ -74,22 +74,22 @@ def bilinear_resample(x, warp):
     idx_c = base_y0 + x1
     idx_d = base_y1 + x1
     # (BxHxW) x D
-    Ia = _np.take(data_flat, idx_a, axis=0)
-    Ib = _np.take(data_flat, idx_b, axis=0)
-    Ic = _np.take(data_flat, idx_c, axis=0)
-    Id = _np.take(data_flat, idx_d, axis=0)
+    Ia = np.take(data_flat, idx_a, axis=0)
+    Ib = np.take(data_flat, idx_b, axis=0)
+    Ic = np.take(data_flat, idx_c, axis=0)
+    Id = np.take(data_flat, idx_d, axis=0)
     # (BxHxW)
     xw = bilinear_weights[:, 0]
     yw = bilinear_weights[:, 1]
     # (BxHxW) x 1
-    wa = _np.expand_dims((1 - xw) * (1 - yw), 1)
-    wb = _np.expand_dims((1 - xw) * yw, 1)
-    wc = _np.expand_dims(xw * (1 - yw), 1)
-    wd = _np.expand_dims(xw * yw, 1)
+    wa = np.expand_dims((1 - xw) * (1 - yw), 1)
+    wb = np.expand_dims((1 - xw) * yw, 1)
+    wc = np.expand_dims(xw * (1 - yw), 1)
+    wd = np.expand_dims(xw * yw, 1)
     # (BxNP) x D
     resampled_flat = wa * Ia + wb * Ib + wc * Ic + wd * Id
     # B x NP x D
-    return _np.reshape(resampled_flat, batch_shape + [-1, num_feats])
+    return np.reshape(resampled_flat, batch_shape + [-1, num_feats])
 
 
 def gradient_image(x):

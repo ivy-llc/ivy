@@ -88,25 +88,6 @@ def test_asin(x, dtype, tensor_fn, dev, call):
     assert np.allclose(call(ivy.asin, x), ivy.functional.backends.numpy.asin(ivy.to_numpy(x)))
 
 
-# acos
-@pytest.mark.parametrize(
-    "x", [[0.], [[0.]]])
-@pytest.mark.parametrize(
-    "dtype", ['float32'])
-@pytest.mark.parametrize(
-    "tensor_fn", [ivy.array, helpers.var_fn])
-def test_acos(x, dtype, tensor_fn, dev, call):
-    # smoke test
-    x = tensor_fn(x, dtype, dev)
-    ret = ivy.acos(x)
-    # type test
-    assert ivy.is_array(ret)
-    # cardinality test
-    assert ret.shape == x.shape
-    # value test
-    assert np.allclose(call(ivy.acos, x), ivy.functional.backends.numpy.acos(ivy.to_numpy(x)))
-
-
 # atan
 @pytest.mark.parametrize(
     "x", [[0.], [[0.]]])
