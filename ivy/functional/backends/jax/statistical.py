@@ -56,8 +56,8 @@ def prod(x: jnp.ndarray,
 def max(x: jnp.ndarray,
         axis: Union[int, Tuple[int]] = None,
         keepdims = False, device = None) \
-        -> _jnp.ndarray:
-    return _jnp.max(a = _jnp.asarray(x), axis = axis, keepdims = keepdims)
+        -> jnp.ndarray:
+    return jnp.max(a = jnp.asarray(x), axis = axis, keepdims = keepdims)
 
 
 def var(x: jnp.ndarray,
