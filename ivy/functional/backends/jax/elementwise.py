@@ -1,4 +1,5 @@
 # global
+import jax
 import jax.numpy as jnp
 
 # local
@@ -178,3 +179,28 @@ def round(x: JaxArray)\
     if 'int' in str(x.dtype):
         return x
     return jnp.round(x)
+
+
+def abs(x: JaxArray)\
+        -> JaxArray:
+    return jnp.absolute(x)
+
+
+def logaddexp(x1: JaxArray, x2: JaxArray) -> JaxArray:
+    return jnp.logaddexp(x1, x2)
+
+
+tan = jnp.tan
+atan = jnp.arctan
+atan2 = jnp.arctan2
+cosh = jnp.cosh
+atanh = jnp.arctanh
+log = jnp.log
+exp = jnp.exp
+
+
+# Extra #
+# ------#
+
+
+erf = jax.scipy.special.erf

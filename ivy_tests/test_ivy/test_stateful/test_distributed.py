@@ -56,7 +56,7 @@ class TrainableModuleWithSplit(ivy.Module):
 
 def loss_fn(module, x_, v_):
     out = module(x_, v=v_)
-    return ivy.reduce_mean(out)[0]
+    return ivy.mean(out)[0]
 
 
 def map_fn(module, dev, xn, vc):

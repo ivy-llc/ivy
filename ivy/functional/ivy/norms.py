@@ -28,8 +28,8 @@ def layer_norm(x, normalized_idxs, epsilon=None, scale=None, offset=None, new_st
     :type new_std: float, optional
     :return: The layer after applying layer normalization.
     """
-    mean = ivy.reduce_mean(x, normalized_idxs, keepdims=True)
-    var = ivy.reduce_var(x, normalized_idxs, keepdims=True)
+    mean = ivy.mean(x, normalized_idxs, keepdims=True)
+    var = ivy.var(x, normalized_idxs, keepdims=True)
     x = ((-mean + x) / ivy.stable_pow(var, 0.5, epsilon))
     if new_std is not None:
         x = x * new_std

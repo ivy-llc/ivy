@@ -4,6 +4,12 @@ import math
 from typing import Union, Tuple, Optional, List
 
 
+
+
+def _flat_array_to_1_dim_array(x):
+    return x.reshape((1,)) if x.shape == () else x
+
+
 def flip(x: np.ndarray,
          axis: Optional[Union[int, Tuple[int], List[int]]] = None)\
          -> np.ndarray:
@@ -30,6 +36,11 @@ def permute_dims(x: np.ndarray,
     return np.transpose(x, axes)
 
 
+
+# Extra #
+# ------#
+
+
 def split(x, num_or_size_splits=None, axis=0, with_remainder=False):
     if x.shape == ():
         if num_or_size_splits is not None and num_or_size_splits != 1:
@@ -50,3 +61,6 @@ def split(x, num_or_size_splits=None, axis=0, with_remainder=False):
 
 repeat = np.repeat
 tile = np.tile
+constant_pad = lambda x, pad_width, value=0: np.pad(_flat_array_to_1_dim_array(x), pad_width, constant_values=value)
+zero_pad = lambda x, pad_width: np.pad(_flat_array_to_1_dim_array(x), pad_width)
+swapaxes = np.swapaxes

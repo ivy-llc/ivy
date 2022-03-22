@@ -106,6 +106,16 @@ def linspace(start, stop, num, axis=None, dev=None):
         axis = -1
     return _to_dev(np.linspace(start, stop, num, axis=axis), dev)
 
+def eye(n_rows: int,
+        n_cols: Optional[int] = None,
+        k: Optional[int] = 0,
+        dtype: Optional[np.dtype] = None,
+        device: Optional[str] = None) \
+        -> np.ndarray:
+    dtype = dtype_from_str(default_dtype(dtype))
+    return _to_dev(np.eye(n_rows, n_cols, k, dtype), device)
+
+
 # Extra #
 # ------#
 

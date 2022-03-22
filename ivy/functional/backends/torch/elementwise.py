@@ -147,6 +147,11 @@ def logical_xor(x1: torch.Tensor, x2: torch.Tensor) \
     return torch.logical_xor(x1.type(torch.bool), x2.type(torch.bool))
 
 
+def logical_and(x1: torch.Tensor, x2: torch.Tensor)\
+        -> torch.Tensor:
+    return torch.logical_and(x1.type(torch.bool), x2.type(torch.bool))
+
+  
 def logical_or(x1: torch.Tensor, x2: torch.Tensor)\
         -> torch.Tensor:
     return torch.logical_or(x1.type(torch.bool), x2.type(torch.bool))
@@ -201,3 +206,62 @@ def round(x: torch.Tensor)\
     if 'int' in str(x.dtype):
         return x
     return torch.round(x)
+
+
+def abs(x: torch.Tensor)\
+        -> torch.Tensor:
+    return torch.abs(x)
+
+  
+def logaddexp(x1: torch.Tensor, x2: torch.Tensor) -> torch.Tensor:
+    x1, x2 = _cast_for_binary_op(x1, x2)
+    return torch.logaddexp(x1, x2)
+
+
+def tan(x: torch.Tensor)\
+        -> torch.Tensor:
+    return torch.tan(x)
+
+
+def acos(x: torch.Tensor)\
+        -> torch.Tensor:
+    return torch.acos(x)
+
+
+def atan(x: torch.Tensor)\
+        -> torch.Tensor:
+    return torch.atan(x)
+
+
+def atan2(x1: torch.Tensor, x2: torch.Tensor) -> torch.Tensor:
+    return torch.atan2(x1, x2)
+
+
+def cosh(x: torch.Tensor)\
+        -> torch.Tensor:
+    return torch.cosh(x)
+
+
+def atanh(x: torch.Tensor)\
+        -> torch.Tensor:
+    return torch.atanh(x)
+
+
+def log(x: torch.Tensor)\
+        -> torch.Tensor:
+    return torch.log(x)
+
+
+def exp(x: torch.Tensor)\
+        -> torch.Tensor:
+    return torch.exp(x)
+
+
+# Extra #
+# ------#
+
+
+def erf(x: torch.Tensor)\
+        -> torch.Tensor:
+    return torch.erf(x)
+
