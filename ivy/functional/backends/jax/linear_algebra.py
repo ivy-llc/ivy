@@ -54,6 +54,14 @@ def vector_norm(x: JaxArray,
     return jnp_normalized_vector
 
 
+
+
+def outer(x1: JaxArray,
+          x2: JaxArray)\
+        -> JaxArray:
+    return jnp.outer(x1,x2)
+
+  
 def svd(x:JaxArray,full_matrices: bool = True) -> Union[JaxArray, Tuple[JaxArray,...]]:
     results=namedtuple("svd", "U S Vh")
     U, D, VT=jnp.linalg.svd(x, full_matrices=full_matrices)

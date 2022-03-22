@@ -81,6 +81,10 @@ def diagonal(x: tf.Tensor,
              axis2: int = -1) -> tf.Tensor:
     return tf.experimental.numpy.diagonal(x, offset, axis1=axis1, axis2=axis2)
 
+def outer(x1:tf.Tensor,
+          x2: tf.Tensor) \
+        -> tf.Tensor:
+    return tf.experimental.numpy.outer(x1, x2)
 
 def qr(x: tf.Tensor,
        mode: str = 'reduced') -> namedtuple('qr', ['Q', 'R']):
