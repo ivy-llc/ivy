@@ -36,7 +36,7 @@
   <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="bitwise_invert" href="elementwise/bitwise_invert.html" />
+    <link rel="next" title="expm1" href="elementwise/expm1.html" />
     <link rel="prev" title="Profiler" href="device/Profiler.html" /> 
 </head>
 
@@ -98,6 +98,7 @@
 <li class="toctree-l1"><a class="reference internal" href="data_type.html">Data type</a></li>
 <li class="toctree-l1"><a class="reference internal" href="device.html">Device</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Elementwise</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="elementwise/expm1.html">expm1</a></li>
 <li class="toctree-l2"><a class="reference internal" href="elementwise/bitwise_invert.html">bitwise_invert</a></li>
 <li class="toctree-l2"><a class="reference internal" href="elementwise/bitwise_and.html">bitwise_and</a></li>
 <li class="toctree-l2"><a class="reference internal" href="elementwise/ceil.html">ceil</a></li>
@@ -559,6 +560,33 @@ determined by Type Promotion Rules.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>The exponential of each element of x.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.elementwise.expm1">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">expm1</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../_modules/ivy/functional/ivy/elementwise.html#expm1"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.elementwise.expm1" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates an implementation-dependent approximation to <code class="docutils literal notranslate"><span class="pre">exp(x)-1</span></code>, having domain <code class="docutils literal notranslate"><span class="pre">[-infinity,</span> <span class="pre">+infinity]</span></code> and codomain <code class="docutils literal notranslate"><span class="pre">[-1,</span> <span class="pre">+infinity]</span></code>, for each element <code class="docutils literal notranslate"><span class="pre">x_i</span></code> of the input array <code class="docutils literal notranslate"><span class="pre">x</span></code>.
+.. note:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>The purpose of this function is to calculate ``exp(x)-1.0`` more accurately when `x` is close to zero. Accordingly, conforming implementations should avoid implementing this function as simply ``exp(x)-1.0``. See FDLIBM, or some other IEEE 754-2019 compliant mathematical library, for a potential reference implementation.
+</pre></div>
+</div>
+<p><strong>Special cases</strong>
+For floating-point operands,
+- If <code class="docutils literal notranslate"><span class="pre">x_i</span></code> is <code class="docutils literal notranslate"><span class="pre">NaN</span></code>, the result is <code class="docutils literal notranslate"><span class="pre">NaN</span></code>.
+- If <code class="docutils literal notranslate"><span class="pre">x_i</span></code> is <code class="docutils literal notranslate"><span class="pre">+0</span></code>, the result is <code class="docutils literal notranslate"><span class="pre">+0</span></code>.
+- If <code class="docutils literal notranslate"><span class="pre">x_i</span></code> is <code class="docutils literal notranslate"><span class="pre">-0</span></code>, the result is <code class="docutils literal notranslate"><span class="pre">-0</span></code>.
+- If <code class="docutils literal notranslate"><span class="pre">x_i</span></code> is <code class="docutils literal notranslate"><span class="pre">+infinity</span></code>, the result is <code class="docutils literal notranslate"><span class="pre">+infinity</span></code>.
+- If <code class="docutils literal notranslate"><span class="pre">x_i</span></code> is <code class="docutils literal notranslate"><span class="pre">-infinity</span></code>, the result is <code class="docutils literal notranslate"><span class="pre">-1</span></code>.
+Parameters
+———-
+x: array</p>
+<blockquote>
+<div><p>input array. Should have a numeric data type.</p>
+</div></blockquote>
+<dl class="simple">
+<dt>out: array</dt><dd><p>an array containing the evaluated result for each element in <code class="docutils literal notranslate"><span class="pre">x</span></code>. The returned array must have a floating-point data type determined by <span class="xref std std-ref">type-promotion</span>.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1033,7 +1061,7 @@ Equivalent to f.sin(x)/f.cos(x) element-wise.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="elementwise/bitwise_invert.html" class="btn btn-neutral float-right" title="bitwise_invert" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="elementwise/expm1.html" class="btn btn-neutral float-right" title="expm1" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="device/Profiler.html" class="btn btn-neutral float-left" title="Profiler" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>

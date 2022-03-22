@@ -13,6 +13,7 @@ Elementwise
    :maxdepth: -1
    :caption: Elementwise
 
+   elementwise/expm1.rst
    elementwise/bitwise_invert.rst
    elementwise/bitwise_and.rst
    elementwise/ceil.rst

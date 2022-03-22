@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>negative &mdash; Ivy 1.0 documentation</title>
+  <title>expm1 &mdash; Ivy 1.0 documentation</title>
   
 
   
@@ -36,8 +36,8 @@
   <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="not_equal" href="not_equal.html" />
-    <link rel="prev" title="sin" href="sin.html" /> 
+    <link rel="next" title="bitwise_invert" href="bitwise_invert.html" />
+    <link rel="prev" title="Elementwise" href="../elementwise.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -98,7 +98,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../data_type.html">Data type</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../device.html">Device</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../elementwise.html">Elementwise</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="expm1.html">expm1</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">expm1</a></li>
 <li class="toctree-l2"><a class="reference internal" href="bitwise_invert.html">bitwise_invert</a></li>
 <li class="toctree-l2"><a class="reference internal" href="bitwise_and.html">bitwise_and</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ceil.html">ceil</a></li>
@@ -125,7 +125,7 @@
 <li class="toctree-l2"><a class="reference internal" href="logical_and.html">logical_and</a></li>
 <li class="toctree-l2"><a class="reference internal" href="acosh.html">acosh</a></li>
 <li class="toctree-l2"><a class="reference internal" href="sin.html">sin</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">negative</a></li>
+<li class="toctree-l2"><a class="reference internal" href="negative.html">negative</a></li>
 <li class="toctree-l2"><a class="reference internal" href="not_equal.html">not_equal</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tanh.html">tanh</a></li>
 <li class="toctree-l2"><a class="reference internal" href="bitwise_or.html">bitwise_or</a></li>
@@ -236,13 +236,13 @@
         
           <li><a href="../elementwise.html">Elementwise</a> &raquo;</li>
         
-      <li>negative</li>
+      <li>expm1</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../../_sources/functional/ivy/elementwise/negative.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../../_sources/functional/ivy/elementwise/expm1.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -255,18 +255,31 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="negative">
-<h1>negative<a class="headerlink" href="#negative" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="expm1">
+<h1>expm1<a class="headerlink" href="#expm1" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
-<dt id="ivy.functional.ivy.elementwise.negative">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">negative</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../../_modules/ivy/functional/ivy/elementwise.html#negative"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.elementwise.negative" title="Permalink to this definition">¶</a></dt>
-<dd><p>Computes the numerical negative of each element</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>x</strong> – Input array</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>an array containing the evaluated result for each element in x</p>
+<dt id="ivy.functional.ivy.elementwise.expm1">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">expm1</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../../_modules/ivy/functional/ivy/elementwise.html#expm1"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.elementwise.expm1" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates an implementation-dependent approximation to <code class="docutils literal notranslate"><span class="pre">exp(x)-1</span></code>, having domain <code class="docutils literal notranslate"><span class="pre">[-infinity,</span> <span class="pre">+infinity]</span></code> and codomain <code class="docutils literal notranslate"><span class="pre">[-1,</span> <span class="pre">+infinity]</span></code>, for each element <code class="docutils literal notranslate"><span class="pre">x_i</span></code> of the input array <code class="docutils literal notranslate"><span class="pre">x</span></code>.
+.. note:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>The purpose of this function is to calculate ``exp(x)-1.0`` more accurately when `x` is close to zero. Accordingly, conforming implementations should avoid implementing this function as simply ``exp(x)-1.0``. See FDLIBM, or some other IEEE 754-2019 compliant mathematical library, for a potential reference implementation.
+</pre></div>
+</div>
+<p><strong>Special cases</strong>
+For floating-point operands,
+- If <code class="docutils literal notranslate"><span class="pre">x_i</span></code> is <code class="docutils literal notranslate"><span class="pre">NaN</span></code>, the result is <code class="docutils literal notranslate"><span class="pre">NaN</span></code>.
+- If <code class="docutils literal notranslate"><span class="pre">x_i</span></code> is <code class="docutils literal notranslate"><span class="pre">+0</span></code>, the result is <code class="docutils literal notranslate"><span class="pre">+0</span></code>.
+- If <code class="docutils literal notranslate"><span class="pre">x_i</span></code> is <code class="docutils literal notranslate"><span class="pre">-0</span></code>, the result is <code class="docutils literal notranslate"><span class="pre">-0</span></code>.
+- If <code class="docutils literal notranslate"><span class="pre">x_i</span></code> is <code class="docutils literal notranslate"><span class="pre">+infinity</span></code>, the result is <code class="docutils literal notranslate"><span class="pre">+infinity</span></code>.
+- If <code class="docutils literal notranslate"><span class="pre">x_i</span></code> is <code class="docutils literal notranslate"><span class="pre">-infinity</span></code>, the result is <code class="docutils literal notranslate"><span class="pre">-1</span></code>.
+Parameters
+———-
+x: array</p>
+<blockquote>
+<div><p>input array. Should have a numeric data type.</p>
+</div></blockquote>
+<dl class="simple">
+<dt>out: array</dt><dd><p>an array containing the evaluated result for each element in <code class="docutils literal notranslate"><span class="pre">x</span></code>. The returned array must have a floating-point data type determined by <span class="xref std std-ref">type-promotion</span>.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -286,10 +299,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="not_equal.html" class="btn btn-neutral float-right" title="not_equal" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="bitwise_invert.html" class="btn btn-neutral float-right" title="bitwise_invert" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="sin.html" class="btn btn-neutral float-left" title="sin" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="../elementwise.html" class="btn btn-neutral float-left" title="Elementwise" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

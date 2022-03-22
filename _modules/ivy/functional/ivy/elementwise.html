@@ -209,6 +209,30 @@
 <span class="c1"># Array API Standard #</span>
 <span class="c1"># -------------------#</span>
 
+<div class="viewcode-block" id="expm1"><a class="viewcode-back" href="../../../../functional/ivy/elementwise/expm1.html#ivy.functional.ivy.elementwise.expm1">[docs]</a><span class="k">def</span> <span class="nf">expm1</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">])</span>\
+        <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Calculates an implementation-dependent approximation to ``exp(x)-1``, having domain ``[-infinity, +infinity]`` and codomain ``[-1, +infinity]``, for each element ``x_i`` of the input array ``x``.</span>
+<span class="sd">    .. note::</span>
+<span class="sd">       The purpose of this function is to calculate ``exp(x)-1.0`` more accurately when `x` is close to zero. Accordingly, conforming implementations should avoid implementing this function as simply ``exp(x)-1.0``. See FDLIBM, or some other IEEE 754-2019 compliant mathematical library, for a potential reference implementation.</span>
+<span class="sd">    **Special cases**</span>
+<span class="sd">    For floating-point operands,</span>
+<span class="sd">    - If ``x_i`` is ``NaN``, the result is ``NaN``.</span>
+<span class="sd">    - If ``x_i`` is ``+0``, the result is ``+0``.</span>
+<span class="sd">    - If ``x_i`` is ``-0``, the result is ``-0``.</span>
+<span class="sd">    - If ``x_i`` is ``+infinity``, the result is ``+infinity``.</span>
+<span class="sd">    - If ``x_i`` is ``-infinity``, the result is ``-1``.</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x: array</span>
+<span class="sd">        input array. Should have a numeric data type.</span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    out: array</span>
+<span class="sd">        an array containing the evaluated result for each element in ``x``. The returned array must have a floating-point data type determined by :ref:`type-promotion`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">expm1</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
+  
 <div class="viewcode-block" id="bitwise_invert"><a class="viewcode-back" href="../../../../functional/ivy/elementwise/bitwise_invert.html#ivy.functional.ivy.elementwise.bitwise_invert">[docs]</a><span class="k">def</span> <span class="nf">bitwise_invert</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">])</span> \
         <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -1113,7 +1137,6 @@
 <span class="sd">    :return: The Gauss error function of x.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">erf</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
-
 </pre></div>
 
            </div>
