@@ -78,7 +78,7 @@ def acos(x: mx.ndarray.ndarray.NDArray)\
 @_handle_flat_arrays_in_out        
 def logical_and(x1: mx.ndarray.ndarray.NDArray,
                 x2: mx.ndarray.ndarray.NDArray,
-                dtype: ['bool'])\
+                dtype: bool)\
         -> mx.ndarray.ndarray.NDArray:
     return mx.nd.logical_and(x1, x2, dtype).astype('bool')
 
@@ -86,7 +86,7 @@ def logical_and(x1: mx.ndarray.ndarray.NDArray,
 @_handle_flat_arrays_in_out
 def logical_or(x1: mx.ndarray.ndarray.NDArray,
                 x2: mx.ndarray.ndarray.NDArray,
-                dtype: ['bool'])\
+                dtype: bool)\
         -> mx.ndarray.ndarray.NDArray:
     return mx.nd.logical_or(x1, x2, dtype).astype('bool')
 
