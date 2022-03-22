@@ -96,6 +96,11 @@ def log10(x: torch.Tensor) \
     return torch.log10(x)
 
 
+def log(x: torch.Tensor)\
+        -> torch.Tensor:
+    return torch.log(x)
+
+
 def log2(x: torch.Tensor) \
         -> torch.Tensor:
     return torch.log2(x)
