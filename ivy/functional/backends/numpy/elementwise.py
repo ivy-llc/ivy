@@ -118,6 +118,11 @@ def logical_or(x1: np.ndarray, x2: np.ndarray)\
         -> np.ndarray:
     return np.logical_or(x1, x2)
 
+  
+def logical_xor(x1: np.ndarray, x2: np.ndarray)\
+        -> np.ndarray:
+    return np.logical_xor(x1, x2)
+
 
 def logical_and(x1: np.ndarray, x2: np.ndarray)\
         -> np.ndarray:

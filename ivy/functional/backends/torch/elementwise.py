@@ -152,6 +152,11 @@ def logical_or(x1: torch.Tensor, x2: torch.Tensor)\
     return torch.logical_or(x1.type(torch.bool), x2.type(torch.bool))
 
 
+def logical_xor(x1: torch.Tensor, x2: torch.Tensor)\
+        -> torch.Tensor:
+    return torch.logical_xor(x1.type(torch.bool), x2.type(torch.bool))
+
+
 def acosh(x: torch.Tensor) \
         -> torch.Tensor:
     return torch.acosh(x)
