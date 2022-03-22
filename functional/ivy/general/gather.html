@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>assert_supports_inplace &mdash; Ivy 1.0 documentation</title>
+  <title>gather &mdash; Ivy 1.0 documentation</title>
   
 
   
@@ -36,8 +36,8 @@
   <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="inplace_update" href="inplace_update.html" />
-    <link rel="prev" title="supports_inplace" href="supports_inplace.html" /> 
+    <link rel="next" title="gather_nd" href="gather_nd.html" />
+    <link rel="prev" title="scatter_nd" href="scatter_nd.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -142,7 +142,7 @@
 <li class="toctree-l2"><a class="reference internal" href="inplace_arrays_supported.html">inplace_arrays_supported</a></li>
 <li class="toctree-l2"><a class="reference internal" href="inplace_variables_supported.html">inplace_variables_supported</a></li>
 <li class="toctree-l2"><a class="reference internal" href="supports_inplace.html">supports_inplace</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">assert_supports_inplace</a></li>
+<li class="toctree-l2"><a class="reference internal" href="assert_supports_inplace.html">assert_supports_inplace</a></li>
 <li class="toctree-l2"><a class="reference internal" href="inplace_update.html">inplace_update</a></li>
 <li class="toctree-l2"><a class="reference internal" href="inplace_decrement.html">inplace_decrement</a></li>
 <li class="toctree-l2"><a class="reference internal" href="inplace_increment.html">inplace_increment</a></li>
@@ -150,7 +150,7 @@
 <li class="toctree-l2"><a class="reference internal" href="cumprod.html">cumprod</a></li>
 <li class="toctree-l2"><a class="reference internal" href="scatter_flat.html">scatter_flat</a></li>
 <li class="toctree-l2"><a class="reference internal" href="scatter_nd.html">scatter_nd</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gather.html">gather</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">gather</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gather_nd.html">gather_nd</a></li>
 </ul>
 </li>
@@ -241,13 +241,13 @@
         
           <li><a href="../general.html">General</a> &raquo;</li>
         
-      <li>assert_supports_inplace</li>
+      <li>gather</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../../_sources/functional/ivy/general/assert_supports_inplace.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../../_sources/functional/ivy/general/gather.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -260,18 +260,23 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="assert-supports-inplace">
-<h1>assert_supports_inplace<a class="headerlink" href="#assert-supports-inplace" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="gather">
+<h1>gather<a class="headerlink" href="#gather" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
-<dt id="ivy.functional.ivy.general.assert_supports_inplace">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">assert_supports_inplace</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/general.html#assert_supports_inplace"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.general.assert_supports_inplace" title="Permalink to this definition">¶</a></dt>
-<dd><p>Asserts that inplace operations are supported for x, else raises exception.</p>
+<dt id="ivy.functional.ivy.general.gather">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">gather</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">params</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">indices</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">axis</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">- 1</span></em>, <em class="sig-param"><span class="n">dev</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>ivy.Device<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/general.html#gather"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.general.gather" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gather slices from params at axis according to indices.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>x</strong> (<em>variable</em><em> or </em><em>array</em>) – Input variable or array to check for inplace support for.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>params</strong> (<em>array</em>) – The array from which to gather values.</p></li>
+<li><p><strong>indices</strong> (<em>array</em>) – Index array.</p></li>
+<li><p><strong>axis</strong> (<em>int</em><em>, </em><em>optional</em>) – The axis from which to gather from. Default is -1.</p></li>
+<li><p><strong>dev</strong> (<em>ivy.Device</em><em>, </em><em>optional</em>) – device on which to create the array ‘cuda:0’, ‘cuda:1’, ‘cpu’ etc. Same as x if None.</p></li>
+</ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>True if support, raises exception otherwise</p>
+<dd class="field-even"><p>New array with the values gathered at the specified indices along the specified axis.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -291,10 +296,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="inplace_update.html" class="btn btn-neutral float-right" title="inplace_update" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="gather_nd.html" class="btn btn-neutral float-right" title="gather_nd" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="supports_inplace.html" class="btn btn-neutral float-left" title="supports_inplace" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="scatter_nd.html" class="btn btn-neutral float-left" title="scatter_nd" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
