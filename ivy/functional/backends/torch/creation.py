@@ -44,7 +44,7 @@ def ones(shape: Union[int, Tuple[int]],
     return torch.ones(shape, dtype=dtype_val, device=dev_from_str(dev))
 
 
-def full_like(x: torch.Tensor, /,
+def full_like(x: torch.Tensor,
               fill_value: Union[int, float],
               dtype: Optional[Union[torch.dtype, str]] = None,
               device: Optional[Union[torch.device, str]] = None) \
