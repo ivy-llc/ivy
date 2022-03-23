@@ -89,7 +89,12 @@
 <li class="toctree-l2"><a class="reference internal" href="../ivy_as_a_transpiler.html">Ivy as a Transpiler</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="../ivy_as_a_framework.html">Ivy as a Framework</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="ivy_container.html">Ivy Container</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">Ivy Stateful API</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Ivy Stateful API</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#modules">Modules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#initializers">Initializers</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#optimizers">Optimizers</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="ivy_array.html">Ivy Array</a></li>
 </ul>
 </li>
@@ -217,6 +222,422 @@
             
   <div class="section" id="ivy-stateful-api">
 <h1>Ivy Stateful API<a class="headerlink" href="#ivy-stateful-api" title="Permalink to this headline">¶</a></h1>
+<p>Here we explain how Ivy’s stateful API builds on the functional API and the <em>ivy.Container</em> class to provide other convenient classes in the form of optimizers, network layers and custom trainable modules, which help get your ML projects up and running very quickly!</p>
+<p>So, without further ado, let’s walk through what the stateful API has to offer!</p>
+<div class="section" id="modules">
+<h2>Modules<a class="headerlink" href="#modules" title="Permalink to this headline">¶</a></h2>
+<p>The most helpful stateful Ivy class is perhaps the <em>ivy.Module</em>. This can be used to create custom trainable layers or entire networks. Manually defined trainable variables must be specified in the <em>_create_variables</em> method. For example, we can create a linear layer by deriving from <em>ivy.Module</em> like so:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Linear</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_channels</span><span class="p">,</span> <span class="n">output_channels</span><span class="p">,</span>
+                 <span class="n">with_bias</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">dev</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_input_channels</span> <span class="o">=</span> <span class="n">input_channels</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_output_channels</span> <span class="o">=</span> <span class="n">output_channels</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_w_shape</span> <span class="o">=</span> <span class="p">(</span><span class="n">output_channels</span><span class="p">,</span> <span class="n">input_channels</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_b_shape</span> <span class="o">=</span> <span class="p">(</span><span class="n">output_channels</span><span class="p">,)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_with_bias</span> <span class="o">=</span> <span class="n">with_bias</span>
+        <span class="n">ivy</span><span class="o">.</span><span class="n">Module</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dev</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_create_variables</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dev</span><span class="p">):</span>
+        <span class="n">v</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;w&#39;</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">random_uniform</span><span class="p">(</span>
+                <span class="n">shape</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_w_shape</span><span class="p">,</span> <span class="n">dev</span><span class="o">=</span><span class="n">dev</span><span class="p">)}</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_with_bias</span><span class="p">:</span>
+            <span class="n">v</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="o">**</span><span class="n">v</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">random_uniform</span><span class="p">(</span>
+                        <span class="n">shape</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_b_shape</span><span class="p">,</span> <span class="n">dev</span><span class="o">=</span><span class="n">dev</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">v</span>
+
+    <span class="k">def</span> <span class="nf">_forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">linear</span><span class="p">(</span>
+          <span class="n">inputs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">w</span><span class="p">,</span>
+          <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">b</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_with_bias</span> <span class="k">else</span> <span class="kc">None</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>For simplicity, this is slightly different to the builtin <em>ivy.Linear</em> in a couple of ways, as we will explain in the Initializer section below.</p>
+<p>All <em>ivy.Module</em> instances have an attribute v (short for variables), which stores all of the trainable variables in the module in an <em>ivy.Container</em>. For our example above, the hierarchical structure of these variables is the same as that defined in the method <em>_create_variables</em>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">linear</span> <span class="o">=</span> <span class="n">Linear</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">linear</span><span class="o">.</span><span class="n">v</span><span class="p">)</span>
+
+<span class="p">{</span>
+    <span class="n">b</span><span class="p">:</span> <span class="n">tensor</span><span class="p">([</span><span class="mf">0.8979</span><span class="p">,</span> <span class="mf">0.3198</span><span class="p">,</span> <span class="mf">0.0196</span><span class="p">,</span> <span class="mf">0.3126</span><span class="p">]),</span>
+    <span class="n">w</span><span class="p">:</span> <span class="n">tensor</span><span class="p">([[</span><span class="mf">0.3717</span><span class="p">,</span> <span class="mf">0.9687</span><span class="p">],</span>
+               <span class="p">[</span><span class="mf">0.6958</span><span class="p">,</span> <span class="mf">0.5122</span><span class="p">],</span>
+               <span class="p">[</span><span class="mf">0.3902</span><span class="p">,</span> <span class="mf">0.8800</span><span class="p">],</span>
+               <span class="p">[</span><span class="mf">0.5613</span><span class="p">,</span> <span class="mf">0.1982</span><span class="p">]])</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>This is all well and good for defining a single layer, but manually defining all variables in <em>_create_variables</em> for very complex networks would be a total nightmare.</p>
+<p>To overcome this issue, modules can be nested up to an arbitrary depth. This means we can very easily create more complex networks as compositions of other sub-modules or layers. For example, we can create a simple fully connected network with our linear layers.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">FC</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">linear0</span> <span class="o">=</span> <span class="n">Linear</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">64</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">linear1</span> <span class="o">=</span> <span class="n">Linear</span><span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">ivy</span><span class="o">.</span><span class="n">Module</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">linear0</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">sigmoid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">linear1</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>In this case, we don’t specify any variables manually using <em>_create_variables</em>. This is because all variables in the network reside in the linear layers. These variables are all detected automatically.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">fc</span> <span class="o">=</span> <span class="n">FC</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">fc</span><span class="o">.</span><span class="n">v</span><span class="p">)</span>
+
+<span class="p">{</span>
+    <span class="n">linear0</span><span class="p">:</span> <span class="p">{</span>
+        <span class="n">b</span><span class="p">:</span> <span class="p">(</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="o">&gt;</span> <span class="n">shape</span><span class="o">=</span><span class="p">[</span><span class="mi">64</span><span class="p">]),</span>
+        <span class="n">w</span><span class="p">:</span> <span class="p">(</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="o">&gt;</span> <span class="n">shape</span><span class="o">=</span><span class="p">[</span><span class="mi">64</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+    <span class="p">},</span>
+    <span class="n">linear1</span><span class="p">:</span> <span class="p">{</span>
+        <span class="n">b</span><span class="p">:</span> <span class="n">tensor</span><span class="p">([</span><span class="mf">0.9563</span><span class="p">]),</span>
+        <span class="n">w</span><span class="p">:</span> <span class="p">(</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="o">&gt;</span> <span class="n">shape</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">64</span><span class="p">])</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Not only are variables detected automatically for <em>ivy.Module</em> instances which are direct attributes of the top-level class, as above, but also if they are contained within any nested structure which is itself an attribute of the top-level class, such as lists, tuples or dicts. These all work up to an arbitrary nested depth. Check out some of the different ways of defining network layers and how this impacts the variable structure below.</p>
+<p>As a list:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">FC</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">linear</span> <span class="o">=</span> <span class="p">[</span><span class="n">Linear</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">64</span><span class="p">),</span> <span class="n">Linear</span><span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="mi">1</span><span class="p">)]</span>
+        <span class="n">ivy</span><span class="o">.</span><span class="n">Module</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">linear</span><span class="p">[</span><span class="mi">0</span><span class="p">](</span><span class="n">x</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">sigmoid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">linear</span><span class="p">[</span><span class="mi">1</span><span class="p">](</span><span class="n">x</span><span class="p">))</span>
+
+<span class="n">fc</span> <span class="o">=</span> <span class="n">FC</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">fc</span><span class="o">.</span><span class="n">v</span><span class="p">)</span>
+
+<span class="p">{</span>
+    <span class="n">linear</span><span class="p">:</span> <span class="p">{</span>
+        <span class="n">v0</span><span class="p">:</span> <span class="p">{</span>
+            <span class="n">b</span><span class="p">:</span> <span class="p">(</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="o">&gt;</span> <span class="n">shape</span><span class="o">=</span><span class="p">[</span><span class="mi">64</span><span class="p">]),</span>
+            <span class="n">w</span><span class="p">:</span> <span class="p">(</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="o">&gt;</span> <span class="n">shape</span><span class="o">=</span><span class="p">[</span><span class="mi">64</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+        <span class="p">},</span>
+        <span class="n">v1</span><span class="p">:</span> <span class="p">{</span>
+            <span class="n">b</span><span class="p">:</span> <span class="n">tensor</span><span class="p">([</span><span class="mf">0.6440</span><span class="p">]),</span>
+            <span class="n">w</span><span class="p">:</span> <span class="p">(</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="o">&gt;</span> <span class="n">shape</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">64</span><span class="p">])</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>As a tuple:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">FC</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">linear</span> <span class="o">=</span> <span class="p">(</span><span class="n">Linear</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">64</span><span class="p">),</span> <span class="n">Linear</span><span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+        <span class="n">ivy</span><span class="o">.</span><span class="n">Module</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">linear</span><span class="p">[</span><span class="mi">0</span><span class="p">](</span><span class="n">x</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">sigmoid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">linear</span><span class="p">[</span><span class="mi">1</span><span class="p">](</span><span class="n">x</span><span class="p">))</span>
+
+<span class="n">fc</span> <span class="o">=</span> <span class="n">FC</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">fc</span><span class="o">.</span><span class="n">v</span><span class="p">)</span>
+
+<span class="p">{</span>
+    <span class="n">linear</span><span class="p">:</span> <span class="p">{</span>
+        <span class="n">v0</span><span class="p">:</span> <span class="p">{</span>
+            <span class="n">b</span><span class="p">:</span> <span class="p">(</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="o">&gt;</span> <span class="n">shape</span><span class="o">=</span><span class="p">[</span><span class="mi">64</span><span class="p">]),</span>
+            <span class="n">w</span><span class="p">:</span> <span class="p">(</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="o">&gt;</span> <span class="n">shape</span><span class="o">=</span><span class="p">[</span><span class="mi">64</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+        <span class="p">},</span>
+        <span class="n">v1</span><span class="p">:</span> <span class="p">{</span>
+            <span class="n">b</span><span class="p">:</span> <span class="n">tensor</span><span class="p">([</span><span class="mf">0.6440</span><span class="p">]),</span>
+            <span class="n">w</span><span class="p">:</span> <span class="p">(</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="o">&gt;</span> <span class="n">shape</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">64</span><span class="p">])</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>As a dict:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">FC</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">linear</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;key0&#39;</span><span class="p">:</span> <span class="n">Linear</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">64</span><span class="p">),</span>
+                       <span class="s1">&#39;key1&#39;</span><span class="p">:</span> <span class="n">Linear</span><span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="mi">1</span><span class="p">)}</span>
+        <span class="n">ivy</span><span class="o">.</span><span class="n">Module</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">linear</span><span class="p">[</span><span class="s1">&#39;key0&#39;</span><span class="p">](</span><span class="n">x</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">sigmoid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">linear</span><span class="p">[</span><span class="s1">&#39;key1&#39;</span><span class="p">](</span><span class="n">x</span><span class="p">))</span>
+
+<span class="n">fc</span> <span class="o">=</span> <span class="n">FC</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">fc</span><span class="o">.</span><span class="n">v</span><span class="p">)</span>
+
+<span class="p">{</span>
+    <span class="n">linear</span><span class="p">:</span> <span class="p">{</span>
+        <span class="n">key0</span><span class="p">:</span> <span class="p">{</span>
+            <span class="n">b</span><span class="p">:</span> <span class="p">(</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="o">&gt;</span> <span class="n">shape</span><span class="o">=</span><span class="p">[</span><span class="mi">64</span><span class="p">]),</span>
+            <span class="n">w</span><span class="p">:</span> <span class="p">(</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="o">&gt;</span> <span class="n">shape</span><span class="o">=</span><span class="p">[</span><span class="mi">64</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+        <span class="p">},</span>
+        <span class="n">key1</span><span class="p">:</span> <span class="p">{</span>
+            <span class="n">b</span><span class="p">:</span> <span class="n">tensor</span><span class="p">([</span><span class="mf">0.1823</span><span class="p">]),</span>
+            <span class="n">w</span><span class="p">:</span> <span class="p">(</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="o">&gt;</span> <span class="n">shape</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">64</span><span class="p">])</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>As a nested list:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">FC</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">linear</span> <span class="o">=</span> <span class="p">[[</span><span class="n">Linear</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">64</span><span class="p">),</span> <span class="n">Linear</span><span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="mi">64</span><span class="p">)],</span>
+                       <span class="n">Linear</span><span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="mi">1</span><span class="p">)]</span>
+        <span class="n">ivy</span><span class="o">.</span><span class="n">Module</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">linear</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">linear</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="n">linear</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">sigmoid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">linear</span><span class="p">[</span><span class="mi">1</span><span class="p">](</span><span class="n">x</span><span class="p">))</span>
+
+<span class="n">fc</span> <span class="o">=</span> <span class="n">FC</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">fc</span><span class="o">.</span><span class="n">v</span><span class="p">)</span>
+
+<span class="p">{</span>
+    <span class="n">linear</span><span class="p">:</span> <span class="p">{</span>
+        <span class="n">v0</span><span class="p">:</span> <span class="p">{</span>
+            <span class="n">v0</span><span class="p">:</span> <span class="p">{</span>
+                <span class="n">b</span><span class="p">:</span> <span class="p">(</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="o">&gt;</span> <span class="n">shape</span><span class="o">=</span><span class="p">[</span><span class="mi">64</span><span class="p">]),</span>
+                <span class="n">w</span><span class="p">:</span> <span class="p">(</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="o">&gt;</span> <span class="n">shape</span><span class="o">=</span><span class="p">[</span><span class="mi">64</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+            <span class="p">},</span>
+            <span class="n">v1</span><span class="p">:</span> <span class="p">{</span>
+                <span class="n">b</span><span class="p">:</span> <span class="p">(</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="o">&gt;</span> <span class="n">shape</span><span class="o">=</span><span class="p">[</span><span class="mi">64</span><span class="p">]),</span>
+                <span class="n">w</span><span class="p">:</span> <span class="p">(</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="o">&gt;</span> <span class="n">shape</span><span class="o">=</span><span class="p">[</span><span class="mi">64</span><span class="p">,</span> <span class="mi">64</span><span class="p">])</span>
+            <span class="p">}</span>
+        <span class="p">},</span>
+        <span class="n">v1</span><span class="p">:</span> <span class="p">{</span>
+            <span class="n">b</span><span class="p">:</span> <span class="n">tensor</span><span class="p">([</span><span class="mf">0.8075</span><span class="p">]),</span>
+            <span class="n">w</span><span class="p">:</span> <span class="p">(</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="o">&gt;</span> <span class="n">shape</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">64</span><span class="p">])</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Duplicates are also handled correctly, if for example a layer is stored both as a direct attribute and also within a list:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">FC</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">linear0</span> <span class="o">=</span> <span class="n">Linear</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">64</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">linear1</span> <span class="o">=</span> <span class="n">Linear</span><span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="mi">64</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">linear3</span> <span class="o">=</span> <span class="n">Linear</span><span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">linear</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">linear0</span><span class="p">,</span>
+                       <span class="bp">self</span><span class="o">.</span><span class="n">linear1</span><span class="p">,</span>
+                       <span class="n">Linear</span><span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="mi">64</span><span class="p">)]</span>
+        <span class="n">ivy</span><span class="o">.</span><span class="n">Module</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">linear</span><span class="p">[</span><span class="mi">0</span><span class="p">](</span><span class="n">x</span><span class="p">))</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">linear</span><span class="p">[</span><span class="mi">1</span><span class="p">](</span><span class="n">x</span><span class="p">))</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">linear</span><span class="p">[</span><span class="mi">2</span><span class="p">](</span><span class="n">x</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">sigmoid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">linear</span><span class="p">[</span><span class="mi">3</span><span class="p">](</span><span class="n">x</span><span class="p">))</span>
+
+<span class="n">fc</span> <span class="o">=</span> <span class="n">FC</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">fc</span><span class="o">.</span><span class="n">v</span><span class="p">)</span>
+
+<span class="p">{</span>
+    <span class="n">linear</span><span class="p">:</span> <span class="p">{</span>
+        <span class="n">v0</span><span class="p">:</span> <span class="p">{</span>
+            <span class="n">b</span><span class="p">:</span> <span class="p">(</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="o">&gt;</span> <span class="n">shape</span><span class="o">=</span><span class="p">[</span><span class="mi">64</span><span class="p">]),</span>
+            <span class="n">w</span><span class="p">:</span> <span class="p">(</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="o">&gt;</span> <span class="n">shape</span><span class="o">=</span><span class="p">[</span><span class="mi">64</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+        <span class="p">},</span>
+        <span class="n">v1</span><span class="p">:</span> <span class="p">{</span>
+            <span class="n">b</span><span class="p">:</span> <span class="p">(</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="o">&gt;</span> <span class="n">shape</span><span class="o">=</span><span class="p">[</span><span class="mi">64</span><span class="p">]),</span>
+            <span class="n">w</span><span class="p">:</span> <span class="p">(</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="o">&gt;</span> <span class="n">shape</span><span class="o">=</span><span class="p">[</span><span class="mi">64</span><span class="p">,</span> <span class="mi">64</span><span class="p">])</span>
+        <span class="p">},</span>
+        <span class="n">v2</span><span class="p">:</span> <span class="p">{</span>
+            <span class="n">b</span><span class="p">:</span> <span class="p">(</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="o">&gt;</span> <span class="n">shape</span><span class="o">=</span><span class="p">[</span><span class="mi">64</span><span class="p">]),</span>
+            <span class="n">w</span><span class="p">:</span> <span class="p">(</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="o">&gt;</span> <span class="n">shape</span><span class="o">=</span><span class="p">[</span><span class="mi">64</span><span class="p">,</span> <span class="mi">64</span><span class="p">])</span>
+        <span class="p">}</span>
+    <span class="p">},</span>
+    <span class="n">linear3</span><span class="p">:</span> <span class="p">{</span>
+        <span class="n">b</span><span class="p">:</span> <span class="n">tensor</span><span class="p">([</span><span class="mf">0.2346</span><span class="p">]),</span>
+        <span class="n">w</span><span class="p">:</span> <span class="p">(</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="o">&gt;</span> <span class="n">shape</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">64</span><span class="p">])</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>While the examples above all use the functional API for calling the ReLU and Sigmoid activation functions, we can also call these using the stateful API like so:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">FC</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">linear0</span> <span class="o">=</span> <span class="n">Linear</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">64</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">linear1</span> <span class="o">=</span> <span class="n">Linear</span><span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">relu</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">ReLU</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sigmoid</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Sigmoid</span><span class="p">()</span>
+        <span class="n">ivy</span><span class="o">.</span><span class="n">Module</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">linear0</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sigmoid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">linear1</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>It may seem counter intuitive to implement the activation as an <em>ivy.Module</em>, as there are no hidden trainable weights. However, for networks where modules are directly chained together, and all outputs from the preceding module are fed as inputs to the subsequent module, then we can use the <em>ivy.Sequential</em> class. This can simplify the construction of our small fully connected network even further.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">fc</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Sequential</span><span class="p">(</span>
+        <span class="n">Linear</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">64</span><span class="p">),</span>
+        <span class="n">ivy</span><span class="o">.</span><span class="n">ReLU</span><span class="p">(),</span>
+        <span class="n">Linear</span><span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+        <span class="n">ivy</span><span class="o">.</span><span class="n">Sigmoid</span><span class="p">())</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">fc</span><span class="o">.</span><span class="n">v</span><span class="p">)</span>
+
+<span class="p">{</span>
+    <span class="n">submodules</span><span class="p">:</span> <span class="p">{</span>
+        <span class="n">v0</span><span class="p">:</span> <span class="p">{</span>
+            <span class="n">b</span><span class="p">:</span> <span class="p">(</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="o">&gt;</span> <span class="n">shape</span><span class="o">=</span><span class="p">[</span><span class="mi">64</span><span class="p">]),</span>
+            <span class="n">w</span><span class="p">:</span> <span class="p">(</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="o">&gt;</span> <span class="n">shape</span><span class="o">=</span><span class="p">[</span><span class="mi">64</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+        <span class="p">},</span>
+        <span class="n">v1</span><span class="p">:</span> <span class="p">{</span>
+            <span class="n">b</span><span class="p">:</span> <span class="n">tensor</span><span class="p">([</span><span class="mf">0.1300</span><span class="p">]),</span>
+            <span class="n">w</span><span class="p">:</span> <span class="p">(</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="o">&gt;</span> <span class="n">shape</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">64</span><span class="p">])</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Given that the weights of our network are stored in an <em>ivy.Container</em>, and the gradients returned from <em>ivy.execute_with_gradients</em> are also stored in an <em>ivy.Container</em>, all operations are applied recursively to every variable at all leaves. Therefore, we can train the network in a few lines of code like so:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">x_in</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">,</span> <span class="mf">3.</span><span class="p">])</span>
+<span class="n">target</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">])</span>
+<span class="n">lr</span> <span class="o">=</span> <span class="mf">0.001</span>
+
+<span class="k">def</span> <span class="nf">loss_fn</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">x_in</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="n">v</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">reduce_mean</span><span class="p">((</span><span class="n">out</span> <span class="o">-</span> <span class="n">target</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+<span class="k">for</span> <span class="n">step</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">):</span>
+    <span class="n">loss</span><span class="p">,</span> <span class="n">grads</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">execute_with_gradients</span><span class="p">(</span>
+        <span class="n">loss_fn</span><span class="p">,</span> <span class="n">model</span><span class="o">.</span><span class="n">v</span><span class="p">)</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">v</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">v</span> <span class="o">-</span> <span class="n">grads</span> <span class="o">*</span> <span class="n">lr</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="initializers">
+<h2>Initializers<a class="headerlink" href="#initializers" title="Permalink to this headline">¶</a></h2>
+<p>In the examples above, we defined how the trainable weights should be initialized directly in the <em>_create_variables</em> method. However, it would be better if we could decouple the initialization scheme from the layer implementation. This is where the <em>ivy.Initializer</em> class comes in. The actual implementation for the <em>ivy.Linear</em> layer exposed in the Ivy stateful API is as follows:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ivy/stateful/layers.py</span>
+<span class="k">class</span> <span class="nc">Linear</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_channels</span><span class="p">,</span> <span class="n">output_channels</span><span class="p">,</span>
+                 <span class="n">weight_initializer</span><span class="o">=</span><span class="n">GlorotUniform</span><span class="p">(),</span>
+                 <span class="n">bias_initializer</span><span class="o">=</span><span class="n">Zeros</span><span class="p">(),</span> <span class="n">with_bias</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                 <span class="n">dev</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_input_channels</span> <span class="o">=</span> <span class="n">input_channels</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_output_channels</span> <span class="o">=</span> <span class="n">output_channels</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_w_shape</span> <span class="o">=</span> <span class="p">(</span><span class="n">output_channels</span><span class="p">,</span> <span class="n">input_channels</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_b_shape</span> <span class="o">=</span> <span class="p">(</span><span class="n">output_channels</span><span class="p">,)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_w_init</span> <span class="o">=</span> <span class="n">weight_initializer</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_b_init</span> <span class="o">=</span> <span class="n">bias_initializer</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_with_bias</span> <span class="o">=</span> <span class="n">with_bias</span>
+        <span class="n">ivy</span><span class="o">.</span><span class="n">Module</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dev</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_create_variables</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dev</span><span class="p">):</span>
+        <span class="n">v</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;w&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_w_init</span><span class="o">.</span><span class="n">create_variables</span><span class="p">(</span>
+          <span class="bp">self</span><span class="o">.</span><span class="n">_w_shape</span><span class="p">,</span> <span class="n">dev</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_output_channels</span><span class="p">,</span>
+          <span class="bp">self</span><span class="o">.</span><span class="n">_input_channels</span><span class="p">)}</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_with_bias</span><span class="p">:</span>
+            <span class="n">v</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="o">**</span><span class="n">v</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_b_init</span><span class="o">.</span><span class="n">create_variables</span><span class="p">(</span>
+              <span class="bp">self</span><span class="o">.</span><span class="n">_b_shape</span><span class="p">,</span> <span class="n">dev</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_output_channels</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">v</span>
+
+    <span class="k">def</span> <span class="nf">_forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">linear</span><span class="p">(</span>
+          <span class="n">inputs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">w</span><span class="p">,</span>
+          <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">b</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_with_bias</span> <span class="k">else</span> <span class="kc">None</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The <em>ivy.Initializer</em> class has a single abstract method, <em>create_variables(var_shape, dev, fan_out=None, fan_in=None, *args, **kwargs)</em>. Check out the <a class="reference external" href="https://github.com/unifyai/ivy/blob/master/ivy/stateful/initializers.py">code</a> or <a class="reference external" href="https://lets-unify.ai/ivy/neural_net_stateful/initializers.html">docs</a> for more details. The default initializer for the weights is <em>ivy.GlorotUniform</em> and for this bias is <em>ivy.Zeros</em>. Let’s take a quick look at what these look like. <em>ivy.GlorotUniform</em> derives from a more general <em>ivy.Uniform</em> initializer class, and is then simply implemented as follows:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ivy/stateful/initializers.py</span>
+<span class="k">class</span> <span class="nc">GlorotUniform</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">Uniform</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="n">numerator</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">fan_mode</span><span class="o">=</span><span class="s1">&#39;fan_sum&#39;</span><span class="p">,</span> <span class="n">power</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">gain</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><em>ivy.Zeros</em> derives from a more general <em>ivy.Constant</em> initializer class, and is then simply implemented as follows:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ivy/stateful/initializers.py</span>
+<span class="k">class</span> <span class="nc">Zeros</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">Constant</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">constant</span><span class="o">=</span><span class="mf">0.</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The initializers are not stateful, and so adding them to the “stateful API” is a slight misnomer. However, the dedicated initializer class helps us to decouple initialization schemes from layer implementations, which are themselves stateful. Given that their application is entirely specific to stateful <em>ivy.Module</em> instances, they still belong in the stateful API.</p>
+</div>
+<div class="section" id="optimizers">
+<h2>Optimizers<a class="headerlink" href="#optimizers" title="Permalink to this headline">¶</a></h2>
+<p>Recapping the example given above, we saw that <em>ivy.Module</em> instances can be trained like so:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">x_in</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">,</span> <span class="mf">3.</span><span class="p">])</span>
+<span class="n">target</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">])</span>
+<span class="n">lr</span> <span class="o">=</span> <span class="mf">0.001</span>
+
+<span class="k">def</span> <span class="nf">loss_fn</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">x_in</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="n">v</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">reduce_mean</span><span class="p">((</span><span class="n">out</span> <span class="o">-</span> <span class="n">target</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+<span class="k">for</span> <span class="n">step</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">):</span>
+    <span class="n">loss</span><span class="p">,</span> <span class="n">grads</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">execute_with_gradients</span><span class="p">(</span>
+        <span class="n">loss_fn</span><span class="p">,</span> <span class="n">model</span><span class="o">.</span><span class="n">v</span><span class="p">)</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">v</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">v</span> <span class="o">-</span> <span class="n">grads</span> <span class="o">*</span> <span class="n">lr</span>
+</pre></div>
+</div>
+<p>However, what if we want to do something more complex than vanilla gradient descent? What about ADAM or other stateful optimizers such as LARS and LAMB? This is where the <em>ivy.Optimizer</em> class comes in.</p>
+<p>Let’s take the class <em>ivy.Adam</em> as an example. The implementation is as follows:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ivy/stateful/optimizers.py</span>
+<span class="k">class</span> <span class="nc">Adam</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">Optimizer</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lr</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">,</span> <span class="n">beta1</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span> <span class="n">beta2</span><span class="o">=</span><span class="mf">0.999</span><span class="p">,</span>
+                 <span class="n">epsilon</span><span class="o">=</span><span class="mf">1e-07</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">stop_gradients</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">compile_on_next_step</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                 <span class="n">dev</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="n">ivy</span><span class="o">.</span><span class="n">Optimizer</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">lr</span><span class="p">,</span> <span class="n">inplace</span><span class="p">,</span> <span class="n">stop_gradients</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span>
+            <span class="n">compile_on_next_step</span><span class="p">,</span> <span class="n">dev</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_beta1</span> <span class="o">=</span> <span class="n">beta1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_beta2</span> <span class="o">=</span> <span class="n">beta2</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_epsilon</span> <span class="o">=</span> <span class="n">epsilon</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_mw</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_vw</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_first_pass</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_should_compile</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="c1"># Custom Step</span>
+
+    <span class="k">def</span> <span class="nf">_step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">grads</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_first_pass</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_mw</span> <span class="o">=</span> <span class="n">grads</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_vw</span> <span class="o">=</span> <span class="n">grads</span> <span class="o">**</span> <span class="mi">2</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_first_pass</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">new_v</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mw</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vw</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">adam_update</span><span class="p">(</span>
+            <span class="n">v</span><span class="p">,</span> <span class="n">grads</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lr</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_lr</span><span class="p">,</span> <span class="nb">float</span><span class="p">)</span>
+            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lr</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mw</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vw</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_count</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_beta1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_beta2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_epsilon</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inplace</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_stop_gradients</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">new_v</span>
+
+    <span class="k">def</span> <span class="nf">set_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_mw</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">mw</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_vw</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">vw</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">state</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">({</span><span class="s1">&#39;mw&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mw</span><span class="p">,</span> <span class="s1">&#39;vw&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vw</span><span class="p">})</span>
+</pre></div>
+</div>
+<p>By changing only a couple of lines, we can use this optimizer to train our network like so:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">x_in</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">,</span> <span class="mf">3.</span><span class="p">])</span>
+<span class="n">target</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">])</span>
+<span class="n">optimizer</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="mf">0.001</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">loss_fn</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">x_in</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="n">v</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">reduce_mean</span><span class="p">((</span><span class="n">out</span> <span class="o">-</span> <span class="n">target</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+<span class="k">for</span> <span class="n">step</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">):</span>
+    <span class="n">loss</span><span class="p">,</span> <span class="n">grads</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">execute_with_gradients</span><span class="p">(</span>
+        <span class="n">loss_fn</span><span class="p">,</span> <span class="n">model</span><span class="o">.</span><span class="n">v</span><span class="p">)</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">v</span> <span class="o">=</span> <span class="n">optimizer</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">v</span><span class="p">,</span> <span class="n">grads</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Round Up</strong></p>
+<p>That should hopefully be enough to get you started with Ivy’s stateful API 😊</p>
+<p>Please check out the discussions on the <a class="reference external" href="https://github.com/unifyai/ivy">repo</a> for FAQs, and reach out on <a class="reference external" href="https://discord.gg/ZVQdvbzNQJ">discord</a> if you have any questions!</p>
+</div>
 </div>
 
 
