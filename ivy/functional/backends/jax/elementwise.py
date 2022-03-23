@@ -1,3 +1,4 @@
+ 
 # global
 import jax
 import jax.numpy as jnp
@@ -5,7 +6,10 @@ import jax.numpy as jnp
 # local
 from ivy.functional.backends.jax import JaxArray
 
-
+def expm1(x: JaxArray)\
+        -> JaxArray:
+    return jnp.expm1(x)
+  
 def bitwise_invert(x: JaxArray)\
         -> JaxArray:
     return jnp.bitwise_not(x)
@@ -59,6 +63,15 @@ def greater_equal(x1: JaxArray, x2: JaxArray)\
 def less_equal(x1: JaxArray, x2: JaxArray)\
         -> JaxArray:
     return x1 <= x2
+  
+
+def subtract(x1: JaxArray, x2: JaxArray)\
+        -> JaxArray:
+    if hasattr(x1, 'dtype') and hasattr(x2, 'dtype'):
+        promoted_type = jnp.promote_types(x1.dtype, x2.dtype)
+        x1 = x1.astype(promoted_type)
+        x2 = x2.astype(promoted_type)
+    return jnp.subtract(x1, x2)
 
 
 def asinh(x: JaxArray)\
@@ -79,6 +92,11 @@ def cosh(x: JaxArray)\
 def log10(x: JaxArray)\
         -> JaxArray:
     return jnp.log10(x)
+
+
+def log(x: JaxArray)\
+        -> JaxArray:
+    return jnp.log(x)
 
 
 def log2(x: JaxArray)\
@@ -104,6 +122,11 @@ def less(x1: JaxArray,x2:JaxArray)\
 def cos(x: JaxArray)\
         -> JaxArray:
     return jnp.cos(x)
+
+
+def logical_xor(x1: JaxArray, x2: JaxArray) \
+        -> JaxArray:
+    return jnp.logical_xor(x1, x2)
 
 
 def logical_or(x1: JaxArray, x2: JaxArray)\
@@ -139,16 +162,6 @@ def sin(x: JaxArray)\
 def negative(x: JaxArray) -> JaxArray:
     return jnp.negative(x)
 
-
-
-def subtract(x1: JaxArray, x2: JaxArray)\
-        -> JaxArray:
-    if hasattr(x1, 'dtype') and hasattr(x2, 'dtype'):
-        promoted_type = jnp.promote_types(x1.dtype, x2.dtype)
-        x1 = x1.astype(promoted_type)
-        x2 = x2.astype(promoted_type)
-    return jnp.subtract(x1, x2)
-  
 
 def not_equal(x1: JaxArray, x2: JaxArray)\
         -> JaxArray:
