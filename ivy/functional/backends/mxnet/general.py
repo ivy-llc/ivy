@@ -123,3 +123,23 @@ def scatter_nd(indices, updates, shape=None, tensor=None, reduction='sum', dev=N
     else:
         raise Exception('MXNet scatter_nd currently only supports reduction mode "replace", but {} selected.'.
                         format(reduction))
+
+def gather(params, indices, axis=-1, dev=None):
+    if dev is None:
+        dev = _callable_dev(params)
+    index_slices = unstack(indices, -1)
+    res = _mx.nd.concat(
+        *[_mx.nd.expand_dims(_mx.nd.pick(params, idx_slice, axis), -1) for idx_slice in index_slices], dim=-1)
+    res = _mx.nd.reshape(res, indices.shape)
+    return res.copyto(_mxnet_init_context(dev))
+
+
+def gather_nd(params, indices, dev=None):
+    if dev is None:
+        dev = _callable_dev(params)
+    indices_shape = indices.shape
+    num_idx_dims = len(indices_shape)
+    transpose_order = [num_idx_dims-1] + list(range(num_idx_dims-1))
+    indices = _mx.nd.transpose(indices, transpose_order)
+    return _mx.nd.gather_nd(params, indices).copyto(_mxnet_init_context(dev))
+
