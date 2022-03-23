@@ -20,6 +20,14 @@ def max(x: np.ndarray,
     return np.amax(a=x, axis=axis, keepdims=keepdims)
 
 
+def var(x: np.ndarray,
+        axis: Optional[Union[int, Tuple[int]]] = None,
+        correction: Union[int, float] = 0.0,
+        keepdims: bool = False) \
+        -> np.ndarray:
+    return np.var(np.array_api.asarray(x), axis=axis, keepdims=keepdims)
+
+
 def sum(x: np.ndarray,
              axis: Union[int,Tuple[int]] =None,
             keepdims: bool = False)\
@@ -58,15 +66,6 @@ def mean(x, axis=None, keepdims=False):
     elif isinstance(axis, list):
         axis = tuple(axis)
     return np.asarray(np.mean(x, axis=axis, keepdims=keepdims))
-
-
-def var(x, axis=None, keepdims=False):
-    if axis is None:
-        num_dims = len(x.shape)
-        axis = tuple(range(num_dims))
-    elif isinstance(axis, list):
-        axis = tuple(axis)
-    return np.asarray(np.var(x, axis=axis, keepdims=keepdims))
 
 
 # Extra #
