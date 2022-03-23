@@ -70,7 +70,7 @@ def diagonal(x: NDArray,
              offset: int = 0,
              axis1: int = -2,
              axis2: int = -1) -> NDArray:
-    return diag(x, k=offset, axis1=axis1, axis2=axis2)
+    return mx.nd.diag(x, k=offset, axis1=axis1, axis2=axis2)
 
 def slogdet(x: Union[_ivy.Array,_ivy.NativeArray],
             full_matrices: bool = True) -> Union[_ivy.Array, Tuple[_ivy.Array,...]]:
