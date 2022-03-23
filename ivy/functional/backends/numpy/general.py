@@ -157,3 +157,31 @@ def scatter_nd(indices, updates, shape=None, tensor=None, reduction='sum', dev=N
     else:
         raise Exception('reduction is {}, but it must be one of "sum", "min" or "max"'.format(reduction))
     return _to_dev(target, dev)
+
+
+def gather(params, indices, axis=-1, dev=None):
+    if dev is None:
+        dev = _dev_callable(params)
+    return _to_dev(np.take_along_axis(params, indices, axis), dev)
+
+
+def gather_nd(params, indices, dev=None):
+    if dev is None:
+        dev = _dev_callable(params)
+    indices_shape = indices.shape
+    params_shape = params.shape
+    num_index_dims = indices_shape[-1]
+    result_dim_sizes_list = [_reduce(_mul, params_shape[i + 1:], 1) for i in range(len(params_shape) - 1)] + [1]
+    result_dim_sizes = np.array(result_dim_sizes_list)
+    implicit_indices_factor = int(result_dim_sizes[num_index_dims - 1].item())
+    flat_params = np.reshape(params, (-1,))
+    new_shape = [1] * (len(indices_shape) - 1) + [num_index_dims]
+    indices_scales = np.reshape(result_dim_sizes[0:num_index_dims], new_shape)
+    indices_for_flat_tiled = np.tile(np.reshape(np.sum(indices * indices_scales, -1, keepdims=True), (-1, 1)), (1, implicit_indices_factor))
+    implicit_indices = np.tile(np.expand_dims(np.arange(implicit_indices_factor), 0), (indices_for_flat_tiled.shape[0], 1))
+    indices_for_flat = indices_for_flat_tiled + implicit_indices
+    flat_indices_for_flat = np.reshape(indices_for_flat, (-1,)).astype(np.int32)
+    flat_gather = np.take(flat_params, flat_indices_for_flat, 0)
+    new_shape = list(indices_shape[:-1]) + list(params_shape[num_index_dims:])
+    res = np.reshape(flat_gather, new_shape)
+    return _to_dev(res, dev)
