@@ -7,12 +7,12 @@ import typing
 import ivy
 
 
-def expm1(x: Tensor) \
+def expm1(x: Tensor)\
         -> Tensor:
     return tf.math.expm1(x)
 
 
-def bitwise_invert(x: Tensor) \
+def bitwise_invert(x: Tensor)\
         -> Tensor:
     if 'int' not in str(x.dtype):
         return tf.logical_not(x)
@@ -20,19 +20,19 @@ def bitwise_invert(x: Tensor) \
 
 
 def bitwise_and(x1: Tensor,
-                x2: Tensor) \
+                x2: Tensor)\
         -> Tensor:
     return tf.bitwise.bitwise_and(x1, x2)
 
 
-def ceil(x: Tensor) \
+def ceil(x: Tensor)\
         -> Tensor:
     if 'int' in str(x.dtype):
         return x
     return tf.math.ceil(x)
 
 
-def floor(x: Tensor) \
+def floor(x: Tensor)\
         -> Tensor:
     if 'int' in str(x.dtype):
         return x
@@ -65,7 +65,7 @@ def _tf_cast(x: Tensor, dtype: tf.dtypes.DType) -> Tensor:
         return x
 
 
-def _cast_for_binary_op(x1: Tensor, x2: Tensor) \
+def _cast_for_binary_op(x1: Tensor, x2: Tensor)\
         -> typing.Tuple[typing.Union[Tensor, int, float, bool], typing.Union[Tensor, int, float, bool]]:
     x1_bits = ivy.functional.backends.tensorflow.old.general.dtype_bits(x1.dtype)
     if isinstance(x2, (int, float, bool)):
@@ -78,13 +78,13 @@ def _cast_for_binary_op(x1: Tensor, x2: Tensor) \
     return x1, x2
 
 
-def equal(x1: Tensor, x2: Tensor) \
+def equal(x1: Tensor, x2: Tensor)\
         -> Tensor:
     x1, x2 = _cast_for_binary_op(x1, x2)
     return tf.math.equal(x1, x2)
 
 
-def less_equal(x1: Tensor, x2: Tensor) \
+def less_equal(x1: Tensor, x2: Tensor)\
         -> Tensor:
     x1, x2 = _cast_for_binary_op(x1, x2)
     return tf.math.less_equal(x1, x2)
@@ -95,7 +95,7 @@ def asinh(x: Tensor) \
     return tf.asinh(x)
 
 
-def sqrt(x: Tensor) \
+def sqrt(x: Tensor)\
         -> Tensor:
     if x.dtype == 'float32':
         x_64 = tf.cast(x, tf.float64)
@@ -113,7 +113,7 @@ def log10(x: Tensor) \
     return tf.experimental.numpy.log10(x)
 
 
-def log(x: Tensor) \
+def log(x: Tensor)\
         -> Tensor:
     return tf.math.log(x)
 
@@ -128,14 +128,14 @@ def log1p(x: Tensor) \
     return tf.experimental.numpy.log1p(x)
 
 
-def isnan(x: Tensor) \
+def isnan(x: Tensor)\
         -> Tensor:
     if ivy.is_int_dtype(x):
         return tf.zeros_like(x, tf.bool)
     return tf.math.is_nan(x)
 
 
-def less(x1: Tensor, x2: Tensor) \
+def less(x1: Tensor, x2: Tensor)\
         -> Tensor:
     if hasattr(x1, 'dtype') and hasattr(x2, 'dtype'):
         promoted_type = tf.experimental.numpy.promote_types(x1.dtype, x2.dtype)
@@ -144,17 +144,17 @@ def less(x1: Tensor, x2: Tensor) \
     return tf.math.less(x1, x2)
 
 
-def cos(x: Tensor) \
+def cos(x: Tensor)\
         -> Tensor:
     return tf.cos(x)
 
 
-def logical_not(x: Tensor) \
+def logical_not(x: Tensor)\
         -> Tensor:
     return tf.logical_not(tf.cast(x, tf.bool))
 
 
-def greater_equal(x1: Tensor, x2: Tensor) \
+def greater_equal(x1: Tensor, x2: Tensor)\
         -> Tensor:
     if hasattr(x1, 'dtype') and hasattr(x2, 'dtype'):
         promoted_type = tf.experimental.numpy.promote_types(x1.dtype, x2.dtype)
@@ -163,7 +163,7 @@ def greater_equal(x1: Tensor, x2: Tensor) \
     return tf.math.greater_equal(x1, x2)
 
 
-def acos(x: Tensor) \
+def acos(x: Tensor)\
         -> Tensor:
     return tf.acos(x)
 
@@ -173,12 +173,12 @@ def logical_xor(x1: Tensor, x2: Tensor) \
     return tf.math.logical_xor(tf.cast(x1, tf.bool), tf.cast(x2, tf.bool))
 
 
-def logical_or(x1: Tensor, x2: Tensor) \
+def logical_or(x1: Tensor, x2: Tensor)\
         -> Tensor:
     return tf.logical_or(tf.cast(x1, tf.bool), tf.cast(x2, tf.bool))
 
 
-def logical_and(x1: Tensor, x2: Tensor) \
+def logical_and(x1: Tensor, x2: Tensor)\
         -> Tensor:
     return tf.logical_and(tf.cast(x1, tf.bool), tf.cast(x2, tf.bool))
 
@@ -188,7 +188,7 @@ def acosh(x: Tensor) \
     return tf.acosh(x)
 
 
-def sin(x: Tensor) \
+def sin(x: Tensor)\
         -> Tensor:
     return tf.sin(x)
 
@@ -199,7 +199,7 @@ def negative(x: Tensor) -> Tensor:
     return tf.negative(x)
 
 
-def not_equal(x1: Tensor, x2: Tensor) \
+def not_equal(x1: Tensor, x2: Tensor)\
         -> Tensor:
     x1, x2 = _cast_for_binary_op(x1, x2)
     return tf.math.not_equal(x1, x2)
@@ -221,24 +221,24 @@ def bitwise_or(x1: Tensor, x2: Tensor) \
     return x1 | x2
 
 
-def positive(x: Tensor) \
+def positive(x: Tensor)\
         -> Tensor:
     return tf.experimental.numpy.positive(x)
 
 
-def square(x: Tensor) \
+def square(x: Tensor)\
         -> Tensor:
     return tf.math.square(x)
 
 
-def round(x: Tensor) \
+def round(x: Tensor)\
         -> Tensor:
     if 'int' in str(x.dtype):
         return x
     return tf.round(x)
 
 
-def abs(x: Tensor) \
+def abs(x: Tensor)\
         -> Tensor:
     return tf.math.abs(x)
 
