@@ -59,6 +59,7 @@ Elementwise
    elementwise/atanh.rst
    elementwise/log.rst
    elementwise/exp.rst
+   elementwise/subtract.rst
    elementwise/divide.rst
    elementwise/remainder.rst
    elementwise/erf.rst
