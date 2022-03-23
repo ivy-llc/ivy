@@ -4,7 +4,7 @@ acosh
 #add
 #asin # depends on: greater
 asinh
-#atan
+atan
 #atan2
 #atanh
 #bitwise_and
