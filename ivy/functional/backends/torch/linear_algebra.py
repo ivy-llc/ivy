@@ -29,6 +29,10 @@ def matrix_transpose(x: torch.Tensor)\
         -> torch.Tensor:
     return torch.swapaxes(x, -1, -2)
 
+def eig(x: torch.tensor)\
+  -> torch.tensor:
+    returm torch.linalg.eig(x)
+
 
 def vector_norm(x: torch.Tensor,
                 p: Union[int, float, Literal[inf, - inf]] = 2,
