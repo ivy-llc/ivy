@@ -36,7 +36,7 @@
   <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Extensions" href="extensions.html" />
+    <link rel="next" title="Building Blocks" href="design/building_blocks.html" />
     <link rel="prev" title="Standardization" href="background/standardization.html" /> 
 </head>
 
@@ -84,7 +84,12 @@
               <p class="caption"><span class="caption-text">Overview</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="background.html">Background</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Design</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Design</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="design/building_blocks.html">Building Blocks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="design/ivy_as_a_transpiler.html">Ivy as a Transpiler</a></li>
+<li class="toctree-l2"><a class="reference internal" href="design/ivy_as_a_framework.html">Ivy as a Framework</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="extensions.html">Extensions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="roadmap.html">Roadmap</a></li>
 <li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
@@ -210,22 +215,24 @@
 <div class="line">2. serve as a new ML framework with multi-framework support</div>
 <div class="line"><br /></div>
 <div class="line">The Ivy codebase can then be split into three categories, and can be further split into 8 distinct submodules, each of which fall into one of these three categories as follows:</div>
-<div class="line"><br /></div>
-<div class="line">IMAGE</div>
-<div class="line"><br /></div>
-<div class="line">(a) <strong>Building Blocks</strong></div>
+</div>
+<a class="reference internal image-reference" href="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/submodule_dependency_graph.png?raw=true"><img alt="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/submodule_dependency_graph.png?raw=true" class="align-center" src="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/submodule_dependency_graph.png?raw=true" style="width: 100%;" /></a>
+<div class="line-block">
+<div class="line">(a) <a class="reference internal" href="design/building_blocks.html#building-blocks"><span class="std std-ref">Building Blocks</span></a></div>
 <div class="line">back-end functional APIs ✅</div>
 <div class="line">Ivy functional API ✅</div>
 <div class="line">Framework Handler ✅</div>
 <div class="line">Ivy Compiler 🚧</div>
 <div class="line"><br /></div>
-<div class="line">(b) <strong>Ivy as a Transpiler</strong></div>
+<div class="line">(b) <a class="reference internal" href="design/ivy_as_a_transpiler.html#ivy-as-a-transpiler"><span class="std std-ref">Ivy as a Transpiler</span></a></div>
 <div class="line">front-end functional APIs 🚧</div>
 <div class="line"><br /></div>
-<div class="line">(c) <strong>Ivy as a Framework</strong></div>
+<div class="line">(c) <a class="reference internal" href="design/ivy_as_a_framework.html#ivy-as-a-framework"><span class="std std-ref">Ivy as a Framework</span></a></div>
 <div class="line">Ivy stateful API ✅</div>
 <div class="line">Ivy Container ✅</div>
 <div class="line">Ivy Array 🚧</div>
+</div>
+<div class="toctree-wrapper compound">
 </div>
 </div>
 
@@ -237,7 +244,7 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="extensions.html" class="btn btn-neutral float-right" title="Extensions" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="design/building_blocks.html" class="btn btn-neutral float-right" title="Building Blocks" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="background/standardization.html" class="btn btn-neutral float-left" title="Standardization" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>

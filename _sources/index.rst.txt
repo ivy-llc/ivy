@@ -332,9 +332,6 @@ Citation
       year={2021}
     }
 
-Documentation Tree
-------------------
-
 .. toctree::
    :hidden:
    :maxdepth: -1
