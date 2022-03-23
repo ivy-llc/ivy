@@ -16,3 +16,4 @@ def sort(x: mx.ndarray.ndarray.NDArray,
          stable: bool = True) -> mx.ndarray.ndarray.NDArray:
     kind = "stable" if stable else "quicksort"
     return mx.nd.array((mx.nd.sort(mx.nd.sort(x), axis=axis, is_ascend=kind)))
+
