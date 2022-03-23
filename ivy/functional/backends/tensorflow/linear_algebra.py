@@ -17,6 +17,10 @@ inv = tf.linalg.inv
 pinv = tf.linalg.pinv
 cholesky = tf.linalg.cholesky
 
+def eig(x: tf.tensor)\
+  ->tf.tensor:
+        returm tf.linalg.eig(x, compute=False)
+
 
 def matrix_transpose(x: Tensor)\
         -> Tensor:
