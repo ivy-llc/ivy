@@ -60,5 +60,6 @@ Elementwise
    elementwise/log.rst
    elementwise/exp.rst
    elementwise/divide.rst
+   elementwise/remainder.rst
    elementwise/erf.rst
 

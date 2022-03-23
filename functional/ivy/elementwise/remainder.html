@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>sinh &mdash; Ivy 1.0 documentation</title>
+  <title>remainder &mdash; Ivy 1.0 documentation</title>
   
 
   
@@ -36,8 +36,8 @@
   <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="positive" href="positive.html" />
-    <link rel="prev" title="bitwise_or" href="bitwise_or.html" /> 
+    <link rel="next" title="erf" href="erf.html" />
+    <link rel="prev" title="divide" href="divide.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -129,7 +129,7 @@
 <li class="toctree-l2"><a class="reference internal" href="not_equal.html">not_equal</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tanh.html">tanh</a></li>
 <li class="toctree-l2"><a class="reference internal" href="bitwise_or.html">bitwise_or</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">sinh</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sinh.html">sinh</a></li>
 <li class="toctree-l2"><a class="reference internal" href="positive.html">positive</a></li>
 <li class="toctree-l2"><a class="reference internal" href="square.html">square</a></li>
 <li class="toctree-l2"><a class="reference internal" href="logaddexp.html">logaddexp</a></li>
@@ -145,7 +145,7 @@
 <li class="toctree-l2"><a class="reference internal" href="log.html">log</a></li>
 <li class="toctree-l2"><a class="reference internal" href="exp.html">exp</a></li>
 <li class="toctree-l2"><a class="reference internal" href="divide.html">divide</a></li>
-<li class="toctree-l2"><a class="reference internal" href="remainder.html">remainder</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">remainder</a></li>
 <li class="toctree-l2"><a class="reference internal" href="erf.html">erf</a></li>
 </ul>
 </li>
@@ -237,13 +237,13 @@
         
           <li><a href="../elementwise.html">Elementwise</a> &raquo;</li>
         
-      <li>sinh</li>
+      <li>remainder</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../../_sources/functional/ivy/elementwise/sinh.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../../_sources/functional/ivy/elementwise/remainder.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -256,27 +256,51 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="sinh">
-<h1>sinh<a class="headerlink" href="#sinh" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="remainder">
+<h1>remainder<a class="headerlink" href="#remainder" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
-<dt id="ivy.functional.ivy.elementwise.sinh">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">sinh</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../../_modules/ivy/functional/ivy/elementwise.html#sinh"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.elementwise.sinh" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculates an implementation-dependent approximation to the hyperbolic sine, having domain <code class="docutils literal notranslate"><span class="pre">[-infinity,</span> <span class="pre">+infinity]</span></code> and codomain <code class="docutils literal notranslate"><span class="pre">[-infinity,</span> <span class="pre">+infinity]</span></code>, for each element <code class="docutils literal notranslate"><span class="pre">x_i</span></code> of the input array <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p>
-<p><strong>Special cases</strong></p>
+<dt id="ivy.functional.ivy.elementwise.remainder">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">remainder</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x1</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">x2</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../../_modules/ivy/functional/ivy/elementwise.html#remainder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.elementwise.remainder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the remainder of division for each element <code class="docutils literal notranslate"><span class="pre">x1_i</span></code> of the input array <code class="docutils literal notranslate"><span class="pre">x1</span></code>
+and the respective element <code class="docutils literal notranslate"><span class="pre">x2_i</span></code> of the input array <code class="docutils literal notranslate"><span class="pre">x2</span></code>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This function is equivalent to the Python modulus operator <code class="docutils literal notranslate"><span class="pre">x1_i</span> <span class="pre">%</span> <span class="pre">x2_i</span></code>.
+For input arrays which promote to an integer data type, the result of division by zero is unspecified and thus implementation-defined.
+In general, similar to Python’s <code class="docutils literal notranslate"><span class="pre">%</span></code> operator, this function is not recommended for floating-point operands as semantics do not follow IEEE 754. That this function is specified to accept floating-point operands is primarily for reasons of backward compatibility.</p>
+</div>
+<p><strong>Special Cases</strong></p>
 <p>For floating-point operands,</p>
 <ul class="simple">
-<li><p>If <code class="docutils literal notranslate"><span class="pre">x_i</span></code> is <code class="docutils literal notranslate"><span class="pre">NaN</span></code>, the result is <code class="docutils literal notranslate"><span class="pre">NaN</span></code>.</p></li>
-<li><p>If <code class="docutils literal notranslate"><span class="pre">x_i</span></code> is <code class="docutils literal notranslate"><span class="pre">+0</span></code>, the result is <code class="docutils literal notranslate"><span class="pre">+0</span></code>.</p></li>
-<li><p>If <code class="docutils literal notranslate"><span class="pre">x_i</span></code> is <code class="docutils literal notranslate"><span class="pre">-0</span></code>, the result is <code class="docutils literal notranslate"><span class="pre">-0</span></code>.</p></li>
-<li><p>If <code class="docutils literal notranslate"><span class="pre">x_i</span></code> is <code class="docutils literal notranslate"><span class="pre">+infinity</span></code>, the result is <code class="docutils literal notranslate"><span class="pre">+infinity</span></code>.</p></li>
-<li><p>If <code class="docutils literal notranslate"><span class="pre">x_i</span></code> is <code class="docutils literal notranslate"><span class="pre">-infinity</span></code>, the result is <code class="docutils literal notranslate"><span class="pre">-infinity</span></code>.</p></li>
+<li><p>If either <code class="docutils literal notranslate"><span class="pre">x1_i</span></code> or <code class="docutils literal notranslate"><span class="pre">x2_i</span></code> is <code class="docutils literal notranslate"><span class="pre">NaN</span></code>, the result is <code class="docutils literal notranslate"><span class="pre">NaN</span></code>.</p></li>
+<li><p>If <code class="docutils literal notranslate"><span class="pre">x1_i</span></code> is either <code class="docutils literal notranslate"><span class="pre">+infinity</span></code> or <code class="docutils literal notranslate"><span class="pre">-infinity</span></code> and <code class="docutils literal notranslate"><span class="pre">x2_i</span></code> is either <code class="docutils literal notranslate"><span class="pre">+infinity</span></code> or <code class="docutils literal notranslate"><span class="pre">-infinity</span></code>, the result is <code class="docutils literal notranslate"><span class="pre">NaN</span></code>.</p></li>
+<li><p>If <code class="docutils literal notranslate"><span class="pre">x1_i</span></code> is either <code class="docutils literal notranslate"><span class="pre">+0</span></code> or <code class="docutils literal notranslate"><span class="pre">-0</span></code> and <code class="docutils literal notranslate"><span class="pre">x2_i</span></code> is either <code class="docutils literal notranslate"><span class="pre">+0</span></code> or <code class="docutils literal notranslate"><span class="pre">-0</span></code>, the result is <code class="docutils literal notranslate"><span class="pre">NaN</span></code>.</p></li>
+<li><p>If <code class="docutils literal notranslate"><span class="pre">x1_i</span></code> is <code class="docutils literal notranslate"><span class="pre">+0</span></code> and <code class="docutils literal notranslate"><span class="pre">x2_i</span></code> is greater than <code class="docutils literal notranslate"><span class="pre">0</span></code>, the result is <code class="docutils literal notranslate"><span class="pre">+0</span></code>.</p></li>
+<li><p>If <code class="docutils literal notranslate"><span class="pre">x1_i</span></code> is <code class="docutils literal notranslate"><span class="pre">-0</span></code> and <code class="docutils literal notranslate"><span class="pre">x2_i</span></code> is greater than <code class="docutils literal notranslate"><span class="pre">0</span></code>, the result is <code class="docutils literal notranslate"><span class="pre">+0</span></code>.</p></li>
+<li><p>If <code class="docutils literal notranslate"><span class="pre">x1_i</span></code> is <code class="docutils literal notranslate"><span class="pre">+0</span></code> and <code class="docutils literal notranslate"><span class="pre">x2_i</span></code> is less than <code class="docutils literal notranslate"><span class="pre">0</span></code>, the result is <code class="docutils literal notranslate"><span class="pre">-0</span></code>.</p></li>
+<li><p>If <code class="docutils literal notranslate"><span class="pre">x1_i</span></code> is <code class="docutils literal notranslate"><span class="pre">-0</span></code> and <code class="docutils literal notranslate"><span class="pre">x2_i</span></code> is less than <code class="docutils literal notranslate"><span class="pre">0</span></code>, the result is <code class="docutils literal notranslate"><span class="pre">-0</span></code>.</p></li>
+<li><p>If <code class="docutils literal notranslate"><span class="pre">x1_i</span></code> is greater than <code class="docutils literal notranslate"><span class="pre">0</span></code> and <code class="docutils literal notranslate"><span class="pre">x2_i</span></code> is <code class="docutils literal notranslate"><span class="pre">+0</span></code>, the result is <code class="docutils literal notranslate"><span class="pre">NaN</span></code>.</p></li>
+<li><p>If <code class="docutils literal notranslate"><span class="pre">x1_i</span></code> is greater than <code class="docutils literal notranslate"><span class="pre">0</span></code> and <code class="docutils literal notranslate"><span class="pre">x2_i</span></code> is <code class="docutils literal notranslate"><span class="pre">-0</span></code>, the result is <code class="docutils literal notranslate"><span class="pre">NaN</span></code>.</p></li>
+<li><p>If <code class="docutils literal notranslate"><span class="pre">x1_i</span></code> is less than <code class="docutils literal notranslate"><span class="pre">0</span></code> and <code class="docutils literal notranslate"><span class="pre">x2_i</span></code> is <code class="docutils literal notranslate"><span class="pre">+0</span></code>, the result is <code class="docutils literal notranslate"><span class="pre">NaN</span></code>.</p></li>
+<li><p>If <code class="docutils literal notranslate"><span class="pre">x1_i</span></code> is less than <code class="docutils literal notranslate"><span class="pre">0</span></code> and <code class="docutils literal notranslate"><span class="pre">x2_i</span></code> is <code class="docutils literal notranslate"><span class="pre">-0</span></code>, the result is <code class="docutils literal notranslate"><span class="pre">NaN</span></code>.</p></li>
+<li><p>If <code class="docutils literal notranslate"><span class="pre">x1_i</span></code> is <code class="docutils literal notranslate"><span class="pre">+infinity</span></code> and <code class="docutils literal notranslate"><span class="pre">x2_i</span></code> is a positive (i.e., greater than <code class="docutils literal notranslate"><span class="pre">0</span></code>) finite number, the result is <code class="docutils literal notranslate"><span class="pre">NaN</span></code>.</p></li>
+<li><p>If <code class="docutils literal notranslate"><span class="pre">x1_i</span></code> is <code class="docutils literal notranslate"><span class="pre">+infinity</span></code> and <code class="docutils literal notranslate"><span class="pre">x2_i</span></code> is a negative (i.e., less than <code class="docutils literal notranslate"><span class="pre">0</span></code>) finite number, the result is <code class="docutils literal notranslate"><span class="pre">NaN</span></code>.</p></li>
+<li><p>If <code class="docutils literal notranslate"><span class="pre">x1_i</span></code> is <code class="docutils literal notranslate"><span class="pre">-infinity</span></code> and <code class="docutils literal notranslate"><span class="pre">x2_i</span></code> is a positive (i.e., greater than <code class="docutils literal notranslate"><span class="pre">0</span></code>) finite number, the result is <code class="docutils literal notranslate"><span class="pre">NaN</span></code>.</p></li>
+<li><p>If <code class="docutils literal notranslate"><span class="pre">x1_i</span></code> is <code class="docutils literal notranslate"><span class="pre">-infinity</span></code> and <code class="docutils literal notranslate"><span class="pre">x2_i</span></code> is a negative (i.e., less than <code class="docutils literal notranslate"><span class="pre">0</span></code>) finite number, the result is <code class="docutils literal notranslate"><span class="pre">NaN</span></code>.</p></li>
+<li><p>If <code class="docutils literal notranslate"><span class="pre">x1_i</span></code> is a positive (i.e., greater than <code class="docutils literal notranslate"><span class="pre">0</span></code>) finite number and <code class="docutils literal notranslate"><span class="pre">x2_i</span></code> is <code class="docutils literal notranslate"><span class="pre">+infinity</span></code>, the result is <code class="docutils literal notranslate"><span class="pre">x1_i</span></code>. (note: this result matches Python behavior.)</p></li>
+<li><p>If <code class="docutils literal notranslate"><span class="pre">x1_i</span></code> is a positive (i.e., greater than <code class="docutils literal notranslate"><span class="pre">0</span></code>) finite number and <code class="docutils literal notranslate"><span class="pre">x2_i</span></code> is <code class="docutils literal notranslate"><span class="pre">-infinity</span></code>, the result is <code class="docutils literal notranslate"><span class="pre">x2_i</span></code>. (note: this result matches Python behavior.)</p></li>
+<li><p>If <code class="docutils literal notranslate"><span class="pre">x1_i</span></code> is a negative (i.e., less than <code class="docutils literal notranslate"><span class="pre">0</span></code>) finite number and <code class="docutils literal notranslate"><span class="pre">x2_i</span></code> is <code class="docutils literal notranslate"><span class="pre">+infinity</span></code>, the result is <code class="docutils literal notranslate"><span class="pre">x2_i</span></code>. (note: this results matches Python behavior.)</p></li>
+<li><p>If <code class="docutils literal notranslate"><span class="pre">x1_i</span></code> is a negative (i.e., less than <code class="docutils literal notranslate"><span class="pre">0</span></code>) finite number and <code class="docutils literal notranslate"><span class="pre">x2_i</span></code> is <code class="docutils literal notranslate"><span class="pre">-infinity</span></code>, the result is <code class="docutils literal notranslate"><span class="pre">x1_i</span></code>. (note: this result matches Python behavior.)</p></li>
+<li><p>In the remaining cases, the result must match that of the Python <code class="docutils literal notranslate"><span class="pre">%</span></code> operator.</p></li>
 </ul>
 <dl class="simple">
-<dt>x: </dt><dd><p>input array whose elements each represent a hyperbolic angle. Should have a floating-point data type.</p>
+<dt>x1:</dt><dd><p>dividend input array. Should have a numeric data type.</p>
+</dd>
+<dt>x2:</dt><dd><p>divisor input array. Must be compatible with <code class="docutils literal notranslate"><span class="pre">x1</span></code> (see <span class="xref std std-ref">Broadcasting</span>). Should have a numeric data type.</p>
 </dd>
 </dl>
 <dl class="simple">
-<dt>out:</dt><dd><p>an array containing the hyperbolic sine of each element in <code class="docutils literal notranslate"><span class="pre">x</span></code>. The returned array must have a floating-point data type determined by <span class="xref std std-ref">type-promotion</span>.</p>
+<dt>out:</dt><dd><p>an array containing the element-wise results. Each element-wise result must have the same sign as the respective element <code class="docutils literal notranslate"><span class="pre">x2_i</span></code>. The returned array must have a data type determined by <span class="xref std std-ref">Type Promotion Rules</span>.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -296,10 +320,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="positive.html" class="btn btn-neutral float-right" title="positive" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="erf.html" class="btn btn-neutral float-right" title="erf" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="bitwise_or.html" class="btn btn-neutral float-left" title="bitwise_or" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="divide.html" class="btn btn-neutral float-left" title="divide" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

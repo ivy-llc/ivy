@@ -1134,6 +1134,58 @@
     <span class="k">return</span> <span class="n">x1</span> <span class="o">/</span> <span class="n">x2</span></div>
 
 
+<div class="viewcode-block" id="remainder"><a class="viewcode-back" href="../../../../functional/ivy/elementwise/remainder.html#ivy.functional.ivy.elementwise.remainder">[docs]</a><span class="k">def</span> <span class="nf">remainder</span><span class="p">(</span><span class="n">x1</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+              <span class="n">x2</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">])</span>\
+        <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns the remainder of division for each element ``x1_i`` of the input array ``x1``</span>
+<span class="sd">    and the respective element ``x2_i`` of the input array ``x2``.</span>
+
+<span class="sd">    .. note::</span>
+<span class="sd">        This function is equivalent to the Python modulus operator ``x1_i % x2_i``.</span>
+<span class="sd">        For input arrays which promote to an integer data type, the result of division by zero is unspecified and thus implementation-defined.</span>
+<span class="sd">        In general, similar to Python’s ``%`` operator, this function is not recommended for floating-point operands as semantics do not follow IEEE 754. That this function is specified to accept floating-point operands is primarily for reasons of backward compatibility.</span>
+
+<span class="sd">    **Special Cases**</span>
+
+<span class="sd">    For floating-point operands,</span>
+
+<span class="sd">    - If either ``x1_i`` or ``x2_i`` is ``NaN``, the result is ``NaN``.</span>
+<span class="sd">    - If ``x1_i`` is either ``+infinity`` or ``-infinity`` and ``x2_i`` is either ``+infinity`` or ``-infinity``, the result is ``NaN``.</span>
+<span class="sd">    - If ``x1_i`` is either ``+0`` or ``-0`` and ``x2_i`` is either ``+0`` or ``-0``, the result is ``NaN``.</span>
+<span class="sd">    - If ``x1_i`` is ``+0`` and ``x2_i`` is greater than ``0``, the result is ``+0``.</span>
+<span class="sd">    - If ``x1_i`` is ``-0`` and ``x2_i`` is greater than ``0``, the result is ``+0``.</span>
+<span class="sd">    - If ``x1_i`` is ``+0`` and ``x2_i`` is less than ``0``, the result is ``-0``.</span>
+<span class="sd">    - If ``x1_i`` is ``-0`` and ``x2_i`` is less than ``0``, the result is ``-0``.</span>
+<span class="sd">    - If ``x1_i`` is greater than ``0`` and ``x2_i`` is ``+0``, the result is ``NaN``.</span>
+<span class="sd">    - If ``x1_i`` is greater than ``0`` and ``x2_i`` is ``-0``, the result is ``NaN``.</span>
+<span class="sd">    - If ``x1_i`` is less than ``0`` and ``x2_i`` is ``+0``, the result is ``NaN``.</span>
+<span class="sd">    - If ``x1_i`` is less than ``0`` and ``x2_i`` is ``-0``, the result is ``NaN``.</span>
+<span class="sd">    - If ``x1_i`` is ``+infinity`` and ``x2_i`` is a positive (i.e., greater than ``0``) finite number, the result is ``NaN``.</span>
+<span class="sd">    - If ``x1_i`` is ``+infinity`` and ``x2_i`` is a negative (i.e., less than ``0``) finite number, the result is ``NaN``.</span>
+<span class="sd">    - If ``x1_i`` is ``-infinity`` and ``x2_i`` is a positive (i.e., greater than ``0``) finite number, the result is ``NaN``.</span>
+<span class="sd">    - If ``x1_i`` is ``-infinity`` and ``x2_i`` is a negative (i.e., less than ``0``) finite number, the result is ``NaN``.</span>
+<span class="sd">    - If ``x1_i`` is a positive (i.e., greater than ``0``) finite number and ``x2_i`` is ``+infinity``, the result is ``x1_i``. (note: this result matches Python behavior.)</span>
+<span class="sd">    - If ``x1_i`` is a positive (i.e., greater than ``0``) finite number and ``x2_i`` is ``-infinity``, the result is ``x2_i``. (note: this result matches Python behavior.)</span>
+<span class="sd">    - If ``x1_i`` is a negative (i.e., less than ``0``) finite number and ``x2_i`` is ``+infinity``, the result is ``x2_i``. (note: this results matches Python behavior.)</span>
+<span class="sd">    - If ``x1_i`` is a negative (i.e., less than ``0``) finite number and ``x2_i`` is ``-infinity``, the result is ``x1_i``. (note: this result matches Python behavior.)</span>
+<span class="sd">    - In the remaining cases, the result must match that of the Python ``%`` operator.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x1:</span>
+<span class="sd">        dividend input array. Should have a numeric data type.</span>
+<span class="sd">    x2:</span>
+<span class="sd">        divisor input array. Must be compatible with ``x1`` (see :ref:`Broadcasting`). Should have a numeric data type.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    out:</span>
+<span class="sd">        an array containing the element-wise results. Each element-wise result must have the same sign as the respective element ``x2_i``. The returned array must have a data type determined by :ref:`Type Promotion Rules`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">)</span><span class="o">.</span><span class="n">remainder</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">)</span></div>
+
+
 <span class="c1"># Extra #</span>
 <span class="c1"># ------#</span>
 
