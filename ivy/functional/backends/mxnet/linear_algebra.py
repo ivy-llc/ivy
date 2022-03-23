@@ -38,6 +38,10 @@ def pinv(x):
                 return _matmul(xT, inv(x_xT))
             else:
                 return xT
+            
+def eig(x: mx.ndarray)\
+  ->mx.ndarray:
+    returm mx.np.linalg.eig(x)
 
 
 def vector_norm(x: NDArray,
