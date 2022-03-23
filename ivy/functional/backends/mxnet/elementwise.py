@@ -155,6 +155,12 @@ def round(x: mx.ndarray.ndarray.NDArray)\
     return mx.nd.round(x)
 
 
+@_handle_flat_arrays_in_out
+def subtract(x1: mx.ndarray.ndarray.NDArray, x2: mx.ndarray.ndarray.NDArray)\
+        -> mx.ndarray.ndarray.NDArray:
+    return mx.nd.subtract(x1, x2)
+
+
 cos = lambda x: math.cos(x) if isinstance(x, float) else mx.nd.cos(x)
 tan = lambda x: math.tan(x) if isinstance(x, float) else mx.nd.tan(x)
 asin = lambda x: math.asin(x) if isinstance(x, float) else mx.nd.arcsin(x)
