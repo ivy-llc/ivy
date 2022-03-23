@@ -10,7 +10,7 @@ from ivy import inf
 # noinspection PyUnusedLocal,PyShadowingBuiltins
 
 def eig(x: tf.tensor)\
-  -> tf.tensor:
+    -> tf.tensor:
   return tf.linalg.eig(x, compute=False)
 
 
