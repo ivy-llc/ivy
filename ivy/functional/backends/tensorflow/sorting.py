@@ -25,7 +25,14 @@ def sort(x: Tensor,
          descending: bool = False,
          stable: bool = True) -> Tensor:
     direction = 'ASCENDING' if stable else 'DESCENDING'
-    if descending:
-        return tf.sort(tf.cast(tf.convert_to_tensor(tf.cast(x, dtype=tf.int32))), axis=axis, direction=direction)
+
+    if tf.convert_to_tensor(x).dtype.is_bool:
+        if descending:
+            return tf.argsort(tf.cast(x, dtype=tf.int32), axis=axis, direction=direction)
+        else:
+            return tf.argsort(tf.cast(x, dtype=tf.int32), axis=axis, direction=direction)
     else:
-        return tf.sort(tf.cast(tf.convert_to_tensor(tf.cast(x, dtype=tf.int32))), axis=axis, direction=direction)
+        if descending:
+            return tf.argsort(tf.convert_to_tensor(x), axis=axis, direction=direction)
+        else:
+            return tf.argsort(tf.convert_to_tensor(x), axis=axis, direction=direction)
