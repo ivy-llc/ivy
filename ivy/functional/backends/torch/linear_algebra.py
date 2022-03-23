@@ -64,6 +64,12 @@ def svd(x:torch.Tensor,full_matrices: bool = True) -> Union[torch.Tensor, Tuple[
     return res
 
 
+def outer(x1: torch.Tensor,
+          x2: torch.Tensor)\
+        -> torch.Tensor:
+    return torch.outer(x1, x2)
+
+
 def diagonal(x: torch.Tensor,
              offset: int = 0,
              axis1: int = -2,
