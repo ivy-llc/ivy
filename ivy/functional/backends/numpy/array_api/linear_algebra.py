@@ -9,7 +9,7 @@ from ivy import inf
 # noinspection PyUnusedLocal,PyShadowingBuiltins
 
 def eig(x: np.ndarray)\
-   -> np.ndarray:
+    -> np.ndarray:
   return np.linalg.eig(x)
 
 
