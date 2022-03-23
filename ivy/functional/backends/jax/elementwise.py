@@ -63,6 +63,15 @@ def greater_equal(x1: JaxArray, x2: JaxArray)\
 def less_equal(x1: JaxArray, x2: JaxArray)\
         -> JaxArray:
     return x1 <= x2
+  
+
+def subtract(x1: JaxArray, x2: JaxArray)\
+        -> JaxArray:
+    if hasattr(x1, 'dtype') and hasattr(x2, 'dtype'):
+        promoted_type = jnp.promote_types(x1.dtype, x2.dtype)
+        x1 = x1.astype(promoted_type)
+        x2 = x2.astype(promoted_type)
+    return jnp.subtract(x1, x2)
 
 
 def asinh(x: JaxArray)\
@@ -213,4 +222,3 @@ exp = jnp.exp
 
 
 erf = jax.scipy.special.erf
-

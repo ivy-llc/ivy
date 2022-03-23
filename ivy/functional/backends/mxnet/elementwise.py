@@ -121,6 +121,12 @@ def negative(x: mx.ndarray.ndarray.NDArray)\
         -> mx.ndarray.ndarray.NDArray:
     return mx.np.negative(x)
 
+ 
+@_handle_flat_arrays_in_out
+def subtract(x1: mx.ndarray.ndarray.NDArray, x2: mx.ndarray.ndarray.NDArray)\
+        -> mx.ndarray.ndarray.NDArray:
+    return mx.nd.subtract(x1, x2)
+
 
 @_handle_flat_arrays_in_out
 def tanh(x: mx.ndarray.ndarray.NDArray)\
