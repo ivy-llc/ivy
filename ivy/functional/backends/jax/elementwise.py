@@ -1,4 +1,3 @@
- 
 # global
 import jax
 import jax.numpy as jnp
@@ -6,10 +5,12 @@ import jax.numpy as jnp
 # local
 from ivy.functional.backends.jax import JaxArray
 
+
 def expm1(x: JaxArray)\
         -> JaxArray:
     return jnp.expm1(x)
-  
+
+
 def bitwise_invert(x: JaxArray)\
         -> JaxArray:
     return jnp.bitwise_not(x)
@@ -39,11 +40,11 @@ def isfinite(x: JaxArray)\
         -> JaxArray:
     return jnp.isfinite(x)
 
-  
+
 def asin(x: JaxArray)\
         -> JaxArray:
     return jnp.arcsin(x)
-  
+
 
 def isinf(x: JaxArray)\
         -> JaxArray:
@@ -105,9 +106,9 @@ def isnan(x: JaxArray)\
     return jnp.isnan(x)
 
 
-def less(x1: JaxArray,x2:JaxArray)\
+def less(x1: JaxArray, x2: JaxArray)\
         -> JaxArray:
-    return jnp.less(x1,x2)
+    return jnp.less(x1, x2)
 
 
 def cos(x: JaxArray)\
@@ -115,7 +116,7 @@ def cos(x: JaxArray)\
     return jnp.cos(x)
 
 
-def logical_xor(x1: JaxArray, x2: JaxArray) \
+def logical_xor(x1: JaxArray, x2: JaxArray)\
         -> JaxArray:
     return jnp.logical_xor(x1, x2)
 
@@ -144,7 +145,7 @@ def acosh(x: JaxArray)\
         -> JaxArray:
     return jnp.arccosh(x)
 
-  
+
 def sin(x: JaxArray)\
         -> JaxArray:
     return jnp.sin(x)
@@ -154,7 +155,7 @@ def negative(x: JaxArray) -> JaxArray:
     return jnp.negative(x)
 
 
-def not_equal(x1: JaxArray, x2: JaxArray)\
+def not_equal(x1: JaxArray, x2: JaxArray) \
         -> JaxArray:
     return jnp.not_equal(x1, x2)
 
@@ -177,8 +178,8 @@ def positive(x: JaxArray)\
         -> JaxArray:
     return jnp.positive(x)
 
-    
-def square(x: JaxArray) \
+
+def square(x: JaxArray)\
         -> JaxArray:
     return jnp.square(x)
 
@@ -200,17 +201,21 @@ def logaddexp(x1: JaxArray, x2: JaxArray) -> JaxArray:
 
 
 tan = jnp.tan
-atan = jnp.arctan
+
+
+def atan(x: JaxArray)\
+        -> JaxArray:
+    return jnp.arctan(x)
+
+
 atan2 = jnp.arctan2
 cosh = jnp.cosh
 atanh = jnp.arctanh
 log = jnp.log
 exp = jnp.exp
 
-
 # Extra #
 # ------#
 
 
 erf = jax.scipy.special.erf
-
