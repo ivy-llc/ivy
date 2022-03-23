@@ -195,3 +195,18 @@ def scatter_nd(indices, updates, shape=None, tensor=None, reduction='sum', dev=N
         raise Exception('reduction is {}, but it must be one of "sum", "min" or "max"'.format(reduction))
     with _tf.device(dev_from_str(dev)):
         return res
+
+
+def gather(params, indices, axis=-1, dev=None):
+    axis = axis % len(indices.shape)
+    if dev is None:
+        dev = _dev_callable(params)
+    with _tf.device(dev_from_str(dev)):
+        return _tf.gather(params, indices, axis=axis, batch_dims=axis)
+
+
+def gather_nd(params, indices, dev=None):
+    if dev is None:
+        dev = _dev_callable(params)
+    with _tf.device(dev_from_str(dev)):
+        return _tf.gather_nd(params, indices)
