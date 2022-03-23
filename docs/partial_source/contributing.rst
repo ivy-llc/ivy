@@ -1,5 +1,5 @@
-Contributing to Ivy
-===================
+Contributing
+============
 
 .. _`Array API`: https://data-apis.org/array-api/latest/
 .. _`tutorial series`: https://www.youtube.com/channel/UCGlkr-YCs3TjMVeOhbbULsw
