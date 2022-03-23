@@ -226,7 +226,11 @@ class Array(ArrayWithArrayAPI, ArrayWithDevice, ArrayWithGeneral, ArrayWithGradi
 
     @_native_wrapper
     def __mod__(self, other):
-        return ivy.remainder(self._data, other)
+        other = to_native(other)
+        res = ivy.remainder(self._data, other)
+        if res is NotImplemented:
+            return res
+        return to_ivy(res)
 
     @_native_wrapper
     def __truediv__(self, other):
