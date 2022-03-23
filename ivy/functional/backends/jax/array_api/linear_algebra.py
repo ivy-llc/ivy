@@ -11,7 +11,7 @@ from ivy.functional.backends.jax import JaxArray
 
 def eig(x: JaxArray)\
    ->jnp.ndarray:
-  return jax.linalg.eig(x)
+  return jnp.linalg.eig(x)
 
 
 def vector_norm(x: JaxArray,
