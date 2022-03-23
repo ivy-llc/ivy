@@ -28,11 +28,11 @@ def sort(x: Tensor,
 
     if tf.convert_to_tensor(x).dtype.is_bool:
         if descending:
-            return tf.argsort(tf.cast(x, dtype=tf.int32), axis=axis, direction=direction)
+            return tf.sort(tf.cast(x, dtype=tf.int32), axis=axis, direction=direction)
         else:
-            return tf.argsort(tf.cast(x, dtype=tf.int32), axis=axis, direction=direction)
+            return tf.sort(tf.cast(x, dtype=tf.int32), axis=axis, direction=direction)
     else:
         if descending:
-            return tf.argsort(tf.convert_to_tensor(x), axis=axis, direction=direction)
+            return tf.sort(tf.convert_to_tensor(x), axis=axis, direction=direction)
         else:
-            return tf.argsort(tf.convert_to_tensor(x), axis=axis, direction=direction)
+            return tf.sort(tf.convert_to_tensor(x), axis=axis, direction=direction)
