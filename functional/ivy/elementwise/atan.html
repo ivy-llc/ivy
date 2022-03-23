@@ -260,14 +260,22 @@
 <dl class="py function">
 <dt id="ivy.functional.ivy.elementwise.atan">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">atan</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../../_modules/ivy/functional/ivy/elementwise.html#atan"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.elementwise.atan" title="Permalink to this definition">¶</a></dt>
-<dd><p>Computes trigonometric inverse tangent, element-wise.
-The inverse of tan, so that if y = tan(x) then x = arctan(y).</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>x</strong> (<em>array</em>) – Input array.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Out has the same shape as x. Its real part is in [-pi/2, pi/2] (arctan(+/-inf) returns +/-pi/2).</p>
+<dd><p>Calculates an implementation-dependent approximation of the principal value of the inverse tangent, having domain <code class="docutils literal notranslate"><span class="pre">[-infinity,</span> <span class="pre">+infinity]</span></code> and codomain <code class="docutils literal notranslate"><span class="pre">[-π/2,</span> <span class="pre">+π/2]</span></code>, for each element <code class="docutils literal notranslate"><span class="pre">x_i</span></code> of the input array <code class="docutils literal notranslate"><span class="pre">x</span></code>. Each element-wise result is expressed in radians.
+<strong>Special cases</strong>
+For floating-point operands,
+- If <code class="docutils literal notranslate"><span class="pre">x_i</span></code> is <code class="docutils literal notranslate"><span class="pre">NaN</span></code>, the result is <code class="docutils literal notranslate"><span class="pre">NaN</span></code>.
+- If <code class="docutils literal notranslate"><span class="pre">x_i</span></code> is <code class="docutils literal notranslate"><span class="pre">+0</span></code>, the result is <code class="docutils literal notranslate"><span class="pre">+0</span></code>.
+- If <code class="docutils literal notranslate"><span class="pre">x_i</span></code> is <code class="docutils literal notranslate"><span class="pre">-0</span></code>, the result is <code class="docutils literal notranslate"><span class="pre">-0</span></code>.
+- If <code class="docutils literal notranslate"><span class="pre">x_i</span></code> is <code class="docutils literal notranslate"><span class="pre">+infinity</span></code>, the result is an implementation-dependent approximation to <code class="docutils literal notranslate"><span class="pre">+π/2</span></code>.
+- If <code class="docutils literal notranslate"><span class="pre">x_i</span></code> is <code class="docutils literal notranslate"><span class="pre">-infinity</span></code>, the result is an implementation-dependent approximation to <code class="docutils literal notranslate"><span class="pre">-π/2</span></code>.
+Parameters
+———-
+x: array</p>
+<blockquote>
+<div><p>input array. Should have a floating-point data type.</p>
+</div></blockquote>
+<dl class="simple">
+<dt>out: array</dt><dd><p>an array containing the inverse tangent of each element in <code class="docutils literal notranslate"><span class="pre">x</span></code>. The returned array must have a floating-point data type determined by <span class="xref std std-ref">type-promotion</span>.</p>
 </dd>
 </dl>
 </dd></dl>
