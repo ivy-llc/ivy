@@ -10,8 +10,8 @@ from ivy.functional.backends.jax import JaxArray
 # noinspection PyUnusedLocal,PyShadowingBuiltins
 
 def eig(x: JaxArray)\
-   ->jnp.ndarray:
-  return jnp.linalg.eig(x)
+     ->JaxArray:
+   return jnp.linalg.eig(x)
 
 
 def vector_norm(x: JaxArray,
