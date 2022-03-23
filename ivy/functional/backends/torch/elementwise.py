@@ -237,7 +237,7 @@ def acos(x: torch.Tensor)\
     return torch.acos(x)
 
 
-def atan(x: torch.Tensor)\
+def atan(x: torch.Tensor) \
         -> torch.Tensor:
     return torch.atan(x)
 

@@ -1,4 +1,3 @@
-
 # global
 import numpy as np
 import numpy.array_api as npa
@@ -8,10 +7,12 @@ try:
 except (ImportError, ModuleNotFoundError):
     _erf = None
 
+
 def expm1(x: np.ndarray)\
         -> np.ndarray:
     return np.expm1(x)
-  
+
+
 def bitwise_invert(x: np.ndarray)\
         -> np.ndarray:
     return np.invert(x)
@@ -57,7 +58,7 @@ def isfinite(x: np.ndarray) \
         -> np.ndarray:
     return np.asarray(npa.isfinite(npa.asarray(x)))
 
-  
+
 def asin(x: np.ndarray)\
         -> np.ndarray:
     return np.arcsin(x)
@@ -103,9 +104,9 @@ def isnan(x: np.ndarray)\
     return np.isnan(x)
 
 
-def less(x1: np.ndarray,x2: np.ndarray)\
+def less(x1: np.ndarray, x2: np.ndarray)\
         -> np.ndarray:
-    return np.less(x1,x2)
+    return np.less(x1, x2)
 
 
 def cos(x: np.ndarray)\
@@ -127,7 +128,7 @@ def logical_xor(x1: np.ndarray, x2: np.ndarray) \
         -> np.ndarray:
     return np.logical_xor(x1, x2)
 
-  
+
 def logical_or(x1: np.ndarray, x2: np.ndarray)\
         -> np.ndarray:
     return np.logical_or(x1, x2)
@@ -141,13 +142,13 @@ def logical_and(x1: np.ndarray, x2: np.ndarray)\
 def acosh(x: np.ndarray)\
         -> np.ndarray:
     return np.asarray(npa.acosh(npa.asarray(x)))
-  
+
 
 def sin(x: np.ndarray)\
         -> np.ndarray:
     return np.asarray(npa.sin(npa.asarray(x)))
 
-  
+
 def negative(x: np.ndarray) -> np.ndarray:
     return np.negative(x)
 
@@ -161,7 +162,7 @@ def tanh(x: np.ndarray)\
         -> np.ndarray:
     return np.asarray(npa.tanh(npa.asarray(x)))
 
-  
+
 def sinh(x: np.ndarray)\
         -> np.ndarray:
     return np.asarray(npa.sinh(npa.asarray(x)))
@@ -170,8 +171,8 @@ def sinh(x: np.ndarray)\
 def positive(x: np.ndarray)\
         -> np.ndarray:
     return np.positive(x)
-  
-  
+
+
 def square(x: np.ndarray)\
         -> np.ndarray:
     return np.square(x)
@@ -182,7 +183,7 @@ def round(x: np.ndarray)\
     return np.asarray(npa.round(npa.asarray(x)))
 
 
-def bitwise_or(x1: np.ndarray , x2: np.ndarray) \
+def bitwise_or(x1: np.ndarray, x2: np.ndarray)\
         -> np.ndarray:
     if not isinstance(x2, np.ndarray):
         x2 = np.asarray(x2, dtype=x1.dtype)
@@ -197,7 +198,7 @@ def abs(x: np.ndarray)\
         -> np.ndarray:
     return np.absolute(x)
 
-  
+
 def logaddexp(x1: np.ndarray, x2: np.ndarray) -> np.ndarray:
     if not isinstance(x2, np.ndarray):
         x2 = np.asarray(x2, dtype=x1.dtype)
@@ -209,7 +210,13 @@ def logaddexp(x1: np.ndarray, x2: np.ndarray) -> np.ndarray:
 
 
 tan = np.tan
-atan = np.arctan
+
+
+def atan(x: np.ndarray) \
+        -> np.ndarray:
+    return np.arctan(x)
+
+
 atan2 = np.arctan2
 cosh = np.cosh
 atanh = np.arctanh
