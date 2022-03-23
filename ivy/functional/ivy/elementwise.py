@@ -921,6 +921,28 @@ def exp(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
     return _cur_framework(x).exp(x)
 
 
+def subtract(x1: Union[ivy.Array, ivy.NativeArray],
+             x2: Union[ivy.Array, ivy.NativeArray])\
+        -> ivy.Array:
+    """
+    Calculates the difference for each element ``x1_i`` of the input array ``x1`` with the respective element ``x2_i``
+    of the input array ``x2``.
+
+    Parameters
+    ----------
+    x1:
+        first input array. Should have a numeric data type.
+    x2:
+        second input array. Must be compatible with ``x1`` (see :ref:`broadcasting`). Should have a numeric data type.
+
+    Returns
+    -------
+    out:
+        an array containing the element-wise differences.
+    """
+    return _cur_framework(x1).subtract(x1, x2)
+
+
 def divide(x1: Union[ivy.Array, ivy.NativeArray], x2: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
     """
     Calculates the division for each element x1_i of the input array x1 with the respective element x2_i of the
