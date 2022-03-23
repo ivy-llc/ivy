@@ -62,12 +62,6 @@ def clip(x, x_min, x_max):
 def abs(x):
     return torch.abs(x)
 
-def argmin(x, axis: int = 0):
-    ret = torch.argmin(x, axis)
-    if ret.shape == ():
-        return ret.reshape(-1)
-    return ret
-
 
 def cast(x, dtype_in: str):
     dtype_val = dtype_from_str(dtype_in)
