@@ -214,36 +214,6 @@ def meshgrid(*xs, indexing='ij'):
 
 
 
-# noinspection PyShadowingNames
-def gather(params, indices, axis=-1, dev: Optional[str] = None):
-    if dev is None:
-        dev = _callable_dev(params)
-    return torch.gather(params, axis, indices.type(torch.int64)).to(dev_from_str(dev))
-
-
-# noinspection PyShadowingNames
-def gather_nd(params, indices, dev: Optional[str] = None):
-    if dev is None:
-        dev = _callable_dev(params)
-    indices_shape = indices.shape
-    params_shape = params.shape
-    num_index_dims = indices_shape[-1]
-    result_dim_sizes_list = [_reduce(mul, params_shape[i + 1:], 1) for i in range(len(params_shape) - 1)] + [1]
-    result_dim_sizes = torch.tensor(result_dim_sizes_list).to(dev_from_str(dev))
-    implicit_indices_factor = int(result_dim_sizes[num_index_dims - 1].item())
-    flat_params = torch.reshape(params, (-1,))
-    new_shape = [1] * (len(indices_shape) - 1) + [num_index_dims]
-    indices_scales = torch.reshape(result_dim_sizes[0:num_index_dims], new_shape)
-    indices_for_flat_tiled = torch.reshape(torch.sum(indices * indices_scales, -1, keepdim=True), (-1, 1)).repeat(
-        *[1, implicit_indices_factor])
-    implicit_indices = torch.unsqueeze(torch.arange(implicit_indices_factor).to(dev_from_str(dev)), 0).repeat(
-        *[indices_for_flat_tiled.shape[0], 1])
-    indices_for_flat = indices_for_flat_tiled + implicit_indices
-    flat_indices_for_flat = torch.reshape(indices_for_flat, (-1,)).type(torch.long)
-    flat_gather = torch.gather(flat_params, 0, flat_indices_for_flat)
-    res = torch.reshape(flat_gather, list(indices_shape[:-1]) + list(params_shape[num_index_dims:]))
-    return res
-
 
 def linear_resample(x, num_samples: int, axis: int = -1):
     x_shape = list(x.shape)
