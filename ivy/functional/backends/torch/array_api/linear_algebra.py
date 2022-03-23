@@ -7,7 +7,7 @@ from ivy import inf
 
 
 def eig(x: torch.tensor)\
-  -> torch.tensor:
+     -> torch.tensor:
   return torch.linalg.eig(x)
 
 
