@@ -8,7 +8,7 @@ from ivy import inf
 
 def eig(x: mx.ndarray)\
   ->mx.ndarray:
-  return mx.linalg.eig(x)
+  return mx.np.linalg.eig(x)
 
 
 def vector_norm(x: mx.ndarray.ndarray.NDArray,
