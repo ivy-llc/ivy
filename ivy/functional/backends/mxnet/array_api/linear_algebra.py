@@ -7,7 +7,7 @@ from typing import Union, Optional, Tuple, Literal
 from ivy import inf
 
 def eig(x: mx.ndarray)\
-  ->mx.ndarray:
+     ->mx.ndarray:
   return mx.np.linalg.eig(x)
 
 
