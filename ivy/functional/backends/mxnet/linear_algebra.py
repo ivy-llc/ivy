@@ -94,7 +94,7 @@ def det(x:mx.ndarray) \
     -> mx.ndarray:
     return mx.linalg.det(x)
 
-def cholesky(x: mx.nd.NDArray,
+def cholesky(x: mx.nd.NDArray, 
              upper: bool = False) -> mx.nd.NDArray:
 
     if not upper:
