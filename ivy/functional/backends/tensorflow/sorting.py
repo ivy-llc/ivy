@@ -20,10 +20,11 @@ def argsort(x: Tensor,
             return tf.argsort(tf.convert_to_tensor(x), axis=axis, direction='ASCENDING', stable=stable)
 
 
-def sort(x: Tensor,
+def sort(x: tf.Tensor,
          axis: int = -1,
          descending: bool = False,
-         stable: bool = True) -> Tensor:
+         stable: bool = True)\
+        -> tf.Tensor:
     direction = 'ASCENDING' if stable else 'DESCENDING'
 
     if tf.convert_to_tensor(x).dtype.is_bool:
