@@ -34,15 +34,6 @@ def mean(x, axis=None, keepdims=False):
     return jnp.mean(x, axis=axis, keepdims=keepdims)
 
 
-def var(x, axis=None, keepdims=False):
-    if axis is None:
-        num_dims = len(x.shape)
-        axis = tuple(range(num_dims))
-    elif isinstance(axis, list):
-        axis = tuple(axis)
-    return jnp.var(x, axis=axis, keepdims=keepdims)
-
-
 def prod(x: jnp.ndarray,
          axis: Optional[Union[int, Tuple[int]]] = None,
          dtype: Optional[jnp.dtype] = None,
@@ -67,6 +58,14 @@ def max(x: jnp.ndarray,
         keepdims = False, device = None) \
         -> jnp.ndarray:
     return jnp.max(a = jnp.asarray(x), axis = axis, keepdims = keepdims)
+
+
+def var(x: jnp.ndarray,
+        axis: Optional[Union[int, Tuple[int]]] = None,
+        correction: Union[int, float] = 0.0,
+        keepdims: bool = False) \
+        -> jnp.ndarray:
+    return jnp.var(x, axis=axis, ddof=correction, keepdims=keepdims)
 
 
 # Extra #

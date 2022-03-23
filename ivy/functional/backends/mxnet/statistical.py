@@ -83,7 +83,7 @@ def min(x, axis=None, keepdims=False):
         axis = tuple(axis)
     if x.shape == ():
         x = _flat_array_to_1_dim_array(x)
-    ret = _mx.nd.min(x, axis=axis, keepdims=keepdims)
+    ret = mx.nd.min(x, axis=axis, keepdims=keepdims)
     return _handle_output(x, axis, keepdims, ret)
 
 
