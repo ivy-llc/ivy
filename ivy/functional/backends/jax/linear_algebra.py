@@ -17,6 +17,10 @@ inv = jnp.linalg.inv
 pinv = jnp.linalg.pinv
 cholesky = jnp.linalg.cholesky
 
+def eig(x: JaxArray)\
+  ->JaxArray:
+    return jnp.linalg.eig(x)
+
 
 
 def matrix_norm(x, p=2, axes=None, keepdims=False):
