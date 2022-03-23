@@ -184,6 +184,11 @@ def square(x: JaxArray)\
     return jnp.square(x)
 
 
+def remainder(x1: JaxArray, x2: JaxArray)\
+        -> JaxArray:
+    return jnp.remainder(x1, x2)
+
+
 def round(x: JaxArray)\
         -> JaxArray:
     if 'int' in str(x.dtype):

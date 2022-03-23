@@ -231,6 +231,12 @@ def square(x: Tensor)\
     return tf.math.square(x)
 
 
+def remainder(x1: Tensor, x2: Tensor)\
+        -> Tensor:
+    x1, x2 = _cast_for_binary_op(x1, x2)
+    return tf.experimental.numpy.remainder(x1, x2)
+
+
 def round(x: Tensor)\
         -> Tensor:
     if 'int' in str(x.dtype):
