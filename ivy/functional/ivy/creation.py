@@ -84,7 +84,7 @@ def ones(shape: Union[int, Tuple[int], List[int]],
     return _cur_framework().ones(shape, dtype, device)
 
 
-def full_like(x: Union[ivy.Array, ivy.NativeArray], /,
+def full_like(x: Union[ivy.Array, ivy.NativeArray],
               fill_value: Union[int, float], *,
               dtype: Optional[Union[ivy.Dtype, str]] = None,
               device: Optional[Union[ivy.Device, str]] = None,

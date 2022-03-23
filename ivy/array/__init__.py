@@ -225,6 +225,10 @@ class Array(ArrayWithArrayAPI, ArrayWithDevice, ArrayWithGeneral, ArrayWithGradi
         return to_ivy(res)
 
     @_native_wrapper
+    def __mod__(self, other):
+        return ivy.remainder(self._data, other)
+
+    @_native_wrapper
     def __truediv__(self, other):
         other = to_native(other)
         res = self._data.__truediv__(other)
