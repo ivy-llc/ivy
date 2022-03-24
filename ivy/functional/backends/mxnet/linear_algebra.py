@@ -41,7 +41,7 @@ def pinv(x):
             
 def eig(x: mx.ndarray)\
   ->mx.ndarray:
-    e, v = mx.np.linalg.eig(x, dtype, compute_v= True)
+    e, v = mx.np.linalg.eig(x, compute_v= True)
     return e, v
 
 
