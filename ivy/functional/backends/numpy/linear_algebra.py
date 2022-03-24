@@ -17,7 +17,8 @@ cholesky = np.linalg.cholesky
 
 def eig(x: np.ndarray)\
    ->np.ndarray:
-        return np.linalg.eig(x)
+       e, v = np.linalg.eig(x,compute_v=True)
+          return e, v
 
 
 def matrix_transpose(x: np.ndarray) \
