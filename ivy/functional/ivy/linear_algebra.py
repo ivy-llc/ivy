@@ -115,6 +115,33 @@ def svd(x:Union[ivy.Array,ivy.NativeArray],full_matrices: bool = True)->Union[iv
     return _cur_framework(x).svd(x,full_matrices)
 
 
+def outer(x1: Union[ivy.Array, ivy.NativeArray],
+          x2: Union[ivy.Array, ivy.NativeArray])\
+        -> ivy.Array:
+    """
+    returns the outer product of two vectors x1 and x2.
+    
+    Parameters
+    ----------
+    x1 (array) – first one-dimensional input array of size N. Should have a numeric data type.
+    a(M,) array_like
+    First input vector. Input is flattened if not already 1-dimensional.
+
+    x2 (array) – second one-dimensional input array of size M. Should have a numeric data type.
+    b(N,) array_like
+    Second input vector. Input is flattened if not already 1-dimensional.
+
+
+    Returns
+    -------
+    out (array) – a two-dimensional array containing the outer product and whose shape is (N, M).
+    The returned array must have a data type determined by Type Promotion Rules.
+    out(M, N) ndarray, optional
+    A location where the result is stored
+    """
+    return _cur_framework(x1, x2).outer(x1, x2)
+
+
 def diagonal(x: ivy.Array,
              offset: int = 0,
              axis1: int = -2,

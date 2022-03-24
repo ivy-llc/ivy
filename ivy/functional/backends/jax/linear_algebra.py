@@ -61,6 +61,12 @@ def svd(x:JaxArray,full_matrices: bool = True) -> Union[JaxArray, Tuple[JaxArray
     return res
 
 
+def outer(x1: JaxArray,
+          x2: JaxArray)\
+        -> JaxArray:
+    return jnp.outer(x1, x2)
+
+
 def diagonal(x: JaxArray,
              offset: int = 0,
              axis1: int = -2,
