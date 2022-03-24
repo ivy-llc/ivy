@@ -17,7 +17,7 @@ inv = tf.linalg.inv
 pinv = tf.linalg.pinv
 cholesky = tf.linalg.cholesky
 
-def eig(x: Tensor)
+def eig(x: Tensor)\
   ->Tensor:
     return tf.linalg.eig(x)
 
