@@ -61,6 +61,12 @@ def svd(x:JaxArray,full_matrices: bool = True) -> Union[JaxArray, Tuple[JaxArray
     return res
 
 
+def outer(x1: JaxArray,
+          x2: JaxArray)\
+        -> JaxArray:
+    return jnp.outer(x1, x2)
+
+
 def diagonal(x: JaxArray,
              offset: int = 0,
              axis1: int = -2,
@@ -101,6 +107,19 @@ def det(x:jnp.array) \
     -> jnp.array:
     return jnp.linalg.det(x)
 
+def cholesky(x: JaxArray, 
+             upper: bool = False) -> JaxArray:
+    if not upper:
+        return jnp.linalg.cholesky(x)
+    else:
+        axes = list(range(len(x.shape) - 2)) + [len(x.shape) - 1, len(x.shape) - 2]
+        return jnp.transpose(jnp.linalg.cholesky(jnp.transpose(x, axes=axes)),
+                        axes=axes)
+
+
+def eigvalsh(x: JaxArray) -> JaxArray:
+    return jnp.linalg.eigvalsh(x)
+
 
 # Extra #
 # ------#
@@ -122,3 +141,4 @@ def vector_to_skew_symmetric_matrix(vector: JaxArray)\
     row3 = jnp.concatenate((-a2s, a1s, zs), -1)
     # BS x 3 x 3
     return jnp.concatenate((row1, row2, row3), -2)
+

@@ -115,6 +115,33 @@ def svd(x:Union[ivy.Array,ivy.NativeArray],full_matrices: bool = True)->Union[iv
     return _cur_framework(x).svd(x,full_matrices)
 
 
+def outer(x1: Union[ivy.Array, ivy.NativeArray],
+          x2: Union[ivy.Array, ivy.NativeArray])\
+        -> ivy.Array:
+    """
+    returns the outer product of two vectors x1 and x2.
+    
+    Parameters
+    ----------
+    x1 (array) – first one-dimensional input array of size N. Should have a numeric data type.
+    a(M,) array_like
+    First input vector. Input is flattened if not already 1-dimensional.
+
+    x2 (array) – second one-dimensional input array of size M. Should have a numeric data type.
+    b(N,) array_like
+    Second input vector. Input is flattened if not already 1-dimensional.
+
+
+    Returns
+    -------
+    out (array) – a two-dimensional array containing the outer product and whose shape is (N, M).
+    The returned array must have a data type determined by Type Promotion Rules.
+    out(M, N) ndarray, optional
+    A location where the result is stored
+    """
+    return _cur_framework(x1, x2).outer(x1, x2)
+
+
 def diagonal(x: ivy.Array,
              offset: int = 0,
              axis1: int = -2,
@@ -338,6 +365,37 @@ def det(x: ivy.Array) \
                dimensional array containing the determinant for each square matrix. The returned array must have the same data type as x.
     """
     return _cur_framework(x).det(x)
+
+def cholesky(x: Union[ivy.Array, ivy.NativeArray], 
+             upper: bool = False) -> ivy.Array:
+    """
+    Computes the cholesky decomposition of the x matrix.
+
+    :param x:  input array having shape (..., M, M) and whose innermost two dimensions form square symmetric
+     positive-definite matrices. Should have a floating-point data type.
+    :type x: array
+    :param upper:  If True, the result must be the upper-triangular Cholesky factor U. If False, the result
+     must be the lower-triangular Cholesky factor L. Default: False.
+    :type upper: bool
+    :return out: an array containing the Cholesky factors for each square matrix.
+     If upper is False, the returned array must contain lower-triangular matrices; otherwise,
+      the returned array must contain upper-triangular matrices. 
+      The returned array must have a floating-point data type determined by Type Promotion Rules 
+      and must have the same shape as x.
+    :type out: array
+    """
+    return  _cur_framework(x).cholesky(x, upper)
+
+def eigvalsh(x: Union[ivy.Array, ivy.NativeArray], /) -> ivy.Array:
+    """
+    Return the eigenvalues of a symmetric matrix (or a stack of symmetric matrices) x.
+    :param x: input array having shape (..., M, M) and whose innermost two dimensions form square matrices.
+              Must have floating-point data type.
+
+    :return: an array containing the computed eigenvalues. The returned array must have shape (..., M) and
+             have the same data type as x.
+    """
+    return _cur_framework(x).eigvalsh(x)
 
 
 # Extra #

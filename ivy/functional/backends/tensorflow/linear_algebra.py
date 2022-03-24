@@ -75,6 +75,12 @@ def svd(x:Tensor,full_matrices: bool = True) -> Union[Tensor, Tuple[Tensor,...]]
     return res
 
 
+def outer(x1:tf.Tensor,
+          x2: tf.Tensor) \
+        -> tf.Tensor:
+    return tf.experimental.numpy.outer(x1, x2)
+
+
 def diagonal(x: tf.Tensor,
              offset: int = 0,
              axis1: int = -2,
@@ -171,6 +177,19 @@ def trace(x: tf.Tensor,
 def det(x:tf.Tensor,name:Optional[str]=None) \
     -> tf.Tensor:
     return tf.linalg.det(x,name)
+
+def cholesky(x: tf.Tensor,
+            upper: bool = False) -> tf.Tensor:
+    if not upper:
+        return tf.linalg.cholesky(x)
+    else:
+        axes = list(range(len(x.shape) - 2)) + [len(x.shape) - 1, len(x.shape) - 2]
+        return tf.transpose(tf.linalg.cholesky(tf.transpose(x, perm=axes)),
+                            perm=axes)
+
+
+def eigvalsh(x: Tensor) -> Tensor:
+    return tf.linalg.eigvalsh(x)
 
 
 # Extra #

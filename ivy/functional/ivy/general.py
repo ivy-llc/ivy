@@ -752,3 +752,120 @@ def inplace_increment(x, val, f=None):
     :return: The variable following the in-place increment.
     """
     return _cur_framework(x).inplace_increment(x, val)
+
+
+def cumsum(x: Union[ivy.Array, ivy.NativeArray], axis: int = 0)\
+        -> Union[ivy.Array, ivy.NativeArray]:
+    """
+    Returns the cumulative sum of the elements along a given axis.
+
+    :param x: Input array.
+    :type x: array
+    :param axis: Axis along which the cumulative sum is computed. By default 0.
+    :type axis: int
+    :return: Input array with cumulatively summed elements along axis.
+    """
+    return _cur_framework(x).cumsum(x, axis)
+
+
+def cumprod(x: Union[ivy.Array, ivy.NativeArray], axis: int = 0, exclusive: bool = False)\
+        -> Union[ivy.Array, ivy.NativeArray]:
+    """
+    Returns the cumulative product of the elements along a given axis.
+
+    :param x: Input array.
+    :type x: array
+    :param axis: Axis along which the cumulative product is computed. By default 0.
+    :type axis: int
+    :param exclusive: Whether to perform the cumprod exclusively. Defaults is False.
+    :type exclusive: bool, optional
+    :return: Input array with cumulatively multiplied elements along axis.
+    """
+    return _cur_framework(x).cumprod(x, axis, exclusive)
+
+
+# noinspection PyShadowingNames
+def scatter_flat(indices: Union[ivy.Array, ivy.NativeArray], updates: Union[ivy.Array, ivy.NativeArray],
+                 size: Optional[int] = None, tensor: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+                 reduction: str = 'sum', dev: ivy.Device = None)\
+        -> Union[ivy.Array, ivy.NativeArray]:
+    """
+    Scatter flat updates into a new flat array according to flat indices.
+
+    :param indices: Indices for the new values to occupy.
+    :type indices: array
+    :param updates: Values for the new array to hold.
+    :type updates: array
+    :param size: The size of the result.
+    :type size: int
+    :param tensor: The tensor in which to scatter the results, default is None, in which case the size is used to
+                    scatter into a zeros array.
+    :param reduction: The reduction method for the scatter, one of 'sum', 'min', 'max' or 'replace'
+    :type reduction: str
+    :param dev: device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. Same as updates if None.
+    :type dev: ivy.Device, optional
+    :return: New array of given shape, with the values scattered at the indices.
+    """
+    return _cur_framework(indices).scatter_flat(indices, updates, size, tensor, reduction, dev)
+
+
+# noinspection PyShadowingNames
+def scatter_nd(indices: Union[ivy.Array, ivy.NativeArray], updates: Union[ivy.Array, ivy.NativeArray],
+               shape: Optional[Iterable[int]] = None, tensor: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+               reduction: str = 'sum', dev: ivy.Device = None)\
+        -> Union[ivy.Array, ivy.NativeArray]:
+    """
+    Scatter updates into a new array according to indices.
+
+    :param indices: Indices for the new values to occupy.
+    :type indices: array
+    :param updates: Values for the new array to hold.
+    :type updates: array
+    :param shape: The shape of the result. Default is None, in which case tensor argument must be provided.
+    :type shape: sequence of ints
+    :param tensor: The tensor in which to scatter the results, default is None, in which case the shape arg is used to
+                    scatter into a zeros array.
+    :param reduction: The reduction method for the scatter, one of 'sum', 'min', 'max' or 'replace'
+    :type reduction: str
+    :param dev: device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. Same as updates if None.
+    :type dev: ivy.Device, optional
+    :return: New array of given shape, with the values scattered at the indices.
+    """
+    return _cur_framework(indices).scatter_nd(indices, updates, shape, tensor, reduction, dev)
+
+
+# noinspection PyShadowingNames
+def gather(params: Union[ivy.Array, ivy.NativeArray], indices: Union[ivy.Array, ivy.NativeArray], axis: int = -1,
+           dev: ivy.Device = None) -> Union[ivy.Array, ivy.NativeArray]:
+    """
+    Gather slices from params at axis according to indices.
+
+    :param params: The array from which to gather values.
+    :type params: array
+    :param indices: Index array.
+    :type indices: array
+    :param axis: The axis from which to gather from. Default is -1.
+    :type axis: int, optional
+    :param dev: device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. Same as x if None.
+    :type dev: ivy.Device, optional
+    :return: New array with the values gathered at the specified indices along the specified axis.
+    """
+    return _cur_framework(params).gather(params, indices, axis, dev)
+
+
+# noinspection PyShadowingNames
+def gather_nd(params: Union[ivy.Array, ivy.NativeArray], indices: Union[ivy.Array, ivy.NativeArray],
+              dev: ivy.Device = None) -> Union[ivy.Array, ivy.NativeArray]:
+    """
+    Gather slices from params into a array with shape specified by indices.
+
+    :param params: The array from which to gather values.
+    :type params: array
+    :param indices: Index array.
+    :type indices: array
+    :param dev: device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. Same as x if None.
+    :type dev: ivy.Device, optional
+    :return: New array of given shape, with the values gathered at the indices.
+    """
+    return _cur_framework(params).gather_nd(params, indices, dev)
+
