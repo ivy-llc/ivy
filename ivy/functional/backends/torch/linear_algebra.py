@@ -64,6 +64,12 @@ def svd(x:torch.Tensor,full_matrices: bool = True) -> Union[torch.Tensor, Tuple[
     return res
 
 
+def outer(x1: torch.Tensor,
+          x2: torch.Tensor)\
+        -> torch.Tensor:
+    return torch.outer(x1, x2)
+
+
 def diagonal(x: torch.Tensor,
              offset: int = 0,
              axis1: int = -2,
@@ -121,7 +127,12 @@ def cholesky(x: torch.Tensor,
     else:
         return torch.transpose(torch.linalg.cholesky(torch.transpose(x, dim0=len(x.shape) - 1,dim1=len(x.shape) - 2)),
                                dim0=len(x.shape) - 1, dim1=len(x.shape) - 2)
-        
+
+
+def eigvalsh(x: torch.Tensor) -> torch.Tensor:
+    return torch.linalg.eigvalsh(x)
+
+
 # Extra #
 # ------#
 
