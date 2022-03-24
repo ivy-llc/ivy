@@ -43,7 +43,7 @@ def argmin(
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None
 ) -> ivy.Array:
     """
-    Returns the indices of the minimum values along a specified axis. When the minumum value occurs multiple times, only the indices corresponding to the first occurrence are returned.
+    Returns the indices of the minimum values along a specified axis. When the miniumum value occurs multiple times, only the indices corresponding to the first occurrence are returned.
 
     Parameters
     ----------
