@@ -25,8 +25,15 @@ def sort(x: tf.Tensor,
          descending: bool = False,
          stable: bool = True) \
         -> tf.Tensor:
-    x = tf.cast(x, dtype=tf.float32)
-    if descending:
-        return tf.sort(x, axis=axis, direction='DESCENDING', name=None)
+    if tf.convert_to_tensor(x).dtype.is_bool:
+        if descending:
+            res = tf.sort(tf.cast(x, dtype=tf.int32), axis=axis, direction='DESCENDING')
+            return tf.cast(res, tf.bool)
+        else:
+            res = tf.sort(tf.cast(x, dtype=tf.int32), axis=axis, direction='ASCENDING')
+            return tf.cast(res, tf.bool)
     else:
-        return tf.sort(x, axis=axis, direction='ASCENDING', name=None)
+        if descending:
+            return tf.sort(tf.convert_to_tensor(x), axis=axis, direction='DESCENDING')
+        else:
+            return tf.sort(tf.convert_to_tensor(x), axis=axis, direction='ASCENDING')
