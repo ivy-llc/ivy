@@ -65,6 +65,10 @@ def svd(x: NDArray, full_matrices: bool = True) -> Union[NDArray, Tuple[NDArray,
 
     return mx.np.linalg.norm(x, p, axis, keepdims)
 
+def outer(x1: mx.nd.NDArray,
+          x2: mx.nd.NDArray)\
+        -> mx.nd.NDArray:
+    return mx.outer (x1,x2)
 
 def diagonal(x: NDArray,
              offset: int = 0,

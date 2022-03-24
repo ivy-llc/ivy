@@ -10,7 +10,7 @@ matmul
 #matrix_power
 #matrix_rank
 matrix_transpose
-#outer
+#outer # depends on: multiply
 #pinv
 qr
 slogdet

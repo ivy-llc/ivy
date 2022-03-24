@@ -58,6 +58,12 @@ def svd(x: np.ndarray, full_matrices: bool = True) -> Union[np.ndarray, Tuple[np
     return res
 
 
+def outer(x1: np.ndarray,
+          x2: np.ndarray)\
+        -> np.ndarray:
+    return np.outer(x1, x2)
+
+
 def diagonal(x: np.ndarray,
              offset: int = 0,
              axis1: int = -2,
