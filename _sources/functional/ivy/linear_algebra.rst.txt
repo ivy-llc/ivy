@@ -16,6 +16,7 @@ Linear algebra
    linear_algebra/matrix_transpose.rst
    linear_algebra/vector_norm.rst
    linear_algebra/svd.rst
+   linear_algebra/outer.rst
    linear_algebra/diagonal.rst
    linear_algebra/inv.rst
    linear_algebra/pinv.rst

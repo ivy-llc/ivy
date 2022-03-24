@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>trace &mdash; Ivy 1.0 documentation</title>
+  <title>outer &mdash; Ivy 1.0 documentation</title>
   
 
   
@@ -36,8 +36,8 @@
   <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="det" href="det.html" />
-    <link rel="prev" title="svdvals" href="svdvals.html" /> 
+    <link rel="next" title="diagonal" href="diagonal.html" />
+    <link rel="prev" title="svd" href="svd.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -106,7 +106,7 @@
 <li class="toctree-l2"><a class="reference internal" href="matrix_transpose.html">matrix_transpose</a></li>
 <li class="toctree-l2"><a class="reference internal" href="vector_norm.html">vector_norm</a></li>
 <li class="toctree-l2"><a class="reference internal" href="svd.html">svd</a></li>
-<li class="toctree-l2"><a class="reference internal" href="outer.html">outer</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">outer</a></li>
 <li class="toctree-l2"><a class="reference internal" href="diagonal.html">diagonal</a></li>
 <li class="toctree-l2"><a class="reference internal" href="inv.html">inv</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pinv.html">pinv</a></li>
@@ -116,7 +116,7 @@
 <li class="toctree-l2"><a class="reference internal" href="matmul.html">matmul</a></li>
 <li class="toctree-l2"><a class="reference internal" href="slodget.html">slodget</a></li>
 <li class="toctree-l2"><a class="reference internal" href="svdvals.html">svdvals</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">trace</a></li>
+<li class="toctree-l2"><a class="reference internal" href="trace.html">trace</a></li>
 <li class="toctree-l2"><a class="reference internal" href="det.html">det</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cholesky.html">cholesky</a></li>
 <li class="toctree-l2"><a class="reference internal" href="eigvalsh.html">eigvalsh</a></li>
@@ -206,13 +206,13 @@
         
           <li><a href="../linear_algebra.html">Linear algebra</a> &raquo;</li>
         
-      <li>trace</li>
+      <li>outer</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../../_sources/functional/ivy/linear_algebra/trace.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../../_sources/functional/ivy/linear_algebra/outer.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -225,26 +225,22 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="trace">
-<h1>trace<a class="headerlink" href="#trace" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="outer">
+<h1>outer<a class="headerlink" href="#outer" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
-<dt id="ivy.functional.ivy.linear_algebra.trace">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">trace</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">ivy.array.Array</span></em>, <em class="sig-param"><span class="n">offset</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">0</span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../../_modules/ivy/functional/ivy/linear_algebra.html#trace"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.linear_algebra.trace" title="Permalink to this definition">¶</a></dt>
-<dd><p>Computes the sum of the diagonal of an array.</p>
-<dl class="simple">
-<dt>x:</dt><dd><p>This is an array.</p>
-</dd>
-</dl>
-<p>Out:</p>
-<blockquote>
-<div><dl class="simple">
-<dt>This function returns two values -</dt><dd><dl class="simple">
-<dt>sum:</dt><dd><p>The sum of the diagonals along an axis.</p>
-</dd>
-</dl>
-</dd>
-</dl>
-</div></blockquote>
+<dt id="ivy.functional.ivy.linear_algebra.outer">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">outer</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x1</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">x2</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../../_modules/ivy/functional/ivy/linear_algebra.html#outer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.linear_algebra.outer" title="Permalink to this definition">¶</a></dt>
+<dd><p>returns the outer product of two vectors x1 and x2.</p>
+<p>x1 (array) – first one-dimensional input array of size N. Should have a numeric data type.
+a(M,) array_like
+First input vector. Input is flattened if not already 1-dimensional.</p>
+<p>x2 (array) – second one-dimensional input array of size M. Should have a numeric data type.
+b(N,) array_like
+Second input vector. Input is flattened if not already 1-dimensional.</p>
+<p>out (array) – a two-dimensional array containing the outer product and whose shape is (N, M).
+The returned array must have a data type determined by Type Promotion Rules.
+out(M, N) ndarray, optional
+A location where the result is stored</p>
 </dd></dl>
 
 <div class="line-block">
@@ -262,10 +258,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="det.html" class="btn btn-neutral float-right" title="det" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="diagonal.html" class="btn btn-neutral float-right" title="diagonal" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="svdvals.html" class="btn btn-neutral float-left" title="svdvals" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="svd.html" class="btn btn-neutral float-left" title="svd" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

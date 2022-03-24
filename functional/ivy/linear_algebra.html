@@ -106,6 +106,7 @@
 <li class="toctree-l2"><a class="reference internal" href="linear_algebra/matrix_transpose.html">matrix_transpose</a></li>
 <li class="toctree-l2"><a class="reference internal" href="linear_algebra/vector_norm.html">vector_norm</a></li>
 <li class="toctree-l2"><a class="reference internal" href="linear_algebra/svd.html">svd</a></li>
+<li class="toctree-l2"><a class="reference internal" href="linear_algebra/outer.html">outer</a></li>
 <li class="toctree-l2"><a class="reference internal" href="linear_algebra/diagonal.html">diagonal</a></li>
 <li class="toctree-l2"><a class="reference internal" href="linear_algebra/inv.html">inv</a></li>
 <li class="toctree-l2"><a class="reference internal" href="linear_algebra/pinv.html">pinv</a></li>
@@ -391,6 +392,22 @@ x: array</p>
 <dt>out: array</dt><dd><p>an array containing the transpose for each matrix and having shape <code class="docutils literal notranslate"><span class="pre">(...,</span> <span class="pre">N,</span> <span class="pre">M)</span></code>. The returned array must have the same data type as <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.linear_algebra.outer">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">outer</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x1</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">x2</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../_modules/ivy/functional/ivy/linear_algebra.html#outer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.linear_algebra.outer" title="Permalink to this definition">¶</a></dt>
+<dd><p>returns the outer product of two vectors x1 and x2.</p>
+<p>x1 (array) – first one-dimensional input array of size N. Should have a numeric data type.
+a(M,) array_like
+First input vector. Input is flattened if not already 1-dimensional.</p>
+<p>x2 (array) – second one-dimensional input array of size M. Should have a numeric data type.
+b(N,) array_like
+Second input vector. Input is flattened if not already 1-dimensional.</p>
+<p>out (array) – a two-dimensional array containing the outer product and whose shape is (N, M).
+The returned array must have a data type determined by Type Promotion Rules.
+out(M, N) ndarray, optional
+A location where the result is stored</p>
 </dd></dl>
 
 <dl class="py function">
