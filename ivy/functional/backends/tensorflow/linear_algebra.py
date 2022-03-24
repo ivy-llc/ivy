@@ -203,7 +203,7 @@ def cross (x1: tf.Tensor,
     if x1.dtype != x2.dtype:
         x1 = tf.cast(x1, dtype_from)
         x2 = tf.cast(x2, dtype_from)      
-    return tf.experimental.numpy.cross(x1, x2)
+    return tf.experimental.numpy.cross(x1, x2,axis=axis)
 
 
 # Extra #
