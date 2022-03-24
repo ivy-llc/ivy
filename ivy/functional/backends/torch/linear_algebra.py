@@ -31,7 +31,7 @@ def matrix_transpose(x: torch.Tensor)\
 
 def eig(x: torch.tensor)\
   -> torch.tensor:
-    e_complex, v_complex = torch.linalg.eig(x, compute_v= true)
+    e_complex, v_complex = torch.linalg.eig(x, compute_v= True)
       return e, v
 
 
