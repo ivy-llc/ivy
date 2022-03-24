@@ -3,7 +3,7 @@ cholesky
 det
 #diagonal # fails non-determinstically for jax, due to +0 vs -0 inconsistencies
 #eigh
-#eigvalsh
+eigvalsh
 #inv
 matmul
 #matrix_norm
