@@ -14,4 +14,5 @@ Searching
    :caption: Searching
 
    searching/argmax.rst
+   searching/argmin.rst
 
