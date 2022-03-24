@@ -19,8 +19,12 @@ cholesky = jnp.linalg.cholesky
 
 
 def eig(x: JaxArray, name=name)\
-  e, v = jax.numpy.linalg.eig(x, out_dtype, compute_v=True, name=name)
-return e, v
+    if jax.dtyape == dtypes.float32 or jax.dtypes==dtypes.complex64:
+      out_dtype == dtypes.complex64
+      elif jax.dtype == dtypes.float64 or jax.dtypes == dtypes.complex128:
+        out_dtype = dtype.complex128
+        e, v = jax.numpy.linalg.eig(x, out_dtype, compute_v=True, name=name)
+        return e, v
 
 
 
