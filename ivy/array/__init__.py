@@ -2,7 +2,7 @@
 import copy
 import functools
 from numbers import Number
-
+from operator import mul
 # local
 import ivy
 from . import array_api
@@ -47,6 +47,8 @@ class Array(ArrayWithArrayAPI, ArrayWithDevice, ArrayWithGeneral, ArrayWithGradi
         assert ivy.is_array(data)
         self._data = data
         self._shape = data.shape
+
+        self._size = functools.reduce(mul,self._data.shape) if len(self._data.shape) >0 else 0 
         self._dtype = ivy.dtype(self._data)
         self._device = ivy.dev(data)
         self._dev_str = ivy.dev_to_str(self._device)
@@ -81,6 +83,24 @@ class Array(ArrayWithArrayAPI, ArrayWithDevice, ArrayWithGeneral, ArrayWithGradi
         assert len(self._data.shape) == 2
         return ivy.matrix_transpose(self._data)
 
+    @property
+    def size(self):
+        """
+        Number of elements in an array.
+        
+        .. note::
+           This must equal the product of the array's dimensions.
+        
+        Returns
+        -------
+        out: Optional[int]
+            number of elements in an array. The returned value must be ``None`` if and only if one or more array dimensions are unknown.
+        
+        
+        .. note::
+           For array libraries having graph-based computational models, an array may have unknown dimensions due to data-dependent operations.
+        """
+        return self._size
     # Built-ins #
     # ----------#
 
@@ -175,7 +195,7 @@ class Array(ArrayWithArrayAPI, ArrayWithDevice, ArrayWithGeneral, ArrayWithGradi
     @_native_wrapper
     def __sub__(self, other):
         other = to_native(other)
-        res = self._data.__sub__(other)
+        res = ivy.subtract(self._data, other)
         if res is NotImplemented:
             return res
         return to_ivy(res)
@@ -183,7 +203,7 @@ class Array(ArrayWithArrayAPI, ArrayWithDevice, ArrayWithGeneral, ArrayWithGradi
     @_native_wrapper
     def __rsub__(self, other):
         other = to_native(other)
-        res = self._data.__rsub__(other)
+        res = -ivy.subtract(self._data, other)
         if res is NotImplemented:
             return res
         return to_ivy(res)
@@ -203,6 +223,10 @@ class Array(ArrayWithArrayAPI, ArrayWithDevice, ArrayWithGeneral, ArrayWithGradi
         if res is NotImplemented:
             return res
         return to_ivy(res)
+
+    @_native_wrapper
+    def __mod__(self, other):
+        return ivy.remainder(self._data, other)
 
     @_native_wrapper
     def __truediv__(self, other):
