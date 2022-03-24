@@ -135,7 +135,7 @@ def eigvalsh(x: torch.Tensor) -> torch.Tensor:
 def cross (x1: torch.Tensor,
            x2: torch.Tensor,
            axis:int = -1) -> torch.Tensor:
-    return torch.cross(a= x1, b = x2, dim=axis)
+    return torch.cross(input = x1, other  = x2, dim=axis)
 
 # Extra #
 # ------#

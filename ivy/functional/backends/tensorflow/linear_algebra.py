@@ -195,7 +195,7 @@ def eigvalsh(x: Tensor) -> Tensor:
 def cross (x1: tf.Tensor,
            x2: tf.Tensor,
            axis:int = -1) -> tf.Tensor:
-    return tf.linalg.cross(a= x1, b = x2)
+    return tf.experimental.numpy.cross(a= x1, b = x2, axis=axis)
 
 
 # Extra #
