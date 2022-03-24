@@ -121,7 +121,12 @@ def cholesky(x: torch.Tensor,
     else:
         return torch.transpose(torch.linalg.cholesky(torch.transpose(x, dim0=len(x.shape) - 1,dim1=len(x.shape) - 2)),
                                dim0=len(x.shape) - 1, dim1=len(x.shape) - 2)
-        
+
+
+def eigvalsh(x: torch.Tensor) -> torch.Tensor:
+    return torch.linalg.eigvalsh(x)
+
+
 # Extra #
 # ------#
 
