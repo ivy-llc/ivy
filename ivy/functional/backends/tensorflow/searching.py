@@ -20,9 +20,12 @@ def argmax(
 
 def argmin(
     x: Tensor,
-    axis: Tensor = None,
+    axis: Optional[int] = None,
+    keepdims: bool = False,
     output_type: Optional[int] = tf.dtypes.int64,
 ) -> Tensor:
 
-    ret = tf.math.argmin(x, axis=axis, output_type=output_type)
+    ret = x.numpy().argmin(axis=axis, keepdims=keepdims)
+    ret = tf.convert_to_tensor(ret,dtype=ret.dtype)
+
     return ret
