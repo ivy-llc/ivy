@@ -18,9 +18,11 @@ pinv = jnp.linalg.pinv
 cholesky = jnp.linalg.cholesky
 
 
-def eig(x: JaxArray)\
-  -> JaxArray:
-    return jnp.linalg(x)
+def eig(x: JaxArray, name=name)\
+  e, v = jax.numpy.linalg.eig(x, out_dtype, compute_v=True, name=name)
+return e, v
+
+
 
 
 
