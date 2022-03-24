@@ -19,7 +19,7 @@ cholesky = jnp.linalg.cholesky
 
 def eig(x: JaxArray)\
   ->JaxArray:
-    return jnp.linalg.eig(x)
+    return jax.numpy.linalg.eig(x)
 
 
 
