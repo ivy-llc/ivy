@@ -419,7 +419,7 @@ def cross(x1: Union[ivy.Array, ivy.NativeArray],
      by Type Promotion Rules.
     :type out: array
     """
-    return _cur_framework(x1,x2).cross(x1,x2,axis)
+    return _cur_framework(x1).cross(x1,x2,axis)
 
 # Extra #
 # ------#
