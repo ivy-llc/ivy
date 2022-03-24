@@ -10,3 +10,14 @@ def argmax(
     x = torch.tensor(x)
     ret = torch.argmax(x,dim=axis,out=out,keepdim=keepdims)
     return ret
+
+
+def argmin(
+    x: torch.Tensor,
+    axis: Optional[int] = None,
+    out: Optional[torch.Tensor] = None,
+    keepdims: Optional[bool] = False
+) -> torch.Tensor:
+    x = torch.tensor(x)
+    ret = torch.argmin(x,dim=axis,out=out,keepdim=keepdims)
+    return ret
