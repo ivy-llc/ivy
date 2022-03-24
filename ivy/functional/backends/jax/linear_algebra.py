@@ -111,6 +111,10 @@ def cholesky(x: JaxArray,
                         axes=axes)
 
 
+def eigvalsh(x: JaxArray) -> JaxArray:
+    return jnp.linalg.eigvalsh(x)
+
+
 # Extra #
 # ------#
 
