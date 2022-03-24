@@ -103,7 +103,11 @@ def cholesky(x: mx.nd.NDArray,
         axes = list(range(len(x.shape) - 2)) + [len(x.shape) - 1, len(x.shape) - 2]
         return mx.np.transpose(mx.np.linalg.cholesky(mx.np.transpose(x, axes=axes)),
                         axes=axes)
-        
+
+def eigvalsh(x: mx.ndarray.ndarray.NDArray) -> mx.ndarray.ndarray.NDArray:
+    return mx.np.linalg.eigvalsh(x)
+
+
 # Extra #
 # ------#
 
