@@ -180,7 +180,12 @@ def cholesky(x: tf.Tensor,
         axes = list(range(len(x.shape) - 2)) + [len(x.shape) - 1, len(x.shape) - 2]
         return tf.transpose(tf.linalg.cholesky(tf.transpose(x, perm=axes)),
                             perm=axes)
-        
+
+
+def eigvalsh(x: Tensor) -> Tensor:
+    return tf.linalg.eigvalsh(x)
+
+
 # Extra #
 # ------#
 
