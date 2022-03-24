@@ -558,7 +558,19 @@
 <span class="sd">    :type out: array</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span>  <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">cholesky</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">upper</span><span class="p">)</span></div>
-    
+
+<div class="viewcode-block" id="eigvalsh"><a class="viewcode-back" href="../../../../functional/ivy/linear_algebra/eigvalsh.html#ivy.functional.ivy.linear_algebra.eigvalsh">[docs]</a><span class="k">def</span> <span class="nf">eigvalsh</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return the eigenvalues of a symmetric matrix (or a stack of symmetric matrices) x.</span>
+<span class="sd">    :param x: input array having shape (..., M, M) and whose innermost two dimensions form square matrices.</span>
+<span class="sd">              Must have floating-point data type.</span>
+
+<span class="sd">    :return: an array containing the computed eigenvalues. The returned array must have shape (..., M) and</span>
+<span class="sd">             have the same data type as x.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">eigvalsh</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
+
+
 <span class="c1"># Extra #</span>
 <span class="c1"># ------#</span>
 
