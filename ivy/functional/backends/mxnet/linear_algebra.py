@@ -41,7 +41,8 @@ def pinv(x):
             
 def eig(x: mx.ndarray)\
   ->mx.ndarray:
-    return mx.np.linalg.eig(x)
+    e, v = mx.np.linalg.eig(x, dtype, compute_v= True)
+    return e, v
 
 
 def vector_norm(x: NDArray,
