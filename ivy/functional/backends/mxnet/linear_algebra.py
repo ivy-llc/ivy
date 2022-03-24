@@ -114,7 +114,7 @@ def eigvalsh(x: mx.ndarray.ndarray.NDArray) -> mx.ndarray.ndarray.NDArray:
 def cross (x1: mx.nd.NDArray,
            x2: mx.nd.NDArray,
            axis:int = -1) -> mx.nd.NDArray:
-    return mx.np.linalg.cross(a= x1, b = x2, axis= axis)
+    return mx.np.cross(a= x1, b = x2, axis= axis)
 
 # Extra #
 # ------#

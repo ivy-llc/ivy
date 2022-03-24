@@ -121,7 +121,7 @@ def eigvalsh(x: np.ndarray) -> np.ndarray:
 def cross (x1: np.ndarray,
            x2: np.ndarray,
            axis:int = -1) -> np.ndarray:
-    return np.linalg.cross(a= x1, b = x2, axis= axis)
+    return np.cross(a= x1, b = x2, axis= axis)
 
 # Extra #
 # ------#
