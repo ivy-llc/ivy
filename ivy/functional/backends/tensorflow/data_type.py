@@ -1,7 +1,7 @@
 # global
 import numpy as np
 import tensorflow as tf
-from typing import Union
+from typing import Union, Tuple
 from tensorflow.python.types.core import Tensor
 from tensorflow.python.framework.dtypes import DType
 
@@ -45,3 +45,17 @@ class Finfo:
 def finfo(type: Union[DType, str, Tensor])\
         -> Finfo:
     return Finfo(tf.experimental.numpy.finfo(ivy.dtype_from_str(type)))
+
+  
+def result_type(*arrays_and_dtypes: Union[Tensor, tf.DType]) -> tf.DType:
+    if len(arrays_and_dtypes) <= 1:
+        return tf.experimental.numpy.result_type(arrays_and_dtypes)
+
+    result = tf.experimental.numpy.result_type(arrays_and_dtypes[0], arrays_and_dtypes[1])
+    for i in range(2, len(arrays_and_dtypes)):
+        result = tf.experimental.numpy.result_type(result, arrays_and_dtypes[i])
+    return result
+
+
+def broadcast_to (x: Tensor, shape: Tuple[int, ...])-> Tensor:
+    return tf.broadcast_to(x, shape)

@@ -7,7 +7,12 @@ import typing
 import ivy
 
 
-def bitwise_invert(x: Tensor) \
+def expm1(x: Tensor)\
+        -> Tensor:
+    return tf.math.expm1(x)
+
+
+def bitwise_invert(x: Tensor)\
         -> Tensor:
     if 'int' not in str(x.dtype):
         return tf.logical_not(x)
@@ -27,13 +32,20 @@ def ceil(x: Tensor)\
     return tf.math.ceil(x)
 
 
+def floor(x: Tensor)\
+        -> Tensor:
+    if 'int' in str(x.dtype):
+        return x
+    return tf.math.floor(x)
+
+
 def isfinite(x: Tensor) \
         -> Tensor:
     if ivy.is_int_dtype(x):
         return tf.ones_like(x, tf.bool)
     return tf.math.is_finite(x)
 
-  
+
 def asin(x: Tensor) \
         -> Tensor:
     return tf.asin(x)
@@ -88,8 +100,7 @@ def sqrt(x: Tensor)\
     if x.dtype == 'float32':
         x_64 = tf.cast(x, tf.float64)
         return tf.cast(tf.sqrt(x_64), x.dtype)
-    return  tf.math.sqrt(x)
-
+    return tf.math.sqrt(x)
 
 
 def cosh(x: Tensor) \
@@ -100,6 +111,11 @@ def cosh(x: Tensor) \
 def log10(x: Tensor) \
         -> Tensor:
     return tf.experimental.numpy.log10(x)
+
+
+def log(x: Tensor)\
+        -> Tensor:
+    return tf.math.log(x)
 
 
 def log2(x: Tensor) \
@@ -138,11 +154,25 @@ def logical_not(x: Tensor)\
     return tf.logical_not(tf.cast(x, tf.bool))
 
 
+def greater_equal(x1: Tensor, x2: Tensor)\
+        -> Tensor:
+    if hasattr(x1, 'dtype') and hasattr(x2, 'dtype'):
+        promoted_type = tf.experimental.numpy.promote_types(x1.dtype, x2.dtype)
+        x1 = tf.cast(x1, promoted_type)
+        x2 = tf.cast(x2, promoted_type)
+    return tf.math.greater_equal(x1, x2)
+
+
 def acos(x: Tensor)\
         -> Tensor:
     return tf.acos(x)
 
-  
+
+def logical_xor(x1: Tensor, x2: Tensor) \
+        -> Tensor:
+    return tf.math.logical_xor(tf.cast(x1, tf.bool), tf.cast(x2, tf.bool))
+
+
 def logical_or(x1: Tensor, x2: Tensor)\
         -> Tensor:
     return tf.logical_or(tf.cast(x1, tf.bool), tf.cast(x2, tf.bool))
@@ -157,7 +187,7 @@ def acosh(x: Tensor) \
         -> Tensor:
     return tf.acosh(x)
 
-  
+
 def sin(x: Tensor)\
         -> Tensor:
     return tf.sin(x)
@@ -169,16 +199,86 @@ def negative(x: Tensor) -> Tensor:
     return tf.negative(x)
 
 
+def not_equal(x1: Tensor, x2: Tensor)\
+        -> Tensor:
+    x1, x2 = _cast_for_binary_op(x1, x2)
+    return tf.math.not_equal(x1, x2)
+
+
 def tanh(x: Tensor) \
         -> Tensor:
     return tf.tanh(x)
-  
-  
+
+
 def sinh(x: Tensor) \
         -> Tensor:
-    return tf.sinh(x)  
+    return tf.sinh(x)
 
- 
+
+def bitwise_or(x1: Tensor, x2: Tensor) \
+        -> Tensor:
+    x1, x2 = _cast_for_binary_op(x1, x2)
+    return x1 | x2
+
+
+def positive(x: Tensor)\
+        -> Tensor:
+    return tf.experimental.numpy.positive(x)
+
+
 def square(x: Tensor)\
         -> Tensor:
     return tf.math.square(x)
+
+
+def remainder(x1: Tensor, x2: Tensor)\
+        -> Tensor:
+    x1, x2 = _cast_for_binary_op(x1, x2)
+    return tf.experimental.numpy.remainder(x1, x2)
+
+
+def round(x: Tensor)\
+        -> Tensor:
+    if 'int' in str(x.dtype):
+        return x
+    return tf.round(x)
+
+
+def abs(x: Tensor)\
+        -> Tensor:
+    return tf.math.abs(x)
+
+
+def subtract(x1: Tensor, x2: Tensor)\
+        -> Tensor:
+    if hasattr(x1, 'dtype') and hasattr(x2, 'dtype'):
+        promoted_type = tf.experimental.numpy.promote_types(x1.dtype, x2.dtype)
+        x1 = tf.cast(x1, promoted_type)
+        x2 = tf.cast(x2, promoted_type)
+    return tf.subtract(x1, x2)
+
+
+def logaddexp(x1: Tensor, x2: Tensor) -> Tensor:
+    x1, x2 = _cast_for_binary_op(x1, x2)
+    return tf.experimental.numpy.logaddexp(x1, x2)
+
+
+tan = tf.tan
+
+
+def atan(x: Tensor) \
+        -> Tensor:
+    return tf.atan(x)
+
+
+atan2 = tf.atan2
+cosh = tf.math.cosh
+atanh = tf.math.atanh
+log = tf.math.log
+exp = tf.math.exp
+
+# Extra #
+# ------#
+
+
+erf = tf.math.erf

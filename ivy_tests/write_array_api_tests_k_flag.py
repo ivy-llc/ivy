@@ -2,21 +2,14 @@ import os
 
 this_dir = os.path.dirname(os.path.realpath(__file__))
 func_folder = os.path.join(this_dir, 'array_api_methods_to_test')
-array_folder = os.path.join(func_folder, 'array')
 
 # api function filepaths
 func_fnames = os.listdir(func_folder)
-func_fnames.remove('array')
 func_fnames.sort()
 func_fpaths = [os.path.join(func_folder, fname) for fname in func_fnames]
 
-# array function filepaths
-array_fnames = os.listdir(array_folder)
-array_fnames.sort()
-array_fpaths = [os.path.join(array_folder, fname) for fname in array_fnames]
-
 # all filepaths
-fpaths = func_fpaths + array_fpaths
+fpaths = func_fpaths
 
 # test lists
 tests_to_run = list()
