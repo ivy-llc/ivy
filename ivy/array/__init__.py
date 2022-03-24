@@ -211,7 +211,7 @@ class Array(ArrayWithArrayAPI, ArrayWithDevice, ArrayWithGeneral, ArrayWithGradi
     @_native_wrapper
     def __mul__(self, other):
         other = to_native(other)
-        res = self._data.__mul__(other)
+        res = ivy.multiply(self._data, other)
         if res is NotImplemented:
             return res
         return to_ivy(res)
