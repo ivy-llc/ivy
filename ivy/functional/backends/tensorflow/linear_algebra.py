@@ -17,9 +17,14 @@ inv = tf.linalg.inv
 pinv = tf.linalg.pinv
 cholesky = tf.linalg.cholesky
 
-def eig(x: tf.tensor)\
-  ->tf.tensor:
-        returm tf.linalg.eig(x, compute=False)
+def eig(x: Tensor, name=None)\
+   if tensor.dtype == dtypes.float32 or dtypes.complex64:
+       out_dtype = dtype.complex64
+    elif tensor.dtype == dtypes.float64 or dtypes.complex128:
+      out_dtypes = dtypes.complex128
+      e, v = gen_linalg_ops.eig(tensor, Tout=out_dtypes, compute_v=True, name=name
+                                return e, v
+  
 
 
 def matrix_transpose(x: Tensor)\
