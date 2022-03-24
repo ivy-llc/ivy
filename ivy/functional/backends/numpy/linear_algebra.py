@@ -109,6 +109,10 @@ def cholesky(x: np.ndarray,
         return np.transpose(np.linalg.cholesky(np.transpose(x, axes=axes)),
                             axes=axes)
 
+def eigvalsh(x: np.ndarray) -> np.ndarray:
+    return np.linalg.eigvalsh(x)
+
+
 # Extra #
 # ------#
 
