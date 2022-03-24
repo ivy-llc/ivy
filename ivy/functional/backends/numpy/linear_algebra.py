@@ -118,6 +118,10 @@ def cholesky(x: np.ndarray,
 def eigvalsh(x: np.ndarray) -> np.ndarray:
     return np.linalg.eigvalsh(x)
 
+def cross (x1: np.ndarray,
+           x2: np.ndarray,
+           axis:int = -1) -> np.ndarray:
+    return np.linalg.cross(a= x1, b = x2, axis= axis)
 
 # Extra #
 # ------#

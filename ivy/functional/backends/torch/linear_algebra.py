@@ -132,6 +132,10 @@ def cholesky(x: torch.Tensor,
 def eigvalsh(x: torch.Tensor) -> torch.Tensor:
     return torch.linalg.eigvalsh(x)
 
+def cross (x1: torch.Tensor,
+           x2: torch.Tensor,
+           axis:int = -1) -> torch.Tensor:
+    return torch.linalg.cross(a= x1, b = x2, dim=axis)
 
 # Extra #
 # ------#

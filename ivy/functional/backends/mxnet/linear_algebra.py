@@ -111,6 +111,10 @@ def cholesky(x: mx.nd.NDArray,
 def eigvalsh(x: mx.ndarray.ndarray.NDArray) -> mx.ndarray.ndarray.NDArray:
     return mx.np.linalg.eigvalsh(x)
 
+def cross (x1: mx.nd.NDArray,
+           x2: mx.nd.NDArray,
+           axis:int = -1) -> mx.nd.NDArray:
+    return mx.np.linalg.cross(a= x1, b = x2, axis= axis)
 
 # Extra #
 # ------#
