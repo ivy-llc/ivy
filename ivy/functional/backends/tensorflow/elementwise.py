@@ -246,7 +246,10 @@ def round(x: Tensor)\
 
 def abs(x: Tensor)\
         -> Tensor:
-    return tf.math.abs(x)
+
+    if 'uint' in ivy.dtype(x, as_str=True):
+        return x
+    return tf.abs(x)
 
 
 def subtract(x1: Tensor, x2: Tensor)\
