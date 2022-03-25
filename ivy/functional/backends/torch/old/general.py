@@ -57,12 +57,6 @@ def clip(x, x_min, x_max):
     return torch.clamp(x, x_min, x_max)
 
 
-# noinspection PyShadowingBuiltins
-# noinspection PyShadowingBuiltins
-def abs(x):
-    return torch.abs(x)
-
-
 def cast(x, dtype_in: str):
     dtype_val = dtype_from_str(dtype_in)
     return x.type(dtype_val)
