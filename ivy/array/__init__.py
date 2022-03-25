@@ -195,7 +195,7 @@ class Array(ArrayWithArrayAPI, ArrayWithDevice, ArrayWithGeneral, ArrayWithGradi
     @_native_wrapper
     def __sub__(self, other):
         other = to_native(other)
-        res = self._data.__sub__(other)
+        res = ivy.subtract(self._data, other)
         if res is NotImplemented:
             return res
         return to_ivy(res)
@@ -203,7 +203,7 @@ class Array(ArrayWithArrayAPI, ArrayWithDevice, ArrayWithGeneral, ArrayWithGradi
     @_native_wrapper
     def __rsub__(self, other):
         other = to_native(other)
-        res = self._data.__rsub__(other)
+        res = -ivy.subtract(self._data, other)
         if res is NotImplemented:
             return res
         return to_ivy(res)
@@ -223,6 +223,10 @@ class Array(ArrayWithArrayAPI, ArrayWithDevice, ArrayWithGeneral, ArrayWithGradi
         if res is NotImplemented:
             return res
         return to_ivy(res)
+
+    @_native_wrapper
+    def __mod__(self, other):
+        return ivy.remainder(self._data, other)
 
     @_native_wrapper
     def __truediv__(self, other):
@@ -302,7 +306,7 @@ class Array(ArrayWithArrayAPI, ArrayWithDevice, ArrayWithGeneral, ArrayWithGradi
     @_native_wrapper
     def __eq__(self, other):
         other = to_native(other)
-        res = self._data.__eq__(other)
+        res = ivy.equal(self._data, other)
         if res is NotImplemented:
             return res
         return to_ivy(res)

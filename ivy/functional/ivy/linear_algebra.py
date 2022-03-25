@@ -10,6 +10,24 @@ inf = float('inf')
 
 # Array API Standard #
 # -------------------#
+def pinv(x: Union[ivy.Array, ivy.NativeArray],
+         rtol: Optional[Union[float, Tuple[float]]] = None) \
+        -> ivy.Array:
+    """
+    Returns the (Moore-Penrose) pseudo-inverse of a matrix (or a stack of matrices) ``x``.
+    Parameters
+    ----------
+    x: array
+        input array having shape ``(..., M, N)`` and whose innermost two dimensions form ``MxN`` matrices. Should have a floating-point data type.
+    rtol: Optional[Union[float, array]]
+        relative tolerance for small singular values. Singular values approximately less than or equal to ``rtol * largest_singular_value`` are set to zero. If a ``float``, the value is equivalent to a zero-dimensional array having a floating-point data type determined by :ref:`type-promotion` (as applied to ``x``) and must be broadcast against each matrix. If an ``array``, must have a floating-point data type and must be compatible with ``shape(x)[:-2]`` (see :ref:`broadcasting`). If ``None``, the default value is ``max(M, N) * eps``, where ``eps`` must be the machine epsilon associated with the floating-point data type determined by :ref:`type-promotion` (as applied to ``x``). Default: ``None``.
+    Returns
+    -------
+    out: array
+        an array containing the pseudo-inverses. The returned array must have a floating-point data type determined by :ref:`type-promotion` and must have shape ``(..., N, M)`` (i.e., must have the same shape as ``x``, except the innermost two dimensions must be transposed).
+    """
+    return _cur_framework(x).pinv(x, rtol)
+
 
 def matrix_transpose(x: Union[ivy.Array, ivy.NativeArray])\
         -> ivy.Array:
@@ -113,6 +131,33 @@ def svd(x:Union[ivy.Array,ivy.NativeArray],full_matrices: bool = True)->Union[iv
         The size of the last two dimensions depends on the value of full_matrices.
     """
     return _cur_framework(x).svd(x,full_matrices)
+
+
+def outer(x1: Union[ivy.Array, ivy.NativeArray],
+          x2: Union[ivy.Array, ivy.NativeArray])\
+        -> ivy.Array:
+    """
+    returns the outer product of two vectors x1 and x2.
+    
+    Parameters
+    ----------
+    x1 (array) – first one-dimensional input array of size N. Should have a numeric data type.
+    a(M,) array_like
+    First input vector. Input is flattened if not already 1-dimensional.
+
+    x2 (array) – second one-dimensional input array of size M. Should have a numeric data type.
+    b(N,) array_like
+    Second input vector. Input is flattened if not already 1-dimensional.
+
+
+    Returns
+    -------
+    out (array) – a two-dimensional array containing the outer product and whose shape is (N, M).
+    The returned array must have a data type determined by Type Promotion Rules.
+    out(M, N) ndarray, optional
+    A location where the result is stored
+    """
+    return _cur_framework(x1, x2).outer(x1, x2)
 
 
 def diagonal(x: ivy.Array,
@@ -358,7 +403,19 @@ def cholesky(x: Union[ivy.Array, ivy.NativeArray],
     :type out: array
     """
     return  _cur_framework(x).cholesky(x, upper)
-    
+
+def eigvalsh(x: Union[ivy.Array, ivy.NativeArray], /) -> ivy.Array:
+    """
+    Return the eigenvalues of a symmetric matrix (or a stack of symmetric matrices) x.
+    :param x: input array having shape (..., M, M) and whose innermost two dimensions form square matrices.
+              Must have floating-point data type.
+
+    :return: an array containing the computed eigenvalues. The returned array must have shape (..., M) and
+             have the same data type as x.
+    """
+    return _cur_framework(x).eigvalsh(x)
+
+
 # Extra #
 # ------#
 
