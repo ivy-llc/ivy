@@ -143,4 +143,19 @@ def gather_nd(params, indices, dev=None):
     indices = _mx.nd.transpose(indices, transpose_order)
     return _mx.nd.gather_nd(params, indices).copyto(_mxnet_init_context(dev))
 
+
 multiprocessing = lambda context=None: _multiprocessing if context is None else _multiprocessing.get_context(context)
+
+# noinspection PyUnusedLocal
+one_hot = lambda indices, depth, dev=None: _mx.nd.one_hot(indices, depth)
+
+
+def indices_where(x):
+    x_shape = x.shape
+    x_flat = x.reshape((1, -1,))
+    flat_indices = x_flat.astype('int32').tostype('csr').indices
+    if flat_indices.shape == (0,):
+        res = flat_indices.reshape((0, len(x_shape)))
+        return res
+    res = _mx.nd.swapaxes(_mx.nd.unravel_index(flat_indices, x_shape), 0, 1)
+    return res
