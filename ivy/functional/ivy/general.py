@@ -872,3 +872,14 @@ def gather_nd(params: Union[ivy.Array, ivy.NativeArray], indices: Union[ivy.Arra
     """
     return _cur_framework(params).gather_nd(params, indices, dev)
 
+
+
+def multiprocessing(context: str = None):
+    """
+    Return framewrk-specific multi-processing module
+
+    :param context: The context of the multiprocessing, either fork, forkserver or spawn. Default is None.
+    :type context: str, optional
+    :return: Multiprocessing module
+    """
+    return _cur_framework().multiprocessing(context)

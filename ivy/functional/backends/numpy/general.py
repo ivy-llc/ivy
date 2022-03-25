@@ -185,3 +185,5 @@ def gather_nd(params, indices, dev=None):
     new_shape = list(indices_shape[:-1]) + list(params_shape[num_index_dims:])
     res = np.reshape(flat_gather, new_shape)
     return _to_dev(res, dev)
+
+multiprocessing = lambda context=None: _multiprocessing if context is None else _multiprocessing.get_context(context)
