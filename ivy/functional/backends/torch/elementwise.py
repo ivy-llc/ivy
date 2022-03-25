@@ -7,6 +7,11 @@ import typing
 # local
 import ivy
 
+def __or__(x: torch.tensor)\
+   ->torch.tensor:
+        return torch.__or__(x)
+
+
 def expm1(x: Tensor)\
         -> Tensor:
     return torch.expm1(x)
