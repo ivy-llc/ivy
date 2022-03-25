@@ -265,16 +265,7 @@ def where(condition: Union[ivy.Array, ivy.NativeArray], x1: Union[ivy.Array, ivy
     return _cur_framework(x1).where(condition, x1, x2)
 
 
-def indices_where(x: Union[ivy.Array, ivy.NativeArray])\
-        -> Union[ivy.Array, ivy.NativeArray]:
-    """
-    Returns indices or true elements in an input boolean array.
 
-    :param x: Boolean array, for which indices are desired.
-    :type x: array
-    :return: Indices for where the boolean array is True.
-    """
-    return _cur_framework(x).indices_where(x)
 
 
 def reshape(x: Union[ivy.Array, ivy.NativeArray], newshape: Union[int, Iterable[int]])\
@@ -369,20 +360,6 @@ def full(shape: Union[int, Tuple[int]], fill_value: Union[int, float], dtype: Op
     return _cur_framework().full(shape, fill_value, dtype, device)
 
 
-# noinspection PyShadowingNames
-def one_hot(indices: Union[ivy.Array, ivy.NativeArray], depth: int, dev: ivy.Device = None)\
-        -> Union[ivy.Array, ivy.NativeArray]:
-    """
-    Returns a one-hot array
-    :param indices: Indices for where the ones should be scattered *[batch_shape, dim]*
-    :type indices: array
-    :param depth: Scalar defining the depth of the one-hot dimension.
-    :type depth: int
-    :param dev: device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. Same as x if None.
-    :type dev: ivy.Device, optional
-    :return: Tensor of zeros with the same shape and type as a, unless dtype provided which overrides.
-    """
-    return _cur_framework(indices).one_hot(indices, depth, dev)
 
 
 def cross(x1: Union[ivy.Array, ivy.NativeArray], x2: Union[ivy.Array, ivy.NativeArray])\
@@ -455,42 +432,5 @@ def meshgrid(*xs: Iterable[Union[ivy.Array, ivy.NativeArray]], indexing: str = '
 
 
 
-def linear_resample(x: Union[ivy.Array, ivy.NativeArray], num_samples: int, axis: int = -1)\
-        -> Union[ivy.Array, ivy.NativeArray]:
-    """
-    Performs linear re-sampling on input image.
 
-    :param x: Input array
-    :type x: array
-    :param num_samples: The number of interpolated samples to take.
-    :type num_samples: int
-    :param axis: The axis along which to perform the resample. Default is last dimension.
-    :type axis: int, optional
-    :return: The array after the linear resampling.
-    """
-    return _cur_framework(x).linear_resample(x, num_samples, axis)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-def multiprocessing(context: str = None):
-    """
-    Return framewrk-specific multi-processing module
-
-    :param context: The context of the multiprocessing, either fork, forkserver or spawn. Default is None.
-    :type context: str, optional
-    :return: Multiprocessing module
-    """
-    return _cur_framework().multiprocessing(context)
 
