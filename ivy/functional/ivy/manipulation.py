@@ -169,3 +169,23 @@ def swapaxes(x: Union[ivy.Array, ivy.NativeArray], axis0: int, axis1: int)\
     :return: x with its axes permuted.
     """
     return _cur_framework(x).swapaxes(x, axis0, axis1)
+
+
+def concat(x: Union[ivy.Array, ivy.NativeArray], y: Union[ivy.Array, ivy.NativeArray]) -> Union[ivy.Array, ivy.NativeArray]:
+    """
+    Concatenates two given arrays and return the resultant array.
+
+    Parameters
+    ----------
+    x:
+        first input array.
+    y:
+        second input array.
+
+    Returns
+    -------
+    out:
+        an output array having the same data as both ``x`` and ``y``, the data of ``x`` comes first in the original order, followed by the data of ``y`` in the original order.
+    """
+
+    return _cur_framework(x).concat(x, y)
