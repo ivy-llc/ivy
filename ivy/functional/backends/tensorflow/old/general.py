@@ -79,7 +79,6 @@ def abs(x):
         return x
     return _tf.abs(x)
 
-  
 
 def cast(x, dtype):
     return _tf.cast(x, dtype_from_str(dtype))

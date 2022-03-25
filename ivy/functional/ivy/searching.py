@@ -28,7 +28,7 @@ def argmax(
         If this is set to True, the axes which are reduced are left in the result as dimensions with size one. With this option, the result will broadcast correctly against the array.
     out:
         If provided, the result will be inserted into this array. It should be of the appropriate shape and dtype.
-    
+
     Returns
     -------
         if axis is None, a zero-dimensional array containing the index of the first occurrence of the maximum value; otherwise, a non-zero-dimensional array containing the indices of the maximum values. The returned array must have be the default array index data type.
@@ -57,6 +57,7 @@ def argmin(x: Union[ivy.Array, ivy.NativeArray],
     """
 
     return _cur_framework(x).argmin(x, axis, out, keepdims)
+
 
 # Extra #
 # ------#

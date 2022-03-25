@@ -58,6 +58,12 @@ def svd(x: np.ndarray, full_matrices: bool = True) -> Union[np.ndarray, Tuple[np
     return res
 
 
+def outer(x1: np.ndarray,
+          x2: np.ndarray)\
+        -> np.ndarray:
+    return np.outer(x1, x2)
+
+
 def diagonal(x: np.ndarray,
              offset: int = 0,
              axis1: int = -2,
@@ -108,6 +114,10 @@ def cholesky(x: np.ndarray,
         axes = list(range(len(x.shape)-2))+[len(x.shape)-1, len(x.shape)-2]
         return np.transpose(np.linalg.cholesky(np.transpose(x, axes=axes)),
                             axes=axes)
+
+def eigvalsh(x: np.ndarray) -> np.ndarray:
+    return np.linalg.eigvalsh(x)
+
 
 # Extra #
 # ------#
