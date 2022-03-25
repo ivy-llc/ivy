@@ -105,9 +105,7 @@ get_num_dims = lambda x, as_tensor=False: _jnp.asarray(len(_jnp.shape(x))) if as
 minimum = _jnp.minimum
 maximum = _jnp.maximum
 clip = _jnp.clip
-# noinspection PyShadowingBuiltins
-# noinspection PyShadowingBuiltins
-abs = _jnp.absolute
+
 
 
 def cast(x, dtype):
