@@ -5,6 +5,10 @@ import jax.numpy as jnp
 # local
 from ivy.functional.backends.jax import JaxArray
 
+def __or__(x: JaxArray)\
+ ->JaxArray:
+        return jax.np.__or__(x)
+
 
 def expm1(x: JaxArray)\
         -> JaxArray:
