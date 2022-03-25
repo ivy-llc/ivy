@@ -7,6 +7,11 @@ import typing
 import ivy
 
 
+def __or__(x: Tensor)\
+  -> Tensor:
+        return tf.experimental.__or__(x)
+
+
 def expm1(x: Tensor)\
         -> Tensor:
     return tf.math.expm1(x)
