@@ -6,8 +6,7 @@ Collection of Numpy general functions, wrapped to fit Ivy syntax and signature.
 import logging
 import numpy as np
 import math as _math
-from operator import mul as _mul
-from functools import reduce as _reduce
+
 import multiprocessing as _multiprocessing
 
 # local
@@ -131,14 +130,6 @@ def transpose(x, axes=None):
 where = lambda condition, x1, x2: np.where(condition, x1, x2)
 
 
-def indices_where(x):
-    where_x = np.where(x)
-    if len(where_x) == 1:
-        return np.expand_dims(where_x[0], -1)
-    res = np.concatenate([np.expand_dims(item, -1) for item in where_x], -1)
-    return res
-
-
 reshape = np.reshape
 broadcast_to = np.broadcast_to
 
@@ -167,11 +158,6 @@ def full(shape, fill_value, dtype=None, device=None):
     return _to_dev(np.full(shape, fill_value, dtype_from_str(default_dtype(dtype, fill_value))), device)
 
 
-# noinspection PyUnusedLocal
-def one_hot(indices, depth, dev=None):
-    # from https://stackoverflow.com/questions/38592324/one-hot-encoding-using-numpy
-    res = np.eye(depth)[np.array(indices).reshape(-1)]
-    return res.reshape(list(indices.shape) + [depth])
 
 
 cross = np.cross
@@ -196,29 +182,6 @@ meshgrid = lambda *xs, indexing='ij': np.meshgrid(*xs, indexing=indexing)
 
 
 
-def linear_resample(x, num_samples, axis=-1):
-    x_shape = list(x.shape)
-    num_x_dims = len(x_shape)
-    axis = axis % num_x_dims
-    x_pre_shape = x_shape[0:axis]
-    x_pre_size = _reduce(_mul, x_pre_shape) if x_pre_shape else 1
-    num_pre_dims = len(x_pre_shape)
-    num_vals = x.shape[axis]
-    x_post_shape = x_shape[axis+1:]
-    x_post_size = _reduce(_mul, x_post_shape) if x_post_shape else 1
-    num_post_dims = len(x_post_shape)
-    xp = np.reshape(np.arange(num_vals*x_pre_size*x_post_size), x_shape)
-    x_coords = np.arange(num_samples) * ((num_vals-1)/(num_samples-1)) * x_post_size
-    x_coords = np.reshape(x_coords, [1]*num_pre_dims + [num_samples] + [1]*num_post_dims)
-    x_coords = np.broadcast_to(x_coords, x_pre_shape + [num_samples] + x_post_shape)
-    slc = [slice(None)] * num_x_dims
-    slc[axis] = slice(0, 1, 1)
-    x_coords = x_coords + xp[tuple(slc)]
-    x = np.reshape(x, (-1,))
-    xp = np.reshape(xp, (-1,))
-    x_coords = np.reshape(x_coords, (-1,))
-    ret = np.interp(x_coords, xp, x)
-    return np.reshape(ret, x_pre_shape + [num_samples] + x_post_shape)
 
 
 def dtype(x, as_str=False):
@@ -249,7 +212,7 @@ def compile(func, dynamic=True, example_inputs=None, static_argnums=None, static
 
 current_framework_str = lambda: 'numpy'
 current_framework_str.__name__ = 'current_framework_str'
-multiprocessing = lambda context=None: _multiprocessing if context is None else _multiprocessing.get_context(context)
+
 
 
 
