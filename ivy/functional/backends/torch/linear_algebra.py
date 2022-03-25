@@ -24,6 +24,10 @@ def pinv(x):
 def cholesky(x):
     return torch.linalg.cholesky(x)
 
+def eig(x: torch.tensor)\
+  -> torch.tensor:
+    return torch.linalg.eig(x)
+
 
 def matrix_transpose(x: torch.Tensor)\
         -> torch.Tensor:

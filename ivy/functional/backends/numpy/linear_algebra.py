@@ -15,6 +15,10 @@ inv = np.linalg.inv
 pinv = np.linalg.pinv
 cholesky = np.linalg.cholesky
 
+def eig(x: np.ndarray)\
+  -> np.ndarray:
+        return np.linalg.eig(x)
+
 
 def matrix_transpose(x: np.ndarray) \
         -> np.ndarray:

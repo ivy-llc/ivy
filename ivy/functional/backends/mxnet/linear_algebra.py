@@ -16,6 +16,11 @@ DET_THRESHOLD = 1e-12
 # Array API Standard #
 # -------------------#
 
+def eig(x: mx.ndarray)\
+  ->mx.ndarray:
+    return mx.np.linalg.eig(x)
+
+
 inv = mx.nd.linalg_inverse
 cholesky = lambda x: mx.np.linalg.cholesky(x.as_np_ndarray()).as_nd_ndarray()
 
@@ -38,6 +43,7 @@ def pinv(x):
                 return _matmul(xT, inv(x_xT))
             else:
                 return xT
+            
 
 
 def vector_norm(x: NDArray,
