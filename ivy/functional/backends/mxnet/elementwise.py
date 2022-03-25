@@ -5,6 +5,10 @@ import math
 # local
 from ivy.functional.backends.mxnet import _handle_flat_arrays_in_out
 
+def __or__(x: mx.ndarray)\
+  ->mx.ndarray:
+    return mx.np.__or__(x)
+
 
 def bitwise_and(x1: mx.ndarray.ndarray.NDArray, x2: mx.ndarray.ndarray.NDArray) -> mx.nd.ndarray.NDArray:
     return mx.numpy.bitwise_and(x1, x2)
