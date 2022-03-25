@@ -17,6 +17,18 @@ def ceil(x: mx.ndarray.ndarray.NDArray)\
 
 
 @_handle_flat_arrays_in_out
+def floor(x: mx.ndarray.ndarray.NDArray)\
+        -> mx.ndarray.ndarray.NDArray:
+    return mx.nd.floor(x)
+
+
+@_handle_flat_arrays_in_out
+def greater_equal(x1: mx.ndarray.ndarray.NDArray, x2: mx.ndarray.ndarray.NDArray)\
+        -> mx.ndarray.ndarray.NDArray:
+    return mx.nd.greater_equal(x1, x2)
+
+
+@_handle_flat_arrays_in_out
 def isfinite(x: mx.ndarray.ndarray.NDArray)\
         -> mx.ndarray.ndarray.NDArray:
     # ToDo: remove float32 conversion once int8 and uint8 work correctly. Currently 0 returns 0 for these types.
@@ -49,17 +61,42 @@ def less(x1: mx.ndarray.ndarray.NDArray,x2: mx.ndarray.ndarray.NDArray)\
 
 
 @_handle_flat_arrays_in_out
+def logical_xor(x1: mx.ndarray.ndarray.NDArray,
+                x2: mx.ndarray.ndarray.NDArray,
+                dtype: ['bool']) \
+        -> mx.ndarray.ndarray.NDArray:
+    return mx.nd.logical_xor(x1, x2, dtype).astype('bool')
+
+
+@_handle_flat_arrays_in_out
 def logical_not(x: mx.ndarray.ndarray.NDArray)\
         -> mx.ndarray.ndarray.NDArray:
     return mx.nd.logical_not(x)
 
 
 @_handle_flat_arrays_in_out
+def acos(x: mx.ndarray.ndarray.NDArray)\
+      -> mx.ndarray.ndarray.NDArray:
+    if isinstance(x, float):
+        return math.acos(x)
+    else:
+        mx.nd.arccos(x)
+
+
+@_handle_flat_arrays_in_out        
 def logical_and(x1: mx.ndarray.ndarray.NDArray,
                 x2: mx.ndarray.ndarray.NDArray,
                 dtype: ['bool'])\
         -> mx.ndarray.ndarray.NDArray:
     return mx.nd.logical_and(x1, x2, dtype).astype('bool')
+
+
+@_handle_flat_arrays_in_out
+def logical_or(x1: mx.ndarray.ndarray.NDArray,
+                x2: mx.ndarray.ndarray.NDArray,
+                dtype: ['bool'])\
+        -> mx.ndarray.ndarray.NDArray:
+    return mx.nd.logical_or(x1, x2, dtype).astype('bool')
 
 
 @_handle_flat_arrays_in_out
@@ -94,6 +131,12 @@ def tanh(x: mx.ndarray.ndarray.NDArray)\
 
 
 @_handle_flat_arrays_in_out
+def bitwise_or(x1: mx.ndarray.ndarray.NDArray, x2: mx.ndarray.ndarray.NDArray) \
+        -> mx.nd.ndarray.NDArray:
+    return mx.numpy.bitwise_or(x1, x2)
+
+
+@_handle_flat_arrays_in_out
 def sinh(x: mx.ndarray.ndarray.NDArray)\
         -> mx.ndarray.ndarray.NDArray:
     if isinstance(x, float):
@@ -105,3 +148,33 @@ def sinh(x: mx.ndarray.ndarray.NDArray)\
 def square(x: mx.ndarray.ndarray.NDArray)\
         -> mx.ndarray.ndarray.NDArray:
     return mx.nd.square(x)
+
+@_handle_flat_arrays_in_out
+def round(x: mx.ndarray.ndarray.NDArray)\
+        -> mx.ndarray.ndarray.NDArray:
+    return mx.nd.round(x)
+
+
+@_handle_flat_arrays_in_out
+def subtract(x1: mx.ndarray.ndarray.NDArray, x2: mx.ndarray.ndarray.NDArray)\
+        -> mx.ndarray.ndarray.NDArray:
+    return mx.nd.subtract(x1, x2)
+
+
+cos = lambda x: math.cos(x) if isinstance(x, float) else mx.nd.cos(x)
+tan = lambda x: math.tan(x) if isinstance(x, float) else mx.nd.tan(x)
+asin = lambda x: math.asin(x) if isinstance(x, float) else mx.nd.arcsin(x)
+atan = lambda x: math.atan(x) if isinstance(x, float) else mx.nd.arctan(x)
+atan2 = lambda x, y: math.atan2(x, y) if isinstance(x, float) else mx.np.arctan2(x.as_np_ndarray(), y.as_np_ndarray()).as_nd_ndarray()
+cosh = lambda x: math.cosh(x) if isinstance(x, float) else mx.nd.cosh(x)
+asinh = lambda x: math.asinh(x) if isinstance(x, float) else mx.nd.arcsinh(x)
+atanh = lambda x: math.atanh(x) if isinstance(x, float) else mx.nd.arctanh(x)
+log = lambda x: math.log(x) if isinstance(x, float) else mx.nd.log(x)
+exp = lambda x: math.exp(x) if isinstance(x, float) else mx.nd.exp(x)
+
+
+# Extra #
+# ------#
+
+
+erf = lambda x: math.erf(x) if isinstance(x, float) else mx.nd.erf(x)

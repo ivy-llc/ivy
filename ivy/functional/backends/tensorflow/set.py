@@ -13,3 +13,8 @@ def unique_inverse(x: Tensor) \
     if x.shape == tf.TensorShape([]):
         inverse_indices = tf.reshape(inverse_indices, [])
     return out(values, inverse_indices)
+
+
+def unique_values(x: Tensor) \
+        -> Tensor:
+    return tf.unique(tf.reshape(x, [-1]))[0]
