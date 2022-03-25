@@ -91,13 +91,13 @@ def asarray(object_in, dtype: Optional[str] = None, dev: Optional[str] = None, c
         # Temporary fix on type
         # Because default_type() didn't return correct type for normal python array
         if copy is True:
-            return to_dev((jnp.asarray(object_in).copy()), dev)
+            return to_dev(jnp.array(object_in,copy=True), dev)
         else:
             return to_dev(jnp.asarray(object_in), dev)
     else:
         dtype = default_dtype(dtype, object_in)
     if copy is True:
-        return to_dev((jnp.asarray(object_in, dtype=dtype).copy()), dev)
+        return to_dev(jnp.array(object_in, dtype=dtype,copy=True), dev)
     else:
         return to_dev(jnp.asarray(object_in, dtype=dtype), dev)
 
