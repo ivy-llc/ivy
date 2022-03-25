@@ -9,6 +9,30 @@ from ivy.framework_handler import current_framework as _cur_framework
 # Array API Standard #
 # -------------------#
 
+def expm1(x: Union[ivy.Array, ivy.NativeArray])\
+        -> ivy.Array:
+    """
+    Calculates an implementation-dependent approximation to ``exp(x)-1``, having domain ``[-infinity, +infinity]`` and codomain ``[-1, +infinity]``, for each element ``x_i`` of the input array ``x``.
+    .. note::
+       The purpose of this function is to calculate ``exp(x)-1.0`` more accurately when `x` is close to zero. Accordingly, conforming implementations should avoid implementing this function as simply ``exp(x)-1.0``. See FDLIBM, or some other IEEE 754-2019 compliant mathematical library, for a potential reference implementation.
+    **Special cases**
+    For floating-point operands,
+    - If ``x_i`` is ``NaN``, the result is ``NaN``.
+    - If ``x_i`` is ``+0``, the result is ``+0``.
+    - If ``x_i`` is ``-0``, the result is ``-0``.
+    - If ``x_i`` is ``+infinity``, the result is ``+infinity``.
+    - If ``x_i`` is ``-infinity``, the result is ``-1``.
+    Parameters
+    ----------
+    x: array
+        input array. Should have a numeric data type.
+    Returns
+    -------
+    out: array
+        an array containing the evaluated result for each element in ``x``. The returned array must have a floating-point data type determined by :ref:`type-promotion`.
+    """
+    return _cur_framework(x).expm1(x)
+  
 def bitwise_invert(x: Union[ivy.Array, ivy.NativeArray]) \
         -> ivy.Array:
     """
@@ -279,6 +303,29 @@ def cosh(x: Union[ivy.Array, ivy.NativeArray])\
     return _cur_framework(x).cosh(x)
 
 
+def log(x: Union[ivy.Array, ivy.NativeArray])\
+        -> ivy.Array:
+    """
+    Calculates an implementation-dependent approximation to the natural (base ``e``) logarithm, having domain ``[0, +infinity]`` and codomain ``[-infinity, +infinity]``, for each element ``x_i`` of the input array ``x``.
+    **Special cases**
+    For floating-point operands,
+    - If ``x_i`` is ``NaN``, the result is ``NaN``.
+    - If ``x_i`` is less than ``0``, the result is ``NaN``.
+    - If ``x_i`` is either ``+0`` or ``-0``, the result is ``-infinity``.
+    - If ``x_i`` is ``1``, the result is ``+0``.
+    - If ``x_i`` is ``+infinity``, the result is ``+infinity``.
+    Parameters
+    ----------
+    x: array
+        input array. Should have a floating-point data type.
+    Returns
+    -------
+    out: array
+        an array containing the evaluated natural logarithm for each element in ``x``. The returned array must have a floating-point data type determined by :ref:`type-promotion`.
+    """
+    return _cur_framework(x).log(x)
+
+
 def log2(x: Union[ivy.Array, ivy.NativeArray])\
         -> ivy.Array:
     """
@@ -467,6 +514,24 @@ def acos(x: Union[ivy.Array, ivy.NativeArray])\
         an array containing the inverse cosine of each element in x. The returned array must have a floating-point data type determined by :ref:`type-promotion`.
     """
     return _cur_framework(x).acos(x)
+
+
+def logical_xor(x1: Union[ivy.Array, ivy.NativeArray], x2: Union[ivy.Array, ivy.NativeArray]) \
+        -> ivy.Array:
+    """
+    Computes the bitwise XOR of the underlying binary representation of each element ``x1_i`` of the input array ``x1`` with the respective element ``x2_i`` of the input array ``x2``.
+    Parameters
+    ----------
+    x1: array
+        first input array. Should have an integer or boolean data type.
+    x2: array
+        second input array. Must be compatible with ``x1`` (see :ref:`broadcasting`). Should have an integer or boolean data type.
+    Returns
+    -------
+    out: array
+        an array containing the element-wise results. The returned array must have a data type determined by :ref:`type-promotion`.
+    """
+    return _cur_framework(x1, x2).logical_xor(x1, x2)
 
 
 def logical_or(x1: Union[ivy.Array, ivy.NativeArray], x2: Union[ivy.Array, ivy.NativeArray])\
@@ -767,14 +832,25 @@ def asin(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
     return _cur_framework(x).asin(x)
 
 
-def atan(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
+def atan(x: Union[ivy.Array, ivy.NativeArray]) \
+        -> ivy.Array:
     """
-    Computes trigonometric inverse tangent, element-wise.
-    The inverse of tan, so that if y = tan(x) then x = arctan(y).
-
-    :param x: Input array.
-    :type x: array
-    :return: Out has the same shape as x. Its real part is in [-pi/2, pi/2] (arctan(+/-inf) returns +/-pi/2).
+    Calculates an implementation-dependent approximation of the principal value of the inverse tangent, having domain ``[-infinity, +infinity]`` and codomain ``[-π/2, +π/2]``, for each element ``x_i`` of the input array ``x``. Each element-wise result is expressed in radians.
+    **Special cases**
+    For floating-point operands,
+    - If ``x_i`` is ``NaN``, the result is ``NaN``.
+    - If ``x_i`` is ``+0``, the result is ``+0``.
+    - If ``x_i`` is ``-0``, the result is ``-0``.
+    - If ``x_i`` is ``+infinity``, the result is an implementation-dependent approximation to ``+π/2``.
+    - If ``x_i`` is ``-infinity``, the result is an implementation-dependent approximation to ``-π/2``.
+    Parameters
+    ----------
+    x: array
+        input array. Should have a floating-point data type.
+    Returns
+    -------
+    out: array
+        an array containing the inverse tangent of each element in ``x``. The returned array must have a floating-point data type determined by :ref:`type-promotion`.
     """
     return _cur_framework(x).atan(x)
 
@@ -845,6 +921,28 @@ def exp(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
     return _cur_framework(x).exp(x)
 
 
+def subtract(x1: Union[ivy.Array, ivy.NativeArray],
+             x2: Union[ivy.Array, ivy.NativeArray])\
+        -> ivy.Array:
+    """
+    Calculates the difference for each element ``x1_i`` of the input array ``x1`` with the respective element ``x2_i``
+    of the input array ``x2``.
+
+    Parameters
+    ----------
+    x1:
+        first input array. Should have a numeric data type.
+    x2:
+        second input array. Must be compatible with ``x1`` (see :ref:`broadcasting`). Should have a numeric data type.
+
+    Returns
+    -------
+    out:
+        an array containing the element-wise differences.
+    """
+    return _cur_framework(x1).subtract(x1, x2)
+
+
 def divide(x1: Union[ivy.Array, ivy.NativeArray], x2: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
     """
     Calculates the division for each element x1_i of the input array x1 with the respective element x2_i of the
@@ -856,6 +954,58 @@ def divide(x1: Union[ivy.Array, ivy.NativeArray], x2: Union[ivy.Array, ivy.Nativ
              determined by Type Promotion Rules.
     """
     return x1 / x2
+
+
+def remainder(x1: Union[ivy.Array, ivy.NativeArray],
+              x2: Union[ivy.Array, ivy.NativeArray])\
+        -> ivy.Array:
+    """
+    Returns the remainder of division for each element ``x1_i`` of the input array ``x1``
+    and the respective element ``x2_i`` of the input array ``x2``.
+
+    .. note::
+        This function is equivalent to the Python modulus operator ``x1_i % x2_i``.
+        For input arrays which promote to an integer data type, the result of division by zero is unspecified and thus implementation-defined.
+        In general, similar to Python’s ``%`` operator, this function is not recommended for floating-point operands as semantics do not follow IEEE 754. That this function is specified to accept floating-point operands is primarily for reasons of backward compatibility.
+
+    **Special Cases**
+
+    For floating-point operands,
+
+    - If either ``x1_i`` or ``x2_i`` is ``NaN``, the result is ``NaN``.
+    - If ``x1_i`` is either ``+infinity`` or ``-infinity`` and ``x2_i`` is either ``+infinity`` or ``-infinity``, the result is ``NaN``.
+    - If ``x1_i`` is either ``+0`` or ``-0`` and ``x2_i`` is either ``+0`` or ``-0``, the result is ``NaN``.
+    - If ``x1_i`` is ``+0`` and ``x2_i`` is greater than ``0``, the result is ``+0``.
+    - If ``x1_i`` is ``-0`` and ``x2_i`` is greater than ``0``, the result is ``+0``.
+    - If ``x1_i`` is ``+0`` and ``x2_i`` is less than ``0``, the result is ``-0``.
+    - If ``x1_i`` is ``-0`` and ``x2_i`` is less than ``0``, the result is ``-0``.
+    - If ``x1_i`` is greater than ``0`` and ``x2_i`` is ``+0``, the result is ``NaN``.
+    - If ``x1_i`` is greater than ``0`` and ``x2_i`` is ``-0``, the result is ``NaN``.
+    - If ``x1_i`` is less than ``0`` and ``x2_i`` is ``+0``, the result is ``NaN``.
+    - If ``x1_i`` is less than ``0`` and ``x2_i`` is ``-0``, the result is ``NaN``.
+    - If ``x1_i`` is ``+infinity`` and ``x2_i`` is a positive (i.e., greater than ``0``) finite number, the result is ``NaN``.
+    - If ``x1_i`` is ``+infinity`` and ``x2_i`` is a negative (i.e., less than ``0``) finite number, the result is ``NaN``.
+    - If ``x1_i`` is ``-infinity`` and ``x2_i`` is a positive (i.e., greater than ``0``) finite number, the result is ``NaN``.
+    - If ``x1_i`` is ``-infinity`` and ``x2_i`` is a negative (i.e., less than ``0``) finite number, the result is ``NaN``.
+    - If ``x1_i`` is a positive (i.e., greater than ``0``) finite number and ``x2_i`` is ``+infinity``, the result is ``x1_i``. (note: this result matches Python behavior.)
+    - If ``x1_i`` is a positive (i.e., greater than ``0``) finite number and ``x2_i`` is ``-infinity``, the result is ``x2_i``. (note: this result matches Python behavior.)
+    - If ``x1_i`` is a negative (i.e., less than ``0``) finite number and ``x2_i`` is ``+infinity``, the result is ``x2_i``. (note: this results matches Python behavior.)
+    - If ``x1_i`` is a negative (i.e., less than ``0``) finite number and ``x2_i`` is ``-infinity``, the result is ``x1_i``. (note: this result matches Python behavior.)
+    - In the remaining cases, the result must match that of the Python ``%`` operator.
+
+    Parameters
+    ----------
+    x1:
+        dividend input array. Should have a numeric data type.
+    x2:
+        divisor input array. Must be compatible with ``x1`` (see :ref:`Broadcasting`). Should have a numeric data type.
+
+    Returns
+    -------
+    out:
+        an array containing the element-wise results. Each element-wise result must have the same sign as the respective element ``x2_i``. The returned array must have a data type determined by :ref:`Type Promotion Rules`.
+    """
+    return _cur_framework(x1, x2).remainder(x1, x2)
 
 
 # Extra #
@@ -872,4 +1022,3 @@ def erf(x: Union[ivy.Array, ivy.NativeArray])\
     :return: The Gauss error function of x.
     """
     return _cur_framework(x).erf(x)
-

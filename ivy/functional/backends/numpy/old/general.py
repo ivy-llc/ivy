@@ -87,13 +87,6 @@ clip = lambda x, x_min, x_max: np.asarray(np.clip(x, x_min, x_max))
 abs = lambda x: np.asarray(np.absolute(x))
 
 
-def argmin(x, axis=0):
-    ret = np.asarray(np.argmin(x, axis))
-    if ret.shape == ():
-        return ret.reshape(-1)
-    return ret
-
-
 def cast(x, dtype):
     return x.astype(dtype_from_str(dtype))
 
