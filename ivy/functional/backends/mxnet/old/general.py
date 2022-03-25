@@ -161,16 +161,6 @@ def where(condition, x1, x2):
     return _mx.nd.where(tiled_condition, x1, x2)
 
 
-def indices_where(x):
-    x_shape = x.shape
-    x_flat = x.reshape((1, -1,))
-    flat_indices = x_flat.astype('int32').tostype('csr').indices
-    if flat_indices.shape == (0,):
-        res = flat_indices.reshape((0, len(x_shape)))
-        return res
-    res = _mx.nd.swapaxes(_mx.nd.unravel_index(flat_indices, x_shape), 0, 1)
-    return res
-
 
 reshape = lambda x, new_shape: x.reshape(new_shape)
 
@@ -216,8 +206,6 @@ def full(shape, fill_value, dtype=None, device=None):
             _mx.nd.full((1,), fill_value, cont, dtype_from_str(default_dtype(dtype, fill_value))))
     return _mx.nd.full(shape, fill_value, cont, dtype_from_str(default_dtype(dtype, fill_value)))
 
-# noinspection PyUnusedLocal
-one_hot = lambda indices, depth, dev=None: _mx.nd.one_hot(indices, depth)
 
 
 def cross(x1, x2):
