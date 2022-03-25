@@ -17,7 +17,13 @@ inv = jnp.linalg.inv
 pinv = jnp.linalg.pinv
 cholesky = jnp.linalg.cholesky
 
+def pinv(x: JaxArray,
+         rtol: Optional[Union[float, Tuple[float]]] = None) \
+        -> JaxArray:
 
+    if rtol is None:
+        return jnp.linalg.pinv(x)
+    return jnp.linalg.pinv(x, rtol)
 
 def matrix_norm(x, p=2, axes=None, keepdims=False):
     axes = (-2, -1) if axes is None else axes
