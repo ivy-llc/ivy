@@ -187,3 +187,18 @@ def gather_nd(params, indices, dev=None):
     return _to_dev(res, dev)
 
 multiprocessing = lambda context=None: _multiprocessing if context is None else _multiprocessing.get_context(context)
+
+
+def indices_where(x):
+    where_x = np.where(x)
+    if len(where_x) == 1:
+        return np.expand_dims(where_x[0], -1)
+    res = np.concatenate([np.expand_dims(item, -1) for item in where_x], -1)
+    return res
+
+
+# noinspection PyUnusedLocal
+def one_hot(indices, depth, dev=None):
+    # from https://stackoverflow.com/questions/38592324/one-hot-encoding-using-numpy
+    res = np.eye(depth)[np.array(indices).reshape(-1)]
+    return res.reshape(list(indices.shape) + [depth])
