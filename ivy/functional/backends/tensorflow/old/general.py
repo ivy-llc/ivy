@@ -72,12 +72,7 @@ get_num_dims = lambda x, as_tensor=False: _tf.shape(_tf.shape(x))[0] if as_tenso
 minimum = _tf.minimum
 maximum = _tf.maximum
 clip = _tf.clip_by_value
-# noinspection PyShadowingBuiltins
-# noinspection PyShadowingBuiltins
-def abs(x):
-    if 'uint' in dtype(x, as_str=True):
-        return x
-    return _tf.abs(x)
+
 
 
 def cast(x, dtype):
