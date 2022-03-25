@@ -6,8 +6,7 @@ Collection of Numpy general functions, wrapped to fit Ivy syntax and signature.
 import logging
 import numpy as np
 import math as _math
-from operator import mul as _mul
-from functools import reduce as _reduce
+
 import multiprocessing as _multiprocessing
 
 # local
@@ -196,29 +195,6 @@ meshgrid = lambda *xs, indexing='ij': np.meshgrid(*xs, indexing=indexing)
 
 
 
-def linear_resample(x, num_samples, axis=-1):
-    x_shape = list(x.shape)
-    num_x_dims = len(x_shape)
-    axis = axis % num_x_dims
-    x_pre_shape = x_shape[0:axis]
-    x_pre_size = _reduce(_mul, x_pre_shape) if x_pre_shape else 1
-    num_pre_dims = len(x_pre_shape)
-    num_vals = x.shape[axis]
-    x_post_shape = x_shape[axis+1:]
-    x_post_size = _reduce(_mul, x_post_shape) if x_post_shape else 1
-    num_post_dims = len(x_post_shape)
-    xp = np.reshape(np.arange(num_vals*x_pre_size*x_post_size), x_shape)
-    x_coords = np.arange(num_samples) * ((num_vals-1)/(num_samples-1)) * x_post_size
-    x_coords = np.reshape(x_coords, [1]*num_pre_dims + [num_samples] + [1]*num_post_dims)
-    x_coords = np.broadcast_to(x_coords, x_pre_shape + [num_samples] + x_post_shape)
-    slc = [slice(None)] * num_x_dims
-    slc[axis] = slice(0, 1, 1)
-    x_coords = x_coords + xp[tuple(slc)]
-    x = np.reshape(x, (-1,))
-    xp = np.reshape(xp, (-1,))
-    x_coords = np.reshape(x_coords, (-1,))
-    ret = np.interp(x_coords, xp, x)
-    return np.reshape(ret, x_pre_shape + [num_samples] + x_post_shape)
 
 
 def dtype(x, as_str=False):
@@ -249,7 +225,7 @@ def compile(func, dynamic=True, example_inputs=None, static_argnums=None, static
 
 current_framework_str = lambda: 'numpy'
 current_framework_str.__name__ = 'current_framework_str'
-multiprocessing = lambda context=None: _multiprocessing if context is None else _multiprocessing.get_context(context)
+
 
 
 

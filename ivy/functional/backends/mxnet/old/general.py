@@ -278,30 +278,6 @@ def meshgrid(*xs, indexing='ij'):
 
 
 
-def linear_resample(x, num_samples, axis=-1):
-    x_shape = list(x.shape)
-    num_x_dims = len(x_shape)
-    axis = axis % num_x_dims
-    x_pre_shape = x_shape[0:axis]
-    x_pre_size = _reduce(_mul, x_pre_shape) if x_pre_shape else 1
-    num_pre_dims = len(x_pre_shape)
-    num_vals = x.shape[axis]
-    x_post_shape = x_shape[axis+1:]
-    x_post_size = _reduce(_mul, x_post_shape) if x_post_shape else 1
-    num_post_dims = len(x_post_shape)
-    xp = _mx.nd.reshape(_mx.nd.arange(num_vals*x_pre_size*x_post_size), x_shape)
-    x_coords = _mx.nd.arange(num_samples) * ((num_vals-1)/(num_samples-1)) * x_post_size
-    x_coords = _mx.nd.reshape(x_coords, [1]*num_pre_dims + [num_samples] + [1]*num_post_dims)
-    x_coords = _mx.nd.broadcast_to(x_coords, x_pre_shape + [num_samples] + x_post_shape)
-    slc = [slice(None)] * num_x_dims
-    slc[axis] = slice(0, 1, 1)
-    x_coords = x_coords + xp[tuple(slc)]
-    x = _mx.nd.reshape(x, (-1,))
-    xp = _mx.nd.reshape(xp, (-1,))
-    x_coords = _mx.nd.reshape(x_coords, (-1,))
-    ret = _mx.nd.array(_mx.np.interp(x_coords.asnumpy(), xp.asnumpy(), x.asnumpy()))
-    return _mx.nd.reshape(ret, x_pre_shape + [num_samples] + x_post_shape)
-
 
 def dtype(x, as_str=False):
     dt = x.dtype
@@ -332,7 +308,7 @@ def compile(func, dynamic=True, example_inputs=None, static_argnums=None, static
 
 current_framework_str = lambda: 'mxnet'
 current_framework_str.__name__ = 'current_framework_str'
-multiprocessing = lambda context=None: _multiprocessing if context is None else _multiprocessing.get_context(context)
+
 
 
 
