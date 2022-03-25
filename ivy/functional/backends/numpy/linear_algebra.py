@@ -15,6 +15,13 @@ inv = np.linalg.inv
 pinv = np.linalg.pinv
 cholesky = np.linalg.cholesky
 
+def pinv(x: np.ndarray,
+         rtol: Optional[Union[float, Tuple[float]]] = None) \
+        -> np.ndarray:
+
+    if rtol is None:
+        return np.linalg.pinv(x)
+    return np.linalg.pinv(x, rtol)
 
 def matrix_transpose(x: np.ndarray) \
         -> np.ndarray:
