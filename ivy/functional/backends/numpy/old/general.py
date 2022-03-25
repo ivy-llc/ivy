@@ -83,7 +83,6 @@ get_num_dims = lambda x, as_tensor=False: np.asarray(len(np.shape(x))) if as_ten
 minimum = np.minimum
 maximum = np.maximum
 clip = lambda x, x_min, x_max: np.asarray(np.clip(x, x_min, x_max))
-abs = lambda x: np.asarray(np.absolute(x))
 
 
 def cast(x, dtype):
