@@ -212,3 +212,4 @@ def gather_nd(params, indices, dev=None):
         return _tf.gather_nd(params, indices)
 
 multiprocessing = lambda context=None: _multiprocessing if context is None else _multiprocessing.get_context(context)
+indices_where = _tf.where
