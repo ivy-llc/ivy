@@ -65,12 +65,16 @@ def svd(x: NDArray, full_matrices: bool = True) -> Union[NDArray, Tuple[NDArray,
 
     return mx.np.linalg.norm(x, p, axis, keepdims)
 
+def outer(x1: mx.nd.NDArray,
+          x2: mx.nd.NDArray)\
+        -> mx.nd.NDArray:
+    return mx.outer (x1,x2)
 
 def diagonal(x: NDArray,
              offset: int = 0,
              axis1: int = -2,
              axis2: int = -1) -> NDArray:
-    return diag(x, k=offset, axis1=axis1, axis2=axis2)
+    return mx.nd.diag(x, k=offset, axis1=axis1, axis2=axis2)
 
 def slogdet(x: Union[_ivy.Array,_ivy.NativeArray],
             full_matrices: bool = True) -> Union[_ivy.Array, Tuple[_ivy.Array,...]]:
@@ -103,7 +107,11 @@ def cholesky(x: mx.nd.NDArray,
         axes = list(range(len(x.shape) - 2)) + [len(x.shape) - 1, len(x.shape) - 2]
         return mx.np.transpose(mx.np.linalg.cholesky(mx.np.transpose(x, axes=axes)),
                         axes=axes)
-        
+
+def eigvalsh(x: mx.ndarray.ndarray.NDArray) -> mx.ndarray.ndarray.NDArray:
+    return mx.np.linalg.eigvalsh(x)
+
+
 # Extra #
 # ------#
 

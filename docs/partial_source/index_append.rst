@@ -1,9 +1,11 @@
 
 .. toctree::
+   :hidden:
    :maxdepth: -1
-   :caption: Guides
+   :caption: Overview
 
-   why_ivy.rst
-   using_ivy.rst
-   training_a_network.rst
+   background.rst
+   design.rst
+   extensions.rst
+   roadmap.rst
    contributing.rst

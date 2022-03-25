@@ -22,22 +22,9 @@ TIMEOUT = 15.0
 TMP_DIR = '/tmp'
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-def equal(x1: Union[ivy.Array, ivy.NativeArray], x2: Union[ivy.Array, ivy.NativeArray]):
+def equal(x1: Union[ivy.Array, ivy.NativeArray],
+          x2: Union[ivy.Array, ivy.NativeArray])\
+        -> ivy.Array:
     """
     Computes the truth value of x1_i == x2_i for each element x1_i of the input array x1 with the respective
     element x2_i of the input array x2.
