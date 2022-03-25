@@ -6,6 +6,10 @@ try:
     from scipy.special import erf as _erf
 except (ImportError, ModuleNotFoundError):
     _erf = None
+    
+ def __or__(x: np.ndarray)\
+   -> np.ndarray:
+      return np.__or__(x)
 
 
 def expm1(x: np.ndarray)\
