@@ -883,3 +883,31 @@ def multiprocessing(context: str = None):
     :return: Multiprocessing module
     """
     return _cur_framework().multiprocessing(context)
+
+
+def indices_where(x: Union[ivy.Array, ivy.NativeArray])\
+        -> Union[ivy.Array, ivy.NativeArray]:
+    """
+    Returns indices or true elements in an input boolean array.
+
+    :param x: Boolean array, for which indices are desired.
+    :type x: array
+    :return: Indices for where the boolean array is True.
+    """
+    return _cur_framework(x).indices_where(x)
+
+
+# noinspection PyShadowingNames
+def one_hot(indices: Union[ivy.Array, ivy.NativeArray], depth: int, dev: ivy.Device = None)\
+        -> Union[ivy.Array, ivy.NativeArray]:
+    """
+    Returns a one-hot array
+    :param indices: Indices for where the ones should be scattered *[batch_shape, dim]*
+    :type indices: array
+    :param depth: Scalar defining the depth of the one-hot dimension.
+    :type depth: int
+    :param dev: device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. Same as x if None.
+    :type dev: ivy.Device, optional
+    :return: Tensor of zeros with the same shape and type as a, unless dtype provided which overrides.
+    """
+    return _cur_framework(indices).one_hot(indices, depth, dev)

@@ -130,14 +130,6 @@ def transpose(x, axes=None):
 where = lambda condition, x1, x2: np.where(condition, x1, x2)
 
 
-def indices_where(x):
-    where_x = np.where(x)
-    if len(where_x) == 1:
-        return np.expand_dims(where_x[0], -1)
-    res = np.concatenate([np.expand_dims(item, -1) for item in where_x], -1)
-    return res
-
-
 reshape = np.reshape
 broadcast_to = np.broadcast_to
 
@@ -166,11 +158,6 @@ def full(shape, fill_value, dtype=None, device=None):
     return _to_dev(np.full(shape, fill_value, dtype_from_str(default_dtype(dtype, fill_value))), device)
 
 
-# noinspection PyUnusedLocal
-def one_hot(indices, depth, dev=None):
-    # from https://stackoverflow.com/questions/38592324/one-hot-encoding-using-numpy
-    res = np.eye(depth)[np.array(indices).reshape(-1)]
-    return res.reshape(list(indices.shape) + [depth])
 
 
 cross = np.cross
