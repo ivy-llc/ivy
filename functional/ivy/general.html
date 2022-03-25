@@ -154,6 +154,8 @@
 <li class="toctree-l2"><a class="reference internal" href="general/gather.html">gather</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/gather_nd.html">gather_nd</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/multiprocessing.html">multiprocessing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="general/indices_where.html">indices_where</a></li>
+<li class="toctree-l2"><a class="reference internal" href="general/one_hot.html">one_hot</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="gradients.html">Gradients</a></li>
@@ -651,6 +653,20 @@ a key-value structure, and exposes public methods .keys(), .values() and items()
 </dd></dl>
 
 <dl class="py function">
+<dt id="ivy.functional.ivy.general.indices_where">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">indices_where</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/general.html#indices_where"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.general.indices_where" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns indices or true elements in an input boolean array.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>x</strong> (<em>array</em>) – Boolean array, for which indices are desired.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Indices for where the boolean array is True.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt id="ivy.functional.ivy.general.inplace_arrays_supported">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">inplace_arrays_supported</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/general.html#inplace_arrays_supported"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.general.inplace_arrays_supported" title="Permalink to this definition">¶</a></dt>
 <dd><p>Determine whether inplace arrays are supported for the current backend framework.</p>
@@ -776,6 +792,19 @@ a key-value structure, and exposes public methods .keys(), .values() and items()
 <dt id="ivy.functional.ivy.general.num_arrays_in_memory">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">num_arrays_in_memory</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/general.html#num_arrays_in_memory"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.general.num_arrays_in_memory" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the number of arrays which are currently alive.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.general.one_hot">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">one_hot</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">indices</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">depth</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">dev</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>ivy.Device<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/general.html#one_hot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.general.one_hot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a one-hot array
+:param indices: Indices for where the ones should be scattered <em>[batch_shape, dim]</em>
+:type indices: array
+:param depth: Scalar defining the depth of the one-hot dimension.
+:type depth: int
+:param dev: device on which to create the array ‘cuda:0’, ‘cuda:1’, ‘cpu’ etc. Same as x if None.
+:type dev: ivy.Device, optional
+:return: Tensor of zeros with the same shape and type as a, unless dtype provided which overrides.</p>
 </dd></dl>
 
 <dl class="py function">

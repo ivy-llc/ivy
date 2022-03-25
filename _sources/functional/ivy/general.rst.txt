@@ -68,4 +68,6 @@ General
    general/gather.rst
    general/gather_nd.rst
    general/multiprocessing.rst
+   general/indices_where.rst
+   general/one_hot.rst
 
