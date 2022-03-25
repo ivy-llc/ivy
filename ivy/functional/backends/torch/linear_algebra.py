@@ -17,9 +17,12 @@ def inv(x):
     return torch.inverse(x)
 
 
-def pinv(x):
-    return torch.pinverse(x)
-
+def pinv(x: torch.Tensor,
+         rtol: Optional[Union[float, Tuple[float]]] = None) \
+        -> torch.Tensor:
+    if rtol is None:
+        return torch.linalg.pinv(x)
+    return torch.linalg.pinv(x, rtol)
 
 def cholesky(x):
     return torch.linalg.cholesky(x)
