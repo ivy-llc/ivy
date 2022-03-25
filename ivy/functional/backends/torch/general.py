@@ -278,3 +278,10 @@ def gather_nd(params, indices, dev: Optional[str] = None):
     flat_gather = torch.gather(flat_params, 0, flat_indices_for_flat)
     res = torch.reshape(flat_gather, list(indices_shape[:-1]) + list(params_shape[num_index_dims:]))
     return res
+
+
+def multiprocessing(context=None):
+    import torch.multiprocessing
+    if context is None:
+        return torch.multiprocessing
+    return torch.multiprocessing.get_context(context)

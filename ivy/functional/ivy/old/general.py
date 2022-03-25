@@ -455,42 +455,5 @@ def meshgrid(*xs: Iterable[Union[ivy.Array, ivy.NativeArray]], indexing: str = '
 
 
 
-def linear_resample(x: Union[ivy.Array, ivy.NativeArray], num_samples: int, axis: int = -1)\
-        -> Union[ivy.Array, ivy.NativeArray]:
-    """
-    Performs linear re-sampling on input image.
 
-    :param x: Input array
-    :type x: array
-    :param num_samples: The number of interpolated samples to take.
-    :type num_samples: int
-    :param axis: The axis along which to perform the resample. Default is last dimension.
-    :type axis: int, optional
-    :return: The array after the linear resampling.
-    """
-    return _cur_framework(x).linear_resample(x, num_samples, axis)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-def multiprocessing(context: str = None):
-    """
-    Return framewrk-specific multi-processing module
-
-    :param context: The context of the multiprocessing, either fork, forkserver or spawn. Default is None.
-    :type context: str, optional
-    :return: Multiprocessing module
-    """
-    return _cur_framework().multiprocessing(context)
 
