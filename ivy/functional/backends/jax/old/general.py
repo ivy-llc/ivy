@@ -150,10 +150,7 @@ def transpose(x, axes=None):
 where = lambda condition, x1, x2: _jnp.where(condition, x1, x2)
 
 
-def indices_where(x):
-    where_x = _jnp.where(x)
-    ret = _jnp.concatenate([_jnp.expand_dims(item, -1) for item in where_x], -1)
-    return ret
+
 
 
 reshape = _jnp.reshape
@@ -184,11 +181,7 @@ def full(shape, fill_value, dtype=None, device=None):
                   default_device(device))
 
 
-# noinspection PyUnusedLocal
-def one_hot(indices, depth, dev=None):
-    # from https://stackoverflow.com/questions/38592324/one-hot-encoding-using-numpy
-    res = _jnp.eye(depth)[_jnp.array(indices).reshape(-1)]
-    return to_dev(res.reshape(list(indices.shape) + [depth]), default_device(dev))
+
 
 
 cross = _jnp.cross
@@ -212,29 +205,7 @@ meshgrid = lambda *xs, indexing='ij': _jnp.meshgrid(*xs, indexing=indexing)
 
 
 
-def linear_resample(x, num_samples, axis=-1):
-    x_shape = list(x.shape)
-    num_x_dims = len(x_shape)
-    axis = axis % num_x_dims
-    x_pre_shape = x_shape[0:axis]
-    x_pre_size = _reduce(_mul, x_pre_shape) if x_pre_shape else 1
-    num_pre_dims = len(x_pre_shape)
-    num_vals = x.shape[axis]
-    x_post_shape = x_shape[axis + 1:]
-    x_post_size = _reduce(_mul, x_post_shape) if x_post_shape else 1
-    num_post_dims = len(x_post_shape)
-    xp = _jnp.reshape(_jnp.arange(num_vals * x_pre_size * x_post_size), x_shape)
-    x_coords = _jnp.arange(num_samples) * ((num_vals - 1) / (num_samples - 1)) * x_post_size
-    x_coords = _jnp.reshape(x_coords, [1] * num_pre_dims + [num_samples] + [1] * num_post_dims)
-    x_coords = _jnp.broadcast_to(x_coords, x_pre_shape + [num_samples] + x_post_shape)
-    slc = [slice(None)] * num_x_dims
-    slc[axis] = slice(0, 1, 1)
-    x_coords = x_coords + xp[tuple(slc)]
-    x = _jnp.reshape(x, (-1,))
-    xp = _jnp.reshape(xp, (-1,))
-    x_coords = _jnp.reshape(x_coords, (-1,))
-    ret = _jnp.interp(x_coords, xp, x)
-    return _jnp.reshape(ret, x_pre_shape + [num_samples] + x_post_shape)
+
 
 
 def dtype(x, as_str=False):
@@ -260,5 +231,5 @@ compile = lambda fn, dynamic=True, example_inputs=None, static_argnums=None, sta
     _jax.jit(fn, static_argnums=static_argnums, static_argnames=static_argnames)
 current_framework_str = lambda: 'jax'
 current_framework_str.__name__ = 'current_framework_str'
-multiprocessing = lambda context=None: _multiprocessing if context is None else _multiprocessing.get_context(context)
+
 
