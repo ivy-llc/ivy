@@ -278,7 +278,10 @@ def fourier_encode(x: Union[ivy.Array, ivy.NativeArray], max_freq: Union[float, 
     if linear:
         scales = ivy.linspace(1., max_freq / 2, num_bands, dev=dev(x))
     else:
-        scales = ivy.logspace(0., ivy.log(max_freq / 2) / math.log(10), num_bands, base=10, dev=dev(x))
+        if ivy.backend == 'torch' and isinstance(max_freq,float):
+            scales = ivy.logspace(0., ivy.log(ivy.array(max_freq / 2)) / math.log(10), num_bands, base=10, dev=dev(x))            
+        else:
+            scales = ivy.logspace(0., ivy.log(max_freq / 2) / math.log(10), num_bands, base=10, dev=dev(x))
     scales = ivy.cast(scales, ivy.dtype(x))
     scales = scales[(*((None,) * (len(x.shape) - len(scales.shape))), Ellipsis)]
     x = x * scales * math.pi

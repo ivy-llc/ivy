@@ -15,6 +15,13 @@ inv = np.linalg.inv
 pinv = np.linalg.pinv
 cholesky = np.linalg.cholesky
 
+def pinv(x: np.ndarray,
+         rtol: Optional[Union[float, Tuple[float]]] = None) \
+        -> np.ndarray:
+
+    if rtol is None:
+        return np.linalg.pinv(x)
+    return np.linalg.pinv(x, rtol)
 
 def matrix_transpose(x: np.ndarray) \
         -> np.ndarray:
@@ -56,6 +63,12 @@ def svd(x: np.ndarray, full_matrices: bool = True) -> Union[np.ndarray, Tuple[np
     U, D, VT = np.linalg.svd(x, full_matrices=full_matrices)
     res = results(U, D, VT)
     return res
+
+
+def outer(x1: np.ndarray,
+          x2: np.ndarray)\
+        -> np.ndarray:
+    return np.outer(x1, x2)
 
 
 def diagonal(x: np.ndarray,
@@ -108,6 +121,10 @@ def cholesky(x: np.ndarray,
         axes = list(range(len(x.shape)-2))+[len(x.shape)-1, len(x.shape)-2]
         return np.transpose(np.linalg.cholesky(np.transpose(x, axes=axes)),
                             axes=axes)
+
+def eigvalsh(x: np.ndarray) -> np.ndarray:
+    return np.linalg.eigvalsh(x)
+
 
 # Extra #
 # ------#
