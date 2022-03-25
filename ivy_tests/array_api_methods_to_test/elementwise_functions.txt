@@ -17,7 +17,7 @@ bitwise_invert
 cos
 cosh
 #divide
-#equal
+equal
 #exp
 expm1
 #floor # depends on: remainder
