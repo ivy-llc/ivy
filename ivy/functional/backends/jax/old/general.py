@@ -109,12 +109,6 @@ clip = _jnp.clip
 # noinspection PyShadowingBuiltins
 abs = _jnp.absolute
 
-def argmin(x, axis=0):
-    ret = _jnp.argmin(x, axis)
-    if ret.shape == ():
-        return ret.reshape(-1)
-    return ret
-
 
 def cast(x, dtype):
     return x.astype(dtype_from_str(dtype))
