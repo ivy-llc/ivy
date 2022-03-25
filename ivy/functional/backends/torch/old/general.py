@@ -209,24 +209,6 @@ def meshgrid(*xs, indexing='ij'):
 
 
 
-def linear_resample(x, num_samples: int, axis: int = -1):
-    x_shape = list(x.shape)
-    num_x_dims = len(x_shape)
-    num_vals = x_shape[axis]
-    axis = axis % num_x_dims
-    if axis != num_x_dims - 1:
-        x_pre_shape = x_shape[0:axis] + x_shape[-1:] + x_shape[axis + 1:-1]
-        x = torch.swapaxes(x, axis, -1)
-    else:
-        x_pre_shape = x_shape[:-1]
-    x = torch.reshape(x, ([-1, 1] + [num_vals]))
-    ret = torch.nn.functional.interpolate(x, num_samples, mode='linear', align_corners=True)
-    ret = torch.reshape(ret, x_pre_shape + [num_samples])
-    if axis != num_x_dims - 1:
-        return torch.transpose(ret, -1, axis)
-    return ret
-
-
 def dtype(x, as_str=False):
     dt = x.dtype
     if as_str:
@@ -273,12 +255,6 @@ def compile(fn, dynamic=True, example_inputs=None, static_argnums=None, static_a
 def current_framework_str():
     return 'torch'
 
-
-def multiprocessing(context=None):
-    import torch.multiprocessing
-    if context is None:
-        return torch.multiprocessing
-    return torch.multiprocessing.get_context(context)
 
 
 
