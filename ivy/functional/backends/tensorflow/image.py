@@ -8,7 +8,7 @@ from functools import reduce as _reduce
 from operator import mul as _mul
 tfa = None
 import tensorflow as tf
-
+import tensorflow_probability as tfp
 # local
 from ivy.functional.backends import tensorflow as _ivy
 
@@ -35,6 +35,17 @@ def stack_images(images, desired_aspect_ratio=(1, 1)):
         image_rows.append(_ivy.concatenate(images_to_concat, num_batch_dims))
     return _ivy.concatenate(image_rows, num_batch_dims + 1)
 
+
+def linear_resample(x, num_samples, axis=-1):
+    x_shape = list(x.shape)
+    num_x_dims = len(x_shape)
+    axis = axis % num_x_dims
+    num_vals = x.shape[axis]
+    x_post_shape = x_shape[axis+1:]
+    xp = tf.range(num_vals, dtype=tf.float32)
+    x_coords = tf.range(num_samples, dtype=tf.float32) * ((num_vals-1)/(num_samples-1))
+    x_coords = x_coords + xp[0:1]
+    return tfp.math.interp_regular_1d_grid(x_coords, 0, num_vals-1, x, axis=axis)
 
 def bilinear_resample(x, warp):
     batch_shape = _ivy.shape(x)[:-3]
