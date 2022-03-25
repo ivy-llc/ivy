@@ -17,6 +17,13 @@ inv = tf.linalg.inv
 pinv = tf.linalg.pinv
 cholesky = tf.linalg.cholesky
 
+def pinv(x: Tensor,
+         rtol: Optional[Union[float, Tuple[float]]] = None) \
+        -> Tensor:
+    if rtol is None:
+        return tf.linalg.pinv(x)
+    return tf.linalg.pinv(tf.cast(x != 0, 'float32'), tf.cast(rtol != 0, 'float32'))
+
 
 def matrix_transpose(x: Tensor)\
         -> Tensor:
@@ -73,6 +80,12 @@ def svd(x:Tensor,full_matrices: bool = True) -> Union[Tensor, Tuple[Tensor,...]]
     VT = tf.transpose(V, transpose_dims)
     res=results(U, D, VT)
     return res
+
+
+def outer(x1:tf.Tensor,
+          x2: tf.Tensor) \
+        -> tf.Tensor:
+    return tf.experimental.numpy.outer(x1, x2)
 
 
 def diagonal(x: tf.Tensor,
@@ -180,7 +193,12 @@ def cholesky(x: tf.Tensor,
         axes = list(range(len(x.shape) - 2)) + [len(x.shape) - 1, len(x.shape) - 2]
         return tf.transpose(tf.linalg.cholesky(tf.transpose(x, perm=axes)),
                             perm=axes)
-        
+
+
+def eigvalsh(x: Tensor) -> Tensor:
+    return tf.linalg.eigvalsh(x)
+
+
 # Extra #
 # ------#
 

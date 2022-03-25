@@ -4,7 +4,7 @@ acosh
 #add
 #asin # depends on: greater
 asinh
-#atan
+atan
 #atan2
 #atanh
 #bitwise_and
@@ -17,9 +17,9 @@ bitwise_invert
 cos
 cosh
 #divide
-#equal
+equal
 #exp
-#expm1
+expm1
 #floor # depends on: remainder
 #floor_divide
 #greater
@@ -29,7 +29,7 @@ isinf
 isnan
 less
 #less_equal
-#log
+log
 log1p
 log2
 log10
@@ -37,20 +37,20 @@ logaddexp
 logical_and
 logical_not
 logical_or
-#logical_xor
+logical_xor
 #multiply
 negative
 positive
-not_equal
+#not_equal # Failing non-deterministically after the update to Array API test suite under commit 2dcf4cf153c8cb37a685467fed91680e1552fc6a
 #pow
-#remainder
+#remainder # depends on: asarray
 #round #depends on: remainder
 #sign
 sin
 sinh
 square
 sqrt
-#subtract
+#subtract # depends on: asarray
 tan
 tanh
 #trunc
