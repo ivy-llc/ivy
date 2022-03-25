@@ -143,3 +143,4 @@ def gather_nd(params, indices, dev=None):
     indices = _mx.nd.transpose(indices, transpose_order)
     return _mx.nd.gather_nd(params, indices).copyto(_mxnet_init_context(dev))
 
+multiprocessing = lambda context=None: _multiprocessing if context is None else _multiprocessing.get_context(context)

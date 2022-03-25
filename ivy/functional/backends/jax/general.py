@@ -191,6 +191,7 @@ def gather_nd(params, indices, dev=None):
     ret = _jnp.reshape(flat_gather, new_shape)
     return to_dev(ret, dev)
 
+multiprocessing = lambda context=None: _multiprocessing if context is None else _multiprocessing.get_context(context)
 
 def inplace_decrement(x, val):
     raise Exception('Jax does not support inplace operations')
