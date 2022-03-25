@@ -285,3 +285,15 @@ def multiprocessing(context=None):
     if context is None:
         return torch.multiprocessing
     return torch.multiprocessing.get_context(context)
+
+
+def indices_where(x):
+    where_x = torch.where(x)
+    res = torch.cat([torch.unsqueeze(item, -1) for item in where_x], -1)
+    return res
+
+# noinspection PyUnresolvedReferences,PyShadowingNames
+def one_hot(indices, depth: int, dev: Optional[str] = None):
+    if dev is None:
+        dev = _callable_dev(indices)
+    return torch.nn.functional.one_hot(indices.type(torch.int64), depth).to(dev_from_str(dev))

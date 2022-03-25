@@ -113,10 +113,6 @@ def where(condition, x1, x2):
     return torch.where(condition.type(torch.bool), x1, x2)
 
 
-def indices_where(x):
-    where_x = torch.where(x)
-    res = torch.cat([torch.unsqueeze(item, -1) for item in where_x], -1)
-    return res
 
 
 def reshape(x, newshape: List[int]):
@@ -162,11 +158,7 @@ def full(shape, fill_value, dtype=None, device=None):
         device=default_device(device))
 
 
-# noinspection PyUnresolvedReferences,PyShadowingNames
-def one_hot(indices, depth: int, dev: Optional[str] = None):
-    if dev is None:
-        dev = _callable_dev(indices)
-    return torch.nn.functional.one_hot(indices.type(torch.int64), depth).to(dev_from_str(dev))
+
 
 
 def cross(x1, x2):

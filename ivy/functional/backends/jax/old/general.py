@@ -150,10 +150,7 @@ def transpose(x, axes=None):
 where = lambda condition, x1, x2: _jnp.where(condition, x1, x2)
 
 
-def indices_where(x):
-    where_x = _jnp.where(x)
-    ret = _jnp.concatenate([_jnp.expand_dims(item, -1) for item in where_x], -1)
-    return ret
+
 
 
 reshape = _jnp.reshape
@@ -184,11 +181,7 @@ def full(shape, fill_value, dtype=None, device=None):
                   default_device(device))
 
 
-# noinspection PyUnusedLocal
-def one_hot(indices, depth, dev=None):
-    # from https://stackoverflow.com/questions/38592324/one-hot-encoding-using-numpy
-    res = _jnp.eye(depth)[_jnp.array(indices).reshape(-1)]
-    return to_dev(res.reshape(list(indices.shape) + [depth]), default_device(dev))
+
 
 
 cross = _jnp.cross
