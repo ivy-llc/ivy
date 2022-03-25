@@ -67,4 +67,5 @@ General
    general/scatter_nd.rst
    general/gather.rst
    general/gather_nd.rst
+   general/multiprocessing.rst
 

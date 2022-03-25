@@ -19,4 +19,5 @@ Image
    image/float_img_to_uint8_img.rst
    image/uint8_img_to_float_img.rst
    image/random_crop.rst
+   image/linear_resample.rst
 
