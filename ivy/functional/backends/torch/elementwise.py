@@ -281,6 +281,16 @@ def remainder(x1: torch.Tensor, x2: torch.Tensor)\
     return torch.remainder(x1, x2)
 
 
+def atanh(x: torch.Tensor) \
+        ->Union[float, Tensor]:
+    if isinstance(x, float):
+        return math.atanh(x)
+    return torch.atanh(x)
+
+
+
+
+
 # Extra #
 # ------#
 
