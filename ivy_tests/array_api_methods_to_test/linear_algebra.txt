@@ -11,7 +11,7 @@ matmul
 #matrix_rank
 matrix_transpose
 #outer # depends on: multiply
-#pinv
+pinv
 qr
 slogdet
 #solve
