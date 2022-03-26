@@ -274,9 +274,12 @@ def atan(x: Tensor) \
     return tf.atan(x)
 
 
+def atanh(x: Tensor) \
+        -> Tensor:
+    return tf.math.atanh(x)
+
 atan2 = tf.atan2
 cosh = tf.math.cosh
-atanh = tf.math.atanh
 log = tf.math.log
 exp = tf.math.exp
 
