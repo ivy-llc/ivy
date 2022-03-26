@@ -251,10 +251,6 @@ def cosh(x: torch.Tensor)\
     return torch.cosh(x)
 
 
-def atanh(x: torch.Tensor)\
-        -> torch.Tensor:
-    return torch.atanh(x)
-
 
 def log(x: torch.Tensor)\
         -> torch.Tensor:
