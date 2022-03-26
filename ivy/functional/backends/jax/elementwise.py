@@ -1,5 +1,6 @@
 # global
 import jax
+import typing
 import jax.numpy as jnp
 
 # local
