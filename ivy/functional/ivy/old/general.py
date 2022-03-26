@@ -116,21 +116,6 @@ def clip(x: Union[ivy.Array, ivy.NativeArray], x_min: Union[Number, Union[ivy.Ar
     return _cur_framework(x).clip(x, x_min, x_max)
 
 
-def argmax(x: Union[ivy.Array, ivy.NativeArray], axis: int = 0)\
-        -> Union[ivy.Array, ivy.NativeArray]:
-    """
-    Returns the index with the largest value across axes of an array.
-
-    :param x: Input array containing elements to argmax.
-    :type x: array
-    :param axis: Axis to perform the argmax, default is 0.
-    :type axis: int, optional
-    :return: Tensor containing the indices of the maximum values across the specified axis.
-    """
-    return _cur_framework(x).argmax(x, axis)
-
-
-
 # noinspection PyShadowingNames
 def arange(stop: Number, start: Number = 0, step: Number = 1, dtype: ivy.Dtype = None, dev: ivy.Device = None,
            ) -> Union[ivy.Array, ivy.NativeArray]:
