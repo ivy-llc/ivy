@@ -38,7 +38,6 @@ def argmax(
 
 def argmin(x: Union[ivy.Array, ivy.NativeArray],
             axis: Optional[int] = None,
-            out: Optional[ivy.Array] = None,
             keepdims: Optional[bool] = False) \
         -> ivy.Array:
     """
@@ -56,7 +55,7 @@ def argmin(x: Union[ivy.Array, ivy.NativeArray],
     :return: Array containing the indices of the minimum values across the specified axis.
     """
 
-    return _cur_framework(x).argmin(x, axis, out, keepdims)
+    return _cur_framework(x).argmin(x, axis, keepdims)
 
 
 # Extra #
