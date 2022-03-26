@@ -166,6 +166,14 @@ def tanh(x: JaxArray)\
 
 
 def bitwise_or(x1: JaxArray, x2: JaxArray) -> JaxArray:
+    if isinstance(x1,int):
+        if x1 > 9223372036854775807:
+           x1 = jnp.array(x1,dtype='uint64')
+
+    if isinstance(x2,int):
+        if x2 > 9223372036854775807:
+           x2 = jnp.array(x2,dtype='uint64')
+
     return jnp.bitwise_or(x1, x2)
 
 
