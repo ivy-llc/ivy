@@ -230,7 +230,10 @@ def atan(x: JaxArray)\
     return jnp.arctan(x)
 
 
-atan2 = jnp.arctan2
+def atan2(x1: JaxArray, x2: JaxArray) -> JaxArray:
+    return jnp.arctan2(x1, x2)
+
+
 cosh = jnp.cosh
 atanh = jnp.arctanh
 log = jnp.log

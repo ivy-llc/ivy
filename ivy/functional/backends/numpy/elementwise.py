@@ -239,7 +239,10 @@ def atan(x: np.ndarray) \
     return np.arctan(x)
 
 
-atan2 = np.arctan2
+def atan2(x1: np.ndarray, x2: np.ndarray) -> np.ndarray:
+    return np.arctan2(x1, x2)
+
+
 cosh = np.cosh
 atanh = np.arctanh
 log = np.log
