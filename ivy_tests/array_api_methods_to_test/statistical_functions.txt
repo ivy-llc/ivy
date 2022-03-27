@@ -3,5 +3,5 @@ max
 min
 #prod # PyTorch not passing due to bug in Arrat API test suite (https://github.com/data-apis/array-api-tests/issues/10#issuecomment-1068840049)
 #std
-#sum
+sum
 var

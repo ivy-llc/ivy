@@ -135,7 +135,6 @@ def sum(x: Union[ivy.Array, ivy.NativeArray],
         axis: Optional[Union[int, Tuple[int, ...]]] = None,
         dtype: Optional[Union[ivy.Dtype, str]] = None,
         keepdims: bool = False) -> ivy.Array:
-
     """
     Calculates the sum of the input array ``x``.
     **Special Cases**
