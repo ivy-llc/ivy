@@ -13,6 +13,11 @@ import ivy
 # Array API Standard #
 # -------------------#
 
+def eigh(x: jaxArray)\
+  ->JaxArray:
+         return jax.np.linalg.eigh(x)
+
+
 inv = jnp.linalg.inv
 pinv = jnp.linalg.pinv
 cholesky = jnp.linalg.cholesky
