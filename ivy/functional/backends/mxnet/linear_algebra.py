@@ -16,6 +16,11 @@ DET_THRESHOLD = 1e-12
 # Array API Standard #
 # -------------------#
 
+def eigh(x: mx.ndarray)\
+  ->mx.ndarray:
+    return mx.np.linalg.eigh(x)
+
+
 inv = mx.nd.linalg_inverse
 cholesky = lambda x: mx.np.linalg.cholesky(x.as_np_ndarray()).as_nd_ndarray()
 
