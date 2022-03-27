@@ -221,7 +221,7 @@ def _assert_float_dtype_correct_formatting(dtype: Union[ivy.Dtype, str]):
 
 
 # noinspection PyShadowingNames
-def default_int_dtype(int_dtype: Union[ivy.Dtype, str] = None, as_str: bool = False)\
+def default_int_dtype(input = None, int_dtype: Union[ivy.Dtype, str] = None, as_str: bool = False)\
         -> Union[ivy.Dtype, str]:
     """
     Return the input int dtype if provided, otherwise return the global default int dtype.
@@ -229,22 +229,50 @@ def default_int_dtype(int_dtype: Union[ivy.Dtype, str] = None, as_str: bool = Fa
     if ivy.exists(int_dtype):
         _assert_int_dtype_correct_formatting(ivy.dtype_to_str(int_dtype))
         return int_dtype
-    global default_int_dtype_stack
-    if not default_int_dtype_stack:
-        def_dtype = default_dtype()
-        if ivy.is_int_dtype(def_dtype):
-            ret = def_dtype
-        else:
-            ret = 'int32'
+    elif ivy.exists(input):
+        if ivy.is_array(input):
+            ret = ivy.dtype(input)
+        elif isinstance(input, np.ndarray):
+            ret = input.dtype
+        elif isinstance(input, (list, tuple, dict)):
+            if ivy.nested_indices_where(input, lambda x: x> 9223372036854775807 and x!=ivy.inf):
+                ret = ivy.uint64
+            elif ivy.nested_indices_where(input, lambda x: x> 2147483647 and x!=ivy.inf):
+                ret = ivy.int64
+            else:
+                def_dtype = default_dtype()
+                if ivy.is_int_dtype(def_dtype):
+                    ret = def_dtype
+                else:
+                    ret = ivy.int32     
+        elif isinstance(input, Number):
+            if input > 9223372036854775807 and input!=ivy.inf and ivy.backend != 'torch':
+                ret = ivy.uint64
+            elif input > 2147483647 and input!=ivy.inf:
+                ret = ivy.int64
+            else:
+                def_dtype = default_dtype()
+                if ivy.is_int_dtype(def_dtype):
+                    ret = def_dtype
+                else:
+                    ret = ivy.int32     
     else:
-        ret = default_int_dtype_stack[-1]
+        global default_int_dtype_stack
+        if not default_int_dtype_stack:
+            def_dtype = default_dtype()
+            if ivy.is_int_dtype(def_dtype):
+                ret = def_dtype
+            else:
+                ret = 'int32'
+        else:
+            ret = default_int_dtype_stack[-1]
     if as_str:
         return ivy.dtype_to_str(ret)
     return ivy.dtype_from_str(ret)
 
 
 # noinspection PyShadowingNames
-def default_float_dtype(float_dtype: Union[ivy.Dtype, str] = None, as_str: bool = False)\
+def default_float_dtype(input = None,float_dtype: Union[ivy.Dtype, str] = None, as_str: bool = False)\
         -> Union[ivy.Dtype, str]:
     """
     Return the input float dtype if provided, otherwise return the global default float dtype.
@@ -252,15 +280,39 @@ def default_float_dtype(float_dtype: Union[ivy.Dtype, str] = None, as_str: bool 
     if ivy.exists(float_dtype):
         _assert_float_dtype_correct_formatting(ivy.dtype_to_str(float_dtype))
         return float_dtype
-    global default_float_dtype_stack
-    if not default_float_dtype_stack:
-        def_dtype = default_dtype()
-        if ivy.is_float_dtype(def_dtype):
-            ret = def_dtype
-        else:
-            ret = 'float32'
+    elif ivy.exists(input):
+        if ivy.is_array(input):
+            ret = ivy.dtype(input)
+        elif isinstance(input, np.ndarray):
+            ret = input.dtype
+        elif isinstance(input, (list, tuple, dict)):
+            if ivy.nested_indices_where(input, lambda x: x>3.4028235 * 10**38 and x!=ivy.inf):
+                ret = ivy.float64
+            else:
+                def_dtype = default_dtype()
+                if ivy.is_float_dtype(def_dtype):
+                    ret = def_dtype
+                else:
+                    ret = ivy.float32     
+        elif isinstance(input, Number):
+            if input > 3.4028235 * 10**38 and input!=ivy.inf:
+                ret = ivy.float64
+            else:
+                def_dtype = default_dtype()
+                if ivy.is_float_dtype(def_dtype):
+                    ret = def_dtype
+                else:
+                    ret = ivy.float32     
     else:
-        ret = default_float_dtype_stack[-1]
+        global default_float_dtype_stack
+        if not default_float_dtype_stack:
+            def_dtype = default_dtype()
+            if ivy.is_float_dtype(def_dtype):
+                ret = def_dtype
+            else:
+                ret = 'float32'
+        else:
+            ret = default_float_dtype_stack[-1]
     if as_str:
         return ivy.dtype_to_str(ret)
     return ivy.dtype_from_str(ret)
@@ -279,9 +331,9 @@ def default_dtype(dtype: Union[ivy.Dtype, str] = None, item=None, as_str: bool =
         if isinstance(item, (list, tuple, dict)) and len(item) == 0:
             pass
         elif ivy.is_float_dtype(item):
-            return default_float_dtype(as_str=as_str)
+            return default_float_dtype(item,as_str=as_str)
         elif ivy.is_int_dtype(item):
-            return default_int_dtype(as_str=as_str)
+            return default_int_dtype(item,as_str=as_str)
         elif as_str:
             return 'bool'
         else:
