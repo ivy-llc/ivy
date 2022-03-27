@@ -22,22 +22,9 @@ TIMEOUT = 15.0
 TMP_DIR = '/tmp'
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-def equal(x1: Union[ivy.Array, ivy.NativeArray], x2: Union[ivy.Array, ivy.NativeArray]):
+def equal(x1: Union[ivy.Array, ivy.NativeArray],
+          x2: Union[ivy.Array, ivy.NativeArray])\
+        -> ivy.Array:
     """
     Computes the truth value of x1_i == x2_i for each element x1_i of the input array x1 with the respective
     element x2_i of the input array x2.
@@ -127,48 +114,6 @@ def clip(x: Union[ivy.Array, ivy.NativeArray], x_min: Union[Number, Union[ivy.Ar
                 and those > x_max with x_max.
     """
     return _cur_framework(x).clip(x, x_min, x_max)
-
-
-
-
-
-# noinspection PyShadowingBuiltins
-def floor(x: Union[ivy.Array, ivy.NativeArray])\
-        -> Union[ivy.Array, ivy.NativeArray]:
-    """
-    Returns element-wise largest integer not greater than x.
-
-    :param x: Input array to floor.
-    :type x: array
-    :return: An array of the same shape and type as x, with the elements floored to integers.
-    """
-    return _cur_framework(x).floor(x)
-
-
-# noinspection PyShadowingBuiltins
-def abs(x: Union[ivy.Array, ivy.NativeArray])\
-        -> Union[ivy.Array, ivy.NativeArray]:
-    """
-    Returns the absolute value of each element in x.
-    :param x: Input array containing elements to absolute value.
-    :type x: array
-    :return: A new array of the same shape as input array a, with all values now positive.
-    """
-    return _cur_framework(x).abs(x)
-
-
-def argmin(x: Union[ivy.Array, ivy.NativeArray], axis: int = 0)\
-        -> Union[ivy.Array, ivy.NativeArray]:
-    """
-    Returns the index with the smallest value across axes of an array.
-
-    :param x: Input array containing elements to argmin.
-    :type x: array
-    :param axis: Axis to perform the argmin, default is 0.
-    :type axis: int, optional
-    :return: Tensor containing the indices of the minimum values across the specified axis.
-    """
-    return _cur_framework(x).argmin(x, axis)
 
 
 # noinspection PyShadowingNames
@@ -278,16 +223,7 @@ def where(condition: Union[ivy.Array, ivy.NativeArray], x1: Union[ivy.Array, ivy
     return _cur_framework(x1).where(condition, x1, x2)
 
 
-def indices_where(x: Union[ivy.Array, ivy.NativeArray])\
-        -> Union[ivy.Array, ivy.NativeArray]:
-    """
-    Returns indices or true elements in an input boolean array.
 
-    :param x: Boolean array, for which indices are desired.
-    :type x: array
-    :return: Indices for where the boolean array is True.
-    """
-    return _cur_framework(x).indices_where(x)
 
 
 def reshape(x: Union[ivy.Array, ivy.NativeArray], newshape: Union[int, Iterable[int]])\
@@ -382,20 +318,6 @@ def full(shape: Union[int, Tuple[int]], fill_value: Union[int, float], dtype: Op
     return _cur_framework().full(shape, fill_value, dtype, device)
 
 
-# noinspection PyShadowingNames
-def one_hot(indices: Union[ivy.Array, ivy.NativeArray], depth: int, dev: ivy.Device = None)\
-        -> Union[ivy.Array, ivy.NativeArray]:
-    """
-    Returns a one-hot array
-    :param indices: Indices for where the ones should be scattered *[batch_shape, dim]*
-    :type indices: array
-    :param depth: Scalar defining the depth of the one-hot dimension.
-    :type depth: int
-    :param dev: device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. Same as x if None.
-    :type dev: ivy.Device, optional
-    :return: Tensor of zeros with the same shape and type as a, unless dtype provided which overrides.
-    """
-    return _cur_framework(indices).one_hot(indices, depth, dev)
 
 
 def cross(x1: Union[ivy.Array, ivy.NativeArray], x2: Union[ivy.Array, ivy.NativeArray])\
@@ -468,42 +390,5 @@ def meshgrid(*xs: Iterable[Union[ivy.Array, ivy.NativeArray]], indexing: str = '
 
 
 
-def linear_resample(x: Union[ivy.Array, ivy.NativeArray], num_samples: int, axis: int = -1)\
-        -> Union[ivy.Array, ivy.NativeArray]:
-    """
-    Performs linear re-sampling on input image.
 
-    :param x: Input array
-    :type x: array
-    :param num_samples: The number of interpolated samples to take.
-    :type num_samples: int
-    :param axis: The axis along which to perform the resample. Default is last dimension.
-    :type axis: int, optional
-    :return: The array after the linear resampling.
-    """
-    return _cur_framework(x).linear_resample(x, num_samples, axis)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-def multiprocessing(context: str = None):
-    """
-    Return framewrk-specific multi-processing module
-
-    :param context: The context of the multiprocessing, either fork, forkserver or spawn. Default is None.
-    :type context: str, optional
-    :return: Multiprocessing module
-    """
-    return _cur_framework().multiprocessing(context)
 

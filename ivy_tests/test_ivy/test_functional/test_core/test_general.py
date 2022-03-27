@@ -560,27 +560,6 @@ def test_floormod(x_n_divisor_n_x_floormod, dtype, tensor_fn, dev, call):
     assert np.allclose(call(ivy.floormod, x, divisor), np.array(x_n_divisor_n_x_floormod[2]))
 
 
-# floor
-@pytest.mark.parametrize(
-    "x_n_x_floored", [(2.5, 2.), ([10.7], [10.]), ([[3.8, 2.2], [1.7, 0.2]], [[3., 2.], [1., 0.]])])
-@pytest.mark.parametrize(
-    "dtype", ['float32'])
-@pytest.mark.parametrize(
-    "tensor_fn", [ivy.array, helpers.var_fn])
-def test_floor(x_n_x_floored, dtype, tensor_fn, dev, call):
-    # smoke test
-    if (isinstance(x_n_x_floored[0], Number) or isinstance(x_n_x_floored[1], Number))\
-            and tensor_fn == helpers.var_fn and call is helpers.mx_call:
-        # mxnet does not support 0-dimensional variables
-        pytest.skip()
-    x = tensor_fn(x_n_x_floored[0], dtype, dev)
-    ret = ivy.floor(x)
-    # type test
-    assert ivy.is_array(ret)
-    # cardinality test
-    assert ret.shape == x.shape
-    # value test
-    assert np.allclose(call(ivy.floor, x), np.array(x_n_x_floored[1]))
 
 
 # ceil
@@ -606,27 +585,6 @@ def test_ceil(x_n_x_ceiled, dtype, tensor_fn, dev, call):
     assert np.allclose(call(ivy.ceil, x), np.array(x_n_x_ceiled[1]))
 
 
-# abs
-@pytest.mark.parametrize(
-    "x_n_x_absed", [(-2.5, 2.5), ([-10.7], [10.7]), ([[-3.8, 2.2], [1.7, -0.2]], [[3.8, 2.2], [1.7, 0.2]])])
-@pytest.mark.parametrize(
-    "dtype", ['float32'])
-@pytest.mark.parametrize(
-    "tensor_fn", [ivy.array, helpers.var_fn])
-def test_abs(x_n_x_absed, dtype, tensor_fn, dev, call):
-    # smoke test
-    if (isinstance(x_n_x_absed[0], Number) or isinstance(x_n_x_absed[1], Number))\
-            and tensor_fn == helpers.var_fn and call is helpers.mx_call:
-        # mxnet does not support 0-dimensional variables
-        pytest.skip()
-    x = tensor_fn(x_n_x_absed[0], dtype, dev)
-    ret = ivy.abs(x)
-    # type test
-    assert ivy.is_array(ret)
-    # cardinality test
-    assert ret.shape == x.shape
-    # value test
-    assert np.allclose(call(ivy.abs, x), np.array(x_n_x_absed[1]))
 
 
 # argmax
@@ -649,26 +607,6 @@ def test_abs(x_n_x_absed, dtype, tensor_fn, dev, call):
 #     # value test
 #     assert np.allclose(call(ivy.argmax, x, axis), np.array(x_n_axis_x_argmax[2]))
 
-
-# argmin
-@pytest.mark.parametrize(
-    "x_n_axis_x_argmin", [([-0.3, 0.1], None, [0]), ([[1.3, 2.6], [2.3, 2.5]], 0, [0, 1]),
-                          ([[1.3, 2.6], [2.3, 2.5]], 1, [0, 0])])
-@pytest.mark.parametrize(
-    "dtype", ['float32'])
-@pytest.mark.parametrize(
-    "tensor_fn", [ivy.array, helpers.var_fn])
-def test_argmin(x_n_axis_x_argmin, dtype, tensor_fn, dev, call):
-    # smoke test
-    x = tensor_fn(x_n_axis_x_argmin[0], dtype, dev)
-    axis = x_n_axis_x_argmin[1]
-    ret = ivy.argmin(x, axis)
-    # type test
-    assert ivy.is_array(ret)
-    # cardinality test
-    assert tuple(ret.shape) == (len(x.shape),)
-    # value test
-    assert np.allclose(call(ivy.argmin, x, axis), np.array(x_n_axis_x_argmin[2]))
 
 
 # argsort
@@ -1048,50 +986,50 @@ def test_zero_pad(x_n_pw, dtype, tensor_fn, dev, call):
 
 
 # fourier_encode
-# @pytest.mark.parametrize(
-#     "x_n_mf_n_nb_n_gt", [([2.], 4., 4, [[2.0000000e+00, 1.7484555e-07, 9.9805772e-01,-5.2196848e-01,
-#                                          3.4969111e-07, 1.0000000e+00, -6.2295943e-02, -8.5296476e-01, 1.0000000e+00]]),
-#                          ([[1., 2.], [3., 4.], [5., 6.]], [2., 4.], 4,
-#                           [[[1.0000000e+00, -8.7422777e-08, -8.7422777e-08, -8.7422777e-08,
-#                              -8.7422777e-08, -1.0000000e+00, -1.0000000e+00, -1.0000000e+00,
-#                              -1.0000000e+00],
-#                             [2.0000000e+00, 1.7484555e-07, 9.9805772e-01, -5.2196848e-01,
-#                              -6.0398321e-07, 1.0000000e+00, -6.2295943e-02, -8.5296476e-01,
-#                              1.0000000e+00]],
-#                            [[3.0000000e+00, -2.3849761e-08, -2.3849761e-08, -2.3849761e-08,
-#                              -2.3849761e-08, -1.0000000e+00, -1.0000000e+00, -1.0000000e+00,
-#                              -1.0000000e+00],
-#                             [4.0000000e+00, 3.4969111e-07, -1.2434989e-01, 8.9044148e-01,
-#                              -1.2079664e-06, 1.0000000e+00, -9.9223840e-01, 4.5509776e-01,
-#                              1.0000000e+00]],
-#                            [[5.0000000e+00, -6.7553248e-07, -6.7553248e-07, -6.7553248e-07,
-#                              -6.7553248e-07, -1.0000000e+00, -1.0000000e+00, -1.0000000e+00,
-#                              -1.0000000e+00],
-#                             [6.0000000e+00, 4.7699523e-08, -9.8256493e-01, -9.9706185e-01,
-#                              -3.7192983e-06, 1.0000000e+00, 1.8591987e-01, 7.6601014e-02,
-#                              1.0000000e+00]]])])
-# @pytest.mark.parametrize(
-#     "dtype", ['float32'])
-# @pytest.mark.parametrize(
-#     "tensor_fn", [ivy.array, helpers.var_fn])
-# def test_fourier_encode(x_n_mf_n_nb_n_gt, dtype, tensor_fn, dev, call):
-#     # smoke test
-#     x, max_freq, num_bands, ground_truth = x_n_mf_n_nb_n_gt
-#     if isinstance(x, Number) and tensor_fn == helpers.var_fn and call is helpers.mx_call:
-#         # mxnet does not support 0-dimensional variables
-#         pytest.skip()
-#     x = tensor_fn(x, dtype, dev)
-#     if isinstance(max_freq, list):
-#         max_freq = tensor_fn(max_freq, dtype, dev)
-#     ret = ivy.fourier_encode(x, max_freq, num_bands)
-#     # type test
-#     assert ivy.is_array(ret)
-#     # cardinality test
-#     x_shape = [1] if x.shape == () else list(x.shape)
-#     expected_shape = x_shape + [1 + 2*num_bands]
-#     assert list(ret.shape) == expected_shape
-#     # value test
-#     assert np.allclose(call(ivy.fourier_encode, x, max_freq, num_bands), np.array(ground_truth), atol=1e-5)
+@pytest.mark.parametrize(
+    "x_n_mf_n_nb_n_gt", [([2.], 4., 4, [[2.0000000e+00, 1.7484555e-07, 9.9805772e-01,-5.2196848e-01,
+                                         3.4969111e-07, 1.0000000e+00, -6.2295943e-02, -8.5296476e-01, 1.0000000e+00]]),
+                         ([[1., 2.], [3., 4.], [5., 6.]], [2., 4.], 4,
+                          [[[1.0000000e+00, -8.7422777e-08, -8.7422777e-08, -8.7422777e-08,
+                             -8.7422777e-08, -1.0000000e+00, -1.0000000e+00, -1.0000000e+00,
+                             -1.0000000e+00],
+                            [2.0000000e+00, 1.7484555e-07, 9.9805772e-01, -5.2196848e-01,
+                             -6.0398321e-07, 1.0000000e+00, -6.2295943e-02, -8.5296476e-01,
+                             1.0000000e+00]],
+                           [[3.0000000e+00, -2.3849761e-08, -2.3849761e-08, -2.3849761e-08,
+                             -2.3849761e-08, -1.0000000e+00, -1.0000000e+00, -1.0000000e+00,
+                             -1.0000000e+00],
+                            [4.0000000e+00, 3.4969111e-07, -1.2434989e-01, 8.9044148e-01,
+                             -1.2079664e-06, 1.0000000e+00, -9.9223840e-01, 4.5509776e-01,
+                             1.0000000e+00]],
+                           [[5.0000000e+00, -6.7553248e-07, -6.7553248e-07, -6.7553248e-07,
+                             -6.7553248e-07, -1.0000000e+00, -1.0000000e+00, -1.0000000e+00,
+                             -1.0000000e+00],
+                            [6.0000000e+00, 4.7699523e-08, -9.8256493e-01, -9.9706185e-01,
+                             -3.7192983e-06, 1.0000000e+00, 1.8591987e-01, 7.6601014e-02,
+                             1.0000000e+00]]])])
+@pytest.mark.parametrize(
+    "dtype", ['float32'])
+@pytest.mark.parametrize(
+    "tensor_fn", [ivy.array, helpers.var_fn])
+def test_fourier_encode(x_n_mf_n_nb_n_gt, dtype, tensor_fn, dev, call):
+    # smoke test
+    x, max_freq, num_bands, ground_truth = x_n_mf_n_nb_n_gt
+    if isinstance(x, Number) and tensor_fn == helpers.var_fn and call is helpers.mx_call:
+        # mxnet does not support 0-dimensional variables
+        pytest.skip()
+    x = tensor_fn(x, dtype, dev)
+    if isinstance(max_freq, list):
+        max_freq = tensor_fn(max_freq, dtype, dev)
+    ret = ivy.fourier_encode(x, max_freq, num_bands)
+    # type test
+    assert ivy.is_array(ret)
+    # cardinality test
+    x_shape = [1] if x.shape == () else list(x.shape)
+    expected_shape = x_shape + [1 + 2*num_bands]
+    assert list(ret.shape) == expected_shape
+    # value test
+    assert np.allclose(call(ivy.fourier_encode, x, max_freq, num_bands), np.array(ground_truth), atol=1e-5)
 
 
 # constant_pad

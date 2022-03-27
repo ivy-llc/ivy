@@ -9,6 +9,24 @@ from ivy.framework_handler import current_framework as _cur_framework
 # Array API Standard #
 # -------------------#
 
+def squeeze(x: Union[ivy.Array, ivy.NativeArray],
+            axis: Union[int, Tuple[int, ...]])\
+        -> ivy.Array:
+    """
+    Removes singleton dimensions (axes) from ``x``.
+    Parameters
+    ----------
+    x: array
+        input array.
+    axis: Union[int, Tuple[int, ...]]
+        axis (or axes) to squeeze. If a specified axis has a size greater than one, a ``ValueError`` must be raised.
+    Returns
+    -------
+    out: array
+        an output array having the same data type and elements as ``x``.
+    """
+    return _cur_framework(x).squeeze(x, axis)
+
 def flip(x: Union[ivy.Array, ivy.NativeArray],
         axis: Optional[Union[int, Tuple[int], List[int]]] = None)\
         -> ivy.Array:

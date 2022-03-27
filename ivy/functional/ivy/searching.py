@@ -28,12 +28,34 @@ def argmax(
         If this is set to True, the axes which are reduced are left in the result as dimensions with size one. With this option, the result will broadcast correctly against the array.
     out:
         If provided, the result will be inserted into this array. It should be of the appropriate shape and dtype.
-    
+
     Returns
     -------
         if axis is None, a zero-dimensional array containing the index of the first occurrence of the maximum value; otherwise, a non-zero-dimensional array containing the indices of the maximum values. The returned array must have be the default array index data type.
     """
     return _cur_framework(x).argmax(x,axis,keepdims,out)
+
+
+def argmin(x: Union[ivy.Array, ivy.NativeArray],
+            axis: Optional[int] = None,
+            keepdims: Optional[bool] = False) \
+        -> ivy.Array:
+    """
+    Returns the indices of the minimum values along a specified axis. When the minimum value occurs multiple times, only the indices corresponding to the first occurrence are returned
+
+    :param x: input array. Should have a numeric data type.
+    :param axis: axis along which to search. If None, the function must return the index of the minimum value of the flattened
+                array. Default = None.
+    :param keepdims: if True, the reduced axes (dimensions) must be included in the result as singleton dimensions, and,
+                accordingly, the result must be compatible with the input array (see Broadcasting). Otherwise, if False,
+                the reduced axes (dimensions) must not be included in the result. Default = False.
+    :param out: if axis is None, a zero-dimensional array containing the index of the first occurrence of the minimum value;
+                otherwise, a non-zero-dimensional array containing the indices of the minimum values.
+                The returned array must have the default array index data type.
+    :return: Array containing the indices of the minimum values across the specified axis.
+    """
+
+    return _cur_framework(x).argmin(x, axis, keepdims)
 
 
 # Extra #
