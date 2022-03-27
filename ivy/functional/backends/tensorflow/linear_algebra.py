@@ -202,10 +202,7 @@ def eigvalsh(x: Tensor) -> Tensor:
 def cross (x1: tf.Tensor,
            x2: tf.Tensor,
            axis:int = -1) -> tf.Tensor:
-    #dtype_from = tf.experimental.numpy.promote_types(x1.dtype.as_numpy_dtype, x2.dtype.as_numpy_dtype)
-    #dtype_from = tf.as_dtype(dtype_from)
-    #x1 = tf.cast(x1, dtype_from)
-    #x2 = tf.cast(x2, dtype_from)   
+    x2 = tf.cast(x2, x1.dtype)   
     return tf.experimental.numpy.cross(x1, x2,axis=axis)
 
 
