@@ -108,8 +108,6 @@ def clip(x, x_min, x_max):
 def abs(x):
     return _mx.nd.abs(x)
 
-argmin = lambda x, axis=0: _mx.nd.argmin(x, axis)
-
 
 @_handle_flat_arrays_in_out
 def cast(x, dtype):
