@@ -202,7 +202,6 @@ def eigvalsh(x: Tensor) -> Tensor:
 def cross (x1: tf.Tensor,
            x2: tf.Tensor,
            axis:int = -1) -> tf.Tensor:
-    x2 = tf.cast(x2, x1.dtype)   
     return tf.experimental.numpy.cross(x1, x2,axis=axis)
 
 
