@@ -117,14 +117,6 @@ reshape = lambda x, newshape: _tf.reshape(x, (newshape,) if isinstance(newshape,
 broadcast_to = _tf.broadcast_to
 
 
-def squeeze(x, axis=None):
-    if x.shape == ():
-        if axis is None or axis == 0 or axis == -1:
-            return x
-        raise Exception('tried to squeeze a zero-dimensional input by axis {}'.format(axis))
-    return _tf.squeeze(x, axis)
-
-
 # noinspection PyShadowingNames
 def zeros_like(x, dtype=None, dev=None):
     dtype = _tf.__dict__[dtype] if dtype else dtype

@@ -119,13 +119,6 @@ def broadcast_to(x, new_shape):
     return x.expand(new_shape)
 
 
-def squeeze(x, axis: Optional[int] = None):
-    if axis is None:
-        return torch.squeeze(x)
-    return torch.squeeze(x, axis)
-
-
-
 
 # noinspection PyShadowingNames
 def zeros_like(x, dtype: Optional[str] = None, dev: Optional[str] = None):
