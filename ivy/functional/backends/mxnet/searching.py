@@ -9,3 +9,13 @@ def argmax(
     keepdims: bool = False
     ) -> mx.ndarray.ndarray.NDArray:
     return mx.nd.argmax(x,axis=axis,out=out, keepdims=keepdims)
+
+
+def argmin(
+        x: mx.ndarray.ndarray.NDArray,
+        axis: Optional[int] = None,
+        out: Optional[mx.ndarray.ndarray.NDArray] = None,
+        keepdims: bool = False
+) -> mx.ndarray.ndarray.NDArray:
+    ret = mx.nd.argmin(x, axis=axis, out=out, keepdims=keepdims)
+    return ret
