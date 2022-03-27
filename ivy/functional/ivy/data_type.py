@@ -1,4 +1,5 @@
 # global
+import math
 import numpy as np
 import importlib
 from typing import Union, Tuple
@@ -270,6 +271,15 @@ def default_int_dtype(input = None, int_dtype: Union[ivy.Dtype, str] = None, as_
         return ivy.dtype_to_str(ret)
     return ivy.dtype_from_str(ret)
 
+#len(get_binary_from_float(x)) >24 and int(get_binary_from_float(x)[24:])>0)
+def _check_float64(input):
+    if math.isfinite(input):
+        tmp = str(input).replace('-','').split('.')
+        Exponent = int(math.floor(math.log10(abs(input)))) if input != 0 else 0
+        mant = bin(int(tmp[0])).replace('0b','')
+        return (input>3.4028235 * 10**38) or (len(mant) >24 and int(mant[24:]) > 0 ) or (Exponent < -126) or (Exponent>127) 
+    return False
+
 
 # noinspection PyShadowingNames
 def default_float_dtype(input = None,float_dtype: Union[ivy.Dtype, str] = None, as_str: bool = False)\
@@ -286,7 +296,7 @@ def default_float_dtype(input = None,float_dtype: Union[ivy.Dtype, str] = None, 
         elif isinstance(input, np.ndarray):
             ret = input.dtype
         elif isinstance(input, (list, tuple, dict)):
-            if ivy.nested_indices_where(input, lambda x: x>3.4028235 * 10**38 and x!=ivy.inf):
+            if ivy.nested_indices_where(input, lambda x:  _check_float64(x)):
                 ret = ivy.float64
             else:
                 def_dtype = default_dtype()
@@ -295,7 +305,7 @@ def default_float_dtype(input = None,float_dtype: Union[ivy.Dtype, str] = None, 
                 else:
                     ret = ivy.float32     
         elif isinstance(input, Number):
-            if input > 3.4028235 * 10**38 and input!=ivy.inf:
+            if _check_float64(input):
                 ret = ivy.float64
             else:
                 def_dtype = default_dtype()
