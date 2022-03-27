@@ -13,7 +13,7 @@ from collections import namedtuple
 
 def eigh(x: np.ndarray)\
   -> np.ndarray:
-         return mx.np.eigh(x)
+         return np.linalg.eigh(x)
 
 
 
