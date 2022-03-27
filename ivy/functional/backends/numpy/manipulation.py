@@ -6,6 +6,12 @@ from typing import Union, Tuple, Optional, List
 
 
 
+def squeeze(x: np.ndarray,
+            axis: Union[int, Tuple[int], List[int]])\
+        -> np.ndarray:
+    return np.squeeze(x, axis)
+
+
 def _flat_array_to_1_dim_array(x):
     return x.reshape((1,)) if x.shape == () else x
 
