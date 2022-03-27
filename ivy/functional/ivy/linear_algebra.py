@@ -36,7 +36,7 @@ inf = float('inf')
     .. note::
        Eigenvalue sort order is left unspecified and is thus implementation-dependent.
     """
-                  return _cur_framework(x).eigh(x)   
+    return _cur_framework(x).eigh(x)   
          
          
 
