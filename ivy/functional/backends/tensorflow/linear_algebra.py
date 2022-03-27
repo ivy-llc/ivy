@@ -204,12 +204,8 @@ def cross (x1: tf.Tensor,
            axis:int = -1) -> tf.Tensor:
     dtype_from = tf.experimental.numpy.promote_types(x1.dtype.as_numpy_dtype, x2.dtype.as_numpy_dtype)
     dtype_from = tf.as_dtype(dtype_from)
-    if dtype_from.is_unsigned or dtype_from==tf.int8 or dtype_from==tf.int16:
-        x1 = tf.cast(x1, tf.int64)
-        x2 = tf.cast(x2, tf.int64)
-    if x1.dtype != x2.dtype:
-        x1 = tf.cast(x1, dtype_from)
-        x2 = tf.cast(x2, dtype_from)      
+    x1 = tf.cast(x1, dtype_from)
+    x2 = tf.cast(x2, dtype_from)   
     return tf.experimental.numpy.cross(x1, x2,axis=axis)
 
 
