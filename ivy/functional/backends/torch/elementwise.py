@@ -1,7 +1,7 @@
 # global
 import torch
 from torch import Tensor
-from typing import Union
+
 
 
 # local
@@ -278,7 +278,7 @@ def remainder(x1: torch.Tensor, x2: torch.Tensor)\
 
 
 def atanh(x: torch.Tensor) \
-        ->Union[float, Tensor]:
+        -> torch.Tensor:
     if isinstance(x, float):
         return math.atanh(x)
     return torch.atanh(x)
