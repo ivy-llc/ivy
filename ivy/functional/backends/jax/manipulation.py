@@ -7,6 +7,12 @@ from typing import Union, Tuple, Optional, List
 from ivy.functional.backends.jax import JaxArray
 
 
+def squeeze(x: JaxArray,
+            axis: Union[int, Tuple[int], List[int]])\
+        -> JaxArray:
+    return jnp.squeeze(x, axis)
+
+
 def _flat_array_to_1_dim_array(x):
     return x.reshape((1,)) if x.shape == () else x
 

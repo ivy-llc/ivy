@@ -57,12 +57,6 @@ def clip(x, x_min, x_max):
     return torch.clamp(x, x_min, x_max)
 
 
-# noinspection PyShadowingBuiltins
-# noinspection PyShadowingBuiltins
-def abs(x):
-    return torch.abs(x)
-
-
 def cast(x, dtype_in: str):
     dtype_val = dtype_from_str(dtype_in)
     return x.type(dtype_val)
@@ -123,13 +117,6 @@ def reshape(x, newshape: List[int]):
 
 def broadcast_to(x, new_shape):
     return x.expand(new_shape)
-
-
-def squeeze(x, axis: Optional[int] = None):
-    if axis is None:
-        return torch.squeeze(x)
-    return torch.squeeze(x, axis)
-
 
 
 

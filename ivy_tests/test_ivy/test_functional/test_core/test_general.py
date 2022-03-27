@@ -560,27 +560,6 @@ def test_floormod(x_n_divisor_n_x_floormod, dtype, tensor_fn, dev, call):
     assert np.allclose(call(ivy.floormod, x, divisor), np.array(x_n_divisor_n_x_floormod[2]))
 
 
-# floor
-@pytest.mark.parametrize(
-    "x_n_x_floored", [(2.5, 2.), ([10.7], [10.]), ([[3.8, 2.2], [1.7, 0.2]], [[3., 2.], [1., 0.]])])
-@pytest.mark.parametrize(
-    "dtype", ['float32'])
-@pytest.mark.parametrize(
-    "tensor_fn", [ivy.array, helpers.var_fn])
-def test_floor(x_n_x_floored, dtype, tensor_fn, dev, call):
-    # smoke test
-    if (isinstance(x_n_x_floored[0], Number) or isinstance(x_n_x_floored[1], Number))\
-            and tensor_fn == helpers.var_fn and call is helpers.mx_call:
-        # mxnet does not support 0-dimensional variables
-        pytest.skip()
-    x = tensor_fn(x_n_x_floored[0], dtype, dev)
-    ret = ivy.floor(x)
-    # type test
-    assert ivy.is_array(ret)
-    # cardinality test
-    assert ret.shape == x.shape
-    # value test
-    assert np.allclose(call(ivy.floor, x), np.array(x_n_x_floored[1]))
 
 
 # ceil
@@ -606,27 +585,6 @@ def test_ceil(x_n_x_ceiled, dtype, tensor_fn, dev, call):
     assert np.allclose(call(ivy.ceil, x), np.array(x_n_x_ceiled[1]))
 
 
-# abs
-@pytest.mark.parametrize(
-    "x_n_x_absed", [(-2.5, 2.5), ([-10.7], [10.7]), ([[-3.8, 2.2], [1.7, -0.2]], [[3.8, 2.2], [1.7, 0.2]])])
-@pytest.mark.parametrize(
-    "dtype", ['float32'])
-@pytest.mark.parametrize(
-    "tensor_fn", [ivy.array, helpers.var_fn])
-def test_abs(x_n_x_absed, dtype, tensor_fn, dev, call):
-    # smoke test
-    if (isinstance(x_n_x_absed[0], Number) or isinstance(x_n_x_absed[1], Number))\
-            and tensor_fn == helpers.var_fn and call is helpers.mx_call:
-        # mxnet does not support 0-dimensional variables
-        pytest.skip()
-    x = tensor_fn(x_n_x_absed[0], dtype, dev)
-    ret = ivy.abs(x)
-    # type test
-    assert ivy.is_array(ret)
-    # cardinality test
-    assert ret.shape == x.shape
-    # value test
-    assert np.allclose(call(ivy.abs, x), np.array(x_n_x_absed[1]))
 
 
 # argmax
@@ -649,26 +607,6 @@ def test_abs(x_n_x_absed, dtype, tensor_fn, dev, call):
 #     # value test
 #     assert np.allclose(call(ivy.argmax, x, axis), np.array(x_n_axis_x_argmax[2]))
 
-
-# argmin
-# @pytest.mark.parametrize(
-#     "x_n_axis_x_argmin", [([-0.3, 0.1], None, [0]), ([[1.3, 2.6], [2.3, 2.5]], 0, [0, 1]),
-#                           ([[1.3, 2.6], [2.3, 2.5]], 1, [0, 0])])
-# @pytest.mark.parametrize(
-#     "dtype", ['float32'])
-# @pytest.mark.parametrize(
-#     "tensor_fn", [ivy.array, helpers.var_fn])
-# def test_argmin(x_n_axis_x_argmin, dtype, tensor_fn, dev, call):
-#     # smoke test
-#     x = tensor_fn(x_n_axis_x_argmin[0], dtype, dev)
-#     axis = x_n_axis_x_argmin[1]
-#     ret = ivy.argmin(x, axis)
-#     # type test
-#     assert ivy.is_array(ret)
-#     # cardinality test
-#     assert tuple(ret.shape) == (len(x.shape),)
-#     # value test
-#     assert np.allclose(call(ivy.argmin, x, axis), np.array(x_n_axis_x_argmin[2]))
 
 
 # argsort
