@@ -13,6 +13,10 @@ import ivy as _ivy
 # Array API Standard #
 # -------------------#
 
+def eigh(x: torch.Tensor)\
+  ->torch.Tensor:
+     return torch.linalg.eigh(x)
+
 def inv(x):
     return torch.inverse(x)
 
