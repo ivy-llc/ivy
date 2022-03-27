@@ -72,12 +72,7 @@ get_num_dims = lambda x, as_tensor=False: _tf.shape(_tf.shape(x))[0] if as_tenso
 minimum = _tf.minimum
 maximum = _tf.maximum
 clip = _tf.clip_by_value
-# noinspection PyShadowingBuiltins
-# noinspection PyShadowingBuiltins
-def abs(x):
-    if 'uint' in dtype(x, as_str=True):
-        return x
-    return _tf.abs(x)
+
 
 
 def cast(x, dtype):
@@ -120,14 +115,6 @@ where = lambda condition, x1, x2: _tf.where(_tf.cast(condition, _tf.bool), x1, x
 
 reshape = lambda x, newshape: _tf.reshape(x, (newshape,) if isinstance(newshape, int) else newshape)
 broadcast_to = _tf.broadcast_to
-
-
-def squeeze(x, axis=None):
-    if x.shape == ():
-        if axis is None or axis == 0 or axis == -1:
-            return x
-        raise Exception('tried to squeeze a zero-dimensional input by axis {}'.format(axis))
-    return _tf.squeeze(x, axis)
 
 
 # noinspection PyShadowingNames
