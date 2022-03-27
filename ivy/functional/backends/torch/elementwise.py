@@ -281,6 +281,12 @@ def remainder(x1: torch.Tensor, x2: torch.Tensor)\
     return torch.remainder(x1, x2)
 
 
+def bitwise_right_shift(x1: torch.Tensor, x2: torch.Tensor)\
+        -> torch.Tensor:
+    x1, x2 = _cast_for_binary_op(x1, x2)
+    return torch.bitwise_right_shift(x1, x2)
+
+
 # Extra #
 # ------#
 
