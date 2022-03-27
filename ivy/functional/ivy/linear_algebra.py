@@ -10,6 +10,24 @@ inf = float('inf')
 
 # Array API Standard #
 # -------------------#
+def pinv(x: Union[ivy.Array, ivy.NativeArray],
+         rtol: Optional[Union[float, Tuple[float]]] = None) \
+        -> ivy.Array:
+    """
+    Returns the (Moore-Penrose) pseudo-inverse of a matrix (or a stack of matrices) ``x``.
+    Parameters
+    ----------
+    x: array
+        input array having shape ``(..., M, N)`` and whose innermost two dimensions form ``MxN`` matrices. Should have a floating-point data type.
+    rtol: Optional[Union[float, array]]
+        relative tolerance for small singular values. Singular values approximately less than or equal to ``rtol * largest_singular_value`` are set to zero. If a ``float``, the value is equivalent to a zero-dimensional array having a floating-point data type determined by :ref:`type-promotion` (as applied to ``x``) and must be broadcast against each matrix. If an ``array``, must have a floating-point data type and must be compatible with ``shape(x)[:-2]`` (see :ref:`broadcasting`). If ``None``, the default value is ``max(M, N) * eps``, where ``eps`` must be the machine epsilon associated with the floating-point data type determined by :ref:`type-promotion` (as applied to ``x``). Default: ``None``.
+    Returns
+    -------
+    out: array
+        an array containing the pseudo-inverses. The returned array must have a floating-point data type determined by :ref:`type-promotion` and must have shape ``(..., N, M)`` (i.e., must have the same shape as ``x``, except the innermost two dimensions must be transposed).
+    """
+    return _cur_framework(x).pinv(x, rtol)
+
 
 def matrix_transpose(x: Union[ivy.Array, ivy.NativeArray])\
         -> ivy.Array:

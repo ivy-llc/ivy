@@ -36,6 +36,31 @@ def stack_images(images, desired_aspect_ratio=(1, 1)):
     return _ivy.concatenate(image_rows, num_batch_dims + 1)
 
 
+def linear_resample(x, num_samples, axis=-1):
+    x_shape = list(x.shape)
+    num_x_dims = len(x_shape)
+    axis = axis % num_x_dims
+    x_pre_shape = x_shape[0:axis]
+    x_pre_size = _reduce(_mul, x_pre_shape) if x_pre_shape else 1
+    num_pre_dims = len(x_pre_shape)
+    num_vals = x.shape[axis]
+    x_post_shape = x_shape[axis + 1:]
+    x_post_size = _reduce(_mul, x_post_shape) if x_post_shape else 1
+    num_post_dims = len(x_post_shape)
+    xp = jnp.reshape(jnp.arange(num_vals * x_pre_size * x_post_size), x_shape)
+    x_coords = jnp.arange(num_samples) * ((num_vals - 1) / (num_samples - 1)) * x_post_size
+    x_coords = jnp.reshape(x_coords, [1] * num_pre_dims + [num_samples] + [1] * num_post_dims)
+    x_coords = jnp.broadcast_to(x_coords, x_pre_shape + [num_samples] + x_post_shape)
+    slc = [slice(None)] * num_x_dims
+    slc[axis] = slice(0, 1, 1)
+    x_coords = x_coords + xp[tuple(slc)]
+    x = jnp.reshape(x, (-1,))
+    xp = jnp.reshape(xp, (-1,))
+    x_coords = jnp.reshape(x_coords, (-1,))
+    ret = jnp.interp(x_coords, xp, x)
+    return jnp.reshape(ret, x_pre_shape + [num_samples] + x_post_shape)
+
+
 # noinspection PyPep8Naming
 def bilinear_resample(x, warp):
     batch_shape = x.shape[:-3]

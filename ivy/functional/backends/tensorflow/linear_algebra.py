@@ -17,6 +17,13 @@ inv = tf.linalg.inv
 pinv = tf.linalg.pinv
 cholesky = tf.linalg.cholesky
 
+def pinv(x: Tensor,
+         rtol: Optional[Union[float, Tuple[float]]] = None) \
+        -> Tensor:
+    if rtol is None:
+        return tf.linalg.pinv(x)
+    return tf.linalg.pinv(tf.cast(x != 0, 'float32'), tf.cast(rtol != 0, 'float32'))
+
 
 def matrix_transpose(x: Tensor)\
         -> Tensor:
