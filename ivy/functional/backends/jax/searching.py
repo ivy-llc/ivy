@@ -11,10 +11,11 @@ def argmax(
 ) -> JaxArray: 
     return jnp.argmax(x,axis=axis,out=out,keepdims=keepdims)
 
-def argmin(
-    x:JaxArray,
-    axis:Optional[int]=None,
+def argmin(x : JaxArray,
+    axis: Optional[int] = None,
     out: Optional[JaxArray] = None,
-    keepdims:bool= False
-) -> JaxArray:
-    return jnp.argmin(x,axis=axis,out=out,keepdims=keepdims)
+    keepdims: bool = False
+    ) -> JaxArray:
+
+    ret = jnp.argmin(x,axis=axis,out=out,keepdims=keepdims)
+    return (ret)

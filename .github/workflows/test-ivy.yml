@@ -14,3 +14,4 @@ jobs:
       - name: Run Tests
         run: |
           docker run --rm -v `pwd`/ivy:/ivy unifyai/ivy:latest python3 -m pytest ivy/ivy_tests/test_ivy
+          
