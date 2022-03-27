@@ -12,8 +12,8 @@ inf = float('inf')
 # -------------------#
 
 
-  def eigh(x: Union[ivy.Array, ivy.NativeArray])\
-          -> ivy.Array:
+def eigh(x: Union[ivy.Array, ivy.NativeArray]) \
+        -> ivy.Array:
     """
     Returns an eigendecomposition x = QLQᵀ of a symmetric matrix (or a stack of symmetric matrices) ``x``, where ``Q`` is an orthogonal matrix (or a stack of matrices) and ``L`` is a vector (or a stack of vectors).
     .. note::
