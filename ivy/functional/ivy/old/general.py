@@ -116,48 +116,6 @@ def clip(x: Union[ivy.Array, ivy.NativeArray], x_min: Union[Number, Union[ivy.Ar
     return _cur_framework(x).clip(x, x_min, x_max)
 
 
-
-
-
-# noinspection PyShadowingBuiltins
-def floor(x: Union[ivy.Array, ivy.NativeArray])\
-        -> Union[ivy.Array, ivy.NativeArray]:
-    """
-    Returns element-wise largest integer not greater than x.
-
-    :param x: Input array to floor.
-    :type x: array
-    :return: An array of the same shape and type as x, with the elements floored to integers.
-    """
-    return _cur_framework(x).floor(x)
-
-
-# noinspection PyShadowingBuiltins
-def abs(x: Union[ivy.Array, ivy.NativeArray])\
-        -> Union[ivy.Array, ivy.NativeArray]:
-    """
-    Returns the absolute value of each element in x.
-    :param x: Input array containing elements to absolute value.
-    :type x: array
-    :return: A new array of the same shape as input array a, with all values now positive.
-    """
-    return _cur_framework(x).abs(x)
-
-
-def argmin(x: Union[ivy.Array, ivy.NativeArray], axis: int = 0)\
-        -> Union[ivy.Array, ivy.NativeArray]:
-    """
-    Returns the index with the smallest value across axes of an array.
-
-    :param x: Input array containing elements to argmin.
-    :type x: array
-    :param axis: Axis to perform the argmin, default is 0.
-    :type axis: int, optional
-    :return: Tensor containing the indices of the minimum values across the specified axis.
-    """
-    return _cur_framework(x).argmin(x, axis)
-
-
 # noinspection PyShadowingNames
 def arange(stop: Number, start: Number = 0, step: Number = 1, dtype: ivy.Dtype = None, dev: ivy.Device = None,
            ) -> Union[ivy.Array, ivy.NativeArray]:
