@@ -1,7 +1,7 @@
 # global
 import torch
 from torch import Tensor
-import typing
+from typing import Union
 
 
 # local
