@@ -15,7 +15,7 @@ import ivy
 
 def eigh(x: jaxArray)\
   ->JaxArray:
-         return jax.np.linalg.eigh(x)
+         return jnp.linalg.eigh(x)
 
 
 inv = jnp.linalg.inv
