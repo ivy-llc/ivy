@@ -5,6 +5,26 @@ from numbers import Number
 from typing import Union, Optional, Tuple, List
 
 
+def squeeze(x: torch.Tensor,
+            axis: Union[int, Tuple[int], List[int]] = None)\
+        -> torch.Tensor:
+    if isinstance(axis, int):
+        if x.shape[axis] > 1:
+            raise ValueError('Expected dimension of size 1, but found dimension size {}'.format(x.shape[axis]))
+        return torch.squeeze(x, axis)
+    if isinstance(axis, tuple):
+        axis = list(axis)
+    normalise_axis = [(len(x.shape) - abs(element)) if element < 0 else element for element in axis]
+    normalise_axis.sort()
+    axis_updated_after_squeeze = [ dim - key for (key, dim) in enumerate(normalise_axis)]
+    for i in axis_updated_after_squeeze:
+        if x.shape[i] > 1:
+            raise ValueError('Expected dimension of size 1, but found dimension size {}'.format(x.shape[i]))
+        else:
+            x = torch.squeeze(x, i)
+    return x
+
+
 # noinspection PyShadowingBuiltins
 def flip(x: torch.Tensor,
          axis: Optional[Union[int, Tuple[int], List[int]]] = None)\
