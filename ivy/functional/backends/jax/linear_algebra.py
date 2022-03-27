@@ -13,7 +13,7 @@ import ivy
 # Array API Standard #
 # -------------------#
 
-def eigh(x: jaxArray)\
+def eigh(x: JaxArray)\
   ->JaxArray:
          return jnp.linalg.eigh(x)
 
