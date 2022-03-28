@@ -1,4 +1,5 @@
 # global
+from ivy.functional.backends.torch.old.general import dtype
 import torch
 from typing import Union, Optional, Tuple, Literal
 from collections import namedtuple
@@ -104,6 +105,16 @@ def matmul(x1: torch.Tensor,
     x2 = x2.type(dtype_from)
     ret = torch.matmul(x1, x2)
     return ret.type(dtype_from)
+
+def solve(x1: torch.Tensor,
+          x2: torch.Tensor) -> torch.Tensor:
+    
+    dtype_from = torch.promote_types(x1.dtype, x2.dtype)
+    x1 = x1.type(dtype_from)
+    x2 = x2.type(dtype_from)
+    res = torch.linalg.solve(x1, x2)
+    return res.type(dtype_from)
+    
 
 
 def slogdet(x:Union[_ivy.Array,_ivy.NativeArray],full_matrices: bool = True) -> Union[_ivy.Array, Tuple[_ivy.Array,...]]:
