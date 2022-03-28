@@ -5,7 +5,7 @@ acosh
 #asin # depends on: greater
 asinh
 atan
-#atan2
+atan2
 #atanh
 #bitwise_and
 #bitwise_left_shift
