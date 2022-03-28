@@ -219,6 +219,45 @@ def less_equal(x1: Union[ivy.Array, ivy.NativeArray], x2: Union[ivy.Array, ivy.N
     return _cur_framework(x1, x2).less_equal(x1, x2)
 
 
+def multiply(x1: Union[ivy.Array, ivy.NativeArray],
+             x2: Union[ivy.Array, ivy.NativeArray])\
+        -> ivy.Array:
+    """
+    Calculates the product for each element ``x1_i`` of the input array ``x1`` with the respective element ``x2_i`` of the input array ``x2``.
+
+    **Special cases**
+
+    For floating-point operands,
+
+    - If either ``x1_i`` or ``x2_i`` is ``NaN``, the result is ``NaN``.
+    - If ``x1_i`` is either ``+infinity`` or ``-infinity`` and ``x2_i`` is either ``+0`` or ``-0``, the result is ``NaN``.
+    - If ``x1_i`` is either ``+0`` or ``-0`` and ``x2_i`` is either ``+infinity`` or ``-infinity``, the result is ``NaN``.
+    - If ``x1_i`` and ``x2_i`` have the same mathematical sign, the result has a positive mathematical sign, unless the result is ``NaN``. If the result is ``NaN``, the “sign” of ``NaN`` is implementation-defined.
+    - If ``x1_i`` and ``x2_i`` have different mathematical signs, the result has a negative mathematical sign, unless the result is ``NaN``. If the result is ``NaN``, the “sign” of ``NaN`` is implementation-defined.
+    - If ``x1_i`` is either ``+infinity`` or ``-infinity`` and ``x2_i`` is either ``+infinity`` or ``-infinity``, the result is a signed infinity with the mathematical sign determined by the rule already stated above.
+    - If ``x1_i`` is either ``+infinity`` or ``-infinity`` and ``x2_i`` is a nonzero finite number, the result is a signed infinity with the mathematical sign determined by the rule already stated above.
+    - If ``x1_i`` is a nonzero finite number and ``x2_i`` is either ``+infinity`` or ``-infinity``, the result is a signed infinity with the mathematical sign determined by the rule already stated above.
+
+    In the remaining cases, where neither ``infinity`` nor ``NaN`` is involved, the product must be computed and rounded to the nearest representable value according to IEEE 754-2019 and a supported rounding mode. If the magnitude is too large to represent, the result is an ``infinity`` of appropriate mathematical sign. If the magnitude is too small to represent, the result is a zero of appropriate mathematical sign.
+
+    .. note::
+        Floating-point multiplication is not always associative due to finite precision.
+
+    Parameters
+    ----------
+    x1:
+        first input array. Should have a numeric data type.
+    x2:
+        second input array. Must be compatible with ``x1`` (see :ref:`Broadcasting`). Should have a numeric data type.
+
+    Returns
+    -------
+    out:
+        an array containing the element-wise products. The returned array must have a data type determined by :ref:`Type Promotion Rules`.
+    """
+    return _cur_framework(x1, x2).multiply(x1, x2)
+
+
 def asinh(x: Union[ivy.Array, ivy.NativeArray])\
         -> ivy.Array:
     """

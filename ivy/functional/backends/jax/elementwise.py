@@ -101,6 +101,11 @@ def log1p(x: JaxArray)\
     return jnp.log1p(x)
 
 
+def multiply(x1: JaxArray, x2: JaxArray)\
+        -> JaxArray:
+    return jnp.multiply(x1, x2)
+
+
 def isnan(x: JaxArray)\
         -> JaxArray:
     return jnp.isnan(x)
