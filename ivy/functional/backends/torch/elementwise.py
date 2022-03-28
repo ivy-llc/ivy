@@ -293,6 +293,7 @@ def remainder(x1: torch.Tensor, x2: torch.Tensor)\
     return torch.remainder(x1, x2)
 
 
+
 def atanh(x: torch.Tensor) \
         -> torch.Tensor:
     if isinstance(x, float):
@@ -301,6 +302,15 @@ def atanh(x: torch.Tensor) \
 
 
 
+
+def bitwise_right_shift(x1: torch.Tensor, x2: torch.Tensor)\
+        -> torch.Tensor:
+    if hasattr(x1, 'dtype') and hasattr(x2, 'dtype'):
+        promoted_type = torch.promote_types(x1.dtype, x2.dtype)
+        x2 = torch.clamp(x2, max=torch.iinfo(promoted_type).bits - 1)
+        x1 = x1.to(promoted_type)
+        x2 = x2.to(promoted_type)
+    return torch.bitwise_right_shift(x1, x2)
 
 
 # Extra #
