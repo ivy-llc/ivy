@@ -71,8 +71,6 @@ def concatenate(xs: List[torch.Tensor], axis: int = -1):
     return torch.cat(xs, axis)
 
 
-def stack(xs: List[torch.Tensor], axis: int = 0):
-    return torch.stack(xs, axis)
 
 
 
@@ -82,12 +80,7 @@ def stack(xs: List[torch.Tensor], axis: int = 0):
 
 
 
-def transpose(x, axes: List[int]):
-    if axes is None:
-        num_dims = len(x.shape)
-        axes = list(range(num_dims))
-        axes.reverse()
-    return x.permute(axes)
+
 
 
 def where(condition, x1, x2):

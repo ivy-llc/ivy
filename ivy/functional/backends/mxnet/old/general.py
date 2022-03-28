@@ -119,18 +119,7 @@ def concatenate(xs, axis=-1):
     return _mx.nd.concat(*xs, dim=axis)
 
 
-def stack(xs, axis=0):
-    if xs[0].shape == ():
-        return _mx.nd.reshape(_mx.nd.stack(*[_flat_array_to_1_dim_array(x) for x in xs], axis=axis), -1)
-    return _mx.nd.stack(*xs, axis=axis)
 
-
-def transpose(x, axes=None):
-    if axes is None:
-        num_dims = len(x.shape)
-        axes = list(range(num_dims))
-        axes.reverse()
-    return _mx.nd.transpose(x, axes)
 
 
 @_handle_flat_arrays_in_out
