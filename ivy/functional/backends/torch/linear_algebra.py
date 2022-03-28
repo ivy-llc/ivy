@@ -112,6 +112,13 @@ def solve(x1: torch.Tensor,
     dtype_from = torch.promote_types(x1.dtype, x2.dtype)
     x1 = x1.type(dtype_from)
     x2 = x2.type(dtype_from)
+
+    if x1.numel() == 0 or x2.numel() == 0:
+        raise Exception('Tensor with no values is ambiguous')
+
+    if det(x1) == 0:
+        raise Exception('Matrix is singular')
+
     res = torch.linalg.solve(x1, x2)
     return res.type(dtype_from)
     
