@@ -14,7 +14,7 @@ matrix_transpose
 pinv
 qr
 slogdet
-#solve
+solve
 svd
 svdvals
 #tensordot
