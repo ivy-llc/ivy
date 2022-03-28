@@ -31,6 +31,13 @@ def expand_dims(x: mx.ndarray.ndarray.NDArray,
     return mx.nd.expand_dims(x, axis)
 
 
+
+def stack(xs, axis=0):
+    if xs[0].shape == ():
+        return mx.nd.reshape(mx.nd.stack(*[_flat_array_to_1_dim_array(x) for x in xs], axis=axis), -1)
+    return mx.nd.stack(*xs, axis=axis)
+
+
 # Extra #
 # ------#
 

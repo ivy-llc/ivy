@@ -86,6 +86,22 @@ def permute_dims(x: Union[ivy.Array, ivy.NativeArray],
     return _cur_framework(x).permute_dims(x, axes)
 
 
+def stack(xs: Iterable[Union[ivy.Array, ivy.NativeArray]], axis: int = 0)\
+        -> Union[ivy.Array, ivy.NativeArray]:
+    """
+    Joins a sequence of arrays along a new axis.
+    The axis parameter specifies the index of the new axis in the dimensions of the result.
+    For example, if axis: int = 0, it will be the first dimension and if axis: int = -1, it will be the last dimension.
+
+    :param xs: Input arrays, each array must have the same shape.
+    :type xs: sequence of arrays
+    :param axis: The axis in the result array along which the input arrays are stacked.
+    :type axis: int, optional
+    :return: The stacked array has one more dimension than the input arrays.
+    """
+    return _cur_framework(xs[0]).stack(xs, axis)
+
+
 # Extra #
 # ------#
 
@@ -209,3 +225,4 @@ def clip(x: Union[ivy.Array, ivy.NativeArray], x_min: Union[Number, Union[ivy.Ar
                 and those > x_max with x_max.
     """
     return _cur_framework(x).clip(x, x_min, x_max)
+
