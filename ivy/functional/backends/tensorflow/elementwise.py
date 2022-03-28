@@ -289,6 +289,13 @@ def atan(x: Tensor) \
     return tf.atan(x)
 
 
+
+def atanh(x: Tensor) \
+        -> Tensor:
+    return tf.math.atanh(x)
+
+
+
 def atan2(x1: Tensor, x2: Tensor) -> Tensor:
     if hasattr(x1, 'dtype') and hasattr(x2, 'dtype'):
         promoted_type = tf.experimental.numpy.promote_types(x1.dtype, x2.dtype)
@@ -297,8 +304,8 @@ def atan2(x1: Tensor, x2: Tensor) -> Tensor:
     return tf.math.atan2(x1, x2)
 
 
+
 cosh = tf.math.cosh
-atanh = tf.math.atanh
 log = tf.math.log
 exp = tf.math.exp
 
