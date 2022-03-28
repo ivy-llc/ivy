@@ -87,20 +87,12 @@ def dtype_bits(dtype_in):
         'int', '').replace('bfloat', '').replace('float', ''))
 
 
-equal = lambda x1, x2: x1 == x2
-equal.__name__ = 'equal'
 
-shape = lambda x, as_tensor=False: _mx.nd.shape_array(x) if as_tensor else x.shape
-shape.__name__ = 'shape'
-get_num_dims = lambda x, as_tensor=False:\
-    _mx.nd.shape_array(_mx.nd.shape_array(x)).reshape([]) if as_tensor else len(x.shape)
+
 minimum = lambda x, y: _mx.nd.array(_mx.nd.minimum(_scalar_or_flat_array_to_scalar(x), _scalar_or_flat_array_to_scalar(y)))
 maximum = lambda x, y: _mx.nd.array(_mx.nd.maximum(_scalar_or_flat_array_to_scalar(x), _scalar_or_flat_array_to_scalar(y)))
 
 
-@_handle_flat_arrays_in_out
-def clip(x, x_min, x_max):
-    return _mx.nd.clip(_mx.nd.array(x), x_min, x_max)
 
 
 # noinspection PyShadowingBuiltins
@@ -117,13 +109,7 @@ def cast(x, dtype):
 astype = cast
 
 
-# noinspection PyUnresolvedReferences
-def arange(stop, start=0, step=1, dtype=None, dev=None):
-    cont = _mxnet_init_context(default_device(dev))
-    stop = stop if isinstance(stop, Number) else stop.asscalar()
-    start = start if isinstance(start, Number) else start.asscalar()
-    step = step if isinstance(step, Number) else step.asscalar()
-    return _mx.nd.arange(start, stop, ctx=cont, step=step, dtype=dtype)
+
 
 
 
@@ -133,18 +119,7 @@ def concatenate(xs, axis=-1):
     return _mx.nd.concat(*xs, dim=axis)
 
 
-def stack(xs, axis=0):
-    if xs[0].shape == ():
-        return _mx.nd.reshape(_mx.nd.stack(*[_flat_array_to_1_dim_array(x) for x in xs], axis=axis), -1)
-    return _mx.nd.stack(*xs, axis=axis)
 
-
-def transpose(x, axes=None):
-    if axes is None:
-        num_dims = len(x.shape)
-        axes = list(range(num_dims))
-        axes.reverse()
-    return _mx.nd.transpose(x, axes)
 
 
 @_handle_flat_arrays_in_out

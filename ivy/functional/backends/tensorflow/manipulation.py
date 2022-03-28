@@ -58,6 +58,7 @@ def permute_dims(x: Tensor,
     return tf.transpose(x,perm=axes)
 
 
+stack = tf.stack
 
 # Extra #
 # ------#
@@ -118,3 +119,4 @@ def swapaxes(x, axis0, axis1):
     config.insert(axis1, axis0)
     return tf.transpose(x, config)
 
+clip = tf.clip_by_value

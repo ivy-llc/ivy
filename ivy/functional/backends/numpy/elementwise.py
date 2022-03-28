@@ -39,6 +39,17 @@ def less_equal(x1: np.ndarray, x2: np.ndarray)\
     return x1 <= x2
 
 
+def multiply(x1: np.ndarray, x2: np.ndarray)\
+        -> np.ndarray:
+    if hasattr(x1, 'dtype') and hasattr(x2, 'dtype'):
+        promoted_type = np.promote_types(x1.dtype, x2.dtype)
+        x1 = x1.astype(promoted_type)
+        x2 = x2.astype(promoted_type)
+    elif not hasattr(x2, 'dtype'):
+        x2 = np.array(x2, dtype=x1.dtype)
+    return np.multiply(x1, x2)
+
+
 def ceil(x: np.ndarray)\
         -> np.ndarray:
     return np.asarray(npa.ceil(npa.asarray(x)))
@@ -231,6 +242,17 @@ def logaddexp(x1: np.ndarray, x2: np.ndarray) -> np.ndarray:
     return np.logaddexp(x1, x2)
 
 
+def bitwise_right_shift(x1: np.ndarray, x2: np.ndarray)\
+        -> np.ndarray:
+    if not isinstance(x2, np.ndarray):
+        x2 = np.asarray(x2, dtype=x1.dtype)
+    else:
+        dtype = np.promote_types(x1.dtype, x2.dtype)
+        x1 = x1.astype(dtype)
+        x2 = x2.astype(dtype)
+    return np.right_shift(x1, x2)
+
+
 tan = np.tan
 
 
@@ -239,9 +261,26 @@ def atan(x: np.ndarray) \
     return np.arctan(x)
 
 
-atan2 = np.arctan2
+
+
+def atanh(x: np.ndarray) \
+        -> np.ndarray:
+    return np.asarray(np.arctanh(npa.asarray(x)))
+
+
+
+def atan2(x1: np.ndarray, x2: np.ndarray) -> np.ndarray:
+    if not isinstance(x2, np.ndarray):
+        x2 = np.asarray(x2, dtype=x1.dtype)
+    else:
+        dtype = np.promote_types(x1.dtype, x2.dtype)
+        x1 = x1.astype(dtype)
+        x2 = x2.astype(dtype)
+    return np.arctan2(x1, x2)
+
+
+
 cosh = np.cosh
-atanh = np.arctanh
 log = np.log
 exp = np.exp
 

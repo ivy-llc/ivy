@@ -100,6 +100,13 @@ def logical_or(x1: mx.ndarray.ndarray.NDArray,
 
 
 @_handle_flat_arrays_in_out
+def multiply(x1: mx.ndarray.ndarray.NDArray,
+             x2: mx.ndarray.ndarray.NDArray)\
+        -> mx.ndarray.ndarray.NDArray:
+    return mx.nd.multiply(x1, x2)
+
+
+@_handle_flat_arrays_in_out
 def acosh(x: mx.ndarray.ndarray.NDArray)\
       -> mx.ndarray.ndarray.NDArray:
     if isinstance(x, float):
@@ -171,7 +178,8 @@ asinh = lambda x: math.asinh(x) if isinstance(x, float) else mx.nd.arcsinh(x)
 atanh = lambda x: math.atanh(x) if isinstance(x, float) else mx.nd.arctanh(x)
 log = lambda x: math.log(x) if isinstance(x, float) else mx.nd.log(x)
 exp = lambda x: math.exp(x) if isinstance(x, float) else mx.nd.exp(x)
-
+equal = lambda x1, x2: x1 == x2
+equal.__name__ = 'equal'
 
 # Extra #
 # ------#

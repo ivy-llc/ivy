@@ -15,6 +15,7 @@ from ivy.functional.ivy import default_dtype
 from ivy.functional.backends.numpy.device import _dev_callable
 #temporary
 from ivy.functional.backends.numpy.general import _to_dev
+
 DTYPE_TO_STR = {np.dtype('int8'): 'int8',
                 np.dtype('int16'): 'int16',
                 np.dtype('int32'): 'int32',
@@ -77,12 +78,11 @@ def dtype_bits(dtype_in):
 
 
 
-shape = lambda x, as_tensor=False: np.asarray(np.shape(x)) if as_tensor else x.shape
-shape.__name__ = 'shape'
-get_num_dims = lambda x, as_tensor=False: np.asarray(len(np.shape(x))) if as_tensor else len(x.shape)
+
+
 minimum = np.minimum
 maximum = np.maximum
-clip = lambda x, x_min, x_max: np.asarray(np.clip(x, x_min, x_max))
+
 
 
 def cast(x, dtype):
@@ -92,17 +92,7 @@ def cast(x, dtype):
 astype = cast
 
 
-# noinspection PyShadowingNames
-def arange(stop, start=0, step=1, dtype=None, dev=None):
-    if dtype:
-        dtype = dtype_from_str(dtype)
-    res = _to_dev(np.arange(start, stop, step=step, dtype=dtype), dev)
-    if not dtype:
-        if res.dtype == np.float64:
-            return res.astype(np.float32)
-        elif res.dtype == np.int64:
-            return res.astype(np.int32)
-    return res
+
 
 
 
@@ -113,17 +103,7 @@ def concatenate(xs, axis=-1):
     return np.concatenate(xs, axis)
 
 
-stack = np.stack
 
-
-
-
-def transpose(x, axes=None):
-    if axes is None:
-        num_dims = len(x.shape)
-        axes = list(range(num_dims))
-        axes.reverse()
-    return np.transpose(x, axes)
 
 
 where = lambda condition, x1, x2: np.where(condition, x1, x2)

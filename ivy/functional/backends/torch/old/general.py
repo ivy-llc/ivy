@@ -33,12 +33,10 @@ def dtype_bits(dtype_in):
         'float', ''))
 
 
-def shape(x, as_tensor=False) -> Union[torch.Tensor, List[int]]:
-    return torch.tensor(x.shape) if as_tensor else x.shape
 
 
-def get_num_dims(x, as_tensor=False) -> Union[torch.Tensor, int]:
-    return torch.tensor(len(x.shape)) if as_tensor else len(x.shape)
+
+
 
 
 def minimum(x, y):
@@ -53,10 +51,6 @@ def maximum(x, y):
     return torch.max(x_val, y_val)
 
 
-def clip(x, x_min, x_max):
-    return torch.clamp(x, x_min, x_max)
-
-
 def cast(x, dtype_in: str):
     dtype_val = dtype_from_str(dtype_in)
     return x.type(dtype_val)
@@ -65,14 +59,7 @@ def cast(x, dtype_in: str):
 astype = cast
 
 
-# noinspection PyShadowingNames
-def arange(stop: Number, start: Number = 0, step: Number = 1, dtype: Optional[str] = None,
-           dev: Optional[str] = None):
-    dev = default_device(dev)
-    if dtype is not None:
-        return torch.arange(start, stop, step=step, dtype=dtype_from_str(dtype), device=dev_from_str(dev))
-    else:
-        return torch.arange(start, stop, step=step, device=dev_from_str(dev))
+
 
 
 
@@ -84,8 +71,6 @@ def concatenate(xs: List[torch.Tensor], axis: int = -1):
     return torch.cat(xs, axis)
 
 
-def stack(xs: List[torch.Tensor], axis: int = 0):
-    return torch.stack(xs, axis)
 
 
 
@@ -95,12 +80,7 @@ def stack(xs: List[torch.Tensor], axis: int = 0):
 
 
 
-def transpose(x, axes: List[int]):
-    if axes is None:
-        num_dims = len(x.shape)
-        axes = list(range(num_dims))
-        axes.reverse()
-    return x.permute(axes)
+
 
 
 def where(condition, x1, x2):
