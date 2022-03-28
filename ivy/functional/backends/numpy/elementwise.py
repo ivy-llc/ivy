@@ -242,6 +242,17 @@ def logaddexp(x1: np.ndarray, x2: np.ndarray) -> np.ndarray:
     return np.logaddexp(x1, x2)
 
 
+def bitwise_right_shift(x1: np.ndarray, x2: np.ndarray)\
+        -> np.ndarray:
+    if not isinstance(x2, np.ndarray):
+        x2 = np.asarray(x2, dtype=x1.dtype)
+    else:
+        dtype = np.promote_types(x1.dtype, x2.dtype)
+        x1 = x1.astype(dtype)
+        x2 = x2.astype(dtype)
+    return np.right_shift(x1, x2)
+
+
 tan = np.tan
 
 
@@ -250,7 +261,16 @@ def atan(x: np.ndarray) \
     return np.arctan(x)
 
 
-atan2 = np.arctan2
+def atan2(x1: np.ndarray, x2: np.ndarray) -> np.ndarray:
+    if not isinstance(x2, np.ndarray):
+        x2 = np.asarray(x2, dtype=x1.dtype)
+    else:
+        dtype = np.promote_types(x1.dtype, x2.dtype)
+        x1 = x1.astype(dtype)
+        x2 = x2.astype(dtype)
+    return np.arctan2(x1, x2)
+
+
 cosh = np.cosh
 atanh = np.arctanh
 log = np.log
