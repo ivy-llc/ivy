@@ -62,7 +62,7 @@ def split(x, num_or_size_splits=None, axis=0, with_remainder=False):
 
 repeat = jnp.repeat
 tile = jnp.tile
-
+clip = jnp.clip
 constant_pad = lambda x, pad_width, value=0: jnp.pad(_flat_array_to_1_dim_array(x), pad_width, constant_values=value)
 zero_pad = lambda x, pad_width: jnp.pad(_flat_array_to_1_dim_array(x), pad_width, constant_values=0)
 swapaxes = jnp.swapaxes
