@@ -15,6 +15,7 @@ from ivy.functional.ivy import default_dtype
 from ivy.functional.backends.numpy.device import _dev_callable
 #temporary
 from ivy.functional.backends.numpy.general import _to_dev
+
 DTYPE_TO_STR = {np.dtype('int8'): 'int8',
                 np.dtype('int16'): 'int16',
                 np.dtype('int32'): 'int32',
@@ -81,7 +82,7 @@ def dtype_bits(dtype_in):
 
 minimum = np.minimum
 maximum = np.maximum
-clip = lambda x, x_min, x_max: np.asarray(np.clip(x, x_min, x_max))
+
 
 
 def cast(x, dtype):
@@ -91,17 +92,7 @@ def cast(x, dtype):
 astype = cast
 
 
-# noinspection PyShadowingNames
-def arange(stop, start=0, step=1, dtype=None, dev=None):
-    if dtype:
-        dtype = dtype_from_str(dtype)
-    res = _to_dev(np.arange(start, stop, step=step, dtype=dtype), dev)
-    if not dtype:
-        if res.dtype == np.float64:
-            return res.astype(np.float32)
-        elif res.dtype == np.int64:
-            return res.astype(np.int32)
-    return res
+
 
 
 

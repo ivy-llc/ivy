@@ -3,10 +3,10 @@ Collection of Jax general functions, wrapped to fit Ivy syntax and signature.
 """
 
 # global
-import jax as _jax
+import jax
 import math as _math
 import numpy as _onp
-import jax.numpy as _jnp
+import jax.numpy as jnp
 import jaxlib as _jaxlib
 from numbers import Number
 from collections import Iterable
@@ -22,47 +22,47 @@ from ivy.functional.ivy.device import default_device
 from ivy.functional.ivy import default_dtype
 from ivy.functional.backends.jax.device import to_dev, dev as callable_dev
 
-DTYPE_TO_STR = {_jnp.dtype('int8'): 'int8',
-                _jnp.dtype('int16'): 'int16',
-                _jnp.dtype('int32'): 'int32',
-                _jnp.dtype('int64'): 'int64',
-                _jnp.dtype('uint8'): 'uint8',
-                _jnp.dtype('uint16'): 'uint16',
-                _jnp.dtype('uint32'): 'uint32',
-                _jnp.dtype('uint64'): 'uint64',
-                _jnp.dtype('bfloat16'): 'bfloat16',
-                _jnp.dtype('float16'): 'float16',
-                _jnp.dtype('float32'): 'float32',
-                _jnp.dtype('float64'): 'float64',
-                _jnp.dtype('bool'): 'bool',
+DTYPE_TO_STR = {jnp.dtype('int8'): 'int8',
+                jnp.dtype('int16'): 'int16',
+                jnp.dtype('int32'): 'int32',
+                jnp.dtype('int64'): 'int64',
+                jnp.dtype('uint8'): 'uint8',
+                jnp.dtype('uint16'): 'uint16',
+                jnp.dtype('uint32'): 'uint32',
+                jnp.dtype('uint64'): 'uint64',
+                jnp.dtype('bfloat16'): 'bfloat16',
+                jnp.dtype('float16'): 'float16',
+                jnp.dtype('float32'): 'float32',
+                jnp.dtype('float64'): 'float64',
+                jnp.dtype('bool'): 'bool',
 
-                _jnp.int8: 'int8',
-                _jnp.int16: 'int16',
-                _jnp.int32: 'int32',
-                _jnp.int64: 'int64',
-                _jnp.uint8: 'uint8',
-                _jnp.uint16: 'uint16',
-                _jnp.uint32: 'uint32',
-                _jnp.uint64: 'uint64',
-                _jnp.bfloat16: 'bfloat16',
-                _jnp.float16: 'float16',
-                _jnp.float32: 'float32',
-                _jnp.float64: 'float64',
-                _jnp.bool_: 'bool'}
+                jnp.int8: 'int8',
+                jnp.int16: 'int16',
+                jnp.int32: 'int32',
+                jnp.int64: 'int64',
+                jnp.uint8: 'uint8',
+                jnp.uint16: 'uint16',
+                jnp.uint32: 'uint32',
+                jnp.uint64: 'uint64',
+                jnp.bfloat16: 'bfloat16',
+                jnp.float16: 'float16',
+                jnp.float32: 'float32',
+                jnp.float64: 'float64',
+                jnp.bool_: 'bool'}
 
-DTYPE_FROM_STR = {'int8': _jnp.dtype('int8'),
-                  'int16': _jnp.dtype('int16'),
-                  'int32': _jnp.dtype('int32'),
-                  'int64': _jnp.dtype('int64'),
-                  'uint8': _jnp.dtype('uint8'),
-                  'uint16': _jnp.dtype('uint16'),
-                  'uint32': _jnp.dtype('uint32'),
-                  'uint64': _jnp.dtype('uint64'),
-                  'bfloat16': _jnp.dtype('bfloat16'),
-                  'float16': _jnp.dtype('float16'),
-                  'float32': _jnp.dtype('float32'),
-                  'float64': _jnp.dtype('float64'),
-                  'bool': _jnp.dtype('bool')}
+DTYPE_FROM_STR = {'int8': jnp.dtype('int8'),
+                  'int16': jnp.dtype('int16'),
+                  'int32': jnp.dtype('int32'),
+                  'int64': jnp.dtype('int64'),
+                  'uint8': jnp.dtype('uint8'),
+                  'uint16': jnp.dtype('uint16'),
+                  'uint32': jnp.dtype('uint32'),
+                  'uint64': jnp.dtype('uint64'),
+                  'bfloat16': jnp.dtype('bfloat16'),
+                  'float16': jnp.dtype('float16'),
+                  'float32': jnp.dtype('float32'),
+                  'float64': jnp.dtype('float64'),
+                  'bool': jnp.dtype('bool')}
 
 
 # Helpers #
@@ -71,9 +71,9 @@ DTYPE_FROM_STR = {'int8': _jnp.dtype('int8'),
 
 
 def _to_array(x):
-    if isinstance(x, _jax.interpreters.ad.JVPTracer):
+    if isinstance(x, jax.interpreters.ad.JVPTracer):
         return _to_array(x.primal)
-    elif isinstance(x, _jax.interpreters.partial_eval.DynamicJaxprTracer):
+    elif isinstance(x, jax.interpreters.partial_eval.DynamicJaxprTracer):
         return _to_array(x.aval)
     return x
 
@@ -100,9 +100,9 @@ def dtype_bits(dtype_in):
 
 
 
-minimum = _jnp.minimum
-maximum = _jnp.maximum
-clip = _jnp.clip
+minimum = jnp.minimum
+maximum = jnp.maximum
+
 
 
 
@@ -113,21 +113,17 @@ def cast(x, dtype):
 astype = cast
 
 
-# noinspection PyShadowingNames
-def arange(stop, start=0, step=1, dtype=None, dev=None):
-    dtype = dtype_from_str(dtype)
-    return to_dev(_jnp.arange(start, stop, step=step, dtype=dtype), default_device(dev))
 
 
 
 
 def concatenate(xs, axis=-1):
     if xs[0].shape == ():
-        return _jnp.concatenate([_jnp.expand_dims(x, 0) for x in xs], axis)
-    return _jnp.concatenate(xs, axis)
+        return jnp.concatenate([jnp.expand_dims(x, 0) for x in xs], axis)
+    return jnp.concatenate(xs, axis)
 
 
-stack = _jnp.stack
+stack = jnp.stack
 
 
 
@@ -140,17 +136,17 @@ def transpose(x, axes=None):
         num_dims = len(x.shape)
         axes = list(range(num_dims))
         axes.reverse()
-    return _jnp.transpose(x, axes)
+    return jnp.transpose(x, axes)
 
 
-where = lambda condition, x1, x2: _jnp.where(condition, x1, x2)
+where = lambda condition, x1, x2: jnp.where(condition, x1, x2)
 
 
 
 
 
-reshape = _jnp.reshape
-broadcast_to = _jnp.broadcast_to
+reshape = jnp.reshape
+broadcast_to = jnp.broadcast_to
 
 
 def squeeze(x, axis=None):
@@ -158,7 +154,7 @@ def squeeze(x, axis=None):
         if axis is None or axis == 0 or axis == -1:
             return x
         raise Exception('tried to squeeze a zero-dimensional input by axis {}'.format(axis))
-    return _jnp.squeeze(x, axis)
+    return jnp.squeeze(x, axis)
 
 
 
@@ -166,38 +162,38 @@ def squeeze(x, axis=None):
 # noinspection PyShadowingNames
 def zeros_like(x, dtype=None, dev=None):
     if dtype:
-        dtype = _jnp.__dict__[dtype]
+        dtype = jnp.__dict__[dtype]
     else:
         dtype = x.dtype
-    return to_dev(_jnp.zeros_like(x, dtype=dtype), default_device(dev))
+    return to_dev(jnp.zeros_like(x, dtype=dtype), default_device(dev))
 
 
 def full(shape, fill_value, dtype=None, device=None):
-    return to_dev(_jnp.full(shape, fill_value, dtype_from_str(default_dtype(dtype, fill_value))),
+    return to_dev(jnp.full(shape, fill_value, dtype_from_str(default_dtype(dtype, fill_value))),
                   default_device(device))
 
 
 
 
 
-cross = _jnp.cross
+cross = jnp.cross
 
 
 
 # noinspection PyShadowingNames
 def identity(n, dtype='float32', batch_shape=None, dev=None):
-    dtype = _jnp.__dict__[dtype]
-    mat = _jnp.identity(n, dtype=dtype)
+    dtype = jnp.__dict__[dtype]
+    mat = jnp.identity(n, dtype=dtype)
     if batch_shape is None:
         return_mat = mat
     else:
         reshape_dims = [1] * len(batch_shape) + [n, n]
         tile_dims = list(batch_shape) + [1, 1]
-        return_mat = _jnp.tile(_jnp.reshape(mat, reshape_dims), tile_dims)
+        return_mat = jnp.tile(jnp.reshape(mat, reshape_dims), tile_dims)
     return to_dev(return_mat, default_device(dev))
 
 
-meshgrid = lambda *xs, indexing='ij': _jnp.meshgrid(*xs, indexing=indexing)
+meshgrid = lambda *xs, indexing='ij': jnp.meshgrid(*xs, indexing=indexing)
 
 
 
@@ -224,7 +220,7 @@ def dtype_from_str(dtype_in):
 
 
 compile = lambda fn, dynamic=True, example_inputs=None, static_argnums=None, static_argnames=None: \
-    _jax.jit(fn, static_argnums=static_argnums, static_argnames=static_argnames)
+    jax.jit(fn, static_argnums=static_argnums, static_argnames=static_argnames)
 current_framework_str = lambda: 'jax'
 current_framework_str.__name__ = 'current_framework_str'
 

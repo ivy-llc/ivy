@@ -118,3 +118,4 @@ def swapaxes(x, axis0, axis1):
     config.insert(axis1, axis0)
     return tf.transpose(x, config)
 
+clip = tf.clip_by_value

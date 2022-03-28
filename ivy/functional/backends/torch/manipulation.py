@@ -121,3 +121,7 @@ def zero_pad(x, pad_width: List[List[int]]):
 
 def swapaxes(x, axis0: int, axis1: int):
     return torch.transpose(x, axis0, axis1)
+
+
+def clip(x, x_min, x_max):
+    return torch.clamp(x, x_min, x_max)
