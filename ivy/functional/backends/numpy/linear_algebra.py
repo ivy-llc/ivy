@@ -82,6 +82,15 @@ def svdvals(x: np.ndarray) -> np.ndarray:
     return np.linalg.svd(x, compute_uv=False)
 
 
+def solve(x1: np.ndarray,
+          x2: np.ndarray) -> np.ndarray:
+
+    if x2.ndim == 1 or ((x1.ndim-x2.ndim == 1) and (x1.shape[:-1] == x2.shape[:-2])):
+        return np.linalg.solve(x1, x2)
+    else:
+        raise Exception('Input operand does not have enough dimensions')
+
+
 def qr(x: np.ndarray,
        mode: str = 'reduced') -> namedtuple('qr', ['Q', 'R']):
     res = namedtuple('qr', ['Q', 'R'])
