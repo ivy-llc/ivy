@@ -234,6 +234,16 @@ def atan(x: JaxArray)\
     return jnp.arctan(x)
 
 
+
+def atanh(x: JaxArray)\
+        -> JaxArray:
+    return jnp.arctanh(x)
+
+
+
+
+
+
 def atan2(x1: JaxArray, x2: JaxArray) -> JaxArray:
     if hasattr(x1, 'dtype') and hasattr(x2, 'dtype'):
         promoted_type = jnp.promote_types(x1.dtype, x2.dtype)
@@ -242,8 +252,8 @@ def atan2(x1: JaxArray, x2: JaxArray) -> JaxArray:
     return jnp.arctan2(x1, x2)
 
 
+
 cosh = jnp.cosh
-atanh = jnp.arctanh
 log = jnp.log
 exp = jnp.exp
 
