@@ -261,6 +261,14 @@ def atan(x: np.ndarray) \
     return np.arctan(x)
 
 
+
+
+def atanh(x: np.ndarray) \
+        -> np.ndarray:
+    return np.asarray(np.arctanh(npa.asarray(x)))
+
+
+
 def atan2(x1: np.ndarray, x2: np.ndarray) -> np.ndarray:
     if not isinstance(x2, np.ndarray):
         x2 = np.asarray(x2, dtype=x1.dtype)
@@ -271,8 +279,8 @@ def atan2(x1: np.ndarray, x2: np.ndarray) -> np.ndarray:
     return np.arctan2(x1, x2)
 
 
+
 cosh = np.cosh
-atanh = np.arctanh
 log = np.log
 exp = np.exp
 
