@@ -1,7 +1,7 @@
 # global
 import mxnet as mx
 from typing import Tuple, Union, Optional, Iterable
-
+from numbers import Number
 # local
 from ivy import default_device, dtype_from_str, default_dtype, dtype_to_str
 from ivy.functional.backends.mxnet import _mxnet_init_context
@@ -122,6 +122,14 @@ def eye(n_rows: int,
         -> mx.ndarray.ndarray.NDArray:
     cont = _mxnet_init_context(default_device(device))
     return mx.nd.eye(n_rows, n_cols, k, ctx=cont).astype(dtype)
+
+# noinspection PyUnresolvedReferences
+def arange(stop, start=0, step=1, dtype=None, dev=None):
+    cont = _mxnet_init_context(default_device(dev))
+    stop = stop if isinstance(stop, Number) else stop.asscalar()
+    start = start if isinstance(start, Number) else start.asscalar()
+    step = step if isinstance(step, Number) else step.asscalar()
+    return mx.nd.arange(start, stop, ctx=cont, step=step, dtype=dtype)
 
 
 # Extra #

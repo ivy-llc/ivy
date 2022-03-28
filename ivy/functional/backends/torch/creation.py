@@ -3,7 +3,7 @@ import torch
 import numpy as np
 from torch import Tensor
 from typing import Union, Tuple, Optional, Dict
-
+from numbers import Number
 # local
 from ivy import dtype_from_str, default_dtype, dev_from_str, default_device
 from ivy.functional.backends.torch.device import _callable_dev
@@ -229,6 +229,14 @@ def eye(n_rows: int,
         return torch.zeros([n_rows, n_cols], dtype=dtype, device=device)
 
 
+# noinspection PyShadowingNames
+def arange(stop: Number, start: Number = 0, step: Number = 1, dtype: Optional[str] = None,
+           dev: Optional[str] = None):
+    dev = default_device(dev)
+    if dtype is not None:
+        return torch.arange(start, stop, step=step, dtype=dtype_from_str(dtype), device=dev_from_str(dev))
+    else:
+        return torch.arange(start, stop, step=step, device=dev_from_str(dev))
 # Extra #
 # ------#
 
