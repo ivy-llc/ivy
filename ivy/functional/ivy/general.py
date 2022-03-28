@@ -911,3 +911,30 @@ def one_hot(indices: Union[ivy.Array, ivy.NativeArray], depth: int, dev: ivy.Dev
     :return: Tensor of zeros with the same shape and type as a, unless dtype provided which overrides.
     """
     return _cur_framework(indices).one_hot(indices, depth, dev)
+
+
+def shape(x: Union[ivy.Array, ivy.NativeArray], as_array: bool = False)\
+        -> Iterable[int]:
+    """
+    Returns the shape of the array x.
+
+    :param x: Input array to infer the shape of.
+    :type x: array
+    :param as_array: Whether to return the shape as a array, default False.
+    :type as_array: bool, optional
+    :return: Shape of the array
+    """
+    return _cur_framework(x).shape(x, as_array)
+
+
+def get_num_dims(x: Union[ivy.Array, ivy.NativeArray], as_array: bool = False) -> int:
+    """
+    Returns the number of dimensions of the array x.
+
+    :param x: Input array to infer the number of dimensions for.
+    :type x: array
+    :param as_array: Whether to return the shape as a array, default False.
+    :type as_array: bool, optional
+    :return: Shape of the array
+    """
+    return _cur_framework(x).get_num_dims(x, as_array)

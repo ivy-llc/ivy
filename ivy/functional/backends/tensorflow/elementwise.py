@@ -275,6 +275,12 @@ def logaddexp(x1: Tensor, x2: Tensor) -> Tensor:
     return tf.experimental.numpy.logaddexp(x1, x2)
 
 
+def bitwise_right_shift(x1: Tensor, x2: Tensor)\
+        -> Tensor:
+    x1, x2 = _cast_for_binary_op(x1, x2)
+    return tf.bitwise.right_shift(x1, x2)
+
+
 tan = tf.tan
 
 
@@ -283,7 +289,14 @@ def atan(x: Tensor) \
     return tf.atan(x)
 
 
-atan2 = tf.atan2
+def atan2(x1: Tensor, x2: Tensor) -> Tensor:
+    if hasattr(x1, 'dtype') and hasattr(x2, 'dtype'):
+        promoted_type = tf.experimental.numpy.promote_types(x1.dtype, x2.dtype)
+        x1 = tf.cast(x1, promoted_type)
+        x2 = tf.cast(x2, promoted_type)
+    return tf.math.atan2(x1, x2)
+
+
 cosh = tf.math.cosh
 atanh = tf.math.atanh
 log = tf.math.log

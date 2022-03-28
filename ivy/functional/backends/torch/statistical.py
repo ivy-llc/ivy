@@ -20,13 +20,31 @@ def min(x: torch.Tensor,
 
 
 def sum(x: torch.Tensor,
-        axis: Optional[List[int]] = None,
+        axis: Optional[Union[int, Tuple[int]]] = None,
+        dtype: Optional[torch.dtype] = None,
         keepdims: bool = False)\
         -> torch.Tensor:
+
+    if dtype == None:
+        if x.dtype in [torch.int8, torch.int16]:
+            dtype = torch.int32
+        elif x.dtype == torch.uint8:
+            dtype = torch.uint8
+        elif x.dtype in [torch.int32, torch.int64]:
+            dtype = torch.int64
+
     if axis is None:
-        num_dims = len(x.shape)
-        axis = list(range(num_dims))
-    return torch.sum(x, dim=axis, keepdim=keepdims)
+       return torch.sum(input=x,dtype=dtype)
+    elif type(axis) == list:
+        torch.sum(input = x, dim = axis)
+    elif type(axis) == tuple:
+        if len(axis) == 0:
+            axis = 0
+        else:
+            return torch.sum(torch.Tensor(
+                [torch.sum(input=x, dim=i, dtype=dtype, keepdim=keepdims) for i in axis]), dtype=dtype)
+
+    return torch.sum(input=x, dim=axis, dtype=dtype, keepdim=keepdims)
 
 
 def prod(x: torch.Tensor,
