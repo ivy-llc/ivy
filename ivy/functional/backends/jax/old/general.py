@@ -99,9 +99,7 @@ def dtype_bits(dtype_in):
 
 
 
-shape = lambda x, as_tensor=False: _jnp.asarray(_jnp.shape(x)) if as_tensor else x.shape
-shape.__name__ = 'shape'
-get_num_dims = lambda x, as_tensor=False: _jnp.asarray(len(_jnp.shape(x))) if as_tensor else len(x.shape)
+
 minimum = _jnp.minimum
 maximum = _jnp.maximum
 clip = _jnp.clip
