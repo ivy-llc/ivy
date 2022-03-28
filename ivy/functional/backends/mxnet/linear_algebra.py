@@ -111,19 +111,19 @@ def cholesky(x: mx.nd.NDArray,
 def eigvalsh(x: mx.ndarray.ndarray.NDArray) -> mx.ndarray.ndarray.NDArray:
     return mx.np.linalg.eigvalsh(x)
 
-<<<<<<< cross
+
 def cross (x1: mx.nd.NDArray,
            x2: mx.nd.NDArray,
            axis:int = -1) -> mx.nd.NDArray:
     return mx.np.cross(a= x1, b = x2, axis= axis)
-=======
+
 def matrix_transpose(x, axes=None):
     if axes is None:
         num_dims = len(x.shape)
         axes = list(range(num_dims))
         axes.reverse()
     return mx.nd.transpose(x, axes)
->>>>>>> master
+
 
 # Extra #
 # ------#
