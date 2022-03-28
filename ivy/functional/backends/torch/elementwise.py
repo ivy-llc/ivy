@@ -7,13 +7,16 @@ import typing
 # local
 import ivy
 
+
 def expm1(x: Tensor)\
         -> Tensor:
     return torch.expm1(x)
-  
+
+
 def bitwise_invert(x: torch.Tensor) \
         -> torch.Tensor:
     return torch.bitwise_not(x)
+
 
 def isfinite(x: Tensor)\
         -> Tensor:
@@ -126,6 +129,15 @@ def less(x1: torch.Tensor, x2: torch.Tensor):
         x1 = x1.to(promoted_type)
         x2 = x2.to(promoted_type)
     return torch.lt(x1, x2)
+
+
+def multiply(x1: torch.Tensor, x2: torch.Tensor)\
+        -> torch.Tensor:
+    if hasattr(x1, 'dtype') and hasattr(x2, 'dtype'):
+        promoted_type = torch.promote_types(x1.dtype, x2.dtype)
+        x1 = x1.to(promoted_type)
+        x2 = x2.to(promoted_type)
+    return torch.multiply(x1, x2)
 
 
 def cos(x: torch.Tensor)\
@@ -242,7 +254,11 @@ def atan(x: torch.Tensor) \
     return torch.atan(x)
 
 
-def atan2(x1: torch.Tensor, x2: torch.Tensor) -> torch.Tensor:
+def atan2(x1: Tensor, x2: Tensor) -> Tensor:
+    if hasattr(x1, 'dtype') and hasattr(x2, 'dtype'):
+        promoted_type = torch.promote_types(x1.dtype, x2.dtype)
+        x1 = x1.to(promoted_type)
+        x2 = x2.to(promoted_type)
     return torch.atan2(x1, x2)
 
 

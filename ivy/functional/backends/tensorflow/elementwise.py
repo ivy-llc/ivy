@@ -193,6 +193,15 @@ def sin(x: Tensor)\
     return tf.sin(x)
 
 
+def multiply(x1: Tensor, x2: Tensor)\
+        -> Tensor:
+    if hasattr(x1, 'dtype') and hasattr(x2, 'dtype'):
+        promoted_type = tf.experimental.numpy.promote_types(x1.dtype, x2.dtype)
+        x1 = tf.cast(x1, promoted_type)
+        x2 = tf.cast(x2, promoted_type)
+    return tf.math.multiply(x1, x2)
+
+
 def negative(x: Tensor) -> Tensor:
     if x.dtype in [tf.uint8, tf.uint16, tf.uint32, tf.uint64]:
         return tf.cast(tf.negative(tf.cast(x, tf.float32)), x.dtype)
@@ -274,11 +283,22 @@ def atan(x: Tensor) \
     return tf.atan(x)
 
 
+
 def atanh(x: Tensor) \
         -> Tensor:
     return tf.math.atanh(x)
 
 atan2 = tf.atan2
+
+def atan2(x1: Tensor, x2: Tensor) -> Tensor:
+    if hasattr(x1, 'dtype') and hasattr(x2, 'dtype'):
+        promoted_type = tf.experimental.numpy.promote_types(x1.dtype, x2.dtype)
+        x1 = tf.cast(x1, promoted_type)
+        x2 = tf.cast(x2, promoted_type)
+    return tf.math.atan2(x1, x2)
+
+
+
 cosh = tf.math.cosh
 log = tf.math.log
 exp = tf.math.exp
