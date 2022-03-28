@@ -118,6 +118,12 @@ def eye(n_rows: int,
     return to_dev(jnp.eye(n_rows, n_cols, k, dtype), device)
 
 
+# noinspection PyShadowingNames
+def arange(stop, start=0, step=1, dtype=None, dev=None):
+    dtype = dtype_from_str(dtype)
+    return to_dev(jnp.arange(start, stop, step=step, dtype=dtype), default_device(dev))
+
+
 # Extra #
 # ------#
 

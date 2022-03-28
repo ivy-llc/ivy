@@ -150,6 +150,13 @@ def eye(n_rows: int,
             return tf.zeros([n_rows, n_cols], dtype=dtype)
 
 
+# noinspection PyShadowingNames
+def arange(stop, start=0, step=1, dtype=None, dev=None):
+    dtype = tf.__dict__[dtype] if dtype else dtype
+    dev = default_device(dev)
+    with tf.device(dev_from_str(dev)):
+        return tf.range(start, stop, delta=step, dtype=dtype)
+
 # Extra #
 # ------#
 
