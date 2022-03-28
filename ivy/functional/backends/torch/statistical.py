@@ -46,6 +46,7 @@ def sum(x: torch.Tensor,
 
     return torch.sum(input=x, dim=axis, dtype=dtype, keepdim=keepdims)
 
+
 def prod(x: torch.Tensor,
          axis: Optional[Union[int, Tuple[int]]] = None,
          dtype: Optional[torch.dtype] = None,
