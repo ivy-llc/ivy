@@ -1082,6 +1082,20 @@ def remainder(x1: Union[ivy.Array, ivy.NativeArray],
     return _cur_framework(x1, x2).remainder(x1, x2)
 
 
+def equal(x1: Union[ivy.Array, ivy.NativeArray],
+          x2: Union[ivy.Array, ivy.NativeArray])\
+        -> ivy.Array:
+    """
+    Computes the truth value of x1_i == x2_i for each element x1_i of the input array x1 with the respective
+    element x2_i of the input array x2.
+
+    :param x1: first input array. May have any data type.
+    :param x2: second input array. Must be compatible with x1 (with Broadcasting). May have any data type.
+    :return: an array containing the element-wise results. The returned array must have a data type of bool.
+    """
+    return _cur_framework(x1, x2).equal(x1, x2)
+
+
 # Extra #
 # ------#
 
