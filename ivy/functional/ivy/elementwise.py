@@ -963,12 +963,13 @@ def tanh(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
     return _cur_framework(x).tanh(x)
 
 
-def atanh(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
+def atanh(x: Union[ivy.Array, ivy.NativeArray]) \
+        -> ivy.Array:
     """
     Returns a new array with the inverse hyperbolic tangent of the elements of x.
 
-    :param x: Input array.
-    :return: A new array with the inverse hyperbolic tangent of the elements of x.
+    :param x: input array whose elements each represent the area of a hyperbolic sector. Should have a floating-point data type.
+    :return:an array containing the inverse hyperbolic tangent of each element in x. The returned array must have a floating-point data type determined by Type Promotion Rules.
     """
     return _cur_framework(x).atanh(x)
 
