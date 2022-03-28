@@ -58,6 +58,7 @@ def permute_dims(x: Tensor,
     return tf.transpose(x,perm=axes)
 
 
+stack = tf.stack
 
 # Extra #
 # ------#
