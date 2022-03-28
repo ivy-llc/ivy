@@ -15,6 +15,7 @@ def bitwise_invert(x: torch.Tensor) \
         -> torch.Tensor:
     return torch.bitwise_not(x)
 
+
 def isfinite(x: torch.Tensor)\
         -> torch.Tensor:
     return torch.isfinite(x)
