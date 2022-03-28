@@ -6,7 +6,7 @@ acosh
 asinh
 atan
 atan2
-#atanh
+atanh
 #bitwise_and
 #bitwise_left_shift
 bitwise_invert
