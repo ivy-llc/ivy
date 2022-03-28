@@ -83,28 +83,6 @@ def concatenate(xs: Iterable[Union[ivy.Array, ivy.NativeArray]], axis: int = -1)
 
 
 
-
-
-
-
-
-
-
-
-def transpose(x: Union[ivy.Array, ivy.NativeArray], axes: Iterable[int] = None)\
-        -> Union[ivy.Array, ivy.NativeArray]:
-    """
-    Permutes the dimensions of an array.
-
-    :param x: Input array.
-    :type x: array
-    :param axes: By default, reverse the dimensions, otherwise permute the axes according to the values given.
-    :type axes: sequence of ints of length N
-    :return: x with its axes permuted.
-    """
-    return _cur_framework(x).matrix_transpose(x, axes)
-
-
 def where(condition: Union[ivy.Array, ivy.NativeArray], x1: Union[ivy.Array, ivy.NativeArray],
           x2: Union[ivy.Array, ivy.NativeArray])\
         -> Union[ivy.Array, ivy.NativeArray]:
