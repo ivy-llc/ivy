@@ -42,6 +42,8 @@ def permute_dims(x: np.ndarray,
     return np.transpose(x, axes)
 
 
+stack = np.stack
+
 
 # Extra #
 # ------#

@@ -38,6 +38,9 @@ def permute_dims(x: JaxArray,
     return jnp.transpose(x,axes)
 
 
+stack = jnp.stack
+
+
 # Extra #
 # ------#
 

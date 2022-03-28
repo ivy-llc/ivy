@@ -123,20 +123,12 @@ def concatenate(xs, axis=-1):
     return jnp.concatenate(xs, axis)
 
 
-stack = jnp.stack
 
 
 
 
 
 
-
-def transpose(x, axes=None):
-    if axes is None:
-        num_dims = len(x.shape)
-        axes = list(range(num_dims))
-        axes.reverse()
-    return jnp.transpose(x, axes)
 
 
 where = lambda condition, x1, x2: jnp.where(condition, x1, x2)
