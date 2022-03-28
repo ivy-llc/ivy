@@ -53,7 +53,7 @@ def isinf(x: JaxArray)\
 
 def equal(x1: JaxArray, x2: JaxArray)\
         -> JaxArray:
-    return x1 == x2
+    return jnp.equal(x1,x2)
 
 
 def greater_equal(x1: JaxArray, x2: JaxArray)\
@@ -171,14 +171,6 @@ def tanh(x: JaxArray)\
 
 
 def bitwise_or(x1: JaxArray, x2: JaxArray) -> JaxArray:
-    if isinstance(x1,int):
-        if x1 > 9223372036854775807:
-           x1 = jnp.array(x1,dtype='uint64')
-
-    if isinstance(x2,int):
-        if x2 > 9223372036854775807:
-           x2 = jnp.array(x2,dtype='uint64')
-
     return jnp.bitwise_or(x1, x2)
 
 
@@ -199,7 +191,9 @@ def square(x: JaxArray)\
 
 def remainder(x1: JaxArray, x2: JaxArray)\
         -> JaxArray:
-    return jnp.remainder(x1, x2)
+        if isinstance(x2,int) and x2 >9223372036854775807:
+            x2 = jax.numpy.uint64(x2)
+        return jnp.remainder(x1, x2)
 
 
 def round(x: JaxArray)\
