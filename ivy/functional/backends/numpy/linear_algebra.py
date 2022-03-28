@@ -15,6 +15,9 @@ inv = np.linalg.inv
 pinv = np.linalg.pinv
 cholesky = np.linalg.cholesky
 
+def inv(x: np.ndarray) -> np.ndarray:
+    return np.linalg.inv(x)
+
 def pinv(x: np.ndarray,
          rtol: Optional[Union[float, Tuple[float]]] = None) \
         -> np.ndarray:
