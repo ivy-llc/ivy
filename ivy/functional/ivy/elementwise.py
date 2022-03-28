@@ -896,14 +896,49 @@ def atan(x: Union[ivy.Array, ivy.NativeArray]) \
 
 def atan2(x1: Union[ivy.Array, ivy.NativeArray], x2: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
     """
-    Computes element-wise arc tangent of x1/x2 choosing the quadrant correctly.
+    Calculates an implementation-dependent approximation of the inverse tangent of the quotient ``x1/x2``, having domain ``[-infinity, +infinity] x [-infinity, +infinity]`` (where the ``x`` notation denotes the set of ordered pairs of elements ``(x1_i, x2_i)``) and codomain ``[-π, +π]``, for each pair of elements ``(x1_i, x2_i)`` of the input arrays ``x1`` and ``x2``, respectively. Each element-wise result is expressed in radians.
+    The mathematical signs of ``x1_i and x2_i`` determine the quadrant of each element-wise result. The quadrant (i.e., branch) is chosen such that each element-wise result is the signed angle in radians between the ray ending at the origin and passing through the point ``(1,0)`` and the ray ending at the origin and passing through the point ``(x2_i, x1_i)``.
 
-    :param x1: y-coordinates.
-    :type x1: array
-    :param x2: x-coordinates. If x1.shape != x2.shape, they must be broadcastable to a common shape
-                    (which becomes the shape of the output).
-    :type x2: array
-    :return: Array of angles in radians, in the range [-pi, pi].
+    **Special cases**
+
+    For floating-point operands,
+
+    - If either ``x1_i`` or ``x2_i`` is ``NaN``, the result is ``NaN``.
+    - If ``x1_i`` is greater than ``0`` and ``x2_i`` is ``+0``, the result is an approximation to ``+π/2``.
+    - If ``x1_i`` is greater than ``0`` and ``x2_i`` is ``-0``, the result is an approximation to ``+π/2``.
+    - If ``x1_i`` is ``+0`` and ``x2_i`` is greater than ``0``, the result is ``+0``.
+    - If ``x1_i`` is ``+0`` and ``x2_i`` is ``+0``, the result is ``+0``.
+    - If ``x1_i`` is ``+0`` and ``x2_i`` is ``-0``, the result is an approximation to ``+π``.
+    - If ``x1_i`` is ``+0`` and ``x2_i`` is less than 0, the result is an approximation to ``+π``.
+    - If ``x1_i`` is ``-0`` and ``x2_i`` is greater than ``0``, the result is ``-0``.
+    - If ``x1_i`` is ``-0`` and ``x2_i`` is ``+0``, the result is ``-0``.
+    - If ``x1_i`` is ``-0`` and ``x2_i`` is ``-0``, the result is an approximation to ``-π``.
+    - If ``x1_i`` is ``-0`` and ``x2_i`` is less than ``0``, the result is an approximation to ``-π``.
+    - If ``x1_i`` is less than ``0`` and ``x2_i`` is ``+0``, the result is an approximation to ``-π/2``.
+    - If ``x1_i`` is less than ``0`` and ``x2_i`` is ``-0``, the result is an approximation to ``-π/2``.
+    - If ``x1_i`` is greater than ``0``, ``x1_i`` is a finite number, and ``x2_i`` is ``+infinity``, the result is ``+0``.
+    - If ``x1_i`` is greater than ``0``, ``x1_i`` is a finite number, and ``x2_i`` is ``-infinity``, the result is an approximation to ``+π``.
+    - If ``x1_i`` is less than ``0``, ``x1_i`` is a finite number, and ``x2_i`` is ``+infinity``, the result is ``-0``.
+    - If ``x1_i`` is less than ``0``, ``x1_i`` is a finite number, and ``x2_i`` is ``-infinity``, the result is an approximation to ``-π``.
+    - If ``x1_i`` is ``+infinity`` and ``x2_i`` is finite, the result is an approximation to ``+π/2``.
+    - If ``x1_i`` is ``-infinity`` and ``x2_i`` is finite, the result is an approximation to ``-π/2``.
+    - If ``x1_i`` is ``+infinity`` and ``x2_i`` is ``+infinity``, the result is an approximation to ``+π/4``.
+    - If ``x1_i`` is ``+infinity`` and ``x2_i`` is ``-infinity``, the result is an approximation to ``+3π/4``.
+    - If ``x1_i`` is ``-infinity`` and ``x2_i`` is ``+infinity``, the result is an approximation to ``-π/4``.
+    - If ``x1_i`` is ``-infinity`` and ``x2_i`` is ``-infinity``, the result is an approximation to ``-3π/4``.
+    
+    Parameters
+    ----------
+    x1:
+        input array corresponding to the y-coordinates. Should have a floating-point data type.
+    
+    x2:
+        input array corresponding to the x-coordinates. Must be compatible with ``x1``. Should have a floating-point data type.
+
+    Returns
+    -------
+    out:
+        an array containing the inverse tangent of the quotient ``x1/x2``. The returned array must have a floating-point data type.
     """
     return _cur_framework(x1).atan2(x1, x2)
 
