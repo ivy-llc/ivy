@@ -202,3 +202,7 @@ def one_hot(indices, depth, dev=None):
     # from https://stackoverflow.com/questions/38592324/one-hot-encoding-using-numpy
     res = np.eye(depth)[np.array(indices).reshape(-1)]
     return res.reshape(list(indices.shape) + [depth])
+
+shape = lambda x, as_tensor=False: np.asarray(np.shape(x)) if as_tensor else x.shape
+shape.__name__ = 'shape'
+get_num_dims = lambda x, as_tensor=False: np.asarray(len(np.shape(x))) if as_tensor else len(x.shape)

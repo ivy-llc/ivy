@@ -29,15 +29,21 @@ def var(x: np.ndarray,
 
 
 def sum(x: np.ndarray,
-             axis: Union[int,Tuple[int]] =None,
-            keepdims: bool = False)\
-                -> np.ndarray:
-    if axis is None:
-        num_dims = len(x.shape)
-        axis = tuple(range(num_dims))
-    elif isinstance(axis, list):
-        axis = tuple(axis)
-    return np.asarray(np.sum(x, axis=axis, keepdims=keepdims))
+        axis: Union[int,Tuple[int]] =None,
+        dtype: Optional[np.dtype] = None,
+        keepdims: bool = False) -> np.ndarray:
+
+    if dtype == None and np.issubdtype(x.dtype, np.integer):
+        if np.issubdtype(x.dtype, np.signedinteger) and x.dtype in [np.int8, np.int16, np.int32]:
+            dtype = np.int32
+        elif np.issubdtype(x.dtype, np.unsignedinteger) and x.dtype in [np.uint8, np.uint16, np.uint32]:
+            dtype = np.uint32
+        elif x.dtype == np.int64:
+            dtype = np.int64
+        else:
+            dtype = np.uint64
+
+    return np.sum(a=x, axis=axis, dtype=dtype, keepdims=keepdims)
 
 
 def prod(x: np.ndarray,
