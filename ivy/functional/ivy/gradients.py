@@ -324,6 +324,6 @@ def lamb_update(ws, dcdws, lr, mw_tm1, vw_tm1, step, beta1=0.9, beta2=0.999, eps
         r2 = (eff_grads + decay_lambda*ws).norm()
     else:
         r2 = eff_grads.vector_norm()
-    r = _ivy.stable_divide(r1, r2).minimum(max_trust_ratio)
+    r = _ivy.stable_divide(r1, r2).min(max_trust_ratio)
     lr = r * lr
     return optimizer_update(ws, eff_grads, lr, inplace, stop_gradients), mw, vw

@@ -393,60 +393,6 @@ def test_get_num_dims(object_in, dtype, as_tensor, tensor_fn, dev, call):
         return
 
 
-# minimum
-@pytest.mark.parametrize(
-    "xy", [([0.7], [0.5]), ([0.7], 0.5), (0.5, [0.7]), ([[0.8, 1.2], [1.5, 0.2]], [0., 1.])])
-@pytest.mark.parametrize(
-    "dtype", ['float32'])
-@pytest.mark.parametrize(
-    "tensor_fn", [ivy.array, helpers.var_fn])
-def test_minimum(xy, dtype, tensor_fn, dev, call):
-    # smoke test
-    if (isinstance(xy[0], Number) or isinstance(xy[1], Number))\
-            and tensor_fn == helpers.var_fn and call is helpers.mx_call:
-        # mxnet does not support 0-dimensional variables
-        pytest.skip()
-    x = tensor_fn(xy[0], dtype, dev)
-    y = tensor_fn(xy[1], dtype, dev)
-    ret = ivy.minimum(x, y)
-    # type test
-    assert ivy.is_array(ret)
-    # cardinality test
-    if len(x.shape) > len(y.shape):
-        assert ret.shape == x.shape
-    else:
-        assert ret.shape == y.shape
-    # value test
-    assert np.array_equal(call(ivy.minimum, x, y), np.asarray(ivy.functional.backends.numpy.minimum(ivy.to_numpy(x), ivy.to_numpy(y))))
-
-
-# maximum
-@pytest.mark.parametrize(
-    "xy", [([0.7], [0.5]), ([0.7], 0.5), (0.5, [0.7]), ([[0.8, 1.2], [1.5, 0.2]], [0., 1.])])
-@pytest.mark.parametrize(
-    "dtype", ['float32'])
-@pytest.mark.parametrize(
-    "tensor_fn", [ivy.array, helpers.var_fn])
-def test_maximum(xy, dtype, tensor_fn, dev, call):
-    # smoke test
-    if (isinstance(xy[0], Number) or isinstance(xy[1], Number))\
-            and tensor_fn == helpers.var_fn and call is helpers.mx_call:
-        # mxnet does not support 0-dimensional variables
-        pytest.skip()
-    x = tensor_fn(xy[0], dtype, dev)
-    y = tensor_fn(xy[1], dtype, dev)
-    ret = ivy.maximum(x, y)
-    # type test
-    assert ivy.is_array(ret)
-    # cardinality test
-    if len(x.shape) > len(y.shape):
-        assert ret.shape == x.shape
-    else:
-        assert ret.shape == y.shape
-    # value test
-    assert np.array_equal(call(ivy.maximum, x, y), np.asarray(ivy.functional.backends.numpy.maximum(ivy.to_numpy(x), ivy.to_numpy(y))))
-
-
 # clip
 @pytest.mark.parametrize(
     "x_min_n_max", [(-0.5, 0., 1.5), ([1.7], [0.5], [1.1]), ([[0.8, 2.2], [1.5, 0.2]], 0.2, 1.4),

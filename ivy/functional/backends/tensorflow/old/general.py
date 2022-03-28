@@ -68,8 +68,7 @@ def dtype_bits(dtype_in):
 
 
 
-minimum = _tf.minimum
-maximum = _tf.maximum
+
 
 
 
@@ -79,6 +78,7 @@ def cast(x, dtype):
 
 
 astype = cast
+
 
 
 

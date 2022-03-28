@@ -1256,7 +1256,7 @@ class Container(dict):
         """
         is_container = isinstance(other, Container)
         return self.map(lambda x, kc:
-                        self._ivy.minimum(x, other[kc] if is_container else other) if self._ivy.is_array(x) else x,
+                        self._ivy.min(x, other[kc] if is_container else other) if self._ivy.is_array(x) else x,
                         key_chains, to_apply, prune_unapplied, map_sequences)
 
     def maximum(self, other, key_chains=None, to_apply=True, prune_unapplied=False, map_sequences=False):
@@ -1278,7 +1278,7 @@ class Container(dict):
         """
         is_container = isinstance(other, Container)
         return self.map(lambda x, kc:
-                        self._ivy.maximum(x, other[kc] if is_container else other) if self._ivy.is_array(x) else x,
+                        self._ivy.max(x, other[kc] if is_container else other) if self._ivy.is_array(x) else x,
                         key_chains, to_apply, prune_unapplied, map_sequences)
 
     def clip(self, clip_min, clip_max, key_chains=None, to_apply=True, prune_unapplied=False, map_sequences=False):

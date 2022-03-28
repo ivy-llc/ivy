@@ -80,8 +80,7 @@ def dtype_bits(dtype_in):
 
 
 
-minimum = np.minimum
-maximum = np.maximum
+
 
 
 

@@ -214,7 +214,7 @@ def clip_matrix_norm(x: Union[ivy.Array, ivy.NativeArray], max_norm: float, p: f
     :return: An array with the matrix norm downscaled to the max norm if needed.
     """
     norms = ivy.matrix_norm(x, p, keepdims=True)
-    ratios = ivy.maximum(ivy.stable_divide(max_norm, norms), 1.)
+    ratios = ivy.max(ivy.stable_divide(max_norm, norms), 1.)
     return ratios * x
 
 
