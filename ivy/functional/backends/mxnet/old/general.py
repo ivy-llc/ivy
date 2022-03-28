@@ -93,9 +93,6 @@ minimum = lambda x, y: _mx.nd.array(_mx.nd.minimum(_scalar_or_flat_array_to_scal
 maximum = lambda x, y: _mx.nd.array(_mx.nd.maximum(_scalar_or_flat_array_to_scalar(x), _scalar_or_flat_array_to_scalar(y)))
 
 
-@_handle_flat_arrays_in_out
-def clip(x, x_min, x_max):
-    return _mx.nd.clip(_mx.nd.array(x), x_min, x_max)
 
 
 # noinspection PyShadowingBuiltins
@@ -112,13 +109,7 @@ def cast(x, dtype):
 astype = cast
 
 
-# noinspection PyUnresolvedReferences
-def arange(stop, start=0, step=1, dtype=None, dev=None):
-    cont = _mxnet_init_context(default_device(dev))
-    stop = stop if isinstance(stop, Number) else stop.asscalar()
-    start = start if isinstance(start, Number) else start.asscalar()
-    step = step if isinstance(step, Number) else step.asscalar()
-    return _mx.nd.arange(start, stop, ctx=cont, step=step, dtype=dtype)
+
 
 
 

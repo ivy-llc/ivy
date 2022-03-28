@@ -47,6 +47,27 @@ def sum(x: torch.Tensor,
     return torch.sum(input=x, dim=axis, dtype=dtype, keepdim=keepdims)
 
 
+    if dtype == None:
+        if x.dtype in [torch.int8, torch.int16]:
+            dtype = torch.int8
+        elif x.dtype == torch.uint8:
+            dtype = torch.uint8
+        elif x.dtype in [torch.int32, torch.int64]:
+            dtype = torch.int64
+
+    if dim is None:
+        dim = x.dim()-1
+    elif type(dim) == list:
+        torch.sum(input = x, dim = dim)
+    elif type(dim) == tuple:
+        if len(dim) == 0:
+            dim = x.dim() - 1
+        else:
+            return torch.sum(torch.Tensor(
+                [torch.sum(input=x, dim=i, dtype=dtype, keepdim=keepdim) for i in dim]), dtype=dtype)
+
+    return torch.sum(input=x, dim=dim, dtype=dtype, keepdim=keepdim)
+
 def prod(x: torch.Tensor,
          axis: Optional[Union[int, Tuple[int]]] = None,
          dtype: Optional[torch.dtype] = None,
