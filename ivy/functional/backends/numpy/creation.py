@@ -3,9 +3,9 @@ import numpy as np
 from typing import Union, Tuple, Optional, List
 
 # local
-from ivy import dtype_from_str, default_dtype
+from .general import dtype_from_str, default_dtype
 # noinspection PyProtectedMember
-from ivy.functional.backends.numpy.old.general import _to_dev
+from ivy.functional.backends.numpy.general import _to_dev
 
 
 def asarray(object_in, dtype=None, dev=None, copy=None):
@@ -115,6 +115,17 @@ def eye(n_rows: int,
     dtype = dtype_from_str(default_dtype(dtype))
     return _to_dev(np.eye(n_rows, n_cols, k, dtype), device)
 
+# noinspection PyShadowingNames
+def arange(stop, start=0, step=1, dtype=None, dev=None):
+    if dtype:
+        dtype = dtype_from_str(dtype)
+    res = _to_dev(np.arange(start, stop, step=step, dtype=dtype), dev)
+    if not dtype:
+        if res.dtype == np.float64:
+            return res.astype(np.float32)
+        elif res.dtype == np.int64:
+            return res.astype(np.int32)
+    return res
 
 # Extra #
 # ------#

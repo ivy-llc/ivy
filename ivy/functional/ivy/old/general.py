@@ -61,61 +61,7 @@ def maximum(x: Union[ivy.Array, ivy.NativeArray, Number], y: Union[ivy.Array, iv
     return _cur_framework(x).maximum(x, y)
 
 
-def clip(x: Union[ivy.Array, ivy.NativeArray], x_min: Union[Number, Union[ivy.Array, ivy.NativeArray]],
-         x_max: Union[Number, Union[ivy.Array, ivy.NativeArray]])\
-        -> Union[ivy.Array, ivy.NativeArray]:
-    """
-    Clips (limits) the values in an array.
 
-    Given an interval, values outside the interval are clipped to the interval edges (element-wise).
-    For example, if an interval of [0, 1] is specified, values smaller than 0 become 0,
-    and values larger than 1 become 1.
-
-    :param x: Input array containing elements to clip.
-    :type x: array
-    :param x_min: Minimum value.
-    :type x_min: scalar or array
-    :param x_max: Maximum value.
-    :type x_max: scalar or array
-    :return: An array with the elements of x, but where values < x_min are replaced with x_min,
-                and those > x_max with x_max.
-    """
-    return _cur_framework(x).clip(x, x_min, x_max)
-
-
-# noinspection PyShadowingNames
-def arange(stop: Number, start: Number = 0, step: Number = 1, dtype: ivy.Dtype = None, dev: ivy.Device = None,
-           ) -> Union[ivy.Array, ivy.NativeArray]:
-    """
-    Returns evenly spaced values within a given interval, with the spacing being specified.
-
-    Values are generated within the half-open interval [start, stop) (in other words, the interval including start but
-    excluding stop). For integer arguments the function is equivalent to the Python built-in range function,
-    but returns an array in the chosen ml_framework rather than a list.
-
-    See :math:`linspace` for a certain number of evenly spaced values in an interval.
-
-    :param stop: End of interval. The interval does not include this value, except in some cases where step is not an
-                integer and floating point round-off affects the length of out.
-    :type stop: number
-    :param start: Start of interval. The interval includes this value. The default start value is 0.
-    :type start: number, optional
-    :param step: Spacing between values. For any output out, this is the distance between two adjacent values,
-                    out[i+1] - out[i]. The default step size is 1. If step is specified as a position argument,
-                    start must also be given.
-    :type step: number, optional
-    :param dtype: The desired data-type for the array in string format, i.e. 'float32' or 'int64'.
-        If not given, then the type will be determined as the minimum type required to hold the objects in the
-        sequence.
-    :type dtype: data-type string, optional
-    :param dev: device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
-    :type dev: ivy.Device
-    :return: Tensor of evenly spaced values.
-
-            For floating point arguments, the length of the result is ceil((stop - start)/step).
-            Because of floating point overflow, this rule may result in the last element of out being greater than stop.
-    """
-    return _cur_framework().arange(stop, start, step, dtype, dev)
 
 
 

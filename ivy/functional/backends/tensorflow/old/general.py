@@ -70,7 +70,7 @@ def dtype_bits(dtype_in):
 
 minimum = _tf.minimum
 maximum = _tf.maximum
-clip = _tf.clip_by_value
+
 
 
 
@@ -80,14 +80,6 @@ def cast(x, dtype):
 
 astype = cast
 
-
-
-# noinspection PyShadowingNames
-def arange(stop, start=0, step=1, dtype=None, dev=None):
-    dtype = _tf.__dict__[dtype] if dtype else dtype
-    dev = default_device(dev)
-    with _tf.device(dev_from_str(dev)):
-        return _tf.range(start, stop, delta=step, dtype=dtype)
 
 
 
