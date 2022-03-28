@@ -174,6 +174,18 @@ def slogdet(x:Union[ivy.Array,ivy.NativeArray],full_matrices: bool = True) -> Un
     res = results(sign, logabsdet)
     return res
 
+def solve(x1: tf.Tensor, x2:tf.Tensor) -> tf.Tensor:
+    
+    dtype_from = tf.experimental.numpy.promote_types(x1.dtype.as_numpy_dtype, x2.dtype.as_numpy_dtype)
+    dtype_from = tf.as_dtype(dtype_from)
+    
+    if x1.dtype != x2.dtype:
+        x1 = tf.cast(x1, dtype_from)
+        x2 = tf.cast(x2, dtype_from)
+    
+    res = tf.linalg.solve(x1, x2)
+    res = tf.cast(res, dtype=dtype_from)
+    return res
 
 def trace(x: tf.Tensor,
           offset: int = 0)\
