@@ -93,13 +93,12 @@ def concatenate(xs, axis=-1):
     return _tf.concat(xs, axis)
 
 
-stack = _tf.stack
 
 
 
 
 
-transpose = _tf.transpose
+
 where = lambda condition, x1, x2: _tf.where(_tf.cast(condition, _tf.bool), x1, x2)
 
 

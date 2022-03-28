@@ -56,6 +56,9 @@ def permute_dims(x: torch.Tensor,
     return torch.permute(x, axes)
 
 
+def stack(xs: List[torch.Tensor], axis: int = 0):
+    return torch.stack(xs, axis)
+
 
 # Extra #
 # ------#
