@@ -17,6 +17,11 @@ inv = tf.linalg.inv
 pinv = tf.linalg.pinv
 cholesky = tf.linalg.cholesky
 
+
+def inv(x: tf.Tensor) -> tf.Tensor:
+    return tf.linalg.inv(x)
+
+
 def pinv(x: Tensor,
          rtol: Optional[Union[float, Tuple[float]]] = None) \
         -> Tensor:
