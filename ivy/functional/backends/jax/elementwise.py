@@ -242,7 +242,7 @@ def atanh(x: JaxArray)\
 
 
 
-atan2 = jnp.arctan2
+
 
 def atan2(x1: JaxArray, x2: JaxArray) -> JaxArray:
     if hasattr(x1, 'dtype') and hasattr(x2, 'dtype'):
