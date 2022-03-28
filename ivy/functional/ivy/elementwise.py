@@ -1082,6 +1082,29 @@ def remainder(x1: Union[ivy.Array, ivy.NativeArray],
     return _cur_framework(x1, x2).remainder(x1, x2)
 
 
+def bitwise_right_shift(x1: Union[ivy.Array, ivy.NativeArray], x2: Union[ivy.Array, ivy.NativeArray])\
+        -> ivy.Array:
+    """
+    Shifts the bits of each element ``x1_i`` of the input array ``x1`` to the right according to the respective element ``x2_i`` of the input array ``x2``.
+
+    .. note::
+       This operation must be an arithmetic shift (i.e., sign-propagating) and thus equivalent to floor division by a power of two.
+
+    Parameters
+    ----------
+    x1:
+        first input array. Should have an integer data type.
+    x2:
+        second input array. Must be compatible with ``x1`` (see :ref:`broadcasting`). Should have an integer data type. Each element must be greater than or equal to 0.
+
+    Returns
+    -------
+    out:
+        out (array) – an array containing the element-wise results. The returned array must have a data type determined by :ref:`Type Promotion Rules`.
+    """
+    return _cur_framework(x1, x2).bitwise_right_shift(x1, x2)
+
+  
 def equal(x1: Union[ivy.Array, ivy.NativeArray],
           x2: Union[ivy.Array, ivy.NativeArray])\
         -> ivy.Array:
