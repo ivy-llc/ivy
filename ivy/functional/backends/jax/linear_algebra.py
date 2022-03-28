@@ -127,6 +127,10 @@ def eigvalsh(x: JaxArray) -> JaxArray:
     return jnp.linalg.eigvalsh(x)
 
 
+def inv(x: JaxArray) -> JaxArray:
+    return jnp.linalg.inv(x)
+
+
 # Extra #
 # ------#
 
