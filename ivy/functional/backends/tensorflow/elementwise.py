@@ -294,7 +294,7 @@ def atanh(x: Tensor) \
         -> Tensor:
     return tf.math.atanh(x)
 
-atan2 = tf.atan2
+
 
 def atan2(x1: Tensor, x2: Tensor) -> Tensor:
     if hasattr(x1, 'dtype') and hasattr(x2, 'dtype'):
