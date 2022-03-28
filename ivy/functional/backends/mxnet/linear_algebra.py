@@ -20,6 +20,10 @@ inv = mx.nd.linalg_inverse
 cholesky = lambda x: mx.np.linalg.cholesky(x.as_np_ndarray()).as_nd_ndarray()
 
 
+def inv(x: mx.nd.NDArray) -> mx.nd.NDArray:
+    return mx.nd.linalg.inverse(x)
+
+
 def pinv(x):
     """
     reference: https://help.matheass.eu/en/Pseudoinverse.html
