@@ -96,4 +96,9 @@ def zero_pad(x, pad_width):
     return constant_pad(x, pad_width, 0)
 
 
+@_handle_flat_arrays_in_out
+def clip(x, x_min, x_max):
+    return mx.nd.clip(mx.nd.array(x), x_min, x_max)
+
+
 swapaxes = mx.nd.swapaxes

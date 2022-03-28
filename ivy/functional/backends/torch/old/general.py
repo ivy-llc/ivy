@@ -51,10 +51,6 @@ def maximum(x, y):
     return torch.max(x_val, y_val)
 
 
-def clip(x, x_min, x_max):
-    return torch.clamp(x, x_min, x_max)
-
-
 def cast(x, dtype_in: str):
     dtype_val = dtype_from_str(dtype_in)
     return x.type(dtype_val)
@@ -63,14 +59,7 @@ def cast(x, dtype_in: str):
 astype = cast
 
 
-# noinspection PyShadowingNames
-def arange(stop: Number, start: Number = 0, step: Number = 1, dtype: Optional[str] = None,
-           dev: Optional[str] = None):
-    dev = default_device(dev)
-    if dtype is not None:
-        return torch.arange(start, stop, step=step, dtype=dtype_from_str(dtype), device=dev_from_str(dev))
-    else:
-        return torch.arange(start, stop, step=step, device=dev_from_str(dev))
+
 
 
 
