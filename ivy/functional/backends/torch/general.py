@@ -278,3 +278,22 @@ def gather_nd(params, indices, dev: Optional[str] = None):
     flat_gather = torch.gather(flat_params, 0, flat_indices_for_flat)
     res = torch.reshape(flat_gather, list(indices_shape[:-1]) + list(params_shape[num_index_dims:]))
     return res
+
+
+def multiprocessing(context=None):
+    import torch.multiprocessing
+    if context is None:
+        return torch.multiprocessing
+    return torch.multiprocessing.get_context(context)
+
+
+def indices_where(x):
+    where_x = torch.where(x)
+    res = torch.cat([torch.unsqueeze(item, -1) for item in where_x], -1)
+    return res
+
+# noinspection PyUnresolvedReferences,PyShadowingNames
+def one_hot(indices, depth: int, dev: Optional[str] = None):
+    if dev is None:
+        dev = _callable_dev(indices)
+    return torch.nn.functional.one_hot(indices.type(torch.int64), depth).to(dev_from_str(dev))
