@@ -178,7 +178,8 @@ asinh = lambda x: math.asinh(x) if isinstance(x, float) else mx.nd.arcsinh(x)
 atanh = lambda x: math.atanh(x) if isinstance(x, float) else mx.nd.arctanh(x)
 log = lambda x: math.log(x) if isinstance(x, float) else mx.nd.log(x)
 exp = lambda x: math.exp(x) if isinstance(x, float) else mx.nd.exp(x)
-
+equal = lambda x1, x2: x1 == x2
+equal.__name__ = 'equal'
 
 # Extra #
 # ------#

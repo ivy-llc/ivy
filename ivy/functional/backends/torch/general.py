@@ -297,3 +297,9 @@ def one_hot(indices, depth: int, dev: Optional[str] = None):
     if dev is None:
         dev = _callable_dev(indices)
     return torch.nn.functional.one_hot(indices.type(torch.int64), depth).to(dev_from_str(dev))
+
+def shape(x, as_tensor=False) -> Union[torch.Tensor, List[int]]:
+    return torch.tensor(x.shape) if as_tensor else x.shape
+
+def get_num_dims(x, as_tensor=False) -> Union[torch.Tensor, int]:
+    return torch.tensor(len(x.shape)) if as_tensor else len(x.shape)
