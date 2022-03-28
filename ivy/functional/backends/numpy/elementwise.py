@@ -67,7 +67,7 @@ def sqrt(x: np.ndarray)\
 
 def isfinite(x: np.ndarray) \
         -> np.ndarray:
-    return np.asarray(npa.isfinite(npa.asarray(x)))
+    return np.isfinite(x)
 
 
 def asin(x: np.ndarray)\
