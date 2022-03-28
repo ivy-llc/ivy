@@ -66,9 +66,8 @@ def dtype_bits(dtype_in):
 
 
 
-shape = lambda x, as_tensor=False: _tf.shape(x) if as_tensor else tuple(x.shape)
-shape.__name__ = 'shape'
-get_num_dims = lambda x, as_tensor=False: _tf.shape(_tf.shape(x))[0] if as_tensor else int(_tf.shape(_tf.shape(x)))
+
+
 minimum = _tf.minimum
 maximum = _tf.maximum
 clip = _tf.clip_by_value
