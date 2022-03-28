@@ -267,7 +267,7 @@ def atanh(x: np.ndarray) \
         -> np.ndarray:
     return np.asarray(np.arctanh(npa.asarray(x)))
 
-atan2 = np.arctan2
+
 
 def atan2(x1: np.ndarray, x2: np.ndarray) -> np.ndarray:
     if not isinstance(x2, np.ndarray):
