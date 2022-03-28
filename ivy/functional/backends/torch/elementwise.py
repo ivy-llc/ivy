@@ -267,10 +267,6 @@ def cosh(x: torch.Tensor)\
     return torch.cosh(x)
 
 
-def atanh(x: torch.Tensor)\
-        -> torch.Tensor:
-    return torch.atanh(x)
-
 
 def log(x: torch.Tensor)\
         -> torch.Tensor:
@@ -295,6 +291,16 @@ def remainder(x1: torch.Tensor, x2: torch.Tensor)\
         -> torch.Tensor:
     x1, x2 = _cast_for_binary_op(x1, x2)
     return torch.remainder(x1, x2)
+
+
+
+def atanh(x: torch.Tensor) \
+        -> torch.Tensor:
+    if isinstance(x, float):
+        return math.atanh(x)
+    return torch.atanh(x)
+
+
 
 
 def bitwise_right_shift(x1: torch.Tensor, x2: torch.Tensor)\
