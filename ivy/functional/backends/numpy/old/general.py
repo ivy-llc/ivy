@@ -103,17 +103,7 @@ def concatenate(xs, axis=-1):
     return np.concatenate(xs, axis)
 
 
-stack = np.stack
 
-
-
-
-def transpose(x, axes=None):
-    if axes is None:
-        num_dims = len(x.shape)
-        axes = list(range(num_dims))
-        axes.reverse()
-    return np.transpose(x, axes)
 
 
 where = lambda condition, x1, x2: np.where(condition, x1, x2)
