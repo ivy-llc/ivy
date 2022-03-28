@@ -384,10 +384,6 @@ class Array(ArrayWithArrayAPI, ArrayWithDevice, ArrayWithGeneral, ArrayWithGradi
         return ivy.bitwise_right_shift(self._data, other)
     
     @_native_wrapper
-    def __irshift__(self, other):
-        self._data = ivy.bitwise_right_shift(self._data, other)
-    
-    @_native_wrapper
     def __rrshift__(self, other):
         other = to_native(other)
         res = self._data.__rrshift__(other)
