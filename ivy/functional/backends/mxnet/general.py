@@ -145,10 +145,12 @@ def gather_nd(params, indices, dev=None):
 
 
 multiprocessing = lambda context=None: _multiprocessing if context is None else _multiprocessing.get_context(context)
-
 # noinspection PyUnusedLocal
 one_hot = lambda indices, depth, dev=None: _mx.nd.one_hot(indices, depth)
-
+shape = lambda x, as_tensor=False: _mx.nd.shape_array(x) if as_tensor else x.shape
+shape.__name__ = 'shape'
+get_num_dims = lambda x, as_tensor=False:\
+    _mx.nd.shape_array(_mx.nd.shape_array(x)).reshape([]) if as_tensor else len(x.shape)
 
 def indices_where(x):
     x_shape = x.shape

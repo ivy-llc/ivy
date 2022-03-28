@@ -213,3 +213,6 @@ def gather_nd(params, indices, dev=None):
 
 multiprocessing = lambda context=None: _multiprocessing if context is None else _multiprocessing.get_context(context)
 indices_where = _tf.where
+shape = lambda x, as_tensor=False: _tf.shape(x) if as_tensor else tuple(x.shape)
+shape.__name__ = 'shape'
+get_num_dims = lambda x, as_tensor=False: _tf.shape(_tf.shape(x))[0] if as_tensor else int(_tf.shape(_tf.shape(x)))

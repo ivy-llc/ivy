@@ -77,9 +77,8 @@ def dtype_bits(dtype_in):
 
 
 
-shape = lambda x, as_tensor=False: np.asarray(np.shape(x)) if as_tensor else x.shape
-shape.__name__ = 'shape'
-get_num_dims = lambda x, as_tensor=False: np.asarray(len(np.shape(x))) if as_tensor else len(x.shape)
+
+
 minimum = np.minimum
 maximum = np.maximum
 clip = lambda x, x_min, x_max: np.asarray(np.clip(x, x_min, x_max))
