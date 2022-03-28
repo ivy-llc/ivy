@@ -144,11 +144,11 @@ def sum(x: Union[ivy.Array, ivy.NativeArray],
     -   If ``x_i`` is ``NaN``, the sum is ``NaN`` (i.e., ``NaN`` values propagate).
     Parameters
     ----------
-    x: array
+    x:
         input array. Should have a numeric data type.
-    axis: Optional[Union[int, Tuple[int, ...]]]
+    axis:
         axis or axes along which sums must be computed. By default, the sum must be computed over the entire array. If a tuple of integers, sums must be computed over multiple axes. Default: ``None``.
-    dtype: Optional[dtype]
+    dtype:
         data type of the returned array. If ``None``,
         -   if the default data type corresponding to the data type "kind" (integer or floating-point) of ``x`` has a smaller range of values than the data type of ``x`` (e.g., ``x`` has data type ``int64`` and the default data type is ``int32``, or ``x`` has data type ``uint64`` and the default data type is ``int64``), the returned array must have the same data type as ``x``.
         -   if ``x`` has a floating-point data type, the returned array must have the default floating-point data type.
@@ -157,11 +157,11 @@ def sum(x: Union[ivy.Array, ivy.NativeArray],
         If the data type (either specified or resolved) differs from the data type of ``x``, the input array should be cast to the specified data type before computing the sum. Default: ``None``.
         .. note::
            keyword argument is intended to help prevent data type overflows.
-    keepdims: bool
+    keepdims:
         if ``True``, the reduced axes (dimensions) must be included in the result as singleton dimensions, and, accordingly, the result must be compatible with the input array (see :ref:`broadcasting`). Otherwise, if ``False``, the reduced axes (dimensions) must not be included in the result. Default: ``False``.
     Returns
     -------
-    out: array
+    out:
         if the sum was computed over the entire array, a zero-dimensional array containing the sum; otherwise, an array containing the sums. The returned array must have a data type as described by the ``dtype`` parameter above.
     """
 
