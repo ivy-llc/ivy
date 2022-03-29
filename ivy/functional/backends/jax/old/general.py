@@ -141,12 +141,7 @@ reshape = jnp.reshape
 broadcast_to = jnp.broadcast_to
 
 
-def squeeze(x, axis=None):
-    if x.shape == ():
-        if axis is None or axis == 0 or axis == -1:
-            return x
-        raise Exception('tried to squeeze a zero-dimensional input by axis {}'.format(axis))
-    return jnp.squeeze(x, axis)
+
 
 
 
