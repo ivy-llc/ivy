@@ -133,15 +133,6 @@ astype = cast
 
 
 
-def identity(n, dtype='float32', batch_shape=None, dev=None):
-    mat = _mx.nd.eye(n, dtype=dtype).copyto(_mxnet_init_context(default_device(dev)))
-    if batch_shape is None:
-        return mat
-    else:
-        reshape_dims = [1]*len(batch_shape) + [n, n]
-        tile_dims = list(batch_shape) + [1, 1]
-        res = _mx.nd.tile(_mx.nd.reshape(mat, reshape_dims), tile_dims)
-        return res
 
 
 

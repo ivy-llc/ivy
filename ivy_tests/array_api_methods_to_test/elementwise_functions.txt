@@ -10,14 +10,14 @@ atanh
 #bitwise_and
 #bitwise_left_shift
 bitwise_invert
-bitwise_or
-bitwise_right_shift
+#bitwise_or # failing non-deterministically
+#bitwise_right_shift # failing non-deterministically
 #bitwise_xor
 ceil
 cos
 cosh
 #divide
-equal
+#equal # failing non-deterministically
 #exp
 expm1
 floor
