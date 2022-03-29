@@ -126,21 +126,6 @@ astype = cast
 
 
 
-def zeros_like(x, dtype=None, dev=None):
-    if x.shape == ():
-        return _mx.nd.array(0., ctx=_mxnet_init_context(default_device(dev)))
-    mx_zeros = _mx.nd.zeros_like(x, ctx=_mxnet_init_context(default_device(dev)))
-    return mx_zeros if not dtype else mx_zeros.astype(dtype)
-
-
-def full(shape, fill_value, dtype=None, device=None):
-    shape = ivy.shape_to_tuple(shape)
-    cont = _mxnet_init_context(default_device(device))
-    if len(shape) == 0 or 0 in shape:
-        return _1_dim_array_to_flat_array(
-            _mx.nd.full((1,), fill_value, cont, dtype_from_str(default_dtype(dtype, fill_value))))
-    return _mx.nd.full(shape, fill_value, cont, dtype_from_str(default_dtype(dtype, fill_value)))
-
 
 
 def cross(x1, x2):

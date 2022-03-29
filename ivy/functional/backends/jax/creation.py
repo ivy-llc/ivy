@@ -124,6 +124,21 @@ def arange(stop, start=0, step=1, dtype=None, dev=None):
     return to_dev(jnp.arange(start, stop, step=step, dtype=dtype), default_device(dev))
 
 
+# noinspection PyShadowingNames
+def zeros_like(x, dtype=None, dev=None):
+    if dtype:
+        dtype = jnp.__dict__[dtype]
+    else:
+        dtype = x.dtype
+    return to_dev(jnp.zeros_like(x, dtype=dtype), default_device(dev))
+
+
+def full(shape, fill_value, dtype=None, device=None):
+    return to_dev(jnp.full(shape, fill_value, dtype_from_str(default_dtype(dtype, fill_value))),
+                  default_device(device))
+
+
+
 # Extra #
 # ------#
 
