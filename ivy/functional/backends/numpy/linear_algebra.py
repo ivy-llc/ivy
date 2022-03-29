@@ -126,6 +126,9 @@ def eigvalsh(x: np.ndarray) -> np.ndarray:
     return np.linalg.eigvalsh(x)
 
 
+cross = np.cross
+
+
 # Extra #
 # ------#
 

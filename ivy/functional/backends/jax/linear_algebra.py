@@ -126,6 +126,8 @@ def cholesky(x: JaxArray,
 def eigvalsh(x: JaxArray) -> JaxArray:
     return jnp.linalg.eigvalsh(x)
 
+cross = jnp.cross
+
 
 # Extra #
 # ------#

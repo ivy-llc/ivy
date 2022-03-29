@@ -136,6 +136,10 @@ def eigvalsh(x: torch.Tensor) -> torch.Tensor:
     return torch.linalg.eigvalsh(x)
 
 
+def cross(x1, x2):
+    return torch.cross(x1, x2)
+
+
 # Extra #
 # ------#
 

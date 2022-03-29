@@ -199,6 +199,9 @@ def eigvalsh(x: Tensor) -> Tensor:
     return tf.linalg.eigvalsh(x)
 
 
+cross = tf.linalg.cross
+
+
 # Extra #
 # ------#
 
