@@ -1220,29 +1220,6 @@ def test_one_hot(ind_n_depth, dtype, tensor_fn, dev, call):
                        np.asarray(ivy.functional.backends.numpy.one_hot(ivy.to_numpy(ind), depth)))
 
 
-# cross
-@pytest.mark.parametrize(
-    "x1_n_x2", [([0., 1., 2.], [3., 4., 5.]), ([[0., 1., 2.], [2., 1., 0.]], [[3., 4., 5.], [5., 4., 3.]])])
-@pytest.mark.parametrize(
-    "dtype", ['float32'])
-@pytest.mark.parametrize(
-    "tensor_fn", [ivy.array, helpers.var_fn])
-def test_cross(x1_n_x2, dtype, tensor_fn, dev, call):
-    # smoke test
-    x1, x2 = x1_n_x2
-    if (isinstance(x1, Number) or isinstance(x2, Number)) and tensor_fn == helpers.var_fn and call is helpers.mx_call:
-        # mxnet does not support 0-dimensional variables
-        pytest.skip()
-    x1 = ivy.array(x1, dtype, dev)
-    x2 = ivy.array(x2, dtype, dev)
-    ret = ivy.cross(x1, x2)
-    # type test
-    assert ivy.is_array(ret)
-    # cardinality test
-    assert ret.shape == x1.shape
-    # value test
-    assert np.allclose(call(ivy.cross, x1, x2), np.asarray(ivy.functional.backends.numpy.cross(ivy.to_numpy(x1), ivy.to_numpy(x2))))
-
 
 
 # cumsum
