@@ -1,7 +1,7 @@
 Ivy Container
 =============
 
-In this post, we’ll be explaining how the :code:`ivy.Container` class save you a ton of time and clean up code in almost all aspects of your ML workflow. So without further ado, let’s dive in!
+Here, we explain how the :code:`ivy.Container` class saves you a ton of time and cleans up code in almost all aspects of your ML workflow. So without further ado, let’s dive in!
 
 Firstly, Dictionaries are an incredibly powerful and useful data type in Python. They enable a clean, readable and efficient-access (via hashing) storage of arbitrarily hierarchical data.
 
