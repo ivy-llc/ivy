@@ -5,7 +5,7 @@ import numpy as _np
 from collections import namedtuple
 from mxnet.ndarray.ndarray import NDArray
 from typing import Union, Optional, Tuple, Literal
-from ivy.functional.backends.mxnet.linear_algebra import matmul as _matmul
+
 
 
 # local
@@ -29,13 +29,13 @@ def pinv(x):
         return inv(x)
     else:
         xT = mx.nd.swapaxes(x, -1, -2)
-        xT_x = _ivy.to_native(_matmul(xT, x))
+        xT_x = _ivy.to_native(matmul(xT, x))
         if mx.nd.linalg.det(xT_x) > DET_THRESHOLD:
-            return _matmul(inv(xT_x), xT)
+            return matmul(inv(xT_x), xT)
         else:
-            x_xT = _ivy.to_native(_matmul(x, xT))
+            x_xT = _ivy.to_native(matmul(x, xT))
             if mx.nd.linalg.det(x_xT) > DET_THRESHOLD:
-                return _matmul(xT, inv(x_xT))
+                return matmul(xT, inv(x_xT))
             else:
                 return xT
 
