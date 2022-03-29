@@ -16,7 +16,7 @@ Frontend Functional APIs 🚧
 
 While the backend API, Ivy API and framework handler enable all Ivy code to be framework-agnostic, they do not for example enable PyTorch code to be framework agnostic. But with frontend APIs, we can also achieve this!
 
-Let’s revisit the *ivy.clip* method we explored when learning about the backend APIs. The backend code is as follows:
+Let’s revisit the :code:`ivy.clip` method we explored when learning about the backend APIs. The backend code is as follows:
 
 .. code-block:: python
 
@@ -44,7 +44,7 @@ Let’s revisit the *ivy.clip* method we explored when learning about the backen
    def clip(x, x_min, x_max):
        return torch.clamp(x, x_min, x_max)
 
-The Ivy API for the *clip* method is as follows:
+The Ivy API for the :code:`clip` method is as follows:
 
 .. code-block:: python
 
@@ -121,7 +121,7 @@ Importantly, we can select the backend and frontend **independently** from one a
 
 For this example it’s very simple, the differences are only syntactic, but the above process works for **any** function. If there are semantic differences then these will be captured (a) in the wrapped frontend code which expresses the frontend method as a composition of Ivy functions, and (b) in the wrapped backend code which expressed the Ivy functions as compositions of backend methods.
 
-Let’s take a more complex example and convert PyTorch method *torch.nn.functional.one_hot()* into NumPy code. The frontend is implemented by wrapping a single Ivy method *ivy.one_hot()* as follows:
+Let’s take a more complex example and convert PyTorch method :code:`torch.nn.functional.one_hot()` into NumPy code. The frontend is implemented by wrapping a single Ivy method :code:`ivy.one_hot()` as follows:
 
 .. code-block:: python
 
@@ -138,7 +138,7 @@ Let’s look at the NumPy backend code for this Ivy method:
        res = np.eye(depth)[np.array(indices).reshape(-1)]
        return res.reshape(list(indices.shape) + [depth])
 
-By chaining these method together, we can now call *torch.nn.functional.one_hot()* using NumPy:
+By chaining these method together, we can now call :code:`torch.nn.functional.one_hot()` using NumPy:
 
 .. code-block:: python
 
@@ -150,7 +150,7 @@ By chaining these method together, we can now call *torch.nn.functional.one_hot(
    x = np.array([0., 1., 2.])
    ret = torch.nn.functional.one_hot(x, 3)
 
-Let’s take one more example and convert TensorFlow method *tf.cumprod()* into PyTorch code. This time, the frontend is implemented by wrapping two Ivy methods *ivy.cumprod()*, and *ivy.flip()* as follows:
+Let’s take one more example and convert TensorFlow method :code:`tf.cumprod()` into PyTorch code. This time, the frontend is implemented by wrapping two Ivy methods :code:`ivy.cumprod()`, and :code:`ivy.flip()` as follows:
 
 .. code-block:: python
 
@@ -196,7 +196,7 @@ Let’s look at the PyTorch backend code for both of these Ivy methods:
                    else item for item in new_axis]
        return torch.flip(x, new_axis)
 
-Again, by chaining these methods together, we can now call *tf.math.cumprod()* using PyTorch:
+Again, by chaining these methods together, we can now call :code:`tf.math.cumprod()` using PyTorch:
 
 .. code-block:: python
 
@@ -232,7 +232,7 @@ For example, let’s take the following PyTorch code and run it using JAX:
    net = Network()
    net(x)
 
-We cannot simply *import ivy.frontends.torch* in place of *import torch* as we did in the previous examples. This is because the Ivy frontend only supports the functional API for each framework, whereas the code above makes use of higher level classes through the use of the *torch.nn* namespace.
+We cannot simply :code:`import ivy.frontends.torch` in place of :code:`import torch` as we did in the previous examples. This is because the Ivy frontend only supports the functional API for each framework, whereas the code above makes use of higher level classes through the use of the :code:`torch.nn` namespace.
 
 In general, the way we convert code is by first compiling the code into it’s constituent functions in the core API using Ivy’s graph compiler, and then we convert this executable graph into the new framework. For the example above, this would look like:
 
@@ -245,18 +245,18 @@ In general, the way we convert code is by first compiling the code into it’s c
    x = jax.numpy.array([1., 2., 3.])
    jax_graph(x)
 
-However, when calling *ivy.compile_graph()* the graph only connects the inputs to the outputs. Any other tensors or variables which are not listed in the inputs are treated as constants in the graph. In this case, this means the learnable weights in the Module will be treated as constants. This works fine if we only care about running inference on our graph post-training, but this won’t enable training of the Module in JAX.
+However, when calling :code:`ivy.compile_graph()` the graph only connects the inputs to the outputs. Any other tensors or variables which are not listed in the inputs are treated as constants in the graph. In this case, this means the learnable weights in the Module will be treated as constants. This works fine if we only care about running inference on our graph post-training, but this won’t enable training of the Module in JAX.
 
 Converting Network Models 🚧
 -------------------------
 
-In order to convert a model from PyTorch to JAX, we first must convert the *torch.nn.Module* instance to an *ivy.Module* instance using the method *ivy.to_ivy_module()* like so:
+In order to convert a model from PyTorch to JAX, we first must convert the :code:`torch.nn.Module` instance to an :code:`ivy.Module` instance using the method :code:`ivy.to_ivy_module()` like so:
 
 .. code-block:: python
 
    net = ivy.to_ivy_module(net)
 
-In it’s current form, the *ivy.Module* instance thinly wraps the PyTorch model into the *ivy.Module* interface, whilst preserving the pure PyTorch backend. We can compile this network into a graph using Ivy’s graph compiler like so:
+In it’s current form, the :code:`ivy.Module` instance thinly wraps the PyTorch model into the :code:`ivy.Module` interface, whilst preserving the pure PyTorch backend. We can compile this network into a graph using Ivy’s graph compiler like so:
 
 .. code-block:: python
 
@@ -264,7 +264,7 @@ In it’s current form, the *ivy.Module* instance thinly wraps the PyTorch model
 
 In this case, the learnable weights are treated as inputs to the graph rather than constants.
 
-Now, with a compiled graph under the hood of our model, we can call *.to_backend()* directly on the *ivy.Module* instance to convert it to any backend of our choosing, like so:
+Now, with a compiled graph under the hood of our model, we can call :code:`.to_backend()` directly on the :code:`ivy.Module` instance to convert it to any backend of our choosing, like so:
 
 .. code-block:: python
 
@@ -286,7 +286,7 @@ The network can now be trained using Ivy’s optimizer classes with a JAX backen
        loss, grads = ivy.execute_with_gradients(loss_fn, model.v)
        model.v = optimizer.step(model.v, grads)
 
-To convert this *ivy.Module* instance to a *haiku.Module* instance, we can call *.to_haiku_module()* like so:
+To convert this :code:`ivy.Module` instance to a :code:`haiku.Module` instance, we can call :code:`.to_haiku_module()` like so:
 
 .. code-block:: python
 
@@ -322,7 +322,7 @@ If we want to remove Ivy from the pipeline entirely, we can then train the model
 
 Other JAX-specific network libraries such as Flax, Trax and Objax are also supported.
 
-Overall, we have taken a *torch.nn.Module* instance, which can be trained using PyTorch’s optimizer classes, and converted this to a *haiku.Module* instance which can be trained using Haiku’s optimizer classes. The same is true for any combination of frameworks, and for any network architecture, regardless of it’s complexity!
+Overall, we have taken a :code:`torch.nn.Module` instance, which can be trained using PyTorch’s optimizer classes, and converted this to a :code:`haiku.Module` instance which can be trained using Haiku’s optimizer classes. The same is true for any combination of frameworks, and for any network architecture, regardless of it’s complexity!
 
 **Round Up**
 
