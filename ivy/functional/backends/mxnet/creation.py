@@ -148,6 +148,12 @@ def full(shape, fill_value, dtype=None, device=None):
             mx.nd.full((1,), fill_value, cont, dtype_from_str(default_dtype(dtype, fill_value))))
     return mx.nd.full(shape, fill_value, cont, dtype_from_str(default_dtype(dtype, fill_value)))
 
+
+def meshgrid(*xs, indexing='ij'):
+    # ToDo: implement this without reliance on NumPy backend
+    xs_np = [x.as_np_ndarray() for x in xs]
+    return tuple([item.as_nd_ndarray() for item in mx.np.meshgrid(*xs_np, indexing=indexing)])
+
 # Extra #
 # ------#
 
