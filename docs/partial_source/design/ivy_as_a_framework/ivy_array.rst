@@ -1,7 +1,7 @@
 Ivy Array
 =========
 
-Here, we explain how the *ivy.Array* class can clean up your code, by enabling methods to be called as attributes on the arrays directly.
+Here, we explain how the :code:`ivy.Array` class can clean up your code, by enabling methods to be called as attributes on the arrays directly.
 
 So, without further ado, let’s walk through what the Ivy Array has to offer!
 
