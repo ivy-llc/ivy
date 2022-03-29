@@ -289,6 +289,10 @@ exp = np.exp
 # ------#
 
 
+minimum = np.minimum
+maximum = np.maximum
+
+
 def erf(x):
     if _erf is None:
         raise Exception('scipy must be installed in order to call ivy.erf with a numpy backend.')

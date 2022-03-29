@@ -2,7 +2,7 @@
 import torch
 from torch import Tensor
 import typing
-
+import math
 
 # local
 import ivy
@@ -302,7 +302,6 @@ def atanh(x: torch.Tensor) \
 
 
 
-
 def bitwise_right_shift(x1: torch.Tensor, x2: torch.Tensor)\
         -> torch.Tensor:
     if hasattr(x1, 'dtype') and hasattr(x2, 'dtype'):
@@ -321,3 +320,14 @@ def erf(x: torch.Tensor)\
         -> torch.Tensor:
     return torch.erf(x)
 
+
+def minimum(x, y):
+    x_val = torch.tensor(x) if (isinstance(x, int) or isinstance(x, float)) else x
+    y_val = torch.tensor(y) if (isinstance(y, int) or isinstance(y, float)) else y
+    return torch.min(x_val, y_val)
+
+
+def maximum(x, y):
+    x_val = torch.tensor(x) if (isinstance(x, int) or isinstance(x, float)) else x
+    y_val = torch.tensor(y) if (isinstance(y, int) or isinstance(y, float)) else y
+    return torch.max(x_val, y_val)
