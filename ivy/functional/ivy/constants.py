@@ -14,6 +14,8 @@ pi = math.pi
 nan = math.nan
 """ IEEE 754 floating-point representation of Not a Number (NaN). """
 
+inf = math.inf
+"""IEEE 754 floating-point representation of (positive) infinity."""
 
 # Extra #
 # ------#
