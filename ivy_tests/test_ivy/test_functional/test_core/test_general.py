@@ -1275,14 +1275,14 @@ def test_cumprod(x_n_axis, exclusive, dtype, tensor_fn, dev, call):
 def test_identity(dim_n_bs, dtype, tensor_fn, dev, call):
     # smoke test
     dim, bs = dim_n_bs
-    ret = ivy.identity(dim, dtype, bs, dev)
+    ret = ivy.eye(dim, dtype, bs, dev)
     # type test
     assert ivy.is_array(ret)
     # cardinality test
     assert ret.shape == (tuple(bs) if bs else ()) + (dim, dim)
     # value test
-    assert np.allclose(call(ivy.identity, dim, dtype, bs, dev),
-                       np.asarray(ivy.functional.backends.numpy.identity(dim, dtype, bs)))
+    assert np.allclose(call(ivy.eye, dim, dtype, bs, dev),
+                       np.asarray(ivy.functional.backends.numpy.eye(dim, dtype, bs)))
 
 
 
