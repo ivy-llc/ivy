@@ -138,6 +138,7 @@ def full(shape, fill_value, dtype=None, device=None):
                   default_device(device))
 
 
+meshgrid = lambda *xs, indexing='ij': jnp.meshgrid(*xs, indexing=indexing)
 
 # Extra #
 # ------#
