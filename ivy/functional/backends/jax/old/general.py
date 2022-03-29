@@ -161,7 +161,6 @@ def identity(n, dtype='float32', batch_shape=None, dev=None):
     return to_dev(return_mat, default_device(dev))
 
 
-meshgrid = lambda *xs, indexing='ij': jnp.meshgrid(*xs, indexing=indexing)
 
 
 

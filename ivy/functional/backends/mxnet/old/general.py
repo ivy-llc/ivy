@@ -179,11 +179,6 @@ def identity(n, dtype='float32', batch_shape=None, dev=None):
         return res
 
 
-def meshgrid(*xs, indexing='ij'):
-    # ToDo: implement this without reliance on NumPy backend
-    xs_np = [x.as_np_ndarray() for x in xs]
-    return tuple([item.as_nd_ndarray() for item in _mx.np.meshgrid(*xs_np, indexing=indexing)])
-
 
 
 
