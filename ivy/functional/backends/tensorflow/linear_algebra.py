@@ -13,6 +13,10 @@ from collections import namedtuple
 # Array API Standard #
 # -------------------#
 
+def eigh(x: Tensor)\
+ -> Tensor:
+        return tf.linalg.eigh(x) 
+
 inv = tf.linalg.inv
 pinv = tf.linalg.pinv
 cholesky = tf.linalg.cholesky
