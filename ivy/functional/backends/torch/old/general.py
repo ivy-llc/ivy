@@ -89,15 +89,6 @@ def where(condition, x1, x2):
 
 
 
-def reshape(x, newshape: List[int]):
-    if isinstance(newshape, int):
-        newshape = [newshape]
-    return torch.reshape(x, newshape)
-
-
-def broadcast_to(x, new_shape):
-    return x.expand(new_shape)
-
 
 
 # noinspection PyShadowingNames

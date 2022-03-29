@@ -102,6 +102,23 @@ def stack(xs: Iterable[Union[ivy.Array, ivy.NativeArray]], axis: int = 0)\
     return _cur_framework(xs[0]).stack(xs, axis)
 
 
+def reshape(x: Union[ivy.Array, ivy.NativeArray], newshape: Union[int, Iterable[int]])\
+        -> Union[ivy.Array, ivy.NativeArray]:
+    """
+    Gives a new shape to an array without changing its data.
+
+    :param x: Tensor to be reshaped.
+    :type x: array
+    :param newshape: The new shape should be compatible with the original shape. One shape dimension can be -1.
+                        In this case, the value is inferred from the length of the array and remaining dimensions.
+    :type newshape: int or sequence of ints
+    :return: Reshaped array.
+    """
+    return _cur_framework(x).reshape(x, newshape)
+
+
+
+
 # Extra #
 # ------#
 
