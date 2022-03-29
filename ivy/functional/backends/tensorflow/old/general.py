@@ -122,7 +122,7 @@ def identity(n, dtype='float32', batch_shape=None, dev=None):
         return tf.eye(n, n, batch_shape=batch_shape, dtype=dtype)
 
 
-meshgrid = lambda *xs, indexing='ij': tf.meshgrid(*xs, indexing=indexing)
+
 
 
 

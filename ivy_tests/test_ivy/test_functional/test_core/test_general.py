@@ -1171,23 +1171,6 @@ def test_isfinite(x_n_res, dtype, tensor_fn, dev, call):
 
 
 
-# ones
-# @pytest.mark.parametrize(
-#     "shape", [(), (1, 2, 3), tuple([1]*10)])
-# @pytest.mark.parametrize(
-#     "dtype", ['float32'])
-# @pytest.mark.parametrize(
-#     "tensor_fn", [ivy.array, helpers.var_fn])
-# def test_ones(shape, dtype, tensor_fn, dev, call):
-#     # smoke test
-#     ret = ivy.ones(shape, dtype, dev)
-#     # type test
-#     assert ivy.is_array(ret)
-#     # cardinality test
-#     assert ret.shape == tuple(shape)
-#     # value test
-#     assert np.allclose(call(ivy.ones, shape, dtype, dev), np.asarray(ivy.functional.backends.numpy.ones(shape, dtype)))
-
 
 # ones_like
 # @pytest.mark.parametrize(
@@ -1347,33 +1330,6 @@ def test_identity(dim_n_bs, dtype, tensor_fn, dev, call):
     assert np.allclose(call(ivy.identity, dim, dtype, bs, dev),
                        np.asarray(ivy.functional.backends.numpy.identity(dim, dtype, bs)))
 
-
-# meshgrid
-@pytest.mark.parametrize(
-    "xs", [([1, 2, 3], [4, 5, 6]), ([1, 2, 3], [4, 5, 6, 7], [8, 9])])
-@pytest.mark.parametrize(
-    "indexing", ['xy', 'ij'])
-@pytest.mark.parametrize(
-    "dtype", ['float32'])
-@pytest.mark.parametrize(
-    "tensor_fn", [ivy.array, helpers.var_fn])
-def test_meshgrid(xs, indexing, dtype, tensor_fn, dev, call):
-    # smoke test
-    xs_as_arrays = [ivy.array(x, 'int32', dev) for x in xs]
-    rets = ivy.meshgrid(*xs_as_arrays, indexing=indexing)
-    # type test
-    for ret in rets:
-        assert ivy.is_array(ret)
-    # cardinality test
-    target_shape = tuple([len(x) for x in xs])
-    if indexing == 'xy':
-        target_shape = (target_shape[1], target_shape[0]) + target_shape[2:]
-    for ret in rets:
-        assert ret.shape == target_shape
-    # value test
-    assert np.allclose(
-        call(ivy.meshgrid, *xs_as_arrays, indexing=indexing),
-        [np.asarray(i) for i in ivy.functional.backends.numpy.meshgrid(*[ivy.to_numpy(x) for x in xs_as_arrays], indexing=indexing)])
 
 
 # scatter_flat
