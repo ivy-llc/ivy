@@ -1,4 +1,4 @@
 e
 pi
-#inf
+inf
 #nan
