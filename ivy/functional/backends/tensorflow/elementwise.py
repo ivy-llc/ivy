@@ -313,4 +313,6 @@ exp = tf.math.exp
 # ------#
 
 
+minimum = tf.minimum
+maximum = tf.maximum
 erf = tf.math.erf
