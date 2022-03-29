@@ -1,5 +1,5 @@
 # global
-from typing import Union, Tuple, Optional, List
+from typing import Union, Tuple, Optional, List, Iterable
 from numbers import Number
 
 # local
@@ -281,6 +281,37 @@ def full(shape: Union[int, Tuple[int]], fill_value: Union[int, float], dtype: Op
     :param device: device on which to place the created array. Default: None.
     """
     return _cur_framework().full(shape, fill_value, dtype, device)
+
+
+def ones(shape: Iterable[int], dtype: Union[ivy.Dtype, str] = 'float32', dev: ivy.Device = None)\
+        -> Union[ivy.Array, ivy.NativeArray]:
+    """
+    Returns a new array of given shape and type, filled with ones.
+
+    :param shape: Shape of the new array, e.g. (2, 3).
+    :type shape: sequence of ints
+    :param dtype: The desired data-type for the array in string format, i.e. 'float32' or 'int64'.
+    Default is 'float32'.
+    :type dtype: data-type string, optional
+    :param dev: device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc..
+    :type dev: ivy.Device
+    :return: Tensor of ones with the given shape and dtype.
+    """
+    return _cur_framework().ones(shape, dtype, dev)
+
+
+def meshgrid(*xs: Iterable[Union[ivy.Array, ivy.NativeArray]], indexing: str = 'ij')\
+        -> Iterable[Union[ivy.Array, ivy.NativeArray]]:
+    """
+    Broadcasts parameters for evaluation on an N-D grid.
+
+    :param xs: input arrays
+    :type xs: sequence of arrays
+    :param indexing: The indexing method, either 'xy' or 'ij'. Default is 'ij'.
+    :type indexing: str, optional
+    :return: list of N-D coordinate arrays for evaluating expressions on an N-D grid
+    """
+    return _cur_framework().meshgrid(*xs, indexing=indexing)
 
 
 # Extra #

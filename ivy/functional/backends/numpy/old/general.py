@@ -129,7 +129,7 @@ def identity(n, dtype='float32', batch_shape=None, dev=None):
     return _to_dev(return_mat, dev)
 
 
-meshgrid = lambda *xs, indexing='ij': np.meshgrid(*xs, indexing=indexing)
+
 
 
 

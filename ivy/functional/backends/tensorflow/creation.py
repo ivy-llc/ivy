@@ -170,6 +170,10 @@ def full(shape, fill_value, dtype=None, device=None):
     with tf.device(dev_from_str(default_device(device))):
         return tf.fill(shape, tf.constant(fill_value, dtype=dtype_from_str(default_dtype(dtype, fill_value))))
 
+
+meshgrid = lambda *xs, indexing='ij': tf.meshgrid(*xs, indexing=indexing)
+
+
 # Extra #
 # ------#
 
