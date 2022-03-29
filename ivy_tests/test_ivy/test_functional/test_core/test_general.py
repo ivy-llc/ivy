@@ -1169,27 +1169,6 @@ def test_isfinite(x_n_res, dtype, tensor_fn, dev, call):
 #     assert np.allclose(call(ivy.zeros, shape, dtype, dev), np.asarray(ivy.functional.backends.numpy.zeros(shape, dtype)))
 
 
-# zeros_like
-@pytest.mark.parametrize(
-    "x", [1, [1], [[1], [2], [3]]])
-@pytest.mark.parametrize(
-    "dtype", ['float32'])
-@pytest.mark.parametrize(
-    "tensor_fn", [ivy.array, helpers.var_fn])
-def test_zeros_like(x, dtype, tensor_fn, dev, call):
-    # smoke test
-    if isinstance(x, Number) and tensor_fn == helpers.var_fn and call is helpers.mx_call:
-        # mxnet does not support 0-dimensional variables
-        pytest.skip()
-    x = tensor_fn(x, dtype, dev)
-    ret = ivy.zeros_like(x, dtype, dev)
-    # type test
-    assert ivy.is_array(ret)
-    # cardinality test
-    assert ret.shape == x.shape
-    # value test
-    assert np.allclose(call(ivy.zeros_like, x, dtype, dev),
-                       np.asarray(ivy.functional.backends.numpy.zeros_like(ivy.to_numpy(x), dtype)))
 
 
 # ones
@@ -1232,26 +1211,6 @@ def test_zeros_like(x, dtype, tensor_fn, dev, call):
 #     assert np.allclose(call(ivy.ones_like, x, dtype, dev),
 #                        np.asarray(ivy.functional.backends.numpy.ones_like(ivy.to_numpy(x), dtype)))
 
-
-# full
-# @pytest.mark.parametrize(
-#     "shape", [(), (1, 2, 3), tuple([1]*10)])
-# @pytest.mark.parametrize(
-#     "fill_val", [2., -7.])
-# @pytest.mark.parametrize(
-#     "dtype", ['float32'])
-# @pytest.mark.parametrize(
-#     "tensor_fn", [ivy.array, helpers.var_fn])
-# def test_full(shape, fill_val, dtype, tensor_fn, dev, call):
-#     # smoke test
-#     ret = ivy.full(shape, fill_val, dtype, dev)
-#     # type test
-#     assert ivy.is_array(ret)
-#     # cardinality test
-#     assert ret.shape == tuple(shape)
-#     # value test
-#     assert np.allclose(call(ivy.full, shape, fill_val, dtype, dev),
-#                        np.asarray(ivy.functional.backends.numpy.full(shape, fill_val, dtype)))
 
 
 # one_hot
