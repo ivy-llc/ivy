@@ -73,29 +73,6 @@ astype = cast
 
 
 
-# noinspection PyShadowingNames
-def identity(n: int, dtype: ivy.Dtype = 'float32', batch_shape: Optional[List[int]] = None,
-             dev: Optional[str] = None):
-    dev = default_device(dev)
-    type_dict: Dict[str, torch.dtype] = {'int8': torch.int8,
-            'int16': torch.int16,
-            'int32': torch.int32,
-            'int64': torch.int64,
-            'uint8': torch.uint8,
-            'bfloat16': torch.bfloat16,
-            'float16': torch.float16,
-            'float32': torch.float32,
-            'float64': torch.float64,
-            'bool': torch.bool}
-    dtype_val: torch.dtype = type_dict[dtype]
-    mat = torch.eye(n, n, dtype=dtype_val, device=dev_from_str(dev))
-    if batch_shape is None:
-        return mat
-    else:
-        reshape_dims = [1] * len(batch_shape) + [n, n]
-        tile_dims = list(batch_shape) + [1, 1]
-        res = torch.reshape(mat, reshape_dims).repeat(tile_dims)
-        return res
 
 
 
