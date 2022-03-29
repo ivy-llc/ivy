@@ -137,9 +137,6 @@ where = lambda condition, x1, x2: jnp.where(condition, x1, x2)
 
 
 
-reshape = jnp.reshape
-broadcast_to = jnp.broadcast_to
-
 
 
 
