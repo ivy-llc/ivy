@@ -103,33 +103,6 @@ def where(condition: Union[ivy.Array, ivy.NativeArray], x1: Union[ivy.Array, ivy
 
 
 
-def reshape(x: Union[ivy.Array, ivy.NativeArray], newshape: Union[int, Iterable[int]])\
-        -> Union[ivy.Array, ivy.NativeArray]:
-    """
-    Gives a new shape to an array without changing its data.
-
-    :param x: Tensor to be reshaped.
-    :type x: array
-    :param newshape: The new shape should be compatible with the original shape. One shape dimension can be -1.
-                        In this case, the value is inferred from the length of the array and remaining dimensions.
-    :type newshape: int or sequence of ints
-    :return: Reshaped array.
-    """
-    return _cur_framework(x).reshape(x, newshape)
-
-
-def broadcast_to(x: Union[ivy.Array, ivy.NativeArray], newshape: Iterable[int])\
-        -> Union[ivy.Array, ivy.NativeArray]:
-    """
-    Broadcast the input tensor to newshape, adding dimensions of size 1 where the dimensions do not align.
-
-    :param x: Tensor to be broadcast to new shape.
-    :type x: array
-    :param newshape: The new shape the tensor should be broadcast to.
-    :type newshape: sequence of ints
-    :return: Newly broadcast array.
-    """
-    return _cur_framework(x).broadcast_to(x, newshape)
 
 
 

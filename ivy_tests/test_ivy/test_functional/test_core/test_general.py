@@ -1207,53 +1207,6 @@ def test_isfinite(x_n_res, dtype, tensor_fn, dev, call):
     assert np.allclose(call(ivy.isfinite, x), res)
 
 
-# reshape
-@pytest.mark.parametrize(
-    "x_n_shp", [(1., (1, 1)), (1., 1), (1., []), ([[1.]], []), ([[0., 1.], [2., 3.]], (1, 4, 1))])
-@pytest.mark.parametrize(
-    "dtype", ['float32'])
-@pytest.mark.parametrize(
-    "tensor_fn", [ivy.array, helpers.var_fn])
-def test_reshape(x_n_shp, dtype, tensor_fn, dev, call):
-    # smoke test
-    x, new_shape = x_n_shp
-    if isinstance(x, Number) and tensor_fn == helpers.var_fn and call is helpers.mx_call:
-        # mxnet does not support 0-dimensional variables
-        pytest.skip()
-    x = tensor_fn(x, dtype, dev)
-    ret = ivy.reshape(x, new_shape)
-    # type test
-    assert ivy.is_array(ret)
-    # cardinality test
-    assert ret.shape == ((new_shape,) if isinstance(new_shape, int) else tuple(new_shape))
-    # value test
-    assert np.allclose(call(ivy.reshape, x, new_shape), np.asarray(ivy.functional.backends.numpy.reshape(ivy.to_numpy(x), new_shape)))
-
-
-# broadcast_to
-@pytest.mark.parametrize(
-    "x_n_shp", [([1.], (2, 1)), ([[0., 1.], [2., 3.]], (10, 2, 2))])
-@pytest.mark.parametrize(
-    "dtype", ['float32'])
-@pytest.mark.parametrize(
-    "tensor_fn", [ivy.array, helpers.var_fn])
-def test_broadcast_to(x_n_shp, dtype, tensor_fn, dev, call):
-    # smoke test
-    x, new_shape = x_n_shp
-    if isinstance(x, Number) and tensor_fn == helpers.var_fn and call is helpers.mx_call:
-        # mxnet does not support 0-dimensional variables
-        pytest.skip()
-    x = tensor_fn(x, dtype, dev)
-    ret = ivy.broadcast_to(x, new_shape)
-    # type test
-    assert ivy.is_array(ret)
-    # cardinality test
-    assert len(ret.shape) == len(new_shape)
-    # value test
-    assert np.allclose(call(ivy.broadcast_to, x, new_shape),
-                       np.asarray(ivy.functional.backends.numpy.broadcast_to(ivy.to_numpy(x), new_shape)))
-
-
 
 # zeros
 # @pytest.mark.parametrize(
