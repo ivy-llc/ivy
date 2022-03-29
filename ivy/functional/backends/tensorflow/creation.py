@@ -157,6 +157,19 @@ def arange(stop, start=0, step=1, dtype=None, dev=None):
     with tf.device(dev_from_str(dev)):
         return tf.range(start, stop, delta=step, dtype=dtype)
 
+
+# noinspection PyShadowingNames
+def zeros_like(x, dtype=None, dev=None):
+    dtype = tf.__dict__[dtype] if dtype else dtype
+    dev = default_device(dev)
+    with tf.device(dev_from_str(dev)):
+        return tf.zeros_like(x, dtype=dtype)
+
+
+def full(shape, fill_value, dtype=None, device=None):
+    with tf.device(dev_from_str(default_device(device))):
+        return tf.fill(shape, tf.constant(fill_value, dtype=dtype_from_str(default_dtype(dtype, fill_value))))
+
 # Extra #
 # ------#
 

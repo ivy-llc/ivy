@@ -64,29 +64,6 @@ astype = cast
 
 
 
-# noinspection PyShadowingNames
-def zeros_like(x, dtype: Optional[str] = None, dev: Optional[str] = None):
-    if dev is None:
-        dev = _callable_dev(x)
-    if dtype is not None:
-        type_dict: Dict[str, torch.dtype] = {'int8': torch.int8,
-            'int16': torch.int16,
-            'int32': torch.int32,
-            'int64': torch.int64,
-            'uint8': torch.uint8,
-            'bfloat16': torch.bfloat16,
-            'float16': torch.float16,
-            'float32': torch.float32,
-            'float64': torch.float64,
-            'bool': torch.bool}
-        return torch.zeros_like(x, dtype=type_dict[dtype], device=dev_from_str(dev))
-    return torch.zeros_like(x, device=dev_from_str(dev))
-
-
-def full(shape, fill_value, dtype=None, device=None):
-    return torch.full(
-        ivy.shape_to_tuple(shape), fill_value, dtype=dtype_from_str(default_dtype(dtype, fill_value)),
-        device=default_device(device))
 
 
 

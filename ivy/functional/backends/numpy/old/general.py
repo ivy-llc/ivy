@@ -109,20 +109,6 @@ astype = cast
 
 
 
-# noinspection PyShadowingNames
-def zeros_like(x, dtype=None, dev=None):
-    if dtype:
-        dtype = 'bool_' if dtype == 'bool' else dtype
-        dtype = np.__dict__[dtype]
-    else:
-        dtype = x.dtype
-    return _to_dev(np.zeros_like(x, dtype=dtype), dev)
-
-
-def full(shape, fill_value, dtype=None, device=None):
-    return _to_dev(np.full(shape, fill_value, dtype_from_str(default_dtype(dtype, fill_value))), device)
-
-
 
 
 cross = np.cross
