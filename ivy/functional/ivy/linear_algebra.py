@@ -10,6 +10,36 @@ inf = float('inf')
 
 # Array API Standard #
 # -------------------#
+
+
+def eigh(x: Union[ivy.Array, ivy.NativeArray]) \
+        -> ivy.Array:
+    """
+    Returns an eigendecomposition x = QLQᵀ of a symmetric matrix (or a stack of symmetric matrices) ``x``, where ``Q`` is an orthogonal matrix (or a stack of matrices) and ``L`` is a vector (or a stack of vectors).
+    .. note::
+       The function ``eig`` will be added in a future version of the specification, as it requires complex number support.
+    ..
+      NOTE: once complex numbers are supported, each square matrix must be Hermitian.
+    .. note::
+       Whether an array library explicitly checks whether an input array is a symmetric matrix (or a stack of symmetric matrices) is implementation-defined.
+    Parameters
+    ----------
+    x: array
+        input array having shape ``(..., M, M)`` and whose innermost two dimensions form square matrices. Must have a floating-point data type.
+    Returns
+    -------
+    out: Tuple[array]
+        a namedtuple (``eigenvalues``, ``eigenvectors``) whose
+        -   first element must have the field name ``eigenvalues`` (corresponding to ``L`` above) and must be an array consisting of computed eigenvalues. The array containing the eigenvalues must have shape ``(..., M)``.
+        -   second element have have the field name ``eigenvectors`` (corresponding to ``Q`` above) and must be an array where the columns of the inner most matrices contain the computed eigenvectors. These matrices must be orthogonal. The array containing the eigenvectors must have shape ``(..., M, M)``.
+        Each returned array must have the same floating-point data type as ``x``.
+    .. note::
+       Eigenvalue sort order is left unspecified and is thus implementation-dependent.
+    """
+    return _cur_framework(x).eigh(x)   
+         
+         
+
 def pinv(x: Union[ivy.Array, ivy.NativeArray],
          rtol: Optional[Union[float, Tuple[float]]] = None) \
         -> ivy.Array:

@@ -11,6 +11,12 @@ from collections import namedtuple
 # Array API Standard #
 # -------------------#
 
+def eigh(x: np.ndarray)\
+  -> np.ndarray:
+         return np.linalg.eigh(x)
+
+
+
 inv = np.linalg.inv
 pinv = np.linalg.pinv
 cholesky = np.linalg.cholesky
