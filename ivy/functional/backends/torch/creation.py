@@ -263,6 +263,15 @@ def full(shape, fill_value, dtype=None, device=None):
         shape_to_tuple(shape), fill_value, dtype=dtype_from_str(default_dtype(dtype, fill_value)),
         device=default_device(device))
 
+
+def meshgrid(*xs, indexing='ij'):
+    ret = torch.meshgrid(*xs)
+    if indexing == 'xy':
+        # ToDo: verify if this is correct
+        return tuple([torch.transpose(x, 1, 0) for x in ret])
+    return ret
+
+
 # Extra #
 # ------#
 

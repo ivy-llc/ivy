@@ -143,6 +143,9 @@ def full(shape, fill_value, dtype=None, device=None):
     return _to_dev(np.full(shape, fill_value, dtype_from_str(default_dtype(dtype, fill_value))), device)
 
 
+meshgrid = lambda *xs, indexing='ij': np.meshgrid(*xs, indexing=indexing)
+
+
 # Extra #
 # ------#
 
