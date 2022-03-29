@@ -144,7 +144,7 @@ astype = cast
 
 
 
-cross = jnp.cross
+
 
 
 

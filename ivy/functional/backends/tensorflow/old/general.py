@@ -109,7 +109,7 @@ def one_hot(indices, depth, dev=None):
     return tf.one_hot(indices, depth)
 
 
-cross = tf.linalg.cross
+
 
 
 

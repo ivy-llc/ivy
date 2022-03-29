@@ -69,8 +69,7 @@ astype = cast
 
 
 
-def cross(x1, x2):
-    return torch.cross(x1, x2)
+
 
 
 

@@ -86,21 +86,6 @@ def maximum(x: Union[ivy.Array, ivy.NativeArray, Number], y: Union[ivy.Array, iv
 
 
 
-def cross(x1: Union[ivy.Array, ivy.NativeArray], x2: Union[ivy.Array, ivy.NativeArray])\
-        -> Union[ivy.Array, ivy.NativeArray]:
-    """
-    Returns the cross product of two (arrays of) vectors in R^3.
-    The cross product of x1 and x2 in R^3 is a vector perpendicular to both x1 and x2.
-    If x1 and x2 are arrays of vectors, the vectors are defined by the last axis of x1 and x2 by default which must have
-    dimension 3.
-
-    :param x1: Components of the first vector(s).
-    :type x1: array
-    :param x2: Components of the second vector(s).
-    :type x2: array
-    :return: Vector cross product(s).
-    """
-    return _cur_framework(x1).cross(x1, x2)
 
 
 
