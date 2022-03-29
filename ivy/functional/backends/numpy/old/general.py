@@ -97,16 +97,9 @@ astype = cast
 
 
 
-def concatenate(xs, axis=-1):
-    if xs[0].shape == ():
-        return np.concatenate([np.expand_dims(x, 0) for x in xs], axis)
-    return np.concatenate(xs, axis)
 
 
 
-
-
-where = lambda condition, x1, x2: np.where(condition, x1, x2)
 
 
 

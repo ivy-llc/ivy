@@ -46,6 +46,11 @@ def permute_dims(x: JaxArray,
 stack = jnp.stack
 reshape = jnp.reshape
 
+def concatenate(xs, axis=-1):
+    if xs[0].shape == ():
+        return jnp.concatenate([jnp.expand_dims(x, 0) for x in xs], axis)
+    return jnp.concatenate(xs, axis)
+
 
 
 # Extra #
