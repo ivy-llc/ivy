@@ -1265,25 +1265,6 @@ def test_cumprod(x_n_axis, exclusive, dtype, tensor_fn, dev, call):
                        np.asarray(ivy.functional.backends.numpy.cumprod(ivy.to_numpy(x), axis, exclusive)))
 
 
-# identity
-@pytest.mark.parametrize(
-    "dim_n_bs", [(3, None), (1, (2, 3)), (5, (1, 2, 3))])
-@pytest.mark.parametrize(
-    "dtype", ['float32'])
-@pytest.mark.parametrize(
-    "tensor_fn", [ivy.array, helpers.var_fn])
-def test_identity(dim_n_bs, dtype, tensor_fn, dev, call):
-    # smoke test
-    dim, bs = dim_n_bs
-    ret = ivy.identity(dim, dtype, bs, dev)
-    # type test
-    assert ivy.is_array(ret)
-    # cardinality test
-    assert ret.shape == (tuple(bs) if bs else ()) + (dim, dim)
-    # value test
-    assert np.allclose(call(ivy.identity, dim, dtype, bs, dev),
-                       np.asarray(ivy.functional.backends.numpy.identity(dim, dtype, bs)))
-
 
 
 # scatter_flat

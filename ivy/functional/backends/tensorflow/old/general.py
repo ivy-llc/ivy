@@ -114,13 +114,6 @@ def one_hot(indices, depth, dev=None):
 
 
 
-# noinspection PyShadowingNames
-def identity(n, dtype='float32', batch_shape=None, dev=None):
-    dtype = tf.__dict__[dtype]
-    dev = default_device(dev)
-    with tf.device(dev_from_str(dev)):
-        return tf.eye(n, n, batch_shape=batch_shape, dtype=dtype)
-
 
 
 
