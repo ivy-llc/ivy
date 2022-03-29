@@ -65,16 +65,19 @@ def svd(x: NDArray, full_matrices: bool = True) -> Union[NDArray, Tuple[NDArray,
 
     return mx.np.linalg.norm(x, p, axis, keepdims)
 
+
 def outer(x1: mx.nd.NDArray,
           x2: mx.nd.NDArray)\
         -> mx.nd.NDArray:
     return mx.outer (x1,x2)
+
 
 def diagonal(x: NDArray,
              offset: int = 0,
              axis1: int = -2,
              axis2: int = -1) -> NDArray:
     return mx.nd.diag(x, k=offset, axis1=axis1, axis2=axis2)
+
 
 def slogdet(x: Union[_ivy.Array,_ivy.NativeArray],
             full_matrices: bool = True) -> Union[_ivy.Array, Tuple[_ivy.Array,...]]:
@@ -83,6 +86,7 @@ def slogdet(x: Union[_ivy.Array,_ivy.NativeArray],
     res = results(sign, logabsdet)
     
     return res
+
 
 def trace(x: NDArray,
           offset: int = 0)\
@@ -98,6 +102,7 @@ def det(x:mx.ndarray) \
     -> mx.ndarray:
     return mx.linalg.det(x)
 
+
 def cholesky(x: mx.nd.NDArray, 
              upper: bool = False) -> mx.nd.NDArray:
 
@@ -108,8 +113,10 @@ def cholesky(x: mx.nd.NDArray,
         return mx.np.transpose(mx.np.linalg.cholesky(mx.np.transpose(x, axes=axes)),
                         axes=axes)
 
+
 def eigvalsh(x: mx.ndarray.ndarray.NDArray) -> mx.ndarray.ndarray.NDArray:
     return mx.np.linalg.eigvalsh(x)
+
 
 def matrix_transpose(x, axes=None):
     if axes is None:
@@ -117,6 +124,30 @@ def matrix_transpose(x, axes=None):
         axes = list(range(num_dims))
         axes.reverse()
     return mx.nd.transpose(x, axes)
+
+
+def matmul(x1, x2):
+    expanded = False
+    x1_shape = list(x1.shape)
+    x2_shape = list(x2.shape)
+    if len(x1_shape) != 3:
+        num_x1_dims = len(x1_shape)
+        x1 = mx.nd.reshape(x1, [1]*max(2-num_x1_dims, 0) + [-1] + x1_shape[-min(num_x1_dims, 2):])
+        expanded = True
+    if len(x2_shape) != 3:
+        num_x2_dims = len(x2_shape)
+        x2 = mx.nd.reshape(x2, [1]*max(2-num_x2_dims, 0) + [-1] + x2_shape[-min(num_x2_dims, 2):])
+        expanded = True
+    x1_batch_size = x1.shape[0]
+    x2_batch_size = x2.shape[0]
+    if x1_batch_size > x2_batch_size:
+        x2 = mx.nd.tile(x2, (int(x1_batch_size/x2_batch_size), 1, 1))
+    elif x2_batch_size > x1_batch_size:
+        x1 = mx.nd.tile(x1, (int(x2_batch_size / x1_batch_size), 1, 1))
+    res = mx.nd.batch_dot(x1, x2)
+    if expanded:
+        return mx.nd.reshape(res, list(x1_shape[:-1]) + [res.shape[-1]])
+    return res
 
 # Extra #
 # ------#
