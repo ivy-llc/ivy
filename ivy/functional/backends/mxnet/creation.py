@@ -3,6 +3,7 @@ import mxnet as mx
 from typing import Tuple, Union, Optional, Iterable
 from numbers import Number
 # local
+import ivy
 from ivy import default_device, dtype_from_str, default_dtype, dtype_to_str
 from ivy.functional.backends.mxnet import _mxnet_init_context
 from ivy.functional.backends.mxnet import _1_dim_array_to_flat_array
@@ -131,6 +132,21 @@ def arange(stop, start=0, step=1, dtype=None, dev=None):
     step = step if isinstance(step, Number) else step.asscalar()
     return mx.nd.arange(start, stop, ctx=cont, step=step, dtype=dtype)
 
+
+def zeros_like(x, dtype=None, dev=None):
+    if x.shape == ():
+        return mx.nd.array(0., ctx=_mxnet_init_context(default_device(dev)))
+    mx_zeros = mx.nd.zeros_like(x, ctx=_mxnet_init_context(default_device(dev)))
+    return mx_zeros if not dtype else mx_zeros.astype(dtype)
+
+
+def full(shape, fill_value, dtype=None, device=None):
+    shape = ivy.shape_to_tuple(shape)
+    cont = _mxnet_init_context(default_device(device))
+    if len(shape) == 0 or 0 in shape:
+        return _1_dim_array_to_flat_array(
+            mx.nd.full((1,), fill_value, cont, dtype_from_str(default_dtype(dtype, fill_value))))
+    return mx.nd.full(shape, fill_value, cont, dtype_from_str(default_dtype(dtype, fill_value)))
 
 # Extra #
 # ------#
