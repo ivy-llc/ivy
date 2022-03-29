@@ -1,14 +1,14 @@
 Ivy Stateful API
 ================
 
-Here we explain how Ivy’s stateful API builds on the functional API and the *ivy.Container* class to provide other convenient classes in the form of optimizers, network layers and custom trainable modules, which help get your ML projects up and running very quickly!
+Here we explain how Ivy’s stateful API builds on the functional API and the :code:`ivy.Container` class to provide other convenient classes in the form of optimizers, network layers and custom trainable modules, which help get your ML projects up and running very quickly!
 
 So, without further ado, let’s walk through what the stateful API has to offer!
 
 Modules
 -------
 
-The most helpful stateful Ivy class is perhaps the *ivy.Module*. This can be used to create custom trainable layers or entire networks. Manually defined trainable variables must be specified in the *_create_variables* method. For example, we can create a linear layer by deriving from *ivy.Module* like so:
+The most helpful stateful Ivy class is perhaps the :code:`ivy.Module`. This can be used to create custom trainable layers or entire networks. Manually defined trainable variables must be specified in the :code:`_create_variables` method. For example, we can create a linear layer by deriving from :code:`ivy.Module` like so:
 
 .. code-block:: python
 
@@ -36,9 +36,9 @@ The most helpful stateful Ivy class is perhaps the *ivy.Module*. This can be use
               inputs, self.v.w,
               self.v.b if self._with_bias else None)
 
-For simplicity, this is slightly different to the builtin *ivy.Linear* in a couple of ways, as we will explain in the Initializer section below.
+For simplicity, this is slightly different to the builtin :code:`ivy.Linear` in a couple of ways, as we will explain in the Initializer section below.
 
-All *ivy.Module* instances have an attribute v (short for variables), which stores all of the trainable variables in the module in an *ivy.Container*. For our example above, the hierarchical structure of these variables is the same as that defined in the method *_create_variables*.
+All :code:`ivy.Module` instances have an attribute v (short for variables), which stores all of the trainable variables in the module in an :code:`ivy.Container`. For our example above, the hierarchical structure of these variables is the same as that defined in the method :code:`_create_variables`.
 
 .. code-block:: python
 
@@ -53,7 +53,7 @@ All *ivy.Module* instances have an attribute v (short for variables), which stor
                    [0.5613, 0.1982]])
     }
 
-This is all well and good for defining a single layer, but manually defining all variables in *_create_variables* for very complex networks would be a total nightmare.
+This is all well and good for defining a single layer, but manually defining all variables in :code:`_create_variables` for very complex networks would be a total nightmare.
 
 To overcome this issue, modules can be nested up to an arbitrary depth. This means we can very easily create more complex networks as compositions of other sub-modules or layers. For example, we can create a simple fully connected network with our linear layers.
 
@@ -69,7 +69,7 @@ To overcome this issue, modules can be nested up to an arbitrary depth. This mea
             x = ivy.relu(self.linear0(x))
             return ivy.sigmoid(self.linear1(x))
 
-In this case, we don’t specify any variables manually using *_create_variables*. This is because all variables in the network reside in the linear layers. These variables are all detected automatically.
+In this case, we don’t specify any variables manually using :code:`_create_variables`. This is because all variables in the network reside in the linear layers. These variables are all detected automatically.
 
 .. code-block:: python
 
@@ -87,7 +87,7 @@ In this case, we don’t specify any variables manually using *_create_variables
         }
     }
 
-Not only are variables detected automatically for *ivy.Module* instances which are direct attributes of the top-level class, as above, but also if they are contained within any nested structure which is itself an attribute of the top-level class, such as lists, tuples or dicts. These all work up to an arbitrary nested depth. Check out some of the different ways of defining network layers and how this impacts the variable structure below.
+Not only are variables detected automatically for :code:`ivy.Module` instances which are direct attributes of the top-level class, as above, but also if they are contained within any nested structure which is itself an attribute of the top-level class, such as lists, tuples or dicts. These all work up to an arbitrary nested depth. Check out some of the different ways of defining network layers and how this impacts the variable structure below.
 
 As a list:
 
@@ -274,7 +274,7 @@ While the examples above all use the functional API for calling the ReLU and Sig
             x = self.relu(self.linear0(x))
             return self.sigmoid(self.linear1(x))
 
-It may seem counter intuitive to implement the activation as an *ivy.Module*, as there are no hidden trainable weights. However, for networks where modules are directly chained together, and all outputs from the preceding module are fed as inputs to the subsequent module, then we can use the *ivy.Sequential* class. This can simplify the construction of our small fully connected network even further.
+It may seem counter intuitive to implement the activation as an :code:`ivy.Module`, as there are no hidden trainable weights. However, for networks where modules are directly chained together, and all outputs from the preceding module are fed as inputs to the subsequent module, then we can use the :code:`ivy.Sequential` class. This can simplify the construction of our small fully connected network even further.
 
 .. code-block:: python
 
@@ -299,7 +299,7 @@ It may seem counter intuitive to implement the activation as an *ivy.Module*, as
         }
     }
 
-Given that the weights of our network are stored in an *ivy.Container*, and the gradients returned from *ivy.execute_with_gradients* are also stored in an *ivy.Container*, all operations are applied recursively to every variable at all leaves. Therefore, we can train the network in a few lines of code like so:
+Given that the weights of our network are stored in an :code:`ivy.Container`, and the gradients returned from :code:`ivy.execute_with_gradients` are also stored in an :code:`ivy.Container`, all operations are applied recursively to every variable at all leaves. Therefore, we can train the network in a few lines of code like so:
 
 .. code-block:: python
 
@@ -319,7 +319,7 @@ Given that the weights of our network are stored in an *ivy.Container*, and the 
 Initializers
 ------------
 
-In the examples above, we defined how the trainable weights should be initialized directly in the *_create_variables* method. However, it would be better if we could decouple the initialization scheme from the layer implementation. This is where the *ivy.Initializer* class comes in. The actual implementation for the *ivy.Linear* layer exposed in the Ivy stateful API is as follows:
+In the examples above, we defined how the trainable weights should be initialized directly in the :code:`_create_variables` method. However, it would be better if we could decouple the initialization scheme from the layer implementation. This is where the :code:`ivy.Initializer` class comes in. The actual implementation for the :code:`ivy.Linear` layer exposed in the Ivy stateful API is as follows:
 
 .. code-block:: python
 
@@ -353,7 +353,7 @@ In the examples above, we defined how the trainable weights should be initialize
               inputs, self.v.w,
               self.v.b if self._with_bias else None)
 
-The *ivy.Initializer* class has a single abstract method, *create_variables(var_shape, dev, fan_out=None, fan_in=None, *args, **kwargs)*. Check out the `code <https://github.com/unifyai/ivy/blob/master/ivy/stateful/initializers.py>`_ or `docs <https://lets-unify.ai/ivy/neural_net_stateful/initializers.html>`_ for more details. The default initializer for the weights is *ivy.GlorotUniform* and for this bias is *ivy.Zeros*. Let’s take a quick look at what these look like. *ivy.GlorotUniform* derives from a more general *ivy.Uniform* initializer class, and is then simply implemented as follows:
+The :code:`ivy.Initializer` class has a single abstract method, :code:`create_variables(var_shape, dev, fan_out=None, fan_in=None, *args, **kwargs)`. Check out the `code <https://github.com/unifyai/ivy/blob/master/ivy/stateful/initializers.py>`_ or `docs <https://lets-unify.ai/ivy/neural_net_stateful/initializers.html>`_ for more details. The default initializer for the weights is :code:`ivy.GlorotUniform` and for this bias is :code:`ivy.Zeros`. Let’s take a quick look at what these look like. :code:`ivy.GlorotUniform` derives from a more general :code:`ivy.Uniform` initializer class, and is then simply implemented as follows:
 
 .. code-block:: python
 
@@ -363,7 +363,7 @@ The *ivy.Initializer* class has a single abstract method, *create_variables(var_
             super().__init__(
                 numerator=6, fan_mode='fan_sum', power=0.5, gain=1)
 
-*ivy.Zeros* derives from a more general *ivy.Constant* initializer class, and is then simply implemented as follows:
+:code:`ivy.Zeros` derives from a more general :code:`ivy.Constant` initializer class, and is then simply implemented as follows:
 
 .. code-block:: python
 
@@ -372,11 +372,11 @@ The *ivy.Initializer* class has a single abstract method, *create_variables(var_
         def __init__(self):
             super().__init__(constant=0.)
 
-The initializers are not stateful, and so adding them to the “stateful API” is a slight misnomer. However, the dedicated initializer class helps us to decouple initialization schemes from layer implementations, which are themselves stateful. Given that their application is entirely specific to stateful *ivy.Module* instances, they still belong in the stateful API.
+The initializers are not stateful, and so adding them to the “stateful API” is a slight misnomer. However, the dedicated initializer class helps us to decouple initialization schemes from layer implementations, which are themselves stateful. Given that their application is entirely specific to stateful :code:`ivy.Module` instances, they still belong in the stateful API.
 
 Optimizers
 ----------
-Recapping the example given above, we saw that *ivy.Module* instances can be trained like so:
+Recapping the example given above, we saw that :code:`ivy.Module` instances can be trained like so:
 
 .. code-block:: python
 
@@ -393,9 +393,9 @@ Recapping the example given above, we saw that *ivy.Module* instances can be tra
             loss_fn, model.v)
         model.v = model.v - grads * lr
 
-However, what if we want to do something more complex than vanilla gradient descent? What about ADAM or other stateful optimizers such as LARS and LAMB? This is where the *ivy.Optimizer* class comes in.
+However, what if we want to do something more complex than vanilla gradient descent? What about ADAM or other stateful optimizers such as LARS and LAMB? This is where the :code:`ivy.Optimizer` class comes in.
 
-Let’s take the class *ivy.Adam* as an example. The implementation is as follows:
+Let’s take the class :code:`ivy.Adam` as an example. The implementation is as follows:
 
 .. code-block:: python
 

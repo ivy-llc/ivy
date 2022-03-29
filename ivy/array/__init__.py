@@ -211,7 +211,7 @@ class Array(ArrayWithArrayAPI, ArrayWithDevice, ArrayWithGeneral, ArrayWithGradi
     @_native_wrapper
     def __mul__(self, other):
         other = to_native(other)
-        res = self._data.__mul__(other)
+        res = ivy.multiply(self._data, other)
         if res is NotImplemented:
             return res
         return to_ivy(res)
@@ -306,7 +306,7 @@ class Array(ArrayWithArrayAPI, ArrayWithDevice, ArrayWithGeneral, ArrayWithGradi
     @_native_wrapper
     def __eq__(self, other):
         other = to_native(other)
-        res = self._data.__eq__(other)
+        res = ivy.equal(self._data, other)
         if res is NotImplemented:
             return res
         return to_ivy(res)
@@ -375,6 +375,18 @@ class Array(ArrayWithArrayAPI, ArrayWithDevice, ArrayWithGeneral, ArrayWithGradi
     def __rxor__(self, other):
         other = to_native(other)
         res = self._data.__rxor__(other)
+        if res is NotImplemented:
+            return res
+        return to_ivy(res)
+
+    @_native_wrapper
+    def __rshift__(self, other):
+        return ivy.bitwise_right_shift(self._data, other)
+    
+    @_native_wrapper
+    def __rrshift__(self, other):
+        other = to_native(other)
+        res = self._data.__rrshift__(other)
         if res is NotImplemented:
             return res
         return to_ivy(res)

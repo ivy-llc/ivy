@@ -67,10 +67,10 @@ def _tf_cast(x: Tensor, dtype: tf.dtypes.DType) -> Tensor:
 
 def _cast_for_binary_op(x1: Tensor, x2: Tensor)\
         -> typing.Tuple[typing.Union[Tensor, int, float, bool], typing.Union[Tensor, int, float, bool]]:
-    x1_bits = ivy.functional.backends.tensorflow.old.general.dtype_bits(x1.dtype)
+    x1_bits = ivy.functional.backends.tensorflow.dtype_bits(x1.dtype)
     if isinstance(x2, (int, float, bool)):
         return x1, x2
-    x2_bits = ivy.functional.backends.tensorflow.old.general.dtype_bits(x2.dtype)
+    x2_bits = ivy.functional.backends.tensorflow.dtype_bits(x2.dtype)
     if x1_bits > x2_bits:
         x2 = _tf_cast(x2, x1.dtype)
     elif x2_bits > x1_bits:
@@ -193,6 +193,15 @@ def sin(x: Tensor)\
     return tf.sin(x)
 
 
+def multiply(x1: Tensor, x2: Tensor)\
+        -> Tensor:
+    if hasattr(x1, 'dtype') and hasattr(x2, 'dtype'):
+        promoted_type = tf.experimental.numpy.promote_types(x1.dtype, x2.dtype)
+        x1 = tf.cast(x1, promoted_type)
+        x2 = tf.cast(x2, promoted_type)
+    return tf.math.multiply(x1, x2)
+
+
 def negative(x: Tensor) -> Tensor:
     if x.dtype in [tf.uint8, tf.uint16, tf.uint32, tf.uint64]:
         return tf.cast(tf.negative(tf.cast(x, tf.float32)), x.dtype)
@@ -246,7 +255,10 @@ def round(x: Tensor)\
 
 def abs(x: Tensor)\
         -> Tensor:
-    return tf.math.abs(x)
+
+    if 'uint' in ivy.dtype(x, as_str=True):
+        return x
+    return tf.abs(x)
 
 
 def subtract(x1: Tensor, x2: Tensor)\
@@ -263,6 +275,12 @@ def logaddexp(x1: Tensor, x2: Tensor) -> Tensor:
     return tf.experimental.numpy.logaddexp(x1, x2)
 
 
+def bitwise_right_shift(x1: Tensor, x2: Tensor)\
+        -> Tensor:
+    x1, x2 = _cast_for_binary_op(x1, x2)
+    return tf.bitwise.right_shift(x1, x2)
+
+
 tan = tf.tan
 
 
@@ -271,9 +289,23 @@ def atan(x: Tensor) \
     return tf.atan(x)
 
 
-atan2 = tf.atan2
+
+def atanh(x: Tensor) \
+        -> Tensor:
+    return tf.math.atanh(x)
+
+
+
+def atan2(x1: Tensor, x2: Tensor) -> Tensor:
+    if hasattr(x1, 'dtype') and hasattr(x2, 'dtype'):
+        promoted_type = tf.experimental.numpy.promote_types(x1.dtype, x2.dtype)
+        x1 = tf.cast(x1, promoted_type)
+        x2 = tf.cast(x2, promoted_type)
+    return tf.math.atan2(x1, x2)
+
+
+
 cosh = tf.math.cosh
-atanh = tf.math.atanh
 log = tf.math.log
 exp = tf.math.exp
 
@@ -281,4 +313,6 @@ exp = tf.math.exp
 # ------#
 
 
+minimum = tf.minimum
+maximum = tf.maximum
 erf = tf.math.erf

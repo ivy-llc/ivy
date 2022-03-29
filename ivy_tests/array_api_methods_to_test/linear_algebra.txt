@@ -3,15 +3,15 @@ cholesky
 det
 #diagonal # fails non-determinstically for jax, due to +0 vs -0 inconsistencies
 #eigh
-#eigvalsh
+#eigvalsh # depends on: mT
 #inv
 matmul
 #matrix_norm
 #matrix_power
 #matrix_rank
 matrix_transpose
-#outer
-#pinv
+#outer # depends on: multiply
+pinv
 qr
 slogdet
 #solve
