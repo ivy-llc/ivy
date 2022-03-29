@@ -260,5 +260,6 @@ exp = jnp.exp
 # Extra #
 # ------#
 
-
+minimum = jnp.minimum
+maximum = jnp.maximum
 erf = jax.scipy.special.erf
