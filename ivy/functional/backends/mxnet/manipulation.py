@@ -53,6 +53,10 @@ def squeeze(x, axis=None):
 reshape = lambda x, new_shape: x.reshape(new_shape)
 
 
+@_handle_flat_arrays_in_out
+def concatenate(xs, axis=-1):
+    return mx.nd.concat(*xs, dim=axis)
+
 
 # Extra #
 # ------#

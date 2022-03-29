@@ -117,10 +117,6 @@ astype = cast
 
 
 
-def concatenate(xs, axis=-1):
-    if xs[0].shape == ():
-        return jnp.concatenate([jnp.expand_dims(x, 0) for x in xs], axis)
-    return jnp.concatenate(xs, axis)
 
 
 
@@ -131,7 +127,7 @@ def concatenate(xs, axis=-1):
 
 
 
-where = lambda condition, x1, x2: jnp.where(condition, x1, x2)
+
 
 
 

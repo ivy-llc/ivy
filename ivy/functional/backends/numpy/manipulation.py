@@ -46,6 +46,13 @@ def permute_dims(x: np.ndarray,
     return np.transpose(x, axes)
 
 
+
+def concatenate(xs, axis=-1):
+    if xs[0].shape == ():
+        return np.concatenate([np.expand_dims(x, 0) for x in xs], axis)
+    return np.concatenate(xs, axis)
+
+
 stack = np.stack
 reshape = np.reshape
 
