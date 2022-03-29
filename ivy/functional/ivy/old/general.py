@@ -132,20 +132,6 @@ def broadcast_to(x: Union[ivy.Array, ivy.NativeArray], newshape: Iterable[int])\
     return _cur_framework(x).broadcast_to(x, newshape)
 
 
-def squeeze(x: Union[ivy.Array, ivy.NativeArray], axis: int = None)\
-        -> Union[ivy.Array, ivy.NativeArray]:
-    """
-    Removes a single-dimensional entry from the shape of an array.
-
-    :param x: Input data.
-    :type x: array
-    :param axis: Index for one of the single-dimensional entries in the shape.
-                 If an axis is selected with shape entry greater than one, an error is raised.
-    :type axis: int, optional
-    :return: The input array, but with all (axis=None) or one (axis is int) of the dimensions of length 1 removed.
-    """
-    return _cur_framework(x).squeeze(x, axis)
-
 
 def zeros_like(x: Union[ivy.Array, ivy.NativeArray], dtype: ivy.Dtype = None, dev: ivy.Device = None,
                ) -> Union[ivy.Array, ivy.NativeArray]:
