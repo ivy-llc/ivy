@@ -5,7 +5,7 @@ import numpy as _np
 from collections import namedtuple
 from mxnet.ndarray.ndarray import NDArray
 from typing import Union, Optional, Tuple, Literal
-from ivy.functional.backends.mxnet.old.general import matmul as _matmul
+from ivy.functional.backends.mxnet.linear_algebra import matmul as _matmul
 
 
 # local
