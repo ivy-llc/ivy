@@ -252,8 +252,41 @@ def linspace(start: Union[ivy.Array, ivy.NativeArray, int], stop: Union[ivy.Arra
     return _cur_framework(start).linspace(start, stop, num, axis, dev)
 
 
+def zeros_like(x: Union[ivy.Array, ivy.NativeArray], dtype: ivy.Dtype = None, dev: ivy.Device = None,
+               ) -> Union[ivy.Array, ivy.NativeArray]:
+    """
+    Returns an array of zeros with the same shape and type as x, unless dtype provided which overrides.
+
+    :param x: The shape and data-type of x define these same attributes of the returned array.
+    :type x: array
+    :param dtype: The desired data-type for the array in string format, i.e. 'float32' or 'int64'.
+                    If not given, then the type of the original array is used.
+    :type dtype: data-type string, optional
+    :param dev: device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. Same as x if None.
+    :type dev: ivy.Device, optional
+    :return: Tensor of zeros with the same shape and type as a, unless dtype provided which overrides.
+    """
+    return _cur_framework(x).zeros_like(x, dtype, dev)
+
+
+# noinspection PyShadowingNames
+def full(shape: Union[int, Tuple[int]], fill_value: Union[int, float], dtype: Optional[ivy.Dtype] = None,
+         device: Optional[ivy.Device] = None):
+    """
+    Returns a new array having a specified shape and filled with fill_value.
+
+    :param shape: output array shape.
+    :param fill_value: fill value.
+    :param dtype: output array data type.
+    :param device: device on which to place the created array. Default: None.
+    """
+    return _cur_framework().full(shape, fill_value, dtype, device)
+
+
 # Extra #
 # ------#
+
+
 # noinspection PyShadowingNames
 def array(object_in: Union[List, ivy.Array, ivy.NativeArray], dtype: Union[ivy.Dtype, str] = None,
           dev: ivy.Device = None) -> Union[ivy.Array, ivy.NativeArray]:
