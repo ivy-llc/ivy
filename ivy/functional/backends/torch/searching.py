@@ -22,3 +22,8 @@ def argmin(
     ret = torch.argmin(x,axis=axis, keepdim=keepdims)
 
     return ret
+
+
+def where(condition, x1, x2):
+    return torch.where(condition.type(torch.bool), x1, x2)
+
