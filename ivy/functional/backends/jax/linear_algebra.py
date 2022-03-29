@@ -128,6 +128,8 @@ def eigvalsh(x: JaxArray) -> JaxArray:
 
 
 def inv(x: JaxArray) -> JaxArray:
+    import hypothesis as hp
+    hp.HealthCheck.too_slow
     return jnp.linalg.inv(x)
 
 
