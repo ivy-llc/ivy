@@ -64,33 +64,6 @@ astype = cast
 
 
 
-
-def concatenate(xs: List[torch.Tensor], axis: int = -1):
-    if xs[0].shape == ():
-        return torch.cat([x.unsqueeze(0) for x in xs], axis)
-    return torch.cat(xs, axis)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-def where(condition, x1, x2):
-    return torch.where(condition.type(torch.bool), x1, x2)
-
-
-
-
-
-
 # noinspection PyShadowingNames
 def zeros_like(x, dtype: Optional[str] = None, dev: Optional[str] = None):
     if dev is None:

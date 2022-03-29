@@ -63,6 +63,12 @@ reshape = lambda x, newshape: tf.reshape(x, (newshape,) if isinstance(newshape, 
 
 
 
+def concatenate(xs, axis=-1):
+    if xs[0].shape == ():
+        return tf.concat([tf.expand_dims(x, 0) for x in xs], axis)
+    return tf.concat(xs, axis)
+
+
 # Extra #
 # ------#
 
