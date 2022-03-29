@@ -6,7 +6,7 @@ from typing import Union
 
 # local
 import ivy
-
+from ivy.functional.backends.mxnet import _handle_flat_arrays_in_out
 
 # noinspection PyShadowingBuiltins
 def iinfo(type: Union[type, str, mx.ndarray.ndarray.NDArray])\
@@ -54,3 +54,12 @@ def broadcast_to(x, new_shape):
         return mx.nd.broadcast_to(x, new_shape)
     x = mx.nd.reshape(x, [1]*diff + x_shape)
     return mx.nd.broadcast_to(x, new_shape)
+
+
+
+@_handle_flat_arrays_in_out
+def cast(x, dtype):
+    return x.astype(dtype)
+
+
+astype = cast
