@@ -9,6 +9,10 @@ from typing import Union, Tuple, Optional, List
 def squeeze(x: np.ndarray,
             axis: Union[int, Tuple[int], List[int]])\
         -> np.ndarray:
+    if x.shape == ():
+        if axis is None or axis == 0 or axis == -1:
+            return x
+        raise ValueError('tried to squeeze a zero-dimensional input by axis {}'.format(axis))
     return np.squeeze(x, axis)
 
 

@@ -38,6 +38,17 @@ def stack(xs, axis=0):
     return mx.nd.stack(*xs, axis=axis)
 
 
+def squeeze(x, axis=None):
+    if x.shape == ():
+        if axis is None or axis == 0 or axis == -1:
+            return x
+        raise Exception('tried to squeeze a zero-dimensional input by axis {}'.format(axis))
+    res = _mx.nd.squeeze(x, axis)
+    if axis is None:
+        return _1_dim_array_to_flat_array(res)
+    return res
+
+
 # Extra #
 # ------#
 
