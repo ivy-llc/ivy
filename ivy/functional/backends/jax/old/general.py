@@ -100,8 +100,7 @@ def dtype_bits(dtype_in):
 
 
 
-minimum = jnp.minimum
-maximum = jnp.maximum
+
 
 
 

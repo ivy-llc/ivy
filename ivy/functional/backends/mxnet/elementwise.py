@@ -3,7 +3,7 @@ import mxnet as mx
 import math
 
 # local
-from ivy.functional.backends.mxnet import _handle_flat_arrays_in_out
+from ivy.functional.backends.mxnet import _handle_flat_arrays_in_out, _scalar_or_flat_array_to_scalar
 
 
 def bitwise_and(x1: mx.ndarray.ndarray.NDArray, x2: mx.ndarray.ndarray.NDArray) -> mx.nd.ndarray.NDArray:
@@ -185,4 +185,6 @@ equal.__name__ = 'equal'
 # ------#
 
 
+minimum = lambda x, y: mx.nd.array(mx.nd.minimum(_scalar_or_flat_array_to_scalar(x), _scalar_or_flat_array_to_scalar(y)))
+maximum = lambda x, y: mx.nd.array(mx.nd.maximum(_scalar_or_flat_array_to_scalar(x), _scalar_or_flat_array_to_scalar(y)))
 erf = lambda x: math.erf(x) if isinstance(x, float) else mx.nd.erf(x)
