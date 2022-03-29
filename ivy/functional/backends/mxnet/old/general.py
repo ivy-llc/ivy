@@ -98,13 +98,6 @@ def abs(x):
     return _mx.nd.abs(x)
 
 
-@_handle_flat_arrays_in_out
-def cast(x, dtype):
-    return x.astype(dtype)
-
-
-astype = cast
-
 
 
 
