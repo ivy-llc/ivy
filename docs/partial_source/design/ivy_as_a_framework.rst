@@ -13,7 +13,7 @@ Specifically, here we consider the :code:`ivy.Container` class, the :code:`ivy.A
    :align: center
    :width: 100%
 
-Some tools described in these posts are works in progress, as indicated by the the construction signs 🚧. This is in keeping with the rest of the documentation.
+Some tools described here are works in progress, as indicated by the the construction signs 🚧. This is in keeping with the rest of the documentation.
 
 | (a) :ref:`Ivy Container` ✅
 | Hierarchical container solving almost everything behind the scenes in Ivy
