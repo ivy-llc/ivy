@@ -148,18 +148,6 @@ astype = cast
 
 
 
-# noinspection PyShadowingNames
-def identity(n, dtype='float32', batch_shape=None, dev=None):
-    dtype = jnp.__dict__[dtype]
-    mat = jnp.identity(n, dtype=dtype)
-    if batch_shape is None:
-        return_mat = mat
-    else:
-        reshape_dims = [1] * len(batch_shape) + [n, n]
-        tile_dims = list(batch_shape) + [1, 1]
-        return_mat = jnp.tile(jnp.reshape(mat, reshape_dims), tile_dims)
-    return to_dev(return_mat, default_device(dev))
-
 
 
 

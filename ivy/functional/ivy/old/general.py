@@ -92,25 +92,6 @@ def maximum(x: Union[ivy.Array, ivy.NativeArray, Number], y: Union[ivy.Array, iv
 
 
 
-# noinspection PyShadowingNames
-def identity(n: int, dtype: ivy.Dtype = 'float32', batch_shape: Iterable[int] = None, dev: ivy.Device = None,
-             ) -> Union[ivy.Array, ivy.NativeArray]:
-    """
-    Returns the identity array.
-    The identity array is a square array with ones on the main diagonal.
-
-    :param n: Number of rows (and columns) in n x n output.
-    :type n: int
-    :param dtype: The desired data-type for the array in string format, i.e. 'float32' or 'int64'.
-                      Default is 'float32'.
-    :type dtype: data-type string, optional
-    :param batch_shape: Shape of batch. Inferred from inputs if None.
-    :type batch_shape: sequence of ints, optional
-    :param dev: device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc..
-    :type dev: ivy.Device
-    :return: n x n array of type dtype, with its main diagonal set to one, and all other elements 0.
-    """
-    return _cur_framework().identity(n, dtype, batch_shape, dev)
 
 
 
