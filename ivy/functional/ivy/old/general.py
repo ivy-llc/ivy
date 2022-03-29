@@ -103,18 +103,6 @@ def cross(x1: Union[ivy.Array, ivy.NativeArray], x2: Union[ivy.Array, ivy.Native
     return _cur_framework(x1).cross(x1, x2)
 
 
-def matmul(x1: Union[ivy.Array, ivy.NativeArray], x2: Union[ivy.Array, ivy.NativeArray])\
-        -> Union[ivy.Array, ivy.NativeArray]:
-    """
-    Computes the matrix product of two arrays x1 and x2.
-
-    :param x1: Input array 1.
-    :type x1: array
-    :param x2: Input array 2.
-    :type x2: array
-    :return: The matrix product of the input arrays.
-    """
-    return _cur_framework(x1).matmul(x1, x2)
 
 
 
