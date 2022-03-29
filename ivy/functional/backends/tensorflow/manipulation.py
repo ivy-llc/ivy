@@ -59,6 +59,9 @@ def permute_dims(x: Tensor,
 
 
 stack = tf.stack
+reshape = lambda x, newshape: tf.reshape(x, (newshape,) if isinstance(newshape, int) else newshape)
+
+
 
 # Extra #
 # ------#

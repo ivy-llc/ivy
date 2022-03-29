@@ -109,8 +109,6 @@ def concatenate(xs, axis=-1):
 where = lambda condition, x1, x2: np.where(condition, x1, x2)
 
 
-reshape = np.reshape
-broadcast_to = np.broadcast_to
 
 
 
