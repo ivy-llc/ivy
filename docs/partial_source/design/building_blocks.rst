@@ -12,7 +12,7 @@ Backend Functional APIs ✅
 
 The first important point to make is that, Ivy does not implement it’s own C++ or CUDA backend. Instead, Ivy **wraps** the functional APIs of existing frameworks, bringing them into syntactic and semantic alignment. Let’s take the function :code:`ivy.clip` as an example.
 
-There are separate backend modules for JAX, TensorFlow, PyTorch, MXNet and NumPy, and so we implement the clip method once for each backend, each in separate backend files like so:
+There are separate backend modules for JAX, TensorFlow, PyTorch, MXNet and NumPy, and so we implement the :code:`clip` method once for each backend, each in separate backend files like so:
 
 .. code-block:: python
 
@@ -56,7 +56,7 @@ Ivy Functional API ✅
 
 Calling the different backend files explicitly would work okay, but it would mean we need to :code:`import ivy.functional.backends.torch as ivy` to use a PyTorch backend or :code:`import ivy.functional.backends.tensorflow as ivy` to use a TensorFlow backend. Instead, we allow these backends to be bound to the single shared namespace ivy. The backend can then be changed by calling :code:`ivy.set_framework(‘torch’)` for example.
 
-ivy.api is the submodule where all the doc strings and argument typing reside for the functional Ivy API. The :code:`clip` function is shown below:
+:code:`ivy.functional.ivy` is the submodule where all the doc strings and argument typing reside for the functional Ivy API. The :code:`clip` function is shown below:
 
 .. code-block:: python
 
