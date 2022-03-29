@@ -58,3 +58,10 @@ def result_type(*arrays_and_dtypes: Union[JaxArray, jnp.dtype]) -> jnp.dtype:
   
 def broadcast_to(x: JaxArray, shape: Tuple[int, ...]) -> JaxArray:
     return jnp.broadcast_to(x, shape)
+
+
+def cast(x, dtype):
+    return x.astype(ivy.dtype_from_str(dtype))
+
+
+astype = cast

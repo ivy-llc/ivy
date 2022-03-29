@@ -41,12 +41,6 @@ def dtype_bits(dtype_in):
 
 
 
-def cast(x, dtype_in: str):
-    dtype_val = dtype_from_str(dtype_in)
-    return x.type(dtype_val)
-
-
-astype = cast
 
 
 

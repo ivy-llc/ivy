@@ -71,12 +71,6 @@ def dtype_bits(dtype_in):
 
 
 
-def cast(x, dtype):
-    return tf.cast(x, dtype_from_str(dtype))
-
-
-astype = cast
-
 
 
 
