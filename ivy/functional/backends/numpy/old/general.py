@@ -111,7 +111,7 @@ astype = cast
 
 
 
-cross = np.cross
+
 
 
 
