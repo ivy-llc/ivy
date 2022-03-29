@@ -1254,35 +1254,6 @@ def test_broadcast_to(x_n_shp, dtype, tensor_fn, dev, call):
                        np.asarray(ivy.functional.backends.numpy.broadcast_to(ivy.to_numpy(x), new_shape)))
 
 
-# squeeze
-# @pytest.mark.parametrize(
-#     "x_n_axis", [(1., 0), (1., -1), ([[1.]], None), ([[[0.], [1.]], [[2.], [3.]]], -1)])
-# @pytest.mark.parametrize(
-#     "dtype", ['float32'])
-# @pytest.mark.parametrize(
-#     "tensor_fn", [ivy.array, helpers.var_fn])
-# def test_squeeze(x_n_axis, dtype, tensor_fn, dev, call):
-#     # smoke test
-#     x, axis = x_n_axis
-#     if isinstance(x, Number) and tensor_fn == helpers.var_fn and call is helpers.mx_call:
-#         # mxnet does not support 0-dimensional variables
-#         pytest.skip()
-#     x = tensor_fn(x, dtype, dev)
-#     ret = ivy.squeeze(x, axis)
-#     # type test
-#     assert ivy.is_array(ret)
-#     # cardinality test
-#     if axis is None:
-#         expected_shape = [item for item in x.shape if item != 1]
-#     elif x.shape == ():
-#         expected_shape = []
-#     else:
-#         expected_shape = list(x.shape)
-#         expected_shape.pop(axis)
-#     assert ret.shape == tuple(expected_shape)
-#     # value test
-#     assert np.allclose(call(ivy.squeeze, x, axis), np.asarray(ivy.functional.backends.numpy.squeeze(ivy.to_numpy(x), axis)))
-
 
 # zeros
 # @pytest.mark.parametrize(
