@@ -588,7 +588,7 @@ We can then load this Dataset with a configurable batch size like so, and we can
 Network weights
 --------------
 
-Finally, the Ivy Containers can also be used for storing network weights. In fact, as will be discussed in the next post on the stateful Ivy API, this is how the :code:`ivy.Module` class stores all trainable variables in the model. The following code is possible thanks to the recursive operation of the container, which applies the gradient update to all variable arrays in the container recursively.
+Finally, the Ivy Containers can also be used for storing network weights. In fact, as is discussed in the documentation for the Ivy stateful API, this is how the :code:`ivy.Module` class stores all trainable variables in the model. The following code is possible thanks to the recursive operation of the container, which applies the gradient update to all variable arrays in the container recursively.
 
 .. code-block:: python
 
