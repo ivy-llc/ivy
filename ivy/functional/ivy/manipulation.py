@@ -118,6 +118,20 @@ def reshape(x: Union[ivy.Array, ivy.NativeArray], newshape: Union[int, Iterable[
 
 
 
+def concatenate(xs: Iterable[Union[ivy.Array, ivy.NativeArray]], axis: int = -1)\
+        -> Union[ivy.Array, ivy.NativeArray]:
+    """
+    Casts an array to a specified type.
+
+    :param xs: The input arrays must have the same shape, except in the dimension corresponding to axis
+                        (the first, by default).
+    :type xs: sequence of arrays
+    :param axis: The axis along which the arrays will be joined. Default is -1.
+    :type axis: int, optional
+    :return: The concatenated array.
+    """
+    return _cur_framework(xs[0]).concatenate(xs, axis)
+
 
 # Extra #
 # ------#

@@ -19,3 +19,5 @@ def argmin(x : JaxArray,
 
     ret = jnp.argmin(x,axis=axis,out=out,keepdims=keepdims)
     return (ret)
+
+where = lambda condition, x1, x2: jnp.where(condition, x1, x2)

@@ -114,24 +114,9 @@ astype = cast
 
 
 
-@_handle_flat_arrays_in_out
-def concatenate(xs, axis=-1):
-    return _mx.nd.concat(*xs, dim=axis)
 
 
 
-
-
-@_handle_flat_arrays_in_out
-def where(condition, x1, x2):
-    x_shape = list(x1.shape)
-    condition_shape = list(condition.shape)
-    if x_shape == condition_shape:
-        res = _mx.nd.where(condition, x1, x2)
-        return res
-    tile_reps = [int(x / c) for x, c in zip(x_shape, condition_shape)]
-    tiled_condition = _mx.nd.tile(condition, tile_reps)
-    return _mx.nd.where(tiled_condition, x1, x2)
 
 
 
