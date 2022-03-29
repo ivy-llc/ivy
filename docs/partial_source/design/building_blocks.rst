@@ -258,7 +258,29 @@ The compiler takes in any Ivy function, backend function, or composition, and re
 
 As an example, the following 3 pieces of code all compile to the exact same computation graph as shown:
 
-CODE
++----------------------------------------+-----------------------------------------+-----------------------------------------+
+|.. code-block:: python                  |.. code-block:: python                   |.. code-block:: python                   |
+|                                        |                                         |                                         |
+| def pure_ivy(x):                       | def pure_torch(x):                      | def mix(x):                             |
+|     y = ivy.reduce_mean(x)             |     y = torch.mean(x)                   |     y = ivy.reduce_mean(x)              |
+|     z = ivy.reduce_sum(x)              |     z = torch.sum(x)                    |     z = torch.sum(x)                    |
+|     f = ivy.reduce_var(y)              |     f = torch.var(y)                    |     f = ivy.reduce_var(y)               |
+|     k = ivy.cos(z)                     |     k = torch.cos(z)                    |     k = torch.cos(z)                    |
+|     m = ivy.sin(f)                     |     m = torch.sin(f)                    |     m = ivy.sin(f)                      |
+|     o = ivy.tan(y)                     |     o = torch.tan(y)                    |     o = torch.tan(y)                    |
+|     return ivy.concatenate(            |     return torch.cat(                   |     return ivy.concatenate(             |
+|         [k, m, o], -1)                 |         [k, m, o], -1)                  |         [k, m, o], -1)                  |
+|                                        |                                         |                                         |
+| # input                                | # input                                 | # input                                 |
+| x = ivy.array([[1., 2., 3.]])          | x = torch.tensor([[1., 2., 3.]])        | x = ivy.array([[1., 2., 3.]])           |
+|                                        |                                         |                                         |
+| # create graph                         | # create graph                          | # create graph                          |
+| graph = ivy.compile_graph(             | graph = ivy.compile_graph(              | graph = ivy.compile_graph(              |
+|     pure_ivy, x)                       |     pure_torch, x)                      |     mix, x)                             |
+|                                        |                                         |                                         |
+| # call graph                           | # call graph                            | # call graph                            |
+| ret = graph(x)                         | ret = graph(x)                          | ret = graph(x)                          |
++----------------------------------------+-----------------------------------------+-----------------------------------------+
 
 .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/compiled_graph_a.png?raw=true
    :align: center
@@ -266,7 +288,30 @@ CODE
 
 For all existing ML frameworks, the functional API is the backbone which underpins all higher level functions and classes. This means that under the hood, any code can be expressed as a composition of ops in the functional API. The same is true for Ivy. Therefore, when compiling the graph with Ivy, any higher-level classes or extra code which does not directly contribute towards the computation graph is excluded. For example, the following 3 pieces of code all compile to the exact same computation graph as shown:
 
-CODE
++----------------------------------------+-----------------------------------------+-----------------------------------------+
+|.. code-block:: python                  |.. code-block:: python                   |.. code-block:: python                   |
+|                                        |                                         |                                         |
+| class Network(ivy.module)              | def clean(x, w, b):                     | def unclean(x, w, b):                   |
+|                                        |     return w*x + b                      |     y = b + w + x                       |
+|     def __init__(self):                |                                         |     print('message')                    |
+|         self._layer = ivy.Linear(3, 3) |                                         |     wx = w * x                          |
+|         super().__init__()             |                                         |     ret = wx + b                        |
+|                                        |                                         |     temp = y * wx                       |
+|     def _forward(self, x):             |                                         |     return ret                          |
+|         return self._layer(x)          |                                         |                                         |
+|                                        | # input                                 | # input                                 |
+| # build network                        | x = ivy.array([1., 2., 3.])             | x = ivy.array([1., 2., 3.])             |
+| net = Network()                        | w = ivy.random_unifrom(                 | w = ivy.random_unifrom(                 |
+|                                        |     -1, 1, (3, 3))                      |     -1, 1, (3, 3))                      |
+| # input                                | b = ivy.zeros((3,))                     | b = ivy.zeros((3,))                     |
+| x = ivy.array([1., 2., 3.])            |                                         |                                         |
+|                                        | # compile graph                         | # compile graph                         |
+| # compile graph                        | graph = ivy.compile_graph(              | graph = ivy.compile_graph(              |
+| net.compile_graph(x)                   |     clean, x, w, b)                     |     unclean, x, w, b)                   |
+|                                        |                                         |                                         |
+| # execute graph                        | # execute graph                         | # execute graph                         |
+| net(x)                                 | graph(x, w, b)                          | graph(x, w, b)                          |
++----------------------------------------+-----------------------------------------+-----------------------------------------+
 
 .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/compiled_graph_b.png?raw=true
    :align: center
