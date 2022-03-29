@@ -44,6 +44,8 @@ def permute_dims(x: JaxArray,
 
 
 stack = jnp.stack
+reshape = jnp.reshape
+
 
 
 # Extra #

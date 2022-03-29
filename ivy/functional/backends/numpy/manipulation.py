@@ -47,6 +47,7 @@ def permute_dims(x: np.ndarray,
 
 
 stack = np.stack
+reshape = np.reshape
 
 
 # Extra #
