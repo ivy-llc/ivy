@@ -117,8 +117,6 @@ def solve(x1: np.ndarray,
          x2 = x2[np.newaxis]
      if x2.ndim == 1 or ((x1.ndim-x2.ndim == 1) and (x1.shape[:-1] == x2.shape[:-2])):
          return np.linalg.solve(x1, x2)
-     else:
-         raise Exception('Input operand does not have enough dimensions')
 
 def tensordot(x1: np.ndarray, x2: np.ndarray,
               axes: Union[int, Tuple[List[int], List[int]]] = 2) \
