@@ -1,7 +1,7 @@
 # global
 import tensorflow as tf
 from tensorflow.python.types.core import Tensor
-from typing import Union, Optional, Tuple, Literal
+from typing import Union, Optional, Tuple, Literal, List
 from collections import namedtuple
 
 # local
