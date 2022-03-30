@@ -143,8 +143,6 @@ def cross (x1: np.ndarray,
            axis:int = -1) -> np.ndarray:
     return np.cross(a= x1, b = x2, axis= axis)
 
-cross = np.cross
-
 
 # Extra #
 # ------#
