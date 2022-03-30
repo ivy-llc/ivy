@@ -160,6 +160,7 @@ def logical_not(x: torch.Tensor)\
 def divide(x1: torch.Tensor,
            x2: torch.Tensor) \
         -> torch.Tensor:
+    x1, x2 = _cast_for_binary_op(x1, x2)
     return torch.divide(x1, x2)  
 
 

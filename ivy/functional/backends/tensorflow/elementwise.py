@@ -168,6 +168,7 @@ def logical_not(x: Tensor)\
 def divide(x1: Tensor,
            x2: Tensor)\
         -> Tensor:
+    x1, x2 = _cast_for_binary_op(x1, x2)
     return tf.divide(x1, x2)
 
 
