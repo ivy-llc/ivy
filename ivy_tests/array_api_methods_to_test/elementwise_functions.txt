@@ -22,7 +22,7 @@ cosh
 expm1
 floor
 #floor_divide
-#greater
+greater
 greater_equal
 isfinite
 isinf
