@@ -23,6 +23,13 @@ def floor(x: mx.ndarray.ndarray.NDArray)\
 
 
 @_handle_flat_arrays_in_out
+def divide(x1: mx.ndarray.ndarray.NDArray,
+           x2: mx.ndarray.ndarray.NDArray)\
+        -> mx.ndarray.ndarray.NDArray:
+    return mx.nd.divide(x1, x2)
+
+
+@_handle_flat_arrays_in_out
 def greater(x1: mx.ndarray.ndarray.NDArray,
             x2: mx.ndarray.ndarray.NDArray)\
         -> mx.ndarray.ndarray.NDArray:

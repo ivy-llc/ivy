@@ -1061,7 +1061,7 @@ def divide(x1: Union[ivy.Array, ivy.NativeArray], x2: Union[ivy.Array, ivy.Nativ
     :return: an array containing the element-wise results. The returned array must have a floating-point data type
              determined by Type Promotion Rules.
     """
-    return x1 / x2
+    return _cur_framework(x1, x2).divide(x1, x2)
 
 
 def remainder(x1: Union[ivy.Array, ivy.NativeArray],
