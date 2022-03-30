@@ -38,7 +38,7 @@ logical_and
 logical_not
 logical_or
 logical_xor
-multiply
+#multiply # Failing non-deterministically
 negative
 positive
 #not_equal # Failing non-deterministically after the update to Array API test suite under commit 2dcf4cf153c8cb37a685467fed91680e1552fc6a
