@@ -371,8 +371,7 @@ def trace(x: ivy.Array,
 
     return _cur_framework(x).trace(x, offset)
 
-def vecdot(x1: Union[ivy.Array, ivy.NativeArray], 
-        x2: Union[ivy.Array, ivy.NativeArray], axis: int = -1)  \
+def vecdot(x1: ivy.Array, x2: ivy.Array, axis: int = -1)\
         -> ivy.Array:
     """
     Computes the (vector) dot product of two arrays.
@@ -393,7 +392,7 @@ def vecdot(x1: Union[ivy.Array, ivy.NativeArray],
     -   if the size of the axis over which to compute the dot product is not the same for both ``x1`` and ``x2``.
     """
 
-    return _cur_framework(x1).vecdot(x1, x2)
+    return _cur_framework(x1).vecdot(x1, x2, axis)
 
 def det(x: ivy.Array) \
     -> ivy.Array:

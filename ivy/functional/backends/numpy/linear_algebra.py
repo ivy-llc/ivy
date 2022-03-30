@@ -108,10 +108,11 @@ def trace(x: np.ndarray,
     return np.trace(x, offset)
 
 def vecdot(x1: np.ndarray, 
-        x2: np.ndarray, axis: int = -1)  \
+        x2: np.ndarray, 
+        axis: int = -1)  \
         -> np.ndarray:
 
-    return np.dot(x1, x2)
+    return np.dot(x1, x2, axis)
 
 def det(x: np.array) \
         -> np.array:
