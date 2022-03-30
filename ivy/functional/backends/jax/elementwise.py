@@ -58,7 +58,12 @@ def isinf(x: JaxArray)\
 
 def equal(x1: JaxArray, x2: JaxArray)\
         -> JaxArray:
-    return jnp.equal(x1,x2)
+    return jnp.equal(x1, x2)
+
+
+def greater(x1: JaxArray, x2: JaxArray) \
+        -> JaxArray:
+    return jnp.greater(x1, x2)
 
 
 def greater_equal(x1: JaxArray, x2: JaxArray)\
