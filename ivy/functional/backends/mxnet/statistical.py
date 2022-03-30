@@ -1,7 +1,8 @@
 from numbers import Number
-from ivy.functional.backends.mxnet.old.reductions import _handle_output
 import mxnet as mx
-from ivy.functional.backends.mxnet import _flat_array_to_1_dim_array, _1_dim_array_to_flat_array
+
+#Local
+from ivy.functional.backends.mxnet import _flat_array_to_1_dim_array, _1_dim_array_to_flat_array, _handle_output
 
 
 # Array API Standard #
@@ -83,7 +84,7 @@ def min(x, axis=None, keepdims=False):
         axis = tuple(axis)
     if x.shape == ():
         x = _flat_array_to_1_dim_array(x)
-    ret = _mx.nd.min(x, axis=axis, keepdims=keepdims)
+    ret = mx.nd.min(x, axis=axis, keepdims=keepdims)
     return _handle_output(x, axis, keepdims, ret)
 
 

@@ -278,7 +278,10 @@ def fourier_encode(x: Union[ivy.Array, ivy.NativeArray], max_freq: Union[float, 
     if linear:
         scales = ivy.linspace(1., max_freq / 2, num_bands, dev=dev(x))
     else:
-        scales = ivy.logspace(0., ivy.log(max_freq / 2) / math.log(10), num_bands, base=10, dev=dev(x))
+        if ivy.backend == 'torch' and isinstance(max_freq,float):
+            scales = ivy.logspace(0., ivy.log(ivy.array(max_freq / 2)) / math.log(10), num_bands, base=10, dev=dev(x))            
+        else:
+            scales = ivy.logspace(0., ivy.log(max_freq / 2) / math.log(10), num_bands, base=10, dev=dev(x))
     scales = ivy.cast(scales, ivy.dtype(x))
     scales = scales[(*((None,) * (len(x.shape) - len(scales.shape))), Ellipsis)]
     x = x * scales * math.pi
@@ -833,3 +836,105 @@ def scatter_nd(indices: Union[ivy.Array, ivy.NativeArray], updates: Union[ivy.Ar
     """
     return _cur_framework(indices).scatter_nd(indices, updates, shape, tensor, reduction, dev)
 
+
+# noinspection PyShadowingNames
+def gather(params: Union[ivy.Array, ivy.NativeArray], indices: Union[ivy.Array, ivy.NativeArray], axis: int = -1,
+           dev: ivy.Device = None) -> Union[ivy.Array, ivy.NativeArray]:
+    """
+    Gather slices from params at axis according to indices.
+
+    :param params: The array from which to gather values.
+    :type params: array
+    :param indices: Index array.
+    :type indices: array
+    :param axis: The axis from which to gather from. Default is -1.
+    :type axis: int, optional
+    :param dev: device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. Same as x if None.
+    :type dev: ivy.Device, optional
+    :return: New array with the values gathered at the specified indices along the specified axis.
+    """
+    return _cur_framework(params).gather(params, indices, axis, dev)
+
+
+# noinspection PyShadowingNames
+def gather_nd(params: Union[ivy.Array, ivy.NativeArray], indices: Union[ivy.Array, ivy.NativeArray],
+              dev: ivy.Device = None) -> Union[ivy.Array, ivy.NativeArray]:
+    """
+    Gather slices from params into a array with shape specified by indices.
+
+    :param params: The array from which to gather values.
+    :type params: array
+    :param indices: Index array.
+    :type indices: array
+    :param dev: device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. Same as x if None.
+    :type dev: ivy.Device, optional
+    :return: New array of given shape, with the values gathered at the indices.
+    """
+    return _cur_framework(params).gather_nd(params, indices, dev)
+
+
+
+def multiprocessing(context: str = None):
+    """
+    Return framewrk-specific multi-processing module
+
+    :param context: The context of the multiprocessing, either fork, forkserver or spawn. Default is None.
+    :type context: str, optional
+    :return: Multiprocessing module
+    """
+    return _cur_framework().multiprocessing(context)
+
+
+def indices_where(x: Union[ivy.Array, ivy.NativeArray])\
+        -> Union[ivy.Array, ivy.NativeArray]:
+    """
+    Returns indices or true elements in an input boolean array.
+
+    :param x: Boolean array, for which indices are desired.
+    :type x: array
+    :return: Indices for where the boolean array is True.
+    """
+    return _cur_framework(x).indices_where(x)
+
+
+# noinspection PyShadowingNames
+def one_hot(indices: Union[ivy.Array, ivy.NativeArray], depth: int, dev: ivy.Device = None)\
+        -> Union[ivy.Array, ivy.NativeArray]:
+    """
+    Returns a one-hot array
+    :param indices: Indices for where the ones should be scattered *[batch_shape, dim]*
+    :type indices: array
+    :param depth: Scalar defining the depth of the one-hot dimension.
+    :type depth: int
+    :param dev: device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. Same as x if None.
+    :type dev: ivy.Device, optional
+    :return: Tensor of zeros with the same shape and type as a, unless dtype provided which overrides.
+    """
+    return _cur_framework(indices).one_hot(indices, depth, dev)
+
+
+def shape(x: Union[ivy.Array, ivy.NativeArray], as_array: bool = False)\
+        -> Iterable[int]:
+    """
+    Returns the shape of the array x.
+
+    :param x: Input array to infer the shape of.
+    :type x: array
+    :param as_array: Whether to return the shape as a array, default False.
+    :type as_array: bool, optional
+    :return: Shape of the array
+    """
+    return _cur_framework(x).shape(x, as_array)
+
+
+def get_num_dims(x: Union[ivy.Array, ivy.NativeArray], as_array: bool = False) -> int:
+    """
+    Returns the number of dimensions of the array x.
+
+    :param x: Input array to infer the number of dimensions for.
+    :type x: array
+    :param as_array: Whether to return the shape as a array, default False.
+    :type as_array: bool, optional
+    :return: Shape of the array
+    """
+    return _cur_framework(x).get_num_dims(x, as_array)
