@@ -8,9 +8,14 @@ from ivy.functional.backends.jax import JaxArray
 
 
 def squeeze(x: JaxArray,
-            axis: Union[int, Tuple[int], List[int]])\
+            axis: Union[int, Tuple[int], List[int]]=None)\
         -> JaxArray:
-    return jnp.squeeze(x, axis)
+
+        if x.shape == ():
+            if axis is None or axis == 0 or axis == -1:
+                return x
+            raise ValueError('tried to squeeze a zero-dimensional input by axis {}'.format(axis))
+        return jnp.squeeze(x, axis)
 
 
 def _flat_array_to_1_dim_array(x):
@@ -39,6 +44,13 @@ def permute_dims(x: JaxArray,
 
 
 stack = jnp.stack
+reshape = jnp.reshape
+
+def concatenate(xs, axis=-1):
+    if xs[0].shape == ():
+        return jnp.concatenate([jnp.expand_dims(x, 0) for x in xs], axis)
+    return jnp.concatenate(xs, axis)
+
 
 
 # Extra #

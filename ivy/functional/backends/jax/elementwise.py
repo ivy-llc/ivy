@@ -5,6 +5,11 @@ import jax.numpy as jnp
 # local
 from ivy.functional.backends.jax import JaxArray
 
+def bitwise_xor(x1: JaxArray,
+                x2: JaxArray)\
+        -> JaxArray:
+    return jnp.bitwise_xor(x1, x2)
+
 
 def expm1(x: JaxArray)\
         -> JaxArray:
@@ -53,7 +58,12 @@ def isinf(x: JaxArray)\
 
 def equal(x1: JaxArray, x2: JaxArray)\
         -> JaxArray:
-    return jnp.equal(x1,x2)
+    return jnp.equal(x1, x2)
+
+
+def greater(x1: JaxArray, x2: JaxArray) \
+        -> JaxArray:
+    return jnp.greater(x1, x2)
 
 
 def greater_equal(x1: JaxArray, x2: JaxArray)\
@@ -139,6 +149,12 @@ def logical_and(x1: JaxArray, x2: JaxArray)\
 def logical_not(x: JaxArray)\
         -> JaxArray:
     return jnp.logical_not(x)
+  
+  
+def divide(x1: JaxArray,
+           x2: JaxArray)\
+        -> JaxArray:
+    return jnp.divide(x1, x2)  
 
 
 def acos(x: JaxArray)\
@@ -260,5 +276,6 @@ exp = jnp.exp
 # Extra #
 # ------#
 
-
+minimum = jnp.minimum
+maximum = jnp.maximum
 erf = jax.scipy.special.erf

@@ -230,11 +230,7 @@ class Array(ArrayWithArrayAPI, ArrayWithDevice, ArrayWithGeneral, ArrayWithGradi
 
     @_native_wrapper
     def __truediv__(self, other):
-        other = to_native(other)
-        res = self._data.__truediv__(other)
-        if res is NotImplemented:
-            return res
-        return to_ivy(res)
+        return ivy.divide(self._data, other)
 
     @_native_wrapper
     def __rtruediv__(self, other):
@@ -317,11 +313,7 @@ class Array(ArrayWithArrayAPI, ArrayWithDevice, ArrayWithGeneral, ArrayWithGradi
 
     @_native_wrapper
     def __gt__(self, other):
-        other = to_native(other)
-        res = self._data.__gt__(other)
-        if res is NotImplemented:
-            return res
-        return to_ivy(res)
+        return ivy.greater(self._data, other)
 
     @_native_wrapper
     def __ge__(self, other):
@@ -366,7 +358,7 @@ class Array(ArrayWithArrayAPI, ArrayWithDevice, ArrayWithGeneral, ArrayWithGradi
     @_native_wrapper
     def __xor__(self, other):
         other = to_native(other)
-        res = self._data.__xor__(other)
+        res = ivy.bitwise_xor(self._data, other)
         if res is NotImplemented:
             return res
         return to_ivy(res)

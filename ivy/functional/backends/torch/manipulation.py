@@ -60,6 +60,19 @@ def stack(xs: List[torch.Tensor], axis: int = 0):
     return torch.stack(xs, axis)
 
 
+
+def reshape(x, newshape: List[int]):
+    if isinstance(newshape, int):
+        newshape = [newshape]
+    return torch.reshape(x, newshape)
+
+
+def concatenate(xs: List[torch.Tensor], axis: int = -1):
+    if xs[0].shape == ():
+        return torch.cat([x.unsqueeze(0) for x in xs], axis)
+    return torch.cat(xs, axis)
+
+
 # Extra #
 # ------#
 

@@ -52,6 +52,15 @@ def ones_like(x : JaxArray,
     return to_dev(jnp.ones_like(x, dtype=dtype), default_device(dev))
 
 
+def zeros_like(x: JaxArray,
+               dtype: Optional[jnp.dtype]= None,
+               device: Optional[jaxlib.xla_extension.Device] = None)\
+        -> JaxArray:
+    if not dtype:
+        dtype = x.dtype
+    return to_dev(jnp.zeros_like(x, dtype=dtype), default_device(device))
+
+
 def tril(x: JaxArray,
          k: int = 0) \
          -> JaxArray:
@@ -123,6 +132,13 @@ def arange(stop, start=0, step=1, dtype=None, dev=None):
     dtype = dtype_from_str(dtype)
     return to_dev(jnp.arange(start, stop, step=step, dtype=dtype), default_device(dev))
 
+
+def full(shape, fill_value, dtype=None, device=None):
+    return to_dev(jnp.full(shape, fill_value, dtype_from_str(default_dtype(dtype, fill_value))),
+                  default_device(device))
+
+
+meshgrid = lambda *xs, indexing='ij': jnp.meshgrid(*xs, indexing=indexing)
 
 # Extra #
 # ------#

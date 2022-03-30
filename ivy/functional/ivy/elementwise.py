@@ -1,6 +1,6 @@
 # global
 from typing import Union
-
+from numbers import Number
 # local
 import ivy
 from ivy.framework_handler import current_framework as _cur_framework
@@ -8,6 +8,24 @@ from ivy.framework_handler import current_framework as _cur_framework
 
 # Array API Standard #
 # -------------------#
+
+def bitwise_xor(x1: Union[ivy.Array, ivy.NativeArray],
+                x2: Union[ivy.Array, ivy.NativeArray])\
+        -> ivy.Array:
+    """
+    Computes the bitwise XOR of the underlying binary representation of each element ``x1_i`` of the input array ``x1`` with the respective element ``x2_i`` of the input array ``x2``.
+    Parameters
+    ----------
+    x1: array
+        first input array. Should have an integer or boolean data type.
+    x2: array
+        second input array. Must be compatible with ``x1`` (see :ref:`broadcasting`). Should have an integer or boolean data type.
+    Returns
+    -------
+    out: array
+        an array containing the element-wise results. The returned array must have a data type determined by :ref:`type-promotion`.
+    """
+    return _cur_framework(x1, x2).bitwise_xor(x1, x2)
 
 def expm1(x: Union[ivy.Array, ivy.NativeArray])\
         -> ivy.Array:
@@ -192,6 +210,21 @@ def isinf(x: Union[ivy.Array, ivy.NativeArray])\
         an array containing test results. An element out_i is True if x_i is either positive or negative infinity and False otherwise. The returned array must have a data type of bool.
     """
     return _cur_framework(x).isinf(x)
+
+
+def greater(x1: Union[ivy.Array, ivy.NativeArray],
+            x2: Union[ivy.Array, ivy.NativeArray])\
+        -> ivy.Array:
+    """
+    Computes the truth value of x1_i < x2_i for each element x1_i of the input array x1 with the respective
+    element x2_i of the input array x2.
+
+    :param x1: Input array.
+    :param x2: Input array.
+    :param f: Machine learning framework. Inferred from inputs if None.
+    :return: an array containing the element-wise results. The returned array must have a data type of bool.
+    """
+    return _cur_framework(x1, x2).greater(x1, x2)
 
 
 def greater_equal(x1: Union[ivy.Array, ivy.NativeArray], x2: Union[ivy.Array, ivy.NativeArray])\
@@ -1028,7 +1061,7 @@ def divide(x1: Union[ivy.Array, ivy.NativeArray], x2: Union[ivy.Array, ivy.Nativ
     :return: an array containing the element-wise results. The returned array must have a floating-point data type
              determined by Type Promotion Rules.
     """
-    return x1 / x2
+    return _cur_framework(x1, x2).divide(x1, x2)
 
 
 def remainder(x1: Union[ivy.Array, ivy.NativeArray],
@@ -1134,3 +1167,30 @@ def erf(x: Union[ivy.Array, ivy.NativeArray])\
     :return: The Gauss error function of x.
     """
     return _cur_framework(x).erf(x)
+
+def minimum(x: Union[ivy.Array, ivy.NativeArray], y: Union[ivy.Array, ivy.NativeArray])\
+        -> Union[ivy.Array, ivy.NativeArray]:
+    """
+    Returns the min of x and y (i.e. x < y ? x : y) element-wise.
+
+    :param x: Input array containing elements to minimum threshold.
+    :type x: array
+    :param y: Tensor containing minimum values, must be broadcastable to x.
+    :type y: array
+    :return: An array with the elements of x, but clipped to not exceed the y values.
+    """
+    return _cur_framework(x).minimum(x, y)
+
+
+def maximum(x: Union[ivy.Array, ivy.NativeArray, Number], y: Union[ivy.Array, ivy.NativeArray, Number],
+            ) -> Union[ivy.Array, ivy.NativeArray]:
+    """
+    Returns the max of x and y (i.e. x > y ? x : y) element-wise.
+
+    :param x: Input array containing elements to maximum threshold.
+    :type x: array
+    :param y: Tensor containing maximum values, must be broadcastable to x.
+    :type y: array
+    :return: An array with the elements of x, but clipped to not be lower than the y values.
+    """
+    return _cur_framework(x).maximum(x, y)

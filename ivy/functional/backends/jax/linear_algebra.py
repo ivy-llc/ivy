@@ -2,7 +2,7 @@
 from multiprocessing.dummy import Array
 import jax
 import jax.numpy as jnp
-from typing import Union, Optional, Tuple, Literal
+from typing import Union, Optional, Tuple, Literal, List
 from collections import namedtuple
 
 # local
@@ -13,6 +13,11 @@ import ivy
 
 # Array API Standard #
 # -------------------#
+
+def eigh(x: JaxArray)\
+  ->JaxArray:
+         return jnp.linalg.eigh(x)
+
 
 inv = jnp.linalg.inv
 pinv = jnp.linalg.pinv
@@ -103,6 +108,12 @@ def slogdet(x:Union[ivy.Array,ivy.NativeArray],full_matrices: bool = True) -> Un
     res = results(sign, logabsdet)
     return res
 
+def tensordot(x1: JaxArray, x2: JaxArray,
+              axes: Union[int, Tuple[List[int], List[int]]] = 2) \
+        -> JaxArray:
+
+    return jnp.tensordot(x1, x2, axes)
+
 
 def trace(x: JaxArray,
           offset: int = 0)\
@@ -126,6 +137,8 @@ def cholesky(x: JaxArray,
 
 def eigvalsh(x: JaxArray) -> JaxArray:
     return jnp.linalg.eigvalsh(x)
+
+cross = jnp.cross
 
 
 def cross (x1: JaxArray,

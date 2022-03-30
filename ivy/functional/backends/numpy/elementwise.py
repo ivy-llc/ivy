@@ -7,6 +7,12 @@ try:
 except (ImportError, ModuleNotFoundError):
     _erf = None
 
+def bitwise_xor(x1: np.ndarray,
+                x2: np.ndarray)\
+        -> np.ndarray:
+    if not isinstance(x2, np.ndarray):
+        x2 = np.asarray(x2, dtype=x1.dtype)
+    return npa.bitwise_xor(npa.asarray(x1), npa.asarray(x2))
 
 def expm1(x: np.ndarray)\
         -> np.ndarray:
@@ -27,6 +33,11 @@ def bitwise_and(x1: np.ndarray,
 def equal(x1: np.ndarray, x2: np.ndarray)\
         -> np.ndarray:
     return x1 == x2
+
+
+def greater(x1: np.ndarray, x2: np.ndarray) \
+        -> np.ndarray:
+    return np.greater(x1, x2)
 
 
 def greater_equal(x1: np.ndarray, x2: np.ndarray)\
@@ -128,6 +139,14 @@ def cos(x: np.ndarray)\
 def logical_not(x: np.ndarray)\
         -> np.ndarray:
     return np.logical_not(x)
+  
+  
+def divide(x1: np.ndarray,
+           x2: np.ndarray)\
+        -> np.ndarray:
+    if not isinstance(x2, np.ndarray):
+        x2 = np.asarray(x2, dtype=x1.dtype)
+    return npa.divide(npa.asarray(x1), npa.asarray(x2))
 
 
 def acos(x: np.ndarray)\
@@ -287,6 +306,10 @@ exp = np.exp
 
 # Extra #
 # ------#
+
+
+minimum = np.minimum
+maximum = np.maximum
 
 
 def erf(x):
