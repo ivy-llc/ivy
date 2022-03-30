@@ -1,7 +1,7 @@
 # global
 import jax
 import jax.numpy as jnp
-from typing import Union, Optional, Tuple, Literal
+from typing import Union, Optional, Tuple, Literal, List
 from collections import namedtuple
 
 # local
@@ -106,6 +106,12 @@ def slogdet(x:Union[ivy.Array,ivy.NativeArray],full_matrices: bool = True) -> Un
     sign, logabsdet = jnp.linalg.slogdet(x)
     res = results(sign, logabsdet)
     return res
+
+def tensordot(x1: JaxArray, x2: JaxArray,
+              axes: Union[int, Tuple[List[int], List[int]]] = 2) \
+        -> JaxArray:
+
+    return jnp.tensordot(x1, x2, axes)
 
 
 def trace(x: JaxArray,
