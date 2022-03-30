@@ -35,6 +35,11 @@ def equal(x1: np.ndarray, x2: np.ndarray)\
     return x1 == x2
 
 
+def greater(x1: np.ndarray, x2: np.ndarray) \
+        -> np.ndarray:
+    return np.greater(x1, x2)
+
+
 def greater_equal(x1: np.ndarray, x2: np.ndarray)\
         -> np.ndarray:
     return np.greater_equal(x1, x2)
