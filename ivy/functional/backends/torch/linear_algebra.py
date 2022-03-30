@@ -1,6 +1,6 @@
 # global
 import torch
-from typing import Union, Optional, Tuple, Literal
+from typing import Union, Optional, Tuple, Literal, List
 from collections import namedtuple
 
 # local
@@ -100,7 +100,7 @@ def qr(x: torch.Tensor,
     else:
         raise Exception("Only 'reduced' and 'complete' qr modes are allowed for the torch backend.")
 
-        
+
 def matmul(x1: torch.Tensor,
            x2: torch.Tensor) -> torch.Tensor:
     dtype_from = torch.promote_types(x1.dtype, x2.dtype)
@@ -115,6 +115,21 @@ def slogdet(x:Union[_ivy.Array,_ivy.NativeArray],full_matrices: bool = True) -> 
     sign, logabsdet = torch.linalg.slogdet(x)
     res = results(sign, logabsdet)
     return res
+
+def tensordot(x1: torch.Tensor, x2: torch.Tensor,
+              axes: Union[int, Tuple[List[int], List[int]]] = 2) \
+        -> torch.Tensor:
+
+    # find the type to promote to
+    dtype = torch.promote_types(x1.dtype, x2.dtype)
+    # type conversion to one that torch.tensordot can work with
+    x1, x2 = x1.type(torch.float32), x2.type(torch.float32)
+
+    # handle tensordot for axes==0
+    # otherwise call with axes
+    if axes == 0:
+        return (x1.reshape(x1.size() + (1,) * x2.dim()) * x2).type(dtype)
+    return torch.tensordot(x1, x2, dims=axes).type(dtype)
 
 
 def trace(x: torch.Tensor,

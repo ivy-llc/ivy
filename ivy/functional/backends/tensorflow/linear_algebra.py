@@ -1,7 +1,7 @@
 # global
 import tensorflow as tf
 from tensorflow.python.types.core import Tensor
-from typing import Union, Optional, Tuple, Literal
+from typing import Union, Optional, Tuple, Literal, List
 from collections import namedtuple
 
 # local
@@ -20,6 +20,20 @@ def eigh(x: Tensor)\
 inv = tf.linalg.inv
 pinv = tf.linalg.pinv
 cholesky = tf.linalg.cholesky
+
+
+def tensordot(x1: Tensor, x2: Tensor,
+              axes: Union[int, Tuple[List[int], List[int]]] = 2) \
+        -> Tensor:
+
+    # find type to promote to
+    dtype = tf.experimental.numpy.promote_types(x1.dtype, x2.dtype)
+
+    # type casting to float32 which is acceptable for tf.tensordot
+    x1, x2 = tf.cast(x1, tf.float32), tf.cast(x2, tf.float32)
+
+    return tf.cast(tf.tensordot(x1, x2, axes), dtype)
+
 
 def pinv(x: Tensor,
          rtol: Optional[Union[float, Tuple[float]]] = None) \
