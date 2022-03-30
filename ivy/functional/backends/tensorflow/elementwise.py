@@ -7,6 +7,12 @@ import typing
 import ivy
 
 
+def bitwise_xor(x1: Tensor,
+                x2: Tensor)\
+        -> Tensor:
+    return tf.bitwise.bitwise_xor(x1, x2)
+
+
 def expm1(x: Tensor)\
         -> Tensor:
     return tf.math.expm1(x)

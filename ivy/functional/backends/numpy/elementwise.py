@@ -7,6 +7,10 @@ try:
 except (ImportError, ModuleNotFoundError):
     _erf = None
 
+def bitwise_xor(x1: np.ndarray,
+                x2: np.ndarray)\
+        -> np.ndarray:
+    return np.bitwise_xor(x1, x2)
 
 def expm1(x: np.ndarray)\
         -> np.ndarray:
