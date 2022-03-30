@@ -149,6 +149,12 @@ def logical_and(x1: JaxArray, x2: JaxArray)\
 def logical_not(x: JaxArray)\
         -> JaxArray:
     return jnp.logical_not(x)
+  
+  
+def divide(x1: JaxArray,
+           x2: JaxArray)\
+        -> JaxArray:
+    return jnp.divide(x1, x2)  
 
 
 def acos(x: JaxArray)\

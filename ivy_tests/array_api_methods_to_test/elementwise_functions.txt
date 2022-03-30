@@ -16,7 +16,7 @@ bitwise_invert
 ceil
 cos
 cosh
-#divide
+divide
 #equal # failing non-deterministically
 #exp
 expm1
