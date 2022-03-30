@@ -1,6 +1,7 @@
 # global
 import numpy as np
-from typing import Union, Optional, Tuple, Literal
+import ivy as _ivy
+from typing import Union, Optional, Tuple, Literal, List
 from collections import namedtuple
 
 # local
@@ -106,6 +107,12 @@ def slogdet(x: Union[ivy.Array, ivy.NativeArray], full_matrices: bool = True) ->
     sign, logabsdet = np.linalg.slogdet(x)
     res = results(sign, logabsdet)
     return res
+
+def tensordot(x1: np.ndarray, x2: np.ndarray,
+              axes: Union[int, Tuple[List[int], List[int]]] = 2) \
+    -> np.ndarray:
+
+    return np.tensordot(x1, x2, axes=axes)
 
 
 def trace(x: np.ndarray,
