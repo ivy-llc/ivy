@@ -8,6 +8,13 @@ import math
 import ivy
 
 
+def bitwise_xor(x1: torch.Tensor,
+                x2: torch.Tensor)\
+        -> torch.Tensor:
+    x1, x2 = _cast_for_binary_op(x1, x2)
+    return torch.bitwise_xor(x1, x2)
+
+
 def expm1(x: Tensor)\
         -> Tensor:
     return torch.expm1(x)
