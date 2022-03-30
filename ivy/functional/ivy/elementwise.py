@@ -212,6 +212,21 @@ def isinf(x: Union[ivy.Array, ivy.NativeArray])\
     return _cur_framework(x).isinf(x)
 
 
+def greater(x1: Union[ivy.Array, ivy.NativeArray],
+            x2: Union[ivy.Array, ivy.NativeArray])\
+        -> ivy.Array:
+    """
+    Computes the truth value of x1_i < x2_i for each element x1_i of the input array x1 with the respective
+    element x2_i of the input array x2.
+
+    :param x1: Input array.
+    :param x2: Input array.
+    :param f: Machine learning framework. Inferred from inputs if None.
+    :return: an array containing the element-wise results. The returned array must have a data type of bool.
+    """
+    return _cur_framework(x1, x2).greater(x1, x2)
+
+
 def greater_equal(x1: Union[ivy.Array, ivy.NativeArray], x2: Union[ivy.Array, ivy.NativeArray])\
         -> ivy.Array:
     """
