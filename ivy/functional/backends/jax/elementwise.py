@@ -5,6 +5,11 @@ import jax.numpy as jnp
 # local
 from ivy.functional.backends.jax import JaxArray
 
+def bitwise_xor(x1: JaxArray,
+                x2: JaxArray)\
+        -> JaxArray:
+    return jnp.bitwise_xor(x1, x2)
+
 
 def expm1(x: JaxArray)\
         -> JaxArray:
