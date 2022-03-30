@@ -467,22 +467,28 @@ def eigvalsh(x: Union[ivy.Array, ivy.NativeArray], /) -> ivy.Array:
     return _cur_framework(x).eigvalsh(x)
 
 
-def cross(x1: Union[ivy.Array, ivy.NativeArray], x2: Union[ivy.Array, ivy.NativeArray])\
-        -> Union[ivy.Array, ivy.NativeArray]:
+def cross(x1: Union[ivy.Array, ivy.NativeArray],
+          x2: Union[ivy.Array, ivy.NativeArray],
+          axis: int = - 1) -> ivy.Array:
     """
-    Returns the cross product of two (arrays of) vectors in R^3.
-    The cross product of x1 and x2 in R^3 is a vector perpendicular to both x1 and x2.
-    If x1 and x2 are arrays of vectors, the vectors are defined by the last axis of x1 and x2 by default which must have
-    dimension 3.
+    The cross product of 3-element vectors. If x1 and x2 are multi-dimensional arrays 
+    (i.e., both have a rank greater than 1), then the cross-product of each pair of corresponding 
+    3-element vectors is independently computed.
 
-    :param x1: Components of the first vector(s).
+    Parameters
+    :param x1: first input array. Should have a numeric data type.
     :type x1: array
-    :param x2: Components of the second vector(s).
+    :param x2: second input array. Must have the same shape as x1. Should have a numeric data type.
     :type x2: array
-    :return: Vector cross product(s).
+    :param axis: the axis (dimension) of x1 and x2 containing the vectors for which to compute the cross product.
+     If set to -1, the function computes the cross product for vectors defined by the last axis (dimension).
+      Default: -1.
+    :type axis: int
+    :returnout: an array containing the cross products. The returned array must have a data type determined
+     by Type Promotion Rules.
+    :type out: array
     """
-    return _cur_framework(x1).cross(x1, x2)
-
+    return _cur_framework(x1).cross(x1,x2,axis)
 
 # Extra #
 # ------#
