@@ -12,7 +12,7 @@ atanh
 bitwise_invert
 #bitwise_or # failing non-deterministically
 #bitwise_right_shift # failing non-deterministically
-#bitwise_xor
+bitwise_xor
 ceil
 cos
 cosh
