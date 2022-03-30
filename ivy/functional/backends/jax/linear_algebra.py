@@ -13,11 +13,22 @@ import ivy
 # Array API Standard #
 # -------------------#
 
+def eigh(x: JaxArray)\
+  ->JaxArray:
+         return jnp.linalg.eigh(x)
+
+
 inv = jnp.linalg.inv
 pinv = jnp.linalg.pinv
 cholesky = jnp.linalg.cholesky
 
+def pinv(x: JaxArray,
+         rtol: Optional[Union[float, Tuple[float]]] = None) \
+        -> JaxArray:
 
+    if rtol is None:
+        return jnp.linalg.pinv(x)
+    return jnp.linalg.pinv(x, rtol)
 
 def matrix_norm(x, p=2, axes=None, keepdims=False):
     axes = (-2, -1) if axes is None else axes
@@ -59,6 +70,12 @@ def svd(x:JaxArray,full_matrices: bool = True) -> Union[JaxArray, Tuple[JaxArray
     U, D, VT=jnp.linalg.svd(x, full_matrices=full_matrices)
     res=results(U, D, VT)
     return res
+
+
+def outer(x1: JaxArray,
+          x2: JaxArray)\
+        -> JaxArray:
+    return jnp.outer(x1, x2)
 
 
 def diagonal(x: JaxArray,
@@ -115,6 +132,12 @@ def cholesky(x: JaxArray,
         axes = list(range(len(x.shape) - 2)) + [len(x.shape) - 1, len(x.shape) - 2]
         return jnp.transpose(jnp.linalg.cholesky(jnp.transpose(x, axes=axes)),
                         axes=axes)
+
+
+def eigvalsh(x: JaxArray) -> JaxArray:
+    return jnp.linalg.eigvalsh(x)
+
+cross = jnp.cross
 
 
 # Extra #

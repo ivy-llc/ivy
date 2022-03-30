@@ -2,6 +2,7 @@ on:
   issue_comment:
     types:
       - created
+
 jobs:
   issue_commented:
     name: Issue comment

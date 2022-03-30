@@ -248,3 +248,113 @@ def scatter_nd(indices, updates, shape=None, tensor=None, reduction='sum', dev=N
     res = torch.reshape(flat_scatter, list(shape))
     return res
 
+
+# noinspection PyShadowingNames
+def gather(params, indices, axis=-1, dev: Optional[str] = None):
+    if dev is None:
+        dev = _callable_dev(params)
+    return torch.gather(params, axis, indices.type(torch.int64)).to(dev_from_str(dev))
+
+
+# noinspection PyShadowingNames
+def gather_nd(params, indices, dev: Optional[str] = None):
+    if dev is None:
+        dev = _callable_dev(params)
+    indices_shape = indices.shape
+    params_shape = params.shape
+    num_index_dims = indices_shape[-1]
+    result_dim_sizes_list = [_reduce(mul, params_shape[i + 1:], 1) for i in range(len(params_shape) - 1)] + [1]
+    result_dim_sizes = torch.tensor(result_dim_sizes_list).to(dev_from_str(dev))
+    implicit_indices_factor = int(result_dim_sizes[num_index_dims - 1].item())
+    flat_params = torch.reshape(params, (-1,))
+    new_shape = [1] * (len(indices_shape) - 1) + [num_index_dims]
+    indices_scales = torch.reshape(result_dim_sizes[0:num_index_dims], new_shape)
+    indices_for_flat_tiled = torch.reshape(torch.sum(indices * indices_scales, -1, keepdim=True), (-1, 1)).repeat(
+        *[1, implicit_indices_factor])
+    implicit_indices = torch.unsqueeze(torch.arange(implicit_indices_factor).to(dev_from_str(dev)), 0).repeat(
+        *[indices_for_flat_tiled.shape[0], 1])
+    indices_for_flat = indices_for_flat_tiled + implicit_indices
+    flat_indices_for_flat = torch.reshape(indices_for_flat, (-1,)).type(torch.long)
+    flat_gather = torch.gather(flat_params, 0, flat_indices_for_flat)
+    res = torch.reshape(flat_gather, list(indices_shape[:-1]) + list(params_shape[num_index_dims:]))
+    return res
+
+
+def multiprocessing(context=None):
+    import torch.multiprocessing
+    if context is None:
+        return torch.multiprocessing
+    return torch.multiprocessing.get_context(context)
+
+
+def indices_where(x):
+    where_x = torch.where(x)
+    res = torch.cat([torch.unsqueeze(item, -1) for item in where_x], -1)
+    return res
+
+# noinspection PyUnresolvedReferences,PyShadowingNames
+def one_hot(indices, depth: int, dev: Optional[str] = None):
+    if dev is None:
+        dev = _callable_dev(indices)
+    return torch.nn.functional.one_hot(indices.type(torch.int64), depth).to(dev_from_str(dev))
+
+def shape(x, as_tensor=False) -> Union[torch.Tensor, List[int]]:
+    return torch.tensor(x.shape) if as_tensor else x.shape
+
+def get_num_dims(x, as_tensor=False) -> Union[torch.Tensor, int]:
+    return torch.tensor(len(x.shape)) if as_tensor else len(x.shape)
+
+
+def dtype_bits(dtype_in):
+    dtype_str = dtype_to_str(dtype_in)
+    if 'bool' in dtype_str:
+        return 1
+    return int(dtype_str.replace('torch.', '').replace('uint', '').replace('int', '').replace('bfloat', '').replace(
+        'float', ''))
+
+
+def dtype(x, as_str=False):
+    dt = x.dtype
+    if as_str:
+        return dtype_to_str(dt)
+    return dt
+
+
+def dtype_to_str(dtype_in):
+    if isinstance(dtype_in, str):
+        return dtype_in
+    return {torch.int8: 'int8',
+            torch.int16: 'int16',
+            torch.int32: 'int32',
+            torch.int64: 'int64',
+            torch.uint8: 'uint8',
+            torch.bfloat16: 'bfloat16',
+            torch.float16: 'float16',
+            torch.float32: 'float32',
+            torch.float64: 'float64',
+            torch.bool: 'bool'}[dtype_in]
+
+
+def dtype_from_str(dtype_in: str) -> torch.dtype:
+    if not isinstance(dtype_in, str):
+        return dtype_in
+    return {'int8': torch.int8,
+            'int16': torch.int16,
+            'int32': torch.int32,
+            'int64': torch.int64,
+            'uint8': torch.uint8,
+            'bfloat16': torch.bfloat16,
+            'float16': torch.float16,
+            'float32': torch.float32,
+            'float64': torch.float64,
+            'bool': torch.bool}[dtype_in]
+
+
+def compile(fn, dynamic=True, example_inputs=None, static_argnums=None, static_argnames=None):
+    if dynamic:
+        return torch.jit.script(fn)
+    return torch.jit.trace(fn, example_inputs)
+
+
+def current_framework_str():
+    return 'torch'

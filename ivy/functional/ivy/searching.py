@@ -28,13 +28,51 @@ def argmax(
         If this is set to True, the axes which are reduced are left in the result as dimensions with size one. With this option, the result will broadcast correctly against the array.
     out:
         If provided, the result will be inserted into this array. It should be of the appropriate shape and dtype.
-    
+
     Returns
     -------
         if axis is None, a zero-dimensional array containing the index of the first occurrence of the maximum value; otherwise, a non-zero-dimensional array containing the indices of the maximum values. The returned array must have be the default array index data type.
     """
     return _cur_framework(x).argmax(x,axis,keepdims,out)
 
+
+def argmin(x: Union[ivy.Array, ivy.NativeArray],
+            axis: Optional[int] = None,
+            keepdims: Optional[bool] = False) \
+        -> ivy.Array:
+    """
+    Returns the indices of the minimum values along a specified axis. When the minimum value occurs multiple times, only the indices corresponding to the first occurrence are returned
+
+    :param x: input array. Should have a numeric data type.
+    :param axis: axis along which to search. If None, the function must return the index of the minimum value of the flattened
+                array. Default = None.
+    :param keepdims: if True, the reduced axes (dimensions) must be included in the result as singleton dimensions, and,
+                accordingly, the result must be compatible with the input array (see Broadcasting). Otherwise, if False,
+                the reduced axes (dimensions) must not be included in the result. Default = False.
+    :param out: if axis is None, a zero-dimensional array containing the index of the first occurrence of the minimum value;
+                otherwise, a non-zero-dimensional array containing the indices of the minimum values.
+                The returned array must have the default array index data type.
+    :return: Array containing the indices of the minimum values across the specified axis.
+    """
+
+    return _cur_framework(x).argmin(x, axis, keepdims)
+
+
+def where(condition: Union[ivy.Array, ivy.NativeArray], x1: Union[ivy.Array, ivy.NativeArray],
+          x2: Union[ivy.Array, ivy.NativeArray])\
+        -> Union[ivy.Array, ivy.NativeArray]:
+    """
+    Returns elements chosen from x or y depending on condition.
+
+    :param condition: Where True, yield x1, otherwise yield x2.
+    :type condition: bool array
+    :param x1: values from which to choose when condition is True.
+    :type x1: array
+    :param x2: values from which to choose when condition is False.
+    :type x2: array
+    :return: An array with elements from x1 where condition is True, and elements from x2 elsewhere.
+    """
+    return _cur_framework(x1).where(condition, x1, x2)
 
 # Extra #
 # ------#

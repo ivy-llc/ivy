@@ -13,13 +13,20 @@ import ivy as _ivy
 # Array API Standard #
 # -------------------#
 
+def eigh(x: torch.Tensor)\
+  ->torch.Tensor:
+     return torch.linalg.eigh(x)
+
 def inv(x):
     return torch.inverse(x)
 
 
-def pinv(x):
-    return torch.pinverse(x)
-
+def pinv(x: torch.Tensor,
+         rtol: Optional[Union[float, Tuple[float]]] = None) \
+        -> torch.Tensor:
+    if rtol is None:
+        return torch.linalg.pinv(x)
+    return torch.linalg.pinv(x, rtol)
 
 def cholesky(x):
     return torch.linalg.cholesky(x)
@@ -62,6 +69,12 @@ def svd(x:torch.Tensor,full_matrices: bool = True) -> Union[torch.Tensor, Tuple[
     U, D, VT = torch.linalg.svd(x, full_matrices=full_matrices)
     res=results(U, D, VT)
     return res
+
+
+def outer(x1: torch.Tensor,
+          x2: torch.Tensor)\
+        -> torch.Tensor:
+    return torch.outer(x1, x2)
 
 
 def diagonal(x: torch.Tensor,
@@ -136,7 +149,16 @@ def cholesky(x: torch.Tensor,
     else:
         return torch.transpose(torch.linalg.cholesky(torch.transpose(x, dim0=len(x.shape) - 1,dim1=len(x.shape) - 2)),
                                dim0=len(x.shape) - 1, dim1=len(x.shape) - 2)
-        
+
+
+def eigvalsh(x: torch.Tensor) -> torch.Tensor:
+    return torch.linalg.eigvalsh(x)
+
+
+def cross(x1, x2):
+    return torch.cross(x1, x2)
+
+
 # Extra #
 # ------#
 

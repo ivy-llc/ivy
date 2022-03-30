@@ -1,4 +1,4 @@
 argmax
-#argmin
+argmin
 #nonzero
 #where
