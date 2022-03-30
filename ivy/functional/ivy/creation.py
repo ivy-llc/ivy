@@ -128,6 +128,25 @@ def ones_like( x: Union[ivy.Array, ivy.NativeArray],
     return _cur_framework(x).ones_like(x, dtype, dev)
 
 
+def zeros_like(x: Union[ivy.Array, ivy.NativeArray],
+               dtype: Optional[Union[ivy.Dtype, str]] = None,
+               dev: Optional[Union[ivy.Device, str]] = None)\
+        -> Union[ivy.Array, ivy.NativeArray]:
+    """
+    Returns an array of zeros with the same shape and type as x, unless dtype provided which overrides.
+
+    :param x: The shape and data-type of x define these same attributes of the returned array.
+    :type x: array
+    :param dtype: The desired data-type for the array in string format, i.e. 'float32' or 'int64'.
+                    If not given, then the type of the original array is used.
+    :type dtype: data-type string, optional
+    :param dev: device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. Same as x if None.
+    :type dev: ivy.Device, optional
+    :return: Tensor of zeros with the same shape and type as a, unless dtype provided which overrides.
+    """
+    return _cur_framework(x).zeros_like(x, dtype, dev)
+
+
 def tril(x: Union[ivy.Array, ivy.NativeArray],
          k: int = 0) \
         -> ivy.Array:
