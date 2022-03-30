@@ -139,6 +139,14 @@ def cos(x: np.ndarray)\
 def logical_not(x: np.ndarray)\
         -> np.ndarray:
     return np.logical_not(x)
+  
+  
+def divide(x1: np.ndarray,
+           x2: np.ndarray)\
+        -> np.ndarray:
+    if not isinstance(x2, np.ndarray):
+        x2 = np.asarray(x2, dtype=x1.dtype)
+    return npa.divide(npa.asarray(x1), npa.asarray(x2))
 
 
 def acos(x: np.ndarray)\

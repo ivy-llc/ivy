@@ -155,6 +155,13 @@ def cos(x: torch.Tensor)\
 def logical_not(x: torch.Tensor)\
         -> torch.Tensor:
     return torch.logical_not(x.type(torch.bool))
+  
+  
+def divide(x1: torch.Tensor,
+           x2: torch.Tensor) \
+        -> torch.Tensor:
+    x1, x2 = _cast_for_binary_op(x1, x2)
+    return torch.divide(x1, x2)  
 
 
 def greater(x1: torch.Tensor, x2: torch.Tensor)\
