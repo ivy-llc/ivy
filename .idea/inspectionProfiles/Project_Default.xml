@@ -19,7 +19,7 @@
     <inspection_tool class="PyPackageRequirementsInspection" enabled="true" level="WARNING" enabled_by_default="true">
       <option name="ignoredPackages">
         <value>
-           <list size="62">
+          <list size="62">
             <item index="0" class="java.lang.String" itemvalue="tensorflow" />
             <item index="1" class="java.lang.String" itemvalue="psutil" />
             <item index="2" class="java.lang.String" itemvalue="pandas" />
