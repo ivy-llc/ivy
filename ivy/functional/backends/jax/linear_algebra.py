@@ -1,5 +1,4 @@
 # global
-from multiprocessing.dummy import Array
 import jax
 import jax.numpy as jnp
 from typing import Union, Optional, Tuple, Literal, List
