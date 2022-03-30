@@ -115,7 +115,20 @@ def slogdet(x:Union[_ivy.Array,_ivy.NativeArray],full_matrices: bool = True) -> 
     sign, logabsdet = torch.linalg.slogdet(x)
     res = results(sign, logabsdet)
     return res
+def solve(x1: torch.Tensor, x2: torch.Tensor) -> torch.Tensor:
+     dtype_from = torch.promote_types(x1.dtype, x2.dtype)
+     x1 = x1.type(dtype_from)
+     x2 = x2.type(dtype_from)
 
+     if x1.numel() == 0 or x2.numel() == 0:
+         raise Exception('Tensor with no values is ambiguous')
+
+     if det(x1) == 0:
+         raise Exception('Matrix is singular')
+
+     res = torch.linalg.solve(x1, x2)
+     return res.type(dtype_from)
+     
 def tensordot(x1: torch.Tensor, x2: torch.Tensor,
               axes: Union[int, Tuple[List[int], List[int]]] = 2) \
         -> torch.Tensor:
