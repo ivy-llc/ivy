@@ -11,6 +11,7 @@ from ivy.functional.ivy.device import default_device
 from ivy.functional.ivy import default_dtype
 from jaxlib.xla_extension import Buffer, Device, DeviceArray
 from jax.interpreters.xla import _DeviceArray
+from jax.dlpack import from_dlpack as jax_from_dlpack
 
 def ones(shape: Union[int, Tuple[int], List[int]],
          dtype: Optional[jnp.dtype] = None,
@@ -139,6 +140,9 @@ def full(shape, fill_value, dtype=None, device=None):
 
 
 meshgrid = lambda *xs, indexing='ij': jnp.meshgrid(*xs, indexing=indexing)
+
+
+from_dlpack = lambda x: jax_from_dlpack(x)
 
 # Extra #
 # ------#

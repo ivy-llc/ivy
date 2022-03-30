@@ -175,6 +175,8 @@ def full(shape, fill_value, dtype=None, device=None):
 meshgrid = lambda *xs, indexing='ij': tf.meshgrid(*xs, indexing=indexing)
 
 
+from_dlpack = lambda x: tf.experimental.dlpack.from_dlpack(x)
+
 # Extra #
 # ------#
 
