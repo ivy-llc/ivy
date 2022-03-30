@@ -120,12 +120,12 @@ def trace(x: np.ndarray,
         -> np.ndarray:
     return np.trace(x, offset)
 
-def vecdot(x1: np.ndarray, 
-        x2: np.ndarray, 
+def vecdot(x1: np.array, 
+        x2: np.array, 
         axis: int = -1)  \
-        -> np.ndarray:
+        -> np.array:
 
-    return np.dot(x1, x2, axis)
+    return np.dot(x1, x2)
 
 def det(x: np.array) \
         -> np.array:
