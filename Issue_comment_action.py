@@ -40,7 +40,7 @@ def issue_in_comment(cmt_bd):
 
 def comment_title(cid):
     x = command(f'gh issue view {int(cid[1:])} --json title')
-    return x['title']
+    return x['title'].strip()
 
 
 def functions_titles(issues_ids):
