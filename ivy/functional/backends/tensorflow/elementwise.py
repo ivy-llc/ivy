@@ -7,6 +7,17 @@ import typing
 import ivy
 
 
+def bitwise_xor(x1: Tensor,
+                x2: Tensor)\
+        -> Tensor:
+    if not isinstance(x2, Tensor):
+        x2 = tf.constant(x2, dtype=x1.dtype)
+    if ('int' not in str(x1.dtype)) & ('int' not in str(x2.dtype)):
+        return tf.math.logical_xor(x1, x2)
+    x1, x2 = _cast_for_binary_op(x1, x2)
+    return tf.bitwise.bitwise_xor(x1, x2)
+
+
 def expm1(x: Tensor)\
         -> Tensor:
     return tf.math.expm1(x)
