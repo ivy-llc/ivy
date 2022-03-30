@@ -10,6 +10,10 @@ import ivy
 def bitwise_xor(x1: Tensor,
                 x2: Tensor)\
         -> Tensor:
+    if 'int' not in str(x1.dtype):
+        x1 = tf.cast(x1, tf.int8)
+    if 'int' not in str(x2.dtype):
+        x2 = tf.cast(x2, tf.int8)
     return tf.bitwise.bitwise_xor(x1, x2)
 
 

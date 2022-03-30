@@ -10,7 +10,9 @@ except (ImportError, ModuleNotFoundError):
 def bitwise_xor(x1: np.ndarray,
                 x2: np.ndarray)\
         -> np.ndarray:
-    return np.bitwise_xor(x1, x2)
+    if not isinstance(x2, np.ndarray):
+        x2 = np.asarray(x2, dtype=x1.dtype)
+    return npa.bitwise_xor(npa.asarray(x1), npa.asarray(x2))
 
 def expm1(x: np.ndarray)\
         -> np.ndarray:
