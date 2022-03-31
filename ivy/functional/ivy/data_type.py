@@ -101,7 +101,7 @@ def dtype(x: Union[ivy.Array, ivy.NativeArray], as_str: bool = False)\
     :return: Data type of the array
     """
     return _cur_framework(x).dtype(x, as_str)
-    
+
 def cast(x: Union[ivy.Array, ivy.NativeArray], dtype: ivy.Dtype)\
          -> Union[ivy.Array, ivy.NativeArray]:
      """
@@ -116,9 +116,6 @@ def cast(x: Union[ivy.Array, ivy.NativeArray], dtype: ivy.Dtype)\
      :return: A new array of the same shape as input array a, with data type given by dtype.
      """
      return _cur_framework(x).cast(x, dtype)
-
-
- astype = cast
 
 # noinspection PyShadowingNames
 def astype(x: Union[ivy.Array, ivy.NativeArray], dtype: ivy.Dtype, copy: bool = True)\
