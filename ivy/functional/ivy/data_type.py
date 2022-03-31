@@ -119,8 +119,7 @@ def cast(x: Union[ivy.Array, ivy.NativeArray], dtype: ivy.Dtype)\
 
 # noinspection PyShadowingNames
 def astype(x: Union[ivy.Array, ivy.NativeArray], dtype: ivy.Dtype, copy: bool = True)\
-     -> Union[ivy.Array, ivy.NativeArray]:
-
+         -> ivy.Array:
      """
      Copies an array to a specified data type irrespective of Type Promotion Rules.
 
