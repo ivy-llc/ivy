@@ -134,7 +134,7 @@ def linspace(start, stop, num, axis=None, dev=None):
     with tf.device(ivy.dev_from_str(dev)):
         return tf.linspace(start, stop, num, axis=axis)
 
-def meshgrid(*arrays: tf.Tensor, indexing: str = 'xy')\
+def meshgrid(*arrays: List[tf.Tensor], indexing: str = 'xy')\
         -> List[tf.Tensor]:
     return tf.meshgrid(*arrays, indexing=indexing)
 
