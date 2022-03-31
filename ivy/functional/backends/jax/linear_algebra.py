@@ -141,7 +141,13 @@ def eigvalsh(x: JaxArray) -> JaxArray:
 def matrix_rank(vector: JaxArray,
                 rtol: Optional[Union[float, Tuple[float]]] = None) \
         -> JaxArray:
-    return jnp.linalg.matrix_rank(vector, rtol)
+        if vector.size == 0:
+            return 0
+        if vector.size == 1:
+            return jnp.count_nonzero(vector)
+        if vector.ndim >2:
+            vector = vector.reshape([-1])
+        return jnp.linalg.matrix_rank(vector, rtol)
 
 
 def cross (x1: JaxArray,
