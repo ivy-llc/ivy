@@ -5,7 +5,7 @@ import numpy as _np
 from collections import namedtuple
 from mxnet.ndarray.ndarray import NDArray
 from typing import Union, Optional, Tuple, Literal
-from ivy.functional.backends.mxnet.old.general import matmul as _matmul
+
 
 
 # local
@@ -15,6 +15,11 @@ DET_THRESHOLD = 1e-12
 
 # Array API Standard #
 # -------------------#
+
+def eigh(x: mx.ndarray)\
+  ->mx.ndarray:
+    return mx.np.linalg.eigh(x)
+
 
 inv = mx.nd.linalg_inverse
 cholesky = lambda x: mx.np.linalg.cholesky(x.as_np_ndarray()).as_nd_ndarray()
@@ -29,13 +34,13 @@ def pinv(x):
         return inv(x)
     else:
         xT = mx.nd.swapaxes(x, -1, -2)
-        xT_x = _ivy.to_native(_matmul(xT, x))
+        xT_x = _ivy.to_native(matmul(xT, x))
         if mx.nd.linalg.det(xT_x) > DET_THRESHOLD:
-            return _matmul(inv(xT_x), xT)
+            return matmul(inv(xT_x), xT)
         else:
-            x_xT = _ivy.to_native(_matmul(x, xT))
+            x_xT = _ivy.to_native(matmul(x, xT))
             if mx.nd.linalg.det(x_xT) > DET_THRESHOLD:
-                return _matmul(xT, inv(x_xT))
+                return matmul(xT, inv(x_xT))
             else:
                 return xT
 
@@ -66,11 +71,18 @@ def svd(x: NDArray, full_matrices: bool = True) -> Union[NDArray, Tuple[NDArray,
     return mx.np.linalg.norm(x, p, axis, keepdims)
 
 
+def outer(x1: mx.nd.NDArray,
+          x2: mx.nd.NDArray)\
+        -> mx.nd.NDArray:
+    return mx.outer (x1,x2)
+
+
 def diagonal(x: NDArray,
              offset: int = 0,
              axis1: int = -2,
              axis2: int = -1) -> NDArray:
     return mx.nd.diag(x, k=offset, axis1=axis1, axis2=axis2)
+
 
 def slogdet(x: Union[_ivy.Array,_ivy.NativeArray],
             full_matrices: bool = True) -> Union[_ivy.Array, Tuple[_ivy.Array,...]]:
@@ -79,6 +91,7 @@ def slogdet(x: Union[_ivy.Array,_ivy.NativeArray],
     res = results(sign, logabsdet)
     
     return res
+
 
 def trace(x: NDArray,
           offset: int = 0)\
@@ -94,6 +107,7 @@ def det(x:mx.ndarray) \
     -> mx.ndarray:
     return mx.linalg.det(x)
 
+
 def cholesky(x: mx.nd.NDArray, 
              upper: bool = False) -> mx.nd.NDArray:
 
@@ -103,7 +117,49 @@ def cholesky(x: mx.nd.NDArray,
         axes = list(range(len(x.shape) - 2)) + [len(x.shape) - 1, len(x.shape) - 2]
         return mx.np.transpose(mx.np.linalg.cholesky(mx.np.transpose(x, axes=axes)),
                         axes=axes)
-        
+
+
+def eigvalsh(x: mx.ndarray.ndarray.NDArray) -> mx.ndarray.ndarray.NDArray:
+    return mx.np.linalg.eigvalsh(x)
+
+
+def cross (x1: mx.nd.NDArray,
+           x2: mx.nd.NDArray,
+           axis:int = -1) -> mx.nd.NDArray:
+    return mx.np.cross(a= x1, b = x2, axis= axis)
+
+def matrix_transpose(x, axes=None):
+    if axes is None:
+        num_dims = len(x.shape)
+        axes = list(range(num_dims))
+        axes.reverse()
+    return mx.nd.transpose(x, axes)
+
+
+def matmul(x1, x2):
+    expanded = False
+    x1_shape = list(x1.shape)
+    x2_shape = list(x2.shape)
+    if len(x1_shape) != 3:
+        num_x1_dims = len(x1_shape)
+        x1 = mx.nd.reshape(x1, [1]*max(2-num_x1_dims, 0) + [-1] + x1_shape[-min(num_x1_dims, 2):])
+        expanded = True
+    if len(x2_shape) != 3:
+        num_x2_dims = len(x2_shape)
+        x2 = mx.nd.reshape(x2, [1]*max(2-num_x2_dims, 0) + [-1] + x2_shape[-min(num_x2_dims, 2):])
+        expanded = True
+    x1_batch_size = x1.shape[0]
+    x2_batch_size = x2.shape[0]
+    if x1_batch_size > x2_batch_size:
+        x2 = mx.nd.tile(x2, (int(x1_batch_size/x2_batch_size), 1, 1))
+    elif x2_batch_size > x1_batch_size:
+        x1 = mx.nd.tile(x1, (int(x2_batch_size / x1_batch_size), 1, 1))
+    res = mx.nd.batch_dot(x1, x2)
+    if expanded:
+        return mx.nd.reshape(res, list(x1_shape[:-1]) + [res.shape[-1]])
+    return res
+
+
 # Extra #
 # ------#
 

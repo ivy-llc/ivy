@@ -3,7 +3,8 @@ import mxnet as mx
 import math
 import numpy as np
 from typing import Union, Tuple, Optional, List
-from ivy.functional.backends.mxnet import _flat_array_to_1_dim_array, _handle_flat_arrays_in_out, _handle_flat_arrays_in
+from ivy.functional.backends.mxnet import _flat_array_to_1_dim_array, _handle_flat_arrays_in_out, _handle_flat_arrays_in, _1_dim_array_to_flat_array
+
 
 def flip(x: mx.ndarray.ndarray.NDArray,
          axis: Optional[Union[int, Tuple[int], List[int]]] = None)\
@@ -29,6 +30,32 @@ def expand_dims(x: mx.ndarray.ndarray.NDArray,
     if x.shape == ():
         return _flat_array_to_1_dim_array(x)
     return mx.nd.expand_dims(x, axis)
+
+
+
+def stack(xs, axis=0):
+    if xs[0].shape == ():
+        return mx.nd.reshape(mx.nd.stack(*[_flat_array_to_1_dim_array(x) for x in xs], axis=axis), -1)
+    return mx.nd.stack(*xs, axis=axis)
+
+
+def squeeze(x, axis=None):
+    if x.shape == ():
+        if axis is None or axis == 0 or axis == -1:
+            return x
+        raise Exception('tried to squeeze a zero-dimensional input by axis {}'.format(axis))
+    res = mx.nd.squeeze(x, axis)
+    if axis is None:
+        return _1_dim_array_to_flat_array(res)
+    return res
+
+
+reshape = lambda x, new_shape: x.reshape(new_shape)
+
+
+@_handle_flat_arrays_in_out
+def concatenate(xs, axis=-1):
+    return mx.nd.concat(*xs, dim=axis)
 
 
 # Extra #
@@ -94,6 +121,11 @@ def constant_pad(x, pad_width, value=0):
 
 def zero_pad(x, pad_width):
     return constant_pad(x, pad_width, 0)
+
+
+@_handle_flat_arrays_in_out
+def clip(x, x_min, x_max):
+    return mx.nd.clip(mx.nd.array(x), x_min, x_max)
 
 
 swapaxes = mx.nd.swapaxes
