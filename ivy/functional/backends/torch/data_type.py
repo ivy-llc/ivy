@@ -64,7 +64,7 @@ def cast(x, dtype_in: str):
      dtype_val = ivy.dtype_from_str(dtype_in)
      return x.type(dtype_val)
 
-def astype(x: torch.Tensor, dtype: torch.dtype,/,*, copy: bool = True)\
+def astype(x: torch.Tensor, dtype: torch.dtype, copy: bool = True)\
      -> torch.Tensor:
      if copy:
          if x.dtype == dtype:
