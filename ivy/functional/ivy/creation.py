@@ -333,6 +333,28 @@ def meshgrid(*xs: Iterable[Union[ivy.Array, ivy.NativeArray]], indexing: str = '
     return _cur_framework().meshgrid(*xs, indexing=indexing)
 
 
+def from_dlpack(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
+    """
+    Returns a new array containing the data from another (array) object with a ``__dlpack__`` method.
+
+    Parameters
+    ----------
+    x: object
+        input (array) object.
+
+    Returns
+    -------
+    out: array
+        an array containing the data in `x`.
+
+        .. admonition:: Note
+           :class: note
+
+           The returned array may be either a copy or a view. See :ref:`data-interchange` for details.
+    """
+    return _cur_framework(x).from_dlpack(x)
+
+
 # Extra #
 # ------#
 
