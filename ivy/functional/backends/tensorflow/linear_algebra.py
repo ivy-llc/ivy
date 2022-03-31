@@ -1,13 +1,46 @@
 # global
 import tensorflow as tf
 from tensorflow.python.types.core import Tensor
-from typing import Union, Optional, Tuple, Literal
+from typing import Union, Optional, Tuple, Literal, List
 from collections import namedtuple
 
 # local
 from ivy import inf
 import ivy
 from collections import namedtuple
+
+
+# Array API Standard #
+# -------------------#
+
+def eigh(x: Tensor)\
+ -> Tensor:
+        return tf.linalg.eigh(x) 
+
+inv = tf.linalg.inv
+pinv = tf.linalg.pinv
+cholesky = tf.linalg.cholesky
+
+
+def tensordot(x1: Tensor, x2: Tensor,
+              axes: Union[int, Tuple[List[int], List[int]]] = 2) \
+        -> Tensor:
+
+    # find type to promote to
+    dtype = tf.experimental.numpy.promote_types(x1.dtype, x2.dtype)
+
+    # type casting to float32 which is acceptable for tf.tensordot
+    x1, x2 = tf.cast(x1, tf.float32), tf.cast(x2, tf.float32)
+
+    return tf.cast(tf.tensordot(x1, x2, axes), dtype)
+
+
+def pinv(x: Tensor,
+         rtol: Optional[Union[float, Tuple[float]]] = None) \
+        -> Tensor:
+    if rtol is None:
+        return tf.linalg.pinv(x)
+    return tf.linalg.pinv(tf.cast(x != 0, 'float32'), tf.cast(rtol != 0, 'float32'))
 
 
 def matrix_transpose(x: Tensor)\
@@ -38,6 +71,22 @@ def vector_norm(x: Tensor,
     return tn_normalized_vector
 
 
+def matrix_norm(x, p=2, axes=None, keepdims=False):
+    axes = (-2, -1) if axes is None else axes
+    if isinstance(axes, int):
+        raise Exception('if specified, axes must be a length-2 sequence of ints,'
+                        'but found {} of type {}'.format(axes, type(axes)))
+    if p == -float('inf'):
+        ret = tf.reduce_min(tf.reduce_sum(tf.abs(x), axis=axes[1], keepdims=True), axis=axes)
+    elif p == -1:
+        ret = tf.reduce_min(tf.reduce_sum(tf.abs(x), axis=axes[0], keepdims=True), axis=axes)
+    else:
+        ret = tf.linalg.norm(x, p, axes, keepdims)
+    if ret.shape == ():
+        return tf.expand_dims(ret, 0)
+    return ret
+
+
 # noinspection PyPep8Naming
 def svd(x:Tensor,full_matrices: bool = True) -> Union[Tensor, Tuple[Tensor,...]]:
     results=namedtuple("svd", "U S Vh")
@@ -49,6 +98,12 @@ def svd(x:Tensor,full_matrices: bool = True) -> Union[Tensor, Tuple[Tensor,...]]
     VT = tf.transpose(V, transpose_dims)
     res=results(U, D, VT)
     return res
+
+
+def outer(x1:tf.Tensor,
+          x2: tf.Tensor) \
+        -> tf.Tensor:
+    return tf.experimental.numpy.outer(x1, x2)
 
 
 def diagonal(x: tf.Tensor,
@@ -142,3 +197,49 @@ def trace(x: tf.Tensor,
           offset: int = 0)\
               -> tf.Tensor:
     return tf.trace(x, offset)
+
+
+def det(x:tf.Tensor,name:Optional[str]=None) \
+    -> tf.Tensor:
+    return tf.linalg.det(x,name)
+
+def cholesky(x: tf.Tensor,
+            upper: bool = False) -> tf.Tensor:
+    if not upper:
+        return tf.linalg.cholesky(x)
+    else:
+        axes = list(range(len(x.shape) - 2)) + [len(x.shape) - 1, len(x.shape) - 2]
+        return tf.transpose(tf.linalg.cholesky(tf.transpose(x, perm=axes)),
+                            perm=axes)
+
+
+def eigvalsh(x: Tensor) -> Tensor:
+    return tf.linalg.eigvalsh(x)
+
+
+def cross (x1: tf.Tensor,
+           x2: tf.Tensor,
+           axis:int = -1) -> tf.Tensor:
+    return tf.experimental.numpy.cross(x1, x2,axis=axis)
+
+
+# Extra #
+# ------#
+
+def vector_to_skew_symmetric_matrix(vector: Tensor)\
+        -> Tensor:
+    batch_shape = list(vector.shape[:-1])
+    # BS x 3 x 1
+    vector_expanded = tf.expand_dims(vector, -1)
+    # BS x 1 x 1
+    a1s = vector_expanded[..., 0:1, :]
+    a2s = vector_expanded[..., 1:2, :]
+    a3s = vector_expanded[..., 2:3, :]
+    # BS x 1 x 1
+    zs = tf.zeros(batch_shape + [1, 1])
+    # BS x 1 x 3
+    row1 = tf.concat((zs, -a3s, a2s), -1)
+    row2 = tf.concat((a3s, zs, -a1s), -1)
+    row3 = tf.concat((-a2s, a1s, zs), -1)
+    # BS x 3 x 3
+    return tf.concat((row1, row2, row3), -2)
