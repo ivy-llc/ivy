@@ -4,5 +4,6 @@ flip
 permute_dims
 #reshape
 #roll
-#squeeze
+squeeze
 stack
+
