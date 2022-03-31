@@ -36,7 +36,7 @@
   <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="expm1" href="elementwise/expm1.html" />
+    <link rel="next" title="bitwise_xor" href="elementwise/bitwise_xor.html" />
     <link rel="prev" title="Profiler" href="device/Profiler.html" /> 
 </head>
 
@@ -98,6 +98,7 @@
 <li class="toctree-l1"><a class="reference internal" href="data_type.html">Data type</a></li>
 <li class="toctree-l1"><a class="reference internal" href="device.html">Device</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Elementwise</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="elementwise/bitwise_xor.html">bitwise_xor</a></li>
 <li class="toctree-l2"><a class="reference internal" href="elementwise/expm1.html">expm1</a></li>
 <li class="toctree-l2"><a class="reference internal" href="elementwise/bitwise_invert.html">bitwise_invert</a></li>
 <li class="toctree-l2"><a class="reference internal" href="elementwise/bitwise_and.html">bitwise_and</a></li>
@@ -106,8 +107,10 @@
 <li class="toctree-l2"><a class="reference internal" href="elementwise/isfinite.html">isfinite</a></li>
 <li class="toctree-l2"><a class="reference internal" href="elementwise/asin.html">asin</a></li>
 <li class="toctree-l2"><a class="reference internal" href="elementwise/isinf.html">isinf</a></li>
+<li class="toctree-l2"><a class="reference internal" href="elementwise/greater.html">greater</a></li>
 <li class="toctree-l2"><a class="reference internal" href="elementwise/greater_equal.html">greater_equal</a></li>
 <li class="toctree-l2"><a class="reference internal" href="elementwise/less_equal.html">less_equal</a></li>
+<li class="toctree-l2"><a class="reference internal" href="elementwise/multiply.html">multiply</a></li>
 <li class="toctree-l2"><a class="reference internal" href="elementwise/asinh.html">asinh</a></li>
 <li class="toctree-l2"><a class="reference internal" href="elementwise/sqrt.html">sqrt</a></li>
 <li class="toctree-l2"><a class="reference internal" href="elementwise/cosh.html">cosh</a></li>
@@ -128,12 +131,14 @@
 <li class="toctree-l2"><a class="reference internal" href="elementwise/negative.html">negative</a></li>
 <li class="toctree-l2"><a class="reference internal" href="elementwise/not_equal.html">not_equal</a></li>
 <li class="toctree-l2"><a class="reference internal" href="elementwise/tanh.html">tanh</a></li>
+<li class="toctree-l2"><a class="reference internal" href="elementwise/floor_divide.html">floor_divide</a></li>
 <li class="toctree-l2"><a class="reference internal" href="elementwise/bitwise_or.html">bitwise_or</a></li>
 <li class="toctree-l2"><a class="reference internal" href="elementwise/sinh.html">sinh</a></li>
 <li class="toctree-l2"><a class="reference internal" href="elementwise/positive.html">positive</a></li>
 <li class="toctree-l2"><a class="reference internal" href="elementwise/square.html">square</a></li>
 <li class="toctree-l2"><a class="reference internal" href="elementwise/logaddexp.html">logaddexp</a></li>
 <li class="toctree-l2"><a class="reference internal" href="elementwise/round.html">round</a></li>
+<li class="toctree-l2"><a class="reference internal" href="elementwise/trunc.html">trunc</a></li>
 <li class="toctree-l2"><a class="reference internal" href="elementwise/abs.html">abs</a></li>
 <li class="toctree-l2"><a class="reference internal" href="elementwise/tan.html">tan</a></li>
 <li class="toctree-l2"><a class="reference internal" href="elementwise/asin.html">asin</a></li>
@@ -147,7 +152,11 @@
 <li class="toctree-l2"><a class="reference internal" href="elementwise/subtract.html">subtract</a></li>
 <li class="toctree-l2"><a class="reference internal" href="elementwise/divide.html">divide</a></li>
 <li class="toctree-l2"><a class="reference internal" href="elementwise/remainder.html">remainder</a></li>
+<li class="toctree-l2"><a class="reference internal" href="elementwise/bitwise_right_shift.html">bitwise_right_shift</a></li>
+<li class="toctree-l2"><a class="reference internal" href="elementwise/equal.html">equal</a></li>
 <li class="toctree-l2"><a class="reference internal" href="elementwise/erf.html">erf</a></li>
+<li class="toctree-l2"><a class="reference internal" href="elementwise/minimum.html">minimum</a></li>
+<li class="toctree-l2"><a class="reference internal" href="elementwise/maximum.html">maximum</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="general.html">General</a></li>
@@ -389,17 +398,43 @@ x: array</p>
 <dl class="py function">
 <dt id="ivy.functional.ivy.elementwise.atan2">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">atan2</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x1</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">x2</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../_modules/ivy/functional/ivy/elementwise.html#atan2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.elementwise.atan2" title="Permalink to this definition">¶</a></dt>
-<dd><p>Computes element-wise arc tangent of x1/x2 choosing the quadrant correctly.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>x1</strong> (<em>array</em>) – y-coordinates.</p></li>
-<li><p><strong>x2</strong> (<em>array</em>) – x-coordinates. If x1.shape != x2.shape, they must be broadcastable to a common shape
-(which becomes the shape of the output).</p></li>
+<dd><p>Calculates an implementation-dependent approximation of the inverse tangent of the quotient <code class="docutils literal notranslate"><span class="pre">x1/x2</span></code>, having domain <code class="docutils literal notranslate"><span class="pre">[-infinity,</span> <span class="pre">+infinity]</span> <span class="pre">x</span> <span class="pre">[-infinity,</span> <span class="pre">+infinity]</span></code> (where the <code class="docutils literal notranslate"><span class="pre">x</span></code> notation denotes the set of ordered pairs of elements <code class="docutils literal notranslate"><span class="pre">(x1_i,</span> <span class="pre">x2_i)</span></code>) and codomain <code class="docutils literal notranslate"><span class="pre">[-π,</span> <span class="pre">+π]</span></code>, for each pair of elements <code class="docutils literal notranslate"><span class="pre">(x1_i,</span> <span class="pre">x2_i)</span></code> of the input arrays <code class="docutils literal notranslate"><span class="pre">x1</span></code> and <code class="docutils literal notranslate"><span class="pre">x2</span></code>, respectively. Each element-wise result is expressed in radians.
+The mathematical signs of <code class="docutils literal notranslate"><span class="pre">x1_i</span> <span class="pre">and</span> <span class="pre">x2_i</span></code> determine the quadrant of each element-wise result. The quadrant (i.e., branch) is chosen such that each element-wise result is the signed angle in radians between the ray ending at the origin and passing through the point <code class="docutils literal notranslate"><span class="pre">(1,0)</span></code> and the ray ending at the origin and passing through the point <code class="docutils literal notranslate"><span class="pre">(x2_i,</span> <span class="pre">x1_i)</span></code>.</p>
+<p><strong>Special cases</strong></p>
+<p>For floating-point operands,</p>
+<ul class="simple">
+<li><p>If either <code class="docutils literal notranslate"><span class="pre">x1_i</span></code> or <code class="docutils literal notranslate"><span class="pre">x2_i</span></code> is <code class="docutils literal notranslate"><span class="pre">NaN</span></code>, the result is <code class="docutils literal notranslate"><span class="pre">NaN</span></code>.</p></li>
+<li><p>If <code class="docutils literal notranslate"><span class="pre">x1_i</span></code> is greater than <code class="docutils literal notranslate"><span class="pre">0</span></code> and <code class="docutils literal notranslate"><span class="pre">x2_i</span></code> is <code class="docutils literal notranslate"><span class="pre">+0</span></code>, the result is an approximation to <code class="docutils literal notranslate"><span class="pre">+π/2</span></code>.</p></li>
+<li><p>If <code class="docutils literal notranslate"><span class="pre">x1_i</span></code> is greater than <code class="docutils literal notranslate"><span class="pre">0</span></code> and <code class="docutils literal notranslate"><span class="pre">x2_i</span></code> is <code class="docutils literal notranslate"><span class="pre">-0</span></code>, the result is an approximation to <code class="docutils literal notranslate"><span class="pre">+π/2</span></code>.</p></li>
+<li><p>If <code class="docutils literal notranslate"><span class="pre">x1_i</span></code> is <code class="docutils literal notranslate"><span class="pre">+0</span></code> and <code class="docutils literal notranslate"><span class="pre">x2_i</span></code> is greater than <code class="docutils literal notranslate"><span class="pre">0</span></code>, the result is <code class="docutils literal notranslate"><span class="pre">+0</span></code>.</p></li>
+<li><p>If <code class="docutils literal notranslate"><span class="pre">x1_i</span></code> is <code class="docutils literal notranslate"><span class="pre">+0</span></code> and <code class="docutils literal notranslate"><span class="pre">x2_i</span></code> is <code class="docutils literal notranslate"><span class="pre">+0</span></code>, the result is <code class="docutils literal notranslate"><span class="pre">+0</span></code>.</p></li>
+<li><p>If <code class="docutils literal notranslate"><span class="pre">x1_i</span></code> is <code class="docutils literal notranslate"><span class="pre">+0</span></code> and <code class="docutils literal notranslate"><span class="pre">x2_i</span></code> is <code class="docutils literal notranslate"><span class="pre">-0</span></code>, the result is an approximation to <code class="docutils literal notranslate"><span class="pre">+π</span></code>.</p></li>
+<li><p>If <code class="docutils literal notranslate"><span class="pre">x1_i</span></code> is <code class="docutils literal notranslate"><span class="pre">+0</span></code> and <code class="docutils literal notranslate"><span class="pre">x2_i</span></code> is less than 0, the result is an approximation to <code class="docutils literal notranslate"><span class="pre">+π</span></code>.</p></li>
+<li><p>If <code class="docutils literal notranslate"><span class="pre">x1_i</span></code> is <code class="docutils literal notranslate"><span class="pre">-0</span></code> and <code class="docutils literal notranslate"><span class="pre">x2_i</span></code> is greater than <code class="docutils literal notranslate"><span class="pre">0</span></code>, the result is <code class="docutils literal notranslate"><span class="pre">-0</span></code>.</p></li>
+<li><p>If <code class="docutils literal notranslate"><span class="pre">x1_i</span></code> is <code class="docutils literal notranslate"><span class="pre">-0</span></code> and <code class="docutils literal notranslate"><span class="pre">x2_i</span></code> is <code class="docutils literal notranslate"><span class="pre">+0</span></code>, the result is <code class="docutils literal notranslate"><span class="pre">-0</span></code>.</p></li>
+<li><p>If <code class="docutils literal notranslate"><span class="pre">x1_i</span></code> is <code class="docutils literal notranslate"><span class="pre">-0</span></code> and <code class="docutils literal notranslate"><span class="pre">x2_i</span></code> is <code class="docutils literal notranslate"><span class="pre">-0</span></code>, the result is an approximation to <code class="docutils literal notranslate"><span class="pre">-π</span></code>.</p></li>
+<li><p>If <code class="docutils literal notranslate"><span class="pre">x1_i</span></code> is <code class="docutils literal notranslate"><span class="pre">-0</span></code> and <code class="docutils literal notranslate"><span class="pre">x2_i</span></code> is less than <code class="docutils literal notranslate"><span class="pre">0</span></code>, the result is an approximation to <code class="docutils literal notranslate"><span class="pre">-π</span></code>.</p></li>
+<li><p>If <code class="docutils literal notranslate"><span class="pre">x1_i</span></code> is less than <code class="docutils literal notranslate"><span class="pre">0</span></code> and <code class="docutils literal notranslate"><span class="pre">x2_i</span></code> is <code class="docutils literal notranslate"><span class="pre">+0</span></code>, the result is an approximation to <code class="docutils literal notranslate"><span class="pre">-π/2</span></code>.</p></li>
+<li><p>If <code class="docutils literal notranslate"><span class="pre">x1_i</span></code> is less than <code class="docutils literal notranslate"><span class="pre">0</span></code> and <code class="docutils literal notranslate"><span class="pre">x2_i</span></code> is <code class="docutils literal notranslate"><span class="pre">-0</span></code>, the result is an approximation to <code class="docutils literal notranslate"><span class="pre">-π/2</span></code>.</p></li>
+<li><p>If <code class="docutils literal notranslate"><span class="pre">x1_i</span></code> is greater than <code class="docutils literal notranslate"><span class="pre">0</span></code>, <code class="docutils literal notranslate"><span class="pre">x1_i</span></code> is a finite number, and <code class="docutils literal notranslate"><span class="pre">x2_i</span></code> is <code class="docutils literal notranslate"><span class="pre">+infinity</span></code>, the result is <code class="docutils literal notranslate"><span class="pre">+0</span></code>.</p></li>
+<li><p>If <code class="docutils literal notranslate"><span class="pre">x1_i</span></code> is greater than <code class="docutils literal notranslate"><span class="pre">0</span></code>, <code class="docutils literal notranslate"><span class="pre">x1_i</span></code> is a finite number, and <code class="docutils literal notranslate"><span class="pre">x2_i</span></code> is <code class="docutils literal notranslate"><span class="pre">-infinity</span></code>, the result is an approximation to <code class="docutils literal notranslate"><span class="pre">+π</span></code>.</p></li>
+<li><p>If <code class="docutils literal notranslate"><span class="pre">x1_i</span></code> is less than <code class="docutils literal notranslate"><span class="pre">0</span></code>, <code class="docutils literal notranslate"><span class="pre">x1_i</span></code> is a finite number, and <code class="docutils literal notranslate"><span class="pre">x2_i</span></code> is <code class="docutils literal notranslate"><span class="pre">+infinity</span></code>, the result is <code class="docutils literal notranslate"><span class="pre">-0</span></code>.</p></li>
+<li><p>If <code class="docutils literal notranslate"><span class="pre">x1_i</span></code> is less than <code class="docutils literal notranslate"><span class="pre">0</span></code>, <code class="docutils literal notranslate"><span class="pre">x1_i</span></code> is a finite number, and <code class="docutils literal notranslate"><span class="pre">x2_i</span></code> is <code class="docutils literal notranslate"><span class="pre">-infinity</span></code>, the result is an approximation to <code class="docutils literal notranslate"><span class="pre">-π</span></code>.</p></li>
+<li><p>If <code class="docutils literal notranslate"><span class="pre">x1_i</span></code> is <code class="docutils literal notranslate"><span class="pre">+infinity</span></code> and <code class="docutils literal notranslate"><span class="pre">x2_i</span></code> is finite, the result is an approximation to <code class="docutils literal notranslate"><span class="pre">+π/2</span></code>.</p></li>
+<li><p>If <code class="docutils literal notranslate"><span class="pre">x1_i</span></code> is <code class="docutils literal notranslate"><span class="pre">-infinity</span></code> and <code class="docutils literal notranslate"><span class="pre">x2_i</span></code> is finite, the result is an approximation to <code class="docutils literal notranslate"><span class="pre">-π/2</span></code>.</p></li>
+<li><p>If <code class="docutils literal notranslate"><span class="pre">x1_i</span></code> is <code class="docutils literal notranslate"><span class="pre">+infinity</span></code> and <code class="docutils literal notranslate"><span class="pre">x2_i</span></code> is <code class="docutils literal notranslate"><span class="pre">+infinity</span></code>, the result is an approximation to <code class="docutils literal notranslate"><span class="pre">+π/4</span></code>.</p></li>
+<li><p>If <code class="docutils literal notranslate"><span class="pre">x1_i</span></code> is <code class="docutils literal notranslate"><span class="pre">+infinity</span></code> and <code class="docutils literal notranslate"><span class="pre">x2_i</span></code> is <code class="docutils literal notranslate"><span class="pre">-infinity</span></code>, the result is an approximation to <code class="docutils literal notranslate"><span class="pre">+3π/4</span></code>.</p></li>
+<li><p>If <code class="docutils literal notranslate"><span class="pre">x1_i</span></code> is <code class="docutils literal notranslate"><span class="pre">-infinity</span></code> and <code class="docutils literal notranslate"><span class="pre">x2_i</span></code> is <code class="docutils literal notranslate"><span class="pre">+infinity</span></code>, the result is an approximation to <code class="docutils literal notranslate"><span class="pre">-π/4</span></code>.</p></li>
+<li><p>If <code class="docutils literal notranslate"><span class="pre">x1_i</span></code> is <code class="docutils literal notranslate"><span class="pre">-infinity</span></code> and <code class="docutils literal notranslate"><span class="pre">x2_i</span></code> is <code class="docutils literal notranslate"><span class="pre">-infinity</span></code>, the result is an approximation to <code class="docutils literal notranslate"><span class="pre">-3π/4</span></code>.</p></li>
 </ul>
+<dl class="simple">
+<dt>x1:</dt><dd><p>input array corresponding to the y-coordinates. Should have a floating-point data type.</p>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Array of angles in radians, in the range [-pi, pi].</p>
+<dt>x2:</dt><dd><p>input array corresponding to the x-coordinates. Must be compatible with <code class="docutils literal notranslate"><span class="pre">x1</span></code>. Should have a floating-point data type.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>out:</dt><dd><p>an array containing the inverse tangent of the quotient <code class="docutils literal notranslate"><span class="pre">x1/x2</span></code>. The returned array must have a floating-point data type.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -410,12 +445,10 @@ x: array</p>
 <dd><p>Returns a new array with the inverse hyperbolic tangent of the elements of x.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>x</strong> – Input array.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>A new array with the inverse hyperbolic tangent of the elements of x.</p>
+<dd class="field-odd"><p><strong>x</strong> – input array whose elements each represent the area of a hyperbolic sector. Should have a floating-point data type.</p>
 </dd>
 </dl>
+<p>:return:an array containing the inverse hyperbolic tangent of each element in x. The returned array must have a floating-point data type determined by Type Promotion Rules.</p>
 </dd></dl>
 
 <dl class="py function">
@@ -460,6 +493,46 @@ x: array</p>
 </dl>
 <dl class="simple">
 <dt>out:</dt><dd><p>an array containing the element-wise results. The returned array must have a data type determined by <span class="xref std std-ref">type-promotion</span>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.elementwise.bitwise_right_shift">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">bitwise_right_shift</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x1</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">x2</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../_modules/ivy/functional/ivy/elementwise.html#bitwise_right_shift"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.elementwise.bitwise_right_shift" title="Permalink to this definition">¶</a></dt>
+<dd><p>Shifts the bits of each element <code class="docutils literal notranslate"><span class="pre">x1_i</span></code> of the input array <code class="docutils literal notranslate"><span class="pre">x1</span></code> to the right according to the respective element <code class="docutils literal notranslate"><span class="pre">x2_i</span></code> of the input array <code class="docutils literal notranslate"><span class="pre">x2</span></code>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This operation must be an arithmetic shift (i.e., sign-propagating) and thus equivalent to floor division by a power of two.</p>
+</div>
+<dl class="simple">
+<dt>x1:</dt><dd><p>first input array. Should have an integer data type.</p>
+</dd>
+<dt>x2:</dt><dd><p>second input array. Must be compatible with <code class="docutils literal notranslate"><span class="pre">x1</span></code> (see <span class="xref std std-ref">broadcasting</span>). Should have an integer data type. Each element must be greater than or equal to 0.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>out:</dt><dd><p>out (array) – an array containing the element-wise results. The returned array must have a data type determined by <span class="xref std std-ref">Type Promotion Rules</span>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.elementwise.bitwise_xor">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">bitwise_xor</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x1</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">x2</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../_modules/ivy/functional/ivy/elementwise.html#bitwise_xor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.elementwise.bitwise_xor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the bitwise XOR of the underlying binary representation of each element <code class="docutils literal notranslate"><span class="pre">x1_i</span></code> of the input array <code class="docutils literal notranslate"><span class="pre">x1</span></code> with the respective element <code class="docutils literal notranslate"><span class="pre">x2_i</span></code> of the input array <code class="docutils literal notranslate"><span class="pre">x2</span></code>.
+Parameters
+———-
+x1: array</p>
+<blockquote>
+<div><p>first input array. Should have an integer or boolean data type.</p>
+</div></blockquote>
+<dl class="simple">
+<dt>x2: array</dt><dd><p>second input array. Must be compatible with <code class="docutils literal notranslate"><span class="pre">x1</span></code> (see <span class="xref std std-ref">broadcasting</span>). Should have an integer or boolean data type.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>out: array</dt><dd><p>an array containing the element-wise results. The returned array must have a data type determined by <span class="xref std std-ref">type-promotion</span>.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -547,6 +620,24 @@ determined by Type Promotion Rules.</p>
 </dd></dl>
 
 <dl class="py function">
+<dt id="ivy.functional.ivy.elementwise.equal">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">equal</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x1</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">x2</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../_modules/ivy/functional/ivy/elementwise.html#equal"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.elementwise.equal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the truth value of x1_i == x2_i for each element x1_i of the input array x1 with the respective
+element x2_i of the input array x2.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x1</strong> – first input array. May have any data type.</p></li>
+<li><p><strong>x2</strong> – second input array. Must be compatible with x1 (with Broadcasting). May have any data type.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>an array containing the element-wise results. The returned array must have a data type of bool.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt id="ivy.functional.ivy.elementwise.erf">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">erf</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/elementwise.html#erf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.elementwise.erf" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes the Gauss error function of x element-wise.</p>
@@ -623,6 +714,44 @@ x: array</p>
 </dl>
 <dl class="simple">
 <dt>out:</dt><dd><p>an array containing the rounded result for each element in <code class="docutils literal notranslate"><span class="pre">x</span></code>. The returned array must have the same data type as <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.elementwise.floor_divide">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">floor_divide</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x1</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">x2</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../_modules/ivy/functional/ivy/elementwise.html#floor_divide"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.elementwise.floor_divide" title="Permalink to this definition">¶</a></dt>
+<dd><p>Rounds the result of dividing each element x1_i of the input array x1 by the respective element x2_i
+of the input array x2 to the greatest (i.e., closest to +infinity) integer-value number that is not
+greater than the division result.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x1</strong> – first input array. Must have a numeric data type.</p></li>
+<li><p><strong>x2</strong> – second input array. Must be compatible with x1 (with Broadcasting). Must have a numeric data type.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>an array containing the element-wise results. The returned array must have a numeric data type.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.elementwise.greater">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">greater</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x1</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">x2</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../_modules/ivy/functional/ivy/elementwise.html#greater"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.elementwise.greater" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the truth value of x1_i &lt; x2_i for each element x1_i of the input array x1 with the respective
+element x2_i of the input array x2.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x1</strong> – Input array.</p></li>
+<li><p><strong>x2</strong> – Input array.</p></li>
+<li><p><strong>f</strong> – Machine learning framework. Inferred from inputs if None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>an array containing the element-wise results. The returned array must have a data type of bool.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -897,6 +1026,73 @@ x1: array</p>
 </dd></dl>
 
 <dl class="py function">
+<dt id="ivy.functional.ivy.elementwise.maximum">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">maximum</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">, </span>numbers.Number<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">y</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">, </span>numbers.Number<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/elementwise.html#maximum"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.elementwise.maximum" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the max of x and y (i.e. x &gt; y ? x : y) element-wise.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>array</em>) – Input array containing elements to maximum threshold.</p></li>
+<li><p><strong>y</strong> (<em>array</em>) – Tensor containing maximum values, must be broadcastable to x.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>An array with the elements of x, but clipped to not be lower than the y values.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.elementwise.minimum">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">minimum</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">y</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/elementwise.html#minimum"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.elementwise.minimum" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the min of x and y (i.e. x &lt; y ? x : y) element-wise.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>array</em>) – Input array containing elements to minimum threshold.</p></li>
+<li><p><strong>y</strong> (<em>array</em>) – Tensor containing minimum values, must be broadcastable to x.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>An array with the elements of x, but clipped to not exceed the y values.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.elementwise.multiply">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">multiply</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x1</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">x2</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../_modules/ivy/functional/ivy/elementwise.html#multiply"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.elementwise.multiply" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the product for each element <code class="docutils literal notranslate"><span class="pre">x1_i</span></code> of the input array <code class="docutils literal notranslate"><span class="pre">x1</span></code> with the respective element <code class="docutils literal notranslate"><span class="pre">x2_i</span></code> of the input array <code class="docutils literal notranslate"><span class="pre">x2</span></code>.</p>
+<p><strong>Special cases</strong></p>
+<p>For floating-point operands,</p>
+<ul class="simple">
+<li><p>If either <code class="docutils literal notranslate"><span class="pre">x1_i</span></code> or <code class="docutils literal notranslate"><span class="pre">x2_i</span></code> is <code class="docutils literal notranslate"><span class="pre">NaN</span></code>, the result is <code class="docutils literal notranslate"><span class="pre">NaN</span></code>.</p></li>
+<li><p>If <code class="docutils literal notranslate"><span class="pre">x1_i</span></code> is either <code class="docutils literal notranslate"><span class="pre">+infinity</span></code> or <code class="docutils literal notranslate"><span class="pre">-infinity</span></code> and <code class="docutils literal notranslate"><span class="pre">x2_i</span></code> is either <code class="docutils literal notranslate"><span class="pre">+0</span></code> or <code class="docutils literal notranslate"><span class="pre">-0</span></code>, the result is <code class="docutils literal notranslate"><span class="pre">NaN</span></code>.</p></li>
+<li><p>If <code class="docutils literal notranslate"><span class="pre">x1_i</span></code> is either <code class="docutils literal notranslate"><span class="pre">+0</span></code> or <code class="docutils literal notranslate"><span class="pre">-0</span></code> and <code class="docutils literal notranslate"><span class="pre">x2_i</span></code> is either <code class="docutils literal notranslate"><span class="pre">+infinity</span></code> or <code class="docutils literal notranslate"><span class="pre">-infinity</span></code>, the result is <code class="docutils literal notranslate"><span class="pre">NaN</span></code>.</p></li>
+<li><p>If <code class="docutils literal notranslate"><span class="pre">x1_i</span></code> and <code class="docutils literal notranslate"><span class="pre">x2_i</span></code> have the same mathematical sign, the result has a positive mathematical sign, unless the result is <code class="docutils literal notranslate"><span class="pre">NaN</span></code>. If the result is <code class="docutils literal notranslate"><span class="pre">NaN</span></code>, the “sign” of <code class="docutils literal notranslate"><span class="pre">NaN</span></code> is implementation-defined.</p></li>
+<li><p>If <code class="docutils literal notranslate"><span class="pre">x1_i</span></code> and <code class="docutils literal notranslate"><span class="pre">x2_i</span></code> have different mathematical signs, the result has a negative mathematical sign, unless the result is <code class="docutils literal notranslate"><span class="pre">NaN</span></code>. If the result is <code class="docutils literal notranslate"><span class="pre">NaN</span></code>, the “sign” of <code class="docutils literal notranslate"><span class="pre">NaN</span></code> is implementation-defined.</p></li>
+<li><p>If <code class="docutils literal notranslate"><span class="pre">x1_i</span></code> is either <code class="docutils literal notranslate"><span class="pre">+infinity</span></code> or <code class="docutils literal notranslate"><span class="pre">-infinity</span></code> and <code class="docutils literal notranslate"><span class="pre">x2_i</span></code> is either <code class="docutils literal notranslate"><span class="pre">+infinity</span></code> or <code class="docutils literal notranslate"><span class="pre">-infinity</span></code>, the result is a signed infinity with the mathematical sign determined by the rule already stated above.</p></li>
+<li><p>If <code class="docutils literal notranslate"><span class="pre">x1_i</span></code> is either <code class="docutils literal notranslate"><span class="pre">+infinity</span></code> or <code class="docutils literal notranslate"><span class="pre">-infinity</span></code> and <code class="docutils literal notranslate"><span class="pre">x2_i</span></code> is a nonzero finite number, the result is a signed infinity with the mathematical sign determined by the rule already stated above.</p></li>
+<li><p>If <code class="docutils literal notranslate"><span class="pre">x1_i</span></code> is a nonzero finite number and <code class="docutils literal notranslate"><span class="pre">x2_i</span></code> is either <code class="docutils literal notranslate"><span class="pre">+infinity</span></code> or <code class="docutils literal notranslate"><span class="pre">-infinity</span></code>, the result is a signed infinity with the mathematical sign determined by the rule already stated above.</p></li>
+</ul>
+<p>In the remaining cases, where neither <code class="docutils literal notranslate"><span class="pre">infinity</span></code> nor <code class="docutils literal notranslate"><span class="pre">NaN</span></code> is involved, the product must be computed and rounded to the nearest representable value according to IEEE 754-2019 and a supported rounding mode. If the magnitude is too large to represent, the result is an <code class="docutils literal notranslate"><span class="pre">infinity</span></code> of appropriate mathematical sign. If the magnitude is too small to represent, the result is a zero of appropriate mathematical sign.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Floating-point multiplication is not always associative due to finite precision.</p>
+</div>
+<dl class="simple">
+<dt>x1:</dt><dd><p>first input array. Should have a numeric data type.</p>
+</dd>
+<dt>x2:</dt><dd><p>second input array. Must be compatible with <code class="docutils literal notranslate"><span class="pre">x1</span></code> (see <span class="xref std std-ref">Broadcasting</span>). Should have a numeric data type.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>out:</dt><dd><p>an array containing the element-wise products. The returned array must have a data type determined by <span class="xref std std-ref">Type Promotion Rules</span>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt id="ivy.functional.ivy.elementwise.negative">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">negative</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../_modules/ivy/functional/ivy/elementwise.html#negative"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.elementwise.negative" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes the numerical negative of each element</p>
@@ -1123,6 +1319,30 @@ Equivalent to f.sin(x)/f.cos(x) element-wise.</p>
 </dl>
 </dd></dl>
 
+<dl class="py function">
+<dt id="ivy.functional.ivy.elementwise.trunc">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">trunc</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../_modules/ivy/functional/ivy/elementwise.html#trunc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.elementwise.trunc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Rounds each element x_i of the input array x to the integer-valued number that is closest to but no greater than
+x_i.</p>
+<p><strong>Special cases</strong>
+- If <code class="docutils literal notranslate"><span class="pre">x_i</span></code> is already an integer-valued, the result is <code class="docutils literal notranslate"><span class="pre">x_i</span></code>.</p>
+<p>For floating-point operands,
+- If <code class="docutils literal notranslate"><span class="pre">x_i</span></code> is <code class="docutils literal notranslate"><span class="pre">+infinity</span></code>, the result is <code class="docutils literal notranslate"><span class="pre">+infinity</span></code>.
+- If <code class="docutils literal notranslate"><span class="pre">x_i</span></code> is <code class="docutils literal notranslate"><span class="pre">-infinity</span></code>, the result is <code class="docutils literal notranslate"><span class="pre">-infinity</span></code>.
+- If <code class="docutils literal notranslate"><span class="pre">x_i</span></code> is <code class="docutils literal notranslate"><span class="pre">+0</span></code>, the result is <code class="docutils literal notranslate"><span class="pre">+0</span></code>.
+- If <code class="docutils literal notranslate"><span class="pre">x_i</span></code> is <code class="docutils literal notranslate"><span class="pre">-0</span></code>, the result is <code class="docutils literal notranslate"><span class="pre">-0</span></code>.
+- If <code class="docutils literal notranslate"><span class="pre">x_i</span></code> is <code class="docutils literal notranslate"><span class="pre">NaN</span></code>, the result is <code class="docutils literal notranslate"><span class="pre">NaN</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>x</strong> – input array. Should have a numeric data type.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>an array containing the values before the decimal point for each element <code class="docutils literal notranslate"><span class="pre">x</span></code>. The returned array must have
+the same data type as x.</p>
+</dd>
+</dl>
+</dd></dl>
+
 <div class="toctree-wrapper compound">
 </div>
 </div>
@@ -1135,7 +1355,7 @@ Equivalent to f.sin(x)/f.cos(x) element-wise.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="elementwise/expm1.html" class="btn btn-neutral float-right" title="expm1" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="elementwise/bitwise_xor.html" class="btn btn-neutral float-right" title="bitwise_xor" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="device/Profiler.html" class="btn btn-neutral float-left" title="Profiler" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>

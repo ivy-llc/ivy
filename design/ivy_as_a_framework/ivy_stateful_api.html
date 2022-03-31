@@ -222,11 +222,11 @@
             
   <div class="section" id="ivy-stateful-api">
 <h1>Ivy Stateful API<a class="headerlink" href="#ivy-stateful-api" title="Permalink to this headline">¶</a></h1>
-<p>Here we explain how Ivy’s stateful API builds on the functional API and the <em>ivy.Container</em> class to provide other convenient classes in the form of optimizers, network layers and custom trainable modules, which help get your ML projects up and running very quickly!</p>
+<p>Here we explain how Ivy’s stateful API builds on the functional API and the <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> class to provide other convenient classes in the form of optimizers, network layers and custom trainable modules, which help get your ML projects up and running very quickly!</p>
 <p>So, without further ado, let’s walk through what the stateful API has to offer!</p>
 <div class="section" id="modules">
 <h2>Modules<a class="headerlink" href="#modules" title="Permalink to this headline">¶</a></h2>
-<p>The most helpful stateful Ivy class is perhaps the <em>ivy.Module</em>. This can be used to create custom trainable layers or entire networks. Manually defined trainable variables must be specified in the <em>_create_variables</em> method. For example, we can create a linear layer by deriving from <em>ivy.Module</em> like so:</p>
+<p>The most helpful stateful Ivy class is perhaps the <code class="code docutils literal notranslate"><span class="pre">ivy.Module</span></code>. This can be used to create custom trainable layers or entire networks. Manually defined trainable variables must be specified in the <code class="code docutils literal notranslate"><span class="pre">_create_variables</span></code> method. For example, we can create a linear layer by deriving from <code class="code docutils literal notranslate"><span class="pre">ivy.Module</span></code> like so:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Linear</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_channels</span><span class="p">,</span> <span class="n">output_channels</span><span class="p">,</span>
@@ -252,8 +252,8 @@
           <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">b</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_with_bias</span> <span class="k">else</span> <span class="kc">None</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>For simplicity, this is slightly different to the builtin <em>ivy.Linear</em> in a couple of ways, as we will explain in the Initializer section below.</p>
-<p>All <em>ivy.Module</em> instances have an attribute v (short for variables), which stores all of the trainable variables in the module in an <em>ivy.Container</em>. For our example above, the hierarchical structure of these variables is the same as that defined in the method <em>_create_variables</em>.</p>
+<p>For simplicity, this is slightly different to the builtin <code class="code docutils literal notranslate"><span class="pre">ivy.Linear</span></code> in a couple of ways, as we will explain in the Initializer section below.</p>
+<p>All <code class="code docutils literal notranslate"><span class="pre">ivy.Module</span></code> instances have an attribute v (short for variables), which stores all of the trainable variables in the module in an <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code>. For our example above, the hierarchical structure of these variables is the same as that defined in the method <code class="code docutils literal notranslate"><span class="pre">_create_variables</span></code>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">linear</span> <span class="o">=</span> <span class="n">Linear</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">linear</span><span class="o">.</span><span class="n">v</span><span class="p">)</span>
 
@@ -266,7 +266,7 @@
 <span class="p">}</span>
 </pre></div>
 </div>
-<p>This is all well and good for defining a single layer, but manually defining all variables in <em>_create_variables</em> for very complex networks would be a total nightmare.</p>
+<p>This is all well and good for defining a single layer, but manually defining all variables in <code class="code docutils literal notranslate"><span class="pre">_create_variables</span></code> for very complex networks would be a total nightmare.</p>
 <p>To overcome this issue, modules can be nested up to an arbitrary depth. This means we can very easily create more complex networks as compositions of other sub-modules or layers. For example, we can create a simple fully connected network with our linear layers.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">FC</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -279,7 +279,7 @@
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">sigmoid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">linear1</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
 </pre></div>
 </div>
-<p>In this case, we don’t specify any variables manually using <em>_create_variables</em>. This is because all variables in the network reside in the linear layers. These variables are all detected automatically.</p>
+<p>In this case, we don’t specify any variables manually using <code class="code docutils literal notranslate"><span class="pre">_create_variables</span></code>. This is because all variables in the network reside in the linear layers. These variables are all detected automatically.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">fc</span> <span class="o">=</span> <span class="n">FC</span><span class="p">()</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">fc</span><span class="o">.</span><span class="n">v</span><span class="p">)</span>
 
@@ -295,7 +295,7 @@
 <span class="p">}</span>
 </pre></div>
 </div>
-<p>Not only are variables detected automatically for <em>ivy.Module</em> instances which are direct attributes of the top-level class, as above, but also if they are contained within any nested structure which is itself an attribute of the top-level class, such as lists, tuples or dicts. These all work up to an arbitrary nested depth. Check out some of the different ways of defining network layers and how this impacts the variable structure below.</p>
+<p>Not only are variables detected automatically for <code class="code docutils literal notranslate"><span class="pre">ivy.Module</span></code> instances which are direct attributes of the top-level class, as above, but also if they are contained within any nested structure which is itself an attribute of the top-level class, such as lists, tuples or dicts. These all work up to an arbitrary nested depth. Check out some of the different ways of defining network layers and how this impacts the variable structure below.</p>
 <p>As a list:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">FC</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -469,7 +469,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sigmoid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">linear1</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
 </pre></div>
 </div>
-<p>It may seem counter intuitive to implement the activation as an <em>ivy.Module</em>, as there are no hidden trainable weights. However, for networks where modules are directly chained together, and all outputs from the preceding module are fed as inputs to the subsequent module, then we can use the <em>ivy.Sequential</em> class. This can simplify the construction of our small fully connected network even further.</p>
+<p>It may seem counter intuitive to implement the activation as an <code class="code docutils literal notranslate"><span class="pre">ivy.Module</span></code>, as there are no hidden trainable weights. However, for networks where modules are directly chained together, and all outputs from the preceding module are fed as inputs to the subsequent module, then we can use the <code class="code docutils literal notranslate"><span class="pre">ivy.Sequential</span></code> class. This can simplify the construction of our small fully connected network even further.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">fc</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Sequential</span><span class="p">(</span>
         <span class="n">Linear</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">64</span><span class="p">),</span>
         <span class="n">ivy</span><span class="o">.</span><span class="n">ReLU</span><span class="p">(),</span>
@@ -492,7 +492,7 @@
 <span class="p">}</span>
 </pre></div>
 </div>
-<p>Given that the weights of our network are stored in an <em>ivy.Container</em>, and the gradients returned from <em>ivy.execute_with_gradients</em> are also stored in an <em>ivy.Container</em>, all operations are applied recursively to every variable at all leaves. Therefore, we can train the network in a few lines of code like so:</p>
+<p>Given that the weights of our network are stored in an <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code>, and the gradients returned from <code class="code docutils literal notranslate"><span class="pre">ivy.execute_with_gradients</span></code> are also stored in an <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code>, all operations are applied recursively to every variable at all leaves. Therefore, we can train the network in a few lines of code like so:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">x_in</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">,</span> <span class="mf">3.</span><span class="p">])</span>
 <span class="n">target</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">])</span>
 <span class="n">lr</span> <span class="o">=</span> <span class="mf">0.001</span>
@@ -510,7 +510,7 @@
 </div>
 <div class="section" id="initializers">
 <h2>Initializers<a class="headerlink" href="#initializers" title="Permalink to this headline">¶</a></h2>
-<p>In the examples above, we defined how the trainable weights should be initialized directly in the <em>_create_variables</em> method. However, it would be better if we could decouple the initialization scheme from the layer implementation. This is where the <em>ivy.Initializer</em> class comes in. The actual implementation for the <em>ivy.Linear</em> layer exposed in the Ivy stateful API is as follows:</p>
+<p>In the examples above, we defined how the trainable weights should be initialized directly in the <code class="code docutils literal notranslate"><span class="pre">_create_variables</span></code> method. However, it would be better if we could decouple the initialization scheme from the layer implementation. This is where the <code class="code docutils literal notranslate"><span class="pre">ivy.Initializer</span></code> class comes in. The actual implementation for the <code class="code docutils literal notranslate"><span class="pre">ivy.Linear</span></code> layer exposed in the Ivy stateful API is as follows:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ivy/stateful/layers.py</span>
 <span class="k">class</span> <span class="nc">Linear</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
 
@@ -542,7 +542,7 @@
           <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">b</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_with_bias</span> <span class="k">else</span> <span class="kc">None</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>The <em>ivy.Initializer</em> class has a single abstract method, <em>create_variables(var_shape, dev, fan_out=None, fan_in=None, *args, **kwargs)</em>. Check out the <a class="reference external" href="https://github.com/unifyai/ivy/blob/master/ivy/stateful/initializers.py">code</a> or <a class="reference external" href="https://lets-unify.ai/ivy/neural_net_stateful/initializers.html">docs</a> for more details. The default initializer for the weights is <em>ivy.GlorotUniform</em> and for this bias is <em>ivy.Zeros</em>. Let’s take a quick look at what these look like. <em>ivy.GlorotUniform</em> derives from a more general <em>ivy.Uniform</em> initializer class, and is then simply implemented as follows:</p>
+<p>The <code class="code docutils literal notranslate"><span class="pre">ivy.Initializer</span></code> class has a single abstract method, <code class="code docutils literal notranslate"><span class="pre">create_variables(var_shape,</span> <span class="pre">dev,</span> <span class="pre">fan_out=None,</span> <span class="pre">fan_in=None,</span> <span class="pre">*args,</span> <span class="pre">**kwargs)</span></code>. Check out the <a class="reference external" href="https://github.com/unifyai/ivy/blob/master/ivy/stateful/initializers.py">code</a> or <a class="reference external" href="https://lets-unify.ai/ivy/neural_net_stateful/initializers.html">docs</a> for more details. The default initializer for the weights is <code class="code docutils literal notranslate"><span class="pre">ivy.GlorotUniform</span></code> and for this bias is <code class="code docutils literal notranslate"><span class="pre">ivy.Zeros</span></code>. Let’s take a quick look at what these look like. <code class="code docutils literal notranslate"><span class="pre">ivy.GlorotUniform</span></code> derives from a more general <code class="code docutils literal notranslate"><span class="pre">ivy.Uniform</span></code> initializer class, and is then simply implemented as follows:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ivy/stateful/initializers.py</span>
 <span class="k">class</span> <span class="nc">GlorotUniform</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">Uniform</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -550,18 +550,18 @@
             <span class="n">numerator</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">fan_mode</span><span class="o">=</span><span class="s1">&#39;fan_sum&#39;</span><span class="p">,</span> <span class="n">power</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">gain</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
 </div>
-<p><em>ivy.Zeros</em> derives from a more general <em>ivy.Constant</em> initializer class, and is then simply implemented as follows:</p>
+<p><code class="code docutils literal notranslate"><span class="pre">ivy.Zeros</span></code> derives from a more general <code class="code docutils literal notranslate"><span class="pre">ivy.Constant</span></code> initializer class, and is then simply implemented as follows:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ivy/stateful/initializers.py</span>
 <span class="k">class</span> <span class="nc">Zeros</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">Constant</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">constant</span><span class="o">=</span><span class="mf">0.</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>The initializers are not stateful, and so adding them to the “stateful API” is a slight misnomer. However, the dedicated initializer class helps us to decouple initialization schemes from layer implementations, which are themselves stateful. Given that their application is entirely specific to stateful <em>ivy.Module</em> instances, they still belong in the stateful API.</p>
+<p>The initializers are not stateful, and so adding them to the “stateful API” is a slight misnomer. However, the dedicated initializer class helps us to decouple initialization schemes from layer implementations, which are themselves stateful. Given that their application is entirely specific to stateful <code class="code docutils literal notranslate"><span class="pre">ivy.Module</span></code> instances, they still belong in the stateful API.</p>
 </div>
 <div class="section" id="optimizers">
 <h2>Optimizers<a class="headerlink" href="#optimizers" title="Permalink to this headline">¶</a></h2>
-<p>Recapping the example given above, we saw that <em>ivy.Module</em> instances can be trained like so:</p>
+<p>Recapping the example given above, we saw that <code class="code docutils literal notranslate"><span class="pre">ivy.Module</span></code> instances can be trained like so:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">x_in</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">,</span> <span class="mf">3.</span><span class="p">])</span>
 <span class="n">target</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">])</span>
 <span class="n">lr</span> <span class="o">=</span> <span class="mf">0.001</span>
@@ -576,8 +576,8 @@
     <span class="n">model</span><span class="o">.</span><span class="n">v</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">v</span> <span class="o">-</span> <span class="n">grads</span> <span class="o">*</span> <span class="n">lr</span>
 </pre></div>
 </div>
-<p>However, what if we want to do something more complex than vanilla gradient descent? What about ADAM or other stateful optimizers such as LARS and LAMB? This is where the <em>ivy.Optimizer</em> class comes in.</p>
-<p>Let’s take the class <em>ivy.Adam</em> as an example. The implementation is as follows:</p>
+<p>However, what if we want to do something more complex than vanilla gradient descent? What about ADAM or other stateful optimizers such as LARS and LAMB? This is where the <code class="code docutils literal notranslate"><span class="pre">ivy.Optimizer</span></code> class comes in.</p>
+<p>Let’s take the class <code class="code docutils literal notranslate"><span class="pre">ivy.Adam</span></code> as an example. The implementation is as follows:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ivy/stateful/optimizers.py</span>
 <span class="k">class</span> <span class="nc">Adam</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">Optimizer</span><span class="p">):</span>
 

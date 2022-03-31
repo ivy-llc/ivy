@@ -36,7 +36,7 @@
   <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="flip" href="manipulation/flip.html" />
+    <link rel="next" title="squeeze" href="manipulation/squeeze.html" />
     <link rel="prev" title="sparse_cross_entropy" href="losses/sparse_cross_entropy.html" /> 
 </head>
 
@@ -105,15 +105,20 @@
 <li class="toctree-l1"><a class="reference internal" href="linear_algebra.html">Linear algebra</a></li>
 <li class="toctree-l1"><a class="reference internal" href="losses.html">Losses</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Manipulation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="manipulation/squeeze.html">squeeze</a></li>
 <li class="toctree-l2"><a class="reference internal" href="manipulation/flip.html">flip</a></li>
 <li class="toctree-l2"><a class="reference internal" href="manipulation/expand_dims.html">expand_dims</a></li>
 <li class="toctree-l2"><a class="reference internal" href="manipulation/permute_dims.html">permute_dims</a></li>
+<li class="toctree-l2"><a class="reference internal" href="manipulation/stack.html">stack</a></li>
+<li class="toctree-l2"><a class="reference internal" href="manipulation/reshape.html">reshape</a></li>
+<li class="toctree-l2"><a class="reference internal" href="manipulation/concatenate.html">concatenate</a></li>
 <li class="toctree-l2"><a class="reference internal" href="manipulation/split.html">split</a></li>
 <li class="toctree-l2"><a class="reference internal" href="manipulation/repeat.html">repeat</a></li>
 <li class="toctree-l2"><a class="reference internal" href="manipulation/tile.html">tile</a></li>
 <li class="toctree-l2"><a class="reference internal" href="manipulation/constant_pad.html">constant_pad</a></li>
 <li class="toctree-l2"><a class="reference internal" href="manipulation/zero_pad.html">zero_pad</a></li>
 <li class="toctree-l2"><a class="reference internal" href="manipulation/swapaxes.html">swapaxes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="manipulation/clip.html">clip</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="meta.html">Meta</a></li>
@@ -217,6 +222,46 @@
   <div class="section" id="module-ivy.functional.ivy.manipulation">
 <span id="manipulation"></span><h1>Manipulation<a class="headerlink" href="#module-ivy.functional.ivy.manipulation" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
+<dt id="ivy.functional.ivy.manipulation.clip">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">clip</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">x_min</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>numbers.Number<span class="p">, </span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">x_max</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>numbers.Number<span class="p">, </span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/manipulation.html#clip"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.manipulation.clip" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clips (limits) the values in an array.</p>
+<p>Given an interval, values outside the interval are clipped to the interval edges (element-wise).
+For example, if an interval of [0, 1] is specified, values smaller than 0 become 0,
+and values larger than 1 become 1.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>array</em>) – Input array containing elements to clip.</p></li>
+<li><p><strong>x_min</strong> (<em>scalar</em><em> or </em><em>array</em>) – Minimum value.</p></li>
+<li><p><strong>x_max</strong> (<em>scalar</em><em> or </em><em>array</em>) – Maximum value.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>An array with the elements of x, but where values &lt; x_min are replaced with x_min,
+and those &gt; x_max with x_max.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.manipulation.concatenate">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">concatenate</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">xs</span><span class="p">:</span> <span class="n">Iterable<span class="p">[</span>Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">axis</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">- 1</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/manipulation.html#concatenate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.manipulation.concatenate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Casts an array to a specified type.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>xs</strong> (<em>sequence of arrays</em>) – The input arrays must have the same shape, except in the dimension corresponding to axis
+(the first, by default).</p></li>
+<li><p><strong>axis</strong> (<em>int</em><em>, </em><em>optional</em>) – The axis along which the arrays will be joined. Default is -1.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The concatenated array.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt id="ivy.functional.ivy.manipulation.constant_pad">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">constant_pad</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">pad_width</span><span class="p">:</span> <span class="n">Iterable<span class="p">[</span>Tuple<span class="p">[</span>int<span class="p">]</span><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">value</span><span class="p">:</span> <span class="n">numbers.Number</span> <span class="o">=</span> <span class="default_value">0</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/manipulation.html#constant_pad"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.manipulation.constant_pad" title="Permalink to this definition">¶</a></dt>
 <dd><p>Pads an array with a constant value.</p>
@@ -305,6 +350,24 @@ By default, use the flattened input array, and return a flat output array.</p></
 </dd></dl>
 
 <dl class="py function">
+<dt id="ivy.functional.ivy.manipulation.reshape">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">reshape</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">newshape</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>int<span class="p">, </span>Iterable<span class="p">[</span>int<span class="p">]</span><span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/manipulation.html#reshape"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.manipulation.reshape" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gives a new shape to an array without changing its data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>array</em>) – Tensor to be reshaped.</p></li>
+<li><p><strong>newshape</strong> (<em>int</em><em> or </em><em>sequence of ints</em>) – The new shape should be compatible with the original shape. One shape dimension can be -1.
+In this case, the value is inferred from the length of the array and remaining dimensions.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Reshaped array.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt id="ivy.functional.ivy.manipulation.split">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">split</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">num_or_size_splits</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Union<span class="p">[</span>int<span class="p">, </span>Iterable<span class="p">[</span>int<span class="p">]</span><span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">axis</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">0</span></em>, <em class="sig-param"><span class="n">with_remainder</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/manipulation.html#split"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.manipulation.split" title="Permalink to this definition">¶</a></dt>
 <dd><p>Splits an array into multiple sub-arrays.</p>
@@ -321,6 +384,45 @@ Default is to divide into as many 1-dimensional arrays as the axis dimension.</p
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>A list of sub-arrays.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.manipulation.squeeze">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">squeeze</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">axis</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>int<span class="p">, </span>Tuple<span class="p">[</span>int<span class="p">, </span><span class="p">…</span><span class="p">]</span><span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../_modules/ivy/functional/ivy/manipulation.html#squeeze"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.manipulation.squeeze" title="Permalink to this definition">¶</a></dt>
+<dd><p>Removes singleton dimensions (axes) from <code class="docutils literal notranslate"><span class="pre">x</span></code>.
+Parameters
+———-
+x: array</p>
+<blockquote>
+<div><p>input array.</p>
+</div></blockquote>
+<dl class="simple">
+<dt>axis: Union[int, Tuple[int, …]]</dt><dd><p>axis (or axes) to squeeze. If a specified axis has a size greater than one, a <code class="docutils literal notranslate"><span class="pre">ValueError</span></code> must be raised.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>out: array</dt><dd><p>an output array having the same data type and elements as <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.manipulation.stack">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">stack</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">xs</span><span class="p">:</span> <span class="n">Iterable<span class="p">[</span>Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">axis</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">0</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/manipulation.html#stack"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.manipulation.stack" title="Permalink to this definition">¶</a></dt>
+<dd><p>Joins a sequence of arrays along a new axis.
+The axis parameter specifies the index of the new axis in the dimensions of the result.
+For example, if axis: int = 0, it will be the first dimension and if axis: int = -1, it will be the last dimension.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>xs</strong> (<em>sequence of arrays</em>) – Input arrays, each array must have the same shape.</p></li>
+<li><p><strong>axis</strong> (<em>int</em><em>, </em><em>optional</em>) – The axis in the result array along which the input arrays are stacked.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The stacked array has one more dimension than the input arrays.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -390,7 +492,7 @@ Specified as ((before_1, after_1), … (before_N, after_N)), where N is number o
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="manipulation/flip.html" class="btn btn-neutral float-right" title="flip" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="manipulation/squeeze.html" class="btn btn-neutral float-right" title="squeeze" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="losses/sparse_cross_entropy.html" class="btn btn-neutral float-left" title="sparse_cross_entropy" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>

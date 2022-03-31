@@ -220,8 +220,8 @@
 <a class="reference internal image-reference" href="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/submodule_dependency_graph.png?raw=true"><img alt="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/submodule_dependency_graph.png?raw=true" class="align-center" src="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/submodule_dependency_graph.png?raw=true" style="width: 100%;" /></a>
 <div class="section" id="backend-functional-apis">
 <h2>Backend Functional APIs ✅<a class="headerlink" href="#backend-functional-apis" title="Permalink to this headline">¶</a></h2>
-<p>The first important point to make is that, Ivy does not implement it’s own C++ or CUDA backend. Instead, Ivy <strong>wraps</strong> the functional APIs of existing frameworks, bringing them into syntactic and semantic alignment. Let’s take the function <em>ivy.clip</em> as an example.</p>
-<p>There are separate backend modules for JAX, TensorFlow, PyTorch, MXNet and NumPy, and so we implement the clip method once for each backend, each in separate backend files like so:</p>
+<p>The first important point to make is that, Ivy does not implement it’s own C++ or CUDA backend. Instead, Ivy <strong>wraps</strong> the functional APIs of existing frameworks, bringing them into syntactic and semantic alignment. Let’s take the function <code class="code docutils literal notranslate"><span class="pre">ivy.clip</span></code> as an example.</p>
+<p>There are separate backend modules for JAX, TensorFlow, PyTorch, MXNet and NumPy, and so we implement the <code class="code docutils literal notranslate"><span class="pre">clip</span></code> method once for each backend, each in separate backend files like so:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ivy/functional/backends/jax/elementwise.py:</span>
 <span class="k">def</span> <span class="nf">clip</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">x_min</span><span class="p">,</span> <span class="n">x_max</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">jax</span><span class="o">.</span><span class="n">numpy</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">x_min</span><span class="p">,</span> <span class="n">x_max</span><span class="p">)</span>
@@ -248,7 +248,7 @@
 </pre></div>
 </div>
 <p>For NumPy, MXNet, and JAX there are no changes at all in this case, and for TensorFlow and PyTorch there is just a simple name change.</p>
-<p>For more complicated functions, we need to do more than simply wrap and maybe change the name. For functions with differing behavior then we must modify the function to fit the unified in-out behavior of Ivy’s API. For example, the APIs of JAX, PyTorch, MXNet and NumPy all have a <em>logspace</em> method, but TensorFlow does not at the time of writing. Therefore, we need to construct it using a composition of existing TensorFlow ops like so:</p>
+<p>For more complicated functions, we need to do more than simply wrap and maybe change the name. For functions with differing behavior then we must modify the function to fit the unified in-out behavior of Ivy’s API. For example, the APIs of JAX, PyTorch, MXNet and NumPy all have a <code class="code docutils literal notranslate"><span class="pre">logspace</span></code> method, but TensorFlow does not at the time of writing. Therefore, we need to construct it using a composition of existing TensorFlow ops like so:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ivy/functional/backends/tensorflow/creation.py:</span>
 <span class="k">def</span> <span class="nf">logspace</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">num</span><span class="p">,</span> <span class="n">base</span><span class="o">=</span><span class="mf">10.</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dev</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="n">power_seq</span> <span class="o">=</span> <span class="n">linspace</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">num</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">default_device</span><span class="p">(</span><span class="n">dev</span><span class="p">))</span>
@@ -258,8 +258,8 @@
 </div>
 <div class="section" id="ivy-functional-api">
 <h2>Ivy Functional API ✅<a class="headerlink" href="#ivy-functional-api" title="Permalink to this headline">¶</a></h2>
-<p>Calling the different backend files explicitly would work okay, but it would mean we need to <em>import ivy.functional.backends.torch as ivy</em> to use a PyTorch backend or <em>import ivy.functional.backends.tensorflow as ivy</em> to use a TensorFlow backend. Instead, we allow these backends to be bound to the single shared namespace ivy. The backend can then be changed by calling <em>ivy.set_framework(‘torch’)</em> for example.</p>
-<p>ivy.api is the submodule where all the doc strings and argument typing reside for the functional Ivy API. The <em>clip</em> function is shown below:</p>
+<p>Calling the different backend files explicitly would work okay, but it would mean we need to <code class="code docutils literal notranslate"><span class="pre">import</span> <span class="pre">ivy.functional.backends.torch</span> <span class="pre">as</span> <span class="pre">ivy</span></code> to use a PyTorch backend or <code class="code docutils literal notranslate"><span class="pre">import</span> <span class="pre">ivy.functional.backends.tensorflow</span> <span class="pre">as</span> <span class="pre">ivy</span></code> to use a TensorFlow backend. Instead, we allow these backends to be bound to the single shared namespace ivy. The backend can then be changed by calling <code class="code docutils literal notranslate"><span class="pre">ivy.set_framework(‘torch’)</span></code> for example.</p>
+<p><code class="code docutils literal notranslate"><span class="pre">ivy.functional.ivy</span></code> is the submodule where all the doc strings and argument typing reside for the functional Ivy API. The <code class="code docutils literal notranslate"><span class="pre">clip</span></code> function is shown below:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ivy/functional/ivy/elementwise.py:</span>
 <span class="k">def</span> <span class="nf">clip</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
       <span class="n">x_min</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Number</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]],</span>
@@ -288,7 +288,7 @@
      <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_framework</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">x_min</span><span class="p">,</span> <span class="n">x_max</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Furthermore, this <em>ivy.api</em> submodule enables implicit framework selection, where a function can be called before a backend framework is explicitly set, and the backend framework is then inferred automatically by checking the input types to the function.</p>
+<p>Furthermore, this <code class="code docutils literal notranslate"><span class="pre">ivy.api</span></code> submodule enables implicit framework selection, where a function can be called before a backend framework is explicitly set, and the backend framework is then inferred automatically by checking the input types to the function.</p>
 <table class="docutils align-default">
 <colgroup>
 <col style="width: 49%" />
@@ -348,7 +348,7 @@ print(ivy.current_framework())
 </div>
 <div class="section" id="framework-handler">
 <h2>Framework Handler ✅<a class="headerlink" href="#framework-handler" title="Permalink to this headline">¶</a></h2>
-<p>All code for setting and unsetting frameworks resides in the submodule at <em>ivy/framework_handler.py</em>, and the front facing function is <em>ivy.current_framework()</em>. The contents of this function are as follows:</p>
+<p>All code for setting and unsetting frameworks resides in the submodule at <code class="code docutils literal notranslate"><span class="pre">ivy/framework_handler.py</span></code>, and the front facing function is <code class="code docutils literal notranslate"><span class="pre">ivy.current_framework()</span></code>. The contents of this function are as follows:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ivy/framework_handler.py</span>
 <span class="k">def</span> <span class="nf">current_framework</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 
@@ -377,8 +377,8 @@ print(ivy.current_framework())
     <span class="k">return</span> <span class="n">f</span>
 </pre></div>
 </div>
-<p>When the backend framework is provided explicitly as an argument (for example <em>f=ivy.functional.backends.torch</em>), then this framework is returned directly without setting it as the global framework. Otherwise, if a global framework has been previously added to the framework stack using for example <em>ivy.set_framework(‘tensorflow’)</em>, then this globally set framework is returned. Finally if neither of these cases apply then the input arguments are type-checked to infer the framework, and this is returned from the function without setting as the global framework. In all cases, a callable module is returned with all bound functions adhering to the specific backend.</p>
-<p>The functions in this returned module are populated by iterating through the global <em>ivy.__dict__</em> (or a non-global copy of <em>ivy.__dict__</em> if non-globally-set), and overwriting every function which is also directly implemented in the framework-specific namespace. The following is a slightly simplified version of this code for illustration, which updates the global <em>ivy.__dict__</em> directly:</p>
+<p>When the backend framework is provided explicitly as an argument (for example <code class="code docutils literal notranslate"><span class="pre">f=ivy.functional.backends.torch</span></code>), then this framework is returned directly without setting it as the global framework. Otherwise, if a global framework has been previously added to the framework stack using for example <code class="code docutils literal notranslate"><span class="pre">ivy.set_framework(‘tensorflow’)</span></code>, then this globally set framework is returned. Finally if neither of these cases apply then the input arguments are type-checked to infer the framework, and this is returned from the function without setting as the global framework. In all cases, a callable module is returned with all bound functions adhering to the specific backend.</p>
+<p>The functions in this returned module are populated by iterating through the global <code class="code docutils literal notranslate"><span class="pre">ivy.__dict__</span></code> (or a non-global copy of <code class="code docutils literal notranslate"><span class="pre">ivy.__dict__</span></code> if non-globally-set), and overwriting every function which is also directly implemented in the framework-specific namespace. The following is a slightly simplified version of this code for illustration, which updates the global <code class="code docutils literal notranslate"><span class="pre">ivy.__dict__</span></code> directly:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ivy/framework_handler.py</span>
 <span class="k">def</span> <span class="nf">set_framework</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
 
@@ -406,7 +406,7 @@ print(ivy.current_framework())
             <span class="s1">&#39;framework stack: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">framework_stack</span><span class="p">))</span>
 </pre></div>
 </div>
-<p>The functions implemented by the framework-specific backend such as <em>ivy.functional.backends.torch</em> only constitute a subset of the full Ivy API. This is because many higher level functions are written as a composition of lower level Ivy functions. These functions therefore do not need to be written independently for each backend framework. A good example is <em>ivy.lstm_update</em>, as shown:</p>
+<p>The functions implemented by the framework-specific backend such as <code class="code docutils literal notranslate"><span class="pre">ivy.functional.backends.torch</span></code> only constitute a subset of the full Ivy API. This is because many higher level functions are written as a composition of lower level Ivy functions. These functions therefore do not need to be written independently for each backend framework. A good example is <code class="code docutils literal notranslate"><span class="pre">ivy.lstm_update</span></code>, as shown:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ivy/functional/ivy/nn/layers.py</span>
 <span class="k">def</span> <span class="nf">lstm_update</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">init_h</span><span class="p">,</span> <span class="n">init_c</span><span class="p">,</span> <span class="n">kernel</span><span class="p">,</span> <span class="n">recurrent_kernel</span><span class="p">,</span>
                 <span class="n">bias</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">recurrent_bias</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -470,12 +470,165 @@ Generally, we have made decisions so that Ivy is as stable and scalable as possi
 <p>The compiler takes in any Ivy function, backend function, or composition, and returns the computation graph using the backend functional API only. The dependency graph for this process looks like this:</p>
 <a class="reference internal image-reference" href="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/compiler_dependency_graph.png?raw=true"><img alt="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/compiler_dependency_graph.png?raw=true" class="align-center" src="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/compiler_dependency_graph.png?raw=true" style="width: 75%;" /></a>
 <p>As an example, the following 3 pieces of code all compile to the exact same computation graph as shown:</p>
-<p>CODE</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 34%" />
+<col style="width: 34%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">pure_ivy</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">reduce_mean</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">z</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">reduce_sum</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">reduce_var</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+    <span class="n">k</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
+    <span class="n">m</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+    <span class="n">o</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">tan</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span>
+        <span class="p">[</span><span class="n">k</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">o</span><span class="p">],</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="c1"># input</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">,</span> <span class="mf">3.</span><span class="p">]])</span>
+
+<span class="c1"># create graph</span>
+<span class="n">graph</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">compile_graph</span><span class="p">(</span>
+    <span class="n">pure_ivy</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+
+<span class="c1"># call graph</span>
+<span class="n">ret</span> <span class="o">=</span> <span class="n">graph</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+</pre></div>
+</div>
+</td>
+<td><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">pure_torch</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">z</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">var</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+    <span class="n">k</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
+    <span class="n">m</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+    <span class="n">o</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tan</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">(</span>
+        <span class="p">[</span><span class="n">k</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">o</span><span class="p">],</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="c1"># input</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">,</span> <span class="mf">3.</span><span class="p">]])</span>
+
+<span class="c1"># create graph</span>
+<span class="n">graph</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">compile_graph</span><span class="p">(</span>
+    <span class="n">pure_torch</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+
+<span class="c1"># call graph</span>
+<span class="n">ret</span> <span class="o">=</span> <span class="n">graph</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+</pre></div>
+</div>
+</td>
+<td><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">mix</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">reduce_mean</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">z</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">reduce_var</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+    <span class="n">k</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
+    <span class="n">m</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+    <span class="n">o</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tan</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span>
+        <span class="p">[</span><span class="n">k</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">o</span><span class="p">],</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="c1"># input</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">,</span> <span class="mf">3.</span><span class="p">]])</span>
+
+<span class="c1"># create graph</span>
+<span class="n">graph</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">compile_graph</span><span class="p">(</span>
+    <span class="n">mix</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+
+<span class="c1"># call graph</span>
+<span class="n">ret</span> <span class="o">=</span> <span class="n">graph</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+</pre></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
 <a class="reference internal image-reference" href="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/compiled_graph_a.png?raw=true"><img alt="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/compiled_graph_a.png?raw=true" class="align-center" src="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/compiled_graph_a.png?raw=true" style="width: 75%;" /></a>
 <p>For all existing ML frameworks, the functional API is the backbone which underpins all higher level functions and classes. This means that under the hood, any code can be expressed as a composition of ops in the functional API. The same is true for Ivy. Therefore, when compiling the graph with Ivy, any higher-level classes or extra code which does not directly contribute towards the computation graph is excluded. For example, the following 3 pieces of code all compile to the exact same computation graph as shown:</p>
-<p>CODE</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 34%" />
+<col style="width: 34%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Network</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">module</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_layer</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_layer</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+<span class="c1"># build network</span>
+<span class="n">net</span> <span class="o">=</span> <span class="n">Network</span><span class="p">()</span>
+
+<span class="c1"># input</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">,</span> <span class="mf">3.</span><span class="p">])</span>
+
+<span class="c1"># compile graph</span>
+<span class="n">net</span><span class="o">.</span><span class="n">compile_graph</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+<span class="c1"># execute graph</span>
+<span class="n">net</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+</pre></div>
+</div>
+</td>
+<td><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">clean</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">w</span><span class="o">*</span><span class="n">x</span> <span class="o">+</span> <span class="n">b</span>
+
+
+
+
+
+
+<span class="c1"># input</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">,</span> <span class="mf">3.</span><span class="p">])</span>
+<span class="n">w</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">random_unifrom</span><span class="p">(</span>
+    <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+<span class="n">b</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">3</span><span class="p">,))</span>
+
+<span class="c1"># compile graph</span>
+<span class="n">graph</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">compile_graph</span><span class="p">(</span>
+    <span class="n">clean</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
+
+<span class="c1"># execute graph</span>
+<span class="n">graph</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
+</pre></div>
+</div>
+</td>
+<td><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">unclean</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">b</span> <span class="o">+</span> <span class="n">w</span> <span class="o">+</span> <span class="n">x</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;message&#39;</span><span class="p">)</span>
+    <span class="n">wx</span> <span class="o">=</span> <span class="n">w</span> <span class="o">*</span> <span class="n">x</span>
+    <span class="n">ret</span> <span class="o">=</span> <span class="n">wx</span> <span class="o">+</span> <span class="n">b</span>
+    <span class="n">temp</span> <span class="o">=</span> <span class="n">y</span> <span class="o">*</span> <span class="n">wx</span>
+    <span class="k">return</span> <span class="n">ret</span>
+
+<span class="c1"># input</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">,</span> <span class="mf">3.</span><span class="p">])</span>
+<span class="n">w</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">random_unifrom</span><span class="p">(</span>
+    <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+<span class="n">b</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">3</span><span class="p">,))</span>
+
+<span class="c1"># compile graph</span>
+<span class="n">graph</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">compile_graph</span><span class="p">(</span>
+    <span class="n">unclean</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
+
+<span class="c1"># execute graph</span>
+<span class="n">graph</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
+</pre></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
 <a class="reference internal image-reference" href="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/compiled_graph_b.png?raw=true"><img alt="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/compiled_graph_b.png?raw=true" class="align-center" src="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/compiled_graph_b.png?raw=true" style="width: 75%;" /></a>
-<p>The graph compiler does not compile to C++, CUDA or any other lower level language. It simply traces the backend functional methods in the graph, stores this graph, and then efficiently traverses this graph at execution time, all in Python. Compiling to lower level languages (C++, CUDA, TorchScript etc.) is supported for most backend frameworks via <em>ivy.compile()</em>, which wraps backend-specific compilation code, for example:</p>
+<p>The graph compiler does not compile to C++, CUDA or any other lower level language. It simply traces the backend functional methods in the graph, stores this graph, and then efficiently traverses this graph at execution time, all in Python. Compiling to lower level languages (C++, CUDA, TorchScript etc.) is supported for most backend frameworks via <code class="code docutils literal notranslate"><span class="pre">ivy.compile()</span></code>, which wraps backend-specific compilation code, for example:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ivy/functional/backends/tensorflow/compilation.py</span>
 <span class="nb">compile</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">fn</span><span class="p">,</span> <span class="n">dynamic</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">example_inputs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>\
 <span class="n">static_argnums</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">static_argnames</span><span class="o">=</span><span class="kc">None</span><span class="p">:</span>\

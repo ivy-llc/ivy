@@ -100,14 +100,21 @@
 <li class="toctree-l2 current"><a class="current reference internal" href="#">ones</a></li>
 <li class="toctree-l2"><a class="reference internal" href="full_like.html">full_like</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ones_like.html">ones_like</a></li>
+<li class="toctree-l2"><a class="reference internal" href="zeros_like.html">zeros_like</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tril.html">tril</a></li>
 <li class="toctree-l2"><a class="reference internal" href="triu.html">triu</a></li>
 <li class="toctree-l2"><a class="reference internal" href="empty.html">empty</a></li>
 <li class="toctree-l2"><a class="reference internal" href="empty_like.html">empty_like</a></li>
 <li class="toctree-l2"><a class="reference internal" href="eye.html">eye</a></li>
 <li class="toctree-l2"><a class="reference internal" href="linspace.html">linspace</a></li>
+<li class="toctree-l2"><a class="reference internal" href="zeros_like.html">zeros_like</a></li>
+<li class="toctree-l2"><a class="reference internal" href="full.html">full</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">ones</a></li>
+<li class="toctree-l2"><a class="reference internal" href="meshgrid.html">meshgrid</a></li>
+<li class="toctree-l2"><a class="reference internal" href="from_dlpack.html">from_dlpack</a></li>
 <li class="toctree-l2"><a class="reference internal" href="array.html">array</a></li>
 <li class="toctree-l2"><a class="reference internal" href="logspace.html">logspace</a></li>
+<li class="toctree-l2"><a class="reference internal" href="arange.html">arange</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../data_type.html">Data type</a></li>
@@ -224,20 +231,21 @@
 <h1>ones<a class="headerlink" href="#ones" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
 <dt id="ivy.functional.ivy.creation.ones">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">ones</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">shape</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>int<span class="p">, </span>Tuple<span class="p">[</span>int<span class="p">]</span><span class="p">, </span>List<span class="p">[</span>int<span class="p">]</span><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">dtype</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>ivy.Dtype<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">device</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>ivy.Device<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../../_modules/ivy/functional/ivy/creation.html#ones"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.creation.ones" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns a new array having a specified <code class="docutils literal notranslate"><span class="pre">shape</span></code> and filled with ones.</p>
-<dl class="simple">
-<dt>shape:</dt><dd><p>output array shape.</p>
-</dd>
-<dt>dtype:</dt><dd><p>output array data type. If <code class="docutils literal notranslate"><span class="pre">dtype</span></code> is <code class="docutils literal notranslate"><span class="pre">None</span></code>, the output array data type must be the default floating-point data type. Default: <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
-</dd>
-<dt>device:</dt><dd><p>device on which to place the created array. Default: <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
-</dd>
-</dl>
-<dl class="simple">
-<dt>out:</dt><dd><p>an array containing ones.</p>
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">ones</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">shape</span><span class="p">:</span> <span class="n">Iterable<span class="p">[</span>int<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">dtype</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.Dtype<span class="p">, </span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">'float32'</span></em>, <em class="sig-param"><span class="n">dev</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>ivy.Device<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/creation.html#ones"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.creation.ones" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a new array of given shape and type, filled with ones.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>shape</strong> (<em>sequence of ints</em>) – Shape of the new array, e.g. (2, 3).</p></li>
+<li><p><strong>dtype</strong> – The desired data-type for the array in string format, i.e. ‘float32’ or ‘int64’.</p></li>
+</ul>
 </dd>
 </dl>
+<p>Default is ‘float32’.
+:type dtype: data-type string, optional
+:param dev: device on which to create the array ‘cuda:0’, ‘cuda:1’, ‘cpu’ etc..
+:type dev: ivy.Device
+:return: Tensor of ones with the given shape and dtype.</p>
 </dd></dl>
 
 <div class="line-block">

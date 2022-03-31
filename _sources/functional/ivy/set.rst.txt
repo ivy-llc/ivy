@@ -15,4 +15,5 @@ Set
 
    set/unique_inverse.rst
    set/unique_values.rst
+   set/unique_counts.rst
 

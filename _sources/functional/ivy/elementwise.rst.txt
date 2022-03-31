@@ -13,6 +13,7 @@ Elementwise
    :maxdepth: -1
    :caption: Elementwise
 
+   elementwise/bitwise_xor.rst
    elementwise/expm1.rst
    elementwise/bitwise_invert.rst
    elementwise/bitwise_and.rst
@@ -21,8 +22,10 @@ Elementwise
    elementwise/isfinite.rst
    elementwise/asin.rst
    elementwise/isinf.rst
+   elementwise/greater.rst
    elementwise/greater_equal.rst
    elementwise/less_equal.rst
+   elementwise/multiply.rst
    elementwise/asinh.rst
    elementwise/sqrt.rst
    elementwise/cosh.rst
@@ -43,12 +46,14 @@ Elementwise
    elementwise/negative.rst
    elementwise/not_equal.rst
    elementwise/tanh.rst
+   elementwise/floor_divide.rst
    elementwise/bitwise_or.rst
    elementwise/sinh.rst
    elementwise/positive.rst
    elementwise/square.rst
    elementwise/logaddexp.rst
    elementwise/round.rst
+   elementwise/trunc.rst
    elementwise/abs.rst
    elementwise/tan.rst
    elementwise/asin.rst
@@ -62,5 +67,9 @@ Elementwise
    elementwise/subtract.rst
    elementwise/divide.rst
    elementwise/remainder.rst
+   elementwise/bitwise_right_shift.rst
+   elementwise/equal.rst
    elementwise/erf.rst
+   elementwise/minimum.rst
+   elementwise/maximum.rst
 

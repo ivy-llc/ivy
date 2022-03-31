@@ -37,7 +37,7 @@
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="unique_inverse" href="set/unique_inverse.html" />
-    <link rel="prev" title="argmin" href="searching/argmin.html" /> 
+    <link rel="prev" title="where" href="searching/where.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -113,6 +113,7 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Set</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="set/unique_inverse.html">unique_inverse</a></li>
 <li class="toctree-l2"><a class="reference internal" href="set/unique_values.html">unique_values</a></li>
+<li class="toctree-l2"><a class="reference internal" href="set/unique_counts.html">unique_counts</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="sorting.html">Sorting</a></li>
@@ -210,6 +211,22 @@
   <div class="section" id="module-ivy.functional.ivy.set">
 <span id="set"></span><h1>Set<a class="headerlink" href="#module-ivy.functional.ivy.set" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
+<dt id="ivy.functional.ivy.set.unique_counts">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">unique_counts</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; Tuple<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.array.Array<span class="p">]</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/set.html#unique_counts"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.set.unique_counts" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the unique elements of an input array x and the corresponding counts for each unique element in x.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>x</strong> – input array. If x has more than one dimension, the function must flatten x and return the unique elements of the flattened array.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>a namedtuple (values, counts) whose
+-first element must have the field name values and must be an array containing the unique elements of x. The array must have the same data type as x.
+-second element must have the field name counts and must be an array containing the number of times each unique element occurs in x. The returned array must have same shape as values and must have the default array index data type.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt id="ivy.functional.ivy.set.unique_inverse">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">unique_inverse</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; Tuple<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.array.Array<span class="p">]</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/set.html#unique_inverse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.set.unique_inverse" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a tuple of two arrays, one being the unique elements of an input array x and the other one the indices from
@@ -272,7 +289,7 @@ the set of uniques elements that reconstruct x.</p>
         <a href="set/unique_inverse.html" class="btn btn-neutral float-right" title="unique_inverse" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="searching/argmin.html" class="btn btn-neutral float-left" title="argmin" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="searching/where.html" class="btn btn-neutral float-left" title="where" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

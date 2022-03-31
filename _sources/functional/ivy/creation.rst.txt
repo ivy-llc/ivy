@@ -18,12 +18,19 @@ Creation
    creation/ones.rst
    creation/full_like.rst
    creation/ones_like.rst
+   creation/zeros_like.rst
    creation/tril.rst
    creation/triu.rst
    creation/empty.rst
    creation/empty_like.rst
    creation/eye.rst
    creation/linspace.rst
+   creation/zeros_like.rst
+   creation/full.rst
+   creation/ones.rst
+   creation/meshgrid.rst
+   creation/from_dlpack.rst
    creation/array.rst
    creation/logspace.rst
+   creation/arange.rst
 

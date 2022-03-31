@@ -37,7 +37,7 @@
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="get_referrers_recursive" href="general/get_referrers_recursive.html" />
-    <link rel="prev" title="erf" href="elementwise/erf.html" /> 
+    <link rel="prev" title="maximum" href="elementwise/maximum.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -156,6 +156,8 @@
 <li class="toctree-l2"><a class="reference internal" href="general/multiprocessing.html">multiprocessing</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/indices_where.html">indices_where</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/one_hot.html">one_hot</a></li>
+<li class="toctree-l2"><a class="reference internal" href="general/shape.html">shape</a></li>
+<li class="toctree-l2"><a class="reference internal" href="general/get_num_dims.html">get_num_dims</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="gradients.html">Gradients</a></li>
@@ -631,6 +633,23 @@ a key-value structure, and exposes public methods .keys(), .values() and items()
 </dd></dl>
 
 <dl class="py function">
+<dt id="ivy.functional.ivy.general.get_num_dims">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">get_num_dims</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">as_array</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span> &#x2192; int<a class="reference internal" href="../../_modules/ivy/functional/ivy/general.html#get_num_dims"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.general.get_num_dims" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the number of dimensions of the array x.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>array</em>) – Input array to infer the number of dimensions for.</p></li>
+<li><p><strong>as_array</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to return the shape as a array, default False.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Shape of the array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt id="ivy.functional.ivy.general.get_referrers_recursive">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">get_referrers_recursive</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">item</span></em>, <em class="sig-param"><span class="n">depth</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">max_depth</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">seen_set</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">local_set</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/general.html#get_referrers_recursive"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.general.get_referrers_recursive" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -903,6 +922,23 @@ scatter into a zeros array.</p></li>
 </dd></dl>
 
 <dl class="py function">
+<dt id="ivy.functional.ivy.general.shape">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">shape</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">as_array</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span> &#x2192; Iterable<span class="p">[</span>int<span class="p">]</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/general.html#shape"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.general.shape" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the shape of the array x.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>array</em>) – Input array to infer the shape of.</p></li>
+<li><p><strong>as_array</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to return the shape as a array, default False.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Shape of the array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt id="ivy.functional.ivy.general.shape_to_tuple">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">shape_to_tuple</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">shape</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>int<span class="p">, </span>Tuple<span class="p">[</span>int<span class="p">]</span><span class="p">, </span>List<span class="p">[</span>int<span class="p">]</span><span class="p">]</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/general.html#shape_to_tuple"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.general.shape_to_tuple" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a tuple representation of the input shape.</p>
@@ -1073,7 +1109,7 @@ scatter into a zeros array.</p></li>
         <a href="general/get_referrers_recursive.html" class="btn btn-neutral float-right" title="get_referrers_recursive" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="elementwise/erf.html" class="btn btn-neutral float-left" title="erf" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="elementwise/maximum.html" class="btn btn-neutral float-left" title="maximum" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

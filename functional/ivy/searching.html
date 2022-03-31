@@ -112,6 +112,7 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Searching</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="searching/argmax.html">argmax</a></li>
 <li class="toctree-l2"><a class="reference internal" href="searching/argmin.html">argmin</a></li>
+<li class="toctree-l2"><a class="reference internal" href="searching/where.html">where</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="set.html">Set</a></li>
@@ -230,21 +231,44 @@
 
 <dl class="py function">
 <dt id="ivy.functional.ivy.searching.argmin">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">argmin</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">axis</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>int<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">keepdims</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>bool<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">out</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../_modules/ivy/functional/ivy/searching.html#argmin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.searching.argmin" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the indices of the minimum values along a specified axis. When the miniumum value occurs multiple times, only the indices corresponding to the first occurrence are returned.</p>
-<dl class="simple">
-<dt>x:</dt><dd><p>input array. Should have a numeric data type.</p>
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">argmin</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">axis</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>int<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">keepdims</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>bool<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../_modules/ivy/functional/ivy/searching.html#argmin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.searching.argmin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the indices of the minimum values along a specified axis. When the minimum value occurs multiple times, only the indices corresponding to the first occurrence are returned</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> – input array. Should have a numeric data type.</p></li>
+<li><p><strong>axis</strong> – axis along which to search. If None, the function must return the index of the minimum value of the flattened
+array. Default = None.</p></li>
+<li><p><strong>keepdims</strong> – if True, the reduced axes (dimensions) must be included in the result as singleton dimensions, and,
+accordingly, the result must be compatible with the input array (see Broadcasting). Otherwise, if False,
+the reduced axes (dimensions) must not be included in the result. Default = False.</p></li>
+<li><p><strong>out</strong> – if axis is None, a zero-dimensional array containing the index of the first occurrence of the minimum value;
+otherwise, a non-zero-dimensional array containing the indices of the minimum values.
+The returned array must have the default array index data type.</p></li>
+</ul>
 </dd>
-<dt>axis:</dt><dd><p>axis along which to search. If None, the function must return the index of the minimum value of the flattened array. Default: None.</p>
-</dd>
-<dt>keepdims:</dt><dd><p>If this is set to True, the axes which are reduced are left in the result as dimensions with size one. With this option, the result will broadcast correctly against the array.</p>
-</dd>
-<dt>out:</dt><dd><p>If provided, the result will be inserted into this array. It should be of the appropriate shape and dtype.</p>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Array containing the indices of the minimum values across the specified axis.</p>
 </dd>
 </dl>
-<blockquote>
-<div><p>if axis is None, a zero-dimensional array containing the index of the first occurrence of the minimum value; otherwise, a non-zero-dimensional array containing the indices of the maximum values. The returned array must have be the default array index data type.</p>
-</div></blockquote>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.searching.where">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">where</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">condition</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">x1</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">x2</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/searching.html#where"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.searching.where" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns elements chosen from x or y depending on condition.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>condition</strong> (<em>bool array</em>) – Where True, yield x1, otherwise yield x2.</p></li>
+<li><p><strong>x1</strong> (<em>array</em>) – values from which to choose when condition is True.</p></li>
+<li><p><strong>x2</strong> (<em>array</em>) – values from which to choose when condition is False.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>An array with elements from x1 where condition is True, and elements from x2 elsewhere.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <div class="toctree-wrapper compound">

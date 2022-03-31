@@ -362,25 +362,38 @@ one. With this option, the result will broadcast correctly against the input arr
 
 <dl class="py function">
 <dt id="ivy.functional.ivy.statistical.sum">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">sum</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">keepdims</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/statistical.html#sum"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.statistical.sum" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculates the sum of the input array x.</p>
-<dl class="simple">
-<dt>x:</dt><dd><p>input array. Should have a numeric data type.</p>
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">sum</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">axis</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Union<span class="p">[</span>int<span class="p">, </span>Tuple<span class="p">[</span>int<span class="p">, </span><span class="p">…</span><span class="p">]</span><span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">dtype</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Union<span class="p">[</span>ivy.Dtype<span class="p">, </span>str<span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">keepdims</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../_modules/ivy/functional/ivy/statistical.html#sum"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.statistical.sum" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the sum of the input array <code class="docutils literal notranslate"><span class="pre">x</span></code>.
+<strong>Special Cases</strong>
+Let <code class="docutils literal notranslate"><span class="pre">N</span></code> equal the number of elements over which to compute the sum.
+-   If <code class="docutils literal notranslate"><span class="pre">N</span></code> is <code class="docutils literal notranslate"><span class="pre">0</span></code>, the sum is <code class="docutils literal notranslate"><span class="pre">0</span></code> (i.e., the empty sum).
+For floating-point operands,
+-   If <code class="docutils literal notranslate"><span class="pre">x_i</span></code> is <code class="docutils literal notranslate"><span class="pre">NaN</span></code>, the sum is <code class="docutils literal notranslate"><span class="pre">NaN</span></code> (i.e., <code class="docutils literal notranslate"><span class="pre">NaN</span></code> values propagate).
+Parameters
+———-
+x:</p>
+<blockquote>
+<div><p>input array. Should have a numeric data type.</p>
+</div></blockquote>
+<dl>
+<dt>axis:</dt><dd><p>axis or axes along which sums must be computed. By default, the sum must be computed over the entire array. If a tuple of integers, sums must be computed over multiple axes. Default: <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
 </dd>
-<dt>axis:</dt><dd><p>axis or axes along which sums must be computed. By default, the sum must be computed over the entire array. If a tuple of integers, sums must be computed over multiple axes. Default: None.</p>
+<dt>dtype:</dt><dd><p>data type of the returned array. If <code class="docutils literal notranslate"><span class="pre">None</span></code>,
+-   if the default data type corresponding to the data type “kind” (integer or floating-point) of <code class="docutils literal notranslate"><span class="pre">x</span></code> has a smaller range of values than the data type of <code class="docutils literal notranslate"><span class="pre">x</span></code> (e.g., <code class="docutils literal notranslate"><span class="pre">x</span></code> has data type <code class="docutils literal notranslate"><span class="pre">int64</span></code> and the default data type is <code class="docutils literal notranslate"><span class="pre">int32</span></code>, or <code class="docutils literal notranslate"><span class="pre">x</span></code> has data type <code class="docutils literal notranslate"><span class="pre">uint64</span></code> and the default data type is <code class="docutils literal notranslate"><span class="pre">int64</span></code>), the returned array must have the same data type as <code class="docutils literal notranslate"><span class="pre">x</span></code>.
+-   if <code class="docutils literal notranslate"><span class="pre">x</span></code> has a floating-point data type, the returned array must have the default floating-point data type.
+-   if <code class="docutils literal notranslate"><span class="pre">x</span></code> has a signed integer data type (e.g., <code class="docutils literal notranslate"><span class="pre">int16</span></code>), the returned array must have the default integer data type.
+-   if <code class="docutils literal notranslate"><span class="pre">x</span></code> has an unsigned integer data type (e.g., <code class="docutils literal notranslate"><span class="pre">uint16</span></code>), the returned array must have an unsigned integer data type having the same number of bits as the default integer data type (e.g., if the default integer data type is <code class="docutils literal notranslate"><span class="pre">int32</span></code>, the returned array must have a <code class="docutils literal notranslate"><span class="pre">uint32</span></code> data type).
+If the data type (either specified or resolved) differs from the data type of <code class="docutils literal notranslate"><span class="pre">x</span></code>, the input array should be cast to the specified data type before computing the sum. Default: <code class="docutils literal notranslate"><span class="pre">None</span></code>.
+.. note:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">keyword</span> <span class="n">argument</span> <span class="ow">is</span> <span class="n">intended</span> <span class="n">to</span> <span class="n">help</span> <span class="n">prevent</span> <span class="n">data</span> <span class="nb">type</span> <span class="n">overflows</span><span class="o">.</span>
+</pre></div>
+</div>
 </dd>
-<dt>dtype:</dt><dd><p>data type of the returned array. If None,</p>
+<dt>keepdims:</dt><dd><p>if <code class="docutils literal notranslate"><span class="pre">True</span></code>, the reduced axes (dimensions) must be included in the result as singleton dimensions, and, accordingly, the result must be compatible with the input array (see <span class="xref std std-ref">broadcasting</span>). Otherwise, if <code class="docutils literal notranslate"><span class="pre">False</span></code>, the reduced axes (dimensions) must not be included in the result. Default: <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
 </dd>
 </dl>
-<p>if the default data type corresponding to the data type “kind” (integer or floating-point) of x has a smaller range of values than the data type of x (e.g., x has data type int64 and the default data type is int32, or x has data type uint64 and the default data type is int64), the returned array must have the same data type as x.</p>
-<p>if x has a floating-point data type, the returned array must have the default floating-point data type.</p>
-<p>if x has a signed integer data type (e.g., int16), the returned array must have the default integer data type.</p>
-<p>if x has an unsigned integer data type (e.g., uint16), the returned array must have an unsigned integer data type having the same number of bits as the default integer data type (e.g., if the default integer data type is int32, the returned array must have a uint32 data type).</p>
-<p>If the data type (either specified or resolved) differs from the data type of x, the input array should be cast to the specified data type before computing the sum. Default: None.    :return: The array with sums computed.</p>
 <dl class="simple">
-<dt>out:</dt><dd><p>if the sum was computed over the entire array, a zero-dimensional array containing the sum;
-otherwise, an array containing the sums. The returned array must have a data type as described
-by the dtype parameter above</p>
+<dt>out:</dt><dd><p>if the sum was computed over the entire array, a zero-dimensional array containing the sum; otherwise, an array containing the sums. The returned array must have a data type as described by the <code class="docutils literal notranslate"><span class="pre">dtype</span></code> parameter above.</p>
 </dd>
 </dl>
 </dd></dl>

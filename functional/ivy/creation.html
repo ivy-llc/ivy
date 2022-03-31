@@ -100,14 +100,21 @@
 <li class="toctree-l2"><a class="reference internal" href="creation/ones.html">ones</a></li>
 <li class="toctree-l2"><a class="reference internal" href="creation/full_like.html">full_like</a></li>
 <li class="toctree-l2"><a class="reference internal" href="creation/ones_like.html">ones_like</a></li>
+<li class="toctree-l2"><a class="reference internal" href="creation/zeros_like.html">zeros_like</a></li>
 <li class="toctree-l2"><a class="reference internal" href="creation/tril.html">tril</a></li>
 <li class="toctree-l2"><a class="reference internal" href="creation/triu.html">triu</a></li>
 <li class="toctree-l2"><a class="reference internal" href="creation/empty.html">empty</a></li>
 <li class="toctree-l2"><a class="reference internal" href="creation/empty_like.html">empty_like</a></li>
 <li class="toctree-l2"><a class="reference internal" href="creation/eye.html">eye</a></li>
 <li class="toctree-l2"><a class="reference internal" href="creation/linspace.html">linspace</a></li>
+<li class="toctree-l2"><a class="reference internal" href="creation/zeros_like.html">zeros_like</a></li>
+<li class="toctree-l2"><a class="reference internal" href="creation/full.html">full</a></li>
+<li class="toctree-l2"><a class="reference internal" href="creation/ones.html">ones</a></li>
+<li class="toctree-l2"><a class="reference internal" href="creation/meshgrid.html">meshgrid</a></li>
+<li class="toctree-l2"><a class="reference internal" href="creation/from_dlpack.html">from_dlpack</a></li>
 <li class="toctree-l2"><a class="reference internal" href="creation/array.html">array</a></li>
 <li class="toctree-l2"><a class="reference internal" href="creation/logspace.html">logspace</a></li>
+<li class="toctree-l2"><a class="reference internal" href="creation/arange.html">arange</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="data_type.html">Data type</a></li>
@@ -221,6 +228,38 @@
   <div class="section" id="module-ivy.functional.ivy.creation">
 <span id="creation"></span><h1>Creation<a class="headerlink" href="#module-ivy.functional.ivy.creation" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
+<dt id="ivy.functional.ivy.creation.arange">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">arange</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">stop</span><span class="p">:</span> <span class="n">numbers.Number</span></em>, <em class="sig-param"><span class="n">start</span><span class="p">:</span> <span class="n">numbers.Number</span> <span class="o">=</span> <span class="default_value">0</span></em>, <em class="sig-param"><span class="n">step</span><span class="p">:</span> <span class="n">numbers.Number</span> <span class="o">=</span> <span class="default_value">1</span></em>, <em class="sig-param"><span class="n">dtype</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>ivy.Dtype<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">dev</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>ivy.Device<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/creation.html#arange"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.creation.arange" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns evenly spaced values within a given interval, with the spacing being specified.</p>
+<p>Values are generated within the half-open interval [start, stop) (in other words, the interval including start but
+excluding stop). For integer arguments the function is equivalent to the Python built-in range function,
+but returns an array in the chosen ml_framework rather than a list.</p>
+<p>See <span class="math notranslate nohighlight">\(linspace\)</span> for a certain number of evenly spaced values in an interval.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>stop</strong> (<em>number</em>) – End of interval. The interval does not include this value, except in some cases where step is not an
+integer and floating point round-off affects the length of out.</p></li>
+<li><p><strong>start</strong> (<em>number</em><em>, </em><em>optional</em>) – Start of interval. The interval includes this value. The default start value is 0.</p></li>
+<li><p><strong>step</strong> (<em>number</em><em>, </em><em>optional</em>) – Spacing between values. For any output out, this is the distance between two adjacent values,
+out[i+1] - out[i]. The default step size is 1. If step is specified as a position argument,
+start must also be given.</p></li>
+<li><p><strong>dtype</strong> (<em>data-type string</em><em>, </em><em>optional</em>) – The desired data-type for the array in string format, i.e. ‘float32’ or ‘int64’.
+If not given, then the type will be determined as the minimum type required to hold the objects in the
+sequence.</p></li>
+<li><p><strong>dev</strong> (<em>ivy.Device</em>) – device on which to create the array ‘cuda:0’, ‘cuda:1’, ‘cpu’ etc.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><p>Tensor of evenly spaced values.</p>
+<p>For floating point arguments, the length of the result is ceil((stop - start)/step).
+Because of floating point overflow, this rule may result in the last element of out being greater than stop.</p>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt id="ivy.functional.ivy.creation.array">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">array</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">object_in</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>List<span class="p">, </span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">dtype</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Union<span class="p">[</span>ivy.Dtype<span class="p">, </span>str<span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">dev</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>ivy.Device<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/creation.html#array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.creation.array" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates an array.</p>
@@ -323,6 +362,40 @@ point data type. Default: None.</p></li>
 </dd></dl>
 
 <dl class="py function">
+<dt id="ivy.functional.ivy.creation.from_dlpack">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">from_dlpack</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../_modules/ivy/functional/ivy/creation.html#from_dlpack"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.creation.from_dlpack" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a new array containing the data from another (array) object with a <code class="docutils literal notranslate"><span class="pre">__dlpack__</span></code> method.</p>
+<dl class="simple">
+<dt>x: object</dt><dd><p>input (array) object.</p>
+</dd>
+</dl>
+<dl>
+<dt>out: array</dt><dd><p>an array containing the data in <cite>x</cite>.</p>
+<div class="note admonition">
+<p class="admonition-title">Note</p>
+<p>The returned array may be either a copy or a view. See <span class="xref std std-ref">data-interchange</span> for details.</p>
+</div>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.creation.full">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">full</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">shape</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>int<span class="p">, </span>Tuple<span class="p">[</span>int<span class="p">]</span><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">fill_value</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>int<span class="p">, </span>float<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">dtype</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>ivy.Dtype<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">device</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>ivy.Device<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/creation.html#full"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.creation.full" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a new array having a specified shape and filled with fill_value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>shape</strong> – output array shape.</p></li>
+<li><p><strong>fill_value</strong> – fill value.</p></li>
+<li><p><strong>dtype</strong> – output array data type.</p></li>
+<li><p><strong>device</strong> – device on which to place the created array. Default: None.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt id="ivy.functional.ivy.creation.full_like">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">full_like</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">fill_value</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>int<span class="p">, </span>float<span class="p">]</span></span></em>, <em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">dtype</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Union<span class="p">[</span>ivy.Dtype<span class="p">, </span>str<span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">device</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Union<span class="p">[</span>ivy.Device<span class="p">, </span>str<span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../_modules/ivy/functional/ivy/creation.html#full_like"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.creation.full_like" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a new array filled with fill_value and having the same shape as an input array x.</p>
@@ -383,21 +456,39 @@ out:an array having the same shape as x and where every element is equal to fill
 </dd></dl>
 
 <dl class="py function">
+<dt id="ivy.functional.ivy.creation.meshgrid">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">meshgrid</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">xs</span><span class="p">:</span> <span class="n">Iterable<span class="p">[</span>Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">indexing</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'ij'</span></em><span class="sig-paren">)</span> &#x2192; Iterable<span class="p">[</span>Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><span class="p">]</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/creation.html#meshgrid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.creation.meshgrid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Broadcasts parameters for evaluation on an N-D grid.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>xs</strong> (<em>sequence of arrays</em>) – input arrays</p></li>
+<li><p><strong>indexing</strong> (<em>str</em><em>, </em><em>optional</em>) – The indexing method, either ‘xy’ or ‘ij’. Default is ‘ij’.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>list of N-D coordinate arrays for evaluating expressions on an N-D grid</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt id="ivy.functional.ivy.creation.ones">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">ones</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">shape</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>int<span class="p">, </span>Tuple<span class="p">[</span>int<span class="p">]</span><span class="p">, </span>List<span class="p">[</span>int<span class="p">]</span><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">dtype</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>ivy.Dtype<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">device</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>ivy.Device<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../_modules/ivy/functional/ivy/creation.html#ones"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.creation.ones" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns a new array having a specified <code class="docutils literal notranslate"><span class="pre">shape</span></code> and filled with ones.</p>
-<dl class="simple">
-<dt>shape:</dt><dd><p>output array shape.</p>
-</dd>
-<dt>dtype:</dt><dd><p>output array data type. If <code class="docutils literal notranslate"><span class="pre">dtype</span></code> is <code class="docutils literal notranslate"><span class="pre">None</span></code>, the output array data type must be the default floating-point data type. Default: <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
-</dd>
-<dt>device:</dt><dd><p>device on which to place the created array. Default: <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
-</dd>
-</dl>
-<dl class="simple">
-<dt>out:</dt><dd><p>an array containing ones.</p>
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">ones</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">shape</span><span class="p">:</span> <span class="n">Iterable<span class="p">[</span>int<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">dtype</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.Dtype<span class="p">, </span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">'float32'</span></em>, <em class="sig-param"><span class="n">dev</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>ivy.Device<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/creation.html#ones"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.creation.ones" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a new array of given shape and type, filled with ones.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>shape</strong> (<em>sequence of ints</em>) – Shape of the new array, e.g. (2, 3).</p></li>
+<li><p><strong>dtype</strong> – The desired data-type for the array in string format, i.e. ‘float32’ or ‘int64’.</p></li>
+</ul>
 </dd>
 </dl>
+<p>Default is ‘float32’.
+:type dtype: data-type string, optional
+:param dev: device on which to create the array ‘cuda:0’, ‘cuda:1’, ‘cpu’ etc..
+:type dev: ivy.Device
+:return: Tensor of ones with the given shape and dtype.</p>
 </dd></dl>
 
 <dl class="py function">
@@ -470,6 +561,25 @@ same device as x.</p>
 </dl>
 <dl class="simple">
 <dt>out:</dt><dd><p>an array containing zeros.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.creation.zeros_like">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">zeros_like</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">dtype</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>ivy.Dtype<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">dev</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>ivy.Device<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/creation.html#zeros_like"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.creation.zeros_like" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns an array of zeros with the same shape and type as x, unless dtype provided which overrides.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>array</em>) – The shape and data-type of x define these same attributes of the returned array.</p></li>
+<li><p><strong>dtype</strong> (<em>data-type string</em><em>, </em><em>optional</em>) – The desired data-type for the array in string format, i.e. ‘float32’ or ‘int64’.
+If not given, then the type of the original array is used.</p></li>
+<li><p><strong>dev</strong> (<em>ivy.Device</em><em>, </em><em>optional</em>) – device on which to create the array ‘cuda:0’, ‘cuda:1’, ‘cpu’ etc. Same as x if None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Tensor of zeros with the same shape and type as a, unless dtype provided which overrides.</p>
 </dd>
 </dl>
 </dd></dl>
