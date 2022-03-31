@@ -291,6 +291,16 @@ def round(x: Tensor)\
     return tf.round(x)
 
 
+def trunc(x: Tensor)\
+        -> Tensor:
+    if 'int' in str(x.dtype):
+        return x
+    res = tf.zeros(x.shape, dtype=x.dtype)
+    res = tf.tensor_scatter_nd_update(res, tf.where(x > 0), tf.math.floor(x[x > 0]))
+    res = tf.tensor_scatter_nd_update(res, tf.where(x < 0), tf.math.ceil(x[x < 0]))
+    return res
+
+
 def abs(x: Tensor)\
         -> Tensor:
 
@@ -349,7 +359,6 @@ exp = tf.math.exp
 
 # Extra #
 # ------#
-
 
 minimum = tf.minimum
 maximum = tf.maximum

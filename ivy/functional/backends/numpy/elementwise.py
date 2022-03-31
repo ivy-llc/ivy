@@ -242,6 +242,11 @@ def bitwise_or(x1: np.ndarray, x2: np.ndarray)\
     return np.bitwise_or(x1, x2)
 
 
+def trunc(x: np.ndarray) \
+        -> np.ndarray:
+    return np.asarray(npa.trunc(npa.asarray(x)))
+
+
 def abs(x: np.ndarray)\
         -> np.ndarray:
     return np.absolute(x)
