@@ -48,7 +48,7 @@ class Array(ArrayWithArrayAPI, ArrayWithDevice, ArrayWithGeneral, ArrayWithGradi
         self._data = data
         self._shape = data.shape
 
-        self._size = functools.reduce(mul,self._data.shape) if len(self._data.shape) >0 else 0 
+        self._size = functools.reduce(mul,self._data.shape) if len(self._data.shape) >0 else 0
         self._dtype = ivy.dtype(self._data)
         self._device = ivy.dev(data)
         self._dev_str = ivy.dev_to_str(self._device)
@@ -68,6 +68,17 @@ class Array(ArrayWithArrayAPI, ArrayWithDevice, ArrayWithGeneral, ArrayWithGradi
     @property
     def shape(self):
         return tuple(self._shape)
+
+    @property
+    def ndim(self):
+        """
+        Number of array dimensions (axes).
+        Returns
+        -------
+        out: int
+            number of array dimensions (axes).
+        """
+        return len(tuple(self._shape))
 
     @property
     def dtype(self):
@@ -339,7 +350,7 @@ class Array(ArrayWithArrayAPI, ArrayWithDevice, ArrayWithGeneral, ArrayWithGradi
     def __or__(self, other):
         return ivy.bitwise_or(self._data, other)
 
-        
+
     @_native_wrapper
     def __ror__(self, other):
         other = to_native(other)
@@ -374,7 +385,7 @@ class Array(ArrayWithArrayAPI, ArrayWithDevice, ArrayWithGeneral, ArrayWithGradi
     @_native_wrapper
     def __rshift__(self, other):
         return ivy.bitwise_right_shift(self._data, other)
-    
+
     @_native_wrapper
     def __rrshift__(self, other):
         other = to_native(other)
