@@ -1,5 +1,5 @@
 cholesky
-#cross
+#cross # failing non-deterministically
 det
 #diagonal # fails non-determinstically for jax, due to +0 vs -0 inconsistencies
 eigh
@@ -8,7 +8,7 @@ eigh
 matmul
 #matrix_norm
 #matrix_power
-#matrix_rank
+matrix_rank
 matrix_transpose
 #outer # depends on: multiply
 pinv

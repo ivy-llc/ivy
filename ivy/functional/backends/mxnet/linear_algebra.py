@@ -123,6 +123,16 @@ def eigvalsh(x: mx.ndarray.ndarray.NDArray) -> mx.ndarray.ndarray.NDArray:
     return mx.np.linalg.eigvalsh(x)
 
 
+def matrix_rank(vector: NDArray,
+                rtol: Union[NDArray, float] = None) -> Union[NDArray, float]:
+    return mx.np.linalg.matrix_rank(vector, rtol)
+
+    
+def cross (x1: mx.nd.NDArray,
+           x2: mx.nd.NDArray,
+           axis:int = -1) -> mx.nd.NDArray:
+    return mx.np.cross(a= x1, b = x2, axis= axis)
+
 def matrix_transpose(x, axes=None):
     if axes is None:
         num_dims = len(x.shape)
@@ -152,20 +162,6 @@ def matmul(x1, x2):
     res = mx.nd.batch_dot(x1, x2)
     if expanded:
         return mx.nd.reshape(res, list(x1_shape[:-1]) + [res.shape[-1]])
-    return res
-
-
-def cross(x1, x2):
-    a1 = x1[..., 0:1]
-    a2 = x1[..., 1:2]
-    a3 = x1[..., 2:3]
-    b1 = x2[..., 0:1]
-    b2 = x2[..., 1:2]
-    b3 = x2[..., 2:3]
-    res1 = a2*b3 - a3*b2
-    res2 = a3*b1 - a1*b3
-    res3 = a1*b2 - a2*b1
-    res = mx.nd.concat(res1, res2, res3, dim=-1)
     return res
 
 

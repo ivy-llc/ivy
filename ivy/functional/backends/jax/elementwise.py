@@ -186,6 +186,11 @@ def tanh(x: JaxArray)\
     return jnp.tanh(x)
 
 
+def floor_divide(x1: JaxArray, x2: JaxArray)\
+                -> JaxArray:
+    return jnp.floor_divide(x1, x2)
+
+
 def bitwise_or(x1: JaxArray, x2: JaxArray) -> JaxArray:
     return jnp.bitwise_or(x1, x2)
 
@@ -199,7 +204,7 @@ def positive(x: JaxArray)\
         -> JaxArray:
     return jnp.positive(x)
 
-
+  
 def square(x: JaxArray)\
         -> JaxArray:
     return jnp.square(x)
@@ -219,6 +224,13 @@ def round(x: JaxArray)\
     return jnp.round(x)
 
 
+def trunc(x: JaxArray)\
+        -> JaxArray:
+    if 'int' in str(x.dtype):
+        return x
+    return jnp.trunc(x)
+
+  
 def abs(x: JaxArray)\
         -> JaxArray:
     return jnp.absolute(x)

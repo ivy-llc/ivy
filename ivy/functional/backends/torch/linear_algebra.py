@@ -36,6 +36,11 @@ def matrix_transpose(x: torch.Tensor)\
         -> torch.Tensor:
     return torch.swapaxes(x, -1, -2)
 
+def matrix_rank(vector: torch.Tensor,
+                rtol: Optional[Union[float, Tuple[float]]] = None) \
+        -> torch.Tensor:
+    return torch.linalg.matrix_rank(vector, rtol)
+
 
 def vector_norm(x: torch.Tensor,
                 p: Union[int, float, Literal[inf, - inf]] = 2,
@@ -168,8 +173,15 @@ def eigvalsh(x: torch.Tensor) -> torch.Tensor:
     return torch.linalg.eigvalsh(x)
 
 
-def cross(x1, x2):
-    return torch.cross(x1, x2)
+def cross (x1: torch.Tensor,
+           x2: torch.Tensor,
+           axis:int = -1) -> torch.Tensor:
+    if axis == None:
+        axis = -1
+    dtype_from = torch.promote_types(x1.dtype, x2.dtype)
+    x1 = x1.type(dtype_from)
+    x2 = x2.type(dtype_from)
+    return torch.cross(input = x1, other  = x2, dim=axis)    
 
 
 # Extra #

@@ -88,7 +88,7 @@ def isfinite(x: torch.Tensor) \
 def asin(x: torch.Tensor) \
         -> torch.Tensor:
     return torch.asin(x)
-  
+
 
 def asinh(x: torch.Tensor) \
         -> torch.Tensor:
@@ -196,7 +196,7 @@ def logical_and(x1: torch.Tensor, x2: torch.Tensor)\
         -> torch.Tensor:
     return torch.logical_and(x1.type(torch.bool), x2.type(torch.bool))
 
-  
+
 def logical_or(x1: torch.Tensor, x2: torch.Tensor)\
         -> torch.Tensor:
     return torch.logical_or(x1.type(torch.bool), x2.type(torch.bool))
@@ -226,6 +226,12 @@ def tanh(x: torch.Tensor) -> torch.Tensor:
     return torch.tanh(x)
 
 
+def floor_divide(x1: torch.Tensor, x2: torch.Tensor)\
+                -> torch.Tensor:
+    x1, x2 = _cast_for_binary_op(x1, x2)
+    return torch.div(x1, x2, rounding_mode='floor')
+
+
 def bitwise_or(x1: torch.Tensor, x2: torch.Tensor) \
         -> torch.Tensor:
     x1, x2 = _cast_for_binary_op(x1, x2)
@@ -240,7 +246,7 @@ def positive(x: torch.Tensor)\
         -> torch.Tensor:
     return torch.positive(x)
 
-    
+
 def square(x: torch.Tensor) \
         -> torch.Tensor:
     return torch.square(x)
@@ -251,6 +257,13 @@ def round(x: torch.Tensor)\
     if 'int' in str(x.dtype):
         return x
     return torch.round(x)
+
+
+def trunc(x: torch.Tensor)\
+        -> torch.Tensor:
+    if 'int' in str(x.dtype):
+        return x
+    return torch.trunc(x)
 
 
 def abs(x: torch.Tensor)\
