@@ -229,7 +229,7 @@ def tanh(x: torch.Tensor) -> torch.Tensor:
 def floor_divide(x1: torch.Tensor, x2: torch.Tensor)\
                 -> torch.Tensor:
     x1, x2 = _cast_for_binary_op(x1, x2)
-    return torch.floor_divide(x1, x2)
+    return torch.floor(torch.divide(x1, x2)).type(x1.dtype)
 
 
 def bitwise_or(x1: torch.Tensor, x2: torch.Tensor) \
