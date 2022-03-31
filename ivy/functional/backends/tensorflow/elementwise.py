@@ -3,9 +3,6 @@ import tensorflow as tf
 from tensorflow.python.types.core import Tensor
 import typing
 
-import numpy as np
-import numpy.array_api as npa
-
 # local
 import ivy
 
