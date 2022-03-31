@@ -58,9 +58,15 @@ def broadcast_to(x: np.ndarray, shape: Tuple[int,...]) -> np.ndarray:
     return np.broadcast_to(x,shape)
 
 
-
-def cast(x, dtype):
-    return x.astype(ivy.dtype_from_str(dtype))
-
-
-astype = cast
+def astype(x: np.ndarray, dtype: np.dtype, copy: bool = True):
+    if copy:
+         if x.dtype == dtype:
+             new_tensor = np.copy(x)
+             return new_tensor
+    else:
+         if x.dtype == dtype:
+             return x
+         else:
+            new_tensor = np.copy(x)
+            return new_tensor.astype(dtype)
+    return x.astype(dtype)
