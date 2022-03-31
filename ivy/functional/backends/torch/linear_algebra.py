@@ -120,6 +120,8 @@ def slogdet(x:Union[_ivy.Array,_ivy.NativeArray],full_matrices: bool = True) -> 
     sign, logabsdet = torch.linalg.slogdet(x)
     res = results(sign, logabsdet)
     return res
+
+
 def solve(x1: torch.Tensor, x2: torch.Tensor) -> torch.Tensor:
      dtype_from = torch.promote_types(x1.dtype, x2.dtype)
      x1 = x1.type(dtype_from)
