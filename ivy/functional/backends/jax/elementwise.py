@@ -186,6 +186,11 @@ def tanh(x: JaxArray)\
     return jnp.tanh(x)
 
 
+def floor_divide(x1: JaxArray, x2: JaxArray)\
+                -> JaxArray:
+    return jnp.floor_divide(x1, x2)
+
+
 def bitwise_or(x1: JaxArray, x2: JaxArray) -> JaxArray:
     return jnp.bitwise_or(x1, x2)
 
