@@ -1,18 +1,18 @@
 Ivy Container
 =============
 
-In this post, we’ll be explaining how the *ivy.Container* class save you a ton of time and clean up code in almost all aspects of your ML workflow. So without further ado, let’s dive in!
+Here, we explain how the :code:`ivy.Container` class saves you a ton of time and cleans up code in almost all aspects of your ML workflow. So without further ado, let’s dive in!
 
 Firstly, Dictionaries are an incredibly powerful and useful data type in Python. They enable a clean, readable and efficient-access (via hashing) storage of arbitrarily hierarchical data.
 
-The *ivy.Container* class can be seen as a souped-up Dict, with many useful features built on top. It’s the backbone of most high level operations in Ivy.
+The :code:`ivy.Container` class can be seen as a souped-up Dict, with many useful features built on top. It’s the backbone of most high level operations in Ivy.
 
-Let’s walk through some of the most important features of the *ivy.Container*!
+Let’s walk through some of the most important features of the :code:`ivy.Container`!
 
 Construction
 ------------
 
-A container can be constructed in a number of ways. All construction approaches below result in identical *ivy.Container* instances.
+A container can be constructed in a number of ways. All construction approaches below result in identical :code:`ivy.Container` instances.
 
 .. code-block:: python
 
@@ -43,7 +43,7 @@ A container can be constructed in a number of ways. All construction approaches 
 Representation
 --------------
 
-*ivy.Container* prints the hierarchical structure to the terminal in a very intuitive manner, much more so than native Python Dicts.
+:code:`ivy.Container` prints the hierarchical structure to the terminal in a very intuitive manner, much more so than native Python Dicts.
 
 .. code-block:: python
 
@@ -106,7 +106,7 @@ If the container holds very large arrays, then their shapes are printed instead.
 Recursive Methods
 ----------------
 
-All methods in Ivy’s functional API are implemented as recursive methods on the *ivy.Container*. This means you can easily map a single method to all arrays in the container with a single line.
+All methods in Ivy’s functional API are implemented as recursive methods on the :code:`ivy.Container`. This means you can easily map a single method to all arrays in the container with a single line.
 
 Starting with the following container:
 
@@ -144,7 +144,7 @@ Or we can flip each sub-array:
        }
    }
 
-There are 178 such functions for the *ivy.Container* class in total, check out the `code <https://github.com/unifyai/ivy/blob/master/ivy/container.py>`_ or `docs <https://lets-unify.ai/ivy/core/container.html>`_ to see what they are!
+There are 178 such functions for the :code:`ivy.Container` class in total, check out the `code <https://github.com/unifyai/ivy/blob/master/ivy/container.py>`_ or `docs <https://lets-unify.ai/ivy/core/container.html>`_ to see what they are!
 
 Built-ins
 ----------
@@ -173,12 +173,12 @@ All built-in methods also apply recursively. For example, performing a gradient 
        }
    }
 
-Check out the section below on Ivy’s stateful API to see how the *ivy.Container* is used for storing all network weights in *ivy.Module* instances!
+Check out the section below on Ivy’s stateful API to see how the :code:`ivy.Container` is used for storing all network weights in :code:`ivy.Module` instances!
 
 Access
 ------
 
-The keys in an *ivy.Container* can be set and accessed by using either class attributes or keys in the dictionary. Both of these setting and accessing approaches are equivalent under the hood.
+The keys in an :code:`ivy.Container` can be set and accessed by using either class attributes or keys in the dictionary. Both of these setting and accessing approaches are equivalent under the hood.
 
 .. code-block:: python
 
@@ -317,7 +317,7 @@ Comparing differences between containers can be achieved on a per-leaf basis. Th
        }
    }
 
-Or perhaps we saved JSON configuration files to disk for two different experiment runs, and then want to quickly see their differences. The *ivy.Container.diff* method will also detect differences in the hierarchical structure and key name differences.
+Or perhaps we saved JSON configuration files to disk for two different experiment runs, and then want to quickly see their differences. The :code:`ivy.Container.diff` method will also detect differences in the hierarchical structure and key name differences.
 
 .. code-block:: python
 
@@ -347,12 +347,12 @@ Or perhaps we saved JSON configuration files to disk for two different experimen
         }
     }
 
-The *ivy.Container.diff* method can be applied to arbitrarily many containers at once in a single call, not just two as in the examples above.
+The :code:`ivy.Container.diff` method can be applied to arbitrarily many containers at once in a single call, not just two as in the examples above.
 
 Customized Representations
 -------------------------
 
-Not only does *ivy.Container* print to the terminal in a very intuitive manner, but there are also helper functions to fully control this representation. This is very helpful when debugging networks with huge numbers of parameters with a deep hierarchical structure for example.
+Not only does :code:`ivy.Container` print to the terminal in a very intuitive manner, but there are also helper functions to fully control this representation. This is very helpful when debugging networks with huge numbers of parameters with a deep hierarchical structure for example.
 
 If our networks weights go many levels deep in the nested hierarchy, we might not want to see all of them when printing our container to screen. Consider the following nested structure.
 
@@ -445,7 +445,7 @@ Likewise, we can clip the height of the printed container in order to make the s
 
 These are very useful methods when stepping through code and debugging complex nested structures such as the weights of a network.
 
-There are also methods: *with_print_limit* for controlling the printable size of arrays before the shape is instead displayed, *with_key_length_limit* for setting the maximum key length before string clipping, *with_print_indent* for controlling the nested indent, and many more. Check out the `docs <https://lets-unify.ai/ivy/core/container.html>`_ for more details!
+There are also methods: :code:`with_print_limit` for controlling the printable size of arrays before the shape is instead displayed, :code:`with_key_length_limit` for setting the maximum key length before string clipping, :code:`with_print_indent` for controlling the nested indent, and many more. Check out the `docs <https://lets-unify.ai/ivy/core/container.html>`_ for more details!
 
 Use Cases
 ---------
@@ -455,7 +455,7 @@ We’ll now just go through a few of the different use cases for the Ivy Contain
 Compartmentalization
 --------------------
 
-The most obvious use case for the *ivy.Container* class is to compartmentalize inputs into a useful structure. For example, without better foresight, we could untidily implement a function *update_agent* as follows:
+The most obvious use case for the :code:`ivy.Container` class is to compartmentalize inputs into a useful structure. For example, without better foresight, we could untidily implement a function :code:`update_agent` as follows:
 
 .. code-block:: python
 
@@ -521,12 +521,12 @@ Our code will be much cleaner if we do something like the following, particularl
         cam_range = cam_max - cam_min
         agent.cams = (agent.cams - cam_min) / cam_range
 
-Of course, this argument holds for the use of custom classes or built-in containers (Python list, dict, tuple etc.), and isn’t only relevant for the Ivy container. However the recursive methods of the Ivy Container make things even more convenient, such as where we recursively normalize all five images in the final four lines of the *update_agent* method.
+Of course, this argument holds for the use of custom classes or built-in containers (Python list, dict, tuple etc.), and isn’t only relevant for the Ivy container. However the recursive methods of the Ivy Container make things even more convenient, such as where we recursively normalize all five images in the final four lines of the :code:`update_agent` method.
 
 Configuration
 --------------
 
-As briefly alluded to when explaining the *ivy.Container.diff* method, the container class is also the ideal data type for storing experiment configurations. Configurations can either first be stored to disk as a JSON file and then loaded into the *ivy.Container* for recursive comparisons to see differences between experiments, or the config can be specified in the code and then saved to disk as a JSON to keep a permanent log afterwards.
+As briefly alluded to when explaining the :code:`ivy.Container.diff` method, the container class is also the ideal data type for storing experiment configurations. Configurations can either first be stored to disk as a JSON file and then loaded into the :code:`ivy.Container` for recursive comparisons to see differences between experiments, or the config can be specified in the code and then saved to disk as a JSON to keep a permanent log afterwards.
 
 Data loading
 -----------
@@ -588,7 +588,7 @@ We can then load this Dataset with a configurable batch size like so, and we can
 Network weights
 --------------
 
-Finally, the Ivy Containers can also be used for storing network weights. In fact, as will be discussed in the next post on the stateful Ivy API, this is how the *ivy.Module* class stores all trainable variables in the model. The following code is possible thanks to the recursive operation of the container, which applies the gradient update to all variable arrays in the container recursively.
+Finally, the Ivy Containers can also be used for storing network weights. In fact, as is discussed in the documentation for the Ivy stateful API, this is how the :code:`ivy.Module` class stores all trainable variables in the model. The following code is possible thanks to the recursive operation of the container, which applies the gradient update to all variable arrays in the container recursively.
 
 .. code-block:: python
 
@@ -633,6 +633,6 @@ Finally, the Ivy Containers can also be used for storing network weights. In fac
 
 **Round Up**
 
-That should hopefully be enough to get you started with the *ivy.Container* class 😊
+That should hopefully be enough to get you started with the :code:`ivy.Container` class 😊
 
 Please check out the discussions on the `repo <https://github.com/unifyai/ivy>`_ for FAQs, and reach out on `discord <https://discord.gg/ZVQdvbzNQJ>`_ if you have any questions!

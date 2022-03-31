@@ -1,3 +1,4 @@
+name: Issue Automation
 on:
   issue_comment:
     types:
