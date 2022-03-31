@@ -204,7 +204,7 @@ def positive(x: JaxArray)\
         -> JaxArray:
     return jnp.positive(x)
 
-
+  
 def square(x: JaxArray)\
         -> JaxArray:
     return jnp.square(x)
@@ -224,6 +224,13 @@ def round(x: JaxArray)\
     return jnp.round(x)
 
 
+def trunc(x: JaxArray)\
+        -> JaxArray:
+    if 'int' in str(x.dtype):
+        return x
+    return jnp.trunc(x)
+
+  
 def abs(x: JaxArray)\
         -> JaxArray:
     return jnp.absolute(x)
