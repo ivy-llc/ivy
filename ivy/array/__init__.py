@@ -70,7 +70,7 @@ class Array(ArrayWithArrayAPI, ArrayWithDevice, ArrayWithGeneral, ArrayWithGradi
         return tuple(self._shape)
 
     @property
-    def ndim(self) -> int:
+    def ndim(self):
         """
         Number of array dimensions (axes).
         Returns
