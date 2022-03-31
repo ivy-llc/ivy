@@ -3,9 +3,9 @@ import torch
 import numpy as np
 from torch import Tensor
 from typing import Union, Tuple, Optional, Dict
-
+from numbers import Number
 # local
-from ivy import dtype_from_str, default_dtype, dev_from_str, default_device
+from ivy import dtype_from_str, default_dtype, dev_from_str, default_device, shape_to_tuple
 from ivy.functional.backends.torch.device import _callable_dev
 
 
@@ -89,6 +89,18 @@ def ones_like(x : torch.Tensor,
         return torch.ones_like(x, dtype= dtype, device=dev_from_str(dev))
 
     return torch.ones_like(x, device=dev_from_str(dev))
+
+
+def zeros_like(x: torch.Tensor,
+               dtype: Optional[torch.dtype] = None,
+               device: Optional[Union[torch.device, str]] = None)\
+            -> torch.Tensor:
+    if device is None:
+        device = _callable_dev(x)
+    if dtype is not None:
+        return torch.zeros_like(x, dtype=dtype, device=dev_from_str(device))
+
+    return torch.zeros_like(x, device=dev_from_str(device))
 
 
 def tril(x: torch.Tensor,
@@ -228,6 +240,33 @@ def eye(n_rows: int,
     else:
         return torch.zeros([n_rows, n_cols], dtype=dtype, device=device)
 
+
+# noinspection PyShadowingNames
+def arange(stop: Number, start: Number = 0, step: Number = 1, dtype: Optional[str] = None,
+           dev: Optional[str] = None):
+    dev = default_device(dev)
+    if dtype is not None:
+        return torch.arange(start, stop, step=step, dtype=dtype_from_str(dtype), device=dev_from_str(dev))
+    else:
+        return torch.arange(start, stop, step=step, device=dev_from_str(dev))
+
+
+def full(shape, fill_value, dtype=None, device=None):
+    return torch.full(
+        shape_to_tuple(shape), fill_value, dtype=dtype_from_str(default_dtype(dtype, fill_value)),
+        device=default_device(device))
+
+
+def meshgrid(*xs, indexing='ij'):
+    ret = torch.meshgrid(*xs)
+    if indexing == 'xy':
+        # ToDo: verify if this is correct
+        return tuple([torch.transpose(x, 1, 0) for x in ret])
+    return ret
+
+
+def from_dlpack(x):
+    return torch.utils.dlpack.from_dlpack(x)
 
 # Extra #
 # ------#
