@@ -14,3 +14,12 @@ def unique_inverse(x: torch.Tensor) \
 def unique_values(x: torch.Tensor) \
         -> torch.Tensor:
     return torch.unique(x)
+
+
+def unique_counts(x: torch.Tensor) \
+        -> Tuple[torch.Tensor, torch.Tensor]:
+    v, c = torch.unique(torch.reshape(x, [-1]), return_counts=True)
+    nan_idx = torch.where(torch.isnan(v))
+    c[nan_idx] = 1
+    uc = namedtuple('uc', ['values', 'counts'])
+    return uc(v, c)
