@@ -117,9 +117,9 @@ def linspace(start, stop, num, axis=None, dev=None):
         axis = -1
     return _to_dev(np.linspace(start, stop, num, axis=axis), dev)
 
-def meshgrid(*arrays: np.ndarray, indexing: str = 'xy')\
-        -> List[np.ndarray]:
-    return _to_dev(np.meshgrid(*arrays, indexing))
+def meshgrid(*arrays: np.ndarray, indexing: str = 'xy', device: Optional[str] = None)\
+        -> np.ndarray:
+    return _to_dev(np.meshgrid(*arrays, indexing), device)
 
 def eye(n_rows: int,
         n_cols: Optional[int] = None,
