@@ -22,3 +22,16 @@ def unique_values(x: np.ndarray)\
     else:
         unique = np.unique(x.flatten()).astype(x.dtype)
     return unique
+
+
+def unique_counts(x: np.ndarray) \
+        -> Tuple[np.ndarray, np.ndarray]:
+    v, c = np.unique(x, return_counts=True)
+    nan_count = np.count_nonzero(np.isnan(x))
+    if nan_count > 1:
+        nan_idx = np.where(np.isnan(v))
+        c[nan_idx] = 1
+        v = np.append(v, np.full(nan_count - 1, np.nan)).astype(x.dtype)
+        c = np.append(c, np.full(nan_count - 1, 1)).astype('int32')
+    uc = namedtuple('uc', ['values', 'counts'])
+    return uc(v, c)
