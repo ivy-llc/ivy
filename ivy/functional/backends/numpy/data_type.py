@@ -57,6 +57,8 @@ def result_type(*arrays_and_dtypes: Union[np.ndarray, np.dtype]) -> np.dtype:
 def broadcast_to(x: np.ndarray, shape: Tuple[int,...]) -> np.ndarray:
     return np.broadcast_to(x,shape)
 
+def cast(x, dtype):
+     return x.astype(ivy.dtype_from_str(dtype))
 
 def astype(x: np.ndarray, dtype: np.dtype, copy: bool = True):
     if copy:

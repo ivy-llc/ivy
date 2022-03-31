@@ -60,6 +60,9 @@ def result_type(*arrays_and_dtypes: Union[torch.tensor, torch.dtype]) -> torch.d
 def broadcast_to(x: torch.Tensor, shape: Tuple[int,...]) -> torch.Tensor:
     return torch.broadcast_to(x,shape)
 
+def cast(x, dtype_in: str):
+     dtype_val = ivy.dtype_from_str(dtype_in)
+     return x.type(dtype_val)
 
 def astype(x: torch.Tensor, dtype: torch.dtype,/,*, copy: bool = True)\
      -> torch.Tensor:

@@ -60,6 +60,10 @@ def broadcast_to(x: JaxArray, shape: Tuple[int, ...]) -> JaxArray:
     return jnp.broadcast_to(x, shape)
 
 
+
+def cast(x, dtype):
+    return x.astype(ivy.dtype_from_str(dtype))
+
 def astype(x: JaxArray, dtype: jnp.dtype, copy: bool = True) -> JaxArray:
     if copy:
          if x.dtype == dtype:
