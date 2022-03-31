@@ -341,18 +341,6 @@ def ones(shape: Iterable[int], dtype: Union[ivy.Dtype, str] = 'float32', dev: iv
     return _cur_framework().ones(shape, dtype, dev)
 
 
-def meshgrid(*xs: Iterable[Union[ivy.Array, ivy.NativeArray]], indexing: str = 'ij')\
-        -> Iterable[Union[ivy.Array, ivy.NativeArray]]:
-    """
-    Broadcasts parameters for evaluation on an N-D grid.
-
-    :param xs: input arrays
-    :type xs: sequence of arrays
-    :param indexing: The indexing method, either 'xy' or 'ij'. Default is 'ij'.
-    :type indexing: str, optional
-    :return: list of N-D coordinate arrays for evaluating expressions on an N-D grid
-    """
-    return _cur_framework().meshgrid(*xs, indexing=indexing)
 
 
 def from_dlpack(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
