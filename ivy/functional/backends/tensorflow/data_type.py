@@ -64,7 +64,8 @@ def broadcast_to (x: Tensor, shape: Tuple[int, ...])-> Tensor:
 def cast(x, dtype):
      return tf.cast(x, ivy.dtype_from_str(dtype))
      
-def astype(x: Tensor, dtype: tf.DType, copy: bool = True):
+def astype(x: Tensor, dtype: tf.DType, copy: bool = True)\
+        -> Tensor:
     if copy:
          if x.dtype == dtype:
              new_tensor = tf.experimental.numpy.copy(x)
