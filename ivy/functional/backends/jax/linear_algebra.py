@@ -107,24 +107,11 @@ def slogdet(x:Union[ivy.Array,ivy.NativeArray],full_matrices: bool = True) -> Un
     res = results(sign, logabsdet)
     return res
 
-<<<<<<< HEAD
 def tensordot(x1: JaxArray, x2: JaxArray,
               axes: Union[int, Tuple[List[int], List[int]]] = 2) \
         -> JaxArray:
 
     return jnp.tensordot(x1, x2, axes)
-=======
-def solve(x1: JaxArray,
-          x2: JaxArray) -> JaxArray:
-    
-    if x1.ndim == 0 or x2.ndim == 0:
-        raise Exception('0 dim array given')
-    if x1.ndim > 2 and x2.ndim < 2:
-        x2 = jnp.expand_dims(x2, 1)
-    if x2.ndim == 1 or ((x1.ndim-x2.ndim == 1) and (x1.shape[:-1] == x2.shape[:-2])):
-        return jnp.linalg.solve(x1, x2)
-
->>>>>>> solve
 
 
 def trace(x: JaxArray,
