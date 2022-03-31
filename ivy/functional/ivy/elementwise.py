@@ -167,27 +167,27 @@ def isfinite(x: Union[ivy.Array, ivy.NativeArray])\
     """
     return _cur_framework(x).isfinite(x)
 
-  
+
 def asin(x: Union[ivy.Array, ivy.NativeArray])\
         -> ivy.Array:
     """
     Calculates an implementation-dependent approximation of the principal value of the inverse sine, having domain ``[-1, +1]`` and codomain ``[-π/2, +π/2]`` for each element ``x_i`` of the input array ``x``. Each element-wise result is expressed in radians.
-    
+
     **Special cases**
-    
+
     For floating-point operands,
-    
+
     - If ``x_i`` is ``NaN``, the result is ``NaN``.
     - If ``x_i`` is greater than ``1``, the result is ``NaN``.
     - If ``x_i`` is less than ``-1``, the result is ``NaN``.
     - If ``x_i`` is ``+0``, the result is ``+0``.
     - If ``x_i`` is ``-0``, the result is ``-0``.
-    
+
     Parameters
     ----------
     x: array
         input array. Should have a floating-point data type.
-        
+
     Returns
     -------
     out: array
@@ -195,7 +195,7 @@ def asin(x: Union[ivy.Array, ivy.NativeArray])\
     """
     return _cur_framework(x).asin(x)
 
-  
+
 def isinf(x: Union[ivy.Array, ivy.NativeArray])\
         -> ivy.Array:
     """
@@ -574,7 +574,7 @@ def acos(x: Union[ivy.Array, ivy.NativeArray])\
     - If x_i is greater than 1, the result is NaN.
     - If x_i is less than -1, the result is NaN.
     - If x_i is 1, the result is +0.
-    
+
     Parameters
     ----------
     x:
@@ -767,14 +767,14 @@ def bitwise_or(x1: Union[ivy.Array, ivy.NativeArray],
         -> ivy.Array:
     """
     Computes the bitwise OR of the underlying binary representation of each element ``x1_i`` of the input array ``x1`` with the respective element ``x2_i`` of the input array ``x2``.
-    
+
     Parameters
     ----------
     x1:
         first input array. Should have an integer or boolean data type.
     x2:
         second input array. Must be compatible with ``x1`` (see :ref:`broadcasting`). Should have an integer or boolean data type.
-    
+
     Returns
     -------
     out:
@@ -820,7 +820,7 @@ def positive(x: Union[ivy.Array, ivy.NativeArray])\
     """
     return _cur_framework(x).positive(x)
 
-    
+
 def square(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
     """
     each element x_i of the input array x.
@@ -865,6 +865,31 @@ def round(x: Union[ivy.Array, ivy.NativeArray])\
     :return: An array of the same shape and type as x, with the elements rounded to integers.
     """
     return _cur_framework(x).round(x)
+
+
+def trunc(x: Union[ivy.Array, ivy.NativeArray])\
+        -> ivy.Array:
+    """
+    Rounds each element x_i of the input array x to the integer-valued number that is closest to but no greater than
+    x_i.
+
+
+    **Special cases**
+    - If ``x_i`` is already an integer-valued, the result is ``x_i``.
+
+    For floating-point operands,
+    - If ``x_i`` is ``+infinity``, the result is ``+infinity``.
+    - If ``x_i`` is ``-infinity``, the result is ``-infinity``.
+    - If ``x_i`` is ``+0``, the result is ``+0``.
+    - If ``x_i`` is ``-0``, the result is ``-0``.
+    - If ``x_i`` is ``NaN``, the result is ``NaN``.
+
+    :param x: input array. Should have a numeric data type.
+
+    :return: an array containing the values before the decimal point for each element ``x``. The returned array must have
+     the same data type as x.
+    """
+    return _cur_framework(x).trunc(x)
 
 
 def abs(x: Union[ivy.Array, ivy.NativeArray]) \
@@ -1182,6 +1207,7 @@ def erf(x: Union[ivy.Array, ivy.NativeArray])\
     :return: The Gauss error function of x.
     """
     return _cur_framework(x).erf(x)
+
 
 def minimum(x: Union[ivy.Array, ivy.NativeArray], y: Union[ivy.Array, ivy.NativeArray])\
         -> Union[ivy.Array, ivy.NativeArray]:
