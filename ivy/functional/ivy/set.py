@@ -47,7 +47,7 @@ def unique_values(x: Union[ivy.Array, ivy.NativeArray])\
 
 
 def unique_counts(x: Union[ivy.Array, ivy.NativeArray])\
-                -> Tuple[ivy.Array, ivy.Array]:
+        -> Tuple[ivy.Array, ivy.Array]:
     """
     Returns the unique elements of an input array x and the corresponding counts for each unique element in x.
 
