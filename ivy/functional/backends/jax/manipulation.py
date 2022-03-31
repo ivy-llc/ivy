@@ -7,6 +7,17 @@ from typing import Union, Tuple, Optional, List
 from ivy.functional.backends.jax import JaxArray
 
 
+def squeeze(x: JaxArray,
+            axis: Union[int, Tuple[int], List[int]]=None)\
+        -> JaxArray:
+
+        if x.shape == ():
+            if axis is None or axis == 0 or axis == -1:
+                return x
+            raise ValueError('tried to squeeze a zero-dimensional input by axis {}'.format(axis))
+        return jnp.squeeze(x, axis)
+
+
 def _flat_array_to_1_dim_array(x):
     return x.reshape((1,)) if x.shape == () else x
 
@@ -30,6 +41,16 @@ def permute_dims(x: JaxArray,
                 axes: Tuple[int,...]) \
         -> JaxArray:
     return jnp.transpose(x,axes)
+
+
+stack = jnp.stack
+reshape = jnp.reshape
+
+def concatenate(xs, axis=-1):
+    if xs[0].shape == ():
+        return jnp.concatenate([jnp.expand_dims(x, 0) for x in xs], axis)
+    return jnp.concatenate(xs, axis)
+
 
 
 # Extra #
@@ -56,7 +77,7 @@ def split(x, num_or_size_splits=None, axis=0, with_remainder=False):
 
 repeat = jnp.repeat
 tile = jnp.tile
-
+clip = jnp.clip
 constant_pad = lambda x, pad_width, value=0: jnp.pad(_flat_array_to_1_dim_array(x), pad_width, constant_values=value)
 zero_pad = lambda x, pad_width: jnp.pad(_flat_array_to_1_dim_array(x), pad_width, constant_values=0)
 swapaxes = jnp.swapaxes
