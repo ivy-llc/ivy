@@ -285,8 +285,12 @@ def round(x: Tensor)\
 
 def trunc(x: Tensor)\
         -> Tensor:
-    array = x.numpy()
-    return tf.convert_to_tensor(np.asarray(npa.trunc(npa.asarray(array))))
+    if 'int' in str(x.dtype):
+        return x
+    res = tf.zeros(x.shape, dtype=x.dtype)
+    res = tf.tensor_scatter_nd_update(res, tf.where(x > 0), tf.math.floor(x[x > 0]))
+    res = tf.tensor_scatter_nd_update(res, tf.where(x < 0), tf.math.ceil(x[x < 0]))
+    return res
 
 
 def abs(x: Tensor)\
