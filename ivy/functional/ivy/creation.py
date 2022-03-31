@@ -250,6 +250,28 @@ def linspace(start: Union[ivy.Array, ivy.NativeArray, int], stop: Union[ivy.Arra
     """
     return _cur_framework(start).linspace(start, stop, num, axis, dev)
 
+def meshgrid(*arrays: List[Union[ivy.Array, ivy.NativeArray]], indexing: str = 'xy') \
+        -> List[ivy.Array]:
+    """
+    Returns coordinate matrices from coordinate vectors.
+    Parameters
+    ----------
+    arrays: array
+        an arbitrary number of one-dimensional arrays representing grid coordinates. Each array should have the same numeric data type.
+    indexing: str
+        Cartesian ``'xy'`` or matrix ``'ij'`` indexing of output. If provided zero or one one-dimensional vector(s) (i.e., the zero- and one-dimensional cases, respectively), the ``indexing`` keyword has no effect and should be ignored. Default: ``'xy'``.
+    Returns
+    -------
+    out: List[array]
+        list of N arrays, where ``N`` is the number of provided one-dimensional input arrays. Each returned array must have rank ``N``. For ``N`` one-dimensional arrays having lengths ``Ni = len(xi)``,
+        - if matrix indexing ``ij``, then each returned array must have the shape ``(N1, N2, N3, ..., Nn)``.
+        - if Cartesian indexing ``xy``, then each returned array must have shape ``(N2, N1, N3, ..., Nn)``.
+        Accordingly, for the two-dimensional case with input one-dimensional arrays of length ``M`` and ``N``, if matrix indexing ``ij``, then each returned array must have shape ``(M, N)``, and, if Cartesian indexing ``xy``, then each returned array must have shape ``(N, M)``.
+        Similarly, for the three-dimensional case with input one-dimensional arrays of length ``M``, ``N``, and ``P``, if matrix indexing ``ij``, then each returned array must have shape ``(M, N, P)``, and, if Cartesian indexing ``xy``, then each returned array must have shape ``(N, M, P)``.
+        Each returned array should have the same data type as the input arrays.
+    """
+    return _cur_framework().meshgrid(*arrays, indexing=indexing)
+
 
 # Extra #
 # ------#

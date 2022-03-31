@@ -229,6 +229,11 @@ def eye(n_rows: int,
         return torch.zeros([n_rows, n_cols], dtype=dtype, device=device)
 
 
+def meshgrid(*arrays: torch.Tensor, indexing='xy')\
+        -> torch.Tensor:
+    return torch.meshgrid(*arrays, indexing=indexing)
+
+
 # Extra #
 # ------#
 

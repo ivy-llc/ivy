@@ -123,6 +123,12 @@ def eye(n_rows: int,
     cont = _mxnet_init_context(default_device(device))
     return mx.nd.eye(n_rows, n_cols, k, ctx=cont).astype(dtype)
 
+def meshgrid(*xs, indexing='ij'):
+    # ToDo: implement this without reliance on NumPy backend
+    xs_np = [x.as_np_ndarray() for x in xs]
+    return tuple([item.as_nd_ndarray() for item in mx.np.meshgrid(*xs_np, indexing=indexing)])
+
+
 
 # Extra #
 # ------#

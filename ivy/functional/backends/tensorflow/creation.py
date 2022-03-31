@@ -125,6 +125,9 @@ def linspace(start, stop, num, axis=None, dev=None):
     with tf.device(ivy.dev_from_str(dev)):
         return tf.linspace(start, stop, num, axis=axis)
 
+def meshgrid(*arrays: tf.Tensor, indexing: str = 'xy')\
+        ->tf.Tensor:
+    return tf.meshgrid(*arrays, indexing=indexing)
 
 def eye(n_rows: int,
         n_cols: Optional[int] = None,
