@@ -92,7 +92,7 @@
 <li class="toctree-l3"><a class="reference internal" href="ivy_stateful_api.html">Ivy Stateful API</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">Ivy Array</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#the-array-class">The Array Class</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#array-mode">Array Mode</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#returning-ivy-arrays">Returning Ivy Arrays</a></li>
 </ul>
 </li>
 </ul>
@@ -221,8 +221,9 @@
             
   <div class="section" id="ivy-array">
 <h1>Ivy Array<a class="headerlink" href="#ivy-array" title="Permalink to this headline">¶</a></h1>
-<p>Here, we explain how the <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> class can clean up your code, by enabling methods to be called as attributes on the arrays directly.</p>
-<p>So, without further ado, let’s walk through what the Ivy Array has to offer!</p>
+<p>Here, we explain the <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> class, which is the class used to represent all arrays in Ivy. Every Ivy method
+returns <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> instances to represent the returned arrays.</p>
+<p>Without further ado, let’s walk through what the Ivy Array has to offer!</p>
 <div class="section" id="the-array-class">
 <h2>The Array Class<a class="headerlink" href="#the-array-class" title="Permalink to this headline">¶</a></h2>
 <p>Let’s dive straight in and check out what the <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> constructor looks like.</p>
@@ -284,7 +285,7 @@
                     <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">batch_shape</span><span class="p">))</span>
 </pre></div>
 </div>
-<p>Effectively, the <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> class wraps the backend array object, storing it in <code class="code docutils literal notranslate"><span class="pre">self._data</span></code>, and this allows all Ivy methods to be called as attributes of the array. The method <code class="code docutils literal notranslate"><span class="pre">ivy.to_ivy</span></code> recursively converts all <code class="code docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code> instances (i.e. <code class="code docutils literal notranslate"><span class="pre">torch.Tensor</span></code>)to <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> instances. This wrapping doesn’t extend the capabilities at all, but it can help to tidy up code. For example:</p>
+<p>Effectively, the <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> class wraps the backend array object, storing it in <code class="code docutils literal notranslate"><span class="pre">self._data</span></code>, and this allows all Ivy methods to be called as attributes of the array. The method <code class="code docutils literal notranslate"><span class="pre">ivy.to_ivy</span></code> recursively converts all <code class="code docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code> instances (i.e. <code class="code docutils literal notranslate"><span class="pre">torch.Tensor</span></code>)to <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> instances. One benefit of the <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> class is that it can help to tidy up code. For example:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
 
 <span class="c1"># without ivy.Array</span>
@@ -296,39 +297,31 @@
 </pre></div>
 </div>
 <p>In the example above, not only is the <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> approach shorter to write, but more importantly there is much better alignment between each function and the function arguments. It’s hard to work out which shape parameters align with which method in the first case, but in the second case this is crystal clear.</p>
-<p>In addition to the functions in the topic-specific parent classes, there are 41 builtin methods implemented directly in the <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> class, some examples are given below.</p>
+<p>In addition to the functions in the topic-specific parent classes, there are 41 builtin methods implemented directly in the <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> class, each of which directly wrap a method in Ivy’s functional API. some examples are given below.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ivy/array/__init__.py</span>
 <span class="k">def</span> <span class="fm">__add__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
     <span class="n">other</span> <span class="o">=</span> <span class="n">to_native</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
-    <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="fm">__add__</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">res</span> <span class="ow">is</span> <span class="bp">NotImplemented</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">res</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">to_ivy</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
 
 <span class="k">def</span> <span class="fm">__radd__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
     <span class="n">other</span> <span class="o">=</span> <span class="n">to_native</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
-    <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="fm">__radd__</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">res</span> <span class="ow">is</span> <span class="bp">NotImplemented</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">res</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">radd</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">to_ivy</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
 
 <span class="k">def</span> <span class="fm">__sub__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
     <span class="n">other</span> <span class="o">=</span> <span class="n">to_native</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
-    <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="fm">__sub__</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">res</span> <span class="ow">is</span> <span class="bp">NotImplemented</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">res</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">to_ivy</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
 
 <span class="k">def</span> <span class="fm">__rsub__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
     <span class="n">other</span> <span class="o">=</span> <span class="n">to_native</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
-    <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="fm">__rsub__</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">res</span> <span class="ow">is</span> <span class="bp">NotImplemented</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">res</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">rsub</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">to_ivy</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>These enable builtin operations to be performed on the <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> instances.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">]))</span>
+<p>These enable builtin operations to be performed on the <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> instances, and also combinations of <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> and <code class="code docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code> instances.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">])</span>
 <span class="n">y</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">])</span><span class="o">.</span><span class="n">cuda</span><span class="p">()</span>
 
 <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="n">y</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">)</span>
@@ -338,23 +331,31 @@
 </pre></div>
 </div>
 </div>
-<div class="section" id="array-mode">
-<h2>Array Mode<a class="headerlink" href="#array-mode" title="Permalink to this headline">¶</a></h2>
-<p>“But how do we call the backend framework methods?”, I hear you ask.</p>
+<div class="section" id="returning-ivy-arrays">
+<h2>Returning Ivy Arrays<a class="headerlink" href="#returning-ivy-arrays" title="Permalink to this headline">¶</a></h2>
+<p>“But how do we call the backend framework methods when we’re using ivy.Array classes?”, I hear you ask.</p>
 <p>“<code class="code docutils literal notranslate"><span class="pre">torch.reshape</span></code> only accepts <code class="code docutils literal notranslate"><span class="pre">torch.Tensor</span></code> instances as input, we can’t just decide to pass in an <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> instead”</p>
 <p>This is absolutely correct! The following code throws an error.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">]))</span>
-<span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">])</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
 
-<span class="o">-&gt;</span>          <span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
-<span class="o">-&gt;</span> <span class="n">File</span> <span class="s2">&quot;ivy/backends/torch/core/general.py&quot;</span><span class="p">,</span> <span class="n">line</span> <span class="mi">359</span><span class="p">,</span> <span class="ow">in</span> <span class="n">reshape</span>
-<span class="o">-&gt;</span>          <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">newshape</span><span class="p">)</span>
+<span class="o">-&gt;</span>          <span class="n">y</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
 <span class="o">-&gt;</span> <span class="ne">TypeError</span><span class="p">:</span> <span class="n">no</span> <span class="n">implementation</span> <span class="n">found</span> <span class="k">for</span> <span class="s1">&#39;torch.reshape&#39;</span> <span class="n">on</span>
 <span class="o">-&gt;</span> <span class="n">types</span> <span class="n">that</span> <span class="n">implement</span> <span class="n">__torch_function__</span><span class="p">:</span> <span class="p">[</span><span class="mh">0x7fef01e65ad0</span><span class="p">]</span>
 </pre></div>
 </div>
-<p>Furthermore, even if it could accept <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> instances as input, the backend function returns a <code class="code docutils literal notranslate"><span class="pre">torch.Tensor</span></code>, and so we would lose the <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> structure of our array as soon as any backend method was called upon it.</p>
-<p>In order to solve this problem, Ivy has a dedicated array mode, which can be set by calling <code class="code docutils literal notranslate"><span class="pre">ivy.set_array_mode()</span></code>. In this mode, all Ivy methods in the functional API are automatically wrapped such that all inputs are recursively parsed to convert <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> instances to <code class="code docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code> instances (i.e. <code class="code docutils literal notranslate"><span class="pre">torch.Tensor</span></code>), then the backend method is called as usual, and finally the return values are recursively parsed to convert all <code class="code docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code> instances into <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> instances. The wrapping method is implemented as follows:</p>
+<p>Furthermore, even if it could accept <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> instances as input, <code class="code docutils literal notranslate"><span class="pre">torch.reshape</span></code> returns a <code class="code docutils literal notranslate"><span class="pre">torch.Tensor</span></code>, and so we lose the <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> structure of our array as soon as any backend-specific method is called upon it.</p>
+<p>This is indeed the case, and in order to run the above code without throwing an error, we would need to write something like the following:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">])</span>
+<span class="n">x_native</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">data</span>
+<span class="n">y_native</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">(</span><span class="n">y_native</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>In general, if integrating ivy code alongside native code, then conversions such as these will be needed between the adjacent blocks of code.</p>
+<p>“What about ivy methods? How do they call the backend methods without error?” I also hear you ask.</p>
+<p>This is a great question!</p>
+<p>All Ivy methods in the functional API are automatically wrapped such that all inputs are recursively parsed to convert <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> instances to <code class="code docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code> instances (i.e. <code class="code docutils literal notranslate"><span class="pre">torch.Tensor</span></code>), then the backend method is called as usual, and finally the return values are recursively parsed to convert all <code class="code docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code> instances into <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> instances. The wrapping method is implemented as follows:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ivy/func_wrapper.py</span>
 <span class="k">def</span> <span class="nf">_wrap_method</span><span class="p">(</span><span class="n">fn</span><span class="p">):</span>
 
@@ -380,7 +381,11 @@
     <span class="k">return</span> <span class="n">_method_wrapped</span>
 </pre></div>
 </div>
-<p>First, we verify the method is public, otherwise we return the private method without wrapping. Next, we check if the method is already wrapped, and if so we just return this already wrapped method. Then we define the new wrapped method <code class="code docutils literal notranslate"><span class="pre">_method_wrapped</span></code>. Finally, we copy the method name over to <code class="code docutils literal notranslate"><span class="pre">_method_wrapped</span></code>, and flag the wrapped attribute, store the unwrapped inner function as an attribute, and return the wrapped method.</p>
+<p>First, we verify the method should be wrapped, otherwise we return the method without wrapping.
+Next, we check if the method is already wrapped, and if so we just return this already wrapped method.
+Then we define the new wrapped method <code class="code docutils literal notranslate"><span class="pre">_method_wrapped</span></code>.
+Finally, we copy the method name over to <code class="code docutils literal notranslate"><span class="pre">_method_wrapped</span></code>, and flag the wrapped attribute,
+store the unwrapped inner function as an attribute, and return the wrapped method.</p>
 <p>The unwrap method is much simpler, implemented as follows:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ivy/func_wrapper.py</span>
 <span class="k">def</span> <span class="nf">_unwrap_method</span><span class="p">(</span><span class="n">method_wrapped</span><span class="p">):</span>
@@ -391,27 +396,9 @@
     <span class="k">return</span> <span class="n">method_wrapped</span><span class="o">.</span><span class="n">inner_fn</span>
 </pre></div>
 </div>
-<p>When setting array mode via <code class="code docutils literal notranslate"><span class="pre">ivy.set_array_mode()</span></code>, the entire <code class="code docutils literal notranslate"><span class="pre">ivy.__dict__</span></code> is traversed and all methods are wrapped using the <code class="code docutils literal notranslate"><span class="pre">_wrap_method</span></code> outlined above. Therefore, in array mode, all Ivy methods operate as expected, accepting and returning <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> instances without issue, whist still making use of the wrapped backend methods which only operate with <code class="code docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code> instances, such as:code:<cite>torch.Tensor</cite> etc.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ivy</span><span class="o">.</span><span class="n">set_array_mode</span><span class="p">()</span>
-<span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">]))</span>
+<p>When setting any backend framework, the entire <code class="code docutils literal notranslate"><span class="pre">ivy.__dict__</span></code> is traversed and all methods are wrapped using the <code class="code docutils literal notranslate"><span class="pre">_wrap_method</span></code> outlined above. Therefore, all Ivy methods operate as expected, accepting and returning <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> instances without issue, whist still making use of the wrapped backend methods which only operate with <code class="code docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code> instances, such as:code:<cite>torch.Tensor</cite> etc.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">])</span>
 <span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
-<span class="c1"># passes without error</span>
-</pre></div>
-</div>
-<p>However, in array mode, the arrays still cannot be passed directly into backend methods, for example the following will still throw an error.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ivy</span><span class="o">.</span><span class="n">set_array_mode</span><span class="p">()</span>
-<span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">]))</span>
-<span class="n">y</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
-
-<span class="o">-&gt;</span>          <span class="n">y</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
-<span class="o">-&gt;</span> <span class="ne">TypeError</span><span class="p">:</span> <span class="n">no</span> <span class="n">implementation</span> <span class="n">found</span> <span class="k">for</span> <span class="s1">&#39;torch.reshape&#39;</span> <span class="n">on</span>
-<span class="o">-&gt;</span> <span class="n">types</span> <span class="n">that</span> <span class="n">implement</span> <span class="n">__torch_function__</span><span class="p">:</span> <span class="p">[</span><span class="mh">0x7f9888abc4e0</span><span class="p">]</span>
-</pre></div>
-</div>
-<p>Using backend methods directly when Ivy is in array mode would require passing the <code class="code docutils literal notranslate"><span class="pre">self.data</span></code> property into the backend methods and then re-wrapping the return like so:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ivy</span><span class="o">.</span><span class="n">set_wrapped_mode</span><span class="p">()</span>
-<span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">]))</span>
-<span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">)))</span>
 <span class="c1"># passes without error</span>
 </pre></div>
 </div>
