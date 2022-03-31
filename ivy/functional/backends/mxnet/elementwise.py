@@ -97,7 +97,7 @@ def acos(x: mx.ndarray.ndarray.NDArray)\
         mx.nd.arccos(x)
 
 
-@_handle_flat_arrays_in_out        
+@_handle_flat_arrays_in_out
 def logical_and(x1: mx.ndarray.ndarray.NDArray,
                 x2: mx.ndarray.ndarray.NDArray,
                 dtype: ['bool'])\
@@ -177,6 +177,12 @@ def round(x: mx.ndarray.ndarray.NDArray)\
 
 
 @_handle_flat_arrays_in_out
+def trunc(x: mx.ndarray.ndarray.NDArray)\
+        -> mx.nd.ndarray.NDArray:
+    return mx.np.trunc(x)
+
+  
+@_handle_flat_arrays_in_out  
 def subtract(x1: mx.ndarray.ndarray.NDArray, x2: mx.ndarray.ndarray.NDArray)\
         -> mx.ndarray.ndarray.NDArray:
     return mx.nd.subtract(x1, x2)
