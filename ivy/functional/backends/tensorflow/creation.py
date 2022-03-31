@@ -135,7 +135,7 @@ def linspace(start, stop, num, axis=None, dev=None):
         return tf.linspace(start, stop, num, axis=axis)
 
 def meshgrid(*arrays: tf.Tensor, indexing: str = 'xy')\
-        -> List[tf.Tensor]:
+        -> tf.Tensor:
     return tf.meshgrid(*arrays, indexing=indexing)
 
 def eye(n_rows: int,
