@@ -119,6 +119,13 @@ def eigvalsh(x: np.ndarray) -> np.ndarray:
     return np.linalg.eigvalsh(x)
 
 
+def matrix_rank(vector: np.ndarray,
+                rtol: Optional[Union[float, Tuple[float]]] = None) \
+        -> np.ndarray:
+    if rtol is None:
+        return np.linalg.matrix_rank(vector)
+    return np.linalg.matrix_rank(vector, rtol)
+
 # Extra #
 # ------#
 

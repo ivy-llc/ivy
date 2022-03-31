@@ -192,6 +192,13 @@ def eigvalsh(x: Tensor) -> Tensor:
     return tf.linalg.eigvalsh(x)
 
 
+def matrix_rank(vector: Tensor,
+                rtol: Optional[Union[float, Tuple[float]]] = None)\
+        -> Tensor:
+    if rtol is None:
+        return tf.linalg.matrix_rank(vector)
+    return tf.linalg.matrix_rank(tf.cast(vector != 0, tf.float32), tf.cast(rtol != 0, tf.float32))
+
 # Extra #
 # ------#
 

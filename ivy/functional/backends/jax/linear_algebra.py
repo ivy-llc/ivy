@@ -121,6 +121,12 @@ def eigvalsh(x: JaxArray) -> JaxArray:
     return jnp.linalg.eigvalsh(x)
 
 
+def matrix_rank(vector: JaxArray,
+                rtol: Optional[Union[float, Tuple[float]]] = None) \
+        -> JaxArray:
+    return jnp.linalg.matrix_rank(vector, rtol)
+
+
 # Extra #
 # ------#
 

@@ -112,6 +112,11 @@ def eigvalsh(x: mx.ndarray.ndarray.NDArray) -> mx.ndarray.ndarray.NDArray:
     return mx.np.linalg.eigvalsh(x)
 
 
+def matrix_rank(vector: NDArray,
+                rtol: Union[NDArray, float] = None) -> Union[NDArray, float]:
+    return mx.np.linalg.matrix_rank(vector, rtol)
+
+
 # Extra #
 # ------#
 
