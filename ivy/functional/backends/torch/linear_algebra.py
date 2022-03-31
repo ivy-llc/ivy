@@ -36,6 +36,11 @@ def matrix_transpose(x: torch.Tensor)\
         -> torch.Tensor:
     return torch.swapaxes(x, -1, -2)
 
+def matrix_rank(vector: torch.Tensor,
+                rtol: Optional[Union[float, Tuple[float]]] = None) \
+        -> torch.Tensor:
+    return torch.linalg.matrix_rank(vector, rtol)
+
 
 def vector_norm(x: torch.Tensor,
                 p: Union[int, float, Literal[inf, - inf]] = 2,
