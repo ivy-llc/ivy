@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>set_default_dtype &mdash; Ivy 1.0 documentation</title>
+  <title>astype &mdash; Ivy 1.0 documentation</title>
   
 
   
@@ -36,8 +36,8 @@
   <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="unset_default_dtype" href="unset_default_dtype.html" />
-    <link rel="prev" title="default_dtype" href="default_dtype.html" /> 
+    <link rel="next" title="dtype_bits" href="dtype_bits.html" />
+    <link rel="prev" title="cast" href="cast.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -101,14 +101,14 @@
 <li class="toctree-l2"><a class="reference internal" href="broadcast_to.html">broadcast_to</a></li>
 <li class="toctree-l2"><a class="reference internal" href="dtype.html">dtype</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cast.html">cast</a></li>
-<li class="toctree-l2"><a class="reference internal" href="astype.html">astype</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">astype</a></li>
 <li class="toctree-l2"><a class="reference internal" href="dtype_bits.html">dtype_bits</a></li>
 <li class="toctree-l2"><a class="reference internal" href="dtype_to_str.html">dtype_to_str</a></li>
 <li class="toctree-l2"><a class="reference internal" href="dtype_from_str.html">dtype_from_str</a></li>
 <li class="toctree-l2"><a class="reference internal" href="default_int_dtype.html">default_int_dtype</a></li>
 <li class="toctree-l2"><a class="reference internal" href="default_float_dtype.html">default_float_dtype</a></li>
 <li class="toctree-l2"><a class="reference internal" href="default_dtype.html">default_dtype</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">set_default_dtype</a></li>
+<li class="toctree-l2"><a class="reference internal" href="set_default_dtype.html">set_default_dtype</a></li>
 <li class="toctree-l2"><a class="reference internal" href="unset_default_dtype.html">unset_default_dtype</a></li>
 <li class="toctree-l2"><a class="reference internal" href="set_default_int_dtype.html">set_default_int_dtype</a></li>
 <li class="toctree-l2"><a class="reference internal" href="unset_default_int_dtype.html">unset_default_int_dtype</a></li>
@@ -213,13 +213,13 @@
         
           <li><a href="../data_type.html">Data type</a> &raquo;</li>
         
-      <li>set_default_dtype</li>
+      <li>astype</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../../_sources/functional/ivy/data_type/set_default_dtype.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../../_sources/functional/ivy/data_type/astype.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -232,12 +232,30 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="set-default-dtype">
-<h1>set_default_dtype<a class="headerlink" href="#set-default-dtype" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="astype">
+<h1>astype<a class="headerlink" href="#astype" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
-<dt id="ivy.functional.ivy.data_type.set_default_dtype">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">set_default_dtype</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dtype</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.Dtype<span class="p">, </span>str<span class="p">]</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/data_type.html#set_default_dtype"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.data_type.set_default_dtype" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dt id="ivy.functional.ivy.data_type.astype">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">astype</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">dtype</span><span class="p">:</span> <span class="n">ivy.Dtype</span></em>, <em class="sig-param"><span class="n">copy</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">True</span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../../_modules/ivy/functional/ivy/data_type.html#astype"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.data_type.astype" title="Permalink to this definition">¶</a></dt>
+<dd><p>Copies an array to a specified data type irrespective of Type Promotion Rules.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>x</strong> – array to cast.</p>
+</dd>
+<dt class="field-even">Dtype</dt>
+<dd class="field-even"><p>desired data type.</p>
+</dd>
+<dt class="field-odd">Copy</dt>
+<dd class="field-odd"><p>(bool) specifies whether to copy an array when the specified dtype matches the data type of the input array x.
+If True, a newly allocated array must always be returned.
+If False and the specified dtype matches the data type of the input array, the input array must be returned; otherwise, a newly allocated must be returned.
+Default: True.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>an array having the specified data type. The returned array must have the same shape as x.</p>
+</dd>
+</dl>
+</dd></dl>
 
 <div class="line-block">
 <div class="line"><br /></div>
@@ -254,10 +272,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="unset_default_dtype.html" class="btn btn-neutral float-right" title="unset_default_dtype" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="dtype_bits.html" class="btn btn-neutral float-right" title="dtype_bits" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="default_dtype.html" class="btn btn-neutral float-left" title="default_dtype" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="cast.html" class="btn btn-neutral float-left" title="cast" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
