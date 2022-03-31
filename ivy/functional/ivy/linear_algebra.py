@@ -1,5 +1,5 @@
 # global
-from typing import Union, Optional, Tuple, Literal
+from typing import Union, Optional, Tuple, Literal, List
 from collections import namedtuple
 
 # local
@@ -10,6 +10,54 @@ inf = float('inf')
 
 # Array API Standard #
 # -------------------#
+
+
+def eigh(x: Union[ivy.Array, ivy.NativeArray]) \
+        -> ivy.Array:
+    """
+    Returns an eigendecomposition x = QLQᵀ of a symmetric matrix (or a stack of symmetric matrices) ``x``, where ``Q`` is an orthogonal matrix (or a stack of matrices) and ``L`` is a vector (or a stack of vectors).
+    .. note::
+       The function ``eig`` will be added in a future version of the specification, as it requires complex number support.
+    ..
+      NOTE: once complex numbers are supported, each square matrix must be Hermitian.
+    .. note::
+       Whether an array library explicitly checks whether an input array is a symmetric matrix (or a stack of symmetric matrices) is implementation-defined.
+    Parameters
+    ----------
+    x: array
+        input array having shape ``(..., M, M)`` and whose innermost two dimensions form square matrices. Must have a floating-point data type.
+    Returns
+    -------
+    out: Tuple[array]
+        a namedtuple (``eigenvalues``, ``eigenvectors``) whose
+        -   first element must have the field name ``eigenvalues`` (corresponding to ``L`` above) and must be an array consisting of computed eigenvalues. The array containing the eigenvalues must have shape ``(..., M)``.
+        -   second element have have the field name ``eigenvectors`` (corresponding to ``Q`` above) and must be an array where the columns of the inner most matrices contain the computed eigenvectors. These matrices must be orthogonal. The array containing the eigenvectors must have shape ``(..., M, M)``.
+        Each returned array must have the same floating-point data type as ``x``.
+    .. note::
+       Eigenvalue sort order is left unspecified and is thus implementation-dependent.
+    """
+    return _cur_framework(x).eigh(x)   
+         
+         
+
+def pinv(x: Union[ivy.Array, ivy.NativeArray],
+         rtol: Optional[Union[float, Tuple[float]]] = None) \
+        -> ivy.Array:
+    """
+    Returns the (Moore-Penrose) pseudo-inverse of a matrix (or a stack of matrices) ``x``.
+    Parameters
+    ----------
+    x: array
+        input array having shape ``(..., M, N)`` and whose innermost two dimensions form ``MxN`` matrices. Should have a floating-point data type.
+    rtol: Optional[Union[float, array]]
+        relative tolerance for small singular values. Singular values approximately less than or equal to ``rtol * largest_singular_value`` are set to zero. If a ``float``, the value is equivalent to a zero-dimensional array having a floating-point data type determined by :ref:`type-promotion` (as applied to ``x``) and must be broadcast against each matrix. If an ``array``, must have a floating-point data type and must be compatible with ``shape(x)[:-2]`` (see :ref:`broadcasting`). If ``None``, the default value is ``max(M, N) * eps``, where ``eps`` must be the machine epsilon associated with the floating-point data type determined by :ref:`type-promotion` (as applied to ``x``). Default: ``None``.
+    Returns
+    -------
+    out: array
+        an array containing the pseudo-inverses. The returned array must have a floating-point data type determined by :ref:`type-promotion` and must have shape ``(..., N, M)`` (i.e., must have the same shape as ``x``, except the innermost two dimensions must be transposed).
+    """
+    return _cur_framework(x).pinv(x, rtol)
+
 
 def matrix_transpose(x: Union[ivy.Array, ivy.NativeArray])\
         -> ivy.Array:
@@ -115,6 +163,33 @@ def svd(x:Union[ivy.Array,ivy.NativeArray],full_matrices: bool = True)->Union[iv
     return _cur_framework(x).svd(x,full_matrices)
 
 
+def outer(x1: Union[ivy.Array, ivy.NativeArray],
+          x2: Union[ivy.Array, ivy.NativeArray])\
+        -> ivy.Array:
+    """
+    returns the outer product of two vectors x1 and x2.
+    
+    Parameters
+    ----------
+    x1 (array) – first one-dimensional input array of size N. Should have a numeric data type.
+    a(M,) array_like
+    First input vector. Input is flattened if not already 1-dimensional.
+
+    x2 (array) – second one-dimensional input array of size M. Should have a numeric data type.
+    b(N,) array_like
+    Second input vector. Input is flattened if not already 1-dimensional.
+
+
+    Returns
+    -------
+    out (array) – a two-dimensional array containing the outer product and whose shape is (N, M).
+    The returned array must have a data type determined by Type Promotion Rules.
+    out(M, N) ndarray, optional
+    A location where the result is stored
+    """
+    return _cur_framework(x1, x2).outer(x1, x2)
+
+
 def diagonal(x: ivy.Array,
              offset: int = 0,
              axis1: int = -2,
@@ -213,7 +288,7 @@ def qr(x: ivy.Array,
         - 'reduced': compute only the leading K columns of q, such that q and r have dimensions (..., M, K) and (..., K, N), respectively, and where K = min(M, N).
         - 'complete': compute q and r with dimensions (..., M, M) and (..., M, N), respectively.
         Default: 'reduced'.
-    
+
     Returns
     -------
     out:
@@ -223,12 +298,12 @@ def qr(x: ivy.Array,
     """
     return _cur_framework(x).qr(x, mode)
 
-  
-def matmul(x1: Union[ivy.Array, ivy.NativeArray], 
+
+def matmul(x1: Union[ivy.Array, ivy.NativeArray],
            x2: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
     """
     Computes the matrix product.
-    
+
     Parameters
     ----------
     x1:
@@ -258,7 +333,7 @@ def matmul(x1: Union[ivy.Array, ivy.NativeArray],
     """
     return _cur_framework(x1).matmul(x1, x2)
 
-  
+
 def slodget(x: Union[ivy.Array, ivy.NativeArray],) \
             -> ivy.Array:
     """
@@ -283,12 +358,33 @@ def slodget(x: Union[ivy.Array, ivy.NativeArray],) \
     """
     return _cur_framework(x).slodget(x)
 
+def tensordot(x1: Union[ivy.Array, ivy.NativeArray],
+              x2: Union[ivy.Array, ivy.NativeArray],
+              axes: Union[int, Tuple[List[int], List[int]]] = 2) \
+    -> ivy.Array:
+
+    """
+    Returns a tensor contraction of x1 and x2 over specific axes.
+
+    :param x1: First input array. Should have a numeric data type.
+    :type x1: array
+    :param x2: second input array. Must be compatible with x1 for all non-contracted axes.
+               Should have a numeric data type.
+    :type x2: array
+    :param axes: The axes to contract over.
+    :type axes: int or tuple of ints, or tuple of sequences of ints.
+                Default is 2.
+    :return: The tensor contraction of x1 and x2 over the specified axes.
+    """
+
+    return _cur_framework(x1, x2).tensordot(x1, x2, axes)
+
 
 def svdvals(x: Union[ivy.Array, ivy.NativeArray],) \
             -> ivy.Array:
     """
     Returns the singular values of a matrix (or a stack of matrices) ``x``.
-    
+
     Parameters
     ----------
     x:
@@ -358,7 +454,42 @@ def cholesky(x: Union[ivy.Array, ivy.NativeArray],
     :type out: array
     """
     return  _cur_framework(x).cholesky(x, upper)
-    
+
+def eigvalsh(x: Union[ivy.Array, ivy.NativeArray], /) -> ivy.Array:
+    """
+    Return the eigenvalues of a symmetric matrix (or a stack of symmetric matrices) x.
+    :param x: input array having shape (..., M, M) and whose innermost two dimensions form square matrices.
+              Must have floating-point data type.
+
+    :return: an array containing the computed eigenvalues. The returned array must have shape (..., M) and
+             have the same data type as x.
+    """
+    return _cur_framework(x).eigvalsh(x)
+
+
+def cross(x1: Union[ivy.Array, ivy.NativeArray],
+          x2: Union[ivy.Array, ivy.NativeArray],
+          axis: int = - 1) -> ivy.Array:
+    """
+    The cross product of 3-element vectors. If x1 and x2 are multi-dimensional arrays 
+    (i.e., both have a rank greater than 1), then the cross-product of each pair of corresponding 
+    3-element vectors is independently computed.
+
+    Parameters
+    :param x1: first input array. Should have a numeric data type.
+    :type x1: array
+    :param x2: second input array. Must have the same shape as x1. Should have a numeric data type.
+    :type x2: array
+    :param axis: the axis (dimension) of x1 and x2 containing the vectors for which to compute the cross product.
+     If set to -1, the function computes the cross product for vectors defined by the last axis (dimension).
+      Default: -1.
+    :type axis: int
+    :returnout: an array containing the cross products. The returned array must have a data type determined
+     by Type Promotion Rules.
+    :type out: array
+    """
+    return _cur_framework(x1).cross(x1,x2,axis)
+
 # Extra #
 # ------#
 

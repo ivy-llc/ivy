@@ -59,3 +59,11 @@ def result_type(*arrays_and_dtypes: Union[Tensor, tf.DType]) -> tf.DType:
 
 def broadcast_to (x: Tensor, shape: Tuple[int, ...])-> Tensor:
     return tf.broadcast_to(x, shape)
+
+
+def cast(x, dtype):
+    return tf.cast(x, ivy.dtype_from_str(dtype))
+
+
+astype = cast
+
