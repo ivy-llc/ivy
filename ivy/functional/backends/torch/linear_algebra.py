@@ -1,6 +1,6 @@
 # global
 import torch
-from typing import Union, Optional, Tuple, Literal
+from typing import Union, Optional, Tuple, Literal, List
 from collections import namedtuple
 
 # local
@@ -12,6 +12,10 @@ import ivy as _ivy
 
 # Array API Standard #
 # -------------------#
+
+def eigh(x: torch.Tensor)\
+  ->torch.Tensor:
+     return torch.linalg.eigh(x)
 
 def inv(x):
     return torch.inverse(x)
@@ -31,6 +35,11 @@ def cholesky(x):
 def matrix_transpose(x: torch.Tensor)\
         -> torch.Tensor:
     return torch.swapaxes(x, -1, -2)
+
+def matrix_rank(vector: torch.Tensor,
+                rtol: Optional[Union[float, Tuple[float]]] = None) \
+        -> torch.Tensor:
+    return torch.linalg.matrix_rank(vector, rtol)
 
 
 def vector_norm(x: torch.Tensor,
@@ -96,7 +105,7 @@ def qr(x: torch.Tensor,
     else:
         raise Exception("Only 'reduced' and 'complete' qr modes are allowed for the torch backend.")
 
-        
+
 def matmul(x1: torch.Tensor,
            x2: torch.Tensor) -> torch.Tensor:
     dtype_from = torch.promote_types(x1.dtype, x2.dtype)
@@ -111,6 +120,21 @@ def slogdet(x:Union[_ivy.Array,_ivy.NativeArray],full_matrices: bool = True) -> 
     sign, logabsdet = torch.linalg.slogdet(x)
     res = results(sign, logabsdet)
     return res
+
+def tensordot(x1: torch.Tensor, x2: torch.Tensor,
+              axes: Union[int, Tuple[List[int], List[int]]] = 2) \
+        -> torch.Tensor:
+
+    # find the type to promote to
+    dtype = torch.promote_types(x1.dtype, x2.dtype)
+    # type conversion to one that torch.tensordot can work with
+    x1, x2 = x1.type(torch.float32), x2.type(torch.float32)
+
+    # handle tensordot for axes==0
+    # otherwise call with axes
+    if axes == 0:
+        return (x1.reshape(x1.size() + (1,) * x2.dim()) * x2).type(dtype)
+    return torch.tensordot(x1, x2, dims=axes).type(dtype)
 
 
 def trace(x: torch.Tensor,
@@ -134,6 +158,17 @@ def cholesky(x: torch.Tensor,
 
 def eigvalsh(x: torch.Tensor) -> torch.Tensor:
     return torch.linalg.eigvalsh(x)
+
+
+def cross (x1: torch.Tensor,
+           x2: torch.Tensor,
+           axis:int = -1) -> torch.Tensor:
+    if axis == None:
+        axis = -1
+    dtype_from = torch.promote_types(x1.dtype, x2.dtype)
+    x1 = x1.type(dtype_from)
+    x2 = x2.type(dtype_from)
+    return torch.cross(input = x1, other  = x2, dim=axis)    
 
 
 # Extra #
