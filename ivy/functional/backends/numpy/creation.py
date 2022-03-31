@@ -146,7 +146,8 @@ def full(shape, fill_value, dtype=None, device=None):
 meshgrid = lambda *xs, indexing='ij': np.meshgrid(*xs, indexing=indexing)
 
 
-from_dlpack = lambda x: np.from_dlpack(x)
+def from_dlpack(x):
+    return np.from_dlpack(x)
 
 # Extra #
 # ------#

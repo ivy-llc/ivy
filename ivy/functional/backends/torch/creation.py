@@ -265,7 +265,8 @@ def meshgrid(*xs, indexing='ij'):
     return ret
 
 
-from_dlpack = lambda x: torch.utils.dlpack.from_dlpack(x)
+def from_dlpack(x):
+    return torch.utils.dlpack.from_dlpack(x)
 
 # Extra #
 # ------#

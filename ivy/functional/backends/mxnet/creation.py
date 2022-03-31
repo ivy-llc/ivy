@@ -155,7 +155,8 @@ def meshgrid(*xs, indexing='ij'):
     return tuple([item.as_nd_ndarray() for item in mx.np.meshgrid(*xs_np, indexing=indexing)])
 
 
-from_dlpack = lambda x: mx.nd.from_dlpack(x)
+def from_dlpack(x):
+    return mx.nd.from_dlpack(x)
 
 # Extra #
 # ------#

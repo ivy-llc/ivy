@@ -142,7 +142,8 @@ def full(shape, fill_value, dtype=None, device=None):
 meshgrid = lambda *xs, indexing='ij': jnp.meshgrid(*xs, indexing=indexing)
 
 
-from_dlpack = lambda x: jax_from_dlpack(x)
+def from_dlpack(x):
+    return jax_from_dlpack(x)
 
 # Extra #
 # ------#
