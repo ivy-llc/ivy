@@ -1,23 +1,23 @@
 cholesky
-#cross
+cross
 det
 #diagonal # fails non-determinstically for jax, due to +0 vs -0 inconsistencies
-#eigh
-#eigvalsh
+eigh
+#eigvalsh # depends on: mT
 #inv
 matmul
 #matrix_norm
 #matrix_power
 #matrix_rank
 matrix_transpose
-#outer
-#pinv
+#outer # depends on: multiply
+pinv
 qr
 slogdet
 #solve
 svd
 svdvals
-#tensordot
+tensordot
 #trace # accidentally merged trace when #T in array folder was preventing test from running.
 #vecdot
 vector_norm

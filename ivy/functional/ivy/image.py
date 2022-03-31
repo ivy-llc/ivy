@@ -3,11 +3,12 @@ Collection of image Ivy functions.
 """
 
 # local
-import ivy as _ivy
+import ivy as ivy
 import numpy as _np
 from operator import mul as _mul
 from functools import reduce as _reduce
 from ivy.framework_handler import current_framework as _cur_framework
+from typing import Union
 
 
 # Extra #
@@ -58,11 +59,11 @@ def float_img_to_uint8_img(x):
     :type x: array
     :return: The new encoded uint8 image *[batch_shape,h,w,4]* .
     """
-    x_np = _ivy.to_numpy(x)
+    x_np = ivy.to_numpy(x)
     x_shape = x_np.shape
     x_bytes = x_np.tobytes()
     x_uint8 = _np.frombuffer(x_bytes, _np.uint8)
-    return _ivy.array(_np.reshape(x_uint8, list(x_shape) + [4]).tolist())
+    return ivy.array(_np.reshape(x_uint8, list(x_shape) + [4]).tolist())
 
 
 def uint8_img_to_float_img(x):
@@ -73,11 +74,11 @@ def uint8_img_to_float_img(x):
     :type x: array
     :return: The new float image *[batch_shape,h,w]*
     """
-    x_np = _ivy.to_numpy(x)
+    x_np = ivy.to_numpy(x)
     x_shape = x_np.shape
     x_bytes = x_np.tobytes()
     x_float = _np.frombuffer(x_bytes, _np.float32)
-    return _ivy.array(_np.reshape(x_float, x_shape[:-1]).tolist())
+    return ivy.array(_np.reshape(x_float, x_shape[:-1]).tolist())
 
 
 def random_crop(x, crop_size, batch_shape=None, image_dims=None):
@@ -109,7 +110,7 @@ def random_crop(x, crop_size, batch_shape=None, image_dims=None):
     margins = [img_dim - cs for img_dim, cs in zip(image_dims, crop_size)]
 
     # FBS x H x W x F
-    x_flat = _ivy.reshape(x, [flat_batch_size] + image_dims + [num_channels])
+    x_flat = ivy.reshape(x, [flat_batch_size] + image_dims + [num_channels])
 
     # FBS x 1
     x_offsets = _np.random.randint(0, margins[0] + 1, [flat_batch_size]).tolist()
@@ -117,10 +118,26 @@ def random_crop(x, crop_size, batch_shape=None, image_dims=None):
 
     # list of 1 x NH x NW x F
     cropped_list = [img[..., xo:xo+crop_size[0], yo:yo+crop_size[1], :] for img, xo, yo
-                    in zip(_ivy.unstack(x_flat, 0, True), x_offsets, y_offsets)]
+                    in zip(ivy.unstack(x_flat, 0, True), x_offsets, y_offsets)]
 
     # FBS x NH x NW x F
-    flat_cropped = _ivy.concatenate(cropped_list, 0)
+    flat_cropped = ivy.concatenate(cropped_list, 0)
 
     # BS x NH x NW x F
-    return _ivy.reshape(flat_cropped, batch_shape + crop_size + [num_channels])
+    return ivy.reshape(flat_cropped, batch_shape + crop_size + [num_channels])
+
+
+def linear_resample(x: Union[ivy.Array, ivy.NativeArray], num_samples: int, axis: int = -1)\
+        -> Union[ivy.Array, ivy.NativeArray]:
+    """
+    Performs linear re-sampling on input image.
+
+    :param x: Input array
+    :type x: array
+    :param num_samples: The number of interpolated samples to take.
+    :type num_samples: int
+    :param axis: The axis along which to perform the resample. Default is last dimension.
+    :type axis: int, optional
+    :return: The array after the linear resampling.
+    """
+    return _cur_framework(x).linear_resample(x, num_samples, axis)

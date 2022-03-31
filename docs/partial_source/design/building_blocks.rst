@@ -10,9 +10,9 @@ Here we explain the components of Ivy which are fundamental to it’s usage eith
 Backend Functional APIs ✅
 -----------------------
 
-The first important point to make is that, Ivy does not implement it’s own C++ or CUDA backend. Instead, Ivy **wraps** the functional APIs of existing frameworks, bringing them into syntactic and semantic alignment. Let’s take the function *ivy.clip* as an example.
+The first important point to make is that, Ivy does not implement it’s own C++ or CUDA backend. Instead, Ivy **wraps** the functional APIs of existing frameworks, bringing them into syntactic and semantic alignment. Let’s take the function :code:`ivy.clip` as an example.
 
-There are separate backend modules for JAX, TensorFlow, PyTorch, MXNet and NumPy, and so we implement the clip method once for each backend, each in separate backend files like so:
+There are separate backend modules for JAX, TensorFlow, PyTorch, MXNet and NumPy, and so we implement the :code:`clip` method once for each backend, each in separate backend files like so:
 
 .. code-block:: python
 
@@ -42,7 +42,7 @@ There are separate backend modules for JAX, TensorFlow, PyTorch, MXNet and NumPy
 
 For NumPy, MXNet, and JAX there are no changes at all in this case, and for TensorFlow and PyTorch there is just a simple name change.
 
-For more complicated functions, we need to do more than simply wrap and maybe change the name. For functions with differing behavior then we must modify the function to fit the unified in-out behavior of Ivy’s API. For example, the APIs of JAX, PyTorch, MXNet and NumPy all have a *logspace* method, but TensorFlow does not at the time of writing. Therefore, we need to construct it using a composition of existing TensorFlow ops like so:
+For more complicated functions, we need to do more than simply wrap and maybe change the name. For functions with differing behavior then we must modify the function to fit the unified in-out behavior of Ivy’s API. For example, the APIs of JAX, PyTorch, MXNet and NumPy all have a :code:`logspace` method, but TensorFlow does not at the time of writing. Therefore, we need to construct it using a composition of existing TensorFlow ops like so:
 
 .. code-block:: python
 
@@ -54,9 +54,9 @@ For more complicated functions, we need to do more than simply wrap and maybe ch
 Ivy Functional API ✅
 ------------------
 
-Calling the different backend files explicitly would work okay, but it would mean we need to *import ivy.functional.backends.torch as ivy* to use a PyTorch backend or *import ivy.functional.backends.tensorflow as ivy* to use a TensorFlow backend. Instead, we allow these backends to be bound to the single shared namespace ivy. The backend can then be changed by calling *ivy.set_framework(‘torch’)* for example.
+Calling the different backend files explicitly would work okay, but it would mean we need to :code:`import ivy.functional.backends.torch as ivy` to use a PyTorch backend or :code:`import ivy.functional.backends.tensorflow as ivy` to use a TensorFlow backend. Instead, we allow these backends to be bound to the single shared namespace ivy. The backend can then be changed by calling :code:`ivy.set_framework(‘torch’)` for example.
 
-ivy.api is the submodule where all the doc strings and argument typing reside for the functional Ivy API. The *clip* function is shown below:
+:code:`ivy.functional.ivy` is the submodule where all the doc strings and argument typing reside for the functional Ivy API. The :code:`clip` function is shown below:
 
 .. code-block:: python
 
@@ -87,7 +87,7 @@ ivy.api is the submodule where all the doc strings and argument typing reside fo
         """
         return ivy.current_framework(x, f=f).clip(x, x_min, x_max)
 
-Furthermore, this *ivy.api* submodule enables implicit framework selection, where a function can be called before a backend framework is explicitly set, and the backend framework is then inferred automatically by checking the input types to the function.
+Furthermore, this :code:`ivy.api` submodule enables implicit framework selection, where a function can be called before a backend framework is explicitly set, and the backend framework is then inferred automatically by checking the input types to the function.
 
 
 +----------------------------------------+-----------------------------------------+
@@ -121,7 +121,7 @@ This implicit framework selection, and the use of a shared global ivy namespace 
 Framework Handler ✅
 -----------------
 
-All code for setting and unsetting frameworks resides in the submodule at *ivy/framework_handler.py*, and the front facing function is *ivy.current_framework()*. The contents of this function are as follows:
+All code for setting and unsetting frameworks resides in the submodule at :code:`ivy/framework_handler.py`, and the front facing function is :code:`ivy.current_framework()`. The contents of this function are as follows:
 
 .. code-block:: python
 
@@ -152,9 +152,9 @@ All code for setting and unsetting frameworks resides in the submodule at *ivy/f
                'Using framework from type: {}'.format(f))
        return f
 
-When the backend framework is provided explicitly as an argument (for example *f=ivy.functional.backends.torch*), then this framework is returned directly without setting it as the global framework. Otherwise, if a global framework has been previously added to the framework stack using for example *ivy.set_framework(‘tensorflow’)*, then this globally set framework is returned. Finally if neither of these cases apply then the input arguments are type-checked to infer the framework, and this is returned from the function without setting as the global framework. In all cases, a callable module is returned with all bound functions adhering to the specific backend.
+When the backend framework is provided explicitly as an argument (for example :code:`f=ivy.functional.backends.torch`), then this framework is returned directly without setting it as the global framework. Otherwise, if a global framework has been previously added to the framework stack using for example :code:`ivy.set_framework(‘tensorflow’)`, then this globally set framework is returned. Finally if neither of these cases apply then the input arguments are type-checked to infer the framework, and this is returned from the function without setting as the global framework. In all cases, a callable module is returned with all bound functions adhering to the specific backend.
 
-The functions in this returned module are populated by iterating through the global *ivy.__dict__* (or a non-global copy of *ivy.__dict__* if non-globally-set), and overwriting every function which is also directly implemented in the framework-specific namespace. The following is a slightly simplified version of this code for illustration, which updates the global *ivy.__dict__* directly:
+The functions in this returned module are populated by iterating through the global :code:`ivy.__dict__` (or a non-global copy of :code:`ivy.__dict__` if non-globally-set), and overwriting every function which is also directly implemented in the framework-specific namespace. The following is a slightly simplified version of this code for illustration, which updates the global :code:`ivy.__dict__` directly:
 
 .. code-block:: python
 
@@ -184,7 +184,7 @@ The functions in this returned module are populated by iterating through the glo
            verbosity.cprint(
                'framework stack: {}'.format(framework_stack))
 
-The functions implemented by the framework-specific backend such as *ivy.functional.backends.torch* only constitute a subset of the full Ivy API. This is because many higher level functions are written as a composition of lower level Ivy functions. These functions therefore do not need to be written independently for each backend framework. A good example is *ivy.lstm_update*, as shown:
+The functions implemented by the framework-specific backend such as :code:`ivy.functional.backends.torch` only constitute a subset of the full Ivy API. This is because many higher level functions are written as a composition of lower level Ivy functions. These functions therefore do not need to be written independently for each backend framework. A good example is :code:`ivy.lstm_update`, as shown:
 
 .. code-block:: python
 
@@ -258,7 +258,29 @@ The compiler takes in any Ivy function, backend function, or composition, and re
 
 As an example, the following 3 pieces of code all compile to the exact same computation graph as shown:
 
-CODE
++----------------------------------------+-----------------------------------------+-----------------------------------------+
+|.. code-block:: python                  |.. code-block:: python                   |.. code-block:: python                   |
+|                                        |                                         |                                         |
+| def pure_ivy(x):                       | def pure_torch(x):                      | def mix(x):                             |
+|     y = ivy.reduce_mean(x)             |     y = torch.mean(x)                   |     y = ivy.reduce_mean(x)              |
+|     z = ivy.reduce_sum(x)              |     z = torch.sum(x)                    |     z = torch.sum(x)                    |
+|     f = ivy.reduce_var(y)              |     f = torch.var(y)                    |     f = ivy.reduce_var(y)               |
+|     k = ivy.cos(z)                     |     k = torch.cos(z)                    |     k = torch.cos(z)                    |
+|     m = ivy.sin(f)                     |     m = torch.sin(f)                    |     m = ivy.sin(f)                      |
+|     o = ivy.tan(y)                     |     o = torch.tan(y)                    |     o = torch.tan(y)                    |
+|     return ivy.concatenate(            |     return torch.cat(                   |     return ivy.concatenate(             |
+|         [k, m, o], -1)                 |         [k, m, o], -1)                  |         [k, m, o], -1)                  |
+|                                        |                                         |                                         |
+| # input                                | # input                                 | # input                                 |
+| x = ivy.array([[1., 2., 3.]])          | x = torch.tensor([[1., 2., 3.]])        | x = ivy.array([[1., 2., 3.]])           |
+|                                        |                                         |                                         |
+| # create graph                         | # create graph                          | # create graph                          |
+| graph = ivy.compile_graph(             | graph = ivy.compile_graph(              | graph = ivy.compile_graph(              |
+|     pure_ivy, x)                       |     pure_torch, x)                      |     mix, x)                             |
+|                                        |                                         |                                         |
+| # call graph                           | # call graph                            | # call graph                            |
+| ret = graph(x)                         | ret = graph(x)                          | ret = graph(x)                          |
++----------------------------------------+-----------------------------------------+-----------------------------------------+
 
 .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/compiled_graph_a.png?raw=true
    :align: center
@@ -266,13 +288,36 @@ CODE
 
 For all existing ML frameworks, the functional API is the backbone which underpins all higher level functions and classes. This means that under the hood, any code can be expressed as a composition of ops in the functional API. The same is true for Ivy. Therefore, when compiling the graph with Ivy, any higher-level classes or extra code which does not directly contribute towards the computation graph is excluded. For example, the following 3 pieces of code all compile to the exact same computation graph as shown:
 
-CODE
++----------------------------------------+-----------------------------------------+-----------------------------------------+
+|.. code-block:: python                  |.. code-block:: python                   |.. code-block:: python                   |
+|                                        |                                         |                                         |
+| class Network(ivy.module)              | def clean(x, w, b):                     | def unclean(x, w, b):                   |
+|                                        |     return w*x + b                      |     y = b + w + x                       |
+|     def __init__(self):                |                                         |     print('message')                    |
+|         self._layer = ivy.Linear(3, 3) |                                         |     wx = w * x                          |
+|         super().__init__()             |                                         |     ret = wx + b                        |
+|                                        |                                         |     temp = y * wx                       |
+|     def _forward(self, x):             |                                         |     return ret                          |
+|         return self._layer(x)          |                                         |                                         |
+|                                        | # input                                 | # input                                 |
+| # build network                        | x = ivy.array([1., 2., 3.])             | x = ivy.array([1., 2., 3.])             |
+| net = Network()                        | w = ivy.random_unifrom(                 | w = ivy.random_unifrom(                 |
+|                                        |     -1, 1, (3, 3))                      |     -1, 1, (3, 3))                      |
+| # input                                | b = ivy.zeros((3,))                     | b = ivy.zeros((3,))                     |
+| x = ivy.array([1., 2., 3.])            |                                         |                                         |
+|                                        | # compile graph                         | # compile graph                         |
+| # compile graph                        | graph = ivy.compile_graph(              | graph = ivy.compile_graph(              |
+| net.compile_graph(x)                   |     clean, x, w, b)                     |     unclean, x, w, b)                   |
+|                                        |                                         |                                         |
+| # execute graph                        | # execute graph                         | # execute graph                         |
+| net(x)                                 | graph(x, w, b)                          | graph(x, w, b)                          |
++----------------------------------------+-----------------------------------------+-----------------------------------------+
 
 .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/compiled_graph_b.png?raw=true
    :align: center
    :width: 75%
 
-The graph compiler does not compile to C++, CUDA or any other lower level language. It simply traces the backend functional methods in the graph, stores this graph, and then efficiently traverses this graph at execution time, all in Python. Compiling to lower level languages (C++, CUDA, TorchScript etc.) is supported for most backend frameworks via *ivy.compile()*, which wraps backend-specific compilation code, for example:
+The graph compiler does not compile to C++, CUDA or any other lower level language. It simply traces the backend functional methods in the graph, stores this graph, and then efficiently traverses this graph at execution time, all in Python. Compiling to lower level languages (C++, CUDA, TorchScript etc.) is supported for most backend frameworks via :code:`ivy.compile()`, which wraps backend-specific compilation code, for example:
 
 .. code-block:: python
 
