@@ -467,6 +467,31 @@ def eigvalsh(x: Union[ivy.Array, ivy.NativeArray], /) -> ivy.Array:
     return _cur_framework(x).eigvalsh(x)
 
 
+def matrix_rank(vector: Union[ivy.Array, ivy.NativeArray],
+                rtol: Optional[Union[float, Tuple[float]]] = None) \
+        -> Union[ivy.Array, ivy.NativeArray]:
+    """
+    Returns the rank (i.e., number of non-zero singular values) of a matrix (or a stack of matrices).
+
+    Parameters:
+    x:
+    (array) – input array having shape (..., M, N) and whose innermost two dimensions form MxN matrices. Should have a floating-point data type.
+
+    rtol:
+    (Optional[Union[float, array]]) – relative tolerance for small singular values.
+    Singular values approximately less than or equal to rtol * largest_singular_value are set to zero.
+    If a float, the value is equivalent to a zero-dimensional array having a floating-point data type determined by Type Promotion Rules (as applied to x) and must be broadcast against each matrix.
+    If an array, must have a floating-point data type and must be compatible with shape(x)[:-2] .
+    If None, the default value is max(M, N) * eps, where eps must be the machine epsilon associated with the floating-point data type determined by Type Promotion Rules (as applied to x). Default: None.
+
+    Returns:
+    out:
+    (array) – an array containing the ranks.
+
+    """
+    return _cur_framework(vector).matrix_rank(vector, rtol)
+
+
 def cross(x1: Union[ivy.Array, ivy.NativeArray],
           x2: Union[ivy.Array, ivy.NativeArray],
           axis: int = - 1) -> ivy.Array:
