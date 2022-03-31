@@ -1,9 +1,10 @@
 Ivy Array
 =========
 
-Here, we explain how the :code:`ivy.Array` class can clean up your code, by enabling methods to be called as attributes on the arrays directly.
+Here, we explain the :code:`ivy.Array` class, which is the class used to represent all arrays in Ivy. Every Ivy method
+returns :code:`ivy.Array` instances to represent the returned arrays.
 
-So, without further ado, let’s walk through what the Ivy Array has to offer!
+Without further ado, let’s walk through what the Ivy Array has to offer!
 
 The Array Class
 ---------------
@@ -72,7 +73,7 @@ All methods in the Ivy functional API are implemented as public methods in the :
             return ivy.to_ivy(ivy.flip(
                         self._data, axis, batch_shape))
 
-Effectively, the :code:`ivy.Array` class wraps the backend array object, storing it in :code:`self._data`, and this allows all Ivy methods to be called as attributes of the array. The method :code:`ivy.to_ivy` recursively converts all :code:`ivy.NativeArray` instances (i.e. :code:`torch.Tensor`)to :code:`ivy.Array` instances. This wrapping doesn’t extend the capabilities at all, but it can help to tidy up code. For example:
+Effectively, the :code:`ivy.Array` class wraps the backend array object, storing it in :code:`self._data`, and this allows all Ivy methods to be called as attributes of the array. The method :code:`ivy.to_ivy` recursively converts all :code:`ivy.NativeArray` instances (i.e. :code:`torch.Tensor`)to :code:`ivy.Array` instances. One benefit of the :code:`ivy.Array` class is that it can help to tidy up code. For example:
 
 .. code-block:: python
 
@@ -87,44 +88,36 @@ Effectively, the :code:`ivy.Array` class wraps the backend array object, storing
 
 In the example above, not only is the :code:`ivy.Array` approach shorter to write, but more importantly there is much better alignment between each function and the function arguments. It’s hard to work out which shape parameters align with which method in the first case, but in the second case this is crystal clear.
 
-In addition to the functions in the topic-specific parent classes, there are 41 builtin methods implemented directly in the :code:`ivy.Array` class, some examples are given below.
+In addition to the functions in the topic-specific parent classes, there are 41 builtin methods implemented directly in the :code:`ivy.Array` class, each of which directly wrap a method in Ivy's functional API. some examples are given below.
 
 .. code-block:: python
 
     # ivy/array/__init__.py
     def __add__(self, other):
         other = to_native(other)
-        res = self._data.__add__(other)
-        if res is NotImplemented:
-            return res
+        res = ivy.add(self._data, other)
         return to_ivy(res)
 
     def __radd__(self, other):
         other = to_native(other)
-        res = self._data.__radd__(other)
-        if res is NotImplemented:
-            return res
+        res = ivy.radd(self._data, other)
         return to_ivy(res)
 
     def __sub__(self, other):
         other = to_native(other)
-        res = self._data.__sub__(other)
-        if res is NotImplemented:
-            return res
+        res = ivy.sub(self._data, other)
         return to_ivy(res)
 
     def __rsub__(self, other):
         other = to_native(other)
-        res = self._data.__rsub__(other)
-        if res is NotImplemented:
-            return res
+        res = ivy.rsub(self._data, other)
         return to_ivy(res)
 
-These enable builtin operations to be performed on the :code:`ivy.Array` instances.
+These enable builtin operations to be performed on the :code:`ivy.Array` instances, and also combinations of :code:`ivy.Array` and :code:`ivy.NativeArray` instances.
 
 .. code-block:: python
 
-    x = ivy.Array(ivy.array([0., 1., 2.]))
+    x = ivy.array([0., 1., 2.])
     y = torch.tensor([0., 1., 2.]).cuda()
 
     assert isinstance(x + y, ivy.Array)
@@ -132,10 +125,10 @@ These enable builtin operations to be performed on the :code:`ivy.Array` instanc
     assert isinstance(x - y, ivy.Array)
     assert isinstance(y - x, ivy.Array)
 
-Array Mode
-----------
+Returning Ivy Arrays
+--------------------
 
-“But how do we call the backend framework methods?”, I hear you ask.
+“But how do we call the backend framework methods when we're using ivy.Array classes?”, I hear you ask.
 
 “:code:`torch.reshape` only accepts :code:`torch.Tensor` instances as input, we can’t just decide to pass in an :code:`ivy.Array` instead”
 
@@ -143,18 +136,31 @@ This is absolutely correct! The following code throws an error.
 
 .. code-block:: python
 
-    x = ivy.Array(ivy.array([0., 1., 2.]))
-    y = ivy.reshape(x, (1, 3, 1))
+    x = ivy.array([0., 1., 2.])
+    y = torch.reshape(x, (1, 3, 1))
 
-    ->          y = ivy.reshape(x, (1, 3, 1))
-    -> File "ivy/backends/torch/core/general.py", line 359, in reshape
-    ->          return torch.reshape(x, newshape)
+    ->          y = torch.reshape(x, (1, 3, 1))
     -> TypeError: no implementation found for 'torch.reshape' on
     -> types that implement __torch_function__: [0x7fef01e65ad0]
 
-Furthermore, even if it could accept :code:`ivy.Array` instances as input, the backend function returns a :code:`torch.Tensor`, and so we would lose the :code:`ivy.Array` structure of our array as soon as any backend method was called upon it.
+Furthermore, even if it could accept :code:`ivy.Array` instances as input, :code:`torch.reshape` returns a :code:`torch.Tensor`, and so we lose the :code:`ivy.Array` structure of our array as soon as any backend-specific method is called upon it.
 
-In order to solve this problem, Ivy has a dedicated array mode, which can be set by calling :code:`ivy.set_array_mode()`. In this mode, all Ivy methods in the functional API are automatically wrapped such that all inputs are recursively parsed to convert :code:`ivy.Array` instances to :code:`ivy.NativeArray` instances (i.e. :code:`torch.Tensor`), then the backend method is called as usual, and finally the return values are recursively parsed to convert all :code:`ivy.NativeArray` instances into :code:`ivy.Array` instances. The wrapping method is implemented as follows:
+This is indeed the case, and in order to run the above code without throwing an error, we would need to write something like the following:
+
+.. code-block:: python
+
+    x = ivy.array([0., 1., 2.])
+    x_native = x.data
+    y_native = torch.reshape(x, (1, 3, 1))
+    y = ivy.Array(y_native)
+
+In general, if integrating ivy code alongside native code, then conversions such as these will be needed between the adjacent blocks of code.
+
+"What about ivy methods? How do they call the backend methods without error?" I also hear you ask.
+
+This is a great question!
+
+All Ivy methods in the functional API are automatically wrapped such that all inputs are recursively parsed to convert :code:`ivy.Array` instances to :code:`ivy.NativeArray` instances (i.e. :code:`torch.Tensor`), then the backend method is called as usual, and finally the return values are recursively parsed to convert all :code:`ivy.NativeArray` instances into :code:`ivy.Array` instances. The wrapping method is implemented as follows:
 
 .. code-block:: python
 
@@ -182,7 +188,11 @@ In order to solve this problem, Ivy has a dedicated array mode, which can be set
         _method_wrapped.inner_fn = fn
         return _method_wrapped
 
-First, we verify the method is public, otherwise we return the private method without wrapping. Next, we check if the method is already wrapped, and if so we just return this already wrapped method. Then we define the new wrapped method :code:`_method_wrapped`. Finally, we copy the method name over to :code:`_method_wrapped`, and flag the wrapped attribute, store the unwrapped inner function as an attribute, and return the wrapped method.
+First, we verify the method should be wrapped, otherwise we return the method without wrapping.
+Next, we check if the method is already wrapped, and if so we just return this already wrapped method.
+Then we define the new wrapped method :code:`_method_wrapped`.
+Finally, we copy the method name over to :code:`_method_wrapped`, and flag the wrapped attribute,
+store the unwrapped inner function as an attribute, and return the wrapped method.
 
 The unwrap method is much simpler, implemented as follows:
 
@@ -196,34 +206,12 @@ The unwrap method is much simpler, implemented as follows:
             return method_wrapped
         return method_wrapped.inner_fn
 
-When setting array mode via :code:`ivy.set_array_mode()`, the entire :code:`ivy.__dict__` is traversed and all methods are wrapped using the :code:`_wrap_method` outlined above. Therefore, in array mode, all Ivy methods operate as expected, accepting and returning :code:`ivy.Array` instances without issue, whist still making use of the wrapped backend methods which only operate with :code:`ivy.NativeArray` instances, such as:code:`torch.Tensor` etc.
+When setting any backend framework, the entire :code:`ivy.__dict__` is traversed and all methods are wrapped using the :code:`_wrap_method` outlined above. Therefore, all Ivy methods operate as expected, accepting and returning :code:`ivy.Array` instances without issue, whist still making use of the wrapped backend methods which only operate with :code:`ivy.NativeArray` instances, such as:code:`torch.Tensor` etc.
 
 .. code-block:: python
 
-    ivy.set_array_mode()
-    x = ivy.Array(ivy.array([0., 1., 2.]))
+    x = ivy.array([0., 1., 2.])
     y = ivy.reshape(x, (1, 3, 1))
-    # passes without error
-
-However, in array mode, the arrays still cannot be passed directly into backend methods, for example the following will still throw an error.
-
-.. code-block:: python
-
-    ivy.set_array_mode()
-    x = ivy.Array(ivy.array([0., 1., 2.]))
-    y = torch.reshape(x, (1, 3, 1))
-
-    ->          y = torch.reshape(x, (1, 3, 1))
-    -> TypeError: no implementation found for 'torch.reshape' on
-    -> types that implement __torch_function__: [0x7f9888abc4e0]
-
-Using backend methods directly when Ivy is in array mode would require passing the :code:`self.data` property into the backend methods and then re-wrapping the return like so:
-
-.. code-block:: python
-
-    ivy.set_wrapped_mode()
-    x = ivy.Array(ivy.array([0., 1., 2.]))
-    y = ivy.Array(torch.reshape(x.data, (1, 3, 1)))
     # passes without error
 
 
