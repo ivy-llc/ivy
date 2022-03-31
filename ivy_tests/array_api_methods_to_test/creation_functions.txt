@@ -3,7 +3,7 @@ asarray
 empty
 empty_like
 #eye # fails non-determinstically for jax, possibly due to +0 vs -0 inconsistencies
-#from_dlpack
+from_dlpack
 full
 full_like
 #linspace
