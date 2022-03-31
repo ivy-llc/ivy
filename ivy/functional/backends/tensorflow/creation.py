@@ -87,6 +87,15 @@ def ones_like(x : Tensor,
         return tf.ones_like(x, dtype=dtype)
 
 
+def zeros_like(x: Tensor,
+               dtype: Optional[Dtype] = None,
+               device: Optional[str] = None)\
+            -> Tensor:
+    device = default_device(device)
+    with tf.device(dev_from_str(device)):
+        return tf.zeros_like(x, dtype=dtype)
+
+
 def tril(x: tf.Tensor,
          k: int = 0) \
          -> tf.Tensor:
@@ -149,6 +158,25 @@ def eye(n_rows: int,
         else:
             return tf.zeros([n_rows, n_cols], dtype=dtype)
 
+
+# noinspection PyShadowingNames
+def arange(stop, start=0, step=1, dtype=None, dev=None):
+    dtype = tf.__dict__[dtype] if dtype else dtype
+    dev = default_device(dev)
+    with tf.device(dev_from_str(dev)):
+        return tf.range(start, stop, delta=step, dtype=dtype)
+
+
+def full(shape, fill_value, dtype=None, device=None):
+    with tf.device(dev_from_str(default_device(device))):
+        return tf.fill(shape, tf.constant(fill_value, dtype=dtype_from_str(default_dtype(dtype, fill_value))))
+
+
+meshgrid = lambda *xs, indexing='ij': tf.meshgrid(*xs, indexing=indexing)
+
+
+def from_dlpack(x):
+    return tf.experimental.dlpack.from_dlpack(x)
 
 # Extra #
 # ------#

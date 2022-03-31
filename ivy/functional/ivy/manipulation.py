@@ -9,6 +9,24 @@ from ivy.framework_handler import current_framework as _cur_framework
 # Array API Standard #
 # -------------------#
 
+def squeeze(x: Union[ivy.Array, ivy.NativeArray],
+            axis: Union[int, Tuple[int, ...]])\
+        -> ivy.Array:
+    """
+    Removes singleton dimensions (axes) from ``x``.
+    Parameters
+    ----------
+    x: array
+        input array.
+    axis: Union[int, Tuple[int, ...]]
+        axis (or axes) to squeeze. If a specified axis has a size greater than one, a ``ValueError`` must be raised.
+    Returns
+    -------
+    out: array
+        an output array having the same data type and elements as ``x``.
+    """
+    return _cur_framework(x).squeeze(x, axis)
+
 def flip(x: Union[ivy.Array, ivy.NativeArray],
         axis: Optional[Union[int, Tuple[int], List[int]]] = None)\
         -> ivy.Array:
@@ -66,6 +84,53 @@ def permute_dims(x: Union[ivy.Array, ivy.NativeArray],
         an array containing the axes permutation. The returned array must have the same data type as x.
     """
     return _cur_framework(x).permute_dims(x, axes)
+
+
+def stack(xs: Iterable[Union[ivy.Array, ivy.NativeArray]], axis: int = 0)\
+        -> Union[ivy.Array, ivy.NativeArray]:
+    """
+    Joins a sequence of arrays along a new axis.
+    The axis parameter specifies the index of the new axis in the dimensions of the result.
+    For example, if axis: int = 0, it will be the first dimension and if axis: int = -1, it will be the last dimension.
+
+    :param xs: Input arrays, each array must have the same shape.
+    :type xs: sequence of arrays
+    :param axis: The axis in the result array along which the input arrays are stacked.
+    :type axis: int, optional
+    :return: The stacked array has one more dimension than the input arrays.
+    """
+    return _cur_framework(xs[0]).stack(xs, axis)
+
+
+def reshape(x: Union[ivy.Array, ivy.NativeArray], newshape: Union[int, Iterable[int]])\
+        -> Union[ivy.Array, ivy.NativeArray]:
+    """
+    Gives a new shape to an array without changing its data.
+
+    :param x: Tensor to be reshaped.
+    :type x: array
+    :param newshape: The new shape should be compatible with the original shape. One shape dimension can be -1.
+                        In this case, the value is inferred from the length of the array and remaining dimensions.
+    :type newshape: int or sequence of ints
+    :return: Reshaped array.
+    """
+    return _cur_framework(x).reshape(x, newshape)
+
+
+
+def concatenate(xs: Iterable[Union[ivy.Array, ivy.NativeArray]], axis: int = -1)\
+        -> Union[ivy.Array, ivy.NativeArray]:
+    """
+    Casts an array to a specified type.
+
+    :param xs: The input arrays must have the same shape, except in the dimension corresponding to axis
+                        (the first, by default).
+    :type xs: sequence of arrays
+    :param axis: The axis along which the arrays will be joined. Default is -1.
+    :type axis: int, optional
+    :return: The concatenated array.
+    """
+    return _cur_framework(xs[0]).concatenate(xs, axis)
 
 
 # Extra #
@@ -169,3 +234,26 @@ def swapaxes(x: Union[ivy.Array, ivy.NativeArray], axis0: int, axis1: int)\
     :return: x with its axes permuted.
     """
     return _cur_framework(x).swapaxes(x, axis0, axis1)
+
+
+def clip(x: Union[ivy.Array, ivy.NativeArray], x_min: Union[Number, Union[ivy.Array, ivy.NativeArray]],
+         x_max: Union[Number, Union[ivy.Array, ivy.NativeArray]])\
+        -> Union[ivy.Array, ivy.NativeArray]:
+    """
+    Clips (limits) the values in an array.
+
+    Given an interval, values outside the interval are clipped to the interval edges (element-wise).
+    For example, if an interval of [0, 1] is specified, values smaller than 0 become 0,
+    and values larger than 1 become 1.
+
+    :param x: Input array containing elements to clip.
+    :type x: array
+    :param x_min: Minimum value.
+    :type x_min: scalar or array
+    :param x_max: Maximum value.
+    :type x_max: scalar or array
+    :return: An array with the elements of x, but where values < x_min are replaced with x_min,
+                and those > x_max with x_max.
+    """
+    return _cur_framework(x).clip(x, x_min, x_max)
+

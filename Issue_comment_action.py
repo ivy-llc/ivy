@@ -20,7 +20,7 @@ def command(cmd, save_output=True):
 def carve_main_issue_body_functions(main_issue_body, allocated=True):
     if allocated:
         return [int(i[7:]) for i in main_issue_body.split('\r\n') if '- [ ] #' in i]
-    return [i[6:] for i in main_issue_body.split('\r\n') if '#' not in i]
+    return [i[6:].strip() for i in main_issue_body.split('\r\n') if '#' not in i]
 
 
 def main_issue_numbers(lst):
@@ -40,7 +40,7 @@ def issue_in_comment(cmt_bd):
 
 def comment_title(cid):
     x = command(f'gh issue view {int(cid[1:])} --json title')
-    return x['title']
+    return x['title'].strip()
 
 
 def functions_titles(issues_ids):
@@ -67,7 +67,7 @@ main_issue_ids = main_issue_numbers(command('gh issue list --label "Array API","
 if issue_number in main_issue_ids:
     main_issue = command(f'gh issue view {issue_number} --json number,title,body')
     alocate_functions = carve_main_issue_body_functions(main_issue['body'])
-    non_alocate_functions = carve_main_issue_body_functions(main_issue['body'], False)
+    non_alocate_functions = carve_main_issue_body_functions(main_issue['body'], allocated=False)
     issue_in_cmt, issue_id = issue_in_comment(comment_body)
     print(f"New comment detected on: '{main_issue['title']}'")
     print(f"Comment body: '{comment_body}'")
