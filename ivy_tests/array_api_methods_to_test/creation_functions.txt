@@ -7,7 +7,7 @@ from_dlpack
 full
 full_like
 #linspace
-#meshgrid
+meshgrid
 ones
 ones_like
 tril
