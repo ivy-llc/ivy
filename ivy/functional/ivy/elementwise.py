@@ -340,6 +340,24 @@ def asinh(x: Union[ivy.Array, ivy.NativeArray])\
     """
     return _cur_framework(x).asinh(x)
 
+def sign(x: Union[ivy.Array, ivy.NativeArray])\
+        -> ivy.Array:
+    """
+    Returns an indication of the sign of a number for each element ``x_i`` of the input array ``x``.
+    **Special cases**
+    - If ``x_i`` is less than ``0``, the result is ``-1``.
+    - If ``x_i`` is either ``-0`` or ``+0``, the result is ``0``.
+    - If ``x_i`` is greater than ``0``, the result is ``+1``.
+    Parameters
+    ----------
+    x: array
+        input array. Should have a numeric data type.
+    Returns
+    -------
+    out: array
+        an array containing the evaluated result for each element in ``x``. The returned array must have the same data type as ``x``.
+    """
+    return _cur_framework(x).sign(x)
 
 def sqrt(x: Union[ivy.Array, ivy.NativeArray])\
         -> ivy.Array:

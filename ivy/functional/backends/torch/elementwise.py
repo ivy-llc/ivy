@@ -97,6 +97,9 @@ def asinh(x: torch.Tensor) \
         -> torch.Tensor:
     return torch.asinh(x)
 
+def sign(x: Tensor)\
+        -> Tensor:
+    return torch.sign(x)
 
 def sqrt(x: torch.Tensor)\
         -> torch.Tensor:
