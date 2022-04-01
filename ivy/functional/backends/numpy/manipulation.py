@@ -53,7 +53,12 @@ def concatenate(xs, axis=-1):
     return np.concatenate(xs, axis)
 
 
-stack = np.stack
+def stack(x: Union[Tuple[np.ndarray], List[np.ndarray]],
+          axis: Optional[int] = 0)\
+          -> np.ndarray:
+    return np.stack(x, axis)
+
+
 reshape = np.reshape
 
 
@@ -81,16 +86,6 @@ def split(x, num_or_size_splits=None, axis=0, with_remainder=False):
 
 repeat = np.repeat
 tile = np.tile
-
-
-def stack(x: Union[Tuple[np.ndarray], List[np.ndarray]],
-          axis: Optional[int] = None)\
-          -> np.ndarray:
-    if axis is None:
-        axis = 0
-    return np.stack(x, axis)
-
-
 constant_pad = lambda x, pad_width, value=0: np.pad(_flat_array_to_1_dim_array(x), pad_width, constant_values=value)
 zero_pad = lambda x, pad_width: np.pad(_flat_array_to_1_dim_array(x), pad_width)
 swapaxes = np.swapaxes

@@ -58,7 +58,12 @@ def permute_dims(x: Tensor,
     return tf.transpose(x,perm=axes)
 
 
-stack = tf.stack
+def stack(x: Union[Tuple[Tensor], List[Tensor]],
+          axis: Optional[int] = 0)\
+          -> Tensor:
+    return tf.experimental.numpy.stack(x, axis)
+
+
 reshape = lambda x, newshape: tf.reshape(x, (newshape,) if isinstance(newshape, int) else newshape)
 
 
@@ -101,17 +106,6 @@ def tile(x, reps):
     if isinstance(reps, Tensor) and reps.shape == ():
         reps = tf.reshape(reps, (-1,))
     return tf.tile(x, reps)
-
-
-def stack(x: Union[Tuple[Tensor], List[Tensor]],
-          axis: Optional[int] = None)\
-          -> Tensor:
-    x = tf.cast(x, dtype=tf.uint8)
-    if axis is None:
-        new_axis = 0
-    else:
-        new_axis = axis
-    return tf.stack(x, axis=new_axis)
 
 
 def constant_pad(x, pad_width, value=0):
