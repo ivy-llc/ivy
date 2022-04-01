@@ -39,8 +39,8 @@ Elementwise
    elementwise/isnan.rst
    elementwise/less.rst
    elementwise/cos.rst
-   elementwise/logical_not.rst
    elementwise/acos.rst
+   elementwise/logical_not.rst
    elementwise/logical_xor.rst
    elementwise/logical_or.rst
    elementwise/logical_and.rst
@@ -66,7 +66,6 @@ Elementwise
    elementwise/tanh.rst
    elementwise/atanh.rst
    elementwise/log.rst
-   elementwise/exp.rst
    elementwise/subtract.rst
    elementwise/divide.rst
    elementwise/remainder.rst
