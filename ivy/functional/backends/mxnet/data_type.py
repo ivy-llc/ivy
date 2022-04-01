@@ -56,10 +56,6 @@ def broadcast_to(x, new_shape):
     return mx.nd.broadcast_to(x, new_shape)
 
 
-
 @_handle_flat_arrays_in_out
-def cast(x, dtype):
+def astype(x, dtype):
     return x.astype(dtype)
-
-
-astype = cast

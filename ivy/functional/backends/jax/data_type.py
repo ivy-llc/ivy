@@ -60,19 +60,15 @@ def broadcast_to(x: JaxArray, shape: Tuple[int, ...]) -> JaxArray:
     return jnp.broadcast_to(x, shape)
 
 
-
-def cast(x, dtype):
-    return x.astype(ivy.dtype_from_str(dtype))
-
 def astype(x: JaxArray, dtype: jnp.dtype, copy: bool = True) -> JaxArray:
     if copy:
-         if x.dtype == dtype:
-             new_tensor = jnp.array(x)
-             return new_tensor
+        if x.dtype == dtype:
+            new_tensor = jnp.array(x)
+            return new_tensor
     else:
-         if x.dtype == dtype:
-             return x
-         else:
+        if x.dtype == dtype:
+            return x
+        else:
             new_tensor = jnp.array(x)
             return new_tensor.astype(dtype)
     return x.astype(dtype)
