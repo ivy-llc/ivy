@@ -1,7 +1,7 @@
 abs
 #acos # depends on: greater
 acosh
-#add
+add
 #asin # depends on: greater
 asinh
 atan
