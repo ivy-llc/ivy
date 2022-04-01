@@ -242,7 +242,7 @@ def eye(n_rows: int,
 
 
 def meshgrid(*arrays: torch.Tensor, indexing='xy')\
-        -> Tuple[torch.Tensor]:
+        -> List[torch.Tensor]:
     return torch.meshgrid(*arrays, indexing=indexing)
 
 
