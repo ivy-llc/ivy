@@ -63,7 +63,7 @@ class Array(ArrayWithArrayAPI, ArrayWithDevice, ArrayWithGeneral, ArrayWithGradi
 
     @property
     def mT(self):
-        assert len(self._data.shape) < 2
+        assert len(self._data.shape) >= 2
         return ivy.matrix_transpose(self._data)
 
     @property
