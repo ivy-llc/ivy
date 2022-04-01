@@ -619,27 +619,6 @@ def cos(x: Union[ivy.Array, ivy.NativeArray])\
     return _cur_framework(x).cos(x)
 
 
-def logical_not(x: Union[ivy.Array, ivy.NativeArray])\
-        -> ivy.Array:
-    """
-    Computes the logical NOT for each element ``x_i`` of the input array ``x``.
-
-    .. note::
-       While this specification recommends that this function only accept input arrays having a boolean data type, specification-compliant array libraries may choose to accept input arrays having numeric data types. If non-boolean data types are supported, zeros must be considered the equivalent of ``False``, while non-zeros must be considered the equivalent of ``True``.
-
-    Parameters
-    ----------
-    x:
-        input array. Should have a boolean data type.
-
-    Returns
-    -------
-    out:
-        an array containing the element-wise results. The returned array must have a data type of ``bool``.
-    """
-    return _cur_framework(x).logical_not(x)
-
-
 def acos(x: Union[ivy.Array, ivy.NativeArray])\
         -> ivy.Array:
     """
@@ -665,6 +644,28 @@ def acos(x: Union[ivy.Array, ivy.NativeArray])\
         an array containing the inverse cosine of each element in x. The returned array must have a floating-point data type determined by :ref:`type-promotion`.
     """
     return _cur_framework(x).acos(x)
+
+
+def logical_not(x: Union[ivy.Array, ivy.NativeArray])\
+        -> ivy.Array:
+    """
+    Computes the logical NOT for each element ``x_i`` of the input array ``x``.
+
+    .. note::
+       While this specification recommends that this function only accept input arrays having a boolean data type, specification-compliant array libraries may choose to accept input arrays having numeric data types. If non-boolean data types are supported, zeros must be considered the equivalent of ``False``, while non-zeros must be considered the equivalent of ``True``.
+
+    Parameters
+    ----------
+    x:
+        input array. Should have a boolean data type.
+
+    Returns
+    -------
+    out:
+        an array containing the element-wise results. The returned array must have a data type of ``bool``.
+    """
+    return _cur_framework(x).logical_not(x)
+
 
 
 def logical_xor(x1: Union[ivy.Array, ivy.NativeArray], x2: Union[ivy.Array, ivy.NativeArray]) \
@@ -1137,15 +1138,7 @@ def log(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
     return _cur_framework(x).log(x)
 
 
-def exp(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
-    """
-    Computes exponential of x element-wise.
 
-    :param x: Value to compute exponential for.
-    :type x: array
-    :return: The exponential of each element of x.
-    """
-    return _cur_framework(x).exp(x)
 
 
 def subtract(x1: Union[ivy.Array, ivy.NativeArray],
