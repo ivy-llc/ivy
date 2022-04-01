@@ -28,6 +28,7 @@ Elementwise
    elementwise/less_equal.rst
    elementwise/multiply.rst
    elementwise/asinh.rst
+   elementwise/sign.rst
    elementwise/sqrt.rst
    elementwise/cosh.rst
    elementwise/log.rst

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>maximum &mdash; Ivy 1.0 documentation</title>
+  <title>sign &mdash; Ivy 1.0 documentation</title>
   
 
   
@@ -36,8 +36,8 @@
   <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="General" href="../general.html" />
-    <link rel="prev" title="minimum" href="minimum.html" /> 
+    <link rel="next" title="sqrt" href="sqrt.html" />
+    <link rel="prev" title="asinh" href="asinh.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -113,7 +113,7 @@
 <li class="toctree-l2"><a class="reference internal" href="less_equal.html">less_equal</a></li>
 <li class="toctree-l2"><a class="reference internal" href="multiply.html">multiply</a></li>
 <li class="toctree-l2"><a class="reference internal" href="asinh.html">asinh</a></li>
-<li class="toctree-l2"><a class="reference internal" href="sign.html">sign</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">sign</a></li>
 <li class="toctree-l2"><a class="reference internal" href="sqrt.html">sqrt</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cosh.html">cosh</a></li>
 <li class="toctree-l2"><a class="reference internal" href="log.html">log</a></li>
@@ -158,7 +158,7 @@
 <li class="toctree-l2"><a class="reference internal" href="equal.html">equal</a></li>
 <li class="toctree-l2"><a class="reference internal" href="erf.html">erf</a></li>
 <li class="toctree-l2"><a class="reference internal" href="minimum.html">minimum</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">maximum</a></li>
+<li class="toctree-l2"><a class="reference internal" href="maximum.html">maximum</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../general.html">General</a></li>
@@ -249,13 +249,13 @@
         
           <li><a href="../elementwise.html">Elementwise</a> &raquo;</li>
         
-      <li>maximum</li>
+      <li>sign</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../../_sources/functional/ivy/elementwise/maximum.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../../_sources/functional/ivy/elementwise/sign.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -268,21 +268,24 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="maximum">
-<h1>maximum<a class="headerlink" href="#maximum" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="sign">
+<h1>sign<a class="headerlink" href="#sign" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
-<dt id="ivy.functional.ivy.elementwise.maximum">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">maximum</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">, </span>numbers.Number<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">y</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">, </span>numbers.Number<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/elementwise.html#maximum"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.elementwise.maximum" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the max of x and y (i.e. x &gt; y ? x : y) element-wise.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>array</em>) – Input array containing elements to maximum threshold.</p></li>
-<li><p><strong>y</strong> (<em>array</em>) – Tensor containing maximum values, must be broadcastable to x.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>An array with the elements of x, but clipped to not be lower than the y values.</p>
+<dt id="ivy.functional.ivy.elementwise.sign">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">sign</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../../_modules/ivy/functional/ivy/elementwise.html#sign"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.elementwise.sign" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns an indication of the sign of a number for each element <code class="docutils literal notranslate"><span class="pre">x_i</span></code> of the input array <code class="docutils literal notranslate"><span class="pre">x</span></code>.
+<strong>Special cases</strong>
+- If <code class="docutils literal notranslate"><span class="pre">x_i</span></code> is less than <code class="docutils literal notranslate"><span class="pre">0</span></code>, the result is <code class="docutils literal notranslate"><span class="pre">-1</span></code>.
+- If <code class="docutils literal notranslate"><span class="pre">x_i</span></code> is either <code class="docutils literal notranslate"><span class="pre">-0</span></code> or <code class="docutils literal notranslate"><span class="pre">+0</span></code>, the result is <code class="docutils literal notranslate"><span class="pre">0</span></code>.
+- If <code class="docutils literal notranslate"><span class="pre">x_i</span></code> is greater than <code class="docutils literal notranslate"><span class="pre">0</span></code>, the result is <code class="docutils literal notranslate"><span class="pre">+1</span></code>.
+Parameters
+———-
+x: array</p>
+<blockquote>
+<div><p>input array. Should have a numeric data type.</p>
+</div></blockquote>
+<dl class="simple">
+<dt>out: array</dt><dd><p>an array containing the evaluated result for each element in <code class="docutils literal notranslate"><span class="pre">x</span></code>. The returned array must have the same data type as <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -302,10 +305,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../general.html" class="btn btn-neutral float-right" title="General" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="sqrt.html" class="btn btn-neutral float-right" title="sqrt" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="minimum.html" class="btn btn-neutral float-left" title="minimum" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="asinh.html" class="btn btn-neutral float-left" title="asinh" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
