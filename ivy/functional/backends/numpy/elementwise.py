@@ -7,6 +7,13 @@ try:
 except (ImportError, ModuleNotFoundError):
     _erf = None
 
+def add(x1: np.ndarray,
+        x2: np.ndarray)\
+        -> np.ndarray:
+    if not isinstance(x2, np.ndarray):
+        x2 = np.asarray(x2, dtype=x1.dtype)
+    return np.asarray(npa.add(npa.asarray(x1), npa.asarray(x2)))
+
 def bitwise_xor(x1: np.ndarray,
                 x2: np.ndarray)\
         -> np.ndarray:
