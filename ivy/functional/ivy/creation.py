@@ -270,7 +270,7 @@ def linspace(start: Union[ivy.Array, ivy.NativeArray, int], stop: Union[ivy.Arra
     """
     return _cur_framework(start).linspace(start, stop, num, axis, dev)
 
-def meshgrid(*arrays: Union[ivy.Array, ivy.NativeArray], indexing: str = 'xy') \
+def meshgrid(*arrays: Union[ivy.Array, ivy.NativeArray], indexing: Optional[str] = 'xy') \
         -> List[ivy.Array]:
     """
     Returns coordinate matrices from coordinate vectors.
