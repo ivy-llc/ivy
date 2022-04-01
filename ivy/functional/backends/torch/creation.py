@@ -243,7 +243,7 @@ def eye(n_rows: int,
 
 def meshgrid(*arrays: torch.Tensor, indexing='xy')\
         -> List[torch.Tensor]:
-    return torch.meshgrid(*arrays, indexing=indexing)
+    return list(torch.meshgrid(*arrays, indexing=indexing))
 
 
 # noinspection PyShadowingNames
