@@ -11,13 +11,13 @@ inv
 matrix_rank
 matrix_transpose
 #outer # depends on: multiply
-#pinv
-#qr
-#slogdet
+pinv
+qr
+slogdet
 #solve
 svd
 svdvals
 tensordot
 #trace # accidentally merged trace when #T in array folder was preventing test from running.
 #vecdot
-#vector_norm
+vector_norm
