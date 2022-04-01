@@ -36,7 +36,7 @@
   <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="bitwise_xor" href="elementwise/bitwise_xor.html" />
+    <link rel="next" title="add" href="elementwise/add.html" />
     <link rel="prev" title="Profiler" href="device/Profiler.html" /> 
 </head>
 
@@ -98,6 +98,7 @@
 <li class="toctree-l1"><a class="reference internal" href="data_type.html">Data type</a></li>
 <li class="toctree-l1"><a class="reference internal" href="device.html">Device</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Elementwise</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="elementwise/add.html">add</a></li>
 <li class="toctree-l2"><a class="reference internal" href="elementwise/bitwise_xor.html">bitwise_xor</a></li>
 <li class="toctree-l2"><a class="reference internal" href="elementwise/exp.html">exp</a></li>
 <li class="toctree-l2"><a class="reference internal" href="elementwise/expm1.html">expm1</a></li>
@@ -333,6 +334,45 @@
 </dl>
 <dl class="simple">
 <dt>out:</dt><dd><p>an array containing the inverse hyperbolic cosine of each element in x. The returned array must have a floating-point data type determined by <span class="xref std std-ref">type-promotion</span>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.elementwise.add">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">add</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x1</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">x2</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../_modules/ivy/functional/ivy/elementwise.html#add"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.elementwise.add" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the sum for each element <code class="docutils literal notranslate"><span class="pre">x1_i</span></code> of the input array <code class="docutils literal notranslate"><span class="pre">x1</span></code> with the respective element <code class="docutils literal notranslate"><span class="pre">x2_i</span></code> of the input array <code class="docutils literal notranslate"><span class="pre">x2</span></code>.
+<strong>Special cases</strong>
+For floating-point operands,
+- If either <code class="docutils literal notranslate"><span class="pre">x1_i</span></code> or <code class="docutils literal notranslate"><span class="pre">x2_i</span></code> is <code class="docutils literal notranslate"><span class="pre">NaN</span></code>, the result is <code class="docutils literal notranslate"><span class="pre">NaN</span></code>.
+- If <code class="docutils literal notranslate"><span class="pre">x1_i</span></code> is <code class="docutils literal notranslate"><span class="pre">+infinity</span></code> and <code class="docutils literal notranslate"><span class="pre">x2_i</span></code> is <code class="docutils literal notranslate"><span class="pre">-infinity</span></code>, the result is <code class="docutils literal notranslate"><span class="pre">NaN</span></code>.
+- If <code class="docutils literal notranslate"><span class="pre">x1_i</span></code> is <code class="docutils literal notranslate"><span class="pre">-infinity</span></code> and <code class="docutils literal notranslate"><span class="pre">x2_i</span></code> is <code class="docutils literal notranslate"><span class="pre">+infinity</span></code>, the result is <code class="docutils literal notranslate"><span class="pre">NaN</span></code>.
+- If <code class="docutils literal notranslate"><span class="pre">x1_i</span></code> is <code class="docutils literal notranslate"><span class="pre">+infinity</span></code> and <code class="docutils literal notranslate"><span class="pre">x2_i</span></code> is <code class="docutils literal notranslate"><span class="pre">+infinity</span></code>, the result is <code class="docutils literal notranslate"><span class="pre">+infinity</span></code>.
+- If <code class="docutils literal notranslate"><span class="pre">x1_i</span></code> is <code class="docutils literal notranslate"><span class="pre">-infinity</span></code> and <code class="docutils literal notranslate"><span class="pre">x2_i</span></code> is <code class="docutils literal notranslate"><span class="pre">-infinity</span></code>, the result is <code class="docutils literal notranslate"><span class="pre">-infinity</span></code>.
+- If <code class="docutils literal notranslate"><span class="pre">x1_i</span></code> is <code class="docutils literal notranslate"><span class="pre">+infinity</span></code> and <code class="docutils literal notranslate"><span class="pre">x2_i</span></code> is a finite number, the result is <code class="docutils literal notranslate"><span class="pre">+infinity</span></code>.
+- If <code class="docutils literal notranslate"><span class="pre">x1_i</span></code> is <code class="docutils literal notranslate"><span class="pre">-infinity</span></code> and <code class="docutils literal notranslate"><span class="pre">x2_i</span></code> is a finite number, the result is <code class="docutils literal notranslate"><span class="pre">-infinity</span></code>.
+- If <code class="docutils literal notranslate"><span class="pre">x1_i</span></code> is a finite number and <code class="docutils literal notranslate"><span class="pre">x2_i</span></code> is <code class="docutils literal notranslate"><span class="pre">+infinity</span></code>, the result is <code class="docutils literal notranslate"><span class="pre">+infinity</span></code>.
+- If <code class="docutils literal notranslate"><span class="pre">x1_i</span></code> is a finite number and <code class="docutils literal notranslate"><span class="pre">x2_i</span></code> is <code class="docutils literal notranslate"><span class="pre">-infinity</span></code>, the result is <code class="docutils literal notranslate"><span class="pre">-infinity</span></code>.
+- If <code class="docutils literal notranslate"><span class="pre">x1_i</span></code> is <code class="docutils literal notranslate"><span class="pre">-0</span></code> and <code class="docutils literal notranslate"><span class="pre">x2_i</span></code> is <code class="docutils literal notranslate"><span class="pre">-0</span></code>, the result is <code class="docutils literal notranslate"><span class="pre">-0</span></code>.
+- If <code class="docutils literal notranslate"><span class="pre">x1_i</span></code> is <code class="docutils literal notranslate"><span class="pre">-0</span></code> and <code class="docutils literal notranslate"><span class="pre">x2_i</span></code> is <code class="docutils literal notranslate"><span class="pre">+0</span></code>, the result is <code class="docutils literal notranslate"><span class="pre">+0</span></code>.
+- If <code class="docutils literal notranslate"><span class="pre">x1_i</span></code> is <code class="docutils literal notranslate"><span class="pre">+0</span></code> and <code class="docutils literal notranslate"><span class="pre">x2_i</span></code> is <code class="docutils literal notranslate"><span class="pre">-0</span></code>, the result is <code class="docutils literal notranslate"><span class="pre">+0</span></code>.
+- If <code class="docutils literal notranslate"><span class="pre">x1_i</span></code> is <code class="docutils literal notranslate"><span class="pre">+0</span></code> and <code class="docutils literal notranslate"><span class="pre">x2_i</span></code> is <code class="docutils literal notranslate"><span class="pre">+0</span></code>, the result is <code class="docutils literal notranslate"><span class="pre">+0</span></code>.
+- If <code class="docutils literal notranslate"><span class="pre">x1_i</span></code> is either <code class="docutils literal notranslate"><span class="pre">+0</span></code> or <code class="docutils literal notranslate"><span class="pre">-0</span></code> and <code class="docutils literal notranslate"><span class="pre">x2_i</span></code> is a nonzero finite number, the result is <code class="docutils literal notranslate"><span class="pre">x2_i</span></code>.
+- If <code class="docutils literal notranslate"><span class="pre">x1_i</span></code> is a nonzero finite number and <code class="docutils literal notranslate"><span class="pre">x2_i</span></code> is either <code class="docutils literal notranslate"><span class="pre">+0</span></code> or <code class="docutils literal notranslate"><span class="pre">-0</span></code>, the result is <code class="docutils literal notranslate"><span class="pre">x1_i</span></code>.
+- If <code class="docutils literal notranslate"><span class="pre">x1_i</span></code> is a nonzero finite number and <code class="docutils literal notranslate"><span class="pre">x2_i</span></code> is <code class="docutils literal notranslate"><span class="pre">-x1_i</span></code>, the result is <code class="docutils literal notranslate"><span class="pre">+0</span></code>.
+- In the remaining cases, when neither <code class="docutils literal notranslate"><span class="pre">infinity</span></code>, <code class="docutils literal notranslate"><span class="pre">+0</span></code>, <code class="docutils literal notranslate"><span class="pre">-0</span></code>, nor a <code class="docutils literal notranslate"><span class="pre">NaN</span></code> is involved, and the operands have the same mathematical sign or have different magnitudes, the sum must be computed and rounded to the nearest representable value according to IEEE 754-2019 and a supported round mode. If the magnitude is too large to represent, the operation overflows and the result is an <cite>infinity</cite> of appropriate mathematical sign.
+.. note:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Floating</span><span class="o">-</span><span class="n">point</span> <span class="n">addition</span> <span class="ow">is</span> <span class="n">a</span> <span class="n">commutative</span> <span class="n">operation</span><span class="p">,</span> <span class="n">but</span> <span class="ow">not</span> <span class="n">always</span> <span class="n">associative</span><span class="o">.</span>
+</pre></div>
+</div>
+<dl class="simple">
+<dt>x1: array</dt><dd><p>first input array. Should have a numeric data type.</p>
+</dd>
+<dt>x2: array</dt><dd><p>second input array. Must be compatible with <code class="docutils literal notranslate"><span class="pre">x1</span></code> (see <span class="xref std std-ref">broadcasting</span>). Should have a numeric data type.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>out: array</dt><dd><p>an array containing the element-wise sums. The returned array must have a data type determined by <span class="xref std std-ref">type-promotion</span>.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1377,7 +1417,7 @@ the same data type as x.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="elementwise/bitwise_xor.html" class="btn btn-neutral float-right" title="bitwise_xor" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="elementwise/add.html" class="btn btn-neutral float-right" title="add" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="device/Profiler.html" class="btn btn-neutral float-left" title="Profiler" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>

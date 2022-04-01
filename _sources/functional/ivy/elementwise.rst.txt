@@ -13,6 +13,7 @@ Elementwise
    :maxdepth: -1
    :caption: Elementwise
 
+   elementwise/add.rst
    elementwise/bitwise_xor.rst
    elementwise/exp.rst
    elementwise/expm1.rst
