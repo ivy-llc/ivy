@@ -104,24 +104,20 @@ def dtype(x: Union[ivy.Array, ivy.NativeArray], as_str: bool = False)\
 
 
 # noinspection PyShadowingNames
-def cast(x: Union[ivy.Array, ivy.NativeArray], dtype: ivy.Dtype)\
-        -> Union[ivy.Array, ivy.NativeArray]:
+def astype(x: Union[ivy.Array, ivy.NativeArray], dtype: ivy.Dtype, copy: bool = True)\
+         -> ivy.Array:
     """
-    Casts an array to a specified type.
+    Copies an array to a specified data type irrespective of Type Promotion Rules.
 
-    :param x: Input array containing elements to cast.
-    :type x: array
-    :param dtype: The desired data-type for the array in string format, i.e. 'float32' or 'int64'.
-            If not given, then the type will be determined as the minimum type required to hold the objects in the
-            sequence.
-    :type dtype: data-type string
-    :return: A new array of the same shape as input array a, with data type given by dtype.
+    :param x: array to cast.
+    :dtype: desired data type.
+    :copy: (bool) specifies whether to copy an array when the specified dtype matches the data type of the input array x.
+                If True, a newly allocated array must always be returned.
+                If False and the specified dtype matches the data type of the input array, the input array must be returned; otherwise, a newly allocated must be returned.
+                Default: True.
+    :return: an array having the specified data type. The returned array must have the same shape as x.
     """
-    return _cur_framework(x).cast(x, dtype)
-
-
-astype = cast
-
+    return _cur_framework(x).astype(x, dtype, copy)
 
 # Extra #
 # ------#

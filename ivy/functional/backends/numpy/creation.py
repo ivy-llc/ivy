@@ -68,6 +68,17 @@ def ones_like(x : np.ndarray,
     return _to_dev(np.ones_like(x, dtype=dtype), dev)
 
 
+def zeros_like(x: np.ndarray,
+               dtype: Optional[np.dtype] =None,
+               dev:  Optional[str]  =None)\
+            -> np.ndarray:
+    if dtype:
+        dtype = 'bool_' if dtype == 'bool' else dtype
+    else:
+        dtype = x.dtype
+    return _to_dev(np.zeros_like(x, dtype=dtype), dev)
+
+
 def tril(x: np.ndarray,
          k: int = 0) \
          -> np.ndarray:
@@ -106,6 +117,10 @@ def linspace(start, stop, num, axis=None, dev=None):
         axis = -1
     return _to_dev(np.linspace(start, stop, num, axis=axis), dev)
 
+def meshgrid(*arrays: np.ndarray, indexing: str = 'xy',  device: Optional[str] = None)\
+        -> List[np.ndarray]:
+    return _to_dev(np.meshgrid(*arrays, indexing=indexing), device)
+
 def eye(n_rows: int,
         n_cols: Optional[int] = None,
         k: Optional[int] = 0,
@@ -128,23 +143,14 @@ def arange(stop, start=0, step=1, dtype=None, dev=None):
     return res
 
 
-
-# noinspection PyShadowingNames
-def zeros_like(x, dtype=None, dev=None):
-    if dtype:
-        dtype = 'bool_' if dtype == 'bool' else dtype
-        dtype = np.__dict__[dtype]
-    else:
-        dtype = x.dtype
-    return _to_dev(np.zeros_like(x, dtype=dtype), dev)
-
-
 def full(shape, fill_value, dtype=None, device=None):
     return _to_dev(np.full(shape, fill_value, dtype_from_str(default_dtype(dtype, fill_value))), device)
 
 
-meshgrid = lambda *xs, indexing='ij': np.meshgrid(*xs, indexing=indexing)
 
+
+def from_dlpack(x):
+    return np.from_dlpack(x)
 
 # Extra #
 # ------#

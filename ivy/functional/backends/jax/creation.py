@@ -11,6 +11,7 @@ from ivy.functional.ivy.device import default_device
 from ivy.functional.ivy import default_dtype
 from jaxlib.xla_extension import Buffer, Device, DeviceArray
 from jax.interpreters.xla import _DeviceArray
+from jax.dlpack import from_dlpack as jax_from_dlpack
 
 def ones(shape: Union[int, Tuple[int], List[int]],
          dtype: Optional[jnp.dtype] = None,
@@ -50,6 +51,15 @@ def ones_like(x : JaxArray,
     else:
         dtype = x.dtype
     return to_dev(jnp.ones_like(x, dtype=dtype), default_device(dev))
+
+
+def zeros_like(x: JaxArray,
+               dtype: Optional[jnp.dtype]= None,
+               device: Optional[jaxlib.xla_extension.Device] = None)\
+        -> JaxArray:
+    if not dtype:
+        dtype = x.dtype
+    return to_dev(jnp.zeros_like(x, dtype=dtype), default_device(device))
 
 
 def tril(x: JaxArray,
@@ -107,6 +117,11 @@ def linspace(start, stop, num, axis=None, dev=None):
         axis = -1
     return to_dev(jnp.linspace(start, stop, num, axis=axis), default_device(dev))
 
+def meshgrid(*arrays: JaxArray,
+             indexing: str = 'xy') \
+        -> List[JaxArray]:
+    return to_dev(jnp.meshgrid(*arrays, indexing=indexing))
+
 def eye(n_rows: int,
         n_cols: Optional[int] = None,
         k: Optional[int] = 0,
@@ -124,21 +139,15 @@ def arange(stop, start=0, step=1, dtype=None, dev=None):
     return to_dev(jnp.arange(start, stop, step=step, dtype=dtype), default_device(dev))
 
 
-# noinspection PyShadowingNames
-def zeros_like(x, dtype=None, dev=None):
-    if dtype:
-        dtype = jnp.__dict__[dtype]
-    else:
-        dtype = x.dtype
-    return to_dev(jnp.zeros_like(x, dtype=dtype), default_device(dev))
-
-
 def full(shape, fill_value, dtype=None, device=None):
     return to_dev(jnp.full(shape, fill_value, dtype_from_str(default_dtype(dtype, fill_value))),
                   default_device(device))
 
 
-meshgrid = lambda *xs, indexing='ij': jnp.meshgrid(*xs, indexing=indexing)
+
+
+def from_dlpack(x):
+    return jax_from_dlpack(x)
 
 # Extra #
 # ------#

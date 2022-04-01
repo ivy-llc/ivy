@@ -491,22 +491,53 @@ def eigvalsh(x: Union[ivy.Array, ivy.NativeArray], /) -> ivy.Array:
     return _cur_framework(x).eigvalsh(x)
 
 
-def cross(x1: Union[ivy.Array, ivy.NativeArray], x2: Union[ivy.Array, ivy.NativeArray])\
+def matrix_rank(vector: Union[ivy.Array, ivy.NativeArray],
+                rtol: Optional[Union[float, Tuple[float]]] = None) \
         -> Union[ivy.Array, ivy.NativeArray]:
     """
-    Returns the cross product of two (arrays of) vectors in R^3.
-    The cross product of x1 and x2 in R^3 is a vector perpendicular to both x1 and x2.
-    If x1 and x2 are arrays of vectors, the vectors are defined by the last axis of x1 and x2 by default which must have
-    dimension 3.
+    Returns the rank (i.e., number of non-zero singular values) of a matrix (or a stack of matrices).
 
-    :param x1: Components of the first vector(s).
-    :type x1: array
-    :param x2: Components of the second vector(s).
-    :type x2: array
-    :return: Vector cross product(s).
+    Parameters:
+    x:
+    (array) – input array having shape (..., M, N) and whose innermost two dimensions form MxN matrices. Should have a floating-point data type.
+
+    rtol:
+    (Optional[Union[float, array]]) – relative tolerance for small singular values.
+    Singular values approximately less than or equal to rtol * largest_singular_value are set to zero.
+    If a float, the value is equivalent to a zero-dimensional array having a floating-point data type determined by Type Promotion Rules (as applied to x) and must be broadcast against each matrix.
+    If an array, must have a floating-point data type and must be compatible with shape(x)[:-2] .
+    If None, the default value is max(M, N) * eps, where eps must be the machine epsilon associated with the floating-point data type determined by Type Promotion Rules (as applied to x). Default: None.
+
+    Returns:
+    out:
+    (array) – an array containing the ranks.
+
     """
-    return _cur_framework(x1).cross(x1, x2)
+    return _cur_framework(vector).matrix_rank(vector, rtol)
 
+
+def cross(x1: Union[ivy.Array, ivy.NativeArray],
+          x2: Union[ivy.Array, ivy.NativeArray],
+          axis: int = - 1) -> ivy.Array:
+    """
+    The cross product of 3-element vectors. If x1 and x2 are multi-dimensional arrays 
+    (i.e., both have a rank greater than 1), then the cross-product of each pair of corresponding 
+    3-element vectors is independently computed.
+
+    Parameters
+    :param x1: first input array. Should have a numeric data type.
+    :type x1: array
+    :param x2: second input array. Must have the same shape as x1. Should have a numeric data type.
+    :type x2: array
+    :param axis: the axis (dimension) of x1 and x2 containing the vectors for which to compute the cross product.
+     If set to -1, the function computes the cross product for vectors defined by the last axis (dimension).
+      Default: -1.
+    :type axis: int
+    :returnout: an array containing the cross products. The returned array must have a data type determined
+     by Type Promotion Rules.
+    :type out: array
+    """
+    return _cur_framework(x1).cross(x1,x2,axis)
 
 # Extra #
 # ------#

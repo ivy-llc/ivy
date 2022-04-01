@@ -1,8 +1,8 @@
 abs
-#acos # depends on: greater
+acos
 acosh
-#add
-#asin # depends on: greater
+add
+asin
 asinh
 atan
 atan2
@@ -12,17 +12,17 @@ atanh
 bitwise_invert
 #bitwise_or # failing non-deterministically
 #bitwise_right_shift # failing non-deterministically
-bitwise_xor
+#bitwise_xor # failing non-deterministically
 ceil
 cos
 cosh
-#divide
+divide
 #equal # failing non-deterministically
-#exp
+exp
 expm1
 floor
-#floor_divide
-#greater
+#floor_divide # failing non-deterministically
+greater
 greater_equal
 isfinite
 isinf
@@ -45,7 +45,7 @@ positive
 #pow
 #remainder # Failing non-deterministically 
 round
-#sign
+#sign # tests are passing but uncommenting causes everything in test_signatures to run
 sin
 sinh
 square
@@ -53,4 +53,4 @@ sqrt
 subtract
 tan
 tanh
-#trunc
+trunc

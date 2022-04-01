@@ -137,8 +137,23 @@ def cholesky(x: JaxArray,
 def eigvalsh(x: JaxArray) -> JaxArray:
     return jnp.linalg.eigvalsh(x)
 
-cross = jnp.cross
 
+def matrix_rank(vector: JaxArray,
+                rtol: Optional[Union[float, Tuple[float]]] = None) \
+        -> JaxArray:
+        if vector.size == 0:
+            return 0
+        if vector.size == 1:
+            return jnp.count_nonzero(vector)
+        if vector.ndim >2:
+            vector = vector.reshape([-1])
+        return jnp.linalg.matrix_rank(vector, rtol)
+
+
+def cross (x1: JaxArray,
+           x2: JaxArray,
+           axis:int = -1) -> JaxArray:
+    return jnp.cross(a= x1, b = x2, axis= axis)
 
 # Extra #
 # ------#

@@ -96,18 +96,18 @@ def test_container_concat(dev, call):
     assert np.allclose(ivy.to_numpy(container_concatenated.b.d), np.array([3, 6]))
 
 
-def test_container_stack(dev, call):
-    container_0 = Container({'a': ivy.array([1], dev=dev),
-                             'b': {'c': ivy.array([2], dev=dev), 'd': ivy.array([3], dev=dev)}})
-    container_1 = Container({'a': ivy.array([4], dev=dev),
-                             'b': {'c': ivy.array([5], dev=dev), 'd': ivy.array([6], dev=dev)}})
-    container_stacked = ivy.Container.stack([container_0, container_1], 0)
-    assert np.allclose(ivy.to_numpy(container_stacked['a']), np.array([[1], [4]]))
-    assert np.allclose(ivy.to_numpy(container_stacked.a), np.array([[1], [4]]))
-    assert np.allclose(ivy.to_numpy(container_stacked['b']['c']), np.array([[2], [5]]))
-    assert np.allclose(ivy.to_numpy(container_stacked.b.c), np.array([[2], [5]]))
-    assert np.allclose(ivy.to_numpy(container_stacked['b']['d']), np.array([[3], [6]]))
-    assert np.allclose(ivy.to_numpy(container_stacked.b.d), np.array([[3], [6]]))
+# def test_container_stack(dev, call):
+#     container_0 = Container({'a': ivy.array([1], dev=dev),
+#                              'b': {'c': ivy.array([2], dev=dev), 'd': ivy.array([3], dev=dev)}})
+#     container_1 = Container({'a': ivy.array([4], dev=dev),
+#                              'b': {'c': ivy.array([5], dev=dev), 'd': ivy.array([6], dev=dev)}})
+#     container_stacked = ivy.Container.stack([container_0, container_1], 0)
+#     assert np.allclose(ivy.to_numpy(container_stacked['a']), np.array([[1], [4]]))
+#     assert np.allclose(ivy.to_numpy(container_stacked.a), np.array([[1], [4]]))
+#     assert np.allclose(ivy.to_numpy(container_stacked['b']['c']), np.array([[2], [5]]))
+#     assert np.allclose(ivy.to_numpy(container_stacked.b.c), np.array([[2], [5]]))
+#     assert np.allclose(ivy.to_numpy(container_stacked['b']['d']), np.array([[3], [6]]))
+#     assert np.allclose(ivy.to_numpy(container_stacked.b.d), np.array([[3], [6]]))
 
 
 def test_container_combine(dev, call):
