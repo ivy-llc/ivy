@@ -23,7 +23,7 @@ cholesky = tf.linalg.cholesky
 
 
 def inv(x: Tensor) -> Tensor:
-    return tf.linalg.solve(x, tf.eye(x.shape[-1], batch_shape=x.shape[:-2]))
+    return tf.linalg.inv(x)
 
 
 def tensordot(x1: Tensor, x2: Tensor,
