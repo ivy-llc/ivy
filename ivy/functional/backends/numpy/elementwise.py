@@ -74,6 +74,9 @@ def floor(x: np.ndarray)\
         -> np.ndarray:
     return np.asarray(npa.floor(npa.asarray(x)))
 
+def sign(x: np.ndarray)\
+        -> np.ndarray:
+    return np.sign(x)
 
 def sqrt(x: np.ndarray)\
         -> np.ndarray:

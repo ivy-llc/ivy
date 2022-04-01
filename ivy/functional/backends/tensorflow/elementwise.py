@@ -108,6 +108,11 @@ def asinh(x: Tensor) \
         -> Tensor:
     return tf.asinh(x)
 
+def sign(x: Tensor) \
+        -> Tensor:
+    if x.dtype in [tf.uint8, tf.uint16, tf.uint32, tf.uint64]:
+        return tf.cast(tf.math.sign(tf.cast(x, tf.float32)), x.dtype)
+    return tf.math.sign(x)
 
 def sqrt(x: Tensor)\
         -> Tensor:
