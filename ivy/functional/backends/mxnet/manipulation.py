@@ -32,11 +32,10 @@ def expand_dims(x: mx.ndarray.ndarray.NDArray,
     return mx.nd.expand_dims(x, axis)
 
 
-
-def stack(xs, axis=0):
-    if xs[0].shape == ():
-        return mx.nd.reshape(mx.nd.stack(*[_flat_array_to_1_dim_array(x) for x in xs], axis=axis), -1)
-    return mx.nd.stack(*xs, axis=axis)
+def stack(x: Union[Tuple[mx.ndarray.ndarray.NDArray], List[mx.ndarray.ndarray.NDArray]],
+          axis: Optional[int] = 0)\
+          -> mx.ndarray.ndarray.NDArray:
+    return mx.nd.stack(x, axis)
 
 
 def squeeze(x, axis=None):
@@ -123,9 +122,9 @@ def zero_pad(x, pad_width):
     return constant_pad(x, pad_width, 0)
 
 
+swapaxes = mx.nd.swapaxes
+
+
 @_handle_flat_arrays_in_out
 def clip(x, x_min, x_max):
     return mx.nd.clip(mx.nd.array(x), x_min, x_max)
-
-
-swapaxes = mx.nd.swapaxes
