@@ -1,8 +1,8 @@
 abs
-#acos # depends on: greater
+acos
 acosh
 add
-#asin # depends on: greater
+asin
 asinh
 atan
 atan2
