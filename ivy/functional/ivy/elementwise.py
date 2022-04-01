@@ -619,27 +619,6 @@ def cos(x: Union[ivy.Array, ivy.NativeArray])\
     return _cur_framework(x).cos(x)
 
 
-def logical_not(x: Union[ivy.Array, ivy.NativeArray])\
-        -> ivy.Array:
-    """
-    Computes the logical NOT for each element ``x_i`` of the input array ``x``.
-
-    .. note::
-       While this specification recommends that this function only accept input arrays having a boolean data type, specification-compliant array libraries may choose to accept input arrays having numeric data types. If non-boolean data types are supported, zeros must be considered the equivalent of ``False``, while non-zeros must be considered the equivalent of ``True``.
-
-    Parameters
-    ----------
-    x:
-        input array. Should have a boolean data type.
-
-    Returns
-    -------
-    out:
-        an array containing the element-wise results. The returned array must have a data type of ``bool``.
-    """
-    return _cur_framework(x).logical_not(x)
-
-
 def acos(x: Union[ivy.Array, ivy.NativeArray])\
         -> ivy.Array:
     """
@@ -665,6 +644,28 @@ def acos(x: Union[ivy.Array, ivy.NativeArray])\
         an array containing the inverse cosine of each element in x. The returned array must have a floating-point data type determined by :ref:`type-promotion`.
     """
     return _cur_framework(x).acos(x)
+
+
+def logical_not(x: Union[ivy.Array, ivy.NativeArray])\
+        -> ivy.Array:
+    """
+    Computes the logical NOT for each element ``x_i`` of the input array ``x``.
+
+    .. note::
+       While this specification recommends that this function only accept input arrays having a boolean data type, specification-compliant array libraries may choose to accept input arrays having numeric data types. If non-boolean data types are supported, zeros must be considered the equivalent of ``False``, while non-zeros must be considered the equivalent of ``True``.
+
+    Parameters
+    ----------
+    x:
+        input array. Should have a boolean data type.
+
+    Returns
+    -------
+    out:
+        an array containing the element-wise results. The returned array must have a data type of ``bool``.
+    """
+    return _cur_framework(x).logical_not(x)
+
 
 
 def logical_xor(x1: Union[ivy.Array, ivy.NativeArray], x2: Union[ivy.Array, ivy.NativeArray]) \
@@ -811,19 +812,6 @@ def not_equal(x1: Union[ivy.Array, ivy.NativeArray], x2: Union[ivy.Array, ivy.Na
         an array containing the element-wise results. The returned array must have a data type of ``bool``.
     """
     return _cur_framework(x1, x2).not_equal(x1, x2)
-
-
-def tanh(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
-    """
-    Calculates an implementation-dependent approximation to the hyperbolic tangent,
-    having domain [-infinity, +infinity] and codomain [-1, +1], for each element x_i of the input array x.
-
-    :param x: input array whose elements each represent a hyperbolic angle. Should have a floating-point
-            data type.
-    :return: an array containing the hyperbolic tangent of each element in x. The returned array must
-            have a floating-point data type
-    """
-    return _cur_framework(x).tanh(x)
 
 
 def floor_divide(x1: Union[ivy.Array, ivy.NativeArray],
@@ -1012,16 +1000,6 @@ def tan(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
     return _cur_framework(x).tan(x)
 
 
-def asin(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
-    """
-    Computes inverse sine element-wise.
-
-    :param x: y-coordinate on the unit circle.
-    :type x: array
-    :return: The inverse sine of each element in x, in radians and in the closed interval [-pi/2, pi/2].
-    """
-    return _cur_framework(x).asin(x)
-
 
 def atan(x: Union[ivy.Array, ivy.NativeArray]) \
         -> ivy.Array:
@@ -1137,15 +1115,7 @@ def log(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
     return _cur_framework(x).log(x)
 
 
-def exp(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
-    """
-    Computes exponential of x element-wise.
 
-    :param x: Value to compute exponential for.
-    :type x: array
-    :return: The exponential of each element of x.
-    """
-    return _cur_framework(x).exp(x)
 
 
 def subtract(x1: Union[ivy.Array, ivy.NativeArray],
