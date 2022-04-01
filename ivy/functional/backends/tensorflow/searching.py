@@ -29,3 +29,5 @@ def argmin(
     ret = tf.convert_to_tensor(ret,dtype=ret.dtype)
 
     return ret
+
+where = lambda condition, x1, x2: tf.where(tf.cast(condition, tf.bool), x1, x2)
