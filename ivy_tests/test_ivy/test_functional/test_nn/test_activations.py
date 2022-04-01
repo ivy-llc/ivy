@@ -29,6 +29,8 @@ def test_relu(x, dtype, tensor_fn, dev, call):
     assert ret.shape == x.shape
     # value test
     assert np.allclose(call(ivy.relu, x), ivy.functional.backends.numpy.relu(ivy.to_numpy(x)))
+    # docstring test
+    helpers.assert_docstring_examples_run(ivy.relu)
 
 
 # leaky_relu
