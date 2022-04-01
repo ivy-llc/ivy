@@ -5,4 +5,5 @@ permute_dims
 #reshape
 #roll
 squeeze
-#stack
+stack
+
