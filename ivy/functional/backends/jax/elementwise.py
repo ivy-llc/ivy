@@ -10,6 +10,9 @@ def bitwise_xor(x1: JaxArray,
         -> JaxArray:
     return jnp.bitwise_xor(x1, x2)
 
+def exp(x: JaxArray)\
+        -> JaxArray:
+    return jnp.exp(x)
 
 def expm1(x: JaxArray)\
         -> JaxArray:

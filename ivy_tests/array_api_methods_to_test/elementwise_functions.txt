@@ -18,7 +18,7 @@ cos
 cosh
 divide
 #equal # failing non-deterministically
-#exp
+exp
 expm1
 floor
 #floor_divide # failing non-deterministically
