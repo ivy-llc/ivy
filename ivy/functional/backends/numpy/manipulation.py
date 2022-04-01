@@ -53,7 +53,12 @@ def concatenate(xs, axis=-1):
     return np.concatenate(xs, axis)
 
 
-stack = np.stack
+def stack(x: Union[Tuple[np.ndarray], List[np.ndarray]],
+          axis: Optional[int] = 0)\
+          -> np.ndarray:
+    return np.stack(x, axis)
+
+
 reshape = np.reshape
 
 
