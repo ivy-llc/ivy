@@ -17,7 +17,6 @@ Data type
    data_type/finfo.rst
    data_type/broadcast_to.rst
    data_type/dtype.rst
-   data_type/cast.rst
    data_type/astype.rst
    data_type/dtype_bits.rst
    data_type/dtype_to_str.rst
