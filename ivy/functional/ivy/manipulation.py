@@ -86,20 +86,28 @@ def permute_dims(x: Union[ivy.Array, ivy.NativeArray],
     return _cur_framework(x).permute_dims(x, axes)
 
 
-def stack(xs: Iterable[Union[ivy.Array, ivy.NativeArray]], axis: int = 0)\
-        -> Union[ivy.Array, ivy.NativeArray]:
+def stack(arrays: Union[Tuple[ivy.Array], List[ivy.Array], Tuple[ivy.NativeArray], List[ivy.NativeArray]],
+          axis: int = 0) \
+          -> ivy.Array:
     """
     Joins a sequence of arrays along a new axis.
-    The axis parameter specifies the index of the new axis in the dimensions of the result.
-    For example, if axis: int = 0, it will be the first dimension and if axis: int = -1, it will be the last dimension.
 
-    :param xs: Input arrays, each array must have the same shape.
-    :type xs: sequence of arrays
-    :param axis: The axis in the result array along which the input arrays are stacked.
-    :type axis: int, optional
-    :return: The stacked array has one more dimension than the input arrays.
+    Parameters
+    ----------
+    arrays:
+        input arrays to join. Each array must have the same shape.
+    axis:
+        axis along which the arrays will be joined. Providing an ``axis`` specifies the index of the new axis in the dimensions of the result. For example, if ``axis`` is ``0``, the new axis will be the first dimension and the output array will have shape ``(N, A, B, C)``; if ``axis`` is ``1``, the new axis will be the second dimension and the output array will have shape ``(A, N, B, C)``; and, if ``axis`` is ``-1``, the new axis will be the last dimension and the output array will have shape ``(A, B, C, N)``. A valid ``axis`` must be on the interval ``[-N, N)``, where ``N`` is the rank (number of dimensions) of ``x``. If provided an ``axis`` outside of the required interval, the function must raise an exception. Default: ``0``.
+
+    Returns
+    --------
+    out:
+        an output array having rank ``N+1``, where ``N`` is the rank (number of dimensions) of ``x``. If the input arrays have different data types, normal :ref:`type-promotion` must apply. If the input arrays have the same data type, the output array must have the same data type as the input arrays.
+        .. note::
+           This specification leaves type promotion between data type families (i.e., ``intxx`` and ``floatxx``) unspecified.
     """
-    return _cur_framework(xs[0]).stack(xs, axis)
+
+    return _cur_framework(arrays).stack(arrays, axis)
 
 
 def reshape(x: Union[ivy.Array, ivy.NativeArray], newshape: Union[int, Iterable[int]])\
@@ -256,4 +264,3 @@ def clip(x: Union[ivy.Array, ivy.NativeArray], x_min: Union[Number, Union[ivy.Ar
                 and those > x_max with x_max.
     """
     return _cur_framework(x).clip(x, x_min, x_max)
-
