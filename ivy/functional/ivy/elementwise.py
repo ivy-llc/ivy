@@ -1104,20 +1104,6 @@ def atanh(x: Union[ivy.Array, ivy.NativeArray]) \
     return _cur_framework(x).atanh(x)
 
 
-def log(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
-    """
-    Computes natural logarithm of x element-wise.
-
-    :param x: Value to compute log for.
-    :type x: array
-    :return: The natural logarithm of each element of x.
-    """
-    return _cur_framework(x).log(x)
-
-
-
-
-
 def subtract(x1: Union[ivy.Array, ivy.NativeArray],
              x2: Union[ivy.Array, ivy.NativeArray])\
         -> ivy.Array:
