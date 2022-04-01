@@ -17,6 +17,9 @@ def bitwise_xor(x1: Tensor,
     x1, x2 = _cast_for_binary_op(x1, x2)
     return tf.bitwise.bitwise_xor(x1, x2)
 
+def exp(x: Tensor)\
+        -> Tensor:
+    return tf.math.exp(x)
 
 def expm1(x: Tensor)\
         -> Tensor:
