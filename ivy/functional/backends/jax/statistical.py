@@ -1,6 +1,7 @@
 # global
 import jax.numpy as jnp
 from typing import Tuple, Union, Optional , List
+from ivy.functional.backends.jax import JaxArray
 
 
 # Array API Standard #
@@ -33,7 +34,12 @@ def sum(x: jnp.ndarray,
     return jnp.sum(a=x, axis=axis, dtype=dtype, keepdims=keepdims)
 
 
-def mean(x, axis=None, keepdims=False):
+def mean(x: JaxArray,
+         /,
+         *,
+         axis: Optional[Union[int, Tuple[int, ...]]] = None,
+         keepdims: bool = False)\
+        -> JaxArray:
     if axis is None:
         num_dims = len(x.shape)
         axis = tuple(range(num_dims))
