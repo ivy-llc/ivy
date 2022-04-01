@@ -192,6 +192,16 @@ def assert_compilable(fn):
         raise e
 
 
+def assert_docstring_examples_run(fn):
+    fn_name = fn.__name__
+    docstring = ivy.framework_handler.ivy_original_dict[fn_name].__doc__
+    if docstring is None:
+        return True
+    executable_lines = [line.split('>>>')[1][1:] for line in docstring.split('\n') if '>>>' in line]
+    for line in executable_lines:
+        exec(line)
+
+
 def var_fn(a, b=None, c=None):
     return ivy.variable(ivy.array(a, b, c))
 
