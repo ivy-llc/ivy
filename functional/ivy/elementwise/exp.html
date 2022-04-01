@@ -124,8 +124,8 @@
 <li class="toctree-l2"><a class="reference internal" href="isnan.html">isnan</a></li>
 <li class="toctree-l2"><a class="reference internal" href="less.html">less</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cos.html">cos</a></li>
-<li class="toctree-l2"><a class="reference internal" href="acos.html">acos</a></li>
 <li class="toctree-l2"><a class="reference internal" href="logical_not.html">logical_not</a></li>
+<li class="toctree-l2"><a class="reference internal" href="acos.html">acos</a></li>
 <li class="toctree-l2"><a class="reference internal" href="logical_xor.html">logical_xor</a></li>
 <li class="toctree-l2"><a class="reference internal" href="logical_or.html">logical_or</a></li>
 <li class="toctree-l2"><a class="reference internal" href="logical_and.html">logical_and</a></li>
@@ -133,6 +133,7 @@
 <li class="toctree-l2"><a class="reference internal" href="sin.html">sin</a></li>
 <li class="toctree-l2"><a class="reference internal" href="negative.html">negative</a></li>
 <li class="toctree-l2"><a class="reference internal" href="not_equal.html">not_equal</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tanh.html">tanh</a></li>
 <li class="toctree-l2"><a class="reference internal" href="floor_divide.html">floor_divide</a></li>
 <li class="toctree-l2"><a class="reference internal" href="bitwise_or.html">bitwise_or</a></li>
 <li class="toctree-l2"><a class="reference internal" href="sinh.html">sinh</a></li>
@@ -143,12 +144,14 @@
 <li class="toctree-l2"><a class="reference internal" href="trunc.html">trunc</a></li>
 <li class="toctree-l2"><a class="reference internal" href="abs.html">abs</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tan.html">tan</a></li>
+<li class="toctree-l2"><a class="reference internal" href="asin.html">asin</a></li>
 <li class="toctree-l2"><a class="reference internal" href="atan.html">atan</a></li>
 <li class="toctree-l2"><a class="reference internal" href="atan2.html">atan2</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cosh.html">cosh</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tanh.html">tanh</a></li>
 <li class="toctree-l2"><a class="reference internal" href="atanh.html">atanh</a></li>
 <li class="toctree-l2"><a class="reference internal" href="log.html">log</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">exp</a></li>
 <li class="toctree-l2"><a class="reference internal" href="subtract.html">subtract</a></li>
 <li class="toctree-l2"><a class="reference internal" href="divide.html">divide</a></li>
 <li class="toctree-l2"><a class="reference internal" href="remainder.html">remainder</a></li>
@@ -271,22 +274,13 @@
 <dl class="py function">
 <dt id="ivy.functional.ivy.elementwise.exp">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">exp</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../../_modules/ivy/functional/ivy/elementwise.html#exp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.elementwise.exp" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculates an implementation-dependent approximation to the exponential function, having domain <code class="docutils literal notranslate"><span class="pre">[-infinity,</span> <span class="pre">+infinity]</span></code> and codomain <code class="docutils literal notranslate"><span class="pre">[+0,</span> <span class="pre">+infinity]</span></code>, for each element <code class="docutils literal notranslate"><span class="pre">x_i</span></code> of the input array <code class="docutils literal notranslate"><span class="pre">x</span></code> (<code class="docutils literal notranslate"><span class="pre">e</span></code> raised to the power of <code class="docutils literal notranslate"><span class="pre">x_i</span></code>, where <code class="docutils literal notranslate"><span class="pre">e</span></code> is the base of the natural logarithm).
-<strong>Special cases</strong>
-For floating-point operands,
-- If <code class="docutils literal notranslate"><span class="pre">x_i</span></code> is <code class="docutils literal notranslate"><span class="pre">NaN</span></code>, the result is <code class="docutils literal notranslate"><span class="pre">NaN</span></code>.
-- If <code class="docutils literal notranslate"><span class="pre">x_i</span></code> is <code class="docutils literal notranslate"><span class="pre">+0</span></code>, the result is <code class="docutils literal notranslate"><span class="pre">1</span></code>.
-- If <code class="docutils literal notranslate"><span class="pre">x_i</span></code> is <code class="docutils literal notranslate"><span class="pre">-0</span></code>, the result is <code class="docutils literal notranslate"><span class="pre">1</span></code>.
-- If <code class="docutils literal notranslate"><span class="pre">x_i</span></code> is <code class="docutils literal notranslate"><span class="pre">+infinity</span></code>, the result is <code class="docutils literal notranslate"><span class="pre">+infinity</span></code>.
-- If <code class="docutils literal notranslate"><span class="pre">x_i</span></code> is <code class="docutils literal notranslate"><span class="pre">-infinity</span></code>, the result is <code class="docutils literal notranslate"><span class="pre">+0</span></code>.
-Parameters
-———-
-x: array</p>
-<blockquote>
-<div><p>input array. Should have a floating-point data type.</p>
-</div></blockquote>
-<dl class="simple">
-<dt>out: array</dt><dd><p>an array containing the evaluated exponential function result for each element in <code class="docutils literal notranslate"><span class="pre">x</span></code>. The returned array must have a floating-point data type determined by <span class="xref std std-ref">type-promotion</span>.</p>
+<dd><p>Computes exponential of x element-wise.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>x</strong> (<em>array</em>) – Value to compute exponential for.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The exponential of each element of x.</p>
 </dd>
 </dl>
 </dd></dl>
