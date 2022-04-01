@@ -43,12 +43,12 @@ def matrix_rank(vector: torch.Tensor,
 
 
 def vector_norm(x: torch.Tensor,
-                p: Union[int, float, Literal[inf, - inf]] = 2,
                 axis: Optional[Union[int, Tuple[int]]] = None,
-                keepdims: bool = False)\
+                keepdims: bool = False,
+                ord: Union[int, float, Literal[inf, - inf]] = 2)\
         -> torch.Tensor:
 
-    py_normalized_vector = torch.linalg.vector_norm(x, p, axis, keepdims)
+    py_normalized_vector = torch.linalg.vector_norm(x, ord, axis, keepdims)
 
     if py_normalized_vector.shape == ():
         return torch.unsqueeze(py_normalized_vector, 0)
