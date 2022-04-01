@@ -193,7 +193,7 @@ def clip_vector_norm(x: Union[ivy.Array, ivy.NativeArray], max_norm: float, p: f
     :type p: float, optional
     :return: An array with the vector norm downscaled to the max norm if needed.
     """
-    norm = ivy.vector_norm(x, p, keepdims=True)
+    norm = ivy.vector_norm(x, keepdims=True, ord=p)
     ratio = ivy.stable_divide(max_norm, norm)
     if ratio < 1:
         return ratio * x
