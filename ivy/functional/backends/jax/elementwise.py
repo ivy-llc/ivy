@@ -5,6 +5,14 @@ import jax.numpy as jnp
 # local
 from ivy.functional.backends.jax import JaxArray
 
+def bitwise_xor(x1: JaxArray,
+                x2: JaxArray)\
+        -> JaxArray:
+    return jnp.bitwise_xor(x1, x2)
+
+def exp(x: JaxArray)\
+        -> JaxArray:
+    return jnp.exp(x)
 
 def expm1(x: JaxArray)\
         -> JaxArray:
@@ -53,7 +61,12 @@ def isinf(x: JaxArray)\
 
 def equal(x1: JaxArray, x2: JaxArray)\
         -> JaxArray:
-    return jnp.equal(x1,x2)
+    return jnp.equal(x1, x2)
+
+
+def greater(x1: JaxArray, x2: JaxArray) \
+        -> JaxArray:
+    return jnp.greater(x1, x2)
 
 
 def greater_equal(x1: JaxArray, x2: JaxArray)\
@@ -139,6 +152,12 @@ def logical_and(x1: JaxArray, x2: JaxArray)\
 def logical_not(x: JaxArray)\
         -> JaxArray:
     return jnp.logical_not(x)
+  
+  
+def divide(x1: JaxArray,
+           x2: JaxArray)\
+        -> JaxArray:
+    return jnp.divide(x1, x2)  
 
 
 def acos(x: JaxArray)\
@@ -170,6 +189,11 @@ def tanh(x: JaxArray)\
     return jnp.tanh(x)
 
 
+def floor_divide(x1: JaxArray, x2: JaxArray)\
+                -> JaxArray:
+    return jnp.floor_divide(x1, x2)
+
+
 def bitwise_or(x1: JaxArray, x2: JaxArray) -> JaxArray:
     return jnp.bitwise_or(x1, x2)
 
@@ -183,7 +207,7 @@ def positive(x: JaxArray)\
         -> JaxArray:
     return jnp.positive(x)
 
-
+  
 def square(x: JaxArray)\
         -> JaxArray:
     return jnp.square(x)
@@ -203,6 +227,13 @@ def round(x: JaxArray)\
     return jnp.round(x)
 
 
+def trunc(x: JaxArray)\
+        -> JaxArray:
+    if 'int' in str(x.dtype):
+        return x
+    return jnp.trunc(x)
+
+  
 def abs(x: JaxArray)\
         -> JaxArray:
     return jnp.absolute(x)
@@ -234,6 +265,16 @@ def atan(x: JaxArray)\
     return jnp.arctan(x)
 
 
+
+def atanh(x: JaxArray)\
+        -> JaxArray:
+    return jnp.arctanh(x)
+
+
+
+
+
+
 def atan2(x1: JaxArray, x2: JaxArray) -> JaxArray:
     if hasattr(x1, 'dtype') and hasattr(x2, 'dtype'):
         promoted_type = jnp.promote_types(x1.dtype, x2.dtype)
@@ -242,13 +283,14 @@ def atan2(x1: JaxArray, x2: JaxArray) -> JaxArray:
     return jnp.arctan2(x1, x2)
 
 
+
 cosh = jnp.cosh
-atanh = jnp.arctanh
 log = jnp.log
 exp = jnp.exp
 
 # Extra #
 # ------#
 
-
+minimum = jnp.minimum
+maximum = jnp.maximum
 erf = jax.scipy.special.erf

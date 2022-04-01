@@ -205,23 +205,6 @@ def test_asinh(x, dtype, tensor_fn, dev, call):
     assert np.allclose(call(ivy.asinh, x), ivy.functional.backends.numpy.asinh(ivy.to_numpy(x)))
 
 
-# acosh
-# @pytest.mark.parametrize(
-#     "x", [[[1, 1.2, 200, 10000]]])
-# @pytest.mark.parametrize(
-#     "dtype", ['float32'])
-# @pytest.mark.parametrize(
-#     "tensor_fn", [ivy.array, helpers.var_fn])
-# def test_acosh(x, dtype, tensor_fn, dev, call):
-#     # smoke test
-#     x = tensor_fn(x, dtype, dev)
-#     ret = ivy.acosh(x)
-#     # type test
-#     assert ivy.is_array(ret)
-#     # cardinality test
-#     assert ret.shape == x.shape
-#     # value test
-#     assert np.allclose(call(ivy.acosh, x), ivy.functional.backends.numpy.acosh(ivy.to_numpy(x)))
 
 
 # atanh

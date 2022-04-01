@@ -18,3 +18,10 @@ def unique_inverse(x: Tensor) \
 def unique_values(x: Tensor) \
         -> Tensor:
     return tf.unique(tf.reshape(x, [-1]))[0]
+
+
+def unique_counts(x: Tensor) \
+        -> Tuple[Tensor, Tensor]:
+    uc = namedtuple('uc', ['values', 'counts'])
+    v, _, c = tf.unique_with_counts(tf.reshape(x, [-1]))
+    return uc(v, c)
