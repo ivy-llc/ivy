@@ -48,7 +48,6 @@ Elementwise
    elementwise/sin.rst
    elementwise/negative.rst
    elementwise/not_equal.rst
-   elementwise/tanh.rst
    elementwise/floor_divide.rst
    elementwise/bitwise_or.rst
    elementwise/sinh.rst
@@ -59,7 +58,6 @@ Elementwise
    elementwise/trunc.rst
    elementwise/abs.rst
    elementwise/tan.rst
-   elementwise/asin.rst
    elementwise/atan.rst
    elementwise/atan2.rst
    elementwise/cosh.rst
