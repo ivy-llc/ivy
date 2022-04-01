@@ -200,6 +200,7 @@ def assert_docstring_examples_run(fn):
     executable_lines = [line.split('>>>')[1][1:] for line in docstring.split('\n') if '>>>' in line]
     for line in executable_lines:
         exec(line)
+    return True
 
 
 def var_fn(a, b=None, c=None):
