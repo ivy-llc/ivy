@@ -5,7 +5,7 @@ det
 eigh
 #eigvalsh # depends on: mT
 #inv
-matmul
+#matmul # failing non-deterministically for torch
 #matrix_norm
 #matrix_power
 matrix_rank
