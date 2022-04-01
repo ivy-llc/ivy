@@ -1,6 +1,3 @@
-from . import old
-from .old import *
-
 from . import activations
 from .activations import *
 from . import compilation

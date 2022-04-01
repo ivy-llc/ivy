@@ -1,7 +1,7 @@
 # global
 import jax
 import jax.numpy as jnp
-from typing import Union, Optional, Tuple, Literal
+from typing import Union, Optional, Tuple, Literal, List
 from collections import namedtuple
 
 # local
@@ -13,7 +13,11 @@ import ivy
 # Array API Standard #
 # -------------------#
 
-inv = jnp.linalg.inv
+def eigh(x: JaxArray)\
+  ->JaxArray:
+         return jnp.linalg.eigh(x)
+
+
 pinv = jnp.linalg.pinv
 cholesky = jnp.linalg.cholesky
 
@@ -102,6 +106,12 @@ def slogdet(x:Union[ivy.Array,ivy.NativeArray],full_matrices: bool = True) -> Un
     res = results(sign, logabsdet)
     return res
 
+def tensordot(x1: JaxArray, x2: JaxArray,
+              axes: Union[int, Tuple[List[int], List[int]]] = 2) \
+        -> JaxArray:
+
+    return jnp.tensordot(x1, x2, axes)
+
 
 def trace(x: JaxArray,
           offset: int = 0)\
@@ -129,6 +139,24 @@ def eigvalsh(x: JaxArray) -> JaxArray:
 
 def inv(x: JaxArray) -> JaxArray:
     return jnp.linalg.inv(x)
+
+
+def matrix_rank(vector: JaxArray,
+                rtol: Optional[Union[float, Tuple[float]]] = None) \
+        -> JaxArray:
+        if vector.size == 0:
+            return 0
+        if vector.size == 1:
+            return jnp.count_nonzero(vector)
+        if vector.ndim >2:
+            vector = vector.reshape([-1])
+        return jnp.linalg.matrix_rank(vector, rtol)
+
+
+def cross (x1: JaxArray,
+           x2: JaxArray,
+           axis:int = -1) -> JaxArray:
+    return jnp.cross(a= x1, b = x2, axis= axis)
 
 
 # Extra #

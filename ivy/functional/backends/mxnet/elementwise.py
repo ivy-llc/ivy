@@ -3,7 +3,14 @@ import mxnet as mx
 import math
 
 # local
-from ivy.functional.backends.mxnet import _handle_flat_arrays_in_out
+from ivy.functional.backends.mxnet import _handle_flat_arrays_in_out, _scalar_or_flat_array_to_scalar
+
+
+@_handle_flat_arrays_in_out
+def add(x1: mx.ndarray.ndarray.NDArray,
+        x2: mx.ndarray.ndarray.NDArray)\
+        -> mx.ndarray.ndarray.NDArray:
+    return mx.nd.add(x1, x2)
 
 
 def bitwise_and(x1: mx.ndarray.ndarray.NDArray, x2: mx.ndarray.ndarray.NDArray) -> mx.nd.ndarray.NDArray:
@@ -20,6 +27,20 @@ def ceil(x: mx.ndarray.ndarray.NDArray)\
 def floor(x: mx.ndarray.ndarray.NDArray)\
         -> mx.ndarray.ndarray.NDArray:
     return mx.nd.floor(x)
+
+
+@_handle_flat_arrays_in_out
+def divide(x1: mx.ndarray.ndarray.NDArray,
+           x2: mx.ndarray.ndarray.NDArray)\
+        -> mx.ndarray.ndarray.NDArray:
+    return mx.nd.divide(x1, x2)
+
+
+@_handle_flat_arrays_in_out
+def greater(x1: mx.ndarray.ndarray.NDArray,
+            x2: mx.ndarray.ndarray.NDArray)\
+        -> mx.ndarray.ndarray.NDArray:
+    return mx.nd.greater(x1, x2)
 
 
 @_handle_flat_arrays_in_out
@@ -83,7 +104,7 @@ def acos(x: mx.ndarray.ndarray.NDArray)\
         mx.nd.arccos(x)
 
 
-@_handle_flat_arrays_in_out        
+@_handle_flat_arrays_in_out
 def logical_and(x1: mx.ndarray.ndarray.NDArray,
                 x2: mx.ndarray.ndarray.NDArray,
                 dtype: ['bool'])\
@@ -163,9 +184,21 @@ def round(x: mx.ndarray.ndarray.NDArray)\
 
 
 @_handle_flat_arrays_in_out
+def trunc(x: mx.ndarray.ndarray.NDArray)\
+        -> mx.nd.ndarray.NDArray:
+    return mx.np.trunc(x)
+
+  
+@_handle_flat_arrays_in_out  
 def subtract(x1: mx.ndarray.ndarray.NDArray, x2: mx.ndarray.ndarray.NDArray)\
         -> mx.ndarray.ndarray.NDArray:
     return mx.nd.subtract(x1, x2)
+
+
+# noinspection PyShadowingBuiltins
+@_handle_flat_arrays_in_out
+def abs(x):
+    return mx.nd.abs(x)
 
 
 cos = lambda x: math.cos(x) if isinstance(x, float) else mx.nd.cos(x)
@@ -185,4 +218,6 @@ equal.__name__ = 'equal'
 # ------#
 
 
+minimum = lambda x, y: mx.nd.array(mx.nd.minimum(_scalar_or_flat_array_to_scalar(x), _scalar_or_flat_array_to_scalar(y)))
+maximum = lambda x, y: mx.nd.array(mx.nd.maximum(_scalar_or_flat_array_to_scalar(x), _scalar_or_flat_array_to_scalar(y)))
 erf = lambda x: math.erf(x) if isinstance(x, float) else mx.nd.erf(x)

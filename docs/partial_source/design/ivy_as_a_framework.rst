@@ -7,13 +7,13 @@ On the :ref:`Ivy as a Transpiler` page, we explained the role of the framework-s
 
 So far, by considering parts (a) and (b), we have mainly treated Ivy as a fully functional framework with code conversion abilities. Ivy builds on these primitives to create a fully-fledged ML framework with stateful classes, optimizers and convenience tools to get ML experiments running in very few lines of code.
 
-Specifically, here we consider the *ivy.Container* class, the *ivy.Array* class and the stateful API. These parts are labelled as (c) in the image below.
+Specifically, here we consider the :code:`ivy.Container` class, the :code:`ivy.Array` class and the stateful API. These parts are labelled as (c) in the image below.
 
 .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/submodule_dependency_graph.png?raw=true
    :align: center
    :width: 100%
 
-Some tools described in these posts are works in progress, as indicated by the the construction signs 🚧. This is in keeping with the rest of the documentation.
+Some tools described here are works in progress, as indicated by the the construction signs 🚧. This is in keeping with the rest of the documentation.
 
 | (a) :ref:`Ivy Container` ✅
 | Hierarchical container solving almost everything behind the scenes in Ivy

@@ -480,35 +480,35 @@ def test_clip(x_min_n_max, dtype, tensor_fn, dev, call):
 
 
 # clip_vector_norm
-# @pytest.mark.parametrize(
-#     "x_max_norm_n_p_val_clipped",
-#     [(-0.5, 0.4, 2., -0.4), ([1.7], 1.5, 3., [1.5]),
-#      ([[0.8, 2.2], [1.5, 0.2]], 4., 1., [[0.6808511, 1.8723406], [1.2765958, 0.17021278]]),
-#      ([[0.8, 2.2], [1.5, 0.2]], 2.5, 2., [[0.71749604, 1.9731141], [1.345305, 0.17937401]])])
-# @pytest.mark.parametrize(
-#     "dtype", ['float32'])
-# @pytest.mark.parametrize(
-#     "tensor_fn", [ivy.array, helpers.var_fn])
-# def test_clip_vector_norm(x_max_norm_n_p_val_clipped, dtype, tensor_fn, dev, call):
-#     # smoke test
-#     if call is helpers.mx_call:
-#         # mxnet does not support 0-dimensional variables
-#         pytest.skip()
-#     x = tensor_fn(x_max_norm_n_p_val_clipped[0], dtype, dev)
-#     max_norm = x_max_norm_n_p_val_clipped[1]
-#     p_val = x_max_norm_n_p_val_clipped[2]
-#     clipped = x_max_norm_n_p_val_clipped[3]
-#     ret = ivy.clip_vector_norm(x, max_norm, p_val)
-#     # type test
-#     assert ivy.is_array(ret)
-#     # cardinality test
-#     assert ret.shape == (x.shape if len(x.shape) else (1,))
-#     # value test
-#     assert np.allclose(call(ivy.clip_vector_norm, x, max_norm, p_val), np.array(clipped))
-#     # compilation test
-#     if call is helpers.torch_call:
-#         # pytorch jit cannot compile global variables, in this case MIN_DENOMINATOR
-#         return
+@pytest.mark.parametrize(
+    "x_max_norm_n_p_val_clipped",
+    [(-0.5, 0.4, 2., -0.4), ([1.7], 1.5, 3., [1.5]),
+     ([[0.8, 2.2], [1.5, 0.2]], 4., 1., [[0.6808511, 1.8723406], [1.2765958, 0.17021278]]),
+     ([[0.8, 2.2], [1.5, 0.2]], 2.5, 2., [[0.71749604, 1.9731141], [1.345305, 0.17937401]])])
+@pytest.mark.parametrize(
+    "dtype", ['float32'])
+@pytest.mark.parametrize(
+    "tensor_fn", [ivy.array, helpers.var_fn])
+def test_clip_vector_norm(x_max_norm_n_p_val_clipped, dtype, tensor_fn, dev, call):
+    # smoke test
+    if call is helpers.mx_call:
+        # mxnet does not support 0-dimensional variables
+        pytest.skip()
+    x = tensor_fn(x_max_norm_n_p_val_clipped[0], dtype, dev)
+    max_norm = x_max_norm_n_p_val_clipped[1]
+    p_val = x_max_norm_n_p_val_clipped[2]
+    clipped = x_max_norm_n_p_val_clipped[3]
+    ret = ivy.clip_vector_norm(x, max_norm, p_val)
+    # type test
+    assert ivy.is_array(ret)
+    # cardinality test
+    assert ret.shape == (x.shape if len(x.shape) else (1,))
+    # value test
+    assert np.allclose(call(ivy.clip_vector_norm, x, max_norm, p_val), np.array(clipped))
+    # compilation test
+    if call is helpers.torch_call:
+        # pytorch jit cannot compile global variables, in this case MIN_DENOMINATOR
+        return
 
 
 # round
@@ -723,37 +723,6 @@ def test_logspace(start_n_stop_n_num_n_base_n_axis, dtype, tensor_fn, dev, call)
     # value test
     assert np.allclose(call(ivy.logspace, start, stop, num, base, axis, dev=dev),
                        ivy.functional.backends.numpy.logspace(ivy.to_numpy(start), ivy.to_numpy(stop), num, base, axis))
-
-
-# concatenate
-@pytest.mark.parametrize(
-    "x1_n_x2_n_axis", [(1, 10, 0), ([[0., 1., 2.]], [[1., 2., 3.]], 0), ([[0., 1., 2.]], [[1., 2., 3.]], 1),
-                       ([[[-0.1471, 0.4477, 0.2214]]], [[[-0.3048, 0.3308, 0.2721]]], -1)])
-@pytest.mark.parametrize(
-    "dtype", ['float32'])
-@pytest.mark.parametrize(
-    "tensor_fn", [ivy.array, helpers.var_fn])
-def test_concatenate(x1_n_x2_n_axis, dtype, tensor_fn, dev, call):
-    # smoke test
-    x1, x2, axis = x1_n_x2_n_axis
-    if (isinstance(x1, Number) or isinstance(x2, Number)) and tensor_fn == helpers.var_fn and call is helpers.mx_call:
-        # mxnet does not support 0-dimensional variables
-        pytest.skip()
-    x1 = tensor_fn(x1, dtype, dev)
-    x2 = tensor_fn(x2, dtype, dev)
-    ret = ivy.concatenate((x1, x2), axis)
-    # type test
-    assert ivy.is_array(ret)
-    # cardinality test
-    axis_val = (axis % len(x1.shape) if (axis is not None and len(x1.shape) != 0) else len(x1.shape) - 1)
-    if x1.shape == ():
-        expected_shape = (2,)
-    else:
-        expected_shape = tuple([item * 2 if i == axis_val else item for i, item in enumerate(x1.shape)])
-    assert ret.shape == expected_shape
-    # value test
-    assert np.allclose(call(ivy.concatenate, [x1, x2], axis),
-                       np.asarray(ivy.functional.backends.numpy.concatenate([ivy.to_numpy(x1), ivy.to_numpy(x2)], axis)))
 
 
 # flip
@@ -1082,32 +1051,6 @@ def test_expand_dims(x_n_axis, dtype, tensor_fn, dev, call):
     assert np.allclose(call(ivy.expand_dims, x, axis), np.asarray(ivy.functional.backends.numpy.expand_dims(ivy.to_numpy(x), axis)))
 
 
-# where
-@pytest.mark.parametrize(
-    "cond_n_x1_n_x2", [(True, 2., 3.), (0., 2., 3.), ([True], [2.], [3.]), ([[0.]], [[2., 3.]], [[4., 5.]])])
-@pytest.mark.parametrize(
-    "dtype", ['float32'])
-@pytest.mark.parametrize(
-    "tensor_fn", [ivy.array, helpers.var_fn])
-def test_where(cond_n_x1_n_x2, dtype, tensor_fn, dev, call):
-    # smoke test
-    cond, x1, x2 = cond_n_x1_n_x2
-    if (isinstance(cond, Number) or isinstance(x1, Number) or isinstance(x2, Number))\
-            and tensor_fn == helpers.var_fn and call is helpers.mx_call:
-        # mxnet does not support 0-dimensional variables
-        pytest.skip()
-    cond = tensor_fn(cond, dtype, dev)
-    x1 = tensor_fn(x1, dtype, dev)
-    x2 = tensor_fn(x2, dtype, dev)
-    ret = ivy.where(cond, x1, x2)
-    # type test
-    assert ivy.is_array(ret)
-    # cardinality test
-    assert ret.shape == x1.shape
-    # value test
-    assert np.allclose(call(ivy.where, cond, x1, x2),
-                       np.asarray(ivy.functional.backends.numpy.where(ivy.to_numpy(cond), ivy.to_numpy(x1), ivy.to_numpy(x2))))
-
 
 # indices_where
 @pytest.mark.parametrize(
@@ -1207,82 +1150,6 @@ def test_isfinite(x_n_res, dtype, tensor_fn, dev, call):
     assert np.allclose(call(ivy.isfinite, x), res)
 
 
-# reshape
-@pytest.mark.parametrize(
-    "x_n_shp", [(1., (1, 1)), (1., 1), (1., []), ([[1.]], []), ([[0., 1.], [2., 3.]], (1, 4, 1))])
-@pytest.mark.parametrize(
-    "dtype", ['float32'])
-@pytest.mark.parametrize(
-    "tensor_fn", [ivy.array, helpers.var_fn])
-def test_reshape(x_n_shp, dtype, tensor_fn, dev, call):
-    # smoke test
-    x, new_shape = x_n_shp
-    if isinstance(x, Number) and tensor_fn == helpers.var_fn and call is helpers.mx_call:
-        # mxnet does not support 0-dimensional variables
-        pytest.skip()
-    x = tensor_fn(x, dtype, dev)
-    ret = ivy.reshape(x, new_shape)
-    # type test
-    assert ivy.is_array(ret)
-    # cardinality test
-    assert ret.shape == ((new_shape,) if isinstance(new_shape, int) else tuple(new_shape))
-    # value test
-    assert np.allclose(call(ivy.reshape, x, new_shape), np.asarray(ivy.functional.backends.numpy.reshape(ivy.to_numpy(x), new_shape)))
-
-
-# broadcast_to
-@pytest.mark.parametrize(
-    "x_n_shp", [([1.], (2, 1)), ([[0., 1.], [2., 3.]], (10, 2, 2))])
-@pytest.mark.parametrize(
-    "dtype", ['float32'])
-@pytest.mark.parametrize(
-    "tensor_fn", [ivy.array, helpers.var_fn])
-def test_broadcast_to(x_n_shp, dtype, tensor_fn, dev, call):
-    # smoke test
-    x, new_shape = x_n_shp
-    if isinstance(x, Number) and tensor_fn == helpers.var_fn and call is helpers.mx_call:
-        # mxnet does not support 0-dimensional variables
-        pytest.skip()
-    x = tensor_fn(x, dtype, dev)
-    ret = ivy.broadcast_to(x, new_shape)
-    # type test
-    assert ivy.is_array(ret)
-    # cardinality test
-    assert len(ret.shape) == len(new_shape)
-    # value test
-    assert np.allclose(call(ivy.broadcast_to, x, new_shape),
-                       np.asarray(ivy.functional.backends.numpy.broadcast_to(ivy.to_numpy(x), new_shape)))
-
-
-# squeeze
-# @pytest.mark.parametrize(
-#     "x_n_axis", [(1., 0), (1., -1), ([[1.]], None), ([[[0.], [1.]], [[2.], [3.]]], -1)])
-# @pytest.mark.parametrize(
-#     "dtype", ['float32'])
-# @pytest.mark.parametrize(
-#     "tensor_fn", [ivy.array, helpers.var_fn])
-# def test_squeeze(x_n_axis, dtype, tensor_fn, dev, call):
-#     # smoke test
-#     x, axis = x_n_axis
-#     if isinstance(x, Number) and tensor_fn == helpers.var_fn and call is helpers.mx_call:
-#         # mxnet does not support 0-dimensional variables
-#         pytest.skip()
-#     x = tensor_fn(x, dtype, dev)
-#     ret = ivy.squeeze(x, axis)
-#     # type test
-#     assert ivy.is_array(ret)
-#     # cardinality test
-#     if axis is None:
-#         expected_shape = [item for item in x.shape if item != 1]
-#     elif x.shape == ():
-#         expected_shape = []
-#     else:
-#         expected_shape = list(x.shape)
-#         expected_shape.pop(axis)
-#     assert ret.shape == tuple(expected_shape)
-#     # value test
-#     assert np.allclose(call(ivy.squeeze, x, axis), np.asarray(ivy.functional.backends.numpy.squeeze(ivy.to_numpy(x), axis)))
-
 
 # zeros
 # @pytest.mark.parametrize(
@@ -1302,45 +1169,7 @@ def test_broadcast_to(x_n_shp, dtype, tensor_fn, dev, call):
 #     assert np.allclose(call(ivy.zeros, shape, dtype, dev), np.asarray(ivy.functional.backends.numpy.zeros(shape, dtype)))
 
 
-# zeros_like
-@pytest.mark.parametrize(
-    "x", [1, [1], [[1], [2], [3]]])
-@pytest.mark.parametrize(
-    "dtype", ['float32'])
-@pytest.mark.parametrize(
-    "tensor_fn", [ivy.array, helpers.var_fn])
-def test_zeros_like(x, dtype, tensor_fn, dev, call):
-    # smoke test
-    if isinstance(x, Number) and tensor_fn == helpers.var_fn and call is helpers.mx_call:
-        # mxnet does not support 0-dimensional variables
-        pytest.skip()
-    x = tensor_fn(x, dtype, dev)
-    ret = ivy.zeros_like(x, dtype, dev)
-    # type test
-    assert ivy.is_array(ret)
-    # cardinality test
-    assert ret.shape == x.shape
-    # value test
-    assert np.allclose(call(ivy.zeros_like, x, dtype, dev),
-                       np.asarray(ivy.functional.backends.numpy.zeros_like(ivy.to_numpy(x), dtype)))
 
-
-# ones
-# @pytest.mark.parametrize(
-#     "shape", [(), (1, 2, 3), tuple([1]*10)])
-# @pytest.mark.parametrize(
-#     "dtype", ['float32'])
-# @pytest.mark.parametrize(
-#     "tensor_fn", [ivy.array, helpers.var_fn])
-# def test_ones(shape, dtype, tensor_fn, dev, call):
-#     # smoke test
-#     ret = ivy.ones(shape, dtype, dev)
-#     # type test
-#     assert ivy.is_array(ret)
-#     # cardinality test
-#     assert ret.shape == tuple(shape)
-#     # value test
-#     assert np.allclose(call(ivy.ones, shape, dtype, dev), np.asarray(ivy.functional.backends.numpy.ones(shape, dtype)))
 
 
 # ones_like
@@ -1365,26 +1194,6 @@ def test_zeros_like(x, dtype, tensor_fn, dev, call):
 #     assert np.allclose(call(ivy.ones_like, x, dtype, dev),
 #                        np.asarray(ivy.functional.backends.numpy.ones_like(ivy.to_numpy(x), dtype)))
 
-
-# full
-# @pytest.mark.parametrize(
-#     "shape", [(), (1, 2, 3), tuple([1]*10)])
-# @pytest.mark.parametrize(
-#     "fill_val", [2., -7.])
-# @pytest.mark.parametrize(
-#     "dtype", ['float32'])
-# @pytest.mark.parametrize(
-#     "tensor_fn", [ivy.array, helpers.var_fn])
-# def test_full(shape, fill_val, dtype, tensor_fn, dev, call):
-#     # smoke test
-#     ret = ivy.full(shape, fill_val, dtype, dev)
-#     # type test
-#     assert ivy.is_array(ret)
-#     # cardinality test
-#     assert ret.shape == tuple(shape)
-#     # value test
-#     assert np.allclose(call(ivy.full, shape, fill_val, dtype, dev),
-#                        np.asarray(ivy.functional.backends.numpy.full(shape, fill_val, dtype)))
 
 
 # one_hot
@@ -1411,52 +1220,6 @@ def test_one_hot(ind_n_depth, dtype, tensor_fn, dev, call):
                        np.asarray(ivy.functional.backends.numpy.one_hot(ivy.to_numpy(ind), depth)))
 
 
-# cross
-@pytest.mark.parametrize(
-    "x1_n_x2", [([0., 1., 2.], [3., 4., 5.]), ([[0., 1., 2.], [2., 1., 0.]], [[3., 4., 5.], [5., 4., 3.]])])
-@pytest.mark.parametrize(
-    "dtype", ['float32'])
-@pytest.mark.parametrize(
-    "tensor_fn", [ivy.array, helpers.var_fn])
-def test_cross(x1_n_x2, dtype, tensor_fn, dev, call):
-    # smoke test
-    x1, x2 = x1_n_x2
-    if (isinstance(x1, Number) or isinstance(x2, Number)) and tensor_fn == helpers.var_fn and call is helpers.mx_call:
-        # mxnet does not support 0-dimensional variables
-        pytest.skip()
-    x1 = ivy.array(x1, dtype, dev)
-    x2 = ivy.array(x2, dtype, dev)
-    ret = ivy.cross(x1, x2)
-    # type test
-    assert ivy.is_array(ret)
-    # cardinality test
-    assert ret.shape == x1.shape
-    # value test
-    assert np.allclose(call(ivy.cross, x1, x2), np.asarray(ivy.functional.backends.numpy.cross(ivy.to_numpy(x1), ivy.to_numpy(x2))))
-
-
-# matmul
-@pytest.mark.parametrize(
-    "x1_n_x2", [([[0., 1., 2.]], [[3.], [4.], [5.]]), ([[0., 1., 2.], [2., 1., 0.]], [[3., 4.], [5., 5.], [4., 3.]])])
-@pytest.mark.parametrize(
-    "dtype", ['float32'])
-@pytest.mark.parametrize(
-    "tensor_fn", [ivy.array, helpers.var_fn])
-def test_matmul(x1_n_x2, dtype, tensor_fn, dev, call):
-    # smoke test
-    x1, x2 = x1_n_x2
-    if (isinstance(x1, Number) or isinstance(x2, Number)) and tensor_fn == helpers.var_fn and call is helpers.mx_call:
-        # mxnet does not support 0-dimensional variables
-        pytest.skip()
-    x1 = ivy.array(x1, dtype, dev)
-    x2 = ivy.array(x2, dtype, dev)
-    ret = ivy.matmul(x1, x2)
-    # type test
-    assert ivy.is_array(ret)
-    # cardinality test
-    assert ret.shape == x1.shape[:-1] + (x2.shape[-1],)
-    # value test
-    assert np.allclose(call(ivy.matmul, x1, x2), np.asarray(ivy.functional.backends.numpy.matmul(ivy.to_numpy(x1), ivy.to_numpy(x2))))
 
 
 # cumsum
@@ -1502,52 +1265,6 @@ def test_cumprod(x_n_axis, exclusive, dtype, tensor_fn, dev, call):
                        np.asarray(ivy.functional.backends.numpy.cumprod(ivy.to_numpy(x), axis, exclusive)))
 
 
-# identity
-@pytest.mark.parametrize(
-    "dim_n_bs", [(3, None), (1, (2, 3)), (5, (1, 2, 3))])
-@pytest.mark.parametrize(
-    "dtype", ['float32'])
-@pytest.mark.parametrize(
-    "tensor_fn", [ivy.array, helpers.var_fn])
-def test_identity(dim_n_bs, dtype, tensor_fn, dev, call):
-    # smoke test
-    dim, bs = dim_n_bs
-    ret = ivy.identity(dim, dtype, bs, dev)
-    # type test
-    assert ivy.is_array(ret)
-    # cardinality test
-    assert ret.shape == (tuple(bs) if bs else ()) + (dim, dim)
-    # value test
-    assert np.allclose(call(ivy.identity, dim, dtype, bs, dev),
-                       np.asarray(ivy.functional.backends.numpy.identity(dim, dtype, bs)))
-
-
-# meshgrid
-@pytest.mark.parametrize(
-    "xs", [([1, 2, 3], [4, 5, 6]), ([1, 2, 3], [4, 5, 6, 7], [8, 9])])
-@pytest.mark.parametrize(
-    "indexing", ['xy', 'ij'])
-@pytest.mark.parametrize(
-    "dtype", ['float32'])
-@pytest.mark.parametrize(
-    "tensor_fn", [ivy.array, helpers.var_fn])
-def test_meshgrid(xs, indexing, dtype, tensor_fn, dev, call):
-    # smoke test
-    xs_as_arrays = [ivy.array(x, 'int32', dev) for x in xs]
-    rets = ivy.meshgrid(*xs_as_arrays, indexing=indexing)
-    # type test
-    for ret in rets:
-        assert ivy.is_array(ret)
-    # cardinality test
-    target_shape = tuple([len(x) for x in xs])
-    if indexing == 'xy':
-        target_shape = (target_shape[1], target_shape[0]) + target_shape[2:]
-    for ret in rets:
-        assert ret.shape == target_shape
-    # value test
-    assert np.allclose(
-        call(ivy.meshgrid, *xs_as_arrays, indexing=indexing),
-        [np.asarray(i) for i in ivy.functional.backends.numpy.meshgrid(*[ivy.to_numpy(x) for x in xs_as_arrays], indexing=indexing)])
 
 
 # scatter_flat

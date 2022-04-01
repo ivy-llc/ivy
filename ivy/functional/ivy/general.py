@@ -193,7 +193,7 @@ def clip_vector_norm(x: Union[ivy.Array, ivy.NativeArray], max_norm: float, p: f
     :type p: float, optional
     :return: An array with the vector norm downscaled to the max norm if needed.
     """
-    norm = ivy.vector_norm(x, p, keepdims=True)
+    norm = ivy.vector_norm(x, keepdims=True, ord=p)
     ratio = ivy.stable_divide(max_norm, norm)
     if ratio < 1:
         return ratio * x
@@ -282,7 +282,7 @@ def fourier_encode(x: Union[ivy.Array, ivy.NativeArray], max_freq: Union[float, 
             scales = ivy.logspace(0., ivy.log(ivy.array(max_freq / 2)) / math.log(10), num_bands, base=10, dev=dev(x))            
         else:
             scales = ivy.logspace(0., ivy.log(max_freq / 2) / math.log(10), num_bands, base=10, dev=dev(x))
-    scales = ivy.cast(scales, ivy.dtype(x))
+    scales = ivy.astype(scales, ivy.dtype(x))
     scales = scales[(*((None,) * (len(x.shape) - len(scales.shape))), Ellipsis)]
     x = x * scales * math.pi
     sin_x = ivy.sin(x)
