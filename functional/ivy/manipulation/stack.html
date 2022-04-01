@@ -225,19 +225,20 @@
 <h1>stack<a class="headerlink" href="#stack" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
 <dt id="ivy.functional.ivy.manipulation.stack">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">stack</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">xs</span><span class="p">:</span> <span class="n">Iterable<span class="p">[</span>Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">axis</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">0</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/manipulation.html#stack"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.manipulation.stack" title="Permalink to this definition">¶</a></dt>
-<dd><p>Joins a sequence of arrays along a new axis.
-The axis parameter specifies the index of the new axis in the dimensions of the result.
-For example, if axis: int = 0, it will be the first dimension and if axis: int = -1, it will be the last dimension.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>xs</strong> (<em>sequence of arrays</em>) – Input arrays, each array must have the same shape.</p></li>
-<li><p><strong>axis</strong> (<em>int</em><em>, </em><em>optional</em>) – The axis in the result array along which the input arrays are stacked.</p></li>
-</ul>
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">stack</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">arrays</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>Tuple<span class="p">[</span>ivy.array.Array<span class="p">]</span><span class="p">, </span>List<span class="p">[</span>ivy.array.Array<span class="p">]</span><span class="p">, </span>Tuple<span class="p">[</span>ivy.NativeArray<span class="p">]</span><span class="p">, </span>List<span class="p">[</span>ivy.NativeArray<span class="p">]</span><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">axis</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">0</span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../../_modules/ivy/functional/ivy/manipulation.html#stack"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.manipulation.stack" title="Permalink to this definition">¶</a></dt>
+<dd><p>Joins a sequence of arrays along a new axis.</p>
+<dl class="simple">
+<dt>arrays:</dt><dd><p>input arrays to join. Each array must have the same shape.</p>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>The stacked array has one more dimension than the input arrays.</p>
+<dt>axis:</dt><dd><p>axis along which the arrays will be joined. Providing an <code class="docutils literal notranslate"><span class="pre">axis</span></code> specifies the index of the new axis in the dimensions of the result. For example, if <code class="docutils literal notranslate"><span class="pre">axis</span></code> is <code class="docutils literal notranslate"><span class="pre">0</span></code>, the new axis will be the first dimension and the output array will have shape <code class="docutils literal notranslate"><span class="pre">(N,</span> <span class="pre">A,</span> <span class="pre">B,</span> <span class="pre">C)</span></code>; if <code class="docutils literal notranslate"><span class="pre">axis</span></code> is <code class="docutils literal notranslate"><span class="pre">1</span></code>, the new axis will be the second dimension and the output array will have shape <code class="docutils literal notranslate"><span class="pre">(A,</span> <span class="pre">N,</span> <span class="pre">B,</span> <span class="pre">C)</span></code>; and, if <code class="docutils literal notranslate"><span class="pre">axis</span></code> is <code class="docutils literal notranslate"><span class="pre">-1</span></code>, the new axis will be the last dimension and the output array will have shape <code class="docutils literal notranslate"><span class="pre">(A,</span> <span class="pre">B,</span> <span class="pre">C,</span> <span class="pre">N)</span></code>. A valid <code class="docutils literal notranslate"><span class="pre">axis</span></code> must be on the interval <code class="docutils literal notranslate"><span class="pre">[-N,</span> <span class="pre">N)</span></code>, where <code class="docutils literal notranslate"><span class="pre">N</span></code> is the rank (number of dimensions) of <code class="docutils literal notranslate"><span class="pre">x</span></code>. If provided an <code class="docutils literal notranslate"><span class="pre">axis</span></code> outside of the required interval, the function must raise an exception. Default: <code class="docutils literal notranslate"><span class="pre">0</span></code>.</p>
+</dd>
+</dl>
+<dl>
+<dt>out:</dt><dd><p>an output array having rank <code class="docutils literal notranslate"><span class="pre">N+1</span></code>, where <code class="docutils literal notranslate"><span class="pre">N</span></code> is the rank (number of dimensions) of <code class="docutils literal notranslate"><span class="pre">x</span></code>. If the input arrays have different data types, normal <span class="xref std std-ref">type-promotion</span> must apply. If the input arrays have the same data type, the output array must have the same data type as the input arrays.
+.. note:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>This specification leaves type promotion between data type families (i.e., ``intxx`` and ``floatxx``) unspecified.
+</pre></div>
+</div>
 </dd>
 </dl>
 </dd></dl>
