@@ -122,13 +122,14 @@ def trace(x: np.ndarray,
 
 
 def vecdot(x1: np.ndarray, 
-        x2: np.ndarray,
-        axis: int = -1)  \
+           x2: np.ndarray,
+           axis: int = -1)\
         -> np.ndarray:
-    if axis:
-        return np.dot(x1, x2)
-    else:
-        raise Exception('Axis must be an integer on the interval [-N, N)')
+    if axis < -len(x1.shape) or axis >= len(x1.shape):
+        raise Exception('Invalid axis')
+    if x1.shape[axis] != x2.shape[axis]:
+        raise Exception('Sizes of axes must be the same')
+    return np.tensordot(x1, x2, axes=(axis, axis))
 
 
 def det(x: np.array) \
