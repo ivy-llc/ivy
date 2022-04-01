@@ -814,19 +814,6 @@ def not_equal(x1: Union[ivy.Array, ivy.NativeArray], x2: Union[ivy.Array, ivy.Na
     return _cur_framework(x1, x2).not_equal(x1, x2)
 
 
-def tanh(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
-    """
-    Calculates an implementation-dependent approximation to the hyperbolic tangent,
-    having domain [-infinity, +infinity] and codomain [-1, +1], for each element x_i of the input array x.
-
-    :param x: input array whose elements each represent a hyperbolic angle. Should have a floating-point
-            data type.
-    :return: an array containing the hyperbolic tangent of each element in x. The returned array must
-            have a floating-point data type
-    """
-    return _cur_framework(x).tanh(x)
-
-
 def floor_divide(x1: Union[ivy.Array, ivy.NativeArray],
                  x2: Union[ivy.Array, ivy.NativeArray])\
         -> ivy.Array:
@@ -1012,16 +999,6 @@ def tan(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
     """
     return _cur_framework(x).tan(x)
 
-
-def asin(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
-    """
-    Computes inverse sine element-wise.
-
-    :param x: y-coordinate on the unit circle.
-    :type x: array
-    :return: The inverse sine of each element in x, in radians and in the closed interval [-pi/2, pi/2].
-    """
-    return _cur_framework(x).asin(x)
 
 
 def atan(x: Union[ivy.Array, ivy.NativeArray]) \
