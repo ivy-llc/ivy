@@ -1,14 +1,14 @@
 cholesky
-#cross
+#cross # failing non-deterministically
 det
 #diagonal # fails non-determinstically for jax, due to +0 vs -0 inconsistencies
-#eigh
+eigh
 #eigvalsh # depends on: mT
 #inv
-matmul
+#matmul # failing non-deterministically for torch
 #matrix_norm
 #matrix_power
-#matrix_rank
+matrix_rank
 matrix_transpose
 #outer # depends on: multiply
 pinv
@@ -17,7 +17,7 @@ slogdet
 #solve
 svd
 svdvals
-#tensordot
+tensordot
 #trace # accidentally merged trace when #T in array folder was preventing test from running.
 #vecdot
 vector_norm
