@@ -5,15 +5,13 @@ Collection of Numpy general functions, wrapped to fit Ivy syntax and signature.
 # global
 import logging
 import numpy as np
-import math as _math
 from operator import mul as _mul
 from functools import reduce as _reduce
 import multiprocessing as _multiprocessing
 
 # local
 import ivy
-from ivy.functional.ivy import default_dtype
-from ivy.functional.backends.numpy.device import _dev_callable, to_dev
+from ivy.functional.backends.numpy.device import _dev_callable
 
 # Helpers #
 # --------#
