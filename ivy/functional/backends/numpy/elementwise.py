@@ -7,6 +7,16 @@ try:
 except (ImportError, ModuleNotFoundError):
     _erf = None
 
+def bitwise_xor(x1: np.ndarray,
+                x2: np.ndarray)\
+        -> np.ndarray:
+    if not isinstance(x2, np.ndarray):
+        x2 = np.asarray(x2, dtype=x1.dtype)
+    return npa.bitwise_xor(npa.asarray(x1), npa.asarray(x2))
+
+def exp(x: np.ndarray)\
+        -> np.ndarray:
+    return np.exp(x)
 
 def expm1(x: np.ndarray)\
         -> np.ndarray:
@@ -27,6 +37,11 @@ def bitwise_and(x1: np.ndarray,
 def equal(x1: np.ndarray, x2: np.ndarray)\
         -> np.ndarray:
     return x1 == x2
+
+
+def greater(x1: np.ndarray, x2: np.ndarray) \
+        -> np.ndarray:
+    return np.greater(x1, x2)
 
 
 def greater_equal(x1: np.ndarray, x2: np.ndarray)\
@@ -128,6 +143,14 @@ def cos(x: np.ndarray)\
 def logical_not(x: np.ndarray)\
         -> np.ndarray:
     return np.logical_not(x)
+  
+  
+def divide(x1: np.ndarray,
+           x2: np.ndarray)\
+        -> np.ndarray:
+    if not isinstance(x2, np.ndarray):
+        x2 = np.asarray(x2, dtype=x1.dtype)
+    return npa.divide(npa.asarray(x1), npa.asarray(x2))
 
 
 def acos(x: np.ndarray)\
@@ -174,6 +197,13 @@ def tanh(x: np.ndarray)\
     return np.asarray(npa.tanh(npa.asarray(x)))
 
 
+def floor_divide(x1: np.ndarray, x2: np.ndarray)\
+                -> np.ndarray:
+    if not isinstance(x2, np.ndarray):
+        x2 = np.asarray(x2, dtype=x1.dtype)
+    return npa.floor_divide(npa.asarray(x1), npa.asarray(x2))
+
+
 def sinh(x: np.ndarray)\
         -> np.ndarray:
     return np.asarray(npa.sinh(npa.asarray(x)))
@@ -214,6 +244,11 @@ def bitwise_or(x1: np.ndarray, x2: np.ndarray)\
         x1 = x1.astype(dtype)
         x2 = x2.astype(dtype)
     return np.bitwise_or(x1, x2)
+
+
+def trunc(x: np.ndarray) \
+        -> np.ndarray:
+    return np.asarray(npa.trunc(npa.asarray(x)))
 
 
 def abs(x: np.ndarray)\
@@ -261,6 +296,14 @@ def atan(x: np.ndarray) \
     return np.arctan(x)
 
 
+
+
+def atanh(x: np.ndarray) \
+        -> np.ndarray:
+    return np.asarray(np.arctanh(npa.asarray(x)))
+
+
+
 def atan2(x1: np.ndarray, x2: np.ndarray) -> np.ndarray:
     if not isinstance(x2, np.ndarray):
         x2 = np.asarray(x2, dtype=x1.dtype)
@@ -271,14 +314,18 @@ def atan2(x1: np.ndarray, x2: np.ndarray) -> np.ndarray:
     return np.arctan2(x1, x2)
 
 
+
 cosh = np.cosh
-atanh = np.arctanh
 log = np.log
 exp = np.exp
 
 
 # Extra #
 # ------#
+
+
+minimum = np.minimum
+maximum = np.maximum
 
 
 def erf(x):

@@ -58,6 +58,21 @@ def permute_dims(x: Tensor,
     return tf.transpose(x,perm=axes)
 
 
+def stack(x: Union[Tuple[Tensor], List[Tensor]],
+          axis: Optional[int] = 0)\
+          -> Tensor:
+    return tf.experimental.numpy.stack(x, axis)
+
+
+reshape = lambda x, newshape: tf.reshape(x, (newshape,) if isinstance(newshape, int) else newshape)
+
+
+
+def concatenate(xs, axis=-1):
+    if xs[0].shape == ():
+        return tf.concat([tf.expand_dims(x, 0) for x in xs], axis)
+    return tf.concat(xs, axis)
+
 
 # Extra #
 # ------#
@@ -93,7 +108,6 @@ def tile(x, reps):
     return tf.tile(x, reps)
 
 
-
 def constant_pad(x, pad_width, value=0):
     if x.shape == ():
         x = tf.reshape(x, (-1,))
@@ -118,3 +132,4 @@ def swapaxes(x, axis0, axis1):
     config.insert(axis1, axis0)
     return tf.transpose(x, config)
 
+clip = tf.clip_by_value

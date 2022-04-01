@@ -9,6 +9,10 @@ from typing import Union, Tuple, Optional, List
 def squeeze(x: np.ndarray,
             axis: Union[int, Tuple[int], List[int]])\
         -> np.ndarray:
+    if x.shape == ():
+        if axis is None or axis == 0 or axis == -1:
+            return x
+        raise ValueError('tried to squeeze a zero-dimensional input by axis {}'.format(axis))
     return np.squeeze(x, axis)
 
 
@@ -43,6 +47,21 @@ def permute_dims(x: np.ndarray,
 
 
 
+def concatenate(xs, axis=-1):
+    if xs[0].shape == ():
+        return np.concatenate([np.expand_dims(x, 0) for x in xs], axis)
+    return np.concatenate(xs, axis)
+
+
+def stack(x: Union[Tuple[np.ndarray], List[np.ndarray]],
+          axis: Optional[int] = 0)\
+          -> np.ndarray:
+    return np.stack(x, axis)
+
+
+reshape = np.reshape
+
+
 # Extra #
 # ------#
 
@@ -70,3 +89,4 @@ tile = np.tile
 constant_pad = lambda x, pad_width, value=0: np.pad(_flat_array_to_1_dim_array(x), pad_width, constant_values=value)
 zero_pad = lambda x, pad_width: np.pad(_flat_array_to_1_dim_array(x), pad_width)
 swapaxes = np.swapaxes
+clip = lambda x, x_min, x_max: np.asarray(np.clip(x, x_min, x_max))
