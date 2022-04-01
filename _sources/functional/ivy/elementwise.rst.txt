@@ -63,7 +63,6 @@ Elementwise
    elementwise/cosh.rst
    elementwise/tanh.rst
    elementwise/atanh.rst
-   elementwise/log.rst
    elementwise/subtract.rst
    elementwise/divide.rst
    elementwise/remainder.rst
