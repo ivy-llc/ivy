@@ -2,7 +2,7 @@
 import torch
 import numpy as np
 from torch import Tensor
-from typing import Union, Tuple, Optional, Dict
+from typing import Union, Tuple, List, Optional, Dict
 from numbers import Number
 # local
 from ivy import dtype_from_str, default_dtype, dev_from_str, default_device, shape_to_tuple

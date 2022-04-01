@@ -1,7 +1,7 @@
 # global
 import tensorflow as tf
 from tensorflow import Tensor
-from typing import Union, Tuple, Optional
+from typing import Union, Tuple, List, Optional
 from tensorflow.python.framework.dtypes import DType
 
 # local
