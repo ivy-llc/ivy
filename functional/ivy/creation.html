@@ -107,10 +107,10 @@
 <li class="toctree-l2"><a class="reference internal" href="creation/empty_like.html">empty_like</a></li>
 <li class="toctree-l2"><a class="reference internal" href="creation/eye.html">eye</a></li>
 <li class="toctree-l2"><a class="reference internal" href="creation/linspace.html">linspace</a></li>
+<li class="toctree-l2"><a class="reference internal" href="creation/meshgrid.html">meshgrid</a></li>
 <li class="toctree-l2"><a class="reference internal" href="creation/zeros_like.html">zeros_like</a></li>
 <li class="toctree-l2"><a class="reference internal" href="creation/full.html">full</a></li>
 <li class="toctree-l2"><a class="reference internal" href="creation/ones.html">ones</a></li>
-<li class="toctree-l2"><a class="reference internal" href="creation/meshgrid.html">meshgrid</a></li>
 <li class="toctree-l2"><a class="reference internal" href="creation/from_dlpack.html">from_dlpack</a></li>
 <li class="toctree-l2"><a class="reference internal" href="creation/array.html">array</a></li>
 <li class="toctree-l2"><a class="reference internal" href="creation/logspace.html">logspace</a></li>
@@ -457,17 +457,25 @@ out:an array having the same shape as x and where every element is equal to fill
 
 <dl class="py function">
 <dt id="ivy.functional.ivy.creation.meshgrid">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">meshgrid</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">xs</span><span class="p">:</span> <span class="n">Iterable<span class="p">[</span>Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">indexing</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'ij'</span></em><span class="sig-paren">)</span> &#x2192; Iterable<span class="p">[</span>Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><span class="p">]</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/creation.html#meshgrid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.creation.meshgrid" title="Permalink to this definition">¶</a></dt>
-<dd><p>Broadcasts parameters for evaluation on an N-D grid.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>xs</strong> (<em>sequence of arrays</em>) – input arrays</p></li>
-<li><p><strong>indexing</strong> (<em>str</em><em>, </em><em>optional</em>) – The indexing method, either ‘xy’ or ‘ij’. Default is ‘ij’.</p></li>
-</ul>
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">meshgrid</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">arrays</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">indexing</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">'xy'</span></em><span class="sig-paren">)</span> &#x2192; List<span class="p">[</span>ivy.array.Array<span class="p">]</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/creation.html#meshgrid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.creation.meshgrid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns coordinate matrices from coordinate vectors.
+Parameters
+———-
+arrays: array</p>
+<blockquote>
+<div><p>an arbitrary number of one-dimensional arrays representing grid coordinates. Each array should have the same numeric data type.</p>
+</div></blockquote>
+<dl class="simple">
+<dt>indexing: str</dt><dd><p>Cartesian <code class="docutils literal notranslate"><span class="pre">'xy'</span></code> or matrix <code class="docutils literal notranslate"><span class="pre">'ij'</span></code> indexing of output. If provided zero or one one-dimensional vector(s) (i.e., the zero- and one-dimensional cases, respectively), the <code class="docutils literal notranslate"><span class="pre">indexing</span></code> keyword has no effect and should be ignored. Default: <code class="docutils literal notranslate"><span class="pre">'xy'</span></code>.</p>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>list of N-D coordinate arrays for evaluating expressions on an N-D grid</p>
+</dl>
+<dl class="simple">
+<dt>out: List[array]</dt><dd><p>list of N arrays, where <code class="docutils literal notranslate"><span class="pre">N</span></code> is the number of provided one-dimensional input arrays. Each returned array must have rank <code class="docutils literal notranslate"><span class="pre">N</span></code>. For <code class="docutils literal notranslate"><span class="pre">N</span></code> one-dimensional arrays having lengths <code class="docutils literal notranslate"><span class="pre">Ni</span> <span class="pre">=</span> <span class="pre">len(xi)</span></code>,
+- if matrix indexing <code class="docutils literal notranslate"><span class="pre">ij</span></code>, then each returned array must have the shape <code class="docutils literal notranslate"><span class="pre">(N1,</span> <span class="pre">N2,</span> <span class="pre">N3,</span> <span class="pre">...,</span> <span class="pre">Nn)</span></code>.
+- if Cartesian indexing <code class="docutils literal notranslate"><span class="pre">xy</span></code>, then each returned array must have shape <code class="docutils literal notranslate"><span class="pre">(N2,</span> <span class="pre">N1,</span> <span class="pre">N3,</span> <span class="pre">...,</span> <span class="pre">Nn)</span></code>.
+Accordingly, for the two-dimensional case with input one-dimensional arrays of length <code class="docutils literal notranslate"><span class="pre">M</span></code> and <code class="docutils literal notranslate"><span class="pre">N</span></code>, if matrix indexing <code class="docutils literal notranslate"><span class="pre">ij</span></code>, then each returned array must have shape <code class="docutils literal notranslate"><span class="pre">(M,</span> <span class="pre">N)</span></code>, and, if Cartesian indexing <code class="docutils literal notranslate"><span class="pre">xy</span></code>, then each returned array must have shape <code class="docutils literal notranslate"><span class="pre">(N,</span> <span class="pre">M)</span></code>.
+Similarly, for the three-dimensional case with input one-dimensional arrays of length <code class="docutils literal notranslate"><span class="pre">M</span></code>, <code class="docutils literal notranslate"><span class="pre">N</span></code>, and <code class="docutils literal notranslate"><span class="pre">P</span></code>, if matrix indexing <code class="docutils literal notranslate"><span class="pre">ij</span></code>, then each returned array must have shape <code class="docutils literal notranslate"><span class="pre">(M,</span> <span class="pre">N,</span> <span class="pre">P)</span></code>, and, if Cartesian indexing <code class="docutils literal notranslate"><span class="pre">xy</span></code>, then each returned array must have shape <code class="docutils literal notranslate"><span class="pre">(N,</span> <span class="pre">M,</span> <span class="pre">P)</span></code>.
+Each returned array should have the same data type as the input arrays.</p>
 </dd>
 </dl>
 </dd></dl>
