@@ -58,5 +58,21 @@ def argmin(x: Union[ivy.Array, ivy.NativeArray],
     return _cur_framework(x).argmin(x, axis, keepdims)
 
 
+def where(condition: Union[ivy.Array, ivy.NativeArray], x1: Union[ivy.Array, ivy.NativeArray],
+          x2: Union[ivy.Array, ivy.NativeArray])\
+        -> Union[ivy.Array, ivy.NativeArray]:
+    """
+    Returns elements chosen from x or y depending on condition.
+
+    :param condition: Where True, yield x1, otherwise yield x2.
+    :type condition: bool array
+    :param x1: values from which to choose when condition is True.
+    :type x1: array
+    :param x2: values from which to choose when condition is False.
+    :type x2: array
+    :return: An array with elements from x1 where condition is True, and elements from x2 elsewhere.
+    """
+    return _cur_framework(x1).where(condition, x1, x2)
+
 # Extra #
 # ------#

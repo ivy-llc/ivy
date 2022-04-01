@@ -7,6 +7,20 @@ import typing
 import ivy
 
 
+def bitwise_xor(x1: Tensor,
+                x2: Tensor)\
+        -> Tensor:
+    if not isinstance(x2, Tensor):
+        x2 = tf.constant(x2, dtype=x1.dtype)
+    if ('int' not in str(x1.dtype)) & ('int' not in str(x2.dtype)):
+        return tf.math.logical_xor(x1, x2)
+    x1, x2 = _cast_for_binary_op(x1, x2)
+    return tf.bitwise.bitwise_xor(x1, x2)
+
+def exp(x: Tensor)\
+        -> Tensor:
+    return tf.math.exp(x)
+
 def expm1(x: Tensor)\
         -> Tensor:
     return tf.math.expm1(x)
@@ -67,10 +81,10 @@ def _tf_cast(x: Tensor, dtype: tf.dtypes.DType) -> Tensor:
 
 def _cast_for_binary_op(x1: Tensor, x2: Tensor)\
         -> typing.Tuple[typing.Union[Tensor, int, float, bool], typing.Union[Tensor, int, float, bool]]:
-    x1_bits = ivy.functional.backends.tensorflow.old.general.dtype_bits(x1.dtype)
+    x1_bits = ivy.functional.backends.tensorflow.dtype_bits(x1.dtype)
     if isinstance(x2, (int, float, bool)):
         return x1, x2
-    x2_bits = ivy.functional.backends.tensorflow.old.general.dtype_bits(x2.dtype)
+    x2_bits = ivy.functional.backends.tensorflow.dtype_bits(x2.dtype)
     if x1_bits > x2_bits:
         x2 = _tf_cast(x2, x1.dtype)
     elif x2_bits > x1_bits:
@@ -152,6 +166,22 @@ def cos(x: Tensor)\
 def logical_not(x: Tensor)\
         -> Tensor:
     return tf.logical_not(tf.cast(x, tf.bool))
+  
+  
+def divide(x1: Tensor,
+           x2: Tensor)\
+        -> Tensor:
+    x1, x2 = _cast_for_binary_op(x1, x2)
+    return tf.divide(x1, x2)
+
+
+def greater(x1: Tensor, x2: Tensor)\
+        -> Tensor:
+    if hasattr(x1, 'dtype') and hasattr(x2, 'dtype'):
+        promoted_type = tf.experimental.numpy.promote_types(x1.dtype, x2.dtype)
+        x1 = tf.cast(x1, promoted_type)
+        x2 = tf.cast(x2, promoted_type)
+    return tf.math.greater(x1, x2)
 
 
 def greater_equal(x1: Tensor, x2: Tensor)\
@@ -219,6 +249,17 @@ def tanh(x: Tensor) \
     return tf.tanh(x)
 
 
+def floor_divide(x1: Tensor, x2: Tensor)\
+                -> Tensor:
+    if not isinstance(x2, Tensor):
+        x2 = tf.constant(x2, dtype=x1.dtype)
+    else:
+        promoted_type = tf.experimental.numpy.promote_types(x1.dtype, x2.dtype)
+        x1 = tf.cast(x1, promoted_type)
+        x2 = tf.cast(x2, promoted_type)
+    return tf.math.floordiv(x1, x2)
+
+
 def sinh(x: Tensor) \
         -> Tensor:
     return tf.sinh(x)
@@ -251,6 +292,16 @@ def round(x: Tensor)\
     if 'int' in str(x.dtype):
         return x
     return tf.round(x)
+
+
+def trunc(x: Tensor)\
+        -> Tensor:
+    if 'int' in str(x.dtype):
+        return x
+    res = tf.zeros(x.shape, dtype=x.dtype)
+    res = tf.tensor_scatter_nd_update(res, tf.where(x > 0), tf.math.floor(x[x > 0]))
+    res = tf.tensor_scatter_nd_update(res, tf.where(x < 0), tf.math.ceil(x[x < 0]))
+    return res
 
 
 def abs(x: Tensor)\
@@ -289,6 +340,13 @@ def atan(x: Tensor) \
     return tf.atan(x)
 
 
+
+def atanh(x: Tensor) \
+        -> Tensor:
+    return tf.math.atanh(x)
+
+
+
 def atan2(x1: Tensor, x2: Tensor) -> Tensor:
     if hasattr(x1, 'dtype') and hasattr(x2, 'dtype'):
         promoted_type = tf.experimental.numpy.promote_types(x1.dtype, x2.dtype)
@@ -297,13 +355,14 @@ def atan2(x1: Tensor, x2: Tensor) -> Tensor:
     return tf.math.atan2(x1, x2)
 
 
+
 cosh = tf.math.cosh
-atanh = tf.math.atanh
 log = tf.math.log
 exp = tf.math.exp
 
 # Extra #
 # ------#
 
-
+minimum = tf.minimum
+maximum = tf.maximum
 erf = tf.math.erf

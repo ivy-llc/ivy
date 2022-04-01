@@ -59,3 +59,18 @@ def result_type(*arrays_and_dtypes: Union[torch.tensor, torch.dtype]) -> torch.d
   
 def broadcast_to(x: torch.Tensor, shape: Tuple[int,...]) -> torch.Tensor:
     return torch.broadcast_to(x,shape)
+
+
+def astype(x: torch.Tensor, dtype: torch.dtype, copy: bool = True)\
+     -> torch.Tensor:
+    if copy:
+        if x.dtype == dtype:
+            new_tensor = x.clone().detach()
+            return new_tensor
+    else:
+        if x.dtype == dtype:
+            return x
+        else:
+            new_tensor = x.clone().detach()
+            return new_tensor.to(dtype)
+    return x.to(dtype)

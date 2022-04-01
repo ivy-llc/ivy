@@ -56,6 +56,23 @@ def permute_dims(x: torch.Tensor,
     return torch.permute(x, axes)
 
 
+def stack(x: Union[Tuple[torch.Tensor], List[torch.Tensor]],
+          axis: Optional[int] = 0)\
+          -> torch.Tensor:
+    return torch.stack(x, axis)
+
+
+def reshape(x, newshape: List[int]):
+    if isinstance(newshape, int):
+        newshape = [newshape]
+    return torch.reshape(x, newshape)
+
+
+def concatenate(xs: List[torch.Tensor], axis: int = -1):
+    if xs[0].shape == ():
+        return torch.cat([x.unsqueeze(0) for x in xs], axis)
+    return torch.cat(xs, axis)
+
 
 # Extra #
 # ------#
@@ -99,8 +116,6 @@ def tile(x, reps):
     return x.repeat(reps)
 
 
-
-
 # noinspection PyUnresolvedReferences
 def constant_pad(x, pad_width: List[List[int]], value: Number = 0.):
     if x.shape == ():
@@ -121,3 +136,7 @@ def zero_pad(x, pad_width: List[List[int]]):
 
 def swapaxes(x, axis0: int, axis1: int):
     return torch.transpose(x, axis0, axis1)
+
+
+def clip(x, x_min, x_max):
+    return torch.clamp(x, x_min, x_max)
