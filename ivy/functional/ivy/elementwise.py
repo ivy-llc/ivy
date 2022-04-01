@@ -27,6 +27,28 @@ def bitwise_xor(x1: Union[ivy.Array, ivy.NativeArray],
     """
     return _cur_framework(x1, x2).bitwise_xor(x1, x2)
 
+def exp(x: Union[ivy.Array, ivy.NativeArray])\
+        -> ivy.Array:
+    """
+    Calculates an implementation-dependent approximation to the exponential function, having domain ``[-infinity, +infinity]`` and codomain ``[+0, +infinity]``, for each element ``x_i`` of the input array ``x`` (``e`` raised to the power of ``x_i``, where ``e`` is the base of the natural logarithm).
+    **Special cases**
+    For floating-point operands,
+    - If ``x_i`` is ``NaN``, the result is ``NaN``.
+    - If ``x_i`` is ``+0``, the result is ``1``.
+    - If ``x_i`` is ``-0``, the result is ``1``.
+    - If ``x_i`` is ``+infinity``, the result is ``+infinity``.
+    - If ``x_i`` is ``-infinity``, the result is ``+0``.
+    Parameters
+    ----------
+    x: array
+        input array. Should have a floating-point data type.
+    Returns
+    -------
+    out: array
+        an array containing the evaluated exponential function result for each element in ``x``. The returned array must have a floating-point data type determined by :ref:`type-promotion`.
+    """
+    return _cur_framework(x).exp(x)
+
 def expm1(x: Union[ivy.Array, ivy.NativeArray])\
         -> ivy.Array:
     """
