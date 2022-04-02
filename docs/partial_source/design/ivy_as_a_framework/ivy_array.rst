@@ -223,7 +223,7 @@ Finally, we copy the method name over to :code:`_method_wrapped`, and flag the w
 store the unwrapped inner function as an attribute, and return the wrapped method.
 
 Importantly, :code:`ivy.args_to_native` does not fail in the inputs are already native arrays.
-This means that every Ivy method is able to accept either :code:`ivy.Array` or :code:`ivy.NativeArray`instances for each array argument,
+This means that every Ivy method is able to accept either :code:`ivy.Array` or :code:`ivy.NativeArray` instances for each array argument,
 but the returned arrays are always enforced to be :code:`ivy.Array` instances.
 
 This just simplifies the transition from native code to Ivy code in any given project, preventing code such as the following from needlessly throwing an error:
