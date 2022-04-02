@@ -105,7 +105,7 @@ In this case, the code will execute without error, printing :code:`array([0, 2, 
 Now consider we use JAX in the backend by calling :code:`ivy.set_framework('jax')` in the first line.
 :code:`x` would then be a :code:`jax.numpy.ndarray` instance.
 
-The code will now throw the error :code:`TypeError: '<class 'jaxlib.xla_extension.DeviceArray'>' object does not support item assignment. JAX arrays are immutable. Instead of x[idx] = y, use x = x.at[idx].set(y) or another .at[] method: https://jax.readthedocs.io/en/latest/jax.ops.html` when we try to set index 0 to the value 0.
+The code will now throw the error :code:`TypeError: '<class 'jaxlib.xla_extension.DeviceArray'>' object does not support item assignment.` :code:`JAX arrays are immutable.` :code:`Instead of x[idx] = y, use x = x.at[idx].set(y) or another .at[] method` when we try to set index 0 to the value 0.
 
 As can be seen from the error message, the reason for this is that JAX does not support inplace updates for arrays.
 
