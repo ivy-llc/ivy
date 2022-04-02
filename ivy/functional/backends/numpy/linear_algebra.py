@@ -1,8 +1,7 @@
 # global
 import numpy as np
-import ivy as _ivy
 from typing import Union, Optional, Tuple, Literal, List
-from collections import namedtuple
+
 
 # local
 from ivy import inf

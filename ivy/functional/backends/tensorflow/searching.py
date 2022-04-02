@@ -38,4 +38,4 @@ def where(condition: Tensor,
           x1: Tensor,
           x2: Tensor)\
         -> Tensor:
-    return tf.where(tf.cast(condition, tf.bool), x1, x2)
+    return tf.experimental.numpy.where(condition, x1, x2)

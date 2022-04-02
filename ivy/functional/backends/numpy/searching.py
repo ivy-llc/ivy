@@ -3,6 +3,7 @@ import numpy as np
 from typing import Union, Optional, Tuple
 
 
+
 def argmax(
     x: np.ndarray,
     axis: Optional[int] = None,

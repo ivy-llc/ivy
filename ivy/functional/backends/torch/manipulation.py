@@ -56,9 +56,10 @@ def permute_dims(x: torch.Tensor,
     return torch.permute(x, axes)
 
 
-def stack(xs: List[torch.Tensor], axis: int = 0):
-    return torch.stack(xs, axis)
-
+def stack(x: Union[Tuple[torch.Tensor], List[torch.Tensor]],
+          axis: Optional[int] = 0)\
+          -> torch.Tensor:
+    return torch.stack(x, axis)
 
 
 def reshape(x, newshape: List[int]):
@@ -113,8 +114,6 @@ def tile(x, reps):
     if isinstance(reps, torch.Tensor):
         reps = reps.detach().cpu().numpy().tolist()
     return x.repeat(reps)
-
-
 
 
 # noinspection PyUnresolvedReferences

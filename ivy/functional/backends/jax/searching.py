@@ -1,7 +1,8 @@
 import jax.numpy as jnp
 
 from ivy.functional.backends.jax import JaxArray
-from typing import Optional, Union
+from typing import Optional
+
 
 
 def argmax(
