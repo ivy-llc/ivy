@@ -21,7 +21,7 @@ def _to_ivy(x: Any)\
         -> Any:
     if isinstance(x, (ivy.Array, ivy.Variable)):
         return x
-    return ivy.Variable(x) if ivy.is_variable(x, exclusive=True) else ivy.Array(x) if ivy.is_array(x) else x
+    return ivy.Variable(x) if ivy.is_variable(x, exclusive=True) else ivy.Array(x) if ivy.is_native_array(x) else x
 
 
 # Wrapped #

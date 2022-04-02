@@ -13,12 +13,10 @@ from typing import List, Optional, Union
 
 
 # local
-from ivy.functional.ivy import default_dtype
-from ivy.functional.ivy.device import default_device
 from ivy.functional.backends.torch.device import dev_from_str, _callable_dev
 
 
-def is_array(x, exclusive=False):
+def is_native_array(x, exclusive=False):
     if isinstance(x, torch.Tensor):
         if exclusive and x.requires_grad:
             return False
