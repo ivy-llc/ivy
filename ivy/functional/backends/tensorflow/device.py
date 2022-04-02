@@ -4,7 +4,7 @@ Collection of TensorFlow general functions, wrapped to fit Ivy syntax and signat
 
 # global
 _round = round
-import tensorflow as _tf
+import tensorflow as tf
 
 # local
 from ivy.functional.ivy.device import Profiler as BaseProfiler
@@ -28,8 +28,8 @@ def to_dev(x, dev=None):
         return x
     current_dev = _dev_callable(x)
     if not _same_device(current_dev, dev):
-        with _tf.device('/' + dev.upper()):
-            return _tf.identity(x)
+        with tf.device('/' + dev.upper()):
+            return tf.identity(x)
     return x
 
 
@@ -57,17 +57,17 @@ def dev_from_str(dev):
 
 clear_mem_on_dev = lambda dev: None
 _dev_callable = dev
-gpu_is_available = lambda: len(_tf.config.list_physical_devices('GPU')) > 0
-num_gpus = lambda: len(_tf.config.list_physical_devices('GPU'))
+gpu_is_available = lambda: len(tf.config.list_physical_devices('GPU')) > 0
+num_gpus = lambda: len(tf.config.list_physical_devices('GPU'))
 
 
 def tpu_is_available():
     try:
-        resolver = _tf.distribute.cluster_resolver.TPUClusterResolver()
-        _tf.config.experimental_connect_to_cluster(resolver)
-        _tf.tpu.experimental.initialize_tpu_system(resolver)
-        _tf.config.list_logical_devices('TPU')
-        _tf.distribute.experimental.TPUStrategy(resolver)
+        resolver = tf.distribute.cluster_resolver.TPUClusterResolver()
+        tf.config.experimental_connect_to_cluster(resolver)
+        tf.tpu.experimental.initialize_tpu_system(resolver)
+        tf.config.list_logical_devices('TPU')
+        tf.distribute.experimental.TPUStrategy(resolver)
         return True
     except ValueError:
         return False
@@ -77,14 +77,14 @@ class Profiler(BaseProfiler):
 
     def __init__(self, save_dir):
         super(Profiler, self).__init__(save_dir)
-        self._options = _tf.profiler.experimental.ProfilerOptions(
+        self._options = tf.profiler.experimental.ProfilerOptions(
             host_tracer_level=3, python_tracer_level=1, device_tracer_level=1)
 
     def start(self):
-        _tf.profiler.experimental.start(self._save_dir, options=self._options)
+        tf.profiler.experimental.start(self._save_dir, options=self._options)
 
     def stop(self):
-        _tf.profiler.experimental.stop()
+        tf.profiler.experimental.stop()
 
     def __enter__(self):
         self.start()
