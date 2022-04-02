@@ -1,5 +1,6 @@
 # global
 import jax.numpy as jnp
+
 from typing import Tuple, Union, Optional , List
 from ivy.functional.backends.jax import JaxArray
 

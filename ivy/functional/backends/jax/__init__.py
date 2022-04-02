@@ -3,7 +3,7 @@ import sys
 from jax.config import config
 config.update("jax_enable_x64", True)
 import jaxlib
-import jax as _jax
+import jax as jax
 import jax.numpy as jnp
 from typing import Union
 # noinspection PyPackageRequirements
@@ -26,11 +26,11 @@ register_pytree_node(
 use = ivy.framework_handler.ContextManager(sys.modules[__name__])
 
 # noinspection PyUnresolvedReferences
-JaxArray = Union[_jax.interpreters.xla._DeviceArray, jaxlib.xla_extension.DeviceArray, Buffer]
+JaxArray = Union[jax.interpreters.xla._DeviceArray, jaxlib.xla_extension.DeviceArray, Buffer]
 # noinspection PyUnresolvedReferences,PyProtectedMember
-NativeArray = (_jax.interpreters.xla._DeviceArray, jaxlib.xla_extension.DeviceArray, Buffer)
+NativeArray = (jax.interpreters.xla._DeviceArray, jaxlib.xla_extension.DeviceArray, Buffer)
 # noinspection PyUnresolvedReferences,PyProtectedMember
-NativeVariable = _jax.interpreters.xla._DeviceArray
+NativeVariable = jax.interpreters.xla._DeviceArray
 # noinspection PyUnresolvedReferences
 Device = jaxlib.xla_extension.Device
 Dtype = jnp.dtype
