@@ -44,10 +44,12 @@ class Array(ArrayWithArrayAPI, ArrayWithDevice, ArrayWithGeneral, ArrayWithGradi
             ArrayWithLogic, ArrayWithMath, ArrayWithMeta, ArrayWithRandom, ArrayWithReductions):
 
     def __init__(self, data):
-        assert ivy.is_native_array(data)
+        if ivy.is_ivy_array(data):
+            self._data = data.data
+        else:
+            assert ivy.is_native_array(data)
         self._data = data
         self._shape = data.shape
-
         self._size = functools.reduce(mul,self._data.shape) if len(self._data.shape) >0 else 0
         self._dtype = ivy.dtype(self._data)
         self._device = ivy.dev(data)
