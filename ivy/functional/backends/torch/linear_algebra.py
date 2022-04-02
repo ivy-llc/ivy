@@ -18,7 +18,8 @@ def eigh(x: torch.Tensor)\
      return torch.linalg.eigh(x)
 
 
-def inv(x):
+def inv(x: torch.Tensor)\
+  ->torch.Tensor:
     return torch.inverse(x)
 
 
