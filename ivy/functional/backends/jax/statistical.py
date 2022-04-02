@@ -1,7 +1,6 @@
 # global
 import jax.numpy as jnp
-from typing import Tuple, Union, Optional , List
-
+from typing import Tuple, Union, Optional
 
 # Array API Standard #
 # -------------------#

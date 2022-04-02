@@ -8,12 +8,21 @@ import math
 import ivy
 
 
+def add(x1: torch.Tensor,
+           x2: torch.Tensor) \
+        -> torch.Tensor:
+    x1, x2 = _cast_for_binary_op(x1, x2)
+    return torch.add(x1, x2)
+
 def bitwise_xor(x1: torch.Tensor,
                 x2: torch.Tensor)\
         -> torch.Tensor:
     x1, x2 = _cast_for_binary_op(x1, x2)
     return torch.bitwise_xor(x1, x2)
 
+def exp(x: Tensor)\
+        -> Tensor:
+    return torch.exp(x)
 
 def expm1(x: Tensor)\
         -> Tensor:
@@ -94,6 +103,9 @@ def asinh(x: torch.Tensor) \
         -> torch.Tensor:
     return torch.asinh(x)
 
+def sign(x: Tensor)\
+        -> Tensor:
+    return torch.sign(x)
 
 def sqrt(x: torch.Tensor)\
         -> torch.Tensor:
