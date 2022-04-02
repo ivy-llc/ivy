@@ -1,6 +1,7 @@
 import numpy as np
 
-from typing import Union, Optional
+from typing import Union, Optional, Tuple
+
 
 
 def argmax(
@@ -18,6 +19,11 @@ def argmin(x: np.ndarray,
            keepdims: bool = False
            ) -> np.ndarray:
     return np.argmin(x, axis=axis, out=out, keepdims=keepdims)
+
+
+def nonzero(x: np.ndarray)\
+        -> Tuple[np.ndarray]:
+    return np.nonzero(x)
 
 
 def where(condition: np.ndarray,
