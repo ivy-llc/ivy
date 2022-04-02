@@ -15,6 +15,7 @@ General
 
    general/get_referrers_recursive.rst
    general/is_native_array.rst
+   general/is_ivy_array.rst
    general/copy_array.rst
    general/array_equal.rst
    general/arrays_equal.rst
