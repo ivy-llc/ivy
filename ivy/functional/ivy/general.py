@@ -53,7 +53,7 @@ def get_referrers_recursive(item, depth=0, max_depth=None, seen_set=None, local_
 def is_native_array(x: Any, exclusive: bool = False)\
         -> bool:
     """
-    Determines whether the input x is an Ivy Array.
+    Determines whether the input x is a Native Array.
 
     :param x: The input to check
     :type x: any
@@ -65,6 +65,20 @@ def is_native_array(x: Any, exclusive: bool = False)\
         return _cur_framework(x).is_native_array(x, exclusive)
     except ValueError:
         return False
+
+
+def is_ivy_array(x: Any, exclusive: bool = False)\
+        -> bool:
+    """
+    Determines whether the input x is an Ivy Array.
+
+    :param x: The input to check
+    :type x: any
+    :param exclusive: Whether to check if the data type is exclusively an array, rather than a variable or traced array.
+    :type exclusive: bool, optional
+    :return: Boolean, whether or not x is an array.
+    """
+    return isinstance(x, ivy.Array) and ivy.is_native_array(x.data, exclusive)
 
 
 # noinspection PyShadowingNames
