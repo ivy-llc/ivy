@@ -61,9 +61,7 @@ DTYPE_FROM_STR = {'int8': _np.int8,
                 'bool': _np.bool_}
 
 
-
-
-def is_array(x, exclusive=False):
+def is_native_array(x, exclusive=False):
     if isinstance(x, _mx.ndarray.ndarray.NDArray):
         if exclusive and x.grad is not None:
             return False
