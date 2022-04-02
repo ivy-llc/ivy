@@ -4,6 +4,7 @@ from ivy.functional.backends.jax import JaxArray
 from typing import Optional
 
 
+
 def argmax(
     x: JaxArray,
     axis: Optional[int] = None,
@@ -19,6 +20,11 @@ def argmin(x: JaxArray,
            keepdims: bool = False)\
         -> JaxArray:
     return jnp.argmin(x, axis=axis, out=out, keepdims=keepdims)
+
+
+def nonzero(x: JaxArray)\
+        -> JaxArray:
+    return jnp.nonzero(x)
 
 
 def where(condition: JaxArray,

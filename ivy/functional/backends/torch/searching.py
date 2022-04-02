@@ -1,5 +1,5 @@
 import torch
-from typing import Optional, Union
+from typing import Optional, Union, Tuple
 
 def argmax(
     x: torch.Tensor,
@@ -21,6 +21,11 @@ def argmin(
     x = torch.tensor(x)
     ret = torch.argmin(x, axis=axis, keepdim=keepdims)
     return ret
+
+
+def nonzero(x: torch.Tensor)\
+        -> Tuple[torch.Tensor]:
+    return torch.nonzero(x, as_tuple=True)
 
 
 def where(condition: torch.Tensor,
