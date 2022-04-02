@@ -24,7 +24,7 @@ def test_vector_to_skew_symmetric_matrix(x, dtype, tensor_fn, dev, call):
     x = tensor_fn(x, dtype, dev)
     ret = ivy.vector_to_skew_symmetric_matrix(x)
     # type test
-    assert ivy.is_array(ret)
+    assert ivy.is_native_array(ret)
     # cardinality test
     assert ret.shape == x.shape + (x.shape[-1],)
     # value test

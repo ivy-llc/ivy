@@ -65,7 +65,7 @@ DTYPE_FROM_STR = {'int8': jnp.dtype('int8'),
 
 
 # noinspection PyUnresolvedReferences,PyProtectedMember
-def is_array(x, exclusive=False):
+def is_native_array(x, exclusive=False):
     if exclusive:
         return isinstance(x, (jax.interpreters.xla._DeviceArray,
                               jaxlib.xla_extension.DeviceArray, Buffer))
