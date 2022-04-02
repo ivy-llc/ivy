@@ -4,10 +4,8 @@ from typing import Union, Optional, Tuple, Literal, List
 from collections import namedtuple
 
 # local
-import ivy as _ivy
 from ivy import inf
-from collections import namedtuple
-import ivy as _ivy
+import ivy
 
 
 # Array API Standard #
@@ -16,6 +14,7 @@ import ivy as _ivy
 def eigh(x: torch.Tensor)\
   ->torch.Tensor:
      return torch.linalg.eigh(x)
+
 
 def inv(x):
     return torch.inverse(x)
@@ -28,6 +27,7 @@ def pinv(x: torch.Tensor,
         return torch.linalg.pinv(x)
     return torch.linalg.pinv(x, rtol)
 
+
 def cholesky(x):
     return torch.linalg.cholesky(x)
 
@@ -35,6 +35,7 @@ def cholesky(x):
 def matrix_transpose(x: torch.Tensor)\
         -> torch.Tensor:
     return torch.swapaxes(x, -1, -2)
+
 
 def matrix_rank(vector: torch.Tensor,
                 rtol: Optional[Union[float, Tuple[float]]] = None) \
@@ -115,11 +116,12 @@ def matmul(x1: torch.Tensor,
     return ret.type(dtype_from)
 
 
-def slogdet(x:Union[_ivy.Array,_ivy.NativeArray],full_matrices: bool = True) -> Union[_ivy.Array, Tuple[_ivy.Array,...]]:
+def slogdet(x:Union[ivy.Array,ivy.NativeArray],full_matrices: bool = True) -> Union[ivy.Array, Tuple[ivy.Array,...]]:
     results = namedtuple("slogdet", "sign logabsdet")
     sign, logabsdet = torch.linalg.slogdet(x)
     res = results(sign, logabsdet)
     return res
+
 
 def tensordot(x1: torch.Tensor, x2: torch.Tensor,
               axes: Union[int, Tuple[List[int], List[int]]] = 2) \
@@ -146,6 +148,7 @@ def trace(x: torch.Tensor,
 def det(A:torch.Tensor) \
     -> torch.Tensor:
     return torch.linalg.det(A)
+
 
 def cholesky(x: torch.Tensor,
             upper: bool = False) -> torch.Tensor:
