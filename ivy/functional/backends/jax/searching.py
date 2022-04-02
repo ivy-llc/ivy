@@ -21,6 +21,11 @@ def argmin(x: JaxArray,
     return jnp.argmin(x, axis=axis, out=out, keepdims=keepdims)
 
 
+def nonzero(x: JaxArray)\
+        -> JaxArray:
+    return jnp.nonzero(x)
+
+
 def where(condition: JaxArray,
           x1: JaxArray,
           x2: JaxArray)\

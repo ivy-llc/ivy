@@ -29,6 +29,11 @@ def argmin(
     return ret
 
 
+def nonzero(x: Tensor)\
+        -> Tensor:
+    return tf.experimental.numpy.nonzero(x)
+
+
 def where(condition: Tensor,
           x1: Tensor,
           x2: Tensor)\

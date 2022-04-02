@@ -1,5 +1,5 @@
 # global
-from typing import Union, Optional
+from typing import Union, Optional, Tuple
 
 # local
 import ivy
@@ -56,6 +56,24 @@ def argmin(x: Union[ivy.Array, ivy.NativeArray],
     """
 
     return _cur_framework(x).argmin(x, axis, keepdims)
+
+
+def nonzero(x: Union[ivy.Array, ivy.NativeArray])\
+        -> Tuple[ivy.Array]:
+    """
+    Returns the indices of the array elements which are non-zero.
+
+    Parameters
+    ----------
+    x:
+        input array. Must have a positive rank. If `x` is zero-dimensional, the function must raise an exception.
+
+    Returns
+    -------
+    out:
+        a tuple of `k` arrays, one for each dimension of `x` and each of size `n` (where `n` is the total number of non-zero elements), containing the indices of the non-zero elements in that dimension. The indices must be returned in row-major, C-style order. The returned array must have the default array index data type.
+    """
+    return _cur_framework(x).nonzero(x)
 
 
 def where(condition: Union[ivy.Array, ivy.NativeArray],
