@@ -15,5 +15,6 @@ Searching
 
    searching/argmax.rst
    searching/argmin.rst
+   searching/nonzero.rst
    searching/where.rst
 

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>where &mdash; Ivy 1.0 documentation</title>
+  <title>nonzero &mdash; Ivy 1.0 documentation</title>
   
 
   
@@ -36,8 +36,8 @@
   <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="Set" href="../set.html" />
-    <link rel="prev" title="nonzero" href="nonzero.html" /> 
+    <link rel="next" title="where" href="where.html" />
+    <link rel="prev" title="argmin" href="argmin.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -112,8 +112,8 @@
 <li class="toctree-l1 current"><a class="reference internal" href="../searching.html">Searching</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="argmax.html">argmax</a></li>
 <li class="toctree-l2"><a class="reference internal" href="argmin.html">argmin</a></li>
-<li class="toctree-l2"><a class="reference internal" href="nonzero.html">nonzero</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">where</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">nonzero</a></li>
+<li class="toctree-l2"><a class="reference internal" href="where.html">where</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../set.html">Set</a></li>
@@ -192,13 +192,13 @@
         
           <li><a href="../searching.html">Searching</a> &raquo;</li>
         
-      <li>where</li>
+      <li>nonzero</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../../_sources/functional/ivy/searching/where.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../../_sources/functional/ivy/searching/nonzero.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -211,22 +211,18 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="where">
-<h1>where<a class="headerlink" href="#where" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="nonzero">
+<h1>nonzero<a class="headerlink" href="#nonzero" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
-<dt id="ivy.functional.ivy.searching.where">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">where</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">condition</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">x1</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">x2</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../../_modules/ivy/functional/ivy/searching.html#where"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.searching.where" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns elements chosen from x or y depending on condition.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>condition</strong> (<em>bool array</em>) – Where True, yield x1, otherwise yield x2.</p></li>
-<li><p><strong>x1</strong> (<em>array</em>) – values from which to choose when condition is True.</p></li>
-<li><p><strong>x2</strong> (<em>array</em>) – values from which to choose when condition is False.</p></li>
-</ul>
+<dt id="ivy.functional.ivy.searching.nonzero">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">nonzero</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; Tuple<span class="p">[</span>ivy.array.Array<span class="p">]</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/searching.html#nonzero"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.searching.nonzero" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the indices of the array elements which are non-zero.</p>
+<dl class="simple">
+<dt>x:</dt><dd><p>input array. Must have a positive rank. If <cite>x</cite> is zero-dimensional, the function must raise an exception.</p>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>An array with elements from x1 where condition is True, and elements from x2 elsewhere.</p>
+</dl>
+<dl class="simple">
+<dt>out:</dt><dd><p>a tuple of <cite>k</cite> arrays, one for each dimension of <cite>x</cite> and each of size <cite>n</cite> (where <cite>n</cite> is the total number of non-zero elements), containing the indices of the non-zero elements in that dimension. The indices must be returned in row-major, C-style order. The returned array must have the default array index data type.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -246,10 +242,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../set.html" class="btn btn-neutral float-right" title="Set" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="where.html" class="btn btn-neutral float-right" title="where" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="nonzero.html" class="btn btn-neutral float-left" title="nonzero" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="argmin.html" class="btn btn-neutral float-left" title="argmin" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
