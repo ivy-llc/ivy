@@ -27,7 +27,7 @@ def test_einsum(eq_n_op_n_shp, dtype, tensor_fn, dev, call):
     operands = [tensor_fn(op, dtype, dev) for op in operands]
     ret = ivy.einsum(eq, *operands)
     # type test
-    assert ivy.is_array(ret)
+    assert ivy.is_native_array(ret)
     # cardinality test
     assert ret.shape == true_shape
     # value test
@@ -51,7 +51,7 @@ def test_all(x, axis, kd, dtype, tensor_fn, dev, call):
     x = tensor_fn(x, dtype, dev)
     ret = ivy.all(x, axis, kd)
     # type test
-    assert ivy.is_array(ret)
+    assert ivy.is_native_array(ret)
     # cardinality test
     if axis is None:
         expected_shape = [1]*len(x.shape) if kd else []
