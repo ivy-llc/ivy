@@ -66,7 +66,7 @@ def test_is_variable(object_in, dtype, dev, call):
     non_var_res = ivy.is_variable(non_var)
     var_res = ivy.is_variable(var)
     # type test
-    assert ivy.is_array(non_var)
+    assert ivy.is_native_array(non_var)
     if call is not helpers.np_call:
         assert ivy.is_variable(var)
     if call in [helpers.np_call, helpers.jnp_call]:
@@ -102,7 +102,7 @@ def test_variable_data(object_in, dtype, dev, call):
         if call is not helpers.mx_call:
             # jax variables and their data are the same instance
             assert not ivy.is_variable(var_data, exclusive=True)
-        assert ivy.is_array(var_data)
+        assert ivy.is_native_array(var_data)
     # cardinality test
     assert var_data.shape == var.shape
     # value test
@@ -123,7 +123,7 @@ def test_stop_gradient(x_raw, dtype, tensor_fn, dev, call):
     ret = ivy.stop_gradient(x)
     # type test
     if fn_name == 'array':
-        assert ivy.is_array(ret)
+        assert ivy.is_native_array(ret)
     elif call is not helpers.np_call:
         # Numpy does not support variables, is_variable() always returns False
         assert ivy.is_variable(ret)

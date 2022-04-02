@@ -50,7 +50,7 @@ def get_referrers_recursive(item, depth=0, max_depth=None, seen_set=None, local_
     return ret_cont
 
 
-def is_array(x: Any, exclusive: bool = False)\
+def is_native_array(x: Any, exclusive: bool = False)\
         -> bool:
     """
     Determines whether the input x is an Ivy Array.
@@ -62,7 +62,7 @@ def is_array(x: Any, exclusive: bool = False)\
     :return: Boolean, whether or not x is an array.
     """
     try:
-        return _cur_framework(x).is_array(x, exclusive)
+        return _cur_framework(x).is_native_array(x, exclusive)
     except ValueError:
         return False
 
@@ -122,7 +122,7 @@ def all_equal(*xs: Iterable[Any], equality_matrix: bool = False)\
     :type equality_matrix: bool, optional
     :return: Boolean, whether or not the inputs are equal, or matrix array of booleans if equality_matrix=True is set.
     """
-    equality_fn = ivy.array_equal if ivy.is_array(xs[0]) else lambda a, b: a == b
+    equality_fn = ivy.array_equal if ivy.is_native_array(xs[0]) else lambda a, b: a == b
     if equality_matrix:
         num_arrays = len(xs)
         mat = [[None for _ in range(num_arrays)] for _ in range(num_arrays)]
@@ -130,7 +130,7 @@ def all_equal(*xs: Iterable[Any], equality_matrix: bool = False)\
             for j_, xb in enumerate(xs[i:]):
                 j = j_ + i
                 res = equality_fn(xa, xb)
-                if ivy.is_array(res):
+                if ivy.is_native_array(res):
                     # noinspection PyTypeChecker
                     res = ivy.to_scalar(res)
                 # noinspection PyTypeChecker
@@ -308,7 +308,7 @@ def value_is_nan(x: Union[ivy.Array, ivy.NativeArray, Number], include_infs: boo
     :type include_infs: bool, optional
     :return Boolean as to whether the input value is a nan or not.
     """
-    x_scalar = ivy.to_scalar(x) if ivy.is_array(x) else x
+    x_scalar = ivy.to_scalar(x) if ivy.is_native_array(x) else x
     if not x_scalar == x_scalar:
         return True
     if include_infs and x_scalar == INF or x_scalar == -INF:
@@ -604,7 +604,7 @@ def get_all_arrays_in_memory():
     for obj in gc.get_objects():
         # noinspection PyBroadException
         try:
-            if ivy.is_array(obj):
+            if ivy.is_native_array(obj):
                 all_arrays.append(obj)
         except Exception:
             pass
@@ -699,7 +699,7 @@ def supports_inplace(x):
     """
     if ivy.is_variable(x):
         return ivy.inplace_variables_supported()
-    elif ivy.is_array(x):
+    elif ivy.is_native_array(x):
         return ivy.inplace_arrays_supported()
     raise Exception('Input x must be either a variable or an array.')
 
