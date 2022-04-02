@@ -2,7 +2,10 @@
 Collection of Ivy activation functions.
 """
 
+from typing import Union, Optional
+
 # local
+import ivy
 from ivy.framework_handler import current_framework as _cur_framework
 
 
@@ -20,15 +23,28 @@ def relu(x):
     return _cur_framework(x).relu(x)
 
 
-def leaky_relu(x, alpha=0.2):
-    """
-    Applies the leaky rectified linear unit function element-wise.
+def leaky_relu(x: Union[ivy.Array, ivy.NativeArray], alpha: Optional[float] = 0.2)\
+        -> ivy.Array:
+    """Applies the leaky rectified linear unit function element-wise.
 
-    :param x: Input array.
-    :type x: array
-    :param alpha: Negative slope for ReLU
-    :type alpha: float
-    :return: The input array with leaky relu applied element-wise.
+    Parameters
+    ----------
+    x : ivy.Array or ivy.NativeArray
+        Input array.
+    alpha : float, default=0.2
+        Negative slope for ReLU.
+
+    Returns
+    -------
+    ivy.Array
+        The input array with leaky relu applied element-wise.
+
+    Examples:
+    >>> x = ivy.array([0.39, -0.85])
+    >>> y = ivy.leaky_relu(x)
+    >>> print(y)
+    [0.39, -0.17]
+
     """
     return _cur_framework(x).leaky_relu(x, alpha)
 
