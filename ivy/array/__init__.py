@@ -44,7 +44,7 @@ class Array(ArrayWithArrayAPI, ArrayWithDevice, ArrayWithGeneral, ArrayWithGradi
             ArrayWithLogic, ArrayWithMath, ArrayWithMeta, ArrayWithRandom, ArrayWithReductions):
 
     def __init__(self, data):
-        assert ivy.is_array(data)
+        assert ivy.is_native_array(data)
         self._data = data
         self._shape = data.shape
 
