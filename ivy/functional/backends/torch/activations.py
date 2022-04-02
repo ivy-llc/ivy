@@ -3,7 +3,7 @@ Collection of PyTorch activation functions, wrapped to fit Ivy syntax and signat
 """
 
 # global
-import numpy as _np
+import numpy as np
 import torch
 
 
@@ -18,7 +18,7 @@ def leaky_relu(x, alpha: float = 0.2):
 
 def gelu(x, approximate: bool = True):
     if approximate:
-        return 0.5 * x * (1 + torch.tanh(((2 / _np.pi) ** 0.5) * (x + 0.044715 * x ** 3)))
+        return 0.5 * x * (1 + torch.tanh(((2 / np.pi) ** 0.5) * (x + 0.044715 * x ** 3)))
     return torch.nn.functional.gelu(x)
 
 
