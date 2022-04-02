@@ -9,7 +9,8 @@ import numpy as _np
 import torch
 
 
-def relu(x):
+def relu(x: torch.Tensor)\
+        -> torch.Tensor:
     return torch.relu(x)
 
 

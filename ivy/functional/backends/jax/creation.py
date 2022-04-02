@@ -117,6 +117,13 @@ def linspace(start, stop, num, axis=None, dev=None):
         axis = -1
     return to_dev(jnp.linspace(start, stop, num, axis=axis), default_device(dev))
 
+
+def meshgrid(*arrays: JaxArray,
+             indexing: str = 'xy') \
+        -> List[JaxArray]:
+    return jnp.meshgrid(*arrays, indexing=indexing)
+
+
 def eye(n_rows: int,
         n_cols: Optional[int] = None,
         k: Optional[int] = 0,
@@ -139,7 +146,6 @@ def full(shape, fill_value, dtype=None, device=None):
                   default_device(device))
 
 
-meshgrid = lambda *xs, indexing='ij': jnp.meshgrid(*xs, indexing=indexing)
 
 
 def from_dlpack(x):

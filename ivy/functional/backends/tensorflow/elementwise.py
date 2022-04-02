@@ -7,6 +7,12 @@ import typing
 import ivy
 
 
+def add(x1: Tensor,
+           x2: Tensor)\
+        -> Tensor:
+    x1, x2 = _cast_for_binary_op(x1, x2)
+    return tf.add(x1, x2)
+
 def bitwise_xor(x1: Tensor,
                 x2: Tensor)\
         -> Tensor:
@@ -108,6 +114,11 @@ def asinh(x: Tensor) \
         -> Tensor:
     return tf.asinh(x)
 
+def sign(x: Tensor) \
+        -> Tensor:
+    if x.dtype in [tf.uint8, tf.uint16, tf.uint32, tf.uint64]:
+        return tf.cast(tf.math.sign(tf.cast(x, tf.float32)), x.dtype)
+    return tf.math.sign(x)
 
 def sqrt(x: Tensor)\
         -> Tensor:

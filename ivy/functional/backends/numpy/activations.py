@@ -11,7 +11,10 @@ try:
 except (ImportError, ModuleNotFoundError):
     _erf = None
 
-relu = lambda x: np.maximum(x, 0)
+
+def relu(x: np.ndarray)\
+        -> np.ndarray:
+    return np.maximum(x, 0)
 
 
 def leaky_relu(x: np.ndarray, alpha: Optional[float] = 0.2)\

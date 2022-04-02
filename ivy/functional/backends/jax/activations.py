@@ -12,7 +12,9 @@ import jax.numpy as jnp
 from ivy.functional.backends.jax import JaxArray
 
 
-relu = lambda x: jnp.maximum(x, 0)
+def relu(x: JaxArray)\
+        -> JaxArray:
+    return jnp.maximum(x, 0)
 
 
 def leaky_relu(x: JaxArray, alpha: Optional[float] = 0.2)\

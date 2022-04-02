@@ -195,11 +195,11 @@ def assert_compilable(fn):
 def assert_docstring_examples_run(fn):
     fn_name = fn.__name__
     docstring = ivy.framework_handler.ivy_original_dict[fn_name].__doc__
+    if docstring is None:
+        return True
 
-    exec_lines = filter(lambda line: '>>>' in line, docstring.split('\n'))
-    example = map(lambda line: line.split('>>>')[1][1:], exec_lines)
-
-    for line in example:
+    executable_lines = [line.split('>>>')[1][1:] for line in docstring.split('\n') if '>>>' in line]
+    for line in executable_lines:
         exec(line)
 
     return True

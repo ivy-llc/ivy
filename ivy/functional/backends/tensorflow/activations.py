@@ -6,10 +6,12 @@ from typing import Optional
 
 # global
 import tensorflow as tf
-
 from tensorflow.python.types.core import Tensor
 
-relu = tf.nn.relu
+
+def relu(x: Tensor)\
+        -> Tensor:
+    return tf.nn.relu(x)
 
 
 def leaky_relu(x: Tensor, alpha: Optional[float] = 0.2)\

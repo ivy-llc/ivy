@@ -8,7 +8,10 @@ from typing import Optional
 import numpy as _np
 import mxnet as _mx
 
-relu = _mx.nd.relu
+
+def relu(x: _mx.nd.NDArray)\
+        -> _mx.nd.NDArray:
+    return _mx.nd.relu(x)
 
 
 def leaky_relu(x: _mx.nd.NDArray, alpha: Optional[float] = 0.2)\
