@@ -25,7 +25,7 @@ def test_logical_not(x, dtype, tensor_fn, dev, call):
     x = tensor_fn(x, dtype, dev)
     ret = ivy.logical_not(x)
     # type test
-    assert ivy.is_array(ret)
+    assert ivy.is_native_array(ret)
     # cardinality test
     assert ret.shape == x.shape
     # value test
