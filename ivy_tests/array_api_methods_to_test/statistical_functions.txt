@@ -1,5 +1,5 @@
 max
-#mean
+mean
 min
 #prod # PyTorch not passing due to bug in Array API test suite (https://github.com/data-apis/array-api-tests/issues/10#issuecomment-1068840049)
 std
