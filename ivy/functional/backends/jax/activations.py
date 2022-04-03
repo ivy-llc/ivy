@@ -2,12 +2,26 @@
 Collection of Jax activation functions, wrapped to fit Ivy syntax and signature.
 """
 
+from typing import Optional
+
 # global
 import jax
 import jax.numpy as jnp
 
-relu = lambda x: jnp.maximum(x, 0)
-leaky_relu = lambda x, alpha=0.2: jnp.where(x > 0, x, x * alpha)
+# local
+from ivy.functional.backends.jax import JaxArray
+
+
+def relu(x: JaxArray)\
+        -> JaxArray:
+    return jnp.maximum(x, 0)
+
+
+def leaky_relu(x: JaxArray, alpha: Optional[float] = 0.2)\
+        -> JaxArray:
+    return jnp.where(x > 0, x, x * alpha)
+
+
 gelu = jax.nn.gelu
 tanh = jnp.tanh
 sigmoid = lambda x: 1 / (1 + jnp.exp(-x))

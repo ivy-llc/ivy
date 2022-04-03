@@ -2,7 +2,7 @@
 import torch
 import numpy as np
 from torch import Tensor
-from typing import Union, Tuple, Optional, Dict
+from typing import Union, Tuple, List, Optional, Dict
 from numbers import Number
 # local
 from ivy import dtype_from_str, default_dtype, dev_from_str, default_device, shape_to_tuple
@@ -241,6 +241,11 @@ def eye(n_rows: int,
         return torch.zeros([n_rows, n_cols], dtype=dtype, device=device)
 
 
+def meshgrid(*arrays: torch.Tensor, indexing='xy')\
+        -> List[torch.Tensor]:
+    return list(torch.meshgrid(*arrays, indexing=indexing))
+
+
 # noinspection PyShadowingNames
 def arange(stop: Number, start: Number = 0, step: Number = 1, dtype: Optional[str] = None,
            dev: Optional[str] = None):
@@ -255,14 +260,6 @@ def full(shape, fill_value, dtype=None, device=None):
     return torch.full(
         shape_to_tuple(shape), fill_value, dtype=dtype_from_str(default_dtype(dtype, fill_value)),
         device=default_device(device))
-
-
-def meshgrid(*xs, indexing='ij'):
-    ret = torch.meshgrid(*xs)
-    if indexing == 'xy':
-        # ToDo: verify if this is correct
-        return tuple([torch.transpose(x, 1, 0) for x in ret])
-    return ret
 
 
 def from_dlpack(x):

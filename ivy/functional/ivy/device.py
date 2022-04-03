@@ -73,7 +73,7 @@ def get_all_arrays_on_dev(dev):
     for obj in gc.get_objects():
         # noinspection PyBroadException
         try:
-            if ivy.is_array(obj) and ivy.dev(obj) == dev:
+            if ivy.is_native_array(obj) and ivy.dev(obj) == dev:
                 all_arrays.append(obj)
         except Exception:
             pass
@@ -438,7 +438,7 @@ def split_func_call(func: Callable, inputs: Iterable[Union[Union[ivy.Array, ivy.
     chunk_sizes = [chunk_size] * num_chunks_floored
     if num_chunks != num_chunks_floored:
         chunk_sizes.append(dim_size - chunk_size * num_chunks_floored)
-    inputs_split = [ivy.split(inp, chunk_sizes, input_axes[i], True) if ivy.is_array(inp)
+    inputs_split = [ivy.split(inp, chunk_sizes, input_axes[i], True) if ivy.is_native_array(inp)
                     else inp.split(chunk_sizes, input_axes[i], True) for i, inp in enumerate(inputs)]
     is_mean = mode == 'mean'
     is_sum = mode == 'sum'
@@ -465,7 +465,7 @@ def split_func_call(func: Callable, inputs: Iterable[Union[Union[ivy.Array, ivy.
         output_axes = [input_axes[0]] * num_outputs
     elif isinstance(output_axes, int):
         output_axes = [output_axes] * num_outputs
-    ret = [ivy.concatenate([r[i] for r in rets], output_axes[i]) if ivy.is_array(rets[0][i])
+    ret = [ivy.concatenate([r[i] for r in rets], output_axes[i]) if ivy.is_native_array(rets[0][i])
            else ivy.Container.concat([r[i] for r in rets], output_axes[i]) for i in range(num_outputs)]
     return ret[0] if len(ret) == 1 else ret
 
@@ -639,7 +639,7 @@ def dev_dist(x, devs: Union[Iterable[str], Dict[str, int]], axis=0):
     :type axis: int, optional
     :return: array or container distributed across the target devices
     """
-    if ivy.is_array(x):
+    if ivy.is_native_array(x):
         return dev_dist_array(x, devs, axis)
     elif isinstance(x, ivy.Container):
         return x.dev_dist(devs, axis)
@@ -729,7 +729,7 @@ def dev_clone(x, devs):
     :type devs: sequence of strs
     :return: array or container distributed across the target devices
     """
-    if ivy.is_array(x):
+    if ivy.is_native_array(x):
         return dev_clone_array(x, devs)
     elif isinstance(x, ivy.Container):
         return x.dev_clone(devs)
@@ -830,7 +830,7 @@ def dev_unify(xs, dev, mode, axis=0):
         return xs
     # noinspection PyProtectedMember
     xs0 = next(iter(xs.items()))[1]
-    if ivy.is_array(xs0):
+    if ivy.is_native_array(xs0):
         return dev_unify_array(xs, dev, mode, axis)
     elif isinstance(xs0, ivy.Container):
         return ivy.Container.unify(xs, dev, mode, axis)
@@ -858,7 +858,7 @@ def dev_unify_iter(xs, dev, mode, axis=0, transpose=False):
     xs = xs._data if isinstance(xs, MultiDevIter) else xs
     if transpose:
         # ToDo: make this more elegant, this method should not be responsible for transposing iterators
-        xs_t = [MultiDevItem({ivy.dev(i) if ivy.is_array(i) else i.dev: i
+        xs_t = [MultiDevItem({ivy.dev(i) if ivy.is_native_array(i) else i.dev: i
                               for i in mdi}) for mdi in list(map(list, zip(*xs)))]
         return [dev_unify(x, dev, mode, axis) for x in xs_t]
     return dev_unify(xs, dev, mode, axis)

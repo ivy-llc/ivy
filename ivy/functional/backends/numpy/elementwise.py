@@ -7,12 +7,23 @@ try:
 except (ImportError, ModuleNotFoundError):
     _erf = None
 
+def add(x1: np.ndarray,
+        x2: np.ndarray)\
+        -> np.ndarray:
+    if not isinstance(x2, np.ndarray):
+        x2 = np.asarray(x2, dtype=x1.dtype)
+    return np.asarray(npa.add(npa.asarray(x1), npa.asarray(x2)))
+
 def bitwise_xor(x1: np.ndarray,
                 x2: np.ndarray)\
         -> np.ndarray:
     if not isinstance(x2, np.ndarray):
         x2 = np.asarray(x2, dtype=x1.dtype)
     return npa.bitwise_xor(npa.asarray(x1), npa.asarray(x2))
+
+def exp(x: np.ndarray)\
+        -> np.ndarray:
+    return np.exp(x)
 
 def expm1(x: np.ndarray)\
         -> np.ndarray:
@@ -70,6 +81,9 @@ def floor(x: np.ndarray)\
         -> np.ndarray:
     return np.asarray(npa.floor(npa.asarray(x)))
 
+def sign(x: np.ndarray)\
+        -> np.ndarray:
+    return np.sign(x)
 
 def sqrt(x: np.ndarray)\
         -> np.ndarray:
@@ -193,6 +207,13 @@ def tanh(x: np.ndarray)\
     return np.asarray(npa.tanh(npa.asarray(x)))
 
 
+def floor_divide(x1: np.ndarray, x2: np.ndarray)\
+                -> np.ndarray:
+    if not isinstance(x2, np.ndarray):
+        x2 = np.asarray(x2, dtype=x1.dtype)
+    return npa.floor_divide(npa.asarray(x1), npa.asarray(x2))
+
+
 def sinh(x: np.ndarray)\
         -> np.ndarray:
     return np.asarray(npa.sinh(npa.asarray(x)))
@@ -233,6 +254,11 @@ def bitwise_or(x1: np.ndarray, x2: np.ndarray)\
         x1 = x1.astype(dtype)
         x2 = x2.astype(dtype)
     return np.bitwise_or(x1, x2)
+
+
+def trunc(x: np.ndarray) \
+        -> np.ndarray:
+    return np.asarray(npa.trunc(npa.asarray(x)))
 
 
 def abs(x: np.ndarray)\
