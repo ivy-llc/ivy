@@ -69,7 +69,7 @@ def test_dropout(x, dtype, tensor_fn, dev, call):
     x = tensor_fn(x, dtype, dev)
     ret = ivy.dropout(x, 0.9)
     # type test
-    assert ivy.is_array(ret)
+    assert ivy.is_ivy_array(ret)
     # cardinality test
     assert ret.shape == x.shape
     # value test
