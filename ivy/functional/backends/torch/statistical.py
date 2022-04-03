@@ -101,10 +101,10 @@ def mean(x: torch.Tensor,
     if axis is None:
         num_dims = len(x.shape)
         axis = list(range(num_dims))
-    mean = torch.mean(x, dim=axis, keepdim=keepdims)
+    torch.mean(x, dim=axis, keepdim=keepdims)
     if axis == ():
-        mean = torch.reshape(mean, (1,))
-    return mean
+        return x
+    return torch.mean(x, dim=axis, keepdim=keepdims)
 
 
 # noinspection PyShadowingBuiltins
