@@ -66,8 +66,6 @@ def prod(x: np.ndarray,
 
 
 def mean(x: np.ndarray,
-         /,
-         *,
          axis: Optional[Union[int, Tuple[int, ...]]] = None,
          keepdims: bool = False)\
         -> np.ndarray:
