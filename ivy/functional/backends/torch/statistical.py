@@ -94,10 +94,16 @@ def prod(x: torch.Tensor,
     return torch.prod(input=x, dim=axis, dtype=dtype, keepdim=keepdims)
 
 
-def mean(x, axis: Optional[List[int]] = None, keepdims: bool = False):
+def mean(x: torch.Tensor,
+         axis: Optional[Union[int, Tuple[int, ...]]] = None,
+         keepdims: bool = False)\
+        -> torch.Tensor:
     if axis is None:
         num_dims = len(x.shape)
         axis = list(range(num_dims))
+    torch.mean(x, dim=axis, keepdim=keepdims)
+    if axis == ():
+        return x
     return torch.mean(x, dim=axis, keepdim=keepdims)
 
 
