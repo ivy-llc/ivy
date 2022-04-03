@@ -7,7 +7,7 @@ from collections import namedtuple
 # local
 from ivy import inf
 import ivy
-from collections import namedtuple
+
 
 
 # Array API Standard #
