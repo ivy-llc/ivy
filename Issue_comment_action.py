@@ -76,7 +76,7 @@ token = sys.argv[-1]
 main_issue_ids = main_issue_numbers(command('gh issue list --label "ToDo" --json number'))
 
 if issue_number in main_issue_ids:
-    main_issue = command(f'gh issue view {issue_number} --json number,title,body')
+    main_issue = command(f'gh issue view {issue_number} --json number,title,body,labels')
     main_issue_labels = get_labels(main_issue)
     alocate_functions = carve_main_issue_body_functions(main_issue['body'])
     non_alocate_functions = carve_main_issue_body_functions(main_issue['body'], allocated=False)
