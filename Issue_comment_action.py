@@ -23,6 +23,17 @@ def carve_main_issue_body_functions(main_issue_body, allocated=True):
     return [i[6:].strip() for i in main_issue_body.split('\r\n') if '#' not in i]
 
 
+def get_labels(main_issue):
+    return [label['name'] for label in main_issue['labels']]
+
+
+def set_labels(issue_labels):
+    if 'Array API' in issue_labels:
+        return ['Array API', 'Single Function']
+    elif 'Reformatting' in issue_labels:
+        return ['Reformatting', 'Single Function']
+
+
 def main_issue_numbers(lst):
     x = []
     for number in lst:
@@ -65,7 +76,8 @@ token = sys.argv[-1]
 main_issue_ids = main_issue_numbers(command('gh issue list --label "ToDo" --json number'))
 
 if issue_number in main_issue_ids:
-    main_issue = command(f'gh issue view {issue_number} --json number,title,body')
+    main_issue = command(f'gh issue view {issue_number} --json number,title,body,labels')
+    main_issue_labels = get_labels(main_issue)
     alocate_functions = carve_main_issue_body_functions(main_issue['body'])
     non_alocate_functions = carve_main_issue_body_functions(main_issue['body'], allocated=False)
     issue_in_cmt, issue_id = issue_in_comment(comment_body)
@@ -78,8 +90,9 @@ if issue_number in main_issue_ids:
         if comment_issue_title in non_alocate_functions:
             print('Function Free')
             # ToDo: Add Labels "Array API" "Single Function"
-            main_issue_body = re.sub(r'\b%s\b' % comment_issue_title, issue_id, main_issue['body'])
-            command(f'gh issue edit {comment_issue_id} --add-label "Array API","Single Function"', save_output=False)
+            main_issue_body = re.sub(r'\b%s\b' % comment_issue_title, issue_id.replace('/', '#'), main_issue['body'])
+            set_issue_labels = set_labels(main_issue_labels)
+            command(f'gh issue edit {comment_issue_id} --add-label "{set_issue_labels[0]}","{set_issue_labels[1]}"', save_output=False)
             command(f'gh issue edit {main_issue["number"]} --body "{main_issue_body}"', save_output=False)
             delete_comment(token, issue_number, comment_number)
         elif (comment_issue_title not in non_alocate_functions) and (comment_issue_id not in alocate_functions):
