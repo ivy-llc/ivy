@@ -36,8 +36,6 @@ def sum(x: jnp.ndarray,
 
 
 def mean(x: JaxArray,
-         /,
-         *,
          axis: Optional[Union[int, Tuple[int, ...]]] = None,
          keepdims: bool = False)\
         -> JaxArray:
