@@ -9,6 +9,45 @@ from ivy.framework_handler import current_framework as _cur_framework
 # Array API Standard #
 # -------------------#
 
+def add(x1: Union[ivy.Array, ivy.NativeArray],
+        x2: Union[ivy.Array, ivy.NativeArray])\
+        -> ivy.Array:
+    """
+    Calculates the sum for each element ``x1_i`` of the input array ``x1`` with the respective element ``x2_i`` of the input array ``x2``.
+    **Special cases**
+    For floating-point operands,
+    - If either ``x1_i`` or ``x2_i`` is ``NaN``, the result is ``NaN``.
+    - If ``x1_i`` is ``+infinity`` and ``x2_i`` is ``-infinity``, the result is ``NaN``.
+    - If ``x1_i`` is ``-infinity`` and ``x2_i`` is ``+infinity``, the result is ``NaN``.
+    - If ``x1_i`` is ``+infinity`` and ``x2_i`` is ``+infinity``, the result is ``+infinity``.
+    - If ``x1_i`` is ``-infinity`` and ``x2_i`` is ``-infinity``, the result is ``-infinity``.
+    - If ``x1_i`` is ``+infinity`` and ``x2_i`` is a finite number, the result is ``+infinity``.
+    - If ``x1_i`` is ``-infinity`` and ``x2_i`` is a finite number, the result is ``-infinity``.
+    - If ``x1_i`` is a finite number and ``x2_i`` is ``+infinity``, the result is ``+infinity``.
+    - If ``x1_i`` is a finite number and ``x2_i`` is ``-infinity``, the result is ``-infinity``.
+    - If ``x1_i`` is ``-0`` and ``x2_i`` is ``-0``, the result is ``-0``.
+    - If ``x1_i`` is ``-0`` and ``x2_i`` is ``+0``, the result is ``+0``.
+    - If ``x1_i`` is ``+0`` and ``x2_i`` is ``-0``, the result is ``+0``.
+    - If ``x1_i`` is ``+0`` and ``x2_i`` is ``+0``, the result is ``+0``.
+    - If ``x1_i`` is either ``+0`` or ``-0`` and ``x2_i`` is a nonzero finite number, the result is ``x2_i``.
+    - If ``x1_i`` is a nonzero finite number and ``x2_i`` is either ``+0`` or ``-0``, the result is ``x1_i``.
+    - If ``x1_i`` is a nonzero finite number and ``x2_i`` is ``-x1_i``, the result is ``+0``.
+    - In the remaining cases, when neither ``infinity``, ``+0``, ``-0``, nor a ``NaN`` is involved, and the operands have the same mathematical sign or have different magnitudes, the sum must be computed and rounded to the nearest representable value according to IEEE 754-2019 and a supported round mode. If the magnitude is too large to represent, the operation overflows and the result is an `infinity` of appropriate mathematical sign.
+    .. note::
+       Floating-point addition is a commutative operation, but not always associative.
+    Parameters
+    ----------
+    x1: array
+        first input array. Should have a numeric data type.
+    x2: array
+        second input array. Must be compatible with ``x1`` (see :ref:`broadcasting`). Should have a numeric data type.
+    Returns
+    -------
+    out: array
+        an array containing the element-wise sums. The returned array must have a data type determined by :ref:`type-promotion`.
+    """
+    return _cur_framework(x1, x2).add(x1, x2)
+
 def bitwise_xor(x1: Union[ivy.Array, ivy.NativeArray],
                 x2: Union[ivy.Array, ivy.NativeArray])\
         -> ivy.Array:
@@ -340,6 +379,24 @@ def asinh(x: Union[ivy.Array, ivy.NativeArray])\
     """
     return _cur_framework(x).asinh(x)
 
+def sign(x: Union[ivy.Array, ivy.NativeArray])\
+        -> ivy.Array:
+    """
+    Returns an indication of the sign of a number for each element ``x_i`` of the input array ``x``.
+    **Special cases**
+    - If ``x_i`` is less than ``0``, the result is ``-1``.
+    - If ``x_i`` is either ``-0`` or ``+0``, the result is ``0``.
+    - If ``x_i`` is greater than ``0``, the result is ``+1``.
+    Parameters
+    ----------
+    x: array
+        input array. Should have a numeric data type.
+    Returns
+    -------
+    out: array
+        an array containing the evaluated result for each element in ``x``. The returned array must have the same data type as ``x``.
+    """
+    return _cur_framework(x).sign(x)
 
 def sqrt(x: Union[ivy.Array, ivy.NativeArray])\
         -> ivy.Array:
@@ -562,27 +619,6 @@ def cos(x: Union[ivy.Array, ivy.NativeArray])\
     return _cur_framework(x).cos(x)
 
 
-def logical_not(x: Union[ivy.Array, ivy.NativeArray])\
-        -> ivy.Array:
-    """
-    Computes the logical NOT for each element ``x_i`` of the input array ``x``.
-
-    .. note::
-       While this specification recommends that this function only accept input arrays having a boolean data type, specification-compliant array libraries may choose to accept input arrays having numeric data types. If non-boolean data types are supported, zeros must be considered the equivalent of ``False``, while non-zeros must be considered the equivalent of ``True``.
-
-    Parameters
-    ----------
-    x:
-        input array. Should have a boolean data type.
-
-    Returns
-    -------
-    out:
-        an array containing the element-wise results. The returned array must have a data type of ``bool``.
-    """
-    return _cur_framework(x).logical_not(x)
-
-
 def acos(x: Union[ivy.Array, ivy.NativeArray])\
         -> ivy.Array:
     """
@@ -608,6 +644,28 @@ def acos(x: Union[ivy.Array, ivy.NativeArray])\
         an array containing the inverse cosine of each element in x. The returned array must have a floating-point data type determined by :ref:`type-promotion`.
     """
     return _cur_framework(x).acos(x)
+
+
+def logical_not(x: Union[ivy.Array, ivy.NativeArray])\
+        -> ivy.Array:
+    """
+    Computes the logical NOT for each element ``x_i`` of the input array ``x``.
+
+    .. note::
+       While this specification recommends that this function only accept input arrays having a boolean data type, specification-compliant array libraries may choose to accept input arrays having numeric data types. If non-boolean data types are supported, zeros must be considered the equivalent of ``False``, while non-zeros must be considered the equivalent of ``True``.
+
+    Parameters
+    ----------
+    x:
+        input array. Should have a boolean data type.
+
+    Returns
+    -------
+    out:
+        an array containing the element-wise results. The returned array must have a data type of ``bool``.
+    """
+    return _cur_framework(x).logical_not(x)
+
 
 
 def logical_xor(x1: Union[ivy.Array, ivy.NativeArray], x2: Union[ivy.Array, ivy.NativeArray]) \
@@ -754,19 +812,6 @@ def not_equal(x1: Union[ivy.Array, ivy.NativeArray], x2: Union[ivy.Array, ivy.Na
         an array containing the element-wise results. The returned array must have a data type of ``bool``.
     """
     return _cur_framework(x1, x2).not_equal(x1, x2)
-
-
-def tanh(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
-    """
-    Calculates an implementation-dependent approximation to the hyperbolic tangent,
-    having domain [-infinity, +infinity] and codomain [-1, +1], for each element x_i of the input array x.
-
-    :param x: input array whose elements each represent a hyperbolic angle. Should have a floating-point
-            data type.
-    :return: an array containing the hyperbolic tangent of each element in x. The returned array must
-            have a floating-point data type
-    """
-    return _cur_framework(x).tanh(x)
 
 
 def floor_divide(x1: Union[ivy.Array, ivy.NativeArray],
@@ -955,16 +1000,6 @@ def tan(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
     return _cur_framework(x).tan(x)
 
 
-def asin(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
-    """
-    Computes inverse sine element-wise.
-
-    :param x: y-coordinate on the unit circle.
-    :type x: array
-    :return: The inverse sine of each element in x, in radians and in the closed interval [-pi/2, pi/2].
-    """
-    return _cur_framework(x).asin(x)
-
 
 def atan(x: Union[ivy.Array, ivy.NativeArray]) \
         -> ivy.Array:
@@ -1067,28 +1102,6 @@ def atanh(x: Union[ivy.Array, ivy.NativeArray]) \
     :return:an array containing the inverse hyperbolic tangent of each element in x. The returned array must have a floating-point data type determined by Type Promotion Rules.
     """
     return _cur_framework(x).atanh(x)
-
-
-def log(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
-    """
-    Computes natural logarithm of x element-wise.
-
-    :param x: Value to compute log for.
-    :type x: array
-    :return: The natural logarithm of each element of x.
-    """
-    return _cur_framework(x).log(x)
-
-
-def exp(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
-    """
-    Computes exponential of x element-wise.
-
-    :param x: Value to compute exponential for.
-    :type x: array
-    :return: The exponential of each element of x.
-    """
-    return _cur_framework(x).exp(x)
 
 
 def subtract(x1: Union[ivy.Array, ivy.NativeArray],

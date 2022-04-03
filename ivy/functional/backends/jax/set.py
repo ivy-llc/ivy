@@ -1,5 +1,4 @@
 # global
-import jax
 import jax.numpy as jnp
 from typing import Tuple
 from collections import namedtuple
