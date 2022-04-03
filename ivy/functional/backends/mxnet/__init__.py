@@ -114,8 +114,6 @@ def _handle_output(x, axis, keepdims, ret):
 # local sub-modules
 from . import activations
 from .activations import *
-from . import constants
-from .constants import *
 from . import creation
 from .creation import *
 from . import data_type
