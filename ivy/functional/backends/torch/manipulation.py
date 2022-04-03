@@ -62,10 +62,11 @@ def stack(x: Union[Tuple[torch.Tensor], List[torch.Tensor]],
     return torch.stack(x, axis)
 
 
-def reshape(x, newshape: List[int]):
-    if isinstance(newshape, int):
-        newshape = [newshape]
-    return torch.reshape(x, newshape)
+def reshape(x: torch.Tensor,
+            shape: Tuple[int, ...],
+            copy: Optional[bool] = None)\
+        -> torch.Tensor:
+    return torch.reshape(x, shape)
 
 
 def concatenate(xs: List[torch.Tensor], axis: int = -1):
