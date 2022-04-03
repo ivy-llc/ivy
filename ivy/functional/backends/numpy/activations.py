@@ -2,6 +2,8 @@
 Collection of Numpy activation functions, wrapped to fit Ivy syntax and signature.
 """
 
+from typing import Optional
+
 # global
 import numpy as np
 try:
@@ -15,7 +17,9 @@ def relu(x: np.ndarray)\
     return np.maximum(x, 0)
 
 
-leaky_relu = lambda x, alpha=0.2: np.where(x > 0, x, x * alpha)
+def leaky_relu(x: np.ndarray, alpha: Optional[float] = 0.2)\
+        -> np.ndarray:
+    return np.where(x > 0, x, x * alpha)
 
 
 def gelu(x, approximate=True):

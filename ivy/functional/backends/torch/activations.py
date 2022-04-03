@@ -2,6 +2,8 @@
 Collection of PyTorch activation functions, wrapped to fit Ivy syntax and signature.
 """
 
+from typing import Optional
+
 # global
 import numpy as np
 import torch
@@ -12,7 +14,8 @@ def relu(x: torch.Tensor)\
     return torch.relu(x)
 
 
-def leaky_relu(x, alpha: float = 0.2):
+def leaky_relu(x: torch.Tensor, alpha: Optional[float] = 0.2)\
+        -> torch.Tensor:
     return torch.nn.functional.leaky_relu(x, alpha)
 
 
