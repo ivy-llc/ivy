@@ -1,7 +1,7 @@
 # global
 import tensorflow as tf
 from tensorflow import Tensor
-from typing import Union, Tuple, Optional
+from typing import Union, Tuple, List, Optional
 from tensorflow.python.framework.dtypes import DType
 
 # local
@@ -134,6 +134,9 @@ def linspace(start, stop, num, axis=None, dev=None):
     with tf.device(ivy.dev_from_str(dev)):
         return tf.linspace(start, stop, num, axis=axis)
 
+def meshgrid(*arrays: tf.Tensor, indexing: str = 'xy')\
+        -> List[tf.Tensor]:
+    return tf.meshgrid(*arrays, indexing=indexing)
 
 def eye(n_rows: int,
         n_cols: Optional[int] = None,
@@ -171,8 +174,6 @@ def full(shape, fill_value, dtype=None, device=None):
     with tf.device(dev_from_str(default_device(device))):
         return tf.fill(shape, tf.constant(fill_value, dtype=dtype_from_str(default_dtype(dtype, fill_value))))
 
-
-meshgrid = lambda *xs, indexing='ij': tf.meshgrid(*xs, indexing=indexing)
 
 
 def from_dlpack(x):

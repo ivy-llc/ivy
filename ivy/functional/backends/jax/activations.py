@@ -6,7 +6,15 @@ Collection of Jax activation functions, wrapped to fit Ivy syntax and signature.
 import jax
 import jax.numpy as jnp
 
-relu = lambda x: jnp.maximum(x, 0)
+# local
+from ivy.functional.backends.jax import JaxArray
+
+
+def relu(x: JaxArray)\
+        -> JaxArray:
+    return jnp.maximum(x, 0)
+
+
 leaky_relu = lambda x, alpha=0.2: jnp.where(x > 0, x, x * alpha)
 gelu = jax.nn.gelu
 tanh = jnp.tanh

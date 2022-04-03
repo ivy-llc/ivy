@@ -1,8 +1,8 @@
 abs
-#acos # depends on: greater
+acos
 acosh
-#add
-#asin # depends on: greater
+add
+asin
 asinh
 atan
 atan2
@@ -45,7 +45,7 @@ positive
 #pow
 #remainder # Failing non-deterministically 
 round
-#sign
+#sign # tests are passing but uncommenting causes everything in test_signatures to run
 sin
 sinh
 square

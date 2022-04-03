@@ -110,8 +110,10 @@ def stack(arrays: Union[Tuple[ivy.Array], List[ivy.Array], Tuple[ivy.NativeArray
     return _cur_framework(arrays).stack(arrays, axis)
 
 
-def reshape(x: Union[ivy.Array, ivy.NativeArray], newshape: Union[int, Iterable[int]])\
-        -> Union[ivy.Array, ivy.NativeArray]:
+def reshape(x: Union[ivy.Array, ivy.NativeArray],
+            shape: Tuple[int, ...],
+            copy: Optional[bool] = None)\
+        -> ivy.Array:
     """
     Gives a new shape to an array without changing its data.
 
@@ -122,8 +124,7 @@ def reshape(x: Union[ivy.Array, ivy.NativeArray], newshape: Union[int, Iterable[
     :type newshape: int or sequence of ints
     :return: Reshaped array.
     """
-    return _cur_framework(x).reshape(x, newshape)
-
+    return _cur_framework(x).reshape(x, shape, copy)
 
 
 def concatenate(xs: Iterable[Union[ivy.Array, ivy.NativeArray]], axis: int = -1)\

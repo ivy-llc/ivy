@@ -64,8 +64,11 @@ def stack(x: Union[Tuple[Tensor], List[Tensor]],
     return tf.experimental.numpy.stack(x, axis)
 
 
-reshape = lambda x, newshape: tf.reshape(x, (newshape,) if isinstance(newshape, int) else newshape)
-
+def reshape(x: Tensor,
+            shape: Tuple[int, ...],
+            copy: Optional[bool] = None)\
+        -> Tensor:
+    return tf.reshape(x, shape)
 
 
 def concatenate(xs, axis=-1):

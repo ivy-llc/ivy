@@ -24,10 +24,18 @@ def argmin(
     keepdims: bool = False,
     output_type: Optional[int] = tf.dtypes.int64,
 ) -> Tensor:
-
     ret = x.numpy().argmin(axis=axis, keepdims=keepdims)
     ret = tf.convert_to_tensor(ret,dtype=ret.dtype)
-
     return ret
 
-where = lambda condition, x1, x2: tf.where(tf.cast(condition, tf.bool), x1, x2)
+
+def nonzero(x: Tensor)\
+        -> Tensor:
+    return tf.experimental.numpy.nonzero(x)
+
+
+def where(condition: Tensor,
+          x1: Tensor,
+          x2: Tensor)\
+        -> Tensor:
+    return tf.experimental.numpy.where(condition, x1, x2)

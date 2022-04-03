@@ -5,7 +5,7 @@ Collection of PyTorch gradient functions, wrapped to fit Ivy syntax and signatur
 # global
 import ivy
 import torch
-import warnings as _warnings
+import warnings
 
 
 def variable(x):
@@ -45,8 +45,8 @@ def execute_with_gradients(func, xs, retain_grads=False):
 
 def stop_gradient(x, preserve_type=True):
     if is_variable(x) and preserve_type:
-        with _warnings.catch_warnings():
-            _warnings.simplefilter("ignore")
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
             if x.grad_fn:
                 x = x.detach()
                 x.requires_grad = True
