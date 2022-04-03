@@ -81,8 +81,6 @@ backend = 'jax'
 # local sub-modules
 from . import activations
 from .activations import *
-from . import constants
-from .constants import *
 from . import converters
 from .converters import *
 from . import creation
