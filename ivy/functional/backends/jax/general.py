@@ -4,8 +4,7 @@ Collection of Jax general functions, wrapped to fit Ivy syntax and signature.
 
 # global
 import jax as jax
-import math as _math
-import numpy as _onp
+import numpy as np
 import jax.numpy as jnp
 import jaxlib as jaxlib
 from numbers import Number
@@ -66,7 +65,7 @@ DTYPE_FROM_STR = {'int8': jnp.dtype('int8'),
 
 
 # noinspection PyUnresolvedReferences,PyProtectedMember
-def is_array(x, exclusive=False):
+def is_native_array(x, exclusive=False):
     if exclusive:
         return isinstance(x, (jax.interpreters.xla._DeviceArray,
                               jaxlib.xla_extension.DeviceArray, Buffer))
@@ -88,7 +87,7 @@ def _to_array(x):
 copy_array = jnp.array
 array_equal = jnp.array_equal
 floormod = lambda x, y: x % y
-to_numpy = lambda x: _onp.asarray(_to_array(x))
+to_numpy = lambda x: np.asarray(_to_array(x))
 to_numpy.__name__ = 'to_numpy'
 to_scalar = lambda x: x if isinstance(x, Number) else _to_array(x).item()
 to_scalar.__name__ = 'to_scalar'

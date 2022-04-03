@@ -18,7 +18,8 @@ NON_WRAPPED_METHODS = ['current_framework', 'current_framework_str', 'set_framew
                        'set_nest_at_indices', 'map_nest_at_indices', 'nested_indices_where', 'map',
                        'unset_default_device', 'closest_valid_dtype', 'default_dtype', 'dtype_from_str']
 
-ARRAYLESS_RET_METHODS = ['to_numpy', 'to_list', 'to_scalar', 'shape', 'get_num_dims', 'is_array', 'is_variable']
+ARRAYLESS_RET_METHODS = ['to_numpy', 'to_list', 'to_scalar', 'shape', 'get_num_dims', 'is_native_array', 'is_ivy_array',
+                         'is_variable']
 NESTED_ARRAY_RET_METHODS = ['unstack', 'split']
 
 FW_FN_KEYWORDS = {'numpy': [],
