@@ -51,7 +51,12 @@ def permute_dims(x: JaxArray,
     return jnp.transpose(x,axes)
 
 
-reshape = jnp.reshape
+def reshape(x: JaxArray,
+            shape: Tuple[int, ...],
+            copy: Optional[bool] = None)\
+        -> JaxArray:
+    return jnp.reshape(x, shape)
+
 
 def concatenate(xs, axis=-1):
     if xs[0].shape == ():

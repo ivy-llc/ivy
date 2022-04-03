@@ -6,17 +6,13 @@ Collection of TensorFlow general functions, wrapped to fit Ivy syntax and signat
 import ivy
 _round = round
 import numpy as _np
-import math as _math
 import tensorflow as tf
 from numbers import Number
-import tensorflow_probability as tfp
 import multiprocessing as _multiprocessing
 from tensorflow.python.types.core import Tensor
 
 # local
-from ivy.functional.ivy import default_dtype
 from ivy.functional.ivy.device import default_device
-from ivy.functional.backends.tensorflow import linspace
 from ivy.functional.backends.tensorflow.device import _dev_callable, dev_from_str
 
 
@@ -49,8 +45,7 @@ DTYPE_FROM_STR = {'int8': tf.int8,
                 'bool': tf.bool}
 
 
-
-def is_array(x, exclusive=False):
+def is_native_array(x, exclusive=False):
     if isinstance(x, Tensor):
         if exclusive and isinstance(x, tf.Variable):
             return False
@@ -69,7 +64,6 @@ to_list = lambda x: x.numpy().tolist()
 to_list.__name__ = 'to_list'
 
 
-
 def unstack(x, axis, keepdims=False):
     if x.shape == ():
         return [x]
@@ -77,6 +71,7 @@ def unstack(x, axis, keepdims=False):
     if keepdims:
         return [tf.expand_dims(r, axis) for r in ret]
     return ret
+
 
 container_types = lambda: []
 
@@ -105,9 +100,9 @@ def inplace_increment(x, val):
         return x
     raise Exception('TensorFlow does not support inplace operations on non-Variable tensors')
 
+
 cumsum = tf.cumsum
 cumprod = tf.math.cumprod
-
 
 
 # noinspection PyShadowingNames
