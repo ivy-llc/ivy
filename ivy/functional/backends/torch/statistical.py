@@ -94,10 +94,16 @@ def prod(x: torch.Tensor,
     return torch.prod(input=x, dim=axis, dtype=dtype, keepdim=keepdims)
 
 
-def mean(x, axis: Optional[List[int]] = None, keepdims: bool = False):
+def mean(x: torch.Tensor,
+         axis: Optional[Union[int, Tuple[int, ...]]] = None,
+         keepdims: bool = False)\
+        -> torch.Tensor:
     if axis is None:
         num_dims = len(x.shape)
         axis = list(range(num_dims))
+    torch.mean(x, dim=axis, keepdim=keepdims)
+    if axis == ():
+        return x
     return torch.mean(x, dim=axis, keepdim=keepdims)
 
 
@@ -125,6 +131,23 @@ def var(x: torch.Tensor,
     axis = tuple([i % dims for i in axis])
     for i, a in enumerate(axis):
         x = torch.var(x, dim=a if keepdims else a - i, keepdim=keepdims)
+    return x
+
+
+def std(x: torch.Tensor,
+        axis: Optional[Union[int, Tuple[int]]] = None,
+        correction: Union[int, float] = 0.0,
+        keepdims: bool = False) \
+        -> torch.Tensor:
+    if axis is None:
+        num_dims = len(x.shape)
+        axis = tuple(range(num_dims))
+    if isinstance(axis, int):
+        return torch.std(x, dim=axis, keepdim=keepdims)
+    dims = len(x.shape)
+    axis = tuple([i % dims for i in axis])
+    for i, a in enumerate(axis):
+        x = torch.std(x, dim=a if keepdims else a - i, keepdim=keepdims)
     return x
 
 

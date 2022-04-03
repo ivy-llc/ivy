@@ -25,7 +25,7 @@ def var(x: np.ndarray,
         correction: Union[int, float] = 0.0,
         keepdims: bool = False) \
         -> np.ndarray:
-    return np.var(np.array_api.asarray(x), axis=axis, keepdims=keepdims)
+    return np.var(x, axis=axis, keepdims=keepdims)
 
 
 def sum(x: np.ndarray,
@@ -65,13 +65,24 @@ def prod(x: np.ndarray,
     return np.prod(a=x,axis=axis,dtype=dtype,keepdims=keepdims)
 
 
-def mean(x, axis=None, keepdims=False):
+def mean(x: np.ndarray,
+         axis: Optional[Union[int, Tuple[int, ...]]] = None,
+         keepdims: bool = False)\
+        -> np.ndarray:
     if axis is None:
         num_dims = len(x.shape)
         axis = tuple(range(num_dims))
     elif isinstance(axis, list):
         axis = tuple(axis)
-    return np.asarray(np.mean(x, axis=axis, keepdims=keepdims))
+    return np.mean(x, axis=axis, keepdims=keepdims)
+
+
+def std(x: np.ndarray,
+        axis: Optional[Union[int, Tuple[int]]] = None,
+        correction: Union[int, float] = 0.0,
+        keepdims: bool = False) \
+        -> np.ndarray:
+    return np.std(x, axis=axis, keepdims=keepdims)
 
 
 # Extra #

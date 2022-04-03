@@ -7,6 +7,12 @@ import typing
 import ivy
 
 
+def add(x1: Tensor,
+           x2: Tensor)\
+        -> Tensor:
+    x1, x2 = _cast_for_binary_op(x1, x2)
+    return tf.add(x1, x2)
+
 def bitwise_xor(x1: Tensor,
                 x2: Tensor)\
         -> Tensor:
@@ -17,6 +23,9 @@ def bitwise_xor(x1: Tensor,
     x1, x2 = _cast_for_binary_op(x1, x2)
     return tf.bitwise.bitwise_xor(x1, x2)
 
+def exp(x: Tensor)\
+        -> Tensor:
+    return tf.math.exp(x)
 
 def expm1(x: Tensor)\
         -> Tensor:
@@ -105,6 +114,11 @@ def asinh(x: Tensor) \
         -> Tensor:
     return tf.asinh(x)
 
+def sign(x: Tensor) \
+        -> Tensor:
+    if x.dtype in [tf.uint8, tf.uint16, tf.uint32, tf.uint64]:
+        return tf.cast(tf.math.sign(tf.cast(x, tf.float32)), x.dtype)
+    return tf.math.sign(x)
 
 def sqrt(x: Tensor)\
         -> Tensor:
@@ -246,6 +260,17 @@ def tanh(x: Tensor) \
     return tf.tanh(x)
 
 
+def floor_divide(x1: Tensor, x2: Tensor)\
+                -> Tensor:
+    if not isinstance(x2, Tensor):
+        x2 = tf.constant(x2, dtype=x1.dtype)
+    else:
+        promoted_type = tf.experimental.numpy.promote_types(x1.dtype, x2.dtype)
+        x1 = tf.cast(x1, promoted_type)
+        x2 = tf.cast(x2, promoted_type)
+    return tf.math.floordiv(x1, x2)
+
+
 def sinh(x: Tensor) \
         -> Tensor:
     return tf.sinh(x)
@@ -278,6 +303,16 @@ def round(x: Tensor)\
     if 'int' in str(x.dtype):
         return x
     return tf.round(x)
+
+
+def trunc(x: Tensor)\
+        -> Tensor:
+    if 'int' in str(x.dtype):
+        return x
+    res = tf.zeros(x.shape, dtype=x.dtype)
+    res = tf.tensor_scatter_nd_update(res, tf.where(x > 0), tf.math.floor(x[x > 0]))
+    res = tf.tensor_scatter_nd_update(res, tf.where(x < 0), tf.math.ceil(x[x < 0]))
+    return res
 
 
 def abs(x: Tensor)\
@@ -338,7 +373,6 @@ exp = tf.math.exp
 
 # Extra #
 # ------#
-
 
 minimum = tf.minimum
 maximum = tf.maximum

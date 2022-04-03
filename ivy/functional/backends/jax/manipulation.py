@@ -37,14 +37,26 @@ def expand_dims(x: JaxArray,
         raise IndexError(error)
 
 
+def stack(x: Union[Tuple[JaxArray], List[JaxArray]],
+          axis: Optional[int] = None) \
+        -> JaxArray:
+    if axis is None:
+        axis = 0
+    return jnp.stack(x, axis=axis)
+
+
 def permute_dims(x: JaxArray,
                 axes: Tuple[int,...]) \
         -> JaxArray:
     return jnp.transpose(x,axes)
 
 
-stack = jnp.stack
-reshape = jnp.reshape
+def reshape(x: JaxArray,
+            shape: Tuple[int, ...],
+            copy: Optional[bool] = None)\
+        -> JaxArray:
+    return jnp.reshape(x, shape)
+
 
 def concatenate(xs, axis=-1):
     if xs[0].shape == ():
@@ -81,3 +93,4 @@ clip = jnp.clip
 constant_pad = lambda x, pad_width, value=0: jnp.pad(_flat_array_to_1_dim_array(x), pad_width, constant_values=value)
 zero_pad = lambda x, pad_width: jnp.pad(_flat_array_to_1_dim_array(x), pad_width, constant_values=0)
 swapaxes = jnp.swapaxes
+

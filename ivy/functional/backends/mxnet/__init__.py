@@ -98,11 +98,11 @@ def _handle_flat_arrays_in_out(fn, include_out=True):
             expanded = True
             return _flat_array_to_1_dim_array(x)
 
-        args_expanded = ivy.nested_map(args, lambda x: expand(x) if ivy.is_array(x) and len(x.shape) == 0 else x)
-        kwargs_expanded = ivy.nested_map(kwargs, lambda x: expand(x) if ivy.is_array(x) and len(x.shape) == 0 else x)
+        args_expanded = ivy.nested_map(args, lambda x: expand(x) if ivy.is_native_array(x) and len(x.shape) == 0 else x)
+        kwargs_expanded = ivy.nested_map(kwargs, lambda x: expand(x) if ivy.is_native_array(x) and len(x.shape) == 0 else x)
         ret = fn(*args_expanded, **kwargs_expanded)
         if expanded and include_out:
-            return ivy.nested_map(ret, lambda x: _1_dim_array_to_flat_array(x) if ivy.is_array(x) else x)
+            return ivy.nested_map(ret, lambda x: _1_dim_array_to_flat_array(x) if ivy.is_native_array(x) else x)
         return ret
     return wrapped_fn
 
