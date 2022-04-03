@@ -8,17 +8,19 @@ from ivy_tests.test_ivy import helpers
 from ivy import clear_framework_stack, DefaultDevice
 
 
-FW_STRS = ['numpy', 'jax', 'tensorflow', 'torch']
+FW_STRS = ['numpy', 'jax', 'tensorflow', 'torch', 'mxnet']
 
 
 TEST_FRAMEWORKS: Dict[str, callable] = {'numpy': lambda: helpers.get_ivy_numpy(),
                                         'jax': lambda: helpers.get_ivy_jax(),
                                         'tensorflow': lambda: helpers.get_ivy_tensorflow(),
-                                        'torch': lambda: helpers.get_ivy_torch()}
+                                        'torch': lambda: helpers.get_ivy_torch(),
+                                        'mxnet': lambda: helpers.get_ivy_mxnet()}
 TEST_CALL_METHODS: Dict[str, callable] = {'numpy': helpers.np_call,
                                           'jax': helpers.jnp_call,
                                           'tensorflow': helpers.tf_call,
-                                          'torch': helpers.torch_call}
+                                          'torch': helpers.torch_call,
+                                          'mxnet': helpers.mx_call}
 
 if 'ARRAY_API_TESTS_MODULE' not in os.environ:
     os.environ['ARRAY_API_TESTS_MODULE'] = 'ivy.functional.backends.numpy'
@@ -79,6 +81,6 @@ def pytest_generate_tests(metafunc):
 
 def pytest_addoption(parser):
     parser.addoption('--dev', action="store", default="cpu")
-    parser.addoption('--framework', action="store", default="jax,mxnet,numpy,tensorflow,torch")
+    parser.addoption('--framework', action="store", default="jax,numpy,tensorflow,torch")
     parser.addoption('--compile_graph', action="store", default="true")
     parser.addoption('--with_implicit', action="store", default="false")
