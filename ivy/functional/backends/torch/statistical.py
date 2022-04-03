@@ -98,12 +98,13 @@ def mean(x: torch.Tensor,
          axis: Optional[Union[int, Tuple[int, ...]]] = None,
          keepdims: bool = False)\
         -> torch.Tensor:
-    # if axis is None:
-    #     num_dims = len(x.shape)
-    #     axis = list(range(num_dims))
-    # elif isinstance(axis, list):
-    #     axis = tuple(axis)
-    return torch.mean(x, dim=axis, keepdim=keepdims)
+    if axis is None:
+        num_dims = len(x.shape)
+        axis = list(range(num_dims))
+    mean = torch.mean(x, dim=axis, keepdim=keepdims)
+    if axis == ():
+        mean = torch.reshape(mean, (1,))
+    return mean
 
 
 # noinspection PyShadowingBuiltins

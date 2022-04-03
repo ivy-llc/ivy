@@ -74,7 +74,7 @@ def mean(x: np.ndarray,
         axis = tuple(range(num_dims))
     elif isinstance(axis, list):
         axis = tuple(axis)
-    return np.asarray(np.mean(x, axis=axis, keepdims=keepdims))
+    return np.mean(x, axis=axis, keepdims=keepdims)
 
 
 # Extra #
