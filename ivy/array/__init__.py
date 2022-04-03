@@ -44,13 +44,15 @@ class Array(ArrayWithArrayAPI, ArrayWithDevice, ArrayWithGeneral, ArrayWithGradi
             ArrayWithLogic, ArrayWithMath, ArrayWithMeta, ArrayWithRandom, ArrayWithReductions):
 
     def __init__(self, data):
-        assert ivy.is_array(data)
-        self._data = data
-        self._shape = data.shape
-
-        self._size = functools.reduce(mul,self._data.shape) if len(self._data.shape) >0 else 0
+        if ivy.is_ivy_array(data):
+            self._data = data.data
+        else:
+            assert ivy.is_native_array(data)
+            self._data = data
+        self._shape = self._data.shape
+        self._size = functools.reduce(mul, self._data.shape) if len(self._data.shape) > 0 else 0
         self._dtype = ivy.dtype(self._data)
-        self._device = ivy.dev(data)
+        self._device = ivy.dev(self._data)
         self._dev_str = ivy.dev_to_str(self._device)
         self._pre_repr = 'ivy.'
         if 'gpu' in self._dev_str:
@@ -60,6 +62,11 @@ class Array(ArrayWithArrayAPI, ArrayWithDevice, ArrayWithGeneral, ArrayWithGradi
 
     # Properties #
     # -----------#
+
+    @property
+    def mT(self):
+        assert len(self._data.shape) >= 2
+        return ivy.matrix_transpose(self._data)
 
     @property
     def data(self):
@@ -190,10 +197,7 @@ class Array(ArrayWithArrayAPI, ArrayWithDevice, ArrayWithGeneral, ArrayWithGradi
     @_native_wrapper
     def __add__(self, other):
         other = to_native(other)
-        res = self._data.__add__(other)
-        if res is NotImplemented:
-            return res
-        return to_ivy(res)
+        return ivy.add(self._data, other)
 
     @_native_wrapper
     def __radd__(self, other):
@@ -253,11 +257,7 @@ class Array(ArrayWithArrayAPI, ArrayWithDevice, ArrayWithGeneral, ArrayWithGradi
 
     @_native_wrapper
     def __floordiv__(self, other):
-        other = to_native(other)
-        res = self._data.__floordiv__(other)
-        if res is NotImplemented:
-            return res
-        return to_ivy(res)
+        return ivy.floor_divide(self._data, other)
 
     @_native_wrapper
     def __rfloordiv__(self, other):

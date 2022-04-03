@@ -30,29 +30,6 @@ import ivy_tests.test_ivy.helpers as helpers
 #     assert ivy.exists(ivy.bool)
 
 
-# cast
-@pytest.mark.parametrize(
-    "object_in", [[1], [True], [[1., 2.]]])
-@pytest.mark.parametrize(
-    "starting_dtype", ['float32', 'int32', 'bool'])
-@pytest.mark.parametrize(
-    "target_dtype", ['float32', 'int32', 'bool'])
-def test_cast(object_in, starting_dtype, target_dtype, dev, call):
-    # smoke test
-    x = ivy.array(object_in, starting_dtype, dev)
-    ret = ivy.cast(x, target_dtype)
-    # type test
-    assert ivy.is_array(ret)
-    # cardinality test
-    assert ret.shape == x.shape
-    # value test
-    assert ivy.dtype(ret, as_str=True) == target_dtype
-    # compilation test
-    if call in [helpers.torch_call]:
-        # pytorch scripting does not support .type() method
-        return
-
-
 # is_int_dtype
 @pytest.mark.parametrize(
     "in_n_asarray_n_res", [([1, 2], True, True), ([1.3, 4.2], True, False),  # array

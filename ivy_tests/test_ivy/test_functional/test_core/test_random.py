@@ -33,7 +33,7 @@ def test_random_uniform(low, high, shape, dtype, tensor_fn, dev, call):
         kwargs['shape'] = shape
     ret = ivy.random_uniform(**kwargs, dev=dev)
     # type test
-    assert ivy.is_array(ret)
+    assert ivy.is_native_array(ret)
     # cardinality test
     if shape is None:
         assert ret.shape == ()
@@ -67,7 +67,7 @@ def test_random_normal(mean, std, shape, dtype, tensor_fn, dev, call):
         kwargs['shape'] = shape
     ret = ivy.random_normal(**kwargs, dev=dev)
     # type test
-    assert ivy.is_array(ret)
+    assert ivy.is_native_array(ret)
     # cardinality test
     if shape is None:
         assert ret.shape == ()
@@ -100,7 +100,7 @@ def test_multinomial(probs, num_samples, replace, dtype, tensor_fn, dev, call):
     batch_size = probs.shape[0] if probs is not None else 2
     ret = ivy.multinomial(population_size, num_samples, batch_size, probs, replace)
     # type test
-    assert ivy.is_array(ret)
+    assert ivy.is_native_array(ret)
     # cardinality test
     assert ret.shape == tuple([batch_size] + [num_samples])
 
@@ -124,7 +124,7 @@ def test_randint(low, high, shape, dtype, tensor_fn, dev, call):
     low_tnsr, high_tnsr = tensor_fn(low), tensor_fn(high)
     ret = ivy.randint(low_tnsr, high_tnsr, shape, dev=dev)
     # type test
-    assert ivy.is_array(ret)
+    assert ivy.is_native_array(ret)
     # cardinality test
     assert ret.shape == shape
     # value test
@@ -157,7 +157,7 @@ def test_shuffle(x, dtype, tensor_fn, dev, call):
     x = tensor_fn(x, dtype, dev)
     ret = ivy.shuffle(x)
     # type test
-    assert ivy.is_array(ret)
+    assert ivy.is_native_array(ret)
     # cardinality test
     assert ret.shape == x.shape
     # value test
