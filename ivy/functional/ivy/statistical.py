@@ -72,9 +72,8 @@ def var(x: Union[ivy.Array, ivy.NativeArray],
     """
     return _cur_framework(x).var(x, axis, correction, keepdims)
 
+
 def mean(x: Union[ivy.Array, ivy.NativeArray],
-         /,
-         *,
          axis: Optional[Union[int, Tuple[int, ...]]] = None,
          keepdims: bool = False)\
         -> ivy.Array:
@@ -99,7 +98,8 @@ def mean(x: Union[ivy.Array, ivy.NativeArray],
         .. note::
            While this specification recommends that this function only accept input arrays having a floating-point data type, specification-compliant array libraries may choose to accept input arrays having an integer data type. While mixed data type promotion is implementation-defined, if the input array ``x`` has an integer data type, the returned array must have the default floating-point data type.
     """
-    return _cur_framework.mean(x)
+    return _cur_framework(x).mean(x, axis, keepdims)
+
 
 def prod(x: Union[ivy.Array, ivy.NativeArray],
          axis: Optional[Union[int, Tuple[int]]] = None,
