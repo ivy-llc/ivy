@@ -24,7 +24,7 @@ def test_sin(x, dtype, tensor_fn, dev, call):
     x = tensor_fn(x, dtype, dev)
     ret = ivy.sin(x)
     # type test
-    assert ivy.is_array(ret)
+    assert ivy.is_native_array(ret)
     # cardinality test
     assert ret.shape == x.shape
     # value test
@@ -43,7 +43,7 @@ def test_cos(x, dtype, tensor_fn, dev, call):
     x = tensor_fn(x, dtype, dev)
     ret = ivy.cos(x)
     # type test
-    assert ivy.is_array(ret)
+    assert ivy.is_native_array(ret)
     # cardinality test
     assert ret.shape == x.shape
     # value test
@@ -62,7 +62,7 @@ def test_tan(x, dtype, tensor_fn, dev, call):
     x = tensor_fn(x, dtype, dev)
     ret = ivy.tan(x)
     # type test
-    assert ivy.is_array(ret)
+    assert ivy.is_native_array(ret)
     # cardinality test
     assert ret.shape == x.shape
     # value test
@@ -81,7 +81,7 @@ def test_asin(x, dtype, tensor_fn, dev, call):
     x = tensor_fn(x, dtype, dev)
     ret = ivy.asin(x)
     # type test
-    assert ivy.is_array(ret)
+    assert ivy.is_native_array(ret)
     # cardinality test
     assert ret.shape == x.shape
     # value test
@@ -100,7 +100,7 @@ def test_atan(x, dtype, tensor_fn, dev, call):
     x = tensor_fn(x, dtype, dev)
     ret = ivy.atan(x)
     # type test
-    assert ivy.is_array(ret)
+    assert ivy.is_native_array(ret)
     # cardinality test
     assert ret.shape == x.shape
     # value test
@@ -121,7 +121,7 @@ def test_atan2(x1_n_x2, dtype, tensor_fn, dev, call):
     x2 = tensor_fn(x2, dtype, dev)
     ret = ivy.atan2(x1, x2)
     # type test
-    assert ivy.is_array(ret)
+    assert ivy.is_native_array(ret)
     # cardinality test
     assert ret.shape == x1.shape
     # value test
@@ -140,7 +140,7 @@ def test_sinh(x, dtype, tensor_fn, dev, call):
     x = tensor_fn(x, dtype, dev)
     ret = ivy.sinh(x)
     # type test
-    assert ivy.is_array(ret)
+    assert ivy.is_native_array(ret)
     # cardinality test
     assert ret.shape == x.shape
     # value test
@@ -160,7 +160,7 @@ def test_cosh(x, dtype, tensor_fn, dev, call):
     ret = ivy.cosh(x)
     # type test
     # type test
-    assert ivy.is_array(ret)
+    assert ivy.is_native_array(ret)
     # cardinality test
     assert ret.shape == x.shape
     # value test
@@ -179,7 +179,7 @@ def test_tanh(x, dtype, tensor_fn, dev, call):
     x = tensor_fn(x, dtype, dev)
     ret = ivy.tanh(x)
     # type test
-    assert ivy.is_array(ret)
+    assert ivy.is_native_array(ret)
     # cardinality test
     assert ret.shape == x.shape
     # value test
@@ -198,7 +198,7 @@ def test_asinh(x, dtype, tensor_fn, dev, call):
     x = tensor_fn(x, dtype, dev)
     ret = ivy.asinh(x)
     # type test
-    assert ivy.is_array(ret)
+    assert ivy.is_native_array(ret)
     # cardinality test
     assert ret.shape == x.shape
     # value test
@@ -219,7 +219,7 @@ def test_atanh(x, dtype, tensor_fn, dev, call):
     x = tensor_fn(x, dtype, dev)
     ret = ivy.atanh(x)
     # type test
-    assert ivy.is_array(ret)
+    assert ivy.is_native_array(ret)
     # cardinality test
     assert ret.shape == x.shape
     # value test
@@ -238,7 +238,7 @@ def test_log(x, dtype, tensor_fn, dev, call):
     x = tensor_fn(x, dtype, dev)
     ret = ivy.log(x)
     # type test
-    assert ivy.is_array(ret)
+    assert ivy.is_native_array(ret)
     # cardinality test
     assert ret.shape == x.shape
     # value test
@@ -257,7 +257,7 @@ def test_exp(x, dtype, tensor_fn, dev, call):
     x = tensor_fn(x, dtype, dev)
     ret = ivy.exp(x)
     # type test
-    assert ivy.is_array(ret)
+    assert ivy.is_native_array(ret)
     # cardinality test
     assert ret.shape == x.shape
     # value test
@@ -276,7 +276,7 @@ def test_erf(x, dtype, tensor_fn, dev, call):
     x = tensor_fn(x, dtype, dev)
     ret = ivy.erf(x)
     # type test
-    assert ivy.is_array(ret)
+    assert ivy.is_native_array(ret)
     # cardinality test
     assert ret.shape == x.shape
     # value test

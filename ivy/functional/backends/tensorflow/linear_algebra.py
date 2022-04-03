@@ -7,7 +7,7 @@ from collections import namedtuple
 # local
 from ivy import inf
 import ivy
-from collections import namedtuple
+
 
 
 # Array API Standard #
@@ -217,6 +217,25 @@ def eigvalsh(x: Tensor) -> Tensor:
     return tf.linalg.eigvalsh(x)
 
 
+def matrix_rank(vector: Tensor,
+                rtol: Optional[Union[float, Tuple[float]]] = None)\
+        -> Tensor:
+    if rtol is None:
+        return tf.linalg.matrix_rank(vector)
+    if tf.size(vector) == 0:
+        return 0
+    if tf.size(vector) == 1:
+        return tf.math.count_nonzero(vector)
+    vector = tf.reshape(vector,[-1])
+    vector = tf.expand_dims(vector,0)
+    if hasattr(rtol,'dtype'):
+        if rtol.dtype != vector.dtype:
+            promoted_dtype = tf.experimental.numpy.promote_types(rtol.dtype,vector.dtype)
+            vector = tf.cast(vector,promoted_dtype)
+            rtol = tf.cast(rtol,promoted_dtype)
+    return tf.linalg.matrix_rank(vector,rtol)
+
+    
 def cross (x1: tf.Tensor,
            x2: tf.Tensor,
            axis:int = -1) -> tf.Tensor:

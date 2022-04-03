@@ -33,17 +33,9 @@ def _replace_logos_html(txt):
               '   :width: 100%'
     backends_chunk = '\n\n'.join(bc[0:1] + [img_str] + bc[2:])
 
-    # library logos
-    libraries_chunk = chunks[3]
-    lc = libraries_chunk.split('\n\n')
-    img_str = '.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/ivy_libraries.png?raw=true\n' \
-              '   :width: 100%'
-    libraries_chunk = '\n\n'.join(lc[0:1] + [img_str] + lc[2:])
-
     # re-join
-    chunks[3] = libraries_chunk
     return ''.join(
-        ['.. raw:: html'.join(chunks[0:2]), backends_chunk, '.. raw:: html'.join(chunks[3:])])
+        ['.. raw:: html'.join(chunks[0:2]), backends_chunk, '.. raw:: html'.join(chunks[2:])])
 
 
 def _is_html(line):
@@ -65,7 +57,7 @@ def _is_raw_block(line):
 
 this_directory = Path(__file__).parent
 text = (this_directory / "README.rst").read_text()
-lines = _replace_logos_html(text).replace('. Click on the icons below to learn more!', '!').split('\n')
+lines = _replace_logos_html(text).split('\n')
 lines = [line for line in lines if not (_is_html(line) or _is_raw_block(line))]
 long_description = '\n'.join(lines)
 
