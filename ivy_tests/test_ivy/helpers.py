@@ -83,8 +83,7 @@ _ivy_fws_dict = {'numpy': lambda: get_ivy_numpy(),
                  'jax': lambda: get_ivy_jax(),
                  'tensorflow': lambda: get_ivy_tensorflow(),
                  'tensorflow_graph': lambda: get_ivy_tensorflow(),
-                 'torch': lambda: get_ivy_torch(),
-                 'mxnet': lambda: get_ivy_mxnet()}
+                 'torch': lambda: get_ivy_torch()}
 
 _iterable_types = [list, tuple, dict]
 _excluded = []

@@ -8,19 +8,17 @@ from ivy_tests.test_ivy import helpers
 from ivy import clear_framework_stack, DefaultDevice
 
 
-FW_STRS = ['numpy', 'jax', 'tensorflow', 'torch', 'mxnet']
+FW_STRS = ['numpy', 'jax', 'tensorflow', 'torch']
 
 
 TEST_FRAMEWORKS: Dict[str, callable] = {'numpy': lambda: helpers.get_ivy_numpy(),
                                         'jax': lambda: helpers.get_ivy_jax(),
                                         'tensorflow': lambda: helpers.get_ivy_tensorflow(),
-                                        'torch': lambda: helpers.get_ivy_torch(),
-                                        'mxnet': lambda: helpers.get_ivy_mxnet()}
+                                        'torch': lambda: helpers.get_ivy_torch()}
 TEST_CALL_METHODS: Dict[str, callable] = {'numpy': helpers.np_call,
                                           'jax': helpers.jnp_call,
                                           'tensorflow': helpers.tf_call,
-                                          'torch': helpers.torch_call,
-                                          'mxnet': helpers.mx_call}
+                                          'torch': helpers.torch_call}
 
 if 'ARRAY_API_TESTS_MODULE' not in os.environ:
     os.environ['ARRAY_API_TESTS_MODULE'] = 'ivy.functional.backends.numpy'
