@@ -1,6 +1,6 @@
 # global
 import mxnet as mx
-import numpy as _np
+import numpy as np
 
 from collections import namedtuple
 from mxnet.ndarray.ndarray import NDArray
@@ -64,7 +64,7 @@ def matrix_norm(x, p=2, axes=None, keepdims=False):
 # noinspection PyPep8Naming
 def svd(x: NDArray, full_matrices: bool = True) -> Union[NDArray, Tuple[NDArray,...]]:
     results=namedtuple("svd", "U S Vh")
-    U, D, VT=_np.linalg.svd(x, full_matrices=full_matrices)
+    U, D, VT=np.linalg.svd(x, full_matrices=full_matrices)
     res=results(U, D, VT)
     return res
 
