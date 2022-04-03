@@ -5,7 +5,7 @@ Collection of MXNet general functions, wrapped to fit Ivy syntax and signature.
 # global
 import os
 _round = round
-import mxnet as _mx
+import mxnet as mx
 from mxnet import profiler as _profiler
 
 # local
@@ -43,13 +43,13 @@ def dev_from_str(dev):
         idx = int(dev_split[1])
     else:
         idx = 0
-    return _mx.context.Context(dev, idx)
+    return mx.context.Context(dev, idx)
 
 
 clear_mem_on_dev = lambda dev: None
 _callable_dev = dev
-gpu_is_available = lambda: _mx.context.num_gpus() > 0
-num_gpus = lambda: _mx.context.num_gpus()
+gpu_is_available = lambda: mx.context.num_gpus() > 0
+num_gpus = lambda: mx.context.num_gpus()
 tpu_is_available = lambda: False
 
 
