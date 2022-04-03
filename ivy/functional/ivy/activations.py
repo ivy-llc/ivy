@@ -2,20 +2,38 @@
 Collection of Ivy activation functions.
 """
 
+# global
+from typing import Union
+
 # local
+import ivy
 from ivy.framework_handler import current_framework as _cur_framework
 
 
 # Extra #
 # ------#
 
-def relu(x):
+def relu(x: Union[ivy.Array, ivy.NativeArray])\
+        -> ivy.Array:
     """
     Applies the rectified linear unit function element-wise.
 
-    :param x: Input array.
-    :type x: array
-    :return: The input array with relu applied element-wise.
+     Parameters
+     ----------
+     x:
+         input array
+
+
+    Returns
+    -------
+    out:
+       an array containing the rectified linear unit activation of each element in ``x``.
+
+    Examples:
+    >>> x = ivy.array([-1, 0, 1])
+    >>> y = ivy.relu(x)
+    >>> print(y)
+    [-0.0, 0.0, 1.0]
     """
     return _cur_framework(x).relu(x)
 

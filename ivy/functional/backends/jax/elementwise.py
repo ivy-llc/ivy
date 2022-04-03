@@ -5,6 +5,11 @@ import jax.numpy as jnp
 # local
 from ivy.functional.backends.jax import JaxArray
 
+def add(x1: JaxArray,
+           x2: JaxArray)\
+        -> JaxArray:
+    return jnp.add(x1 ,x2)
+
 def bitwise_xor(x1: JaxArray,
                 x2: JaxArray)\
         -> JaxArray:
@@ -83,6 +88,9 @@ def asinh(x: JaxArray)\
         -> JaxArray:
     return jnp.arcsinh(x)
 
+def sign(x: JaxArray)\
+        -> JaxArray:
+    return jnp.sign(x)
 
 def sqrt(x: JaxArray)\
         -> JaxArray:
