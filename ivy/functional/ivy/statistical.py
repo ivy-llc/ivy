@@ -167,7 +167,11 @@ def sum(x: Union[ivy.Array, ivy.NativeArray],
 
     return _cur_framework(x).sum(x, axis, dtype, keepdims)
 
-def std(x, axis=None, keepdims=False):
+def std(x: Union[ivy.Array, ivy.NativeArray],
+        axis: Optional[Union[int, Tuple[int, ...]]] = None,
+        correction: Union[int, float] = 0.0,
+        keepdims: bool = False)\
+        -> ivy.Array:
     """
     Computes the arithmetic standard deviation along a given axis. The standard deviation is taken over
     the flattened array by default, otherwise over the specified axis.
@@ -183,7 +187,7 @@ def std(x, axis=None, keepdims=False):
     :type keepdims: bool, optional
     :return: The array with standard deviations computed.
     """
-    return ivy.array(ivy.var(x, axis, keepdims) ** 0.5)
+    return _cur_framework(x).std(x, axis, correction, keepdims)
 
 
 # Extra #
