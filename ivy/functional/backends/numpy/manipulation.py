@@ -59,7 +59,11 @@ def stack(x: Union[Tuple[np.ndarray], List[np.ndarray]],
     return np.stack(x, axis)
 
 
-reshape = np.reshape
+def reshape(x: np.ndarray,
+            shape: Tuple[int, ...],
+            copy: Optional[bool] = None)\
+        -> np.ndarray:
+    return np.reshape(x, shape)
 
 
 # Extra #
