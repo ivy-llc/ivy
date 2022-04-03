@@ -1,6 +1,7 @@
 # global
 _round = round
 import tensorflow as tf
+from tensorflow.python.types.core import Tensor
 from typing import Tuple, Union, Optional
 
 
@@ -50,7 +51,10 @@ def prod(x: tf.Tensor,
     return tf.experimental.numpy.prod(x,axis,dtype,keepdims)
 
 
-def mean(x, axis=None, keepdims=False):
+def mean(x: Tensor,
+         axis: Optional[Union[int, Tuple[int, ...]]] = None,
+         keepdims: bool = False)\
+        -> Tensor:
     if axis is None:
         num_dims = len(x.shape)
         axis = tuple(range(num_dims))
