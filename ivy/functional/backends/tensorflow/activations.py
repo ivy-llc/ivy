@@ -2,6 +2,8 @@
 Collection of TensorFlow activation functions, wrapped to fit Ivy syntax and signature.
 """
 
+from typing import Optional
+
 # global
 import tensorflow as tf
 from tensorflow.python.types.core import Tensor
@@ -12,7 +14,11 @@ def relu(x: Tensor)\
     return tf.nn.relu(x)
 
 
-leaky_relu = tf.nn.leaky_relu
+def leaky_relu(x: Tensor, alpha: Optional[float] = 0.2)\
+        -> Tensor:
+    return tf.nn.leaky_relu(x, alpha)
+
+
 gelu = lambda x, approximate=True: tf.nn.gelu(x, approximate)
 tanh = tf.nn.tanh
 sigmoid = tf.nn.sigmoid
