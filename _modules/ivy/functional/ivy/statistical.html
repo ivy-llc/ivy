@@ -272,22 +272,31 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">var</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">correction</span><span class="p">,</span> <span class="n">keepdims</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="mean"><a class="viewcode-back" href="../../../../functional/ivy/statistical/mean.html#ivy.functional.ivy.statistical.mean">[docs]</a><span class="k">def</span> <span class="nf">mean</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Computes the arithmetic mean along a given axis.</span>
-<span class="sd">    Returns the average of the array elements. The average is taken over the flattened array by default, otherwise over</span>
-<span class="sd">    the specified axis.</span>
 
-<span class="sd">    :param x: Array containing numbers whose mean is desired.</span>
-<span class="sd">    :type x: array</span>
-<span class="sd">    :param axis: Axis or axes along which the means are computed. The default is to compute the mean of the flattened</span>
-<span class="sd">                    array. If this is a tuple of ints, a mean is performed over multiple axes, instead of a single axis</span>
-<span class="sd">                    or all the axes as before.</span>
-<span class="sd">    :type axis: int or sequence of ints</span>
-<span class="sd">    :param keepdims: If this is set to True, the axes which are reduced are left in the result as dimensions with size</span>
-<span class="sd">                        one. With this option, the result will broadcast correctly against the input array.</span>
-<span class="sd">    :type keepdims: bool, optional</span>
-<span class="sd">    :return: The array with means computed.</span>
+<div class="viewcode-block" id="mean"><a class="viewcode-back" href="../../../../functional/ivy/statistical/mean.html#ivy.functional.ivy.statistical.mean">[docs]</a><span class="k">def</span> <span class="nf">mean</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+         <span class="n">axis</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+         <span class="n">keepdims</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>\
+        <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Calculates the arithmetic mean of the input array ``x``.</span>
+<span class="sd">    **Special Cases**</span>
+<span class="sd">    Let ``N`` equal the number of elements over which to compute the arithmetic mean.</span>
+<span class="sd">    -   If ``N`` is ``0``, the arithmetic mean is ``NaN``.</span>
+<span class="sd">    -   If ``x_i`` is ``NaN``, the arithmetic mean is ``NaN`` (i.e., ``NaN`` values propagate).</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x: array</span>
+<span class="sd">        input array. Should have a floating-point data type.</span>
+<span class="sd">    axis: Optional[Union[int, Tuple[int, ...]]]</span>
+<span class="sd">        axis or axes along which arithmetic means must be computed. By default, the mean must be computed over the entire array. If a tuple of integers, arithmetic means must be computed over multiple axes. Default: ``None``.</span>
+<span class="sd">    keepdims: bool</span>
+<span class="sd">        if ``True``, the reduced axes (dimensions) must be included in the result as singleton dimensions, and, accordingly, the result must be compatible with the input array (see :ref:`broadcasting`). Otherwise, if ``False``, the reduced axes (dimensions) must not be included in the result. Default: ``False``.</span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    out: array</span>
+<span class="sd">        if the arithmetic mean was computed over the entire array, a zero-dimensional array containing the arithmetic mean; otherwise, a non-zero-dimensional array containing the arithmetic means. The returned array must have the same data type as ``x``.</span>
+<span class="sd">        .. note::</span>
+<span class="sd">           While this specification recommends that this function only accept input arrays having a floating-point data type, specification-compliant array libraries may choose to accept input arrays having an integer data type. While mixed data type promotion is implementation-defined, if the input array ``x`` has an integer data type, the returned array must have the default floating-point data type.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">keepdims</span><span class="p">)</span></div>
 
