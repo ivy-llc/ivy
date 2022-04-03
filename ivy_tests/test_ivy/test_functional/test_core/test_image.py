@@ -16,20 +16,20 @@ import ivy_tests.test_ivy.helpers as helpers
 
 
 # stack_images
-# @pytest.mark.parametrize(
-#     "shp_n_num_n_ar_n_newshp", [((1, 2, 3), 4, (2, 1), (2, 4, 3)),
-#                                 ((8, 8, 3), 9, (1, 1), (24, 24, 3)),
-#                                 ((3, 16, 12, 4), 10, (2, 5), (3, 80, 36, 4)),
-#                                 ((5, 20, 9, 5), 10, (5, 2), (5, 40, 72, 5))])
-# def test_stack_images(shp_n_num_n_ar_n_newshp, dev, call):
-#     # smoke test
-#     shape, num, ar, new_shape = shp_n_num_n_ar_n_newshp
-#     xs = [ivy.ones(shape)] * num
-#     ret = ivy.stack_images(xs, ar)
-#     # type test
-#     assert ivy.is_array(ret)
-#     # cardinality test
-#     assert ret.shape == new_shape
+@pytest.mark.parametrize(
+    "shp_n_num_n_ar_n_newshp", [((1, 2, 3), 4, (2, 1), (2, 4, 3)),
+                                ((8, 8, 3), 9, (1, 1), (24, 24, 3)),
+                                ((3, 16, 12, 4), 10, (2, 5), (3, 80, 36, 4)),
+                                ((5, 20, 9, 5), 10, (5, 2), (5, 40, 72, 5))])
+def test_stack_images(shp_n_num_n_ar_n_newshp, dev, call):
+    # smoke test
+    shape, num, ar, new_shape = shp_n_num_n_ar_n_newshp
+    xs = [ivy.ones(shape)] * num
+    ret = ivy.stack_images(xs, ar)
+    # type test
+    assert ivy.is_ivy_array(ret)
+    # cardinality test
+    assert ret.shape == new_shape
 
 
 # bilinear_resample
