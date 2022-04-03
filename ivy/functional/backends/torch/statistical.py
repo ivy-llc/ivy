@@ -95,8 +95,6 @@ def prod(x: torch.Tensor,
 
 
 def mean(x: torch.Tensor,
-         /,
-         *,
          axis: Optional[Union[int, Tuple[int, ...]]] = None,
          keepdims: bool = False)\
         -> torch.Tensor:
