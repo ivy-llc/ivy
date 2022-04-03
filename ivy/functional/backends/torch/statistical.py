@@ -128,6 +128,23 @@ def var(x: torch.Tensor,
     return x
 
 
+def std(x: torch.Tensor,
+        axis: Optional[Union[int, Tuple[int]]] = None,
+        correction: Union[int, float] = 0.0,
+        keepdims: bool = False) \
+        -> torch.Tensor:
+    if axis is None:
+        num_dims = len(x.shape)
+        axis = tuple(range(num_dims))
+    if isinstance(axis, int):
+        return torch.std(x, dim=axis, keepdim=keepdims)
+    dims = len(x.shape)
+    axis = tuple([i % dims for i in axis])
+    for i, a in enumerate(axis):
+        x = torch.std(x, dim=a if keepdims else a - i, keepdim=keepdims)
+    return x
+
+
 # Extra #
 # ------#
 
