@@ -72,22 +72,31 @@ def var(x: Union[ivy.Array, ivy.NativeArray],
     """
     return _cur_framework(x).var(x, axis, correction, keepdims)
 
-def mean(x, axis=None, keepdims=False):
-    """
-    Computes the arithmetic mean along a given axis.
-    Returns the average of the array elements. The average is taken over the flattened array by default, otherwise over
-    the specified axis.
 
-    :param x: Array containing numbers whose mean is desired.
-    :type x: array
-    :param axis: Axis or axes along which the means are computed. The default is to compute the mean of the flattened
-                    array. If this is a tuple of ints, a mean is performed over multiple axes, instead of a single axis
-                    or all the axes as before.
-    :type axis: int or sequence of ints
-    :param keepdims: If this is set to True, the axes which are reduced are left in the result as dimensions with size
-                        one. With this option, the result will broadcast correctly against the input array.
-    :type keepdims: bool, optional
-    :return: The array with means computed.
+def mean(x: Union[ivy.Array, ivy.NativeArray],
+         axis: Optional[Union[int, Tuple[int, ...]]] = None,
+         keepdims: bool = False)\
+        -> ivy.Array:
+    """
+    Calculates the arithmetic mean of the input array ``x``.
+    **Special Cases**
+    Let ``N`` equal the number of elements over which to compute the arithmetic mean.
+    -   If ``N`` is ``0``, the arithmetic mean is ``NaN``.
+    -   If ``x_i`` is ``NaN``, the arithmetic mean is ``NaN`` (i.e., ``NaN`` values propagate).
+    Parameters
+    ----------
+    x: array
+        input array. Should have a floating-point data type.
+    axis: Optional[Union[int, Tuple[int, ...]]]
+        axis or axes along which arithmetic means must be computed. By default, the mean must be computed over the entire array. If a tuple of integers, arithmetic means must be computed over multiple axes. Default: ``None``.
+    keepdims: bool
+        if ``True``, the reduced axes (dimensions) must be included in the result as singleton dimensions, and, accordingly, the result must be compatible with the input array (see :ref:`broadcasting`). Otherwise, if ``False``, the reduced axes (dimensions) must not be included in the result. Default: ``False``.
+    Returns
+    -------
+    out: array
+        if the arithmetic mean was computed over the entire array, a zero-dimensional array containing the arithmetic mean; otherwise, a non-zero-dimensional array containing the arithmetic means. The returned array must have the same data type as ``x``.
+        .. note::
+           While this specification recommends that this function only accept input arrays having a floating-point data type, specification-compliant array libraries may choose to accept input arrays having an integer data type. While mixed data type promotion is implementation-defined, if the input array ``x`` has an integer data type, the returned array must have the default floating-point data type.
     """
     return _cur_framework(x).mean(x, axis, keepdims)
 
