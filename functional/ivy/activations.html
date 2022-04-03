@@ -234,19 +234,23 @@
 
 <dl class="py function">
 <dt id="ivy.functional.ivy.activations.leaky_relu">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">leaky_relu</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">alpha</span><span class="o">=</span><span class="default_value">0.2</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/activations.html#leaky_relu"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.activations.leaky_relu" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">leaky_relu</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">alpha</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>float<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">0.2</span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../_modules/ivy/functional/ivy/activations.html#leaky_relu"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.activations.leaky_relu" title="Permalink to this definition">¶</a></dt>
 <dd><p>Applies the leaky rectified linear unit function element-wise.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>array</em>) – Input array.</p></li>
-<li><p><strong>alpha</strong> (<em>float</em>) – Negative slope for ReLU</p></li>
-</ul>
+<dl class="simple">
+<dt>x<span class="classifier">ivy.Array or ivy.NativeArray</span></dt><dd><p>Input array.</p>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>The input array with leaky relu applied element-wise.</p>
+<dt>alpha<span class="classifier">float, default=0.2</span></dt><dd><p>Negative slope for ReLU.</p>
 </dd>
 </dl>
+<dl class="simple">
+<dt>ivy.Array</dt><dd><p>The input array with leaky relu applied element-wise.</p>
+</dd>
+</dl>
+<p>Examples:
+&gt;&gt;&gt; x = ivy.array([0.39, -0.85])
+&gt;&gt;&gt; y = ivy.leaky_relu(x)
+&gt;&gt;&gt; print(y)
+[0.39, -0.17]</p>
 </dd></dl>
 
 <dl class="py function">
