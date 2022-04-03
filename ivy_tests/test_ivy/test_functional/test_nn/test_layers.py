@@ -57,24 +57,24 @@ def test_linear(x_n_w_n_b_n_res, dtype, tensor_fn, dev, call):
 # --------#
 
 # dropout
-# @pytest.mark.parametrize(
-#     "x", [([[1., 2., 3.]]),
-#           ([[[1., 2., 3.]]])])
-# @pytest.mark.parametrize(
-#     "dtype", ['float32'])
-# @pytest.mark.parametrize(
-#     "tensor_fn", [ivy.array, helpers.var_fn])
-# def test_dropout(x, dtype, tensor_fn, dev, call):
-#     # smoke test
-#     x = tensor_fn(x, dtype, dev)
-#     ret = ivy.dropout(x, 0.9)
-#     # type test
-#     assert ivy.is_array(ret)
-#     # cardinality test
-#     assert ret.shape == x.shape
-#     # value test
-#     ivy.seed(0)
-#     assert np.min(call(ivy.dropout, x, 0.9)) == 0.
+@pytest.mark.parametrize(
+    "x", [([[1., 2., 3.]]),
+          ([[[1., 2., 3.]]])])
+@pytest.mark.parametrize(
+    "dtype", ['float32'])
+@pytest.mark.parametrize(
+    "tensor_fn", [ivy.array, helpers.var_fn])
+def test_dropout(x, dtype, tensor_fn, dev, call):
+    # smoke test
+    x = tensor_fn(x, dtype, dev)
+    ret = ivy.dropout(x, 0.9)
+    # type test
+    assert ivy.is_ivy_array(ret)
+    # cardinality test
+    assert ret.shape == x.shape
+    # value test
+    ivy.seed(0)
+    assert np.min(call(ivy.dropout, x, 0.9)) == 0.
 
 
 # Attention #
