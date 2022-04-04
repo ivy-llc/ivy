@@ -1086,51 +1086,6 @@ def test_isfinite(x_n_res, dtype, tensor_fn, dev, call):
 
 
 
-# zeros
-# @pytest.mark.parametrize(
-#     "shape", [(), (1, 2, 3), tuple([1]*10)])
-# @pytest.mark.parametrize(
-#     "dtype", ['float32'])
-# @pytest.mark.parametrize(
-#     "tensor_fn", [ivy.array, helpers.var_fn])
-# def test_zeros(shape, dtype, tensor_fn, dev, call):
-#     # smoke test
-#     ret = ivy.zeros(shape, dtype, dev)
-#     # type test
-#     assert ivy.is_array(ret)
-#     # cardinality test
-#     assert ret.shape == tuple(shape)
-#     # value test
-#     assert np.allclose(call(ivy.zeros, shape, dtype, dev), np.asarray(ivy.functional.backends.numpy.zeros(shape, dtype)))
-
-
-
-
-
-# ones_like
-# @pytest.mark.parametrize(
-#     "x", [1, [1], [[1], [2], [3]]])
-# @pytest.mark.parametrize(
-#     "dtype", ['float32'])
-# @pytest.mark.parametrize(
-#     "tensor_fn", [ivy.array, helpers.var_fn])
-# def test_ones_like(x, dtype, tensor_fn, dev, call):
-#     # smoke test
-#     if isinstance(x, Number) and tensor_fn == helpers.var_fn and call is helpers.mx_call:
-#         # mxnet does not support 0-dimensional variables
-#         pytest.skip()
-#     x = tensor_fn(x, dtype, dev)
-#     ret = ivy.ones_like(x, dtype, dev)
-#     # type test
-#     assert ivy.is_array(ret)
-#     # cardinality test
-#     assert ret.shape == x.shape
-#     # value test
-#     assert np.allclose(call(ivy.ones_like, x, dtype, dev),
-#                        np.asarray(ivy.functional.backends.numpy.ones_like(ivy.to_numpy(x), dtype)))
-
-
-
 # one_hot
 @pytest.mark.parametrize(
     "ind_n_depth", [([0], 1), ([0, 1, 2], 3), ([[1, 3], [0, 0], [8, 4], [7, 9]], 10)])
