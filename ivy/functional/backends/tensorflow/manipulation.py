@@ -6,6 +6,20 @@ from typing import Union, Tuple, Optional, List
 from tensorflow.python.types.core import Tensor
 
 
+def roll(x: Tensor,
+         shift: Union[int, Tuple[int, ...]],
+         axis: Optional[Union[int, Tuple[int, ...]]] = None)\
+        -> Tensor:
+    if axis is None:
+        originalShape = x.shape
+        axis = 0
+        x = tf.reshape(x, [-1])
+        roll = tf.roll(x, shift, axis)
+        return tf.reshape(roll, originalShape)
+
+    return tf.roll(x, shift, axis)
+
+
 def squeeze(x: Tensor,
             axis: Union[int, Tuple[int], List[int]])\
         -> Tensor:
@@ -64,8 +78,11 @@ def stack(x: Union[Tuple[Tensor], List[Tensor]],
     return tf.experimental.numpy.stack(x, axis)
 
 
-reshape = lambda x, newshape: tf.reshape(x, (newshape,) if isinstance(newshape, int) else newshape)
-
+def reshape(x: Tensor,
+            shape: Tuple[int, ...],
+            copy: Optional[bool] = None)\
+        -> Tensor:
+    return tf.reshape(x, shape)
 
 
 def concatenate(xs, axis=-1):

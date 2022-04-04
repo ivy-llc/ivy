@@ -7,7 +7,7 @@ from collections import namedtuple
 # local
 from ivy import inf
 import ivy
-from collections import namedtuple
+
 
 
 # Array API Standard #
@@ -18,8 +18,6 @@ def eigh(x: Tensor)\
         return tf.linalg.eigh(x) 
 
 inv = tf.linalg.inv
-pinv = tf.linalg.pinv
-cholesky = tf.linalg.cholesky
 
 
 def tensordot(x1: Tensor, x2: Tensor,

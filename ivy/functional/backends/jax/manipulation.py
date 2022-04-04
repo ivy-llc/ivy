@@ -7,6 +7,13 @@ from typing import Union, Tuple, Optional, List
 from ivy.functional.backends.jax import JaxArray
 
 
+def roll(x: JaxArray,
+         shift: Union[int, Tuple[int, ...]],
+         axis: Optional[Union[int, Tuple[int, ...]]] = None) \
+        -> JaxArray:
+    return jnp.roll(x, shift, axis)
+
+
 def squeeze(x: JaxArray,
             axis: Union[int, Tuple[int], List[int]]=None)\
         -> JaxArray:
@@ -51,7 +58,12 @@ def permute_dims(x: JaxArray,
     return jnp.transpose(x,axes)
 
 
-reshape = jnp.reshape
+def reshape(x: JaxArray,
+            shape: Tuple[int, ...],
+            copy: Optional[bool] = None)\
+        -> JaxArray:
+    return jnp.reshape(x, shape)
+
 
 def concatenate(xs, axis=-1):
     if xs[0].shape == ():
