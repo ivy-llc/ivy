@@ -17,6 +17,7 @@ jobs:
           persist-credentials: false
       - name: Issue Comment Check
         run: |
+          cd ivy/automation_tools/issues_automation
           ls
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
