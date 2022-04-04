@@ -188,7 +188,7 @@ class Array(ArrayWithArrayAPI, ArrayWithDevice, ArrayWithGeneral, ArrayWithGradi
 
     @_native_wrapper
     def __pow__(self, power):
-        return self._data.__pow__(power)
+        return ivy.pow(self._data, power)
 
     @_native_wrapper
     def __rpow__(self, power):
