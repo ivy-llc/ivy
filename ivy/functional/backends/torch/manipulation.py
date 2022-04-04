@@ -5,6 +5,13 @@ from numbers import Number
 from typing import Union, Optional, Tuple, List
 
 
+def roll(x: torch.Tensor,
+         shift: Union[int, Tuple[int, ...]],
+         axis: Optional[Union[int, Tuple[int, ...]]] = None) \
+        -> torch.Tensor:
+    return torch.roll(x, shift, axis)
+
+
 def squeeze(x: torch.Tensor,
             axis: Union[int, Tuple[int], List[int]] = None)\
         -> torch.Tensor:

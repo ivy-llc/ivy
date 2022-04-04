@@ -252,34 +252,34 @@ def test_layerwise_gradient_descent_update(ws_n_grads_n_lr_n_wsnew, dtype, tenso
         return
 
 
-# lars_update
-# @pytest.mark.parametrize(
-#     "ws_n_grads_n_lr_n_wsnew", [(Container({'a': [3.], 'b': [3.]}), Container({'a': [6.], 'b': [6.]}),
-#                                  Container({'a': [0.1], 'b': [0.2]}), Container({'a': [2.7], 'b': [2.4]}))])
-# @pytest.mark.parametrize(
-#     "dtype", ['float32'])
-# @pytest.mark.parametrize(
-#     "tensor_fn", [ivy.array, helpers.var_fn])
-# def test_lars_update(ws_n_grads_n_lr_n_wsnew, dtype, tensor_fn, dev, call):
-#     # smoke test
-#     ws_raw, dcdws_raw, lr_raw, ws_raw_new = ws_n_grads_n_lr_n_wsnew
-#     ws = ws_raw.map(lambda x, _: ivy.variable(ivy.array(x)))
-#     dcdws = dcdws_raw.map(lambda x, _: ivy.array(x))
-#     lr = lr_raw.map(lambda x, _: ivy.array(x))
-#     ws_true_new = ws_raw_new.map(lambda x, _: ivy.variable(ivy.array(x)))
-#     ws_new = ivy.lars_update(ws, dcdws, lr)
-#     # type test
-#     assert isinstance(ws_new, dict)
-#     # cardinality test
-#     for (w_new, w_true_new) in zip(ws_new.values(), ws_true_new.values()):
-#         assert w_new.shape == w_true_new.shape
-#     # value test
-#     for (w_new, w_true_new) in zip(ws_new.values(), ws_true_new.values()):
-#         assert np.allclose(ivy.to_numpy(w_new), ivy.to_numpy(w_true_new))
-#     # compilation test
-#     if call in [helpers.torch_call]:
-#         # pytorch scripting does not support internal function definitions
-#         return
+#lars_update
+@pytest.mark.parametrize(
+    "ws_n_grads_n_lr_n_wsnew", [(Container({'a': [3.], 'b': [3.]}), Container({'a': [6.], 'b': [6.]}),
+                                 Container({'a': [0.1], 'b': [0.2]}), Container({'a': [2.7], 'b': [2.4]}))])
+@pytest.mark.parametrize(
+    "dtype", ['float32'])
+@pytest.mark.parametrize(
+    "tensor_fn", [ivy.array, helpers.var_fn])
+def test_lars_update(ws_n_grads_n_lr_n_wsnew, dtype, tensor_fn, dev, call):
+    # smoke test
+    ws_raw, dcdws_raw, lr_raw, ws_raw_new = ws_n_grads_n_lr_n_wsnew
+    ws = ws_raw.map(lambda x, _: ivy.variable(ivy.array(x)))
+    dcdws = dcdws_raw.map(lambda x, _: ivy.array(x))
+    lr = lr_raw.map(lambda x, _: ivy.array(x))
+    ws_true_new = ws_raw_new.map(lambda x, _: ivy.variable(ivy.array(x)))
+    ws_new = ivy.lars_update(ws, dcdws, lr)
+    # type test
+    assert isinstance(ws_new, dict)
+    # cardinality test
+    for (w_new, w_true_new) in zip(ws_new.values(), ws_true_new.values()):
+        assert w_new.shape == w_true_new.shape
+    # value test
+    for (w_new, w_true_new) in zip(ws_new.values(), ws_true_new.values()):
+        assert np.allclose(ivy.to_numpy(w_new), ivy.to_numpy(w_true_new))
+    # compilation test
+    if call in [helpers.torch_call]:
+        # pytorch scripting does not support internal function definitions
+        return
 
 
 # adam_update
@@ -319,76 +319,76 @@ def test_adam_update(ws_n_grads_n_lr_n_wsnew, dtype, tensor_fn, dev, call):
 
 
 # layerwise_adam_update
-# @pytest.mark.parametrize(
-#     "ws_n_grads_n_lr_n_wsnew", [(Container({'a': [3.], 'b': [3.]}), Container({'a': [6.], 'b': [6.]}),
-#                                  Container({'a': [0.1], 'b': [0.2]}), Container({'a': [2.9683773], 'b': [2.9367545]}))])
-# @pytest.mark.parametrize(
-#     "dtype", ['float32'])
-# @pytest.mark.parametrize(
-#     "tensor_fn", [ivy.array, helpers.var_fn])
-# def test_layerwise_adam_update(ws_n_grads_n_lr_n_wsnew, dtype, tensor_fn, dev, call):
-#     # smoke test
-#     ws_raw, dcdws_raw, lr_raw, ws_raw_new = ws_n_grads_n_lr_n_wsnew
-#     ws = ws_raw.map(lambda x, _: ivy.variable(ivy.array(x)))
-#     dcdws = dcdws_raw.map(lambda x, _: ivy.array(x))
-#     lr = lr_raw.map(lambda x, _: ivy.array(x))
-#     ws_true_new = ws_raw_new.map(lambda x, _: ivy.variable(ivy.array(x)))
-#     mw = dcdws
-#     vw = dcdws.map(lambda x, _: x ** 2)
-#     ws_new, mw_new, vw_new = ivy.adam_update(ws, dcdws, lr, mw, vw, ivy.array(1))
-#     # type test
-#     assert isinstance(ws_new, dict)
-#     assert isinstance(mw_new, dict)
-#     assert isinstance(vw_new, dict)
-#     # cardinality test
-#     for (w_new, w_true_new) in zip(ws_new.values(), ws_true_new.values()):
-#         assert w_new.shape == w_true_new.shape
-#     for (m_new, m_orig) in zip(mw_new.values(), mw.values()):
-#         assert m_new.shape == m_orig.shape
-#     for (v_new, v_orig) in zip(vw_new.values(), vw.values()):
-#         assert v_new.shape == v_orig.shape
-#     # value test
-#     for (w_new, w_true_new) in zip(ws_new.values(), ws_true_new.values()):
-#         assert np.allclose(ivy.to_numpy(w_new), ivy.to_numpy(w_true_new))
-#     # compilation test
-#     if call in [helpers.torch_call]:
-#         # pytorch scripting does not support internal function definitions
-#         return
+@pytest.mark.parametrize(
+    "ws_n_grads_n_lr_n_wsnew", [(Container({'a': [3.], 'b': [3.]}), Container({'a': [6.], 'b': [6.]}),
+                                 Container({'a': [0.1], 'b': [0.2]}), Container({'a': [2.9683773], 'b': [2.9367545]}))])
+@pytest.mark.parametrize(
+    "dtype", ['float32'])
+@pytest.mark.parametrize(
+    "tensor_fn", [ivy.array, helpers.var_fn])
+def test_layerwise_adam_update(ws_n_grads_n_lr_n_wsnew, dtype, tensor_fn, dev, call):
+    # smoke test
+    ws_raw, dcdws_raw, lr_raw, ws_raw_new = ws_n_grads_n_lr_n_wsnew
+    ws = ws_raw.map(lambda x, _: ivy.variable(ivy.array(x)))
+    dcdws = dcdws_raw.map(lambda x, _: ivy.array(x))
+    lr = lr_raw.map(lambda x, _: ivy.array(x))
+    ws_true_new = ws_raw_new.map(lambda x, _: ivy.variable(ivy.array(x)))
+    mw = dcdws
+    vw = dcdws.map(lambda x, _: x ** 2)
+    ws_new, mw_new, vw_new = ivy.adam_update(ws, dcdws, lr, mw, vw, ivy.array(1))
+    # type test
+    assert isinstance(ws_new, dict)
+    assert isinstance(mw_new, dict)
+    assert isinstance(vw_new, dict)
+    # cardinality test
+    for (w_new, w_true_new) in zip(ws_new.values(), ws_true_new.values()):
+        assert w_new.shape == w_true_new.shape
+    for (m_new, m_orig) in zip(mw_new.values(), mw.values()):
+        assert m_new.shape == m_orig.shape
+    for (v_new, v_orig) in zip(vw_new.values(), vw.values()):
+        assert v_new.shape == v_orig.shape
+    # value test
+    for (w_new, w_true_new) in zip(ws_new.values(), ws_true_new.values()):
+        assert np.allclose(ivy.to_numpy(w_new), ivy.to_numpy(w_true_new))
+    # compilation test
+    if call in [helpers.torch_call]:
+        # pytorch scripting does not support internal function definitions
+        return
 
 
-# lamb_update
-# @pytest.mark.parametrize(
-#     "ws_n_grads_n_lr_n_wsnew", [(Container({'a': [3.], 'b': [3.]}), Container({'a': [6.], 'b': [6.]}),
-#                                  Container({'a': [0.1], 'b': [0.2]}), Container({'a': [2.7], 'b': [2.4]}))])
-# @pytest.mark.parametrize(
-#     "dtype", ['float32'])
-# @pytest.mark.parametrize(
-#     "tensor_fn", [ivy.array, helpers.var_fn])
-# def test_lamb_update(ws_n_grads_n_lr_n_wsnew, dtype, tensor_fn, dev, call):
-#     # smoke test
-#     ws_raw, dcdws_raw, lr_raw, ws_raw_new = ws_n_grads_n_lr_n_wsnew
-#     ws = ws_raw.map(lambda x, _: ivy.variable(ivy.array(x)))
-#     dcdws = dcdws_raw.map(lambda x, _: ivy.array(x))
-#     lr = lr_raw.map(lambda x, _: ivy.array(x))
-#     ws_true_new = ws_raw_new.map(lambda x, _: ivy.variable(ivy.array(x)))
-#     mw = dcdws
-#     vw = dcdws.map(lambda x, _: x ** 2)
-#     ws_new, mw_new, vw_new = ivy.lamb_update(ws, dcdws, lr, mw, vw, ivy.array(1))
-#     # type test
-#     assert isinstance(ws_new, dict)
-#     assert isinstance(mw_new, dict)
-#     assert isinstance(vw_new, dict)
-#     # cardinality test
-#     for (w_new, w_true_new) in zip(ws_new.values(), ws_true_new.values()):
-#         assert w_new.shape == w_true_new.shape
-#     for (m_new, m_orig) in zip(mw_new.values(), mw.values()):
-#         assert m_new.shape == m_orig.shape
-#     for (v_new, v_orig) in zip(vw_new.values(), vw.values()):
-#         assert v_new.shape == v_orig.shape
-#     # value test
-#     for (w_new, w_true_new) in zip(ws_new.values(), ws_true_new.values()):
-#         assert np.allclose(ivy.to_numpy(w_new), ivy.to_numpy(w_true_new))
-#     # compilation test
-#     if call in [helpers.torch_call]:
-#         # pytorch scripting does not support internal function definitions
-#         return
+#lamb_update
+@pytest.mark.parametrize(
+    "ws_n_grads_n_lr_n_wsnew", [(Container({'a': [3.], 'b': [3.]}), Container({'a': [6.], 'b': [6.]}),
+                                 Container({'a': [0.1], 'b': [0.2]}), Container({'a': [2.7], 'b': [2.4]}))])
+@pytest.mark.parametrize(
+    "dtype", ['float32'])
+@pytest.mark.parametrize(
+    "tensor_fn", [ivy.array, helpers.var_fn])
+def test_lamb_update(ws_n_grads_n_lr_n_wsnew, dtype, tensor_fn, dev, call):
+    # smoke test
+    ws_raw, dcdws_raw, lr_raw, ws_raw_new = ws_n_grads_n_lr_n_wsnew
+    ws = ws_raw.map(lambda x, _: ivy.variable(ivy.array(x)))
+    dcdws = dcdws_raw.map(lambda x, _: ivy.array(x))
+    lr = lr_raw.map(lambda x, _: ivy.array(x))
+    ws_true_new = ws_raw_new.map(lambda x, _: ivy.variable(ivy.array(x)))
+    mw = dcdws
+    vw = dcdws.map(lambda x, _: x ** 2)
+    ws_new, mw_new, vw_new = ivy.lamb_update(ws, dcdws, lr, mw, vw, ivy.array(1))
+    # type test
+    assert isinstance(ws_new, dict)
+    assert isinstance(mw_new, dict)
+    assert isinstance(vw_new, dict)
+    # cardinality test
+    for (w_new, w_true_new) in zip(ws_new.values(), ws_true_new.values()):
+        assert w_new.shape == w_true_new.shape
+    for (m_new, m_orig) in zip(mw_new.values(), mw.values()):
+        assert m_new.shape == m_orig.shape
+    for (v_new, v_orig) in zip(vw_new.values(), vw.values()):
+        assert v_new.shape == v_orig.shape
+    # value test
+    for (w_new, w_true_new) in zip(ws_new.values(), ws_true_new.values()):
+        assert np.allclose(ivy.to_numpy(w_new), ivy.to_numpy(w_true_new))
+    # compilation test
+    if call in [helpers.torch_call]:
+        # pytorch scripting does not support internal function definitions
+        return
