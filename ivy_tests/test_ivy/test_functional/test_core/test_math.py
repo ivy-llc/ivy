@@ -12,63 +12,6 @@ import ivy.functional.backends.numpy
 import ivy_tests.test_ivy.helpers as helpers
 
 
-# sin
-@pytest.mark.parametrize(
-    "x", [[0.], [[0.]]])
-@pytest.mark.parametrize(
-    "dtype", ['float32'])
-@pytest.mark.parametrize(
-    "tensor_fn", [ivy.array, helpers.var_fn])
-def test_sin(x, dtype, tensor_fn, dev, call):
-    # smoke test
-    x = tensor_fn(x, dtype, dev)
-    ret = ivy.sin(x)
-    # type test
-    assert ivy.is_native_array(ret)
-    # cardinality test
-    assert ret.shape == x.shape
-    # value test
-    assert np.allclose(call(ivy.sin, x), ivy.functional.backends.numpy.sin(ivy.to_numpy(x)))
-
-
-# cos
-@pytest.mark.parametrize(
-    "x", [[0.], [[0.]]])
-@pytest.mark.parametrize(
-    "dtype", ['float32'])
-@pytest.mark.parametrize(
-    "tensor_fn", [ivy.array, helpers.var_fn])
-def test_cos(x, dtype, tensor_fn, dev, call):
-    # smoke test
-    x = tensor_fn(x, dtype, dev)
-    ret = ivy.cos(x)
-    # type test
-    assert ivy.is_native_array(ret)
-    # cardinality test
-    assert ret.shape == x.shape
-    # value test
-    assert np.allclose(call(ivy.cos, x), ivy.functional.backends.numpy.cos(ivy.to_numpy(x)))
-
-
-# tan
-@pytest.mark.parametrize(
-    "x", [[0.], [[0.]]])
-@pytest.mark.parametrize(
-    "dtype", ['float32'])
-@pytest.mark.parametrize(
-    "tensor_fn", [ivy.array, helpers.var_fn])
-def test_tan(x, dtype, tensor_fn, dev, call):
-    # smoke test
-    x = tensor_fn(x, dtype, dev)
-    ret = ivy.tan(x)
-    # type test
-    assert ivy.is_native_array(ret)
-    # cardinality test
-    assert ret.shape == x.shape
-    # value test
-    assert np.allclose(call(ivy.tan, x), ivy.functional.backends.numpy.tan(ivy.to_numpy(x)))
-
-
 # asin
 @pytest.mark.parametrize(
     "x", [[0.], [[0.]]])
