@@ -13,12 +13,12 @@ jobs:
       - name: Checks
         uses: actions/checkout@v2
         with:
-          path: contributor-automations
+          path: ivy
           persist-credentials: false
       - name: Issue Comment Check
         run: |
-          cd contributor-automations
           pip install PyGithub
+          cd automation_tools/issues_automation
           python3 Issue_comment_action.py $ISSUE_NUMBER $COMMENT_NUMBER "$COMMENT_BODY" "$COMMENT_AUTHOR" "$GITHUB_TOKEN"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
