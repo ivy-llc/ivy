@@ -28,10 +28,6 @@ def pinv(x: torch.Tensor,
     return torch.linalg.pinv(x, rtol)
 
 
-def cholesky(x):
-    return torch.linalg.cholesky(x)
-
-
 def matrix_transpose(x: torch.Tensor)\
         -> torch.Tensor:
     return torch.swapaxes(x, -1, -2)
