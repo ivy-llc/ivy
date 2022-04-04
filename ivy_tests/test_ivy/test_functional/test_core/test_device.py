@@ -32,10 +32,11 @@ def test_dev(x, dtype, tensor_fn, dev, call):
         # mxnet does not support 0-dimensional variables
         pytest.skip()
     x = tensor_fn(x, dtype, dev)
-    ret = ivy.dev(x)
+    ret = ivy.dev(x, as_str=True)
     # type test
-    assert isinstance(ret, ivy.Device)
-
+    assert isinstance(ret, str)
+    # value test
+    assert ret == dev
 
 # dev_to_str
 @pytest.mark.parametrize(
@@ -83,25 +84,6 @@ def test_dev_from_str(x, dtype, tensor_fn, dev, call):
         # pytorch scripting does not handle converting string to device
         return
 
-
-# dev
-# @pytest.mark.parametrize(
-#     "x", [1, [], [1], [[0.0, 1.0], [2.0, 3.0]]])
-# @pytest.mark.parametrize(
-#     "dtype", ['float32'])
-# @pytest.mark.parametrize(
-#     "tensor_fn", [ivy.array, helpers.var_fn])
-# def test_dev(x, dtype, tensor_fn, dev, call):
-#     # smoke test
-#     if (isinstance(x, Number) or len(x) == 0) and tensor_fn == helpers.var_fn and call is helpers.mx_call:
-#         # mxnet does not support 0-dimensional variables
-#         pytest.skip()
-#     x = tensor_fn(x, dtype, dev)
-#     ret = ivy.dev(x, as_str=True)
-#     # type test
-#     assert isinstance(ret, str)
-#     # value test
-#     assert ret == dev
 
 
 # memory_on_dev
