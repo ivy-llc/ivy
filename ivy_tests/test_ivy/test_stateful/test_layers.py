@@ -678,107 +678,107 @@ def test_conv3d_transpose_layer(x_n_fs_n_pad_n_outshp_n_res, with_v, dtype, tens
 # LSTM #
 # -----#
 
-# @pytest.mark.parametrize(
-#     "b_t_ic_hc_otf_sctv", [
-#         (2, 3, 4, 5, [0.93137765, 0.9587628, 0.96644664, 0.93137765, 0.9587628, 0.96644664], 3.708991),
-#     ])
-# @pytest.mark.parametrize(
-#     "with_v", [True, False])
-# @pytest.mark.parametrize(
-#     "with_initial_state", [True, False])
-# @pytest.mark.parametrize(
-#     "dtype", ['float32'])
-# @pytest.mark.parametrize(
-#     "tensor_fn", [ivy.array, helpers.var_fn])
-# def test_lstm_layer(b_t_ic_hc_otf_sctv, with_v, with_initial_state, dtype, tensor_fn, dev, compile_graph, call):
-#     # smoke test
-#     b, t, input_channels, hidden_channels, output_true_flat, state_c_true_val = b_t_ic_hc_otf_sctv
-#     x = ivy.cast(ivy.linspace(ivy.zeros([b, t]), ivy.ones([b, t]), input_channels), 'float32')
-#     if with_initial_state:
-#         init_h = ivy.ones([b, hidden_channels])
-#         init_c = ivy.ones([b, hidden_channels])
-#         initial_state = ([init_h], [init_c])
-#     else:
-#         initial_state = None
-#     if with_v:
-#         kernel = ivy.variable(ivy.ones([input_channels, 4*hidden_channels], dev=dev)*0.5)
-#         recurrent_kernel = ivy.variable(ivy.ones([hidden_channels, 4*hidden_channels], dev=dev)*0.5)
-#         v = Container({'input': {'layer_0': {'w': kernel}},
-#                        'recurrent': {'layer_0': {'w': recurrent_kernel}}})
-#     else:
-#         v = None
-#     lstm_layer = ivy.LSTM(input_channels, hidden_channels, dev=dev, v=v)
-#     output, (state_h, state_c) = lstm_layer(x, initial_state=initial_state)
-#     # type test
-#     assert ivy.is_array(output)
-#     assert ivy.is_array(state_h[0])
-#     assert ivy.is_array(state_c[0])
-#     # cardinality test
-#     assert output.shape == (b, t, hidden_channels)
-#     assert state_h[0].shape == (b, hidden_channels)
-#     assert state_c[0].shape == (b, hidden_channels)
-#     # value test
-#     if not with_v or not with_initial_state:
-#         return
-#     output_true = np.tile(np.asarray(output_true_flat).reshape((b, t, 1)), (1, 1, hidden_channels))
-#     state_c_true = np.ones([b, hidden_channels]) * state_c_true_val
-#     output, (state_h, state_c) = call(lstm_layer, x, initial_state=initial_state)
-#     assert np.allclose(output, output_true, atol=1e-6)
-#     assert np.allclose(state_c, state_c_true, atol=1e-6)
+@pytest.mark.parametrize(
+    "b_t_ic_hc_otf_sctv", [
+        (2, 3, 4, 5, [0.93137765, 0.9587628, 0.96644664, 0.93137765, 0.9587628, 0.96644664], 3.708991),
+    ])
+@pytest.mark.parametrize(
+    "with_v", [True, False])
+@pytest.mark.parametrize(
+    "with_initial_state", [True, False])
+@pytest.mark.parametrize(
+    "dtype", ['float32'])
+@pytest.mark.parametrize(
+    "tensor_fn", [ivy.array, helpers.var_fn])
+def test_lstm_layer(b_t_ic_hc_otf_sctv, with_v, with_initial_state, dtype, tensor_fn, dev, compile_graph, call):
+    # smoke test
+    b, t, input_channels, hidden_channels, output_true_flat, state_c_true_val = b_t_ic_hc_otf_sctv
+    x = ivy.asarray(ivy.linspace(ivy.zeros([b, t]), ivy.ones([b, t]), input_channels), 'float32')
+    if with_initial_state:
+        init_h = ivy.ones([b, hidden_channels])
+        init_c = ivy.ones([b, hidden_channels])
+        initial_state = ([init_h], [init_c])
+    else:
+        initial_state = None
+    if with_v:
+        kernel = ivy.variable(ivy.ones([input_channels, 4*hidden_channels], device=dev)*0.5)
+        recurrent_kernel = ivy.variable(ivy.ones([hidden_channels, 4*hidden_channels], device=dev)*0.5)
+        v = Container({'input': {'layer_0': {'w': kernel}},
+                       'recurrent': {'layer_0': {'w': recurrent_kernel}}})
+    else:
+        v = None
+    lstm_layer = ivy.LSTM(input_channels, hidden_channels, dev=dev, v=v)
+    output, (state_h, state_c) = lstm_layer(x, initial_state=initial_state)
+    # type test
+    assert ivy.is_ivy_array(output)
+    assert ivy.is_ivy_array(state_h[0])
+    assert ivy.is_ivy_array(state_c[0])
+    # cardinality test
+    assert output.shape == (b, t, hidden_channels)
+    assert state_h[0].shape == (b, hidden_channels)
+    assert state_c[0].shape == (b, hidden_channels)
+    # value test
+    if not with_v or not with_initial_state:
+        return
+    output_true = np.tile(np.asarray(output_true_flat).reshape((b, t, 1)), (1, 1, hidden_channels))
+    state_c_true = np.ones([b, hidden_channels]) * state_c_true_val
+    output, (state_h, state_c) = call(lstm_layer, x, initial_state=initial_state)
+    assert np.allclose(output, output_true, atol=1e-6)
+    assert np.allclose(state_c, state_c_true, atol=1e-6)
 
 
 # Sequential #
 # -----------#
 
-# sequential
-# @pytest.mark.parametrize(
-#     "bs_c_target", [
-#         ([1, 2], 5, [[[-0.34784955,  0.47909835,  0.7241975 , -0.82175905, -0.43836743],
-#                       [-0.34784955,  0.47909835,  0.7241975 , -0.82175905, -0.43836743]]])])
-# @pytest.mark.parametrize(
-#     "with_v", [True, False])
-# @pytest.mark.parametrize(
-#     "seq_v", [True, False])
-# @pytest.mark.parametrize(
-#     "dtype", ['float32'])
-# @pytest.mark.parametrize(
-#     "tensor_fn", [ivy.array, helpers.var_fn])
-# def test_sequential_layer(bs_c_target, with_v, seq_v, dtype, tensor_fn, dev, compile_graph, call):
-#     # smoke test
-#     batch_shape, channels, target = bs_c_target
-#     x = ivy.cast(ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), channels), 'float32')
-#     if with_v:
-#         np.random.seed(0)
-#         wlim = (6 / (channels + channels)) ** 0.5
-#         v = Container(
-#             {'submodules':
-#                       {'v0':
-#                            {'w': ivy.variable(ivy.array(np.random.uniform(
-#                                -wlim, wlim, (channels, channels)), 'float32', dev=dev)),
-#                                'b': ivy.variable(ivy.zeros([channels], dev=dev))},
-#                        'v2':
-#                            {'w': ivy.variable(ivy.array(np.random.uniform(
-#                                -wlim, wlim, (channels, channels)), 'float32', dev=dev)),
-#                                'b': ivy.variable(ivy.zeros([channels], dev=dev))}}})
-#     else:
-#         v = None
-#     if seq_v:
-#         seq = ivy.Sequential(ivy.Linear(channels, channels, dev=dev),
-#                              ivy.Dropout(0.),
-#                              ivy.Linear(channels, channels, dev=dev),
-#                              dev=dev, v=v if with_v else None)
-#     else:
-#         seq = ivy.Sequential(ivy.Linear(channels, channels, dev=dev,
-#                                         v=v['submodules']['v0'] if with_v else None),
-#                              ivy.Dropout(0.),
-#                              ivy.Linear(channels, channels, dev=dev,
-#                                         v=v['submodules']['v2'] if with_v else None), dev=dev)
-#     ret = seq(x)
-#     # type test
-#     assert ivy.is_array(ret)
-#     # cardinality test
-#     assert ret.shape == tuple(batch_shape + [channels])
-#     # value test
-#     if not with_v:
-#         return
-#     assert np.allclose(call(seq, x), np.array(target))
+#sequential
+@pytest.mark.parametrize(
+    "bs_c_target", [
+        ([1, 2], 5, [[[-0.34784955,  0.47909835,  0.7241975 , -0.82175905, -0.43836743],
+                      [-0.34784955,  0.47909835,  0.7241975 , -0.82175905, -0.43836743]]])])
+@pytest.mark.parametrize(
+    "with_v", [True, False])
+@pytest.mark.parametrize(
+    "seq_v", [True, False])
+@pytest.mark.parametrize(
+    "dtype", ['float32'])
+@pytest.mark.parametrize(
+    "tensor_fn", [ivy.array, helpers.var_fn])
+def test_sequential_layer(bs_c_target, with_v, seq_v, dtype, tensor_fn, dev, compile_graph, call):
+    # smoke test
+    batch_shape, channels, target = bs_c_target
+    x = ivy.asarray(ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), channels), 'float32')
+    if with_v:
+        np.random.seed(0)
+        wlim = (6 / (channels + channels)) ** 0.5
+        v = Container(
+            {'submodules':
+                      {'v0':
+                           {'w': ivy.variable(ivy.array(np.random.uniform(
+                               -wlim, wlim, (channels, channels)), 'float32', dev=dev)),
+                               'b': ivy.variable(ivy.zeros([channels], device=dev))},
+                       'v2':
+                           {'w': ivy.variable(ivy.array(np.random.uniform(
+                               -wlim, wlim, (channels, channels)), 'float32', dev=dev)),
+                               'b': ivy.variable(ivy.zeros([channels], device=dev))}}})
+    else:
+        v = None
+    if seq_v:
+        seq = ivy.Sequential(ivy.Linear(channels, channels, dev=dev),
+                             ivy.Dropout(0.),
+                             ivy.Linear(channels, channels, dev=dev),
+                             dev=dev, v=v if with_v else None)
+    else:
+        seq = ivy.Sequential(ivy.Linear(channels, channels, dev=dev,
+                                        v=v['submodules']['v0'] if with_v else None),
+                             ivy.Dropout(0.),
+                             ivy.Linear(channels, channels, dev=dev,
+                                        v=v['submodules']['v2'] if with_v else None), dev=dev)
+    ret = seq(x)
+    # type test
+    assert ivy.is_ivy_array(ret)
+    # cardinality test
+    assert ret.shape == tuple(batch_shape + [channels])
+    # value test
+    if not with_v:
+        return
+    assert np.allclose(call(seq, x), np.array(target))
