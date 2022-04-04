@@ -1,27 +1,23 @@
 # global
 import jax.numpy as jnp
-
-from typing import Tuple, Union, Optional , List
-from ivy.functional.backends.jax import JaxArray
-
+from typing import Tuple, Union, Optional
 
 # local
 from ivy.functional.backends.jax import JaxArray
 
 # Array API Standard #
 # -------------------#
-import ivy
 
 
 def min(x: JaxArray,
-        axis: Union[int, Tuple[int]] = None,
-        keepdims = False, device = None) \
+        axis: Optional[Union[int, Tuple[int, ...]]] = None,
+        keepdims: bool = False)\
         -> JaxArray:
-    return jnp.min(a = jnp.asarray(x), axis = axis, keepdims = keepdims)
+    return jnp.min(a=jnp.asarray(x), axis=axis, keepdims=keepdims)
 
 
 def sum(x: JaxArray,
-        axis: Optional[Union[int,Tuple[int]]] = None,
+        axis: Optional[Union[int, Tuple[int, ...]]] = None,
         dtype: Optional[jnp.dtype] = None,
         keepdims: bool = False) -> JaxArray:
 
@@ -51,7 +47,7 @@ def mean(x: JaxArray,
 
 
 def prod(x: JaxArray,
-         axis: Optional[Union[int, Tuple[int]]] = None,
+         axis: Optional[Union[int, Tuple[int, ...]]] = None,
          dtype: Optional[jnp.dtype] = None,
          keepdims: bool = False)\
         -> JaxArray:
@@ -66,18 +62,18 @@ def prod(x: JaxArray,
         else:
             dtype = jnp.uint64
 
-    return jnp.prod(a=x,axis=axis,dtype=dtype,keepdims=keepdims)
+    return jnp.prod(a=x, axis=axis, dtype=dtype, keepdims=keepdims)
 
 
 def max(x: JaxArray,
-        axis: Union[int, Tuple[int]] = None,
-        keepdims = False, device = None) \
+        axis: Optional[Union[int, Tuple[int, ...]]] = None,
+        keepdims: bool = False)\
         -> JaxArray:
-    return jnp.max(a = jnp.asarray(x), axis = axis, keepdims = keepdims)
+    return jnp.max(a=jnp.asarray(x), axis=axis, keepdims=keepdims)
 
 
 def var(x: JaxArray,
-        axis: Optional[Union[int, Tuple[int]]] = None,
+        axis: Optional[Union[int, Tuple[int, ...]]] = None,
         correction: Union[int, float] = 0.0,
         keepdims: bool = False) \
         -> JaxArray:
@@ -85,7 +81,7 @@ def var(x: JaxArray,
 
 
 def std(x: JaxArray,
-        axis: Optional[Union[int, Tuple[int]]] = None,
+        axis: Optional[Union[int, Tuple[int, ...]]] = None,
         correction: Union[int, float] = 0.0,
         keepdims: bool = False) \
         -> JaxArray:
