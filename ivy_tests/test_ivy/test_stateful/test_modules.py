@@ -365,18 +365,18 @@ class WithCustomVarStructure(ivy.Module):
 
 
 # with custom var structure
-# @pytest.mark.parametrize(
-#     "bs_ic_oc", [([1, 2], 4, 5)])
-# def test_with_custom_var_structure(bs_ic_oc, dev, call):
-#     # smoke test
-#     if call is helpers.np_call:
-#         # NumPy does not support gradients
-#         pytest.skip()
-#     batch_shape, input_channels, output_channels = bs_ic_oc
-#     module = WithCustomVarStructure(input_channels, output_channels, dev=dev)
-#     assert 'x' in module.v
-#     assert 'y' in module.v
-#     assert 'z' in module.v
+@pytest.mark.parametrize(
+    "bs_ic_oc", [([1, 2], 4, 5)])
+def test_with_custom_var_structure(bs_ic_oc, dev, call):
+    # smoke test
+    if call is helpers.np_call:
+        # NumPy does not support gradients
+        pytest.skip()
+    batch_shape, input_channels, output_channels = bs_ic_oc
+    module = WithCustomVarStructure(input_channels, output_channels, dev=dev)
+    assert 'x' in module.v
+    assert 'y' in module.v
+    assert 'z' in module.v
 
 
 class DoubleLinear(ivy.Module):
@@ -407,54 +407,54 @@ class WithNestedModules(ivy.Module):
 
 
 # top variables
-# @pytest.mark.parametrize(
-#     "bs_ic_oc", [([1, 2], 4, 5)])
-# def test_top_variables(bs_ic_oc, dev, call):
-#     # smoke test
-#     if call is helpers.np_call:
-#         # NumPy does not support gradients
-#         pytest.skip()
-#     batch_shape, input_channels, output_channels = bs_ic_oc
-#     module = WithNestedModules(input_channels, output_channels, dev=dev)
-#     for key_chain in ['dl0', 'dl0/l0', 'dl0/l1', 'dl0/l0/b', 'dl0/l0/w', 'dl0/l1/b', 'dl0/l1/w',
-#                       'dl1', 'dl1/l0', 'dl1/l1', 'dl1/l0/b', 'dl1/l0/w', 'dl1/l1/b', 'dl1/l1/w']:
-#
-#         # depth 1
-#         assert key_chain in module._dl0.top_v()
-#         assert key_chain in module._dl1.top_v()
-#
-#         # depth 2
-#         assert key_chain in module._dl0._l0.top_v()
-#         assert key_chain in module._dl0._l1.top_v()
-#         assert key_chain in module._dl1._l0.top_v()
-#         assert key_chain in module._dl1._l1.top_v()
+@pytest.mark.parametrize(
+    "bs_ic_oc", [([1, 2], 4, 5)])
+def test_top_variables(bs_ic_oc, dev, call):
+    # smoke test
+    if call is helpers.np_call:
+        # NumPy does not support gradients
+        pytest.skip()
+    batch_shape, input_channels, output_channels = bs_ic_oc
+    module = WithNestedModules(input_channels, output_channels, dev=dev)
+    for key_chain in ['dl0', 'dl0/l0', 'dl0/l1', 'dl0/l0/b', 'dl0/l0/w', 'dl0/l1/b', 'dl0/l1/w',
+                      'dl1', 'dl1/l0', 'dl1/l1', 'dl1/l0/b', 'dl1/l0/w', 'dl1/l1/b', 'dl1/l1/w']:
+
+        # depth 1
+        assert key_chain in module._dl0.top_v()
+        assert key_chain in module._dl1.top_v()
+
+        # depth 2
+        assert key_chain in module._dl0._l0.top_v()
+        assert key_chain in module._dl0._l1.top_v()
+        assert key_chain in module._dl1._l0.top_v()
+        assert key_chain in module._dl1._l1.top_v()
 
 
 # top module
-# @pytest.mark.parametrize(
-#     "bs_ic_oc", [([1, 2], 4, 5)])
-# def test_top_module(bs_ic_oc, dev, call):
-#     # smoke test
-#     if call is helpers.np_call:
-#         # NumPy does not support gradients
-#         pytest.skip()
-#     batch_shape, input_channels, output_channels = bs_ic_oc
-#     module = WithNestedModules(input_channels, output_channels, dev=dev)
-#
-#     # full depth
-#     assert module._dl0.top_mod() is module
-#     assert module._dl1.top_mod() is module
-#
-#     assert module._dl0._l0.top_mod() is module
-#     assert module._dl0._l1.top_mod() is module
-#     assert module._dl1._l0.top_mod() is module
-#     assert module._dl1._l1.top_mod() is module
-#
-#     # depth 1
-#     assert module._dl0._l0.top_mod(1) is module._dl0
-#     assert module._dl0._l1.top_mod(1) is module._dl0
-#     assert module._dl1._l0.top_mod(1) is module._dl1
-#     assert module._dl1._l1.top_mod(1) is module._dl1
+@pytest.mark.parametrize(
+    "bs_ic_oc", [([1, 2], 4, 5)])
+def test_top_module(bs_ic_oc, dev, call):
+    # smoke test
+    if call is helpers.np_call:
+        # NumPy does not support gradients
+        pytest.skip()
+    batch_shape, input_channels, output_channels = bs_ic_oc
+    module = WithNestedModules(input_channels, output_channels, dev=dev)
+
+    # full depth
+    assert module._dl0.top_mod() is module
+    assert module._dl1.top_mod() is module
+
+    assert module._dl0._l0.top_mod() is module
+    assert module._dl0._l1.top_mod() is module
+    assert module._dl1._l0.top_mod() is module
+    assert module._dl1._l1.top_mod() is module
+
+    # depth 1
+    assert module._dl0._l0.top_mod(1) is module._dl0
+    assert module._dl0._l1.top_mod(1) is module._dl0
+    assert module._dl1._l0.top_mod(1) is module._dl1
+    assert module._dl1._l1.top_mod(1) is module._dl1
 
 
 # v with top v key chains
