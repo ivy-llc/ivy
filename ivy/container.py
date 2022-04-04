@@ -1404,7 +1404,7 @@ class Container(dict):
                     'but found {} of type {}'.format(p, type(p)))
             return sum([v for k, v in
                         self.map(lambda x, kc: self._ivy.sum(x ** p)).to_iterator()]) ** (1 / p)
-        return self.map(lambda x, kc: self._ivy.vector_norm(x, p[kc] if p_is_container else p, axis, keepdims)
+        return self.map(lambda x, kc: self._ivy.vector_norm(x, axis, keepdims, p[kc] if p_is_container else p)
                         if self._ivy.is_native_array(x) else x, key_chains, to_apply, prune_unapplied, map_sequences)
 
     def matrix_norm(self, p=2, axis=None, keepdims=False, key_chains=None, to_apply=True, prune_unapplied=False,
