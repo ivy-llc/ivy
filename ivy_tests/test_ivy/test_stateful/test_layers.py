@@ -16,43 +16,43 @@ import ivy_tests.test_ivy.helpers as helpers
 # -------#
 
 # linear
-# @pytest.mark.parametrize(
-#     "bs_ic_oc_target", [
-#         ([1, 2], 4, 5, [[0.30230279, 0.65123089, 0.30132881, -0.90954636, 1.08810135]]),
-#     ])
-# @pytest.mark.parametrize(
-#     "with_v", [True, False])
-# @pytest.mark.parametrize(
-#     "dtype", ['float32'])
-# @pytest.mark.parametrize(
-#     "tensor_fn", [ivy.array, helpers.var_fn])
-# def test_linear_layer(bs_ic_oc_target, with_v, dtype, tensor_fn, dev, compile_graph, call):
-#     # smoke test
-#     batch_shape, input_channels, output_channels, target = bs_ic_oc_target
-#     x = ivy.cast(ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), input_channels), 'float32')
-#     if with_v:
-#         np.random.seed(0)
-#         wlim = (6 / (output_channels + input_channels)) ** 0.5
-#         w = ivy.variable(ivy.array(np.random.uniform(-wlim, wlim, (output_channels, input_channels)),
-#                                    'float32', dev=dev))
-#         b = ivy.variable(ivy.zeros([output_channels], dev=dev))
-#         v = Container({'w': w, 'b': b})
-#     else:
-#         v = None
-#     linear_layer = ivy.Linear(input_channels, output_channels, dev=dev, v=v)
-#     ret = linear_layer(x)
-#     # type test
-#     assert ivy.is_array(ret)
-#     # cardinality test
-#     assert ret.shape == tuple(batch_shape + [output_channels])
-#     # value test
-#     if not with_v:
-#         return
-#     assert np.allclose(call(linear_layer, x), np.array(target))
-#     # compilation test
-#     if call is helpers.torch_call:
-#         # pytest scripting does not **kwargs
-#         return
+@pytest.mark.parametrize(
+    "bs_ic_oc_target", [
+        ([1, 2], 4, 5, [[0.30230279, 0.65123089, 0.30132881, -0.90954636, 1.08810135]]),
+    ])
+@pytest.mark.parametrize(
+    "with_v", [True, False])
+@pytest.mark.parametrize(
+    "dtype", ['float32'])
+@pytest.mark.parametrize(
+    "tensor_fn", [ivy.array, helpers.var_fn])
+def test_linear_layer(bs_ic_oc_target, with_v, dtype, tensor_fn, dev, compile_graph, call):
+    # smoke test
+    batch_shape, input_channels, output_channels, target = bs_ic_oc_target
+    x = ivy.asarray(ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), input_channels), 'float32')
+    if with_v:
+        np.random.seed(0)
+        wlim = (6 / (output_channels + input_channels)) ** 0.5
+        w = ivy.variable(ivy.asarray(np.random.uniform(-wlim, wlim, (output_channels, input_channels)),
+                                   'float32', dev=dev))
+        b = ivy.variable(ivy.zeros([output_channels], device=dev))
+        v = Container({'w': w, 'b': b})
+    else:
+        v = None
+    linear_layer = ivy.Linear(input_channels, output_channels, dev=dev, v=v)
+    ret = linear_layer(x)
+    # type test
+    assert ivy.is_ivy_array(ret)
+    # cardinality test
+    assert ret.shape == tuple(batch_shape + [output_channels])
+    # value test
+    if not with_v:
+        return
+    assert np.allclose(call(linear_layer, x), np.array(target))
+    # compilation test
+    if call is helpers.torch_call:
+        # pytest scripting does not **kwargs
+        return
 
 
 # Dropout #
