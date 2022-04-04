@@ -933,18 +933,18 @@ def test_container_all_false(dev, call):
     assert error_raised
 
 
-# def test_container_as_random_uniform(dev, call):
-#     dict_in = {'a': ivy.array([1.], dev=dev),
-#                'b': {'c': ivy.array([2.], dev=dev), 'd': ivy.array([3.], dev=dev)}}
-#     container = Container(dict_in)
-#
-#     container_random = container.as_random_uniform()
-#     assert (ivy.to_numpy(container_random['a']) != np.array([1.]))[0]
-#     assert (ivy.to_numpy(container_random.a) != np.array([1.]))[0]
-#     assert (ivy.to_numpy(container_random['b']['c']) != np.array([2.]))[0]
-#     assert (ivy.to_numpy(container_random.b.c) != np.array([2.]))[0]
-#     assert (ivy.to_numpy(container_random['b']['d']) != np.array([3.]))[0]
-#     assert (ivy.to_numpy(container_random.b.d) != np.array([3.]))[0]
+def test_container_as_random_uniform(dev, call):
+    dict_in = {'a': ivy.array([1.], dev=dev),
+               'b': {'c': ivy.array([2.], dev=dev), 'd': ivy.array([3.], dev=dev)}}
+    container = Container(dict_in)
+
+    container_random = container.as_random_uniform()
+    assert (ivy.to_numpy(container_random['a']) != np.array([1.]))[0]
+    assert (ivy.to_numpy(container_random.a) != np.array([1.]))[0]
+    assert (ivy.to_numpy(container_random['b']['c']) != np.array([2.]))[0]
+    assert (ivy.to_numpy(container_random.b.c) != np.array([2.]))[0]
+    assert (ivy.to_numpy(container_random['b']['d']) != np.array([3.]))[0]
+    assert (ivy.to_numpy(container_random.b.d) != np.array([3.]))[0]
 
 
 def test_container_expand_dims(dev, call):
