@@ -59,6 +59,11 @@ reshape = np.reshape
 
 # Extra #
 # ------#
+def roll(x: np.ndarray,
+         shift: Union[int, Tuple[int, ...]],
+         axis: Optional[Union[int, Tuple[int, ...]]] = None) \
+        -> np.ndarray:
+    return np.roll(x, shift, axis)
 
 
 def split(x, num_or_size_splits=None, axis=0, with_remainder=False):
