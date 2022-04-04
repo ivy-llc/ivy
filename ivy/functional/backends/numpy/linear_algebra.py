@@ -18,8 +18,6 @@ def eigh(x: np.ndarray)\
 
 
 inv = np.linalg.inv
-pinv = np.linalg.pinv
-cholesky = np.linalg.cholesky
 
 def pinv(x: np.ndarray,
          rtol: Optional[Union[float, Tuple[float]]] = None) \
