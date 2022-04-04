@@ -63,6 +63,8 @@ def broadcast_to(x: torch.Tensor, shape: Tuple[int,...]) -> torch.Tensor:
 
 def astype(x: torch.Tensor, dtype: torch.dtype, copy: bool = True)\
      -> torch.Tensor:
+    if isinstance(dtype, str):
+        dtype = ivy.dtype_from_str(dtype)
     if copy:
         if x.dtype == dtype:
             new_tensor = x.clone().detach()
