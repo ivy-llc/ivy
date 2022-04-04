@@ -1019,40 +1019,40 @@ def test_container_clone(dev, call):
         lambda xs, _: ivy.arrays_equal(xs), [c for c in container_cloned.values()]).all_true()
 
 
-# @pytest.mark.parametrize(
-#     "devs_as_dict", [True, False])
-# def test_container_distribute(devs_as_dict, dev, call):
-#     array_a = ivy.array([[1], [2], [3], [4]], dev=dev)
-#     array_bc = ivy.array([[2], [3], [4], [5]], dev=dev)
-#     array_bd = ivy.array([[3], [4], [5], [6]], dev=dev)
-#     dict_in = {'a': array_a, 'b': {'c': array_bc, 'd': array_bd}}
-#     container = Container(dict_in)
-#     batch_size = array_a.shape[0]
-#
-#     if call is helpers.mx_call:
-#         # MXNet does not support splitting along an axis with a remainder after division.
-#         pytest.skip()
-#
-#     # devices
-#     dev0 = dev
-#     devs = [dev0]
-#     if 'gpu' in dev and ivy.num_gpus() > 1:
-#         idx = ivy.num_gpus() - 1
-#         dev1 = dev[:-1] + str(idx)
-#         devs.append(dev1)
-#     if devs_as_dict:
-#         devs = dict(zip(devs, [int((1/len(devs))*4)]*len(devs)))
-#     num_devs = len(devs)
-#     sub_size = int(batch_size/num_devs)
-#
-#     # without key_chains specification
-#     container_dist = container.dev_dist(devs)
-#     assert isinstance(container_dist, ivy.DevDistItem)
-#     assert min([cont.dev_str == ds for ds, cont in container_dist.items()])
-#     for i, sub_cont in enumerate(container_dist.values()):
-#         assert np.array_equal(ivy.to_numpy(sub_cont.a), ivy.to_numpy(array_a)[i*sub_size:i*sub_size+sub_size])
-#         assert np.array_equal(ivy.to_numpy(sub_cont.b.c), ivy.to_numpy(array_bc)[i*sub_size:i*sub_size+sub_size])
-#         assert np.array_equal(ivy.to_numpy(sub_cont.b.d), ivy.to_numpy(array_bd)[i*sub_size:i*sub_size+sub_size])
+@pytest.mark.parametrize(
+    "devs_as_dict", [True, False])
+def test_container_distribute(devs_as_dict, dev, call):
+    array_a = ivy.array([[1], [2], [3], [4]], dev=dev)
+    array_bc = ivy.array([[2], [3], [4], [5]], dev=dev)
+    array_bd = ivy.array([[3], [4], [5], [6]], dev=dev)
+    dict_in = {'a': array_a, 'b': {'c': array_bc, 'd': array_bd}}
+    container = Container(dict_in)
+    batch_size = array_a.shape[0]
+
+    if call is helpers.mx_call:
+        # MXNet does not support splitting along an axis with a remainder after division.
+        pytest.skip()
+
+    # devices
+    dev0 = dev
+    devs = [dev0]
+    if 'gpu' in dev and ivy.num_gpus() > 1:
+        idx = ivy.num_gpus() - 1
+        dev1 = dev[:-1] + str(idx)
+        devs.append(dev1)
+    if devs_as_dict:
+        devs = dict(zip(devs, [int((1/len(devs))*4)]*len(devs)))
+    num_devs = len(devs)
+    sub_size = int(batch_size/num_devs)
+
+    # without key_chains specification
+    container_dist = container.dev_dist(devs)
+    assert isinstance(container_dist, ivy.DevDistItem)
+    assert min([cont.dev_str == ds for ds, cont in container_dist.items()])
+    for i, sub_cont in enumerate(container_dist.values()):
+        assert np.array_equal(ivy.to_numpy(sub_cont.a), ivy.to_numpy(array_a)[i*sub_size:i*sub_size+sub_size])
+        assert np.array_equal(ivy.to_numpy(sub_cont.b.c), ivy.to_numpy(array_bc)[i*sub_size:i*sub_size+sub_size])
+        assert np.array_equal(ivy.to_numpy(sub_cont.b.d), ivy.to_numpy(array_bd)[i*sub_size:i*sub_size+sub_size])
 
 
 def test_container_unstack(dev, call):
