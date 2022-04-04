@@ -233,98 +233,98 @@ def test_container_diff(dev, call):
     assert container_diff_same_only.to_dict() == {}
 
 
-# def test_container_structural_diff(dev, call):
-#     # all different keys or shapes
-#     container_0 = Container({'a': ivy.array([1], dev=dev),
-#                              'b': {'c': ivy.array([2], dev=dev), 'd': ivy.array([3], dev=dev)}})
-#     container_1 = Container({'a': ivy.array([[4]], dev=dev),
-#                              'b': {'c': ivy.array([[[5]]], dev=dev), 'e': ivy.array([3], dev=dev)}})
-#     container_diff = ivy.Container.structural_diff(container_0, container_1)
-#     assert np.equal(ivy.to_numpy(container_diff.a.diff_0), np.array([1]))
-#     assert np.equal(ivy.to_numpy(container_diff.a.diff_1), np.array([[4]]))
-#     assert np.equal(ivy.to_numpy(container_diff.b.c.diff_0), np.array([2]))
-#     assert np.equal(ivy.to_numpy(container_diff.b.c.diff_1), np.array([[[5]]]))
-#     assert np.equal(ivy.to_numpy(container_diff.b.d.diff_0), np.array([3]))
-#     assert np.equal(ivy.to_numpy(container_diff.b.e.diff_1), np.array([3]))
-#     container_diff_diff_only = ivy.Container.structural_diff(container_0, container_1, mode='diff_only')
-#     assert container_diff_diff_only.to_dict() == container_diff.to_dict()
-#     container_diff_same_only = ivy.Container.structural_diff(container_0, container_1, mode='same_only')
-#     assert container_diff_same_only.to_dict() == {}
-#
-#     # some different shapes
-#     container_0 = Container({'a': ivy.array([1], dev=dev),
-#                              'b': {'c': ivy.array([2], dev=dev), 'd': ivy.array([3], dev=dev)}})
-#     container_1 = Container({'a': ivy.array([4], dev=dev),
-#                              'b': {'c': ivy.array([[5]], dev=dev), 'd': ivy.array([6], dev=dev)}})
-#     container_diff = ivy.Container.structural_diff(container_0, container_1)
-#     assert np.equal(ivy.to_numpy(container_diff.a), np.array([1]))
-#     assert np.equal(ivy.to_numpy(container_diff.b.c.diff_0), np.array([2]))
-#     assert np.equal(ivy.to_numpy(container_diff.b.c.diff_1), np.array([5]))
-#     assert np.equal(ivy.to_numpy(container_diff.b.d), np.array([3]))
-#     container_diff_diff_only = ivy.Container.structural_diff(container_0, container_1, mode='diff_only')
-#     assert 'a' not in container_diff_diff_only
-#     assert 'b' in container_diff_diff_only
-#     assert 'c' in container_diff_diff_only['b']
-#     assert 'd' not in container_diff_diff_only['b']
-#     container_diff_same_only = ivy.Container.structural_diff(container_0, container_1, mode='same_only')
-#     assert 'a' in container_diff_same_only
-#     assert 'b' in container_diff_same_only
-#     assert 'c' not in container_diff_same_only['b']
-#     assert 'd' in container_diff_same_only['b']
-#
-#     # all different keys
-#     container_0 = Container({'a': ivy.array([1], dev=dev),
-#                              'b': {'c': ivy.array([2], dev=dev), 'd': ivy.array([3], dev=dev)}})
-#     container_1 = Container({'e': ivy.array([4], dev=dev),
-#                              'f': {'g': ivy.array([5], dev=dev), 'h': ivy.array([6], dev=dev)}})
-#     container_diff = ivy.Container.structural_diff(container_0, container_1)
-#     assert np.equal(ivy.to_numpy(container_diff.a.diff_0), np.array([1]))
-#     assert np.equal(ivy.to_numpy(container_diff.b.diff_0.c), np.array([2]))
-#     assert np.equal(ivy.to_numpy(container_diff.b.diff_0.d), np.array([3]))
-#     assert np.equal(ivy.to_numpy(container_diff.e.diff_1), np.array([4]))
-#     assert np.equal(ivy.to_numpy(container_diff.f.diff_1.g), np.array([5]))
-#     assert np.equal(ivy.to_numpy(container_diff.f.diff_1.h), np.array([6]))
-#     container_diff_diff_only = ivy.Container.structural_diff(container_0, container_1, mode='diff_only')
-#     assert container_diff_diff_only.to_dict() == container_diff.to_dict()
-#     container_diff_same_only = ivy.Container.structural_diff(container_0, container_1, mode='same_only')
-#     assert container_diff_same_only.to_dict() == {}
-#
-#     # some different keys
-#     container_0 = Container({'a': ivy.array([1], dev=dev),
-#                              'b': {'c': ivy.array([2], dev=dev), 'd': ivy.array([3], dev=dev)}})
-#     container_1 = Container({'a': ivy.array([4], dev=dev),
-#                              'b': {'c': ivy.array([5], dev=dev), 'e': ivy.array([6], dev=dev)}})
-#     container_diff = ivy.Container.structural_diff(container_0, container_1)
-#     assert np.equal(ivy.to_numpy(container_diff.a), np.array([1]))
-#     assert np.equal(ivy.to_numpy(container_diff.b.c), np.array([2]))
-#     assert np.equal(ivy.to_numpy(container_diff.b.d.diff_0), np.array([3]))
-#     assert np.equal(ivy.to_numpy(container_diff.b.e.diff_1), np.array([6]))
-#     container_diff_diff_only = ivy.Container.structural_diff(container_0, container_1, mode='diff_only')
-#     assert 'a' not in container_diff_diff_only
-#     assert 'b' in container_diff_diff_only
-#     assert 'c' not in container_diff_diff_only['b']
-#     assert 'd' in container_diff_diff_only['b']
-#     assert 'e' in container_diff_diff_only['b']
-#     container_diff_same_only = ivy.Container.structural_diff(container_0, container_1, mode='same_only')
-#     assert 'a' in container_diff_same_only
-#     assert 'b' in container_diff_same_only
-#     assert 'c' in container_diff_same_only['b']
-#     assert 'd' not in container_diff_same_only['b']
-#     assert 'e' not in container_diff_same_only['b']
-#
-#     # all same
-#     container_0 = Container({'a': ivy.array([1], dev=dev),
-#                              'b': {'c': ivy.array([2], dev=dev), 'd': ivy.array([3], dev=dev)}})
-#     container_1 = Container({'a': ivy.array([4], dev=dev),
-#                              'b': {'c': ivy.array([5], dev=dev), 'd': ivy.array([6], dev=dev)}})
-#     container_diff = ivy.Container.structural_diff(container_0, container_1)
-#     assert np.equal(ivy.to_numpy(container_diff.a), np.array([1]))
-#     assert np.equal(ivy.to_numpy(container_diff.b.c), np.array([2]))
-#     assert np.equal(ivy.to_numpy(container_diff.b.d), np.array([3]))
-#     container_diff_diff_only = ivy.Container.structural_diff(container_0, container_1, mode='diff_only')
-#     assert container_diff_diff_only.to_dict() == {}
-#     container_diff_same_only = ivy.Container.structural_diff(container_0, container_1, mode='same_only')
-#     assert container_diff_same_only.to_dict() == container_diff.to_dict()
+def test_container_structural_diff(dev, call):
+    # all different keys or shapes
+    container_0 = Container({'a': ivy.array([1], dev=dev),
+                             'b': {'c': ivy.array([2], dev=dev), 'd': ivy.array([3], dev=dev)}})
+    container_1 = Container({'a': ivy.array([[4]], dev=dev),
+                             'b': {'c': ivy.array([[[5]]], dev=dev), 'e': ivy.array([3], dev=dev)}})
+    container_diff = ivy.Container.structural_diff(container_0, container_1)
+    assert np.equal(ivy.to_numpy(container_diff.a.diff_0), np.array([1]))
+    assert np.equal(ivy.to_numpy(container_diff.a.diff_1), np.array([[4]]))
+    assert np.equal(ivy.to_numpy(container_diff.b.c.diff_0), np.array([2]))
+    assert np.equal(ivy.to_numpy(container_diff.b.c.diff_1), np.array([[[5]]]))
+    assert np.equal(ivy.to_numpy(container_diff.b.d.diff_0), np.array([3]))
+    assert np.equal(ivy.to_numpy(container_diff.b.e.diff_1), np.array([3]))
+    container_diff_diff_only = ivy.Container.structural_diff(container_0, container_1, mode='diff_only')
+    assert container_diff_diff_only.to_dict() == container_diff.to_dict()
+    container_diff_same_only = ivy.Container.structural_diff(container_0, container_1, mode='same_only')
+    assert container_diff_same_only.to_dict() == {}
+
+    # some different shapes
+    container_0 = Container({'a': ivy.array([1], dev=dev),
+                             'b': {'c': ivy.array([2], dev=dev), 'd': ivy.array([3], dev=dev)}})
+    container_1 = Container({'a': ivy.array([4], dev=dev),
+                             'b': {'c': ivy.array([[5]], dev=dev), 'd': ivy.array([6], dev=dev)}})
+    container_diff = ivy.Container.structural_diff(container_0, container_1)
+    assert np.equal(ivy.to_numpy(container_diff.a), np.array([1]))
+    assert np.equal(ivy.to_numpy(container_diff.b.c.diff_0), np.array([2]))
+    assert np.equal(ivy.to_numpy(container_diff.b.c.diff_1), np.array([5]))
+    assert np.equal(ivy.to_numpy(container_diff.b.d), np.array([3]))
+    container_diff_diff_only = ivy.Container.structural_diff(container_0, container_1, mode='diff_only')
+    assert 'a' not in container_diff_diff_only
+    assert 'b' in container_diff_diff_only
+    assert 'c' in container_diff_diff_only['b']
+    assert 'd' not in container_diff_diff_only['b']
+    container_diff_same_only = ivy.Container.structural_diff(container_0, container_1, mode='same_only')
+    assert 'a' in container_diff_same_only
+    assert 'b' in container_diff_same_only
+    assert 'c' not in container_diff_same_only['b']
+    assert 'd' in container_diff_same_only['b']
+
+    # all different keys
+    container_0 = Container({'a': ivy.array([1], dev=dev),
+                             'b': {'c': ivy.array([2], dev=dev), 'd': ivy.array([3], dev=dev)}})
+    container_1 = Container({'e': ivy.array([4], dev=dev),
+                             'f': {'g': ivy.array([5], dev=dev), 'h': ivy.array([6], dev=dev)}})
+    container_diff = ivy.Container.structural_diff(container_0, container_1)
+    assert np.equal(ivy.to_numpy(container_diff.a.diff_0), np.array([1]))
+    assert np.equal(ivy.to_numpy(container_diff.b.diff_0.c), np.array([2]))
+    assert np.equal(ivy.to_numpy(container_diff.b.diff_0.d), np.array([3]))
+    assert np.equal(ivy.to_numpy(container_diff.e.diff_1), np.array([4]))
+    assert np.equal(ivy.to_numpy(container_diff.f.diff_1.g), np.array([5]))
+    assert np.equal(ivy.to_numpy(container_diff.f.diff_1.h), np.array([6]))
+    container_diff_diff_only = ivy.Container.structural_diff(container_0, container_1, mode='diff_only')
+    assert container_diff_diff_only.to_dict() == container_diff.to_dict()
+    container_diff_same_only = ivy.Container.structural_diff(container_0, container_1, mode='same_only')
+    assert container_diff_same_only.to_dict() == {}
+
+    # some different keys
+    container_0 = Container({'a': ivy.array([1], dev=dev),
+                             'b': {'c': ivy.array([2], dev=dev), 'd': ivy.array([3], dev=dev)}})
+    container_1 = Container({'a': ivy.array([4], dev=dev),
+                             'b': {'c': ivy.array([5], dev=dev), 'e': ivy.array([6], dev=dev)}})
+    container_diff = ivy.Container.structural_diff(container_0, container_1)
+    assert np.equal(ivy.to_numpy(container_diff.a), np.array([1]))
+    assert np.equal(ivy.to_numpy(container_diff.b.c), np.array([2]))
+    assert np.equal(ivy.to_numpy(container_diff.b.d.diff_0), np.array([3]))
+    assert np.equal(ivy.to_numpy(container_diff.b.e.diff_1), np.array([6]))
+    container_diff_diff_only = ivy.Container.structural_diff(container_0, container_1, mode='diff_only')
+    assert 'a' not in container_diff_diff_only
+    assert 'b' in container_diff_diff_only
+    assert 'c' not in container_diff_diff_only['b']
+    assert 'd' in container_diff_diff_only['b']
+    assert 'e' in container_diff_diff_only['b']
+    container_diff_same_only = ivy.Container.structural_diff(container_0, container_1, mode='same_only')
+    assert 'a' in container_diff_same_only
+    assert 'b' in container_diff_same_only
+    assert 'c' in container_diff_same_only['b']
+    assert 'd' not in container_diff_same_only['b']
+    assert 'e' not in container_diff_same_only['b']
+
+    # all same
+    container_0 = Container({'a': ivy.array([1], dev=dev),
+                             'b': {'c': ivy.array([2], dev=dev), 'd': ivy.array([3], dev=dev)}})
+    container_1 = Container({'a': ivy.array([4], dev=dev),
+                             'b': {'c': ivy.array([5], dev=dev), 'd': ivy.array([6], dev=dev)}})
+    container_diff = ivy.Container.structural_diff(container_0, container_1)
+    assert np.equal(ivy.to_numpy(container_diff.a), np.array([1]))
+    assert np.equal(ivy.to_numpy(container_diff.b.c), np.array([2]))
+    assert np.equal(ivy.to_numpy(container_diff.b.d), np.array([3]))
+    container_diff_diff_only = ivy.Container.structural_diff(container_0, container_1, mode='diff_only')
+    assert container_diff_diff_only.to_dict() == {}
+    container_diff_same_only = ivy.Container.structural_diff(container_0, container_1, mode='same_only')
+    assert container_diff_same_only.to_dict() == container_diff.to_dict()
 
 
 def test_container_from_dict(dev, call):
