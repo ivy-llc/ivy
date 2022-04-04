@@ -802,33 +802,33 @@ def test_repeat(x_n_reps_n_axis, dtype, tensor_fn, dev, call):
 
 
 # tile
-# @pytest.mark.parametrize(
-#     "x_n_reps", [(1, [1]), (1, 2), (1, [2]), ([[0., 1., 2., 3.]], (2, 1))])
-# @pytest.mark.parametrize(
-#     "dtype", ['float32'])
-# @pytest.mark.parametrize(
-#     "tensor_fn", [ivy.array, helpers.var_fn])
-# def test_tile(x_n_reps, dtype, tensor_fn, dev, call):
-#     # smoke test
-#     x, reps_raw = x_n_reps
-#     if isinstance(x, Number) and tensor_fn == helpers.var_fn and call is helpers.mx_call:
-#         # mxnet does not support 0-dimensional variables
-#         pytest.skip()
-#     x = tensor_fn(x, dtype, dev)
-#     ret_from_list = ivy.tile(x, reps_raw)
-#     reps = ivy.array(reps_raw, 'int32', dev)
-#     ret = ivy.tile(x, reps)
-#     # type test
-#     assert ivy.is_array(ret)
-#     # cardinality test
-#     if x.shape == ():
-#         expected_shape = tuple(reps_raw) if isinstance(reps_raw, list) else (reps_raw,)
-#     else:
-#         expected_shape = tuple([int(item * rep) for item, rep in zip(x.shape, reps_raw)])
-#     assert ret.shape == expected_shape
-#     # value test
-#     assert np.allclose(call(ivy.tile, x, reps),
-#                        np.asarray(ivy.functional.backends.numpy.tile(ivy.to_numpy(x), ivy.to_numpy(reps))))
+@pytest.mark.parametrize(
+    "x_n_reps", [(1, [1]), (1, 2), (1, [2]), ([[0., 1., 2., 3.]], (2, 1))])
+@pytest.mark.parametrize(
+    "dtype", ['float32'])
+@pytest.mark.parametrize(
+    "tensor_fn", [ivy.array, helpers.var_fn])
+def test_tile(x_n_reps, dtype, tensor_fn, dev, call):
+    # smoke test
+    x, reps_raw = x_n_reps
+    if isinstance(x, Number) and tensor_fn == helpers.var_fn and call is helpers.mx_call:
+        # mxnet does not support 0-dimensional variables
+        pytest.skip()
+    x = tensor_fn(x, dtype, dev)
+    ret_from_list = ivy.tile(x, reps_raw)
+    reps = ivy.array(reps_raw, 'int32', dev)
+    ret = ivy.tile(x, reps)
+    # type test
+    assert ivy.is_ivy_array(ret)
+    # cardinality test
+    if x.shape == ():
+        expected_shape = tuple(reps_raw) if isinstance(reps_raw, list) else (reps_raw,)
+    else:
+        expected_shape = tuple([int(item * rep) for item, rep in zip(x.shape, reps_raw)])
+    assert ret.shape == expected_shape
+    # value test
+    assert np.allclose(call(ivy.tile, x, reps),
+                       np.asarray(ivy.functional.backends.numpy.tile(ivy.to_numpy(x), ivy.to_numpy(reps))))
 
 
 # zero_pad
