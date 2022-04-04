@@ -105,13 +105,12 @@ inplace_arrays_supported = lambda: True
 inplace_variables_supported = lambda: True
 
 
-
 def inplace_update(x, val):
     x.data = val
     return x
 
 
-def is_array(x, exclusive=False):
+def is_native_array(x, exclusive=False):
     if isinstance(x, np.ndarray):
         return True
     return False

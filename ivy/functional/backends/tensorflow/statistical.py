@@ -8,17 +8,17 @@ from typing import Tuple, Union, Optional
 # Array API Standard #
 # -------------------#
 
-def min(x: tf.Tensor,
+def min(x: Tensor,
         axis: Union[int, Tuple[int]] = None,
         keepdims: bool = False) \
-        -> tf.Tensor:
+        -> Tensor:
     return tf.math.reduce_min(x, axis = axis, keepdims = keepdims)
 
 
-def sum(x: tf.Tensor,
+def sum(x: Tensor,
         axis: Optional[Union[int,Tuple[int]]] = None,
         dtype: Optional[tf.DType] = None,
-        keepdims: bool = False) -> tf.Tensor:
+        keepdims: bool = False) -> Tensor:
 
     if dtype == None:
         if x.dtype in [tf.int8, tf.int16, tf.int32]:
@@ -33,11 +33,11 @@ def sum(x: tf.Tensor,
     return tf.experimental.numpy.sum(x, axis, dtype, keepdims)
 
 
-def prod(x: tf.Tensor,
+def prod(x: Tensor,
          axis: Optional[Union[int, Tuple[int]]] = None,
          dtype: Optional[tf.DType] = None,
          keepdims: bool = False)\
-        -> tf.Tensor:
+        -> Tensor:
     if dtype == None:
         if x.dtype in [ tf.int8 , tf.int16,tf.int32]:
             dtype = tf.int32
@@ -63,20 +63,28 @@ def mean(x: Tensor,
     return tf.reduce_mean(x, axis=axis, keepdims=keepdims)
 
 
-def max(x: tf.Tensor,
+def max(x: Tensor,
         axis: Union[int, Tuple[int]] = None,
         keepdims: bool = False) \
-        -> tf.Tensor:
+        -> Tensor:
     return tf.math.reduce_max(x, axis = axis, keepdims = keepdims)
 
   
-def var(x: tf.Tensor,
+def var(x: Tensor,
         axis: Optional[Union[int, Tuple[int]]] = None,
         correction: Union[int, float] = 0.0,
         keepdims: bool = False) \
-        -> tf.Tensor:
+        -> Tensor:
     m = tf.reduce_mean(x, axis=axis, keepdims=True)
     return tf.reduce_mean(tf.square(x - m), axis=axis, keepdims=keepdims)
+
+
+def std(x: Tensor,
+        axis: Optional[Union[int, Tuple[int]]] = None,
+        correction: Union[int, float] = 0.0,
+        keepdims: bool = False)\
+        -> Tensor:
+    return tf.experimental.numpy.std(x, axis, keepdims)
 
     
 # Extra #

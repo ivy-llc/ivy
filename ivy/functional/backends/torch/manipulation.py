@@ -5,6 +5,13 @@ from numbers import Number
 from typing import Union, Optional, Tuple, List
 
 
+def roll(x: torch.Tensor,
+         shift: Union[int, Tuple[int, ...]],
+         axis: Optional[Union[int, Tuple[int, ...]]] = None) \
+        -> torch.Tensor:
+    return torch.roll(x, shift, axis)
+
+
 def squeeze(x: torch.Tensor,
             axis: Union[int, Tuple[int], List[int]] = None)\
         -> torch.Tensor:
@@ -62,10 +69,11 @@ def stack(x: Union[Tuple[torch.Tensor], List[torch.Tensor]],
     return torch.stack(x, axis)
 
 
-def reshape(x, newshape: List[int]):
-    if isinstance(newshape, int):
-        newshape = [newshape]
-    return torch.reshape(x, newshape)
+def reshape(x: torch.Tensor,
+            shape: Tuple[int, ...],
+            copy: Optional[bool] = None)\
+        -> torch.Tensor:
+    return torch.reshape(x, shape)
 
 
 def concatenate(xs: List[torch.Tensor], axis: int = -1):

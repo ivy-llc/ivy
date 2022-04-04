@@ -24,7 +24,7 @@ def test_relu(x, dtype, tensor_fn, dev, call):
     x = tensor_fn(x, dtype, dev)
     ret = ivy.relu(x)
     # type test
-    assert ivy.is_array(ret)
+    assert ivy.is_native_array(ret)
     # cardinality test
     assert ret.shape == x.shape
     # value test
@@ -45,11 +45,13 @@ def test_leaky_relu(x, dtype, tensor_fn, dev, call):
     x = tensor_fn(x, dtype, dev)
     ret = ivy.leaky_relu(x)
     # type test
-    assert ivy.is_array(ret)
+    assert ivy.is_native_array(ret)
     # cardinality test
     assert ret.shape == x.shape
     # value test
     assert np.allclose(call(ivy.leaky_relu, x), ivy.functional.backends.numpy.leaky_relu(ivy.to_numpy(x)))
+    # docstring test
+    helpers.assert_docstring_examples_run(ivy.leaky_relu)
 
 
 # gelu
@@ -66,7 +68,7 @@ def test_gelu(x, approx, dtype, tensor_fn, dev, call):
     x = tensor_fn(x, dtype, dev)
     ret = ivy.gelu(x, approx)
     # type test
-    assert ivy.is_array(ret)
+    assert ivy.is_native_array(ret)
     # cardinality test
     assert ret.shape == x.shape
     # value test
@@ -85,7 +87,7 @@ def test_tanh(x, dtype, tensor_fn, dev, call):
     x = tensor_fn(x, dtype, dev)
     ret = ivy.tanh(x)
     # type test
-    assert ivy.is_array(ret)
+    assert ivy.is_native_array(ret)
     # cardinality test
     assert ret.shape == x.shape
     # value test
@@ -104,7 +106,7 @@ def test_sigmoid(x, dtype, tensor_fn, dev, call):
     x = tensor_fn(x, dtype, dev)
     ret = ivy.sigmoid(x)
     # type test
-    assert ivy.is_array(ret)
+    assert ivy.is_native_array(ret)
     # cardinality test
     assert ret.shape == x.shape
     # value test
@@ -123,7 +125,7 @@ def test_softmax(x, dtype, tensor_fn, dev, call):
     x = tensor_fn(x, dtype, dev)
     ret = ivy.softmax(x)
     # type test
-    assert ivy.is_array(ret)
+    assert ivy.is_native_array(ret)
     # cardinality test
     assert ret.shape == x.shape
     # value test
@@ -142,7 +144,7 @@ def test_softplus(x, dtype, tensor_fn, dev, call):
     x = tensor_fn(x, dtype, dev)
     ret = ivy.softplus(x)
     # type test
-    assert ivy.is_array(ret)
+    assert ivy.is_native_array(ret)
     # cardinality test
     assert ret.shape == x.shape
     # value test
