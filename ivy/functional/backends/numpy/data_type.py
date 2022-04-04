@@ -39,7 +39,7 @@ class Finfo:
 
 
 def can_cast(from_: Union[np.dtype, np.ndarray], to: np.dtype, /)\
-        -> bool:
+         -> bool:
     return np.can_cast(from_, to)
 
 # noinspection PyShadowingBuiltins
