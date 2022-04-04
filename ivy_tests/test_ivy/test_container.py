@@ -3471,16 +3471,16 @@ def test_container_scalar_greater_than_or_equal_to(dev, call):
     assert np.allclose(ivy.to_numpy(container.b.d), np.array([True]))
 
 
-# def test_container_reverse_scalar_greater_than_or_equal_to(dev, call):
-#     container = Container({'a': ivy.array([1], dev=dev),
-#                            'b': {'c': ivy.array([2], dev=dev), 'd': ivy.array([3], dev=dev)}})
-#     container = 2 >= container
-#     assert np.allclose(ivy.to_numpy(container['a']), np.array([True]))
-#     assert np.allclose(ivy.to_numpy(container.a), np.array([True]))
-#     assert np.allclose(ivy.to_numpy(container['b']['c']), np.array([True]))
-#     assert np.allclose(ivy.to_numpy(container.b.c), np.array([True]))
-#     assert np.allclose(ivy.to_numpy(container['b']['d']), np.array([False]))
-#     assert np.allclose(ivy.to_numpy(container.b.d), np.array([False]))
+def test_container_reverse_scalar_greater_than_or_equal_to(dev, call):
+    container = Container({'a': ivy.array([1], dev=dev),
+                           'b': {'c': ivy.array([2], dev=dev), 'd': ivy.array([3], dev=dev)}})
+    container = 2 >= container
+    assert np.allclose(ivy.to_numpy(container['a']), np.array([True]))
+    assert np.allclose(ivy.to_numpy(container.a), np.array([True]))
+    assert np.allclose(ivy.to_numpy(container['b']['c']), np.array([True]))
+    assert np.allclose(ivy.to_numpy(container.b.c), np.array([True]))
+    assert np.allclose(ivy.to_numpy(container['b']['d']), np.array([False]))
+    assert np.allclose(ivy.to_numpy(container.b.d), np.array([False]))
 
 
 def test_container_greater_than_or_equal_to(dev, call):
