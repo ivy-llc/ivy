@@ -55,4 +55,4 @@ class Process_issue():
     def main_issue_body_functions(self, allocated=True):
         if allocated:
             return [int(i[1:]) for i in re.findall(r"[#/]\d+", self._issue['body'])]
-        return [i.strip() for i in re.findall(r"\b\w.+\b", self._issue['body']).replace('`', '')]
+        return [i.strip() for i in re.findall(r"\b\w.+\b", self._issue['body'].replace('`', ''))]
