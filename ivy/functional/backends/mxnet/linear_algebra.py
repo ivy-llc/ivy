@@ -1,6 +1,6 @@
 # global
 import mxnet as mx
-import numpy as _np
+import numpy as np
 
 from collections import namedtuple
 from mxnet.ndarray.ndarray import NDArray
@@ -15,6 +15,11 @@ DET_THRESHOLD = 1e-12
 
 # Array API Standard #
 # -------------------#
+
+def eigh(x: mx.ndarray)\
+  ->mx.ndarray:
+    return mx.np.linalg.eigh(x)
+
 
 inv = mx.nd.linalg_inverse
 cholesky = lambda x: mx.np.linalg.cholesky(x.as_np_ndarray()).as_nd_ndarray()
@@ -59,7 +64,7 @@ def matrix_norm(x, p=2, axes=None, keepdims=False):
 # noinspection PyPep8Naming
 def svd(x: NDArray, full_matrices: bool = True) -> Union[NDArray, Tuple[NDArray,...]]:
     results=namedtuple("svd", "U S Vh")
-    U, D, VT=_np.linalg.svd(x, full_matrices=full_matrices)
+    U, D, VT=np.linalg.svd(x, full_matrices=full_matrices)
     res=results(U, D, VT)
     return res
 
@@ -118,6 +123,16 @@ def eigvalsh(x: mx.ndarray.ndarray.NDArray) -> mx.ndarray.ndarray.NDArray:
     return mx.np.linalg.eigvalsh(x)
 
 
+def matrix_rank(vector: NDArray,
+                rtol: Union[NDArray, float] = None) -> Union[NDArray, float]:
+    return mx.np.linalg.matrix_rank(vector, rtol)
+
+    
+def cross (x1: mx.nd.NDArray,
+           x2: mx.nd.NDArray,
+           axis:int = -1) -> mx.nd.NDArray:
+    return mx.np.cross(a= x1, b = x2, axis= axis)
+
 def matrix_transpose(x, axes=None):
     if axes is None:
         num_dims = len(x.shape)
@@ -147,20 +162,6 @@ def matmul(x1, x2):
     res = mx.nd.batch_dot(x1, x2)
     if expanded:
         return mx.nd.reshape(res, list(x1_shape[:-1]) + [res.shape[-1]])
-    return res
-
-
-def cross(x1, x2):
-    a1 = x1[..., 0:1]
-    a2 = x1[..., 1:2]
-    a3 = x1[..., 2:3]
-    b1 = x2[..., 0:1]
-    b2 = x2[..., 1:2]
-    b3 = x2[..., 2:3]
-    res1 = a2*b3 - a3*b2
-    res2 = a3*b1 - a1*b3
-    res3 = a1*b2 - a2*b1
-    res = mx.nd.concat(res1, res2, res3, dim=-1)
     return res
 
 

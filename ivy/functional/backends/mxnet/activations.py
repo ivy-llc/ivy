@@ -2,12 +2,21 @@
 Collection of MXNet activation functions, wrapped to fit Ivy syntax and signature.
 """
 
+from typing import Optional
+
 # global
 import numpy as _np
 import mxnet as _mx
 
-relu = _mx.nd.relu
-leaky_relu = lambda x, alpha=0.2: _mx.nd.LeakyReLU(x, slope=alpha)
+
+def relu(x: _mx.nd.NDArray)\
+        -> _mx.nd.NDArray:
+    return _mx.nd.relu(x)
+
+
+def leaky_relu(x: _mx.nd.NDArray, alpha: Optional[float] = 0.2)\
+        -> _mx.nd.NDArray:
+    return _mx.nd.LeakyReLU(x, slope=alpha)
 
 
 def gelu(x, approximate=True):

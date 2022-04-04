@@ -5,6 +5,19 @@ import jax.numpy as jnp
 # local
 from ivy.functional.backends.jax import JaxArray
 
+def add(x1: JaxArray,
+           x2: JaxArray)\
+        -> JaxArray:
+    return jnp.add(x1 ,x2)
+
+def bitwise_xor(x1: JaxArray,
+                x2: JaxArray)\
+        -> JaxArray:
+    return jnp.bitwise_xor(x1, x2)
+
+def exp(x: JaxArray)\
+        -> JaxArray:
+    return jnp.exp(x)
 
 def expm1(x: JaxArray)\
         -> JaxArray:
@@ -53,7 +66,12 @@ def isinf(x: JaxArray)\
 
 def equal(x1: JaxArray, x2: JaxArray)\
         -> JaxArray:
-    return jnp.equal(x1,x2)
+    return jnp.equal(x1, x2)
+
+
+def greater(x1: JaxArray, x2: JaxArray) \
+        -> JaxArray:
+    return jnp.greater(x1, x2)
 
 
 def greater_equal(x1: JaxArray, x2: JaxArray)\
@@ -70,6 +88,9 @@ def asinh(x: JaxArray)\
         -> JaxArray:
     return jnp.arcsinh(x)
 
+def sign(x: JaxArray)\
+        -> JaxArray:
+    return jnp.sign(x)
 
 def sqrt(x: JaxArray)\
         -> JaxArray:
@@ -139,6 +160,12 @@ def logical_and(x1: JaxArray, x2: JaxArray)\
 def logical_not(x: JaxArray)\
         -> JaxArray:
     return jnp.logical_not(x)
+  
+  
+def divide(x1: JaxArray,
+           x2: JaxArray)\
+        -> JaxArray:
+    return jnp.divide(x1, x2)  
 
 
 def acos(x: JaxArray)\
@@ -170,6 +197,11 @@ def tanh(x: JaxArray)\
     return jnp.tanh(x)
 
 
+def floor_divide(x1: JaxArray, x2: JaxArray)\
+                -> JaxArray:
+    return jnp.floor_divide(x1, x2)
+
+
 def bitwise_or(x1: JaxArray, x2: JaxArray) -> JaxArray:
     return jnp.bitwise_or(x1, x2)
 
@@ -183,7 +215,7 @@ def positive(x: JaxArray)\
         -> JaxArray:
     return jnp.positive(x)
 
-
+  
 def square(x: JaxArray)\
         -> JaxArray:
     return jnp.square(x)
@@ -203,6 +235,13 @@ def round(x: JaxArray)\
     return jnp.round(x)
 
 
+def trunc(x: JaxArray)\
+        -> JaxArray:
+    if 'int' in str(x.dtype):
+        return x
+    return jnp.trunc(x)
+
+  
 def abs(x: JaxArray)\
         -> JaxArray:
     return jnp.absolute(x)

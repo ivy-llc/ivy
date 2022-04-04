@@ -1,7 +1,7 @@
 # global
 import numpy as np
-from typing import Union, Optional, Tuple, Literal
-from collections import namedtuple
+from typing import Union, Optional, Tuple, Literal, List
+
 
 # local
 from ivy import inf
@@ -10,6 +10,12 @@ from collections import namedtuple
 
 # Array API Standard #
 # -------------------#
+
+def eigh(x: np.ndarray)\
+  -> np.ndarray:
+         return np.linalg.eigh(x)
+
+
 
 inv = np.linalg.inv
 pinv = np.linalg.pinv
@@ -101,6 +107,12 @@ def slogdet(x: Union[ivy.Array, ivy.NativeArray], full_matrices: bool = True) ->
     res = results(sign, logabsdet)
     return res
 
+def tensordot(x1: np.ndarray, x2: np.ndarray,
+              axes: Union[int, Tuple[List[int], List[int]]] = 2) \
+    -> np.ndarray:
+
+    return np.tensordot(x1, x2, axes=axes)
+
 
 def trace(x: np.ndarray,
           offset: int = 0) \
@@ -125,9 +137,18 @@ def cholesky(x: np.ndarray,
 def eigvalsh(x: np.ndarray) -> np.ndarray:
     return np.linalg.eigvalsh(x)
 
+def cross (x1: np.ndarray,
+           x2: np.ndarray,
+           axis:int = -1) -> np.ndarray:
+    return np.cross(a= x1, b = x2, axis= axis)
 
-cross = np.cross
 
+def matrix_rank(vector: np.ndarray,
+                rtol: Optional[Union[float, Tuple[float]]] = None) \
+        -> np.ndarray:
+    if rtol is None:
+        return np.linalg.matrix_rank(vector)
+    return np.linalg.matrix_rank(vector, rtol)
 
 # Extra #
 # ------#

@@ -4,6 +4,7 @@
 .. raw:: html
 
     <br/>
+    <div align="center">
     <a href="https://pypi.org/project/ivy-core">
         <img style="float: left; padding-right: 4px; padding-bottom: 4px;" src="https://badge.fury.io/py/ivy-core.svg">
     </a>
@@ -16,13 +17,14 @@
     <a href="https://discord.gg/G4aR9Q7DTN">
         <img style="float: left; padding-right: 4px; padding-bottom: 4px;" src="https://img.shields.io/discord/799879767196958751?color=blue&label=%20&logo=discord&logoColor=white">
     </a>
+    </div>
     <br clear="all" />
 
 **We’re on a mission to unify all ML frameworks 💥 + automate code conversions 🔄. pip install ivy-core 🚀, join our growing community 😊, and lets-unify.ai! 🦾**
 
 .. raw:: html
 
-    <div style="display: block;">
+    <div style="display: block;" align="center">
         <img width="3%" style="float: left;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/empty.png">
         <a href="https://jax.readthedocs.io">
             <img width="12%" style="float: left;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/jax_logo.png">
@@ -65,7 +67,9 @@ Overview
 Ivy is an ML framework which currently supports JAX, TensorFlow, PyTorch, MXNet and Numpy. We’re very excited for you to try it out!
 
 Next on our road-map is to support automatic code conversions between any frameworks 🔄, and add instant multi-framework support for all open-source libraries with only a few lines of code changed! Read on to learn more 😊
-The post is split into a number of sub-pages explaining different aspects of why we created Ivy, how to use it, what we’ve got planned on our road-map, and how to contribute! Click on the sub-headings to check out these pages!
+
+The docs are split into a number of sub-pages explaining different aspects of why we created Ivy, how to use it, what we’ve got planned on our road-map, and how to contribute! Click on the sub-headings to check out these pages!
+
 We use 🚧 to indicate that the feature being discussed is in development. We use ✅ to indicate that it is already implemented!
 
 Check out the docs_ for more info, and check out our Google Colabs_ for some interactive demos!
@@ -134,8 +138,44 @@ This is the same for ALL Ivy functions. They can accept tensors from any framewo
 To see a list of all Ivy methods, type :code:`ivy.` into a python command prompt and press :code:`tab`.
 You should then see output like the following:
 
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/ivy_tab.png?raw=true
-   :width: 100%
+::
+
+   ivy.Container(                         ivy.general                               ivy.reduce_min(
+   ivy.abs(                               ivy.get_device(                           ivy.reduce_prod(
+   ivy.acos(                              ivy.get_num_dims(                         ivy.reduce_sum(
+   ivy.acosh(                             ivy.gradient_descent_update(              ivy.reductions
+   ivy.activations                        ivy.gradient_image(                       ivy.relu(
+   ivy.arange(                            ivy.gradients                             ivy.reshape(
+   ivy.argmax(                            ivy.identity(                             ivy.round(
+   ivy.argmin(                            ivy.image                                 ivy.scatter_nd(
+   ivy.array(                             ivy.indices_where(                        ivy.seed(
+   ivy.asin(                              ivy.inv(                                  ivy.shape(
+   ivy.asinh(                             ivy.layers                                ivy.shuffle(
+   ivy.atan(                              ivy.leaky_relu(                           ivy.sigmoid(
+   ivy.atan2(                             ivy.linalg                                ivy.sin(
+   ivy.atanh(                             ivy.linear(                               ivy.sinh(
+   ivy.bilinear_resample(                 ivy.linspace(                             ivy.softmax(
+   ivy.cast(                              ivy.log(                                  ivy.softplus(
+   ivy.ceil(                              ivy.logic                                 ivy.split(
+   ivy.clip(                              ivy.logical_and(                          ivy.squeeze(
+   ivy.concatenate(                       ivy.logical_not(                          ivy.stack(            
+   ivy.container                          ivy.logical_or(                           ivy.stack_images(
+   ivy.conv2d(                            ivy.math                                  ivy.stop_gradient(
+   ivy.core                               ivy.matmul(                               ivy.svd(
+   ivy.cos(                               ivy.maximum(                              ivy.tan(
+   ivy.cosh(                              ivy.minimum(                              ivy.tanh(
+   ivy.cross(                             ivy.neural_net                            ivy.tile(
+   ivy.cumsum(                            ivy.nn                                    ivy.to_list(
+   ivy.depthwise_conv2d(                  ivy.norm(                                 ivy.to_numpy(
+   ivy.dtype(                             ivy.one_hot(                              ivy.transpose(
+   ivy.execute_with_gradients(            ivy.ones(                                 ivy.unstack(
+   ivy.exp(                               ivy.ones_like(                            ivy.variable(
+   ivy.expand_dims(                       ivy.pinv(                                 ivy.vector_to_skew_symmetric_matrix(
+   ivy.flip(                              ivy.randint(                              ivy.verbosity
+   ivy.floor(                             ivy.random                                ivy.where(
+   ivy.floormod(                          ivy.random_uniform(                       ivy.zero_pad(
+   ivy.framework_handler                  ivy.reduce_max(                           ivy.zeros(
+   ivy.gather_nd(                         ivy.reduce_mean(                          ivy.zeros_like(
 
 Background
 ----------
