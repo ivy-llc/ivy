@@ -1697,31 +1697,31 @@ def test_einops_repeat(x_n_pattern_n_al_n_newx, dtype, tensor_fn, dev, call):
 
 
 # profiler
-# def test_profiler(dev, call):
-#
-#     # ToDo: find way to prevent this test from hanging when run alongside other tests in parallel
-#
-#     # log dir
-#     this_dir = os.path.dirname(os.path.realpath(__file__))
-#     log_dir = os.path.join(this_dir, '../log')
-#
-#     # with statement
-#     with ivy.Profiler(log_dir):
-#         a = ivy.ones([10])
-#         b = ivy.zeros([10])
-#         a + b
-#     if call is helpers.mx_call:
-#         time.sleep(1)  # required by MXNet for some reason
-#
-#     # start and stop methods
-#     profiler = ivy.Profiler(log_dir)
-#     profiler.start()
-#     a = ivy.ones([10])
-#     b = ivy.zeros([10])
-#     a + b
-#     profiler.stop()
-#     if call is helpers.mx_call:
-#         time.sleep(1)  # required by MXNet for some reason
+def test_profiler(dev, call):
+
+    # ToDo: find way to prevent this test from hanging when run alongside other tests in parallel
+
+    # log dir
+    this_dir = os.path.dirname(os.path.realpath(__file__))
+    log_dir = os.path.join(this_dir, '../log')
+
+    # with statement
+    with ivy.Profiler(log_dir):
+        a = ivy.ones([10])
+        b = ivy.zeros([10])
+        a + b
+    if call is helpers.mx_call:
+        time.sleep(1)  # required by MXNet for some reason
+
+    # start and stop methods
+    profiler = ivy.Profiler(log_dir)
+    profiler.start()
+    a = ivy.ones([10])
+    b = ivy.zeros([10])
+    a + b
+    profiler.stop()
+    if call is helpers.mx_call:
+        time.sleep(1)  # required by MXNet for some reason
 
 
 # container types
