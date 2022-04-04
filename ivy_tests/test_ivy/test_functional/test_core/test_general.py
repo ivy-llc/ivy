@@ -587,25 +587,6 @@ def test_ceil(x_n_x_ceiled, dtype, tensor_fn, dev, call):
 
 
 
-# argmax
-# @pytest.mark.parametrize(
-#     "x_n_axis_x_argmax", [([-0.3, 0.1], None, [1]), ([[1.3, 2.6], [2.3, 2.5]], 0, [1, 0]),
-#                           ([[1.3, 2.6], [2.3, 2.5]], 1, [1, 1])])
-# @pytest.mark.parametrize(
-#     "dtype", ['float32'])
-# @pytest.mark.parametrize(
-#     "tensor_fn", [ivy.array, helpers.var_fn])
-# def test_argmax(x_n_axis_x_argmax, dtype, tensor_fn, dev, call):
-#     # smoke test
-#     x = ivy.array(x_n_axis_x_argmax[0], dtype, dev)
-#     axis = x_n_axis_x_argmax[1]
-#     ret = ivy.argmax(x, axis)
-#     # type test
-#     assert ivy.is_array(ret)
-#     # cardinality test
-#     assert tuple(ret.shape) == (len(x.shape),)
-#     # value test
-#     assert np.allclose(call(ivy.argmax, x, axis), np.array(x_n_axis_x_argmax[2]))
 
 
 
