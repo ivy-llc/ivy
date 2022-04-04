@@ -16,11 +16,6 @@ def eigh(x: np.ndarray)\
          return np.linalg.eigh(x)
 
 
-
-pinv = np.linalg.pinv
-cholesky = np.linalg.cholesky
-
-
 def inv(x: np.ndarray) -> np.ndarray:
     return np.linalg.inv(x)
 

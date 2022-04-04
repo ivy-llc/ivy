@@ -18,10 +18,6 @@ def eigh(x: Tensor)\
         return tf.linalg.eigh(x) 
 
 
-pinv = tf.linalg.pinv
-cholesky = tf.linalg.cholesky
-
-
 def inv(x: Tensor) -> Tensor:
     return tf.linalg.inv(x)
 

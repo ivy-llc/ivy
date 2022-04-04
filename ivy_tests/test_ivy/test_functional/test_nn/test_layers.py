@@ -81,49 +81,49 @@ def test_dropout(x, dtype, tensor_fn, dev, call):
 # ----------#
 
 # # scaled_dot_product_attention
-# @pytest.mark.parametrize(
-#     "q_n_k_n_v_n_s_n_m_n_gt", [([[1.]], [[2.]], [[3.]], 2., [[1.]], [[3.]])])
-# @pytest.mark.parametrize(
-#     "dtype", ['float32'])
-# @pytest.mark.parametrize(
-#     "tensor_fn", [ivy.array, helpers.var_fn])
-# def test_scaled_dot_product_attention(q_n_k_n_v_n_s_n_m_n_gt, dtype, tensor_fn, dev, call):
-#     q, k, v, scale, mask, ground_truth = q_n_k_n_v_n_s_n_m_n_gt
-#     # smoke test
-#     q = tensor_fn(q, dtype, dev)
-#     k = tensor_fn(k, dtype, dev)
-#     v = tensor_fn(v, dtype, dev)
-#     mask = tensor_fn(mask, dtype, dev)
-#     ret = ivy.scaled_dot_product_attention(q, k, v, scale, mask)
-#     # type test
-#     assert ivy.is_array(ret)
-#     # cardinality test
-#     assert ret.shape == q.shape
-#     # value test
-#     assert np.allclose(call(ivy.scaled_dot_product_attention, q, k, v, scale, mask), np.array(ground_truth))
+@pytest.mark.parametrize(
+    "q_n_k_n_v_n_s_n_m_n_gt", [([[1.]], [[2.]], [[3.]], 2., [[1.]], [[3.]])])
+@pytest.mark.parametrize(
+    "dtype", ['float32'])
+@pytest.mark.parametrize(
+    "tensor_fn", [ivy.array, helpers.var_fn])
+def test_scaled_dot_product_attention(q_n_k_n_v_n_s_n_m_n_gt, dtype, tensor_fn, dev, call):
+    q, k, v, scale, mask, ground_truth = q_n_k_n_v_n_s_n_m_n_gt
+    # smoke test
+    q = tensor_fn(q, dtype, dev)
+    k = tensor_fn(k, dtype, dev)
+    v = tensor_fn(v, dtype, dev)
+    mask = tensor_fn(mask, dtype, dev)
+    ret = ivy.scaled_dot_product_attention(q, k, v, scale, mask)
+    # type test
+    assert ivy.is_ivy_array(ret)
+    # cardinality test
+    assert ret.shape == q.shape
+    # value test
+    assert np.allclose(call(ivy.scaled_dot_product_attention, q, k, v, scale, mask), np.array(ground_truth))
 
 
 # multi_head_attention
-# @pytest.mark.parametrize(
-#     "x_n_s_n_m_n_c_n_gt", [([[3.]], 2., [[1.]], [[4., 5.]], [[4., 5., 4., 5.]])])
-# @pytest.mark.parametrize(
-#     "dtype", ['float32'])
-# @pytest.mark.parametrize(
-#     "tensor_fn", [ivy.array, helpers.var_fn])
-# def test_multi_head_attention(x_n_s_n_m_n_c_n_gt, dtype, tensor_fn, dev, call):
-#     x, scale, mask, context, ground_truth = x_n_s_n_m_n_c_n_gt
-#     # smoke test
-#     x = tensor_fn(x, dtype, dev)
-#     context = tensor_fn(context, dtype, dev)
-#     mask = tensor_fn(mask, dtype, dev)
-#     fn = lambda x_, v: ivy.tile(x_, (1, 2))
-#     ret = ivy.multi_head_attention(x, scale, 2, context, mask, fn, fn, fn)
-#     # type test
-#     assert ivy.is_array(ret)
-#     # cardinality test
-#     assert list(ret.shape) == list(np.array(ground_truth).shape)
-#     # value test
-#     assert np.allclose(call(ivy.multi_head_attention, x, scale, 2, context, mask, fn, fn, fn), np.array(ground_truth))
+@pytest.mark.parametrize(
+    "x_n_s_n_m_n_c_n_gt", [([[3.]], 2., [[1.]], [[4., 5.]], [[4., 5., 4., 5.]])])
+@pytest.mark.parametrize(
+    "dtype", ['float32'])
+@pytest.mark.parametrize(
+    "tensor_fn", [ivy.array, helpers.var_fn])
+def test_multi_head_attention(x_n_s_n_m_n_c_n_gt, dtype, tensor_fn, dev, call):
+    x, scale, mask, context, ground_truth = x_n_s_n_m_n_c_n_gt
+    # smoke test
+    x = tensor_fn(x, dtype, dev)
+    context = tensor_fn(context, dtype, dev)
+    mask = tensor_fn(mask, dtype, dev)
+    fn = lambda x_, v: ivy.tile(x_, (1, 2))
+    ret = ivy.multi_head_attention(x, scale, 2, context, mask, fn, fn, fn)
+    # type test
+    assert ivy.is_ivy_array(ret)
+    # cardinality test
+    assert list(ret.shape) == list(np.array(ground_truth).shape)
+    # value test
+    assert np.allclose(call(ivy.multi_head_attention, x, scale, 2, context, mask, fn, fn, fn), np.array(ground_truth))
 
 
 # Convolutions #
