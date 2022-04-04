@@ -362,7 +362,7 @@ class Container(dict):
                                                 equality_matrix=True)
                 equal_mat = ivy.logical_and(equal_mat, shape_equal_mat)
             # noinspection PyTypeChecker
-            if ivy.reduce_min(ivy.cast(equal_mat, 'int32')) == 1:
+            if ivy.min(ivy.astype(equal_mat, 'int32')) == 1:
                 if mode == 'diff_only':
                     return ivy.Container(**config)
                 return container0
