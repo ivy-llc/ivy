@@ -458,112 +458,112 @@ class WithNestedModules(ivy.Module):
 
 
 # v with top v key chains
-# @pytest.mark.parametrize(
-#     "bs_ic_oc", [([1, 2], 4, 5)])
-# def test_v_with_top_v_key_chains(bs_ic_oc, dev, call):
-#     # smoke test
-#     if call is helpers.np_call:
-#         # NumPy does not support gradients
-#         pytest.skip()
-#     batch_shape, input_channels, output_channels = bs_ic_oc
-#     module = WithNestedModules(input_channels, output_channels, dev=dev)
-#
-#     # full depth
-#     v = module._dl0.v_with_top_v_key_chains()
-#     assert 'dl0' in v
-#     assert v.dl0 is module._dl0.v
-#
-#     v = module._dl1.v_with_top_v_key_chains()
-#     assert 'dl1' in v
-#     assert v.dl1 is module._dl1.v
-#
-#     v = module._dl0._l0.v_with_top_v_key_chains()
-#     assert 'dl0' in v
-#     assert 'l0' in v.dl0
-#     assert v.dl0.l0 is module._dl0._l0.v
-#
-#     v = module._dl0._l1.v_with_top_v_key_chains()
-#     assert 'dl0' in v
-#     assert 'l1' in v.dl0
-#     assert v.dl0.l1 is module._dl0._l1.v
-#
-#     v = module._dl1._l0.v_with_top_v_key_chains()
-#     assert 'dl1' in v
-#     assert 'l0' in v.dl1
-#     assert v.dl1.l0 is module._dl1._l0.v
-#
-#     v = module._dl1._l1.v_with_top_v_key_chains()
-#     assert 'dl1' in v
-#     assert 'l1' in v.dl1
-#     assert v.dl1.l1 is module._dl1._l1.v
-#
-#     # depth 1
-#
-#     v = module._dl0._l0.v_with_top_v_key_chains(1)
-#     assert 'l0' in v
-#     assert v.l0 is module._dl0._l0.v
-#
-#     v = module._dl0._l1.v_with_top_v_key_chains(1)
-#     assert 'l1' in v
-#     assert v.l1 is module._dl0._l1.v
-#
-#     v = module._dl1._l0.v_with_top_v_key_chains(1)
-#     assert 'l0' in v
-#     assert v.l0 is module._dl1._l0.v
-#
-#     v = module._dl1._l1.v_with_top_v_key_chains(1)
-#     assert 'l1' in v
-#     assert v.l1 is module._dl1._l1.v
+@pytest.mark.parametrize(
+    "bs_ic_oc", [([1, 2], 4, 5)])
+def test_v_with_top_v_key_chains(bs_ic_oc, dev, call):
+    # smoke test
+    if call is helpers.np_call:
+        # NumPy does not support gradients
+        pytest.skip()
+    batch_shape, input_channels, output_channels = bs_ic_oc
+    module = WithNestedModules(input_channels, output_channels, dev=dev)
+
+    # full depth
+    v = module._dl0.v_with_top_v_key_chains()
+    assert 'dl0' in v
+    assert v.dl0 is module._dl0.v
+
+    v = module._dl1.v_with_top_v_key_chains()
+    assert 'dl1' in v
+    assert v.dl1 is module._dl1.v
+
+    v = module._dl0._l0.v_with_top_v_key_chains()
+    assert 'dl0' in v
+    assert 'l0' in v.dl0
+    assert v.dl0.l0 is module._dl0._l0.v
+
+    v = module._dl0._l1.v_with_top_v_key_chains()
+    assert 'dl0' in v
+    assert 'l1' in v.dl0
+    assert v.dl0.l1 is module._dl0._l1.v
+
+    v = module._dl1._l0.v_with_top_v_key_chains()
+    assert 'dl1' in v
+    assert 'l0' in v.dl1
+    assert v.dl1.l0 is module._dl1._l0.v
+
+    v = module._dl1._l1.v_with_top_v_key_chains()
+    assert 'dl1' in v
+    assert 'l1' in v.dl1
+    assert v.dl1.l1 is module._dl1._l1.v
+
+    # depth 1
+
+    v = module._dl0._l0.v_with_top_v_key_chains(1)
+    assert 'l0' in v
+    assert v.l0 is module._dl0._l0.v
+
+    v = module._dl0._l1.v_with_top_v_key_chains(1)
+    assert 'l1' in v
+    assert v.l1 is module._dl0._l1.v
+
+    v = module._dl1._l0.v_with_top_v_key_chains(1)
+    assert 'l0' in v
+    assert v.l0 is module._dl1._l0.v
+
+    v = module._dl1._l1.v_with_top_v_key_chains(1)
+    assert 'l1' in v
+    assert v.l1 is module._dl1._l1.v
 
 
 # module depth
-# @pytest.mark.parametrize(
-#     "bs_ic_oc", [([1, 2], 4, 5)])
-# def test_module_depth(bs_ic_oc, dev, call):
-#     # smoke test
-#     if call is helpers.np_call:
-#         # NumPy does not support gradients
-#         pytest.skip()
-#     batch_shape, input_channels, output_channels = bs_ic_oc
-#     module = WithNestedModules(input_channels, output_channels, dev=dev)
-#
-#     # depth 0
-#     assert module.mod_depth() == 0
-#
-#     # depth 1
-#     assert module._dl0.mod_depth() == 1
-#     assert module._dl1.mod_depth() == 1
-#
-#     # depth 2
-#     assert module._dl0._l0.mod_depth() == 2
-#     assert module._dl0._l1.mod_depth() == 2
-#     assert module._dl1._l0.mod_depth() == 2
-#     assert module._dl1._l1.mod_depth() == 2
+@pytest.mark.parametrize(
+    "bs_ic_oc", [([1, 2], 4, 5)])
+def test_module_depth(bs_ic_oc, dev, call):
+    # smoke test
+    if call is helpers.np_call:
+        # NumPy does not support gradients
+        pytest.skip()
+    batch_shape, input_channels, output_channels = bs_ic_oc
+    module = WithNestedModules(input_channels, output_channels, dev=dev)
+
+    # depth 0
+    assert module.mod_depth() == 0
+
+    # depth 1
+    assert module._dl0.mod_depth() == 1
+    assert module._dl1.mod_depth() == 1
+
+    # depth 2
+    assert module._dl0._l0.mod_depth() == 2
+    assert module._dl0._l1.mod_depth() == 2
+    assert module._dl1._l0.mod_depth() == 2
+    assert module._dl1._l1.mod_depth() == 2
 
 
 # module height
-# @pytest.mark.parametrize(
-#     "bs_ic_oc", [([1, 2], 4, 5)])
-# def test_module_height(bs_ic_oc, dev, call):
-#     # smoke test
-#     if call is helpers.np_call:
-#         # NumPy does not support gradients
-#         pytest.skip()
-#     batch_shape, input_channels, output_channels = bs_ic_oc
-#     module = WithNestedModules(input_channels, output_channels, dev=dev)
-#
-#     # height 2
-#     assert module.mod_height() == 2
-#
-#     # height 1
-#     assert module._dl0.mod_height() == 1
-#     assert module._dl1.mod_height() == 1
-#
-#     # height 0
-#     assert module._dl0._l0.mod_height() == 0
-#     assert module._dl0._l1.mod_height() == 0
-#     assert module._dl1._l0.mod_height() == 0
-#     assert module._dl1._l1.mod_height() == 0
+@pytest.mark.parametrize(
+    "bs_ic_oc", [([1, 2], 4, 5)])
+def test_module_height(bs_ic_oc, dev, call):
+    # smoke test
+    if call is helpers.np_call:
+        # NumPy does not support gradients
+        pytest.skip()
+    batch_shape, input_channels, output_channels = bs_ic_oc
+    module = WithNestedModules(input_channels, output_channels, dev=dev)
+
+    # height 2
+    assert module.mod_height() == 2
+
+    # height 1
+    assert module._dl0.mod_height() == 1
+    assert module._dl1.mod_height() == 1
+
+    # height 0
+    assert module._dl0._l0.mod_height() == 0
+    assert module._dl0._l1.mod_height() == 0
+    assert module._dl1._l0.mod_height() == 0
+    assert module._dl1._l1.mod_height() == 0
 
 
 # sub modules
