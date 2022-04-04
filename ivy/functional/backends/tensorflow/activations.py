@@ -23,7 +23,7 @@ gelu = lambda x, approximate=True: tf.nn.gelu(x, approximate)
 
 def tanh(x: Tensor)\
         -> Tensor:
-    return tf.nn.tanh
+    return tf.nn.tanh(x)
 
 sigmoid = tf.nn.sigmoid
 softmax = tf.nn.softmax
