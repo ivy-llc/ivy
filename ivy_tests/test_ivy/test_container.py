@@ -996,27 +996,27 @@ def test_container_expand_dims(dev, call):
     assert 'b/d' not in container_expanded_dims
 
 
-# def test_container_clone(dev, call):
-#     dict_in = {'a': ivy.array([[1], [2], [3]], dev=dev),
-#                'b': {'c': ivy.array([[2], [3], [4]], dev=dev),
-#                      'd': ivy.array([[3], [4], [5]], dev=dev)}}
-#     container = Container(dict_in)
-#
-#     # devices
-#     devs = list()
-#     dev0 = dev
-#     devs.append(dev0)
-#     if 'gpu' in dev and ivy.num_gpus() > 1:
-#         idx = ivy.num_gpus() - 1
-#         dev1 = dev[:-1] + str(idx)
-#         devs.append(dev1)
-#
-#     # without key_chains specification
-#     container_cloned = container.dev_clone(devs)
-#     assert isinstance(container_cloned, ivy.DevClonedItem)
-#     assert min([cont.dev_str == ds for ds, cont in container_cloned.items()])
-#     assert ivy.Container.multi_map(
-#         lambda xs, _: ivy.arrays_equal(xs), [c for c in container_cloned.values()]).all_true()
+def test_container_clone(dev, call):
+    dict_in = {'a': ivy.array([[1], [2], [3]], dev=dev),
+               'b': {'c': ivy.array([[2], [3], [4]], dev=dev),
+                     'd': ivy.array([[3], [4], [5]], dev=dev)}}
+    container = Container(dict_in)
+
+    # devices
+    devs = list()
+    dev0 = dev
+    devs.append(dev0)
+    if 'gpu' in dev and ivy.num_gpus() > 1:
+        idx = ivy.num_gpus() - 1
+        dev1 = dev[:-1] + str(idx)
+        devs.append(dev1)
+
+    # without key_chains specification
+    container_cloned = container.dev_clone(devs)
+    assert isinstance(container_cloned, ivy.DevClonedItem)
+    assert min([cont.dev_str == ds for ds, cont in container_cloned.items()])
+    assert ivy.Container.multi_map(
+        lambda xs, _: ivy.arrays_equal(xs), [c for c in container_cloned.values()]).all_true()
 
 
 # @pytest.mark.parametrize(
