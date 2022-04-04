@@ -191,3 +191,14 @@ def vector_to_skew_symmetric_matrix(vector: torch.Tensor)\
     row3 = torch.cat((-a2s, a1s, zs), -1)
     # BS x 3 x 3
     return torch.cat((row1, row2, row3), -2)
+
+
+def vecdot(x1: torch.Tensor, 
+           x2: torch.Tensor,
+           axis: int = 2)\
+        -> torch.Tensor:
+    if axis < -len(x1.shape) or axis >= len(x1.shape):
+        raise Exception('Invalid axis')
+    if x1.shape[axis] != x2.shape[axis]:
+        raise Exception('Sizes of axes must be the same')
+    return torch.tensordot(x1, x2, dims=(axis, axis))
