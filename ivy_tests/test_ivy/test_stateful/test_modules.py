@@ -202,17 +202,17 @@ class ModuleWithNoneAttribute(ivy.Module):
 
 
 # module with none attribute
-# @pytest.mark.parametrize(
-#     "bs_ic_oc", [([1, 2], 4, 5)])
-# def test_module_w_none_attribute(bs_ic_oc, dev, compile_graph, call):
-#     # smoke test
-#     if call is helpers.np_call:
-#         # NumPy does not support gradients
-#         pytest.skip()
-#     batch_shape, input_channels, output_channels = bs_ic_oc
-#     x = ivy.cast(ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), input_channels), 'float32')
-#     module = ModuleWithNoneAttribute(dev=dev)
-#     module(x)
+@pytest.mark.parametrize(
+    "bs_ic_oc", [([1, 2], 4, 5)])
+def test_module_w_none_attribute(bs_ic_oc, dev, compile_graph, call):
+    # smoke test
+    if call is helpers.np_call:
+        # NumPy does not support gradients
+        pytest.skip()
+    batch_shape, input_channels, output_channels = bs_ic_oc
+    x = ivy.astype(ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), input_channels), 'float32')
+    module = ModuleWithNoneAttribute(dev=dev)
+    module(x)
 
 
 class TrainableModuleWithDuplicate(ivy.Module):
