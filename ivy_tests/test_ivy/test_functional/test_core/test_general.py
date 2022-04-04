@@ -588,28 +588,6 @@ def test_ceil(x_n_x_ceiled, dtype, tensor_fn, dev, call):
 
 
 
-
-
-# argsort
-# @pytest.mark.parametrize(
-#     "x_n_axis_x_argsort", [([1, 10, 26.9, 2.8, 166.32, 62.3], -1, [0, 3, 1, 2, 5, 4])])
-# @pytest.mark.parametrize(
-#     "dtype", ['float32'])
-# @pytest.mark.parametrize(
-#     "tensor_fn", [ivy.array, helpers.var_fn])
-# def test_argsort(x_n_axis_x_argsort, dtype, tensor_fn, dev, call):
-#     # smoke test
-#     x = tensor_fn(x_n_axis_x_argsort[0], dtype, dev)
-#     axis = x_n_axis_x_argsort[1]
-#     ret = ivy.argsort(x, axis)
-#     # type test
-#     assert ivy.is_array(ret)
-#     # cardinality test
-#     assert tuple(ret.shape) == (6,)
-#     # value test
-#     assert np.allclose(call(ivy.argsort, x, axis), np.array(x_n_axis_x_argsort[2]))
-
-
 # arange
 @pytest.mark.parametrize(
     "stop_n_start_n_step", [[10, None, None], [10, 2, None], [10, 2, 2]])
@@ -704,30 +682,6 @@ def test_logspace(start_n_stop_n_num_n_base_n_axis, dtype, tensor_fn, dev, call)
     # value test
     assert np.allclose(call(ivy.logspace, start, stop, num, base, axis, dev=dev),
                        ivy.functional.backends.numpy.logspace(ivy.to_numpy(start), ivy.to_numpy(stop), num, base, axis))
-
-
-# flip
-# @pytest.mark.parametrize(
-#     "x_n_axis_n_bs", [(1, 0, None), ([[0., 1., 2.]], None, (1, 3)), ([[0., 1., 2.]], 1, (1, 3)),
-#                        ([[[-0.1471, 0.4477, 0.2214]]], None, None)])
-# @pytest.mark.parametrize(
-#     "dtype", ['float32'])
-# @pytest.mark.parametrize(
-#     "tensor_fn", [ivy.array, helpers.var_fn])
-# def test_flip(x_n_axis_n_bs, dtype, tensor_fn, dev, call):
-#     # smoke test
-#     x, axis, bs = x_n_axis_n_bs
-#     if isinstance(x, Number) and tensor_fn == helpers.var_fn and call is helpers.mx_call:
-#         # mxnet does not support 0-dimensional variables
-#         pytest.skip()
-#     x = tensor_fn(x, dtype, dev)
-#     ret = ivy.flip(x, axis, bs)
-#     # type test
-#     assert ivy.is_array(ret)
-#     # cardinality test
-#     assert ret.shape == x.shape
-#     # value test
-#     assert np.allclose(call(ivy.flip, x, axis, bs), np.asarray(ivy.functional.backends.numpy.flip(ivy.to_numpy(x), axis, bs)))
 
 
 # unstack
