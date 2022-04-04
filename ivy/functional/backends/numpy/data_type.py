@@ -38,6 +38,10 @@ class Finfo:
         return float(self._np_finfo.tiny)
 
 
+def can_cast(from_: Union[np.dtype, np.ndarray], to: np.dtype, /)\
+        -> bool:
+    return np.can_cast(from_, to)
+
 # noinspection PyShadowingBuiltins
 def finfo(type: Union[np.dtype, str, np.ndarray])\
         -> Finfo:

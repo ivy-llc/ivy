@@ -8,6 +8,10 @@ import ivy
 from ivy.functional.backends.jax import JaxArray
 
 
+def can_cast(from_: Union[jnp.dtype, JaxArray], to: jnp.dtype, /)\
+        -> bool:
+    return jnp.can_cast(from_, to)
+
 # noinspection PyShadowingBuiltins
 def iinfo(type: Union[jnp.dtype, str, JaxArray]) \
         -> np.iinfo:

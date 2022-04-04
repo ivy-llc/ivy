@@ -6,6 +6,10 @@ from typing import Union, Tuple
 import ivy
 
 
+def can_cast(from_: Union[torch.dtype, torch.Tensor], to: torch.dtype, /)\
+        -> bool:
+    return torch.can_cast(from_, to)
+
 # noinspection PyShadowingBuiltins
 def iinfo(type: Union[torch.dtype, str, torch.Tensor])\
         -> torch.iinfo:

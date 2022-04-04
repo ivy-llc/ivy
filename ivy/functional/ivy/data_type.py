@@ -20,6 +20,24 @@ Iinfo = None
 
 # Dtype Info #
 
+def can_cast(from_: Union[ivy.Dtype, ivy.Array, ivy.NativeArray], to: ivy.Dtype, /)\
+        -> bool:
+    """
+    Determines if one data type can be cast to another data type according :ref:`type-promotion` rules.
+    Parameters
+    ----------
+    from_: Union[dtype, array]
+        input data type or array from which to cast.
+    to: dtype
+        desired data type.
+    Returns
+    -------
+    out: bool
+        ``True`` if the cast can occur according to :ref:`type-promotion` rules; otherwise, ``False``.
+    """
+    return _cur_framework(dtype_in).can_cast(from_, to)
+
+
 # noinspection PyShadowingBuiltins
 def iinfo(type: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray])\
         -> Iinfo:

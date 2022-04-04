@@ -8,6 +8,17 @@ from tensorflow.python.framework.dtypes import DType
 # local
 import ivy
 
+def can_cast(from_: Union[tf.DType, Tensor], to: tf.DType, /)\
+        -> bool:
+    x = tf.random.normal(
+        [2, 2],
+        dtype=from_
+        )
+    try:
+        tf.cast(x, to)
+    except TypeError:
+        return False
+    return True
 
 # noinspection PyShadowingBuiltins
 def iinfo(type: Union[DType, str, Tensor])\
