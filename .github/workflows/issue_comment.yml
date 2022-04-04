@@ -17,9 +17,7 @@ jobs:
           persist-credentials: false
       - name: Issue Comment Check
         run: |
-          pip install PyGithub
-          cd ivy/automation_tools/issues_automation
-          python3 Issue_comment_action.py $ISSUE_NUMBER $COMMENT_NUMBER "$COMMENT_BODY" "$COMMENT_AUTHOR" "$GITHUB_TOKEN"
+            ls
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           ISSUE_NUMBER: ${{ github.event.issue.number }}
