@@ -567,73 +567,73 @@ class WithNestedModules(ivy.Module):
 
 
 # sub modules
-# @pytest.mark.parametrize(
-#     "bs_ic_oc", [([1, 2], 4, 5)])
-# def test_sub_modules(bs_ic_oc, dev, call):
-#     # smoke test
-#     if call is helpers.np_call:
-#         # NumPy does not support gradients
-#         pytest.skip()
-#     batch_shape, input_channels, output_channels = bs_ic_oc
-#     module = WithNestedModules(input_channels, output_channels, dev=dev)
-#
-#     # depth 0
-#     sub_mods = module.sub_mods(depth=0)
-#     assert module.v is sub_mods
-#
-#     # depth 1
-#     sub_mods = module.sub_mods(depth=1)
-#     for v in [module._dl0.v, module._dl1.v]:
-#         assert v in sub_mods
-#
-#     # depth 2 (full)
-#     sub_mods = module.sub_mods()
-#     for v in [module._dl0._l0.v, module._dl0._l1.v, module._dl1._l0.v, module._dl1._l1.v]:
-#         assert v in sub_mods
+@pytest.mark.parametrize(
+    "bs_ic_oc", [([1, 2], 4, 5)])
+def test_sub_modules(bs_ic_oc, dev, call):
+    # smoke test
+    if call is helpers.np_call:
+        # NumPy does not support gradients
+        pytest.skip()
+    batch_shape, input_channels, output_channels = bs_ic_oc
+    module = WithNestedModules(input_channels, output_channels, dev=dev)
+
+    # depth 0
+    sub_mods = module.sub_mods(depth=0)
+    assert module.v is sub_mods
+
+    # depth 1
+    sub_mods = module.sub_mods(depth=1)
+    for v in [module._dl0.v, module._dl1.v]:
+        assert v in sub_mods
+
+    # depth 2 (full)
+    sub_mods = module.sub_mods()
+    for v in [module._dl0._l0.v, module._dl0._l1.v, module._dl1._l0.v, module._dl1._l1.v]:
+        assert v in sub_mods
 
 
 # track submod returns
-# @pytest.mark.parametrize(
-#     "bs_ic_oc", [([1, 2], 4, 5)])
-# def test_module_track_submod_rets(bs_ic_oc, dev, call):
-#     # smoke test
-#     if call is helpers.np_call:
-#         # NumPy does not support gradients
-#         pytest.skip()
-#     batch_shape, input_channels, output_channels = bs_ic_oc
-#     x = ivy.cast(ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), input_channels), 'float32')
-#     module = WithNestedModules(input_channels, output_channels, dev=dev)
-#
-#     # depth 1
-#     ret = module(x, track_submod_rets=True, submod_depth=1)
-#     assert ret.shape == tuple(batch_shape + [64])
-#     sm_rets = module.submod_rets
-#     for submod in [module._dl0, module._dl1]:
-#         for ret in sm_rets[submod.get_mod_key()]:
-#             assert isinstance(ret, np.ndarray)
-#             assert ret.shape == tuple(batch_shape + [64])
-#     for submod in [module._dl0._l0, module._dl0._l1, module._dl1._l0, module._dl1._l1]:
-#         assert ivy.Container.flatten_key_chain(submod.__repr__(), '_') not in sm_rets
-#
-#     # depth 2 (full)
-#     ret = module(x, track_submod_rets=True)
-#     assert ret.shape == tuple(batch_shape + [64])
-#     sm_rets = module.submod_rets
-#     for submod in [module._dl0, module._dl1, module._dl0._l0, module._dl0._l1, module._dl1._l0, module._dl1._l1]:
-#         for ret in sm_rets[submod.get_mod_key()]:
-#             assert isinstance(ret, np.ndarray)
-#             assert ret.shape == tuple(batch_shape + [64])
-#
-#     # partial submodules
-#     ret = module(x, track_submod_rets=True, submods_to_track=[module._dl1, module._dl0._l0])
-#     assert ret.shape == tuple(batch_shape + [64])
-#     sm_rets = module.submod_rets
-#     for submod in [module._dl1, module._dl0._l0]:
-#         for ret in sm_rets[submod.get_mod_key()]:
-#             assert isinstance(ret, np.ndarray)
-#             assert ret.shape == tuple(batch_shape + [64])
-#     for submod in [module._dl0, module._dl0._l1, module._dl1._l0, module._dl1._l1]:
-#         assert ivy.Container.flatten_key_chain(submod.__repr__(), '_') not in sm_rets
+@pytest.mark.parametrize(
+    "bs_ic_oc", [([1, 2], 4, 5)])
+def test_module_track_submod_rets(bs_ic_oc, dev, call):
+    # smoke test
+    if call is helpers.np_call:
+        # NumPy does not support gradients
+        pytest.skip()
+    batch_shape, input_channels, output_channels = bs_ic_oc
+    x = ivy.astype(ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), input_channels), 'float32')
+    module = WithNestedModules(input_channels, output_channels, dev=dev)
+
+    # depth 1
+    ret = module(x, track_submod_rets=True, submod_depth=1)
+    assert ret.shape == tuple(batch_shape + [64])
+    sm_rets = module.submod_rets
+    for submod in [module._dl0, module._dl1]:
+        for ret in sm_rets[submod.get_mod_key()]:
+            assert isinstance(ret, np.ndarray)
+            assert ret.shape == tuple(batch_shape + [64])
+    for submod in [module._dl0._l0, module._dl0._l1, module._dl1._l0, module._dl1._l1]:
+        assert ivy.Container.flatten_key_chain(submod.__repr__(), '_') not in sm_rets
+
+    # depth 2 (full)
+    ret = module(x, track_submod_rets=True)
+    assert ret.shape == tuple(batch_shape + [64])
+    sm_rets = module.submod_rets
+    for submod in [module._dl0, module._dl1, module._dl0._l0, module._dl0._l1, module._dl1._l0, module._dl1._l1]:
+        for ret in sm_rets[submod.get_mod_key()]:
+            assert isinstance(ret, np.ndarray)
+            assert ret.shape == tuple(batch_shape + [64])
+
+    # partial submodules
+    ret = module(x, track_submod_rets=True, submods_to_track=[module._dl1, module._dl0._l0])
+    assert ret.shape == tuple(batch_shape + [64])
+    sm_rets = module.submod_rets
+    for submod in [module._dl1, module._dl0._l0]:
+        for ret in sm_rets[submod.get_mod_key()]:
+            assert isinstance(ret, np.ndarray)
+            assert ret.shape == tuple(batch_shape + [64])
+    for submod in [module._dl0, module._dl0._l1, module._dl1._l0, module._dl1._l1]:
+        assert ivy.Container.flatten_key_chain(submod.__repr__(), '_') not in sm_rets
 
 
 # check submod returns
