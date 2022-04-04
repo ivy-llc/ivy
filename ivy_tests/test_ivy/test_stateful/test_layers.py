@@ -59,28 +59,28 @@ def test_linear_layer(bs_ic_oc_target, with_v, dtype, tensor_fn, dev, compile_gr
 # --------#
 
 # dropout
-# @pytest.mark.parametrize(
-#     "x_shape", [(1, 2, 3)])
-# @pytest.mark.parametrize(
-#     "dtype", ['float32'])
-# @pytest.mark.parametrize(
-#     "tensor_fn", [ivy.array, helpers.var_fn])
-# def test_dropout_layer(x_shape, dtype, tensor_fn, dev, compile_graph, call):
-#     # smoke test
-#     x = ivy.random_uniform(shape=x_shape)
-#     dropout_layer = ivy.Dropout(0.9)
-#     ret = dropout_layer(x)
-#     # type test
-#     assert ivy.is_array(ret)
-#     # cardinality test
-#     assert ret.shape == x.shape
-#     # value test
-#     ivy.seed(0)
-#     assert np.min(call(dropout_layer, x)) == 0.
-#     # compilation test
-#     if call is helpers.torch_call:
-#         # pytest scripting does not **kwargs
-#         return
+@pytest.mark.parametrize(
+    "x_shape", [(1, 2, 3)])
+@pytest.mark.parametrize(
+    "dtype", ['float32'])
+@pytest.mark.parametrize(
+    "tensor_fn", [ivy.array, helpers.var_fn])
+def test_dropout_layer(x_shape, dtype, tensor_fn, dev, compile_graph, call):
+    # smoke test
+    x = ivy.random_uniform(shape=x_shape)
+    dropout_layer = ivy.Dropout(0.9)
+    ret = dropout_layer(x)
+    # type test
+    assert ivy.is_ivy_array(ret)
+    # cardinality test
+    assert ret.shape == x.shape
+    # value test
+    ivy.seed(0)
+    assert np.min(call(dropout_layer, x)) == 0.
+    # compilation test
+    if call is helpers.torch_call:
+        # pytest scripting does not **kwargs
+        return
 
 
 # Attention #
