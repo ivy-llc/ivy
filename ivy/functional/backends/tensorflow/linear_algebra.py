@@ -18,8 +18,6 @@ def eigh(x: Tensor)\
         return tf.linalg.eigh(x) 
 
 inv = tf.linalg.inv
-pinv = tf.linalg.pinv
-cholesky = tf.linalg.cholesky
 
 
 def tensordot(x1: Tensor, x2: Tensor,

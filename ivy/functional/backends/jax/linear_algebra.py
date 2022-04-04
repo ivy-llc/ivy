@@ -19,8 +19,6 @@ def eigh(x: JaxArray)\
 
 
 inv = jnp.linalg.inv
-pinv = jnp.linalg.pinv
-cholesky = jnp.linalg.cholesky
 
 def pinv(x: JaxArray,
          rtol: Optional[Union[float, Tuple[float]]] = None) \
