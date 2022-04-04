@@ -637,65 +637,65 @@ class WithNestedModules(ivy.Module):
 
 
 # check submod returns
-# @pytest.mark.parametrize(
-#     "bs_ic_oc", [([1, 2], 4, 5)])
-# def test_module_check_submod_rets(bs_ic_oc, dev, call):
-#     # smoke test
-#     if call is helpers.np_call:
-#         # NumPy does not support gradients
-#         pytest.skip()
-#     batch_shape, input_channels, output_channels = bs_ic_oc
-#     x = ivy.cast(ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), input_channels), 'float32')
-#     module = WithNestedModules(input_channels, output_channels, dev=dev)
-#
-#     # depth 1
-#     ret = module(x, track_submod_rets=True, submod_depth=1)
-#     assert ret.shape == tuple(batch_shape + [64])
-#     sm_rets = module.submod_rets
-#     module(x, expected_submod_rets=sm_rets)
-#     try:
-#         module(x, expected_submod_rets=sm_rets.as_random_uniform(map_sequences=True))
-#         raise Exception('forward pass succeeded despite passing random expected_submod_rets, assertion error expected.')
-#     except AssertionError:
-#         pass
-#
-#     # depth 2 (full)
-#     ret = module(x, track_submod_rets=True)
-#     assert ret.shape == tuple(batch_shape + [64])
-#     sm_rets = module.submod_rets
-#     module(x, expected_submod_rets=sm_rets)
-#     try:
-#         module(x, expected_submod_rets=sm_rets.as_random_uniform(map_sequences=True))
-#         raise Exception('forward pass succeeded despite passing random expected_submod_rets, assertion error expected.')
-#     except AssertionError:
-#         pass
-#
-#     # partial submodules
-#     ret = module(x, track_submod_rets=True, submods_to_track=[module._dl1, module._dl0._l0])
-#     assert ret.shape == tuple(batch_shape + [64])
-#     sm_rets = module.submod_rets
-#     module(x, expected_submod_rets=sm_rets)
-#     try:
-#         module(x, expected_submod_rets=sm_rets.as_random_uniform(map_sequences=True))
-#         raise Exception('forward pass succeeded despite passing random expected_submod_rets, assertion error expected.')
-#     except AssertionError:
-#         pass
-#
-#     # with tolerances
-#     ret = module(x, track_submod_rets=True)
-#     assert ret.shape == tuple(batch_shape + [64])
-#     sm_rets_orig = module.submod_rets
-#     sm_rets = ivy.Container({k: {'val': v, 'atol': [1e-8]*len(v), 'rtol': [1e-5]*len(v)}
-#                              for k, v in sm_rets_orig.items()}, **sm_rets_orig.config)
-#     module(x, expected_submod_rets=sm_rets)
-#     sm_rets = ivy.Container({k: {'val': v, 'atol': 1e-8, 'rtol': 1e-5}
-#                              for k, v in sm_rets_orig.items()}, **sm_rets_orig.config)
-#     module(x, expected_submod_rets=sm_rets)
-#     try:
-#         module(x, expected_submod_rets=sm_rets.as_random_uniform(map_sequences=True))
-#         raise Exception('forward pass succeeded despite passing random expected_submod_rets, assertion error expected.')
-#     except AssertionError:
-#         pass
+@pytest.mark.parametrize(
+    "bs_ic_oc", [([1, 2], 4, 5)])
+def test_module_check_submod_rets(bs_ic_oc, dev, call):
+    # smoke test
+    if call is helpers.np_call:
+        # NumPy does not support gradients
+        pytest.skip()
+    batch_shape, input_channels, output_channels = bs_ic_oc
+    x = ivy.astype(ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), input_channels), 'float32')
+    module = WithNestedModules(input_channels, output_channels, dev=dev)
+
+    # depth 1
+    ret = module(x, track_submod_rets=True, submod_depth=1)
+    assert ret.shape == tuple(batch_shape + [64])
+    sm_rets = module.submod_rets
+    module(x, expected_submod_rets=sm_rets)
+    try:
+        module(x, expected_submod_rets=sm_rets.as_random_uniform(map_sequences=True))
+        raise Exception('forward pass succeeded despite passing random expected_submod_rets, assertion error expected.')
+    except AssertionError:
+        pass
+
+    # depth 2 (full)
+    ret = module(x, track_submod_rets=True)
+    assert ret.shape == tuple(batch_shape + [64])
+    sm_rets = module.submod_rets
+    module(x, expected_submod_rets=sm_rets)
+    try:
+        module(x, expected_submod_rets=sm_rets.as_random_uniform(map_sequences=True))
+        raise Exception('forward pass succeeded despite passing random expected_submod_rets, assertion error expected.')
+    except AssertionError:
+        pass
+
+    # partial submodules
+    ret = module(x, track_submod_rets=True, submods_to_track=[module._dl1, module._dl0._l0])
+    assert ret.shape == tuple(batch_shape + [64])
+    sm_rets = module.submod_rets
+    module(x, expected_submod_rets=sm_rets)
+    try:
+        module(x, expected_submod_rets=sm_rets.as_random_uniform(map_sequences=True))
+        raise Exception('forward pass succeeded despite passing random expected_submod_rets, assertion error expected.')
+    except AssertionError:
+        pass
+
+    # with tolerances
+    ret = module(x, track_submod_rets=True)
+    assert ret.shape == tuple(batch_shape + [64])
+    sm_rets_orig = module.submod_rets
+    sm_rets = ivy.Container({k: {'val': v, 'atol': [1e-8]*len(v), 'rtol': [1e-5]*len(v)}
+                             for k, v in sm_rets_orig.items()}, **sm_rets_orig.config)
+    module(x, expected_submod_rets=sm_rets)
+    sm_rets = ivy.Container({k: {'val': v, 'atol': 1e-8, 'rtol': 1e-5}
+                             for k, v in sm_rets_orig.items()}, **sm_rets_orig.config)
+    module(x, expected_submod_rets=sm_rets)
+    try:
+        module(x, expected_submod_rets=sm_rets.as_random_uniform(map_sequences=True))
+        raise Exception('forward pass succeeded despite passing random expected_submod_rets, assertion error expected.')
+    except AssertionError:
+        pass
 
 
 # track submod call order
