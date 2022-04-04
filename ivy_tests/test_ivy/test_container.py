@@ -1411,19 +1411,19 @@ def test_container_einops_repeat(dev, call):
                        np.array([[[10., 10.], [9., 9.], [8., 8.], [7., 7.]]]))
 
 
-# def test_container_to_dev(dev, call):
-#     dict_in = {'a': ivy.array([[0., 1., 2., 3.]], dev=dev),
-#                'b': {'c': ivy.array([[5., 10., 15., 20.]], dev=dev),
-#                      'd': ivy.array([[10., 9., 8., 7.]], dev=dev)}}
-#     container = Container(dict_in)
-#
-#     container_to_cpu = container.to_dev(dev)
-#     assert ivy.dev(container_to_cpu['a'], as_str=True) == dev
-#     assert ivy.dev(container_to_cpu.a, as_str=True) == dev
-#     assert ivy.dev(container_to_cpu['b']['c'], as_str=True) == dev
-#     assert ivy.dev(container_to_cpu.b.c, as_str=True) == dev
-#     assert ivy.dev(container_to_cpu['b']['d'], as_str=True) == dev
-#     assert ivy.dev(container_to_cpu.b.d, as_str=True) == dev
+def test_container_to_dev(dev, call):
+    dict_in = {'a': ivy.array([[0., 1., 2., 3.]], dev=dev),
+               'b': {'c': ivy.array([[5., 10., 15., 20.]], dev=dev),
+                     'd': ivy.array([[10., 9., 8., 7.]], dev=dev)}}
+    container = Container(dict_in)
+
+    container_to_cpu = container.to_dev(dev)
+    assert ivy.dev(container_to_cpu['a'], as_str=True) == dev
+    assert ivy.dev(container_to_cpu.a, as_str=True) == dev
+    assert ivy.dev(container_to_cpu['b']['c'], as_str=True) == dev
+    assert ivy.dev(container_to_cpu.b.c, as_str=True) == dev
+    assert ivy.dev(container_to_cpu['b']['d'], as_str=True) == dev
+    assert ivy.dev(container_to_cpu.b.d, as_str=True) == dev
 
 
 def test_container_stop_gradients(dev, call):
