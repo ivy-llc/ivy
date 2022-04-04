@@ -48,6 +48,16 @@ def add(x1: Union[ivy.Array, ivy.NativeArray],
     """
     return _cur_framework(x1, x2).add(x1, x2)
 
+
+def pow(x1: Union[ivy.Array, ivy.NativeArray],
+        x2: Union[ivy.Array, ivy.NativeArray])\
+        -> ivy.Array:
+    """
+
+    """
+    return _cur_framework(x1, x2).pow(x1, x2)
+
+
 def bitwise_xor(x1: Union[ivy.Array, ivy.NativeArray],
                 x2: Union[ivy.Array, ivy.NativeArray])\
         -> ivy.Array:
