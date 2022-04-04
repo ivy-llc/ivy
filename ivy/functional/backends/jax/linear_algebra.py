@@ -134,6 +134,8 @@ def eigvalsh(x: JaxArray) -> JaxArray:
 
 
 def inv(x: JaxArray) -> JaxArray:
+    if jnp.any(jnp.linalg.det(x.astype('float64')) == 0):
+        return x
     return jnp.linalg.inv(x)
 
 

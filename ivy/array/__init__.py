@@ -169,7 +169,7 @@ class Array(ArrayWithArrayAPI, ArrayWithDevice, ArrayWithGeneral, ArrayWithGradi
         try:
             self._data.__setitem__(query, val)
         except (AttributeError, TypeError):
-            self._data = ivy.scatter_nd(query, val, tensor=self._data, reduction='replace')
+            self._data = ivy.scatter_nd(query, val, tensor=self._data, reduction='replace')._data
 
     @_native_wrapper
     def __contains__(self, key):
