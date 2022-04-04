@@ -32,7 +32,7 @@ def gelu(x, approximate=True):
 
 def tanh(x: np.ndarray)\
         -> np.ndarray:
-    return np.tanh
+    return np.tanh(x)
 
 sigmoid = lambda x: 1 / (1 + np.exp(-x))
 
