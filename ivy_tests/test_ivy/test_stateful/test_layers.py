@@ -87,62 +87,62 @@ def test_dropout_layer(x_shape, dtype, tensor_fn, dev, compile_graph, call):
 # ----------#
 
 # multi_head_attention
-# @pytest.mark.parametrize(
-#     "x_n_s_n_m_n_c_n_gt", [([[3.]], 2., [[1.]], [[4., 5.]], [[0.8066473]])])
-# @pytest.mark.parametrize(
-#     "with_v", [True, False])
-# @pytest.mark.parametrize(
-#     "build_mode", ['on_init', 'explicit', 'on_call'])
-# @pytest.mark.parametrize(
-#     "dtype", ['float32'])
-# @pytest.mark.parametrize(
-#     "tensor_fn", [ivy.array, helpers.var_fn])
-# def test_multi_head_attention_layer(x_n_s_n_m_n_c_n_gt, with_v, build_mode, dtype, tensor_fn, dev, compile_graph, call):
-#     x, scale, mask, context, ground_truth = x_n_s_n_m_n_c_n_gt
-#     # smoke test
-#     x = tensor_fn(x, dtype, dev)
-#     context = tensor_fn(context, dtype, dev)
-#     mask = tensor_fn(mask, dtype, dev)
-#     query_dim = x.shape[-1]
-#     context_dim = context.shape[-1]
-#     if with_v:
-#         inner_dim = 64 * 8
-#         np.random.seed(0)
-#         wlim = (6 / (inner_dim + query_dim)) ** 0.5
-#         w_to_q = ivy.variable(ivy.array(np.random.uniform(-wlim, wlim, (inner_dim, query_dim)),
-#                                         'float32', dev=dev))
-#         wlim = (6 / (inner_dim * 2 + context_dim)) ** 0.5
-#         w_to_k = ivy.variable(ivy.array(np.random.uniform(-wlim, wlim, (inner_dim, context_dim)),
-#                                          'float32', dev=dev))
-#         w_to_v = ivy.variable(ivy.array(np.random.uniform(-wlim, wlim, (inner_dim, context_dim)),
-#                                          'float32', dev=dev))
-#         wlim = (6 / (query_dim + inner_dim)) ** 0.5
-#         w_to_out = ivy.variable(ivy.array(np.random.uniform(-wlim, wlim, (query_dim, inner_dim)),
-#                                           'float32', dev=dev))
-#         b_to_out = ivy.variable(ivy.zeros([query_dim], dev=dev))
-#         v = Container({'to_q': {'w': w_to_q},
-#                        'to_kv': {'k': {'w': w_to_k}, 'v': {'w': w_to_v}},
-#                        'to_out': {'submodules': {'v0': {'w': w_to_out,
-#                                                         'b': b_to_out}}}})
-#     else:
-#         v = None
-#     multi_head_attention_layer = ivy.MultiHeadAttention(
-#         query_dim, context_dim=context_dim, scale=scale, dev=dev, v=v, build_mode=build_mode)
-#     if build_mode == 'explicit':
-#         multi_head_attention_layer.build()
-#     ret = multi_head_attention_layer(x, context, mask)
-#     # type test
-#     assert ivy.is_array(ret)
-#     # cardinality test
-#     assert list(ret.shape) == list(np.array(ground_truth).shape)
-#     # value test
-#     if not with_v:
-#         return
-#     assert np.allclose(call(multi_head_attention_layer, x, context, mask), np.array(ground_truth))
-#     # compilation test
-#     if call in [helpers.torch_call]:
-#         # torch.jit compiled functions can't take variable number of arguments, which torch.einsum takes
-#         return
+@pytest.mark.parametrize(
+    "x_n_s_n_m_n_c_n_gt", [([[3.]], 2., [[1.]], [[4., 5.]], [[0.8066473]])])
+@pytest.mark.parametrize(
+    "with_v", [True, False])
+@pytest.mark.parametrize(
+    "build_mode", ['on_init', 'explicit', 'on_call'])
+@pytest.mark.parametrize(
+    "dtype", ['float32'])
+@pytest.mark.parametrize(
+    "tensor_fn", [ivy.array, helpers.var_fn])
+def test_multi_head_attention_layer(x_n_s_n_m_n_c_n_gt, with_v, build_mode, dtype, tensor_fn, dev, compile_graph, call):
+    x, scale, mask, context, ground_truth = x_n_s_n_m_n_c_n_gt
+    # smoke test
+    x = tensor_fn(x, dtype, dev)
+    context = tensor_fn(context, dtype, dev)
+    mask = tensor_fn(mask, dtype, dev)
+    query_dim = x.shape[-1]
+    context_dim = context.shape[-1]
+    if with_v:
+        inner_dim = 64 * 8
+        np.random.seed(0)
+        wlim = (6 / (inner_dim + query_dim)) ** 0.5
+        w_to_q = ivy.variable(ivy.array(np.random.uniform(-wlim, wlim, (inner_dim, query_dim)),
+                                        'float32', dev=dev))
+        wlim = (6 / (inner_dim * 2 + context_dim)) ** 0.5
+        w_to_k = ivy.variable(ivy.array(np.random.uniform(-wlim, wlim, (inner_dim, context_dim)),
+                                         'float32', dev=dev))
+        w_to_v = ivy.variable(ivy.array(np.random.uniform(-wlim, wlim, (inner_dim, context_dim)),
+                                         'float32', dev=dev))
+        wlim = (6 / (query_dim + inner_dim)) ** 0.5
+        w_to_out = ivy.variable(ivy.array(np.random.uniform(-wlim, wlim, (query_dim, inner_dim)),
+                                          'float32', dev=dev))
+        b_to_out = ivy.variable(ivy.zeros([query_dim], device=dev))
+        v = Container({'to_q': {'w': w_to_q},
+                       'to_kv': {'k': {'w': w_to_k}, 'v': {'w': w_to_v}},
+                       'to_out': {'submodules': {'v0': {'w': w_to_out,
+                                                        'b': b_to_out}}}})
+    else:
+        v = None
+    multi_head_attention_layer = ivy.MultiHeadAttention(
+        query_dim, context_dim=context_dim, scale=scale, dev=dev, v=v, build_mode=build_mode)
+    if build_mode == 'explicit':
+        multi_head_attention_layer.build()
+    ret = multi_head_attention_layer(x, context, mask)
+    # type test
+    assert ivy.is_ivy_array(ret)
+    # cardinality test
+    assert list(ret.shape) == list(np.array(ground_truth).shape)
+    # value test
+    if not with_v:
+        return
+    assert np.allclose(call(multi_head_attention_layer, x, context, mask), np.array(ground_truth))
+    # compilation test
+    if call in [helpers.torch_call]:
+        # torch.jit compiled functions can't take variable number of arguments, which torch.einsum takes
+        return
 
 
 # Convolutions #
