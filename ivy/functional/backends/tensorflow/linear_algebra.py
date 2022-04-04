@@ -19,6 +19,8 @@ def eigh(x: Tensor)\
 
 
 def inv(x: Tensor) -> Tensor:
+    if tf.math.reduce_any(tf.linalg.det(x) == 0 ):
+        return x
     return tf.linalg.inv(x)
 
 
