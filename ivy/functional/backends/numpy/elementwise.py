@@ -14,6 +14,13 @@ def add(x1: np.ndarray,
         x2 = np.asarray(x2, dtype=x1.dtype)
     return np.asarray(npa.add(npa.asarray(x1), npa.asarray(x2)))
 
+
+def pow(x1: np.ndarray,
+        x2: np.ndarray)\
+        -> np.ndarray:
+    return npa.pow(npa.asarray(x1), npa.asarray(x2))
+
+
 def bitwise_xor(x1: np.ndarray,
                 x2: np.ndarray)\
         -> np.ndarray:
