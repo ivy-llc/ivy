@@ -65,6 +65,7 @@ def multiply(x1: np.ndarray, x2: np.ndarray)\
         -> np.ndarray:
     if hasattr(x1, 'dtype') and hasattr(x2, 'dtype'):
         promoted_type = np.promote_types(x1.dtype, x2.dtype)
+        x1, x2 = np.asarray(x1), np.asarray(x2)
         x1 = x1.astype(promoted_type)
         x2 = x2.astype(promoted_type)
     elif not hasattr(x2, 'dtype'):
