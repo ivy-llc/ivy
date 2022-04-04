@@ -699,104 +699,104 @@ class WithNestedModules(ivy.Module):
 
 
 # track submod call order
-# @pytest.mark.parametrize(
-#     "bs_ic_oc", [([1, 2], 4, 5)])
-# def test_module_track_submod_call_order(bs_ic_oc, dev, call):
-#     # smoke test
-#     if call is helpers.np_call:
-#         # NumPy does not support gradients
-#         pytest.skip()
-#     batch_shape, input_channels, output_channels = bs_ic_oc
-#     x = ivy.cast(ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), input_channels), 'float32')
-#     module = WithNestedModules(input_channels, output_channels, dev=dev)
-#
-#     root_key_0 = ivy.Container.flatten_key_chain(module.__repr__(), '_') + '_0'
-#
-#     dl0_key_0 = ivy.Container.flatten_key_chain(module._dl0.__repr__(), '_') + '_0'
-#     dl1_key_0 = ivy.Container.flatten_key_chain(module._dl1.__repr__(), '_') + '_0'
-#     dl1_key_1 = ivy.Container.flatten_key_chain(module._dl1.__repr__(), '_') + '_1'
-#
-#     dl0_l0_key_0 = ivy.Container.flatten_key_chain(module._dl0._l0.__repr__(), '_') + '_0'
-#     dl0_l1_key_0 = ivy.Container.flatten_key_chain(module._dl0._l1.__repr__(), '_') + '_0'
-#     dl1_l0_key_0 = ivy.Container.flatten_key_chain(module._dl1._l0.__repr__(), '_') + '_0'
-#     dl1_l1_key_0 = ivy.Container.flatten_key_chain(module._dl1._l1.__repr__(), '_') + '_0'
-#
-#     # depth 1
-#     ret = module(x, track_submod_call_order=True, submod_depth=1)
-#     assert ret.shape == tuple(batch_shape + [64])
-#
-#     sm_co = module.submod_call_order
-#
-#     assert root_key_0 in sm_co
-#
-#     assert dl0_key_0 in sm_co[root_key_0]
-#     assert dl1_key_0 in sm_co[root_key_0]
-#     assert dl1_key_1 in sm_co[root_key_0]
-#
-#     assert ivy.Container.identical(
-#         [sm_co[root_key_0][dl0_key_0], module._dl0.v_with_top_v_key_chains(flatten_key_chains=True).to_numpy()])
-#     assert ivy.Container.identical(
-#         [sm_co[root_key_0][dl1_key_0], module._dl1.v_with_top_v_key_chains(flatten_key_chains=True).to_numpy()])
-#     assert ivy.Container.identical(
-#         [sm_co[root_key_0][dl1_key_1], module._dl1.v_with_top_v_key_chains(flatten_key_chains=True).to_numpy()])
-#
-#     # depth 2 (full)
-#     ret = module(x, track_submod_call_order=True)
-#     assert ret.shape == tuple(batch_shape + [64])
-#
-#     sm_co = module.submod_call_order
-#
-#     assert root_key_0 in sm_co
-#
-#     assert dl0_key_0 in sm_co[root_key_0]
-#     assert dl1_key_0 in sm_co[root_key_0]
-#     assert dl1_key_1 in sm_co[root_key_0]
-#
-#     assert dl0_l0_key_0 in sm_co[root_key_0][dl0_key_0]
-#     assert dl0_l1_key_0 in sm_co[root_key_0][dl0_key_0]
-#     assert dl1_l0_key_0 in sm_co[root_key_0][dl1_key_0]
-#     assert dl1_l1_key_0 in sm_co[root_key_0][dl1_key_0]
-#     assert dl1_l0_key_0 in sm_co[root_key_0][dl1_key_1]
-#     assert dl1_l1_key_0 in sm_co[root_key_0][dl1_key_1]
-#
-#     assert ivy.Container.identical(
-#         [sm_co[root_key_0][dl0_key_0][dl0_l0_key_0],
-#          module._dl0._l0.v_with_top_v_key_chains(flatten_key_chains=True).to_numpy()])
-#     assert ivy.Container.identical(
-#         [sm_co[root_key_0][dl0_key_0][dl0_l1_key_0],
-#          module._dl0._l1.v_with_top_v_key_chains(flatten_key_chains=True).to_numpy()])
-#     assert ivy.Container.identical(
-#         [sm_co[root_key_0][dl1_key_0][dl1_l0_key_0],
-#          module._dl1._l0.v_with_top_v_key_chains(flatten_key_chains=True).to_numpy()])
-#     assert ivy.Container.identical(
-#         [sm_co[root_key_0][dl1_key_0][dl1_l1_key_0],
-#          module._dl1._l1.v_with_top_v_key_chains(flatten_key_chains=True).to_numpy()])
-#     assert ivy.Container.identical(
-#         [sm_co[root_key_0][dl1_key_1][dl1_l0_key_0],
-#          module._dl1._l0.v_with_top_v_key_chains(flatten_key_chains=True).to_numpy()])
-#     assert ivy.Container.identical(
-#         [sm_co[root_key_0][dl1_key_1][dl1_l1_key_0],
-#          module._dl1._l1.v_with_top_v_key_chains(flatten_key_chains=True).to_numpy()])
-#
-#     # partial submodules
-#     ret = module(x, track_submod_call_order=True, submods_to_track=[module._dl1, module._dl0._l0])
-#     assert ret.shape == tuple(batch_shape + [64])
-#
-#     sm_co = module.submod_call_order
-#
-#     assert root_key_0 in sm_co
-#
-#     assert dl0_key_0 in sm_co[root_key_0]
-#     assert dl1_key_0 in sm_co[root_key_0]
-#     assert dl1_key_1 in sm_co[root_key_0]
-#
-#     assert dl0_l0_key_0 in sm_co[root_key_0][dl0_key_0]
-#     assert dl0_l1_key_0 not in sm_co[root_key_0][dl0_key_0]
-#     assert ivy.Container.identical(
-#         [sm_co[root_key_0][dl1_key_0], module._dl1.v_with_top_v_key_chains(flatten_key_chains=True).to_numpy()])
-#     assert ivy.Container.identical(
-#         [sm_co[root_key_0][dl1_key_1], module._dl1.v_with_top_v_key_chains(flatten_key_chains=True).to_numpy()])
-#
-#     assert ivy.Container.identical(
-#         [sm_co[root_key_0][dl0_key_0][dl0_l0_key_0],
-#          module._dl0._l0.v_with_top_v_key_chains(flatten_key_chains=True).to_numpy()])
+@pytest.mark.parametrize(
+    "bs_ic_oc", [([1, 2], 4, 5)])
+def test_module_track_submod_call_order(bs_ic_oc, dev, call):
+    # smoke test
+    if call is helpers.np_call:
+        # NumPy does not support gradients
+        pytest.skip()
+    batch_shape, input_channels, output_channels = bs_ic_oc
+    x = ivy.astype(ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), input_channels), 'float32')
+    module = WithNestedModules(input_channels, output_channels, dev=dev)
+
+    root_key_0 = ivy.Container.flatten_key_chain(module.__repr__(), '_') + '_0'
+
+    dl0_key_0 = ivy.Container.flatten_key_chain(module._dl0.__repr__(), '_') + '_0'
+    dl1_key_0 = ivy.Container.flatten_key_chain(module._dl1.__repr__(), '_') + '_0'
+    dl1_key_1 = ivy.Container.flatten_key_chain(module._dl1.__repr__(), '_') + '_1'
+
+    dl0_l0_key_0 = ivy.Container.flatten_key_chain(module._dl0._l0.__repr__(), '_') + '_0'
+    dl0_l1_key_0 = ivy.Container.flatten_key_chain(module._dl0._l1.__repr__(), '_') + '_0'
+    dl1_l0_key_0 = ivy.Container.flatten_key_chain(module._dl1._l0.__repr__(), '_') + '_0'
+    dl1_l1_key_0 = ivy.Container.flatten_key_chain(module._dl1._l1.__repr__(), '_') + '_0'
+
+    # depth 1
+    ret = module(x, track_submod_call_order=True, submod_depth=1)
+    assert ret.shape == tuple(batch_shape + [64])
+
+    sm_co = module.submod_call_order
+
+    assert root_key_0 in sm_co
+
+    assert dl0_key_0 in sm_co[root_key_0]
+    assert dl1_key_0 in sm_co[root_key_0]
+    assert dl1_key_1 in sm_co[root_key_0]
+
+    assert ivy.Container.identical(
+        [sm_co[root_key_0][dl0_key_0], module._dl0.v_with_top_v_key_chains(flatten_key_chains=True).to_numpy()])
+    assert ivy.Container.identical(
+        [sm_co[root_key_0][dl1_key_0], module._dl1.v_with_top_v_key_chains(flatten_key_chains=True).to_numpy()])
+    assert ivy.Container.identical(
+        [sm_co[root_key_0][dl1_key_1], module._dl1.v_with_top_v_key_chains(flatten_key_chains=True).to_numpy()])
+
+    # depth 2 (full)
+    ret = module(x, track_submod_call_order=True)
+    assert ret.shape == tuple(batch_shape + [64])
+
+    sm_co = module.submod_call_order
+
+    assert root_key_0 in sm_co
+
+    assert dl0_key_0 in sm_co[root_key_0]
+    assert dl1_key_0 in sm_co[root_key_0]
+    assert dl1_key_1 in sm_co[root_key_0]
+
+    assert dl0_l0_key_0 in sm_co[root_key_0][dl0_key_0]
+    assert dl0_l1_key_0 in sm_co[root_key_0][dl0_key_0]
+    assert dl1_l0_key_0 in sm_co[root_key_0][dl1_key_0]
+    assert dl1_l1_key_0 in sm_co[root_key_0][dl1_key_0]
+    assert dl1_l0_key_0 in sm_co[root_key_0][dl1_key_1]
+    assert dl1_l1_key_0 in sm_co[root_key_0][dl1_key_1]
+
+    assert ivy.Container.identical(
+        [sm_co[root_key_0][dl0_key_0][dl0_l0_key_0],
+         module._dl0._l0.v_with_top_v_key_chains(flatten_key_chains=True).to_numpy()])
+    assert ivy.Container.identical(
+        [sm_co[root_key_0][dl0_key_0][dl0_l1_key_0],
+         module._dl0._l1.v_with_top_v_key_chains(flatten_key_chains=True).to_numpy()])
+    assert ivy.Container.identical(
+        [sm_co[root_key_0][dl1_key_0][dl1_l0_key_0],
+         module._dl1._l0.v_with_top_v_key_chains(flatten_key_chains=True).to_numpy()])
+    assert ivy.Container.identical(
+        [sm_co[root_key_0][dl1_key_0][dl1_l1_key_0],
+         module._dl1._l1.v_with_top_v_key_chains(flatten_key_chains=True).to_numpy()])
+    assert ivy.Container.identical(
+        [sm_co[root_key_0][dl1_key_1][dl1_l0_key_0],
+         module._dl1._l0.v_with_top_v_key_chains(flatten_key_chains=True).to_numpy()])
+    assert ivy.Container.identical(
+        [sm_co[root_key_0][dl1_key_1][dl1_l1_key_0],
+         module._dl1._l1.v_with_top_v_key_chains(flatten_key_chains=True).to_numpy()])
+
+    # partial submodules
+    ret = module(x, track_submod_call_order=True, submods_to_track=[module._dl1, module._dl0._l0])
+    assert ret.shape == tuple(batch_shape + [64])
+
+    sm_co = module.submod_call_order
+
+    assert root_key_0 in sm_co
+
+    assert dl0_key_0 in sm_co[root_key_0]
+    assert dl1_key_0 in sm_co[root_key_0]
+    assert dl1_key_1 in sm_co[root_key_0]
+
+    assert dl0_l0_key_0 in sm_co[root_key_0][dl0_key_0]
+    assert dl0_l1_key_0 not in sm_co[root_key_0][dl0_key_0]
+    assert ivy.Container.identical(
+        [sm_co[root_key_0][dl1_key_0], module._dl1.v_with_top_v_key_chains(flatten_key_chains=True).to_numpy()])
+    assert ivy.Container.identical(
+        [sm_co[root_key_0][dl1_key_1], module._dl1.v_with_top_v_key_chains(flatten_key_chains=True).to_numpy()])
+
+    assert ivy.Container.identical(
+        [sm_co[root_key_0][dl0_key_0][dl0_l0_key_0],
+         module._dl0._l0.v_with_top_v_key_chains(flatten_key_chains=True).to_numpy()])
