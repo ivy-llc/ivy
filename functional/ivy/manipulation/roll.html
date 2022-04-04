@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>constant_pad &mdash; Ivy 1.0 documentation</title>
+  <title>roll &mdash; Ivy 1.0 documentation</title>
   
 
   
@@ -36,8 +36,8 @@
   <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="zero_pad" href="zero_pad.html" />
-    <link rel="prev" title="tile" href="tile.html" /> 
+    <link rel="next" title="squeeze" href="squeeze.html" />
+    <link rel="prev" title="Manipulation" href="../manipulation.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -105,7 +105,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../linear_algebra.html">Linear algebra</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../losses.html">Losses</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../manipulation.html">Manipulation</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="roll.html">roll</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">roll</a></li>
 <li class="toctree-l2"><a class="reference internal" href="squeeze.html">squeeze</a></li>
 <li class="toctree-l2"><a class="reference internal" href="flip.html">flip</a></li>
 <li class="toctree-l2"><a class="reference internal" href="expand_dims.html">expand_dims</a></li>
@@ -116,7 +116,7 @@
 <li class="toctree-l2"><a class="reference internal" href="split.html">split</a></li>
 <li class="toctree-l2"><a class="reference internal" href="repeat.html">repeat</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tile.html">tile</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">constant_pad</a></li>
+<li class="toctree-l2"><a class="reference internal" href="constant_pad.html">constant_pad</a></li>
 <li class="toctree-l2"><a class="reference internal" href="zero_pad.html">zero_pad</a></li>
 <li class="toctree-l2"><a class="reference internal" href="swapaxes.html">swapaxes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="clip.html">clip</a></li>
@@ -203,13 +203,13 @@
         
           <li><a href="../manipulation.html">Manipulation</a> &raquo;</li>
         
-      <li>constant_pad</li>
+      <li>roll</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../../_sources/functional/ivy/manipulation/constant_pad.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../../_sources/functional/ivy/manipulation/roll.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -222,23 +222,26 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="constant-pad">
-<h1>constant_pad<a class="headerlink" href="#constant-pad" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="roll">
+<h1>roll<a class="headerlink" href="#roll" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
-<dt id="ivy.functional.ivy.manipulation.constant_pad">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">constant_pad</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">pad_width</span><span class="p">:</span> <span class="n">Iterable<span class="p">[</span>Tuple<span class="p">[</span>int<span class="p">]</span><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">value</span><span class="p">:</span> <span class="n">numbers.Number</span> <span class="o">=</span> <span class="default_value">0</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/manipulation.html#constant_pad"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.manipulation.constant_pad" title="Permalink to this definition">¶</a></dt>
-<dd><p>Pads an array with a constant value.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>array</em>) – Input array to pad.</p></li>
-<li><p><strong>pad_width</strong> (<em>sequence of tuples of ints</em>) – Number of values padded to the edges of each axis.
-Specified as ((before_1, after_1), … (before_N, after_N)), where N is number of axes of x.</p></li>
-<li><p><strong>value</strong> (<em>float</em><em> or </em><em>int</em><em>, </em><em>default zero</em>) – The constant value to pad the array with.</p></li>
-</ul>
+<dt id="ivy.functional.ivy.manipulation.roll">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">roll</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">shift</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>int<span class="p">, </span>Tuple<span class="p">[</span>int<span class="p">, </span><span class="p">…</span><span class="p">]</span><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">axis</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Union<span class="p">[</span>int<span class="p">, </span>Tuple<span class="p">[</span>int<span class="p">, </span><span class="p">…</span><span class="p">]</span><span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../../_modules/ivy/functional/ivy/manipulation.html#roll"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.manipulation.roll" title="Permalink to this definition">¶</a></dt>
+<dd><p>Rolls array elements along a specified axis. Array elements that roll beyond the last position are re-introduced at the first position. Array elements that roll beyond the first position are re-introduced at the last position.
+Parameters
+———-
+x: array</p>
+<blockquote>
+<div><p>input array.</p>
+</div></blockquote>
+<dl class="simple">
+<dt>shift: Union[int, Tuple[int, …]]</dt><dd><p>number of places by which the elements are shifted. If <code class="docutils literal notranslate"><span class="pre">shift</span></code> is a tuple, then <code class="docutils literal notranslate"><span class="pre">axis</span></code> must be a tuple of the same size, and each of the given axes must be shifted by the corresponding element in <code class="docutils literal notranslate"><span class="pre">shift</span></code>. If <code class="docutils literal notranslate"><span class="pre">shift</span></code> is an <code class="docutils literal notranslate"><span class="pre">int</span></code> and <code class="docutils literal notranslate"><span class="pre">axis</span></code> a tuple, then the same <code class="docutils literal notranslate"><span class="pre">shift</span></code> must be used for all specified axes. If a shift is positive, then array elements must be shifted positively (toward larger indices) along the dimension of <code class="docutils literal notranslate"><span class="pre">axis</span></code>. If a shift is negative, then array elements must be shifted negatively (toward smaller indices) along the dimension of <code class="docutils literal notranslate"><span class="pre">axis</span></code>.</p>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Padded array of rank equal to x with shape increased according to pad_width.</p>
+<dt>axis: Optional[Union[int, Tuple[int, …]]]</dt><dd><p>axis (or axes) along which elements to shift. If <code class="docutils literal notranslate"><span class="pre">axis</span></code> is <code class="docutils literal notranslate"><span class="pre">None</span></code>, the array must be flattened, shifted, and then restored to its original shape. Default: <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>out: array</dt><dd><p>an output array having the same data type as <code class="docutils literal notranslate"><span class="pre">x</span></code> and whose elements, relative to <code class="docutils literal notranslate"><span class="pre">x</span></code>, are shifted.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -258,10 +261,10 @@ Specified as ((before_1, after_1), … (before_N, after_N)), where N is number o
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="zero_pad.html" class="btn btn-neutral float-right" title="zero_pad" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="squeeze.html" class="btn btn-neutral float-right" title="squeeze" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="tile.html" class="btn btn-neutral float-left" title="tile" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="../manipulation.html" class="btn btn-neutral float-left" title="Manipulation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

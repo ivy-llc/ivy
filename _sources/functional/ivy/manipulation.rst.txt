@@ -13,6 +13,7 @@ Manipulation
    :maxdepth: -1
    :caption: Manipulation
 
+   manipulation/roll.rst
    manipulation/squeeze.rst
    manipulation/flip.rst
    manipulation/expand_dims.rst
