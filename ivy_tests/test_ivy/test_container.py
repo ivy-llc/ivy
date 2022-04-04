@@ -3007,18 +3007,18 @@ def test_container_negative(dev, call):
     assert np.allclose(ivy.to_numpy(container.b.d), np.array([-3]))
 
 
-# def test_container_pow(dev, call):
-#     container_a = Container({'a': ivy.array([1], dev=dev),
-#                              'b': {'c': ivy.array([2], dev=dev), 'd': ivy.array([3], dev=dev)}})
-#     container_b = Container({'a': ivy.array([2], dev=dev),
-#                              'b': {'c': ivy.array([4], dev=dev), 'd': ivy.array([6], dev=dev)}})
-#     container = container_a ** container_b
-#     assert np.allclose(ivy.to_numpy(container['a']), np.array([1]))
-#     assert np.allclose(ivy.to_numpy(container.a), np.array([1]))
-#     assert np.allclose(ivy.to_numpy(container['b']['c']), np.array([16]))
-#     assert np.allclose(ivy.to_numpy(container.b.c), np.array([16]))
-#     assert np.allclose(ivy.to_numpy(container['b']['d']), np.array([729]))
-#     assert np.allclose(ivy.to_numpy(container.b.d), np.array([729]))
+def test_container_pow(dev, call):
+    container_a = Container({'a': ivy.array([1], dev=dev),
+                             'b': {'c': ivy.array([2], dev=dev), 'd': ivy.array([3], dev=dev)}})
+    container_b = Container({'a': ivy.array([2], dev=dev),
+                             'b': {'c': ivy.array([4], dev=dev), 'd': ivy.array([6], dev=dev)}})
+    container = container_a ** container_b
+    assert np.allclose(ivy.to_numpy(container['a']), np.array([1]))
+    assert np.allclose(ivy.to_numpy(container.a), np.array([1]))
+    assert np.allclose(ivy.to_numpy(container['b']['c']), np.array([16]))
+    assert np.allclose(ivy.to_numpy(container.b.c), np.array([16]))
+    assert np.allclose(ivy.to_numpy(container['b']['d']), np.array([729]))
+    assert np.allclose(ivy.to_numpy(container.b.d), np.array([729]))
 
 
 def test_container_scalar_pow(dev, call):
