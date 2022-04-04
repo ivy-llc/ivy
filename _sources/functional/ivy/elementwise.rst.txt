@@ -14,6 +14,7 @@ Elementwise
    :caption: Elementwise
 
    elementwise/add.rst
+   elementwise/pow.rst
    elementwise/bitwise_xor.rst
    elementwise/exp.rst
    elementwise/expm1.rst
