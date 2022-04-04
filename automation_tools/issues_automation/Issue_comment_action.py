@@ -38,7 +38,7 @@ def main():
             if comment_issue_title in non_alocate_functions:
                 print('Function Free')
                 # ToDo: Add Labels "Array API" "Single Function"
-                main_issue_body = re.sub(r'\b%s\b' % comment_issue_title, issue_id.replace('/', '#'), main_issue.get_issue_body())
+                main_issue_body = re.sub(r'\b%s\b' % comment_issue_title, issue_id.replace('/', '#'), main_issue.get_issue_body().replace('_', '\_')
                 child_issue_labels = set_child_issue_labels(targeted_labels, accepted_labels)
                 main_issue.command(f'gh issue edit {comment_issue_id} --add-label "{child_issue_labels[0]}","{child_issue_labels[1]}"', save_output=False)
                 main_issue.command(f'gh issue edit {main_issue.get_issue_number()} --body "{main_issue_body}"', save_output=False)
