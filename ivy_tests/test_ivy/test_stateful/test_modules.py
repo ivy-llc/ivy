@@ -139,56 +139,56 @@ class TrainableModuleWithList(ivy.Module):
 
 
 # module with partial v
-# @pytest.mark.parametrize(
-#     "bs_ic_oc", [([1, 2], 4, 5)])
-# def test_module_w_partial_v(bs_ic_oc, dev, compile_graph, call):
-#     # smoke test
-#     if call is helpers.np_call:
-#         # NumPy does not support gradients
-#         pytest.skip()
-#     if call is helpers.mx_call:
-#         # MXNet ivy.Container repr currently does not work
-#         pytest.skip()
-#     batch_shape, input_channels, output_channels = bs_ic_oc
-#     x = ivy.cast(ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), input_channels), 'float32')
-#     v = ivy.Container({
-#         'linear0': {
-#             'b': ivy.variable(ivy.random_uniform(shape=[64])),
-#             'w': ivy.variable(ivy.random_uniform(shape=[64, 4]))
-#         },
-#         'linear1': {
-#             'b': ivy.variable(ivy.random_uniform(shape=[64])),
-#             'w': ivy.variable(ivy.random_uniform(shape=[64, 64])),
-#             'extra': ivy.variable(ivy.random_uniform(shape=[64, 64]))
-#         },
-#         'linear2': {
-#             'b': ivy.variable(ivy.random_uniform(shape=[5])),
-#             'w': ivy.variable(ivy.random_uniform(shape=[5, 64]))
-#         }
-#     })
-#     try:
-#         TrainableModule(input_channels, output_channels, dev=dev, v=v, with_partial_v=True)
-#         raise Exception('TrainableModule did not raise exception desipite being passed with wrongly shaped variables.')
-#     except AssertionError:
-#         pass
-#     v = ivy.Container({
-#         'linear0': {
-#             'b': ivy.variable(ivy.random_uniform(shape=[64])),
-#         },
-#         'linear1': {
-#             'w': ivy.variable(ivy.random_uniform(shape=[64, 64]))
-#         },
-#         'linear2': {
-#             'b': ivy.variable(ivy.random_uniform(shape=[5]))
-#         }
-#     })
-#     try:
-#         TrainableModule(input_channels, output_channels, dev=dev, v=v)
-#         raise Exception('TrainableModule did not raise exception desipite being passed with wrongly shaped variables.')
-#     except AssertionError:
-#         pass
-#     module = TrainableModule(input_channels, output_channels, dev=dev, v=v, with_partial_v=True)
-#     module(x)
+@pytest.mark.parametrize(
+    "bs_ic_oc", [([1, 2], 4, 5)])
+def test_module_w_partial_v(bs_ic_oc, dev, compile_graph, call):
+    # smoke test
+    if call is helpers.np_call:
+        # NumPy does not support gradients
+        pytest.skip()
+    if call is helpers.mx_call:
+        # MXNet ivy.Container repr currently does not work
+        pytest.skip()
+    batch_shape, input_channels, output_channels = bs_ic_oc
+    x = ivy.astype(ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), input_channels), 'float32')
+    v = ivy.Container({
+        'linear0': {
+            'b': ivy.variable(ivy.random_uniform(shape=[64])),
+            'w': ivy.variable(ivy.random_uniform(shape=[64, 4]))
+        },
+        'linear1': {
+            'b': ivy.variable(ivy.random_uniform(shape=[64])),
+            'w': ivy.variable(ivy.random_uniform(shape=[64, 64])),
+            'extra': ivy.variable(ivy.random_uniform(shape=[64, 64]))
+        },
+        'linear2': {
+            'b': ivy.variable(ivy.random_uniform(shape=[5])),
+            'w': ivy.variable(ivy.random_uniform(shape=[5, 64]))
+        }
+    })
+    try:
+        TrainableModule(input_channels, output_channels, dev=dev, v=v, with_partial_v=True)
+        raise Exception('TrainableModule did not raise exception desipite being passed with wrongly shaped variables.')
+    except AssertionError:
+        pass
+    v = ivy.Container({
+        'linear0': {
+            'b': ivy.variable(ivy.random_uniform(shape=[64])),
+        },
+        'linear1': {
+            'w': ivy.variable(ivy.random_uniform(shape=[64, 64]))
+        },
+        'linear2': {
+            'b': ivy.variable(ivy.random_uniform(shape=[5]))
+        }
+    })
+    try:
+        TrainableModule(input_channels, output_channels, dev=dev, v=v)
+        raise Exception('TrainableModule did not raise exception desipite being passed with wrongly shaped variables.')
+    except AssertionError:
+        pass
+    module = TrainableModule(input_channels, output_channels, dev=dev, v=v, with_partial_v=True)
+    module(x)
 
 
 class ModuleWithNoneAttribute(ivy.Module):
