@@ -3662,12 +3662,12 @@ def test_container_shapes(dev, call):
     assert list(container_shapes.b.d) == [1, 1]
 
 
-# def test_container_dev_str(dev, call):
-#     dict_in = {'a': ivy.array([[[1.], [2.], [3.]]], dev=dev),
-#                'b': {'c': ivy.array([[[2.], [4.], [6.]]], dev=dev),
-#                      'd': ivy.array([[[3.], [6.], [9.]]], dev=dev)}}
-#     container = Container(dict_in)
-#     assert container.dev_str == dev
+def test_container_dev_str(dev, call):
+    dict_in = {'a': ivy.array([[[1.], [2.], [3.]]], dev=dev),
+               'b': {'c': ivy.array([[[2.], [4.], [6.]]], dev=dev),
+                     'd': ivy.array([[[3.], [6.], [9.]]], dev=dev)}}
+    container = Container(dict_in)
+    assert container.dev_str == dev
 
 
 def test_container_create_if_absent(dev, call):
