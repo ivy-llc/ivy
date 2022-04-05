@@ -3,25 +3,16 @@ import torch
 from typing import Tuple
 from collections import namedtuple
 
-# local
-from ivy.functional.backends.torch import Tensor
 
+def unique_all(x : torch.Tensor, /)\
+                -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor]:
 
-def unique_all(x : Tensor)\
-                -> Tuple[Tensor, Tensor, Tensor, Tensor]:
-
-    x_ = x.clone()
-
-    if x.requires_grad_:
-        x_ = x_.detach()
-
-    outputs, inverse_indices, counts = torch.unique(x_, sorted=True, return_inverse=True,
+    outputs, inverse_indices, counts = torch.unique(x, sorted=True, return_inverse=True,
                                                     return_counts=True, dim=None)
-    indices = list()
-    Results = namedtuple(typename='unique_all', field_names='values indices inverse_indices counts')
-
-    for value in outputs:
-        r, c = torch.where(x_ == value)
-        indices.append([r[0], c[0]])
-
-    return Results(outputs.to(x_.dtype), torch.tensor(indices), inverse_indices, counts)
+    
+    Results = namedtuple(typename='unique_all', field_names=['values', 'indices', 'inverse_indices', 'counts'])
+    flat_list = x.flatten().tolist()
+    
+    indices = [flat_list.index(val) for val in outputs]
+    
+    return Results(outputs.to(x.dtype), torch.tensor(indices).view(outputs.shape), inverse_indices, counts)
