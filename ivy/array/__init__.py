@@ -334,19 +334,11 @@ class Array(ArrayWithArrayAPI, ArrayWithDevice, ArrayWithGeneral, ArrayWithGradi
 
     @_native_wrapper
     def __and__(self, other):
-        other = to_native(other)
-        res = self._data.__and__(other)
-        if res is NotImplemented:
-            return res
-        return to_ivy(res)
+        return ivy.bitwise_and(self._data, other)
 
     @_native_wrapper
     def __rand__(self, other):
-        other = to_native(other)
-        res = self._data.__rand__(other)
-        if res is NotImplemented:
-            return res
-        return to_ivy(res)
+        return ivy.bitwise_and(self._data, other)
 
     @_native_wrapper
     def __or__(self, other):
