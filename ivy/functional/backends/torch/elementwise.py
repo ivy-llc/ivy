@@ -81,6 +81,7 @@ def less_equal(x1: Tensor, x2: Tensor)\
 def bitwise_and(x1: torch.Tensor,
                 x2: torch.Tensor)\
         -> torch.Tensor:
+    x1, x2 = _cast_for_binary_op(x1, x2)
     return torch.bitwise_and(x1, x2)
 
 

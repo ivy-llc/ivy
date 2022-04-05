@@ -39,6 +39,8 @@ def bitwise_invert(x: JaxArray)\
 def bitwise_and(x1: JaxArray,
                 x2: JaxArray)\
         -> JaxArray:
+    if isinstance(x2, int):
+        x2 = jnp.asarray(x2, dtype=x1.dtype)
     return jnp.bitwise_and(x1, x2)
 
 
