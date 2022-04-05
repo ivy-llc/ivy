@@ -20,7 +20,6 @@ Linear algebra
    linear_algebra/svd.rst
    linear_algebra/outer.rst
    linear_algebra/diagonal.rst
-   linear_algebra/inv.rst
    linear_algebra/pinv.rst
    linear_algebra/cholesky.rst
    linear_algebra/matrix_norm.rst
@@ -33,6 +32,7 @@ Linear algebra
    linear_algebra/det.rst
    linear_algebra/cholesky.rst
    linear_algebra/eigvalsh.rst
+   linear_algebra/inv.rst
    linear_algebra/matrix_rank.rst
    linear_algebra/cross.rst
    linear_algebra/vector_to_skew_symmetric_matrix.rst

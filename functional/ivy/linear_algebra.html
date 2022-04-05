@@ -110,7 +110,6 @@
 <li class="toctree-l2"><a class="reference internal" href="linear_algebra/svd.html">svd</a></li>
 <li class="toctree-l2"><a class="reference internal" href="linear_algebra/outer.html">outer</a></li>
 <li class="toctree-l2"><a class="reference internal" href="linear_algebra/diagonal.html">diagonal</a></li>
-<li class="toctree-l2"><a class="reference internal" href="linear_algebra/inv.html">inv</a></li>
 <li class="toctree-l2"><a class="reference internal" href="linear_algebra/pinv.html">pinv</a></li>
 <li class="toctree-l2"><a class="reference internal" href="linear_algebra/cholesky.html">cholesky</a></li>
 <li class="toctree-l2"><a class="reference internal" href="linear_algebra/matrix_norm.html">matrix_norm</a></li>
@@ -123,6 +122,7 @@
 <li class="toctree-l2"><a class="reference internal" href="linear_algebra/det.html">det</a></li>
 <li class="toctree-l2"><a class="reference internal" href="linear_algebra/cholesky.html">cholesky</a></li>
 <li class="toctree-l2"><a class="reference internal" href="linear_algebra/eigvalsh.html">eigvalsh</a></li>
+<li class="toctree-l2"><a class="reference internal" href="linear_algebra/inv.html">inv</a></li>
 <li class="toctree-l2"><a class="reference internal" href="linear_algebra/matrix_rank.html">matrix_rank</a></li>
 <li class="toctree-l2"><a class="reference internal" href="linear_algebra/cross.html">cross</a></li>
 <li class="toctree-l2"><a class="reference internal" href="linear_algebra/vector_to_skew_symmetric_matrix.html">vector_to_skew_symmetric_matrix</a></li>
@@ -374,17 +374,14 @@ have the same data type as x.</p>
 
 <dl class="py function">
 <dt id="ivy.functional.ivy.linear_algebra.inv">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">inv</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/linear_algebra.html#inv"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.linear_algebra.inv" title="Permalink to this definition">¶</a></dt>
-<dd><p>Computes the (multiplicative) inverse of x matrix.
-Given a square matrix x, returns the matrix x_inv satisfying dot(x, x_inv) = dot(x_inv, x) = eye(x.shape[0]).</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>x</strong> (<em>array</em>) – Matrix to be inverted.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>(Multiplicative) inverse of the matrix x.</p>
-</dd>
-</dl>
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">inv</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../_modules/ivy/functional/ivy/linear_algebra.html#inv"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.linear_algebra.inv" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the multiplicative inverse of a square matrix (or a stack of square matrices) x.</p>
+<p>Parameters
+x (array) : input array having shape (…, M, M) and whose innermost two dimensions form square matrices.
+Should have a floating-point data type.</p>
+<p>Returns
+out (array) : an array containing the multiplicative inverses.
+The returned array must have a floating-point data type determined by Type Promotion Rules and must have the same shape as x.</p>
 </dd></dl>
 
 <dl class="py function">

@@ -36,8 +36,8 @@
   <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="cholesky" href="cholesky.html" />
-    <link rel="prev" title="diagonal" href="diagonal.html" /> 
+    <link rel="next" title="matrix_rank" href="matrix_rank.html" />
+    <link rel="prev" title="eigvalsh" href="eigvalsh.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -110,7 +110,6 @@
 <li class="toctree-l2"><a class="reference internal" href="svd.html">svd</a></li>
 <li class="toctree-l2"><a class="reference internal" href="outer.html">outer</a></li>
 <li class="toctree-l2"><a class="reference internal" href="diagonal.html">diagonal</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">inv</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pinv.html">pinv</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cholesky.html">cholesky</a></li>
 <li class="toctree-l2"><a class="reference internal" href="matrix_norm.html">matrix_norm</a></li>
@@ -123,6 +122,7 @@
 <li class="toctree-l2"><a class="reference internal" href="det.html">det</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cholesky.html">cholesky</a></li>
 <li class="toctree-l2"><a class="reference internal" href="eigvalsh.html">eigvalsh</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">inv</a></li>
 <li class="toctree-l2"><a class="reference internal" href="matrix_rank.html">matrix_rank</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cross.html">cross</a></li>
 <li class="toctree-l2"><a class="reference internal" href="vector_to_skew_symmetric_matrix.html">vector_to_skew_symmetric_matrix</a></li>
@@ -234,17 +234,14 @@
 <h1>inv<a class="headerlink" href="#inv" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
 <dt id="ivy.functional.ivy.linear_algebra.inv">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">inv</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/linear_algebra.html#inv"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.linear_algebra.inv" title="Permalink to this definition">¶</a></dt>
-<dd><p>Computes the (multiplicative) inverse of x matrix.
-Given a square matrix x, returns the matrix x_inv satisfying dot(x, x_inv) = dot(x_inv, x) = eye(x.shape[0]).</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>x</strong> (<em>array</em>) – Matrix to be inverted.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>(Multiplicative) inverse of the matrix x.</p>
-</dd>
-</dl>
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">inv</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../../_modules/ivy/functional/ivy/linear_algebra.html#inv"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.linear_algebra.inv" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the multiplicative inverse of a square matrix (or a stack of square matrices) x.</p>
+<p>Parameters
+x (array) : input array having shape (…, M, M) and whose innermost two dimensions form square matrices.
+Should have a floating-point data type.</p>
+<p>Returns
+out (array) : an array containing the multiplicative inverses.
+The returned array must have a floating-point data type determined by Type Promotion Rules and must have the same shape as x.</p>
 </dd></dl>
 
 <div class="line-block">
@@ -262,10 +259,10 @@ Given a square matrix x, returns the matrix x_inv satisfying dot(x, x_inv) = dot
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="cholesky.html" class="btn btn-neutral float-right" title="cholesky" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="matrix_rank.html" class="btn btn-neutral float-right" title="matrix_rank" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="diagonal.html" class="btn btn-neutral float-left" title="diagonal" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="eigvalsh.html" class="btn btn-neutral float-left" title="eigvalsh" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
