@@ -221,18 +221,6 @@ def diagonal(x: ivy.Array,
     return _cur_framework(x).diagonal(x, offset, axis1=axis1, axis2=axis2)
 
 
-def inv(x):
-    """
-    Computes the (multiplicative) inverse of x matrix.
-    Given a square matrix x, returns the matrix x_inv satisfying dot(x, x_inv) = dot(x_inv, x) = eye(x.shape[0]).
-
-    :param x: Matrix to be inverted.
-    :type x: array
-    :return: (Multiplicative) inverse of the matrix x.
-    """
-    return _cur_framework(x).inv(x)
-
-
 def pinv(x):
     """
     Computes the pseudo inverse of x matrix.
@@ -467,6 +455,22 @@ def eigvalsh(x: Union[ivy.Array, ivy.NativeArray], /) -> ivy.Array:
     return _cur_framework(x).eigvalsh(x)
 
 
+def inv(x: Union[ivy.Array, ivy.NativeArray])\
+        -> ivy.Array:
+    """
+    Returns the multiplicative inverse of a square matrix (or a stack of square matrices) x.
+
+    Parameters
+    x (array) : input array having shape (..., M, M) and whose innermost two dimensions form square matrices.
+    Should have a floating-point data type.
+
+    Returns
+    out (array) : an array containing the multiplicative inverses.
+    The returned array must have a floating-point data type determined by Type Promotion Rules and must have the same shape as x.
+    """
+    return _cur_framework(x).inv(x)
+
+
 def matrix_rank(vector: Union[ivy.Array, ivy.NativeArray],
                 rtol: Optional[Union[float, Tuple[float]]] = None) \
         -> Union[ivy.Array, ivy.NativeArray]:
@@ -514,6 +518,7 @@ def cross(x1: Union[ivy.Array, ivy.NativeArray],
     :type out: array
     """
     return _cur_framework(x1).cross(x1,x2,axis)
+
 
 # Extra #
 # ------#
