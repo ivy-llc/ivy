@@ -16,8 +16,9 @@ def eigh(x: np.ndarray)\
          return np.linalg.eigh(x)
 
 
+def inv(x: np.ndarray) -> np.ndarray:
+    return np.linalg.inv(x)
 
-inv = np.linalg.inv
 
 def pinv(x: np.ndarray,
          rtol: Optional[Union[float, Tuple[float]]] = None) \
