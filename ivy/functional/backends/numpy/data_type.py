@@ -38,7 +38,7 @@ class Finfo:
         return float(self._np_finfo.tiny)
 
 
-def can_cast(from_: Union[np.dtype, np.ndarray], to: np.dtype, /)\
+def can_cast(from_: Union[np.dtype, np.ndarray], to: np.dtype)\
          -> bool:
     return np.can_cast(from_, to)
 

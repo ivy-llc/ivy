@@ -20,7 +20,7 @@ Iinfo = None
 
 # Dtype Info #
 
-def can_cast(from_: Union[ivy.Dtype, ivy.Array, ivy.NativeArray], to: ivy.Dtype, /)\
+def can_cast(from_: Union[ivy.Dtype, ivy.Array, ivy.NativeArray], to: ivy.Dtype)\
         -> bool:
     """
     Determines if one data type can be cast to another data type according :ref:`type-promotion` rules.

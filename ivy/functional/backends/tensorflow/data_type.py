@@ -8,7 +8,7 @@ from tensorflow.python.framework.dtypes import DType
 # local
 import ivy
 
-def can_cast(from_: Union[tf.DType, Tensor], to: tf.DType, /)\
+def can_cast(from_: Union[tf.DType, Tensor], to: tf.DType)\
         -> bool:
     x = tf.random.normal(
         [2, 2],
