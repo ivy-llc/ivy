@@ -7,21 +7,19 @@ from collections import namedtuple
 from ivy.functional.backends.torch import Tensor
 
 
-def unique_all(x : Tensor)\
-                -> Tuple[Tensor, Tensor, Tensor, Tensor]:
+def unique_all(x: torch.Tensor, /) \
+        -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor]:
 
-    x_ = x.clone()
-
-    if x.requires_grad_:
-        x_ = x_.detach()
-
-    outputs, inverse_indices, counts = torch.unique(x_, sorted=True, return_inverse=True,
+    outputs, inverse_indices, counts = torch.unique(x, sorted=False, return_inverse=True,
                                                     return_counts=True, dim=None)
     indices = list()
-    Results = namedtuple(typename='unique_all', field_names='values indices inverse_indices counts')
+    Results = namedtuple(typename='unique_all', field_names=['values', 'indices', 'inverse_indices', 'counts'])
+    temp = list()
+    for val in iter(outputs):
+        loc = torch.where(x == val)
+        for ix in iter(loc):
+            temp.append(ix[0])
+        indices.append(temp)
+        temp.clear()
 
-    for value in outputs:
-        r, c = torch.where(x_ == value)
-        indices.append([r[0], c[0]])
-
-    return Results(outputs.to(x_.dtype), torch.tensor(indices), inverse_indices, counts)
+    return Results(outputs.to(x.dtype), torch.tensor(indices), inverse_indices, counts)
