@@ -162,6 +162,8 @@ def _parse_ellipsis(so, ndims):
 # noinspection PyShadowingNames
 def scatter_nd(indices, updates, shape=None, tensor=None, reduction='sum', dev=None):
 
+    if ivy.exists(tensor) and not isinstance(updates,Number):
+        tensor= tf.cast(tensor,dtype = updates.dtype) if ivy.dtype_bits(updates.dtype) > ivy.dtype_bits(tensor.dtype) else tensor
     # handle numeric updates
     updates = tf.constant([updates] if isinstance(updates, Number) else updates,
                            dtype=ivy.dtype(tensor, as_str=False) if ivy.exists(tensor)
