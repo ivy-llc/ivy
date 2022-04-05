@@ -43,7 +43,6 @@ def sort(x: Union[ivy.Array, ivy.NativeArray],
          ) -> ivy.Array:
     """
     Returns a sorted copy of an array
-
     Parameters:
     ___________
         x:
@@ -57,7 +56,7 @@ def sort(x: Union[ivy.Array, ivy.NativeArray],
 
         stable:
             sort stability. If ``True``,
-            the returned indices must maintain the relative order of ``x`` values which compare as equal.
+            the returned indicEes must maintain the relative order of ``x`` values which compare as equal.
             If ``False``, the returned indices may or may not maintain the relative order of ``x`` values which compare as equal (i.e., the relative order of ``x`` values which compare as equal is implementation-dependent). Default: ``True``.
 
     Returns:
