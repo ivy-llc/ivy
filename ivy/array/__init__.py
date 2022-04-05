@@ -48,11 +48,11 @@ class Array(ArrayWithArrayAPI, ArrayWithDevice, ArrayWithGeneral, ArrayWithGradi
             self._data = data.data
         else:
             assert ivy.is_native_array(data)
-        self._data = data
-        self._shape = data.shape
-        self._size = functools.reduce(mul,self._data.shape) if len(self._data.shape) >0 else 0
+            self._data = data
+        self._shape = self._data.shape
+        self._size = functools.reduce(mul, self._data.shape) if len(self._data.shape) > 0 else 0
         self._dtype = ivy.dtype(self._data)
-        self._device = ivy.dev(data)
+        self._device = ivy.dev(self._data)
         self._dev_str = ivy.dev_to_str(self._device)
         self._pre_repr = 'ivy.'
         if 'gpu' in self._dev_str:
@@ -169,7 +169,9 @@ class Array(ArrayWithArrayAPI, ArrayWithDevice, ArrayWithGeneral, ArrayWithGradi
         try:
             self._data.__setitem__(query, val)
         except (AttributeError, TypeError):
-            self._data = ivy.scatter_nd(query, val, tensor=self._data, reduction='replace')
+            self._data = ivy.scatter_nd(query, val, tensor=self._data, reduction='replace')._data
+            self._dtype = ivy.dtype(self._data)
+
 
     @_native_wrapper
     def __contains__(self, key):
@@ -188,7 +190,7 @@ class Array(ArrayWithArrayAPI, ArrayWithDevice, ArrayWithGeneral, ArrayWithGradi
 
     @_native_wrapper
     def __pow__(self, power):
-        return self._data.__pow__(power)
+        return ivy.pow(self._data, power)
 
     @_native_wrapper
     def __rpow__(self, power):

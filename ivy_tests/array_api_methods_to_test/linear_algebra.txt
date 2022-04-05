@@ -3,8 +3,8 @@ cholesky
 det
 #diagonal # fails non-determinstically for jax, due to +0 vs -0 inconsistencies
 eigh
-#eigvalsh # depends on: mT
-#inv
+eigvalsh
+inv
 #matmul # failing non-deterministically for torch
 #matrix_norm
 #matrix_power

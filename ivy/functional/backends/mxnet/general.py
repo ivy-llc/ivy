@@ -2,7 +2,7 @@
 import ivy
 _round = round
 import logging
-import mxnet as _mx
+import mxnet as mx
 import numpy as _np
 import math as _math
 from numbers import Number
@@ -62,7 +62,7 @@ DTYPE_FROM_STR = {'int8': _np.int8,
 
 
 def is_native_array(x, exclusive=False):
-    if isinstance(x, _mx.ndarray.ndarray.NDArray):
+    if isinstance(x, mx.ndarray.ndarray.NDArray):
         if exclusive and x.grad is not None:
             return False
         return True
@@ -77,7 +77,7 @@ def array_equal(x0, x1):
         x0 = x0.astype('int32')
     if ivy.dtype(x1, as_str=True) == 'bool':
         x1 = x1.astype('int32')
-    return _mx.nd.min(_mx.nd.broadcast_equal(x0, x1)) == 1
+    return mx.nd.min(mx.nd.broadcast_equal(x0, x1)) == 1
 
 to_numpy = lambda x: x if isinstance(x, _np.ndarray) else (_np.array(x) if isinstance(x, (int, float)) else x.asnumpy())
 to_numpy.__name__ = 'to_numpy'
@@ -97,7 +97,7 @@ def unstack(x, axis, keepdims=False):
     if x.shape == ():
         return [x]
     num_outputs = x.shape[axis]
-    ret = _mx.nd.split(x, num_outputs, axis, squeeze_axis=not keepdims)
+    ret = mx.nd.split(x, num_outputs, axis, squeeze_axis=not keepdims)
     return ret if isinstance(ret, list) else [ret]
 
 def inplace_update(x, val):
@@ -124,17 +124,17 @@ def inplace_increment(x, val):
     return x
 
 
-cumsum = lambda x, axis=0: _mx.nd.cumsum(x, axis if axis >= 0 else axis % len(x.shape))
+cumsum = lambda x, axis=0: mx.nd.cumsum(x, axis if axis >= 0 else axis % len(x.shape))
 
 
 def cumprod(x, axis=0, exclusive=False):
-    array_stack = [_mx.nd.expand_dims(chunk, axis) for chunk in unstack(x, axis)]
+    array_stack = [mx.nd.expand_dims(chunk, axis) for chunk in unstack(x, axis)]
     if exclusive:
-        array_stack = [_mx.nd.ones_like(array_stack[0])] + array_stack[:-1]
+        array_stack = [mx.nd.ones_like(array_stack[0])] + array_stack[:-1]
     new_array_list = [array_stack[0]]
     for array_chunk in array_stack[1:]:
         new_array_list.append(new_array_list[-1] * array_chunk)
-    return _mx.nd.concat(*new_array_list, dim=axis)
+    return mx.nd.concat(*new_array_list, dim=axis)
 
 
 
@@ -143,7 +143,7 @@ def scatter_flat(indices, updates, size=None, tensor=None, reduction='sum', dev=
     if ivy.exists(tensor):
         raise Exception('MXNet scatter_flat does not support scattering into an pre-existing tensor.')
     if reduction == 'replace':
-        return _mx.nd.scatter_nd(updates, _mx.nd.expand_dims(indices, 0), [size]).copyto(_mxnet_init_context(default_device(dev)))
+        return mx.nd.scatter_nd(updates, mx.nd.expand_dims(indices, 0), [size]).copyto(_mxnet_init_context(default_device(dev)))
     else:
         raise Exception('MXNet scatter_flat currently only supports reduction mode "replace", but {} selected.'.
                         format(reduction))
@@ -158,10 +158,10 @@ def scatter_nd(indices, updates, shape=None, tensor=None, reduction='sum', dev=N
     shape = list(shape)
     num_idx_dims = len(indices.shape)
     transpose_order = [num_idx_dims-1] + list(range(num_idx_dims-1))
-    indices = _mx.nd.transpose(indices, transpose_order)
+    indices = mx.nd.transpose(indices, transpose_order)
     shape = shape if type(shape) is list else shape.asnumpy().astype(_np.int32).tolist()
     if reduction == 'replace':
-        return _mx.nd.scatter_nd(updates, indices, shape).copyto(_mxnet_init_context(dev))
+        return mx.nd.scatter_nd(updates, indices, shape).copyto(_mxnet_init_context(dev))
     else:
         raise Exception('MXNet scatter_nd currently only supports reduction mode "replace", but {} selected.'.
                         format(reduction))
@@ -170,9 +170,9 @@ def gather(params, indices, axis=-1, dev=None):
     if dev is None:
         dev = _callable_dev(params)
     index_slices = unstack(indices, -1)
-    res = _mx.nd.concat(
-        *[_mx.nd.expand_dims(_mx.nd.pick(params, idx_slice, axis), -1) for idx_slice in index_slices], dim=-1)
-    res = _mx.nd.reshape(res, indices.shape)
+    res = mx.nd.concat(
+        *[mx.nd.expand_dims(mx.nd.pick(params, idx_slice, axis), -1) for idx_slice in index_slices], dim=-1)
+    res = mx.nd.reshape(res, indices.shape)
     return res.copyto(_mxnet_init_context(dev))
 
 
@@ -182,17 +182,17 @@ def gather_nd(params, indices, dev=None):
     indices_shape = indices.shape
     num_idx_dims = len(indices_shape)
     transpose_order = [num_idx_dims-1] + list(range(num_idx_dims-1))
-    indices = _mx.nd.transpose(indices, transpose_order)
-    return _mx.nd.gather_nd(params, indices).copyto(_mxnet_init_context(dev))
+    indices = mx.nd.transpose(indices, transpose_order)
+    return mx.nd.gather_nd(params, indices).copyto(_mxnet_init_context(dev))
 
 
 multiprocessing = lambda context=None: _multiprocessing if context is None else _multiprocessing.get_context(context)
 # noinspection PyUnusedLocal
-one_hot = lambda indices, depth, dev=None: _mx.nd.one_hot(indices, depth)
-shape = lambda x, as_tensor=False: _mx.nd.shape_array(x) if as_tensor else x.shape
+one_hot = lambda indices, depth, dev=None: mx.nd.one_hot(indices, depth)
+shape = lambda x, as_tensor=False: mx.nd.shape_array(x) if as_tensor else x.shape
 shape.__name__ = 'shape'
 get_num_dims = lambda x, as_tensor=False:\
-    _mx.nd.shape_array(_mx.nd.shape_array(x)).reshape([]) if as_tensor else len(x.shape)
+    mx.nd.shape_array(mx.nd.shape_array(x)).reshape([]) if as_tensor else len(x.shape)
 
 def indices_where(x):
     x_shape = x.shape
@@ -201,7 +201,7 @@ def indices_where(x):
     if flat_indices.shape == (0,):
         res = flat_indices.reshape((0, len(x_shape)))
         return res
-    res = _mx.nd.swapaxes(_mx.nd.unravel_index(flat_indices, x_shape), 0, 1)
+    res = mx.nd.swapaxes(mx.nd.unravel_index(flat_indices, x_shape), 0, 1)
     return res
 
 

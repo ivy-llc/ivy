@@ -17,11 +17,6 @@ def eigh(x: JaxArray)\
   ->JaxArray:
          return jnp.linalg.eigh(x)
 
-
-inv = jnp.linalg.inv
-pinv = jnp.linalg.pinv
-cholesky = jnp.linalg.cholesky
-
 def pinv(x: JaxArray,
          rtol: Optional[Union[float, Tuple[float]]] = None) \
         -> JaxArray:
@@ -138,6 +133,12 @@ def eigvalsh(x: JaxArray) -> JaxArray:
     return jnp.linalg.eigvalsh(x)
 
 
+def inv(x: JaxArray) -> JaxArray:
+    if jnp.any(jnp.linalg.det(x.astype('float64')) == 0):
+        return x
+    return jnp.linalg.inv(x)
+
+
 def matrix_rank(vector: JaxArray,
                 rtol: Optional[Union[float, Tuple[float]]] = None) \
         -> JaxArray:
@@ -154,6 +155,7 @@ def cross (x1: JaxArray,
            x2: JaxArray,
            axis:int = -1) -> JaxArray:
     return jnp.cross(a= x1, b = x2, axis= axis)
+
 
 # Extra #
 # ------#
