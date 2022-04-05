@@ -10,11 +10,15 @@ import ivy
 
 def can_cast(from_: Union[tf.DType, Tensor], to: tf.DType)\
         -> bool:
-    x = tf.random.normal(
-        [2, 2],
-        dtype=from_
-        )
+    if 'bool' in str(from_) and 'int' in str(to):
+        return False
     try:
+        from_ = tf.dtypes.as_dtype(from_)
+        to    = tf.dtypes.as_dtype(to)
+        x = tf.random.normal(
+            [2, 2],
+            dtype=from_
+        )
         tf.cast(x, to)
     except TypeError:
         return False

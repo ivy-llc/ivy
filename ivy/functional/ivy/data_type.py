@@ -35,7 +35,7 @@ def can_cast(from_: Union[ivy.Dtype, ivy.Array, ivy.NativeArray], to: ivy.Dtype)
     out: bool
         ``True`` if the cast can occur according to :ref:`type-promotion` rules; otherwise, ``False``.
     """
-    return _cur_framework(dtype_in).can_cast(from_, to)
+    return _cur_framework(from_).can_cast(from_, to)
 
 
 # noinspection PyShadowingBuiltins

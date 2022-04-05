@@ -1,5 +1,6 @@
 # global
 import numpy as np
+import numpy.array_api as npa
 from typing import Union, Tuple
 
 # local
@@ -40,6 +41,8 @@ class Finfo:
 
 def can_cast(from_: Union[np.dtype, np.ndarray], to: np.dtype)\
          -> bool:
+    if 'bool' in str(from_) and 'int' in str(to):
+        return False
     return np.can_cast(from_, to)
 
 # noinspection PyShadowingBuiltins

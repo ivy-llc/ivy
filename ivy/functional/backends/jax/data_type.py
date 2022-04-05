@@ -10,6 +10,8 @@ from ivy.functional.backends.jax import JaxArray
 
 def can_cast(from_: Union[jnp.dtype, JaxArray], to: jnp.dtype)\
         -> bool:
+    if 'bool' in str(from_) and 'int' in str(to):
+        return False
     return jnp.can_cast(from_, to)
 
 # noinspection PyShadowingBuiltins

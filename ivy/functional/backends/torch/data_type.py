@@ -8,6 +8,8 @@ import ivy
 
 def can_cast(from_: Union[torch.dtype, torch.Tensor], to: torch.dtype)\
         -> bool:
+    if 'bool' in str(from_) and 'int' in str(to):
+        return False
     return torch.can_cast(from_, to)
 
 # noinspection PyShadowingBuiltins
