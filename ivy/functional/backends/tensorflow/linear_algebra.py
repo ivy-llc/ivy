@@ -17,7 +17,11 @@ def eigh(x: Tensor)\
  -> Tensor:
         return tf.linalg.eigh(x) 
 
-inv = tf.linalg.inv
+
+def inv(x: Tensor) -> Tensor:
+    if tf.math.reduce_any(tf.linalg.det(x) == 0 ):
+        return x
+    return tf.linalg.inv(x)
 
 
 def tensordot(x1: Tensor, x2: Tensor,
