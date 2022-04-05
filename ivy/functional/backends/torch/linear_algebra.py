@@ -16,7 +16,8 @@ def eigh(x: torch.Tensor)\
      return torch.linalg.eigh(x)
 
 
-def inv(x):
+def inv(x: torch.Tensor)\
+  ->torch.Tensor:
     return torch.inverse(x)
 
 
@@ -26,10 +27,6 @@ def pinv(x: torch.Tensor,
     if rtol is None:
         return torch.linalg.pinv(x)
     return torch.linalg.pinv(x, rtol)
-
-
-def cholesky(x):
-    return torch.linalg.cholesky(x)
 
 
 def matrix_transpose(x: torch.Tensor)\

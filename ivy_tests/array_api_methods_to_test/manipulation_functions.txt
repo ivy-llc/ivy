@@ -2,8 +2,8 @@
 expand_dims
 flip
 permute_dims
-#reshape
-#roll
+#reshape # failing non-deterministically.
+roll
 squeeze
 stack
 

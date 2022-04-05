@@ -9,6 +9,28 @@ from ivy.framework_handler import current_framework as _cur_framework
 # Array API Standard #
 # -------------------#
 
+def roll(x: Union[ivy.Array, ivy.NativeArray],
+         shift: Union[int, Tuple[int, ...]],
+         axis: Optional[Union[int, Tuple[int, ...]]] = None) \
+        -> ivy.Array:
+    """
+    Rolls array elements along a specified axis. Array elements that roll beyond the last position are re-introduced at the first position. Array elements that roll beyond the first position are re-introduced at the last position.
+    Parameters
+    ----------
+    x: array
+        input array.
+    shift: Union[int, Tuple[int, ...]]
+        number of places by which the elements are shifted. If ``shift`` is a tuple, then ``axis`` must be a tuple of the same size, and each of the given axes must be shifted by the corresponding element in ``shift``. If ``shift`` is an ``int`` and ``axis`` a tuple, then the same ``shift`` must be used for all specified axes. If a shift is positive, then array elements must be shifted positively (toward larger indices) along the dimension of ``axis``. If a shift is negative, then array elements must be shifted negatively (toward smaller indices) along the dimension of ``axis``.
+    axis: Optional[Union[int, Tuple[int, ...]]]
+        axis (or axes) along which elements to shift. If ``axis`` is ``None``, the array must be flattened, shifted, and then restored to its original shape. Default: ``None``.
+    Returns
+    -------
+    out: array
+        an output array having the same data type as ``x`` and whose elements, relative to ``x``, are shifted.
+    """
+    return _cur_framework(x).roll(x, shift, axis)
+
+
 def squeeze(x: Union[ivy.Array, ivy.NativeArray],
             axis: Union[int, Tuple[int, ...]])\
         -> ivy.Array:
@@ -110,8 +132,10 @@ def stack(arrays: Union[Tuple[ivy.Array], List[ivy.Array], Tuple[ivy.NativeArray
     return _cur_framework(arrays).stack(arrays, axis)
 
 
-def reshape(x: Union[ivy.Array, ivy.NativeArray], newshape: Union[int, Iterable[int]])\
-        -> Union[ivy.Array, ivy.NativeArray]:
+def reshape(x: Union[ivy.Array, ivy.NativeArray],
+            shape: Tuple[int, ...],
+            copy: Optional[bool] = None)\
+        -> ivy.Array:
     """
     Gives a new shape to an array without changing its data.
 
@@ -122,8 +146,7 @@ def reshape(x: Union[ivy.Array, ivy.NativeArray], newshape: Union[int, Iterable[
     :type newshape: int or sequence of ints
     :return: Reshaped array.
     """
-    return _cur_framework(x).reshape(x, newshape)
-
+    return _cur_framework(x).reshape(x, shape, copy)
 
 
 def concatenate(xs: Iterable[Union[ivy.Array, ivy.NativeArray]], axis: int = -1)\
