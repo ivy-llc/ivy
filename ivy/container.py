@@ -1407,7 +1407,7 @@ class Container(dict):
         return self.map(lambda x, kc: self._ivy.vector_norm(x, axis, keepdims, p[kc] if p_is_container else p)
                         if self._ivy.is_native_array(x) else x, key_chains, to_apply, prune_unapplied, map_sequences)
 
-    def matrix_norm(self, p=2, axis=None, keepdims=False, key_chains=None, to_apply=True, prune_unapplied=False,
+    def matrix_norm(self, ord=2, keepdims=False, key_chains=None, to_apply=True, prune_unapplied=False,
                     map_sequences=False):
         """
         Compute matrix p-norm for each array in the container.
@@ -1432,7 +1432,7 @@ class Container(dict):
         :type map_sequences: bool, optional
         :return: Container object with the matrix norms for each sub-array returned.
         """
-        return self.map(lambda x, kc: self._ivy.matrix_norm(x, p, axis, keepdims) if self._ivy.is_native_array(x) else x,
+        return self.map(lambda x, kc: self._ivy.matrix_norm(x, ord, keepdims) if self._ivy.is_native_array(x) else x,
                         key_chains, to_apply, prune_unapplied, map_sequences)
 
     def flip(self, axis=None, key_chains=None, to_apply=True, prune_unapplied=False, map_sequences=False):
