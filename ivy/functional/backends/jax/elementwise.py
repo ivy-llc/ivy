@@ -5,6 +5,13 @@ import jax.numpy as jnp
 # local
 from ivy.functional.backends.jax import JaxArray
 
+
+def bitwise_left_shift(x1: JaxArray,
+                       x2: JaxArray)\
+                       -> JaxArray:
+    return jnp.left_shift(x1, x2)
+
+
 def add(x1: JaxArray,
            x2: JaxArray)\
         -> JaxArray:

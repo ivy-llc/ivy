@@ -7,6 +7,13 @@ import typing
 import ivy
 
 
+def bitwise_left_shift(x1: Tensor,
+                       x2: Tensor)\
+                       -> Tensor:
+    x1, x2 = _cast_for_binary_op(x1, x2)
+    return tf.bitwise.left_shift(x1, x2)
+
+
 def add(x1: Tensor,
            x2: Tensor)\
         -> Tensor:
