@@ -47,10 +47,23 @@ def permute_dims(x: np.ndarray,
 
 
 
-def concatenate(xs, axis=-1):
-    if xs[0].shape == ():
-        return np.concatenate([np.expand_dims(x, 0) for x in xs], axis)
-    return np.concatenate(xs, axis)
+def concat(xs: List[np.ndarray], axis: int =0) -> np.ndarray:
+    is_tuple = type(xs) is tuple
+
+    if axis==None:
+        if is_tuple:
+            xs = list(xs)
+        for i in range(len(xs)):
+            if xs[i].shape ==():
+                xs[i] = np.ravel(xs[i])
+        if is_tuple:
+            xs = tuple(xs)
+    ret = np.concatenate(xs, axis)
+    highest_dtype = xs[0].dtype
+    for i in xs:
+        highest_dtype = np.promote_types(highest_dtype, i.dtype)
+    ret = ret.astype(highest_dtype)
+    return ret
 
 
 def stack(x: Union[Tuple[np.ndarray], List[np.ndarray]],
