@@ -54,15 +54,11 @@ def vector_norm(x: torch.Tensor,
     return py_normalized_vector
 
 
-def matrix_norm(x, p=2, axes=None, keepdims=False):
-    axes = [-2, -1] if axes is None else axes
-    if isinstance(axes, int):
-        raise Exception('if specified, axes must be a length-2 sequence of ints,'
-                        'but found {} of type {}'.format(axes, type(axes)))
-    ret = torch.linalg.matrix_norm(x, ord=p, dim=axes, keepdim=keepdims)
-    if ret.shape == ():
-        return torch.unsqueeze(ret, 0)
-    return ret
+def matrix_norm(x: torch.Tensor,
+                ord: Optional[Union[int, float, Literal[inf, - inf, 'fro', 'nuc']]] ='fro',
+                keepdims: bool = False)\
+        -> torch.Tensor:
+    return torch.linalg.matrix_norm(x, ord=ord, dim=[-2, -1], keepdim=keepdims)
 
 
 # noinspection PyPep8Naming
