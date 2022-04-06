@@ -10,7 +10,7 @@ matrix_norm
 #matrix_power
 matrix_rank
 matrix_transpose
-#outer # depends on: multiply
+outer
 pinv
 qr
 slogdet
