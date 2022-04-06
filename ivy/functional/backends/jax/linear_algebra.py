@@ -57,7 +57,7 @@ def matrix_norm(x: JaxArray,
             return x.reshape(x.shape[:-2] + (1, 1))
         else:
             return x.reshape(x.shape[:-2])
-    return jnp.linalg.norm(x, ord, (-2, -1), keepdims)
+    return jnp.linalg.norm(x, 2, (-2, -1), keepdims)
 
 
 def svd(x: JaxArray, full_matrices: bool = True) -> Union[JaxArray, Tuple[JaxArray,...]]:
