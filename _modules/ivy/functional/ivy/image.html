@@ -321,7 +321,7 @@
                     <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">unstack</span><span class="p">(</span><span class="n">x_flat</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="kc">True</span><span class="p">),</span> <span class="n">x_offsets</span><span class="p">,</span> <span class="n">y_offsets</span><span class="p">)]</span>
 
     <span class="c1"># FBS x NH x NW x F</span>
-    <span class="n">flat_cropped</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="n">cropped_list</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="n">flat_cropped</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">cropped_list</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
 
     <span class="c1"># BS x NH x NW x F</span>
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">flat_cropped</span><span class="p">,</span> <span class="n">batch_shape</span> <span class="o">+</span> <span class="n">crop_size</span> <span class="o">+</span> <span class="p">[</span><span class="n">num_channels</span><span class="p">])</span></div>

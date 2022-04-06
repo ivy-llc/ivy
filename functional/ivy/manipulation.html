@@ -112,7 +112,7 @@
 <li class="toctree-l2"><a class="reference internal" href="manipulation/permute_dims.html">permute_dims</a></li>
 <li class="toctree-l2"><a class="reference internal" href="manipulation/stack.html">stack</a></li>
 <li class="toctree-l2"><a class="reference internal" href="manipulation/reshape.html">reshape</a></li>
-<li class="toctree-l2"><a class="reference internal" href="manipulation/concatenate.html">concatenate</a></li>
+<li class="toctree-l2"><a class="reference internal" href="manipulation/concat.html">concat</a></li>
 <li class="toctree-l2"><a class="reference internal" href="manipulation/split.html">split</a></li>
 <li class="toctree-l2"><a class="reference internal" href="manipulation/repeat.html">repeat</a></li>
 <li class="toctree-l2"><a class="reference internal" href="manipulation/tile.html">tile</a></li>
@@ -245,8 +245,8 @@ and those &gt; x_max with x_max.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="ivy.functional.ivy.manipulation.concatenate">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">concatenate</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">xs</span><span class="p">:</span> <span class="n">Iterable<span class="p">[</span>Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">axis</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">- 1</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/manipulation.html#concatenate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.manipulation.concatenate" title="Permalink to this definition">¶</a></dt>
+<dt id="ivy.functional.ivy.manipulation.concat">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">concat</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">xs</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>Tuple<span class="p">[</span>Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><span class="p">, </span><span class="p">…</span><span class="p">]</span><span class="p">, </span>List<span class="p">[</span>Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><span class="p">]</span><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">axis</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>int<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">0</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/manipulation.html#concat"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.manipulation.concat" title="Permalink to this definition">¶</a></dt>
 <dd><p>Casts an array to a specified type.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>

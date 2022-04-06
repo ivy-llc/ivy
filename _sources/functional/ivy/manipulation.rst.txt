@@ -20,7 +20,7 @@ Manipulation
    manipulation/permute_dims.rst
    manipulation/stack.rst
    manipulation/reshape.rst
-   manipulation/concatenate.rst
+   manipulation/concat.rst
    manipulation/split.rst
    manipulation/repeat.rst
    manipulation/tile.rst

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>permute_dims &mdash; Ivy 1.0 documentation</title>
+  <title>concat &mdash; Ivy 1.0 documentation</title>
   
 
   
@@ -36,8 +36,8 @@
   <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="stack" href="stack.html" />
-    <link rel="prev" title="expand_dims" href="expand_dims.html" /> 
+    <link rel="next" title="split" href="split.html" />
+    <link rel="prev" title="reshape" href="reshape.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -109,10 +109,10 @@
 <li class="toctree-l2"><a class="reference internal" href="squeeze.html">squeeze</a></li>
 <li class="toctree-l2"><a class="reference internal" href="flip.html">flip</a></li>
 <li class="toctree-l2"><a class="reference internal" href="expand_dims.html">expand_dims</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">permute_dims</a></li>
+<li class="toctree-l2"><a class="reference internal" href="permute_dims.html">permute_dims</a></li>
 <li class="toctree-l2"><a class="reference internal" href="stack.html">stack</a></li>
 <li class="toctree-l2"><a class="reference internal" href="reshape.html">reshape</a></li>
-<li class="toctree-l2"><a class="reference internal" href="concat.html">concat</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">concat</a></li>
 <li class="toctree-l2"><a class="reference internal" href="split.html">split</a></li>
 <li class="toctree-l2"><a class="reference internal" href="repeat.html">repeat</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tile.html">tile</a></li>
@@ -203,13 +203,13 @@
         
           <li><a href="../manipulation.html">Manipulation</a> &raquo;</li>
         
-      <li>permute_dims</li>
+      <li>concat</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../../_sources/functional/ivy/manipulation/permute_dims.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../../_sources/functional/ivy/manipulation/concat.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -222,20 +222,22 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="permute-dims">
-<h1>permute_dims<a class="headerlink" href="#permute-dims" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="concat">
+<h1>concat<a class="headerlink" href="#concat" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
-<dt id="ivy.functional.ivy.manipulation.permute_dims">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">permute_dims</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">axes</span><span class="p">:</span> <span class="n">Tuple<span class="p">[</span>int<span class="p">, </span><span class="p">…</span><span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../../_modules/ivy/functional/ivy/manipulation.html#permute_dims"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.manipulation.permute_dims" title="Permalink to this definition">¶</a></dt>
-<dd><p>Permutes the axes (dimensions) of an array x.</p>
-<dl class="simple">
-<dt>x:</dt><dd><p>input array.</p>
+<dt id="ivy.functional.ivy.manipulation.concat">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">concat</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">xs</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>Tuple<span class="p">[</span>Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><span class="p">, </span><span class="p">…</span><span class="p">]</span><span class="p">, </span>List<span class="p">[</span>Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><span class="p">]</span><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">axis</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>int<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">0</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/manipulation.html#concat"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.manipulation.concat" title="Permalink to this definition">¶</a></dt>
+<dd><p>Casts an array to a specified type.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>xs</strong> (<em>sequence of arrays</em>) – The input arrays must have the same shape, except in the dimension corresponding to axis
+(the first, by default).</p></li>
+<li><p><strong>axis</strong> (<em>int</em><em>, </em><em>optional</em>) – The axis along which the arrays will be joined. Default is -1.</p></li>
+</ul>
 </dd>
-<dt>axes:</dt><dd><p>tuple containing a permutation of (0, 1, …, N-1) where N is the number of axes (dimensions) of x.</p>
-</dd>
-</dl>
-<dl class="simple">
-<dt>out:</dt><dd><p>an array containing the axes permutation. The returned array must have the same data type as x.</p>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The concatenated array.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -255,10 +257,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="stack.html" class="btn btn-neutral float-right" title="stack" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="split.html" class="btn btn-neutral float-right" title="split" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="expand_dims.html" class="btn btn-neutral float-left" title="expand_dims" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="reshape.html" class="btn btn-neutral float-left" title="reshape" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
