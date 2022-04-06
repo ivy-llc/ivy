@@ -121,7 +121,7 @@ def random_crop(x, crop_size, batch_shape=None, image_dims=None):
                     in zip(ivy.unstack(x_flat, 0, True), x_offsets, y_offsets)]
 
     # FBS x NH x NW x F
-    flat_cropped = ivy.concatenate(cropped_list, 0)
+    flat_cropped = ivy.concat(cropped_list, 0)
 
     # BS x NH x NW x F
     return ivy.reshape(flat_cropped, batch_shape + crop_size + [num_channels])

@@ -149,7 +149,7 @@ def reshape(x: Union[ivy.Array, ivy.NativeArray],
     return _cur_framework(x).reshape(x, shape, copy)
 
 
-def concatenate(xs: Iterable[Union[ivy.Array, ivy.NativeArray]], axis: int = -1)\
+def concat(xs: Union[Tuple[Union[ivy.Array, ivy.NativeArray], ...],List[Union[ivy.Array, ivy.NativeArray]]], axis: Optional[int] = 0)\
         -> Union[ivy.Array, ivy.NativeArray]:
     """
     Casts an array to a specified type.
@@ -161,7 +161,7 @@ def concatenate(xs: Iterable[Union[ivy.Array, ivy.NativeArray]], axis: int = -1)
     :type axis: int, optional
     :return: The concatenated array.
     """
-    return _cur_framework(xs[0]).concatenate(xs, axis)
+    return _cur_framework(xs[0]).concat(xs, axis)
 
 
 # Extra #
