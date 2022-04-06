@@ -393,4 +393,4 @@ def lstm_update(x, init_h, init_c, kernel, recurrent_kernel, bias=None, recurren
 
         hts_list.append(ivy.expand_dims(ht, -2))
 
-    return ivy.concatenate(hts_list, -2), ct
+    return ivy.concat(hts_list, -2), ct
