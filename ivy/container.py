@@ -242,9 +242,9 @@ class Container(dict):
             # noinspection PyBroadException
             try:
                 if len(containers[0].shape) == 0:
-                    return ivyh.concatenate([ivyh.reshape(item, [1] * (dim + 1)) for item in containers], dim)
+                    return ivyh.concat([ivyh.reshape(item, [1] * (dim + 1)) for item in containers], dim)
                 else:
-                    return ivyh.concatenate(containers, dim)
+                    return ivyh.concat(containers, dim)
             except Exception as e:
                 raise Exception(str(e) + '\nContainer concat operation only valid for containers of arrays')
 
