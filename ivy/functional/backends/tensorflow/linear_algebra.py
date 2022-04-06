@@ -93,7 +93,7 @@ def matrix_norm(x: Tensor,
         else:
             ret = tf.reduce_sum(tf.linalg.svd(x, compute_uv=False), axis=-1)
     elif ord == 'fro':
-        ret = tf.reduce_sum(tf.square(x), axis=(-2, -1), keepdims=keepdims)
+        ret = tf.linalg.norm(x, 2, axes, keepdims)
     else:
         ret = tf.linalg.norm(x, ord, axes, keepdims)
 
