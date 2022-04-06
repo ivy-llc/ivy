@@ -73,20 +73,31 @@ def vector_norm(x: Tensor,
     return tn_normalized_vector
 
 
-def matrix_norm(x, p=2, axes=None, keepdims=False):
-    axes = (-2, -1) if axes is None else axes
-    if isinstance(axes, int):
-        raise Exception('if specified, axes must be a length-2 sequence of ints,'
-                        'but found {} of type {}'.format(axes, type(axes)))
-    if p == -float('inf'):
+def matrix_norm(x: Tensor,
+                ord: Optional[Union[int, float, Literal[inf, - inf, 'fro', 'nuc']]] = 'fro',
+                keepdims: bool = False)\
+        -> Tensor:
+    axes = (-2, -1)
+    if ord == -float('inf'):
         ret = tf.reduce_min(tf.reduce_sum(tf.abs(x), axis=axes[1], keepdims=True), axis=axes)
-    elif p == -1:
+    elif ord == -1:
         ret = tf.reduce_min(tf.reduce_sum(tf.abs(x), axis=axes[0], keepdims=True), axis=axes)
+    elif ord == -2:
+        ret = tf.reduce_min(x, axis=(-2, -1), keepdims=keepdims)
+    elif ord == 'nuc':
+        if tf.size(x).numpy() == 0:
+            ret = x
+        else:
+            ret = tf.reduce_sum(tf.linalg.svd(x, compute_uv=False), axis=-1)
+    elif ord == 'fro':
+        ret = tf.linalg.norm(x, 2, axes, keepdims)
     else:
-        ret = tf.linalg.norm(x, p, axes, keepdims)
-    if ret.shape == ():
-        return tf.expand_dims(ret, 0)
-    return ret
+        ret = tf.linalg.norm(x, ord, axes, keepdims)
+
+    if keepdims:
+        return tf.reshape(ret, x.shape[:-2] + (1, 1))
+    else:
+        return tf.reshape(ret, x.shape[:-2])
 
 
 # noinspection PyPep8Naming
