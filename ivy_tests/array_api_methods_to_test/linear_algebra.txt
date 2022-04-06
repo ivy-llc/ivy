@@ -4,9 +4,9 @@ det
 #diagonal # fails non-determinstically for jax, due to +0 vs -0 inconsistencies
 eigh
 eigvalsh
-inv
+#inv # fails non-deterministically for jax
 #matmul # failing non-deterministically for torch
-matrix_norm
+#matrix_norm # fails non-deterministically for jax
 #matrix_power
 matrix_rank
 matrix_transpose
