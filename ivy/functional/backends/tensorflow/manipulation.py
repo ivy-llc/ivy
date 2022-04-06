@@ -85,10 +85,26 @@ def reshape(x: Tensor,
     return tf.reshape(x, shape)
 
 
-def concatenate(xs, axis=-1):
-    if xs[0].shape == ():
-        return tf.concat([tf.expand_dims(x, 0) for x in xs], axis)
-    return tf.concat(xs, axis)
+def concat(xs: List[Tensor], axis: int = 0) -> Tensor:
+    is_tuple = type(xs) is tuple
+    is_axis_none = axis==None
+    if is_tuple:
+        xs = list(xs)
+    highest_dtype = xs[0].dtype
+    for i in xs:
+        highest_dtype = tf.experimental.numpy.promote_types(highest_dtype, i.dtype)
+
+    for i in range(len(xs)):
+        if is_axis_none:
+            xs[i] = tf.reshape(xs[i], -1)
+        xs[i] = tf.cast(xs[i], highest_dtype)
+    if is_axis_none:
+        axis = 0
+        if is_tuple:
+            xs = tuple(xs)
+    ret = tf.concat(xs, axis)
+
+    return ret
 
 
 # Extra #

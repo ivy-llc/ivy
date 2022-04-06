@@ -76,10 +76,18 @@ def reshape(x: torch.Tensor,
     return torch.reshape(x, shape)
 
 
-def concatenate(xs: List[torch.Tensor], axis: int = -1):
-    if xs[0].shape == ():
-        return torch.cat([x.unsqueeze(0) for x in xs], axis)
-    return torch.cat(xs, axis)
+def concat(xs: List[torch.Tensor], axis: int = 0) -> torch.Tensor:
+    if axis == None:
+        is_tuple = type(xs) is tuple
+        if is_tuple:
+            xs = list(xs)
+        for i in range(len(xs)):
+            xs[i] = torch.flatten(xs[i])
+        if is_tuple:
+            xs = tuple(xs)
+        axis = 0
+    ret = torch.cat(xs, dim = axis)
+    return ret
 
 
 # Extra #
