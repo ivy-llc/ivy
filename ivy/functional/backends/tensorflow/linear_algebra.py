@@ -86,10 +86,7 @@ def matrix_norm(x: Tensor,
         ret = tf.reduce_min(x, axis=(-2, -1), keepdims=keepdims)
     elif ord == 'nuc':
         if tf.size(x).numpy() == 0:
-            if keepdims:
-                return tf.reshape(x, x.shape[:-2] + (1, 1))
-            else:
-                return tf.reshape(x, x.shape[:-2])
+            ret = x
         else:
             ret = tf.reduce_sum(tf.linalg.svd(x, compute_uv=False), axis=-1)
     elif ord == 'fro':
