@@ -7,7 +7,7 @@ eigvalsh
 inv
 #matmul # failing non-deterministically for torch
 matrix_norm
-#matrix_power
+matrix_power
 matrix_rank
 matrix_transpose
 outer

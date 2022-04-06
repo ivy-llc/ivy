@@ -100,6 +100,31 @@ def matrix_norm(x: Tensor,
         return tf.reshape(ret, x.shape[:-2])
 
 
+def matrix_power(x: Tensor, n: int)\
+        -> Tensor:
+    if n == 0:
+        return tf.broadcast_to(tf.eye(x.shape[-2], dtype=x.dtype), x.shape)
+    elif n < 0:
+        x = tf.linalg.inv(x)
+        n = abs(n)
+
+    if n == 1:
+        return x
+    elif n == 2:
+        return x @ x
+    elif n == 3:
+        return (x @ x) @ x
+
+    z = result = None
+    while n > 0:
+        z = x if z is None else (z @ z)
+        n, bit = divmod(n, 2)
+        if bit:
+            result = z if result is None else (result @ z)
+
+    return result
+
+
 # noinspection PyPep8Naming
 def svd(x:Tensor,full_matrices: bool = True) -> Union[Tensor, Tuple[Tensor,...]]:
     results=namedtuple("svd", "U S Vh")
