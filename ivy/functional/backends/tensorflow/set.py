@@ -8,10 +8,8 @@ from collections import namedtuple
 def unique_inverse(x: Tensor) \
         -> Tuple[Tensor, Tensor]:
     out = namedtuple('unique_inverse', ['values', 'inverse_indices'])
-    x_1D = tf.reshape(x, [-1])
-    values, inverse_indices = tf.unique(x_1D)
-    if x.shape == tf.TensorShape([]):
-        inverse_indices = tf.reshape(inverse_indices, [])
+    values, inverse_indices = tf.unique(tf.reshape(x, -1))
+    inverse_indices = tf.reshape(inverse_indices, x.shape)
     return out(values, inverse_indices)
 
 

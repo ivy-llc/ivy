@@ -9,8 +9,10 @@ def unique_inverse(x: np.ndarray) \
         -> Tuple[np.ndarray, np.ndarray]:
     out = namedtuple('unique_inverse', ['values', 'inverse_indices'])
     values, inverse_indices = np.unique(x, return_inverse=True)
-    if x.shape == ():
-        inverse_indices = inverse_indices.reshape(())
+    nan_count = np.count_nonzero(np.isnan(x))
+    if nan_count > 1:
+        values = np.append(values, np.full(nan_count - 1, np.nan)).astype(x.dtype)
+    inverse_indices = inverse_indices.reshape(x.shape)
     return out(values, inverse_indices)
 
 
