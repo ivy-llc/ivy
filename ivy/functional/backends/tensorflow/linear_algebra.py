@@ -113,9 +113,9 @@ def svd(x:Tensor,full_matrices: bool = True) -> Union[Tensor, Tuple[Tensor,...]]
     return res
 
 
-def outer(x1:tf.Tensor,
-          x2: tf.Tensor) \
-        -> tf.Tensor:
+def outer(x1: Tensor,
+          x2: Tensor) \
+        -> Tensor:
     return tf.experimental.numpy.outer(x1, x2)
 
 
