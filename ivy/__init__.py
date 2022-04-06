@@ -75,16 +75,14 @@ bool = 'bool'
 nan = float('nan')
 inf = float('inf')
 
-all_dtypes = (int8, int16, int32, int64,
-              uint8, uint16, uint32, uint64,
-              bfloat16, float16, float32, float64)
-valid_dtypes = all_dtypes
-invalid_dtypes = ()
+valid_dtypes = (int8, int16, int32, int64,
+                uint8, uint16, uint32, uint64,
+                bfloat16, float16, float32, float64)
 
 all_dtype_strs = ('int8', 'int16', 'int32', 'int64',
                   'uint8', 'uint16', 'uint32', 'uint64',
                   'bfloat16', 'float16', 'float32', 'float64')
-valid_dtype_strs = all_dtypes
+valid_dtype_strs = all_dtype_strs
 invalid_dtype_strs = ()
 
 backend = 'none'
