@@ -243,7 +243,10 @@ def cholesky(x):
     return _cur_framework(x).cholesky(x)
 
 
-def matrix_norm(x, p=2, axes=None, keepdims=False):
+def matrix_norm(x: Union[ivy.Array, ivy.NativeArray],
+                ord: Optional[Union[int, float, Literal[inf, - inf, 'fro', 'nuc']]] = 'fro',
+                keepdims: bool = False)\
+        -> ivy.Array:
     """
     Compute the matrix p-norm.
 
@@ -260,7 +263,7 @@ def matrix_norm(x, p=2, axes=None, keepdims=False):
     :type keepdims: bool, optional
     :return: Matrix norm of the array at specified axes.
     """
-    return _cur_framework(x).matrix_norm(x, p, axes, keepdims)
+    return _cur_framework(x).matrix_norm(x, ord, keepdims)
 
 
 def qr(x: ivy.Array,
