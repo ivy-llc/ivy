@@ -842,7 +842,7 @@ def test_container_matrix_norm(dev, call):
                'b': {'c': ivy.array([[2., 4.], [6., 8.], [10., 12.]], dev=dev),
                      'd': ivy.array([[3., 6.], [9., 12.], [15., 18.]], dev=dev)}}
     container = Container(dict_in)
-    container_normed = container.matrix_norm(axis=(-1, -2))
+    container_normed = container.matrix_norm()
     assert np.allclose(ivy.to_numpy(container_normed['a']), 9.52551809)
     assert np.allclose(ivy.to_numpy(container_normed.a), 9.52551809)
     assert np.allclose(ivy.to_numpy(container_normed['b']['c']), 19.05103618)
