@@ -26,18 +26,6 @@ def pinv(x: JaxArray,
     return jnp.linalg.pinv(x, rtol)
 
 
-def matrix_norm(x: JaxArray,
-                ord: Optional[Union[int, float, Literal[inf, - inf, 'fro', 'nuc']]] = 'fro',
-                keepdims: bool = False)\
-        -> JaxArray:
-    if x.size == 0:
-        if keepdims:
-            return x.reshape(x.shape[:-2] + (1, 1))
-        else:
-            return x.reshape(x.shape[:-2])
-    return jnp.linalg.norm(x, ord, (-2, -1), keepdims)
-
-
 def matrix_transpose(x: JaxArray)\
         -> JaxArray:
     return jnp.swapaxes(x, -1, -2)
@@ -60,10 +48,22 @@ def vector_norm(x: JaxArray,
     return jnp_normalized_vector
 
 
-def svd(x:JaxArray,full_matrices: bool = True) -> Union[JaxArray, Tuple[JaxArray,...]]:
-    results=namedtuple("svd", "U S Vh")
-    U, D, VT=jnp.linalg.svd(x, full_matrices=full_matrices)
-    res=results(U, D, VT)
+def matrix_norm(x: JaxArray,
+                ord: Optional[Union[int, float, Literal[inf, - inf, 'fro', 'nuc']]] = 'fro',
+                keepdims: bool = False)\
+        -> JaxArray:
+    if x.size == 0:
+        if keepdims:
+            return x.reshape(x.shape[:-2] + (1, 1))
+        else:
+            return x.reshape(x.shape[:-2])
+    return jnp.linalg.norm(x, ord, (-2, -1), keepdims)
+
+
+def svd(x: JaxArray, full_matrices: bool = True) -> Union[JaxArray, Tuple[JaxArray,...]]:
+    results = namedtuple("svd", "U S Vh")
+    U, D, VT = jnp.linalg.svd(x, full_matrices=full_matrices)
+    res = results(U, D, VT)
     return res
 
 
