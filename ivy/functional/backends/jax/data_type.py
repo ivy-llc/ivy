@@ -8,6 +8,49 @@ import ivy
 from ivy.functional.backends.jax import JaxArray
 
 
+DTYPE_TO_STR = {jnp.dtype('int8'): 'int8',
+                jnp.dtype('int16'): 'int16',
+                jnp.dtype('int32'): 'int32',
+                jnp.dtype('int64'): 'int64',
+                jnp.dtype('uint8'): 'uint8',
+                jnp.dtype('uint16'): 'uint16',
+                jnp.dtype('uint32'): 'uint32',
+                jnp.dtype('uint64'): 'uint64',
+                jnp.dtype('bfloat16'): 'bfloat16',
+                jnp.dtype('float16'): 'float16',
+                jnp.dtype('float32'): 'float32',
+                jnp.dtype('float64'): 'float64',
+                jnp.dtype('bool'): 'bool',
+
+                jnp.int8: 'int8',
+                jnp.int16: 'int16',
+                jnp.int32: 'int32',
+                jnp.int64: 'int64',
+                jnp.uint8: 'uint8',
+                jnp.uint16: 'uint16',
+                jnp.uint32: 'uint32',
+                jnp.uint64: 'uint64',
+                jnp.bfloat16: 'bfloat16',
+                jnp.float16: 'float16',
+                jnp.float32: 'float32',
+                jnp.float64: 'float64',
+                jnp.bool_: 'bool'}
+
+DTYPE_FROM_STR = {'int8': jnp.dtype('int8'),
+                  'int16': jnp.dtype('int16'),
+                  'int32': jnp.dtype('int32'),
+                  'int64': jnp.dtype('int64'),
+                  'uint8': jnp.dtype('uint8'),
+                  'uint16': jnp.dtype('uint16'),
+                  'uint32': jnp.dtype('uint32'),
+                  'uint64': jnp.dtype('uint64'),
+                  'bfloat16': jnp.dtype('bfloat16'),
+                  'float16': jnp.dtype('float16'),
+                  'float32': jnp.dtype('float32'),
+                  'float64': jnp.dtype('float64'),
+                  'bool': jnp.dtype('bool')}
+
+
 # noinspection PyShadowingBuiltins
 def iinfo(type: Union[jnp.dtype, str, JaxArray]) \
         -> np.iinfo:
@@ -72,3 +115,29 @@ def astype(x: JaxArray, dtype: jnp.dtype, copy: bool = True) -> JaxArray:
             new_tensor = jnp.array(x)
             return new_tensor.astype(dtype)
     return x.astype(dtype)
+
+
+def dtype_bits(dtype_in):
+    dtype_str = dtype_to_str(dtype_in)
+    if 'bool' in dtype_str:
+        return 1
+    return int(dtype_str.replace('uint', '').replace('int', '').replace('bfloat', '').replace('float', ''))
+
+
+def dtype(x, as_str=False):
+    dt = x.dtype
+    if as_str:
+        return dtype_to_str(dt)
+    return dt
+
+
+def dtype_to_str(dtype_in):
+    if isinstance(dtype_in, str):
+        return dtype_in
+    return DTYPE_TO_STR[dtype_in]
+
+
+def dtype_from_str(dtype_in):
+    if not isinstance(dtype_in, str):
+        return dtype_in
+    return DTYPE_FROM_STR[dtype_in]
