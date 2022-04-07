@@ -3,7 +3,8 @@ import numpy as np
 from typing import Union, Tuple, Optional, List
 
 # local
-from .general import dtype_from_str, default_dtype
+from .data_type import dtype_from_str
+from ivy.functional.ivy import default_dtype
 # noinspection PyProtectedMember
 from ivy.functional.backends.numpy.general import _to_dev
 
