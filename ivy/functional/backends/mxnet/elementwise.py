@@ -3,6 +3,7 @@ import mxnet as mx
 import math
 
 # local
+import ivy
 from ivy.functional.backends.mxnet import _handle_flat_arrays_in_out, _scalar_or_flat_array_to_scalar
 
 
@@ -197,8 +198,11 @@ def subtract(x1: mx.ndarray.ndarray.NDArray, x2: mx.ndarray.ndarray.NDArray)\
 
 # noinspection PyShadowingBuiltins
 @_handle_flat_arrays_in_out
-def abs(x):
-    return mx.nd.abs(x)
+def abs(x, out=None):
+    ret = mx.nd.abs(x)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
 cos = lambda x: math.cos(x) if isinstance(x, float) else mx.nd.cos(x)

@@ -3,6 +3,7 @@ import torch
 from torch import Tensor
 import typing
 import math
+from typing import Optional
 
 # local
 import ivy
@@ -289,9 +290,10 @@ def trunc(x: torch.Tensor)\
     return torch.trunc(x)
 
 
-def abs(x: torch.Tensor)\
+def abs(x: torch.Tensor,
+        out: Optional[torch.Tensor] = None)\
         -> torch.Tensor:
-    return torch.abs(x)
+    return torch.abs(x, out=out)
 
   
 def logaddexp(x1: torch.Tensor, x2: torch.Tensor) -> torch.Tensor:
