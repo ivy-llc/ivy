@@ -1,6 +1,6 @@
 # global
-from typing import Union
 from numbers import Number
+from typing import Union, Optional
 # local
 import ivy
 from ivy.framework_handler import current_framework as _cur_framework
@@ -969,7 +969,8 @@ def trunc(x: Union[ivy.Array, ivy.NativeArray])\
     return _cur_framework(x).trunc(x)
 
 
-def abs(x: Union[ivy.Array, ivy.NativeArray]) \
+def abs(x: Union[ivy.Array, ivy.NativeArray],
+        out: Optional[Union[ivy.Array, ivy.NativeArray]] = None) \
         -> ivy.Array:
     """
     Calculates the absolute value for each element ``x_i`` of the input array ``x`` (i.e., the element-wise result has the same magnitude as the respective element in ``x`` but has positive sign).
@@ -989,13 +990,15 @@ def abs(x: Union[ivy.Array, ivy.NativeArray]) \
     ----------
     x:
         input array. Should have a numeric data type.
+    out:
+        optional output array, for writing the result to. It must have a shape that the inputs broadcast to.
 
     Returns
     -------
-    out:
+    return:
         an array containing the absolute value of each element in ``x``. The returned array must have the same data type as ``x``.
     """
-    return _cur_framework(x).abs(x)
+    return _cur_framework(x).abs(x, out)
 
 
 def tan(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
