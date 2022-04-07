@@ -81,6 +81,7 @@ def less_equal(x1: Tensor, x2: Tensor)\
 def bitwise_and(x1: torch.Tensor,
                 x2: torch.Tensor)\
         -> torch.Tensor:
+    x1, x2 = _cast_for_binary_op(x1, x2)
     return torch.bitwise_and(x1, x2)
 
 
@@ -369,6 +370,16 @@ def bitwise_right_shift(x1: torch.Tensor, x2: torch.Tensor)\
         x1 = x1.to(promoted_type)
         x2 = x2.to(promoted_type)
     return torch.bitwise_right_shift(x1, x2)
+
+
+def bitwise_left_shift(x1: torch.Tensor, x2: torch.Tensor)\
+        -> torch.Tensor:
+    if hasattr(x1, 'dtype') and hasattr(x2, 'dtype'):
+        promoted_type = torch.promote_types(x1.dtype, x2.dtype)
+        x2 = torch.clamp(x2, max=torch.iinfo(promoted_type).bits - 1)
+        x1 = x1.to(promoted_type)
+        x2 = x2.to(promoted_type)
+    return torch.bitwise_left_shift(x1, x2)
 
 
 # Extra #
