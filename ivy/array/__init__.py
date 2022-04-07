@@ -119,6 +119,15 @@ class Array(ArrayWithArrayAPI, ArrayWithDevice, ArrayWithGeneral, ArrayWithGradi
            For array libraries having graph-based computational models, an array may have unknown dimensions due to data-dependent operations.
         """
         return self._size
+
+    # Setters #
+    # --------#
+
+    @data.setter
+    def data(self, data):
+        assert ivy.is_native_array(data)
+        self._data = data
+
     # Built-ins #
     # ----------#
 
