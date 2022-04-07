@@ -45,6 +45,14 @@ def add(x1: Union[ivy.Array, ivy.NativeArray],
     -------
     out: array
         an array containing the element-wise sums. The returned array must have a data type determined by :ref:`type-promotion`.
+
+    Example
+    -------
+    >>> x = ivy.Array([1, 2, 3])
+    >>> y = ivy.Array([4, 5, 6])
+    >>> z = ivy.add(x, y)
+    >>> print(z)
+    [5, 7, 9]
     """
     return _cur_framework(x1, x2).add(x1, x2)
 

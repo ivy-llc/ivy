@@ -1,0 +1,11 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Docker Image (1)" type="docker-deploy" factoryName="docker-image" server-name="Docker">
+    <deployment type="docker-image">
+      <settings>
+        <option name="imageTag" value="unifyai/ivy:latest" />
+        <option name="containerName" value="ivy" />
+      </settings>
+    </deployment>
+    <method v="2" />
+  </configuration>
+</component>
