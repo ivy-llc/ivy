@@ -20,6 +20,8 @@ def pow(x1: JaxArray,
 def bitwise_xor(x1: JaxArray,
                 x2: JaxArray)\
         -> JaxArray:
+    if isinstance(x2, int):
+        x2 = jnp.asarray(x2, dtype=x1.dtype)
     return jnp.bitwise_xor(x1, x2)
 
 def exp(x: JaxArray)\
@@ -273,6 +275,8 @@ def logaddexp(x1: JaxArray, x2: JaxArray) -> JaxArray:
 
 def bitwise_right_shift(x1: JaxArray, x2: JaxArray)\
         -> JaxArray:
+    if isinstance(x2, int):
+        x2 = jnp.asarray(x2, dtype=x1.dtype)
     return jnp.right_shift(x1, x2)
 
 

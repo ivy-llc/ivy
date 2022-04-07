@@ -377,8 +377,28 @@ class Array(ArrayWithArrayAPI, ArrayWithDevice, ArrayWithGeneral, ArrayWithGradi
         return to_ivy(res)
 
     @_native_wrapper
+    def __lshift__(self, other):
+        return ivy.bitwise_left_shift(self._data, other)
+
+    @_native_wrapper
+    def __rlshift__(self, other):
+        other = to_native(other)
+        res = self._data.__rlshift__(other)
+        if res is NotImplemented:
+            return res
+        return to_ivy(res)
+
+    @_native_wrapper
     def __rshift__(self, other):
         return ivy.bitwise_right_shift(self._data, other)
+
+    @_native_wrapper
+    def __rrshift__(self, other):
+        other = to_native(other)
+        res = self._data.__rrshift__(other)
+        if res is NotImplemented:
+            return res
+        return to_ivy(res)
 
     @_native_wrapper
     def __rrshift__(self, other):
