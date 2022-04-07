@@ -732,41 +732,42 @@ def assert_supports_inplace(x):
     return True
 
 
-def inplace_update(x, val, f=None):
+def inplace_update(x, val):
     """
-    Perform in-place update for the input variable.
+    Perform in-place update for the input array. This will always be performed on ivy.Array instances pass in the input,
+    and will also be performed on the native array classes in the backend, when the backend supports this.
 
     :param x: The variable to update.
     :type x: variable
     :param val: The array to update the variable with.
     :type val: array
-    :return: The variable following the in-place update.
+    :return: The array following the in-place update.
     """
     return _cur_framework(x).inplace_update(x, val)
 
 
-def inplace_decrement(x, val, f=None):
+def inplace_decrement(x, val):
     """
-    Perform in-place decrement for the input variable.
+    Perform in-place decrement for the input array.
 
-    :param x: The variable to decrement.
-    :type x: variable
+    :param x: The array to decrement.
+    :type x: array
     :param val: The array to decrement the variable with.
     :type val: array
-    :return: The variable following the in-place decrement.
+    :return: The array following the in-place decrement.
     """
     return _cur_framework(x).inplace_decrement(x, val)
 
 
-def inplace_increment(x, val, f=None):
+def inplace_increment(x, val):
     """
-    Perform in-place increment for the input variable.
+    Perform in-place increment for the input array.
 
-    :param x: The variable to increment.
-    :type x: variable
+    :param x: The array to increment.
+    :type x: array
     :param val: The array to increment the variable with.
     :type val: array
-    :return: The variable following the in-place increment.
+    :return: The array following the in-place increment.
     """
     return _cur_framework(x).inplace_increment(x, val)
 

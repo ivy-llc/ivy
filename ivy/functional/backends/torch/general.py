@@ -72,13 +72,17 @@ def container_types():
 
 
 def inplace_update(x, val):
-    x.data = val
+    (x_native, val_native), _ = ivy.args_to_native(x, val)
+    x_native.data = val_native
+    if ivy.is_ivy_array(x):
+        x.data = x_native
+    else:
+        x = ivy.Array(x_native)
     return x
 
 
 inplace_arrays_supported = lambda: True
 inplace_variables_supported = lambda: True
-
 
 
 def inplace_decrement(x, val):
