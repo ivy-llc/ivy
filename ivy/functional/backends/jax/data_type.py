@@ -1,5 +1,7 @@
 # global
 import numpy as np
+import jax
+import jaxlib
 import jax.numpy as jnp
 from typing import Union, Tuple
 
@@ -8,6 +10,20 @@ import ivy
 from ivy.functional.backends.jax import JaxArray
 
 
+def can_cast(from_: Union[jnp.dtype, JaxArray],
+             to: jnp.dtype)\
+        -> bool:
+    if type(from_) in [jax.interpreters.xla._DeviceArray, jaxlib.xla_extension.DeviceArray]:
+        from_ = str(from_.dtype)
+    from_ = str(from_)
+    to = str(to)
+    if 'bool' in from_ and (('int' in to) or ('float' in to)):
+        return False
+    if 'int' in from_ and 'float' in to:
+        return False
+    return jnp.can_cast(from_, to)
+
+  
 DTYPE_TO_STR = {jnp.dtype('int8'): 'int8',
                 jnp.dtype('int16'): 'int16',
                 jnp.dtype('int32'): 'int32',
