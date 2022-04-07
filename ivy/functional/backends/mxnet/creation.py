@@ -2,11 +2,13 @@
 import mxnet as mx
 from typing import Tuple, Union, Optional, Iterable
 from numbers import Number
+
 # local
 import ivy
 from ivy import default_device, dtype_from_str, default_dtype, dtype_to_str
 from ivy.functional.backends.mxnet import _mxnet_init_context
 from ivy.functional.backends.mxnet import _1_dim_array_to_flat_array
+
 
 def asarray(object_in, dtype: Optional[str] = None, dev: Optional[str] = None, copy: Optional[bool] = None):
     # mxnet don't have asarray implementation, haven't properly tested
@@ -29,6 +31,9 @@ def asarray(object_in, dtype: Optional[str] = None, dev: Optional[str] = None, c
         else:
             dtype = dtype_to_str(default_dtype(dtype, object_in))
             return mx.nd.array(object_in, cont, dtype=default_dtype(dtype, object_in))
+
+
+array = asarray
 
 
 def zeros(shape: Union[int, Tuple[int]],
@@ -158,15 +163,10 @@ def meshgrid(*xs, indexing='ij'):
 def from_dlpack(x):
     return mx.nd.from_dlpack(x)
 
+
 # Extra #
 # ------#
-
-def array(object_in, dtype=None, dev=None):
-    cont = _mxnet_init_context(default_device(dev))
-    return mx.nd.array(object_in, cont, dtype=default_dtype(dtype, object_in))
-
 
 def logspace(start, stop, num, base=10., axis=None, dev=None):
     power_seq = linspace(start, stop, num, axis, default_device(dev))
     return base ** power_seq
-
