@@ -47,12 +47,19 @@ def _wrap_method(fn):
     if hasattr(fn, 'wrapped') and fn.wrapped:
         return fn
 
-    def _method_wrapped(*args, **kwargs):
+    def _method_wrapped(*args, out=None, **kwargs):
         native_args, native_kwargs = ivy.args_to_native(*args, **kwargs)
-        native_ret = fn(*native_args, **native_kwargs)
+        if ivy.exists(out):
+            native_out = ivy.to_native(out)
+            native_or_ivy_ret = fn(*native_args, out=native_out, **native_kwargs)
+        else:
+            native_or_ivy_ret = fn(*native_args, **native_kwargs)
         if fn.__name__ in ARRAYLESS_RET_METHODS + NESTED_ARRAY_RET_METHODS:
-            return native_ret
-        return ivy.to_ivy(native_ret, nested=True)
+            return native_or_ivy_ret
+        elif ivy.exists(out) and ivy.is_ivy_array(out):
+            out.data = ivy.to_native(native_or_ivy_ret)
+            return out
+        return ivy.to_ivy(native_or_ivy_ret, nested=True)
 
     if hasattr(fn, '__name__'):
         _method_wrapped.__name__ = fn.__name__
