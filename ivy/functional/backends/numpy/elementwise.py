@@ -1,5 +1,6 @@
 # global
 import numpy as np
+from typing import Optional
 import numpy.array_api as npa
 
 try:
@@ -13,6 +14,20 @@ def add(x1: np.ndarray,
     if not isinstance(x2, np.ndarray):
         x2 = np.asarray(x2, dtype=x1.dtype)
     return np.asarray(npa.add(npa.asarray(x1), npa.asarray(x2)))
+
+
+def pow(x1: np.ndarray,
+        x2: np.ndarray)\
+        -> np.ndarray:
+    if hasattr(x1, 'dtype') and hasattr(x2, 'dtype'):
+        promoted_type = np.promote_types(x1.dtype, x2.dtype)
+        x1, x2 = np.asarray(x1), np.asarray(x2)
+        x1 = x1.astype(promoted_type)
+        x2 = x2.astype(promoted_type)
+    elif not hasattr(x2, 'dtype'):
+        x2 = np.array(x2, dtype=x1.dtype)
+    return np.power(x1, x2)
+
 
 def bitwise_xor(x1: np.ndarray,
                 x2: np.ndarray)\
@@ -38,6 +53,12 @@ def bitwise_invert(x: np.ndarray)\
 def bitwise_and(x1: np.ndarray,
                 x2: np.ndarray)\
         -> np.ndarray:
+    if not isinstance(x2, np.ndarray):
+        x2 = np.asarray(x2, dtype=x1.dtype)
+    else:
+        dtype = np.promote_types(x1.dtype, x2.dtype)
+        x1 = x1.astype(dtype)
+        x2 = x2.astype(dtype)
     return np.bitwise_and(x1, x2)
 
 
@@ -65,6 +86,7 @@ def multiply(x1: np.ndarray, x2: np.ndarray)\
         -> np.ndarray:
     if hasattr(x1, 'dtype') and hasattr(x2, 'dtype'):
         promoted_type = np.promote_types(x1.dtype, x2.dtype)
+        x1, x2 = np.asarray(x1), np.asarray(x2)
         x1 = x1.astype(promoted_type)
         x2 = x2.astype(promoted_type)
     elif not hasattr(x2, 'dtype'):
@@ -261,9 +283,10 @@ def trunc(x: np.ndarray) \
     return np.asarray(npa.trunc(npa.asarray(x)))
 
 
-def abs(x: np.ndarray)\
+def abs(x: np.ndarray,
+        out: Optional[np.ndarray] = None)\
         -> np.ndarray:
-    return np.absolute(x)
+    return np.absolute(x, out=out)
 
 
 def subtract(x1: np.ndarray, x2: np.ndarray)\
@@ -296,6 +319,17 @@ def bitwise_right_shift(x1: np.ndarray, x2: np.ndarray)\
         x1 = x1.astype(dtype)
         x2 = x2.astype(dtype)
     return np.right_shift(x1, x2)
+
+
+def bitwise_left_shift(x1: np.ndarray, x2: np.ndarray)\
+        -> np.ndarray:
+    if not isinstance(x2, np.ndarray):
+        x2 = np.asarray(x2, dtype=x1.dtype)
+    else:
+        dtype = np.promote_types(x1.dtype, x2.dtype)
+        x1 = x1.astype(dtype)
+        x2 = x2.astype(dtype)
+    return np.left_shift(x1, x2)
 
 
 tan = np.tan

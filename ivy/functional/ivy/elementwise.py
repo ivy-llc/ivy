@@ -1,6 +1,6 @@
 # global
-from typing import Union
 from numbers import Number
+from typing import Union, Optional
 # local
 import ivy
 from ivy.framework_handler import current_framework as _cur_framework
@@ -47,6 +47,16 @@ def add(x1: Union[ivy.Array, ivy.NativeArray],
         an array containing the element-wise sums. The returned array must have a data type determined by :ref:`type-promotion`.
     """
     return _cur_framework(x1, x2).add(x1, x2)
+
+
+def pow(x1: Union[ivy.Array, ivy.NativeArray],
+        x2: Union[ivy.Array, ivy.NativeArray])\
+        -> ivy.Array:
+    """
+
+    """
+    return _cur_framework(x1, x2).pow(x1, x2)
+
 
 def bitwise_xor(x1: Union[ivy.Array, ivy.NativeArray],
                 x2: Union[ivy.Array, ivy.NativeArray])\
@@ -959,7 +969,8 @@ def trunc(x: Union[ivy.Array, ivy.NativeArray])\
     return _cur_framework(x).trunc(x)
 
 
-def abs(x: Union[ivy.Array, ivy.NativeArray]) \
+def abs(x: Union[ivy.Array, ivy.NativeArray],
+        out: Optional[Union[ivy.Array, ivy.NativeArray]] = None) \
         -> ivy.Array:
     """
     Calculates the absolute value for each element ``x_i`` of the input array ``x`` (i.e., the element-wise result has the same magnitude as the respective element in ``x`` but has positive sign).
@@ -979,13 +990,15 @@ def abs(x: Union[ivy.Array, ivy.NativeArray]) \
     ----------
     x:
         input array. Should have a numeric data type.
+    out:
+        optional output array, for writing the result to. It must have a shape that the inputs broadcast to.
 
     Returns
     -------
-    out:
+    return:
         an array containing the absolute value of each element in ``x``. The returned array must have the same data type as ``x``.
     """
-    return _cur_framework(x).abs(x)
+    return _cur_framework(x).abs(x, out)
 
 
 def tan(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
@@ -1212,6 +1225,26 @@ def bitwise_right_shift(x1: Union[ivy.Array, ivy.NativeArray], x2: Union[ivy.Arr
         out (array) – an array containing the element-wise results. The returned array must have a data type determined by :ref:`Type Promotion Rules`.
     """
     return _cur_framework(x1, x2).bitwise_right_shift(x1, x2)
+
+
+def bitwise_left_shift(x1: Union[ivy.Array, ivy.NativeArray], x2: Union[ivy.Array, ivy.NativeArray])\
+        -> ivy.Array:
+    """
+    Shifts the bits of each element ``x1_i`` of the input array ``x1`` to the left according to the respective element ``x2_i`` of the input array ``x2``.
+
+    Parameters
+    ----------
+    x1:
+        first input array. Should have an integer data type.
+    x2:
+        second input array. Must be compatible with ``x1`` (see :ref:`broadcasting`). Should have an integer data type. Each element must be greater than or equal to 0.
+
+    Returns
+    -------
+    out:
+        out (array) – an array containing the element-wise results. The returned array must have a data type determined by :ref:`Type Promotion Rules`.
+    """
+    return _cur_framework(x1, x2).bitwise_left_shift(x1, x2)
 
   
 def equal(x1: Union[ivy.Array, ivy.NativeArray],

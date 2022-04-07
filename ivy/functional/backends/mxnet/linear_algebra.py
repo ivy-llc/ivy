@@ -24,6 +24,10 @@ def eigh(x: mx.ndarray)\
 inv = mx.nd.linalg_inverse
 
 
+def inv(x: mx.nd.NDArray) -> mx.nd.NDArray:
+    return mx.nd.linalg.inverse(x)
+
+
 def pinv(x):
     """
     reference: https://help.matheass.eu/en/Pseudoinverse.html
