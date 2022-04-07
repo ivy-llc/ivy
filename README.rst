@@ -150,7 +150,7 @@ This is the same for ALL Ivy functions. They can accept tensors from any framewo
 To see a list of all Ivy methods, type :code:`ivy.` into a python command prompt and press :code:`tab`.
 You should then see output like the following:
 
-::
+.. code-block:: console
 
    ivy.Container(                         ivy.general                               ivy.reduce_min(
    ivy.abs(                               ivy.get_device(                           ivy.reduce_prod(
