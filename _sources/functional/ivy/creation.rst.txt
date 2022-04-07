@@ -30,7 +30,6 @@ Creation
    creation/full.rst
    creation/ones.rst
    creation/from_dlpack.rst
-   creation/array.rst
    creation/logspace.rst
    creation/arange.rst
 
