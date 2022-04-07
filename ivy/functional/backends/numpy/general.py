@@ -18,18 +18,6 @@ from ivy.functional.backends.numpy.device import _dev_callable
 # --------#
 
 
-def _to_dev(x, dev):
-    if dev is not None:
-        if 'gpu' in dev:
-            raise Exception('Native Numpy does not support GPU placement, consider using Jax instead')
-        elif 'cpu' in dev:
-            pass
-        else:
-            raise Exception('Invalid device specified, must be in the form [ "cpu:idx" | "gpu:idx" ],'
-                            'but found {}'.format(dev))
-    return x
-
-
 copy_array = lambda x: x.copy()
 array_equal = np.array_equal
 floormod = lambda x, y: np.asarray(x % y)
