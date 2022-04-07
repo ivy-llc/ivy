@@ -16,35 +16,6 @@ from ivy.functional.ivy.device import default_device
 from ivy.functional.backends.tensorflow.device import _dev_callable, dev_from_str
 
 
-DTYPE_TO_STR = {tf.int8: 'int8',
-                tf.int16: 'int16',
-                tf.int32: 'int32',
-                tf.int64: 'int64',
-                tf.uint8: 'uint8',
-                tf.uint16: 'uint16',
-                tf.uint32: 'uint32',
-                tf.uint64: 'uint64',
-                tf.bfloat16: 'bfloat16',
-                tf.float16: 'float16',
-                tf.float32: 'float32',
-                tf.float64: 'float64',
-                tf.bool: 'bool'}
-
-DTYPE_FROM_STR = {'int8': tf.int8,
-                'int16': tf.int16,
-                'int32': tf.int32,
-                'int64': tf.int64,
-                'uint8': tf.uint8,
-                'uint16': tf.uint16,
-                'uint32': tf.uint32,
-                'uint64': tf.uint64,
-                'bfloat16': tf.bfloat16,
-                'float16': tf.float16,
-                'float32': tf.float32,
-                'float64': tf.float64,
-                'bool': tf.bool}
-
-
 def is_native_array(x, exclusive=False):
     if isinstance(x, Tensor):
         if exclusive and isinstance(x, tf.Variable):
@@ -249,39 +220,12 @@ def gather_nd(params, indices, dev=None):
         return tf.gather_nd(params, indices)
 
 
-def dtype_bits(dtype_in):
-    dtype_str = dtype_to_str(dtype_in)
-    if 'bool' in dtype_str:
-        return 1
-    return int(dtype_str.replace('tf.', '').replace('uint', '').replace('int', '').replace('bfloat', '').replace(
-        'float', ''))
-
-
 def one_hot(indices, depth, dev=None):
     dev = default_device(dev)
     if dev is not None:
         with tf.device(dev_from_str(dev)):
             return tf.one_hot(indices, depth)
     return tf.one_hot(indices, depth)
-
-
-def dtype(x, as_str=False):
-    dt = x.dtype
-    if as_str:
-        return dtype_to_str(dt)
-    return dt
-
-
-def dtype_to_str(dtype_in):
-    if isinstance(dtype_in, str):
-        return dtype_in
-    return DTYPE_TO_STR[dtype_in]
-
-
-def dtype_from_str(dtype_in):
-    if not isinstance(dtype_in, str):
-        return dtype_in
-    return DTYPE_FROM_STR[dtype_in]
 
 
 compile = lambda fn, dynamic=True, example_inputs=None, static_argnums=None, static_argnames=None: tf.function(fn)

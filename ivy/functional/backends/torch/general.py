@@ -291,62 +291,20 @@ def indices_where(x):
     res = torch.cat([torch.unsqueeze(item, -1) for item in where_x], -1)
     return res
 
+
 # noinspection PyUnresolvedReferences,PyShadowingNames
 def one_hot(indices, depth: int, dev: Optional[str] = None):
     if dev is None:
         dev = _callable_dev(indices)
     return torch.nn.functional.one_hot(indices.type(torch.int64), depth).to(dev_from_str(dev))
 
+
 def shape(x, as_tensor=False) -> Union[torch.Tensor, List[int]]:
     return torch.tensor(x.shape) if as_tensor else x.shape
 
+
 def get_num_dims(x, as_tensor=False) -> Union[torch.Tensor, int]:
     return torch.tensor(len(x.shape)) if as_tensor else len(x.shape)
-
-
-def dtype_bits(dtype_in):
-    dtype_str = dtype_to_str(dtype_in)
-    if 'bool' in dtype_str:
-        return 1
-    return int(dtype_str.replace('torch.', '').replace('uint', '').replace('int', '').replace('bfloat', '').replace(
-        'float', ''))
-
-
-def dtype(x, as_str=False):
-    dt = x.dtype
-    if as_str:
-        return dtype_to_str(dt)
-    return dt
-
-
-def dtype_to_str(dtype_in):
-    if isinstance(dtype_in, str):
-        return dtype_in
-    return {torch.int8: 'int8',
-            torch.int16: 'int16',
-            torch.int32: 'int32',
-            torch.int64: 'int64',
-            torch.uint8: 'uint8',
-            torch.bfloat16: 'bfloat16',
-            torch.float16: 'float16',
-            torch.float32: 'float32',
-            torch.float64: 'float64',
-            torch.bool: 'bool'}[dtype_in]
-
-
-def dtype_from_str(dtype_in: str) -> torch.dtype:
-    if not isinstance(dtype_in, str):
-        return dtype_in
-    return {'int8': torch.int8,
-            'int16': torch.int16,
-            'int32': torch.int32,
-            'int64': torch.int64,
-            'uint8': torch.uint8,
-            'bfloat16': torch.bfloat16,
-            'float16': torch.float16,
-            'float32': torch.float32,
-            'float64': torch.float64,
-            'bool': torch.bool}[dtype_in]
 
 
 def compile(fn, dynamic=True, example_inputs=None, static_argnums=None, static_argnames=None):
