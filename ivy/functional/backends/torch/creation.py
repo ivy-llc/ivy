@@ -22,7 +22,7 @@ def asarray(object_in, dtype: Optional[str] = None, dev: Optional[str] = None, c
         else:
             return torch.as_tensor(object_in).to(dev_from_str(dev))
 
-    elif isinstance(object_in, np.ndarray):
+    elif isinstance(object_in, np.ndarray) and dtype is None:
         dtype = dtype_from_str(np_dtype_to_str(object_in.dtype))
     else:
         dtype = dtype_from_str((default_dtype(dtype, object_in)))
