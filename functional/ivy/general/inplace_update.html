@@ -271,8 +271,9 @@
 <h1>inplace_update<a class="headerlink" href="#inplace-update" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
 <dt id="ivy.functional.ivy.general.inplace_update">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">inplace_update</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">val</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/general.html#inplace_update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.general.inplace_update" title="Permalink to this definition">¶</a></dt>
-<dd><p>Perform in-place update for the input variable.</p>
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">inplace_update</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">val</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/general.html#inplace_update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.general.inplace_update" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform in-place update for the input array. This will always be performed on ivy.Array instances pass in the input,
+and will also be performed on the native array classes in the backend, when the backend supports this.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -281,7 +282,7 @@
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>The variable following the in-place update.</p>
+<dd class="field-even"><p>The array following the in-place update.</p>
 </dd>
 </dl>
 </dd></dl>
