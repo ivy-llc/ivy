@@ -6,6 +6,16 @@ from typing import Union, Tuple, Optional, List
 
 
 
+def squeeze(x: np.ndarray,
+            axis: Union[int, Tuple[int], List[int]])\
+        -> np.ndarray:
+    if x.shape == ():
+        if axis is None or axis == 0 or axis == -1:
+            return x
+        raise ValueError('tried to squeeze a zero-dimensional input by axis {}'.format(axis))
+    return np.squeeze(x, axis)
+
+
 def _flat_array_to_1_dim_array(x):
     return x.reshape((1,)) if x.shape == () else x
 
@@ -37,8 +47,45 @@ def permute_dims(x: np.ndarray,
 
 
 
+def concat(xs: List[np.ndarray], axis: int =0) -> np.ndarray:
+    is_tuple = type(xs) is tuple
+
+    if axis==None:
+        if is_tuple:
+            xs = list(xs)
+        for i in range(len(xs)):
+            if xs[i].shape ==():
+                xs[i] = np.ravel(xs[i])
+        if is_tuple:
+            xs = tuple(xs)
+    ret = np.concatenate(xs, axis)
+    highest_dtype = xs[0].dtype
+    for i in xs:
+        highest_dtype = np.promote_types(highest_dtype, i.dtype)
+    ret = ret.astype(highest_dtype)
+    return ret
+
+
+def stack(x: Union[Tuple[np.ndarray], List[np.ndarray]],
+          axis: Optional[int] = 0)\
+          -> np.ndarray:
+    return np.stack(x, axis)
+
+
+def reshape(x: np.ndarray,
+            shape: Tuple[int, ...],
+            copy: Optional[bool] = None)\
+        -> np.ndarray:
+    return np.reshape(x, shape)
+
+
 # Extra #
 # ------#
+def roll(x: np.ndarray,
+         shift: Union[int, Tuple[int, ...]],
+         axis: Optional[Union[int, Tuple[int, ...]]] = None) \
+        -> np.ndarray:
+    return np.roll(x, shift, axis)
 
 
 def split(x, num_or_size_splits=None, axis=0, with_remainder=False):
@@ -64,3 +111,4 @@ tile = np.tile
 constant_pad = lambda x, pad_width, value=0: np.pad(_flat_array_to_1_dim_array(x), pad_width, constant_values=value)
 zero_pad = lambda x, pad_width: np.pad(_flat_array_to_1_dim_array(x), pad_width)
 swapaxes = np.swapaxes
+clip = lambda x, x_min, x_max: np.asarray(np.clip(x, x_min, x_max))

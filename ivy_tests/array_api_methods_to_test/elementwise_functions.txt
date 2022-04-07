@@ -1,28 +1,28 @@
 abs
-#acos # depends on: greater
+acos
 acosh
-#add
-#asin # depends on: greater
+add
+asin
 asinh
-#atan
-#atan2
-#atanh
-#bitwise_and
+atan
+atan2
+atanh
+bitwise_and
 #bitwise_left_shift
 bitwise_invert
-#bitwise_or # asarray not yet implemented correctly
-#bitwise_right_shift
-#bitwise_xor
-#ceil # depends on: asarray, remainder
+bitwise_or
+bitwise_right_shift
+bitwise_xor
+ceil
 cos
 cosh
-#divide
-#equal
-#exp
-#expm1
-#floor # depends on: remainder
-#floor_divide
-#greater
+divide
+#equal # failing non-deterministically
+exp
+expm1
+floor
+#floor_divide # failing non-deterministically
+greater
 greater_equal
 isfinite
 isinf
@@ -37,20 +37,20 @@ logaddexp
 logical_and
 logical_not
 logical_or
-#logical_xor
-#multiply
+logical_xor
+#multiply # Failing non-deterministically
 negative
 positive
-not_equal
+#not_equal # Failing non-deterministically after the update to Array API test suite under commit 2dcf4cf153c8cb37a685467fed91680e1552fc6a
 #pow
-#remainder
-#round #depends on: remainder
-#sign
+#remainder # Failing non-deterministically 
+round
+#sign # tests are passing but uncommenting causes everything in test_signatures to run
 sin
 sinh
 square
 sqrt
-#subtract
+subtract
 tan
 tanh
-#trunc
+trunc

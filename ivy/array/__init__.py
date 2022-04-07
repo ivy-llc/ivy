@@ -44,13 +44,15 @@ class Array(ArrayWithArrayAPI, ArrayWithDevice, ArrayWithGeneral, ArrayWithGradi
             ArrayWithLogic, ArrayWithMath, ArrayWithMeta, ArrayWithRandom, ArrayWithReductions):
 
     def __init__(self, data):
-        assert ivy.is_array(data)
-        self._data = data
-        self._shape = data.shape
-
-        self._size = functools.reduce(mul,self._data.shape) if len(self._data.shape) >0 else 0 
+        if ivy.is_ivy_array(data):
+            self._data = data.data
+        else:
+            assert ivy.is_native_array(data)
+            self._data = data
+        self._shape = self._data.shape
+        self._size = functools.reduce(mul, self._data.shape) if len(self._data.shape) > 0 else 0
         self._dtype = ivy.dtype(self._data)
-        self._device = ivy.dev(data)
+        self._device = ivy.dev(self._data)
         self._dev_str = ivy.dev_to_str(self._device)
         self._pre_repr = 'ivy.'
         if 'gpu' in self._dev_str:
@@ -62,12 +64,28 @@ class Array(ArrayWithArrayAPI, ArrayWithDevice, ArrayWithGeneral, ArrayWithGradi
     # -----------#
 
     @property
+    def mT(self):
+        assert len(self._data.shape) >= 2
+        return ivy.matrix_transpose(self._data)
+
+    @property
     def data(self):
         return self._data
 
     @property
     def shape(self):
         return tuple(self._shape)
+
+    @property
+    def ndim(self):
+        """
+        Number of array dimensions (axes).
+        Returns
+        -------
+        out: int
+            number of array dimensions (axes).
+        """
+        return len(tuple(self._shape))
 
     @property
     def dtype(self):
@@ -101,6 +119,15 @@ class Array(ArrayWithArrayAPI, ArrayWithDevice, ArrayWithGeneral, ArrayWithGradi
            For array libraries having graph-based computational models, an array may have unknown dimensions due to data-dependent operations.
         """
         return self._size
+
+    # Setters #
+    # --------#
+
+    @data.setter
+    def data(self, data):
+        assert ivy.is_native_array(data)
+        self._data = data
+
     # Built-ins #
     # ----------#
 
@@ -151,7 +178,9 @@ class Array(ArrayWithArrayAPI, ArrayWithDevice, ArrayWithGeneral, ArrayWithGradi
         try:
             self._data.__setitem__(query, val)
         except (AttributeError, TypeError):
-            self._data = ivy.scatter_nd(query, val, tensor=self._data, reduction='replace')
+            self._data = ivy.scatter_nd(query, val, tensor=self._data, reduction='replace')._data
+            self._dtype = ivy.dtype(self._data)
+
 
     @_native_wrapper
     def __contains__(self, key):
@@ -170,7 +199,7 @@ class Array(ArrayWithArrayAPI, ArrayWithDevice, ArrayWithGeneral, ArrayWithGradi
 
     @_native_wrapper
     def __pow__(self, power):
-        return self._data.__pow__(power)
+        return ivy.pow(self._data, power)
 
     @_native_wrapper
     def __rpow__(self, power):
@@ -179,10 +208,7 @@ class Array(ArrayWithArrayAPI, ArrayWithDevice, ArrayWithGeneral, ArrayWithGradi
     @_native_wrapper
     def __add__(self, other):
         other = to_native(other)
-        res = self._data.__add__(other)
-        if res is NotImplemented:
-            return res
-        return to_ivy(res)
+        return ivy.add(self._data, other)
 
     @_native_wrapper
     def __radd__(self, other):
@@ -195,7 +221,7 @@ class Array(ArrayWithArrayAPI, ArrayWithDevice, ArrayWithGeneral, ArrayWithGradi
     @_native_wrapper
     def __sub__(self, other):
         other = to_native(other)
-        res = self._data.__sub__(other)
+        res = ivy.subtract(self._data, other)
         if res is NotImplemented:
             return res
         return to_ivy(res)
@@ -203,7 +229,7 @@ class Array(ArrayWithArrayAPI, ArrayWithDevice, ArrayWithGeneral, ArrayWithGradi
     @_native_wrapper
     def __rsub__(self, other):
         other = to_native(other)
-        res = self._data.__rsub__(other)
+        res = -ivy.subtract(self._data, other)
         if res is NotImplemented:
             return res
         return to_ivy(res)
@@ -211,7 +237,7 @@ class Array(ArrayWithArrayAPI, ArrayWithDevice, ArrayWithGeneral, ArrayWithGradi
     @_native_wrapper
     def __mul__(self, other):
         other = to_native(other)
-        res = self._data.__mul__(other)
+        res = ivy.multiply(self._data, other)
         if res is NotImplemented:
             return res
         return to_ivy(res)
@@ -225,12 +251,12 @@ class Array(ArrayWithArrayAPI, ArrayWithDevice, ArrayWithGeneral, ArrayWithGradi
         return to_ivy(res)
 
     @_native_wrapper
+    def __mod__(self, other):
+        return ivy.remainder(self._data, other)
+
+    @_native_wrapper
     def __truediv__(self, other):
-        other = to_native(other)
-        res = self._data.__truediv__(other)
-        if res is NotImplemented:
-            return res
-        return to_ivy(res)
+        return ivy.divide(self._data, other)
 
     @_native_wrapper
     def __rtruediv__(self, other):
@@ -242,11 +268,7 @@ class Array(ArrayWithArrayAPI, ArrayWithDevice, ArrayWithGeneral, ArrayWithGradi
 
     @_native_wrapper
     def __floordiv__(self, other):
-        other = to_native(other)
-        res = self._data.__floordiv__(other)
-        if res is NotImplemented:
-            return res
-        return to_ivy(res)
+        return ivy.floor_divide(self._data, other)
 
     @_native_wrapper
     def __rfloordiv__(self, other):
@@ -302,7 +324,7 @@ class Array(ArrayWithArrayAPI, ArrayWithDevice, ArrayWithGeneral, ArrayWithGradi
     @_native_wrapper
     def __eq__(self, other):
         other = to_native(other)
-        res = self._data.__eq__(other)
+        res = ivy.equal(self._data, other)
         if res is NotImplemented:
             return res
         return to_ivy(res)
@@ -313,11 +335,7 @@ class Array(ArrayWithArrayAPI, ArrayWithDevice, ArrayWithGeneral, ArrayWithGradi
 
     @_native_wrapper
     def __gt__(self, other):
-        other = to_native(other)
-        res = self._data.__gt__(other)
-        if res is NotImplemented:
-            return res
-        return to_ivy(res)
+        return ivy.greater(self._data, other)
 
     @_native_wrapper
     def __ge__(self, other):
@@ -325,25 +343,17 @@ class Array(ArrayWithArrayAPI, ArrayWithDevice, ArrayWithGeneral, ArrayWithGradi
 
     @_native_wrapper
     def __and__(self, other):
-        other = to_native(other)
-        res = self._data.__and__(other)
-        if res is NotImplemented:
-            return res
-        return to_ivy(res)
+        return ivy.bitwise_and(self._data, other)
 
     @_native_wrapper
     def __rand__(self, other):
-        other = to_native(other)
-        res = self._data.__rand__(other)
-        if res is NotImplemented:
-            return res
-        return to_ivy(res)
+        return ivy.bitwise_and(self._data, other)
 
     @_native_wrapper
     def __or__(self, other):
         return ivy.bitwise_or(self._data, other)
 
-        
+
     @_native_wrapper
     def __ror__(self, other):
         other = to_native(other)
@@ -362,7 +372,7 @@ class Array(ArrayWithArrayAPI, ArrayWithDevice, ArrayWithGeneral, ArrayWithGradi
     @_native_wrapper
     def __xor__(self, other):
         other = to_native(other)
-        res = self._data.__xor__(other)
+        res = ivy.bitwise_xor(self._data, other)
         if res is NotImplemented:
             return res
         return to_ivy(res)
@@ -371,6 +381,38 @@ class Array(ArrayWithArrayAPI, ArrayWithDevice, ArrayWithGeneral, ArrayWithGradi
     def __rxor__(self, other):
         other = to_native(other)
         res = self._data.__rxor__(other)
+        if res is NotImplemented:
+            return res
+        return to_ivy(res)
+
+    @_native_wrapper
+    def __lshift__(self, other):
+        return ivy.bitwise_left_shift(self._data, other)
+
+    @_native_wrapper
+    def __rlshift__(self, other):
+        other = to_native(other)
+        res = self._data.__rlshift__(other)
+        if res is NotImplemented:
+            return res
+        return to_ivy(res)
+
+    @_native_wrapper
+    def __rshift__(self, other):
+        return ivy.bitwise_right_shift(self._data, other)
+
+    @_native_wrapper
+    def __rrshift__(self, other):
+        other = to_native(other)
+        res = self._data.__rrshift__(other)
+        if res is NotImplemented:
+            return res
+        return to_ivy(res)
+
+    @_native_wrapper
+    def __rrshift__(self, other):
+        other = to_native(other)
+        res = self._data.__rrshift__(other)
         if res is NotImplemented:
             return res
         return to_ivy(res)

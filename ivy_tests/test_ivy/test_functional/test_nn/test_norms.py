@@ -14,7 +14,7 @@ import ivy_tests.test_ivy.helpers as helpers
 # # layer norm
 # @pytest.mark.parametrize(
 #     "x_n_ni_n_s_n_o_n_res", [
-
+#
 #         ([[1., 2., 3.], [4., 5., 6.]],
 #          -1,
 #          [[1., 2., 3.], [4., 5., 6.]],
@@ -35,7 +35,7 @@ import ivy_tests.test_ivy.helpers as helpers
 #     true_res = tensor_fn(true_res, dtype, dev)
 #     ret = ivy.layer_norm(x, norm_idxs, scale=scale, offset=offset)
 #     # type test
-#     assert ivy.is_array(ret)
+#     assert ivy.is_ivy_array(ret)
 #     # cardinality test
 #     assert ret.shape == true_res.shape
 #     # value test
@@ -44,4 +44,4 @@ import ivy_tests.test_ivy.helpers as helpers
 #     if call in [helpers.torch_call]:
 #         # this is not a backend implemented function
 #         return
-#     # helpers.assert_compilable(ivy.layer_norm)
+    # helpers.assert_compilable(ivy.layer_norm)

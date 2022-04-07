@@ -1,11 +1,14 @@
 # global
 import mxnet as mx
 from typing import Tuple, Union, Optional, Iterable
+from numbers import Number
 
 # local
+import ivy
 from ivy import default_device, dtype_from_str, default_dtype, dtype_to_str
 from ivy.functional.backends.mxnet import _mxnet_init_context
 from ivy.functional.backends.mxnet import _1_dim_array_to_flat_array
+
 
 def asarray(object_in, dtype: Optional[str] = None, dev: Optional[str] = None, copy: Optional[bool] = None):
     # mxnet don't have asarray implementation, haven't properly tested
@@ -28,6 +31,9 @@ def asarray(object_in, dtype: Optional[str] = None, dev: Optional[str] = None, c
         else:
             dtype = dtype_to_str(default_dtype(dtype, object_in))
             return mx.nd.array(object_in, cont, dtype=default_dtype(dtype, object_in))
+
+
+array = asarray
 
 
 def zeros(shape: Union[int, Tuple[int]],
@@ -123,16 +129,44 @@ def eye(n_rows: int,
     cont = _mxnet_init_context(default_device(device))
     return mx.nd.eye(n_rows, n_cols, k, ctx=cont).astype(dtype)
 
+# noinspection PyUnresolvedReferences
+def arange(stop, start=0, step=1, dtype=None, dev=None):
+    cont = _mxnet_init_context(default_device(dev))
+    stop = stop if isinstance(stop, Number) else stop.asscalar()
+    start = start if isinstance(start, Number) else start.asscalar()
+    step = step if isinstance(step, Number) else step.asscalar()
+    return mx.nd.arange(start, stop, ctx=cont, step=step, dtype=dtype)
+
+
+def zeros_like(x, dtype=None, dev=None):
+    if x.shape == ():
+        return mx.nd.array(0., ctx=_mxnet_init_context(default_device(dev)))
+    mx_zeros = mx.nd.zeros_like(x, ctx=_mxnet_init_context(default_device(dev)))
+    return mx_zeros if not dtype else mx_zeros.astype(dtype)
+
+
+def full(shape, fill_value, dtype=None, device=None):
+    shape = ivy.shape_to_tuple(shape)
+    cont = _mxnet_init_context(default_device(device))
+    if len(shape) == 0 or 0 in shape:
+        return _1_dim_array_to_flat_array(
+            mx.nd.full((1,), fill_value, cont, dtype_from_str(default_dtype(dtype, fill_value))))
+    return mx.nd.full(shape, fill_value, cont, dtype_from_str(default_dtype(dtype, fill_value)))
+
+
+def meshgrid(*xs, indexing='ij'):
+    # ToDo: implement this without reliance on NumPy backend
+    xs_np = [x.as_np_ndarray() for x in xs]
+    return tuple([item.as_nd_ndarray() for item in mx.np.meshgrid(*xs_np, indexing=indexing)])
+
+
+def from_dlpack(x):
+    return mx.nd.from_dlpack(x)
+
 
 # Extra #
 # ------#
 
-def array(object_in, dtype=None, dev=None):
-    cont = _mxnet_init_context(default_device(dev))
-    return mx.nd.array(object_in, cont, dtype=default_dtype(dtype, object_in))
-
-
 def logspace(start, stop, num, base=10., axis=None, dev=None):
     power_seq = linspace(start, stop, num, axis, default_device(dev))
     return base ** power_seq
-

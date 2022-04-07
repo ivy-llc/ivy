@@ -3,9 +3,10 @@ import numpy as np
 from typing import Union, Tuple, Optional, List
 
 # local
-from ivy import dtype_from_str, default_dtype
+from .data_type import dtype_from_str
+from ivy.functional.ivy import default_dtype
 # noinspection PyProtectedMember
-from ivy.functional.backends.numpy.old.general import _to_dev
+from ivy.functional.backends.numpy.device import _to_dev
 
 
 def asarray(object_in, dtype=None, dev=None, copy=None):
@@ -25,6 +26,9 @@ def asarray(object_in, dtype=None, dev=None, copy=None):
         return _to_dev(np.copy(np.asarray(object_in, dtype=dtype)), dev)
     else:
         return _to_dev(np.asarray(object_in, dtype=dtype), dev)
+
+
+array = asarray
 
 
 def zeros(shape: Union[int, Tuple[int], List[int]],
@@ -68,6 +72,17 @@ def ones_like(x : np.ndarray,
     return _to_dev(np.ones_like(x, dtype=dtype), dev)
 
 
+def zeros_like(x: np.ndarray,
+               dtype: Optional[np.dtype] =None,
+               dev:  Optional[str]  =None)\
+            -> np.ndarray:
+    if dtype:
+        dtype = 'bool_' if dtype == 'bool' else dtype
+    else:
+        dtype = x.dtype
+    return _to_dev(np.zeros_like(x, dtype=dtype), dev)
+
+
 def tril(x: np.ndarray,
          k: int = 0) \
          -> np.ndarray:
@@ -106,6 +121,12 @@ def linspace(start, stop, num, axis=None, dev=None):
         axis = -1
     return _to_dev(np.linspace(start, stop, num, axis=axis), dev)
 
+
+def meshgrid(*arrays: np.ndarray, indexing: str = 'xy')\
+        -> List[np.ndarray]:
+    return np.meshgrid(*arrays, indexing=indexing)
+
+
 def eye(n_rows: int,
         n_cols: Optional[int] = None,
         k: Optional[int] = 0,
@@ -116,13 +137,29 @@ def eye(n_rows: int,
     return _to_dev(np.eye(n_rows, n_cols, k, dtype), device)
 
 
+# noinspection PyShadowingNames
+def arange(stop, start=0, step=1, dtype=None, dev=None):
+    if dtype:
+        dtype = dtype_from_str(dtype)
+    res = _to_dev(np.arange(start, stop, step=step, dtype=dtype), dev)
+    if not dtype:
+        if res.dtype == np.float64:
+            return res.astype(np.float32)
+        elif res.dtype == np.int64:
+            return res.astype(np.int32)
+    return res
+
+
+def full(shape, fill_value, dtype=None, device=None):
+    return _to_dev(np.full(shape, fill_value, dtype_from_str(default_dtype(dtype, fill_value))), device)
+
+
+def from_dlpack(x):
+    return np.from_dlpack(x)
+
+
 # Extra #
 # ------#
-
-# noinspection PyShadowingNames
-def array(object_in, dtype=None, dev=None):
-    return _to_dev(np.array(object_in, dtype=default_dtype(dtype, object_in)), dev)
-
 
 def logspace(start, stop, num, base=10., axis=None, dev=None):
     if axis is None:

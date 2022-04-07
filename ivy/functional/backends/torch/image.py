@@ -36,6 +36,24 @@ def stack_images(images: List[torch.Tensor], desired_aspect_ratio: List[int] = (
     return torch.cat(image_rows, num_batch_dims + 1)
 
 
+def linear_resample(x, num_samples: int, axis: int = -1):
+    x_shape = list(x.shape)
+    num_x_dims = len(x_shape)
+    num_vals = x_shape[axis]
+    axis = axis % num_x_dims
+    if axis != num_x_dims - 1:
+        x_pre_shape = x_shape[0:axis] + x_shape[-1:] + x_shape[axis + 1:-1]
+        x = torch.swapaxes(x, axis, -1)
+    else:
+        x_pre_shape = x_shape[:-1]
+    x = torch.reshape(x, ([-1, 1] + [num_vals]))
+    ret = torch.nn.functional.interpolate(x, num_samples, mode='linear', align_corners=True)
+    ret = torch.reshape(ret, x_pre_shape + [num_samples])
+    if axis != num_x_dims - 1:
+        return torch.transpose(ret, -1, axis)
+    return ret
+
+
 # noinspection PyUnresolvedReferences
 def bilinear_resample(x, warp):
     batch_shape = x.shape[:-3]
@@ -73,8 +91,8 @@ def gradient_image(x, batch_shape: Optional[List[int]] = None, image_dims: Optio
     dx = x[..., :, 1:, :] - x[..., :, :-1, :]
     # BS x H x W x D
     # noinspection PyTypeChecker
-    dy = _ivy.concatenate((dy, torch.zeros(batch_shape + [1, image_dims[1], num_dims], device=dev)), -3)
+    dy = _ivy.concat((dy, torch.zeros(batch_shape + [1, image_dims[1], num_dims], device=dev)), -3)
     # noinspection PyTypeChecker
-    dx = _ivy.concatenate((dx, torch.zeros(batch_shape + [image_dims[0], 1, num_dims], device=dev)), -2)
+    dx = _ivy.concat((dx, torch.zeros(batch_shape + [image_dims[0], 1, num_dims], device=dev)), -2)
     # BS x H x W x D,    BS x H x W x D
     return dy, dx

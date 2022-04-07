@@ -5,6 +5,8 @@ Collection of Numpy image functions, wrapped to fit Ivy syntax and signature.
 # global
 import math
 import numpy as np
+from operator import mul as _mul
+from functools import reduce as _reduce
 
 # local
 from ivy.functional.backends import numpy as _ivy
@@ -29,9 +31,33 @@ def stack_images(images, desired_aspect_ratio=(1, 1)):
     for i in range(stack_width_int):
         images_to_concat = images[i*stack_height_int:(i+1)*stack_height_int]
         images_to_concat += [_ivy.zeros_like(images[0])] * (stack_height_int - len(images_to_concat))
-        image_rows.append(_ivy.concatenate(images_to_concat, num_batch_dims))
-    return _ivy.concatenate(image_rows, num_batch_dims + 1)
+        image_rows.append(_ivy.concat(images_to_concat, num_batch_dims))
+    return _ivy.concat(image_rows, num_batch_dims + 1)
 
+
+def linear_resample(x, num_samples, axis=-1):
+    x_shape = list(x.shape)
+    num_x_dims = len(x_shape)
+    axis = axis % num_x_dims
+    x_pre_shape = x_shape[0:axis]
+    x_pre_size = _reduce(_mul, x_pre_shape) if x_pre_shape else 1
+    num_pre_dims = len(x_pre_shape)
+    num_vals = x.shape[axis]
+    x_post_shape = x_shape[axis+1:]
+    x_post_size = _reduce(_mul, x_post_shape) if x_post_shape else 1
+    num_post_dims = len(x_post_shape)
+    xp = np.reshape(np.arange(num_vals*x_pre_size*x_post_size), x_shape)
+    x_coords = np.arange(num_samples) * ((num_vals-1)/(num_samples-1)) * x_post_size
+    x_coords = np.reshape(x_coords, [1]*num_pre_dims + [num_samples] + [1]*num_post_dims)
+    x_coords = np.broadcast_to(x_coords, x_pre_shape + [num_samples] + x_post_shape)
+    slc = [slice(None)] * num_x_dims
+    slc[axis] = slice(0, 1, 1)
+    x_coords = x_coords + xp[tuple(slc)]
+    x = np.reshape(x, (-1,))
+    xp = np.reshape(xp, (-1,))
+    x_coords = np.reshape(x_coords, (-1,))
+    ret = np.interp(x_coords, xp, x)
+    return np.reshape(ret, x_pre_shape + [num_samples] + x_post_shape)
 
 # noinspection PyPep8Naming
 def bilinear_resample(x, warp):
@@ -106,7 +132,7 @@ def gradient_image(x):
     # BS x H x W-1 x D
     dx = x[..., :, 1:, :] - x[..., :, :-1, :]
     # BS x H x W x D
-    dy = _ivy.concatenate((dy, _ivy.zeros(batch_shape + [1, image_dims[1], num_dims], dev=dev)), -3)
-    dx = _ivy.concatenate((dx, _ivy.zeros(batch_shape + [image_dims[0], 1, num_dims], dev=dev)), -2)
+    dy = _ivy.concat((dy, _ivy.zeros(batch_shape + [1, image_dims[1], num_dims], device=dev)), -3)
+    dx = _ivy.concat((dx, _ivy.zeros(batch_shape + [image_dims[0], 1, num_dims], device=dev)), -2)
     # BS x H x W x D,    BS x H x W x D
     return dy, dx

@@ -5,7 +5,6 @@ Collection of Numpy general functions, wrapped to fit Ivy syntax and signature.
 # global
 import logging
 import numpy as np
-import math as _math
 from operator import mul as _mul
 from functools import reduce as _reduce
 import multiprocessing as _multiprocessing
@@ -13,21 +12,10 @@ import multiprocessing as _multiprocessing
 # local
 import ivy
 from ivy.functional.ivy import default_dtype
-from ivy.functional.backends.numpy.device import _dev_callable, to_dev
+from ivy.functional.backends.numpy.device import _dev_callable, _to_dev
 
 # Helpers #
 # --------#
-
-def _to_dev(x, dev):
-    if dev is not None:
-        if 'gpu' in dev:
-            raise Exception('Native Numpy does not support GPU placement, consider using Jax instead')
-        elif 'cpu' in dev:
-            pass
-        else:
-            raise Exception('Invalid device specified, must be in the form [ "cpu:idx" | "gpu:idx" ],'
-                            'but found {}'.format(dev))
-    return x
 
 
 copy_array = lambda x: x.copy()
@@ -45,13 +33,17 @@ inplace_arrays_supported = lambda: True
 inplace_variables_supported = lambda: True
 
 
-
 def inplace_update(x, val):
-    x.data = val
+    (x_native, val_native), _ = ivy.args_to_native(x, val)
+    x_native.data = val_native
+    if ivy.is_ivy_array(x):
+        x.data = x_native
+    else:
+        x = ivy.Array(x_native)
     return x
 
 
-def is_array(x, exclusive=False):
+def is_native_array(x, exclusive=False):
     if isinstance(x, np.ndarray):
         return True
     return False
@@ -185,3 +177,34 @@ def gather_nd(params, indices, dev=None):
     new_shape = list(indices_shape[:-1]) + list(params_shape[num_index_dims:])
     res = np.reshape(flat_gather, new_shape)
     return _to_dev(res, dev)
+
+multiprocessing = lambda context=None: _multiprocessing if context is None else _multiprocessing.get_context(context)
+
+
+def indices_where(x):
+    where_x = np.where(x)
+    if len(where_x) == 1:
+        return np.expand_dims(where_x[0], -1)
+    res = np.concatenate([np.expand_dims(item, -1) for item in where_x], -1)
+    return res
+
+
+# noinspection PyUnusedLocal
+def one_hot(indices, depth, dev=None):
+    # from https://stackoverflow.com/questions/38592324/one-hot-encoding-using-numpy
+    res = np.eye(depth)[np.array(indices).reshape(-1)]
+    return res.reshape(list(indices.shape) + [depth])
+
+shape = lambda x, as_tensor=False: np.asarray(np.shape(x)) if as_tensor else x.shape
+shape.__name__ = 'shape'
+get_num_dims = lambda x, as_tensor=False: np.asarray(len(np.shape(x))) if as_tensor else len(x.shape)
+
+
+# noinspection PyUnusedLocal
+def compile(func, dynamic=True, example_inputs=None, static_argnums=None, static_argnames=None):
+    logging.warning('Numpy does not support compiling functions.\n'
+                    'Now returning the unmodified function.')
+    return func
+
+current_framework_str = lambda: 'numpy'
+current_framework_str.__name__ = 'current_framework_str'
