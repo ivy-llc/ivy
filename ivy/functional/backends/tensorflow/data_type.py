@@ -8,21 +8,31 @@ from tensorflow.python.framework.dtypes import DType
 # local
 import ivy
 
-def can_cast(from_: Union[tf.DType, Tensor], to: tf.DType)\
+
+def can_cast(from_: Union[tf.DType, Tensor],
+             to: tf.DType)\
         -> bool:
-    if 'bool' in str(from_) and 'int' in str(to):
+    if isinstance(from_, Tensor):
+        from_ = from_.dtype
+    from_str = str(from_)
+    to_str = str(to)
+    if ivy.dtype_bits(to) < ivy.dtype_bits(from_):
         return False
-    try:
-        from_ = tf.dtypes.as_dtype(from_)
-        to    = tf.dtypes.as_dtype(to)
-        x = tf.random.normal(
-            [2, 2],
-            dtype=from_
-        )
-        tf.cast(x, to)
-    except TypeError:
+    if "'int" in from_str and 'uint' in to_str:
         return False
+    if 'bool' in from_str and (('int' in to_str) or ('float' in to_str)):
+        return False
+    if 'int' in from_str and (('float' in to_str) or ('bool' in to_str)):
+        return False
+    if 'float' in from_str and 'bool' in to_str:
+        return False
+    if 'float' in from_str and 'int' in to_str:
+        return False
+    if 'uint' in from_str and "'int" in to_str:
+        if ivy.dtype_bits(to) <= ivy.dtype_bits(from_):
+            return False
     return True
+
 
 # noinspection PyShadowingBuiltins
 def iinfo(type: Union[DType, str, Tensor])\
