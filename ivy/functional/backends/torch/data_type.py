@@ -6,6 +6,29 @@ from typing import Union, Tuple
 import ivy
 
 
+def can_cast(from_: Union[torch.dtype, torch.Tensor],
+             to: torch.dtype)\
+        -> bool:
+    if isinstance(from_, torch.Tensor):
+        from_ = from_.dtype
+    from_str = str(from_)
+    to_str = str(to)
+    if ivy.dtype_bits(to) < ivy.dtype_bits(from_):
+        return False
+    if '.int' in from_str and 'uint' in to_str:
+        return False
+    if 'uint' in from_str and '.int' in to_str:
+        if ivy.dtype_bits(to) <= ivy.dtype_bits(from_):
+            return False
+        else:
+            return True
+    if 'bool' in from_str and (('int' in to_str) or ('float' in to_str)):
+        return False
+    if 'int' in from_str and 'float' in to_str:
+        return False
+    return torch.can_cast(from_, to)
+
+
 # noinspection PyShadowingBuiltins
 def iinfo(type: Union[torch.dtype, str, torch.Tensor])\
         -> torch.iinfo:
