@@ -1754,24 +1754,24 @@ def test_inplace_variables_supported(dev, call):
         raise Exception('Unrecognized framework')
 
 
-# @pytest.mark.parametrize(
-#     "x_n_new", [([0., 1., 2.], [2., 1., 0.]), (0., 1.)])
-# @pytest.mark.parametrize(
-#     "tensor_fn", [ivy.array, helpers.var_fn])
-# def test_inplace_update(x_n_new, tensor_fn, dev, call):
-#     x_orig, new_val = x_n_new
-#     if call is helpers.mx_call and isinstance(x_orig, Number):
-#         # MxNet supports neither 0-dim variables nor 0-dim inplace updates
-#         pytest.skip()
-#     x_orig = tensor_fn(x_orig, 'float32', dev)
-#     new_val = tensor_fn(new_val, 'float32', dev)
-#     if (tensor_fn is not helpers.var_fn and ivy.inplace_arrays_supported()) or\
-#             (tensor_fn is helpers.var_fn and ivy.inplace_variables_supported()):
-#         x = ivy.inplace_update(x_orig, new_val)
-#         assert id(x) == id(x_orig)
-#         assert np.allclose(ivy.to_numpy(x), ivy.to_numpy(new_val))
-#         return
-#     pytest.skip()
+@pytest.mark.parametrize(
+    "x_n_new", [([0., 1., 2.], [2., 1., 0.]), (0., 1.)])
+@pytest.mark.parametrize(
+    "tensor_fn", [ivy.array, helpers.var_fn])
+def test_inplace_update(x_n_new, tensor_fn, dev, call):
+    x_orig, new_val = x_n_new
+    if call is helpers.mx_call and isinstance(x_orig, Number):
+        # MxNet supports neither 0-dim variables nor 0-dim inplace updates
+        pytest.skip()
+    x_orig = tensor_fn(x_orig, 'float32', dev)
+    new_val = tensor_fn(new_val, 'float32', dev)
+    if (tensor_fn is not helpers.var_fn and ivy.inplace_arrays_supported()) or\
+            (tensor_fn is helpers.var_fn and ivy.inplace_variables_supported()):
+        x = ivy.inplace_update(x_orig, new_val)
+        assert id(x) == id(x_orig)
+        assert np.allclose(ivy.to_numpy(x), ivy.to_numpy(new_val))
+        return
+    pytest.skip()
 
 
 # @pytest.mark.parametrize(
