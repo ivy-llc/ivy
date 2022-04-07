@@ -49,6 +49,11 @@ def bitwise_invert(x: Tensor)\
 def bitwise_and(x1: Tensor,
                 x2: Tensor)\
         -> Tensor:
+    if not isinstance(x2, Tensor):
+        x2 = tf.constant(x2, dtype=x1.dtype)
+    if ('int' not in str(x1.dtype)) & ('int' not in str(x2.dtype)):
+        return tf.math.logical_and(x1, x2)
+    x1, x2 = _cast_for_binary_op(x1, x2)
     return tf.bitwise.bitwise_and(x1, x2)
 
 
@@ -285,8 +290,12 @@ def sinh(x: Tensor) \
 
 def bitwise_or(x1: Tensor, x2: Tensor) \
         -> Tensor:
+    if not isinstance(x2, Tensor):
+        x2 = tf.constant(x2, dtype=x1.dtype)
+    if ('int' not in str(x1.dtype)) & ('int' not in str(x2.dtype)):
+        return tf.math.logical_or(x1, x2)
     x1, x2 = _cast_for_binary_op(x1, x2)
-    return x1 | x2
+    return tf.bitwise.bitwise_or(x1, x2)
 
 
 def positive(x: Tensor)\
@@ -348,6 +357,12 @@ def bitwise_right_shift(x1: Tensor, x2: Tensor)\
         -> Tensor:
     x1, x2 = _cast_for_binary_op(x1, x2)
     return tf.bitwise.right_shift(x1, x2)
+
+
+def bitwise_left_shift(x1: Tensor, x2: Tensor)\
+        -> Tensor:
+    x1, x2 = _cast_for_binary_op(x1, x2)
+    return tf.bitwise.left_shift(x1, x2)
 
 
 tan = tf.tan
