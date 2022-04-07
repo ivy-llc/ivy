@@ -1,7 +1,7 @@
 # global
 import tensorflow as tf
 from tensorflow.python.types.core import Tensor
-import typing
+from typing import Optional, Tuple, Union
 
 # local
 import ivy
@@ -98,7 +98,7 @@ def _tf_cast(x: Tensor, dtype: tf.dtypes.DType) -> Tensor:
 
 
 def _cast_for_binary_op(x1: Tensor, x2: Tensor)\
-        -> typing.Tuple[typing.Union[Tensor, int, float, bool], typing.Union[Tensor, int, float, bool]]:
+        -> Tuple[Union[Tensor, int, float, bool], Union[Tensor, int, float, bool]]:
     x1_bits = ivy.functional.backends.tensorflow.dtype_bits(x1.dtype)
     if isinstance(x2, (int, float, bool)):
         return x1, x2
@@ -331,12 +331,16 @@ def trunc(x: Tensor)\
     return res
 
 
-def abs(x: Tensor)\
+def abs(x: Tensor,
+        out: Optional[Tensor] = None)\
         -> Tensor:
-
     if 'uint' in ivy.dtype(x, as_str=True):
-        return x
-    return tf.abs(x)
+        ret = x
+    else:
+        ret = tf.abs(x)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
 def subtract(x1: Tensor, x2: Tensor)\

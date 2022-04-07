@@ -1,8 +1,10 @@
 # global
 import jax
 import jax.numpy as jnp
+from typing import Optional
 
 # local
+import ivy
 from ivy.functional.backends.jax import JaxArray
 
 def add(x1: JaxArray,
@@ -255,9 +257,13 @@ def trunc(x: JaxArray)\
     return jnp.trunc(x)
 
   
-def abs(x: JaxArray)\
+def abs(x: JaxArray,
+        out: Optional[JaxArray] = None)\
         -> JaxArray:
-    return jnp.absolute(x)
+    ret = jnp.absolute(x)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
 def subtract(x1: JaxArray, x2: JaxArray)\

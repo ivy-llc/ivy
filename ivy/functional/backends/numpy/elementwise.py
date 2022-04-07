@@ -1,5 +1,6 @@
 # global
 import numpy as np
+from typing import Optional
 import numpy.array_api as npa
 
 try:
@@ -282,9 +283,10 @@ def trunc(x: np.ndarray) \
     return np.asarray(npa.trunc(npa.asarray(x)))
 
 
-def abs(x: np.ndarray)\
+def abs(x: np.ndarray,
+        out: Optional[np.ndarray] = None)\
         -> np.ndarray:
-    return np.absolute(x)
+    return np.absolute(x, out=out)
 
 
 def subtract(x1: np.ndarray, x2: np.ndarray)\
