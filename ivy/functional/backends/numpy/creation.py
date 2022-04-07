@@ -28,6 +28,9 @@ def asarray(object_in, dtype=None, dev=None, copy=None):
         return _to_dev(np.asarray(object_in, dtype=dtype), dev)
 
 
+array = asarray
+
+
 def zeros(shape: Union[int, Tuple[int], List[int]],
           dtype: Optional[np.dtype] = None,
           device: Optional[str] = None) \
@@ -133,6 +136,7 @@ def eye(n_rows: int,
     dtype = dtype_from_str(default_dtype(dtype))
     return _to_dev(np.eye(n_rows, n_cols, k, dtype), device)
 
+
 # noinspection PyShadowingNames
 def arange(stop, start=0, step=1, dtype=None, dev=None):
     if dtype:
@@ -150,18 +154,12 @@ def full(shape, fill_value, dtype=None, device=None):
     return _to_dev(np.full(shape, fill_value, dtype_from_str(default_dtype(dtype, fill_value))), device)
 
 
-
-
 def from_dlpack(x):
     return np.from_dlpack(x)
 
+
 # Extra #
 # ------#
-
-# noinspection PyShadowingNames
-def array(object_in, dtype=None, dev=None):
-    return _to_dev(np.array(object_in, dtype=default_dtype(dtype, object_in)), dev)
-
 
 def logspace(start, stop, num, base=10., axis=None, dev=None):
     if axis is None:
