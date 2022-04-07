@@ -68,6 +68,7 @@ Elementwise
    elementwise/divide.rst
    elementwise/remainder.rst
    elementwise/bitwise_right_shift.rst
+   elementwise/bitwise_left_shift.rst
    elementwise/equal.rst
    elementwise/erf.rst
    elementwise/minimum.rst

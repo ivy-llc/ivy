@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>exp &mdash; Ivy 1.0 documentation</title>
+  <title>bitwise_left_shift &mdash; Ivy 1.0 documentation</title>
   
 
   
@@ -36,8 +36,8 @@
   <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="expm1" href="expm1.html" />
-    <link rel="prev" title="bitwise_xor" href="bitwise_xor.html" /> 
+    <link rel="next" title="equal" href="equal.html" />
+    <link rel="prev" title="bitwise_right_shift" href="bitwise_right_shift.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -101,7 +101,7 @@
 <li class="toctree-l2"><a class="reference internal" href="add.html">add</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pow.html">pow</a></li>
 <li class="toctree-l2"><a class="reference internal" href="bitwise_xor.html">bitwise_xor</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">exp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="exp.html">exp</a></li>
 <li class="toctree-l2"><a class="reference internal" href="expm1.html">expm1</a></li>
 <li class="toctree-l2"><a class="reference internal" href="bitwise_invert.html">bitwise_invert</a></li>
 <li class="toctree-l2"><a class="reference internal" href="bitwise_and.html">bitwise_and</a></li>
@@ -153,7 +153,7 @@
 <li class="toctree-l2"><a class="reference internal" href="divide.html">divide</a></li>
 <li class="toctree-l2"><a class="reference internal" href="remainder.html">remainder</a></li>
 <li class="toctree-l2"><a class="reference internal" href="bitwise_right_shift.html">bitwise_right_shift</a></li>
-<li class="toctree-l2"><a class="reference internal" href="bitwise_left_shift.html">bitwise_left_shift</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">bitwise_left_shift</a></li>
 <li class="toctree-l2"><a class="reference internal" href="equal.html">equal</a></li>
 <li class="toctree-l2"><a class="reference internal" href="erf.html">erf</a></li>
 <li class="toctree-l2"><a class="reference internal" href="minimum.html">minimum</a></li>
@@ -248,13 +248,13 @@
         
           <li><a href="../elementwise.html">Elementwise</a> &raquo;</li>
         
-      <li>exp</li>
+      <li>bitwise_left_shift</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../../_sources/functional/ivy/elementwise/exp.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../../_sources/functional/ivy/elementwise/bitwise_left_shift.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -267,27 +267,20 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="exp">
-<h1>exp<a class="headerlink" href="#exp" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="bitwise-left-shift">
+<h1>bitwise_left_shift<a class="headerlink" href="#bitwise-left-shift" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
-<dt id="ivy.functional.ivy.elementwise.exp">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">exp</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../../_modules/ivy/functional/ivy/elementwise.html#exp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.elementwise.exp" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculates an implementation-dependent approximation to the exponential function, having domain <code class="docutils literal notranslate"><span class="pre">[-infinity,</span> <span class="pre">+infinity]</span></code> and codomain <code class="docutils literal notranslate"><span class="pre">[+0,</span> <span class="pre">+infinity]</span></code>, for each element <code class="docutils literal notranslate"><span class="pre">x_i</span></code> of the input array <code class="docutils literal notranslate"><span class="pre">x</span></code> (<code class="docutils literal notranslate"><span class="pre">e</span></code> raised to the power of <code class="docutils literal notranslate"><span class="pre">x_i</span></code>, where <code class="docutils literal notranslate"><span class="pre">e</span></code> is the base of the natural logarithm).
-<strong>Special cases</strong>
-For floating-point operands,
-- If <code class="docutils literal notranslate"><span class="pre">x_i</span></code> is <code class="docutils literal notranslate"><span class="pre">NaN</span></code>, the result is <code class="docutils literal notranslate"><span class="pre">NaN</span></code>.
-- If <code class="docutils literal notranslate"><span class="pre">x_i</span></code> is <code class="docutils literal notranslate"><span class="pre">+0</span></code>, the result is <code class="docutils literal notranslate"><span class="pre">1</span></code>.
-- If <code class="docutils literal notranslate"><span class="pre">x_i</span></code> is <code class="docutils literal notranslate"><span class="pre">-0</span></code>, the result is <code class="docutils literal notranslate"><span class="pre">1</span></code>.
-- If <code class="docutils literal notranslate"><span class="pre">x_i</span></code> is <code class="docutils literal notranslate"><span class="pre">+infinity</span></code>, the result is <code class="docutils literal notranslate"><span class="pre">+infinity</span></code>.
-- If <code class="docutils literal notranslate"><span class="pre">x_i</span></code> is <code class="docutils literal notranslate"><span class="pre">-infinity</span></code>, the result is <code class="docutils literal notranslate"><span class="pre">+0</span></code>.
-Parameters
-———-
-x: array</p>
-<blockquote>
-<div><p>input array. Should have a floating-point data type.</p>
-</div></blockquote>
+<dt id="ivy.functional.ivy.elementwise.bitwise_left_shift">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">bitwise_left_shift</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x1</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">x2</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../../_modules/ivy/functional/ivy/elementwise.html#bitwise_left_shift"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.elementwise.bitwise_left_shift" title="Permalink to this definition">¶</a></dt>
+<dd><p>Shifts the bits of each element <code class="docutils literal notranslate"><span class="pre">x1_i</span></code> of the input array <code class="docutils literal notranslate"><span class="pre">x1</span></code> to the left according to the respective element <code class="docutils literal notranslate"><span class="pre">x2_i</span></code> of the input array <code class="docutils literal notranslate"><span class="pre">x2</span></code>.</p>
 <dl class="simple">
-<dt>out: array</dt><dd><p>an array containing the evaluated exponential function result for each element in <code class="docutils literal notranslate"><span class="pre">x</span></code>. The returned array must have a floating-point data type determined by <span class="xref std std-ref">type-promotion</span>.</p>
+<dt>x1:</dt><dd><p>first input array. Should have an integer data type.</p>
+</dd>
+<dt>x2:</dt><dd><p>second input array. Must be compatible with <code class="docutils literal notranslate"><span class="pre">x1</span></code> (see <span class="xref std std-ref">broadcasting</span>). Should have an integer data type. Each element must be greater than or equal to 0.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>out:</dt><dd><p>out (array) – an array containing the element-wise results. The returned array must have a data type determined by <span class="xref std std-ref">Type Promotion Rules</span>.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -307,10 +300,10 @@ x: array</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="expm1.html" class="btn btn-neutral float-right" title="expm1" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="equal.html" class="btn btn-neutral float-right" title="equal" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="bitwise_xor.html" class="btn btn-neutral float-left" title="bitwise_xor" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="bitwise_right_shift.html" class="btn btn-neutral float-left" title="bitwise_right_shift" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
