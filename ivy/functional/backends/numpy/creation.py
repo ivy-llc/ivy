@@ -6,7 +6,7 @@ from typing import Union, Tuple, Optional, List
 from .data_type import dtype_from_str
 from ivy.functional.ivy import default_dtype
 # noinspection PyProtectedMember
-from ivy.functional.backends.numpy.general import _to_dev
+from ivy.functional.backends.numpy.device import _to_dev
 
 
 def asarray(object_in, dtype=None, dev=None, copy=None):
