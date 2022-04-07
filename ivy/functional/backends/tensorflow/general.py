@@ -77,10 +77,19 @@ container_types = lambda: []
 
 
 def inplace_update(x, val):
-    if ivy.is_variable(x):
-        x.assign(val)
-        return x
-    raise Exception('TensorFlow does not support inplace operations on non-Variable tensors')
+    (x_native, val_native), _ = ivy.args_to_native(x, val)
+    if ivy.is_variable(x_native):
+        x_native.assign(val_native)
+        if ivy.is_ivy_array(x):
+            x.data = x_native
+        else:
+            x = ivy.Array(x_native)
+    else:
+        if ivy.is_ivy_array(x):
+            x.data = val_native
+        else:
+            x = ivy.Array(val_native)
+    return x
 
 
 inplace_arrays_supported = lambda: False
