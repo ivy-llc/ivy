@@ -13,6 +13,7 @@ from jaxlib.xla_extension import Buffer, Device, DeviceArray
 from jax.interpreters.xla import _DeviceArray
 from jax.dlpack import from_dlpack as jax_from_dlpack
 
+
 def ones(shape: Union[int, Tuple[int], List[int]],
          dtype: Optional[jnp.dtype] = None,
          device: Optional[jaxlib.xla_extension.Device] = None) \
@@ -112,6 +113,9 @@ def asarray(object_in, dtype: Optional[str] = None, dev: Optional[str] = None, c
         return to_dev(jnp.asarray(object_in, dtype=dtype), dev)
 
 
+array = asarray
+
+
 def linspace(start, stop, num, axis=None, dev=None):
     if axis is None:
         axis = -1
@@ -146,18 +150,12 @@ def full(shape, fill_value, dtype=None, device=None):
                   default_device(device))
 
 
-
-
 def from_dlpack(x):
     return jax_from_dlpack(x)
 
+
 # Extra #
 # ------#
-
-# noinspection PyShadowingNames
-def array(object_in, dtype=None, dev=None):
-    return to_dev(jnp.array(object_in, dtype=dtype_from_str(default_dtype(dtype, object_in))), default_device(dev))
-
 
 def logspace(start, stop, num, base=10., axis=None, dev=None):
     if axis is None:
