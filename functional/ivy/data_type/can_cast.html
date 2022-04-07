@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>unset_default_float_dtype &mdash; Ivy 1.0 documentation</title>
+  <title>can_cast &mdash; Ivy 1.0 documentation</title>
   
 
   
@@ -36,8 +36,8 @@
   <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="closest_valid_dtype" href="closest_valid_dtype.html" />
-    <link rel="prev" title="set_default_float_dtype" href="set_default_float_dtype.html" /> 
+    <link rel="next" title="iinfo" href="iinfo.html" />
+    <link rel="prev" title="Data type" href="../data_type.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -96,7 +96,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../constants.html">Constants</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../creation.html">Creation</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../data_type.html">Data type</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="can_cast.html">can_cast</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">can_cast</a></li>
 <li class="toctree-l2"><a class="reference internal" href="iinfo.html">iinfo</a></li>
 <li class="toctree-l2"><a class="reference internal" href="finfo.html">finfo</a></li>
 <li class="toctree-l2"><a class="reference internal" href="broadcast_to.html">broadcast_to</a></li>
@@ -113,7 +113,7 @@
 <li class="toctree-l2"><a class="reference internal" href="set_default_int_dtype.html">set_default_int_dtype</a></li>
 <li class="toctree-l2"><a class="reference internal" href="unset_default_int_dtype.html">unset_default_int_dtype</a></li>
 <li class="toctree-l2"><a class="reference internal" href="set_default_float_dtype.html">set_default_float_dtype</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">unset_default_float_dtype</a></li>
+<li class="toctree-l2"><a class="reference internal" href="unset_default_float_dtype.html">unset_default_float_dtype</a></li>
 <li class="toctree-l2"><a class="reference internal" href="closest_valid_dtype.html">closest_valid_dtype</a></li>
 <li class="toctree-l2"><a class="reference internal" href="is_int_dtype.html">is_int_dtype</a></li>
 <li class="toctree-l2"><a class="reference internal" href="is_float_dtype.html">is_float_dtype</a></li>
@@ -213,13 +213,13 @@
         
           <li><a href="../data_type.html">Data type</a> &raquo;</li>
         
-      <li>unset_default_float_dtype</li>
+      <li>can_cast</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../../_sources/functional/ivy/data_type/unset_default_float_dtype.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../../_sources/functional/ivy/data_type/can_cast.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -232,12 +232,27 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="unset-default-float-dtype">
-<h1>unset_default_float_dtype<a class="headerlink" href="#unset-default-float-dtype" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="can-cast">
+<h1>can_cast<a class="headerlink" href="#can-cast" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
-<dt id="ivy.functional.ivy.data_type.unset_default_float_dtype">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">unset_default_float_dtype</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/data_type.html#unset_default_float_dtype"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.data_type.unset_default_float_dtype" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dt id="ivy.functional.ivy.data_type.can_cast">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">can_cast</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">from_</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.Dtype<span class="p">, </span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">to</span><span class="p">:</span> <span class="n">ivy.Dtype</span></em><span class="sig-paren">)</span> &#x2192; bool<a class="reference internal" href="../../../_modules/ivy/functional/ivy/data_type.html#can_cast"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.data_type.can_cast" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determines if one data type can be cast to another data type according <span class="xref std std-ref">type-promotion</span> rules.
+Parameters
+———-
+<a href="#id1"><span class="problematic" id="id2">from_</span></a>: Union[dtype, array]</p>
+<blockquote>
+<div><p>input data type or array from which to cast.</p>
+</div></blockquote>
+<dl class="simple">
+<dt>to: dtype</dt><dd><p>desired data type.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>out: bool</dt><dd><p><code class="docutils literal notranslate"><span class="pre">True</span></code> if the cast can occur according to <span class="xref std std-ref">type-promotion</span> rules; otherwise, <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
+</dd>
+</dl>
+</dd></dl>
 
 <div class="line-block">
 <div class="line"><br /></div>
@@ -254,10 +269,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="closest_valid_dtype.html" class="btn btn-neutral float-right" title="closest_valid_dtype" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="iinfo.html" class="btn btn-neutral float-right" title="iinfo" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="set_default_float_dtype.html" class="btn btn-neutral float-left" title="set_default_float_dtype" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="../data_type.html" class="btn btn-neutral float-left" title="Data type" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

@@ -13,6 +13,7 @@ Data type
    :maxdepth: -1
    :caption: Data type
 
+   data_type/can_cast.rst
    data_type/iinfo.rst
    data_type/finfo.rst
    data_type/broadcast_to.rst
