@@ -203,7 +203,9 @@
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="c1"># local</span>
+<span class="kn">import</span> <span class="nn">ivy</span>
 <span class="kn">import</span> <span class="nn">ivy</span> <span class="k">as</span> <span class="nn">_ivy</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span>
 <span class="kn">from</span> <span class="nn">ivy.framework_handler</span> <span class="kn">import</span> <span class="n">current_framework</span> <span class="k">as</span> <span class="n">_cur_framework</span>
 
 
@@ -256,7 +258,8 @@
 
 <span class="c1"># Variables #</span>
 
-<div class="viewcode-block" id="variable"><a class="viewcode-back" href="../../../../functional/ivy/gradients/variable.html#ivy.functional.ivy.gradients.variable">[docs]</a><span class="k">def</span> <span class="nf">variable</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+<div class="viewcode-block" id="variable"><a class="viewcode-back" href="../../../../functional/ivy/gradients/variable.html#ivy.functional.ivy.gradients.variable">[docs]</a><span class="k">def</span> <span class="nf">variable</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">])</span>\
+        <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Variable</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Creates a variable, which supports gradient computation.</span>
 
