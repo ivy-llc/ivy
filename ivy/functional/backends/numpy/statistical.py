@@ -85,7 +85,6 @@ def std(x: np.ndarray,
     return np.std(x, axis=axis, keepdims=keepdims)
 
 
-
 # Extra #
 # ------#
 
