@@ -96,7 +96,7 @@ def empty_like(x: JaxArray,
 
 
 def asarray(object_in, dtype: Optional[str] = None, dev: Optional[str] = None, copy: Optional[bool] = None):
-    if isinstance(object_in, (_DeviceArray, DeviceArray, Buffer)):
+    if isinstance(object_in, (_DeviceArray, DeviceArray, Buffer)) and dtype!="bool":
         dtype = object_in.dtype
     elif isinstance(object_in, (list, tuple, dict)) and len(object_in) != 0 and dtype is None:
         # Temporary fix on type
