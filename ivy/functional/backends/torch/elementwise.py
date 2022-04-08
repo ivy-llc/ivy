@@ -327,23 +327,27 @@ def acos(x: torch.Tensor,
     return torch.acos(x, out=out)
 
 
-def atan(x: torch.Tensor) \
+def atan(x: torch.Tensor,
+         out: Optional[torch.Tensor] = None) \
         -> torch.Tensor:
-    return torch.atan(x)
+    return torch.atan(x, out=out)
 
 
-def atan2(x1: Tensor, x2: Tensor) -> Tensor:
+def atan2(x1: torch.Tensor,
+          x2: torch.Tensor,
+          out: Optional[torch.Tensor] = None)\
+        -> torch.Tensor:
     if hasattr(x1, 'dtype') and hasattr(x2, 'dtype'):
         promoted_type = torch.promote_types(x1.dtype, x2.dtype)
         x1 = x1.to(promoted_type)
         x2 = x2.to(promoted_type)
-    return torch.atan2(x1, x2)
+    return torch.atan2(x1, x2, out=out)
 
 
-def cosh(x: torch.Tensor)\
+def cosh(x: torch.Tensor,
+         out: Optional[torch.Tensor] = None)\
         -> torch.Tensor:
-    return torch.cosh(x)
-
+    return torch.cosh(x, out=out)
 
 
 def log(x: torch.Tensor)\
