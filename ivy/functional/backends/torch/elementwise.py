@@ -3,6 +3,7 @@ import torch
 from torch import Tensor
 import typing
 import math
+from typing import Optional
 
 # local
 import ivy
@@ -264,6 +265,28 @@ def square(x: torch.Tensor) \
     return torch.square(x)
 
 
+def pow(x1: torch.Tensor,
+        x2: torch.Tensor,
+        out: Optional[torch.Tensor] = None)\
+        -> torch.Tensor:
+    return torch.pow(x1, x2, out=out)
+    if not isinstance(x2, Tensor):
+        x2 = torch.tensor(x2, dtype=x1.dtype)
+        return torch.pow(x1, x2, out=out)
+    promoted_type = torch.promote_types(x1.dtype, x2.dtype)
+    ret = torch.pow(x1, x2).type(promoted_type)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
+
+#
+# def pow(x1: torch.Tensor, x2: torch.Tensor)\
+#         -> torch.Tensor:
+#     if hasattr(x1, 'dtype') and hasattr(x2, 'dtype'):
+#         promoted_type = torch.promote_types(x1.dtype, x2.dtype)
+#     return torch.pow(x1, x2).type(promoted_type)
+
+
 def round(x: torch.Tensor)\
         -> torch.Tensor:
     if 'int' in str(x.dtype):
@@ -316,7 +339,6 @@ def cosh(x: torch.Tensor)\
     return torch.cosh(x)
 
 
-
 def log(x: torch.Tensor)\
         -> torch.Tensor:
     return torch.log(x)
@@ -342,13 +364,11 @@ def remainder(x1: torch.Tensor, x2: torch.Tensor)\
     return torch.remainder(x1, x2)
 
 
-
 def atanh(x: torch.Tensor) \
         -> torch.Tensor:
     if isinstance(x, float):
         return math.atanh(x)
     return torch.atanh(x)
-
 
 
 def bitwise_right_shift(x1: torch.Tensor, x2: torch.Tensor)\
