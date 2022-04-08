@@ -370,7 +370,8 @@ def subtract(x1: torch.Tensor,
         promoted_type = torch.promote_types(x1.dtype, x2.dtype)
         x1 = x1.to(promoted_type)
         x2 = x2.to(promoted_type)
-    return torch.subtract(x1, x2, out=out)
+        return torch.subtract(x1, x2, out=out)
+    return torch.subtract(x1, x2)
 
 
 def remainder(x1: torch.Tensor,
