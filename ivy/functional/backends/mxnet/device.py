@@ -49,8 +49,10 @@ def dev_from_str(dev):
 clear_mem_on_dev = lambda dev: None
 _callable_dev = dev
 gpu_is_available = lambda: mx.context.num_gpus() > 0
-num_gpus = lambda: mx.context.num_gpus()
 tpu_is_available = lambda: False
+
+def num_gpus() -> int:
+    return mx.context.num_gpus()
 
 
 class Profiler(BaseProfiler):

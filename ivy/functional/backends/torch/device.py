@@ -54,7 +54,10 @@ def clear_mem_on_dev(dev):
 
 _callable_dev = dev
 gpu_is_available = torch.cuda.is_available
-num_gpus = torch.cuda.device_count
+
+
+def num_gpus() -> int:
+    return torch.cuda.device_count
 
 
 # noinspection PyUnresolvedReferences

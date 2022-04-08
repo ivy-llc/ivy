@@ -278,7 +278,13 @@ def num_gpus() -> int:
     """
     Determine the number of available GPUs, with the backend framework.
 
-    :return: Number of available GPUs.
+    Returns
+    -------
+    out:
+        Number of available GPUs.
+
+    Examples:
+    >>> print(ivy.num_gpus())
     """
     return _cur_framework().num_gpus()
 

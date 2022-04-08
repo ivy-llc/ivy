@@ -22,6 +22,10 @@ num_gpus = lambda: 0
 tpu_is_available = lambda: False
 
 
+def num_gpus() -> int:
+    return 0
+
+
 def _to_dev(x, dev):
     if dev is not None:
         if 'gpu' in dev:

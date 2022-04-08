@@ -85,7 +85,7 @@ def _dev_is_available(base_dev):
 gpu_is_available = lambda: _dev_is_available('gpu')
 
 
-def num_gpus():
+def num_gpus() -> int:
     try:
         return len(jax.devices('gpu'))
     except RuntimeError:
