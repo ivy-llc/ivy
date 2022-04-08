@@ -307,19 +307,24 @@ def abs(x: torch.Tensor,
     return torch.abs(x, out=out)
 
   
-def logaddexp(x1: torch.Tensor, x2: torch.Tensor) -> torch.Tensor:
+def logaddexp(x1: torch.Tensor,
+              x2: torch.Tensor,
+              out: Optional[torch.Tensor] = None)\
+        -> torch.Tensor:
     x1, x2 = _cast_for_binary_op(x1, x2)
-    return torch.logaddexp(x1, x2)
+    return torch.logaddexp(x1, x2, out=out)
 
 
-def tan(x: torch.Tensor)\
+def tan(x: torch.Tensor,
+        out: Optional[torch.Tensor] = None)\
         -> torch.Tensor:
-    return torch.tan(x)
+    return torch.tan(x, out=out)
 
 
-def acos(x: torch.Tensor)\
+def acos(x: torch.Tensor,
+         out: Optional[torch.Tensor] = None)\
         -> torch.Tensor:
-    return torch.acos(x)
+    return torch.acos(x, out=out)
 
 
 def atan(x: torch.Tensor) \
