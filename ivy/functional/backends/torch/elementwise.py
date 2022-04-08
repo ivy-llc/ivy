@@ -431,8 +431,6 @@ def remainder(x1: torch.Tensor,
 def atanh(x: torch.Tensor,
           out: Optional[torch.Tensor] = None) \
         -> torch.Tensor:
-    if isinstance(x, float):
-        return math.atanh(x)
     return torch.atanh(x, out=out)
 
 
