@@ -428,10 +428,24 @@ def det(x: ivy.Array) \
     """
     Returns the determinant of a square matrix (or a stack of square matrices) x.
 
-    :param x:  input array having shape (..., M, M) and whose innermost two dimensions form square matrices. Should
+    Parameters
+    ----------
+    x:
+          input array having shape (..., M, M) and whose innermost two dimensions form square matrices. Should
                have a floating-point data type.
-    :return :  if x is a two-dimensional array, a zero-dimensional array containing the determinant; otherwise, a non-zero
+
+    Returns
+    ------
+    out(array):
+
+            if x is a two-dimensional array, a zero-dimensional array containing the determinant; otherwise, a non-zero
                dimensional array containing the determinant for each square matrix. The returned array must have the same data type as x.
+
+    Examples:
+    >>> x = ivy.array([ [[1, 2], [3, 4]], [[1, 2], [2, 1]], [[1, 3], [3, 1]] ])
+    >>> out = ivy.det(x)
+    >>> print(out)
+    [-2., -3., -8.]
     """
     return _cur_framework(x).det(x)
 
