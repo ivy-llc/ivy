@@ -164,7 +164,16 @@ def cross (x1: torch.Tensor,
     dtype_from = torch.promote_types(x1.dtype, x2.dtype)
     x1 = x1.type(dtype_from)
     x2 = x2.type(dtype_from)
-    return torch.cross(input = x1, other  = x2, dim=axis)    
+    return torch.cross(input = x1, other  = x2, dim=axis)
+
+
+def vecdot(x1: torch.Tensor,
+           x2: torch.Tensor,
+           axis: int = -1)\
+        -> torch.Tensor:
+    dtype = torch.promote_types(x1.dtype, x2.dtype)
+    x1, x2 = x1.type(torch.float32), x2.type(torch.float32)
+    return torch.tensordot(x1, x2, dims=([axis], [axis])).type(dtype)
 
 
 # Extra #
