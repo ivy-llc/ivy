@@ -7,6 +7,14 @@ from typing import Optional
 import ivy
 from ivy.functional.backends.jax import JaxArray
 
+
+def bitwise_left_shift(x1: JaxArray, x2: JaxArray)\
+        -> JaxArray:
+    if isinstance(x2, int):
+        x2 = jnp.asarray(x2, dtype=x1.dtype)
+    return jnp.left_shift(x1, x2)
+
+
 def add(x1: JaxArray,
            x2: JaxArray)\
         -> JaxArray:

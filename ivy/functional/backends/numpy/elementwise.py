@@ -8,6 +8,19 @@ try:
 except (ImportError, ModuleNotFoundError):
     _erf = None
 
+
+def bitwise_left_shift(x1: np.ndarray,
+                       x2: np.ndarray)\
+                       -> np.ndarray:
+    if not isinstance(x2, np.ndarray):
+        x2 = np.asarray(x2, dtype=x1.dtype)
+    else:
+        dtype = np.promote_types(x1.dtype, x2.dtype)
+        x1 = x1.astype(dtype)
+        x2 = x2.astype(dtype)
+    return np.left_shift(x1, x2)
+
+
 def add(x1: np.ndarray,
         x2: np.ndarray)\
         -> np.ndarray:
