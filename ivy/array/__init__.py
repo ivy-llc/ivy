@@ -119,6 +119,15 @@ class Array(ArrayWithArrayAPI, ArrayWithDevice, ArrayWithGeneral, ArrayWithGradi
            For array libraries having graph-based computational models, an array may have unknown dimensions due to data-dependent operations.
         """
         return self._size
+
+    # Setters #
+    # --------#
+
+    @data.setter
+    def data(self, data):
+        assert ivy.is_native_array(data)
+        self._data = data
+
     # Built-ins #
     # ----------#
 
@@ -212,10 +221,7 @@ class Array(ArrayWithArrayAPI, ArrayWithDevice, ArrayWithGeneral, ArrayWithGradi
     @_native_wrapper
     def __sub__(self, other):
         other = to_native(other)
-        res = ivy.subtract(self._data, other)
-        if res is NotImplemented:
-            return res
-        return to_ivy(res)
+        return ivy.subtract(self._data, other)
 
     @_native_wrapper
     def __rsub__(self, other):
@@ -334,19 +340,11 @@ class Array(ArrayWithArrayAPI, ArrayWithDevice, ArrayWithGeneral, ArrayWithGradi
 
     @_native_wrapper
     def __and__(self, other):
-        other = to_native(other)
-        res = self._data.__and__(other)
-        if res is NotImplemented:
-            return res
-        return to_ivy(res)
+        return ivy.bitwise_and(self._data, other)
 
     @_native_wrapper
     def __rand__(self, other):
-        other = to_native(other)
-        res = self._data.__rand__(other)
-        if res is NotImplemented:
-            return res
-        return to_ivy(res)
+        return ivy.bitwise_and(self._data, other)
 
     @_native_wrapper
     def __or__(self, other):
@@ -385,8 +383,28 @@ class Array(ArrayWithArrayAPI, ArrayWithDevice, ArrayWithGeneral, ArrayWithGradi
         return to_ivy(res)
 
     @_native_wrapper
+    def __lshift__(self, other):
+        return ivy.bitwise_left_shift(self._data, other)
+
+    @_native_wrapper
+    def __rlshift__(self, other):
+        other = to_native(other)
+        res = self._data.__rlshift__(other)
+        if res is NotImplemented:
+            return res
+        return to_ivy(res)
+
+    @_native_wrapper
     def __rshift__(self, other):
         return ivy.bitwise_right_shift(self._data, other)
+
+    @_native_wrapper
+    def __rrshift__(self, other):
+        other = to_native(other)
+        res = self._data.__rrshift__(other)
+        if res is NotImplemented:
+            return res
+        return to_ivy(res)
 
     @_native_wrapper
     def __rrshift__(self, other):

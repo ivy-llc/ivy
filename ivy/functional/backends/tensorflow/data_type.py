@@ -9,6 +9,60 @@ from tensorflow.python.framework.dtypes import DType
 import ivy
 
 
+def can_cast(from_: Union[tf.DType, Tensor],
+             to: tf.DType)\
+        -> bool:
+    if isinstance(from_, Tensor):
+        from_ = from_.dtype
+    from_str = str(from_)
+    to_str = str(to)
+    if ivy.dtype_bits(to) < ivy.dtype_bits(from_):
+        return False
+    if "'int" in from_str and 'uint' in to_str:
+        return False
+    if 'bool' in from_str and (('int' in to_str) or ('float' in to_str)):
+        return False
+    if 'int' in from_str and (('float' in to_str) or ('bool' in to_str)):
+        return False
+    if 'float' in from_str and 'bool' in to_str:
+        return False
+    if 'float' in from_str and 'int' in to_str:
+        return False
+    if 'uint' in from_str and "'int" in to_str:
+        if ivy.dtype_bits(to) <= ivy.dtype_bits(from_):
+            return False
+    return True
+
+  
+DTYPE_TO_STR = {tf.int8: 'int8',
+                tf.int16: 'int16',
+                tf.int32: 'int32',
+                tf.int64: 'int64',
+                tf.uint8: 'uint8',
+                tf.uint16: 'uint16',
+                tf.uint32: 'uint32',
+                tf.uint64: 'uint64',
+                tf.bfloat16: 'bfloat16',
+                tf.float16: 'float16',
+                tf.float32: 'float32',
+                tf.float64: 'float64',
+                tf.bool: 'bool'}
+
+DTYPE_FROM_STR = {'int8': tf.int8,
+                'int16': tf.int16,
+                'int32': tf.int32,
+                'int64': tf.int64,
+                'uint8': tf.uint8,
+                'uint16': tf.uint16,
+                'uint32': tf.uint32,
+                'uint64': tf.uint64,
+                'bfloat16': tf.bfloat16,
+                'float16': tf.float16,
+                'float32': tf.float32,
+                'float64': tf.float64,
+                'bool': tf.bool}
+
+
 # noinspection PyShadowingBuiltins
 def iinfo(type: Union[DType, str, Tensor])\
         -> np.iinfo:
@@ -75,3 +129,30 @@ def astype(x: Tensor, dtype: tf.DType, copy: bool = True)\
             new_tensor = tf.cast(new_tensor, dtype)
             return new_tensor
     return tf.cast(x, dtype)
+
+
+def dtype_bits(dtype_in):
+    dtype_str = dtype_to_str(dtype_in)
+    if 'bool' in dtype_str:
+        return 1
+    return int(dtype_str.replace('tf.', '').replace('uint', '').replace('int', '').replace('bfloat', '').replace(
+        'float', ''))
+
+
+def dtype(x, as_str=False):
+    dt = x.dtype
+    if as_str:
+        return dtype_to_str(dt)
+    return dt
+
+
+def dtype_to_str(dtype_in):
+    if isinstance(dtype_in, str):
+        return dtype_in
+    return DTYPE_TO_STR[dtype_in]
+
+
+def dtype_from_str(dtype_in):
+    if not isinstance(dtype_in, str):
+        return dtype_in
+    return DTYPE_FROM_STR[dtype_in]

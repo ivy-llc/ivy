@@ -37,6 +37,15 @@ def tensordot(x1: Tensor, x2: Tensor,
     return tf.cast(tf.tensordot(x1, x2, axes), dtype)
 
 
+def vecdot(x1: Tensor,
+           x2: Tensor,
+           axis: int = -1)\
+        -> Tensor:
+    dtype = tf.experimental.numpy.promote_types(x1.dtype, x2.dtype)
+    x1, x2 = tf.cast(x1, tf.float32), tf.cast(x2, tf.float32)
+    return tf.cast(tf.tensordot(x1, x2, (axis, axis)), dtype)
+
+
 def pinv(x: Tensor,
          rtol: Optional[Union[float, Tuple[float]]] = None) \
         -> Tensor:

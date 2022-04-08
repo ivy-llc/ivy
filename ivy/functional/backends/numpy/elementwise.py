@@ -1,11 +1,25 @@
 # global
 import numpy as np
+from typing import Optional
 import numpy.array_api as npa
 
 try:
     from scipy.special import erf as _erf
 except (ImportError, ModuleNotFoundError):
     _erf = None
+
+
+def bitwise_left_shift(x1: np.ndarray,
+                       x2: np.ndarray)\
+                       -> np.ndarray:
+    if not isinstance(x2, np.ndarray):
+        x2 = np.asarray(x2, dtype=x1.dtype)
+    else:
+        dtype = np.promote_types(x1.dtype, x2.dtype)
+        x1 = x1.astype(dtype)
+        x2 = x2.astype(dtype)
+    return np.left_shift(x1, x2)
+
 
 def add(x1: np.ndarray,
         x2: np.ndarray)\
@@ -52,6 +66,12 @@ def bitwise_invert(x: np.ndarray)\
 def bitwise_and(x1: np.ndarray,
                 x2: np.ndarray)\
         -> np.ndarray:
+    if not isinstance(x2, np.ndarray):
+        x2 = np.asarray(x2, dtype=x1.dtype)
+    else:
+        dtype = np.promote_types(x1.dtype, x2.dtype)
+        x1 = x1.astype(dtype)
+        x2 = x2.astype(dtype)
     return np.bitwise_and(x1, x2)
 
 
@@ -276,9 +296,10 @@ def trunc(x: np.ndarray) \
     return np.asarray(npa.trunc(npa.asarray(x)))
 
 
-def abs(x: np.ndarray)\
+def abs(x: np.ndarray,
+        out: Optional[np.ndarray] = None)\
         -> np.ndarray:
-    return np.absolute(x)
+    return np.absolute(x, out=out)
 
 
 def subtract(x1: np.ndarray, x2: np.ndarray)\
@@ -311,6 +332,17 @@ def bitwise_right_shift(x1: np.ndarray, x2: np.ndarray)\
         x1 = x1.astype(dtype)
         x2 = x2.astype(dtype)
     return np.right_shift(x1, x2)
+
+
+def bitwise_left_shift(x1: np.ndarray, x2: np.ndarray)\
+        -> np.ndarray:
+    if not isinstance(x2, np.ndarray):
+        x2 = np.asarray(x2, dtype=x1.dtype)
+    else:
+        dtype = np.promote_types(x1.dtype, x2.dtype)
+        x1 = x1.astype(dtype)
+        x2 = x2.astype(dtype)
+    return np.left_shift(x1, x2)
 
 
 tan = np.tan
