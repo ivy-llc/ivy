@@ -4,15 +4,28 @@ from typing import Tuple
 from collections import namedtuple
 
 
+@torch.no_grad()
 def unique_all(x : torch.Tensor, /)\
                 -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor]:
+    
+    Results = namedtuple(typename='unique_all', field_names=['values', 'indices', 'inverse_indices', 'counts'])
 
     outputs, inverse_indices, counts = torch.unique(x, sorted=True, return_inverse=True,
                                                     return_counts=True, dim=None)
     
-    Results = namedtuple(typename='unique_all', field_names=['values', 'indices', 'inverse_indices', 'counts'])
-    flat_list = x.flatten().tolist()
+    flat_tensor = x.flatten()
+    unique_nan = torch.isnan(outputs)
     
-    indices = [flat_list.index(val) for val in outputs]
+    nan_index = torch.where(torch.isnan(flat_tensor))
+    non_nan_index = [flat_tensor.tolist().index(val) for val in outputs if not torch.isnan(val)]
     
-    return Results(outputs.to(x.dtype), torch.tensor(indices).view(outputs.shape), inverse_indices, counts)
+    indices = outputs.clone().to(torch.int64)
+    
+    if any(nan_index[0]):
+        indices[unique_nan] = nan_index[0]
+        inverse_indices[torch.isnan(x)] = torch.where(unique_nan)[0][0]
+        counts[torch.where((unique_nan))[0]] = 1
+    
+    indices[~unique_nan] = torch.tensor(non_nan_index)
+    
+    return Results(outputs.to(x.dtype), indices.view(outputs.shape), inverse_indices.reshape(x.shape), counts)
