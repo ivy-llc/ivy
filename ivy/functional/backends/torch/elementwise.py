@@ -32,14 +32,16 @@ def bitwise_xor(x1: torch.Tensor,
     return torch.bitwise_xor(x1, x2, out=out)
 
 
-def expm1(x: Tensor)\
+def expm1(x: torch.Tensor,
+          out: Optional[torch.Tensor] = None)\
         -> Tensor:
-    return torch.expm1(x)
+    return torch.expm1(x, out=out)
 
 
-def bitwise_invert(x: torch.Tensor) \
+def bitwise_invert(x: torch.Tensor,
+                   out: Optional[torch.Tensor] = None) \
         -> torch.Tensor:
-    return torch.bitwise_not(x)
+    return torch.bitwise_not(x, out=out)
 
 
 def isfinite(x: Tensor)\
@@ -65,10 +67,12 @@ def _cast_for_binary_op(x1: Tensor, x2: Tensor)\
     return x1, x2
 
 
-def equal(x1: Tensor, x2: Tensor)\
+def equal(x1: Tensor,
+          x2: Tensor,
+          out: Optional[torch.Tensor] = None)\
         -> Tensor:
     x1, x2 = _cast_for_binary_op(x1, x2)
-    return x1 == x2
+    return torch.eq(x1, x2, out=out)
 
 
 def less_equal(x1: Tensor, x2: Tensor)\
