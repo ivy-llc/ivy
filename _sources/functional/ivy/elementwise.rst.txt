@@ -13,6 +13,7 @@ Elementwise
    :maxdepth: -1
    :caption: Elementwise
 
+   elementwise/bitwise_left_shift.rst
    elementwise/add.rst
    elementwise/pow.rst
    elementwise/bitwise_xor.rst
