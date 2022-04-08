@@ -302,7 +302,8 @@ def qr(x: ivy.Array,
 
 
 def matmul(x1: Union[ivy.Array, ivy.NativeArray],
-           x2: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
+           x2: Union[ivy.Array, ivy.NativeArray])\
+        -> ivy.Array:
     """
     Computes the matrix product.
 
