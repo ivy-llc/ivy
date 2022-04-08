@@ -50,7 +50,24 @@ def get_referrers_recursive(item, depth=0, max_depth=None, seen_set=None, local_
     return ret_cont
 
 
-def is_array(x: Any, exclusive: bool = False)\
+def is_native_array(x: Any, exclusive: bool = False)\
+        -> bool:
+    """
+    Determines whether the input x is a Native Array.
+
+    :param x: The input to check
+    :type x: any
+    :param exclusive: Whether to check if the data type is exclusively an array, rather than a variable or traced array.
+    :type exclusive: bool, optional
+    :return: Boolean, whether or not x is an array.
+    """
+    try:
+        return _cur_framework(x).is_native_array(x, exclusive)
+    except ValueError:
+        return False
+
+
+def is_ivy_array(x: Any, exclusive: bool = False)\
         -> bool:
     """
     Determines whether the input x is an Ivy Array.
@@ -61,10 +78,7 @@ def is_array(x: Any, exclusive: bool = False)\
     :type exclusive: bool, optional
     :return: Boolean, whether or not x is an array.
     """
-    try:
-        return _cur_framework(x).is_array(x, exclusive)
-    except ValueError:
-        return False
+    return isinstance(x, ivy.Array) and ivy.is_native_array(x.data, exclusive)
 
 
 # noinspection PyShadowingNames
@@ -122,7 +136,7 @@ def all_equal(*xs: Iterable[Any], equality_matrix: bool = False)\
     :type equality_matrix: bool, optional
     :return: Boolean, whether or not the inputs are equal, or matrix array of booleans if equality_matrix=True is set.
     """
-    equality_fn = ivy.array_equal if ivy.is_array(xs[0]) else lambda a, b: a == b
+    equality_fn = ivy.array_equal if ivy.is_native_array(xs[0]) else lambda a, b: a == b
     if equality_matrix:
         num_arrays = len(xs)
         mat = [[None for _ in range(num_arrays)] for _ in range(num_arrays)]
@@ -130,7 +144,7 @@ def all_equal(*xs: Iterable[Any], equality_matrix: bool = False)\
             for j_, xb in enumerate(xs[i:]):
                 j = j_ + i
                 res = equality_fn(xa, xb)
-                if ivy.is_array(res):
+                if ivy.is_native_array(res):
                     # noinspection PyTypeChecker
                     res = ivy.to_scalar(res)
                 # noinspection PyTypeChecker
@@ -292,7 +306,7 @@ def fourier_encode(x: Union[ivy.Array, ivy.NativeArray], max_freq: Union[float, 
         sin_x = ivy.reshape(sin_x, [-1, num_bands*dim])
         cos_x = ivy.reshape(cos_x, [-1, num_bands*dim])
     if concat:
-        return ivy.concatenate([orig_x, sin_x, cos_x], -1)
+        return ivy.concat([orig_x, sin_x, cos_x], -1)
     return sin_x, cos_x
 
 
@@ -308,7 +322,7 @@ def value_is_nan(x: Union[ivy.Array, ivy.NativeArray, Number], include_infs: boo
     :type include_infs: bool, optional
     :return Boolean as to whether the input value is a nan or not.
     """
-    x_scalar = ivy.to_scalar(x) if ivy.is_array(x) else x
+    x_scalar = ivy.to_scalar(x) if ivy.is_native_array(x) else x
     if not x_scalar == x_scalar:
         return True
     if include_infs and x_scalar == INF or x_scalar == -INF:
@@ -604,7 +618,7 @@ def get_all_arrays_in_memory():
     for obj in gc.get_objects():
         # noinspection PyBroadException
         try:
-            if ivy.is_array(obj):
+            if ivy.is_native_array(obj):
                 all_arrays.append(obj)
         except Exception:
             pass
@@ -699,7 +713,7 @@ def supports_inplace(x):
     """
     if ivy.is_variable(x):
         return ivy.inplace_variables_supported()
-    elif ivy.is_array(x):
+    elif ivy.is_native_array(x):
         return ivy.inplace_arrays_supported()
     raise Exception('Input x must be either a variable or an array.')
 
@@ -718,41 +732,42 @@ def assert_supports_inplace(x):
     return True
 
 
-def inplace_update(x, val, f=None):
+def inplace_update(x, val):
     """
-    Perform in-place update for the input variable.
+    Perform in-place update for the input array. This will always be performed on ivy.Array instances pass in the input,
+    and will also be performed on the native array classes in the backend, when the backend supports this.
 
     :param x: The variable to update.
     :type x: variable
     :param val: The array to update the variable with.
     :type val: array
-    :return: The variable following the in-place update.
+    :return: The array following the in-place update.
     """
     return _cur_framework(x).inplace_update(x, val)
 
 
-def inplace_decrement(x, val, f=None):
+def inplace_decrement(x, val):
     """
-    Perform in-place decrement for the input variable.
+    Perform in-place decrement for the input array.
 
-    :param x: The variable to decrement.
-    :type x: variable
+    :param x: The array to decrement.
+    :type x: array
     :param val: The array to decrement the variable with.
     :type val: array
-    :return: The variable following the in-place decrement.
+    :return: The array following the in-place decrement.
     """
     return _cur_framework(x).inplace_decrement(x, val)
 
 
-def inplace_increment(x, val, f=None):
+def inplace_increment(x, val):
     """
-    Perform in-place increment for the input variable.
+    Perform in-place increment for the input array.
 
-    :param x: The variable to increment.
-    :type x: variable
+    :param x: The array to increment.
+    :type x: array
     :param val: The array to increment the variable with.
     :type val: array
-    :return: The variable following the in-place increment.
+    :return: The array following the in-place increment.
     """
     return _cur_framework(x).inplace_increment(x, val)
 

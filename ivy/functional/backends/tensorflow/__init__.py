@@ -31,15 +31,13 @@ float64 = tf.float64
 # noinspection PyShadowingBuiltins
 bool = tf.bool
 
-all_dtypes = (int8, int16, int32, int64,
-              uint8, uint16, uint32, uint64,
-              bfloat16, float16, float32, float64)
-valid_dtypes = all_dtypes
+valid_dtypes = (int8, int16, int32, int64,
+                uint8, uint16, uint32, uint64,
+                bfloat16, float16, float32, float64)
 
-all_dtype_strs = ('int8', 'int16', 'int32', 'int64',
-                  'uint8', 'uint16', 'uint32', 'uint64',
-                  'bfloat16', 'float16', 'float32', 'float64')
-valid_dtype_strs = all_dtypes
+valid_dtype_strs = ('int8', 'int16', 'int32', 'int64',
+                    'uint8', 'uint16', 'uint32', 'uint64',
+                    'bfloat16', 'float16', 'float32', 'float64')
 invalid_dtype_strs = ()
 
 
@@ -55,8 +53,6 @@ backend = 'tensorflow'
 # local sub-modules
 from . import activations
 from .activations import *
-from . import constants
-from .constants import *
 from . import creation
 from .creation import *
 from . import data_type

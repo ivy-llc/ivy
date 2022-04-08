@@ -3,9 +3,21 @@ import torch
 from torch import Tensor
 import typing
 import math
+from typing import Optional
 
 # local
 import ivy
+
+
+def bitwise_left_shift(x1: torch.Tensor,
+                       x2: torch.Tensor)\
+                       -> torch.Tensor:
+    if hasattr(x1, 'dtype') and hasattr(x2, 'dtype'):
+        promoted_type = torch.promote_types(x1.dtype, x2.dtype)
+        x2 = torch.clamp(x2, max=torch.iinfo(promoted_type).bits - 1)
+        x1 = x1.to(promoted_type)
+        x2 = x2.to(promoted_type)
+    return torch.bitwise_left_shift(x1, x2)
 
 
 def add(x1: torch.Tensor,
@@ -14,15 +26,24 @@ def add(x1: torch.Tensor,
     x1, x2 = _cast_for_binary_op(x1, x2)
     return torch.add(x1, x2)
 
+
+def pow(x1: torch.Tensor,
+        x2: torch.Tensor)\
+        -> torch.Tensor:
+    return torch.pow(x1, x2)
+
+
 def bitwise_xor(x1: torch.Tensor,
                 x2: torch.Tensor)\
         -> torch.Tensor:
     x1, x2 = _cast_for_binary_op(x1, x2)
     return torch.bitwise_xor(x1, x2)
 
+
 def exp(x: Tensor)\
         -> Tensor:
     return torch.exp(x)
+
 
 def expm1(x: Tensor)\
         -> Tensor:
@@ -72,6 +93,7 @@ def less_equal(x1: Tensor, x2: Tensor)\
 def bitwise_and(x1: torch.Tensor,
                 x2: torch.Tensor)\
         -> torch.Tensor:
+    x1, x2 = _cast_for_binary_op(x1, x2)
     return torch.bitwise_and(x1, x2)
 
 
@@ -153,6 +175,7 @@ def less(x1: torch.Tensor, x2: torch.Tensor):
 def multiply(x1: torch.Tensor, x2: torch.Tensor)\
         -> torch.Tensor:
     if hasattr(x1, 'dtype') and hasattr(x2, 'dtype'):
+        x1, x2 = torch.tensor(x1), torch.tensor(x2)
         promoted_type = torch.promote_types(x1.dtype, x2.dtype)
         x1 = x1.to(promoted_type)
         x2 = x2.to(promoted_type)
@@ -278,9 +301,10 @@ def trunc(x: torch.Tensor)\
     return torch.trunc(x)
 
 
-def abs(x: torch.Tensor)\
+def abs(x: torch.Tensor,
+        out: Optional[torch.Tensor] = None)\
         -> torch.Tensor:
-    return torch.abs(x)
+    return torch.abs(x, out=out)
 
   
 def logaddexp(x1: torch.Tensor, x2: torch.Tensor) -> torch.Tensor:
@@ -359,6 +383,16 @@ def bitwise_right_shift(x1: torch.Tensor, x2: torch.Tensor)\
         x1 = x1.to(promoted_type)
         x2 = x2.to(promoted_type)
     return torch.bitwise_right_shift(x1, x2)
+
+
+def bitwise_left_shift(x1: torch.Tensor, x2: torch.Tensor)\
+        -> torch.Tensor:
+    if hasattr(x1, 'dtype') and hasattr(x2, 'dtype'):
+        promoted_type = torch.promote_types(x1.dtype, x2.dtype)
+        x2 = torch.clamp(x2, max=torch.iinfo(promoted_type).bits - 1)
+        x1 = x1.to(promoted_type)
+        x2 = x2.to(promoted_type)
+    return torch.bitwise_left_shift(x1, x2)
 
 
 # Extra #

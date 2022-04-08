@@ -4,8 +4,7 @@ Collection of Jax general functions, wrapped to fit Ivy syntax and signature.
 
 # global
 import jax as jax
-import math as _math
-import numpy as _onp
+import numpy as np
 import jax.numpy as jnp
 import jaxlib as jaxlib
 from numbers import Number
@@ -22,51 +21,9 @@ from ivy.functional.ivy.device import default_device
 from ivy.functional.ivy import default_dtype
 from ivy.functional.backends.jax.device import to_dev, _to_array, dev as callable_dev
 
-DTYPE_TO_STR = {jnp.dtype('int8'): 'int8',
-                jnp.dtype('int16'): 'int16',
-                jnp.dtype('int32'): 'int32',
-                jnp.dtype('int64'): 'int64',
-                jnp.dtype('uint8'): 'uint8',
-                jnp.dtype('uint16'): 'uint16',
-                jnp.dtype('uint32'): 'uint32',
-                jnp.dtype('uint64'): 'uint64',
-                jnp.dtype('bfloat16'): 'bfloat16',
-                jnp.dtype('float16'): 'float16',
-                jnp.dtype('float32'): 'float32',
-                jnp.dtype('float64'): 'float64',
-                jnp.dtype('bool'): 'bool',
-
-                jnp.int8: 'int8',
-                jnp.int16: 'int16',
-                jnp.int32: 'int32',
-                jnp.int64: 'int64',
-                jnp.uint8: 'uint8',
-                jnp.uint16: 'uint16',
-                jnp.uint32: 'uint32',
-                jnp.uint64: 'uint64',
-                jnp.bfloat16: 'bfloat16',
-                jnp.float16: 'float16',
-                jnp.float32: 'float32',
-                jnp.float64: 'float64',
-                jnp.bool_: 'bool'}
-
-DTYPE_FROM_STR = {'int8': jnp.dtype('int8'),
-                  'int16': jnp.dtype('int16'),
-                  'int32': jnp.dtype('int32'),
-                  'int64': jnp.dtype('int64'),
-                  'uint8': jnp.dtype('uint8'),
-                  'uint16': jnp.dtype('uint16'),
-                  'uint32': jnp.dtype('uint32'),
-                  'uint64': jnp.dtype('uint64'),
-                  'bfloat16': jnp.dtype('bfloat16'),
-                  'float16': jnp.dtype('float16'),
-                  'float32': jnp.dtype('float32'),
-                  'float64': jnp.dtype('float64'),
-                  'bool': jnp.dtype('bool')}
-
 
 # noinspection PyUnresolvedReferences,PyProtectedMember
-def is_array(x, exclusive=False):
+def is_native_array(x, exclusive=False):
     if exclusive:
         return isinstance(x, (jax.interpreters.xla._DeviceArray,
                               jaxlib.xla_extension.DeviceArray, Buffer))
@@ -88,7 +45,7 @@ def _to_array(x):
 copy_array = jnp.array
 array_equal = jnp.array_equal
 floormod = lambda x, y: x % y
-to_numpy = lambda x: _onp.asarray(_to_array(x))
+to_numpy = lambda x: np.asarray(_to_array(x))
 to_numpy.__name__ = 'to_numpy'
 to_scalar = lambda x: x if isinstance(x, Number) else _to_array(x).item()
 to_scalar.__name__ = 'to_scalar'
@@ -113,7 +70,13 @@ def unstack(x, axis, keepdims=False):
 
 
 def inplace_update(x, val):
-    raise Exception('Jax does not support inplace operations')
+    (x_native, val_native), _ = ivy.args_to_native(x, val)
+    if ivy.is_ivy_array(x):
+        x.data = val_native
+    else:
+        x = ivy.Array(val_native)
+    return x
+
 
 inplace_arrays_supported = lambda: False
 inplace_variables_supported = lambda: False
@@ -266,33 +229,6 @@ def inplace_decrement(x, val):
 
 def inplace_increment(x, val):
     raise Exception('Jax does not support inplace operations')
-
-
-def dtype_bits(dtype_in):
-    dtype_str = dtype_to_str(dtype_in)
-    if 'bool' in dtype_str:
-        return 1
-    return int(dtype_str.replace('uint', '').replace('int', '').replace('bfloat', '').replace('float', ''))
-
-
-
-def dtype(x, as_str=False):
-    dt = x.dtype
-    if as_str:
-        return dtype_to_str(dt)
-    return dt
-
-
-def dtype_to_str(dtype_in):
-    if isinstance(dtype_in, str):
-        return dtype_in
-    return DTYPE_TO_STR[dtype_in]
-
-
-def dtype_from_str(dtype_in):
-    if not isinstance(dtype_in, str):
-        return dtype_in
-    return DTYPE_FROM_STR[dtype_in]
 
 
 compile = lambda fn, dynamic=True, example_inputs=None, static_argnums=None, static_argnames=None: \

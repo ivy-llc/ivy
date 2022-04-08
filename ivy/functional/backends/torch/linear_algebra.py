@@ -4,10 +4,8 @@ from typing import Union, Optional, Tuple, Literal, List
 from collections import namedtuple
 
 # local
-import ivy as _ivy
 from ivy import inf
-from collections import namedtuple
-import ivy as _ivy
+import ivy
 
 
 # Array API Standard #
@@ -17,7 +15,9 @@ def eigh(x: torch.Tensor)\
   ->torch.Tensor:
      return torch.linalg.eigh(x)
 
-def inv(x):
+
+def inv(x: torch.Tensor)\
+  ->torch.Tensor:
     return torch.inverse(x)
 
 
@@ -28,13 +28,11 @@ def pinv(x: torch.Tensor,
         return torch.linalg.pinv(x)
     return torch.linalg.pinv(x, rtol)
 
-def cholesky(x):
-    return torch.linalg.cholesky(x)
-
 
 def matrix_transpose(x: torch.Tensor)\
         -> torch.Tensor:
     return torch.swapaxes(x, -1, -2)
+
 
 def matrix_rank(vector: torch.Tensor,
                 rtol: Optional[Union[float, Tuple[float]]] = None) \
@@ -56,15 +54,11 @@ def vector_norm(x: torch.Tensor,
     return py_normalized_vector
 
 
-def matrix_norm(x, p=2, axes=None, keepdims=False):
-    axes = [-2, -1] if axes is None else axes
-    if isinstance(axes, int):
-        raise Exception('if specified, axes must be a length-2 sequence of ints,'
-                        'but found {} of type {}'.format(axes, type(axes)))
-    ret = torch.linalg.matrix_norm(x, ord=p, dim=axes, keepdim=keepdims)
-    if ret.shape == ():
-        return torch.unsqueeze(ret, 0)
-    return ret
+def matrix_norm(x: torch.Tensor,
+                ord: Optional[Union[int, float, Literal[inf, - inf, 'fro', 'nuc']]] ='fro',
+                keepdims: bool = False)\
+        -> torch.Tensor:
+    return torch.linalg.matrix_norm(x, ord=ord, dim=[-2, -1], keepdim=keepdims)
 
 
 # noinspection PyPep8Naming
@@ -115,11 +109,12 @@ def matmul(x1: torch.Tensor,
     return ret.type(dtype_from)
 
 
-def slogdet(x:Union[_ivy.Array,_ivy.NativeArray],full_matrices: bool = True) -> Union[_ivy.Array, Tuple[_ivy.Array,...]]:
+def slogdet(x:Union[ivy.Array,ivy.NativeArray],full_matrices: bool = True) -> Union[ivy.Array, Tuple[ivy.Array,...]]:
     results = namedtuple("slogdet", "sign logabsdet")
     sign, logabsdet = torch.linalg.slogdet(x)
     res = results(sign, logabsdet)
     return res
+
 
 def tensordot(x1: torch.Tensor, x2: torch.Tensor,
               axes: Union[int, Tuple[List[int], List[int]]] = 2) \

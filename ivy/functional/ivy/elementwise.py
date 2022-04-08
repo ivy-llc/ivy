@@ -1,6 +1,6 @@
 # global
-from typing import Union
 from numbers import Number
+from typing import Union, Optional
 # local
 import ivy
 from ivy.framework_handler import current_framework as _cur_framework
@@ -8,6 +8,26 @@ from ivy.framework_handler import current_framework as _cur_framework
 
 # Array API Standard #
 # -------------------#
+
+
+def bitwise_left_shift(x1: Union[ivy.Array, ivy.NativeArray],
+                       x2: Union[ivy.Array, ivy.NativeArray])\
+                       -> ivy.Array:
+    """
+    Shifts the bits of each element ``x1_i`` of the input array ``x1`` to the left by appending ``x2_i`` (i.e., the respective element in the input array ``x2``) zeros to the right of ``x1_i``.
+    Parameters
+    ----------
+    x1: array
+        first input array. Should have an integer data type.
+    x2: array
+        second input array. Must be compatible with ``x1`` (see :ref:`broadcasting`). Should have an integer data type. Each element must be greater than or equal to ``0``.
+    Returns
+    -------
+    out: array
+        an array containing the element-wise results. The returned array must have a data type determined by :ref:`type-promotion`.
+    """
+    return _cur_framework(x1, x2).bitwise_left_shift(x1, x2)
+
 
 def add(x1: Union[ivy.Array, ivy.NativeArray],
         x2: Union[ivy.Array, ivy.NativeArray])\
@@ -47,6 +67,16 @@ def add(x1: Union[ivy.Array, ivy.NativeArray],
         an array containing the element-wise sums. The returned array must have a data type determined by :ref:`type-promotion`.
     """
     return _cur_framework(x1, x2).add(x1, x2)
+
+
+def pow(x1: Union[ivy.Array, ivy.NativeArray],
+        x2: Union[ivy.Array, ivy.NativeArray])\
+        -> ivy.Array:
+    """
+
+    """
+    return _cur_framework(x1, x2).pow(x1, x2)
+
 
 def bitwise_xor(x1: Union[ivy.Array, ivy.NativeArray],
                 x2: Union[ivy.Array, ivy.NativeArray])\
@@ -619,27 +649,6 @@ def cos(x: Union[ivy.Array, ivy.NativeArray])\
     return _cur_framework(x).cos(x)
 
 
-def logical_not(x: Union[ivy.Array, ivy.NativeArray])\
-        -> ivy.Array:
-    """
-    Computes the logical NOT for each element ``x_i`` of the input array ``x``.
-
-    .. note::
-       While this specification recommends that this function only accept input arrays having a boolean data type, specification-compliant array libraries may choose to accept input arrays having numeric data types. If non-boolean data types are supported, zeros must be considered the equivalent of ``False``, while non-zeros must be considered the equivalent of ``True``.
-
-    Parameters
-    ----------
-    x:
-        input array. Should have a boolean data type.
-
-    Returns
-    -------
-    out:
-        an array containing the element-wise results. The returned array must have a data type of ``bool``.
-    """
-    return _cur_framework(x).logical_not(x)
-
-
 def acos(x: Union[ivy.Array, ivy.NativeArray])\
         -> ivy.Array:
     """
@@ -665,6 +674,28 @@ def acos(x: Union[ivy.Array, ivy.NativeArray])\
         an array containing the inverse cosine of each element in x. The returned array must have a floating-point data type determined by :ref:`type-promotion`.
     """
     return _cur_framework(x).acos(x)
+
+
+def logical_not(x: Union[ivy.Array, ivy.NativeArray])\
+        -> ivy.Array:
+    """
+    Computes the logical NOT for each element ``x_i`` of the input array ``x``.
+
+    .. note::
+       While this specification recommends that this function only accept input arrays having a boolean data type, specification-compliant array libraries may choose to accept input arrays having numeric data types. If non-boolean data types are supported, zeros must be considered the equivalent of ``False``, while non-zeros must be considered the equivalent of ``True``.
+
+    Parameters
+    ----------
+    x:
+        input array. Should have a boolean data type.
+
+    Returns
+    -------
+    out:
+        an array containing the element-wise results. The returned array must have a data type of ``bool``.
+    """
+    return _cur_framework(x).logical_not(x)
+
 
 
 def logical_xor(x1: Union[ivy.Array, ivy.NativeArray], x2: Union[ivy.Array, ivy.NativeArray]) \
@@ -813,19 +844,6 @@ def not_equal(x1: Union[ivy.Array, ivy.NativeArray], x2: Union[ivy.Array, ivy.Na
     return _cur_framework(x1, x2).not_equal(x1, x2)
 
 
-def tanh(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
-    """
-    Calculates an implementation-dependent approximation to the hyperbolic tangent,
-    having domain [-infinity, +infinity] and codomain [-1, +1], for each element x_i of the input array x.
-
-    :param x: input array whose elements each represent a hyperbolic angle. Should have a floating-point
-            data type.
-    :return: an array containing the hyperbolic tangent of each element in x. The returned array must
-            have a floating-point data type
-    """
-    return _cur_framework(x).tanh(x)
-
-
 def floor_divide(x1: Union[ivy.Array, ivy.NativeArray],
                  x2: Union[ivy.Array, ivy.NativeArray])\
         -> ivy.Array:
@@ -971,7 +989,8 @@ def trunc(x: Union[ivy.Array, ivy.NativeArray])\
     return _cur_framework(x).trunc(x)
 
 
-def abs(x: Union[ivy.Array, ivy.NativeArray]) \
+def abs(x: Union[ivy.Array, ivy.NativeArray],
+        out: Optional[Union[ivy.Array, ivy.NativeArray]] = None) \
         -> ivy.Array:
     """
     Calculates the absolute value for each element ``x_i`` of the input array ``x`` (i.e., the element-wise result has the same magnitude as the respective element in ``x`` but has positive sign).
@@ -991,13 +1010,15 @@ def abs(x: Union[ivy.Array, ivy.NativeArray]) \
     ----------
     x:
         input array. Should have a numeric data type.
+    out:
+        optional output array, for writing the result to. It must have a shape that the inputs broadcast to.
 
     Returns
     -------
-    out:
+    return:
         an array containing the absolute value of each element in ``x``. The returned array must have the same data type as ``x``.
     """
-    return _cur_framework(x).abs(x)
+    return _cur_framework(x).abs(x, out)
 
 
 def tan(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
@@ -1011,16 +1032,6 @@ def tan(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
     """
     return _cur_framework(x).tan(x)
 
-
-def asin(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
-    """
-    Computes inverse sine element-wise.
-
-    :param x: y-coordinate on the unit circle.
-    :type x: array
-    :return: The inverse sine of each element in x, in radians and in the closed interval [-pi/2, pi/2].
-    """
-    return _cur_framework(x).asin(x)
 
 
 def atan(x: Union[ivy.Array, ivy.NativeArray]) \
@@ -1124,28 +1135,6 @@ def atanh(x: Union[ivy.Array, ivy.NativeArray]) \
     :return:an array containing the inverse hyperbolic tangent of each element in x. The returned array must have a floating-point data type determined by Type Promotion Rules.
     """
     return _cur_framework(x).atanh(x)
-
-
-def log(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
-    """
-    Computes natural logarithm of x element-wise.
-
-    :param x: Value to compute log for.
-    :type x: array
-    :return: The natural logarithm of each element of x.
-    """
-    return _cur_framework(x).log(x)
-
-
-def exp(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
-    """
-    Computes exponential of x element-wise.
-
-    :param x: Value to compute exponential for.
-    :type x: array
-    :return: The exponential of each element of x.
-    """
-    return _cur_framework(x).exp(x)
 
 
 def subtract(x1: Union[ivy.Array, ivy.NativeArray],
@@ -1256,6 +1245,26 @@ def bitwise_right_shift(x1: Union[ivy.Array, ivy.NativeArray], x2: Union[ivy.Arr
         out (array) – an array containing the element-wise results. The returned array must have a data type determined by :ref:`Type Promotion Rules`.
     """
     return _cur_framework(x1, x2).bitwise_right_shift(x1, x2)
+
+
+def bitwise_left_shift(x1: Union[ivy.Array, ivy.NativeArray], x2: Union[ivy.Array, ivy.NativeArray])\
+        -> ivy.Array:
+    """
+    Shifts the bits of each element ``x1_i`` of the input array ``x1`` to the left according to the respective element ``x2_i`` of the input array ``x2``.
+
+    Parameters
+    ----------
+    x1:
+        first input array. Should have an integer data type.
+    x2:
+        second input array. Must be compatible with ``x1`` (see :ref:`broadcasting`). Should have an integer data type. Each element must be greater than or equal to 0.
+
+    Returns
+    -------
+    out:
+        out (array) – an array containing the element-wise results. The returned array must have a data type determined by :ref:`Type Promotion Rules`.
+    """
+    return _cur_framework(x1, x2).bitwise_left_shift(x1, x2)
 
   
 def equal(x1: Union[ivy.Array, ivy.NativeArray],

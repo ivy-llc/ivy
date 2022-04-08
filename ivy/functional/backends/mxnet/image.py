@@ -6,7 +6,7 @@ Collection of MXNet image functions, wrapped to fit Ivy syntax and signature.
 import math
 from functools import reduce as _reduce
 from operator import mul as _mul
-import mxnet as _mx
+import mxnet as mx
 
 # local
 from ivy.functional.backends import mxnet as _ivy
@@ -31,8 +31,8 @@ def stack_images(images, desired_aspect_ratio=(1, 1)):
     for i in range(stack_width_int):
         images_to_concat = images[i*stack_height_int:(i+1)*stack_height_int]
         images_to_concat += [_ivy.zeros_like(images[0])] * (stack_height_int - len(images_to_concat))
-        image_rows.append(_ivy.concatenate(images_to_concat, num_batch_dims))
-    return _ivy.concatenate(image_rows, num_batch_dims + 1)
+        image_rows.append(_ivy.concat(images_to_concat, num_batch_dims))
+    return _ivy.concat(image_rows, num_batch_dims + 1)
 
 
 def linear_resample(x, num_samples, axis=-1):
@@ -46,18 +46,18 @@ def linear_resample(x, num_samples, axis=-1):
     x_post_shape = x_shape[axis+1:]
     x_post_size = _reduce(_mul, x_post_shape) if x_post_shape else 1
     num_post_dims = len(x_post_shape)
-    xp = _mx.nd.reshape(_mx.nd.arange(num_vals*x_pre_size*x_post_size), x_shape)
-    x_coords = _mx.nd.arange(num_samples) * ((num_vals-1)/(num_samples-1)) * x_post_size
-    x_coords = _mx.nd.reshape(x_coords, [1]*num_pre_dims + [num_samples] + [1]*num_post_dims)
-    x_coords = _mx.nd.broadcast_to(x_coords, x_pre_shape + [num_samples] + x_post_shape)
+    xp = mx.nd.reshape(mx.nd.arange(num_vals*x_pre_size*x_post_size), x_shape)
+    x_coords = mx.nd.arange(num_samples) * ((num_vals-1)/(num_samples-1)) * x_post_size
+    x_coords = mx.nd.reshape(x_coords, [1]*num_pre_dims + [num_samples] + [1]*num_post_dims)
+    x_coords = mx.nd.broadcast_to(x_coords, x_pre_shape + [num_samples] + x_post_shape)
     slc = [slice(None)] * num_x_dims
     slc[axis] = slice(0, 1, 1)
     x_coords = x_coords + xp[tuple(slc)]
-    x = _mx.nd.reshape(x, (-1,))
-    xp = _mx.nd.reshape(xp, (-1,))
-    x_coords = _mx.nd.reshape(x_coords, (-1,))
-    ret = _mx.nd.array(_mx.np.interp(x_coords.asnumpy(), xp.asnumpy(), x.asnumpy()))
-    return _mx.nd.reshape(ret, x_pre_shape + [num_samples] + x_post_shape)
+    x = mx.nd.reshape(x, (-1,))
+    xp = mx.nd.reshape(xp, (-1,))
+    x_coords = mx.nd.reshape(x_coords, (-1,))
+    ret = mx.nd.array(mx.np.interp(x_coords.asnumpy(), xp.asnumpy(), x.asnumpy()))
+    return mx.nd.reshape(ret, x_pre_shape + [num_samples] + x_post_shape)
 
 
 def bilinear_resample(x, warp):
@@ -67,16 +67,16 @@ def bilinear_resample(x, warp):
     batch_shape = list(batch_shape)
     input_image_dims = list(input_image_dims)
     batch_shape_product = _reduce(_mul, batch_shape, 1)
-    warp_flat = _mx.nd.reshape(warp, [batch_shape_product] + [-1, 1] + [2])
+    warp_flat = mx.nd.reshape(warp, [batch_shape_product] + [-1, 1] + [2])
     warp_flat_x = 2 * warp_flat[..., 0:1] / (input_image_dims[1] - 1) - 1
     warp_flat_y = 2 * warp_flat[..., 1:2] / (input_image_dims[0] - 1) - 1
-    warp_flat_scaled = _mx.nd.concat(warp_flat_x, warp_flat_y, dim=-1)
-    warp_flat_trans = _mx.nd.transpose(warp_flat_scaled, (0, 3, 1, 2))
-    mat_flat = _mx.nd.reshape(x, [batch_shape_product] + input_image_dims + [-1])
-    mat_flat_trans = _mx.nd.transpose(mat_flat, (0, 3, 1, 2))
-    interpolated_flat_transposed = _mx.nd.BilinearSampler(mat_flat_trans, warp_flat_trans)
-    interpolated_flat = _mx.nd.transpose(interpolated_flat_transposed, (0, 2, 3, 1))
-    return _mx.nd.reshape(interpolated_flat, batch_shape + [-1, num_feats])
+    warp_flat_scaled = mx.nd.concat(warp_flat_x, warp_flat_y, dim=-1)
+    warp_flat_trans = mx.nd.transpose(warp_flat_scaled, (0, 3, 1, 2))
+    mat_flat = mx.nd.reshape(x, [batch_shape_product] + input_image_dims + [-1])
+    mat_flat_trans = mx.nd.transpose(mat_flat, (0, 3, 1, 2))
+    interpolated_flat_transposed = mx.nd.BilinearSampler(mat_flat_trans, warp_flat_trans)
+    interpolated_flat = mx.nd.transpose(interpolated_flat_transposed, (0, 2, 3, 1))
+    return mx.nd.reshape(interpolated_flat, batch_shape + [-1, num_feats])
 
 
 def gradient_image(x):
@@ -94,8 +94,8 @@ def gradient_image(x):
     dx = x[..., :, 1:, :] - x[..., :, :-1, :]
     # BS x H x W x D
     # noinspection PyTypeChecker
-    dy = _ivy.concatenate((dy, _mx.nd.zeros(batch_shape + [1, image_dims[1], num_dims], ctx=ctx)), -3)
+    dy = _ivy.concat((dy, mx.nd.zeros(batch_shape + [1, image_dims[1], num_dims], ctx=ctx)), -3)
     # noinspection PyTypeChecker
-    dx = _ivy.concatenate((dx, _mx.nd.zeros(batch_shape + [image_dims[0], 1, num_dims], ctx=ctx)), -2)
+    dx = _ivy.concat((dx, mx.nd.zeros(batch_shape + [image_dims[0], 1, num_dims], ctx=ctx)), -2)
     # BS x H x W x D,    BS x H x W x D
     return dy, dx

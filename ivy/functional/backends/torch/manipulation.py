@@ -5,6 +5,13 @@ from numbers import Number
 from typing import Union, Optional, Tuple, List
 
 
+def roll(x: torch.Tensor,
+         shift: Union[int, Tuple[int, ...]],
+         axis: Optional[Union[int, Tuple[int, ...]]] = None) \
+        -> torch.Tensor:
+    return torch.roll(x, shift, axis)
+
+
 def squeeze(x: torch.Tensor,
             axis: Union[int, Tuple[int], List[int]] = None)\
         -> torch.Tensor:
@@ -62,16 +69,25 @@ def stack(x: Union[Tuple[torch.Tensor], List[torch.Tensor]],
     return torch.stack(x, axis)
 
 
-def reshape(x, newshape: List[int]):
-    if isinstance(newshape, int):
-        newshape = [newshape]
-    return torch.reshape(x, newshape)
+def reshape(x: torch.Tensor,
+            shape: Tuple[int, ...],
+            copy: Optional[bool] = None)\
+        -> torch.Tensor:
+    return torch.reshape(x, shape)
 
 
-def concatenate(xs: List[torch.Tensor], axis: int = -1):
-    if xs[0].shape == ():
-        return torch.cat([x.unsqueeze(0) for x in xs], axis)
-    return torch.cat(xs, axis)
+def concat(xs: List[torch.Tensor], axis: int = 0) -> torch.Tensor:
+    if axis == None:
+        is_tuple = type(xs) is tuple
+        if is_tuple:
+            xs = list(xs)
+        for i in range(len(xs)):
+            xs[i] = torch.flatten(xs[i])
+        if is_tuple:
+            xs = tuple(xs)
+        axis = 0
+    ret = torch.cat(xs, dim = axis)
+    return ret
 
 
 # Extra #

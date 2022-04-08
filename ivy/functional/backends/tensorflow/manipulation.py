@@ -6,6 +6,20 @@ from typing import Union, Tuple, Optional, List
 from tensorflow.python.types.core import Tensor
 
 
+def roll(x: Tensor,
+         shift: Union[int, Tuple[int, ...]],
+         axis: Optional[Union[int, Tuple[int, ...]]] = None)\
+        -> Tensor:
+    if axis is None:
+        originalShape = x.shape
+        axis = 0
+        x = tf.reshape(x, [-1])
+        roll = tf.roll(x, shift, axis)
+        return tf.reshape(roll, originalShape)
+
+    return tf.roll(x, shift, axis)
+
+
 def squeeze(x: Tensor,
             axis: Union[int, Tuple[int], List[int]])\
         -> Tensor:
@@ -64,14 +78,33 @@ def stack(x: Union[Tuple[Tensor], List[Tensor]],
     return tf.experimental.numpy.stack(x, axis)
 
 
-reshape = lambda x, newshape: tf.reshape(x, (newshape,) if isinstance(newshape, int) else newshape)
+def reshape(x: Tensor,
+            shape: Tuple[int, ...],
+            copy: Optional[bool] = None)\
+        -> Tensor:
+    return tf.reshape(x, shape)
 
 
+def concat(xs: List[Tensor], axis: int = 0) -> Tensor:
+    is_tuple = type(xs) is tuple
+    is_axis_none = axis==None
+    if is_tuple:
+        xs = list(xs)
+    highest_dtype = xs[0].dtype
+    for i in xs:
+        highest_dtype = tf.experimental.numpy.promote_types(highest_dtype, i.dtype)
 
-def concatenate(xs, axis=-1):
-    if xs[0].shape == ():
-        return tf.concat([tf.expand_dims(x, 0) for x in xs], axis)
-    return tf.concat(xs, axis)
+    for i in range(len(xs)):
+        if is_axis_none:
+            xs[i] = tf.reshape(xs[i], -1)
+        xs[i] = tf.cast(xs[i], highest_dtype)
+    if is_axis_none:
+        axis = 0
+        if is_tuple:
+            xs = tuple(xs)
+    ret = tf.concat(xs, axis)
+
+    return ret
 
 
 # Extra #

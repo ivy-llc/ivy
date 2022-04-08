@@ -26,15 +26,13 @@ float64 = torch.float64
 # noinspection PyShadowingBuiltins
 bool = torch.bool
 
-all_dtypes = (int8, int16, int32, int64,
-              uint8,
-              bfloat16, float16, float32, float64)
-valid_dtypes = all_dtypes
+valid_dtypes = (int8, int16, int32, int64,
+                uint8,
+                bfloat16, float16, float32, float64)
 
-all_dtype_strs = ('int8', 'int16', 'int32', 'int64',
-                  'uint8',
-                  'bfloat16', 'float16', 'float32', 'float64')
-valid_dtype_strs = all_dtypes
+valid_dtype_strs = ('int8', 'int16', 'int32', 'int64',
+                    'uint8',
+                    'bfloat16', 'float16', 'float32', 'float64')
 invalid_dtype_strs = ('uint16', 'uint32', 'uint64')
 
 
@@ -55,8 +53,6 @@ backend = 'torch'
 # local sub-modules
 from . import activations
 from .activations import *
-from . import constants
-from .constants import *
 from . import converters
 from .converters import *
 from . import creation

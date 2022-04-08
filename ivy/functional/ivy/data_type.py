@@ -20,6 +20,25 @@ Iinfo = None
 
 # Dtype Info #
 
+def can_cast(from_: Union[ivy.Dtype, ivy.Array, ivy.NativeArray],
+             to: ivy.Dtype)\
+        -> bool:
+    """
+    Determines if one data type can be cast to another data type according :ref:`type-promotion` rules.
+    Parameters
+    ----------
+    from_: Union[dtype, array]
+        input data type or array from which to cast.
+    to: dtype
+        desired data type.
+    Returns
+    -------
+    out: bool
+        ``True`` if the cast can occur according to :ref:`type-promotion` rules; otherwise, ``False``.
+    """
+    return _cur_framework(from_).can_cast(from_, to)
+
+
 # noinspection PyShadowingBuiltins
 def iinfo(type: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray])\
         -> Iinfo:
@@ -227,7 +246,7 @@ def default_int_dtype(input = None, int_dtype: Union[ivy.Dtype, str] = None, as_
         _assert_int_dtype_correct_formatting(ivy.dtype_to_str(int_dtype))
         return int_dtype
     elif ivy.exists(input):
-        if ivy.is_array(input):
+        if ivy.is_native_array(input):
             ret = ivy.dtype(input)
         elif isinstance(input, np.ndarray):
             ret = input.dtype
@@ -287,7 +306,7 @@ def default_float_dtype(input = None,float_dtype: Union[ivy.Dtype, str] = None, 
         _assert_float_dtype_correct_formatting(ivy.dtype_to_str(float_dtype))
         return float_dtype
     elif ivy.exists(input):
-        if ivy.is_array(input):
+        if ivy.is_native_array(input):
             ret = ivy.dtype(input)
         elif isinstance(input, np.ndarray):
             ret = input.dtype
@@ -420,7 +439,7 @@ def is_int_dtype(dtype_in: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray, Num
     :param dtype_in: Datatype to test
     :return: Whether or not the data type is an integer data type
     """
-    if ivy.is_array(dtype_in):
+    if ivy.is_native_array(dtype_in):
         dtype_in = ivy.dtype(dtype_in)
     elif isinstance(dtype_in, np.ndarray):
         return 'int' in dtype_in.dtype.name
@@ -439,7 +458,7 @@ def is_float_dtype(dtype_in: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray, N
     :param dtype_in: Datatype to test
     :return: Whether or not the data type is a floating point data type
     """
-    if ivy.is_array(dtype_in):
+    if ivy.is_native_array(dtype_in):
         dtype_in = ivy.dtype(dtype_in)
     elif isinstance(dtype_in, np.ndarray):
         return 'float' in dtype_in.dtype.name

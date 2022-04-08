@@ -1,8 +1,7 @@
 # global
 import numpy as np
-import ivy as _ivy
 from typing import Union, Optional, Tuple, Literal, List
-from collections import namedtuple
+
 
 # local
 from ivy import inf
@@ -17,10 +16,9 @@ def eigh(x: np.ndarray)\
          return np.linalg.eigh(x)
 
 
+def inv(x: np.ndarray) -> np.ndarray:
+    return np.linalg.inv(x)
 
-inv = np.linalg.inv
-pinv = np.linalg.pinv
-cholesky = np.linalg.cholesky
 
 def pinv(x: np.ndarray,
          rtol: Optional[Union[float, Tuple[float]]] = None) \
@@ -52,17 +50,11 @@ def vector_norm(x: np.ndarray,
     return np_normalized_vector
 
 
-def matrix_norm(x, p=2, axes=None, keepdims=False):
-    axes = (-2, -1) if axes is None else axes
-    if isinstance(axes, int):
-        raise Exception('if specified, axes must be a length-2 sequence of ints,'
-                        'but found {} of type {}'.format(axes, type(axes)))
-    elif isinstance(axes, list):
-        axes = tuple(axes)
-    ret = np.array(np.linalg.norm(x, p, axes, keepdims))
-    if ret.shape == ():
-        return np.expand_dims(ret, 0)
-    return ret
+def matrix_norm(x: np.ndarray,
+                ord: Optional[Union[int, float, Literal[inf, - inf, 'fro', 'nuc']]] = 'fro',
+                keepdims: bool = False)\
+        -> np.ndarray:
+    return np.linalg.norm(x, ord=ord, axis=(-2, -1), keepdims=keepdims)
 
 
 def svd(x: np.ndarray, full_matrices: bool = True) -> Union[np.ndarray, Tuple[np.ndarray, ...]]:

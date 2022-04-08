@@ -3,14 +3,14 @@ cholesky
 det
 #diagonal # fails non-determinstically for jax, due to +0 vs -0 inconsistencies
 eigh
-#eigvalsh # depends on: mT
-#inv
+eigvalsh
+inv
 #matmul # failing non-deterministically for torch
-#matrix_norm
+#matrix_norm # fails non-deterministically for jax
 #matrix_power
 matrix_rank
 matrix_transpose
-#outer # depends on: multiply
+outer
 pinv
 qr
 slogdet
