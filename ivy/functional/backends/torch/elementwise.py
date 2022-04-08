@@ -220,38 +220,48 @@ def greater(x1: torch.Tensor,
     return torch.greater(x1, x2, out=out)
 
 
-def greater_equal(x1: torch.Tensor, x2: torch.Tensor)\
+def greater_equal(x1: torch.Tensor,
+                  x2: torch.Tensor,
+                  out: Optional[torch.Tensor] = None)\
         -> torch.Tensor:
     if hasattr(x1, 'dtype') and hasattr(x2, 'dtype'):
         promoted_type = torch.promote_types(x1.dtype, x2.dtype)
         x1 = x1.to(promoted_type)
         x2 = x2.to(promoted_type)
-    return torch.greater_equal(x1, x2)
+    return torch.greater_equal(x1, x2, out=out)
 
 
-def acos(x: torch.Tensor)\
+def acos(x: torch.Tensor,
+         out: Optional[torch.Tensor] = None)\
         -> torch.Tensor:
-    return torch.acos(x)
+    return torch.acos(x, out=out)
 
 
-def logical_xor(x1: torch.Tensor, x2: torch.Tensor) \
+def logical_xor(x1: torch.Tensor,
+                x2: torch.Tensor,
+                out: Optional[torch.Tensor] = None) \
         -> torch.Tensor:
-    return torch.logical_xor(x1.type(torch.bool), x2.type(torch.bool))
+    return torch.logical_xor(x1.type(torch.bool), x2.type(torch.bool), out=out)
 
 
-def logical_and(x1: torch.Tensor, x2: torch.Tensor)\
+def logical_and(x1: torch.Tensor,
+                x2: torch.Tensor,
+                out: Optional[torch.Tensor] = None)\
         -> torch.Tensor:
-    return torch.logical_and(x1.type(torch.bool), x2.type(torch.bool))
+    return torch.logical_and(x1.type(torch.bool), x2.type(torch.bool), out=out)
 
 
-def logical_or(x1: torch.Tensor, x2: torch.Tensor)\
+def logical_or(x1: torch.Tensor,
+               x2: torch.Tensor,
+               out: Optional[torch.Tensor] = None)\
         -> torch.Tensor:
-    return torch.logical_or(x1.type(torch.bool), x2.type(torch.bool))
+    return torch.logical_or(x1.type(torch.bool), x2.type(torch.bool), out=out)
 
 
-def acosh(x: torch.Tensor) \
+def acosh(x: torch.Tensor,
+          out: Optional[torch.Tensor] = None)\
         -> torch.Tensor:
-    return torch.acosh(x)
+    return torch.acosh(x, out=out)
 
   
 def sin(x: torch.Tensor)\
