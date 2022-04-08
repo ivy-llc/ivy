@@ -306,32 +306,45 @@ def bitwise_or(x1: torch.Tensor,
     return torch.bitwise_or(x1, x2, out=out)
 
 
-def sinh(x: torch.Tensor) -> torch.Tensor:
-    return torch.sinh(x)
-
-
-def positive(x: torch.Tensor)\
+def sinh(x: torch.Tensor,
+         out: Optional[torch.Tensor] = None)\
         -> torch.Tensor:
-    return torch.positive(x)
+    return torch.sinh(x, out=out)
 
 
-def square(x: torch.Tensor) \
+def positive(x: torch.Tensor,
+             out: Optional[torch.Tensor] = None)\
         -> torch.Tensor:
-    return torch.square(x)
+    ret = torch.positive(x)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
-def round(x: torch.Tensor)\
+def square(x: torch.Tensor,
+           out: Optional[torch.Tensor] = None) \
+        -> torch.Tensor:
+    return torch.square(x, out=out)
+
+
+def round(x: torch.Tensor,
+          out: Optional[torch.Tensor] = None)\
         -> torch.Tensor:
     if 'int' in str(x.dtype):
+        if ivy.exists(out):
+            return ivy.inplace_update(out, x)
         return x
-    return torch.round(x)
+    return torch.round(x, out=out)
 
 
-def trunc(x: torch.Tensor)\
+def trunc(x: torch.Tensor,
+          out: Optional[torch.Tensor] = None)\
         -> torch.Tensor:
     if 'int' in str(x.dtype):
+        if ivy.exists(out):
+            return ivy.inplace_update(out, x)
         return x
-    return torch.trunc(x)
+    return torch.trunc(x, out=out)
 
 
 def abs(x: torch.Tensor,
