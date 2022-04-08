@@ -32,11 +32,6 @@ def bitwise_xor(x1: torch.Tensor,
     return torch.bitwise_xor(x1, x2, out=out)
 
 
-def exp(x: Tensor)\
-        -> Tensor:
-    return torch.exp(x)
-
-
 def expm1(x: Tensor)\
         -> Tensor:
     return torch.expm1(x)
