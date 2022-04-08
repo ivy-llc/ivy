@@ -4,40 +4,55 @@ import math
 from numbers import Number
 from typing import Union, Optional, Tuple, List
 
+import ivy
+
 
 def roll(x: torch.Tensor,
          shift: Union[int, Tuple[int, ...]],
-         axis: Optional[Union[int, Tuple[int, ...]]] = None) \
+         axis: Optional[Union[int, Tuple[int, ...]]] = None,
+         out: Optional[torch.Tensor] = None)\
         -> torch.Tensor:
-    return torch.roll(x, shift, axis)
+    ret = torch.roll(x, shift, axis)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
 def squeeze(x: torch.Tensor,
-            axis: Union[int, Tuple[int], List[int]] = None)\
+            axis: Union[int, Tuple[int], List[int]] = None,
+            out: Optional[torch.Tensor] = None)\
         -> torch.Tensor:
     if isinstance(axis, int):
         if x.shape[axis] > 1:
             raise ValueError('Expected dimension of size 1, but found dimension size {}'.format(x.shape[axis]))
-        return torch.squeeze(x, axis)
-    if isinstance(axis, tuple):
+        ret = torch.squeeze(x, axis)
+        if ivy.exists(out):
+            return ivy.inplace_update(out, ret)
+        return ret
+    elif isinstance(axis, tuple):
         axis = list(axis)
     normalise_axis = [(len(x.shape) - abs(element)) if element < 0 else element for element in axis]
     normalise_axis.sort()
-    axis_updated_after_squeeze = [ dim - key for (key, dim) in enumerate(normalise_axis)]
+    axis_updated_after_squeeze = [dim - key for (key, dim) in enumerate(normalise_axis)]
     for i in axis_updated_after_squeeze:
         if x.shape[i] > 1:
             raise ValueError('Expected dimension of size 1, but found dimension size {}'.format(x.shape[i]))
         else:
             x = torch.squeeze(x, i)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, x)
     return x
 
 
 # noinspection PyShadowingBuiltins
 def flip(x: torch.Tensor,
-         axis: Optional[Union[int, Tuple[int], List[int]]] = None)\
+         axis: Optional[Union[int, Tuple[int], List[int]]] = None,
+         out: Optional[torch.Tensor] = None)\
          -> torch.Tensor:
     num_dims: int = len(x.shape)
     if not num_dims:
+        if ivy.exists(out):
+            return ivy.inplace_update(out, x)
         return x
     if axis is None:
         new_axis: List[int] = list(range(num_dims))
@@ -48,7 +63,10 @@ def flip(x: torch.Tensor,
     else:
         new_axis = new_axis
     new_axis = [item + num_dims if item < 0 else item for item in new_axis]
-    return torch.flip(x, new_axis)
+    ret = torch.flip(x, new_axis)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
 def expand_dims(x: torch.Tensor,
