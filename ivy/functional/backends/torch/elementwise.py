@@ -350,29 +350,35 @@ def cosh(x: torch.Tensor,
     return torch.cosh(x, out=out)
 
 
-def log(x: torch.Tensor)\
+def log(x: torch.Tensor,
+        out: Optional[torch.Tensor] = None)\
         -> torch.Tensor:
-    return torch.log(x)
+    return torch.log(x, out=out)
 
 
-def exp(x: torch.Tensor)\
+def exp(x: torch.Tensor,
+        out: Optional[torch.Tensor] = None)\
         -> torch.Tensor:
-    return torch.exp(x)
+    return torch.exp(x, out=out)
 
 
-def subtract(x1: torch.Tensor, x2: torch.Tensor)\
+def subtract(x1: torch.Tensor,
+             x2: torch.Tensor,
+             out: Optional[torch.Tensor] = None)\
         -> torch.Tensor:
     if hasattr(x1, 'dtype') and hasattr(x2, 'dtype'):
         promoted_type = torch.promote_types(x1.dtype, x2.dtype)
         x1 = x1.to(promoted_type)
         x2 = x2.to(promoted_type)
-    return torch.subtract(x1, x2)
+    return torch.subtract(x1, x2, out=out)
 
 
-def remainder(x1: torch.Tensor, x2: torch.Tensor)\
+def remainder(x1: torch.Tensor,
+              x2: torch.Tensor,
+              out: Optional[torch.Tensor] = None)\
         -> torch.Tensor:
     x1, x2 = _cast_for_binary_op(x1, x2)
-    return torch.remainder(x1, x2)
+    return torch.remainder(x1, x2, out=out)
 
 
 
