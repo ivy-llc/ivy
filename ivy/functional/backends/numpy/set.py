@@ -6,10 +6,24 @@ from collections import namedtuple
 from packaging import version
 
 
-def unique_all(x : np.ndarray)\
-                -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
+def unique_all(x : np.ndarray) \
+    -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
+    
+    UniqueAll = namedtuple(typename = 'unique_all', field_names = ['values', 'indices', 'inverse_indices', 'counts'])
+    
+    values, indices, inverse_indices, counts = np.unique(x, return_index = True, return_counts = True,
+                                                         return_inverse = True)
+    nan_count = np.sum(np.isnan(x)).item()
 
-    return npa.unique_all(npa.asarray(x))
+    if nan_count > 0:
+        values = np.concatenate((values, np.full(fill_value = np.nan, shape = (nan_count - 1,))), axis = 0)
+        counts = np.concatenate((counts, np.full(fill_value = 1, shape = (nan_count - 1, ))), axis = 0)
+        
+        nan_idx = np.where(np.isnan(x.flatten()))[0]
+        
+        indices = np.concatenate((indices, nan_idx), axis = 0)
+
+    return UniqueAll(values.astype(x.dtype), indices, inverse_indices.reshape(x.shape), counts)
 
 
 def unique_inverse(x: np.ndarray) \
