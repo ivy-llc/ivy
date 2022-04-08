@@ -221,6 +221,11 @@ def square(x: JaxArray)\
     return jnp.square(x)
 
 
+def pow(x1: jnp.ndarray, x2: jnp.ndarray)\
+        -> jnp.ndarray:
+    return jnp.power(x1, x2)
+
+
 def remainder(x1: JaxArray, x2: JaxArray)\
         -> JaxArray:
         if isinstance(x2,int) and x2 >9223372036854775807:
