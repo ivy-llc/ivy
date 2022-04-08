@@ -111,11 +111,6 @@ def floor(x: torch.Tensor,
     return torch.floor(x, out=out)
 
 
-def isfinite(x: torch.Tensor) \
-        -> torch.Tensor:
-    return torch.isfinite(x)
-
-
 def asin(x: torch.Tensor,
          out: Optional[torch.Tensor] = None)\
         -> torch.Tensor:
@@ -128,18 +123,22 @@ def asinh(x: torch.Tensor,
     return torch.asinh(x, out=out)
 
 
-def sign(x: Tensor)\
+def sign(x: Tensor,
+         out: Optional[torch.Tensor] = None)\
         -> Tensor:
-    return torch.sign(x)
+    return torch.sign(x, out=out)
 
-def sqrt(x: torch.Tensor)\
+
+def sqrt(x: torch.Tensor,
+         out: Optional[torch.Tensor] = None)\
         -> torch.Tensor:
-    return torch.sqrt(x)
+    return torch.sqrt(x, out=out)
 
 
-def cosh(x: torch.Tensor) \
+def cosh(x: torch.Tensor,
+         out: Optional[torch.Tensor] = None)\
         -> torch.Tensor:
-    return torch.cosh(x)
+    return torch.cosh(x, out=out)
 
 
 def log10(x: torch.Tensor) \
