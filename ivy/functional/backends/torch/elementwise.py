@@ -69,30 +69,36 @@ def _cast_for_binary_op(x1: Tensor, x2: Tensor)\
 
 def equal(x1: Tensor,
           x2: Tensor,
-          out: Optional[torch.Tensor] = None)\
+          out: Optional[Tensor] = None)\
         -> Tensor:
     x1, x2 = _cast_for_binary_op(x1, x2)
     return torch.eq(x1, x2, out=out)
 
 
-def less_equal(x1: Tensor, x2: Tensor)\
+def less_equal(x1: Tensor,
+               x2: Tensor,
+               out: Optional[Tensor] = None)\
         -> Tensor:
     x1, x2 = _cast_for_binary_op(x1, x2)
-    return x1 <= x2
+    return torch.less_equal(x1, x2, out=out)
 
 
 def bitwise_and(x1: torch.Tensor,
-                x2: torch.Tensor)\
+                x2: torch.Tensor,
+                out: Optional[torch.Tensor] = None)\
         -> torch.Tensor:
     x1, x2 = _cast_for_binary_op(x1, x2)
-    return torch.bitwise_and(x1, x2)
+    return torch.bitwise_and(x1, x2, out=out)
 
 
-def ceil(x: torch.Tensor)\
+def ceil(x: torch.Tensor,
+         out: Optional[torch.Tensor] = None)\
         -> torch.Tensor:
     if 'int' in str(x.dtype):
+        if ivy.exists(out):
+            return ivy.inplace_update(out, x)
         return x
-    return torch.ceil(x)
+    return torch.ceil(x, out=out)
 
 
 def floor(x: torch.Tensor)\
