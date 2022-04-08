@@ -10,23 +10,26 @@ import ivy
 
 
 def add(x1: torch.Tensor,
-           x2: torch.Tensor) \
+        x2: torch.Tensor,
+        out: Optional[torch.Tensor] = None) \
         -> torch.Tensor:
     x1, x2 = _cast_for_binary_op(x1, x2)
-    return torch.add(x1, x2)
+    return torch.add(x1, x2, out=out)
 
 
 def pow(x1: torch.Tensor,
-        x2: torch.Tensor)\
+        x2: torch.Tensor,
+        out: Optional[torch.Tensor] = None)\
         -> torch.Tensor:
-    return torch.pow(x1, x2)
+    return torch.pow(x1, x2, out=out)
 
 
 def bitwise_xor(x1: torch.Tensor,
-                x2: torch.Tensor)\
+                x2: torch.Tensor,
+                out: Optional[torch.Tensor] = None)\
         -> torch.Tensor:
     x1, x2 = _cast_for_binary_op(x1, x2)
-    return torch.bitwise_xor(x1, x2)
+    return torch.bitwise_xor(x1, x2, out=out)
 
 
 def exp(x: Tensor)\
