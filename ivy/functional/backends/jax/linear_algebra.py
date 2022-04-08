@@ -60,11 +60,6 @@ def matrix_norm(x: JaxArray,
     return jnp.linalg.norm(x, ord, (-2, -1), keepdims)
 
 
-def matrix_power(x: JaxArray, n: int)\
-        -> JaxArray:
-    return jnp.linalg.matrix_power(x, n)
-
-
 def svd(x: JaxArray, full_matrices: bool = True) -> Union[JaxArray, Tuple[JaxArray,...]]:
     results = namedtuple("svd", "U S Vh")
     U, D, VT = jnp.linalg.svd(x, full_matrices=full_matrices)
