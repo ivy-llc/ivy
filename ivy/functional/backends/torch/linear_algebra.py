@@ -147,6 +147,7 @@ def det(A:torch.Tensor) \
     -> torch.Tensor:
     return torch.linalg.det(A)
 
+
 def cholesky(x: torch.Tensor,
             upper: bool = False) -> torch.Tensor:
     if not upper:
@@ -168,7 +169,16 @@ def cross (x1: torch.Tensor,
     dtype_from = torch.promote_types(x1.dtype, x2.dtype)
     x1 = x1.type(dtype_from)
     x2 = x2.type(dtype_from)
-    return torch.cross(input = x1, other  = x2, dim=axis)    
+    return torch.cross(input = x1, other  = x2, dim=axis)
+
+
+def vecdot(x1: torch.Tensor,
+           x2: torch.Tensor,
+           axis: int = -1)\
+        -> torch.Tensor:
+    dtype = torch.promote_types(x1.dtype, x2.dtype)
+    x1, x2 = x1.type(torch.float32), x2.type(torch.float32)
+    return torch.tensordot(x1, x2, dims=([axis], [axis])).type(dtype)
 
 
 # Extra #
@@ -191,14 +201,3 @@ def vector_to_skew_symmetric_matrix(vector: torch.Tensor)\
     row3 = torch.cat((-a2s, a1s, zs), -1)
     # BS x 3 x 3
     return torch.cat((row1, row2, row3), -2)
-
-
-def vecdot(x1: torch.Tensor, 
-           x2: torch.Tensor,
-           axis: int = 2)\
-        -> torch.Tensor:
-    if axis < -len(x1.shape) or axis >= len(x1.shape):
-        raise Exception('Invalid axis')
-    if x1.shape[axis] != x2.shape[axis]:
-        raise Exception('Sizes of axes must be the same')
-    return torch.tensordot(x1, x2, dims=(axis, axis))

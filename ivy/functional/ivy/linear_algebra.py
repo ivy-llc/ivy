@@ -422,6 +422,7 @@ def trace(x: ivy.Array,
 
     return _cur_framework(x).trace(x, offset)
 
+
 def vecdot(x1: Union[ivy.Array, ivy.NativeArray],
            x2: Union[ivy.Array, ivy.NativeArray],
            axis: int = -1)\
@@ -447,6 +448,7 @@ def vecdot(x1: Union[ivy.Array, ivy.NativeArray],
 
     return _cur_framework(x1).vecdot(x1, x2, axis)
 
+
 def det(x: ivy.Array) \
     -> ivy.Array:
     """
@@ -458,6 +460,7 @@ def det(x: ivy.Array) \
                dimensional array containing the determinant for each square matrix. The returned array must have the same data type as x.
     """
     return _cur_framework(x).det(x)
+
 
 def cholesky(x: Union[ivy.Array, ivy.NativeArray], 
              upper: bool = False) -> ivy.Array:
@@ -478,6 +481,7 @@ def cholesky(x: Union[ivy.Array, ivy.NativeArray],
     :type out: array
     """
     return  _cur_framework(x).cholesky(x, upper)
+
 
 def eigvalsh(x: Union[ivy.Array, ivy.NativeArray], /) -> ivy.Array:
     """
