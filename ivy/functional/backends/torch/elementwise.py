@@ -264,35 +264,46 @@ def acosh(x: torch.Tensor,
     return torch.acosh(x, out=out)
 
   
-def sin(x: torch.Tensor)\
+def sin(x: torch.Tensor,
+        out: Optional[torch.Tensor] = None)\
         -> torch.Tensor:
-    return torch.sin(x)
+    return torch.sin(x, out=out)
 
 
-def negative(x: torch.Tensor) -> torch.Tensor:
-    return torch.neg(x)
+def negative(x: torch.Tensor,
+             out: Optional[torch.Tensor] = None)\
+        -> torch.Tensor:
+    return torch.neg(x, out=out)
 
 
-def not_equal(x1: Tensor, x2: Tensor)\
+def not_equal(x1: Tensor,
+              x2: Tensor,
+              out: Optional[torch.Tensor] = None)\
         -> Tensor:
     x1, x2 = _cast_for_binary_op(x1, x2)
-    return torch.not_equal(x1, x2)
+    return torch.not_equal(x1, x2, out=out)
 
 
-def tanh(x: torch.Tensor) -> torch.Tensor:
-    return torch.tanh(x)
+def tanh(x: torch.Tensor,
+         out: Optional[torch.Tensor] = None)\
+        -> torch.Tensor:
+    return torch.tanh(x, out=out)
 
 
-def floor_divide(x1: torch.Tensor, x2: torch.Tensor)\
+def floor_divide(x1: torch.Tensor,
+                 x2: torch.Tensor,
+                 out: Optional[torch.Tensor] = None)\
                 -> torch.Tensor:
     x1, x2 = _cast_for_binary_op(x1, x2)
-    return torch.div(x1, x2, rounding_mode='floor')
+    return torch.div(x1, x2, rounding_mode='floor', out=out)
 
 
-def bitwise_or(x1: torch.Tensor, x2: torch.Tensor) \
+def bitwise_or(x1: torch.Tensor,
+               x2: torch.Tensor,
+               out: Optional[torch.Tensor] = None) \
         -> torch.Tensor:
     x1, x2 = _cast_for_binary_op(x1, x2)
-    return torch.bitwise_or(x1, x2)
+    return torch.bitwise_or(x1, x2, out=out)
 
 
 def sinh(x: torch.Tensor) -> torch.Tensor:
