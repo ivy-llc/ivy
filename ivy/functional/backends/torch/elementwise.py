@@ -101,11 +101,14 @@ def ceil(x: torch.Tensor,
     return torch.ceil(x, out=out)
 
 
-def floor(x: torch.Tensor)\
+def floor(x: torch.Tensor,
+          out: Optional[torch.Tensor] = None)\
         -> torch.Tensor:
     if 'int' in str(x.dtype):
+        if ivy.exists(out):
+            return ivy.inplace_update(out, x)
         return x
-    return torch.floor(x)
+    return torch.floor(x, out=out)
 
 
 def isfinite(x: torch.Tensor) \
@@ -113,14 +116,17 @@ def isfinite(x: torch.Tensor) \
     return torch.isfinite(x)
 
 
-def asin(x: torch.Tensor) \
+def asin(x: torch.Tensor,
+         out: Optional[torch.Tensor] = None)\
         -> torch.Tensor:
-    return torch.asin(x)
+    return torch.asin(x, out=out)
 
 
-def asinh(x: torch.Tensor) \
+def asinh(x: torch.Tensor,
+          out: Optional[torch.Tensor] = None)\
         -> torch.Tensor:
-    return torch.asinh(x)
+    return torch.asinh(x, out=out)
+
 
 def sign(x: Tensor)\
         -> Tensor:
