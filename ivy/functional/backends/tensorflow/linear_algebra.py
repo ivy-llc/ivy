@@ -1,21 +1,48 @@
 # global
 import tensorflow as tf
 from tensorflow.python.types.core import Tensor
-from typing import Union, Optional, Tuple, Literal
+from typing import Union, Optional, Tuple, Literal, List
 from collections import namedtuple
 
 # local
 from ivy import inf
 import ivy
-from collections import namedtuple
+
 
 
 # Array API Standard #
 # -------------------#
 
-inv = tf.linalg.inv
-pinv = tf.linalg.pinv
-cholesky = tf.linalg.cholesky
+def eigh(x: Tensor)\
+ -> Tensor:
+        return tf.linalg.eigh(x) 
+
+
+def inv(x: Tensor) -> Tensor:
+    if tf.math.reduce_any(tf.linalg.det(x) == 0 ):
+        return x
+    return tf.linalg.inv(x)
+
+
+def tensordot(x1: Tensor, x2: Tensor,
+              axes: Union[int, Tuple[List[int], List[int]]] = 2) \
+        -> Tensor:
+
+    # find type to promote to
+    dtype = tf.experimental.numpy.promote_types(x1.dtype, x2.dtype)
+
+    # type casting to float32 which is acceptable for tf.tensordot
+    x1, x2 = tf.cast(x1, tf.float32), tf.cast(x2, tf.float32)
+
+    return tf.cast(tf.tensordot(x1, x2, axes), dtype)
+
+
+def pinv(x: Tensor,
+         rtol: Optional[Union[float, Tuple[float]]] = None) \
+        -> Tensor:
+    if rtol is None:
+        return tf.linalg.pinv(x)
+    return tf.linalg.pinv(tf.cast(x != 0, 'float32'), tf.cast(rtol != 0, 'float32'))
 
 
 def matrix_transpose(x: Tensor)\
@@ -46,20 +73,31 @@ def vector_norm(x: Tensor,
     return tn_normalized_vector
 
 
-def matrix_norm(x, p=2, axes=None, keepdims=False):
-    axes = (-2, -1) if axes is None else axes
-    if isinstance(axes, int):
-        raise Exception('if specified, axes must be a length-2 sequence of ints,'
-                        'but found {} of type {}'.format(axes, type(axes)))
-    if p == -float('inf'):
+def matrix_norm(x: Tensor,
+                ord: Optional[Union[int, float, Literal[inf, - inf, 'fro', 'nuc']]] = 'fro',
+                keepdims: bool = False)\
+        -> Tensor:
+    axes = (-2, -1)
+    if ord == -float('inf'):
         ret = tf.reduce_min(tf.reduce_sum(tf.abs(x), axis=axes[1], keepdims=True), axis=axes)
-    elif p == -1:
+    elif ord == -1:
         ret = tf.reduce_min(tf.reduce_sum(tf.abs(x), axis=axes[0], keepdims=True), axis=axes)
+    elif ord == -2:
+        ret = tf.reduce_min(x, axis=(-2, -1), keepdims=keepdims)
+    elif ord == 'nuc':
+        if tf.size(x).numpy() == 0:
+            ret = x
+        else:
+            ret = tf.reduce_sum(tf.linalg.svd(x, compute_uv=False), axis=-1)
+    elif ord == 'fro':
+        ret = tf.linalg.norm(x, 2, axes, keepdims)
     else:
-        ret = tf.linalg.norm(x, p, axes, keepdims)
-    if ret.shape == ():
-        return tf.expand_dims(ret, 0)
-    return ret
+        ret = tf.linalg.norm(x, ord, axes, keepdims)
+
+    if keepdims:
+        return tf.reshape(ret, x.shape[:-2] + (1, 1))
+    else:
+        return tf.reshape(ret, x.shape[:-2])
 
 
 # noinspection PyPep8Naming
@@ -73,6 +111,12 @@ def svd(x:Tensor,full_matrices: bool = True) -> Union[Tensor, Tuple[Tensor,...]]
     VT = tf.transpose(V, transpose_dims)
     res=results(U, D, VT)
     return res
+
+
+def outer(x1: Tensor,
+          x2: Tensor) \
+        -> Tensor:
+    return tf.experimental.numpy.outer(x1, x2)
 
 
 def diagonal(x: tf.Tensor,
@@ -180,7 +224,37 @@ def cholesky(x: tf.Tensor,
         axes = list(range(len(x.shape) - 2)) + [len(x.shape) - 1, len(x.shape) - 2]
         return tf.transpose(tf.linalg.cholesky(tf.transpose(x, perm=axes)),
                             perm=axes)
-        
+
+
+def eigvalsh(x: Tensor) -> Tensor:
+    return tf.linalg.eigvalsh(x)
+
+
+def matrix_rank(vector: Tensor,
+                rtol: Optional[Union[float, Tuple[float]]] = None)\
+        -> Tensor:
+    if rtol is None:
+        return tf.linalg.matrix_rank(vector)
+    if tf.size(vector) == 0:
+        return 0
+    if tf.size(vector) == 1:
+        return tf.math.count_nonzero(vector)
+    vector = tf.reshape(vector,[-1])
+    vector = tf.expand_dims(vector,0)
+    if hasattr(rtol,'dtype'):
+        if rtol.dtype != vector.dtype:
+            promoted_dtype = tf.experimental.numpy.promote_types(rtol.dtype,vector.dtype)
+            vector = tf.cast(vector,promoted_dtype)
+            rtol = tf.cast(rtol,promoted_dtype)
+    return tf.linalg.matrix_rank(vector,rtol)
+
+    
+def cross (x1: tf.Tensor,
+           x2: tf.Tensor,
+           axis:int = -1) -> tf.Tensor:
+    return tf.experimental.numpy.cross(x1, x2,axis=axis)
+
+
 # Extra #
 # ------#
 

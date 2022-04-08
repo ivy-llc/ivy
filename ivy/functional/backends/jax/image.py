@@ -32,8 +32,33 @@ def stack_images(images, desired_aspect_ratio=(1, 1)):
     for i in range(stack_width_int):
         images_to_concat = images[i*stack_height_int:(i+1)*stack_height_int]
         images_to_concat += [_ivy.zeros_like(images[0])] * (stack_height_int - len(images_to_concat))
-        image_rows.append(_ivy.concatenate(images_to_concat, num_batch_dims))
-    return _ivy.concatenate(image_rows, num_batch_dims + 1)
+        image_rows.append(_ivy.concat(images_to_concat, num_batch_dims))
+    return _ivy.concat(image_rows, num_batch_dims + 1)
+
+
+def linear_resample(x, num_samples, axis=-1):
+    x_shape = list(x.shape)
+    num_x_dims = len(x_shape)
+    axis = axis % num_x_dims
+    x_pre_shape = x_shape[0:axis]
+    x_pre_size = _reduce(_mul, x_pre_shape) if x_pre_shape else 1
+    num_pre_dims = len(x_pre_shape)
+    num_vals = x.shape[axis]
+    x_post_shape = x_shape[axis + 1:]
+    x_post_size = _reduce(_mul, x_post_shape) if x_post_shape else 1
+    num_post_dims = len(x_post_shape)
+    xp = jnp.reshape(jnp.arange(num_vals * x_pre_size * x_post_size), x_shape)
+    x_coords = jnp.arange(num_samples) * ((num_vals - 1) / (num_samples - 1)) * x_post_size
+    x_coords = jnp.reshape(x_coords, [1] * num_pre_dims + [num_samples] + [1] * num_post_dims)
+    x_coords = jnp.broadcast_to(x_coords, x_pre_shape + [num_samples] + x_post_shape)
+    slc = [slice(None)] * num_x_dims
+    slc[axis] = slice(0, 1, 1)
+    x_coords = x_coords + xp[tuple(slc)]
+    x = jnp.reshape(x, (-1,))
+    xp = jnp.reshape(xp, (-1,))
+    x_coords = jnp.reshape(x_coords, (-1,))
+    ret = jnp.interp(x_coords, xp, x)
+    return jnp.reshape(ret, x_pre_shape + [num_samples] + x_post_shape)
 
 
 # noinspection PyPep8Naming
@@ -110,7 +135,7 @@ def gradient_image(x):
     dx = x[..., :, 1:, :] - x[..., :, :-1, :]
     # BS x H x W x D
     # jax.device_put(x, dev_from_str(dev))
-    dy = _ivy.concatenate((dy, jax.device_put(jnp.zeros(batch_shape + [1, image_dims[1], num_dims]), dev)), -3)
-    dx = _ivy.concatenate((dx, jax.device_put(jnp.zeros(batch_shape + [image_dims[0], 1, num_dims]), dev)), -2)
+    dy = _ivy.concat((dy, jax.device_put(jnp.zeros(batch_shape + [1, image_dims[1], num_dims]), dev)), -3)
+    dx = _ivy.concat((dx, jax.device_put(jnp.zeros(batch_shape + [image_dims[0], 1, num_dims]), dev)), -2)
     # BS x H x W x D,    BS x H x W x D
     return dy, dx

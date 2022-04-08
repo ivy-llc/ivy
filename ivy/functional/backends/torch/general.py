@@ -6,22 +6,17 @@ Collection of PyTorch general functions, wrapped to fit Ivy syntax and signature
 import ivy
 import numpy as np
 torch_scatter = None
-import math as _math
 import torch as torch
 from operator import mul
-from torch.types import Number
 from functools import reduce as _reduce
-from ivy.functional.backends.torch import linspace
-from typing import List, Dict, Optional, Union
+from typing import List, Optional, Union
 
 
 # local
-from ivy.functional.ivy import default_dtype
-from ivy.functional.ivy.device import default_device
 from ivy.functional.backends.torch.device import dev_from_str, _callable_dev
 
 
-def is_array(x, exclusive=False):
+def is_native_array(x, exclusive=False):
     if isinstance(x, torch.Tensor):
         if exclusive and x.requires_grad:
             return False
@@ -77,13 +72,17 @@ def container_types():
 
 
 def inplace_update(x, val):
-    x.data = val
+    (x_native, val_native), _ = ivy.args_to_native(x, val)
+    x_native.data = val_native
+    if ivy.is_ivy_array(x):
+        x.data = x_native
+    else:
+        x = ivy.Array(x_native)
     return x
 
 
 inplace_arrays_supported = lambda: True
 inplace_variables_supported = lambda: True
-
 
 
 def inplace_decrement(x, val):
@@ -278,3 +277,41 @@ def gather_nd(params, indices, dev: Optional[str] = None):
     flat_gather = torch.gather(flat_params, 0, flat_indices_for_flat)
     res = torch.reshape(flat_gather, list(indices_shape[:-1]) + list(params_shape[num_index_dims:]))
     return res
+
+
+def multiprocessing(context=None):
+    import torch.multiprocessing
+    if context is None:
+        return torch.multiprocessing
+    return torch.multiprocessing.get_context(context)
+
+
+def indices_where(x):
+    where_x = torch.where(x)
+    res = torch.cat([torch.unsqueeze(item, -1) for item in where_x], -1)
+    return res
+
+
+# noinspection PyUnresolvedReferences,PyShadowingNames
+def one_hot(indices, depth: int, dev: Optional[str] = None):
+    if dev is None:
+        dev = _callable_dev(indices)
+    return torch.nn.functional.one_hot(indices.type(torch.int64), depth).to(dev_from_str(dev))
+
+
+def shape(x, as_tensor=False) -> Union[torch.Tensor, List[int]]:
+    return torch.tensor(x.shape) if as_tensor else x.shape
+
+
+def get_num_dims(x, as_tensor=False) -> Union[torch.Tensor, int]:
+    return torch.tensor(len(x.shape)) if as_tensor else len(x.shape)
+
+
+def compile(fn, dynamic=True, example_inputs=None, static_argnums=None, static_argnames=None):
+    if dynamic:
+        return torch.jit.script(fn)
+    return torch.jit.trace(fn, example_inputs)
+
+
+def current_framework_str():
+    return 'torch'

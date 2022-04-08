@@ -25,15 +25,13 @@ float64 = np.float64
 # noinspection PyShadowingBuiltins
 bool = np.bool
 
-all_dtypes = (int8, int32, int64,
-              uint8,
-              float16, float32, float64)
-valid_dtypes = all_dtypes
+valid_dtypes = (int8, int32, int64,
+                uint8,
+                float16, float32, float64)
 
-all_dtype_strs = ('int8', 'int32', 'int64',
-                  'uint8',
-                  'float16', 'float32', 'float64')
-valid_dtype_strs = all_dtypes
+valid_dtype_strs = ('int8', 'int32', 'int64',
+                    'uint8',
+                    'float16', 'float32', 'float64')
 invalid_dtype_strs = ('int16', 'uint16', 'uint32', 'uint64', 'bfloat16')
 
 
@@ -98,20 +96,22 @@ def _handle_flat_arrays_in_out(fn, include_out=True):
             expanded = True
             return _flat_array_to_1_dim_array(x)
 
-        args_expanded = ivy.nested_map(args, lambda x: expand(x) if ivy.is_array(x) and len(x.shape) == 0 else x)
-        kwargs_expanded = ivy.nested_map(kwargs, lambda x: expand(x) if ivy.is_array(x) and len(x.shape) == 0 else x)
+        args_expanded = ivy.nested_map(args, lambda x: expand(x) if ivy.is_native_array(x) and len(x.shape) == 0 else x)
+        kwargs_expanded = ivy.nested_map(kwargs, lambda x: expand(x) if ivy.is_native_array(x) and len(x.shape) == 0 else x)
         ret = fn(*args_expanded, **kwargs_expanded)
         if expanded and include_out:
-            return ivy.nested_map(ret, lambda x: _1_dim_array_to_flat_array(x) if ivy.is_array(x) else x)
+            return ivy.nested_map(ret, lambda x: _1_dim_array_to_flat_array(x) if ivy.is_native_array(x) else x)
         return ret
     return wrapped_fn
 
+def _handle_output(x, axis, keepdims, ret):
+    if not keepdims and (axis is None or len((axis,) if isinstance(axis, int) else axis) == len(x.shape)):
+        return _1_dim_array_to_flat_array(ret)
+    return ret
 
 # local sub-modules
 from . import activations
 from .activations import *
-from . import constants
-from .constants import *
 from . import creation
 from .creation import *
 from . import data_type
@@ -144,6 +144,3 @@ from . import statistical
 from .statistical import *
 from . import utility
 from .utility import *
-
-from . import old
-from .old import *

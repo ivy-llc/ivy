@@ -1,7 +1,7 @@
 # global
 import jax
 import jax.numpy as jnp
-from typing import Union, Optional, Tuple, Literal
+from typing import Union, Optional, Tuple, Literal, List
 from collections import namedtuple
 
 # local
@@ -13,23 +13,17 @@ import ivy
 # Array API Standard #
 # -------------------#
 
-inv = jnp.linalg.inv
-pinv = jnp.linalg.pinv
-cholesky = jnp.linalg.cholesky
+def eigh(x: JaxArray)\
+  ->JaxArray:
+         return jnp.linalg.eigh(x)
 
+def pinv(x: JaxArray,
+         rtol: Optional[Union[float, Tuple[float]]] = None) \
+        -> JaxArray:
 
-
-def matrix_norm(x, p=2, axes=None, keepdims=False):
-    axes = (-2, -1) if axes is None else axes
-    if isinstance(axes, int):
-        raise Exception('if specified, axes must be a length-2 sequence of ints,'
-                        'but found {} of type {}'.format(axes, type(axes)))
-    elif isinstance(axes, list):
-        axes = tuple(axes)
-    ret = jnp.linalg.norm(x, p, axes, keepdims)
-    if ret.shape == ():
-        return jnp.expand_dims(ret, 0)
-    return ret
+    if rtol is None:
+        return jnp.linalg.pinv(x)
+    return jnp.linalg.pinv(x, rtol)
 
 
 def matrix_transpose(x: JaxArray)\
@@ -54,11 +48,29 @@ def vector_norm(x: JaxArray,
     return jnp_normalized_vector
 
 
-def svd(x:JaxArray,full_matrices: bool = True) -> Union[JaxArray, Tuple[JaxArray,...]]:
-    results=namedtuple("svd", "U S Vh")
-    U, D, VT=jnp.linalg.svd(x, full_matrices=full_matrices)
-    res=results(U, D, VT)
+def matrix_norm(x: JaxArray,
+                ord: Optional[Union[int, float, Literal[inf, - inf, 'fro', 'nuc']]] = 'fro',
+                keepdims: bool = False)\
+        -> JaxArray:
+    if x.size == 0:
+        if keepdims:
+            return x.reshape(x.shape[:-2] + (1, 1))
+        else:
+            return x.reshape(x.shape[:-2])
+    return jnp.linalg.norm(x, ord, (-2, -1), keepdims)
+
+
+def svd(x: JaxArray, full_matrices: bool = True) -> Union[JaxArray, Tuple[JaxArray,...]]:
+    results = namedtuple("svd", "U S Vh")
+    U, D, VT = jnp.linalg.svd(x, full_matrices=full_matrices)
+    res = results(U, D, VT)
     return res
+
+
+def outer(x1: JaxArray,
+          x2: JaxArray)\
+        -> JaxArray:
+    return jnp.outer(x1, x2)
 
 
 def diagonal(x: JaxArray,
@@ -90,6 +102,12 @@ def slogdet(x:Union[ivy.Array,ivy.NativeArray],full_matrices: bool = True) -> Un
     res = results(sign, logabsdet)
     return res
 
+def tensordot(x1: JaxArray, x2: JaxArray,
+              axes: Union[int, Tuple[List[int], List[int]]] = 2) \
+        -> JaxArray:
+
+    return jnp.tensordot(x1, x2, axes)
+
 
 def trace(x: JaxArray,
           offset: int = 0)\
@@ -109,6 +127,34 @@ def cholesky(x: JaxArray,
         axes = list(range(len(x.shape) - 2)) + [len(x.shape) - 1, len(x.shape) - 2]
         return jnp.transpose(jnp.linalg.cholesky(jnp.transpose(x, axes=axes)),
                         axes=axes)
+
+
+def eigvalsh(x: JaxArray) -> JaxArray:
+    return jnp.linalg.eigvalsh(x)
+
+
+def inv(x: JaxArray) -> JaxArray:
+    if jnp.any(jnp.linalg.det(x.astype('float64')) == 0):
+        return x
+    return jnp.linalg.inv(x)
+
+
+def matrix_rank(vector: JaxArray,
+                rtol: Optional[Union[float, Tuple[float]]] = None) \
+        -> JaxArray:
+        if vector.size == 0:
+            return 0
+        if vector.size == 1:
+            return jnp.count_nonzero(vector)
+        if vector.ndim >2:
+            vector = vector.reshape([-1])
+        return jnp.linalg.matrix_rank(vector, rtol)
+
+
+def cross (x1: JaxArray,
+           x2: JaxArray,
+           axis:int = -1) -> JaxArray:
+    return jnp.cross(a= x1, b = x2, axis= axis)
 
 
 # Extra #

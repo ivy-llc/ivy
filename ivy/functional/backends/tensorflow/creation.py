@@ -1,7 +1,7 @@
 # global
 import tensorflow as tf
 from tensorflow import Tensor
-from typing import Union, Tuple, Optional
+from typing import Union, Tuple, List, Optional
 from tensorflow.python.framework.dtypes import DType
 
 # local
@@ -47,6 +47,9 @@ def asarray(object_in, dtype=None, dev=None, copy=None):
                 return tf.cast(tensor, dtype)
 
 
+array = asarray
+
+
 def zeros(shape: Union[int, Tuple[int]],
           dtype: Optional[Dtype] = None,
           device: Optional[str] = None) \
@@ -85,6 +88,15 @@ def ones_like(x : Tensor,
     dev = default_device(dev)
     with tf.device(dev_from_str(dev)):
         return tf.ones_like(x, dtype=dtype)
+
+
+def zeros_like(x: Tensor,
+               dtype: Optional[Dtype] = None,
+               device: Optional[str] = None)\
+            -> Tensor:
+    device = default_device(device)
+    with tf.device(dev_from_str(device)):
+        return tf.zeros_like(x, dtype=dtype)
 
 
 def tril(x: tf.Tensor,
@@ -126,6 +138,11 @@ def linspace(start, stop, num, axis=None, dev=None):
         return tf.linspace(start, stop, num, axis=axis)
 
 
+def meshgrid(*arrays: tf.Tensor, indexing: str = 'xy')\
+        -> List[tf.Tensor]:
+    return tf.meshgrid(*arrays, indexing=indexing)
+
+
 def eye(n_rows: int,
         n_cols: Optional[int] = None,
         k: Optional[int] = 0,
@@ -150,23 +167,25 @@ def eye(n_rows: int,
             return tf.zeros([n_rows, n_cols], dtype=dtype)
 
 
-# Extra #
-# ------#
-
 # noinspection PyShadowingNames
-def array(object_in, dtype=None, dev=None):
-    dtype = dtype_from_str(default_dtype(dtype, object_in))
+def arange(stop, start=0, step=1, dtype=None, dev=None):
+    dtype = tf.__dict__[dtype] if dtype else dtype
     dev = default_device(dev)
     with tf.device(dev_from_str(dev)):
-        try:
-            tensor = tf.convert_to_tensor(object_in, dtype=dtype)
-        except (TypeError, ValueError):
-            tensor = tf.convert_to_tensor(ivy.nested_map(object_in, lambda x: tf.cast(x, dtype)), dtype=dtype)
-        if dtype is None:
-            return tensor
-        return tf.cast(tensor, dtype)
+        return tf.range(start, stop, delta=step, dtype=dtype)
 
 
+def full(shape, fill_value, dtype=None, device=None):
+    with tf.device(dev_from_str(default_device(device))):
+        return tf.fill(shape, tf.constant(fill_value, dtype=dtype_from_str(default_dtype(dtype, fill_value))))
+
+
+def from_dlpack(x):
+    return tf.experimental.dlpack.from_dlpack(x)
+
+
+# Extra #
+# ------#
 
 def logspace(start, stop, num, base=10., axis=None, dev=None):
     power_seq = linspace(start, stop, num, axis, default_device(dev))

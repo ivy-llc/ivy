@@ -3,7 +3,7 @@ import sys
 from jax.config import config
 config.update("jax_enable_x64", True)
 import jaxlib
-import jax as _jax
+import jax as jax
 import jax.numpy as jnp
 from typing import Union
 # noinspection PyPackageRequirements
@@ -26,11 +26,11 @@ register_pytree_node(
 use = ivy.framework_handler.ContextManager(sys.modules[__name__])
 
 # noinspection PyUnresolvedReferences
-JaxArray = Union[_jax.interpreters.xla._DeviceArray, jaxlib.xla_extension.DeviceArray, Buffer]
+JaxArray = Union[jax.interpreters.xla._DeviceArray, jaxlib.xla_extension.DeviceArray, Buffer]
 # noinspection PyUnresolvedReferences,PyProtectedMember
-NativeArray = (_jax.interpreters.xla._DeviceArray, jaxlib.xla_extension.DeviceArray, Buffer)
+NativeArray = (jax.interpreters.xla._DeviceArray, jaxlib.xla_extension.DeviceArray, Buffer)
 # noinspection PyUnresolvedReferences,PyProtectedMember
-NativeVariable = _jax.interpreters.xla._DeviceArray
+NativeVariable = jax.interpreters.xla._DeviceArray
 # noinspection PyUnresolvedReferences
 Device = jaxlib.xla_extension.Device
 Dtype = jnp.dtype
@@ -51,16 +51,13 @@ float64 = jnp.dtype('float64')
 # noinspection PyShadowingBuiltins
 bool = jnp.dtype('bool')
 
-all_dtypes = (int8, int16, int32,
-              uint8, uint16, uint32, uint64,
-              bfloat16, float16, float32)
-valid_dtypes = all_dtypes
-invalid_dtypes = ()
+valid_dtypes = (int8, int16, int32,
+                uint8, uint16, uint32, uint64,
+                bfloat16, float16, float32)
 
-all_dtype_strs = ('int8', 'int16', 'int32', 'int64',
-                  'uint8', 'uint16', 'uint32', 'uint64',
-                  'bfloat16', 'float16', 'float32', 'float64')
-valid_dtype_strs = all_dtypes
+valid_dtype_strs = ('int8', 'int16', 'int32', 'int64',
+                    'uint8', 'uint16', 'uint32', 'uint64',
+                    'bfloat16', 'float16', 'float32', 'float64')
 invalid_dtype_strs = ()
 
 
@@ -81,8 +78,6 @@ backend = 'jax'
 # local sub-modules
 from . import activations
 from .activations import *
-from . import constants
-from .constants import *
 from . import converters
 from .converters import *
 from . import creation
@@ -117,6 +112,3 @@ from . import statistical
 from .statistical import *
 from . import utility
 from .utility import *
-
-from . import old
-from .old import *

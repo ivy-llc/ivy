@@ -20,14 +20,53 @@ def min(x: torch.Tensor,
 
 
 def sum(x: torch.Tensor,
-        axis: Optional[List[int]] = None,
+        axis: Optional[Union[int, Tuple[int]]] = None,
+        dtype: Optional[torch.dtype] = None,
         keepdims: bool = False)\
         -> torch.Tensor:
-    if axis is None:
-        num_dims = len(x.shape)
-        axis = list(range(num_dims))
-    return torch.sum(x, dim=axis, keepdim=keepdims)
 
+    if dtype == None:
+        if x.dtype in [torch.int8, torch.int16]:
+            dtype = torch.int32
+        elif x.dtype == torch.uint8:
+            dtype = torch.uint8
+        elif x.dtype in [torch.int32, torch.int64]:
+            dtype = torch.int64
+
+    if axis is None:
+       return torch.sum(input=x,dtype=dtype)
+    elif type(axis) == list:
+        torch.sum(input = x, dim = axis)
+    elif type(axis) == tuple:
+        if len(axis) == 0:
+            axis = 0
+        else:
+            return torch.sum(torch.Tensor(
+                [torch.sum(input=x, dim=i, dtype=dtype, keepdim=keepdims) for i in axis]), dtype=dtype)
+
+    return torch.sum(input=x, dim=axis, dtype=dtype, keepdim=keepdims)
+
+
+    if dtype == None:
+        if x.dtype in [torch.int8, torch.int16]:
+            dtype = torch.int8
+        elif x.dtype == torch.uint8:
+            dtype = torch.uint8
+        elif x.dtype in [torch.int32, torch.int64]:
+            dtype = torch.int64
+
+    if dim is None:
+        dim = x.dim()-1
+    elif type(dim) == list:
+        torch.sum(input = x, dim = dim)
+    elif type(dim) == tuple:
+        if len(dim) == 0:
+            dim = x.dim() - 1
+        else:
+            return torch.sum(torch.Tensor(
+                [torch.sum(input=x, dim=i, dtype=dtype, keepdim=keepdim) for i in dim]), dtype=dtype)
+
+    return torch.sum(input=x, dim=dim, dtype=dtype, keepdim=keepdim)
 
 def prod(x: torch.Tensor,
          axis: Optional[Union[int, Tuple[int]]] = None,
@@ -55,10 +94,16 @@ def prod(x: torch.Tensor,
     return torch.prod(input=x, dim=axis, dtype=dtype, keepdim=keepdims)
 
 
-def mean(x, axis: Optional[List[int]] = None, keepdims: bool = False):
+def mean(x: torch.Tensor,
+         axis: Optional[Union[int, Tuple[int, ...]]] = None,
+         keepdims: bool = False)\
+        -> torch.Tensor:
     if axis is None:
         num_dims = len(x.shape)
         axis = list(range(num_dims))
+    torch.mean(x, dim=axis, keepdim=keepdims)
+    if axis == ():
+        return x
     return torch.mean(x, dim=axis, keepdim=keepdims)
 
 
@@ -86,6 +131,23 @@ def var(x: torch.Tensor,
     axis = tuple([i % dims for i in axis])
     for i, a in enumerate(axis):
         x = torch.var(x, dim=a if keepdims else a - i, keepdim=keepdims)
+    return x
+
+
+def std(x: torch.Tensor,
+        axis: Optional[Union[int, Tuple[int]]] = None,
+        correction: Union[int, float] = 0.0,
+        keepdims: bool = False) \
+        -> torch.Tensor:
+    if axis is None:
+        num_dims = len(x.shape)
+        axis = tuple(range(num_dims))
+    if isinstance(axis, int):
+        return torch.std(x, dim=axis, keepdim=keepdims)
+    dims = len(x.shape)
+    axis = tuple([i % dims for i in axis])
+    for i, a in enumerate(axis):
+        x = torch.std(x, dim=a if keepdims else a - i, keepdim=keepdims)
     return x
 
 

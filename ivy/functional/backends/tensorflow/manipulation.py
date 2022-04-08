@@ -6,6 +6,40 @@ from typing import Union, Tuple, Optional, List
 from tensorflow.python.types.core import Tensor
 
 
+def roll(x: Tensor,
+         shift: Union[int, Tuple[int, ...]],
+         axis: Optional[Union[int, Tuple[int, ...]]] = None)\
+        -> Tensor:
+    if axis is None:
+        originalShape = x.shape
+        axis = 0
+        x = tf.reshape(x, [-1])
+        roll = tf.roll(x, shift, axis)
+        return tf.reshape(roll, originalShape)
+
+    return tf.roll(x, shift, axis)
+
+
+def squeeze(x: Tensor,
+            axis: Union[int, Tuple[int], List[int]])\
+        -> Tensor:
+    if isinstance(axis, int):
+        if x.shape[axis] > 1:
+            raise ValueError('Expected dimension of size 1, but found dimension size {}'.format(x.shape[axis]))
+        return tf.squeeze(x, axis)
+    if isinstance(axis, tuple):
+        axis = list(axis)
+    normalise_axis = [(len(x.shape) - abs(element)) if element < 0 else element for element in axis]
+    normalise_axis.sort()
+    axis_updated_after_squeeze = [ dim - key for (key, dim) in enumerate(normalise_axis)]
+    for i in axis_updated_after_squeeze:
+        if x.shape[i] > 1:
+            raise ValueError('Expected dimension of size 1, but found dimension size {}'.format(x.shape[i]))
+        else:
+            x = tf.squeeze(x, i)
+    return x
+
+
 def flip(x: Tensor,
          axis: Optional[Union[int, Tuple[int], List[int]]] = None)\
          -> Tensor:
@@ -37,6 +71,40 @@ def permute_dims(x: Tensor,
         -> Tensor:
     return tf.transpose(x,perm=axes)
 
+
+def stack(x: Union[Tuple[Tensor], List[Tensor]],
+          axis: Optional[int] = 0)\
+          -> Tensor:
+    return tf.experimental.numpy.stack(x, axis)
+
+
+def reshape(x: Tensor,
+            shape: Tuple[int, ...],
+            copy: Optional[bool] = None)\
+        -> Tensor:
+    return tf.reshape(x, shape)
+
+
+def concat(xs: List[Tensor], axis: int = 0) -> Tensor:
+    is_tuple = type(xs) is tuple
+    is_axis_none = axis==None
+    if is_tuple:
+        xs = list(xs)
+    highest_dtype = xs[0].dtype
+    for i in xs:
+        highest_dtype = tf.experimental.numpy.promote_types(highest_dtype, i.dtype)
+
+    for i in range(len(xs)):
+        if is_axis_none:
+            xs[i] = tf.reshape(xs[i], -1)
+        xs[i] = tf.cast(xs[i], highest_dtype)
+    if is_axis_none:
+        axis = 0
+        if is_tuple:
+            xs = tuple(xs)
+    ret = tf.concat(xs, axis)
+
+    return ret
 
 
 # Extra #
@@ -73,7 +141,6 @@ def tile(x, reps):
     return tf.tile(x, reps)
 
 
-
 def constant_pad(x, pad_width, value=0):
     if x.shape == ():
         x = tf.reshape(x, (-1,))
@@ -98,3 +165,4 @@ def swapaxes(x, axis0, axis1):
     config.insert(axis1, axis0)
     return tf.transpose(x, config)
 
+clip = tf.clip_by_value
