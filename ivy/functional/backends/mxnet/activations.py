@@ -26,6 +26,10 @@ def gelu(x, approximate=True):
 
 
 tanh = _mx.nd.tanh
-sigmoid = _mx.nd.sigmoid
+
+
+def sigmoid(x):
+    return _mx.nd.sigmoid(x)
+
 softmax = lambda x, axis=-1: _mx.nd.softmax(x, axis=axis)
 softplus = lambda x: _mx.nd.log(_mx.nd.exp(x) + 1)
