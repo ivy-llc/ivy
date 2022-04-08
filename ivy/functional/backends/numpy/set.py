@@ -21,7 +21,7 @@ def unique_all(x : np.ndarray) \
         
         nan_idx = np.where(np.isnan(x.flatten()))[0]
         
-        indices = np.concatenate((indices, nan_idx), axis = 0)
+        indices = np.concatenate((indices[:-1], nan_idx), axis = 0)
 
     return UniqueAll(values.astype(x.dtype), indices, inverse_indices.reshape(x.shape), counts)
 

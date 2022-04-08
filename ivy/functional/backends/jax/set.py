@@ -22,7 +22,7 @@ def unique_all(x : JaxArray) \
         
         nan_idx = jnp.where(jnp.isnan(x.flatten()))[0]
         
-        indices = jnp.concatenate((indices, nan_idx), axis = 0)
+        indices = jnp.concatenate((indices[:-1], nan_idx), axis = 0)
 
     return UniqueAll(values.astype(x.dtype), indices, inverse_indices.reshape(x.shape), counts)
 
