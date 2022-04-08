@@ -182,7 +182,11 @@ def tile(x: torch.Tensor,
 
 
 # noinspection PyUnresolvedReferences
-def constant_pad(x, pad_width: List[List[int]], value: Number = 0.):
+def constant_pad(x: torch.Tensor,
+                 pad_width: List[List[int]],
+                 value: Number = 0.,
+                 out: Optional[torch.Tensor] = None)\
+        -> torch.Tensor:
     if x.shape == ():
         x = x.unsqueeze(0)
     if isinstance(pad_width, torch.Tensor):
@@ -192,16 +196,28 @@ def constant_pad(x, pad_width: List[List[int]], value: Number = 0.):
     for pad_width_sec in pad_width:
         for item in pad_width_sec:
             pad_width_flat.append(item)
-    return torch.nn.functional.pad(x, pad_width_flat, mode='constant', value=value)
+    ret = torch.nn.functional.pad(x, pad_width_flat, mode='constant', value=value)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
-def zero_pad(x, pad_width: List[List[int]]):
-    return constant_pad(x, pad_width, 0.)
+def zero_pad(x: torch.Tensor,
+             pad_width: List[List[int]],
+             out: Optional[torch.Tensor] = None):
+    return constant_pad(x, pad_width, 0., out=out)
 
 
-def swapaxes(x, axis0: int, axis1: int):
-    return torch.transpose(x, axis0, axis1)
+def swapaxes(x: torch.Tensor,
+             axis0: int,
+             axis1: int,
+             out: Optional[torch.Tensor] = None)\
+        -> torch.Tensor:
+    ret = torch.transpose(x, axis0, axis1)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
-def clip(x, x_min, x_max):
-    return torch.clamp(x, x_min, x_max)
+def clip(x, x_min, x_max, out: Optional[torch.Tensor] = None):
+    return torch.clamp(x, x_min, x_max, out=out)
