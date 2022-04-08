@@ -101,13 +101,20 @@ def stack(x: Union[Tuple[torch.Tensor], List[torch.Tensor]],
 
 def reshape(x: torch.Tensor,
             shape: Tuple[int, ...],
-            copy: Optional[bool] = None)\
+            copy: Optional[bool] = None,
+            out: Optional[torch.Tensor] = None)\
         -> torch.Tensor:
-    return torch.reshape(x, shape)
+    ret = torch.reshape(x, shape)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
-def concat(xs: List[torch.Tensor], axis: int = 0) -> torch.Tensor:
-    if axis == None:
+def concat(xs: List[torch.Tensor],
+           axis: int = 0,
+           out: Optional[torch.Tensor] = None)\
+        -> torch.Tensor:
+    if axis is None:
         is_tuple = type(xs) is tuple
         if is_tuple:
             xs = list(xs)
@@ -116,8 +123,7 @@ def concat(xs: List[torch.Tensor], axis: int = 0) -> torch.Tensor:
         if is_tuple:
             xs = tuple(xs)
         axis = 0
-    ret = torch.cat(xs, dim = axis)
-    return ret
+    return torch.cat(xs, dim=axis, out=out)
 
 
 # Extra #
@@ -150,16 +156,29 @@ def split(x, num_or_size_splits: Optional[Union[int, List[int]]] = None, axis: i
     return list(torch.split(x, num_or_size_splits, axis))
 
 
-def repeat(x, repeats: Union[int, List[int]], axis: int = None):
+def repeat(x: torch.Tensor,
+           repeats: Union[int, List[int]],
+           axis: int = None,
+           out: Optional[torch.Tensor] = None)\
+        -> torch.Tensor:
     if len(x.shape) == 0 and axis in [0, -1]:
         axis = None
-    return torch.repeat_interleave(x, repeats, axis)
+    ret = torch.repeat_interleave(x, repeats, axis)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
-def tile(x, reps):
+def tile(x: torch.Tensor,
+         reps,
+         out: Optional[torch.Tensor] = None)\
+        -> torch.Tensor:
     if isinstance(reps, torch.Tensor):
         reps = reps.detach().cpu().numpy().tolist()
-    return x.repeat(reps)
+    ret = x.repeat(reps)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
 # noinspection PyUnresolvedReferences
