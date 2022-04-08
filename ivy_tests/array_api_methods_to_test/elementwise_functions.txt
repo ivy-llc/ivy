@@ -8,7 +8,7 @@ atan
 atan2
 atanh
 bitwise_and
-#bitwise_left_shift
+bitwise_left_shift
 bitwise_invert
 bitwise_or
 bitwise_right_shift
