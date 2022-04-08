@@ -279,12 +279,6 @@ def pow(x1: torch.Tensor,
         return ivy.inplace_update(out, ret)
     return ret
 
-#
-# def pow(x1: torch.Tensor, x2: torch.Tensor)\
-#         -> torch.Tensor:
-#     if hasattr(x1, 'dtype') and hasattr(x2, 'dtype'):
-#         promoted_type = torch.promote_types(x1.dtype, x2.dtype)
-#     return torch.pow(x1, x2).type(promoted_type)
 
 
 def round(x: torch.Tensor)\
