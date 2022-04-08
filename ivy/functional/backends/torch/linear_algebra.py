@@ -61,11 +61,6 @@ def matrix_norm(x: torch.Tensor,
     return torch.linalg.matrix_norm(x, ord=ord, dim=[-2, -1], keepdim=keepdims)
 
 
-def matrix_power(x: torch.Tensor, n: int)\
-        -> torch.Tensor:
-    return torch.linalg.matrix_power(x, n)
-
-
 # noinspection PyPep8Naming
 def svd(x:torch.Tensor,full_matrices: bool = True) -> Union[torch.Tensor, Tuple[torch.Tensor,...]]:
     results=namedtuple("svd", "U S Vh")
