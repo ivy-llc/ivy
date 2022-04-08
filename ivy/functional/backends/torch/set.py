@@ -31,6 +31,7 @@ def unique_all(x : torch.Tensor, /)\
     return Results(outputs.to(x.dtype), indices.view(outputs.shape), inverse_indices.reshape(x.shape), counts)
   
   
+@torch.no_grad()
 def unique_inverse(x: torch.Tensor) \
         -> Tuple[torch.Tensor, torch.Tensor]:
     out = namedtuple('unique_inverse', ['values', 'inverse_indices'])
@@ -42,11 +43,13 @@ def unique_inverse(x: torch.Tensor) \
     return out(values, inverse_indices)
 
 
+@torch.no_grad()
 def unique_values(x: torch.Tensor) \
         -> torch.Tensor:
     return torch.unique(x)
 
 
+@torch.no_grad()
 def unique_counts(x: torch.Tensor) \
         -> Tuple[torch.Tensor, torch.Tensor]:
     v, c = torch.unique(torch.reshape(x, [-1]), return_counts=True)
