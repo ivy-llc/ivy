@@ -418,9 +418,10 @@ def bitwise_left_shift(x1: torch.Tensor,
 # ------#
 
 
-def erf(x: torch.Tensor)\
+def erf(x: torch.Tensor,
+        out: Optional[torch.Tensor] = None)\
         -> torch.Tensor:
-    return torch.erf(x)
+    return torch.erf(x, out=out)
 
 
 def minimum(x, y):
