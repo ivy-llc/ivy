@@ -1,11 +1,11 @@
 cholesky
-#cross # failing non-deterministically
+#cross
 det
-#diagonal # fails non-determinstically for jax, due to +0 vs -0 inconsistencies
+diagonal
 eigh
 eigvalsh
 inv
-#matmul # failing non-deterministically for torch
+matmul
 matrix_norm
 matrix_power
 matrix_rank
