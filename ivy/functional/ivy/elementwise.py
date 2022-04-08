@@ -9,6 +9,26 @@ from ivy.framework_handler import current_framework as _cur_framework
 # Array API Standard #
 # -------------------#
 
+
+def bitwise_left_shift(x1: Union[ivy.Array, ivy.NativeArray],
+                       x2: Union[ivy.Array, ivy.NativeArray])\
+                       -> ivy.Array:
+    """
+    Shifts the bits of each element ``x1_i`` of the input array ``x1`` to the left by appending ``x2_i`` (i.e., the respective element in the input array ``x2``) zeros to the right of ``x1_i``.
+    Parameters
+    ----------
+    x1: array
+        first input array. Should have an integer data type.
+    x2: array
+        second input array. Must be compatible with ``x1`` (see :ref:`broadcasting`). Should have an integer data type. Each element must be greater than or equal to ``0``.
+    Returns
+    -------
+    out: array
+        an array containing the element-wise results. The returned array must have a data type determined by :ref:`type-promotion`.
+    """
+    return _cur_framework(x1, x2).bitwise_left_shift(x1, x2)
+
+
 def add(x1: Union[ivy.Array, ivy.NativeArray],
         x2: Union[ivy.Array, ivy.NativeArray])\
         -> ivy.Array:
