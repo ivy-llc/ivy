@@ -113,6 +113,13 @@ def trace(x: np.ndarray,
     return np.trace(x, offset)
 
 
+def vecdot(x1: np.ndarray, 
+           x2: np.ndarray,
+           axis: int = -1)\
+        -> np.ndarray:
+    return np.tensordot(x1, x2, axes=(axis, axis))
+
+
 def det(x: np.array) \
         -> np.array:
     return np.linalg.det(x)
