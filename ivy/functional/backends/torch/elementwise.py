@@ -141,24 +141,22 @@ def cosh(x: torch.Tensor,
     return torch.cosh(x, out=out)
 
 
-def log10(x: torch.Tensor) \
+def log10(x: torch.Tensor,
+          out: Optional[torch.Tensor] = None)\
         -> torch.Tensor:
-    return torch.log10(x)
+    return torch.log10(x, out=out)
 
 
-def log(x: torch.Tensor)\
+def log2(x: torch.Tensor,
+         out: Optional[torch.Tensor] = None) \
         -> torch.Tensor:
-    return torch.log(x)
+    return torch.log2(x, out=out)
 
 
-def log2(x: torch.Tensor) \
+def log1p(x: torch.Tensor,
+          out: Optional[torch.Tensor] = None) \
         -> torch.Tensor:
-    return torch.log2(x)
-
-
-def log1p(x: torch.Tensor) \
-        -> torch.Tensor:
-    return torch.log1p(x)
+    return torch.log1p(x, out=out)
 
 
 def isnan(x: torch.Tensor)\
@@ -166,12 +164,14 @@ def isnan(x: torch.Tensor)\
     return torch.isnan(x)
 
 
-def less(x1: torch.Tensor, x2: torch.Tensor):
+def less(x1: torch.Tensor,
+         x2: torch.Tensor,
+         out: Optional[torch.Tensor] = None):
     if hasattr(x1, 'dtype') and hasattr(x2, 'dtype'):
         promoted_type = torch.promote_types(x1.dtype, x2.dtype)
         x1 = x1.to(promoted_type)
         x2 = x2.to(promoted_type)
-    return torch.lt(x1, x2)
+    return torch.lt(x1, x2, out=out)
 
 
 def multiply(x1: torch.Tensor, x2: torch.Tensor)\
