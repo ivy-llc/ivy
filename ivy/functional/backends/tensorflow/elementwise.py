@@ -7,6 +7,7 @@ from typing import Optional, Tuple, Union
 import ivy
 
 
+
 def bitwise_left_shift(x1: Tensor,
                        x2: Tensor)\
                        -> Tensor:
