@@ -70,21 +70,33 @@ def flip(x: torch.Tensor,
 
 
 def expand_dims(x: torch.Tensor,
-                axis: Optional[Union[int, Tuple[int], List[int]]] = None) \
+                axis: Optional[Union[int, Tuple[int], List[int]]] = None,
+                out: Optional[torch.Tensor] = None)\
         -> torch.Tensor:
-    return torch.unsqueeze(x, axis)
+    ret = torch.unsqueeze(x, axis)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
-  
+
 def permute_dims(x: torch.Tensor,
-                axes: Tuple[int,...]) \
+                 axes: Tuple[int, ...],
+                 out: Optional[torch.Tensor] = None)\
         -> torch.Tensor:
-    return torch.permute(x, axes)
+    ret = torch.permute(x, axes)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
 def stack(x: Union[Tuple[torch.Tensor], List[torch.Tensor]],
-          axis: Optional[int] = 0)\
+          axis: Optional[int] = 0,
+          out: Optional[torch.Tensor] = None)\
           -> torch.Tensor:
-    return torch.stack(x, axis)
+    ret = torch.stack(x, axis)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
 def reshape(x: torch.Tensor,
