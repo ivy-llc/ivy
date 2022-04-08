@@ -57,11 +57,6 @@ def matrix_norm(x: np.ndarray,
     return np.linalg.norm(x, ord=ord, axis=(-2, -1), keepdims=keepdims)
 
 
-def matrix_power(x: np.ndarray, n: int)\
-        -> np.ndarray:
-    return np.linalg.matrix_power(x, n)
-
-
 def svd(x: np.ndarray, full_matrices: bool = True) -> Union[np.ndarray, Tuple[np.ndarray, ...]]:
     results = namedtuple("svd", "U S Vh")
     U, D, VT = np.linalg.svd(x, full_matrices=full_matrices)
