@@ -224,6 +224,17 @@ def positive(x: np.ndarray)\
     return np.positive(x)
 
 
+def pow(x1: np.ndarray, x2: np.ndarray)\
+        -> np.ndarray:
+    if hasattr(x1, 'dtype') and hasattr(x2, 'dtype'):
+        promoted_type = np.promote_types(x1.dtype, x2.dtype)
+        x1 = x1.astype(promoted_type)
+        x2 = x2.astype(promoted_type)
+    elif not hasattr(x2, 'dtype'):
+        x2 = np.array(x2, dtype=x1.dtype)
+    return np.power(x1, x2)
+
+
 def square(x: np.ndarray)\
         -> np.ndarray:
     return np.square(x)
