@@ -187,6 +187,7 @@ def ceil(x: Union[ivy.Array, ivy.NativeArray])\
     -------
     out:
         an array containing the rounded result for each element in ``x``. The returned array must have the same data type as ``x``.
+        
     Examples:
     >>> x = ivy.array([0.1, 0, -0.1])
     >>> y = ivy.ceil(x)
