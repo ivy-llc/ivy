@@ -16,7 +16,6 @@ from ivy.functional.ivy.device import Profiler as BaseProfiler
 
 dev = lambda x, as_str=False: 'cpu'
 dev.__name__ = 'dev'
-to_dev = lambda x, dev=None: x
 _dev_callable = dev
 dev_to_str = lambda dev: 'cpu'
 dev_from_str = lambda dev: 'cpu'
@@ -26,7 +25,7 @@ num_gpus = lambda: 0
 tpu_is_available = lambda: False
 
 
-def to_dev(x : np.ndarray, dev=None, out : Optional[np.ndarray] = None) -> np.ndarray:
+def _to_dev(x : np.ndarray, dev=None, out : Optional[np.ndarray] = None) -> np.ndarray:
     if dev is not None:
         if 'gpu' in dev:
             raise Exception('Native Numpy does not support GPU placement, consider using Jax instead')
@@ -39,6 +38,10 @@ def to_dev(x : np.ndarray, dev=None, out : Optional[np.ndarray] = None) -> np.nd
         return ivy.inplace_update(out, x)
     return x
 
+# bind to_dev to _to_dev
+# _to_dev is imported in creation, so to minimize
+# changes, we bind it to to_dev
+to_dev = _to_dev
 
 class Profiler(BaseProfiler):
 

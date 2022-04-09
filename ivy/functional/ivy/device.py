@@ -355,6 +355,11 @@ def to_dev(x: Union[ivy.Array, ivy.NativeArray], dev: ivy.Device = None, \
     -------
     x:
         input array x placed on the desired device
+
+    Examples
+    -------
+    >>> x = ivy.array([1., 2., 3.])
+    >>> x = ivy.to_dev(x, dev)
     """
     return _cur_framework(x).to_dev(x, dev, out)
 
