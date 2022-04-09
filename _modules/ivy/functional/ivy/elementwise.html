@@ -407,6 +407,12 @@
 <span class="sd">    -------</span>
 <span class="sd">    out:</span>
 <span class="sd">        an array containing the rounded result for each element in ``x``. The returned array must have the same data type as ``x``.</span>
+<span class="sd">        </span>
+<span class="sd">    Examples:</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([0.1, 0, -0.1])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.ceil(x)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    [1.0, 0.0, -0.0]</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
 
