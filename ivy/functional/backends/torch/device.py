@@ -57,7 +57,7 @@ gpu_is_available = torch.cuda.is_available
 
 
 def num_gpus() -> int:
-    return torch.cuda.device_count
+    return torch.cuda.device_count()
 
 
 # noinspection PyUnresolvedReferences
