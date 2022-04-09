@@ -583,6 +583,8 @@ def test_ceil(x_n_x_ceiled, dtype, tensor_fn, dev, call):
     assert ret.shape == x.shape
     # value test
     assert np.allclose(call(ivy.ceil, x), np.array(x_n_x_ceiled[1]))
+    # docstring test
+    helpers.assert_docstring_examples_run(ivy.ceil)
 
 
 
