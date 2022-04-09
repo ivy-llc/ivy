@@ -118,7 +118,7 @@ def dev(x: Union[ivy.Array, ivy.NativeArray], as_str: bool = False)\
 # Conversions
 
 # noinspection PyShadowingNames
-def dev_to_str(dev: [ivy.Device, str])\
+def dev_to_str(dev: Union[ivy.Device, str]) \
         -> str:
     """
     Convert native data type to string representation.
@@ -131,7 +131,7 @@ def dev_to_str(dev: [ivy.Device, str])\
 
 
 # noinspection PyShadowingNames
-def dev_from_str(dev: [ivy.Device, str])\
+def dev_from_str(dev: Union[ivy.Device, str]) \
         -> ivy.Device:
     """
     Convert device string representation to native device type.
@@ -353,7 +353,7 @@ def to_dev(x: Union[ivy.Array, ivy.NativeArray], dev: ivy.Device = None, \
 
     Returns
     -------
-    x
+    x:
         input array x placed on the desired device
     """
     return _cur_framework(x).to_dev(x, dev, out)
