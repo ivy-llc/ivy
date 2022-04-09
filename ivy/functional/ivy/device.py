@@ -14,6 +14,8 @@ import inspect
 import logging
 import nvidia_smi
 
+from typing import Optional
+
 # noinspection PyUnresolvedReferences
 try:
     nvidia_smi.nvmlInit()
@@ -334,18 +336,27 @@ def unset_default_device():
 # Device Allocation #
 
 # noinspection PyShadowingNames
-def to_dev(x: Union[ivy.Array, ivy.NativeArray], dev: ivy.Device = None)\
+def to_dev(x: Union[ivy.Array, ivy.NativeArray], dev: ivy.Device = None, \
+           out: Optional[Union[ivy.Array, ivy.NativeArray]] = None) \
         -> Union[ivy.Array, ivy.NativeArray]:
     """
     Move the input array x to the desired device, specified by device string.
 
-    :param x: Array to move onto the device.
-    :type x: array
-    :param dev: device to move the array to 'cuda:0', 'cuda:1', 'cpu' etc. Keep same device if None.
-    :type dev: Device, optional
-    :return: The array x, but now placed on the target device.
+    Parameters
+    ----------
+    x:
+       input array to be moved to the desired device
+    dev:
+        device to move the input array `x` to
+    out:
+        optional output array, for writing the result to. It must have a shape that the inputs broadcast to.
+
+    Returns
+    -------
+    x
+        input array x placed on the desired device
     """
-    return _cur_framework(x).to_dev(x, dev)
+    return _cur_framework(x).to_dev(x, dev, out)
 
 
 # Function Splitting #
