@@ -6,6 +6,7 @@ from typing import Optional
 
 # global
 import tensorflow as tf
+import numpy as np
 from tensorflow.python.types.core import Tensor
 
 
@@ -19,7 +20,10 @@ def leaky_relu(x: Tensor, alpha: Optional[float] = 0.2)\
     return tf.nn.leaky_relu(x, alpha)
 
 
-gelu = lambda x, approximate=True: tf.nn.gelu(x, approximate)
+def gelu(x: Tensor, approximate: bool =True)\
+    -> Tensor:
+    return tf.nn.gelu(x, approximate)
+
 tanh = tf.nn.tanh
 sigmoid = tf.nn.sigmoid
 softmax = tf.nn.softmax
