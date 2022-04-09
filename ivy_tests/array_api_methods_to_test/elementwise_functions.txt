@@ -17,7 +17,7 @@ ceil
 cos
 cosh
 divide
-#equal # failing non-deterministically
+equal
 exp
 expm1
 floor
