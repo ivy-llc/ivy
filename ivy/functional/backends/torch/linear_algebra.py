@@ -63,7 +63,7 @@ def matrix_norm(x: torch.Tensor,
 
 def matrix_power(x: torch.Tensor, n: int)\
         -> torch.Tensor:
-    return torch.linalg.matrix_power(x, n)
+    return torch.linalg.matrix_power(x.type(torch.float64), n).type(x.dtype)
 
 
 # noinspection PyPep8Naming
