@@ -1,6 +1,5 @@
 # global
 import numpy as np
-from numpy import array_api as npa
 from typing import Tuple
 from collections import namedtuple
 from packaging import version
@@ -15,13 +14,15 @@ def unique_all(x : np.ndarray) \
                                                          return_inverse = True)
     nan_count = np.sum(np.isnan(x)).item()
 
-    if nan_count > 0:
+    if nan_count > 1:
         values = np.concatenate((values, np.full(fill_value = np.nan, shape = (nan_count - 1,))), axis = 0)
         counts = np.concatenate((counts, np.full(fill_value = 1, shape = (nan_count - 1, ))), axis = 0)
         
         nan_idx = np.where(np.isnan(x.flatten()))[0]
         
         indices = np.concatenate((indices[:-1], nan_idx), axis = 0)
+    else:
+        pass
 
     return UniqueAll(values.astype(x.dtype), indices, inverse_indices.reshape(x.shape), counts)
 

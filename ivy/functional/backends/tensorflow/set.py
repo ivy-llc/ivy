@@ -5,6 +5,17 @@ from typing import Union, Tuple
 from collections import namedtuple
 
 
+def unique_all(x: Tensor) \
+    -> Tuple[Tensor, Tensor, Tensor, Tensor]:
+    
+    UniqueAllResult = namedtuple(typename='unique_all', field_names=['values', 'indices', 'inverse_indices', 'counts'])
+    
+    values, indices, counts = tf.unique_with_counts(x.flatten())
+    _, inverse_indices = tf.unique(tf.reshape(x, -1))
+    
+    return UniqueAllResult(values.reshape(x.shape), indices, tf.reshape(inverse_indices, tf.shape(x)), counts)
+
+
 def unique_inverse(x: Tensor) \
         -> Tuple[Tensor, Tensor]:
     out = namedtuple('unique_inverse', ['values', 'inverse_indices'])

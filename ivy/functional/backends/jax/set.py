@@ -13,16 +13,18 @@ def unique_all(x : JaxArray) \
     UniqueAll = namedtuple(typename = 'unique_all', field_names = ['values', 'indices', 'inverse_indices', 'counts'])
     
     values, indices, inverse_indices, counts = jnp.unique(x, return_index = True, return_counts = True,
-                                                          return_inverse = True)
-    nan_count = jnp.sum(jnp.isnan(x)).item()
+                                                         return_inverse = True)
+    nan_num = jnp.sum(jnp.isnan(x)).item()
 
-    if nan_count > 0:
-        values = jnp.concatenate((values, jnp.full(fill_value = jnp.nan, shape = (nan_count - 1,))), axis = 0)
-        counts = jnp.concatenate((counts, jnp.full(fill_value = 1, shape = (nan_count - 1, ))), axis = 0)
+    if nan_num > 1:
+        values = jnp.concatenate((values, jnp.full(fill_value = jnp.nan, shape = (nan_num - 1,))), axis = 0)
+        counts = jnp.concatenate((counts, jnp.full(fill_value = 1, shape = (nan_num - 1, ))), axis = 0)
         
         nan_idx = jnp.where(jnp.isnan(x.flatten()))[0]
         
         indices = jnp.concatenate((indices[:-1], nan_idx), axis = 0)
+    else:
+        pass
 
     return UniqueAll(values.astype(x.dtype), indices, inverse_indices.reshape(x.shape), counts)
 
