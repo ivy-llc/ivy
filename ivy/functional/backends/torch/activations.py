@@ -25,8 +25,10 @@ def gelu(x, approximate: bool = True):
     return torch.nn.functional.gelu(x)
 
 
-def tanh(x):
+def tanh(x: torch.Tensor)\
+        -> torch.Tensor:
     return torch.tanh(x)
+
 
 
 def sigmoid(x):

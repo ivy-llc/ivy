@@ -20,7 +20,11 @@ def leaky_relu(x: Tensor, alpha: Optional[float] = 0.2)\
 
 
 gelu = lambda x, approximate=True: tf.nn.gelu(x, approximate)
-tanh = tf.nn.tanh
+
+def tanh(x: Tensor)\
+        -> Tensor:
+    return tf.nn.tanh(x)
+
 sigmoid = tf.nn.sigmoid
 softmax = tf.nn.softmax
 softplus = tf.nn.softplus
