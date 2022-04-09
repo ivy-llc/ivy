@@ -17,7 +17,7 @@ def unique_all(x : torch.Tensor, /)\
     unique_nan = torch.isnan(outputs)
     
     nan_index = torch.where(torch.isnan(flat_tensor))
-    non_nan_index = [flat_tensor.tolist().index(val) for val in outputs if not torch.isnan(val)]
+    non_nan_index = [flat_tensor.tolist().index(val) for val in outputs.tolist() if not torch.isnan(val)]
     
     indices = outputs.clone().to(torch.int64)
     
@@ -26,7 +26,7 @@ def unique_all(x : torch.Tensor, /)\
         inverse_indices[torch.isnan(x)] = torch.where(unique_nan)[0][0]
         counts[torch.where((unique_nan))[0]] = 1
     
-    indices[~unique_nan] = torch.tensor(non_nan_index)
+    indices[~unique_nan] = torch.tensor(non_nan_index, dtype = indices.dtype)
     
     return Results(outputs.to(x.dtype), indices.view(outputs.shape), inverse_indices.reshape(x.shape), counts)
   
