@@ -5,7 +5,7 @@ from collections import namedtuple
 
 
 @torch.no_grad()
-def unique_all(x : torch.Tensor, /)\
+def unique_all(x: torch.Tensor, /)\
                 -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor]:
     
     Results = namedtuple(typename='unique_all', field_names=['values', 'indices', 'inverse_indices', 'counts'])
@@ -17,14 +17,14 @@ def unique_all(x : torch.Tensor, /)\
     unique_nan = torch.isnan(outputs)
     
     nan_index = torch.where(torch.isnan(flat_tensor))
-    non_nan_index = [flat_tensor.tolist().index(val) for val in outputs.tolist() if not torch.isnan(val)]
+    non_nan_index = [flat_tensor.tolist().index(val) for val in outputs if not torch.isnan(val)]
     
     indices = outputs.clone().to(torch.int64)
     
     if any(nan_index[0]):
         indices[unique_nan] = nan_index[0]
         inverse_indices[torch.isnan(x)] = torch.where(unique_nan)[0][0]
-        counts[torch.where((unique_nan))[0]] = 1
+        counts[torch.where(unique_nan)[0]] = 1
     
     indices[~unique_nan] = torch.tensor(non_nan_index, dtype = indices.dtype)
     
