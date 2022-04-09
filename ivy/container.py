@@ -242,9 +242,9 @@ class Container(dict):
             # noinspection PyBroadException
             try:
                 if len(containers[0].shape) == 0:
-                    return ivyh.concatenate([ivyh.reshape(item, [1] * (dim + 1)) for item in containers], dim)
+                    return ivyh.concat([ivyh.reshape(item, [1] * (dim + 1)) for item in containers], dim)
                 else:
-                    return ivyh.concatenate(containers, dim)
+                    return ivyh.concat(containers, dim)
             except Exception as e:
                 raise Exception(str(e) + '\nContainer concat operation only valid for containers of arrays')
 
@@ -362,7 +362,7 @@ class Container(dict):
                                                 equality_matrix=True)
                 equal_mat = ivy.logical_and(equal_mat, shape_equal_mat)
             # noinspection PyTypeChecker
-            if ivy.reduce_min(ivy.cast(equal_mat, 'int32')) == 1:
+            if ivy.min(ivy.astype(equal_mat, 'int32')) == 1:
                 if mode == 'diff_only':
                     return ivy.Container(**config)
                 return container0
@@ -1404,10 +1404,10 @@ class Container(dict):
                     'but found {} of type {}'.format(p, type(p)))
             return sum([v for k, v in
                         self.map(lambda x, kc: self._ivy.sum(x ** p)).to_iterator()]) ** (1 / p)
-        return self.map(lambda x, kc: self._ivy.vector_norm(x, p[kc] if p_is_container else p, axis, keepdims)
+        return self.map(lambda x, kc: self._ivy.vector_norm(x, axis, keepdims, p[kc] if p_is_container else p)
                         if self._ivy.is_native_array(x) else x, key_chains, to_apply, prune_unapplied, map_sequences)
 
-    def matrix_norm(self, p=2, axis=None, keepdims=False, key_chains=None, to_apply=True, prune_unapplied=False,
+    def matrix_norm(self, ord=2, keepdims=False, key_chains=None, to_apply=True, prune_unapplied=False,
                     map_sequences=False):
         """
         Compute matrix p-norm for each array in the container.
@@ -1432,7 +1432,7 @@ class Container(dict):
         :type map_sequences: bool, optional
         :return: Container object with the matrix norms for each sub-array returned.
         """
-        return self.map(lambda x, kc: self._ivy.matrix_norm(x, p, axis, keepdims) if self._ivy.is_native_array(x) else x,
+        return self.map(lambda x, kc: self._ivy.matrix_norm(x, ord, keepdims) if self._ivy.is_native_array(x) else x,
                         key_chains, to_apply, prune_unapplied, map_sequences)
 
     def flip(self, axis=None, key_chains=None, to_apply=True, prune_unapplied=False, map_sequences=False):

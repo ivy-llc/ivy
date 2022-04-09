@@ -139,56 +139,56 @@ class TrainableModuleWithList(ivy.Module):
 
 
 # module with partial v
-# @pytest.mark.parametrize(
-#     "bs_ic_oc", [([1, 2], 4, 5)])
-# def test_module_w_partial_v(bs_ic_oc, dev, compile_graph, call):
-#     # smoke test
-#     if call is helpers.np_call:
-#         # NumPy does not support gradients
-#         pytest.skip()
-#     if call is helpers.mx_call:
-#         # MXNet ivy.Container repr currently does not work
-#         pytest.skip()
-#     batch_shape, input_channels, output_channels = bs_ic_oc
-#     x = ivy.cast(ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), input_channels), 'float32')
-#     v = ivy.Container({
-#         'linear0': {
-#             'b': ivy.variable(ivy.random_uniform(shape=[64])),
-#             'w': ivy.variable(ivy.random_uniform(shape=[64, 4]))
-#         },
-#         'linear1': {
-#             'b': ivy.variable(ivy.random_uniform(shape=[64])),
-#             'w': ivy.variable(ivy.random_uniform(shape=[64, 64])),
-#             'extra': ivy.variable(ivy.random_uniform(shape=[64, 64]))
-#         },
-#         'linear2': {
-#             'b': ivy.variable(ivy.random_uniform(shape=[5])),
-#             'w': ivy.variable(ivy.random_uniform(shape=[5, 64]))
-#         }
-#     })
-#     try:
-#         TrainableModule(input_channels, output_channels, dev=dev, v=v, with_partial_v=True)
-#         raise Exception('TrainableModule did not raise exception desipite being passed with wrongly shaped variables.')
-#     except AssertionError:
-#         pass
-#     v = ivy.Container({
-#         'linear0': {
-#             'b': ivy.variable(ivy.random_uniform(shape=[64])),
-#         },
-#         'linear1': {
-#             'w': ivy.variable(ivy.random_uniform(shape=[64, 64]))
-#         },
-#         'linear2': {
-#             'b': ivy.variable(ivy.random_uniform(shape=[5]))
-#         }
-#     })
-#     try:
-#         TrainableModule(input_channels, output_channels, dev=dev, v=v)
-#         raise Exception('TrainableModule did not raise exception desipite being passed with wrongly shaped variables.')
-#     except AssertionError:
-#         pass
-#     module = TrainableModule(input_channels, output_channels, dev=dev, v=v, with_partial_v=True)
-#     module(x)
+@pytest.mark.parametrize(
+    "bs_ic_oc", [([1, 2], 4, 5)])
+def test_module_w_partial_v(bs_ic_oc, dev, compile_graph, call):
+    # smoke test
+    if call is helpers.np_call:
+        # NumPy does not support gradients
+        pytest.skip()
+    if call is helpers.mx_call:
+        # MXNet ivy.Container repr currently does not work
+        pytest.skip()
+    batch_shape, input_channels, output_channels = bs_ic_oc
+    x = ivy.astype(ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), input_channels), 'float32')
+    v = ivy.Container({
+        'linear0': {
+            'b': ivy.variable(ivy.random_uniform(shape=[64])),
+            'w': ivy.variable(ivy.random_uniform(shape=[64, 4]))
+        },
+        'linear1': {
+            'b': ivy.variable(ivy.random_uniform(shape=[64])),
+            'w': ivy.variable(ivy.random_uniform(shape=[64, 64])),
+            'extra': ivy.variable(ivy.random_uniform(shape=[64, 64]))
+        },
+        'linear2': {
+            'b': ivy.variable(ivy.random_uniform(shape=[5])),
+            'w': ivy.variable(ivy.random_uniform(shape=[5, 64]))
+        }
+    })
+    try:
+        TrainableModule(input_channels, output_channels, dev=dev, v=v, with_partial_v=True)
+        raise Exception('TrainableModule did not raise exception desipite being passed with wrongly shaped variables.')
+    except AssertionError:
+        pass
+    v = ivy.Container({
+        'linear0': {
+            'b': ivy.variable(ivy.random_uniform(shape=[64])),
+        },
+        'linear1': {
+            'w': ivy.variable(ivy.random_uniform(shape=[64, 64]))
+        },
+        'linear2': {
+            'b': ivy.variable(ivy.random_uniform(shape=[5]))
+        }
+    })
+    try:
+        TrainableModule(input_channels, output_channels, dev=dev, v=v)
+        raise Exception('TrainableModule did not raise exception desipite being passed with wrongly shaped variables.')
+    except AssertionError:
+        pass
+    module = TrainableModule(input_channels, output_channels, dev=dev, v=v, with_partial_v=True)
+    module(x)
 
 
 class ModuleWithNoneAttribute(ivy.Module):
@@ -202,17 +202,17 @@ class ModuleWithNoneAttribute(ivy.Module):
 
 
 # module with none attribute
-# @pytest.mark.parametrize(
-#     "bs_ic_oc", [([1, 2], 4, 5)])
-# def test_module_w_none_attribute(bs_ic_oc, dev, compile_graph, call):
-#     # smoke test
-#     if call is helpers.np_call:
-#         # NumPy does not support gradients
-#         pytest.skip()
-#     batch_shape, input_channels, output_channels = bs_ic_oc
-#     x = ivy.cast(ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), input_channels), 'float32')
-#     module = ModuleWithNoneAttribute(dev=dev)
-#     module(x)
+@pytest.mark.parametrize(
+    "bs_ic_oc", [([1, 2], 4, 5)])
+def test_module_w_none_attribute(bs_ic_oc, dev, compile_graph, call):
+    # smoke test
+    if call is helpers.np_call:
+        # NumPy does not support gradients
+        pytest.skip()
+    batch_shape, input_channels, output_channels = bs_ic_oc
+    x = ivy.astype(ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), input_channels), 'float32')
+    module = ModuleWithNoneAttribute(dev=dev)
+    module(x)
 
 
 class TrainableModuleWithDuplicate(ivy.Module):
@@ -365,18 +365,18 @@ class WithCustomVarStructure(ivy.Module):
 
 
 # with custom var structure
-# @pytest.mark.parametrize(
-#     "bs_ic_oc", [([1, 2], 4, 5)])
-# def test_with_custom_var_structure(bs_ic_oc, dev, call):
-#     # smoke test
-#     if call is helpers.np_call:
-#         # NumPy does not support gradients
-#         pytest.skip()
-#     batch_shape, input_channels, output_channels = bs_ic_oc
-#     module = WithCustomVarStructure(input_channels, output_channels, dev=dev)
-#     assert 'x' in module.v
-#     assert 'y' in module.v
-#     assert 'z' in module.v
+@pytest.mark.parametrize(
+    "bs_ic_oc", [([1, 2], 4, 5)])
+def test_with_custom_var_structure(bs_ic_oc, dev, call):
+    # smoke test
+    if call is helpers.np_call:
+        # NumPy does not support gradients
+        pytest.skip()
+    batch_shape, input_channels, output_channels = bs_ic_oc
+    module = WithCustomVarStructure(input_channels, output_channels, dev=dev)
+    assert 'x' in module.v
+    assert 'y' in module.v
+    assert 'z' in module.v
 
 
 class DoubleLinear(ivy.Module):
@@ -407,396 +407,396 @@ class WithNestedModules(ivy.Module):
 
 
 # top variables
-# @pytest.mark.parametrize(
-#     "bs_ic_oc", [([1, 2], 4, 5)])
-# def test_top_variables(bs_ic_oc, dev, call):
-#     # smoke test
-#     if call is helpers.np_call:
-#         # NumPy does not support gradients
-#         pytest.skip()
-#     batch_shape, input_channels, output_channels = bs_ic_oc
-#     module = WithNestedModules(input_channels, output_channels, dev=dev)
-#     for key_chain in ['dl0', 'dl0/l0', 'dl0/l1', 'dl0/l0/b', 'dl0/l0/w', 'dl0/l1/b', 'dl0/l1/w',
-#                       'dl1', 'dl1/l0', 'dl1/l1', 'dl1/l0/b', 'dl1/l0/w', 'dl1/l1/b', 'dl1/l1/w']:
-#
-#         # depth 1
-#         assert key_chain in module._dl0.top_v()
-#         assert key_chain in module._dl1.top_v()
-#
-#         # depth 2
-#         assert key_chain in module._dl0._l0.top_v()
-#         assert key_chain in module._dl0._l1.top_v()
-#         assert key_chain in module._dl1._l0.top_v()
-#         assert key_chain in module._dl1._l1.top_v()
+@pytest.mark.parametrize(
+    "bs_ic_oc", [([1, 2], 4, 5)])
+def test_top_variables(bs_ic_oc, dev, call):
+    # smoke test
+    if call is helpers.np_call:
+        # NumPy does not support gradients
+        pytest.skip()
+    batch_shape, input_channels, output_channels = bs_ic_oc
+    module = WithNestedModules(input_channels, output_channels, dev=dev)
+    for key_chain in ['dl0', 'dl0/l0', 'dl0/l1', 'dl0/l0/b', 'dl0/l0/w', 'dl0/l1/b', 'dl0/l1/w',
+                      'dl1', 'dl1/l0', 'dl1/l1', 'dl1/l0/b', 'dl1/l0/w', 'dl1/l1/b', 'dl1/l1/w']:
+
+        # depth 1
+        assert key_chain in module._dl0.top_v()
+        assert key_chain in module._dl1.top_v()
+
+        # depth 2
+        assert key_chain in module._dl0._l0.top_v()
+        assert key_chain in module._dl0._l1.top_v()
+        assert key_chain in module._dl1._l0.top_v()
+        assert key_chain in module._dl1._l1.top_v()
 
 
 # top module
-# @pytest.mark.parametrize(
-#     "bs_ic_oc", [([1, 2], 4, 5)])
-# def test_top_module(bs_ic_oc, dev, call):
-#     # smoke test
-#     if call is helpers.np_call:
-#         # NumPy does not support gradients
-#         pytest.skip()
-#     batch_shape, input_channels, output_channels = bs_ic_oc
-#     module = WithNestedModules(input_channels, output_channels, dev=dev)
-#
-#     # full depth
-#     assert module._dl0.top_mod() is module
-#     assert module._dl1.top_mod() is module
-#
-#     assert module._dl0._l0.top_mod() is module
-#     assert module._dl0._l1.top_mod() is module
-#     assert module._dl1._l0.top_mod() is module
-#     assert module._dl1._l1.top_mod() is module
-#
-#     # depth 1
-#     assert module._dl0._l0.top_mod(1) is module._dl0
-#     assert module._dl0._l1.top_mod(1) is module._dl0
-#     assert module._dl1._l0.top_mod(1) is module._dl1
-#     assert module._dl1._l1.top_mod(1) is module._dl1
+@pytest.mark.parametrize(
+    "bs_ic_oc", [([1, 2], 4, 5)])
+def test_top_module(bs_ic_oc, dev, call):
+    # smoke test
+    if call is helpers.np_call:
+        # NumPy does not support gradients
+        pytest.skip()
+    batch_shape, input_channels, output_channels = bs_ic_oc
+    module = WithNestedModules(input_channels, output_channels, dev=dev)
+
+    # full depth
+    assert module._dl0.top_mod() is module
+    assert module._dl1.top_mod() is module
+
+    assert module._dl0._l0.top_mod() is module
+    assert module._dl0._l1.top_mod() is module
+    assert module._dl1._l0.top_mod() is module
+    assert module._dl1._l1.top_mod() is module
+
+    # depth 1
+    assert module._dl0._l0.top_mod(1) is module._dl0
+    assert module._dl0._l1.top_mod(1) is module._dl0
+    assert module._dl1._l0.top_mod(1) is module._dl1
+    assert module._dl1._l1.top_mod(1) is module._dl1
 
 
 # v with top v key chains
-# @pytest.mark.parametrize(
-#     "bs_ic_oc", [([1, 2], 4, 5)])
-# def test_v_with_top_v_key_chains(bs_ic_oc, dev, call):
-#     # smoke test
-#     if call is helpers.np_call:
-#         # NumPy does not support gradients
-#         pytest.skip()
-#     batch_shape, input_channels, output_channels = bs_ic_oc
-#     module = WithNestedModules(input_channels, output_channels, dev=dev)
-#
-#     # full depth
-#     v = module._dl0.v_with_top_v_key_chains()
-#     assert 'dl0' in v
-#     assert v.dl0 is module._dl0.v
-#
-#     v = module._dl1.v_with_top_v_key_chains()
-#     assert 'dl1' in v
-#     assert v.dl1 is module._dl1.v
-#
-#     v = module._dl0._l0.v_with_top_v_key_chains()
-#     assert 'dl0' in v
-#     assert 'l0' in v.dl0
-#     assert v.dl0.l0 is module._dl0._l0.v
-#
-#     v = module._dl0._l1.v_with_top_v_key_chains()
-#     assert 'dl0' in v
-#     assert 'l1' in v.dl0
-#     assert v.dl0.l1 is module._dl0._l1.v
-#
-#     v = module._dl1._l0.v_with_top_v_key_chains()
-#     assert 'dl1' in v
-#     assert 'l0' in v.dl1
-#     assert v.dl1.l0 is module._dl1._l0.v
-#
-#     v = module._dl1._l1.v_with_top_v_key_chains()
-#     assert 'dl1' in v
-#     assert 'l1' in v.dl1
-#     assert v.dl1.l1 is module._dl1._l1.v
-#
-#     # depth 1
-#
-#     v = module._dl0._l0.v_with_top_v_key_chains(1)
-#     assert 'l0' in v
-#     assert v.l0 is module._dl0._l0.v
-#
-#     v = module._dl0._l1.v_with_top_v_key_chains(1)
-#     assert 'l1' in v
-#     assert v.l1 is module._dl0._l1.v
-#
-#     v = module._dl1._l0.v_with_top_v_key_chains(1)
-#     assert 'l0' in v
-#     assert v.l0 is module._dl1._l0.v
-#
-#     v = module._dl1._l1.v_with_top_v_key_chains(1)
-#     assert 'l1' in v
-#     assert v.l1 is module._dl1._l1.v
+@pytest.mark.parametrize(
+    "bs_ic_oc", [([1, 2], 4, 5)])
+def test_v_with_top_v_key_chains(bs_ic_oc, dev, call):
+    # smoke test
+    if call is helpers.np_call:
+        # NumPy does not support gradients
+        pytest.skip()
+    batch_shape, input_channels, output_channels = bs_ic_oc
+    module = WithNestedModules(input_channels, output_channels, dev=dev)
+
+    # full depth
+    v = module._dl0.v_with_top_v_key_chains()
+    assert 'dl0' in v
+    assert v.dl0 is module._dl0.v
+
+    v = module._dl1.v_with_top_v_key_chains()
+    assert 'dl1' in v
+    assert v.dl1 is module._dl1.v
+
+    v = module._dl0._l0.v_with_top_v_key_chains()
+    assert 'dl0' in v
+    assert 'l0' in v.dl0
+    assert v.dl0.l0 is module._dl0._l0.v
+
+    v = module._dl0._l1.v_with_top_v_key_chains()
+    assert 'dl0' in v
+    assert 'l1' in v.dl0
+    assert v.dl0.l1 is module._dl0._l1.v
+
+    v = module._dl1._l0.v_with_top_v_key_chains()
+    assert 'dl1' in v
+    assert 'l0' in v.dl1
+    assert v.dl1.l0 is module._dl1._l0.v
+
+    v = module._dl1._l1.v_with_top_v_key_chains()
+    assert 'dl1' in v
+    assert 'l1' in v.dl1
+    assert v.dl1.l1 is module._dl1._l1.v
+
+    # depth 1
+
+    v = module._dl0._l0.v_with_top_v_key_chains(1)
+    assert 'l0' in v
+    assert v.l0 is module._dl0._l0.v
+
+    v = module._dl0._l1.v_with_top_v_key_chains(1)
+    assert 'l1' in v
+    assert v.l1 is module._dl0._l1.v
+
+    v = module._dl1._l0.v_with_top_v_key_chains(1)
+    assert 'l0' in v
+    assert v.l0 is module._dl1._l0.v
+
+    v = module._dl1._l1.v_with_top_v_key_chains(1)
+    assert 'l1' in v
+    assert v.l1 is module._dl1._l1.v
 
 
 # module depth
-# @pytest.mark.parametrize(
-#     "bs_ic_oc", [([1, 2], 4, 5)])
-# def test_module_depth(bs_ic_oc, dev, call):
-#     # smoke test
-#     if call is helpers.np_call:
-#         # NumPy does not support gradients
-#         pytest.skip()
-#     batch_shape, input_channels, output_channels = bs_ic_oc
-#     module = WithNestedModules(input_channels, output_channels, dev=dev)
-#
-#     # depth 0
-#     assert module.mod_depth() == 0
-#
-#     # depth 1
-#     assert module._dl0.mod_depth() == 1
-#     assert module._dl1.mod_depth() == 1
-#
-#     # depth 2
-#     assert module._dl0._l0.mod_depth() == 2
-#     assert module._dl0._l1.mod_depth() == 2
-#     assert module._dl1._l0.mod_depth() == 2
-#     assert module._dl1._l1.mod_depth() == 2
+@pytest.mark.parametrize(
+    "bs_ic_oc", [([1, 2], 4, 5)])
+def test_module_depth(bs_ic_oc, dev, call):
+    # smoke test
+    if call is helpers.np_call:
+        # NumPy does not support gradients
+        pytest.skip()
+    batch_shape, input_channels, output_channels = bs_ic_oc
+    module = WithNestedModules(input_channels, output_channels, dev=dev)
+
+    # depth 0
+    assert module.mod_depth() == 0
+
+    # depth 1
+    assert module._dl0.mod_depth() == 1
+    assert module._dl1.mod_depth() == 1
+
+    # depth 2
+    assert module._dl0._l0.mod_depth() == 2
+    assert module._dl0._l1.mod_depth() == 2
+    assert module._dl1._l0.mod_depth() == 2
+    assert module._dl1._l1.mod_depth() == 2
 
 
 # module height
-# @pytest.mark.parametrize(
-#     "bs_ic_oc", [([1, 2], 4, 5)])
-# def test_module_height(bs_ic_oc, dev, call):
-#     # smoke test
-#     if call is helpers.np_call:
-#         # NumPy does not support gradients
-#         pytest.skip()
-#     batch_shape, input_channels, output_channels = bs_ic_oc
-#     module = WithNestedModules(input_channels, output_channels, dev=dev)
-#
-#     # height 2
-#     assert module.mod_height() == 2
-#
-#     # height 1
-#     assert module._dl0.mod_height() == 1
-#     assert module._dl1.mod_height() == 1
-#
-#     # height 0
-#     assert module._dl0._l0.mod_height() == 0
-#     assert module._dl0._l1.mod_height() == 0
-#     assert module._dl1._l0.mod_height() == 0
-#     assert module._dl1._l1.mod_height() == 0
+@pytest.mark.parametrize(
+    "bs_ic_oc", [([1, 2], 4, 5)])
+def test_module_height(bs_ic_oc, dev, call):
+    # smoke test
+    if call is helpers.np_call:
+        # NumPy does not support gradients
+        pytest.skip()
+    batch_shape, input_channels, output_channels = bs_ic_oc
+    module = WithNestedModules(input_channels, output_channels, dev=dev)
+
+    # height 2
+    assert module.mod_height() == 2
+
+    # height 1
+    assert module._dl0.mod_height() == 1
+    assert module._dl1.mod_height() == 1
+
+    # height 0
+    assert module._dl0._l0.mod_height() == 0
+    assert module._dl0._l1.mod_height() == 0
+    assert module._dl1._l0.mod_height() == 0
+    assert module._dl1._l1.mod_height() == 0
 
 
 # sub modules
-# @pytest.mark.parametrize(
-#     "bs_ic_oc", [([1, 2], 4, 5)])
-# def test_sub_modules(bs_ic_oc, dev, call):
-#     # smoke test
-#     if call is helpers.np_call:
-#         # NumPy does not support gradients
-#         pytest.skip()
-#     batch_shape, input_channels, output_channels = bs_ic_oc
-#     module = WithNestedModules(input_channels, output_channels, dev=dev)
-#
-#     # depth 0
-#     sub_mods = module.sub_mods(depth=0)
-#     assert module.v is sub_mods
-#
-#     # depth 1
-#     sub_mods = module.sub_mods(depth=1)
-#     for v in [module._dl0.v, module._dl1.v]:
-#         assert v in sub_mods
-#
-#     # depth 2 (full)
-#     sub_mods = module.sub_mods()
-#     for v in [module._dl0._l0.v, module._dl0._l1.v, module._dl1._l0.v, module._dl1._l1.v]:
-#         assert v in sub_mods
+@pytest.mark.parametrize(
+    "bs_ic_oc", [([1, 2], 4, 5)])
+def test_sub_modules(bs_ic_oc, dev, call):
+    # smoke test
+    if call is helpers.np_call:
+        # NumPy does not support gradients
+        pytest.skip()
+    batch_shape, input_channels, output_channels = bs_ic_oc
+    module = WithNestedModules(input_channels, output_channels, dev=dev)
+
+    # depth 0
+    sub_mods = module.sub_mods(depth=0)
+    assert module.v is sub_mods
+
+    # depth 1
+    sub_mods = module.sub_mods(depth=1)
+    for v in [module._dl0.v, module._dl1.v]:
+        assert v in sub_mods
+
+    # depth 2 (full)
+    sub_mods = module.sub_mods()
+    for v in [module._dl0._l0.v, module._dl0._l1.v, module._dl1._l0.v, module._dl1._l1.v]:
+        assert v in sub_mods
 
 
 # track submod returns
-# @pytest.mark.parametrize(
-#     "bs_ic_oc", [([1, 2], 4, 5)])
-# def test_module_track_submod_rets(bs_ic_oc, dev, call):
-#     # smoke test
-#     if call is helpers.np_call:
-#         # NumPy does not support gradients
-#         pytest.skip()
-#     batch_shape, input_channels, output_channels = bs_ic_oc
-#     x = ivy.cast(ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), input_channels), 'float32')
-#     module = WithNestedModules(input_channels, output_channels, dev=dev)
-#
-#     # depth 1
-#     ret = module(x, track_submod_rets=True, submod_depth=1)
-#     assert ret.shape == tuple(batch_shape + [64])
-#     sm_rets = module.submod_rets
-#     for submod in [module._dl0, module._dl1]:
-#         for ret in sm_rets[submod.get_mod_key()]:
-#             assert isinstance(ret, np.ndarray)
-#             assert ret.shape == tuple(batch_shape + [64])
-#     for submod in [module._dl0._l0, module._dl0._l1, module._dl1._l0, module._dl1._l1]:
-#         assert ivy.Container.flatten_key_chain(submod.__repr__(), '_') not in sm_rets
-#
-#     # depth 2 (full)
-#     ret = module(x, track_submod_rets=True)
-#     assert ret.shape == tuple(batch_shape + [64])
-#     sm_rets = module.submod_rets
-#     for submod in [module._dl0, module._dl1, module._dl0._l0, module._dl0._l1, module._dl1._l0, module._dl1._l1]:
-#         for ret in sm_rets[submod.get_mod_key()]:
-#             assert isinstance(ret, np.ndarray)
-#             assert ret.shape == tuple(batch_shape + [64])
-#
-#     # partial submodules
-#     ret = module(x, track_submod_rets=True, submods_to_track=[module._dl1, module._dl0._l0])
-#     assert ret.shape == tuple(batch_shape + [64])
-#     sm_rets = module.submod_rets
-#     for submod in [module._dl1, module._dl0._l0]:
-#         for ret in sm_rets[submod.get_mod_key()]:
-#             assert isinstance(ret, np.ndarray)
-#             assert ret.shape == tuple(batch_shape + [64])
-#     for submod in [module._dl0, module._dl0._l1, module._dl1._l0, module._dl1._l1]:
-#         assert ivy.Container.flatten_key_chain(submod.__repr__(), '_') not in sm_rets
+@pytest.mark.parametrize(
+    "bs_ic_oc", [([1, 2], 4, 5)])
+def test_module_track_submod_rets(bs_ic_oc, dev, call):
+    # smoke test
+    if call is helpers.np_call:
+        # NumPy does not support gradients
+        pytest.skip()
+    batch_shape, input_channels, output_channels = bs_ic_oc
+    x = ivy.astype(ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), input_channels), 'float32')
+    module = WithNestedModules(input_channels, output_channels, dev=dev)
+
+    # depth 1
+    ret = module(x, track_submod_rets=True, submod_depth=1)
+    assert ret.shape == tuple(batch_shape + [64])
+    sm_rets = module.submod_rets
+    for submod in [module._dl0, module._dl1]:
+        for ret in sm_rets[submod.get_mod_key()]:
+            assert isinstance(ret, np.ndarray)
+            assert ret.shape == tuple(batch_shape + [64])
+    for submod in [module._dl0._l0, module._dl0._l1, module._dl1._l0, module._dl1._l1]:
+        assert ivy.Container.flatten_key_chain(submod.__repr__(), '_') not in sm_rets
+
+    # depth 2 (full)
+    ret = module(x, track_submod_rets=True)
+    assert ret.shape == tuple(batch_shape + [64])
+    sm_rets = module.submod_rets
+    for submod in [module._dl0, module._dl1, module._dl0._l0, module._dl0._l1, module._dl1._l0, module._dl1._l1]:
+        for ret in sm_rets[submod.get_mod_key()]:
+            assert isinstance(ret, np.ndarray)
+            assert ret.shape == tuple(batch_shape + [64])
+
+    # partial submodules
+    ret = module(x, track_submod_rets=True, submods_to_track=[module._dl1, module._dl0._l0])
+    assert ret.shape == tuple(batch_shape + [64])
+    sm_rets = module.submod_rets
+    for submod in [module._dl1, module._dl0._l0]:
+        for ret in sm_rets[submod.get_mod_key()]:
+            assert isinstance(ret, np.ndarray)
+            assert ret.shape == tuple(batch_shape + [64])
+    for submod in [module._dl0, module._dl0._l1, module._dl1._l0, module._dl1._l1]:
+        assert ivy.Container.flatten_key_chain(submod.__repr__(), '_') not in sm_rets
 
 
 # check submod returns
-# @pytest.mark.parametrize(
-#     "bs_ic_oc", [([1, 2], 4, 5)])
-# def test_module_check_submod_rets(bs_ic_oc, dev, call):
-#     # smoke test
-#     if call is helpers.np_call:
-#         # NumPy does not support gradients
-#         pytest.skip()
-#     batch_shape, input_channels, output_channels = bs_ic_oc
-#     x = ivy.cast(ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), input_channels), 'float32')
-#     module = WithNestedModules(input_channels, output_channels, dev=dev)
-#
-#     # depth 1
-#     ret = module(x, track_submod_rets=True, submod_depth=1)
-#     assert ret.shape == tuple(batch_shape + [64])
-#     sm_rets = module.submod_rets
-#     module(x, expected_submod_rets=sm_rets)
-#     try:
-#         module(x, expected_submod_rets=sm_rets.as_random_uniform(map_sequences=True))
-#         raise Exception('forward pass succeeded despite passing random expected_submod_rets, assertion error expected.')
-#     except AssertionError:
-#         pass
-#
-#     # depth 2 (full)
-#     ret = module(x, track_submod_rets=True)
-#     assert ret.shape == tuple(batch_shape + [64])
-#     sm_rets = module.submod_rets
-#     module(x, expected_submod_rets=sm_rets)
-#     try:
-#         module(x, expected_submod_rets=sm_rets.as_random_uniform(map_sequences=True))
-#         raise Exception('forward pass succeeded despite passing random expected_submod_rets, assertion error expected.')
-#     except AssertionError:
-#         pass
-#
-#     # partial submodules
-#     ret = module(x, track_submod_rets=True, submods_to_track=[module._dl1, module._dl0._l0])
-#     assert ret.shape == tuple(batch_shape + [64])
-#     sm_rets = module.submod_rets
-#     module(x, expected_submod_rets=sm_rets)
-#     try:
-#         module(x, expected_submod_rets=sm_rets.as_random_uniform(map_sequences=True))
-#         raise Exception('forward pass succeeded despite passing random expected_submod_rets, assertion error expected.')
-#     except AssertionError:
-#         pass
-#
-#     # with tolerances
-#     ret = module(x, track_submod_rets=True)
-#     assert ret.shape == tuple(batch_shape + [64])
-#     sm_rets_orig = module.submod_rets
-#     sm_rets = ivy.Container({k: {'val': v, 'atol': [1e-8]*len(v), 'rtol': [1e-5]*len(v)}
-#                              for k, v in sm_rets_orig.items()}, **sm_rets_orig.config)
-#     module(x, expected_submod_rets=sm_rets)
-#     sm_rets = ivy.Container({k: {'val': v, 'atol': 1e-8, 'rtol': 1e-5}
-#                              for k, v in sm_rets_orig.items()}, **sm_rets_orig.config)
-#     module(x, expected_submod_rets=sm_rets)
-#     try:
-#         module(x, expected_submod_rets=sm_rets.as_random_uniform(map_sequences=True))
-#         raise Exception('forward pass succeeded despite passing random expected_submod_rets, assertion error expected.')
-#     except AssertionError:
-#         pass
+@pytest.mark.parametrize(
+    "bs_ic_oc", [([1, 2], 4, 5)])
+def test_module_check_submod_rets(bs_ic_oc, dev, call):
+    # smoke test
+    if call is helpers.np_call:
+        # NumPy does not support gradients
+        pytest.skip()
+    batch_shape, input_channels, output_channels = bs_ic_oc
+    x = ivy.astype(ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), input_channels), 'float32')
+    module = WithNestedModules(input_channels, output_channels, dev=dev)
+
+    # depth 1
+    ret = module(x, track_submod_rets=True, submod_depth=1)
+    assert ret.shape == tuple(batch_shape + [64])
+    sm_rets = module.submod_rets
+    module(x, expected_submod_rets=sm_rets)
+    try:
+        module(x, expected_submod_rets=sm_rets.as_random_uniform(map_sequences=True))
+        raise Exception('forward pass succeeded despite passing random expected_submod_rets, assertion error expected.')
+    except AssertionError:
+        pass
+
+    # depth 2 (full)
+    ret = module(x, track_submod_rets=True)
+    assert ret.shape == tuple(batch_shape + [64])
+    sm_rets = module.submod_rets
+    module(x, expected_submod_rets=sm_rets)
+    try:
+        module(x, expected_submod_rets=sm_rets.as_random_uniform(map_sequences=True))
+        raise Exception('forward pass succeeded despite passing random expected_submod_rets, assertion error expected.')
+    except AssertionError:
+        pass
+
+    # partial submodules
+    ret = module(x, track_submod_rets=True, submods_to_track=[module._dl1, module._dl0._l0])
+    assert ret.shape == tuple(batch_shape + [64])
+    sm_rets = module.submod_rets
+    module(x, expected_submod_rets=sm_rets)
+    try:
+        module(x, expected_submod_rets=sm_rets.as_random_uniform(map_sequences=True))
+        raise Exception('forward pass succeeded despite passing random expected_submod_rets, assertion error expected.')
+    except AssertionError:
+        pass
+
+    # with tolerances
+    ret = module(x, track_submod_rets=True)
+    assert ret.shape == tuple(batch_shape + [64])
+    sm_rets_orig = module.submod_rets
+    sm_rets = ivy.Container({k: {'val': v, 'atol': [1e-8]*len(v), 'rtol': [1e-5]*len(v)}
+                             for k, v in sm_rets_orig.items()}, **sm_rets_orig.config)
+    module(x, expected_submod_rets=sm_rets)
+    sm_rets = ivy.Container({k: {'val': v, 'atol': 1e-8, 'rtol': 1e-5}
+                             for k, v in sm_rets_orig.items()}, **sm_rets_orig.config)
+    module(x, expected_submod_rets=sm_rets)
+    try:
+        module(x, expected_submod_rets=sm_rets.as_random_uniform(map_sequences=True))
+        raise Exception('forward pass succeeded despite passing random expected_submod_rets, assertion error expected.')
+    except AssertionError:
+        pass
 
 
 # track submod call order
-# @pytest.mark.parametrize(
-#     "bs_ic_oc", [([1, 2], 4, 5)])
-# def test_module_track_submod_call_order(bs_ic_oc, dev, call):
-#     # smoke test
-#     if call is helpers.np_call:
-#         # NumPy does not support gradients
-#         pytest.skip()
-#     batch_shape, input_channels, output_channels = bs_ic_oc
-#     x = ivy.cast(ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), input_channels), 'float32')
-#     module = WithNestedModules(input_channels, output_channels, dev=dev)
-#
-#     root_key_0 = ivy.Container.flatten_key_chain(module.__repr__(), '_') + '_0'
-#
-#     dl0_key_0 = ivy.Container.flatten_key_chain(module._dl0.__repr__(), '_') + '_0'
-#     dl1_key_0 = ivy.Container.flatten_key_chain(module._dl1.__repr__(), '_') + '_0'
-#     dl1_key_1 = ivy.Container.flatten_key_chain(module._dl1.__repr__(), '_') + '_1'
-#
-#     dl0_l0_key_0 = ivy.Container.flatten_key_chain(module._dl0._l0.__repr__(), '_') + '_0'
-#     dl0_l1_key_0 = ivy.Container.flatten_key_chain(module._dl0._l1.__repr__(), '_') + '_0'
-#     dl1_l0_key_0 = ivy.Container.flatten_key_chain(module._dl1._l0.__repr__(), '_') + '_0'
-#     dl1_l1_key_0 = ivy.Container.flatten_key_chain(module._dl1._l1.__repr__(), '_') + '_0'
-#
-#     # depth 1
-#     ret = module(x, track_submod_call_order=True, submod_depth=1)
-#     assert ret.shape == tuple(batch_shape + [64])
-#
-#     sm_co = module.submod_call_order
-#
-#     assert root_key_0 in sm_co
-#
-#     assert dl0_key_0 in sm_co[root_key_0]
-#     assert dl1_key_0 in sm_co[root_key_0]
-#     assert dl1_key_1 in sm_co[root_key_0]
-#
-#     assert ivy.Container.identical(
-#         [sm_co[root_key_0][dl0_key_0], module._dl0.v_with_top_v_key_chains(flatten_key_chains=True).to_numpy()])
-#     assert ivy.Container.identical(
-#         [sm_co[root_key_0][dl1_key_0], module._dl1.v_with_top_v_key_chains(flatten_key_chains=True).to_numpy()])
-#     assert ivy.Container.identical(
-#         [sm_co[root_key_0][dl1_key_1], module._dl1.v_with_top_v_key_chains(flatten_key_chains=True).to_numpy()])
-#
-#     # depth 2 (full)
-#     ret = module(x, track_submod_call_order=True)
-#     assert ret.shape == tuple(batch_shape + [64])
-#
-#     sm_co = module.submod_call_order
-#
-#     assert root_key_0 in sm_co
-#
-#     assert dl0_key_0 in sm_co[root_key_0]
-#     assert dl1_key_0 in sm_co[root_key_0]
-#     assert dl1_key_1 in sm_co[root_key_0]
-#
-#     assert dl0_l0_key_0 in sm_co[root_key_0][dl0_key_0]
-#     assert dl0_l1_key_0 in sm_co[root_key_0][dl0_key_0]
-#     assert dl1_l0_key_0 in sm_co[root_key_0][dl1_key_0]
-#     assert dl1_l1_key_0 in sm_co[root_key_0][dl1_key_0]
-#     assert dl1_l0_key_0 in sm_co[root_key_0][dl1_key_1]
-#     assert dl1_l1_key_0 in sm_co[root_key_0][dl1_key_1]
-#
-#     assert ivy.Container.identical(
-#         [sm_co[root_key_0][dl0_key_0][dl0_l0_key_0],
-#          module._dl0._l0.v_with_top_v_key_chains(flatten_key_chains=True).to_numpy()])
-#     assert ivy.Container.identical(
-#         [sm_co[root_key_0][dl0_key_0][dl0_l1_key_0],
-#          module._dl0._l1.v_with_top_v_key_chains(flatten_key_chains=True).to_numpy()])
-#     assert ivy.Container.identical(
-#         [sm_co[root_key_0][dl1_key_0][dl1_l0_key_0],
-#          module._dl1._l0.v_with_top_v_key_chains(flatten_key_chains=True).to_numpy()])
-#     assert ivy.Container.identical(
-#         [sm_co[root_key_0][dl1_key_0][dl1_l1_key_0],
-#          module._dl1._l1.v_with_top_v_key_chains(flatten_key_chains=True).to_numpy()])
-#     assert ivy.Container.identical(
-#         [sm_co[root_key_0][dl1_key_1][dl1_l0_key_0],
-#          module._dl1._l0.v_with_top_v_key_chains(flatten_key_chains=True).to_numpy()])
-#     assert ivy.Container.identical(
-#         [sm_co[root_key_0][dl1_key_1][dl1_l1_key_0],
-#          module._dl1._l1.v_with_top_v_key_chains(flatten_key_chains=True).to_numpy()])
-#
-#     # partial submodules
-#     ret = module(x, track_submod_call_order=True, submods_to_track=[module._dl1, module._dl0._l0])
-#     assert ret.shape == tuple(batch_shape + [64])
-#
-#     sm_co = module.submod_call_order
-#
-#     assert root_key_0 in sm_co
-#
-#     assert dl0_key_0 in sm_co[root_key_0]
-#     assert dl1_key_0 in sm_co[root_key_0]
-#     assert dl1_key_1 in sm_co[root_key_0]
-#
-#     assert dl0_l0_key_0 in sm_co[root_key_0][dl0_key_0]
-#     assert dl0_l1_key_0 not in sm_co[root_key_0][dl0_key_0]
-#     assert ivy.Container.identical(
-#         [sm_co[root_key_0][dl1_key_0], module._dl1.v_with_top_v_key_chains(flatten_key_chains=True).to_numpy()])
-#     assert ivy.Container.identical(
-#         [sm_co[root_key_0][dl1_key_1], module._dl1.v_with_top_v_key_chains(flatten_key_chains=True).to_numpy()])
-#
-#     assert ivy.Container.identical(
-#         [sm_co[root_key_0][dl0_key_0][dl0_l0_key_0],
-#          module._dl0._l0.v_with_top_v_key_chains(flatten_key_chains=True).to_numpy()])
+@pytest.mark.parametrize(
+    "bs_ic_oc", [([1, 2], 4, 5)])
+def test_module_track_submod_call_order(bs_ic_oc, dev, call):
+    # smoke test
+    if call is helpers.np_call:
+        # NumPy does not support gradients
+        pytest.skip()
+    batch_shape, input_channels, output_channels = bs_ic_oc
+    x = ivy.astype(ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), input_channels), 'float32')
+    module = WithNestedModules(input_channels, output_channels, dev=dev)
+
+    root_key_0 = ivy.Container.flatten_key_chain(module.__repr__(), '_') + '_0'
+
+    dl0_key_0 = ivy.Container.flatten_key_chain(module._dl0.__repr__(), '_') + '_0'
+    dl1_key_0 = ivy.Container.flatten_key_chain(module._dl1.__repr__(), '_') + '_0'
+    dl1_key_1 = ivy.Container.flatten_key_chain(module._dl1.__repr__(), '_') + '_1'
+
+    dl0_l0_key_0 = ivy.Container.flatten_key_chain(module._dl0._l0.__repr__(), '_') + '_0'
+    dl0_l1_key_0 = ivy.Container.flatten_key_chain(module._dl0._l1.__repr__(), '_') + '_0'
+    dl1_l0_key_0 = ivy.Container.flatten_key_chain(module._dl1._l0.__repr__(), '_') + '_0'
+    dl1_l1_key_0 = ivy.Container.flatten_key_chain(module._dl1._l1.__repr__(), '_') + '_0'
+
+    # depth 1
+    ret = module(x, track_submod_call_order=True, submod_depth=1)
+    assert ret.shape == tuple(batch_shape + [64])
+
+    sm_co = module.submod_call_order
+
+    assert root_key_0 in sm_co
+
+    assert dl0_key_0 in sm_co[root_key_0]
+    assert dl1_key_0 in sm_co[root_key_0]
+    assert dl1_key_1 in sm_co[root_key_0]
+
+    assert ivy.Container.identical(
+        [sm_co[root_key_0][dl0_key_0], module._dl0.v_with_top_v_key_chains(flatten_key_chains=True).to_numpy()])
+    assert ivy.Container.identical(
+        [sm_co[root_key_0][dl1_key_0], module._dl1.v_with_top_v_key_chains(flatten_key_chains=True).to_numpy()])
+    assert ivy.Container.identical(
+        [sm_co[root_key_0][dl1_key_1], module._dl1.v_with_top_v_key_chains(flatten_key_chains=True).to_numpy()])
+
+    # depth 2 (full)
+    ret = module(x, track_submod_call_order=True)
+    assert ret.shape == tuple(batch_shape + [64])
+
+    sm_co = module.submod_call_order
+
+    assert root_key_0 in sm_co
+
+    assert dl0_key_0 in sm_co[root_key_0]
+    assert dl1_key_0 in sm_co[root_key_0]
+    assert dl1_key_1 in sm_co[root_key_0]
+
+    assert dl0_l0_key_0 in sm_co[root_key_0][dl0_key_0]
+    assert dl0_l1_key_0 in sm_co[root_key_0][dl0_key_0]
+    assert dl1_l0_key_0 in sm_co[root_key_0][dl1_key_0]
+    assert dl1_l1_key_0 in sm_co[root_key_0][dl1_key_0]
+    assert dl1_l0_key_0 in sm_co[root_key_0][dl1_key_1]
+    assert dl1_l1_key_0 in sm_co[root_key_0][dl1_key_1]
+
+    assert ivy.Container.identical(
+        [sm_co[root_key_0][dl0_key_0][dl0_l0_key_0],
+         module._dl0._l0.v_with_top_v_key_chains(flatten_key_chains=True).to_numpy()])
+    assert ivy.Container.identical(
+        [sm_co[root_key_0][dl0_key_0][dl0_l1_key_0],
+         module._dl0._l1.v_with_top_v_key_chains(flatten_key_chains=True).to_numpy()])
+    assert ivy.Container.identical(
+        [sm_co[root_key_0][dl1_key_0][dl1_l0_key_0],
+         module._dl1._l0.v_with_top_v_key_chains(flatten_key_chains=True).to_numpy()])
+    assert ivy.Container.identical(
+        [sm_co[root_key_0][dl1_key_0][dl1_l1_key_0],
+         module._dl1._l1.v_with_top_v_key_chains(flatten_key_chains=True).to_numpy()])
+    assert ivy.Container.identical(
+        [sm_co[root_key_0][dl1_key_1][dl1_l0_key_0],
+         module._dl1._l0.v_with_top_v_key_chains(flatten_key_chains=True).to_numpy()])
+    assert ivy.Container.identical(
+        [sm_co[root_key_0][dl1_key_1][dl1_l1_key_0],
+         module._dl1._l1.v_with_top_v_key_chains(flatten_key_chains=True).to_numpy()])
+
+    # partial submodules
+    ret = module(x, track_submod_call_order=True, submods_to_track=[module._dl1, module._dl0._l0])
+    assert ret.shape == tuple(batch_shape + [64])
+
+    sm_co = module.submod_call_order
+
+    assert root_key_0 in sm_co
+
+    assert dl0_key_0 in sm_co[root_key_0]
+    assert dl1_key_0 in sm_co[root_key_0]
+    assert dl1_key_1 in sm_co[root_key_0]
+
+    assert dl0_l0_key_0 in sm_co[root_key_0][dl0_key_0]
+    assert dl0_l1_key_0 not in sm_co[root_key_0][dl0_key_0]
+    assert ivy.Container.identical(
+        [sm_co[root_key_0][dl1_key_0], module._dl1.v_with_top_v_key_chains(flatten_key_chains=True).to_numpy()])
+    assert ivy.Container.identical(
+        [sm_co[root_key_0][dl1_key_1], module._dl1.v_with_top_v_key_chains(flatten_key_chains=True).to_numpy()])
+
+    assert ivy.Container.identical(
+        [sm_co[root_key_0][dl0_key_0][dl0_l0_key_0],
+         module._dl0._l0.v_with_top_v_key_chains(flatten_key_chains=True).to_numpy()])

@@ -7,6 +7,13 @@ from typing import Union, Tuple, Optional, List
 from ivy.functional.backends.jax import JaxArray
 
 
+def roll(x: JaxArray,
+         shift: Union[int, Tuple[int, ...]],
+         axis: Optional[Union[int, Tuple[int, ...]]] = None) \
+        -> JaxArray:
+    return jnp.roll(x, shift, axis)
+
+
 def squeeze(x: JaxArray,
             axis: Union[int, Tuple[int], List[int]]=None)\
         -> JaxArray:
@@ -58,10 +65,21 @@ def reshape(x: JaxArray,
     return jnp.reshape(x, shape)
 
 
-def concatenate(xs, axis=-1):
-    if xs[0].shape == ():
-        return jnp.concatenate([jnp.expand_dims(x, 0) for x in xs], axis)
-    return jnp.concatenate(xs, axis)
+def concat(xs: List[JaxArray], axis: int = 0) -> JaxArray:
+    is_tuple = type(xs) is tuple
+
+    if axis==None:
+        if is_tuple:
+            xs = list(xs)
+        for i in range(len(xs)):
+            if xs[i].shape ==():
+                xs[i] = jnp.ravel(xs[i])
+        if is_tuple:
+            xs = tuple(xs)
+
+    ret = jnp.concatenate(xs, axis)
+
+    return ret
 
 
 

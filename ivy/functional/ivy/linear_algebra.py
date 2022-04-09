@@ -221,18 +221,6 @@ def diagonal(x: ivy.Array,
     return _cur_framework(x).diagonal(x, offset, axis1=axis1, axis2=axis2)
 
 
-def inv(x):
-    """
-    Computes the (multiplicative) inverse of x matrix.
-    Given a square matrix x, returns the matrix x_inv satisfying dot(x, x_inv) = dot(x_inv, x) = eye(x.shape[0]).
-
-    :param x: Matrix to be inverted.
-    :type x: array
-    :return: (Multiplicative) inverse of the matrix x.
-    """
-    return _cur_framework(x).inv(x)
-
-
 def pinv(x):
     """
     Computes the pseudo inverse of x matrix.
@@ -255,7 +243,10 @@ def cholesky(x):
     return _cur_framework(x).cholesky(x)
 
 
-def matrix_norm(x, p=2, axes=None, keepdims=False):
+def matrix_norm(x: Union[ivy.Array, ivy.NativeArray],
+                ord: Optional[Union[int, float, Literal[inf, - inf, 'fro', 'nuc']]] = 'fro',
+                keepdims: bool = False)\
+        -> ivy.Array:
     """
     Compute the matrix p-norm.
 
@@ -272,7 +263,7 @@ def matrix_norm(x, p=2, axes=None, keepdims=False):
     :type keepdims: bool, optional
     :return: Matrix norm of the array at specified axes.
     """
-    return _cur_framework(x).matrix_norm(x, p, axes, keepdims)
+    return _cur_framework(x).matrix_norm(x, ord, keepdims)
 
 
 def qr(x: ivy.Array,
@@ -423,6 +414,32 @@ def trace(x: ivy.Array,
     return _cur_framework(x).trace(x, offset)
 
 
+def vecdot(x1: Union[ivy.Array, ivy.NativeArray],
+           x2: Union[ivy.Array, ivy.NativeArray],
+           axis: int = -1)\
+        -> ivy.Array:
+    """
+    Computes the (vector) dot product of two arrays.
+    Parameters
+    ----------
+    x1: array
+        first input array. Should have a numeric data type.
+    x2: array
+        second input array. Must be compatible with ``x1`` (see :ref:`broadcasting`). Should have a numeric data type.
+    axis:int
+        axis over which to compute the dot product. Must be an integer on the interval ``[-N, N)``, where ``N`` is the rank (number of dimensions) of the shape determined according to :ref:`broadcasting`. If specified as a negative integer, the function must determine the axis along which to compute the dot product by counting backward from the last dimension (where ``-1`` refers to the last dimension). By default, the function must compute the dot product over the last axis. Default: ``-1``.
+    Returns
+    -------
+    out: array
+        if ``x1`` and ``x2`` are both one-dimensional arrays, a zero-dimensional containing the dot product; otherwise, a non-zero-dimensional array containing the dot products and having rank ``N-1``, where ``N`` is the rank (number of dimensions) of the shape determined according to :ref:`broadcasting`. The returned array must have a data type determined by :ref:`type-promotion`.
+    **Raises**
+    -   if provided an invalid ``axis``.
+    -   if the size of the axis over which to compute the dot product is not the same for both ``x1`` and ``x2``.
+    """
+
+    return _cur_framework(x1).vecdot(x1, x2, axis)
+
+
 def det(x: ivy.Array) \
     -> ivy.Array:
     """
@@ -434,6 +451,7 @@ def det(x: ivy.Array) \
                dimensional array containing the determinant for each square matrix. The returned array must have the same data type as x.
     """
     return _cur_framework(x).det(x)
+
 
 def cholesky(x: Union[ivy.Array, ivy.NativeArray], 
              upper: bool = False) -> ivy.Array:
@@ -455,6 +473,7 @@ def cholesky(x: Union[ivy.Array, ivy.NativeArray],
     """
     return  _cur_framework(x).cholesky(x, upper)
 
+
 def eigvalsh(x: Union[ivy.Array, ivy.NativeArray], /) -> ivy.Array:
     """
     Return the eigenvalues of a symmetric matrix (or a stack of symmetric matrices) x.
@@ -465,6 +484,22 @@ def eigvalsh(x: Union[ivy.Array, ivy.NativeArray], /) -> ivy.Array:
              have the same data type as x.
     """
     return _cur_framework(x).eigvalsh(x)
+
+
+def inv(x: Union[ivy.Array, ivy.NativeArray])\
+        -> ivy.Array:
+    """
+    Returns the multiplicative inverse of a square matrix (or a stack of square matrices) x.
+
+    Parameters
+    x (array) : input array having shape (..., M, M) and whose innermost two dimensions form square matrices.
+    Should have a floating-point data type.
+
+    Returns
+    out (array) : an array containing the multiplicative inverses.
+    The returned array must have a floating-point data type determined by Type Promotion Rules and must have the same shape as x.
+    """
+    return _cur_framework(x).inv(x)
 
 
 def matrix_rank(vector: Union[ivy.Array, ivy.NativeArray],
@@ -514,6 +549,7 @@ def cross(x1: Union[ivy.Array, ivy.NativeArray],
     :type out: array
     """
     return _cur_framework(x1).cross(x1,x2,axis)
+
 
 # Extra #
 # ------#

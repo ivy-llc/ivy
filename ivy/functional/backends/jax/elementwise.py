@@ -1,18 +1,37 @@
 # global
 import jax
 import jax.numpy as jnp
+from typing import Optional
 
 # local
+import ivy
 from ivy.functional.backends.jax import JaxArray
+
+
+def bitwise_left_shift(x1: JaxArray, x2: JaxArray)\
+        -> JaxArray:
+    if isinstance(x2, int):
+        x2 = jnp.asarray(x2, dtype=x1.dtype)
+    return jnp.left_shift(x1, x2)
+
 
 def add(x1: JaxArray,
            x2: JaxArray)\
         -> JaxArray:
-    return jnp.add(x1 ,x2)
+    return jnp.add(x1, x2)
+
+
+def pow(x1: JaxArray,
+        x2: JaxArray)\
+        -> JaxArray:
+    return jnp.power(x1, x2)
+
 
 def bitwise_xor(x1: JaxArray,
                 x2: JaxArray)\
         -> JaxArray:
+    if isinstance(x2, int):
+        x2 = jnp.asarray(x2, dtype=x1.dtype)
     return jnp.bitwise_xor(x1, x2)
 
 def exp(x: JaxArray)\
@@ -32,6 +51,8 @@ def bitwise_invert(x: JaxArray)\
 def bitwise_and(x1: JaxArray,
                 x2: JaxArray)\
         -> JaxArray:
+    if isinstance(x2, int):
+        x2 = jnp.asarray(x2, dtype=x1.dtype)
     return jnp.bitwise_and(x1, x2)
 
 
@@ -203,6 +224,8 @@ def floor_divide(x1: JaxArray, x2: JaxArray)\
 
 
 def bitwise_or(x1: JaxArray, x2: JaxArray) -> JaxArray:
+    if isinstance(x2, int):
+        x2 = jnp.asarray(x2, dtype=x1.dtype)
     return jnp.bitwise_or(x1, x2)
 
 
@@ -251,9 +274,13 @@ def trunc(x: JaxArray)\
     return jnp.trunc(x)
 
   
-def abs(x: JaxArray)\
+def abs(x: JaxArray,
+        out: Optional[JaxArray] = None)\
         -> JaxArray:
-    return jnp.absolute(x)
+    ret = jnp.absolute(x)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
 def subtract(x1: JaxArray, x2: JaxArray)\
@@ -271,6 +298,8 @@ def logaddexp(x1: JaxArray, x2: JaxArray) -> JaxArray:
 
 def bitwise_right_shift(x1: JaxArray, x2: JaxArray)\
         -> JaxArray:
+    if isinstance(x2, int):
+        x2 = jnp.asarray(x2, dtype=x1.dtype)
     return jnp.right_shift(x1, x2)
 
 
