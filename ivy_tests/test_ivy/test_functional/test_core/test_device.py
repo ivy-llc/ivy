@@ -144,36 +144,31 @@ def test_to_dev(x, dtype, tensor_fn, with_out, dev, call):
     if (isinstance(x, Number) or len(x) == 0) and tensor_fn == helpers.var_fn and call is helpers.mx_call:
         # mxnet does not support 0-dimensional variables
         pytest.skip()
-    
+
     x = tensor_fn(x, dtype, dev)
+
+    # create a dummy array for out
+    out = ivy.array([])
+
     dev = ivy.dev(x)
-
-    # not placing `out` on the same device as `x`
-    out = tensor_fn(x)
-
-    if with_out:
-        x_on_dev = ivy.to_dev(x, dev, out)
-    else:
-        x_on_dev = ivy.to_dev(x, dev)
-
+    x_on_dev = ivy.to_dev(x, dev, out)
     dev_from_new_x = ivy.dev(x_on_dev)
-    dev_from_out = ivy.dev(out)
-
+    
     if with_out:
-        assert dev_from_new_x == out
+        # should be the same array test
+        # assert ivy.equal(x_on_dev, out) # depends on equals
+
+        # should be the same device
+        assert ivy.dev(x_on_dev) == ivy.dev(out)
 
     # value test
     if call in [helpers.tf_call, helpers.tf_graph_call]:
         assert '/' + ':'.join(dev_from_new_x[1:].split(':')[-2:]) == '/' + ':'.join(dev[1:].split(':')[-2:])
     elif call is helpers.torch_call:
         assert dev_from_new_x.type == dev.type
-        if with_out:
-            assert dev_from_out.type == dev.type
     else:
         assert dev_from_new_x == dev
-        if with_out:
-            assert dev_from_out == dev
-
+        
 
 # Function Splitting #
 

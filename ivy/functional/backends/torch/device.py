@@ -30,9 +30,8 @@ def to_dev(x, dev: Optional[str] = None, out: Optional[torch.Tensor] = None) -> 
     ret = x.to(dev_from_str(dev))
     if isinstance(x, torch.nn.Parameter):
         if ivy.exists(out):
-            return ivy.inplace_update(out, torch.nn.Parameter(ret))
-        else:
-            return torch.nn.Parameter(ret)
+            return ivy.inplace_update(out, torch.nn.Parameter(ret))        
+        return torch.nn.Parameter(ret)
     
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
