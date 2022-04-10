@@ -12,7 +12,8 @@ from ivy.framework_handler import current_framework as _cur_framework
 # noinspection PyShadowingBuiltins
 def all(x: Union[ivy.Array, ivy.NativeArray],
         axis: Optional[Union[int, Tuple[int], List[int]]] = None,
-        keepdims: bool = False)\
+        keepdims: bool = False,
+        out: Optional[Union[ivy.Array, ivy.NativeArray]]=None)\
         -> ivy.Array:
     """
     Tests whether all input array elements evaluate to ``True`` along a specified axis.
@@ -37,7 +38,7 @@ def all(x: Union[ivy.Array, ivy.NativeArray],
     out:
         if a logical AND reduction was performed over the entire array, the returned array must be a zero-dimensional array containing the test result; otherwise, the returned array must be a non-zero-dimensional array containing the test results. The returned array must have a data type of ``bool``.
     """
-    return _cur_framework(x).all(x, axis, keepdims)
+    return _cur_framework(x).all(x, axis, keepdims, out=out)
 
 
 # noinspection PyShadowingBuiltins
