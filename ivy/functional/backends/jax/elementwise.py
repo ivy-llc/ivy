@@ -87,6 +87,8 @@ def isinf(x: JaxArray)\
 
 def equal(x1: JaxArray, x2: JaxArray)\
         -> JaxArray:
+    if isinstance(x2, int):
+        x2 = jnp.asarray(x2, dtype=x1.dtype)
     return jnp.equal(x1, x2)
 
 
