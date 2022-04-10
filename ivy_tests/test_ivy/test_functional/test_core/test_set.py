@@ -1,5 +1,4 @@
 # global
-from tkinter.messagebox import NO
 import numpy as np
 import pytest
 
