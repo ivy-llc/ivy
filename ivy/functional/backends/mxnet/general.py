@@ -1,4 +1,5 @@
 # global
+from typing import Optional
 import ivy
 _round = round
 import logging
@@ -45,8 +46,12 @@ to_list = lambda x: to_numpy(x).tolist()
 to_list.__name__ = 'to_list'
 
 @_handle_flat_arrays_in_out
-def floormod(x, y):
-    return x % y
+def floormod(x: mx.ndarray.ndarray.NDArray, y: mx.ndarray.ndarray.NDArray, out: Optional[mx.ndarray.ndarray.NDArray] = None)\
+        -> mx.ndarray.ndarray.NDArray:
+    ret = x%y
+    if ivy.exists(out):
+        return ivy.inplace_update(out,ret)
+    return ret
 
 container_types = lambda: []
 

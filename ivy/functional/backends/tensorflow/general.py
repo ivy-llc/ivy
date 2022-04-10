@@ -3,6 +3,7 @@ Collection of TensorFlow general functions, wrapped to fit Ivy syntax and signat
 """
 
 # global
+from typing import Optional
 import ivy
 _round = round
 import numpy as _np
@@ -26,13 +27,20 @@ def is_native_array(x, exclusive=False):
 
 copy_array = tf.identity
 array_equal = tf.experimental.numpy.array_equal
-floormod = lambda x, y: x % y
 to_numpy = lambda x: _np.asarray(tf.convert_to_tensor(x))
 to_numpy.__name__ = 'to_numpy'
 to_scalar = lambda x: to_numpy(x).item()
 to_scalar.__name__ = 'to_scalar'
 to_list = lambda x: x.numpy().tolist()
 to_list.__name__ = 'to_list'
+
+
+def floormod(x: tf.Tensor, y: tf.Tensor, out: Optional[tf.Tensor] = None)\
+        -> tf.Tensor:
+    ret = x%y
+    if ivy.exists(out):
+        return ivy.inplace_update(out,ret)
+    return ret
 
 
 def unstack(x, axis, keepdims=False):
