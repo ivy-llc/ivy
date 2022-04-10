@@ -271,18 +271,24 @@
 <h1>clip_vector_norm<a class="headerlink" href="#clip-vector-norm" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
 <dt id="ivy.functional.ivy.general.clip_vector_norm">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">clip_vector_norm</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">max_norm</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">p</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">2.0</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/general.html#clip_vector_norm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.general.clip_vector_norm" title="Permalink to this definition">¶</a></dt>
-<dd><p>Clips (limits) the vector p-norm of an array.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>array</em>) – Input array containing elements to clip.</p></li>
-<li><p><strong>max_norm</strong> (<em>float</em>) – The maximum value of the array norm.</p></li>
-<li><p><strong>p</strong> (<em>float</em><em>, </em><em>optional</em>) – The p-value for computing the p-norm. Default is 2.</p></li>
-</ul>
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">clip_vector_norm</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">max_norm</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">p</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">2.0</span></em>, <em class="sig-param"><span class="n">out</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/general.html#clip_vector_norm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.general.clip_vector_norm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clips (limits) the vector p-norm of an array.
+Parameters
+———-
+param x:</p>
+<blockquote>
+<div><p>array, input array containing elements to clip.</p>
+</div></blockquote>
+<dl class="simple">
+<dt>param max_norm: </dt><dd><p>float, the maximum value of the array norm.</p>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>An array with the vector norm downscaled to the max norm if needed.</p>
+<dt>param p:</dt><dd><p>optional float, the p-value for computing the p-norm. Default is 2.</p>
+</dd>
+<dt>out:</dt><dd><p>optional output array, for writing the result to. It must have a shape that the inputs broadcast to.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>return:</dt><dd><p>An array with the vector norm downscaled to the max norm if needed.</p>
 </dd>
 </dl>
 </dd></dl>
