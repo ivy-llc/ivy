@@ -55,36 +55,77 @@ def cross_entropy(true : Union[Array, NativeArray], pred : Union[Array, NativeAr
 
 
 # noinspection PyUnresolvedReferences
-def binary_cross_entropy(true, pred, epsilon=1e-7):
+def binary_cross_entropy(true : Union[Array, NativeArray], pred : Union[Array, NativeArray], epsilon : Optional[float] = 1e-7, \
+    out: Optional[Union[Array, NativeArray]] = None) \
+    -> Union[Array, NativeArray]:
     """
-    Computes the binary cross entropy loss.
+    Computes the binary cross entropy loss. 
+    Note that ``true`` and ``pred`` must have the same shape. 
 
-    :param true: true labels
-    :type true: array
-    :param pred: Predicted labels
-    :type pred: array
-    :param epsilon: small constant to add to log functions, default is 1e-7
-    :type epsilon: float, optional
-    :return: The binary cross entropy loss array.
+    Parameters
+    ----------
+    true: array
+        True labels
+    pred: array
+        predicted labels
+    epsilon: float, optional
+        small constant to add to log functions, default is ``1e-7``
+    out:
+        optional output array, for writing the result to. It must have a shape that the inputs broadcast to.
+
+    Returns
+    -------
+        The binary cross entropy loss
+
+    Examples
+    -------
+    >>> true = ivy.array([1, 0, 0, 1, 0])
+    >>> pred = ivy.array([0.9, 0.1, 0.5, 0.8, 0.6])
+    >>> loss = ivy.binary_cross_entropy(true, pred)
     """
     pred = ivy.clip(pred, epsilon, 1-epsilon)
     # noinspection PyTypeChecker
-    return -(ivy.log(pred) * true + ivy.log(1 - pred) * (1 - true))
+    ret = -(ivy.log(pred) * true + ivy.log(1 - pred) * (1 - true))
+
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+
+    return ret
 
 
-def sparse_cross_entropy(true, pred, axis=-1, epsilon=1e-7):
+def sparse_cross_entropy(true : Union[Array, NativeArray], pred : Union[Array, NativeArray], axis : Optional[int] = -1, epsilon : Optional[float] = 1e-7, \
+    out: Optional[Union[Array, NativeArray]] = None) \
+    -> Union[Array, NativeArray]:
     """
-    Computes sparse cross entropy between logits and labels.
+    Computes sparse cross entropy between predicted and true discrete distrubtions.
 
-    :param true: True labels as logits.
-    :type true: array
-    :param pred: predicted labels as logits.
-    :type pred: array
-    :param axis: The class dimension, default is -1.
-    :type axis: int, optional
-    :param epsilon: small constant to add to log functions, default is 1e-7
-    :type epsilon: float, optional
-    :return: The sparse cross entropy loss
+    Parameters
+    ----------
+    true: array
+        True labels
+    pred: array
+        predicted labels
+    axis: int, optional
+        The class dimension, default is ``-1``
+    epsilon: float, optional
+        small constant to add to log functions, default is ``1e-7``
+    out:
+        optional output array, for writing the result to. It must have a shape that the inputs broadcast to.
+
+    Returns
+    -------
+        The sparse cross entropy loss
+
+    Examples
+    -------
+    >>> true = ivy.array([0, 2]) # shape (2,)
+    >>> pred = ivy.array([[0.8, 0.1, 0.1], [0.2, 0.1, 0.7]]) # shape (2, 3)
+    >>> loss = ivy.sparse_cross_entropy(true, pred)
     """
     true = ivy.one_hot(true, pred.shape[axis])
-    return cross_entropy(true, pred, axis, epsilon)
+    ret = cross_entropy(true, pred, axis, epsilon)
+
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+
+    return ret
