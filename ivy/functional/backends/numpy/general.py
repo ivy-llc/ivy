@@ -4,6 +4,7 @@ Collection of Numpy general functions, wrapped to fit Ivy syntax and signature.
 
 # global
 import logging
+from typing import Optional
 import numpy as np
 from operator import mul as _mul
 from functools import reduce as _reduce
@@ -20,7 +21,6 @@ from ivy.functional.backends.numpy.device import _dev_callable, _to_dev
 
 copy_array = lambda x: x.copy()
 array_equal = np.array_equal
-floormod = lambda x, y: np.asarray(x % y)
 
 to_numpy = lambda x: x
 to_numpy.__name__ = 'to_numpy'
@@ -47,6 +47,14 @@ def is_native_array(x, exclusive=False):
     if isinstance(x, np.ndarray):
         return True
     return False
+
+
+def floormod(x: np.ndarray, y: np.ndarray, out: Optional[np.ndarray] = None)\
+        -> np.ndarray:
+    ret = np.asarray(x%y)
+    if ivy.exists(out):
+        return ivy.inplace_update(out,ret)
+    return ret
 
 
 def unstack(x, axis, keepdims=False):

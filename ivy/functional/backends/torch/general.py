@@ -54,8 +54,12 @@ def to_list(x):
     raise ValueError('Expected a pytroch tensor.')
 
 
-def floormod(x, y):
-    return x % y
+def floormod(x: torch.Tensor, y: torch.Tensor, out: Optional[torch.Tensor] = None)\
+        -> torch.Tensor:
+    ret = x%y
+    if ivy.exists(out):
+        return ivy.inplace_update(out,ret)
+    return ret
 
 
 def unstack(x, axis: int, keepdims: bool = False) -> List[torch.Tensor]:
