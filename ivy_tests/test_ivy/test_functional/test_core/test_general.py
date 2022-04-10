@@ -488,8 +488,10 @@ def test_clip(x_min_n_max, dtype, tensor_fn, dev, call):
 @pytest.mark.parametrize(
     "dtype", ['float32'])
 @pytest.mark.parametrize(
+    "with_out", [True, False])    
+@pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_clip_vector_norm(x_max_norm_n_p_val_clipped, dtype, tensor_fn, dev, call):
+def test_clip_vector_norm(x_max_norm_n_p_val_clipped, dtype, with_out, tensor_fn, dev, call):
     # smoke test
     if call is helpers.mx_call:
         # mxnet does not support 0-dimensional variables
@@ -498,13 +500,22 @@ def test_clip_vector_norm(x_max_norm_n_p_val_clipped, dtype, tensor_fn, dev, cal
     max_norm = x_max_norm_n_p_val_clipped[1]
     p_val = x_max_norm_n_p_val_clipped[2]
     clipped = x_max_norm_n_p_val_clipped[3]
-    ret = ivy.clip_vector_norm(x, max_norm, p_val)
+    if with_out:
+        out = ivy.zeros(x.shape if len(x.shape) else (1,)) 
+        ret = ivy.clip_vector_norm(x,max_norm,p_val,out=out)
+    else:
+        ret = ivy.clip_vector_norm(x, max_norm, p_val)
     # type test
     assert ivy.is_native_array(ret)
     # cardinality test
     assert ret.shape == (x.shape if len(x.shape) else (1,))
     # value test
     assert np.allclose(call(ivy.clip_vector_norm, x, max_norm, p_val), np.array(clipped))
+    if with_out:
+        if not ivy.current_framework_str() in ["tensorflow", "jax"]:
+            # these frameworks do not support native inplace updates
+            assert ret is out
+            assert ret.data is out.data
     # compilation test
     if call is helpers.torch_call:
         # pytorch jit cannot compile global variables, in this case MIN_DENOMINATOR
