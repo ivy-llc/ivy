@@ -200,11 +200,11 @@ def clip_vector_norm(x: Union[ivy.Array, ivy.NativeArray], max_norm: float, p: f
     Clips (limits) the vector p-norm of an array.
     Parameters
     ----------
-    param x:  
+    x:  
         array, input array containing elements to clip.
-    param max_norm: 
+    max_norm: 
         float, the maximum value of the array norm.
-    param p:
+    p:
         optional float, the p-value for computing the p-norm. Default is 2. 
     out:
         optional output array, for writing the result to. It must have a shape that the inputs broadcast to.
@@ -245,18 +245,25 @@ def clip_matrix_norm(x: Union[ivy.Array, ivy.NativeArray], max_norm: float, p: f
 
 
 
-def floormod(x: Union[ivy.Array, ivy.NativeArray], y: Union[ivy.Array, ivy.NativeArray])\
+def floormod(x: Union[ivy.Array, ivy.NativeArray], y: Union[ivy.Array, ivy.NativeArray], out: Optional[Union[ivy.Array, ivy.NativeArray]] = None)\
         -> Union[ivy.Array, ivy.NativeArray]:
     """
     Returns element-wise remainder of division.
+    Parameters
+    ----------
+    x:  
+        array, input to floormod
+    y:
+        array, denominator input for floormod.
+    out:
+        optional output array, for writing the result to. It must have a shape that the inputs broadcast to.
 
-    :param x: Input array to floormod.
-    :type x: array
-    :param y: Denominator input for floormod.
-    :type y: array
-    :return: An array of the same shape and type as x, with the elements floor modded.
+    Returns
+    -------
+    return:
+        An array of the same shape and type as x, with the elements floor modded.
     """
-    return _cur_framework(x).floormod(x, y)
+    return _cur_framework(x).floormod(x, y,out)
 
 
 
