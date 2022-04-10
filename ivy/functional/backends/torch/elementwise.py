@@ -338,7 +338,6 @@ def pow(x1: torch.Tensor,
         x2: torch.Tensor,
         out: Optional[torch.Tensor] = None)\
         -> torch.Tensor:
-    return torch.pow(x1, x2, out=out)
     if not isinstance(x2, Tensor):
         x2 = torch.tensor(x2, dtype=x1.dtype)
         return torch.pow(x1, x2, out=out)
