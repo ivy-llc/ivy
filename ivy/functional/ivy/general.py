@@ -194,24 +194,36 @@ def to_list(x: Union[ivy.Array, ivy.NativeArray])\
     """
     return _cur_framework(x).to_list(x)
 
-def clip_vector_norm(x: Union[ivy.Array, ivy.NativeArray], max_norm: float, p: float = 2.0)\
+def clip_vector_norm(x: Union[ivy.Array, ivy.NativeArray], max_norm: float, p: float = 2.0, out: Optional[Union[ivy.Array, ivy.NativeArray]] = None)\
         -> Union[ivy.Array, ivy.NativeArray]:
     """
     Clips (limits) the vector p-norm of an array.
-
-    :param x: Input array containing elements to clip.
-    :type x: array
-    :param max_norm: The maximum value of the array norm.
-    :type max_norm: float
-    :param p: The p-value for computing the p-norm. Default is 2.
-    :type p: float, optional
-    :return: An array with the vector norm downscaled to the max norm if needed.
+    Parameters
+    ----------
+    param x:  
+        array, input array containing elements to clip.
+    param max_norm: 
+        float, the maximum value of the array norm.
+    param p:
+        optional float, the p-value for computing the p-norm. Default is 2. 
+    out:
+        optional output array, for writing the result to. It must have a shape that the inputs broadcast to.
+    Returns
+    -------
+    return:
+        An array with the vector norm downscaled to the max norm if needed.
     """
     norm = ivy.vector_norm(x, keepdims=True, ord=p)
     ratio = ivy.stable_divide(max_norm, norm)
     if ratio < 1:
-        return ratio * x
-    return x
+        if ivy.exists(out):
+            return ivy.inplace_update(out, ratio*x)
+        else:
+            return ratio * x
+    if ivy.exists(out):
+        return ivy.inplace_update(out,x)
+    else:
+        return x
 
 
 def clip_matrix_norm(x: Union[ivy.Array, ivy.NativeArray], max_norm: float, p: float = 2.0)\
