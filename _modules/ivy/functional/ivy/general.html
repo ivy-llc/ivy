@@ -400,11 +400,11 @@
 <span class="sd">    Clips (limits) the vector p-norm of an array.</span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    param x:  </span>
+<span class="sd">    x:  </span>
 <span class="sd">        array, input array containing elements to clip.</span>
-<span class="sd">    param max_norm: </span>
+<span class="sd">    max_norm: </span>
 <span class="sd">        float, the maximum value of the array norm.</span>
-<span class="sd">    param p:</span>
+<span class="sd">    p:</span>
 <span class="sd">        optional float, the p-value for computing the p-norm. Default is 2. </span>
 <span class="sd">    out:</span>
 <span class="sd">        optional output array, for writing the result to. It must have a shape that the inputs broadcast to.</span>
@@ -445,18 +445,25 @@
 
 
 
-<div class="viewcode-block" id="floormod"><a class="viewcode-back" href="../../../../functional/ivy/general/floormod.html#ivy.functional.ivy.general.floormod">[docs]</a><span class="k">def</span> <span class="nf">floormod</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span> <span class="n">y</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">])</span>\
+<div class="viewcode-block" id="floormod"><a class="viewcode-back" href="../../../../functional/ivy/general/floormod.html#ivy.functional.ivy.general.floormod">[docs]</a><span class="k">def</span> <span class="nf">floormod</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span> <span class="n">y</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span>\
         <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns element-wise remainder of division.</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x:  </span>
+<span class="sd">        array, input to floormod</span>
+<span class="sd">    y:</span>
+<span class="sd">        array, denominator input for floormod.</span>
+<span class="sd">    out:</span>
+<span class="sd">        optional output array, for writing the result to. It must have a shape that the inputs broadcast to.</span>
 
-<span class="sd">    :param x: Input array to floormod.</span>
-<span class="sd">    :type x: array</span>
-<span class="sd">    :param y: Denominator input for floormod.</span>
-<span class="sd">    :type y: array</span>
-<span class="sd">    :return: An array of the same shape and type as x, with the elements floor modded.</span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    return:</span>
+<span class="sd">        An array of the same shape and type as x, with the elements floor modded.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">floormod</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">floormod</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span><span class="n">out</span><span class="p">)</span></div>
 
 
 
