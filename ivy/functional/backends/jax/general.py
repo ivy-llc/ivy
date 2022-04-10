@@ -11,7 +11,7 @@ from numbers import Number
 from operator import mul as _mul
 from functools import reduce as _reduce
 from jaxlib.xla_extension import Buffer
-from typing import Iterable
+from typing import Iterable, Optional
 import multiprocessing as _multiprocessing
 from haiku._src.data_structures import FlatMapping
 
@@ -20,6 +20,7 @@ import ivy
 from ivy.functional.ivy.device import default_device
 from ivy.functional.ivy import default_dtype
 from ivy.functional.backends.jax.device import to_dev, _to_array, dev as callable_dev
+from ivy.functional.backends.jax import JaxArray
 
 
 # noinspection PyUnresolvedReferences,PyProtectedMember
@@ -44,7 +45,6 @@ def _to_array(x):
 
 copy_array = jnp.array
 array_equal = jnp.array_equal
-floormod = lambda x, y: x % y
 to_numpy = lambda x: np.asarray(_to_array(x))
 to_numpy.__name__ = 'to_numpy'
 to_scalar = lambda x: x if isinstance(x, Number) else _to_array(x).item()
@@ -56,6 +56,14 @@ shape.__name__ = 'shape'
 get_num_dims = lambda x, as_tensor=False: jnp.asarray(len(jnp.shape(x))) if as_tensor else len(x.shape)
 
 container_types = lambda: [FlatMapping]
+
+
+def floormod(x: JaxArray, y: JaxArray, out: Optional[JaxArray] = None)\
+        -> JaxArray:
+    ret = x%y
+    if ivy.exists(out):
+        return ivy.inplace_update(out,ret)
+    return ret
 
 
 def unstack(x, axis, keepdims=False):
