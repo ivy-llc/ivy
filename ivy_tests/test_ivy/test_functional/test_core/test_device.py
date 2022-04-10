@@ -147,19 +147,26 @@ def test_to_dev(x, dtype, tensor_fn, with_out, dev, call):
 
     x = tensor_fn(x, dtype, dev)
 
-    # create a dummy array for out
-    out = ivy.array([])
+    # create a dummy array for out that is broadcastable to x
+    out = ivy.zeros(ivy.shape(x)) if with_out else None
 
     dev = ivy.dev(x)
-    x_on_dev = ivy.to_dev(x, dev, out)
+    x_on_dev = ivy.to_dev(x, dev, out=out)
     dev_from_new_x = ivy.dev(x_on_dev)
     
     if with_out:
         # should be the same array test
-        # assert ivy.equal(x_on_dev, out) # depends on equals
+        assert np.allclose(ivy.to_numpy(x_on_dev), ivy.to_numpy(out))
 
         # should be the same device
         assert ivy.dev(x_on_dev) == ivy.dev(out)
+
+        # check if native arrays are the same
+        if ivy.current_framework_str() in ["tensorflow", "jax"]:
+            # these frameworks do not support native inplace updates
+            return
+
+        assert x_on_dev.data is out.data
 
     # value test
     if call in [helpers.tf_call, helpers.tf_graph_call]:
