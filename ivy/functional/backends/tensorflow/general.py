@@ -68,17 +68,35 @@ inplace_variables_supported = lambda: True
 
 
 def inplace_decrement(x, val):
-    if ivy.is_variable(x):
-        x.assign(x - val)
-        return x
-    raise Exception('TensorFlow does not support inplace operations on non-Variable tensors')
+    (x_native, val_native), _ = ivy.args_to_native(x, val)
+    if ivy.is_variable(x_native):
+        x_native.assign(x_native-val_native)
+        if ivy.is_ivy_array(x):
+            x.data = x_native
+        else:
+            x = ivy.Array(x_native)
+    else:
+        if ivy.is_ivy_array(x):
+            x.data = val_native
+        else:
+            x = ivy.Array(val_native)
+    return x
 
 
 def inplace_increment(x, val):
-    if ivy.is_variable(x):
-        x.assign(x + val)
-        return x
-    raise Exception('TensorFlow does not support inplace operations on non-Variable tensors')
+    (x_native, val_native), _ = ivy.args_to_native(x, val)
+    if ivy.is_variable(x_native):
+        x_native.assign(x_native + val_native)
+        if ivy.is_ivy_array(x):
+            x.data = x_native
+        else:
+            x = ivy.Array(x_native)
+    else:
+        if ivy.is_ivy_array(x):
+            x.data = val_native
+        else:
+            x = ivy.Array(val_native)
+    return x
 
 
 cumsum = tf.cumsum

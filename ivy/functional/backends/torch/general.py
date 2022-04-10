@@ -86,12 +86,22 @@ inplace_variables_supported = lambda: True
 
 
 def inplace_decrement(x, val):
-    x.data -= val
+    (x_native, val_native), _ = ivy.args_to_native(x, val)
+    x_native.data -= val_native
+    if ivy.is_ivy_array(x):
+        x.data = x_native
+    else:
+        x.data = ivy.Array(x.data)
     return x
 
 
 def inplace_increment(x, val):
-    x.data += val
+    (x_native, val_native), _ = ivy.args_to_native(x, val)
+    x_native.data +=val_native
+    if ivy.is_ivy_array(x):
+        x.data = x_native
+    else:
+        x.data = ivy.Array(x.data)
     return x
 
 

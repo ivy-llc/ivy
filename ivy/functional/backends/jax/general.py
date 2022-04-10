@@ -224,11 +224,21 @@ def indices_where(x):
 
 
 def inplace_decrement(x, val):
-    raise Exception('Jax does not support inplace operations')
+    (x_native, val_native), _ = ivy.args_to_native(x, val)
+    if ivy.is_ivy_array(x):
+        x.data -= val_native
+    else:
+        x = ivy.Array(val_native)
+    return x
 
 
 def inplace_increment(x, val):
-    raise Exception('Jax does not support inplace operations')
+    (x_native, val_native), _ = ivy.args_to_native(x, val)
+    if ivy.is_ivy_array(x):
+        x.data += val_native
+    else:
+        x = ivy.Array(val_native)
+    return x
 
 
 compile = lambda fn, dynamic=True, example_inputs=None, static_argnums=None, static_argnames=None: \
