@@ -123,9 +123,4 @@ def sparse_cross_entropy(true : Union[Array, NativeArray], pred : Union[Array, N
     >>> loss = ivy.sparse_cross_entropy(true, pred)
     """
     true = ivy.one_hot(true, pred.shape[axis])
-    ret = cross_entropy(true, pred, axis, epsilon)
-
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-
-    return ret
+    return cross_entropy(true, pred, axis, epsilon, out=out)
