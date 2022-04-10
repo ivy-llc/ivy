@@ -552,8 +552,10 @@ def test_round(x_n_x_rounded, dtype, tensor_fn, dev, call):
 @pytest.mark.parametrize(
     "dtype", ['float32'])
 @pytest.mark.parametrize(
+    "with_out", [True, False])     
+@pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_floormod(x_n_divisor_n_x_floormod, dtype, tensor_fn, dev, call):
+def test_floormod(x_n_divisor_n_x_floormod, dtype, with_out, tensor_fn, dev, call):
     # smoke test
     if (isinstance(x_n_divisor_n_x_floormod[0], Number) or isinstance(x_n_divisor_n_x_floormod[1], Number) or
             isinstance(x_n_divisor_n_x_floormod[2], Number))\
@@ -562,11 +564,20 @@ def test_floormod(x_n_divisor_n_x_floormod, dtype, tensor_fn, dev, call):
         pytest.skip()
     x = tensor_fn(x_n_divisor_n_x_floormod[0], dtype, dev)
     divisor = ivy.array(x_n_divisor_n_x_floormod[1], dtype, dev)
-    ret = ivy.floormod(x, divisor)
+    if with_out:
+        out = ivy.zeros(x.shape)
+        ret = ivy.floormod(x, divisor, out= out)
+    else:
+        ret = ivy.floormod(x,divisor)
     # type test
     assert ivy.is_native_array(ret)
     # cardinality test
     assert ret.shape == x.shape
+    if with_out:
+        if not ivy.current_framework_str() in ["tensorflow","jax"]:
+            # these frameworks do not support native inplace updates
+            assert ret is out
+            assert ret.data is out.data    
     # value test
     assert np.allclose(call(ivy.floormod, x, divisor), np.array(x_n_divisor_n_x_floormod[2]))
 
