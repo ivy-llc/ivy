@@ -26,9 +26,9 @@ def cross_entropy(true : Union[Array, NativeArray], pred : Union[Array, NativeAr
     pred: array
         predicted labels
     axis: int, optional
-        The class dimension, default is -1
+        The class dimension, default is ``-1``
     epsilon: float, optional
-        small constant to add to log functions, default is 1e-7
+        small constant to add to log functions, default is ``1e-7``
     out:
         optional output array, for writing the result to. It must have a shape that the inputs broadcast to.
 
