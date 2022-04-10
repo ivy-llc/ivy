@@ -16,18 +16,37 @@ import ivy_tests.test_ivy.helpers as helpers
     "dtype", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_cross_entropy(t_n_p_n_res, dtype, tensor_fn, dev, call):
+@pytest.mark.parametrize(
+    "with_out", [False, True])
+def test_cross_entropy(t_n_p_n_res, dtype, tensor_fn, with_out, dev, call):
     # smoke test
     true, pred, true_target = t_n_p_n_res
     pred = tensor_fn(pred, dtype, dev)
     true = tensor_fn(true, dtype, dev)
-    ret = ivy.cross_entropy(true, pred)
+
+    # create dummy out
+    out = ivy.zeros(1) if with_out else None
+
+    ret = ivy.cross_entropy(true, pred, out=out)
+
     # type test
     assert ivy.is_native_array(ret)
     # cardinality test
     assert list(ret.shape) == [1]
     # value test
-    assert np.allclose(call(ivy.cross_entropy, true, pred), np.asarray(true_target))
+    assert np.allclose(ivy.to_numpy(ret), np.asarray(true_target))
+
+    if with_out:
+        assert np.allclose(ivy.to_numpy(ret), ivy.to_numpy(out))
+    
+        # check if native arrays are the same
+        if ivy.current_framework_str() in ["tensorflow", "jax"]:
+            # these frameworks do not support native inplace updates
+            return
+        
+        # native array must be the same object 
+        assert ret.data is out.data
+    
 
 
 # binary_cross_entropy
