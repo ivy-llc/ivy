@@ -405,7 +405,9 @@ def logaddexp(x1: np.ndarray,
     return np.logaddexp(x1, x2, out=out)
 
 
-def bitwise_right_shift(x1: np.ndarray, x2: np.ndarray)\
+def bitwise_right_shift(x1: np.ndarray,
+                        x2: np.ndarray,
+                        out: Optional[np.ndarray] = None)\
         -> np.ndarray:
     if not isinstance(x2, np.ndarray):
         x2 = np.asarray(x2, dtype=x1.dtype)
@@ -413,10 +415,12 @@ def bitwise_right_shift(x1: np.ndarray, x2: np.ndarray)\
         dtype = np.promote_types(x1.dtype, x2.dtype)
         x1 = x1.astype(dtype)
         x2 = x2.astype(dtype)
-    return np.right_shift(x1, x2)
+    return np.right_shift(x1, x2, out=out)
 
 
-def bitwise_left_shift(x1: np.ndarray, x2: np.ndarray)\
+def bitwise_left_shift(x1: np.ndarray,
+                       x2: np.ndarray,
+                       out: Optional[np.ndarray] = None)\
         -> np.ndarray:
     if not isinstance(x2, np.ndarray):
         x2 = np.asarray(x2, dtype=x1.dtype)
@@ -424,10 +428,13 @@ def bitwise_left_shift(x1: np.ndarray, x2: np.ndarray)\
         dtype = np.promote_types(x1.dtype, x2.dtype)
         x1 = x1.astype(dtype)
         x2 = x2.astype(dtype)
-    return np.left_shift(x1, x2)
+    return np.left_shift(x1, x2, out=out)
 
 
-tan = np.tan
+def tan(x: np.ndarray,
+        out: Optional[np.ndarray] = None)\
+        -> np.ndarray:
+    return np.tan(x, out=out)
 
 
 def atan(x: np.ndarray) \
@@ -435,23 +442,23 @@ def atan(x: np.ndarray) \
     return np.arctan(x)
 
 
-
-
-def atanh(x: np.ndarray) \
+def atanh(x: np.ndarray,
+          out: Optional[np.ndarray] = None)\
         -> np.ndarray:
-    return np.asarray(np.arctanh(npa.asarray(x)))
+    return np.arctanh(x, out=out)
 
 
-
-def atan2(x1: np.ndarray, x2: np.ndarray) -> np.ndarray:
+def atan2(x1: np.ndarray,
+          x2: np.ndarray,
+          out: Optional[np.ndarray] = None)\
+        -> np.ndarray:
     if not isinstance(x2, np.ndarray):
         x2 = np.asarray(x2, dtype=x1.dtype)
     else:
         dtype = np.promote_types(x1.dtype, x2.dtype)
         x1 = x1.astype(dtype)
         x2 = x2.astype(dtype)
-    return np.arctan2(x1, x2)
-
+    return np.arctan2(x1, x2, out=out)
 
 
 cosh = np.cosh
