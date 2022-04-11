@@ -223,32 +223,42 @@ def cos(x: np.ndarray,
     return np.cos(x, out=out)
 
 
-def logical_not(x: np.ndarray)\
+def logical_not(x: np.ndarray,
+                out: Optional[np.ndarray] = None)\
         -> np.ndarray:
-    return np.logical_not(x)
+    return np.logical_not(x, out=out)
   
   
 def divide(x1: np.ndarray,
-           x2: np.ndarray)\
+           x2: np.ndarray,
+           out: Optional[np.ndarray] = None)\
         -> np.ndarray:
     if not isinstance(x2, np.ndarray):
         x2 = np.asarray(x2, dtype=x1.dtype)
-    return npa.divide(npa.asarray(x1), npa.asarray(x2))
+    ret = npa.divide(npa.asarray(x1), npa.asarray(x2))
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
-def acos(x: np.ndarray)\
+def acos(x: np.ndarray,
+         out: Optional[np.ndarray] = None)\
         -> np.ndarray:
-    return np.asarray(npa.acos(npa.asarray(x)))
+    return np.arccos(x, out=out)
 
 
-def logical_xor(x1: np.ndarray, x2: np.ndarray) \
+def logical_xor(x1: np.ndarray,
+                x2: np.ndarray,
+                out: Optional[np.ndarray] = None) \
         -> np.ndarray:
-    return np.logical_xor(x1, x2)
+    return np.logical_xor(x1, x2, out=out)
 
 
-def logical_or(x1: np.ndarray, x2: np.ndarray)\
+def logical_or(x1: np.ndarray,
+               x2: np.ndarray,
+                out: Optional[np.ndarray] = None)\
         -> np.ndarray:
-    return np.logical_or(x1, x2)
+    return np.logical_or(x1, x2, out=out)
 
 
 def logical_and(x1: np.ndarray, x2: np.ndarray)\
