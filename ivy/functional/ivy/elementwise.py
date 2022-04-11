@@ -1,6 +1,7 @@
 # global
 from numbers import Number
 from typing import Union, Optional
+
 # local
 import ivy
 from ivy.framework_handler import current_framework as _cur_framework
@@ -11,7 +12,8 @@ from ivy.framework_handler import current_framework as _cur_framework
 
 
 def bitwise_left_shift(x1: Union[ivy.Array, ivy.NativeArray],
-                       x2: Union[ivy.Array, ivy.NativeArray])\
+                       x2: Union[ivy.Array, ivy.NativeArray],
+                       out: Optional[Union[ivy.Array, ivy.NativeArray]] = None)\
                        -> ivy.Array:
     """
     Shifts the bits of each element ``x1_i`` of the input array ``x1`` to the left by appending ``x2_i`` (i.e., the respective element in the input array ``x2``) zeros to the right of ``x1_i``.
@@ -21,16 +23,19 @@ def bitwise_left_shift(x1: Union[ivy.Array, ivy.NativeArray],
         first input array. Should have an integer data type.
     x2: array
         second input array. Must be compatible with ``x1`` (see :ref:`broadcasting`). Should have an integer data type. Each element must be greater than or equal to ``0``.
+    out:
+        optional output array, for writing the result to. It must have a shape that the inputs broadcast to.
     Returns
     -------
-    out: array
+    return: array
         an array containing the element-wise results. The returned array must have a data type determined by :ref:`type-promotion`.
     """
-    return _cur_framework(x1, x2).bitwise_left_shift(x1, x2)
+    return _cur_framework(x1, x2).bitwise_left_shift(x1, x2, out)
 
 
 def add(x1: Union[ivy.Array, ivy.NativeArray],
-        x2: Union[ivy.Array, ivy.NativeArray])\
+        x2: Union[ivy.Array, ivy.NativeArray],
+        out: Optional[Union[ivy.Array, ivy.NativeArray]] = None)\
         -> ivy.Array:
     """
     Calculates the sum for each element ``x1_i`` of the input array ``x1`` with the respective element ``x2_i`` of the input array ``x2``.
@@ -61,16 +66,19 @@ def add(x1: Union[ivy.Array, ivy.NativeArray],
         first input array. Should have a numeric data type.
     x2: array
         second input array. Must be compatible with ``x1`` (see :ref:`broadcasting`). Should have a numeric data type.
+    out:
+        optional output array, for writing the result to. It must have a shape that the inputs broadcast to.
     Returns
     -------
-    out: array
+    return: array
         an array containing the element-wise sums. The returned array must have a data type determined by :ref:`type-promotion`.
     """
-    return _cur_framework(x1, x2).add(x1, x2)
+    return _cur_framework(x1, x2).add(x1, x2, out)
 
 
 def bitwise_xor(x1: Union[ivy.Array, ivy.NativeArray],
-                x2: Union[ivy.Array, ivy.NativeArray])\
+                x2: Union[ivy.Array, ivy.NativeArray],
+                out: Optional[Union[ivy.Array, ivy.NativeArray]] = None)\
         -> ivy.Array:
     """
     Computes the bitwise XOR of the underlying binary representation of each element ``x1_i`` of the input array ``x1`` with the respective element ``x2_i`` of the input array ``x2``.
@@ -80,14 +88,18 @@ def bitwise_xor(x1: Union[ivy.Array, ivy.NativeArray],
         first input array. Should have an integer or boolean data type.
     x2: array
         second input array. Must be compatible with ``x1`` (see :ref:`broadcasting`). Should have an integer or boolean data type.
+    out:
+        optional output array, for writing the result to. It must have a shape that the inputs broadcast to.
     Returns
     -------
-    out: array
+    return: array
         an array containing the element-wise results. The returned array must have a data type determined by :ref:`type-promotion`.
     """
-    return _cur_framework(x1, x2).bitwise_xor(x1, x2)
+    return _cur_framework(x1, x2).bitwise_xor(x1, x2, out)
 
-def exp(x: Union[ivy.Array, ivy.NativeArray])\
+
+def exp(x: Union[ivy.Array, ivy.NativeArray],
+        out: Optional[Union[ivy.Array, ivy.NativeArray]] = None)\
         -> ivy.Array:
     """
     Calculates an implementation-dependent approximation to the exponential function, having domain ``[-infinity, +infinity]`` and codomain ``[+0, +infinity]``, for each element ``x_i`` of the input array ``x`` (``e`` raised to the power of ``x_i``, where ``e`` is the base of the natural logarithm).
@@ -102,14 +114,18 @@ def exp(x: Union[ivy.Array, ivy.NativeArray])\
     ----------
     x: array
         input array. Should have a floating-point data type.
+    out:
+        optional output array, for writing the result to. It must have a shape that the inputs broadcast to.
     Returns
     -------
-    out: array
+    return: array
         an array containing the evaluated exponential function result for each element in ``x``. The returned array must have a floating-point data type determined by :ref:`type-promotion`.
     """
-    return _cur_framework(x).exp(x)
+    return _cur_framework(x).exp(x, out)
 
-def expm1(x: Union[ivy.Array, ivy.NativeArray])\
+
+def expm1(x: Union[ivy.Array, ivy.NativeArray],
+          out: Optional[Union[ivy.Array, ivy.NativeArray]] = None)\
         -> ivy.Array:
     """
     Calculates an implementation-dependent approximation to ``exp(x)-1``, having domain ``[-infinity, +infinity]`` and codomain ``[-1, +infinity]``, for each element ``x_i`` of the input array ``x``.
@@ -126,14 +142,18 @@ def expm1(x: Union[ivy.Array, ivy.NativeArray])\
     ----------
     x: array
         input array. Should have a numeric data type.
+    out:
+        optional output array, for writing the result to. It must have a shape that the inputs broadcast to.
     Returns
     -------
-    out: array
+    return: array
         an array containing the evaluated result for each element in ``x``. The returned array must have a floating-point data type determined by :ref:`type-promotion`.
     """
-    return _cur_framework(x).expm1(x)
-  
-def bitwise_invert(x: Union[ivy.Array, ivy.NativeArray]) \
+    return _cur_framework(x).expm1(x, out)
+
+
+def bitwise_invert(x: Union[ivy.Array, ivy.NativeArray],
+                   out: Optional[Union[ivy.Array, ivy.NativeArray]] = None) \
         -> ivy.Array:
     """
     Inverts (flips) each bit for each element x_i of the input array x.
@@ -142,17 +162,20 @@ def bitwise_invert(x: Union[ivy.Array, ivy.NativeArray]) \
     ----------
     x:
         input array. Should have an integer or boolean data type.
+    out:
+        optional output array, for writing the result to. It must have a shape that the inputs broadcast to.
 
     Returns
     -------
-    out:
+    return:
         an array containing the element-wise results. The returned array must have the same data type as x.
     """
-    return _cur_framework(x).bitwise_invert(x)
+    return _cur_framework(x).bitwise_invert(x, out)
 
 
 def bitwise_and(x1: Union[ivy.Array, ivy.NativeArray],
-                x2: Union[ivy.Array, ivy.NativeArray])\
+                x2: Union[ivy.Array, ivy.NativeArray],
+                out: Optional[Union[ivy.Array, ivy.NativeArray]] = None)\
         -> ivy.Array:
     """
     Computes the bitwise AND of the underlying binary representation of each element ``x1_i`` of the input array ``x1`` with the respective element ``x2_i`` of the input array ``x2``.
@@ -163,13 +186,15 @@ def bitwise_and(x1: Union[ivy.Array, ivy.NativeArray],
         first input array. Should have an integer or boolean data type.
     x2:
         second input array. Must be compatible with ``x1`` (see :ref:`broadcasting`). Should have an integer or boolean data type.
+    out:
+        optional output array, for writing the result to. It must have a shape that the inputs broadcast to.
 
     Returns
     -------
-    out:
+    return:
         an array containing the element-wise results. The returned array must have a data type determined by :ref:`type-promotion`.
     """
-    return _cur_framework(x1, x2).bitwise_and(x1, x2)
+    return _cur_framework(x1, x2).bitwise_and(x1, x2, out)
 
 
 def ceil(x: Union[ivy.Array, ivy.NativeArray])\
@@ -1028,7 +1053,6 @@ def tan(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
     :return: The tangent of x element-wise.
     """
     return _cur_framework(x).tan(x)
-
 
 
 def atan(x: Union[ivy.Array, ivy.NativeArray]) \
