@@ -873,21 +873,30 @@ def scatter_nd(indices: Union[ivy.Array, ivy.NativeArray], updates: Union[ivy.Ar
 
 # noinspection PyShadowingNames
 def gather(params: Union[ivy.Array, ivy.NativeArray], indices: Union[ivy.Array, ivy.NativeArray], axis: int = -1,
-           dev: ivy.Device = None) -> Union[ivy.Array, ivy.NativeArray]:
+           dev: ivy.Device = None,  out: Optional[Union[ivy.Array, ivy.NativeArray]] = None) -> Union[ivy.Array, ivy.NativeArray]:
     """
     Gather slices from params at axis according to indices.
 
-    :param params: The array from which to gather values.
-    :type params: array
-    :param indices: Index array.
-    :type indices: array
-    :param axis: The axis from which to gather from. Default is -1.
-    :type axis: int, optional
-    :param dev: device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. Same as x if None.
-    :type dev: ivy.Device, optional
-    :return: New array with the values gathered at the specified indices along the specified axis.
+    
+    Parameters
+    ----------
+    paramas:
+        array, the array from which to gather values.
+    indices: 
+        array, index array.
+    axis: 
+        optional int, the axis from which to gather from. Default is -1.
+    dev: 
+        optional ivy.Device, device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. Same as x if None.
+    out: 
+        optional output array, for writing the result to.
+    
+    Returns
+    ----------
+    return: 
+        New array with the values gathered at the specified indices along the specified axis.
     """
-    return _cur_framework(params).gather(params, indices, axis, dev)
+    return _cur_framework(params).gather(params, indices, axis, dev,out=out)
 
 
 # noinspection PyShadowingNames
