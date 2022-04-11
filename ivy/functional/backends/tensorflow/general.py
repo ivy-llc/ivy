@@ -107,7 +107,13 @@ def inplace_increment(x, val):
     return x
 
 
-cumsum = tf.cumsum
+def cumsum(x:tf.Tensor,axis:int=0,out: Optional[tf.Tensor] = None)\
+        -> tf.Tensor:
+        if ivy.exists(out):
+            return ivy.inplace_update(out,tf.math.cumsum(x,axis))
+        else:
+            return tf.math.cumsum(x,axis)
+
 cumprod = tf.math.cumprod
 
 

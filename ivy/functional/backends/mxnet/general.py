@@ -98,8 +98,13 @@ def inplace_increment(x, val):
     return x
 
 
-cumsum = lambda x, axis=0: mx.nd.cumsum(x, axis if axis >= 0 else axis % len(x.shape))
-
+def cumsum(x:mx.ndarray.ndarray.NDArray,axis:int=0,
+    out: Optional[mx.ndarray.ndarray.NDArray] = None)\
+        -> mx.ndarray.ndarray.NDArray:
+        if ivy.exists(out):
+            return ivy.inplace_update(out,mx.nd.cumsum(x,axis if axis >= 0 else axis % len(x.shape)))
+        else:
+            mx.nd.cumsum(x, axis if axis >= 0 else axis % len(x.shape))
 
 def cumprod(x, axis=0, exclusive=False):
     array_stack = [mx.nd.expand_dims(chunk, axis) for chunk in unstack(x, axis)]
