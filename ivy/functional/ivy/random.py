@@ -13,7 +13,7 @@ from typing import Optional, Union
 
 def random_uniform(low: float = 0.0, high: float = 1.0,
                    shape: Optional[Union[ivy.Dtype, str]] = None,
-                   dev: Optional[ivy.device] = None)\
+                   dev: Optional[ivy.Device] = None)\
         -> ivy.array:
 
     """
