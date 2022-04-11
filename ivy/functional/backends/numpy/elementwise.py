@@ -181,24 +181,28 @@ def cosh(x: np.ndarray,
     return np.cosh(x, out=out)
 
 
-def log10(x: np.ndarray)\
+def log10(x: np.ndarray,
+          out: Optional[np.ndarray] = None)\
         -> np.ndarray:
-    return np.log10(x)
+    return np.log10(x, out=out)
 
 
-def log(x: np.ndarray)\
+def log(x: np.ndarray,
+        out: Optional[np.ndarray] = None)\
         -> np.ndarray:
-    return np.log(x)
+    return np.log(x, out=out)
 
 
-def log2(x: np.ndarray)\
+def log2(x: np.ndarray,
+         out: Optional[np.ndarray] = None)\
         -> np.ndarray:
-    return np.log2(x)
+    return np.log2(x, out=out)
 
 
-def log1p(x: np.ndarray)\
+def log1p(x: np.ndarray,
+          out: Optional[np.ndarray] = None)\
         -> np.ndarray:
-    return np.log1p(x)
+    return np.log1p(x, out=out)
 
 
 def isnan(x: np.ndarray)\
@@ -206,14 +210,17 @@ def isnan(x: np.ndarray)\
     return np.isnan(x)
 
 
-def less(x1: np.ndarray, x2: np.ndarray)\
+def less(x1: np.ndarray,
+         x2: np.ndarray,
+         out: Optional[np.ndarray] = None)\
         -> np.ndarray:
-    return np.less(x1, x2)
+    return np.less(x1, x2, out=out)
 
 
-def cos(x: np.ndarray)\
+def cos(x: np.ndarray,
+        out: Optional[np.ndarray] = None)\
         -> np.ndarray:
-    return np.asarray(npa.cos(npa.asarray(x)))
+    return np.cos(x, out=out)
 
 
 def logical_not(x: np.ndarray)\
