@@ -194,7 +194,8 @@ def to_list(x: Union[ivy.Array, ivy.NativeArray])\
     """
     return _cur_framework(x).to_list(x)
 
-def clip_vector_norm(x: Union[ivy.Array, ivy.NativeArray], max_norm: float, p: float = 2.0, out: Optional[Union[ivy.Array, ivy.NativeArray]] = None)\
+def clip_vector_norm(x: Union[ivy.Array, ivy.NativeArray], max_norm: float, p: float = 2.0, 
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None)\
         -> Union[ivy.Array, ivy.NativeArray]:
     """
     Clips (limits) the vector p-norm of an array.
@@ -791,18 +792,26 @@ def inplace_increment(x, val):
     return _cur_framework(x).inplace_increment(x, val)
 
 
-def cumsum(x: Union[ivy.Array, ivy.NativeArray], axis: int = 0)\
+def cumsum(x: Union[ivy.Array, ivy.NativeArray], axis: int = 0,
+        out: Optional[Union[ivy.Array, ivy.NativeArray]] = None)\
         -> Union[ivy.Array, ivy.NativeArray]:
     """
     Returns the cumulative sum of the elements along a given axis.
-
-    :param x: Input array.
-    :type x: array
-    :param axis: Axis along which the cumulative sum is computed. By default 0.
-    :type axis: int
-    :return: Input array with cumulatively summed elements along axis.
+    Parameters
+    ----------
+    x:
+        Input array.
+    axis: 
+        int, Axis along which the cumulative sum is computed. By default 0.
+    out:
+        optional output array, for writing the result to.
+    
+    Returns
+    -------
+    return:
+        Input array with cumulatively summed elements along axis
     """
-    return _cur_framework(x).cumsum(x, axis)
+    return _cur_framework(x).cumsum(x, axis,out=out)
 
 
 def cumprod(x: Union[ivy.Array, ivy.NativeArray], axis: int = 0, exclusive: bool = False)\

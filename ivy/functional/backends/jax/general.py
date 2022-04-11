@@ -90,7 +90,13 @@ def inplace_update(x, val):
 inplace_arrays_supported = lambda: False
 inplace_variables_supported = lambda: False
 
-cumsum = jnp.cumsum
+
+def cumsum(x: JaxArray, axis:int=0,out: Optional[JaxArray] = None)\
+    -> JaxArray:
+    if ivy.exists(out):
+        return ivy.inplace_update(out,jnp.cumsum(x,axis))
+    else:
+        return jnp.cumsum(x,axis)
 
 
 def cumprod(x, axis=0, exclusive=False):
