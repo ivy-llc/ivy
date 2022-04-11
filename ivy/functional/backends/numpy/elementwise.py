@@ -90,22 +90,28 @@ def equal(x1: np.ndarray,
 
 def greater(x1: np.ndarray,
             x2: np.ndarray,
-            out: Optional[np.ndarray] = None) \
+            out: Optional[np.ndarray] = None)\
         -> np.ndarray:
     return np.greater(x1, x2, out=out)
 
 
-def greater_equal(x1: np.ndarray, x2: np.ndarray)\
+def greater_equal(x1: np.ndarray,
+                  x2: np.ndarray,
+                  out: Optional[np.ndarray] = None)\
         -> np.ndarray:
-    return np.greater_equal(x1, x2)
+    return np.greater_equal(x1, x2, out=out)
 
 
-def less_equal(x1: np.ndarray, x2: np.ndarray)\
+def less_equal(x1: np.ndarray,
+               x2: np.ndarray,
+               out: Optional[np.ndarray] = None)\
         -> np.ndarray:
-    return x1 <= x2
+    return np.less_equal(x1, x2, out=out)
 
 
-def multiply(x1: np.ndarray, x2: np.ndarray)\
+def multiply(x1: np.ndarray,
+             x2: np.ndarray,
+             out: Optional[np.ndarray] = None)\
         -> np.ndarray:
     if hasattr(x1, 'dtype') and hasattr(x2, 'dtype'):
         promoted_type = np.promote_types(x1.dtype, x2.dtype)
@@ -114,17 +120,26 @@ def multiply(x1: np.ndarray, x2: np.ndarray)\
         x2 = x2.astype(promoted_type)
     elif not hasattr(x2, 'dtype'):
         x2 = np.array(x2, dtype=x1.dtype)
-    return np.multiply(x1, x2)
+    return np.multiply(x1, x2, out=out)
 
 
-def ceil(x: np.ndarray)\
+def ceil(x: np.ndarray,
+         out: Optional[np.ndarray] = None)\
         -> np.ndarray:
-    return np.asarray(npa.ceil(npa.asarray(x)))
+    ret = np.asarray(npa.ceil(npa.asarray(x)))
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
-def floor(x: np.ndarray)\
+def floor(x: np.ndarray,
+          out: Optional[np.ndarray] = None)\
         -> np.ndarray:
-    return np.asarray(npa.floor(npa.asarray(x)))
+    ret = np.asarray(npa.floor(npa.asarray(x)))
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
+
 
 def sign(x: np.ndarray)\
         -> np.ndarray:
