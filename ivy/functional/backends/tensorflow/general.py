@@ -231,13 +231,17 @@ def scatter_nd(indices, updates, shape=None, tensor=None, reduction='sum', dev=N
         return res
 
 
-def gather(params, indices, axis=-1, dev=None):
+def gather(params: tf.Tensor, indices:tf.Tensor, axis: Optional[int] =-1, dev: Optional[str]=None, out: Optional[tf.Tensor] = None)\
+        -> tf.Tensor:
     axis = axis % len(indices.shape)
     if dev is None:
         dev = _dev_callable(params)
     with tf.device(dev_from_str(dev)):
-        return tf.gather(params, indices, axis=axis, batch_dims=axis)
-
+        ret = tf.gather(params, indices, axis=axis, batch_dims=axis)
+        if ivy.exists(out):
+            return ivy.inplace_update(out,ret)
+        else:
+            return ret
 
 def gather_nd(params, indices, dev=None):
     if dev is None:

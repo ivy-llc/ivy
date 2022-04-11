@@ -140,14 +140,19 @@ def scatter_nd(indices, updates, shape=None, tensor=None, reduction='sum', dev=N
         raise Exception('MXNet scatter_nd currently only supports reduction mode "replace", but {} selected.'.
                         format(reduction))
 
-def gather(params, indices, axis=-1, dev=None):
+def gather(params: mx.ndarray.ndarray.NDArray, indices: mx.ndarray.ndarray.NDArray, axis: Optional[int] =-1, dev: Optional[str]=None, out: mx.ndarray.ndarray.NDArray = None)\
+        ->mx.ndarray.ndarray.NDArray:
     if dev is None:
         dev = _callable_dev(params)
     index_slices = unstack(indices, -1)
     res = mx.nd.concat(
         *[mx.nd.expand_dims(mx.nd.pick(params, idx_slice, axis), -1) for idx_slice in index_slices], dim=-1)
     res = mx.nd.reshape(res, indices.shape)
-    return res.copyto(_mxnet_init_context(dev))
+    if ivy.exists(out):
+        out = _mxnet_init_context(dev)
+        return res.copyto(out)
+    else:
+        return res.copyto(_mxnet_init_context(dev))
 
 
 def gather_nd(params, indices, dev=None):

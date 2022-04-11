@@ -1281,13 +1281,19 @@ def test_scatter_nd(inds_n_upd_n_shape_tnsr_n_wdup, red, dtype, tensor_fn, dev, 
 @pytest.mark.parametrize(
     "dtype", ['float32'])
 @pytest.mark.parametrize(
+    "with_out", [True, False])    
+@pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_gather(prms_n_inds_n_axis, dtype, tensor_fn, dev, call):
+def test_gather(prms_n_inds_n_axis, dtype, with_out, tensor_fn, dev, call):
     # smoke test
     prms, inds, axis = prms_n_inds_n_axis
     prms = tensor_fn(prms, dtype, dev)
     inds = ivy.array(inds, 'int32', dev)
-    ret = ivy.gather(prms, inds, axis, dev)
+    if with_out:
+        out = ivy.zeros(inds.shape) 
+        ret = ivy.gather(prms, inds, axis, dev, out=out)
+    else:
+        ret = ivy.gather(prms, inds, axis, dev)
     # type test
     assert ivy.is_native_array(ret)
     # cardinality test
@@ -1295,8 +1301,12 @@ def test_gather(prms_n_inds_n_axis, dtype, tensor_fn, dev, call):
     # value test
     assert np.allclose(call(ivy.gather, prms, inds, axis, dev),
                        np.asarray(ivy.functional.backends.numpy.gather(ivy.to_numpy(prms), ivy.to_numpy(inds), axis)))
-
-
+    # out test 
+    if with_out:
+        if not ivy.current_framework_str() in ["tensorflow", "jax"]:
+            # these frameworks do not support native inplace updates
+            assert ret is out
+            assert ret.data is out.data
 # gather_nd
 @pytest.mark.parametrize(
     "prms_n_inds", [([[[0.0, 1.0], [2.0, 3.0]], [[0.1, 1.1], [2.1, 3.1]]], [[0, 1], [1, 0]]),

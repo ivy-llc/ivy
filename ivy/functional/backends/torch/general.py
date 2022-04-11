@@ -263,10 +263,16 @@ def scatter_nd(indices, updates, shape=None, tensor=None, reduction='sum', dev=N
 
 
 # noinspection PyShadowingNames
-def gather(params, indices, axis=-1, dev: Optional[str] = None):
+def gather(params: torch.Tensor, indices:torch.Tensor, axis:Optional[int]=-1, dev: Optional[str] = None,out:Optional[torch.Tensor]=None)\
+        -> torch.Tensor:
+
     if dev is None:
         dev = _callable_dev(params)
-    return torch.gather(params, axis, indices.type(torch.int64)).to(dev_from_str(dev))
+    ret = torch.gather(params, axis, indices.type(torch.int64)).to(dev_from_str(dev))
+    if ivy.exists(out):
+        return ivy.inplace_update(out,ret)
+    else:
+        return ret
 
 
 # noinspection PyShadowingNames
