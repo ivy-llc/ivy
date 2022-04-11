@@ -243,40 +243,67 @@ def tanh(x: mx.ndarray.ndarray.NDArray,
 
 
 @_handle_flat_arrays_in_out
-def bitwise_or(x1: mx.ndarray.ndarray.NDArray, x2: mx.ndarray.ndarray.NDArray) \
+def bitwise_or(x1: mx.ndarray.ndarray.NDArray,
+               x2: mx.ndarray.ndarray.NDArray,
+               out: Optional[mx.ndarray.ndarray.NDArray] = None) \
         -> mx.nd.ndarray.NDArray:
-    return mx.numpy.bitwise_or(x1, x2)
+    ret = mx.numpy.bitwise_or(x1, x2)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
 @_handle_flat_arrays_in_out
-def sinh(x: mx.ndarray.ndarray.NDArray)\
+def sinh(x: mx.ndarray.ndarray.NDArray,
+         out: Optional[mx.ndarray.ndarray.NDArray] = None)\
         -> mx.ndarray.ndarray.NDArray:
     if isinstance(x, float):
-        return math.sinh(x)
-    return mx.nd.sinh(x)
+        ret = math.sinh(x)
+    else:
+        ret = mx.nd.sinh(x)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
 @_handle_flat_arrays_in_out
-def square(x: mx.ndarray.ndarray.NDArray)\
+def square(x: mx.ndarray.ndarray.NDArray,
+           out: Optional[mx.ndarray.ndarray.NDArray] = None)\
         -> mx.ndarray.ndarray.NDArray:
-    return mx.nd.square(x)
+    ret = mx.nd.square(x)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
+
 
 @_handle_flat_arrays_in_out
-def round(x: mx.ndarray.ndarray.NDArray)\
+def round(x: mx.ndarray.ndarray.NDArray,
+          out: Optional[mx.ndarray.ndarray.NDArray] = None)\
         -> mx.ndarray.ndarray.NDArray:
-    return mx.nd.round(x)
+    ret = mx.nd.round(x)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
 @_handle_flat_arrays_in_out
-def trunc(x: mx.ndarray.ndarray.NDArray)\
+def trunc(x: mx.ndarray.ndarray.NDArray,
+          out: Optional[mx.ndarray.ndarray.NDArray] = None)\
         -> mx.nd.ndarray.NDArray:
-    return mx.np.trunc(x)
+    ret = mx.np.trunc(x)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
   
 @_handle_flat_arrays_in_out  
-def subtract(x1: mx.ndarray.ndarray.NDArray, x2: mx.ndarray.ndarray.NDArray)\
+def subtract(x1: mx.ndarray.ndarray.NDArray, x2: mx.ndarray.ndarray.NDArray,
+             out: Optional[mx.ndarray.ndarray.NDArray] = None)\
         -> mx.ndarray.ndarray.NDArray:
-    return mx.nd.subtract(x1, x2)
+    ret = mx.nd.subtract(x1, x2)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
 # noinspection PyShadowingBuiltins
