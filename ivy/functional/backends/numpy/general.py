@@ -34,12 +34,17 @@ inplace_variables_supported = lambda: True
 
 
 def inplace_update(x, val):
+    print("\nDEBUG STARTS HERE ----------")
+    print("1st print", x, val, type(x), type(val))
     (x_native, val_native), _ = ivy.args_to_native(x, val)
+    print("one more print ---- ", x_native, val_native, type(x_native), type(val_native))
     x_native.data = val_native
+    print("2nd print", x, x_native, x_native.data, val_native, val_native.data, "--------")
     if ivy.is_ivy_array(x):
         x.data = x_native
     else:
         x = ivy.Array(x_native)
+    print("3rd print", x, x_native, val_native, "--------")
     return x
 
 

@@ -99,14 +99,20 @@ def test_binary_cross_entropy(t_n_p_n_res, dtype, tensor_fn, with_out, dev, call
     "with_out", [False, True])
 def test_sparse_cross_entropy(t_n_p_n_res, dtype, tensor_fn, with_out, dev, call):
     # smoke test
+    import pdb;
+    pdb.set_trace()
     true, pred, true_target = t_n_p_n_res
     pred = tensor_fn(pred, dtype, dev)
     true = ivy.array(true, 'int32', dev)
 
     # create dummy out
-    out = ivy.zeros(np.asarray(true_target).shape) if with_out else None
+    tt = np.array(true_target)
+    out = ivy.zeros(tt.shape) if with_out else None
+    print(out, "-asdasdasd-asd")
 
     ret = ivy.sparse_cross_entropy(true, pred, out=out)
+    print(type(ret))
+    print("here is res and out:", ret, out)
     # type test
     assert ivy.is_native_array(ret)
     # cardinality test
@@ -123,5 +129,5 @@ def test_sparse_cross_entropy(t_n_p_n_res, dtype, tensor_fn, with_out, dev, call
             # these frameworks do not support native inplace updates
             return
         
-        # native array must be the same object 
+        # native array must be the same object
         assert ret.data is out.data

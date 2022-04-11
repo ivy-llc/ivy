@@ -48,7 +48,12 @@ def cross_entropy(true : Union[Array, NativeArray], pred : Union[Array, NativeAr
     ret = -ivy.sum(log_pred * true, axis)
 
     if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
+        print("hello----")
+        x = ivy.inplace_update(out, ret)
+        print(ret)
+        print(out)
+        print("----------------")
+        return x
 
     return ret
 
@@ -123,4 +128,7 @@ def sparse_cross_entropy(true : Union[Array, NativeArray], pred : Union[Array, N
     >>> loss = ivy.sparse_cross_entropy(true, pred)
     """
     true = ivy.one_hot(true, pred.shape[axis])
-    return cross_entropy(true, pred, axis, epsilon, out=out)
+    ret = cross_entropy(true, pred, axis, epsilon, out=out)
+    print("ret inside sparse:", ret)
+    print("out inside sparse:", out)
+    return ret
