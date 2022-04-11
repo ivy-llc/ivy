@@ -17,20 +17,6 @@ def add(x1: torch.Tensor,
     return torch.add(x1, x2, out=out)
 
 
-def pow(x1: torch.Tensor,
-        x2: torch.Tensor,
-        out: Optional[torch.Tensor] = None)\
-        -> torch.Tensor:
-    if not isinstance(x2, Tensor):
-        x2 = torch.tensor(x2, dtype=x1.dtype)
-        return torch.pow(x1, x2, out=out)
-    promoted_type = torch.promote_types(x1.dtype, x2.dtype)
-    ret = torch.pow(x1, x2).type(promoted_type)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
-
-
 def bitwise_xor(x1: torch.Tensor,
                 x2: torch.Tensor,
                 out: Optional[torch.Tensor] = None)\
@@ -334,6 +320,20 @@ def square(x: torch.Tensor,
     return torch.square(x, out=out)
 
 
+def pow(x1: torch.Tensor,
+        x2: torch.Tensor,
+        out: Optional[torch.Tensor] = None)\
+        -> torch.Tensor:
+    if not isinstance(x2, Tensor):
+        x2 = torch.tensor(x2, dtype=x1.dtype)
+        return torch.pow(x1, x2, out=out)
+    promoted_type = torch.promote_types(x1.dtype, x2.dtype)
+    ret = torch.pow(x1, x2).type(promoted_type)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
+
+
 def round(x: torch.Tensor,
           out: Optional[torch.Tensor] = None)\
         -> torch.Tensor:
@@ -451,7 +451,7 @@ def bitwise_right_shift(x1: torch.Tensor,
         x1 = x1.to(promoted_type)
         x2 = x2.to(promoted_type)
     return torch.bitwise_right_shift(x1, x2, out=out)
-
+  
 
 def bitwise_left_shift(x1: torch.Tensor,
                        x2: torch.Tensor,
