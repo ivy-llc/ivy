@@ -109,8 +109,11 @@ def inplace_increment(x, val):
     return x
 
 
-def cumsum(x, axis: int = 0):
-    return torch.cumsum(x, axis)
+def cumsum(x:torch.Tensor, axis: int = 0, out: Optional[torch.Tensor] = None):
+    if ivy.exists(out):
+        return ivy.inplace_update(out,torch.cumsum(x,axis))
+    else:
+        return torch.cumsum(x, axis)
 
 
 def cumprod(x, axis: int = 0, exclusive: bool = False):
