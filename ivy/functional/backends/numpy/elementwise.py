@@ -56,18 +56,21 @@ def exp(x: np.ndarray,
     return np.exp(x, out=out)
 
 
-def expm1(x: np.ndarray)\
+def expm1(x: np.ndarray,
+          out: Optional[np.ndarray] = None)\
         -> np.ndarray:
-    return np.expm1(x)
+    return np.expm1(x, out=out)
 
 
-def bitwise_invert(x: np.ndarray)\
+def bitwise_invert(x: np.ndarray,
+                   out: Optional[np.ndarray] = None)\
         -> np.ndarray:
-    return np.invert(x)
+    return np.invert(x, out=out)
 
 
 def bitwise_and(x1: np.ndarray,
-                x2: np.ndarray)\
+                x2: np.ndarray,
+                out: Optional[np.ndarray] = None)\
         -> np.ndarray:
     if not isinstance(x2, np.ndarray):
         x2 = np.asarray(x2, dtype=x1.dtype)
@@ -75,17 +78,21 @@ def bitwise_and(x1: np.ndarray,
         dtype = np.promote_types(x1.dtype, x2.dtype)
         x1 = x1.astype(dtype)
         x2 = x2.astype(dtype)
-    return np.bitwise_and(x1, x2)
+    return np.bitwise_and(x1, x2, out=out)
 
 
-def equal(x1: np.ndarray, x2: np.ndarray)\
+def equal(x1: np.ndarray,
+          x2: np.ndarray,
+          out: Optional[np.ndarray] = None)\
         -> np.ndarray:
-    return x1 == x2
+    return np.equal(x1, x2, out=out)
 
 
-def greater(x1: np.ndarray, x2: np.ndarray) \
+def greater(x1: np.ndarray,
+            x2: np.ndarray,
+            out: Optional[np.ndarray] = None) \
         -> np.ndarray:
-    return np.greater(x1, x2)
+    return np.greater(x1, x2, out=out)
 
 
 def greater_equal(x1: np.ndarray, x2: np.ndarray)\
