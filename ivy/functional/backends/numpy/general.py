@@ -169,11 +169,14 @@ def scatter_nd(indices, updates, shape=None, tensor=None, reduction='sum', dev=N
     return _to_dev(target, dev)
 
 
-def gather(params, indices, axis=-1, dev=None):
+def gather(params: np.ndarray, indices:np.ndarray, axis: Optional[int]=-1, dev:Optional[str]=None, out:Optional[np.ndarray] = None)\
+        -> np.ndarray:
     if dev is None:
         dev = _dev_callable(params)
-    return _to_dev(np.take_along_axis(params, indices, axis), dev)
-
+    ret = _to_dev(np.take_along_axis(params, indices, axis), dev)
+    if ivy.exists(out):
+        return ivy.inplace_update(out,ret)
+    return ret
 
 def gather_nd(params, indices, dev=None):
     if dev is None:
