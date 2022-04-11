@@ -15,7 +15,6 @@ Elementwise
 
    elementwise/bitwise_left_shift.rst
    elementwise/add.rst
-   elementwise/pow.rst
    elementwise/bitwise_xor.rst
    elementwise/exp.rst
    elementwise/expm1.rst
@@ -67,6 +66,7 @@ Elementwise
    elementwise/atanh.rst
    elementwise/subtract.rst
    elementwise/divide.rst
+   elementwise/pow.rst
    elementwise/remainder.rst
    elementwise/bitwise_right_shift.rst
    elementwise/bitwise_left_shift.rst
