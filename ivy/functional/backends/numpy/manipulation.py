@@ -1,7 +1,7 @@
 # global
 import numpy as np
 import math
-from typing import Union, Tuple, Optional, List
+from typing import Union, Tuple, Optional, List, Number
 
 # local
 import ivy
@@ -88,25 +88,35 @@ def concat(xs: List[np.ndarray], axis: int = 0, out: Optional[np.ndarray] = None
 
 
 def stack(x: Union[Tuple[np.ndarray], List[np.ndarray]],
-          axis: Optional[int] = 0)\
+          axis: Optional[int] = 0,
+          out: Optional[np.ndarray] = None)\
           -> np.ndarray:
-    return np.stack(x, axis)
+    return np.stack(x, axis, out=out)
 
 
 def reshape(x: np.ndarray,
             shape: Tuple[int, ...],
-            copy: Optional[bool] = None)\
+            copy: Optional[bool] = None,
+            out: Optional[np.ndarray] = None)\
         -> np.ndarray:
-    return np.reshape(x, shape)
+    ret = np.reshape(x, shape)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
 # Extra #
 # ------#
+
 def roll(x: np.ndarray,
          shift: Union[int, Tuple[int, ...]],
-         axis: Optional[Union[int, Tuple[int, ...]]] = None) \
+         axis: Optional[Union[int, Tuple[int, ...]]] = None,
+         out: Optional[np.ndarray] = None)\
         -> np.ndarray:
-    return np.roll(x, shift, axis)
+    ret = np.roll(x, shift, axis)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
 def split(x, num_or_size_splits=None, axis=0, with_remainder=False):
@@ -127,9 +137,60 @@ def split(x, num_or_size_splits=None, axis=0, with_remainder=False):
     return np.split(x, num_or_size_splits, axis)
 
 
-repeat = np.repeat
-tile = np.tile
-constant_pad = lambda x, pad_width, value=0: np.pad(_flat_array_to_1_dim_array(x), pad_width, constant_values=value)
-zero_pad = lambda x, pad_width: np.pad(_flat_array_to_1_dim_array(x), pad_width)
-swapaxes = np.swapaxes
-clip = lambda x, x_min, x_max: np.asarray(np.clip(x, x_min, x_max))
+def repeat(x: np.ndarray,
+           repeats: Union[int, List[int]],
+           axis: int = None,
+           out: Optional[np.ndarray] = None)\
+        -> np.ndarray:
+    ret = np.repeat(x, repeats, axis)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
+
+
+def tile(x: np.ndarray,
+         reps,
+         out: Optional[np.ndarray] = None)\
+        -> np.ndarray:
+    ret = np.tile(x, reps)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
+
+
+def constant_pad(x: np.ndarray,
+                 pad_width: List[List[int]],
+                 value: Number = 0.,
+                 out: Optional[np.ndarray] = None)\
+        -> np.ndarray:
+    ret = np.pad(_flat_array_to_1_dim_array(x), pad_width, constant_values=value)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
+
+
+def zero_pad(x: np.ndarray,
+             pad_width: List[List[int]],
+             out: Optional[np.ndarray] = None):
+    ret = np.pad(_flat_array_to_1_dim_array(x), pad_width)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
+
+
+def swapaxes(x: np.ndarray,
+             axis0: int,
+             axis1: int,
+             out: Optional[np.ndarray] = None)\
+        -> np.ndarray:
+    ret = np.swapaxes(x, axis0, axis1)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
+
+
+def clip(x, x_min, x_max, out: Optional[np.ndarray] = None):
+    ret = np.asarray(np.clip(x, x_min, x_max))
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
