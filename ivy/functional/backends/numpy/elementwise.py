@@ -461,20 +461,19 @@ def atan2(x1: np.ndarray,
     return np.arctan2(x1, x2, out=out)
 
 
-cosh = np.cosh
-log = np.log
-exp = np.exp
-
-
 # Extra #
 # ------#
 
 
-minimum = np.minimum
-maximum = np.maximum
+def minimum(x1, x2, out: Optional[np.ndarray] = None):
+    return np.minimum(x1, x2, out=out)
 
 
-def erf(x):
+def maximum(x1, x2, out: Optional[np.ndarray] = None):
+    return np.maximum(x1, x2, out=out)
+
+
+def erf(x, out: Optional[np.ndarray] = None):
     if _erf is None:
         raise Exception('scipy must be installed in order to call ivy.erf with a numpy backend.')
-    return _erf(x)
+    return _erf(x, out=out)

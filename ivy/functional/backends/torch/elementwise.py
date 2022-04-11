@@ -475,13 +475,13 @@ def erf(x: torch.Tensor,
     return torch.erf(x, out=out)
 
 
-def minimum(x, y):
+def minimum(x, y, out: Optional[torch.Tensor] = None):
     x_val = torch.tensor(x) if (isinstance(x, int) or isinstance(x, float)) else x
     y_val = torch.tensor(y) if (isinstance(y, int) or isinstance(y, float)) else y
-    return torch.min(x_val, y_val)
+    return torch.min(x_val, y_val, out=out)
 
 
-def maximum(x, y):
+def maximum(x, y, out: Optional[torch.Tensor] = None):
     x_val = torch.tensor(x) if (isinstance(x, int) or isinstance(x, float)) else x
     y_val = torch.tensor(y) if (isinstance(y, int) or isinstance(y, float)) else y
-    return torch.max(x_val, y_val)
+    return torch.max(x_val, y_val, out=out)
