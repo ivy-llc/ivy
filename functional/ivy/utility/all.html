@@ -230,6 +230,8 @@
 </dd>
 <dt>keepdims:</dt><dd><p>If <code class="docutils literal notranslate"><span class="pre">True</span></code>, the reduced axes (dimensions) must be included in the result as singleton dimensions, and, accordingly, the result must be compatible with the input array (see <span class="xref std std-ref">broadcasting</span>). Otherwise, if <code class="docutils literal notranslate"><span class="pre">False</span></code>, the reduced axes (dimensions) must not be included in the result. Default: <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
 </dd>
+<dt>out:</dt><dd><p>optional output array, for writing the result to. It must have a shape that the inputs broadcast to.</p>
+</dd>
 </dl>
 <dl class="simple">
 <dt>out:</dt><dd><p>if a logical AND reduction was performed over the entire array, the returned array must be a zero-dimensional array containing the test result; otherwise, the returned array must be a non-zero-dimensional array containing the test results. The returned array must have a data type of <code class="docutils literal notranslate"><span class="pre">bool</span></code>.</p>
