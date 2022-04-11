@@ -293,31 +293,40 @@ def not_equal(x1: np.ndarray,
     return np.not_equal(x1, x2, out=out)
 
 
-def tanh(x: np.ndarray)\
+def tanh(x: np.ndarray,
+         out: Optional[np.ndarray] = None)\
         -> np.ndarray:
-    return np.asarray(npa.tanh(npa.asarray(x)))
+    return np.tanh(x, out=out)
 
 
-def floor_divide(x1: np.ndarray, x2: np.ndarray)\
+def floor_divide(x1: np.ndarray,
+                 x2: np.ndarray,
+                 out: Optional[np.ndarray] = None)\
                 -> np.ndarray:
     if not isinstance(x2, np.ndarray):
         x2 = np.asarray(x2, dtype=x1.dtype)
-    return npa.floor_divide(npa.asarray(x1), npa.asarray(x2))
+    ret = npa.floor_divide(npa.asarray(x1), npa.asarray(x2))
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
-def sinh(x: np.ndarray)\
+def sinh(x: np.ndarray,
+         out: Optional[np.ndarray] = None)\
         -> np.ndarray:
-    return np.asarray(npa.sinh(npa.asarray(x)))
+    return np.sinh(x, out=out)
 
 
-def positive(x: np.ndarray)\
+def positive(x: np.ndarray,
+             out: Optional[np.ndarray] = None)\
         -> np.ndarray:
-    return np.positive(x)
+    return np.positive(x, out=out)
 
 
-def square(x: np.ndarray)\
+def square(x: np.ndarray,
+           out: Optional[np.ndarray] = None)\
         -> np.ndarray:
-    return np.square(x)
+    return np.square(x, out=out)
 
 
 def remainder(x1: np.ndarray, x2: np.ndarray)\
