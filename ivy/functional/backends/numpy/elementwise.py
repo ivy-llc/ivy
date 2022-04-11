@@ -141,13 +141,16 @@ def floor(x: np.ndarray,
     return ret
 
 
-def sign(x: np.ndarray)\
+def sign(x: np.ndarray,
+         out: Optional[np.ndarray] = None)\
         -> np.ndarray:
-    return np.sign(x)
+    return np.sign(x, out=out)
 
-def sqrt(x: np.ndarray)\
+
+def sqrt(x: np.ndarray,
+         out: Optional[np.ndarray] = None)\
         -> np.ndarray:
-    return np.sqrt(x)
+    return np.sqrt(x, out=out)
 
 
 def isfinite(x: np.ndarray) \
@@ -155,9 +158,10 @@ def isfinite(x: np.ndarray) \
     return np.asarray(npa.isfinite(npa.asarray(x)))
 
 
-def asin(x: np.ndarray)\
+def asin(x: np.ndarray,
+         out: Optional[np.ndarray] = None)\
         -> np.ndarray:
-    return np.arcsin(x)
+    return np.arcsin(x, out=out)
 
 
 def isinf(x: np.ndarray)\
@@ -165,14 +169,16 @@ def isinf(x: np.ndarray)\
     return np.asarray(npa.isinf(npa.asarray(x)))
 
 
-def asinh(x: np.ndarray)\
+def asinh(x: np.ndarray,
+          out: Optional[np.ndarray] = None)\
         -> np.ndarray:
-    return np.arcsinh(x)
+    return np.arcsinh(x, out=out)
 
 
-def cosh(x: np.ndarray)\
+def cosh(x: np.ndarray,
+         out: Optional[np.ndarray] = None)\
         -> np.ndarray:
-    return np.asarray(npa.cosh(npa.asarray(x)))
+    return np.cosh(x, out=out)
 
 
 def log10(x: np.ndarray)\
