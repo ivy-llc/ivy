@@ -218,6 +218,8 @@ def tanh(x: JaxArray)\
 
 def floor_divide(x1: JaxArray, x2: JaxArray)\
                 -> JaxArray:
+    if isinstance(x2, int):
+        x2 = jnp.asarray(x2, dtype=x1.dtype)
     return jnp.floor_divide(x1, x2)
 
 

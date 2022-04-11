@@ -21,14 +21,14 @@ equal
 exp
 expm1
 floor
-#floor_divide # failing non-deterministically
+floor_divide
 greater
 greater_equal
 isfinite
 isinf
 isnan
 less
-#less_equal
+less_equal
 log
 log1p
 log2
