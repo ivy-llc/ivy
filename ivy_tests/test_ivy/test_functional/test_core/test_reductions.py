@@ -45,11 +45,27 @@ def test_einsum(eq_n_op_n_shp, dtype, tensor_fn, dev, call):
 @pytest.mark.parametrize(
     "dtype", ['float32'])
 @pytest.mark.parametrize(
+    "with_out", [True, False])
+@pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_all(x, axis, kd, dtype, tensor_fn, dev, call):
+def test_all(x, axis, kd, dtype, with_out,  tensor_fn, dev, call):
     # smoke test
     x = tensor_fn(x, dtype, dev)
-    ret = ivy.all(x, axis, kd)
+    if axis is None:
+        expected_shape = [1]*len(x.shape) if kd else []
+    else:
+        axis_ = [axis] if isinstance(axis, int) else axis
+        axis_ = [item % len(x.shape) for item in axis_]
+        expected_shape = list(x.shape)
+        if kd:
+            expected_shape = [1 if i % len(x.shape) in axis_ else item for i, item in enumerate(expected_shape)]
+        else:
+            [expected_shape.pop(item) for item in axis_]
+    if with_out:
+        out = ivy.astype(ivy.zeros(tuple(expected_shape)), ivy.bool)
+        ret = ivy.all(x, axis, kd, out=out)
+    else:
+        ret = ivy.all(x, axis, kd)
     # type test
     assert ivy.is_native_array(ret)
     # cardinality test
@@ -64,6 +80,11 @@ def test_all(x, axis, kd, dtype, tensor_fn, dev, call):
         else:
             [expected_shape.pop(item) for item in axis_]
     assert ret.shape == tuple(expected_shape)
-    # value test
+    if with_out:
+        if not ivy.current_framework_str() in ["tensorflow", "jax"]:
+            # these frameworks do not support native inplace updates
+            assert ret is out
+            assert ret.data is out.data
+            # value test
     assert np.allclose(call(ivy.all, x),
                        ivy.functional.backends.numpy.all(ivy.to_numpy(x)))
