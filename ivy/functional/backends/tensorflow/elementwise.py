@@ -22,12 +22,6 @@ def add(x1: Tensor,
     return tf.add(x1, x2)
 
 
-def pow(x1: Tensor,
-        x2: Tensor)\
-        -> Tensor:
-    return tf.math.pow(x1, x2)
-
-
 def bitwise_xor(x1: Tensor,
                 x2: Tensor)\
         -> Tensor:
@@ -314,6 +308,20 @@ def positive(x: Tensor)\
 def square(x: Tensor)\
         -> Tensor:
     return tf.math.square(x)
+
+
+def pow(x1: Tensor, x2: Tensor)\
+        -> Tensor:
+    if not isinstance(x2, Tensor):
+        x2 = tf.constant(x2, dtype=x1.dtype)
+    promoted_type = tf.experimental.numpy.promote_types(x1.dtype, x2.dtype)
+    x1 = tf.cast(x1, promoted_type)
+    x2 = tf.cast(x2, promoted_type)
+    if x1.dtype.is_unsigned:
+        x1 = tf.cast(x1, tf.float64)
+    if x2.dtype.is_unsigned:
+        x2 = tf.cast(x2, tf.float64)
+    return tf.cast(tf.experimental.numpy.power(x1, x2), promoted_type)
 
 
 def remainder(x1: Tensor, x2: Tensor)\

@@ -21,12 +21,6 @@ def add(x1: JaxArray,
     return jnp.add(x1, x2)
 
 
-def pow(x1: JaxArray,
-        x2: JaxArray)\
-        -> JaxArray:
-    return jnp.power(x1, x2)
-
-
 def bitwise_xor(x1: JaxArray,
                 x2: JaxArray)\
         -> JaxArray:
@@ -246,6 +240,15 @@ def positive(x: JaxArray)\
 def square(x: JaxArray)\
         -> JaxArray:
     return jnp.square(x)
+
+
+def pow(x1: jnp.ndarray, x2: jnp.ndarray)\
+        -> jnp.ndarray:
+    if hasattr(x1, 'dtype') and hasattr(x2, 'dtype'):
+        promoted_type = jnp.promote_types(x1.dtype, x2.dtype)
+        x1 = x1.astype(promoted_type)
+        x2 = x2.astype(promoted_type)
+    return jnp.power(x1, x2)
 
 
 def remainder(x1: JaxArray, x2: JaxArray)\
