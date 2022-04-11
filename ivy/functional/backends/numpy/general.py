@@ -85,7 +85,14 @@ def inplace_increment(x, val):
         x = ivy.Array(x_native)
     return x
 
-cumsum = np.cumsum
+
+def cumsum(x:np.ndarray,axis:int=0,out: Optional[np.ndarray] = None)\
+        -> np.ndarray:
+        if ivy.exists(out):
+            return ivy.inplace_update(out,np.cumsum(x,axis))
+        else:
+            return np.cumsum(x,axis)
+
 
 def cumprod(x, axis=0, exclusive=False):
     if exclusive:
