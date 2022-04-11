@@ -261,28 +261,36 @@ def logical_or(x1: np.ndarray,
     return np.logical_or(x1, x2, out=out)
 
 
-def logical_and(x1: np.ndarray, x2: np.ndarray)\
+def logical_and(x1: np.ndarray,
+                x2: np.ndarray,
+                out: Optional[np.ndarray] = None)\
         -> np.ndarray:
-    return np.logical_and(x1, x2)
+    return np.logical_and(x1, x2, out=out)
 
 
-def acosh(x: np.ndarray)\
+def acosh(x: np.ndarray,
+          out: Optional[np.ndarray] = None)\
         -> np.ndarray:
-    return np.asarray(npa.acosh(npa.asarray(x)))
+    return np.arccosh(x, out=out)
 
 
-def sin(x: np.ndarray)\
+def sin(x: np.ndarray,
+        out: Optional[np.ndarray] = None)\
         -> np.ndarray:
-    return np.asarray(npa.sin(npa.asarray(x)))
+    return np.sin(x, out=out)
 
 
-def negative(x: np.ndarray) -> np.ndarray:
-    return np.negative(x)
-
-
-def not_equal(x1: np.ndarray, x2: np.ndarray)\
+def negative(x: np.ndarray,
+             out: Optional[np.ndarray] = None)\
         -> np.ndarray:
-    return np.not_equal(x1, x2)
+    return np.negative(x, out=out)
+
+
+def not_equal(x1: np.ndarray,
+              x2: np.ndarray,
+              out: Optional[np.ndarray] = None)\
+        -> np.ndarray:
+    return np.not_equal(x1, x2, out=out)
 
 
 def tanh(x: np.ndarray)\
