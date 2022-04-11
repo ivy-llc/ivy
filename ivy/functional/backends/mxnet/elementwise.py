@@ -1,6 +1,7 @@
 # global
 import mxnet as mx
 import math
+from typing import Optional
 
 # local
 import ivy
@@ -9,39 +10,65 @@ from ivy.functional.backends.mxnet import _handle_flat_arrays_in_out, _scalar_or
 
 @_handle_flat_arrays_in_out
 def add(x1: mx.ndarray.ndarray.NDArray,
-        x2: mx.ndarray.ndarray.NDArray)\
+        x2: mx.ndarray.ndarray.NDArray,
+        out: Optional[mx.ndarray.ndarray.NDArray] = None)\
         -> mx.ndarray.ndarray.NDArray:
-    return mx.nd.add(x1, x2)
-
-@_handle_flat_arrays_in_out
-def bitwise_and(x1: mx.ndarray.ndarray.NDArray, x2: mx.ndarray.ndarray.NDArray) -> mx.nd.ndarray.NDArray:
-    return mx.numpy.bitwise_and(x1, x2)
-
-
-@_handle_flat_arrays_in_out
-def ceil(x: mx.ndarray.ndarray.NDArray)\
-        -> mx.ndarray.ndarray.NDArray:
-    return mx.nd.ceil(x)
+    ret = mx.nd.add(x1, x2)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
 @_handle_flat_arrays_in_out
-def floor(x: mx.ndarray.ndarray.NDArray)\
+def bitwise_and(x1: mx.ndarray.ndarray.NDArray,
+                x2: mx.ndarray.ndarray.NDArray,
+                out: Optional[mx.ndarray.ndarray.NDArray] = None) -> mx.nd.ndarray.NDArray:
+    ret = mx.numpy.bitwise_and(x1, x2)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
+
+
+@_handle_flat_arrays_in_out
+def ceil(x: mx.ndarray.ndarray.NDArray,
+         out: Optional[mx.ndarray.ndarray.NDArray] = None)\
         -> mx.ndarray.ndarray.NDArray:
-    return mx.nd.floor(x)
+    ret = mx.nd.ceil(x)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
+
+
+@_handle_flat_arrays_in_out
+def floor(x: mx.ndarray.ndarray.NDArray,
+          out: Optional[mx.ndarray.ndarray.NDArray] = None)\
+        -> mx.ndarray.ndarray.NDArray:
+    ret = mx.nd.floor(x)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
 @_handle_flat_arrays_in_out
 def divide(x1: mx.ndarray.ndarray.NDArray,
-           x2: mx.ndarray.ndarray.NDArray)\
+           x2: mx.ndarray.ndarray.NDArray,
+           out: Optional[mx.ndarray.ndarray.NDArray] = None)\
         -> mx.ndarray.ndarray.NDArray:
-    return mx.nd.divide(x1, x2)
+    ret = mx.nd.divide(x1, x2)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
 @_handle_flat_arrays_in_out
 def greater(x1: mx.ndarray.ndarray.NDArray,
-            x2: mx.ndarray.ndarray.NDArray)\
+            x2: mx.ndarray.ndarray.NDArray,
+            out: Optional[mx.ndarray.ndarray.NDArray] = None)\
         -> mx.ndarray.ndarray.NDArray:
-    return mx.nd.greater(x1, x2)
+    ret = mx.nd.greater(x1, x2)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
 @_handle_flat_arrays_in_out
