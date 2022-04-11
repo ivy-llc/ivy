@@ -1,4 +1,5 @@
 # global
+from doctest import Example
 from typing import Union, Tuple, Optional
 
 # local
@@ -22,7 +23,15 @@ def min(x: Union[ivy.Array, ivy.NativeArray],
     :param keepdims, optional axis or axes along which minimum values must be computed, default is None.
     :param f: Machine learning framework. Inferred from inputs if None.
     :return: array containing minimum value.
-    """
+    
+    Examples:
+    >>> x = ivy.arange(10)
+    >>> min_value = ivy.min(x)
+    >>> print(min_value)
+    0
+
+    """   
+
     return _cur_framework.min(x, axis, keepdims)
 
 
