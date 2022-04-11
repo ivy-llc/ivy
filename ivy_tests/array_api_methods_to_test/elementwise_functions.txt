@@ -21,14 +21,14 @@ equal
 exp
 expm1
 floor
-#floor_divide # failing non-deterministically
+floor_divide
 greater
 greater_equal
 isfinite
 isinf
 isnan
 less
-#less_equal
+less_equal
 log
 log1p
 log2
@@ -41,9 +41,9 @@ logical_xor
 multiply
 negative
 positive
-#not_equal # Failing non-deterministically after the update to Array API test suite under commit 2dcf4cf153c8cb37a685467fed91680e1552fc6a
+not_equal
 pow
-#remainder # Failing non-deterministically 
+remainder
 round
 #sign # tests are passing but uncommenting causes everything in test_signatures to run
 sin
