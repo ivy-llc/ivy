@@ -197,7 +197,8 @@ def bitwise_and(x1: Union[ivy.Array, ivy.NativeArray],
     return _cur_framework(x1, x2).bitwise_and(x1, x2, out)
 
 
-def ceil(x: Union[ivy.Array, ivy.NativeArray])\
+def ceil(x: Union[ivy.Array, ivy.NativeArray],
+         out: Optional[Union[ivy.Array, ivy.NativeArray]] = None)\
         -> ivy.Array:
     """
     Rounds each element ``x_i`` of the input array ``x`` to the smallest (i.e., closest to ``-infinity``) integer-valued number that is not less than ``x_i``.
@@ -218,10 +219,12 @@ def ceil(x: Union[ivy.Array, ivy.NativeArray])\
     ----------
     x:
         input array. Should have a numeric data type.
+    out:
+        optional output array, for writing the result to. It must have a shape that the inputs broadcast to.
 
     Returns
     -------
-    out:
+    return:
         an array containing the rounded result for each element in ``x``. The returned array must have the same data type as ``x``.
         
     Examples:
@@ -230,10 +233,11 @@ def ceil(x: Union[ivy.Array, ivy.NativeArray])\
     >>> print(y)
     [1.0, 0.0, -0.0]
     """
-    return _cur_framework(x).ceil(x)
+    return _cur_framework(x).ceil(x, out)
 
 
-def floor(x: Union[ivy.Array, ivy.NativeArray])\
+def floor(x: Union[ivy.Array, ivy.NativeArray],
+          out: Optional[Union[ivy.Array, ivy.NativeArray]] = None)\
         -> ivy.Array:
     """
     Rounds each element ``x_i`` of the input array ``x`` to the greatest (i.e., closest to ``+infinity``) integer-valued number that is not greater than ``x_i``.
@@ -254,13 +258,15 @@ def floor(x: Union[ivy.Array, ivy.NativeArray])\
     ----------
     x:
         input array. Should have a numeric data type.
+    out:
+        optional output array, for writing the result to. It must have a shape that the inputs broadcast to.
 
     Returns
     -------
-    out:
+    return:
         an array containing the rounded result for each element in ``x``. The returned array must have the same data type as ``x``.
     """
-    return _cur_framework(x).floor(x)
+    return _cur_framework(x).floor(x, out)
 
 
 def isfinite(x: Union[ivy.Array, ivy.NativeArray])\
@@ -281,7 +287,8 @@ def isfinite(x: Union[ivy.Array, ivy.NativeArray])\
     return _cur_framework(x).isfinite(x)
 
 
-def asin(x: Union[ivy.Array, ivy.NativeArray])\
+def asin(x: Union[ivy.Array, ivy.NativeArray],
+         out: Optional[Union[ivy.Array, ivy.NativeArray]] = None)\
         -> ivy.Array:
     """
     Calculates an implementation-dependent approximation of the principal value of the inverse sine, having domain ``[-1, +1]`` and codomain ``[-π/2, +π/2]`` for each element ``x_i`` of the input array ``x``. Each element-wise result is expressed in radians.
@@ -300,10 +307,12 @@ def asin(x: Union[ivy.Array, ivy.NativeArray])\
     ----------
     x: array
         input array. Should have a floating-point data type.
+    out:
+        optional output array, for writing the result to. It must have a shape that the inputs broadcast to.
 
     Returns
     -------
-    out: array
+    return: array
         an array containing the inverse sine of each element in ``x``. The returned array must have a floating-point data type determined by :ref:`type-promotion`.
     """
     return _cur_framework(x).asin(x)
@@ -326,7 +335,8 @@ def isinf(x: Union[ivy.Array, ivy.NativeArray])\
 
 
 def greater(x1: Union[ivy.Array, ivy.NativeArray],
-            x2: Union[ivy.Array, ivy.NativeArray])\
+            x2: Union[ivy.Array, ivy.NativeArray],
+            out: Optional[Union[ivy.Array, ivy.NativeArray]] = None)\
         -> ivy.Array:
     """
     Computes the truth value of x1_i < x2_i for each element x1_i of the input array x1 with the respective
@@ -337,10 +347,12 @@ def greater(x1: Union[ivy.Array, ivy.NativeArray],
     :param f: Machine learning framework. Inferred from inputs if None.
     :return: an array containing the element-wise results. The returned array must have a data type of bool.
     """
-    return _cur_framework(x1, x2).greater(x1, x2)
+    return _cur_framework(x1, x2).greater(x1, x2, out)
 
 
-def greater_equal(x1: Union[ivy.Array, ivy.NativeArray], x2: Union[ivy.Array, ivy.NativeArray])\
+def greater_equal(x1: Union[ivy.Array, ivy.NativeArray],
+                  x2: Union[ivy.Array, ivy.NativeArray],
+                  out: Optional[Union[ivy.Array, ivy.NativeArray]] = None)\
         -> ivy.Array:
     """
     Computes the truth value of x1_i >= x2_i for each element x1_i of the input array x1 with the respective
@@ -350,10 +362,12 @@ def greater_equal(x1: Union[ivy.Array, ivy.NativeArray], x2: Union[ivy.Array, iv
     :param x2: second input array. Must be compatible with x1 (with Broadcasting). May have any data type.
     :return: an array containing the element-wise results. The returned array must have a data type of bool.
     """
-    return _cur_framework(x1, x2).greater_equal(x1, x2)
+    return _cur_framework(x1, x2).greater_equal(x1, x2, out)
 
 
-def less_equal(x1: Union[ivy.Array, ivy.NativeArray], x2: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
+def less_equal(x1: Union[ivy.Array, ivy.NativeArray],
+               x2: Union[ivy.Array, ivy.NativeArray],
+               out: Optional[Union[ivy.Array, ivy.NativeArray]] = None) -> ivy.Array:
     """
     Computes the truth value of x1_i <= x2_i for each element x1_i of the input array x1 with the respective
     element x2_i of the input array x2.
@@ -362,11 +376,12 @@ def less_equal(x1: Union[ivy.Array, ivy.NativeArray], x2: Union[ivy.Array, ivy.N
     :param x2: second input array. Must be compatible with x1 (with Broadcasting). May have any data type.
     :return: an array containing the element-wise results. The returned array must have a data type of bool.
     """
-    return _cur_framework(x1, x2).less_equal(x1, x2)
+    return _cur_framework(x1, x2).less_equal(x1, x2, out)
 
 
 def multiply(x1: Union[ivy.Array, ivy.NativeArray],
-             x2: Union[ivy.Array, ivy.NativeArray])\
+             x2: Union[ivy.Array, ivy.NativeArray],
+             out: Optional[Union[ivy.Array, ivy.NativeArray]] = None)\
         -> ivy.Array:
     """
     Calculates the product for each element ``x1_i`` of the input array ``x1`` with the respective element ``x2_i`` of the input array ``x2``.
@@ -395,16 +410,19 @@ def multiply(x1: Union[ivy.Array, ivy.NativeArray],
         first input array. Should have a numeric data type.
     x2:
         second input array. Must be compatible with ``x1`` (see :ref:`Broadcasting`). Should have a numeric data type.
+    out:
+        optional output array, for writing the result to. It must have a shape that the inputs broadcast to.
 
     Returns
     -------
-    out:
+    return:
         an array containing the element-wise products. The returned array must have a data type determined by :ref:`Type Promotion Rules`.
     """
-    return _cur_framework(x1, x2).multiply(x1, x2)
+    return _cur_framework(x1, x2).multiply(x1, x2, out)
 
 
-def asinh(x: Union[ivy.Array, ivy.NativeArray])\
+def asinh(x: Union[ivy.Array, ivy.NativeArray],
+          out: Optional[Union[ivy.Array, ivy.NativeArray]] = None)\
         -> ivy.Array:
     """
     Calculates an implementation-dependent approximation to the inverse hyperbolic sine, having domain ``[-infinity, +infinity]`` and codomain ``[-infinity, +infinity]``, for each element ``x_i`` in the input array ``x``.
@@ -423,15 +441,19 @@ def asinh(x: Union[ivy.Array, ivy.NativeArray])\
     ----------
     x:
         input array whose elements each represent the area of a hyperbolic sector. Should have a floating-point data type.
+    out:
+        optional output array, for writing the result to. It must have a shape that the inputs broadcast to.
 
     Returns
     -------
-    out:
+    return:
         an array containing the inverse hyperbolic sine of each element in ``x``. The returned array must have a floating-point data type determined by :ref:`type-promotion`.
     """
-    return _cur_framework(x).asinh(x)
+    return _cur_framework(x).asinh(x, out)
 
-def sign(x: Union[ivy.Array, ivy.NativeArray])\
+
+def sign(x: Union[ivy.Array, ivy.NativeArray],
+         out: Optional[Union[ivy.Array, ivy.NativeArray]] = None)\
         -> ivy.Array:
     """
     Returns an indication of the sign of a number for each element ``x_i`` of the input array ``x``.
@@ -443,12 +465,16 @@ def sign(x: Union[ivy.Array, ivy.NativeArray])\
     ----------
     x: array
         input array. Should have a numeric data type.
+    out:
+        optional output array, for writing the result to. It must have a shape that the inputs broadcast to.
+
     Returns
     -------
-    out: array
+    return: array
         an array containing the evaluated result for each element in ``x``. The returned array must have the same data type as ``x``.
     """
-    return _cur_framework(x).sign(x)
+    return _cur_framework(x).sign(x, out)
+
 
 def sqrt(x: Union[ivy.Array, ivy.NativeArray])\
         -> ivy.Array:
