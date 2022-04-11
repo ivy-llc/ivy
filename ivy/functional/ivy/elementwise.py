@@ -1139,7 +1139,9 @@ def abs(x: Union[ivy.Array, ivy.NativeArray],
     return _cur_framework(x).abs(x, out)
 
 
-def tan(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
+def tan(x: Union[ivy.Array, ivy.NativeArray],
+        out: Optional[Union[ivy.Array, ivy.NativeArray]] = None)\
+        -> ivy.Array:
     """
     Computes tangent element-wise.
     Equivalent to f.sin(x)/f.cos(x) element-wise.
@@ -1148,10 +1150,11 @@ def tan(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
     :type x: array
     :return: The tangent of x element-wise.
     """
-    return _cur_framework(x).tan(x)
+    return _cur_framework(x).tan(x, out)
 
 
-def atan(x: Union[ivy.Array, ivy.NativeArray]) \
+def atan(x: Union[ivy.Array, ivy.NativeArray],
+         out: Optional[Union[ivy.Array, ivy.NativeArray]] = None) \
         -> ivy.Array:
     """
     Calculates an implementation-dependent approximation of the principal value of the inverse tangent, having domain ``[-infinity, +infinity]`` and codomain ``[-π/2, +π/2]``, for each element ``x_i`` of the input array ``x``. Each element-wise result is expressed in radians.
@@ -1166,15 +1169,20 @@ def atan(x: Union[ivy.Array, ivy.NativeArray]) \
     ----------
     x: array
         input array. Should have a floating-point data type.
+    out:
+        optional output array, for writing the result to. It must have a shape that the inputs broadcast to.
+
     Returns
     -------
-    out: array
+    return: array
         an array containing the inverse tangent of each element in ``x``. The returned array must have a floating-point data type determined by :ref:`type-promotion`.
     """
-    return _cur_framework(x).atan(x)
+    return _cur_framework(x).atan(x, out)
 
 
-def atan2(x1: Union[ivy.Array, ivy.NativeArray], x2: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
+def atan2(x1: Union[ivy.Array, ivy.NativeArray],
+          x2: Union[ivy.Array, ivy.NativeArray],
+          out: Optional[Union[ivy.Array, ivy.NativeArray]] = None) -> ivy.Array:
     """
     Calculates an implementation-dependent approximation of the inverse tangent of the quotient ``x1/x2``, having domain ``[-infinity, +infinity] x [-infinity, +infinity]`` (where the ``x`` notation denotes the set of ordered pairs of elements ``(x1_i, x2_i)``) and codomain ``[-π, +π]``, for each pair of elements ``(x1_i, x2_i)`` of the input arrays ``x1`` and ``x2``, respectively. Each element-wise result is expressed in radians.
     The mathematical signs of ``x1_i and x2_i`` determine the quadrant of each element-wise result. The quadrant (i.e., branch) is chosen such that each element-wise result is the signed angle in radians between the ray ending at the origin and passing through the point ``(1,0)`` and the ray ending at the origin and passing through the point ``(x2_i, x1_i)``.
@@ -1214,36 +1222,30 @@ def atan2(x1: Union[ivy.Array, ivy.NativeArray], x2: Union[ivy.Array, ivy.Native
     
     x2:
         input array corresponding to the x-coordinates. Must be compatible with ``x1``. Should have a floating-point data type.
+    out:
+        optional output array, for writing the result to. It must have a shape that the inputs broadcast to.
 
     Returns
     -------
-    out:
+    return:
         an array containing the inverse tangent of the quotient ``x1/x2``. The returned array must have a floating-point data type.
     """
-    return _cur_framework(x1).atan2(x1, x2)
+    return _cur_framework(x1).atan2(x1, x2, out)
 
 
-def cosh(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
-    """
-    Returns a new array with the hyperbolic cosine of the elements of x.
-
-    :param x: Input array.
-    :return: A new array with the hyperbolic cosine of the elements of x.
-    """
-    return _cur_framework(x).cosh(x)
-
-
-def tanh(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
+def tanh(x: Union[ivy.Array, ivy.NativeArray],
+         out: Optional[Union[ivy.Array, ivy.NativeArray]] = None) -> ivy.Array:
     """
     Returns a new array with the hyperbolic tangent of the elements of x.
 
     :param x: Input array.
     :return: A new array with the hyperbolic tangent of the elements of x.
     """
-    return _cur_framework(x).tanh(x)
+    return _cur_framework(x).tanh(x, out)
 
 
-def atanh(x: Union[ivy.Array, ivy.NativeArray]) \
+def atanh(x: Union[ivy.Array, ivy.NativeArray],
+          out: Optional[Union[ivy.Array, ivy.NativeArray]] = None) \
         -> ivy.Array:
     """
     Returns a new array with the inverse hyperbolic tangent of the elements of x.
@@ -1251,11 +1253,12 @@ def atanh(x: Union[ivy.Array, ivy.NativeArray]) \
     :param x: input array whose elements each represent the area of a hyperbolic sector. Should have a floating-point data type.
     :return:an array containing the inverse hyperbolic tangent of each element in x. The returned array must have a floating-point data type determined by Type Promotion Rules.
     """
-    return _cur_framework(x).atanh(x)
+    return _cur_framework(x).atanh(x, out)
 
 
 def subtract(x1: Union[ivy.Array, ivy.NativeArray],
-             x2: Union[ivy.Array, ivy.NativeArray])\
+             x2: Union[ivy.Array, ivy.NativeArray],
+             out: Optional[Union[ivy.Array, ivy.NativeArray]] = None)\
         -> ivy.Array:
     """
     Calculates the difference for each element ``x1_i`` of the input array ``x1`` with the respective element ``x2_i``
@@ -1267,16 +1270,20 @@ def subtract(x1: Union[ivy.Array, ivy.NativeArray],
         first input array. Should have a numeric data type.
     x2:
         second input array. Must be compatible with ``x1`` (see :ref:`broadcasting`). Should have a numeric data type.
+    out:
+        optional output array, for writing the result to. It must have a shape that the inputs broadcast to.
 
     Returns
     -------
-    out:
+    return:
         an array containing the element-wise differences.
     """
-    return _cur_framework(x1).subtract(x1, x2)
+    return _cur_framework(x1).subtract(x1, x2, out)
 
 
-def divide(x1: Union[ivy.Array, ivy.NativeArray], x2: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
+def divide(x1: Union[ivy.Array, ivy.NativeArray],
+           x2: Union[ivy.Array, ivy.NativeArray],
+           out: Optional[Union[ivy.Array, ivy.NativeArray]] = None) -> ivy.Array:
     """
     Calculates the division for each element x1_i of the input array x1 with the respective element x2_i of the
     input array x2.
@@ -1286,11 +1293,12 @@ def divide(x1: Union[ivy.Array, ivy.NativeArray], x2: Union[ivy.Array, ivy.Nativ
     :return: an array containing the element-wise results. The returned array must have a floating-point data type
              determined by Type Promotion Rules.
     """
-    return _cur_framework(x1, x2).divide(x1, x2)
+    return _cur_framework(x1, x2).divide(x1, x2, out)
 
 
 def pow(x1: Union[ivy.Array, ivy.NativeArray], 
-        x2: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
+        x2: Union[ivy.Array, ivy.NativeArray],
+        out: Optional[Union[ivy.Array, ivy.NativeArray]] = None) -> ivy.Array:
     """
     Calculates an implementation-dependent approximation of exponentiation by raising each element ``x1_i`` (the base) of the input array ``x1`` to the power of ``x2_i`` (the exponent), where ``x2_i`` is the corresponding element of the input array ``x2``.
     .. note::
@@ -1328,16 +1336,20 @@ def pow(x1: Union[ivy.Array, ivy.NativeArray],
         first input array whose elements correspond to the exponentiation base. Should have a numeric data type.
     x2: array
         second input array whose elements correspond to the exponentiation exponent. Must be compatible with ``x1`` (see :ref:`broadcasting`). Should have a numeric data type.
+    out:
+        optional output array, for writing the result to. It must have a shape that the inputs broadcast to.
+
     Returns
     -------
-    out: array
+    return: array
         an array containing the element-wise results. The returned array must have a data type determined by :ref:`type-promotion`.
     """
-    return _cur_framework(x1, x2).pow(x1, x2)
+    return _cur_framework(x1, x2).pow(x1, x2, out)
 
 
 def remainder(x1: Union[ivy.Array, ivy.NativeArray],
-              x2: Union[ivy.Array, ivy.NativeArray])\
+              x2: Union[ivy.Array, ivy.NativeArray],
+              out: Optional[Union[ivy.Array, ivy.NativeArray]] = None)\
         -> ivy.Array:
     """
     Returns the remainder of division for each element ``x1_i`` of the input array ``x1``
@@ -1379,16 +1391,20 @@ def remainder(x1: Union[ivy.Array, ivy.NativeArray],
         dividend input array. Should have a numeric data type.
     x2:
         divisor input array. Must be compatible with ``x1`` (see :ref:`Broadcasting`). Should have a numeric data type.
+    out:
+        optional output array, for writing the result to. It must have a shape that the inputs broadcast to.
 
     Returns
     -------
-    out:
+    return:
         an array containing the element-wise results. Each element-wise result must have the same sign as the respective element ``x2_i``. The returned array must have a data type determined by :ref:`Type Promotion Rules`.
     """
-    return _cur_framework(x1, x2).remainder(x1, x2)
+    return _cur_framework(x1, x2).remainder(x1, x2, out)
 
 
-def bitwise_right_shift(x1: Union[ivy.Array, ivy.NativeArray], x2: Union[ivy.Array, ivy.NativeArray])\
+def bitwise_right_shift(x1: Union[ivy.Array, ivy.NativeArray],
+                        x2: Union[ivy.Array, ivy.NativeArray],
+                        out: Optional[Union[ivy.Array, ivy.NativeArray]] = None)\
         -> ivy.Array:
     """
     Shifts the bits of each element ``x1_i`` of the input array ``x1`` to the right according to the respective element ``x2_i`` of the input array ``x2``.
@@ -1402,37 +1418,20 @@ def bitwise_right_shift(x1: Union[ivy.Array, ivy.NativeArray], x2: Union[ivy.Arr
         first input array. Should have an integer data type.
     x2:
         second input array. Must be compatible with ``x1`` (see :ref:`broadcasting`). Should have an integer data type. Each element must be greater than or equal to 0.
+    out:
+        optional output array, for writing the result to. It must have a shape that the inputs broadcast to.
 
     Returns
     -------
-    out:
+    return:
         out (array) – an array containing the element-wise results. The returned array must have a data type determined by :ref:`Type Promotion Rules`.
     """
-    return _cur_framework(x1, x2).bitwise_right_shift(x1, x2)
-
-
-def bitwise_left_shift(x1: Union[ivy.Array, ivy.NativeArray], x2: Union[ivy.Array, ivy.NativeArray])\
-        -> ivy.Array:
-    """
-    Shifts the bits of each element ``x1_i`` of the input array ``x1`` to the left according to the respective element ``x2_i`` of the input array ``x2``.
-
-    Parameters
-    ----------
-    x1:
-        first input array. Should have an integer data type.
-    x2:
-        second input array. Must be compatible with ``x1`` (see :ref:`broadcasting`). Should have an integer data type. Each element must be greater than or equal to 0.
-
-    Returns
-    -------
-    out:
-        out (array) – an array containing the element-wise results. The returned array must have a data type determined by :ref:`Type Promotion Rules`.
-    """
-    return _cur_framework(x1, x2).bitwise_left_shift(x1, x2)
+    return _cur_framework(x1, x2).bitwise_right_shift(x1, x2, out)
 
   
 def equal(x1: Union[ivy.Array, ivy.NativeArray],
-          x2: Union[ivy.Array, ivy.NativeArray])\
+          x2: Union[ivy.Array, ivy.NativeArray],
+          out: Optional[Union[ivy.Array, ivy.NativeArray]] = None)\
         -> ivy.Array:
     """
     Computes the truth value of x1_i == x2_i for each element x1_i of the input array x1 with the respective
@@ -1442,14 +1441,15 @@ def equal(x1: Union[ivy.Array, ivy.NativeArray],
     :param x2: second input array. Must be compatible with x1 (with Broadcasting). May have any data type.
     :return: an array containing the element-wise results. The returned array must have a data type of bool.
     """
-    return _cur_framework(x1, x2).equal(x1, x2)
+    return _cur_framework(x1, x2).equal(x1, x2, out)
 
 
 # Extra #
 # ------#
 
 
-def erf(x: Union[ivy.Array, ivy.NativeArray])\
+def erf(x: Union[ivy.Array, ivy.NativeArray],
+        out: Optional[Union[ivy.Array, ivy.NativeArray]] = None)\
         -> Union[ivy.Array, ivy.NativeArray]:
     """
     Computes the Gauss error function of x element-wise.
@@ -1458,10 +1458,12 @@ def erf(x: Union[ivy.Array, ivy.NativeArray])\
     :type x: array
     :return: The Gauss error function of x.
     """
-    return _cur_framework(x).erf(x)
+    return _cur_framework(x).erf(x, out)
 
 
-def minimum(x: Union[ivy.Array, ivy.NativeArray], y: Union[ivy.Array, ivy.NativeArray])\
+def minimum(x: Union[ivy.Array, ivy.NativeArray],
+            y: Union[ivy.Array, ivy.NativeArray],
+            out: Optional[Union[ivy.Array, ivy.NativeArray]] = None)\
         -> Union[ivy.Array, ivy.NativeArray]:
     """
     Returns the min of x and y (i.e. x < y ? x : y) element-wise.
@@ -1472,11 +1474,13 @@ def minimum(x: Union[ivy.Array, ivy.NativeArray], y: Union[ivy.Array, ivy.Native
     :type y: array
     :return: An array with the elements of x, but clipped to not exceed the y values.
     """
-    return _cur_framework(x).minimum(x, y)
+    return _cur_framework(x).minimum(x, y, out)
 
 
-def maximum(x: Union[ivy.Array, ivy.NativeArray, Number], y: Union[ivy.Array, ivy.NativeArray, Number],
-            ) -> Union[ivy.Array, ivy.NativeArray]:
+def maximum(x: Union[ivy.Array, ivy.NativeArray, Number],
+            y: Union[ivy.Array, ivy.NativeArray, Number],
+            out: Optional[Union[ivy.Array, ivy.NativeArray]] = None)\
+        -> Union[ivy.Array, ivy.NativeArray]:
     """
     Returns the max of x and y (i.e. x > y ? x : y) element-wise.
 
@@ -1486,4 +1490,4 @@ def maximum(x: Union[ivy.Array, ivy.NativeArray, Number], y: Union[ivy.Array, iv
     :type y: array
     :return: An array with the elements of x, but clipped to not be lower than the y values.
     """
-    return _cur_framework(x).maximum(x, y)
+    return _cur_framework(x).maximum(x, y, out)
