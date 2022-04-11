@@ -3,42 +3,58 @@ import numpy as np
 from typing import Optional
 import numpy.array_api as npa
 
+# local
+import ivy
+
 try:
     from scipy.special import erf as _erf
 except (ImportError, ModuleNotFoundError):
     _erf = None
 
 
-def bitwise_left_shift(x1: np.ndarray,
-                       x2: np.ndarray)\
-                       -> np.ndarray:
-    if not isinstance(x2, np.ndarray):
-        x2 = np.asarray(x2, dtype=x1.dtype)
-    else:
-        dtype = np.promote_types(x1.dtype, x2.dtype)
-        x1 = x1.astype(dtype)
-        x2 = x2.astype(dtype)
-    return np.left_shift(x1, x2)
-
-
 def add(x1: np.ndarray,
-        x2: np.ndarray)\
+        x2: np.ndarray,
+        out: Optional[np.ndarray] = None)\
         -> np.ndarray:
     if not isinstance(x2, np.ndarray):
         x2 = np.asarray(x2, dtype=x1.dtype)
-    return np.asarray(npa.add(npa.asarray(x1), npa.asarray(x2)))
+    ret = np.asarray(npa.add(npa.asarray(x1), npa.asarray(x2)))
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
+
+
+def pow(x1: np.ndarray,
+        x2: np.ndarray,
+        out: Optional[np.ndarray] = None)\
+        -> np.ndarray:
+    if hasattr(x1, 'dtype') and hasattr(x2, 'dtype'):
+        promoted_type = np.promote_types(x1.dtype, x2.dtype)
+        x1, x2 = np.asarray(x1), np.asarray(x2)
+        x1 = x1.astype(promoted_type)
+        x2 = x2.astype(promoted_type)
+    elif not hasattr(x2, 'dtype'):
+        x2 = np.array(x2, dtype=x1.dtype)
+    return np.power(x1, x2, out=out)
 
 
 def bitwise_xor(x1: np.ndarray,
-                x2: np.ndarray)\
+                x2: np.ndarray,
+                out: Optional[np.ndarray] = None)\
         -> np.ndarray:
     if not isinstance(x2, np.ndarray):
         x2 = np.asarray(x2, dtype=x1.dtype)
-    return npa.bitwise_xor(npa.asarray(x1), npa.asarray(x2))
+    ret = npa.bitwise_xor(npa.asarray(x1), npa.asarray(x2))
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
-def exp(x: np.ndarray)\
+
+def exp(x: np.ndarray,
+        out: Optional[np.ndarray] = None)\
         -> np.ndarray:
-    return np.exp(x)
+    return np.exp(x, out=out)
+
 
 def expm1(x: np.ndarray)\
         -> np.ndarray:
@@ -244,17 +260,6 @@ def sinh(x: np.ndarray)\
 def positive(x: np.ndarray)\
         -> np.ndarray:
     return np.positive(x)
-
-
-def pow(x1: np.ndarray, x2: np.ndarray)\
-        -> np.ndarray:
-    if hasattr(x1, 'dtype') and hasattr(x2, 'dtype'):
-        promoted_type = np.promote_types(x1.dtype, x2.dtype)
-        x1 = x1.astype(promoted_type)
-        x2 = x2.astype(promoted_type)
-    elif not hasattr(x2, 'dtype'):
-        x2 = np.array(x2, dtype=x1.dtype)
-    return np.power(x1, x2)
 
 
 def square(x: np.ndarray)\
