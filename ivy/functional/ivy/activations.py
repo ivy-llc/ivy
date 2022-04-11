@@ -113,17 +113,31 @@ def sigmoid(x):
     return _cur_framework(x).sigmoid(x)
 
 
-def softmax(x, axis=-1):
+def softmax(x: Union[ivy.Array, ivy.NativeArray], axis: Optional[int] = -1)\
+        -> ivy.Array:
     """
     Applies the softmax function element-wise.
 
-    :param x: Input array.
-    :type x: array
-    :param axis: The dimension softmax would be performed on. The default is -1 which indicates the last dimension.
-    :type axis: int, optional
-    :return: The input array with softmax applied element-wise.
+    Parameters
+    ----------
+    x:
+        Input array.
+    axis:
+        The dimension softmax would be performed on. The default is -1 which indicates the last dimension.
+
+    Returns
+    -------
+    out:
+        The input array with softmax applied element-wise.
+
+    Examples:
+    >>> x = ivy.array([-1, -0.5, 0, 0.5, 1])
+    >>> y = ivy.softmax(x)
+    >>> print(y)
+    [0.05801222, 0.09564598, 0.15769356, 0.25999272, 0.42865553]
     """
     return _cur_framework(x).softmax(x, axis)
+
 
 
 def softplus(x):
