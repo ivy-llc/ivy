@@ -147,6 +147,8 @@ def log1p(x: JaxArray)\
 
 def multiply(x1: JaxArray, x2: JaxArray)\
         -> JaxArray:
+    if isinstance(x2, int):
+        x2 = jnp.asarray(x2, dtype=x1.dtype)
     return jnp.multiply(x1, x2)
 
 
