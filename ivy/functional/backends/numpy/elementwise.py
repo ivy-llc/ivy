@@ -329,7 +329,9 @@ def square(x: np.ndarray,
     return np.square(x, out=out)
 
 
-def remainder(x1: np.ndarray, x2: np.ndarray)\
+def remainder(x1: np.ndarray,
+              x2: np.ndarray,
+              out: Optional[np.ndarray] = None)\
         -> np.ndarray:
     if not isinstance(x2, np.ndarray):
         x2 = np.asarray(x2, dtype=x1.dtype)
@@ -337,15 +339,21 @@ def remainder(x1: np.ndarray, x2: np.ndarray)\
         dtype = np.promote_types(x1.dtype, x2.dtype)
         x1 = x1.astype(dtype)
         x2 = x2.astype(dtype)
-    return np.remainder(x1, x2)
+    return np.remainder(x1, x2, out=out)
 
 
-def round(x: np.ndarray)\
+def round(x: np.ndarray,
+          out: Optional[np.ndarray] = None)\
         -> np.ndarray:
-    return np.asarray(npa.round(npa.asarray(x)))
+    ret = np.asarray(npa.round(npa.asarray(x)))
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
-def bitwise_or(x1: np.ndarray, x2: np.ndarray)\
+def bitwise_or(x1: np.ndarray,
+               x2: np.ndarray,
+               out: Optional[np.ndarray] = None)\
         -> np.ndarray:
     if not isinstance(x2, np.ndarray):
         x2 = np.asarray(x2, dtype=x1.dtype)
@@ -353,12 +361,16 @@ def bitwise_or(x1: np.ndarray, x2: np.ndarray)\
         dtype = np.promote_types(x1.dtype, x2.dtype)
         x1 = x1.astype(dtype)
         x2 = x2.astype(dtype)
-    return np.bitwise_or(x1, x2)
+    return np.bitwise_or(x1, x2, out=out)
 
 
-def trunc(x: np.ndarray) \
+def trunc(x: np.ndarray,
+          out: Optional[np.ndarray] = None) \
         -> np.ndarray:
-    return np.asarray(npa.trunc(npa.asarray(x)))
+    ret = np.asarray(npa.trunc(npa.asarray(x)))
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
 def abs(x: np.ndarray,
@@ -367,7 +379,9 @@ def abs(x: np.ndarray,
     return np.absolute(x, out=out)
 
 
-def subtract(x1: np.ndarray, x2: np.ndarray)\
+def subtract(x1: np.ndarray,
+             x2: np.ndarray,
+             out: Optional[np.ndarray] = None)\
         -> np.ndarray:
     if hasattr(x1, 'dtype') and hasattr(x2, 'dtype'):
         promoted_type = np.promote_types(x1.dtype, x2.dtype)
@@ -375,17 +389,20 @@ def subtract(x1: np.ndarray, x2: np.ndarray)\
         x2 = x2.astype(promoted_type)
     elif not hasattr(x2, 'dtype'):
         x2 = np.array(x2, dtype=x1.dtype)
-    return np.subtract(x1, x2)
+    return np.subtract(x1, x2, out=out)
 
 
-def logaddexp(x1: np.ndarray, x2: np.ndarray) -> np.ndarray:
+def logaddexp(x1: np.ndarray,
+              x2: np.ndarray,
+              out: Optional[np.ndarray] = None)\
+        -> np.ndarray:
     if not isinstance(x2, np.ndarray):
         x2 = np.asarray(x2, dtype=x1.dtype)
     else:
         dtype = np.promote_types(x1.dtype, x2.dtype)
         x1 = x1.astype(dtype)
         x2 = x2.astype(dtype)
-    return np.logaddexp(x1, x2)
+    return np.logaddexp(x1, x2, out=out)
 
 
 def bitwise_right_shift(x1: np.ndarray, x2: np.ndarray)\
