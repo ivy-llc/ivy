@@ -272,7 +272,7 @@
 <h1>expm1<a class="headerlink" href="#expm1" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
 <dt id="ivy.functional.ivy.elementwise.expm1">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">expm1</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../../_modules/ivy/functional/ivy/elementwise.html#expm1"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.elementwise.expm1" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">expm1</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">out</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../../_modules/ivy/functional/ivy/elementwise.html#expm1"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.elementwise.expm1" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates an implementation-dependent approximation to <code class="docutils literal notranslate"><span class="pre">exp(x)-1</span></code>, having domain <code class="docutils literal notranslate"><span class="pre">[-infinity,</span> <span class="pre">+infinity]</span></code> and codomain <code class="docutils literal notranslate"><span class="pre">[-1,</span> <span class="pre">+infinity]</span></code>, for each element <code class="docutils literal notranslate"><span class="pre">x_i</span></code> of the input array <code class="docutils literal notranslate"><span class="pre">x</span></code>.
 .. note:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>The purpose of this function is to calculate ``exp(x)-1.0`` more accurately when `x` is close to zero. Accordingly, conforming implementations should avoid implementing this function as simply ``exp(x)-1.0``. See FDLIBM, or some other IEEE 754-2019 compliant mathematical library, for a potential reference implementation.
@@ -292,7 +292,11 @@ x: array</p>
 <div><p>input array. Should have a numeric data type.</p>
 </div></blockquote>
 <dl class="simple">
-<dt>out: array</dt><dd><p>an array containing the evaluated result for each element in <code class="docutils literal notranslate"><span class="pre">x</span></code>. The returned array must have a floating-point data type determined by <span class="xref std std-ref">type-promotion</span>.</p>
+<dt>out:</dt><dd><p>optional output array, for writing the result to. It must have a shape that the inputs broadcast to.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>return: array</dt><dd><p>an array containing the evaluated result for each element in <code class="docutils literal notranslate"><span class="pre">x</span></code>. The returned array must have a floating-point data type determined by <span class="xref std std-ref">type-promotion</span>.</p>
 </dd>
 </dl>
 </dd></dl>
