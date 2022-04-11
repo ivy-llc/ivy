@@ -146,7 +146,6 @@
 <li class="toctree-l2"><a class="reference internal" href="tan.html">tan</a></li>
 <li class="toctree-l2"><a class="reference internal" href="atan.html">atan</a></li>
 <li class="toctree-l2"><a class="reference internal" href="atan2.html">atan2</a></li>
-<li class="toctree-l2"><a class="reference internal" href="cosh.html">cosh</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tanh.html">tanh</a></li>
 <li class="toctree-l2"><a class="reference internal" href="atanh.html">atanh</a></li>
 <li class="toctree-l2"><a class="reference internal" href="subtract.html">subtract</a></li>
@@ -154,7 +153,6 @@
 <li class="toctree-l2"><a class="reference internal" href="pow.html">pow</a></li>
 <li class="toctree-l2"><a class="reference internal" href="remainder.html">remainder</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">bitwise_right_shift</a></li>
-<li class="toctree-l2"><a class="reference internal" href="bitwise_left_shift.html">bitwise_left_shift</a></li>
 <li class="toctree-l2"><a class="reference internal" href="equal.html">equal</a></li>
 <li class="toctree-l2"><a class="reference internal" href="erf.html">erf</a></li>
 <li class="toctree-l2"><a class="reference internal" href="minimum.html">minimum</a></li>
@@ -272,7 +270,7 @@
 <h1>bitwise_right_shift<a class="headerlink" href="#bitwise-right-shift" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
 <dt id="ivy.functional.ivy.elementwise.bitwise_right_shift">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">bitwise_right_shift</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x1</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">x2</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../../_modules/ivy/functional/ivy/elementwise.html#bitwise_right_shift"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.elementwise.bitwise_right_shift" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">bitwise_right_shift</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x1</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">x2</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">out</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../../_modules/ivy/functional/ivy/elementwise.html#bitwise_right_shift"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.elementwise.bitwise_right_shift" title="Permalink to this definition">¶</a></dt>
 <dd><p>Shifts the bits of each element <code class="docutils literal notranslate"><span class="pre">x1_i</span></code> of the input array <code class="docutils literal notranslate"><span class="pre">x1</span></code> to the right according to the respective element <code class="docutils literal notranslate"><span class="pre">x2_i</span></code> of the input array <code class="docutils literal notranslate"><span class="pre">x2</span></code>.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -283,9 +281,11 @@
 </dd>
 <dt>x2:</dt><dd><p>second input array. Must be compatible with <code class="docutils literal notranslate"><span class="pre">x1</span></code> (see <span class="xref std std-ref">broadcasting</span>). Should have an integer data type. Each element must be greater than or equal to 0.</p>
 </dd>
+<dt>out:</dt><dd><p>optional output array, for writing the result to. It must have a shape that the inputs broadcast to.</p>
+</dd>
 </dl>
 <dl class="simple">
-<dt>out:</dt><dd><p>out (array) – an array containing the element-wise results. The returned array must have a data type determined by <span class="xref std std-ref">Type Promotion Rules</span>.</p>
+<dt>return:</dt><dd><p>out (array) – an array containing the element-wise results. The returned array must have a data type determined by <span class="xref std std-ref">Type Promotion Rules</span>.</p>
 </dd>
 </dl>
 </dd></dl>

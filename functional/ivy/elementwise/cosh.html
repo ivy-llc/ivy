@@ -146,7 +146,6 @@
 <li class="toctree-l2"><a class="reference internal" href="tan.html">tan</a></li>
 <li class="toctree-l2"><a class="reference internal" href="atan.html">atan</a></li>
 <li class="toctree-l2"><a class="reference internal" href="atan2.html">atan2</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">cosh</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tanh.html">tanh</a></li>
 <li class="toctree-l2"><a class="reference internal" href="atanh.html">atanh</a></li>
 <li class="toctree-l2"><a class="reference internal" href="subtract.html">subtract</a></li>
@@ -154,7 +153,6 @@
 <li class="toctree-l2"><a class="reference internal" href="pow.html">pow</a></li>
 <li class="toctree-l2"><a class="reference internal" href="remainder.html">remainder</a></li>
 <li class="toctree-l2"><a class="reference internal" href="bitwise_right_shift.html">bitwise_right_shift</a></li>
-<li class="toctree-l2"><a class="reference internal" href="bitwise_left_shift.html">bitwise_left_shift</a></li>
 <li class="toctree-l2"><a class="reference internal" href="equal.html">equal</a></li>
 <li class="toctree-l2"><a class="reference internal" href="erf.html">erf</a></li>
 <li class="toctree-l2"><a class="reference internal" href="minimum.html">minimum</a></li>
@@ -272,14 +270,25 @@
 <h1>cosh<a class="headerlink" href="#cosh" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
 <dt id="ivy.functional.ivy.elementwise.cosh">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">cosh</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../../_modules/ivy/functional/ivy/elementwise.html#cosh"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.elementwise.cosh" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns a new array with the hyperbolic cosine of the elements of x.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>x</strong> – Input array.</p>
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">cosh</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">out</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../../_modules/ivy/functional/ivy/elementwise.html#cosh"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.elementwise.cosh" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates an implementation-dependent approximation to the hyperbolic cosine, having domain <code class="docutils literal notranslate"><span class="pre">[-infinity,</span> <span class="pre">+infinity]</span></code> and codomain <code class="docutils literal notranslate"><span class="pre">[-infinity,</span> <span class="pre">+infinity]</span></code>, for each element <code class="docutils literal notranslate"><span class="pre">x_i</span></code> in the input array <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p>
+<p><strong>Special cases</strong></p>
+<p>For floating-point operands,</p>
+<ul class="simple">
+<li><p>If <code class="docutils literal notranslate"><span class="pre">x_i</span></code> is <code class="docutils literal notranslate"><span class="pre">NaN</span></code>, the result is <code class="docutils literal notranslate"><span class="pre">NaN</span></code>.</p></li>
+<li><p>If <code class="docutils literal notranslate"><span class="pre">x_i</span></code> is <code class="docutils literal notranslate"><span class="pre">+0</span></code>, the result is <code class="docutils literal notranslate"><span class="pre">1</span></code>.</p></li>
+<li><p>If <code class="docutils literal notranslate"><span class="pre">x_i</span></code> is <code class="docutils literal notranslate"><span class="pre">-0</span></code>, the result is <code class="docutils literal notranslate"><span class="pre">1</span></code>.</p></li>
+<li><p>If <code class="docutils literal notranslate"><span class="pre">x_i</span></code> is <code class="docutils literal notranslate"><span class="pre">+infinity</span></code>, the result is <code class="docutils literal notranslate"><span class="pre">+infinity</span></code>.</p></li>
+<li><p>If <code class="docutils literal notranslate"><span class="pre">x_i</span></code> is <code class="docutils literal notranslate"><span class="pre">-infinity</span></code>, the result is <code class="docutils literal notranslate"><span class="pre">+infinity</span></code>.</p></li>
+</ul>
+<dl class="simple">
+<dt>x:</dt><dd><p>input array whose elements each represent a hyperbolic angle. Should have a floating-point data type.</p>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>A new array with the hyperbolic cosine of the elements of x.</p>
+<dt>out:</dt><dd><p>optional output array, for writing the result to. It must have a shape that the inputs broadcast to.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>return:</dt><dd><p>an array containing the hyperbolic cosine of each element in <code class="docutils literal notranslate"><span class="pre">x</span></code>. The returned array must have a floating-point data type determined by <span class="xref std std-ref">type-promotion</span>.</p>
 </dd>
 </dl>
 </dd></dl>

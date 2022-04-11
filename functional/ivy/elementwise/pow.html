@@ -146,7 +146,6 @@
 <li class="toctree-l2"><a class="reference internal" href="tan.html">tan</a></li>
 <li class="toctree-l2"><a class="reference internal" href="atan.html">atan</a></li>
 <li class="toctree-l2"><a class="reference internal" href="atan2.html">atan2</a></li>
-<li class="toctree-l2"><a class="reference internal" href="cosh.html">cosh</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tanh.html">tanh</a></li>
 <li class="toctree-l2"><a class="reference internal" href="atanh.html">atanh</a></li>
 <li class="toctree-l2"><a class="reference internal" href="subtract.html">subtract</a></li>
@@ -154,7 +153,6 @@
 <li class="toctree-l2 current"><a class="current reference internal" href="#">pow</a></li>
 <li class="toctree-l2"><a class="reference internal" href="remainder.html">remainder</a></li>
 <li class="toctree-l2"><a class="reference internal" href="bitwise_right_shift.html">bitwise_right_shift</a></li>
-<li class="toctree-l2"><a class="reference internal" href="bitwise_left_shift.html">bitwise_left_shift</a></li>
 <li class="toctree-l2"><a class="reference internal" href="equal.html">equal</a></li>
 <li class="toctree-l2"><a class="reference internal" href="erf.html">erf</a></li>
 <li class="toctree-l2"><a class="reference internal" href="minimum.html">minimum</a></li>
@@ -272,7 +270,7 @@
 <h1>pow<a class="headerlink" href="#pow" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
 <dt id="ivy.functional.ivy.elementwise.pow">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">pow</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x1</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">x2</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../../_modules/ivy/functional/ivy/elementwise.html#pow"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.elementwise.pow" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">pow</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x1</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">x2</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">out</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../../_modules/ivy/functional/ivy/elementwise.html#pow"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.elementwise.pow" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates an implementation-dependent approximation of exponentiation by raising each element <code class="docutils literal notranslate"><span class="pre">x1_i</span></code> (the base) of the input array <code class="docutils literal notranslate"><span class="pre">x1</span></code> to the power of <code class="docutils literal notranslate"><span class="pre">x2_i</span></code> (the exponent), where <code class="docutils literal notranslate"><span class="pre">x2_i</span></code> is the corresponding element of the input array <code class="docutils literal notranslate"><span class="pre">x2</span></code>.
 .. note:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>If both ``x1`` and ``x2`` have integer data types, the result of ``pow`` when ``x2_i`` is negative (i.e., less than zero) is unspecified and thus implementation-dependent.
@@ -314,9 +312,11 @@ x1: array</p>
 <dl class="simple">
 <dt>x2: array</dt><dd><p>second input array whose elements correspond to the exponentiation exponent. Must be compatible with <code class="docutils literal notranslate"><span class="pre">x1</span></code> (see <span class="xref std std-ref">broadcasting</span>). Should have a numeric data type.</p>
 </dd>
+<dt>out:</dt><dd><p>optional output array, for writing the result to. It must have a shape that the inputs broadcast to.</p>
+</dd>
 </dl>
 <dl class="simple">
-<dt>out: array</dt><dd><p>an array containing the element-wise results. The returned array must have a data type determined by <span class="xref std std-ref">type-promotion</span>.</p>
+<dt>return: array</dt><dd><p>an array containing the element-wise results. The returned array must have a data type determined by <span class="xref std std-ref">type-promotion</span>.</p>
 </dd>
 </dl>
 </dd></dl>

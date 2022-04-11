@@ -146,7 +146,6 @@
 <li class="toctree-l2"><a class="reference internal" href="tan.html">tan</a></li>
 <li class="toctree-l2"><a class="reference internal" href="atan.html">atan</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">atan2</a></li>
-<li class="toctree-l2"><a class="reference internal" href="cosh.html">cosh</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tanh.html">tanh</a></li>
 <li class="toctree-l2"><a class="reference internal" href="atanh.html">atanh</a></li>
 <li class="toctree-l2"><a class="reference internal" href="subtract.html">subtract</a></li>
@@ -154,7 +153,6 @@
 <li class="toctree-l2"><a class="reference internal" href="pow.html">pow</a></li>
 <li class="toctree-l2"><a class="reference internal" href="remainder.html">remainder</a></li>
 <li class="toctree-l2"><a class="reference internal" href="bitwise_right_shift.html">bitwise_right_shift</a></li>
-<li class="toctree-l2"><a class="reference internal" href="bitwise_left_shift.html">bitwise_left_shift</a></li>
 <li class="toctree-l2"><a class="reference internal" href="equal.html">equal</a></li>
 <li class="toctree-l2"><a class="reference internal" href="erf.html">erf</a></li>
 <li class="toctree-l2"><a class="reference internal" href="minimum.html">minimum</a></li>
@@ -272,7 +270,7 @@
 <h1>atan2<a class="headerlink" href="#atan2" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
 <dt id="ivy.functional.ivy.elementwise.atan2">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">atan2</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x1</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">x2</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../../_modules/ivy/functional/ivy/elementwise.html#atan2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.elementwise.atan2" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">atan2</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x1</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">x2</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">out</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../../_modules/ivy/functional/ivy/elementwise.html#atan2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.elementwise.atan2" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates an implementation-dependent approximation of the inverse tangent of the quotient <code class="docutils literal notranslate"><span class="pre">x1/x2</span></code>, having domain <code class="docutils literal notranslate"><span class="pre">[-infinity,</span> <span class="pre">+infinity]</span> <span class="pre">x</span> <span class="pre">[-infinity,</span> <span class="pre">+infinity]</span></code> (where the <code class="docutils literal notranslate"><span class="pre">x</span></code> notation denotes the set of ordered pairs of elements <code class="docutils literal notranslate"><span class="pre">(x1_i,</span> <span class="pre">x2_i)</span></code>) and codomain <code class="docutils literal notranslate"><span class="pre">[-π,</span> <span class="pre">+π]</span></code>, for each pair of elements <code class="docutils literal notranslate"><span class="pre">(x1_i,</span> <span class="pre">x2_i)</span></code> of the input arrays <code class="docutils literal notranslate"><span class="pre">x1</span></code> and <code class="docutils literal notranslate"><span class="pre">x2</span></code>, respectively. Each element-wise result is expressed in radians.
 The mathematical signs of <code class="docutils literal notranslate"><span class="pre">x1_i</span> <span class="pre">and</span> <span class="pre">x2_i</span></code> determine the quadrant of each element-wise result. The quadrant (i.e., branch) is chosen such that each element-wise result is the signed angle in radians between the ray ending at the origin and passing through the point <code class="docutils literal notranslate"><span class="pre">(1,0)</span></code> and the ray ending at the origin and passing through the point <code class="docutils literal notranslate"><span class="pre">(x2_i,</span> <span class="pre">x1_i)</span></code>.</p>
 <p><strong>Special cases</strong></p>
@@ -307,9 +305,11 @@ The mathematical signs of <code class="docutils literal notranslate"><span class
 </dd>
 <dt>x2:</dt><dd><p>input array corresponding to the x-coordinates. Must be compatible with <code class="docutils literal notranslate"><span class="pre">x1</span></code>. Should have a floating-point data type.</p>
 </dd>
+<dt>out:</dt><dd><p>optional output array, for writing the result to. It must have a shape that the inputs broadcast to.</p>
+</dd>
 </dl>
 <dl class="simple">
-<dt>out:</dt><dd><p>an array containing the inverse tangent of the quotient <code class="docutils literal notranslate"><span class="pre">x1/x2</span></code>. The returned array must have a floating-point data type.</p>
+<dt>return:</dt><dd><p>an array containing the inverse tangent of the quotient <code class="docutils literal notranslate"><span class="pre">x1/x2</span></code>. The returned array must have a floating-point data type.</p>
 </dd>
 </dl>
 </dd></dl>
