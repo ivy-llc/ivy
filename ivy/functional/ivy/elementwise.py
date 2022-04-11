@@ -476,7 +476,8 @@ def sign(x: Union[ivy.Array, ivy.NativeArray],
     return _cur_framework(x).sign(x, out)
 
 
-def sqrt(x: Union[ivy.Array, ivy.NativeArray])\
+def sqrt(x: Union[ivy.Array, ivy.NativeArray],
+         out: Optional[Union[ivy.Array, ivy.NativeArray]] = None)\
         -> ivy.Array:
     """
     Calculates the square root, having domain ``[0, +infinity]`` and codomain ``[0, +infinity]``, for each element ``x_i`` of the input array ``x``. After rounding, each result must be indistinguishable from the infinitely precise result (as required by IEEE 754).
@@ -494,16 +495,19 @@ def sqrt(x: Union[ivy.Array, ivy.NativeArray])\
     ----------
     x:
         input array. Should have a floating-point data type.
+    out:
+        optional output array, for writing the result to. It must have a shape that the inputs broadcast to.
 
     Returns
     -------
-    out:
+    return:
         an array containing the square root of each element in ``x``. The returned array must have a floating-point data type determined by :ref:`type-promotion`.
     """
-    return _cur_framework(x).sqrt(x)
+    return _cur_framework(x).sqrt(x, out)
 
 
-def cosh(x: Union[ivy.Array, ivy.NativeArray])\
+def cosh(x: Union[ivy.Array, ivy.NativeArray],
+         out: Optional[Union[ivy.Array, ivy.NativeArray]] = None)\
         -> ivy.Array:
     """
     Calculates an implementation-dependent approximation to the hyperbolic cosine, having domain ``[-infinity, +infinity]`` and codomain ``[-infinity, +infinity]``, for each element ``x_i`` in the input array ``x``.
@@ -522,17 +526,20 @@ def cosh(x: Union[ivy.Array, ivy.NativeArray])\
     ----------
     x:
         input array whose elements each represent a hyperbolic angle. Should have a floating-point data type.
+    out:
+        optional output array, for writing the result to. It must have a shape that the inputs broadcast to.
 
     Returns
     -------
-    out:
+    return:
         an array containing the hyperbolic cosine of each element in ``x``. The returned array must have a floating-point data type determined by :ref:`type-promotion`.
     """
 
-    return _cur_framework(x).cosh(x)
+    return _cur_framework(x).cosh(x, out)
 
 
-def log(x: Union[ivy.Array, ivy.NativeArray])\
+def log(x: Union[ivy.Array, ivy.NativeArray],
+        out: Optional[Union[ivy.Array, ivy.NativeArray]] = None)\
         -> ivy.Array:
     """
     Calculates an implementation-dependent approximation to the natural (base ``e``) logarithm, having domain ``[0, +infinity]`` and codomain ``[-infinity, +infinity]``, for each element ``x_i`` of the input array ``x``.
@@ -547,15 +554,19 @@ def log(x: Union[ivy.Array, ivy.NativeArray])\
     ----------
     x: array
         input array. Should have a floating-point data type.
+    out:
+        optional output array, for writing the result to. It must have a shape that the inputs broadcast to.
+
     Returns
     -------
-    out: array
+    return: array
         an array containing the evaluated natural logarithm for each element in ``x``. The returned array must have a floating-point data type determined by :ref:`type-promotion`.
     """
-    return _cur_framework(x).log(x)
+    return _cur_framework(x).log(x, out)
 
 
-def log2(x: Union[ivy.Array, ivy.NativeArray])\
+def log2(x: Union[ivy.Array, ivy.NativeArray],
+         out: Optional[Union[ivy.Array, ivy.NativeArray]] = None)\
         -> ivy.Array:
     """
     Calculates an implementation-dependent approximation to the base ``2`` logarithm, having domain ``[0, +infinity]`` and codomain ``[-infinity, +infinity]``, for each element ``x_i`` of the input array ``x``.
@@ -574,16 +585,19 @@ def log2(x: Union[ivy.Array, ivy.NativeArray])\
     ----------
     x:
         input array. Should have a floating-point data type.
+    out:
+        optional output array, for writing the result to. It must have a shape that the inputs broadcast to.
 
     Returns
     -------
-    out:
+    return:
         an array containing the evaluated base ``2`` logarithm for each element in ``x``. The returned array must have a floating-point data type determined by :ref:`type-promotion`.
     """
-    return _cur_framework(x).log2(x)
+    return _cur_framework(x).log2(x, out)
 
 
-def log10(x: Union[ivy.Array, ivy.NativeArray])\
+def log10(x: Union[ivy.Array, ivy.NativeArray],
+          out: Optional[Union[ivy.Array, ivy.NativeArray]] = None)\
         -> ivy.Array:
     """
     Calculates an implementation-dependent approximation to the base ``10`` logarithm, having domain ``[0, +infinity]`` and codomain ``[-infinity, +infinity]``, for each element ``x_i`` of the input array ``x``.
@@ -602,16 +616,19 @@ def log10(x: Union[ivy.Array, ivy.NativeArray])\
     ----------
     x:
         input array. Should have a floating-point data type.
+    out:
+        optional output array, for writing the result to. It must have a shape that the inputs broadcast to.
 
     Returns
     -------
-    out:
+    return:
         an array containing the evaluated base ``10`` logarithm for each element in ``x``. The returned array must have a floating-point data type determined by :ref:`type-promotion`.
     """
-    return _cur_framework(x).log10(x)
+    return _cur_framework(x).log10(x, out)
 
 
-def log1p(x: Union[ivy.Array, ivy.NativeArray])\
+def log1p(x: Union[ivy.Array, ivy.NativeArray],
+          out: Optional[Union[ivy.Array, ivy.NativeArray]] = None)\
         -> ivy.Array:
     """
     Calculates an implementation-dependent approximation to log(1+x), where log refers to the natural (base e)
@@ -621,13 +638,15 @@ def log1p(x: Union[ivy.Array, ivy.NativeArray])\
     ----------
     x:
         input array.
+    out:
+        optional output array, for writing the result to. It must have a shape that the inputs broadcast to.
 
     Returns
     -------
-    out:
+    return:
         a new array containing the evaluated result for each element in x.
     """
-    return _cur_framework(x).log1p(x)
+    return _cur_framework(x).log1p(x, out)
 
 
 def isnan(x: Union[ivy.Array, ivy.NativeArray])\
@@ -649,7 +668,8 @@ def isnan(x: Union[ivy.Array, ivy.NativeArray])\
 
 
 def less(x1: Union[ivy.Array, ivy.NativeArray],
-         x2: Union[ivy.Array, ivy.NativeArray])\
+         x2: Union[ivy.Array, ivy.NativeArray],
+         out: Optional[Union[ivy.Array, ivy.NativeArray]] = None)\
         -> ivy.Array:
     """
     Computes the truth value of ``x1_i < x2_i`` for each element ``x1_i`` of the input array ``x1`` with the respective element ``x2_i`` of the input array ``x2``.
@@ -660,16 +680,19 @@ def less(x1: Union[ivy.Array, ivy.NativeArray],
         first input array. Should have a numeric data type.
     x2:
         second input array. Must be compatible with ``x1`` (see :ref:`broadcasting`). Should have a numeric data type.
+    out:
+        optional output array, for writing the result to. It must have a shape that the inputs broadcast to.
 
     Returns
     -------
-    out:
+    return:
         an array containing the element-wise results. The returned array must have a data type of ``bool``.
     """
-    return _cur_framework(x1).less(x1,x2)
+    return _cur_framework(x1).less(x1, x2, out)
 
 
-def cos(x: Union[ivy.Array, ivy.NativeArray])\
+def cos(x: Union[ivy.Array, ivy.NativeArray],
+        out: Optional[Union[ivy.Array, ivy.NativeArray]] = None)\
         -> ivy.Array:
     """
     Calculates an implementation-dependent approximation to the cosine, having domain ``(-infinity, +infinity)`` and codomain ``[-1, +1]``, for each element ``x_i`` of the input array ``x``. Each element ``x_i`` is assumed to be expressed in radians.
@@ -688,16 +711,19 @@ def cos(x: Union[ivy.Array, ivy.NativeArray])\
     ----------
     x:
         input array whose elements are each expressed in radians. Should have a floating-point data type.
+    out:
+        optional output array, for writing the result to. It must have a shape that the inputs broadcast to.
 
     Returns
     -------
-    out:
+    return:
         an array containing the cosine of each element in ``x``. The returned array must have a floating-point data type determined by :ref:`type-promotion`.
         """
-    return _cur_framework(x).cos(x)
+    return _cur_framework(x).cos(x, out)
 
 
-def acos(x: Union[ivy.Array, ivy.NativeArray])\
+def acos(x: Union[ivy.Array, ivy.NativeArray],
+         out: Optional[Union[ivy.Array, ivy.NativeArray]] = None)\
         -> ivy.Array:
     """
     Calculates an implementation-dependent approximation of the principal value of the inverse cosine, having domain [-1, +1] and codomain [+0, +π], for each element x_i of the input array x. Each element-wise result is expressed in radians.
@@ -715,16 +741,19 @@ def acos(x: Union[ivy.Array, ivy.NativeArray])\
     ----------
     x:
         input array. Should have a floating-point data type.
+    out:
+        optional output array, for writing the result to. It must have a shape that the inputs broadcast to.
 
     Returns
     -------
-    out:
+    return:
         an array containing the inverse cosine of each element in x. The returned array must have a floating-point data type determined by :ref:`type-promotion`.
     """
-    return _cur_framework(x).acos(x)
+    return _cur_framework(x).acos(x, out)
 
 
-def logical_not(x: Union[ivy.Array, ivy.NativeArray])\
+def logical_not(x: Union[ivy.Array, ivy.NativeArray],
+                out: Optional[Union[ivy.Array, ivy.NativeArray]] = None)\
         -> ivy.Array:
     """
     Computes the logical NOT for each element ``x_i`` of the input array ``x``.
@@ -736,17 +765,20 @@ def logical_not(x: Union[ivy.Array, ivy.NativeArray])\
     ----------
     x:
         input array. Should have a boolean data type.
+    out:
+        optional output array, for writing the result to. It must have a shape that the inputs broadcast to.
 
     Returns
     -------
-    out:
+    return:
         an array containing the element-wise results. The returned array must have a data type of ``bool``.
     """
-    return _cur_framework(x).logical_not(x)
+    return _cur_framework(x).logical_not(x, out)
 
 
-
-def logical_xor(x1: Union[ivy.Array, ivy.NativeArray], x2: Union[ivy.Array, ivy.NativeArray]) \
+def logical_xor(x1: Union[ivy.Array, ivy.NativeArray],
+                x2: Union[ivy.Array, ivy.NativeArray],
+                out: Optional[Union[ivy.Array, ivy.NativeArray]] = None) \
         -> ivy.Array:
     """
     Computes the bitwise XOR of the underlying binary representation of each element ``x1_i`` of the input array ``x1`` with the respective element ``x2_i`` of the input array ``x2``.
@@ -756,15 +788,20 @@ def logical_xor(x1: Union[ivy.Array, ivy.NativeArray], x2: Union[ivy.Array, ivy.
         first input array. Should have an integer or boolean data type.
     x2: array
         second input array. Must be compatible with ``x1`` (see :ref:`broadcasting`). Should have an integer or boolean data type.
+    out:
+        optional output array, for writing the result to. It must have a shape that the inputs broadcast to.
+
     Returns
     -------
-    out: array
+    return: array
         an array containing the element-wise results. The returned array must have a data type determined by :ref:`type-promotion`.
     """
-    return _cur_framework(x1, x2).logical_xor(x1, x2)
+    return _cur_framework(x1, x2).logical_xor(x1, x2, out)
 
 
-def logical_or(x1: Union[ivy.Array, ivy.NativeArray], x2: Union[ivy.Array, ivy.NativeArray])\
+def logical_or(x1: Union[ivy.Array, ivy.NativeArray],
+               x2: Union[ivy.Array, ivy.NativeArray],
+               out: Optional[Union[ivy.Array, ivy.NativeArray]] = None)\
         -> ivy.Array:
     """
     Computes the logical OR for each element ``x1_i`` of the input array ``x1`` with the respective element ``x2_i`` of the input array ``x2``.
@@ -778,16 +815,19 @@ def logical_or(x1: Union[ivy.Array, ivy.NativeArray], x2: Union[ivy.Array, ivy.N
         first input array. Should have a boolean data type.
     x2:
         second input array. Must be compatible with ``x1`` (see :ref:`broadcasting`). Should have a boolean data type.
+    out:
+        optional output array, for writing the result to. It must have a shape that the inputs broadcast to.
 
     Returns
     -------
-    out:
+    return:
         out (array) – an array containing the element-wise results. The returned array must have a data type of ``bool``.
     """
-    return _cur_framework(x1, x2).logical_or(x1, x2)
+    return _cur_framework(x1, x2).logical_or(x1, x2, out)
 
 
-def logical_and(x1: ivy.Array, x2: ivy.Array)\
+def logical_and(x1: ivy.Array, x2: ivy.Array,
+                out: Optional[Union[ivy.Array, ivy.NativeArray]] = None)\
        -> ivy.Array:
     """
     Computes the logical AND for each element x1_i of the input array x1 with the respective
@@ -800,13 +840,16 @@ def logical_and(x1: ivy.Array, x2: ivy.Array)\
     x2:
         second input array. Must be compatible with x1.
         Should have a boolean data type.
+    out:
+        optional output array, for writing the result to. It must have a shape that the inputs broadcast to.
+
     Returns
     -------
-    out:
+    return:
         out (array) – an array containing the element-wise results.
         The returned array must have a data type of bool.
     """
-    return _cur_framework(x1, x2).logical_and(x1, x2)
+    return _cur_framework(x1, x2).logical_and(x1, x2, out)
 
 
 def acosh(x: Union[ivy.Array, ivy.NativeArray])\
