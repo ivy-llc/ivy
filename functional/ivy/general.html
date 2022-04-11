@@ -434,17 +434,22 @@ a key-value structure, and exposes public methods .keys(), .values() and items()
 
 <dl class="py function">
 <dt id="ivy.functional.ivy.general.cumsum">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">cumsum</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">axis</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">0</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/general.html#cumsum"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.general.cumsum" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the cumulative sum of the elements along a given axis.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>array</em>) – Input array.</p></li>
-<li><p><strong>axis</strong> (<em>int</em>) – Axis along which the cumulative sum is computed. By default 0.</p></li>
-</ul>
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">cumsum</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">axis</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">0</span></em>, <em class="sig-param"><span class="n">out</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/general.html#cumsum"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.general.cumsum" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the cumulative sum of the elements along a given axis.
+Parameters
+———-
+x:</p>
+<blockquote>
+<div><p>Input array.</p>
+</div></blockquote>
+<dl class="simple">
+<dt>axis: </dt><dd><p>int, Axis along which the cumulative sum is computed. By default 0.</p>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Input array with cumulatively summed elements along axis.</p>
+<dt>out:</dt><dd><p>optional output array, for writing the result to.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>return:</dt><dd><p>Input array with cumulatively summed elements along axis</p>
 </dd>
 </dl>
 </dd></dl>
