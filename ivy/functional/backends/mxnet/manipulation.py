@@ -113,18 +113,24 @@ def split(x, num_or_size_splits=None, axis=0, with_remainder=False):
 
 
 @_handle_flat_arrays_in_out
-def repeat(x, repeats, axis=None):
-    return mx.nd.repeat(x, repeats, axis)
+def repeat(x, repeats, axis=None, out: Optional[mx.ndarray.ndarray.NDArray] = None):
+    ret = mx.nd.repeat(x, repeats, axis)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
-def tile(x, reps):
+def tile(x, reps, out: Optional[mx.ndarray.ndarray.NDArray] = None):
     if isinstance(reps, mx.nd.ndarray.NDArray):
         reps = reps.asnumpy().tolist()
-    return mx.nd.tile(_flat_array_to_1_dim_array(x), reps)
+    ret = mx.nd.tile(_flat_array_to_1_dim_array(x), reps)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
 @_handle_flat_arrays_in
-def constant_pad(x, pad_width, value=0):
+def constant_pad(x, pad_width, value=0, out: Optional[mx.ndarray.ndarray.NDArray] = None):
     if isinstance(pad_width, mx.ndarray.ndarray.NDArray):
         pad_width = pad_width.asnumpy().tolist()
     x_shape = list(x.shape)
@@ -138,17 +144,25 @@ def constant_pad(x, pad_width, value=0):
     pad_expanded_dims = mx.nd.pad(mat_expanded_dims, mode="constant", pad_width=tuple(pad_width_flat),
                                    constant_value=value)
     new_shape = [orig_dim + pad_width_item[0] + pad_width_item[1] for orig_dim, pad_width_item in zip(x_shape, pad_width)]
-    res = mx.nd.reshape(pad_expanded_dims, tuple(new_shape))
-    return res
+    ret = mx.nd.reshape(pad_expanded_dims, tuple(new_shape))
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
-def zero_pad(x, pad_width):
-    return constant_pad(x, pad_width, 0)
+def zero_pad(x, pad_width, out: Optional[mx.ndarray.ndarray.NDArray] = None):
+    ret = constant_pad(x, pad_width, 0)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
 swapaxes = mx.nd.swapaxes
 
 
 @_handle_flat_arrays_in_out
-def clip(x, x_min, x_max):
-    return mx.nd.clip(mx.nd.array(x), x_min, x_max)
+def clip(x, x_min, x_max, out: Optional[mx.ndarray.ndarray.NDArray] = None):
+    ret = mx.nd.clip(mx.nd.array(x), x_min, x_max)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
