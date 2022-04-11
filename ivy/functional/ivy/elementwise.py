@@ -69,15 +69,6 @@ def add(x1: Union[ivy.Array, ivy.NativeArray],
     return _cur_framework(x1, x2).add(x1, x2)
 
 
-def pow(x1: Union[ivy.Array, ivy.NativeArray],
-        x2: Union[ivy.Array, ivy.NativeArray])\
-        -> ivy.Array:
-    """
-
-    """
-    return _cur_framework(x1, x2).pow(x1, x2)
-
-
 def bitwise_xor(x1: Union[ivy.Array, ivy.NativeArray],
                 x2: Union[ivy.Array, ivy.NativeArray])\
         -> ivy.Array:
@@ -1172,7 +1163,8 @@ def divide(x1: Union[ivy.Array, ivy.NativeArray], x2: Union[ivy.Array, ivy.Nativ
     return _cur_framework(x1, x2).divide(x1, x2)
 
 
-def pow(x1: Union[ivy.Array, ivy.NativeArray], x2: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
+def pow(x1: Union[ivy.Array, ivy.NativeArray], 
+        x2: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
     """
     Calculates an implementation-dependent approximation of exponentiation by raising each element ``x1_i`` (the base) of the input array ``x1`` to the power of ``x2_i`` (the exponent), where ``x2_i`` is the corresponding element of the input array ``x2``.
     .. note::
