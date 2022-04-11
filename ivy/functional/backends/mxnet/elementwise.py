@@ -72,9 +72,13 @@ def greater(x1: mx.ndarray.ndarray.NDArray,
 
 
 @_handle_flat_arrays_in_out
-def greater_equal(x1: mx.ndarray.ndarray.NDArray, x2: mx.ndarray.ndarray.NDArray)\
+def greater_equal(x1: mx.ndarray.ndarray.NDArray, x2: mx.ndarray.ndarray.NDArray,
+                  out: Optional[mx.ndarray.ndarray.NDArray] = None)\
         -> mx.ndarray.ndarray.NDArray:
-    return mx.nd.greater_equal(x1, x2)
+    ret = mx.nd.greater_equal(x1, x2)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
 @_handle_flat_arrays_in_out
@@ -90,11 +94,16 @@ def isinf(x: mx.ndarray.ndarray.NDArray)\
     return mx.nd.contrib.isinf(x.astype('float32')).astype('bool')
 
 
-def sqrt(x: mx.ndarray.ndarray.NDArray)\
+def sqrt(x: mx.ndarray.ndarray.NDArray,
+         out: Optional[mx.ndarray.ndarray.NDArray] = None)\
         -> mx.ndarray.ndarray.NDArray:
     if isinstance(x, float):
-        return math.sqrt(x)
-    return mx.nd.sqrt(x)
+        ret = math.sqrt(x)
+    else:
+        ret = mx.nd.sqrt(x)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
 @_handle_flat_arrays_in_out
@@ -104,32 +113,49 @@ def isnan(x: mx.ndarray.ndarray.NDArray)\
 
 
 @_handle_flat_arrays_in_out
-def less(x1: mx.ndarray.ndarray.NDArray,x2: mx.ndarray.ndarray.NDArray)\
+def less(x1: mx.ndarray.ndarray.NDArray,
+         x2: mx.ndarray.ndarray.NDArray,
+         out: Optional[mx.ndarray.ndarray.NDArray] = None)\
         -> mx.ndarray.ndarray.NDArray:
-    return mx.nd.lesser(x1,x2).astype('bool')
+    ret = mx.nd.lesser(x1,x2).astype('bool')
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
 @_handle_flat_arrays_in_out
 def logical_xor(x1: mx.ndarray.ndarray.NDArray,
                 x2: mx.ndarray.ndarray.NDArray,
-                dtype: ['bool']) \
+                dtype: ['bool'],
+                out: Optional[mx.ndarray.ndarray.NDArray] = None) \
         -> mx.ndarray.ndarray.NDArray:
-    return mx.nd.logical_xor(x1, x2, dtype).astype('bool')
+    ret = mx.nd.logical_xor(x1, x2, dtype).astype('bool')
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
 @_handle_flat_arrays_in_out
-def logical_not(x: mx.ndarray.ndarray.NDArray)\
+def logical_not(x: mx.ndarray.ndarray.NDArray,
+                out: Optional[mx.ndarray.ndarray.NDArray] = None)\
         -> mx.ndarray.ndarray.NDArray:
-    return mx.nd.logical_not(x)
+    ret = mx.nd.logical_not(x)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
 @_handle_flat_arrays_in_out
-def acos(x: mx.ndarray.ndarray.NDArray)\
+def acos(x: mx.ndarray.ndarray.NDArray,
+         out: Optional[mx.ndarray.ndarray.NDArray] = None)\
       -> mx.ndarray.ndarray.NDArray:
     if isinstance(x, float):
-        return math.acos(x)
+        ret = math.acos(x)
     else:
-        mx.nd.arccos(x)
+        ret = mx.nd.arccos(x)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
 @_handle_flat_arrays_in_out
