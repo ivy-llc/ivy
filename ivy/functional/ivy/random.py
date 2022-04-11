@@ -3,30 +3,46 @@ Collection of random Ivy functions
 """
 
 # local
+import ivy
 from ivy.framework_handler import current_framework as _cur_framework
-
+from typing import Optional, Union
 
 # Extra #
 # ------#
 
-def random_uniform(low=0.0, high=1.0, shape=None, dev=None):
+
+def random_uniform(low: float = 0.0, high: float = 1.0,
+                   shape: Optional[Union[ivy.Dtype, str]] = None,
+                   dev: Optional[ivy.device] = None)\
+        -> ivy.array:
+
     """
     Draws samples from a uniform distribution.
     Samples are uniformly distributed over the half-open interval [low, high) (includes low, but excludes high).
     In other words, any value within the given interval is equally likely to be drawn by uniform.
-
-    :param low: Lower boundary of the output interval. All values generated will be greater than or equal to low.
-                The default value is 0.
-    :type low: float
-    :param high: Upper boundary of the output interval. All values generated will be less than high.
-                The default value is 1.0.
-    :type high: float
-    :param shape: Output shape. If the given shape is, e.g., (m, n, k), then m * n * k samples are drawn.
-                    If size is None (default), a single value is returned.
-    :type shape: sequence of ints
-    :param dev: device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
-    :type dev: ivy.Device
-    :return: Drawn samples from the parameterized uniform distribution.
+    
+    Parameters
+    -----------
+    low: float
+        Lower boundary of the output interval. All values generated will be greter than or equal to low.
+    high: float
+        Upper boundary of the output intercal. All the values genrated will be lesser than than high..
+    shape:
+        If the given shape is, e.g (m, n, k), then m * n * k samples are drawn.
+            If size is None(Default), a single value is returned
+    dev:
+        device on which to create the array 'cuda 0', 'cuda:1' , 'cpu' etc.
+    
+    Returns
+    -------
+    ivy.Array
+        Drawn samples from the parameterized uniform distribution
+    
+      Examples:
+        >>> x = ivy.array([0.0, 2.0])
+        >>> y = ivy.random_uniform(0.0,1.0,None)
+        >>> print(y)
+        [1.0]
     """
     return _cur_framework().random_uniform(low, high, shape, dev)
 
