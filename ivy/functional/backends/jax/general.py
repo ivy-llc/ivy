@@ -3,6 +3,7 @@ Collection of Jax general functions, wrapped to fit Ivy syntax and signature.
 """
 
 # global
+from optparse import Option
 import jax as jax
 import numpy as np
 import jax.numpy as jnp
@@ -187,10 +188,14 @@ def scatter_nd(indices, updates, shape=None, tensor=None, reduction='sum', dev=N
 
 
 
-def gather(params, indices, axis=-1, dev=None):
+def gather(params : JaxArray, indices: JaxArray, axis : Optional[int] =-1, dev: Optional[str] = None , out: Optional[JaxArray] = None)\
+        ->JaxArray: 
     if dev is None:
         dev = callable_dev(params)
-    return to_dev(jnp.take_along_axis(params, indices, axis), dev)
+    if ivy.exists(out):
+        return ivy.inplace_update(out,to_dev(jnp.take_along_axis(params, indices, axis), dev))
+    else:
+        return to_dev(jnp.take_along_axis(params, indices, axis), dev)
 
 
 def gather_nd(params, indices, dev=None):
