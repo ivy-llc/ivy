@@ -168,7 +168,9 @@ def reshape(x: Union[ivy.Array, ivy.NativeArray],
     return _cur_framework(x).reshape(x, shape, copy, out)
 
 
-def concat(xs: Union[Tuple[Union[ivy.Array, ivy.NativeArray], ...],List[Union[ivy.Array, ivy.NativeArray]]], axis: Optional[int] = 0)\
+def concat(xs: Union[Tuple[Union[ivy.Array, ivy.NativeArray], ...],List[Union[ivy.Array, ivy.NativeArray]]],
+           axis: Optional[int] = 0,
+           out: Optional[Union[ivy.Array, ivy.NativeArray]] = None)\
         -> Union[ivy.Array, ivy.NativeArray]:
     """
     Casts an array to a specified type.
@@ -180,7 +182,7 @@ def concat(xs: Union[Tuple[Union[ivy.Array, ivy.NativeArray], ...],List[Union[iv
     :type axis: int, optional
     :return: The concatenated array.
     """
-    return _cur_framework(xs[0]).concat(xs, axis)
+    return _cur_framework(xs[0]).concat(xs, axis, out)
 
 
 # Extra #
@@ -207,7 +209,9 @@ def split(x: Union[ivy.Array, ivy.NativeArray], num_or_size_splits: Union[int, I
     return _cur_framework(x).split(x, num_or_size_splits, axis, with_remainder)
 
 
-def repeat(x: Union[ivy.Array, ivy.NativeArray], repeats: Union[int, Iterable[int]], axis: int = None)\
+def repeat(x: Union[ivy.Array, ivy.NativeArray], repeats: Union[int, Iterable[int]],
+           axis: int = None,
+           out: Optional[Union[ivy.Array, ivy.NativeArray]] = None)\
         -> Union[ivy.Array, ivy.NativeArray]:
     """
     Repeat values along a given dimension
@@ -221,10 +225,12 @@ def repeat(x: Union[ivy.Array, ivy.NativeArray], repeats: Union[int, Iterable[in
     :type axis: int, optional
     :return: The repeated output array.
     """
-    return _cur_framework(x).repeat(x, repeats, axis)
+    return _cur_framework(x).repeat(x, repeats, axis, out)
 
 
-def tile(x: Union[ivy.Array, ivy.NativeArray], reps: Iterable[int])\
+def tile(x: Union[ivy.Array, ivy.NativeArray],
+         reps: Iterable[int],
+         out: Optional[Union[ivy.Array, ivy.NativeArray]] = None)\
         -> Union[ivy.Array, ivy.NativeArray]:
     """
     Constructs an array by repeating x the number of times given by reps.
@@ -235,10 +241,13 @@ def tile(x: Union[ivy.Array, ivy.NativeArray], reps: Iterable[int])\
     :type reps: sequence of ints
     :return: The tiled output array.
     """
-    return _cur_framework(x).tile(x, reps)
+    return _cur_framework(x).tile(x, reps, out)
 
 
-def constant_pad(x: Union[ivy.Array, ivy.NativeArray], pad_width: Iterable[Tuple[int]], value: Number = 0)\
+def constant_pad(x: Union[ivy.Array, ivy.NativeArray],
+                 pad_width: Iterable[Tuple[int]],
+                 value: Number = 0,
+                 out: Optional[Union[ivy.Array, ivy.NativeArray]] = None)\
         -> Union[ivy.Array, ivy.NativeArray]:
     """
     Pads an array with a constant value.
@@ -252,10 +261,12 @@ def constant_pad(x: Union[ivy.Array, ivy.NativeArray], pad_width: Iterable[Tuple
     :type value: float or int, default zero
     :return: Padded array of rank equal to x with shape increased according to pad_width.
     """
-    return _cur_framework(x).constant_pad(x, pad_width, value)
+    return _cur_framework(x).constant_pad(x, pad_width, value, out)
 
 
-def zero_pad(x: Union[ivy.Array, ivy.NativeArray], pad_width: Iterable[Tuple[int]])\
+def zero_pad(x: Union[ivy.Array, ivy.NativeArray],
+             pad_width: Iterable[Tuple[int]],
+             out: Optional[Union[ivy.Array, ivy.NativeArray]] = None)\
         -> Union[ivy.Array, ivy.NativeArray]:
     """
     Pads an array with zeros.
@@ -267,10 +278,13 @@ def zero_pad(x: Union[ivy.Array, ivy.NativeArray], pad_width: Iterable[Tuple[int
     :type pad_width: sequence of tuples of ints
     :return: Padded array of rank equal to x with shape increased according to pad_width.
     """
-    return _cur_framework(x).zero_pad(x, pad_width)
+    return _cur_framework(x).zero_pad(x, pad_width, out)
 
 
-def swapaxes(x: Union[ivy.Array, ivy.NativeArray], axis0: int, axis1: int)\
+def swapaxes(x: Union[ivy.Array, ivy.NativeArray],
+             axis0: int,
+             axis1: int,
+             out: Optional[Union[ivy.Array, ivy.NativeArray]] = None)\
         -> Union[ivy.Array, ivy.NativeArray]:
     """
     Interchange two axes of an array.
@@ -283,11 +297,13 @@ def swapaxes(x: Union[ivy.Array, ivy.NativeArray], axis0: int, axis1: int)\
     :type axis1: int
     :return: x with its axes permuted.
     """
-    return _cur_framework(x).swapaxes(x, axis0, axis1)
+    return _cur_framework(x).swapaxes(x, axis0, axis1, out)
 
 
-def clip(x: Union[ivy.Array, ivy.NativeArray], x_min: Union[Number, Union[ivy.Array, ivy.NativeArray]],
-         x_max: Union[Number, Union[ivy.Array, ivy.NativeArray]])\
+def clip(x: Union[ivy.Array, ivy.NativeArray],
+         x_min: Union[Number, Union[ivy.Array, ivy.NativeArray]],
+         x_max: Union[Number, Union[ivy.Array, ivy.NativeArray]],
+         out: Optional[Union[ivy.Array, ivy.NativeArray]] = None)\
         -> Union[ivy.Array, ivy.NativeArray]:
     """
     Clips (limits) the values in an array.
@@ -305,4 +321,4 @@ def clip(x: Union[ivy.Array, ivy.NativeArray], x_min: Union[Number, Union[ivy.Ar
     :return: An array with the elements of x, but where values < x_min are replaced with x_min,
                 and those > x_max with x_max.
     """
-    return _cur_framework(x).clip(x, x_min, x_max)
+    return _cur_framework(x).clip(x, x_min, x_max, out)
