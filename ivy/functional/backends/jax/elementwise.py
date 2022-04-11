@@ -208,6 +208,8 @@ def negative(x: JaxArray) -> JaxArray:
 
 def not_equal(x1: JaxArray, x2: JaxArray) \
         -> JaxArray:
+    if isinstance(x2, int):
+        x2 = jnp.asarray(x2, dtype=x1.dtype)
     return jnp.not_equal(x1, x2)
 
 
@@ -218,6 +220,8 @@ def tanh(x: JaxArray)\
 
 def floor_divide(x1: JaxArray, x2: JaxArray)\
                 -> JaxArray:
+    if isinstance(x2, int):
+        x2 = jnp.asarray(x2, dtype=x1.dtype)
     return jnp.floor_divide(x1, x2)
 
 
@@ -253,9 +257,9 @@ def pow(x1: jnp.ndarray, x2: jnp.ndarray)\
 
 def remainder(x1: JaxArray, x2: JaxArray)\
         -> JaxArray:
-        if isinstance(x2,int) and x2 >9223372036854775807:
-            x2 = jax.numpy.uint64(x2)
-        return jnp.remainder(x1, x2)
+    if isinstance(x2, int):
+        x2 = jnp.asarray(x2, dtype=x1.dtype)
+    return jnp.remainder(x1, x2)
 
 
 def round(x: JaxArray)\
