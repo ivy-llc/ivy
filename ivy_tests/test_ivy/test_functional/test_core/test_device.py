@@ -85,6 +85,12 @@ def test_dev_from_str(x, dtype, tensor_fn, dev, call):
         return
 
 
+# num_gpus
+def test_num_gpus():
+    assert ivy.num_gpus() >= 0
+    # docstring test
+    helpers.assert_docstring_examples_run(ivy.num_gpus)
+
 
 # memory_on_dev
 @pytest.mark.parametrize(
@@ -102,8 +108,6 @@ def test_memory_on_dev(dev_to_check, dev, call):
     if call is helpers.torch_call:
         # global variables aren't supported for pytorch scripting
         pytest.skip()
-    # docstring test
-    helpers.assert_docstring_examples_run(ivy.num_gpus)
 
 
 # Device Allocation #
