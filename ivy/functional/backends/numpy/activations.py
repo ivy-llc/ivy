@@ -22,7 +22,8 @@ def leaky_relu(x: np.ndarray, alpha: Optional[float] = 0.2)\
     return np.where(x > 0, x, x * alpha)
 
 
-def gelu(x, approximate=True):
+def gelu(x: np.ndarray, approximate: bool=True)\
+    -> np.ndarray:
     if _erf is None:
         raise Exception('scipy must be installed in order to call ivy.gelu with a numpy backend.')
     if approximate:

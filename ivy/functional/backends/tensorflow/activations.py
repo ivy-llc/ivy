@@ -19,8 +19,10 @@ def leaky_relu(x: Tensor, alpha: Optional[float] = 0.2)\
     return tf.nn.leaky_relu(x, alpha)
 
 
-gelu = lambda x, approximate=True: tf.nn.gelu(x, approximate)
-
+def gelu(x: Tensor, approximate: bool =True)\
+    -> Tensor:
+    return tf.nn.gelu(x, approximate)
+    
 def tanh(x: Tensor)\
         -> Tensor:
     return tf.nn.tanh(x)
