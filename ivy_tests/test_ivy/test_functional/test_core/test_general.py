@@ -1142,19 +1142,34 @@ def test_one_hot(ind_n_depth, dtype, tensor_fn, dev, call):
 @pytest.mark.parametrize(
     "dtype", ['float32'])
 @pytest.mark.parametrize(
+    "with_out", [True, False])    
+@pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_cumsum(x_n_axis, dtype, tensor_fn, dev, call):
+def test_cumsum(x_n_axis, dtype, with_out, tensor_fn, dev, call):
     # smoke test
     x, axis = x_n_axis
     x = ivy.array(x, dtype, dev)
-    ret = ivy.cumsum(x, axis)
+    if with_out:
+        if ivy.exists(axis):
+            out = ivy.zeros(x.shape)
+            ret = ivy.cumsum(x,axis,out=out)
+        else:
+            out = ivy.zeros(ivy.reshape(x,(-1,)))
+            ret = ivy.cumsum(x,axis,out=out)    
+    else:
+        ret = ivy.cumsum(x, axis)
     # type test
     assert ivy.is_native_array(ret)
     # cardinality test
     assert ret.shape == x.shape
     # value test
     assert np.allclose(call(ivy.cumsum, x, axis), np.asarray(ivy.functional.backends.numpy.cumsum(ivy.to_numpy(x), axis)))
-
+    # out test
+    if with_out:
+        if not ivy.current_framework_str() in ["tensorflow", "jax"]:
+            # these frameworks do not support native inplace updates
+            assert ret is out
+            assert ret.data is out.data    
 
 # cumprod
 @pytest.mark.parametrize(
