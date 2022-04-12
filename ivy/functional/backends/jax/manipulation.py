@@ -5,67 +5,98 @@ from typing import Union, Tuple, Optional, List
 
 # local
 from ivy.functional.backends.jax import JaxArray
+import ivy
 
 
 def roll(x: JaxArray,
          shift: Union[int, Tuple[int, ...]],
-         axis: Optional[Union[int, Tuple[int, ...]]] = None) \
+         axis: Optional[Union[int, Tuple[int, ...]]] = None,
+         out: Optional[JaxArray] = None) \
         -> JaxArray:
-    return jnp.roll(x, shift, axis)
+    ret = jnp.roll(x, shift, axis)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
 def squeeze(x: JaxArray,
-            axis: Union[int, Tuple[int], List[int]]=None)\
+            axis: Union[int, Tuple[int], List[int]] = None,
+            out: Optional[JaxArray] = None)\
         -> JaxArray:
-
-        if x.shape == ():
-            if axis is None or axis == 0 or axis == -1:
-                return x
-            raise ValueError('tried to squeeze a zero-dimensional input by axis {}'.format(axis))
-        return jnp.squeeze(x, axis)
+    if x.shape == ():
+        if axis is None or axis == 0 or axis == -1:
+            ret = x
+        raise ValueError('tried to squeeze a zero-dimensional input by axis {}'.format(axis))
+    else:
+        ret = jnp.squeeze(x, axis)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
 def _flat_array_to_1_dim_array(x):
     return x.reshape((1,)) if x.shape == () else x
 
+
 # noinspection PyShadowingBuiltins
 def flip(x: JaxArray,
-         axis: Optional[Union[int, Tuple[int], List[int]]] = None)\
+         axis: Optional[Union[int, Tuple[int], List[int]]] = None,
+         out: Optional[JaxArray] = None)\
          -> JaxArray:
-    return jnp.flip(x, axis=axis)
+    ret = jnp.flip(x, axis=axis)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
 def expand_dims(x: JaxArray,
-                axis: Optional[Union[int, Tuple[int], List[int]]] = None) \
+                axis: Optional[Union[int, Tuple[int], List[int]]] = None,
+                out: Optional[JaxArray] = None) \
         -> JaxArray:
     try:
-        return jnp.expand_dims(x, axis)
+        ret = jnp.expand_dims(x, axis)
+        if ivy.exists(out):
+            return ivy.inplace_update(out, ret)
+        return ret
     except ValueError as error:
         raise IndexError(error)
 
 
 def stack(x: Union[Tuple[JaxArray], List[JaxArray]],
-          axis: Optional[int] = None) \
+          axis: Optional[int] = None,
+          out: Optional[JaxArray] = None) \
         -> JaxArray:
     if axis is None:
         axis = 0
-    return jnp.stack(x, axis=axis)
+    ret = jnp.stack(x, axis=axis)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
 def permute_dims(x: JaxArray,
-                axes: Tuple[int,...]) \
+                axes: Tuple[int,...],
+                 out: Optional[JaxArray] = None) \
         -> JaxArray:
-    return jnp.transpose(x,axes)
+    ret = jnp.transpose(x,axes)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
 def reshape(x: JaxArray,
             shape: Tuple[int, ...],
-            copy: Optional[bool] = None)\
+            copy: Optional[bool] = None,
+            out: Optional[JaxArray] = None)\
         -> JaxArray:
-    return jnp.reshape(x, shape)
+    ret = jnp.reshape(x, shape)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
-def concat(xs: List[JaxArray], axis: int = 0) -> JaxArray:
+def concat(xs: List[JaxArray], axis: int = 0,
+           out: Optional[JaxArray] = None) -> JaxArray:
     is_tuple = type(xs) is tuple
 
     if axis==None:
@@ -78,9 +109,9 @@ def concat(xs: List[JaxArray], axis: int = 0) -> JaxArray:
             xs = tuple(xs)
 
     ret = jnp.concatenate(xs, axis)
-
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
     return ret
-
 
 
 # Extra #
