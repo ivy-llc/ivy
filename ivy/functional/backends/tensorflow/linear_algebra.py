@@ -176,21 +176,30 @@ def outer(x1: Tensor,
 def diagonal(x: tf.Tensor,
              offset: int = 0,
              axis1: int = -2,
-             axis2: int = -1) -> tf.Tensor:
-    return tf.experimental.numpy.diagonal(x, offset, axis1=axis1, axis2=axis2)
+             axis2: int = -1,
+             out: Optional[Tensor] = None)\
+        -> tf.Tensor:
+    ret = tf.experimental.numpy.diagonal(x, offset, axis1=axis1, axis2=axis2)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
 def qr(x: tf.Tensor,
-       mode: str = 'reduced') -> namedtuple('qr', ['Q', 'R']):
+       mode: str = 'reduced',
+       out: Optional[Tuple[Tensor, Tensor]] = None) -> namedtuple('qr', ['Q', 'R']):
     res = namedtuple('qr', ['Q', 'R'])
     if mode == 'reduced':
         q, r = tf.linalg.qr(x, full_matrices=False)
-        return res(q, r)
+        ret = res(q, r)
     elif mode == 'complete':
         q, r = tf.linalg.qr(x, full_matrices=True)
-        return res(q, r)
+        ret =  res(q, r)
     else:
         raise Exception("Only 'reduced' and 'complete' qr modes are allowed for the tensorflow backend.")
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
 def matmul(x1: tf.Tensor,
