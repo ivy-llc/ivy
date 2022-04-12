@@ -85,11 +85,17 @@ def matrix_norm(x: np.ndarray,
     return ret
 
 
-def svd(x: np.ndarray, full_matrices: bool = True) -> Union[np.ndarray, Tuple[np.ndarray, ...]]:
+def svd(x: np.ndarray,
+        full_matrices: bool = True,
+        out: Optional[np.ndarray] = None) \
+        -> Union[np.ndarray, Tuple[np.ndarray, ...]]:
+
     results = namedtuple("svd", "U S Vh")
     U, D, VT = np.linalg.svd(x, full_matrices=full_matrices)
-    res = results(U, D, VT)
-    return res
+    ret = results(U, D, VT)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
 def outer(x1: np.ndarray,
