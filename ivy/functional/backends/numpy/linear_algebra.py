@@ -29,19 +29,27 @@ def inv(x: np.ndarray,
     return ret
 
 
-
-
 def pinv(x: np.ndarray,
-         rtol: Optional[Union[float, Tuple[float]]] = None) \
+         rtol: Optional[Union[float, Tuple[float]]] = None,
+         out: Optional[np.ndarray] = None) \
         -> np.ndarray:
 
     if rtol is None:
-        return np.linalg.pinv(x)
-    return np.linalg.pinv(x, rtol)
+        ret =  np.linalg.pinv(x)
+    else:
+        ret =  np.linalg.pinv(x, rtol)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
-def matrix_transpose(x: np.ndarray) \
+
+def matrix_transpose(x: np.ndarray,
+                     out: Optional[np.ndarray] = None) \
         -> np.ndarray:
-    return np.swapaxes(x, -1, -2)
+    ret = np.swapaxes(x, -1, -2)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
 # noinspection PyUnusedLocal,PyShadowingBuiltins
