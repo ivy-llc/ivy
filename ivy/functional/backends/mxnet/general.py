@@ -41,7 +41,13 @@ def array_equal(x0, x1):
 
 def to_numpy(x: mx.nd.NDArray) \
         -> mx.nd.NDArray:
-    return mx.nd.array(x)
+    if isinstance(x, _np.ndarray):
+        return x
+    else:
+        if isinstance(x, (int, float)):
+            return _np.array(x)
+        else:
+            return x.asnumpy()
 
 
 to_scalar = lambda x: x if isinstance(x, Number) else x.asscalar().item()
