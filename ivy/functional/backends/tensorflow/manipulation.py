@@ -5,57 +5,74 @@ from numbers import Number
 from typing import Union, Tuple, Optional, List
 from tensorflow.python.types.core import Tensor
 
+# local
+import ivy
+
 
 def roll(x: Tensor,
          shift: Union[int, Tuple[int, ...]],
-         axis: Optional[Union[int, Tuple[int, ...]]] = None)\
+         axis: Optional[Union[int, Tuple[int, ...]]] = None,
+         out: Optional[Tensor] = None)\
         -> Tensor:
     if axis is None:
         originalShape = x.shape
         axis = 0
         x = tf.reshape(x, [-1])
         roll = tf.roll(x, shift, axis)
-        return tf.reshape(roll, originalShape)
-
-    return tf.roll(x, shift, axis)
+        ret = tf.reshape(roll, originalShape)
+    else:
+        ret = tf.roll(x, shift, axis)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
 def squeeze(x: Tensor,
-            axis: Union[int, Tuple[int], List[int]])\
+            axis: Union[int, Tuple[int], List[int]],
+            out: Optional[Tensor] = None)\
         -> Tensor:
     if isinstance(axis, int):
         if x.shape[axis] > 1:
             raise ValueError('Expected dimension of size 1, but found dimension size {}'.format(x.shape[axis]))
-        return tf.squeeze(x, axis)
-    if isinstance(axis, tuple):
-        axis = list(axis)
-    normalise_axis = [(len(x.shape) - abs(element)) if element < 0 else element for element in axis]
-    normalise_axis.sort()
-    axis_updated_after_squeeze = [ dim - key for (key, dim) in enumerate(normalise_axis)]
-    for i in axis_updated_after_squeeze:
-        if x.shape[i] > 1:
-            raise ValueError('Expected dimension of size 1, but found dimension size {}'.format(x.shape[i]))
-        else:
-            x = tf.squeeze(x, i)
-    return x
+        ret = tf.squeeze(x, axis)
+    else:
+        if isinstance(axis, tuple):
+            axis = list(axis)
+        normalise_axis = [(len(x.shape) - abs(element)) if element < 0 else element for element in axis]
+        normalise_axis.sort()
+        axis_updated_after_squeeze = [ dim - key for (key, dim) in enumerate(normalise_axis)]
+        for i in axis_updated_after_squeeze:
+            if x.shape[i] > 1:
+                raise ValueError('Expected dimension of size 1, but found dimension size {}'.format(x.shape[i]))
+            else:
+                x = tf.squeeze(x, i)
+        ret = x
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
 def flip(x: Tensor,
-         axis: Optional[Union[int, Tuple[int], List[int]]] = None)\
+         axis: Optional[Union[int, Tuple[int], List[int]]] = None,
+         out: Optional[Tensor] = None)\
          -> Tensor:
     num_dims = len(x.shape)
     if not num_dims:
-        return x
-    if axis is None:
-        new_axis = list(range(num_dims))
+        ret = x
     else:
-        new_axis = axis
-    if type(new_axis) is int:
-        new_axis = [new_axis]
-    else:
-        new_axis = new_axis
-    new_axis = [item + num_dims if item < 0 else item for item in new_axis]
-    return tf.reverse(x, new_axis)
+        if axis is None:
+            new_axis = list(range(num_dims))
+        else:
+            new_axis = axis
+        if type(new_axis) is int:
+            new_axis = [new_axis]
+        else:
+            new_axis = new_axis
+        new_axis = [item + num_dims if item < 0 else item for item in new_axis]
+        ret = tf.reverse(x, new_axis)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
 def expand_dims(x: Tensor,
