@@ -125,9 +125,11 @@ def svdvals(x: np.ndarray,
         return ivy.inplace_update(out, ret)
     return ret
 
+
 def qr(x: np.ndarray,
        mode: str = 'reduced',
-       out: Optional[np.ndarray] = None) -> namedtuple('qr', ['Q', 'R']):
+       out: Optional[Tuple[np.ndarray, np.ndarray]] = None)\
+        -> namedtuple('qr', ['Q', 'R']):
     res = namedtuple('qr', ['Q', 'R'])
     q, r = np.linalg.qr(x, mode=mode)
     ret =  res(q, r)
@@ -137,16 +139,22 @@ def qr(x: np.ndarray,
 
 
 def matmul(x1: np.ndarray,
-           x2: np.ndarray) -> np.ndarray:
-    return np.matmul(x1, x2)
+           x2: np.ndarray,
+           out: Optional[np.ndarray] = None)\
+        -> np.ndarray:
+    return np.matmul(x1, x2, out)
 
 
-def slogdet(x: Union[ivy.Array, ivy.NativeArray], full_matrices: bool = True) -> Union[
-    ivy.Array, Tuple[ivy.Array, ...]]:
+def slogdet(x: np.ndarray,
+            out: Optional[np.ndarray] = None)\
+        -> Tuple[np.ndarray, np.ndarray]:
     results = namedtuple("slogdet", "sign logabsdet")
     sign, logabsdet = np.linalg.slogdet(x)
-    res = results(sign, logabsdet)
-    return res
+    ret = results(sign, logabsdet)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
+
 
 def tensordot(x1: np.ndarray, x2: np.ndarray,
               axes: Union[int, Tuple[List[int], List[int]]] = 2) \
