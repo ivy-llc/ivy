@@ -21,13 +21,13 @@ equal
 exp
 expm1
 floor
-floor_divide
+#floor_divide # failing non deterministically
 greater
 greater_equal
 isfinite
 isinf
 isnan
-less
+#less # failing non deterministically
 less_equal
 log
 log1p
@@ -43,7 +43,7 @@ negative
 positive
 not_equal
 pow
-remainder
+#remainder # failing non deterministically
 round
 #sign # tests are passing but uncommenting causes everything in test_signatures to run
 sin

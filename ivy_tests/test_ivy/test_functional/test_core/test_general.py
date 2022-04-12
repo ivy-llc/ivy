@@ -1142,19 +1142,34 @@ def test_one_hot(ind_n_depth, dtype, tensor_fn, dev, call):
 @pytest.mark.parametrize(
     "dtype", ['float32'])
 @pytest.mark.parametrize(
+    "with_out", [True, False])    
+@pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_cumsum(x_n_axis, dtype, tensor_fn, dev, call):
+def test_cumsum(x_n_axis, dtype, with_out, tensor_fn, dev, call):
     # smoke test
     x, axis = x_n_axis
     x = ivy.array(x, dtype, dev)
-    ret = ivy.cumsum(x, axis)
+    if with_out:
+        if ivy.exists(axis):
+            out = ivy.zeros(x.shape)
+            ret = ivy.cumsum(x,axis,out=out)
+        else:
+            out = ivy.zeros(ivy.reshape(x,(-1,)).shape)
+            ret = ivy.cumsum(x,axis,out=out)    
+    else:
+        ret = ivy.cumsum(x, axis)
     # type test
     assert ivy.is_native_array(ret)
     # cardinality test
     assert ret.shape == x.shape
     # value test
     assert np.allclose(call(ivy.cumsum, x, axis), np.asarray(ivy.functional.backends.numpy.cumsum(ivy.to_numpy(x), axis)))
-
+    # out test
+    if with_out:
+        if not ivy.current_framework_str() in ["tensorflow", "jax"]:
+            # these frameworks do not support native inplace updates
+            assert ret is out
+            assert ret.data is out.data    
 
 # cumprod
 @pytest.mark.parametrize(
@@ -1164,12 +1179,22 @@ def test_cumsum(x_n_axis, dtype, tensor_fn, dev, call):
 @pytest.mark.parametrize(
     "dtype", ['float32'])
 @pytest.mark.parametrize(
+    "with_out", [True, False])     
+@pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_cumprod(x_n_axis, exclusive, dtype, tensor_fn, dev, call):
+def test_cumprod(x_n_axis, exclusive, dtype, with_out, tensor_fn, dev, call):
     # smoke test
     x, axis = x_n_axis
     x = ivy.array(x, dtype, dev)
-    ret = ivy.cumprod(x, axis, exclusive)
+    if with_out:
+        if ivy.exists(axis):
+            out = ivy.zeros(x.shape)
+            ret = ivy.cumprod(x,axis,exclusive=exclusive,out=out)
+        else:
+            out = ivy.zeros(ivy.reshape(x,(-1,)).shape)
+            ret = ivy.cumprod(x,axis,exclusive=exclusive,out=out)
+    else:
+        ret = ivy.cumprod(x, axis, exclusive)
     # type test
     assert ivy.is_native_array(ret)
     # cardinality test
@@ -1177,7 +1202,12 @@ def test_cumprod(x_n_axis, exclusive, dtype, tensor_fn, dev, call):
     # value test
     assert np.allclose(call(ivy.cumprod, x, axis, exclusive),
                        np.asarray(ivy.functional.backends.numpy.cumprod(ivy.to_numpy(x), axis, exclusive)))
-
+    # out test
+    if with_out:
+        if not ivy.current_framework_str() in ["tensorflow", "jax"]:
+            # these frameworks do not support native inplace updates
+            assert ret is out
+            assert ret.data is out.data
 
 
 
@@ -1633,37 +1663,37 @@ def test_framework_setting_with_multiprocessing(dev, call):
 #     ivy.unset_framework()
 
 
-# def test_class_ivy_handles(dev, call):
-#
-#     if call is helpers.np_call:
-#         # Numpy is the conflicting framework being tested against
-#         pytest.skip()
-#
-#     class ArrayGen:
-#
-#         def __init__(self, ivyh):
-#             self._ivy = ivyh
-#
-#         def get_array(self):
-#             return self._ivy.array([0., 1., 2.])
-#
-#     # create instance
-#     ag = ArrayGen(ivy.get_framework())
-#
-#     # create array from array generator
-#     x = ag.get_array()
-#
-#     # verify this is not a numpy array
-#     assert not isinstance(x, np.ndarray)
-#
-#     # change global framework to numpy
-#     ivy.set_framework('numpy')
-#
-#     # create another array from array generator
-#     x = ag.get_array()
-#
-#     # verify this is not still a numpy array
-#     assert not isinstance(x, np.ndarray)
+def test_class_ivy_handles(dev, call):
+
+    if call is helpers.np_call:
+        # Numpy is the conflicting framework being tested against
+        pytest.skip()
+
+    class ArrayGen:
+
+        def __init__(self, ivyh):
+            self._ivy = ivyh
+
+        def get_array(self):
+            return self._ivy.array([0., 1., 2.])
+
+    # create instance
+    ag = ArrayGen(ivy.get_framework())
+
+    # create array from array generator
+    x = ag.get_array()
+
+    # verify this is not a numpy array
+    assert not isinstance(x, np.ndarray)
+
+    # change global framework to numpy
+    ivy.set_framework('numpy')
+
+    # create another array from array generator
+    x = ag.get_array()
+
+    # verify this is not still a numpy array
+    assert not isinstance(x, np.ndarray)
 
 
 # einops_rearrange

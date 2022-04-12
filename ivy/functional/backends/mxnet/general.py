@@ -98,18 +98,27 @@ def inplace_increment(x, val):
     return x
 
 
-cumsum = lambda x, axis=0: mx.nd.cumsum(x, axis if axis >= 0 else axis % len(x.shape))
+def cumsum(x:mx.ndarray.ndarray.NDArray,axis:int=0,
+    out: Optional[mx.ndarray.ndarray.NDArray] = None)\
+        -> mx.ndarray.ndarray.NDArray:
+        if ivy.exists(out):
+            return ivy.inplace_update(out,mx.nd.cumsum(x,axis if axis >= 0 else axis % len(x.shape)))
+        else:
+            mx.nd.cumsum(x, axis if axis >= 0 else axis % len(x.shape))
 
 
-def cumprod(x, axis=0, exclusive=False):
+def cumprod(x:mx.ndarray.ndarray.NDArray, axis:int=0, exclusive:Optional[bool]=False,
+out: Optional[mx.ndarray.ndarray.NDArray] = None)\
+        -> mx.ndarray.ndarray.NDArray:
     array_stack = [mx.nd.expand_dims(chunk, axis) for chunk in unstack(x, axis)]
     if exclusive:
         array_stack = [mx.nd.ones_like(array_stack[0])] + array_stack[:-1]
     new_array_list = [array_stack[0]]
     for array_chunk in array_stack[1:]:
         new_array_list.append(new_array_list[-1] * array_chunk)
+    if ivy.exists(out):
+        return ivy.inplace_update(out,mx.nd.concat(*new_array_list, dim=axis))
     return mx.nd.concat(*new_array_list, dim=axis)
-
 
 
 # noinspection PyShadowingNames

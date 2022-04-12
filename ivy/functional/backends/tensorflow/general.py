@@ -107,9 +107,19 @@ def inplace_increment(x, val):
     return x
 
 
-cumsum = tf.cumsum
-cumprod = tf.math.cumprod
+def cumsum(x:tf.Tensor,axis:int=0,out: Optional[tf.Tensor] = None)\
+        -> tf.Tensor:
+        if ivy.exists(out):
+            return ivy.inplace_update(out,tf.math.cumsum(x,axis))
+        else:
+            return tf.math.cumsum(x,axis)
 
+def cumprod(x:tf.Tensor,axis:int=0,exclusive:Optional[bool]=False,out: Optional[tf.Tensor] = None)\
+        -> tf.Tensor:
+    if ivy.exists(out):
+        return ivy.inplace_update(out,tf.math.cumprod(x,axis,exclusive))
+    else:
+        return tf.math.cumprod(x,axis,exclusive)
 
 # noinspection PyShadowingNames
 def scatter_flat(indices, updates, size=None, tensor=None, reduction='sum', dev=None):

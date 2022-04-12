@@ -69,16 +69,6 @@ def test_all(x, axis, kd, dtype, with_out,  tensor_fn, dev, call):
     # type test
     assert ivy.is_native_array(ret)
     # cardinality test
-    if axis is None:
-        expected_shape = [1]*len(x.shape) if kd else []
-    else:
-        axis_ = [axis] if isinstance(axis, int) else axis
-        axis_ = [item % len(x.shape) for item in axis_]
-        expected_shape = list(x.shape)
-        if kd:
-            expected_shape = [1 if i % len(x.shape) in axis_ else item for i, item in enumerate(expected_shape)]
-        else:
-            [expected_shape.pop(item) for item in axis_]
     assert ret.shape == tuple(expected_shape)
     if with_out:
         if not ivy.current_framework_str() in ["tensorflow", "jax"]:
@@ -124,16 +114,6 @@ def test_any(x, axis, kd, dtype, with_out,  tensor_fn, dev, call):
     # type test
     assert ivy.is_native_array(ret)
     # cardinality test
-    if axis is None:
-        expected_shape = [1]*len(x.shape) if kd else []
-    else:
-        axis_ = [axis] if isinstance(axis, int) else axis
-        axis_ = [item % len(x.shape) for item in axis_]
-        expected_shape = list(x.shape)
-        if kd:
-            expected_shape = [1 if i % len(x.shape) in axis_ else item for i, item in enumerate(expected_shape)]
-        else:
-            [expected_shape.pop(item) for item in axis_]
     assert ret.shape == tuple(expected_shape)
     if with_out:
         if not ivy.current_framework_str() in ["tensorflow", "jax"]:
