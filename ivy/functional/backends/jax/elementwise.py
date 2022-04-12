@@ -347,48 +347,83 @@ def sin(x: JaxArray,
     return ret
 
 
-def negative(x: JaxArray) -> JaxArray:
-    return jnp.negative(x)
+def negative(x: JaxArray,
+             out: Optional[JaxArray] = None) -> JaxArray:
+    ret = jnp.negative(x)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
-def not_equal(x1: JaxArray, x2: JaxArray) \
+def not_equal(x1: JaxArray,
+              x2: JaxArray,
+              out: Optional[JaxArray] = None) \
         -> JaxArray:
     if isinstance(x2, int):
         x2 = jnp.asarray(x2, dtype=x1.dtype)
-    return jnp.not_equal(x1, x2)
+    ret = jnp.not_equal(x1, x2)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
-def tanh(x: JaxArray)\
+def tanh(x: JaxArray,
+         out: Optional[JaxArray] = None)\
         -> JaxArray:
-    return jnp.tanh(x)
+    ret = jnp.tanh(x)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
-def floor_divide(x1: JaxArray, x2: JaxArray)\
+def floor_divide(x1: JaxArray,
+                 x2: JaxArray,
+                 out: Optional[JaxArray] = None)\
                 -> JaxArray:
     if isinstance(x2, int):
         x2 = jnp.asarray(x2, dtype=x1.dtype)
-    return jnp.floor_divide(x1, x2)
+    ret = jnp.floor_divide(x1, x2)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
-def bitwise_or(x1: JaxArray, x2: JaxArray) -> JaxArray:
+def bitwise_or(x1: JaxArray,
+               x2: JaxArray,
+               out: Optional[JaxArray] = None) -> JaxArray:
     if isinstance(x2, int):
         x2 = jnp.asarray(x2, dtype=x1.dtype)
-    return jnp.bitwise_or(x1, x2)
+    ret = jnp.bitwise_or(x1, x2)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
-def sinh(x: JaxArray)\
+def sinh(x: JaxArray,
+         out: Optional[JaxArray] = None)\
         -> JaxArray:
-    return jnp.sinh(x)
+    ret = jnp.sinh(x)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
-def positive(x: JaxArray)\
+def positive(x: JaxArray,
+             out: Optional[JaxArray] = None)\
         -> JaxArray:
-    return jnp.positive(x)
+    ret = jnp.positive(x)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
   
-def square(x: JaxArray)\
+def square(x: JaxArray,
+           out: Optional[JaxArray] = None)\
         -> JaxArray:
-    return jnp.square(x)
+    ret = jnp.square(x)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
 def pow(x1: jnp.ndarray, x2: jnp.ndarray)\
