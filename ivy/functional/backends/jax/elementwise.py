@@ -57,31 +57,49 @@ def expm1(x: JaxArray,
     return ret
 
 
-def bitwise_invert(x: JaxArray)\
+def bitwise_invert(x: JaxArray,
+                   out: Optional[JaxArray] = None)\
         -> JaxArray:
-    return jnp.bitwise_not(x)
+    ret = jnp.bitwise_not(x)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
 def bitwise_and(x1: JaxArray,
-                x2: JaxArray)\
+                x2: JaxArray,
+                out: Optional[JaxArray] = None)\
         -> JaxArray:
     if isinstance(x2, int):
         x2 = jnp.asarray(x2, dtype=x1.dtype)
-    return jnp.bitwise_and(x1, x2)
+    ret = jnp.bitwise_and(x1, x2)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
-def ceil(x: JaxArray)\
+def ceil(x: JaxArray,
+         out: Optional[JaxArray] = None)\
         -> JaxArray:
     if 'int' in str(x.dtype):
-        return x
-    return jnp.ceil(x)
+        ret = x
+    else:
+        ret = jnp.ceil(x)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
-def floor(x: JaxArray)\
+def floor(x: JaxArray,
+          out: Optional[JaxArray] = None)\
         -> JaxArray:
     if 'int' in str(x.dtype):
-        return x
-    return jnp.floor(x)
+        ret = x
+    else:
+        ret = jnp.floor(x)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
 def isfinite(x: JaxArray)\
@@ -89,9 +107,13 @@ def isfinite(x: JaxArray)\
     return jnp.isfinite(x)
 
 
-def asin(x: JaxArray)\
+def asin(x: JaxArray,
+         out: Optional[JaxArray] = None)\
         -> JaxArray:
-    return jnp.arcsin(x)
+    ret = jnp.arcsin(x)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
 def isinf(x: JaxArray)\
@@ -99,11 +121,16 @@ def isinf(x: JaxArray)\
     return jnp.isinf(x)
 
 
-def equal(x1: JaxArray, x2: JaxArray)\
+def equal(x1: JaxArray,
+          x2: JaxArray,
+          out: Optional[JaxArray] = None)\
         -> JaxArray:
     if isinstance(x2, int):
         x2 = jnp.asarray(x2, dtype=x1.dtype)
-    return jnp.equal(x1, x2)
+    ret = jnp.equal(x1, x2)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
 def greater(x1: JaxArray, x2: JaxArray) \
