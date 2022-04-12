@@ -2,6 +2,7 @@
 import math
 import jax.numpy as jnp
 from typing import Union, Tuple, Optional, List
+from numbers import Number
 
 # local
 from ivy.functional.backends.jax import JaxArray
@@ -136,10 +137,60 @@ def split(x, num_or_size_splits=None, axis=0, with_remainder=False):
     return jnp.split(x, num_or_size_splits, axis)
 
 
-repeat = jnp.repeat
-tile = jnp.tile
-clip = jnp.clip
-constant_pad = lambda x, pad_width, value=0: jnp.pad(_flat_array_to_1_dim_array(x), pad_width, constant_values=value)
-zero_pad = lambda x, pad_width: jnp.pad(_flat_array_to_1_dim_array(x), pad_width, constant_values=0)
-swapaxes = jnp.swapaxes
+def repeat(x: JaxArray,
+           repeats: Union[int, List[int]],
+           axis: int = None,
+           out: Optional[JaxArray] = None)\
+        -> JaxArray:
+    ret = jnp.repeat(x, repeats, axis)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
+
+def tile(x: JaxArray,
+         reps,
+         out: Optional[JaxArray] = None)\
+        -> JaxArray:
+    ret = jnp.tile(x, reps)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
+
+
+def clip(x, x_min, x_max, out: Optional[JaxArray] = None):
+    ret = jnp.clip(x, x_min, x_max)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
+
+
+def constant_pad(x: JaxArray,
+                 pad_width: List[List[int]],
+                 value: Number = 0.,
+                 out: Optional[JaxArray] = None)\
+        -> JaxArray:
+    ret = jnp.pad(_flat_array_to_1_dim_array(x), pad_width, constant_values=value)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
+
+
+def zero_pad(x: JaxArray,
+             pad_width: List[List[int]],
+             out: Optional[JaxArray] = None):
+    ret = jnp.pad(_flat_array_to_1_dim_array(x), pad_width, constant_values=0)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
+
+
+def swapaxes(x: JaxArray,
+             axis0: int,
+             axis1: int,
+             out: Optional[JaxArray] = None)\
+        -> JaxArray:
+    ret = jnp.swapaxes(x, axis0, axis1)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
