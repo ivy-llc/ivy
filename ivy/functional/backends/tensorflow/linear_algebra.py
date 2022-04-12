@@ -9,7 +9,6 @@ from ivy import inf
 import ivy
 
 
-
 # Array API Standard #
 # -------------------#
 
@@ -162,6 +161,7 @@ def svd(x:Tensor,
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
     return ret
+
 
 def outer(x1: Tensor,
           x2: Tensor,
