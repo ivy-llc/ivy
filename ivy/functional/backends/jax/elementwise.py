@@ -199,31 +199,52 @@ def cosh(x: JaxArray,
     return ret
 
 
-def log10(x: JaxArray)\
+def log10(x: JaxArray,
+          out: Optional[JaxArray] = None)\
         -> JaxArray:
-    return jnp.log10(x)
+    ret = jnp.log10(x)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
-def log(x: JaxArray)\
+def log(x: JaxArray,
+        out: Optional[JaxArray] = None)\
         -> JaxArray:
-    return jnp.log(x)
+    ret = jnp.log(x)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
-def log2(x: JaxArray)\
+def log2(x: JaxArray,
+         out: Optional[JaxArray] = None)\
         -> JaxArray:
-    return jnp.log2(x)
+    ret = jnp.log2(x)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
-def log1p(x: JaxArray)\
+def log1p(x: JaxArray,
+          out: Optional[JaxArray] = None)\
         -> JaxArray:
-    return jnp.log1p(x)
+    ret = jnp.log1p(x)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
-def multiply(x1: JaxArray, x2: JaxArray)\
+def multiply(x1: JaxArray,
+             x2: JaxArray,
+             out: Optional[JaxArray] = None)\
         -> JaxArray:
     if isinstance(x2, int):
         x2 = jnp.asarray(x2, dtype=x1.dtype)
-    return jnp.multiply(x1, x2)
+    ret = jnp.multiply(x1, x2)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
 def isnan(x: JaxArray)\
@@ -231,14 +252,23 @@ def isnan(x: JaxArray)\
     return jnp.isnan(x)
 
 
-def less(x1: JaxArray, x2: JaxArray)\
+def less(x1: JaxArray,
+         x2: JaxArray,
+         out: Optional[JaxArray] = None)\
         -> JaxArray:
-    return jnp.less(x1, x2)
+    ret = jnp.less(x1, x2)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
-def cos(x: JaxArray)\
+def cos(x: JaxArray,
+        out: Optional[JaxArray] = None)\
         -> JaxArray:
-    return jnp.cos(x)
+    ret = jnp.cos(x)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
 def logical_xor(x1: JaxArray, x2: JaxArray)\
