@@ -213,29 +213,49 @@ def sqrt(x: Tensor,
     return ret
 
 
-def cosh(x: Tensor) \
+def cosh(x: Tensor,
+         out: Optional[Tensor] = None) \
         -> Tensor:
-    return tf.cosh(x)
+    ret = tf.cosh(x)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
-def log10(x: Tensor) \
+def log10(x: Tensor,
+          out: Optional[Tensor] = None) \
         -> Tensor:
-    return tf.experimental.numpy.log10(x)
+    ret = tf.experimental.numpy.log10(x)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
-def log(x: Tensor)\
+def log(x: Tensor,
+        out: Optional[Tensor] = None)\
         -> Tensor:
-    return tf.math.log(x)
+    ret = tf.math.log(x)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
-def log2(x: Tensor) \
+def log2(x: Tensor,
+         out: Optional[Tensor] = None) \
         -> Tensor:
-    return tf.experimental.numpy.log2(x)
+    ret = tf.experimental.numpy.log2(x)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
-def log1p(x: Tensor) \
+def log1p(x: Tensor,
+          out: Optional[Tensor] = None) \
         -> Tensor:
-    return tf.experimental.numpy.log1p(x)
+    ret = tf.experimental.numpy.log1p(x)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
 def isnan(x: Tensor)\
@@ -245,24 +265,37 @@ def isnan(x: Tensor)\
     return tf.math.is_nan(x)
 
 
-def less(x1: Tensor, x2: Tensor)\
+def less(x1: Tensor,
+         x2: Tensor,
+         out: Optional[Tensor] = None)\
         -> Tensor:
     if hasattr(x1, 'dtype') and hasattr(x2, 'dtype'):
         promoted_type = tf.experimental.numpy.promote_types(x1.dtype, x2.dtype)
         x1 = tf.cast(x1, promoted_type)
         x2 = tf.cast(x2, promoted_type)
-    return tf.math.less(x1, x2)
+    ret = tf.math.less(x1, x2)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
-def cos(x: Tensor)\
+def cos(x: Tensor,
+        out: Optional[Tensor] = None)\
         -> Tensor:
-    return tf.cos(x)
+    ret = tf.cos(x)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
-def logical_not(x: Tensor)\
+def logical_not(x: Tensor,
+                out: Optional[Tensor] = None)\
         -> Tensor:
-    return tf.logical_not(tf.cast(x, tf.bool))
-  
+    ret = tf.logical_not(tf.cast(x, tf.bool))
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
+
   
 def divide(x1: Tensor,
            x2: Tensor)\
