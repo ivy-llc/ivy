@@ -133,37 +133,70 @@ def equal(x1: JaxArray,
     return ret
 
 
-def greater(x1: JaxArray, x2: JaxArray) \
+def greater(x1: JaxArray,
+            x2: JaxArray,
+            out: Optional[JaxArray] = None) \
         -> JaxArray:
-    return jnp.greater(x1, x2)
+    ret = jnp.greater(x1, x2)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
-def greater_equal(x1: JaxArray, x2: JaxArray)\
+def greater_equal(x1: JaxArray,
+                  x2: JaxArray,
+                  out: Optional[JaxArray] = None)\
         -> JaxArray:
-    return jnp.greater_equal(x1, x2)
+    ret = jnp.greater_equal(x1, x2)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
-def less_equal(x1: JaxArray, x2: JaxArray)\
+def less_equal(x1: JaxArray,
+               x2: JaxArray,
+               out: Optional[JaxArray] = None)\
         -> JaxArray:
-    return x1 <= x2
+    ret = jnp.less_equal(x1, x2)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
-def asinh(x: JaxArray)\
+def asinh(x: JaxArray,
+          out: Optional[JaxArray] = None)\
         -> JaxArray:
-    return jnp.arcsinh(x)
+    ret = jnp.arcsinh(x)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
-def sign(x: JaxArray)\
+
+def sign(x: JaxArray,
+         out: Optional[JaxArray] = None)\
         -> JaxArray:
-    return jnp.sign(x)
+    ret = jnp.sign(x)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
-def sqrt(x: JaxArray)\
+
+def sqrt(x: JaxArray,
+         out: Optional[JaxArray] = None)\
         -> JaxArray:
-    return jnp.sqrt(x)
+    ret = jnp.sqrt(x)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
-def cosh(x: JaxArray)\
+def cosh(x: JaxArray,
+         out: Optional[JaxArray] = None)\
         -> JaxArray:
-    return jnp.cosh(x)
+    ret = jnp.cosh(x)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
 def log10(x: JaxArray)\
