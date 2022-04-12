@@ -78,7 +78,6 @@ def pinv(x: Tensor,
     return ret
 
 
-
 def matrix_transpose(x: Tensor,
                      out: Optional[Tensor] = None)\
         -> Tensor:
@@ -88,12 +87,12 @@ def matrix_transpose(x: Tensor,
     return ret
 
 
-
 # noinspection PyUnusedLocal,PyShadowingBuiltins
 def vector_norm(x: Tensor,
                 axis: Optional[Union[int, Tuple[int]]] = None,
                 keepdims: bool = False,
-                ord: Union[int, float, Literal[inf, - inf]] = 2)\
+                ord: Union[int, float, Literal[inf, - inf]] = 2,
+                out: Optional[Tensor] = None)\
                  -> Tensor:
 
     if ord == -float('inf'):
@@ -108,13 +107,18 @@ def vector_norm(x: Tensor,
         tn_normalized_vector = tf.linalg.norm(x, ord, axis, keepdims)
 
     if tn_normalized_vector.shape == tuple():
-        return tf.expand_dims(tn_normalized_vector, 0)
-    return tn_normalized_vector
+        ret =  tf.expand_dims(tn_normalized_vector, 0)
+    else:
+        ret = tn_normalized_vector
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
 def matrix_norm(x: Tensor,
                 ord: Optional[Union[int, float, Literal[inf, - inf, 'fro', 'nuc']]] = 'fro',
-                keepdims: bool = False)\
+                keepdims: bool = False,
+                out: Optional[Tensor] = None)\
         -> Tensor:
     axes = (-2, -1)
     if ord == -float('inf'):
@@ -134,9 +138,12 @@ def matrix_norm(x: Tensor,
         ret = tf.linalg.norm(x, ord, axes, keepdims)
 
     if keepdims:
-        return tf.reshape(ret, x.shape[:-2] + (1, 1))
+        ret =  tf.reshape(ret, x.shape[:-2] + (1, 1))
     else:
-        return tf.reshape(ret, x.shape[:-2])
+        ret = tf.reshape(ret, x.shape[:-2])
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
 # noinspection PyPep8Naming
@@ -153,9 +160,13 @@ def svd(x:Tensor,full_matrices: bool = True) -> Union[Tensor, Tuple[Tensor,...]]
 
 
 def outer(x1: Tensor,
-          x2: Tensor) \
+          x2: Tensor,
+          out: Optional[Tensor] = None) \
         -> Tensor:
-    return tf.experimental.numpy.outer(x1, x2)
+    ret =  tf.experimental.numpy.outer(x1, x2)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
 def diagonal(x: tf.Tensor,
