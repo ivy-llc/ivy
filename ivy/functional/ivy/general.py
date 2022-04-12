@@ -179,8 +179,8 @@ def to_numpy(x: Union[ivy.Array, ivy.NativeArray]) \
     >>> x = ivy.array([-1, 0, 1])
     >>> y = ivy.to_numpy(x)
     >>> print(y)
-    >>> print(type(y))
     array([-1, 0, 1])
+    >>> print(type(y))
     <class 'numpy.ndarray'>
     """
     return _cur_framework(x).to_numpy(x)
