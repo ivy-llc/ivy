@@ -11,9 +11,13 @@ from collections import namedtuple
 # Array API Standard #
 # -------------------#
 
-def eigh(x: np.ndarray)\
-  -> np.ndarray:
-         return np.linalg.eigh(x)
+def eigh(x: np.ndarray,
+         out: Optional[np.ndarray] = None)\
+    -> np.ndarray:
+    ret = np.linalg.eigh(x, out)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
 def inv(x: np.ndarray) -> np.ndarray:
