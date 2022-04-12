@@ -31,7 +31,7 @@ array_equal = tf.experimental.numpy.array_equal
 
 def to_numpy(x: Tensor) \
         -> _np.ndarray:
-    return _np.asarray(x)
+    return _np.asarray(tf.convert_to_tensor(x))
 
 
 to_scalar = lambda x: to_numpy(x).item()
