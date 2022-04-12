@@ -271,45 +271,80 @@ def cos(x: JaxArray,
     return ret
 
 
-def logical_xor(x1: JaxArray, x2: JaxArray)\
+def logical_xor(x1: JaxArray,
+                x2: JaxArray,
+                out: Optional[JaxArray] = None)\
         -> JaxArray:
-    return jnp.logical_xor(x1, x2)
+    ret = jnp.logical_xor(x1, x2)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
-def logical_or(x1: JaxArray, x2: JaxArray)\
+def logical_or(x1: JaxArray,
+               x2: JaxArray,
+               out: Optional[JaxArray] = None)\
         -> JaxArray:
-    return jnp.logical_or(x1, x2)
+    ret = jnp.logical_or(x1, x2)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
-def logical_and(x1: JaxArray, x2: JaxArray)\
+def logical_and(x1: JaxArray,
+                x2: JaxArray,
+                out: Optional[JaxArray] = None)\
         -> JaxArray:
-    return jnp.logical_and(x1, x2)
+    ret = jnp.logical_and(x1, x2)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
-def logical_not(x: JaxArray)\
+def logical_not(x: JaxArray,
+                out: Optional[JaxArray] = None)\
         -> JaxArray:
-    return jnp.logical_not(x)
-  
+    ret = jnp.logical_not(x)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
+
   
 def divide(x1: JaxArray,
-           x2: JaxArray)\
+           x2: JaxArray,
+           out: Optional[JaxArray] = None)\
         -> JaxArray:
-    return jnp.divide(x1, x2)  
+    ret = jnp.divide(x1, x2)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
-def acos(x: JaxArray)\
+def acos(x: JaxArray,
+         out: Optional[JaxArray] = None)\
         -> JaxArray:
-    return jnp.arccos(x)
+    ret = jnp.arccos(x)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
-def acosh(x: JaxArray)\
+def acosh(x: JaxArray,
+          out: Optional[JaxArray] = None)\
         -> JaxArray:
-    return jnp.arccosh(x)
+    ret = jnp.arccosh(x)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
-def sin(x: JaxArray)\
+def sin(x: JaxArray,
+        out: Optional[JaxArray] = None)\
         -> JaxArray:
-    return jnp.sin(x)
+    ret = jnp.sin(x)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
 def negative(x: JaxArray) -> JaxArray:
