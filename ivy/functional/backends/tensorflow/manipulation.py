@@ -167,26 +167,35 @@ def split(x, num_or_size_splits=None, axis=0, with_remainder=False):
 repeat = tf.repeat
 
 
-def tile(x, reps):
+def tile(x, reps, out: Optional[Tensor] = None):
     if x.shape == ():
         x = tf.reshape(x, (-1,))
     if isinstance(reps, Number):
         reps = [reps]
     if isinstance(reps, Tensor) and reps.shape == ():
         reps = tf.reshape(reps, (-1,))
-    return tf.tile(x, reps)
+    ret = tf.tile(x, reps)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
-def constant_pad(x, pad_width, value=0):
+def constant_pad(x, pad_width, value=0, out: Optional[Tensor] = None):
     if x.shape == ():
         x = tf.reshape(x, (-1,))
-    return tf.pad(x, pad_width, constant_values=value)
+    ret = tf.pad(x, pad_width, constant_values=value)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
-def zero_pad(x, pad_width):
+def zero_pad(x, pad_width, out: Optional[Tensor] = None):
     if x.shape == ():
         x = tf.reshape(x, (-1,))
-    return tf.pad(x, pad_width)
+    ret = tf.pad(x, pad_width)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
 def swapaxes(x, axis0, axis1):
