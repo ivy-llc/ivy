@@ -116,13 +116,21 @@ def cumsum(x:torch.Tensor, axis: int = 0, out: Optional[torch.Tensor] = None):
         return torch.cumsum(x, axis)
 
 
-def cumprod(x, axis: int = 0, exclusive: bool = False):
+def cumprod(x: torch.Tensor, axis: int = 0, exclusive: Optional[bool] = False,
+    out:Optional[torch.Tensor]=None)\
+        -> torch.Tensor:
     if exclusive:
         x = torch.transpose(x, axis, -1)
         x = torch.cat((torch.ones_like(x[..., -1:]), x[..., :-1]), -1)
         res = torch.cumprod(x, -1)
-        return torch.transpose(res, axis, -1)
-    return torch.cumprod(x, axis)
+        if ivy.exists(out):
+            return ivy.inplace_update(out,torch.transpose(res, axis, -1))
+        else:
+            return torch.transpose(res, axis, -1)
+    if ivy.exists(out):
+        return ivy.inplace_update(out,torch.cumprod(x, axis))
+    else:
+        return torch.cumprod(x, axis)
 
 
 # noinspection PyShadowingNames

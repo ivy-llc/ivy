@@ -99,13 +99,20 @@ def cumsum(x: JaxArray, axis:int=0,out: Optional[JaxArray] = None)\
         return jnp.cumsum(x,axis)
 
 
-def cumprod(x, axis=0, exclusive=False):
+def cumprod(x: JaxArray, axis: int =0, exclusive: Optional[bool]=False, out: Optional[JaxArray] = None)\
+        -> JaxArray:
     if exclusive:
         x = jnp.swapaxes(x, axis, -1)
         x = jnp.concatenate((jnp.ones_like(x[..., -1:]), x[..., :-1]), -1)
         res = jnp.cumprod(x, -1)
-        return jnp.swapaxes(res, axis, -1)
-    return jnp.cumprod(x, axis)
+        if ivy.exists(out):
+            return ivy.inplace_update(out,jnp.copy(jnp.swapaxes(res, axis, -1)))
+        else:
+            return jnp.swapaxes(res, axis, -1)
+    if ivy.exists(out):
+        return ivy.inplace_update(out,jnp.cumprod(x,axis))
+    else:   
+        return jnp.cumprod(x, axis)
 
 
 def scatter_flat(indices, updates, size=None, tensor=None, reduction='sum', dev=None):
