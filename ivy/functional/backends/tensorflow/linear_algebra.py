@@ -147,7 +147,10 @@ def matrix_norm(x: Tensor,
 
 
 # noinspection PyPep8Naming
-def svd(x:Tensor,full_matrices: bool = True) -> Union[Tensor, Tuple[Tensor,...]]:
+def svd(x:Tensor,
+        full_matrices: bool = True,
+        out: Optional[Union[Tensor, Tuple[Tensor,...]]] = None) \
+        -> Union[Tensor, Tuple[Tensor,...]]:
     results=namedtuple("svd", "U S Vh")
 
     batch_shape = tf.shape(x)[:-2]
@@ -155,9 +158,10 @@ def svd(x:Tensor,full_matrices: bool = True) -> Union[Tensor, Tuple[Tensor,...]]
     transpose_dims = list(range(num_batch_dims)) + [num_batch_dims + 1, num_batch_dims]
     D, U, V = tf.linalg.svd(x,full_matrices=full_matrices)
     VT = tf.transpose(V, transpose_dims)
-    res=results(U, D, VT)
-    return res
-
+    ret=results(U, D, VT)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 def outer(x1: Tensor,
           x2: Tensor,
@@ -245,8 +249,13 @@ def matmul(x1: tf.Tensor,
     return ret
 
 
-def svdvals(x: tf.Tensor) -> tf.Tensor:
-    return tf.linalg.svd(x, compute_uv=False)
+def svdvals(x: tf.Tensor,
+            out: Optional[Tensor] = None)\
+        -> tf.Tensor:
+    ret =  tf.linalg.svd(x, compute_uv=False)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
 def slogdet(x:Union[ivy.Array,ivy.NativeArray],full_matrices: bool = True) -> Union[ivy.Array, Tuple[ivy.Array,...]]:
