@@ -33,7 +33,7 @@ def array_equal(x0, x1):
 
 
 def to_numpy(x: torch.Tensor)\
-        -> ndarray:
+        -> np.ndarray:
     return np.asarray(x)
 
 
