@@ -50,7 +50,7 @@ array_equal = jnp.array_equal
 
 def to_numpy(x: JaxArray) \
         -> np.ndarray:
-    return np.asarray(x)
+    return np.asarray(_to_array(x))
 
 
 to_scalar = lambda x: x if isinstance(x, Number) else _to_array(x).item()
