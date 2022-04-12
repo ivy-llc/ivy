@@ -393,33 +393,54 @@ def sin(x: Tensor,
     return ret
 
 
-def multiply(x1: Tensor, x2: Tensor)\
+def multiply(x1: Tensor,
+             x2: Tensor,
+             out: Optional[Tensor] = None)\
         -> Tensor:
     if hasattr(x1, 'dtype') and hasattr(x2, 'dtype'):
         promoted_type = tf.experimental.numpy.promote_types(x1.dtype, x2.dtype)
         x1 = tf.cast(x1, promoted_type)
         x2 = tf.cast(x2, promoted_type)
-    return tf.math.multiply(x1, x2)
+    ret = tf.math.multiply(x1, x2)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
-def negative(x: Tensor) -> Tensor:
+def negative(x: Tensor,
+             out: Optional[Tensor] = None) -> Tensor:
     if x.dtype in [tf.uint8, tf.uint16, tf.uint32, tf.uint64]:
-        return tf.cast(tf.negative(tf.cast(x, tf.float32)), x.dtype)
-    return tf.negative(x)
+        ret = tf.cast(tf.negative(tf.cast(x, tf.float32)), x.dtype)
+    else:
+        ret = tf.negative(x)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
-def not_equal(x1: Tensor, x2: Tensor)\
+def not_equal(x1: Tensor,
+              x2: Tensor,
+              out: Optional[Tensor] = None)\
         -> Tensor:
     x1, x2 = _cast_for_binary_op(x1, x2)
-    return tf.math.not_equal(x1, x2)
+    ret = tf.math.not_equal(x1, x2)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
-def tanh(x: Tensor) \
+def tanh(x: Tensor,
+         out: Optional[Tensor] = None) \
         -> Tensor:
-    return tf.tanh(x)
+    ret = tf.tanh(x)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
-def floor_divide(x1: Tensor, x2: Tensor)\
+def floor_divide(x1: Tensor,
+                 x2: Tensor,
+                 out: Optional[Tensor] = None)\
                 -> Tensor:
     if not isinstance(x2, Tensor):
         x2 = tf.constant(x2, dtype=x1.dtype)
@@ -427,22 +448,35 @@ def floor_divide(x1: Tensor, x2: Tensor)\
         promoted_type = tf.experimental.numpy.promote_types(x1.dtype, x2.dtype)
         x1 = tf.cast(x1, promoted_type)
         x2 = tf.cast(x2, promoted_type)
-    return tf.math.floordiv(x1, x2)
+    ret = tf.math.floordiv(x1, x2)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
-def sinh(x: Tensor) \
+def sinh(x: Tensor,
+         out: Optional[Tensor] = None) \
         -> Tensor:
-    return tf.sinh(x)
+    ret = tf.sinh(x)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
-def bitwise_or(x1: Tensor, x2: Tensor) \
+def bitwise_or(x1: Tensor,
+               x2: Tensor,
+               out: Optional[Tensor] = None) \
         -> Tensor:
     if not isinstance(x2, Tensor):
         x2 = tf.constant(x2, dtype=x1.dtype)
     if ('int' not in str(x1.dtype)) & ('int' not in str(x2.dtype)):
-        return tf.math.logical_or(x1, x2)
-    x1, x2 = _cast_for_binary_op(x1, x2)
-    return tf.bitwise.bitwise_or(x1, x2)
+        ret = tf.math.logical_or(x1, x2)
+    else:
+        x1, x2 = _cast_for_binary_op(x1, x2)
+        ret = tf.bitwise.bitwise_or(x1, x2)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
 def positive(x: Tensor)\
