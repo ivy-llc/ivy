@@ -45,7 +45,7 @@ def pinv(x: np.ndarray,
 
 def matrix_transpose(x: np.ndarray,
                      out: Optional[np.ndarray] = None) \
-        -> np.ndarray:
+                -> np.ndarray:
     ret = np.swapaxes(x, -1, -2)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
@@ -56,7 +56,8 @@ def matrix_transpose(x: np.ndarray,
 def vector_norm(x: np.ndarray,
                 axis: Optional[Union[int, Tuple[int]]] = None,
                 keepdims: bool = False,
-                ord: Union[int, float, Literal[inf, - inf]] = 2) \
+                ord: Union[int, float, Literal[inf, - inf]] = 2,
+                out: Optional[np.ndarray] = None) \
         -> np.ndarray:
     if axis is None:
         np_normalized_vector = np.linalg.norm(x.flatten(), ord, axis, keepdims)
@@ -65,15 +66,23 @@ def vector_norm(x: np.ndarray,
         np_normalized_vector = np.linalg.norm(x, ord, axis, keepdims)
 
     if np_normalized_vector.shape == tuple():
-        return np.expand_dims(np_normalized_vector, 0)
-    return np_normalized_vector
+        ret = np.expand_dims(np_normalized_vector, 0)
+    else:
+        ret = np_normalized_vector
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
 def matrix_norm(x: np.ndarray,
                 ord: Optional[Union[int, float, Literal[inf, - inf, 'fro', 'nuc']]] = 'fro',
-                keepdims: bool = False)\
+                keepdims: bool = False,
+                out: Optional[np.ndarray] = None)\
         -> np.ndarray:
-    return np.linalg.norm(x, ord=ord, axis=(-2, -1), keepdims=keepdims)
+    ret =  np.linalg.norm(x, ord=ord, axis=(-2, -1), keepdims=keepdims)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
 def svd(x: np.ndarray, full_matrices: bool = True) -> Union[np.ndarray, Tuple[np.ndarray, ...]]:
