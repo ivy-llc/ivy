@@ -291,8 +291,7 @@ def trace(x: tf.Tensor,
 
 def det(x:tf.Tensor,
         name:Optional[str]=None,
-        out: Optional[Tensor] = None
-        ) \
+        out: Optional[Tensor] = None) \
     -> tf.Tensor:
     ret = tf.linalg.det(x,name)
     if ivy.exists(out):
@@ -301,17 +300,28 @@ def det(x:tf.Tensor,
 
 
 def cholesky(x: tf.Tensor,
-            upper: bool = False) -> tf.Tensor:
+            upper: bool = False,
+            out: Optional[Tensor] = None)\
+        -> tf.Tensor:
     if not upper:
-        return tf.linalg.cholesky(x)
+        ret = tf.linalg.cholesky(x)
     else:
         axes = list(range(len(x.shape) - 2)) + [len(x.shape) - 1, len(x.shape) - 2]
-        return tf.transpose(tf.linalg.cholesky(tf.transpose(x, perm=axes)),
+        ret = tf.transpose(tf.linalg.cholesky(tf.transpose(x, perm=axes)),
                             perm=axes)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
-def eigvalsh(x: Tensor) -> Tensor:
-    return tf.linalg.eigvalsh(x)
+
+def eigvalsh(x: Tensor,
+             out: Optional[Tensor] = None)\
+        -> Tensor:
+    ret = tf.linalg.eigvalsh(x)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
 def matrix_rank(vector: Tensor,
@@ -335,9 +345,13 @@ def matrix_rank(vector: Tensor,
     
 def cross (x1: tf.Tensor,
            x2: tf.Tensor,
-           axis:int = -1) -> tf.Tensor:
-    return tf.experimental.numpy.cross(x1, x2,axis=axis)
-
+           axis:int = -1,
+           out: Optional[Tensor] = None)\
+        -> tf.Tensor:
+    ret = tf.experimental.numpy.cross(x1, x2,axis=axis)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 # Extra #
 # ------#
