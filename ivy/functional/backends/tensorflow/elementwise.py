@@ -7,45 +7,71 @@ from typing import Optional, Tuple, Union
 import ivy
 
 
-
 def bitwise_left_shift(x1: Tensor,
-                       x2: Tensor)\
+                       x2: Tensor,
+                       out: Optional[Tensor] = None)\
                        -> Tensor:
     x1, x2 = _cast_for_binary_op(x1, x2)
-    return tf.bitwise.left_shift(x1, x2)
+    ret = tf.bitwise.left_shift(x1, x2)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
 def add(x1: Tensor,
-           x2: Tensor)\
+        x2: Tensor,
+        out: Optional[Tensor] = None)\
         -> Tensor:
     x1, x2 = _cast_for_binary_op(x1, x2)
-    return tf.add(x1, x2)
+    ret = tf.add(x1, x2)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
 def bitwise_xor(x1: Tensor,
-                x2: Tensor)\
+                x2: Tensor,
+                out: Optional[Tensor] = None)\
         -> Tensor:
     if not isinstance(x2, Tensor):
         x2 = tf.constant(x2, dtype=x1.dtype)
     if ('int' not in str(x1.dtype)) & ('int' not in str(x2.dtype)):
         return tf.math.logical_xor(x1, x2)
     x1, x2 = _cast_for_binary_op(x1, x2)
-    return tf.bitwise.bitwise_xor(x1, x2)
+    ret = tf.bitwise.bitwise_xor(x1, x2)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
-def exp(x: Tensor)\
+
+def exp(x: Tensor,
+        out: Optional[Tensor] = None)\
         -> Tensor:
-    return tf.math.exp(x)
+    ret = tf.math.exp(x)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
-def expm1(x: Tensor)\
+
+def expm1(x: Tensor,
+          out: Optional[Tensor] = None)\
         -> Tensor:
-    return tf.math.expm1(x)
+    ret = tf.math.expm1(x)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
-def bitwise_invert(x: Tensor)\
+def bitwise_invert(x: Tensor,
+                   out: Optional[Tensor] = None)\
         -> Tensor:
     if 'int' not in str(x.dtype):
-        return tf.logical_not(x)
-    return tf.bitwise.invert(x)
+        ret = tf.logical_not(x)
+    else:
+        ret = tf.bitwise.invert(x)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
 def bitwise_and(x1: Tensor,
