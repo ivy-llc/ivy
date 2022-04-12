@@ -25,7 +25,7 @@ array_equal = np.array_equal
 
 def to_numpy(x: np.ndarray) \
         -> np.ndarray:
-    return np.asarray(x)
+    return x
 
 
 to_scalar = lambda x: x.item()
