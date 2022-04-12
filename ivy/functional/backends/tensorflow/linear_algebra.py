@@ -23,7 +23,8 @@ def eigh(x: Tensor,
         return ret
 
 def inv(x: Tensor,
-        out: Optional[Tensor] = None) -> Tensor:
+        out: Optional[Tensor] = None) \
+        -> Tensor:
     if tf.math.reduce_any(tf.linalg.det(x) == 0 ):
         ret = x
     else:
@@ -33,8 +34,10 @@ def inv(x: Tensor,
     return ret
 
 
-def tensordot(x1: Tensor, x2: Tensor,
-              axes: Union[int, Tuple[List[int], List[int]]] = 2) \
+def tensordot(x1: Tensor,
+              x2: Tensor,
+              axes: Union[int, Tuple[List[int], List[int]]] = 2,
+              out: Optional[Tensor] = None) \
         -> Tensor:
 
     # find type to promote to
@@ -43,16 +46,23 @@ def tensordot(x1: Tensor, x2: Tensor,
     # type casting to float32 which is acceptable for tf.tensordot
     x1, x2 = tf.cast(x1, tf.float32), tf.cast(x2, tf.float32)
 
-    return tf.cast(tf.tensordot(x1, x2, axes), dtype)
+    ret = tf.cast(tf.tensordot(x1, x2, axes), dtype)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
 def vecdot(x1: Tensor,
            x2: Tensor,
-           axis: int = -1)\
+           axis: int = -1,
+           out: Optional[Tensor] = None)\
         -> Tensor:
     dtype = tf.experimental.numpy.promote_types(x1.dtype, x2.dtype)
     x1, x2 = tf.cast(x1, tf.float32), tf.cast(x2, tf.float32)
-    return tf.cast(tf.tensordot(x1, x2, (axis, axis)), dtype)
+    ret = tf.cast(tf.tensordot(x1, x2, (axis, axis)), dtype)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
 def pinv(x: Tensor,
