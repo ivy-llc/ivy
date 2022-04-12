@@ -13,15 +13,24 @@ import ivy
 # Array API Standard #
 # -------------------#
 
-def eigh(x: Tensor)\
- -> Tensor:
-        return tf.linalg.eigh(x) 
 
+def eigh(x: Tensor,
+         out: Optional[Tensor] = None)\
+        -> Tensor:
+        ret = tf.linalg.eigh(x)
+        if ivy.exists(out):
+            return ivy.inplace_update(out, ret)
+        return ret
 
-def inv(x: Tensor) -> Tensor:
+def inv(x: Tensor,
+        out: Optional[Tensor] = None) -> Tensor:
     if tf.math.reduce_any(tf.linalg.det(x) == 0 ):
-        return x
-    return tf.linalg.inv(x)
+        ret = x
+    else:
+        ret = tf.linalg.inv(x)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
 def tensordot(x1: Tensor, x2: Tensor,
