@@ -61,12 +61,9 @@ def zeros(shape: Union[int, Tuple[int], List[int]],
        an array containing zeros.
 
     Examples:
-    >>> ivy.set_framework('numpy')
-    >>> shape = [3]
-    >>> x = ivy.zeros(shape)
-    >>> print(x)
-
-
+    >>> x = [3]
+    >>> y = ivy.zeros(x)
+    >>> print(y)
     """
     return _cur_framework().zeros(shape, dtype, device)
 
