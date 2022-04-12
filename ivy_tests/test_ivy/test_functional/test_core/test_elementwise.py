@@ -48,7 +48,7 @@ def test_abs(dtype, as_variable, with_out, native_array):
 
 # acosh
 @pytest.mark.parametrize(
-    "dtype", ivy.all_dtype_strs)
+    "dtype", ivy.float_strs)
 @pytest.mark.parametrize(
     "as_variable", [True, False])
 @pytest.mark.parametrize(
@@ -56,9 +56,7 @@ def test_abs(dtype, as_variable, with_out, native_array):
 @pytest.mark.parametrize(
     "native_array", [True, False])
 def test_acosh(dtype, as_variable, with_out, native_array):
-    if not ivy.is_float_dtype(dtype):
-        pytest.skip("input must be floating-point")
-    if ivy.current_framework_str()=='torch' and dtype=='float16':
+    if ivy.current_framework_str() == 'torch' and dtype == 'float16':
         pytest.skip("torch acosh doesnt allow float16")
     if dtype in ivy.invalid_dtype_strs:
         pytest.skip("invalid dtype")
@@ -76,6 +74,43 @@ def test_acosh(dtype, as_variable, with_out, native_array):
         ret = ivy.acosh(x, out=out)
     else:
         ret = ivy.acosh(x)
+    if with_out:
+        if not native_array:
+            assert ret is out
+        if ivy.current_framework_str() in ["tensorflow", "jax"]:
+            # these frameworks do not support native inplace updates
+            return
+        assert ret.data is (out if native_array else out.data)
+
+
+# acos
+@pytest.mark.parametrize(
+    "dtype", ivy.float_strs)
+@pytest.mark.parametrize(
+    "as_variable", [True, False])
+@pytest.mark.parametrize(
+    "with_out", [True, False])
+@pytest.mark.parametrize(
+    "native_array", [True, False])
+def test_acos(dtype, as_variable, with_out, native_array):
+    if ivy.current_framework_str() == 'torch' and dtype == 'float16':
+        pytest.skip("torch acos doesnt allow float16")
+    if dtype in ivy.invalid_dtype_strs:
+        pytest.skip("invalid dtype")
+    x = ivy.array([0.5, 0.8, 4], dtype=dtype)
+    out = ivy.array([2, 3, 4], dtype=dtype)
+    if as_variable:
+        if with_out:
+            pytest.skip("variables do not support out argument")
+        x = ivy.variable(x)
+        out = ivy.variable(out)
+    if native_array:
+        x = x.data
+        out = out.data
+    if with_out:
+        ret = ivy.acos(x, out=out)
+    else:
+        ret = ivy.acos(x)
     if with_out:
         if not native_array:
             assert ret is out
