@@ -36,9 +36,10 @@ def bitwise_xor(x1: Tensor,
     if not isinstance(x2, Tensor):
         x2 = tf.constant(x2, dtype=x1.dtype)
     if ('int' not in str(x1.dtype)) & ('int' not in str(x2.dtype)):
-        return tf.math.logical_xor(x1, x2)
-    x1, x2 = _cast_for_binary_op(x1, x2)
-    ret = tf.bitwise.bitwise_xor(x1, x2)
+        ret = tf.math.logical_xor(x1, x2)
+    else:
+        x1, x2 = _cast_for_binary_op(x1, x2)
+        ret = tf.bitwise.bitwise_xor(x1, x2)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
     return ret
@@ -75,28 +76,43 @@ def bitwise_invert(x: Tensor,
 
 
 def bitwise_and(x1: Tensor,
-                x2: Tensor)\
+                x2: Tensor,
+                out: Optional[Tensor] = None)\
         -> Tensor:
     if not isinstance(x2, Tensor):
         x2 = tf.constant(x2, dtype=x1.dtype)
     if ('int' not in str(x1.dtype)) & ('int' not in str(x2.dtype)):
-        return tf.math.logical_and(x1, x2)
-    x1, x2 = _cast_for_binary_op(x1, x2)
-    return tf.bitwise.bitwise_and(x1, x2)
+        ret = tf.math.logical_and(x1, x2)
+    else:
+        x1, x2 = _cast_for_binary_op(x1, x2)
+        ret = tf.bitwise.bitwise_and(x1, x2)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
-def ceil(x: Tensor)\
+def ceil(x: Tensor,
+         out: Optional[Tensor] = None)\
         -> Tensor:
     if 'int' in str(x.dtype):
-        return x
-    return tf.math.ceil(x)
+        ret = x
+    else:
+        ret = tf.math.ceil(x)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
-def floor(x: Tensor)\
+def floor(x: Tensor,
+          out: Optional[Tensor] = None)\
         -> Tensor:
     if 'int' in str(x.dtype):
-        return x
-    return tf.math.floor(x)
+        ret = x
+    else:
+        ret = tf.math.floor(x)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
 def isfinite(x: Tensor) \
@@ -106,9 +122,13 @@ def isfinite(x: Tensor) \
     return tf.math.is_finite(x)
 
 
-def asin(x: Tensor) \
+def asin(x: Tensor,
+         out: Optional[Tensor] = None) \
         -> Tensor:
-    return tf.asin(x)
+    ret = tf.asin(x)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
 def isinf(x: Tensor) \
@@ -138,34 +158,59 @@ def _cast_for_binary_op(x1: Tensor, x2: Tensor)\
     return x1, x2
 
 
-def equal(x1: Tensor, x2: Tensor)\
+def equal(x1: Tensor,
+          x2: Tensor,
+          out: Optional[Tensor] = None)\
         -> Tensor:
     x1, x2 = _cast_for_binary_op(x1, x2)
-    return tf.math.equal(x1, x2)
+    ret = tf.math.equal(x1, x2)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
-def less_equal(x1: Tensor, x2: Tensor)\
+def less_equal(x1: Tensor,
+               x2: Tensor,
+               out: Optional[Tensor] = None)\
         -> Tensor:
     x1, x2 = _cast_for_binary_op(x1, x2)
-    return tf.math.less_equal(x1, x2)
+    ret = tf.math.less_equal(x1, x2)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
-def asinh(x: Tensor) \
+def asinh(x: Tensor,
+          out: Optional[Tensor] = None) \
         -> Tensor:
-    return tf.asinh(x)
+    ret = tf.asinh(x)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
-def sign(x: Tensor) \
+
+def sign(x: Tensor,
+         out: Optional[Tensor] = None) \
         -> Tensor:
     if x.dtype in [tf.uint8, tf.uint16, tf.uint32, tf.uint64]:
         return tf.cast(tf.math.sign(tf.cast(x, tf.float32)), x.dtype)
-    return tf.math.sign(x)
+    ret = tf.math.sign(x)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
-def sqrt(x: Tensor)\
+
+def sqrt(x: Tensor,
+         out: Optional[Tensor] = None)\
         -> Tensor:
     if x.dtype == 'float32':
         x_64 = tf.cast(x, tf.float64)
-        return tf.cast(tf.sqrt(x_64), x.dtype)
-    return tf.math.sqrt(x)
+        ret = tf.cast(tf.sqrt(x_64), x.dtype)
+    else:
+        ret = tf.math.sqrt(x)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
 def cosh(x: Tensor) \
