@@ -220,21 +220,31 @@ def eigvalsh(x: np.ndarray,
 
 def cross (x1: np.ndarray,
            x2: np.ndarray,
-           axis:int = -1) -> np.ndarray:
-    return np.cross(a= x1, b = x2, axis= axis)
+           axis:int = -1,
+           out: Optional[np.ndarray] = None
+           ) -> np.ndarray:
+    ret =  np.cross(a= x1, b = x2, axis= axis)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
 def matrix_rank(vector: np.ndarray,
-                rtol: Optional[Union[float, Tuple[float]]] = None) \
+                rtol: Optional[Union[float, Tuple[float]]] = None,
+                out: Optional[np.ndarray] = None) \
         -> np.ndarray:
     if rtol is None:
-        return np.linalg.matrix_rank(vector)
-    return np.linalg.matrix_rank(vector, rtol)
+        ret =  np.linalg.matrix_rank(vector)
+    ret =  np.linalg.matrix_rank(vector, rtol)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 # Extra #
 # ------#
 
-def vector_to_skew_symmetric_matrix(vector: np.ndarray) \
+def vector_to_skew_symmetric_matrix(vector: np.ndarray,
+                                    out: Optional[np.ndarray] = None) \
         -> np.ndarray:
     batch_shape = list(vector.shape[:-1])
     # BS x 3 x 1
@@ -250,4 +260,7 @@ def vector_to_skew_symmetric_matrix(vector: np.ndarray) \
     row2 = np.concatenate((a3s, zs, -a1s), -1)
     row3 = np.concatenate((-a2s, a1s, zs), -1)
     # BS x 3 x 3
-    return np.concatenate((row1, row2, row3), -2)
+    ret =  np.concatenate((row1, row2, row3), -2)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
