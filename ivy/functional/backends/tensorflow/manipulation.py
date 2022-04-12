@@ -110,12 +110,17 @@ def stack(x: Union[Tuple[Tensor], List[Tensor]],
 
 def reshape(x: Tensor,
             shape: Tuple[int, ...],
-            copy: Optional[bool] = None)\
+            copy: Optional[bool] = None,
+            out: Optional[Tensor] = None)\
         -> Tensor:
-    return tf.reshape(x, shape)
+    ret = tf.reshape(x, shape)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
-def concat(xs: List[Tensor], axis: int = 0) -> Tensor:
+def concat(xs: List[Tensor], axis: int = 0,
+           out: Optional[Tensor] = None) -> Tensor:
     is_tuple = type(xs) is tuple
     is_axis_none = axis==None
     if is_tuple:
@@ -133,7 +138,8 @@ def concat(xs: List[Tensor], axis: int = 0) -> Tensor:
         if is_tuple:
             xs = tuple(xs)
     ret = tf.concat(xs, axis)
-
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
     return ret
 
 
