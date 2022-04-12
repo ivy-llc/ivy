@@ -298,58 +298,99 @@ def logical_not(x: Tensor,
 
   
 def divide(x1: Tensor,
-           x2: Tensor)\
+           x2: Tensor,
+           out: Optional[Tensor] = None)\
         -> Tensor:
     x1, x2 = _cast_for_binary_op(x1, x2)
-    return tf.divide(x1, x2)
+    ret = tf.divide(x1, x2)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
-def greater(x1: Tensor, x2: Tensor)\
+def greater(x1: Tensor,
+            x2: Tensor,
+            out: Optional[Tensor] = None)\
         -> Tensor:
     if hasattr(x1, 'dtype') and hasattr(x2, 'dtype'):
         promoted_type = tf.experimental.numpy.promote_types(x1.dtype, x2.dtype)
         x1 = tf.cast(x1, promoted_type)
         x2 = tf.cast(x2, promoted_type)
-    return tf.math.greater(x1, x2)
+    ret = tf.math.greater(x1, x2)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
-def greater_equal(x1: Tensor, x2: Tensor)\
+def greater_equal(x1: Tensor,
+                  x2: Tensor,
+                  out: Optional[Tensor] = None)\
         -> Tensor:
     if hasattr(x1, 'dtype') and hasattr(x2, 'dtype'):
         promoted_type = tf.experimental.numpy.promote_types(x1.dtype, x2.dtype)
         x1 = tf.cast(x1, promoted_type)
         x2 = tf.cast(x2, promoted_type)
-    return tf.math.greater_equal(x1, x2)
+    ret = tf.math.greater_equal(x1, x2)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
-def acos(x: Tensor)\
+def acos(x: Tensor,
+         out: Optional[Tensor] = None)\
         -> Tensor:
-    return tf.acos(x)
+    ret = tf.acos(x)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
-def logical_xor(x1: Tensor, x2: Tensor) \
+def logical_xor(x1: Tensor,
+                x2: Tensor,
+                out: Optional[Tensor] = None) \
         -> Tensor:
-    return tf.math.logical_xor(tf.cast(x1, tf.bool), tf.cast(x2, tf.bool))
+    ret = tf.math.logical_xor(tf.cast(x1, tf.bool), tf.cast(x2, tf.bool))
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
-def logical_or(x1: Tensor, x2: Tensor)\
+def logical_or(x1: Tensor,
+               x2: Tensor,
+               out: Optional[Tensor] = None)\
         -> Tensor:
-    return tf.logical_or(tf.cast(x1, tf.bool), tf.cast(x2, tf.bool))
+    ret = tf.logical_or(tf.cast(x1, tf.bool), tf.cast(x2, tf.bool))
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
-def logical_and(x1: Tensor, x2: Tensor)\
+def logical_and(x1: Tensor,
+                x2: Tensor,
+                out: Optional[Tensor] = None)\
         -> Tensor:
-    return tf.logical_and(tf.cast(x1, tf.bool), tf.cast(x2, tf.bool))
+    ret = tf.logical_and(tf.cast(x1, tf.bool), tf.cast(x2, tf.bool))
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
-def acosh(x: Tensor) \
+def acosh(x: Tensor,
+          out: Optional[Tensor] = None) \
         -> Tensor:
-    return tf.acosh(x)
+    ret = tf.acosh(x)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
-def sin(x: Tensor)\
+def sin(x: Tensor,
+        out: Optional[Tensor] = None)\
         -> Tensor:
-    return tf.sin(x)
+    ret = tf.sin(x)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
 def multiply(x1: Tensor, x2: Tensor)\
