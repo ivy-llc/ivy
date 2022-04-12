@@ -131,10 +131,10 @@ def softmax(x: Union[ivy.Array, ivy.NativeArray], axis: Optional[int] = -1)\
         The input array with softmax applied element-wise.
 
     Examples:
-    >>> x = ivy.array([-1, -0.5, 0, 0.5, 1])
+    >>> x = ivy.array([-1.0, 0, 1.0])
     >>> y = ivy.softmax(x)
     >>> print(y)
-    [0.05801222, 0.09564598, 0.15769356, 0.25999272, 0.42865553]
+    [0.09003057, 0.24472847, 0.66524096]
     """
     return _cur_framework(x).softmax(x, axis)
 
