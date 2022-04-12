@@ -87,7 +87,7 @@ def matrix_norm(x: np.ndarray,
 
 def svd(x: np.ndarray,
         full_matrices: bool = True,
-        out: Optional[np.ndarray] = None) \
+        out: Optional[Union[np.ndarray, Tuple[np.ndarray, ...]]] = None) \
         -> Union[np.ndarray, Tuple[np.ndarray, ...]]:
 
     results = namedtuple("svd", "U S Vh")
@@ -117,15 +117,23 @@ def diagonal(x: np.ndarray,
     return ret
 
 
-def svdvals(x: np.ndarray) -> np.ndarray:
-    return np.linalg.svd(x, compute_uv=False)
-
+def svdvals(x: np.ndarray,
+            out: Optional[np.ndarray] = None)\
+        -> np.ndarray:
+    ret =  np.linalg.svd(x, compute_uv=False)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 def qr(x: np.ndarray,
-       mode: str = 'reduced') -> namedtuple('qr', ['Q', 'R']):
+       mode: str = 'reduced',
+       out: Optional[np.ndarray] = None) -> namedtuple('qr', ['Q', 'R']):
     res = namedtuple('qr', ['Q', 'R'])
     q, r = np.linalg.qr(x, mode=mode)
-    return res(q, r)
+    ret =  res(q, r)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
 def matmul(x1: np.ndarray,
