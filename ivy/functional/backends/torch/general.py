@@ -32,12 +32,9 @@ def array_equal(x0, x1):
     return torch.equal(x0, x1)
 
 
-def to_numpy(x) -> np.ndarray:
-    if isinstance(x, np.ndarray) or isinstance(x, (float, int, bool)):
-        return x
-    elif torch.is_tensor(x):
-        return x.detach().cpu().numpy()
-    raise ValueError('Expected a pytroch tensor.')
+def to_numpy(x: torch.Tensor)\
+        -> ndarray:
+    return np.asarray(x)
 
 
 def to_scalar(x) -> Union[float, int, bool]:
