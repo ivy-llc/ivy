@@ -66,16 +66,27 @@ def vecdot(x1: Tensor,
 
 
 def pinv(x: Tensor,
-         rtol: Optional[Union[float, Tuple[float]]] = None) \
+         rtol: Optional[Union[float, Tuple[float]]] = None,
+         out: Optional[Tensor] = None) \
         -> Tensor:
     if rtol is None:
-        return tf.linalg.pinv(x)
-    return tf.linalg.pinv(tf.cast(x != 0, 'float32'), tf.cast(rtol != 0, 'float32'))
+        ret = tf.linalg.pinv(x)
+    else:
+        ret = tf.linalg.pinv(tf.cast(x != 0, 'float32'), tf.cast(rtol != 0, 'float32'))
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
-def matrix_transpose(x: Tensor)\
+
+def matrix_transpose(x: Tensor,
+                     out: Optional[Tensor] = None)\
         -> Tensor:
-    return tf.experimental.numpy.swapaxes(x, -1, -2)
+    ret = tf.experimental.numpy.swapaxes(x, -1, -2)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
+
 
 
 # noinspection PyUnusedLocal,PyShadowingBuiltins
