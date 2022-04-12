@@ -76,23 +76,36 @@ def flip(x: Tensor,
 
 
 def expand_dims(x: Tensor,
-                axis: Optional[Union[int, Tuple[int], List[int]]] = None) \
+                axis: Optional[Union[int, Tuple[int], List[int]]] = None,
+                out: Optional[Tensor] = None) \
         -> Tensor:
     try:
-        return tf.expand_dims(x, axis)
+        ret = tf.expand_dims(x, axis)
+        if ivy.exists(out):
+            return ivy.inplace_update(out, ret)
+        return ret
     except tf.errors.InvalidArgumentError as error:
         raise IndexError(error)
 
+
 def permute_dims(x: Tensor,
-                axes: Tuple[int,...]) \
+                axes: Tuple[int,...],
+                 out: Optional[Tensor] = None) \
         -> Tensor:
-    return tf.transpose(x,perm=axes)
+    ret = tf.transpose(x,perm=axes)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
 def stack(x: Union[Tuple[Tensor], List[Tensor]],
-          axis: Optional[int] = 0)\
+          axis: Optional[int] = 0,
+          out: Optional[Tensor] = None)\
           -> Tensor:
-    return tf.experimental.numpy.stack(x, axis)
+    ret = tf.experimental.numpy.stack(x, axis)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
 def reshape(x: Tensor,
