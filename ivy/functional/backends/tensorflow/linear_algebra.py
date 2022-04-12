@@ -356,7 +356,8 @@ def cross (x1: tf.Tensor,
 # Extra #
 # ------#
 
-def vector_to_skew_symmetric_matrix(vector: Tensor)\
+def vector_to_skew_symmetric_matrix(vector: Tensor,
+                                    out: Optional[Tensor] = None)\
         -> Tensor:
     batch_shape = list(vector.shape[:-1])
     # BS x 3 x 1
@@ -372,4 +373,7 @@ def vector_to_skew_symmetric_matrix(vector: Tensor)\
     row2 = tf.concat((a3s, zs, -a1s), -1)
     row3 = tf.concat((-a2s, a1s, zs), -1)
     # BS x 3 x 3
-    return tf.concat((row1, row2, row3), -2)
+    ret = tf.concat((row1, row2, row3), -2)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
