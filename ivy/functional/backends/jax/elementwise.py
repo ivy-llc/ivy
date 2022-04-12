@@ -426,34 +426,54 @@ def square(x: JaxArray,
     return ret
 
 
-def pow(x1: jnp.ndarray, x2: jnp.ndarray)\
+def pow(x1: jnp.ndarray,
+        x2: jnp.ndarray,
+        out: Optional[JaxArray] = None)\
         -> jnp.ndarray:
     if hasattr(x1, 'dtype') and hasattr(x2, 'dtype'):
         promoted_type = jnp.promote_types(x1.dtype, x2.dtype)
         x1 = x1.astype(promoted_type)
         x2 = x2.astype(promoted_type)
-    return jnp.power(x1, x2)
+    ret = jnp.power(x1, x2)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
-def remainder(x1: JaxArray, x2: JaxArray)\
+def remainder(x1: JaxArray,
+              x2: JaxArray,
+              out: Optional[JaxArray] = None)\
         -> JaxArray:
     if isinstance(x2, int):
         x2 = jnp.asarray(x2, dtype=x1.dtype)
-    return jnp.remainder(x1, x2)
+    ret = jnp.remainder(x1, x2)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
-def round(x: JaxArray)\
+def round(x: JaxArray,
+          out: Optional[JaxArray] = None)\
         -> JaxArray:
     if 'int' in str(x.dtype):
-        return x
-    return jnp.round(x)
+        ret = x
+    else:
+        ret = jnp.round(x)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
-def trunc(x: JaxArray)\
+def trunc(x: JaxArray,
+          out: Optional[JaxArray] = None)\
         -> JaxArray:
     if 'int' in str(x.dtype):
-        return x
-    return jnp.trunc(x)
+        ret = x
+    else:
+        ret = jnp.trunc(x)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
   
 def abs(x: JaxArray,
@@ -465,24 +485,40 @@ def abs(x: JaxArray,
     return ret
 
 
-def subtract(x1: JaxArray, x2: JaxArray)\
+def subtract(x1: JaxArray,
+             x2: JaxArray,
+             out: Optional[JaxArray] = None)\
         -> JaxArray:
     if hasattr(x1, 'dtype') and hasattr(x2, 'dtype'):
         promoted_type = jnp.promote_types(x1.dtype, x2.dtype)
         x1 = x1.astype(promoted_type)
         x2 = x2.astype(promoted_type)
-    return jnp.subtract(x1, x2)
+    ret = jnp.subtract(x1, x2)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
-def logaddexp(x1: JaxArray, x2: JaxArray) -> JaxArray:
-    return jnp.logaddexp(x1, x2)
+def logaddexp(x1: JaxArray,
+              x2: JaxArray,
+              out: Optional[JaxArray] = None)\
+        -> JaxArray:
+    ret = jnp.logaddexp(x1, x2)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
-def bitwise_right_shift(x1: JaxArray, x2: JaxArray)\
+def bitwise_right_shift(x1: JaxArray,
+                        x2: JaxArray,
+                        out: Optional[JaxArray] = None)\
         -> JaxArray:
     if isinstance(x2, int):
         x2 = jnp.asarray(x2, dtype=x1.dtype)
-    return jnp.right_shift(x1, x2)
+    ret = jnp.right_shift(x1, x2)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
 tan = jnp.tan
