@@ -8,7 +8,9 @@ import ivy
 from ivy.functional.backends.jax import JaxArray
 
 
-def bitwise_left_shift(x1: JaxArray, x2: JaxArray)\
+def bitwise_left_shift(x1: JaxArray,
+                       x2: JaxArray,
+                       out: Optional[JaxArray] = None)\
         -> JaxArray:
     if isinstance(x2, int):
         x2 = jnp.asarray(x2, dtype=x1.dtype)
@@ -16,25 +18,43 @@ def bitwise_left_shift(x1: JaxArray, x2: JaxArray)\
 
 
 def add(x1: JaxArray,
-           x2: JaxArray)\
+        x2: JaxArray,
+        out: Optional[JaxArray] = None)\
         -> JaxArray:
-    return jnp.add(x1, x2)
+    ret = jnp.add(x1, x2)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
 def bitwise_xor(x1: JaxArray,
-                x2: JaxArray)\
+                x2: JaxArray,
+                out: Optional[JaxArray] = None)\
         -> JaxArray:
     if isinstance(x2, int):
         x2 = jnp.asarray(x2, dtype=x1.dtype)
-    return jnp.bitwise_xor(x1, x2)
+    ret = jnp.bitwise_xor(x1, x2)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
-def exp(x: JaxArray)\
-        -> JaxArray:
-    return jnp.exp(x)
 
-def expm1(x: JaxArray)\
+def exp(x: JaxArray,
+        out: Optional[JaxArray] = None)\
         -> JaxArray:
-    return jnp.expm1(x)
+    ret = jnp.exp(x)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
+
+
+def expm1(x: JaxArray,
+          out: Optional[JaxArray] = None)\
+        -> JaxArray:
+    ret = jnp.expm1(x)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
 def bitwise_invert(x: JaxArray)\
