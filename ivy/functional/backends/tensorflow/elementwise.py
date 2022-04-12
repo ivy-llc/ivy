@@ -600,37 +600,70 @@ def bitwise_right_shift(x1: Tensor,
     return ret
 
 
-tan = tf.tan
-
-
-def atan(x: Tensor) \
+def tan(x: Tensor,
+        out: Optional[Tensor] = None) \
         -> Tensor:
-    return tf.atan(x)
+    ret = tf.tan(x)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
-
-def atanh(x: Tensor) \
+def atan(x: Tensor,
+         out: Optional[Tensor] = None) \
         -> Tensor:
-    return tf.math.atanh(x)
+    ret = tf.atan(x)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
+def atanh(x: Tensor,
+          out: Optional[Tensor] = None)\
+        -> Tensor:
+    ret = tf.math.atanh(x)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
-def atan2(x1: Tensor, x2: Tensor) -> Tensor:
+
+def atan2(x1: Tensor,
+          x2: Tensor,
+          out: Optional[Tensor] = None) -> Tensor:
     if hasattr(x1, 'dtype') and hasattr(x2, 'dtype'):
         promoted_type = tf.experimental.numpy.promote_types(x1.dtype, x2.dtype)
         x1 = tf.cast(x1, promoted_type)
         x2 = tf.cast(x2, promoted_type)
-    return tf.math.atan2(x1, x2)
+    ret = tf.math.atan2(x1, x2)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
-
-
-cosh = tf.math.cosh
-log = tf.math.log
-exp = tf.math.exp
 
 # Extra #
 # ------#
 
-minimum = tf.minimum
-maximum = tf.maximum
-erf = tf.math.erf
+
+def minimum(x, y, out: Optional[Tensor] = None)\
+        -> Tensor:
+    ret = tf.minimum(x, y)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
+
+
+def maximum(x, y, out: Optional[Tensor] = None)\
+        -> Tensor:
+    ret = tf.maximum(x, y)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
+
+
+def erf(x, out: Optional[Tensor] = None)\
+        -> Tensor:
+    ret = tf.math.erf(x)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
+
