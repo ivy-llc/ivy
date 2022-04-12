@@ -99,16 +99,22 @@ def svd(x: np.ndarray,
 
 
 def outer(x1: np.ndarray,
-          x2: np.ndarray)\
+          x2: np.ndarray,
+          out: Optional[np.ndarray] = None)\
         -> np.ndarray:
-    return np.outer(x1, x2)
+    return np.outer(x1, x2, out)
 
 
 def diagonal(x: np.ndarray,
              offset: int = 0,
              axis1: int = -2,
-             axis2: int = -1) -> np.ndarray:
-    return np.diagonal(x, offset=offset, axis1=axis1, axis2=axis2)
+             axis2: int = -1,
+             out: Optional[np.ndarray] = None)\
+        -> np.ndarray:
+    ret =  np.diagonal(x, offset=offset, axis1=axis1, axis2=axis2)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
 def svdvals(x: np.ndarray) -> np.ndarray:
