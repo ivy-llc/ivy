@@ -164,7 +164,15 @@ def split(x, num_or_size_splits=None, axis=0, with_remainder=False):
     return tf.split(x, num_or_size_splits, axis)
 
 
-repeat = tf.repeat
+def repeat(x: Tensor,
+           repeats: Union[int, List[int]],
+           axis: int = None,
+           out: Optional[Tensor] = None)\
+        -> Tensor:
+    ret = tf.repeat(x, repeats, axis)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
 def tile(x, reps, out: Optional[Tensor] = None):
@@ -198,7 +206,7 @@ def zero_pad(x, pad_width, out: Optional[Tensor] = None):
     return ret
 
 
-def swapaxes(x, axis0, axis1):
+def swapaxes(x, axis0, axis1, out: Optional[Tensor] = None):
     x_shape = x.shape
     num_dims = len(x_shape)
     axis0 %= num_dims
@@ -208,6 +216,14 @@ def swapaxes(x, axis0, axis1):
     config.insert(axis0, axis1)
     config.pop(axis1)
     config.insert(axis1, axis0)
-    return tf.transpose(x, config)
+    ret = tf.transpose(x, config)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
-clip = tf.clip_by_value
+
+def clip(x, x_min, x_max, out: Optional[Tensor] = None):
+    ret = tf.clip_by_value(x, x_min, x_max)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
