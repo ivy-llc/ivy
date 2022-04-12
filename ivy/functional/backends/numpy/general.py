@@ -94,13 +94,21 @@ def cumsum(x:np.ndarray,axis:int=0,out: Optional[np.ndarray] = None)\
             return np.cumsum(x,axis)
 
 
-def cumprod(x, axis=0, exclusive=False):
+def cumprod(x:np.ndarray, axis:int=0, exclusive:Optional[bool]=False,
+    out:Optional[np.ndarray] = None)\
+        -> np.ndarray:
     if exclusive:
         x = np.swapaxes(x, axis, -1)
         x = np.concatenate((np.ones_like(x[..., -1:]), x[..., :-1]), -1)
         res = np.cumprod(x, -1)
-        return np.swapaxes(res, axis, -1)
-    return np.cumprod(x, axis)
+        if ivy.exists(out):
+            return ivy.inplace_update(out,np.swapaxes(res, axis, -1).copy())
+        else:
+            return np.swapaxes(res, axis, -1)
+    if ivy.exists(out):
+        return ivy.inplace_update(out,np.cumprod(x, axis))  
+    else:
+        return np.cumprod(x, axis)
 
 
 
