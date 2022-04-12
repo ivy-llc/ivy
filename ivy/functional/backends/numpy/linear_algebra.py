@@ -186,22 +186,37 @@ def vecdot(x1: np.ndarray,
     return ret
 
 
-def det(x: np.array) \
+def det(x: np.array,
+        out: Optional[np.ndarray] = None) \
         -> np.array:
-    return np.linalg.det(x)
+    ret =  np.linalg.det(x)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
 def cholesky(x: np.ndarray,
-             upper: bool = False) -> np.ndarray:
+             upper: bool = False,
+             out: Optional[np.ndarray] = None) -> np.ndarray:
     if not upper:
-        return np.linalg.cholesky(x)
+        ret =  np.linalg.cholesky(x)
     else:
         axes = list(range(len(x.shape)-2))+[len(x.shape)-1, len(x.shape)-2]
-        return np.transpose(np.linalg.cholesky(np.transpose(x, axes=axes)),
+        ret =  np.transpose(np.linalg.cholesky(np.transpose(x, axes=axes)),
                             axes=axes)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
-def eigvalsh(x: np.ndarray) -> np.ndarray:
-    return np.linalg.eigvalsh(x)
+
+def eigvalsh(x: np.ndarray,
+             out: Optional[np.ndarray] = None)\
+        -> np.ndarray:
+    ret =  np.linalg.eigvalsh(x)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
+
 
 def cross (x1: np.ndarray,
            x2: np.ndarray,
