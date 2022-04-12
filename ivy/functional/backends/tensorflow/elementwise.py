@@ -479,17 +479,27 @@ def bitwise_or(x1: Tensor,
     return ret
 
 
-def positive(x: Tensor)\
+def positive(x: Tensor,
+             out: Optional[Tensor] = None)\
         -> Tensor:
-    return tf.experimental.numpy.positive(x)
+    ret = tf.experimental.numpy.positive(x)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
-def square(x: Tensor)\
+def square(x: Tensor,
+           out: Optional[Tensor] = None)\
         -> Tensor:
-    return tf.math.square(x)
+    ret = tf.math.square(x)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
-def pow(x1: Tensor, x2: Tensor)\
+def pow(x1: Tensor,
+        x2: Tensor,
+        out: Optional[Tensor] = None)\
         -> Tensor:
     if not isinstance(x2, Tensor):
         x2 = tf.constant(x2, dtype=x1.dtype)
@@ -500,30 +510,47 @@ def pow(x1: Tensor, x2: Tensor)\
         x1 = tf.cast(x1, tf.float64)
     if x2.dtype.is_unsigned:
         x2 = tf.cast(x2, tf.float64)
-    return tf.cast(tf.experimental.numpy.power(x1, x2), promoted_type)
+    ret = tf.cast(tf.experimental.numpy.power(x1, x2), promoted_type)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
-def remainder(x1: Tensor, x2: Tensor)\
+def remainder(x1: Tensor,
+              x2: Tensor,
+              out: Optional[Tensor] = None)\
         -> Tensor:
     x1, x2 = _cast_for_binary_op(x1, x2)
-    return tf.experimental.numpy.remainder(x1, x2)
+    ret = tf.experimental.numpy.remainder(x1, x2)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
-def round(x: Tensor)\
+def round(x: Tensor,
+          out: Optional[Tensor] = None)\
         -> Tensor:
     if 'int' in str(x.dtype):
-        return x
-    return tf.round(x)
+        ret = x
+    else:
+        ret = tf.round(x)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
-def trunc(x: Tensor)\
+def trunc(x: Tensor,
+          out: Optional[Tensor] = None)\
         -> Tensor:
     if 'int' in str(x.dtype):
-        return x
-    res = tf.zeros(x.shape, dtype=x.dtype)
-    res = tf.tensor_scatter_nd_update(res, tf.where(x > 0), tf.math.floor(x[x > 0]))
-    res = tf.tensor_scatter_nd_update(res, tf.where(x < 0), tf.math.ceil(x[x < 0]))
-    return res
+        ret = x
+    else:
+        ret = tf.zeros(x.shape, dtype=x.dtype)
+        ret = tf.tensor_scatter_nd_update(ret, tf.where(x > 0), tf.math.floor(x[x > 0]))
+        ret = tf.tensor_scatter_nd_update(ret, tf.where(x < 0), tf.math.ceil(x[x < 0]))
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
 def abs(x: Tensor,
@@ -538,30 +565,39 @@ def abs(x: Tensor,
     return ret
 
 
-def subtract(x1: Tensor, x2: Tensor)\
+def subtract(x1: Tensor,
+             x2: Tensor,
+             out: Optional[Tensor] = None)\
         -> Tensor:
     if hasattr(x1, 'dtype') and hasattr(x2, 'dtype'):
         promoted_type = tf.experimental.numpy.promote_types(x1.dtype, x2.dtype)
         x1 = tf.cast(x1, promoted_type)
         x2 = tf.cast(x2, promoted_type)
-    return tf.subtract(x1, x2)
+    ret = tf.subtract(x1, x2)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
-def logaddexp(x1: Tensor, x2: Tensor) -> Tensor:
+def logaddexp(x1: Tensor,
+              x2: Tensor,
+              out: Optional[Tensor] = None) -> Tensor:
     x1, x2 = _cast_for_binary_op(x1, x2)
-    return tf.experimental.numpy.logaddexp(x1, x2)
+    ret = tf.experimental.numpy.logaddexp(x1, x2)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
-def bitwise_right_shift(x1: Tensor, x2: Tensor)\
+def bitwise_right_shift(x1: Tensor,
+                        x2: Tensor,
+                        out: Optional[Tensor] = None)\
         -> Tensor:
     x1, x2 = _cast_for_binary_op(x1, x2)
-    return tf.bitwise.right_shift(x1, x2)
-
-
-def bitwise_left_shift(x1: Tensor, x2: Tensor)\
-        -> Tensor:
-    x1, x2 = _cast_for_binary_op(x1, x2)
-    return tf.bitwise.left_shift(x1, x2)
+    ret = tf.bitwise.right_shift(x1, x2)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
 tan = tf.tan
