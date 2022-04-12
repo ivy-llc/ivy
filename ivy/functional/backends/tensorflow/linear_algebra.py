@@ -203,7 +203,8 @@ def qr(x: tf.Tensor,
 
 
 def matmul(x1: tf.Tensor,
-           x2: tf.Tensor)\
+           x2: tf.Tensor,
+           out: Optional[Tensor] = None)\
         -> tf.Tensor:
     dtype_from = tf.experimental.numpy.promote_types(x1.dtype.as_numpy_dtype, x2.dtype.as_numpy_dtype)
     dtype_from = tf.as_dtype(dtype_from)
@@ -222,6 +223,10 @@ def matmul(x1: tf.Tensor,
             or (len(x1.shape) >= 2 and len(x2.shape) >= 2 and x1.shape[-1] != x2.shape[-2])):
         raise Exception('Error,shapes not compatible')
 
+    x1_padded = False
+    x1_padded_2 = False
+    x2_padded = False
+
     if len(x1.shape) == len(x2.shape) == 1:
         if x1.shape == 0:
             ret = tf.constant(0)
@@ -229,33 +234,31 @@ def matmul(x1: tf.Tensor,
 
             ret = tf.math.multiply(x1, x2)[0]
         ret = tf.cast(ret, dtype=dtype_from)
-        return ret
+        #return ret
 
-    x1_padded = False
-    x1_padded_2 = False
-    x2_padded = False
+    else:
+        if len(x1.shape) == 1:
+            if len(x2.shape) == 2:
+                x1_padded_2 = True
+            elif len(x2.shape) > 2:
+                x1_padded = True
+            x1 = tf.expand_dims(x1, axis=0)
 
-    if len(x1.shape) == 1:
-        if len(x2.shape) == 2:
-            x1_padded_2 = True
-        elif len(x2.shape) > 2:
-            x1_padded = True
-        x1 = tf.expand_dims(x1, axis=0)
+        elif len(x2.shape) == 1 and len(x1.shape) >= 2:
+            x2 = tf.expand_dims(x2, axis=1)
+            x2_padded = True
 
-    elif len(x2.shape) == 1 and len(x1.shape) >= 2:
-        x2 = tf.expand_dims(x2, axis=1)
-        x2_padded = True
-
-    ret = tf.matmul(x1, x2)
+        ret = tf.matmul(x1, x2)
 
     ret = tf.cast(ret, dtype=dtype_from)
     if x1_padded_2:
-        return ret[0]
+        ret = ret[0]
     elif x1_padded:
-        return tf.squeeze(ret, axis=-2)
+        ret = tf.squeeze(ret, axis=-2)
     elif x2_padded:
-        return tf.squeeze(ret, axis=-1)
-
+        ret = tf.squeeze(ret, axis=-1)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
     return ret
 
 
