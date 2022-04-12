@@ -203,7 +203,8 @@ def qr(x: tf.Tensor,
 
 
 def matmul(x1: tf.Tensor,
-           x2: tf.Tensor) -> tf.Tensor:
+           x2: tf.Tensor)\
+        -> tf.Tensor:
     dtype_from = tf.experimental.numpy.promote_types(x1.dtype.as_numpy_dtype, x2.dtype.as_numpy_dtype)
     dtype_from = tf.as_dtype(dtype_from)
     if dtype_from.is_unsigned or dtype_from==tf.int8 or dtype_from==tf.int16:
@@ -267,22 +268,37 @@ def svdvals(x: tf.Tensor,
     return ret
 
 
-def slogdet(x:Union[ivy.Array,ivy.NativeArray],full_matrices: bool = True) -> Union[ivy.Array, Tuple[ivy.Array,...]]:
+def slogdet(x:Union[ivy.Array,ivy.NativeArray],
+            out: Optional[Tensor] = None) \
+        -> Union[Tensor, Tuple[Tensor,...]]:
     results = namedtuple("slogdet", "sign logabsdet")
     sign, logabsdet = tf.linalg.slogdet(x)
-    res = results(sign, logabsdet)
-    return res
+    ret = results(sign, logabsdet)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
 def trace(x: tf.Tensor,
-          offset: int = 0)\
+          offset: int = 0,
+          out: Optional[Tensor] = None)\
               -> tf.Tensor:
-    return tf.trace(x, offset)
+    ret = tf.trace(x, offset)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
-def det(x:tf.Tensor,name:Optional[str]=None) \
+def det(x:tf.Tensor,
+        name:Optional[str]=None,
+        out: Optional[Tensor] = None
+        ) \
     -> tf.Tensor:
-    return tf.linalg.det(x,name)
+    ret = tf.linalg.det(x,name)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
+
 
 def cholesky(x: tf.Tensor,
             upper: bool = False) -> tf.Tensor:
