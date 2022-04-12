@@ -521,40 +521,74 @@ def bitwise_right_shift(x1: JaxArray,
     return ret
 
 
-tan = jnp.tan
-
-
-def atan(x: JaxArray)\
+def tan(x: JaxArray,
+        out: Optional[JaxArray] = None)\
         -> JaxArray:
-    return jnp.arctan(x)
+    ret = jnp.tan(x)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
-
-def atanh(x: JaxArray)\
+def atan(x: JaxArray,
+         out: Optional[JaxArray] = None)\
         -> JaxArray:
-    return jnp.arctanh(x)
+    ret = jnp.arctan(x)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
+def atanh(x: JaxArray,
+          out: Optional[JaxArray] = None)\
+        -> JaxArray:
+    ret = jnp.arctanh(x)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
-
-
-def atan2(x1: JaxArray, x2: JaxArray) -> JaxArray:
+def atan2(x1: JaxArray,
+          x2: JaxArray,
+          out: Optional[JaxArray] = None) -> JaxArray:
     if hasattr(x1, 'dtype') and hasattr(x2, 'dtype'):
         promoted_type = jnp.promote_types(x1.dtype, x2.dtype)
         x1 = x1.astype(promoted_type)
         x2 = x2.astype(promoted_type)
-    return jnp.arctan2(x1, x2)
+    ret = jnp.arctan2(x1, x2)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
-
-
-cosh = jnp.cosh
-log = jnp.log
-exp = jnp.exp
 
 # Extra #
 # ------#
 
-minimum = jnp.minimum
-maximum = jnp.maximum
-erf = jax.scipy.special.erf
+
+def minimum(x1: JaxArray,
+            x2: JaxArray,
+            out: Optional[JaxArray] = None)\
+        -> JaxArray:
+    ret = jnp.minimum(x1, x2)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
+
+
+def maximum(x1: JaxArray,
+            x2: JaxArray,
+            out: Optional[JaxArray] = None)\
+        -> JaxArray:
+    ret = jnp.maximum(x1, x2)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
+
+
+def erf(x: JaxArray,
+        out: Optional[JaxArray] = None)\
+        -> JaxArray:
+    ret = jax.scipy.special.erf(x)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
