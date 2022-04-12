@@ -325,24 +325,29 @@ def eigvalsh(x: Tensor,
 
 
 def matrix_rank(vector: Tensor,
-                rtol: Optional[Union[float, Tuple[float]]] = None)\
+                rtol: Optional[Union[float, Tuple[float]]] = None,
+                out: Optional[Tensor] = None)\
         -> Tensor:
     if rtol is None:
-        return tf.linalg.matrix_rank(vector)
-    if tf.size(vector) == 0:
-        return 0
-    if tf.size(vector) == 1:
-        return tf.math.count_nonzero(vector)
-    vector = tf.reshape(vector,[-1])
-    vector = tf.expand_dims(vector,0)
-    if hasattr(rtol,'dtype'):
-        if rtol.dtype != vector.dtype:
-            promoted_dtype = tf.experimental.numpy.promote_types(rtol.dtype,vector.dtype)
-            vector = tf.cast(vector,promoted_dtype)
-            rtol = tf.cast(rtol,promoted_dtype)
-    return tf.linalg.matrix_rank(vector,rtol)
+        ret = tf.linalg.matrix_rank(vector)
+    elif tf.size(vector) == 0:
+        ret = 0
+    elif tf.size(vector) == 1:
+        ret = tf.math.count_nonzero(vector)
+    else:
+        vector = tf.reshape(vector,[-1])
+        vector = tf.expand_dims(vector,0)
+        if hasattr(rtol,'dtype'):
+            if rtol.dtype != vector.dtype:
+                promoted_dtype = tf.experimental.numpy.promote_types(rtol.dtype,vector.dtype)
+                vector = tf.cast(vector,promoted_dtype)
+                rtol = tf.cast(rtol,promoted_dtype)
+        ret = tf.linalg.matrix_rank(vector,rtol)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
-    
+
 def cross (x1: tf.Tensor,
            x2: tf.Tensor,
            axis:int = -1,
