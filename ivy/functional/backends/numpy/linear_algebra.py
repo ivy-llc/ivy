@@ -146,7 +146,7 @@ def matmul(x1: np.ndarray,
 
 
 def slogdet(x: np.ndarray,
-            out: Optional[np.ndarray] = None)\
+            out: Optional[Tuple[np.ndarray, np.ndarray]] = None)\
         -> Tuple[np.ndarray, np.ndarray]:
     results = namedtuple("slogdet", "sign logabsdet")
     sign, logabsdet = np.linalg.slogdet(x)
@@ -157,23 +157,33 @@ def slogdet(x: np.ndarray,
 
 
 def tensordot(x1: np.ndarray, x2: np.ndarray,
-              axes: Union[int, Tuple[List[int], List[int]]] = 2) \
-    -> np.ndarray:
+              axes: Union[int, Tuple[List[int], List[int]]] = 2,
+              out: Optional[np.ndarray] = None) \
+            -> np.ndarray:
 
-    return np.tensordot(x1, x2, axes=axes)
+    ret = np.tensordot(x1, x2, axes=axes)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
+
 
 
 def trace(x: np.ndarray,
-          offset: int = 0) \
+          offset: int = 0,
+          out: Optional[np.ndarray] = None) \
         -> np.ndarray:
-    return np.trace(x, offset)
+    return np.trace(x, offset, out=out)
 
 
 def vecdot(x1: np.ndarray, 
            x2: np.ndarray,
-           axis: int = -1)\
+           axis: int = -1,
+           out: Optional[np.ndarray] = None)\
         -> np.ndarray:
-    return np.tensordot(x1, x2, axes=(axis, axis))
+    ret =  np.tensordot(x1, x2, axes=(axis, axis))
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
 def det(x: np.array) \
