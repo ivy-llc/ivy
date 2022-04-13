@@ -33,7 +33,7 @@ def is_native_array(x, exclusive=False):
                           jaxlib.xla_extension.DeviceArray, Buffer,
                           jax.interpreters.ad.JVPTracer,
                           jax.core.ShapedArray,
-                       jax.interpreters.partial_eval.DynamicJaxprTracer))
+                          jax.interpreters.partial_eval.DynamicJaxprTracer))
 
 
 def _to_array(x):
@@ -53,10 +53,16 @@ def to_numpy(x: JaxArray) \
     return np.asarray(_to_array(x))
 
 
-to_scalar = lambda x: x if isinstance(x, Number) else _to_array(x).item()
-to_scalar.__name__ = 'to_scalar'
-to_list = lambda x: _to_array(x).tolist()
-to_list.__name__ = 'to_list'
+def to_scalar(x: JaxArray) \
+        -> Number:
+    if isinstance(x, Number):
+        return x
+    else:
+        return _to_array(x).item()
+
+def to_list(x: JaxArray) \
+        -> list:
+    return _to_array(x).tolist()
 shape = lambda x, as_tensor=False: jnp.asarray(jnp.shape(x)) if as_tensor else x.shape
 shape.__name__ = 'shape'
 get_num_dims = lambda x, as_tensor=False: jnp.asarray(len(jnp.shape(x))) if as_tensor else len(x.shape)
@@ -64,11 +70,11 @@ get_num_dims = lambda x, as_tensor=False: jnp.asarray(len(jnp.shape(x))) if as_t
 container_types = lambda: [FlatMapping]
 
 
-def floormod(x: JaxArray, y: JaxArray, out: Optional[JaxArray] = None)\
+def floormod(x: JaxArray, y: JaxArray, out: Optional[JaxArray] = None) \
         -> JaxArray:
-    ret = x%y
+    ret = x % y
     if ivy.exists(out):
-        return ivy.inplace_update(out,ret)
+        return ivy.inplace_update(out, ret)
     return ret
 
 
@@ -96,28 +102,21 @@ inplace_arrays_supported = lambda: False
 inplace_variables_supported = lambda: False
 
 
-def cumsum(x: JaxArray, axis:int=0,out: Optional[JaxArray] = None)\
-    -> JaxArray:
-    if ivy.exists(out):
-        return ivy.inplace_update(out,jnp.cumsum(x,axis))
-    else:
-        return jnp.cumsum(x,axis)
-
-
-def cumprod(x: JaxArray, axis: int =0, exclusive: Optional[bool]=False, out: Optional[JaxArray] = None)\
+def cumsum(x: JaxArray, axis: int = 0, out: Optional[JaxArray] = None) \
         -> JaxArray:
+    if ivy.exists(out):
+        return ivy.inplace_update(out, jnp.cumsum(x, axis))
+    else:
+        return jnp.cumsum(x, axis)
+
+
+def cumprod(x, axis=0, exclusive=False):
     if exclusive:
         x = jnp.swapaxes(x, axis, -1)
         x = jnp.concatenate((jnp.ones_like(x[..., -1:]), x[..., :-1]), -1)
         res = jnp.cumprod(x, -1)
-        if ivy.exists(out):
-            return ivy.inplace_update(out,jnp.copy(jnp.swapaxes(res, axis, -1)))
-        else:
-            return jnp.swapaxes(res, axis, -1)
-    if ivy.exists(out):
-        return ivy.inplace_update(out,jnp.cumprod(x,axis))
-    else:   
-        return jnp.cumprod(x, axis)
+        return jnp.swapaxes(res, axis, -1)
+    return jnp.cumprod(x, axis)
 
 
 def scatter_flat(indices, updates, size=None, tensor=None, reduction='sum', dev=None):
@@ -154,7 +153,6 @@ def scatter_flat(indices, updates, size=None, tensor=None, reduction='sum', dev=
 
 # noinspection PyShadowingNames
 def scatter_nd(indices, updates, shape=None, tensor=None, reduction='sum', dev=None):
-
     # parse numeric inputs
     if indices not in [Ellipsis, ()] and not (isinstance(indices, Iterable) and Ellipsis in indices):
         indices = [[indices]] if isinstance(indices, Number) else indices
@@ -163,7 +161,7 @@ def scatter_nd(indices, updates, shape=None, tensor=None, reduction='sum', dev=N
             indices = jnp.expand_dims(indices, -1)
     updates = [updates] if isinstance(updates, Number) else updates
     updates = jnp.array(updates, dtype=ivy.dtype(tensor, as_str=False) if ivy.exists(tensor)
-                         else ivy.default_dtype(item=updates))
+    else ivy.default_dtype(item=updates))
 
     # handle Ellipsis
     if isinstance(indices, tuple) or indices is Ellipsis:
@@ -205,13 +203,13 @@ def scatter_nd(indices, updates, shape=None, tensor=None, reduction='sum', dev=N
     return to_dev(target, dev)
 
 
-
-def gather(params : JaxArray, indices: JaxArray, axis : Optional[int] =-1, dev: Optional[str] = None , out: Optional[JaxArray] = None)\
-        ->JaxArray: 
+def gather(params: JaxArray, indices: JaxArray, axis: Optional[int] = -1, dev: Optional[str] = None,
+           out: Optional[JaxArray] = None) \
+        -> JaxArray:
     if dev is None:
         dev = callable_dev(params)
     if ivy.exists(out):
-        return ivy.inplace_update(out,to_dev(jnp.take_along_axis(params, indices, axis), dev))
+        return ivy.inplace_update(out, to_dev(jnp.take_along_axis(params, indices, axis), dev))
     else:
         return to_dev(jnp.take_along_axis(params, indices, axis), dev)
 
@@ -229,15 +227,16 @@ def gather_nd(params, indices, dev=None):
     new_shape = [1] * (len(indices_shape) - 1) + [num_index_dims]
     indices_scales = jnp.reshape(result_dim_sizes[0:num_index_dims], new_shape)
     indices_for_flat_tiled = jnp.tile(jnp.reshape(jnp.sum(indices * indices_scales, -1, keepdims=True), (-1, 1)),
-                                       (1, implicit_indices_factor))
+                                      (1, implicit_indices_factor))
     implicit_indices = jnp.tile(jnp.expand_dims(jnp.arange(implicit_indices_factor), 0),
-                                 (indices_for_flat_tiled.shape[0], 1))
+                                (indices_for_flat_tiled.shape[0], 1))
     indices_for_flat = indices_for_flat_tiled + implicit_indices
     flat_indices_for_flat = jnp.reshape(indices_for_flat, (-1,)).astype(jnp.int32)
     flat_gather = jnp.take(flat_params, flat_indices_for_flat, 0)
     new_shape = list(indices_shape[:-1]) + list(params_shape[num_index_dims:])
     ret = jnp.reshape(flat_gather, new_shape)
     return to_dev(ret, dev)
+
 
 multiprocessing = lambda context=None: _multiprocessing if context is None else _multiprocessing.get_context(context)
 
@@ -247,6 +246,7 @@ def one_hot(indices, depth, dev=None):
     # from https://stackoverflow.com/questions/38592324/one-hot-encoding-using-numpy
     res = jnp.eye(depth)[jnp.array(indices).reshape(-1)]
     return to_dev(res.reshape(list(indices.shape) + [depth]), default_device(dev))
+
 
 def indices_where(x):
     where_x = jnp.where(x)

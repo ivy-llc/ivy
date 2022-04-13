@@ -5,6 +5,7 @@ Collection of TensorFlow general functions, wrapped to fit Ivy syntax and signat
 # global
 from typing import Optional
 import ivy
+
 _round = round
 import numpy as _np
 import tensorflow as tf
@@ -28,23 +29,25 @@ def is_native_array(x, exclusive=False):
 copy_array = tf.identity
 array_equal = tf.experimental.numpy.array_equal
 
-
 def to_numpy(x: Tensor) \
         -> _np.ndarray:
     return _np.asarray(tf.convert_to_tensor(x))
 
 
-to_scalar = lambda x: to_numpy(x).item()
-to_scalar.__name__ = 'to_scalar'
-to_list = lambda x: x.numpy().tolist()
-to_list.__name__ = 'to_list'
+def to_scalar(x: Tensor) \
+        -> Number:
+    return to_numpy(x).item()
+
+def to_list(x: Tensor) \
+        ->list:
+    return x.numpy().tolist()
 
 
-def floormod(x: tf.Tensor, y: tf.Tensor, out: Optional[tf.Tensor] = None)\
+def floormod(x: tf.Tensor, y: tf.Tensor, out: Optional[tf.Tensor] = None) \
         -> tf.Tensor:
-    ret = x%y
+    ret = x % y
     if ivy.exists(out):
-        return ivy.inplace_update(out,ret)
+        return ivy.inplace_update(out, ret)
     return ret
 
 
@@ -83,7 +86,7 @@ inplace_variables_supported = lambda: True
 def inplace_decrement(x, val):
     (x_native, val_native), _ = ivy.args_to_native(x, val)
     if ivy.is_variable(x_native):
-        x_native.assign(x_native-val_native)
+        x_native.assign(x_native - val_native)
         if ivy.is_ivy_array(x):
             x.data = x_native
         else:
@@ -112,19 +115,16 @@ def inplace_increment(x, val):
     return x
 
 
-def cumsum(x:tf.Tensor,axis:int=0,out: Optional[tf.Tensor] = None)\
-        -> tf.Tensor:
-        if ivy.exists(out):
-            return ivy.inplace_update(out,tf.math.cumsum(x,axis))
-        else:
-            return tf.math.cumsum(x,axis)
-
-def cumprod(x:tf.Tensor,axis:int=0,exclusive:Optional[bool]=False,out: Optional[tf.Tensor] = None)\
+def cumsum(x: tf.Tensor, axis: int = 0, out: Optional[tf.Tensor] = None) \
         -> tf.Tensor:
     if ivy.exists(out):
-        return ivy.inplace_update(out,tf.math.cumprod(x,axis,exclusive))
+        return ivy.inplace_update(out, tf.math.cumsum(x, axis))
     else:
-        return tf.math.cumprod(x,axis,exclusive)
+        return tf.math.cumsum(x, axis)
+
+
+cumprod = tf.math.cumprod
+
 
 # noinspection PyShadowingNames
 def scatter_flat(indices, updates, size=None, tensor=None, reduction='sum', dev=None):
@@ -182,13 +182,13 @@ def _parse_ellipsis(so, ndims):
 
 # noinspection PyShadowingNames
 def scatter_nd(indices, updates, shape=None, tensor=None, reduction='sum', dev=None):
-
-    if ivy.exists(tensor) and not isinstance(updates,Number):
-        tensor= tf.cast(tensor,dtype = updates.dtype) if ivy.dtype_bits(updates.dtype) > ivy.dtype_bits(tensor.dtype) else tensor
+    if ivy.exists(tensor) and not isinstance(updates, Number):
+        tensor = tf.cast(tensor, dtype=updates.dtype) if ivy.dtype_bits(updates.dtype) > ivy.dtype_bits(
+            tensor.dtype) else tensor
     # handle numeric updates
     updates = tf.constant([updates] if isinstance(updates, Number) else updates,
-                           dtype=ivy.dtype(tensor, as_str=False) if ivy.exists(tensor)
-                           else ivy.default_dtype(item=updates))
+                          dtype=ivy.dtype(tensor, as_str=False) if ivy.exists(tensor)
+                          else ivy.default_dtype(item=updates))
 
     # hanle non-tensor indices
     if indices == ():
@@ -246,7 +246,8 @@ def scatter_nd(indices, updates, shape=None, tensor=None, reduction='sum', dev=N
         return res
 
 
-def gather(params: tf.Tensor, indices:tf.Tensor, axis: Optional[int] =-1, dev: Optional[str]=None, out: Optional[tf.Tensor] = None)\
+def gather(params: tf.Tensor, indices: tf.Tensor, axis: Optional[int] = -1, dev: Optional[str] = None,
+           out: Optional[tf.Tensor] = None) \
         -> tf.Tensor:
     axis = axis % len(indices.shape)
     if dev is None:
@@ -254,9 +255,10 @@ def gather(params: tf.Tensor, indices:tf.Tensor, axis: Optional[int] =-1, dev: O
     with tf.device(dev_from_str(dev)):
         ret = tf.gather(params, indices, axis=axis, batch_dims=axis)
         if ivy.exists(out):
-            return ivy.inplace_update(out,ret)
+            return ivy.inplace_update(out, ret)
         else:
             return ret
+
 
 def gather_nd(params, indices, dev=None):
     if dev is None:

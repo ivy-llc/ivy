@@ -7,112 +7,70 @@ from typing import Optional, Tuple, Union
 import ivy
 
 
+
 def bitwise_left_shift(x1: Tensor,
-                       x2: Tensor,
-                       out: Optional[Tensor] = None)\
+                       x2: Tensor)\
                        -> Tensor:
     x1, x2 = _cast_for_binary_op(x1, x2)
-    ret = tf.bitwise.left_shift(x1, x2)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
+    return tf.bitwise.left_shift(x1, x2)
 
 
 def add(x1: Tensor,
-        x2: Tensor,
-        out: Optional[Tensor] = None)\
+           x2: Tensor)\
         -> Tensor:
     x1, x2 = _cast_for_binary_op(x1, x2)
-    ret = tf.add(x1, x2)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
+    return tf.add(x1, x2)
 
 
 def bitwise_xor(x1: Tensor,
-                x2: Tensor,
-                out: Optional[Tensor] = None)\
+                x2: Tensor)\
         -> Tensor:
     if not isinstance(x2, Tensor):
         x2 = tf.constant(x2, dtype=x1.dtype)
     if ('int' not in str(x1.dtype)) & ('int' not in str(x2.dtype)):
-        ret = tf.math.logical_xor(x1, x2)
-    else:
-        x1, x2 = _cast_for_binary_op(x1, x2)
-        ret = tf.bitwise.bitwise_xor(x1, x2)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
+        return tf.math.logical_xor(x1, x2)
+    x1, x2 = _cast_for_binary_op(x1, x2)
+    return tf.bitwise.bitwise_xor(x1, x2)
 
-
-def exp(x: Tensor,
-        out: Optional[Tensor] = None)\
+def exp(x: Tensor)\
         -> Tensor:
-    ret = tf.math.exp(x)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
+    return tf.math.exp(x)
 
-
-def expm1(x: Tensor,
-          out: Optional[Tensor] = None)\
+def expm1(x: Tensor)\
         -> Tensor:
-    ret = tf.math.expm1(x)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
+    return tf.math.expm1(x)
 
 
-def bitwise_invert(x: Tensor,
-                   out: Optional[Tensor] = None)\
+def bitwise_invert(x: Tensor)\
         -> Tensor:
     if 'int' not in str(x.dtype):
-        ret = tf.logical_not(x)
-    else:
-        ret = tf.bitwise.invert(x)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
+        return tf.logical_not(x)
+    return tf.bitwise.invert(x)
 
 
 def bitwise_and(x1: Tensor,
-                x2: Tensor,
-                out: Optional[Tensor] = None)\
+                x2: Tensor)\
         -> Tensor:
     if not isinstance(x2, Tensor):
         x2 = tf.constant(x2, dtype=x1.dtype)
     if ('int' not in str(x1.dtype)) & ('int' not in str(x2.dtype)):
-        ret = tf.math.logical_and(x1, x2)
-    else:
-        x1, x2 = _cast_for_binary_op(x1, x2)
-        ret = tf.bitwise.bitwise_and(x1, x2)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
+        return tf.math.logical_and(x1, x2)
+    x1, x2 = _cast_for_binary_op(x1, x2)
+    return tf.bitwise.bitwise_and(x1, x2)
 
 
-def ceil(x: Tensor,
-         out: Optional[Tensor] = None)\
+def ceil(x: Tensor)\
         -> Tensor:
     if 'int' in str(x.dtype):
-        ret = x
-    else:
-        ret = tf.math.ceil(x)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
+        return x
+    return tf.math.ceil(x)
 
 
-def floor(x: Tensor,
-          out: Optional[Tensor] = None)\
+def floor(x: Tensor)\
         -> Tensor:
     if 'int' in str(x.dtype):
-        ret = x
-    else:
-        ret = tf.math.floor(x)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
+        return x
+    return tf.math.floor(x)
 
 
 def isfinite(x: Tensor) \
@@ -122,13 +80,9 @@ def isfinite(x: Tensor) \
     return tf.math.is_finite(x)
 
 
-def asin(x: Tensor,
-         out: Optional[Tensor] = None) \
+def asin(x: Tensor) \
         -> Tensor:
-    ret = tf.asin(x)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
+    return tf.asin(x)
 
 
 def isinf(x: Tensor) \
@@ -158,104 +112,59 @@ def _cast_for_binary_op(x1: Tensor, x2: Tensor)\
     return x1, x2
 
 
-def equal(x1: Tensor,
-          x2: Tensor,
-          out: Optional[Tensor] = None)\
+def equal(x1: Tensor, x2: Tensor)\
         -> Tensor:
     x1, x2 = _cast_for_binary_op(x1, x2)
-    ret = tf.math.equal(x1, x2)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
+    return tf.math.equal(x1, x2)
 
 
-def less_equal(x1: Tensor,
-               x2: Tensor,
-               out: Optional[Tensor] = None)\
+def less_equal(x1: Tensor, x2: Tensor)\
         -> Tensor:
     x1, x2 = _cast_for_binary_op(x1, x2)
-    ret = tf.math.less_equal(x1, x2)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
+    return tf.math.less_equal(x1, x2)
 
 
-def asinh(x: Tensor,
-          out: Optional[Tensor] = None) \
+def asinh(x: Tensor) \
         -> Tensor:
-    ret = tf.asinh(x)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
+    return tf.asinh(x)
 
-
-def sign(x: Tensor,
-         out: Optional[Tensor] = None) \
+def sign(x: Tensor) \
         -> Tensor:
     if x.dtype in [tf.uint8, tf.uint16, tf.uint32, tf.uint64]:
         return tf.cast(tf.math.sign(tf.cast(x, tf.float32)), x.dtype)
-    ret = tf.math.sign(x)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
+    return tf.math.sign(x)
 
-
-def sqrt(x: Tensor,
-         out: Optional[Tensor] = None)\
+def sqrt(x: Tensor)\
         -> Tensor:
     if x.dtype == 'float32':
         x_64 = tf.cast(x, tf.float64)
-        ret = tf.cast(tf.sqrt(x_64), x.dtype)
-    else:
-        ret = tf.math.sqrt(x)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
+        return tf.cast(tf.sqrt(x_64), x.dtype)
+    return tf.math.sqrt(x)
 
 
-def cosh(x: Tensor,
-         out: Optional[Tensor] = None) \
+def cosh(x: Tensor) \
         -> Tensor:
-    ret = tf.cosh(x)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
+    return tf.cosh(x)
 
 
-def log10(x: Tensor,
-          out: Optional[Tensor] = None) \
+def log10(x: Tensor) \
         -> Tensor:
-    ret = tf.experimental.numpy.log10(x)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
+    return tf.experimental.numpy.log10(x)
 
 
-def log(x: Tensor,
-        out: Optional[Tensor] = None)\
+def log(x: Tensor)\
         -> Tensor:
-    ret = tf.math.log(x)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
+    return tf.math.log(x)
 
 
-def log2(x: Tensor,
-         out: Optional[Tensor] = None) \
+def log2(x: Tensor) \
         -> Tensor:
-    ret = tf.experimental.numpy.log2(x)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
+    return tf.experimental.numpy.log2(x)
 
 
-def log1p(x: Tensor,
-          out: Optional[Tensor] = None) \
+def log1p(x: Tensor) \
         -> Tensor:
-    ret = tf.experimental.numpy.log1p(x)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
+    return tf.experimental.numpy.log1p(x)
 
 
 def isnan(x: Tensor)\
@@ -265,182 +174,107 @@ def isnan(x: Tensor)\
     return tf.math.is_nan(x)
 
 
-def less(x1: Tensor,
-         x2: Tensor,
-         out: Optional[Tensor] = None)\
+def less(x1: Tensor, x2: Tensor)\
         -> Tensor:
     if hasattr(x1, 'dtype') and hasattr(x2, 'dtype'):
         promoted_type = tf.experimental.numpy.promote_types(x1.dtype, x2.dtype)
         x1 = tf.cast(x1, promoted_type)
         x2 = tf.cast(x2, promoted_type)
-    ret = tf.math.less(x1, x2)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
+    return tf.math.less(x1, x2)
 
 
-def cos(x: Tensor,
-        out: Optional[Tensor] = None)\
+def cos(x: Tensor)\
         -> Tensor:
-    ret = tf.cos(x)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
+    return tf.cos(x)
 
 
-def logical_not(x: Tensor,
-                out: Optional[Tensor] = None)\
+def logical_not(x: Tensor)\
         -> Tensor:
-    ret = tf.logical_not(tf.cast(x, tf.bool))
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
-
+    return tf.logical_not(tf.cast(x, tf.bool))
+  
   
 def divide(x1: Tensor,
-           x2: Tensor,
-           out: Optional[Tensor] = None)\
+           x2: Tensor)\
         -> Tensor:
     x1, x2 = _cast_for_binary_op(x1, x2)
-    ret = tf.divide(x1, x2)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
+    return tf.divide(x1, x2)
 
 
-def greater(x1: Tensor,
-            x2: Tensor,
-            out: Optional[Tensor] = None)\
+def greater(x1: Tensor, x2: Tensor)\
         -> Tensor:
     if hasattr(x1, 'dtype') and hasattr(x2, 'dtype'):
         promoted_type = tf.experimental.numpy.promote_types(x1.dtype, x2.dtype)
         x1 = tf.cast(x1, promoted_type)
         x2 = tf.cast(x2, promoted_type)
-    ret = tf.math.greater(x1, x2)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
+    return tf.math.greater(x1, x2)
 
 
-def greater_equal(x1: Tensor,
-                  x2: Tensor,
-                  out: Optional[Tensor] = None)\
+def greater_equal(x1: Tensor, x2: Tensor)\
         -> Tensor:
     if hasattr(x1, 'dtype') and hasattr(x2, 'dtype'):
         promoted_type = tf.experimental.numpy.promote_types(x1.dtype, x2.dtype)
         x1 = tf.cast(x1, promoted_type)
         x2 = tf.cast(x2, promoted_type)
-    ret = tf.math.greater_equal(x1, x2)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
+    return tf.math.greater_equal(x1, x2)
 
 
-def acos(x: Tensor,
-         out: Optional[Tensor] = None)\
+def acos(x: Tensor)\
         -> Tensor:
-    ret = tf.acos(x)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
+    return tf.acos(x)
 
 
-def logical_xor(x1: Tensor,
-                x2: Tensor,
-                out: Optional[Tensor] = None) \
+def logical_xor(x1: Tensor, x2: Tensor) \
         -> Tensor:
-    ret = tf.math.logical_xor(tf.cast(x1, tf.bool), tf.cast(x2, tf.bool))
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
+    return tf.math.logical_xor(tf.cast(x1, tf.bool), tf.cast(x2, tf.bool))
 
 
-def logical_or(x1: Tensor,
-               x2: Tensor,
-               out: Optional[Tensor] = None)\
+def logical_or(x1: Tensor, x2: Tensor)\
         -> Tensor:
-    ret = tf.logical_or(tf.cast(x1, tf.bool), tf.cast(x2, tf.bool))
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
+    return tf.logical_or(tf.cast(x1, tf.bool), tf.cast(x2, tf.bool))
 
 
-def logical_and(x1: Tensor,
-                x2: Tensor,
-                out: Optional[Tensor] = None)\
+def logical_and(x1: Tensor, x2: Tensor)\
         -> Tensor:
-    ret = tf.logical_and(tf.cast(x1, tf.bool), tf.cast(x2, tf.bool))
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
+    return tf.logical_and(tf.cast(x1, tf.bool), tf.cast(x2, tf.bool))
 
 
-def acosh(x: Tensor,
-          out: Optional[Tensor] = None) \
+def acosh(x: Tensor) \
         -> Tensor:
-    ret = tf.acosh(x)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
+    return tf.acosh(x)
 
 
-def sin(x: Tensor,
-        out: Optional[Tensor] = None)\
+def sin(x: Tensor)\
         -> Tensor:
-    ret = tf.sin(x)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
+    return tf.sin(x)
 
 
-def multiply(x1: Tensor,
-             x2: Tensor,
-             out: Optional[Tensor] = None)\
+def multiply(x1: Tensor, x2: Tensor)\
         -> Tensor:
     if hasattr(x1, 'dtype') and hasattr(x2, 'dtype'):
         promoted_type = tf.experimental.numpy.promote_types(x1.dtype, x2.dtype)
         x1 = tf.cast(x1, promoted_type)
         x2 = tf.cast(x2, promoted_type)
-    ret = tf.math.multiply(x1, x2)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
+    return tf.math.multiply(x1, x2)
 
 
-def negative(x: Tensor,
-             out: Optional[Tensor] = None) -> Tensor:
+def negative(x: Tensor) -> Tensor:
     if x.dtype in [tf.uint8, tf.uint16, tf.uint32, tf.uint64]:
-        ret = tf.cast(tf.negative(tf.cast(x, tf.float32)), x.dtype)
-    else:
-        ret = tf.negative(x)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
+        return tf.cast(tf.negative(tf.cast(x, tf.float32)), x.dtype)
+    return tf.negative(x)
 
 
-def not_equal(x1: Tensor,
-              x2: Tensor,
-              out: Optional[Tensor] = None)\
+def not_equal(x1: Tensor, x2: Tensor)\
         -> Tensor:
     x1, x2 = _cast_for_binary_op(x1, x2)
-    ret = tf.math.not_equal(x1, x2)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
+    return tf.math.not_equal(x1, x2)
 
 
-def tanh(x: Tensor,
-         out: Optional[Tensor] = None) \
+def tanh(x: Tensor) \
         -> Tensor:
-    ret = tf.tanh(x)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
+    return tf.tanh(x)
 
 
-def floor_divide(x1: Tensor,
-                 x2: Tensor,
-                 out: Optional[Tensor] = None)\
+def floor_divide(x1: Tensor, x2: Tensor)\
                 -> Tensor:
     if not isinstance(x2, Tensor):
         x2 = tf.constant(x2, dtype=x1.dtype)
@@ -448,58 +282,35 @@ def floor_divide(x1: Tensor,
         promoted_type = tf.experimental.numpy.promote_types(x1.dtype, x2.dtype)
         x1 = tf.cast(x1, promoted_type)
         x2 = tf.cast(x2, promoted_type)
-    ret = tf.math.floordiv(x1, x2)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
+    return tf.math.floordiv(x1, x2)
 
 
-def sinh(x: Tensor,
-         out: Optional[Tensor] = None) \
+def sinh(x: Tensor) \
         -> Tensor:
-    ret = tf.sinh(x)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
+    return tf.sinh(x)
 
 
-def bitwise_or(x1: Tensor,
-               x2: Tensor,
-               out: Optional[Tensor] = None) \
+def bitwise_or(x1: Tensor, x2: Tensor) \
         -> Tensor:
     if not isinstance(x2, Tensor):
         x2 = tf.constant(x2, dtype=x1.dtype)
     if ('int' not in str(x1.dtype)) & ('int' not in str(x2.dtype)):
-        ret = tf.math.logical_or(x1, x2)
-    else:
-        x1, x2 = _cast_for_binary_op(x1, x2)
-        ret = tf.bitwise.bitwise_or(x1, x2)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
+        return tf.math.logical_or(x1, x2)
+    x1, x2 = _cast_for_binary_op(x1, x2)
+    return tf.bitwise.bitwise_or(x1, x2)
 
 
-def positive(x: Tensor,
-             out: Optional[Tensor] = None)\
+def positive(x: Tensor)\
         -> Tensor:
-    ret = tf.experimental.numpy.positive(x)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
+    return tf.experimental.numpy.positive(x)
 
 
-def square(x: Tensor,
-           out: Optional[Tensor] = None)\
+def square(x: Tensor)\
         -> Tensor:
-    ret = tf.math.square(x)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
+    return tf.math.square(x)
 
 
-def pow(x1: Tensor,
-        x2: Tensor,
-        out: Optional[Tensor] = None)\
+def pow(x1: Tensor, x2: Tensor)\
         -> Tensor:
     if not isinstance(x2, Tensor):
         x2 = tf.constant(x2, dtype=x1.dtype)
@@ -510,47 +321,30 @@ def pow(x1: Tensor,
         x1 = tf.cast(x1, tf.float64)
     if x2.dtype.is_unsigned:
         x2 = tf.cast(x2, tf.float64)
-    ret = tf.cast(tf.experimental.numpy.power(x1, x2), promoted_type)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
+    return tf.cast(tf.experimental.numpy.power(x1, x2), promoted_type)
 
 
-def remainder(x1: Tensor,
-              x2: Tensor,
-              out: Optional[Tensor] = None)\
+def remainder(x1: Tensor, x2: Tensor)\
         -> Tensor:
     x1, x2 = _cast_for_binary_op(x1, x2)
-    ret = tf.experimental.numpy.remainder(x1, x2)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
+    return tf.experimental.numpy.remainder(x1, x2)
 
 
-def round(x: Tensor,
-          out: Optional[Tensor] = None)\
+def round(x: Tensor)\
         -> Tensor:
     if 'int' in str(x.dtype):
-        ret = x
-    else:
-        ret = tf.round(x)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
+        return x
+    return tf.round(x)
 
 
-def trunc(x: Tensor,
-          out: Optional[Tensor] = None)\
+def trunc(x: Tensor)\
         -> Tensor:
     if 'int' in str(x.dtype):
-        ret = x
-    else:
-        ret = tf.zeros(x.shape, dtype=x.dtype)
-        ret = tf.tensor_scatter_nd_update(ret, tf.where(x > 0), tf.math.floor(x[x > 0]))
-        ret = tf.tensor_scatter_nd_update(ret, tf.where(x < 0), tf.math.ceil(x[x < 0]))
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
+        return x
+    res = tf.zeros(x.shape, dtype=x.dtype)
+    res = tf.tensor_scatter_nd_update(res, tf.where(x > 0), tf.math.floor(x[x > 0]))
+    res = tf.tensor_scatter_nd_update(res, tf.where(x < 0), tf.math.ceil(x[x < 0]))
+    return res
 
 
 def abs(x: Tensor,
@@ -565,105 +359,63 @@ def abs(x: Tensor,
     return ret
 
 
-def subtract(x1: Tensor,
-             x2: Tensor,
-             out: Optional[Tensor] = None)\
+def subtract(x1: Tensor, x2: Tensor)\
         -> Tensor:
     if hasattr(x1, 'dtype') and hasattr(x2, 'dtype'):
         promoted_type = tf.experimental.numpy.promote_types(x1.dtype, x2.dtype)
         x1 = tf.cast(x1, promoted_type)
         x2 = tf.cast(x2, promoted_type)
-    ret = tf.subtract(x1, x2)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
+    return tf.subtract(x1, x2)
 
 
-def logaddexp(x1: Tensor,
-              x2: Tensor,
-              out: Optional[Tensor] = None) -> Tensor:
+def logaddexp(x1: Tensor, x2: Tensor) -> Tensor:
     x1, x2 = _cast_for_binary_op(x1, x2)
-    ret = tf.experimental.numpy.logaddexp(x1, x2)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
+    return tf.experimental.numpy.logaddexp(x1, x2)
 
 
-def bitwise_right_shift(x1: Tensor,
-                        x2: Tensor,
-                        out: Optional[Tensor] = None)\
+def bitwise_right_shift(x1: Tensor, x2: Tensor)\
         -> Tensor:
     x1, x2 = _cast_for_binary_op(x1, x2)
-    ret = tf.bitwise.right_shift(x1, x2)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
+    return tf.bitwise.right_shift(x1, x2)
 
 
-def tan(x: Tensor,
-        out: Optional[Tensor] = None) \
+def bitwise_left_shift(x1: Tensor, x2: Tensor)\
         -> Tensor:
-    ret = tf.tan(x)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
+    x1, x2 = _cast_for_binary_op(x1, x2)
+    return tf.bitwise.left_shift(x1, x2)
 
 
-def atan(x: Tensor,
-         out: Optional[Tensor] = None) \
+tan = tf.tan
+
+
+def atan(x: Tensor) \
         -> Tensor:
-    ret = tf.atan(x)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
+    return tf.atan(x)
 
 
-def atanh(x: Tensor,
-          out: Optional[Tensor] = None)\
+
+def atanh(x: Tensor) \
         -> Tensor:
-    ret = tf.math.atanh(x)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
+    return tf.math.atanh(x)
 
 
-def atan2(x1: Tensor,
-          x2: Tensor,
-          out: Optional[Tensor] = None) -> Tensor:
+
+def atan2(x1: Tensor, x2: Tensor) -> Tensor:
     if hasattr(x1, 'dtype') and hasattr(x2, 'dtype'):
         promoted_type = tf.experimental.numpy.promote_types(x1.dtype, x2.dtype)
         x1 = tf.cast(x1, promoted_type)
         x2 = tf.cast(x2, promoted_type)
-    ret = tf.math.atan2(x1, x2)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
+    return tf.math.atan2(x1, x2)
 
+
+
+cosh = tf.math.cosh
+log = tf.math.log
+exp = tf.math.exp
 
 # Extra #
 # ------#
 
-
-def minimum(x, y, out: Optional[Tensor] = None)\
-        -> Tensor:
-    ret = tf.minimum(x, y)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
-
-
-def maximum(x, y, out: Optional[Tensor] = None)\
-        -> Tensor:
-    ret = tf.maximum(x, y)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
-
-
-def erf(x, out: Optional[Tensor] = None)\
-        -> Tensor:
-    ret = tf.math.erf(x)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
-
+minimum = tf.minimum
+maximum = tf.maximum
+erf = tf.math.erf

@@ -3,6 +3,8 @@ Collection of PyTorch general functions, wrapped to fit Ivy syntax and signature
 """
 
 # global
+from numpy import ndarray
+
 import ivy
 import numpy as np
 torch_scatter = None
@@ -10,6 +12,7 @@ import torch as torch
 from operator import mul
 from functools import reduce as _reduce
 from typing import List, Optional, Union
+from numbers import Number
 
 
 # local
@@ -41,13 +44,15 @@ def to_numpy(x: torch.Tensor)\
     raise ValueError('Expected a pytroch tensor.')
 
 
-def to_scalar(x) -> Union[float, int, bool]:
+def to_scalar(x: torch.Tensor)\
+        -> Number:
     if isinstance(x, (float, int)):
         return x
     return x.item()
 
 
-def to_list(x):
+def to_list(x: torch.Tensor)\
+        -> list:
     if isinstance(x, np.ndarray):
         return x.tolist()
     elif torch.is_tensor(x):
@@ -117,21 +122,13 @@ def cumsum(x:torch.Tensor, axis: int = 0, out: Optional[torch.Tensor] = None):
         return torch.cumsum(x, axis)
 
 
-def cumprod(x: torch.Tensor, axis: int = 0, exclusive: Optional[bool] = False,
-    out:Optional[torch.Tensor]=None)\
-        -> torch.Tensor:
+def cumprod(x, axis: int = 0, exclusive: bool = False):
     if exclusive:
         x = torch.transpose(x, axis, -1)
         x = torch.cat((torch.ones_like(x[..., -1:]), x[..., :-1]), -1)
         res = torch.cumprod(x, -1)
-        if ivy.exists(out):
-            return ivy.inplace_update(out,torch.transpose(res, axis, -1))
-        else:
-            return torch.transpose(res, axis, -1)
-    if ivy.exists(out):
-        return ivy.inplace_update(out,torch.cumprod(x, axis))
-    else:
-        return torch.cumprod(x, axis)
+        return torch.transpose(res, axis, -1)
+    return torch.cumprod(x, axis)
 
 
 # noinspection PyShadowingNames
