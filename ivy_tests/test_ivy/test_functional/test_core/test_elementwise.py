@@ -7,6 +7,7 @@ import pytest
 
 # local
 import ivy
+import ivy_tests.test_ivy.helpers as helpers
 
 
 # abs
@@ -538,6 +539,9 @@ def test_bitwise_xor(dtype, with_out, native_array):
 @pytest.mark.parametrize(
     "native_array", [True, False])
 def test_ceil(dtype, as_variable, with_out, native_array):
+    # docstring test
+    helpers.assert_docstring_examples_run(ivy.ceil)
+    # rest tests out argument
     if ivy.current_framework_str() == 'torch' and dtype == 'float16':
         pytest.skip("torch ceil doesnt allow float16")
     if dtype in ivy.invalid_dtype_strs:
@@ -558,6 +562,695 @@ def test_ceil(dtype, as_variable, with_out, native_array):
         ret = ivy.ceil(x, out=out)
     else:
         ret = ivy.ceil(x)
+    if with_out:
+        if not native_array:
+            assert ret is out
+        if ivy.current_framework_str() in ["tensorflow", "jax"]:
+            # these frameworks do not support native inplace updates
+            return
+        assert ret.data is (out if native_array else out.data)
+
+
+# cos
+@pytest.mark.parametrize(
+    "dtype", ivy.float_strs)
+@pytest.mark.parametrize(
+    "as_variable", [True, False])
+@pytest.mark.parametrize(
+    "with_out", [True, False])
+@pytest.mark.parametrize(
+    "native_array", [True, False])
+def test_cos(dtype, as_variable, with_out, native_array):
+    if ivy.current_framework_str() == 'torch' and dtype == 'float16':
+        pytest.skip("torch cos doesnt allow float16")
+    if dtype in ivy.invalid_dtype_strs:
+        pytest.skip("invalid dtype")
+    x = ivy.array([0.5, 0.8, 4], dtype=dtype)
+    out = ivy.array([2, 3, 4], dtype=dtype)
+    if as_variable:
+        if with_out:
+            pytest.skip("variables do not support out argument")
+        x = ivy.variable(x)
+        out = ivy.variable(out)
+    if native_array:
+        x = x.data
+        out = out.data
+    if with_out:
+        ret = ivy.cos(x, out=out)
+    else:
+        ret = ivy.cos(x)
+    if with_out:
+        if not native_array:
+            assert ret is out
+        if ivy.current_framework_str() in ["tensorflow", "jax"]:
+            # these frameworks do not support native inplace updates
+            return
+        assert ret.data is (out if native_array else out.data)
+
+
+# cosh
+@pytest.mark.parametrize(
+    "dtype", ivy.float_strs)
+@pytest.mark.parametrize(
+    "as_variable", [True, False])
+@pytest.mark.parametrize(
+    "with_out", [True, False])
+@pytest.mark.parametrize(
+    "native_array", [True, False])
+def test_cosh(dtype, as_variable, with_out, native_array):
+    if ivy.current_framework_str() == 'torch' and dtype == 'float16':
+        pytest.skip("torch cosh doesnt allow float16")
+    if dtype in ivy.invalid_dtype_strs:
+        pytest.skip("invalid dtype")
+    x = ivy.array([0.5, 0.8, 4], dtype=dtype)
+    out = ivy.array([2, 3, 4], dtype=dtype)
+    if as_variable:
+        if with_out:
+            pytest.skip("variables do not support out argument")
+        x = ivy.variable(x)
+        out = ivy.variable(out)
+    if native_array:
+        x = x.data
+        out = out.data
+    if with_out:
+        ret = ivy.cosh(x, out=out)
+    else:
+        ret = ivy.cosh(x)
+    if with_out:
+        if not native_array:
+            assert ret is out
+        if ivy.current_framework_str() in ["tensorflow", "jax"]:
+            # these frameworks do not support native inplace updates
+            return
+        assert ret.data is (out if native_array else out.data)
+
+
+# divide
+@pytest.mark.parametrize(
+    "dtype", ivy.all_dtype_strs)
+@pytest.mark.parametrize(
+    "as_variable", [True, False])
+@pytest.mark.parametrize(
+    "with_out", [True, False])
+@pytest.mark.parametrize(
+    "native_array", [True, False])
+def test_divide(dtype, as_variable, with_out, native_array):
+    if dtype in ivy.invalid_dtype_strs:
+        pytest.skip("invalid dtype")
+    x1 = ivy.array([2, 3, 4], dtype=dtype)
+    x2 = ivy.array([2, 3, 4], dtype=dtype)
+    out = ivy.array([2, 3, 4], dtype='float64')
+    if as_variable:
+        if not ivy.is_float_dtype(dtype):
+            pytest.skip("only floating point variables are supported")
+        if with_out:
+            pytest.skip("variables do not support out argument")
+        x1 = ivy.variable(x1)
+        x2 = ivy.variable(x2)
+        out = ivy.variable(out)
+    if native_array:
+        x1 = x1.data
+        x2 = x2.data
+        out = out.data
+    if with_out:
+        ret = ivy.divide(x1, x2, out=out)
+    else:
+        ret = ivy.divide(x1, x2)
+    if with_out:
+        if not native_array:
+            assert ret is out
+        if ivy.current_framework_str() in ["tensorflow", "jax"]:
+            # these frameworks do not support native inplace updates
+            return
+        assert ret.data is (out if native_array else out.data)
+
+
+# equal
+@pytest.mark.parametrize(
+    "dtype", list(ivy.all_dtype_strs) + ['bool'])
+@pytest.mark.parametrize(
+    "as_variable", [True, False])
+@pytest.mark.parametrize(
+    "with_out", [True, False])
+@pytest.mark.parametrize(
+    "native_array", [True, False])
+def test_equal(dtype, as_variable, with_out, native_array):
+    if dtype in ivy.invalid_dtype_strs:
+        pytest.skip("invalid dtype")
+    x1 = ivy.array([2, 3, 4], dtype=dtype)
+    x2 = ivy.array([2, 3, 4], dtype=dtype)
+    out = ivy.array([2, 3, 4], dtype=dtype)
+    if as_variable:
+        if not ivy.is_float_dtype(dtype):
+            pytest.skip("only floating point variables are supported")
+        if with_out:
+            pytest.skip("variables do not support out argument")
+        x1 = ivy.variable(x1)
+        x2 = ivy.variable(x2)
+        out = ivy.variable(out)
+    if native_array:
+        x1 = x1.data
+        x2 = x2.data
+        out = out.data
+    if with_out:
+        ret = ivy.equal(x1, x2, out=out)
+    else:
+        ret = ivy.equal(x1, x2)
+    if with_out:
+        if not native_array:
+            assert ret is out
+        if ivy.current_framework_str() in ["tensorflow", "jax"]:
+            # these frameworks do not support native inplace updates
+            return
+        assert ret.data is (out if native_array else out.data)
+
+
+# exp
+@pytest.mark.parametrize(
+    "dtype", ivy.float_strs)
+@pytest.mark.parametrize(
+    "as_variable", [True, False])
+@pytest.mark.parametrize(
+    "with_out", [True, False])
+@pytest.mark.parametrize(
+    "native_array", [True, False])
+def test_exp(dtype, as_variable, with_out, native_array):
+    if ivy.current_framework_str() == 'torch' and dtype == 'float16':
+        pytest.skip("torch exp doesnt allow float16")
+    if dtype in ivy.invalid_dtype_strs:
+        pytest.skip("invalid dtype")
+    x = ivy.array([0.5, 0.8, 4], dtype=dtype)
+    out = ivy.array([2, 3, 4], dtype=dtype)
+    if as_variable:
+        if with_out:
+            pytest.skip("variables do not support out argument")
+        x = ivy.variable(x)
+        out = ivy.variable(out)
+    if native_array:
+        x = x.data
+        out = out.data
+    if with_out:
+        ret = ivy.exp(x, out=out)
+    else:
+        ret = ivy.exp(x)
+    if with_out:
+        if not native_array:
+            assert ret is out
+        if ivy.current_framework_str() in ["tensorflow", "jax"]:
+            # these frameworks do not support native inplace updates
+            return
+        assert ret.data is (out if native_array else out.data)
+
+
+# expm1
+@pytest.mark.parametrize(
+    "dtype", ivy.float_strs)
+@pytest.mark.parametrize(
+    "as_variable", [True, False])
+@pytest.mark.parametrize(
+    "with_out", [True, False])
+@pytest.mark.parametrize(
+    "native_array", [True, False])
+def test_expm1(dtype, as_variable, with_out, native_array):
+    if ivy.current_framework_str() == 'torch' and dtype == 'float16':
+        pytest.skip("torch expm1 doesnt allow float16")
+    if dtype in ivy.invalid_dtype_strs:
+        pytest.skip("invalid dtype")
+    x = ivy.array([0.5, 0.8, 4], dtype=dtype)
+    out = ivy.array([2, 3, 4], dtype=dtype)
+    if as_variable:
+        if with_out:
+            pytest.skip("variables do not support out argument")
+        x = ivy.variable(x)
+        out = ivy.variable(out)
+    if native_array:
+        x = x.data
+        out = out.data
+    if with_out:
+        ret = ivy.expm1(x, out=out)
+    else:
+        ret = ivy.expm1(x)
+    if with_out:
+        if not native_array:
+            assert ret is out
+        if ivy.current_framework_str() in ["tensorflow", "jax"]:
+            # these frameworks do not support native inplace updates
+            return
+        assert ret.data is (out if native_array else out.data)
+
+
+# floor
+@pytest.mark.parametrize(
+    "dtype", ivy.all_dtype_strs)
+@pytest.mark.parametrize(
+    "as_variable", [True, False])
+@pytest.mark.parametrize(
+    "with_out", [True, False])
+@pytest.mark.parametrize(
+    "native_array", [True, False])
+def test_floor(dtype, as_variable, with_out, native_array):
+    if ivy.current_framework_str() in ['torch', 'numpy'] and dtype == 'float16':
+        pytest.skip("torch and numpy array api dont allow float16")
+    if dtype in ivy.invalid_dtype_strs:
+        pytest.skip("invalid dtype")
+    x = ivy.array([2, 3, 4], dtype=dtype)
+    out = ivy.array([2, 3, 4], dtype=dtype)
+    if as_variable:
+        if not ivy.is_float_dtype(dtype):
+            pytest.skip("only floating point variables are supported")
+        if with_out:
+            pytest.skip("variables do not support out argument")
+        x = ivy.variable(x)
+        out = ivy.variable(out)
+    if native_array:
+        x = x.data
+        out = out.data
+    if with_out:
+        ret = ivy.floor(x, out=out)
+    else:
+        ret = ivy.floor(x)
+    if with_out:
+        if not native_array:
+            assert ret is out
+        if ivy.current_framework_str() in ["tensorflow", "jax"]:
+            # these frameworks do not support native inplace updates
+            return
+        assert ret.data is (out if native_array else out.data)
+
+
+# floor_divide
+@pytest.mark.parametrize(
+    "dtype", ivy.all_dtype_strs)
+@pytest.mark.parametrize(
+    "as_variable", [True, False])
+@pytest.mark.parametrize(
+    "with_out", [True, False])
+@pytest.mark.parametrize(
+    "native_array", [True, False])
+def test_floor_divide(dtype, as_variable, with_out, native_array):
+    if dtype in ivy.invalid_dtype_strs:
+        pytest.skip("invalid dtype")
+    x1 = ivy.array([2, 3, 4], dtype=dtype)
+    x2 = ivy.array([2, 3, 4], dtype=dtype)
+    out = ivy.array([2, 3, 4], dtype=dtype)
+    if as_variable:
+        if not ivy.is_float_dtype(dtype):
+            pytest.skip("only floating point variables are supported")
+        if with_out:
+            pytest.skip("variables do not support out argument")
+        x1 = ivy.variable(x1)
+        x2 = ivy.variable(x2)
+        out = ivy.variable(out)
+    if native_array:
+        x1 = x1.data
+        x2 = x2.data
+        out = out.data
+    if with_out:
+        ret = ivy.floor_divide(x1, x2, out=out)
+    else:
+        ret = ivy.floor_divide(x1, x2)
+    if with_out:
+        if not native_array:
+            assert ret is out
+        if ivy.current_framework_str() in ["tensorflow", "jax"]:
+            # these frameworks do not support native inplace updates
+            return
+        assert ret.data is (out if native_array else out.data)
+
+
+# greater
+@pytest.mark.parametrize(
+    "dtype", ivy.all_dtype_strs)
+@pytest.mark.parametrize(
+    "as_variable", [True, False])
+@pytest.mark.parametrize(
+    "with_out", [True, False])
+@pytest.mark.parametrize(
+    "native_array", [True, False])
+def test_greater(dtype, as_variable, with_out, native_array):
+    if dtype in ivy.invalid_dtype_strs:
+        pytest.skip("invalid dtype")
+    x1 = ivy.array([2, 3, 4], dtype=dtype)
+    x2 = ivy.array([2, 3, 4], dtype=dtype)
+    out = ivy.array([2, 3, 4], dtype=dtype)
+    if as_variable:
+        if not ivy.is_float_dtype(dtype):
+            pytest.skip("only floating point variables are supported")
+        if with_out:
+            pytest.skip("variables do not support out argument")
+        x1 = ivy.variable(x1)
+        x2 = ivy.variable(x2)
+        out = ivy.variable(out)
+    if native_array:
+        x1 = x1.data
+        x2 = x2.data
+        out = out.data
+    if with_out:
+        ret = ivy.greater(x1, x2, out=out)
+    else:
+        ret = ivy.greater(x1, x2)
+    if with_out:
+        if not native_array:
+            assert ret is out
+        if ivy.current_framework_str() in ["tensorflow", "jax"]:
+            # these frameworks do not support native inplace updates
+            return
+        assert ret.data is (out if native_array else out.data)
+
+
+# greater_equal
+@pytest.mark.parametrize(
+    "dtype", ivy.all_dtype_strs)
+@pytest.mark.parametrize(
+    "as_variable", [True, False])
+@pytest.mark.parametrize(
+    "with_out", [True, False])
+@pytest.mark.parametrize(
+    "native_array", [True, False])
+def test_greater_equal(dtype, as_variable, with_out, native_array):
+    if dtype in ivy.invalid_dtype_strs:
+        pytest.skip("invalid dtype")
+    x1 = ivy.array([2, 3, 4], dtype=dtype)
+    x2 = ivy.array([2, 3, 4], dtype=dtype)
+    out = ivy.array([2, 3, 4], dtype=dtype)
+    if as_variable:
+        if not ivy.is_float_dtype(dtype):
+            pytest.skip("only floating point variables are supported")
+        if with_out:
+            pytest.skip("variables do not support out argument")
+        x1 = ivy.variable(x1)
+        x2 = ivy.variable(x2)
+        out = ivy.variable(out)
+    if native_array:
+        x1 = x1.data
+        x2 = x2.data
+        out = out.data
+    if with_out:
+        ret = ivy.greater_equal(x1, x2, out=out)
+    else:
+        ret = ivy.greater_equal(x1, x2)
+    if with_out:
+        if not native_array:
+            assert ret is out
+        if ivy.current_framework_str() in ["tensorflow", "jax"]:
+            # these frameworks do not support native inplace updates
+            return
+        assert ret.data is (out if native_array else out.data)
+
+
+# isfinite
+@pytest.mark.parametrize(
+    "dtype", ivy.all_dtype_strs)
+@pytest.mark.parametrize(
+    "as_variable", [True, False])
+@pytest.mark.parametrize(
+    "with_out", [True, False])
+@pytest.mark.parametrize(
+    "native_array", [True, False])
+def test_isfinite(dtype, as_variable, with_out, native_array):
+    if dtype in ivy.invalid_dtype_strs:
+        pytest.skip("invalid dtype")
+    x = ivy.array([2, 3, 4], dtype=dtype)
+    out = ivy.array([2, 3, 4], dtype=dtype)
+    if as_variable:
+        if not ivy.is_float_dtype(dtype):
+            pytest.skip("only floating point variables are supported")
+        if with_out:
+            pytest.skip("variables do not support out argument")
+        x = ivy.variable(x)
+        out = ivy.variable(out)
+    if native_array:
+        x = x.data
+        out = out.data
+    if with_out:
+        ret = ivy.isfinite(x, out=out)
+    else:
+        ret = ivy.isfinite(x)
+    if with_out:
+        if not native_array:
+            assert ret is out
+        if ivy.current_framework_str() in ["tensorflow", "jax"]:
+            # these frameworks do not support native inplace updates
+            return
+        assert ret.data is (out if native_array else out.data)
+
+
+# isinf
+@pytest.mark.parametrize(
+    "dtype", ivy.all_dtype_strs)
+@pytest.mark.parametrize(
+    "as_variable", [True, False])
+@pytest.mark.parametrize(
+    "with_out", [True, False])
+@pytest.mark.parametrize(
+    "native_array", [True, False])
+def test_isinf(dtype, as_variable, with_out, native_array):
+    if dtype in ivy.invalid_dtype_strs:
+        pytest.skip("invalid dtype")
+    x = ivy.array([2, 3, 4], dtype=dtype)
+    out = ivy.array([2, 3, 4], dtype=dtype)
+    if as_variable:
+        if not ivy.is_float_dtype(dtype):
+            pytest.skip("only floating point variables are supported")
+        if with_out:
+            pytest.skip("variables do not support out argument")
+        x = ivy.variable(x)
+        out = ivy.variable(out)
+    if native_array:
+        x = x.data
+        out = out.data
+    if with_out:
+        ret = ivy.isinf(x, out=out)
+    else:
+        ret = ivy.isinf(x)
+    if with_out:
+        if not native_array:
+            assert ret is out
+        if ivy.current_framework_str() in ["tensorflow", "jax"]:
+            # these frameworks do not support native inplace updates
+            return
+        assert ret.data is (out if native_array else out.data)
+
+
+# isnan
+@pytest.mark.parametrize(
+    "dtype", ivy.all_dtype_strs)
+@pytest.mark.parametrize(
+    "as_variable", [True, False])
+@pytest.mark.parametrize(
+    "with_out", [True, False])
+@pytest.mark.parametrize(
+    "native_array", [True, False])
+def test_isnan(dtype, as_variable, with_out, native_array):
+    if dtype in ivy.invalid_dtype_strs:
+        pytest.skip("invalid dtype")
+    x = ivy.array([2, 3, 4], dtype=dtype)
+    out = ivy.array([2, 3, 4], dtype=dtype)
+    if as_variable:
+        if not ivy.is_float_dtype(dtype):
+            pytest.skip("only floating point variables are supported")
+        if with_out:
+            pytest.skip("variables do not support out argument")
+        x = ivy.variable(x)
+        out = ivy.variable(out)
+    if native_array:
+        x = x.data
+        out = out.data
+    if with_out:
+        ret = ivy.isnan(x, out=out)
+    else:
+        ret = ivy.isnan(x)
+    if with_out:
+        if not native_array:
+            assert ret is out
+        if ivy.current_framework_str() in ["tensorflow", "jax"]:
+            # these frameworks do not support native inplace updates
+            return
+        assert ret.data is (out if native_array else out.data)
+
+
+# less
+@pytest.mark.parametrize(
+    "dtype", ivy.all_dtype_strs)
+@pytest.mark.parametrize(
+    "as_variable", [True, False])
+@pytest.mark.parametrize(
+    "with_out", [True, False])
+@pytest.mark.parametrize(
+    "native_array", [True, False])
+def test_less(dtype, as_variable, with_out, native_array):
+    if dtype in ivy.invalid_dtype_strs:
+        pytest.skip("invalid dtype")
+    x1 = ivy.array([2, 3, 4], dtype=dtype)
+    x2 = ivy.array([2, 3, 4], dtype=dtype)
+    out = ivy.array([2, 3, 4], dtype=dtype)
+    if as_variable:
+        if not ivy.is_float_dtype(dtype):
+            pytest.skip("only floating point variables are supported")
+        if with_out:
+            pytest.skip("variables do not support out argument")
+        x1 = ivy.variable(x1)
+        x2 = ivy.variable(x2)
+        out = ivy.variable(out)
+    if native_array:
+        x1 = x1.data
+        x2 = x2.data
+        out = out.data
+    if with_out:
+        ret = ivy.less(x1, x2, out=out)
+    else:
+        ret = ivy.less(x1, x2)
+    if with_out:
+        if not native_array:
+            assert ret is out
+        if ivy.current_framework_str() in ["tensorflow", "jax"]:
+            # these frameworks do not support native inplace updates
+            return
+        assert ret.data is (out if native_array else out.data)
+
+
+# less_equal
+@pytest.mark.parametrize(
+    "dtype", ivy.all_dtype_strs)
+@pytest.mark.parametrize(
+    "as_variable", [True, False])
+@pytest.mark.parametrize(
+    "with_out", [True, False])
+@pytest.mark.parametrize(
+    "native_array", [True, False])
+def test_less_equal(dtype, as_variable, with_out, native_array):
+    if dtype in ivy.invalid_dtype_strs:
+        pytest.skip("invalid dtype")
+    x1 = ivy.array([2, 3, 4], dtype=dtype)
+    x2 = ivy.array([2, 3, 4], dtype=dtype)
+    out = ivy.array([2, 3, 4], dtype=dtype)
+    if as_variable:
+        if not ivy.is_float_dtype(dtype):
+            pytest.skip("only floating point variables are supported")
+        if with_out:
+            pytest.skip("variables do not support out argument")
+        x1 = ivy.variable(x1)
+        x2 = ivy.variable(x2)
+        out = ivy.variable(out)
+    if native_array:
+        x1 = x1.data
+        x2 = x2.data
+        out = out.data
+    if with_out:
+        ret = ivy.less_equal(x1, x2, out=out)
+    else:
+        ret = ivy.less_equal(x1, x2)
+    if with_out:
+        if not native_array:
+            assert ret is out
+        if ivy.current_framework_str() in ["tensorflow", "jax"]:
+            # these frameworks do not support native inplace updates
+            return
+        assert ret.data is (out if native_array else out.data)
+
+
+# log
+@pytest.mark.parametrize(
+    "dtype", ivy.float_strs)
+@pytest.mark.parametrize(
+    "as_variable", [True, False])
+@pytest.mark.parametrize(
+    "with_out", [True, False])
+@pytest.mark.parametrize(
+    "native_array", [True, False])
+def test_log(dtype, as_variable, with_out, native_array):
+    if ivy.current_framework_str() == 'torch' and dtype == 'float16':
+        pytest.skip("torch log doesnt allow float16")
+    if dtype in ivy.invalid_dtype_strs:
+        pytest.skip("invalid dtype")
+    x = ivy.array([0.5, 0.8, 4], dtype=dtype)
+    out = ivy.array([2, 3, 4], dtype=dtype)
+    if as_variable:
+        if with_out:
+            pytest.skip("variables do not support out argument")
+        x = ivy.variable(x)
+        out = ivy.variable(out)
+    if native_array:
+        x = x.data
+        out = out.data
+    if with_out:
+        ret = ivy.log(x, out=out)
+    else:
+        ret = ivy.log(x)
+    if with_out:
+        if not native_array:
+            assert ret is out
+        if ivy.current_framework_str() in ["tensorflow", "jax"]:
+            # these frameworks do not support native inplace updates
+            return
+        assert ret.data is (out if native_array else out.data)
+
+
+# log1p
+@pytest.mark.parametrize(
+    "dtype", ivy.float_strs)
+@pytest.mark.parametrize(
+    "as_variable", [True, False])
+@pytest.mark.parametrize(
+    "with_out", [True, False])
+@pytest.mark.parametrize(
+    "native_array", [True, False])
+def test_log1p(dtype, as_variable, with_out, native_array):
+    if ivy.current_framework_str() == 'torch' and dtype == 'float16':
+        pytest.skip("torch log1p doesnt allow float16")
+    if dtype in ivy.invalid_dtype_strs:
+        pytest.skip("invalid dtype")
+    x = ivy.array([0.5, 0.8, 4], dtype=dtype)
+    out = ivy.array([2, 3, 4], dtype=dtype)
+    if as_variable:
+        if with_out:
+            pytest.skip("variables do not support out argument")
+        x = ivy.variable(x)
+        out = ivy.variable(out)
+    if native_array:
+        x = x.data
+        out = out.data
+    if with_out:
+        ret = ivy.log1p(x, out=out)
+    else:
+        ret = ivy.log1p(x)
+    if with_out:
+        if not native_array:
+            assert ret is out
+        if ivy.current_framework_str() in ["tensorflow", "jax"]:
+            # these frameworks do not support native inplace updates
+            return
+        assert ret.data is (out if native_array else out.data)
+
+
+# log2
+@pytest.mark.parametrize(
+    "dtype", ivy.float_strs)
+@pytest.mark.parametrize(
+    "as_variable", [True, False])
+@pytest.mark.parametrize(
+    "with_out", [True, False])
+@pytest.mark.parametrize(
+    "native_array", [True, False])
+def test_log2(dtype, as_variable, with_out, native_array):
+    if ivy.current_framework_str() == 'torch' and dtype == 'float16':
+        pytest.skip("torch log2 doesnt allow float16")
+    if dtype in ivy.invalid_dtype_strs:
+        pytest.skip("invalid dtype")
+    x = ivy.array([0.5, 0.8, 4], dtype=dtype)
+    out = ivy.array([2, 3, 4], dtype=dtype)
+    if as_variable:
+        if with_out:
+            pytest.skip("variables do not support out argument")
+        x = ivy.variable(x)
+        out = ivy.variable(out)
+    if native_array:
+        x = x.data
+        out = out.data
+    if with_out:
+        ret = ivy.log2(x, out=out)
+    else:
+        ret = ivy.log2(x)
     if with_out:
         if not native_array:
             assert ret is out
