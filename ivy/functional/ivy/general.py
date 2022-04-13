@@ -21,6 +21,7 @@ INF = float('inf')
 TIMEOUT = 15.0
 TMP_DIR = '/tmp'
 
+
 def get_referrers_recursive(item, depth=0, max_depth=None, seen_set=None, local_set=None):
     seen_set = ivy.default(seen_set, set())
     local_set = ivy.default(local_set, set())
@@ -50,7 +51,7 @@ def get_referrers_recursive(item, depth=0, max_depth=None, seen_set=None, local_
     return ret_cont
 
 
-def is_native_array(x: Any, exclusive: bool = False)\
+def is_native_array(x: Any, exclusive: bool = False) \
         -> bool:
     """
     Determines whether the input x is a Native Array.
@@ -67,7 +68,7 @@ def is_native_array(x: Any, exclusive: bool = False)\
         return False
 
 
-def is_ivy_array(x: Any, exclusive: bool = False)\
+def is_ivy_array(x: Any, exclusive: bool = False) \
         -> bool:
     """
     Determines whether the input x is an Ivy Array.
@@ -81,22 +82,8 @@ def is_ivy_array(x: Any, exclusive: bool = False)\
     return isinstance(x, ivy.Array) and ivy.is_native_array(x.data, exclusive)
 
 
-def is_array(x: Any, exclusive: bool = False)\
-        -> bool:
-    """
-    Determines whether the input x is either an Ivy Array or a Native Array.
-
-    :param x: The input to check
-    :type x: any
-    :param exclusive: Whether to check if the data type is exclusively an array, rather than a variable or traced array.
-    :type exclusive: bool, optional
-    :return: Boolean, whether or not x is an array.
-    """
-    return ivy.is_ivy_array(x, exclusive) or ivy.is_native_array(x, exclusive)
-
-
 # noinspection PyShadowingNames
-def copy_array(x: Union[ivy.Array, ivy.NativeArray])\
+def copy_array(x: Union[ivy.Array, ivy.NativeArray]) \
         -> Union[ivy.Array, ivy.NativeArray]:
     """
     Copy an array.
@@ -108,7 +95,7 @@ def copy_array(x: Union[ivy.Array, ivy.NativeArray])\
     return _cur_framework(x).copy_array(x)
 
 
-def array_equal(x0: Union[ivy.Array, ivy.NativeArray], x1: Union[ivy.Array, ivy.NativeArray])\
+def array_equal(x0: Union[ivy.Array, ivy.NativeArray], x1: Union[ivy.Array, ivy.NativeArray]) \
         -> bool:
     """
     Determines whether two input arrays are equal across all elements.
@@ -122,7 +109,7 @@ def array_equal(x0: Union[ivy.Array, ivy.NativeArray], x1: Union[ivy.Array, ivy.
     return _cur_framework(x0).array_equal(x0, x1)
 
 
-def arrays_equal(xs: List[Union[ivy.Array, ivy.NativeArray]])\
+def arrays_equal(xs: List[Union[ivy.Array, ivy.NativeArray]]) \
         -> bool:
     """
     Determines whether input arrays are equal across all elements.
@@ -138,7 +125,7 @@ def arrays_equal(xs: List[Union[ivy.Array, ivy.NativeArray]])\
     return True
 
 
-def all_equal(*xs: Iterable[Any], equality_matrix: bool = False)\
+def all_equal(*xs: Iterable[Any], equality_matrix: bool = False) \
         -> Union[bool, Union[ivy.Array, ivy.NativeArray]]:
     """
     Determines whether the inputs are all equal.
@@ -173,43 +160,89 @@ def all_equal(*xs: Iterable[Any], equality_matrix: bool = False)\
     return True
 
 
-def to_numpy(x: Union[ivy.Array, ivy.NativeArray])\
+def to_numpy(x: Union[ivy.Array, ivy.NativeArray]) \
         -> np.ndarray:
     """
-    Converts array into a numpy array.
+    Converts an array into a numpy array.
 
-    :param x: Input array.
-    :type x: array
-    :return: A numpy array.
+     Parameters
+     ----------
+     x:
+         input array
+
+
+    Returns
+    -------
+    out:
+       a numpy array copying all the element of the array ``x``.
+
+    Examples:
+    >>> x = ivy.array([-1, 0, 1])
+    >>> y = ivy.to_numpy(x)
+    >>> print(y)
+    array([-1, 0, 1])
+    >>> print(type(y))
+    <class 'numpy.ndarray'>
     """
     return _cur_framework(x).to_numpy(x)
 
 
-def to_scalar(x: Union[ivy.Array, ivy.NativeArray])\
+def to_scalar(x: Union[ivy.Array, ivy.NativeArray]) \
         -> Number:
     """
     Converts an array with a single element into a scalar.
 
-    :param x: Input array with a single element.
-    :type x: array
-    :return: A scalar.
+     Parameters
+     ----------
+     x:
+         Input array with a single element.
+
+
+    Returns
+    -------
+    out:
+       a scalar copying the element of the array ``x``.
+
+    Examples:
+    >>> x = ivy.array([-1])
+    >>> y = ivy.to_scalar(x)
+    >>> print(y)
+    -1
+    >>> print(ivy.is_int_dtype(y))
+    True
     """
     return _cur_framework(x).to_scalar(x)
 
 
-def to_list(x: Union[ivy.Array, ivy.NativeArray])\
+def to_list(x: Union[ivy.Array, ivy.NativeArray]) \
         -> List:
     """
     Creates a (possibly nested) list from input array.
 
-    :param x: Input array.
-    :type x: array
-    :return: A list representation of the input array.
+     Parameters
+     ----------
+     x:
+         Input array.
+
+
+    Returns
+    -------
+    out:
+       A list representation of the input array ``x``.
+
+    Examples:
+    >>> x = ivy.array([-1, 0, 1])
+    >>> y = ivy.to_list(x)
+    >>> print(y)
+    [-1, 0, 1]
+    >>> print(isinstance(y, list))
+    True
     """
     return _cur_framework(x).to_list(x)
 
-def clip_vector_norm(x: Union[ivy.Array, ivy.NativeArray], max_norm: float, p: float = 2.0, 
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None)\
+
+def clip_vector_norm(x: Union[ivy.Array, ivy.NativeArray], max_norm: float, p: float = 2.0,
+                     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None) \
         -> Union[ivy.Array, ivy.NativeArray]:
     """
     Clips (limits) the vector p-norm of an array.
@@ -232,16 +265,16 @@ def clip_vector_norm(x: Union[ivy.Array, ivy.NativeArray], max_norm: float, p: f
     ratio = ivy.stable_divide(max_norm, norm)
     if ratio < 1:
         if ivy.exists(out):
-            return ivy.inplace_update(out, ratio*x)
+            return ivy.inplace_update(out, ratio * x)
         else:
             return ratio * x
     if ivy.exists(out):
-        return ivy.inplace_update(out,x)
+        return ivy.inplace_update(out, x)
     else:
         return x
 
 
-def clip_matrix_norm(x: Union[ivy.Array, ivy.NativeArray], max_norm: float, p: float = 2.0)\
+def clip_matrix_norm(x: Union[ivy.Array, ivy.NativeArray], max_norm: float, p: float = 2.0) \
         -> Union[ivy.Array, ivy.NativeArray]:
     """
     Clips (limits) the matrix norm of an array.
@@ -259,8 +292,8 @@ def clip_matrix_norm(x: Union[ivy.Array, ivy.NativeArray], max_norm: float, p: f
     return ratios * x
 
 
-
-def floormod(x: Union[ivy.Array, ivy.NativeArray], y: Union[ivy.Array, ivy.NativeArray], out: Optional[Union[ivy.Array, ivy.NativeArray]] = None)\
+def floormod(x: Union[ivy.Array, ivy.NativeArray], y: Union[ivy.Array, ivy.NativeArray],
+             out: Optional[Union[ivy.Array, ivy.NativeArray]] = None) \
         -> Union[ivy.Array, ivy.NativeArray]:
     """
     Returns element-wise remainder of division.
@@ -278,12 +311,10 @@ def floormod(x: Union[ivy.Array, ivy.NativeArray], y: Union[ivy.Array, ivy.Nativ
     return:
         An array of the same shape and type as x, with the elements floor modded.
     """
-    return _cur_framework(x).floormod(x, y,out)
+    return _cur_framework(x).floormod(x, y, out)
 
 
-
-
-def unstack(x: Union[ivy.Array, ivy.NativeArray], axis: int, keepdims: bool = False)\
+def unstack(x: Union[ivy.Array, ivy.NativeArray], axis: int, keepdims: bool = False) \
         -> Union[ivy.Array, ivy.NativeArray]:
     """
     Unpacks the given dimension of a rank-R array into rank-(R-1) arrays.
@@ -300,7 +331,7 @@ def unstack(x: Union[ivy.Array, ivy.NativeArray], axis: int, keepdims: bool = Fa
 
 
 def fourier_encode(x: Union[ivy.Array, ivy.NativeArray], max_freq: Union[float, Union[ivy.Array, ivy.NativeArray]],
-                   num_bands: int = 4, linear: bool = False, concat: bool = True, flatten: bool = False)\
+                   num_bands: int = 4, linear: bool = False, concat: bool = True, flatten: bool = False) \
         -> Union[ivy.Array, ivy.NativeArray, Tuple]:
     """
     Pads an array with fourier encodings.
@@ -326,8 +357,8 @@ def fourier_encode(x: Union[ivy.Array, ivy.NativeArray], max_freq: Union[float, 
     if linear:
         scales = ivy.linspace(1., max_freq / 2, num_bands, dev=dev(x))
     else:
-        if ivy.backend == 'torch' and isinstance(max_freq,float):
-            scales = ivy.logspace(0., ivy.log(ivy.array(max_freq / 2)) / math.log(10), num_bands, base=10, dev=dev(x))            
+        if ivy.backend == 'torch' and isinstance(max_freq, float):
+            scales = ivy.logspace(0., ivy.log(ivy.array(max_freq / 2)) / math.log(10), num_bands, base=10, dev=dev(x))
         else:
             scales = ivy.logspace(0., ivy.log(max_freq / 2) / math.log(10), num_bands, base=10, dev=dev(x))
     scales = ivy.astype(scales, ivy.dtype(x))
@@ -337,15 +368,14 @@ def fourier_encode(x: Union[ivy.Array, ivy.NativeArray], max_freq: Union[float, 
     cos_x = ivy.cos(x)
     if flatten:
         orig_x = x_in
-        sin_x = ivy.reshape(sin_x, [-1, num_bands*dim])
-        cos_x = ivy.reshape(cos_x, [-1, num_bands*dim])
+        sin_x = ivy.reshape(sin_x, [-1, num_bands * dim])
+        cos_x = ivy.reshape(cos_x, [-1, num_bands * dim])
     if concat:
         return ivy.concat([orig_x, sin_x, cos_x], -1)
     return sin_x, cos_x
 
 
-
-def value_is_nan(x: Union[ivy.Array, ivy.NativeArray, Number], include_infs: bool = True)\
+def value_is_nan(x: Union[ivy.Array, ivy.NativeArray, Number], include_infs: bool = True) \
         -> bool:
     """
     Determine whether the single valued array or scalar is of nan type
@@ -364,7 +394,7 @@ def value_is_nan(x: Union[ivy.Array, ivy.NativeArray, Number], include_infs: boo
     return False
 
 
-def has_nans(x: Union[ivy.Array, ivy.NativeArray], include_infs: bool = True)\
+def has_nans(x: Union[ivy.Array, ivy.NativeArray], include_infs: bool = True) \
         -> bool:
     """
     Determine whether the array contains any nans, as well as infs or -infs if specified.
@@ -378,7 +408,7 @@ def has_nans(x: Union[ivy.Array, ivy.NativeArray], include_infs: bool = True)\
     return value_is_nan(ivy.sum(x), include_infs)
 
 
-def exists(x: Any)\
+def exists(x: Any) \
         -> bool:
     """
     Simple check as to whether the input is None or not.
@@ -390,7 +420,7 @@ def exists(x: Any)\
     return x is not None
 
 
-def default(x: Any, default_val: Any, catch_exceptions: bool = False, rev: bool = False, with_callable: bool = False)\
+def default(x: Any, default_val: Any, catch_exceptions: bool = False, rev: bool = False, with_callable: bool = False) \
         -> Any:
     """
     Returns x provided it exists (is not None), else returns default value.
@@ -426,6 +456,7 @@ def default(x: Any, default_val: Any, catch_exceptions: bool = False, rev: bool 
     else:
         x = x() if x_callable else x
     return x if exists(x) else default_val() if default_callable else default_val
+
 
 def shape_to_tuple(shape: Union[int, Tuple[int], List[int]]):
     """
@@ -482,7 +513,7 @@ def match_kwargs(kwargs, *receivers, allow_duplicates=False):
     return split_kwargs
 
 
-def cache_fn(func: Callable)\
+def cache_fn(func: Callable) \
         -> Callable:
     """
     Wrap a function, such that when cache=True is passed as an argument, a previously cached output is returned.
@@ -508,7 +539,7 @@ def cache_fn(func: Callable)\
     return cached_fn
 
 
-def current_framework_str()\
+def current_framework_str() \
         -> Union[str, None]:
     """
     Return the string of the current globally set framework. Returns None if no framework is set.
@@ -521,7 +552,7 @@ def current_framework_str()\
     return fw.current_framework_str()
 
 
-def einops_rearrange(x: Union[ivy.Array, ivy.NativeArray], pattern: str, **axes_lengths: Dict[str, int])\
+def einops_rearrange(x: Union[ivy.Array, ivy.NativeArray], pattern: str, **axes_lengths: Dict[str, int]) \
         -> Union[ivy.Array, ivy.NativeArray]:
     """
     Perform einops rearrange operation on input array x.
@@ -555,7 +586,7 @@ def einops_reduce(x: Union[ivy.Array, ivy.NativeArray], pattern: str, reduction:
     return einops.reduce(x, pattern, reduction, **axes_lengths)
 
 
-def einops_repeat(x: Union[ivy.Array, ivy.NativeArray], pattern: str, **axes_lengths: Dict[str, int])\
+def einops_repeat(x: Union[ivy.Array, ivy.NativeArray], pattern: str, **axes_lengths: Dict[str, int]) \
         -> Union[ivy.Array, ivy.NativeArray]:
     """
     Perform einops repeat operation on input array x.
@@ -571,7 +602,7 @@ def einops_repeat(x: Union[ivy.Array, ivy.NativeArray], pattern: str, **axes_len
     return einops.repeat(x, pattern, **axes_lengths)
 
 
-def get_min_denominator()\
+def get_min_denominator() \
         -> float:
     """
     Get the global minimum denominator used by ivy for numerically stable division.
@@ -580,7 +611,7 @@ def get_min_denominator()\
     return ivy._MIN_DENOMINATOR
 
 
-def set_min_denominator(val: float)\
+def set_min_denominator(val: float) \
         -> None:
     """
     Set the global minimum denominator used by ivy for numerically stable division.
@@ -591,9 +622,7 @@ def set_min_denominator(val: float)\
     ivy._MIN_DENOMINATOR = val
 
 
-
-
-def get_min_base()\
+def get_min_base() \
         -> float:
     """
     Get the global minimum base used by ivy for numerically stable power raising.
@@ -602,7 +631,7 @@ def get_min_base()\
     return ivy._MIN_BASE
 
 
-def set_min_base(val: float)\
+def set_min_base(val: float) \
         -> None:
     """
     Set the global minimum base used by ivy for numerically stable power raising.
@@ -611,6 +640,7 @@ def set_min_base(val: float)\
     :type val: float
     """
     ivy._MIN_BASE = val
+
 
 def stable_divide(numerator: Any, denominator: Any, min_denominator: float = None) -> Any:
     """
@@ -627,7 +657,8 @@ def stable_divide(numerator: Any, denominator: Any, min_denominator: float = Non
     # noinspection PyProtectedMember
     return numerator / (denominator + default(min_denominator, ivy._MIN_DENOMINATOR))
 
-def stable_pow(base: Any, exponent: Any, min_base: float = None)\
+
+def stable_pow(base: Any, exponent: Any, min_base: float = None) \
         -> Any:
     """
     Raise the base by the power, with MIN_BASE added to the base when exponent > 1 for numerical stability.
@@ -706,6 +737,7 @@ def set_tmp_dir(tmp_dr):
     """
     global TMP_DIR
     TMP_DIR = tmp_dr
+
 
 def container_types():
     """
@@ -807,7 +839,7 @@ def inplace_increment(x, val):
 
 
 def cumsum(x: Union[ivy.Array, ivy.NativeArray], axis: int = 0,
-        out: Optional[Union[ivy.Array, ivy.NativeArray]] = None)\
+           out: Optional[Union[ivy.Array, ivy.NativeArray]] = None) \
         -> Union[ivy.Array, ivy.NativeArray]:
     """
     Returns the cumulative sum of the elements along a given axis.
@@ -825,35 +857,29 @@ def cumsum(x: Union[ivy.Array, ivy.NativeArray], axis: int = 0,
     return:
         Input array with cumulatively summed elements along axis
     """
-    return _cur_framework(x).cumsum(x, axis,out=out)
+    return _cur_framework(x).cumsum(x, axis, out=out)
 
 
-def cumprod(x: Union[ivy.Array, ivy.NativeArray], axis: int = 0, exclusive: Optional[bool] = False,
-        out: Optional[Union[ivy.Array, ivy.NativeArray]] = None)\
+def cumprod(x: Union[ivy.Array, ivy.NativeArray], axis: int = 0, exclusive: bool = False) \
         -> Union[ivy.Array, ivy.NativeArray]:
     """
     Returns the cumulative product of the elements along a given axis.
-    Parameters
-    ----------
-    x: 
-        Input array.
-    axis: 
-        int , axis along which the cumulative product is computed. By default 0.
-    exclusive: 
-        optional bool, Whether to perform the cumprod exclusively. Defaults is False.
-    
-    Returns
-    -------
-    return: 
-        Input array with cumulatively multiplied elements along axis.
+
+    :param x: Input array.
+    :type x: array
+    :param axis: Axis along which the cumulative product is computed. By default 0.
+    :type axis: int
+    :param exclusive: Whether to perform the cumprod exclusively. Defaults is False.
+    :type exclusive: bool, optional
+    :return: Input array with cumulatively multiplied elements along axis.
     """
-    return _cur_framework(x).cumprod(x, axis, exclusive,out=out)
+    return _cur_framework(x).cumprod(x, axis, exclusive)
 
 
 # noinspection PyShadowingNames
 def scatter_flat(indices: Union[ivy.Array, ivy.NativeArray], updates: Union[ivy.Array, ivy.NativeArray],
                  size: Optional[int] = None, tensor: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-                 reduction: str = 'sum', dev: ivy.Device = None)\
+                 reduction: str = 'sum', dev: ivy.Device = None) \
         -> Union[ivy.Array, ivy.NativeArray]:
     """
     Scatter flat updates into a new flat array according to flat indices.
@@ -878,7 +904,7 @@ def scatter_flat(indices: Union[ivy.Array, ivy.NativeArray], updates: Union[ivy.
 # noinspection PyShadowingNames
 def scatter_nd(indices: Union[ivy.Array, ivy.NativeArray], updates: Union[ivy.Array, ivy.NativeArray],
                shape: Optional[Iterable[int]] = None, tensor: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-               reduction: str = 'sum', dev: ivy.Device = None)\
+               reduction: str = 'sum', dev: ivy.Device = None) \
         -> Union[ivy.Array, ivy.NativeArray]:
     """
     Scatter updates into a new array according to indices.
@@ -902,7 +928,8 @@ def scatter_nd(indices: Union[ivy.Array, ivy.NativeArray], updates: Union[ivy.Ar
 
 # noinspection PyShadowingNames
 def gather(params: Union[ivy.Array, ivy.NativeArray], indices: Union[ivy.Array, ivy.NativeArray], axis: int = -1,
-           dev: ivy.Device = None,  out: Optional[Union[ivy.Array, ivy.NativeArray]] = None) -> Union[ivy.Array, ivy.NativeArray]:
+           dev: ivy.Device = None, out: Optional[Union[ivy.Array, ivy.NativeArray]] = None) -> Union[
+    ivy.Array, ivy.NativeArray]:
     """
     Gather slices from params at axis according to indices.
 
@@ -925,7 +952,7 @@ def gather(params: Union[ivy.Array, ivy.NativeArray], indices: Union[ivy.Array, 
     return: 
         New array with the values gathered at the specified indices along the specified axis.
     """
-    return _cur_framework(params).gather(params, indices, axis, dev,out=out)
+    return _cur_framework(params).gather(params, indices, axis, dev, out=out)
 
 
 # noinspection PyShadowingNames
@@ -945,7 +972,6 @@ def gather_nd(params: Union[ivy.Array, ivy.NativeArray], indices: Union[ivy.Arra
     return _cur_framework(params).gather_nd(params, indices, dev)
 
 
-
 def multiprocessing(context: str = None):
     """
     Return framewrk-specific multi-processing module
@@ -957,7 +983,7 @@ def multiprocessing(context: str = None):
     return _cur_framework().multiprocessing(context)
 
 
-def indices_where(x: Union[ivy.Array, ivy.NativeArray])\
+def indices_where(x: Union[ivy.Array, ivy.NativeArray]) \
         -> Union[ivy.Array, ivy.NativeArray]:
     """
     Returns indices or true elements in an input boolean array.
@@ -970,7 +996,7 @@ def indices_where(x: Union[ivy.Array, ivy.NativeArray])\
 
 
 # noinspection PyShadowingNames
-def one_hot(indices: Union[ivy.Array, ivy.NativeArray], depth: int, dev: ivy.Device = None)\
+def one_hot(indices: Union[ivy.Array, ivy.NativeArray], depth: int, dev: ivy.Device = None) \
         -> Union[ivy.Array, ivy.NativeArray]:
     """
     Returns a one-hot array
@@ -985,7 +1011,7 @@ def one_hot(indices: Union[ivy.Array, ivy.NativeArray], depth: int, dev: ivy.Dev
     return _cur_framework(indices).one_hot(indices, depth, dev)
 
 
-def shape(x: Union[ivy.Array, ivy.NativeArray], as_array: bool = False)\
+def shape(x: Union[ivy.Array, ivy.NativeArray], as_array: bool = False) \
         -> Iterable[int]:
     """
     Returns the shape of the array x.
