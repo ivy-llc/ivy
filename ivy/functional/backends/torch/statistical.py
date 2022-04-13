@@ -61,7 +61,8 @@ def sum(x: torch.Tensor,
 def prod(x: torch.Tensor,
          axis: Optional[Union[int, Tuple[int]]] = None,
          dtype: Optional[torch.dtype] = None,
-         keepdims: bool = False)\
+         keepdims: bool = False,
+         out: Optional[torch.Tensor]=None)\
         -> torch.Tensor:
 
     if dtype is None:
@@ -71,6 +72,8 @@ def prod(x: torch.Tensor,
             dtype = torch.uint8
         elif x.dtype in [torch.int64, torch.int32]:
             dtype = torch.int64
+        elif x.dtype == torch.bfloat16:
+            dtype = torch.float16
 
     if axis is None:
         axis = x.dim()-1
@@ -78,10 +81,16 @@ def prod(x: torch.Tensor,
         if len(axis) == 0:
             axis = x.dim()-1
         else:
-            return torch.prod(torch.Tensor(
+            if ivy.exists(out):
+                return ivy.inplace_update(out,torch.prod(torch.Tensor(
+                    [torch.prod(input=x, dim=i, dtype=dtype, keepdim=keepdims) for i in axis]), dtype=dtype))
+            else:
+                return torch.prod(torch.Tensor(
                 [torch.prod(input=x, dim=i, dtype=dtype, keepdim=keepdims) for i in axis]), dtype=dtype)
-
-    return torch.prod(input=x, dim=axis, dtype=dtype, keepdim=keepdims)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, torch.prod(input=x, dim=axis, dtype=dtype, keepdim=keepdims))
+    else:
+        return torch.prod(input=x, dim=axis, dtype=dtype, keepdim=keepdims)
 
 
 def mean(x: torch.Tensor,

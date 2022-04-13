@@ -41,7 +41,8 @@ def sum(x: Tensor,
 def prod(x: Tensor,
          axis: Optional[Union[int, Tuple[int]]] = None,
          dtype: Optional[tf.DType] = None,
-         keepdims: bool = False)\
+         keepdims: bool = False,
+            out: Optional[Tensor]=None)\
         -> Tensor:
     if dtype == None:
         if x.dtype in [ tf.int8 , tf.int16,tf.int32]:
@@ -52,8 +53,10 @@ def prod(x: Tensor,
             dtype = tf.int64
         elif x.dtype == tf.uint64 :
             dtype = tf.uint64
-        
-    return tf.experimental.numpy.prod(x,axis,dtype,keepdims)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, tf.experimental.numpy.prod(x, axis = axis, keepdims = keepdims))    
+    else:
+        return tf.experimental.numpy.prod(x,axis,dtype,keepdims)
 
 
 def mean(x: Tensor,
