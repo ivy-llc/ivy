@@ -437,9 +437,10 @@ def tan(x: np.ndarray,
     return np.tan(x, out=out)
 
 
-def atan(x: np.ndarray) \
+def atan(x: np.ndarray,
+         out: Optional[np.ndarray] = None) \
         -> np.ndarray:
-    return np.arctan(x)
+    return np.arctan(x, out=out)
 
 
 def atanh(x: np.ndarray,
