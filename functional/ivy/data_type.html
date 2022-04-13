@@ -100,6 +100,7 @@
 <li class="toctree-l2"><a class="reference internal" href="data_type/iinfo.html">iinfo</a></li>
 <li class="toctree-l2"><a class="reference internal" href="data_type/finfo.html">finfo</a></li>
 <li class="toctree-l2"><a class="reference internal" href="data_type/broadcast_to.html">broadcast_to</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data_type/broadcast_arrays.html">broadcast_arrays</a></li>
 <li class="toctree-l2"><a class="reference internal" href="data_type/dtype.html">dtype</a></li>
 <li class="toctree-l2"><a class="reference internal" href="data_type/astype.html">astype</a></li>
 <li class="toctree-l2"><a class="reference internal" href="data_type/dtype_bits.html">dtype_bits</a></li>
@@ -287,6 +288,22 @@ Default: True.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>an array having the specified data type. The returned array must have the same shape as x.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.data_type.broadcast_arrays">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">broadcast_arrays</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">arrays</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; List<span class="p">[</span>ivy.array.Array<span class="p">]</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/data_type.html#broadcast_arrays"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.data_type.broadcast_arrays" title="Permalink to this definition">¶</a></dt>
+<dd><blockquote>
+<div><p>Broadcasts one or more arrays against one another.</p>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>x</strong> – x (array) – an arbitrary number of to-be broadcasted arrays.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>out (List[array]) – Each array must have the same shape. Each array must have the same dtype as its corresponding input array.</p>
 </dd>
 </dl>
 </dd></dl>

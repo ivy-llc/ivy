@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>is_float_dtype &mdash; Ivy 1.0 documentation</title>
+  <title>broadcast_arrays &mdash; Ivy 1.0 documentation</title>
   
 
   
@@ -36,8 +36,8 @@
   <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="result_type" href="result_type.html" />
-    <link rel="prev" title="is_int_dtype" href="is_int_dtype.html" /> 
+    <link rel="next" title="dtype" href="dtype.html" />
+    <link rel="prev" title="broadcast_to" href="broadcast_to.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -100,7 +100,7 @@
 <li class="toctree-l2"><a class="reference internal" href="iinfo.html">iinfo</a></li>
 <li class="toctree-l2"><a class="reference internal" href="finfo.html">finfo</a></li>
 <li class="toctree-l2"><a class="reference internal" href="broadcast_to.html">broadcast_to</a></li>
-<li class="toctree-l2"><a class="reference internal" href="broadcast_arrays.html">broadcast_arrays</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">broadcast_arrays</a></li>
 <li class="toctree-l2"><a class="reference internal" href="dtype.html">dtype</a></li>
 <li class="toctree-l2"><a class="reference internal" href="astype.html">astype</a></li>
 <li class="toctree-l2"><a class="reference internal" href="dtype_bits.html">dtype_bits</a></li>
@@ -117,7 +117,7 @@
 <li class="toctree-l2"><a class="reference internal" href="unset_default_float_dtype.html">unset_default_float_dtype</a></li>
 <li class="toctree-l2"><a class="reference internal" href="closest_valid_dtype.html">closest_valid_dtype</a></li>
 <li class="toctree-l2"><a class="reference internal" href="is_int_dtype.html">is_int_dtype</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">is_float_dtype</a></li>
+<li class="toctree-l2"><a class="reference internal" href="is_float_dtype.html">is_float_dtype</a></li>
 <li class="toctree-l2"><a class="reference internal" href="result_type.html">result_type</a></li>
 <li class="toctree-l2"><a class="reference internal" href="valid_dtype.html">valid_dtype</a></li>
 <li class="toctree-l2"><a class="reference internal" href="invalid_dtype.html">invalid_dtype</a></li>
@@ -214,13 +214,13 @@
         
           <li><a href="../data_type.html">Data type</a> &raquo;</li>
         
-      <li>is_float_dtype</li>
+      <li>broadcast_arrays</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../../_sources/functional/ivy/data_type/is_float_dtype.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../../_sources/functional/ivy/data_type/broadcast_arrays.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -233,18 +233,20 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="is-float-dtype">
-<h1>is_float_dtype<a class="headerlink" href="#is-float-dtype" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="broadcast-arrays">
+<h1>broadcast_arrays<a class="headerlink" href="#broadcast-arrays" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
-<dt id="ivy.functional.ivy.data_type.is_float_dtype">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">is_float_dtype</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dtype_in</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.Dtype<span class="p">, </span>str<span class="p">, </span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">, </span>numbers.Number<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; bool<a class="reference internal" href="../../../_modules/ivy/functional/ivy/data_type.html#is_float_dtype"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.data_type.is_float_dtype" title="Permalink to this definition">¶</a></dt>
-<dd><p>Determine whether the input data type is an float data-type.</p>
+<dt id="ivy.functional.ivy.data_type.broadcast_arrays">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">broadcast_arrays</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">arrays</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; List<span class="p">[</span>ivy.array.Array<span class="p">]</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/data_type.html#broadcast_arrays"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.data_type.broadcast_arrays" title="Permalink to this definition">¶</a></dt>
+<dd><blockquote>
+<div><p>Broadcasts one or more arrays against one another.</p>
+</div></blockquote>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>dtype_in</strong> – Datatype to test</p>
+<dd class="field-odd"><p><strong>x</strong> – x (array) – an arbitrary number of to-be broadcasted arrays.</p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Whether or not the data type is a floating point data type</p>
+<dd class="field-even"><p>out (List[array]) – Each array must have the same shape. Each array must have the same dtype as its corresponding input array.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -264,10 +266,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="result_type.html" class="btn btn-neutral float-right" title="result_type" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="dtype.html" class="btn btn-neutral float-right" title="dtype" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="is_int_dtype.html" class="btn btn-neutral float-left" title="is_int_dtype" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="broadcast_to.html" class="btn btn-neutral float-left" title="broadcast_to" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
