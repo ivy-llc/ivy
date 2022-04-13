@@ -10,6 +10,7 @@ import torch as torch
 from operator import mul
 from functools import reduce as _reduce
 from typing import List, Optional, Union
+from numbers import Number
 
 
 # local
@@ -32,7 +33,9 @@ def array_equal(x0, x1):
     return torch.equal(x0, x1)
 
 
-def to_numpy(x) -> np.ndarray:
+
+def to_numpy(x: torch.Tensor)\
+        -> np.ndarray:
     if isinstance(x, np.ndarray) or isinstance(x, (float, int, bool)):
         return x
     elif torch.is_tensor(x):
@@ -40,13 +43,15 @@ def to_numpy(x) -> np.ndarray:
     raise ValueError('Expected a pytroch tensor.')
 
 
-def to_scalar(x) -> Union[float, int, bool]:
+def to_scalar(x: torch.Tensor)\
+        -> Number:
     if isinstance(x, (float, int)):
         return x
     return x.item()
 
 
-def to_list(x):
+def to_list(x: torch.Tensor)\
+        -> list:
     if isinstance(x, np.ndarray):
         return x.tolist()
     elif torch.is_tensor(x):
