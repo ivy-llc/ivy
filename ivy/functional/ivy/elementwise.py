@@ -269,7 +269,8 @@ def floor(x: Union[ivy.Array, ivy.NativeArray],
     return _cur_framework(x).floor(x, out)
 
 
-def isfinite(x: Union[ivy.Array, ivy.NativeArray])\
+def isfinite(x: Union[ivy.Array, ivy.NativeArray],
+             out: Optional[Union[ivy.Array, ivy.NativeArray]] = None)\
         -> ivy.Array:
     """
     Tests each element ``x_i`` of the input array ``x`` to determine if finite (i.e., not ``NaN`` and not equal to positive or negative infinity).
@@ -278,13 +279,15 @@ def isfinite(x: Union[ivy.Array, ivy.NativeArray])\
     ----------
     x:
        input array. Should have a numeric data type.
+   out:
+        optional output array, for writing the result to. It must have a shape that the inputs broadcast to.
 
     Returns
     -------
-    out:
+    return:
        an array containing test results. An element ``out_i`` is ``True`` if ``x_i`` is finite and ``False`` otherwise. The returned array must have a data type of ``bool``.
     """
-    return _cur_framework(x).isfinite(x)
+    return _cur_framework(x).isfinite(x, out)
 
 
 def asin(x: Union[ivy.Array, ivy.NativeArray],
@@ -315,10 +318,11 @@ def asin(x: Union[ivy.Array, ivy.NativeArray],
     return: array
         an array containing the inverse sine of each element in ``x``. The returned array must have a floating-point data type determined by :ref:`type-promotion`.
     """
-    return _cur_framework(x).asin(x)
+    return _cur_framework(x).asin(x, out)
 
 
-def isinf(x: Union[ivy.Array, ivy.NativeArray])\
+def isinf(x: Union[ivy.Array, ivy.NativeArray],
+          out: Optional[Union[ivy.Array, ivy.NativeArray]] = None)\
         -> ivy.Array:
     """
     Tests each element x_i of the input array x to determine if equal to positive or negative infinity.
@@ -326,12 +330,15 @@ def isinf(x: Union[ivy.Array, ivy.NativeArray])\
     ----------
     x:
         input array. Should have a numeric data type.
+    out:
+        optional output array, for writing the result to. It must have a shape that the inputs broadcast to.
+
     Returns
     -------
-    out:
+    return:
         an array containing test results. An element out_i is True if x_i is either positive or negative infinity and False otherwise. The returned array must have a data type of bool.
     """
-    return _cur_framework(x).isinf(x)
+    return _cur_framework(x).isinf(x, out)
 
 
 def greater(x1: Union[ivy.Array, ivy.NativeArray],
@@ -649,7 +656,8 @@ def log1p(x: Union[ivy.Array, ivy.NativeArray],
     return _cur_framework(x).log1p(x, out)
 
 
-def isnan(x: Union[ivy.Array, ivy.NativeArray])\
+def isnan(x: Union[ivy.Array, ivy.NativeArray],
+          out: Optional[Union[ivy.Array, ivy.NativeArray]] = None)\
         -> ivy.Array:
     """
     Tests each element ``x_i`` of the input array ``x`` to determine whether the element is ``NaN``.
@@ -658,13 +666,15 @@ def isnan(x: Union[ivy.Array, ivy.NativeArray])\
     ----------
     x:
         input array. Should have a numeric data type.
+    out:
+        optional output array, for writing the result to. It must have a shape that the inputs broadcast to.
 
     Returns
     -------
-    out:
+    return:
         an array containing test results. An element ``out_i`` is ``True`` if ``x_i`` is ``NaN`` and ``False`` otherwise. The returned array should have a data type of ``bool``.
     """
-    return _cur_framework(x).isnan(x)
+    return _cur_framework(x).isnan(x, out)
 
 
 def less(x1: Union[ivy.Array, ivy.NativeArray],
