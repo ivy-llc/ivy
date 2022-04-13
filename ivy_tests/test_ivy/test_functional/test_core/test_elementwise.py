@@ -354,25 +354,15 @@ def test_atanh(dtype, as_variable, with_out, native_array):
 @pytest.mark.parametrize(
     "dtype", ivy.int_strs + ['bool'])
 @pytest.mark.parametrize(
-    "as_variable", [True, False])
-@pytest.mark.parametrize(
     "with_out", [True, False])
 @pytest.mark.parametrize(
     "native_array", [True, False])
-def test_bitwise_and(dtype, as_variable, with_out, native_array):
+def test_bitwise_and(dtype, with_out, native_array):
     if dtype in ivy.invalid_dtype_strs:
         pytest.skip("invalid dtype")
     x1 = ivy.array([0, 1, 1], dtype=dtype)
     x2 = ivy.array([0, 1, 1], dtype=dtype)
     out = ivy.array([2, 3, 4], dtype=dtype)
-    if as_variable:
-        # float inputs aren't used
-        pytest.skip("only floating point variables are supported")
-        if with_out:
-            pytest.skip("variables do not support out argument")
-        x1 = ivy.variable(x1)
-        x2 = ivy.variable(x2)
-        out = ivy.variable(out)
     if native_array:
         x1 = x1.data
         x2 = x2.data
@@ -394,25 +384,15 @@ def test_bitwise_and(dtype, as_variable, with_out, native_array):
 @pytest.mark.parametrize(
     "dtype", ivy.int_strs)
 @pytest.mark.parametrize(
-    "as_variable", [True, False])
-@pytest.mark.parametrize(
     "with_out", [True, False])
 @pytest.mark.parametrize(
     "native_array", [True, False])
-def test_bitwise_left_shift(dtype, as_variable, with_out, native_array):
+def test_bitwise_left_shift(dtype, with_out, native_array):
     if dtype in ivy.invalid_dtype_strs:
         pytest.skip("invalid dtype")
     x1 = ivy.array([0, 1, 1], dtype=dtype)
     x2 = ivy.array([0, 1, 1], dtype=dtype)
     out = ivy.array([2, 3, 4], dtype=dtype)
-    if as_variable:
-        # float inputs aren't used
-        pytest.skip("only floating point variables are supported")
-        if with_out:
-            pytest.skip("variables do not support out argument")
-        x1 = ivy.variable(x1)
-        x2 = ivy.variable(x2)
-        out = ivy.variable(out)
     if native_array:
         x1 = x1.data
         x2 = x2.data
@@ -434,23 +414,14 @@ def test_bitwise_left_shift(dtype, as_variable, with_out, native_array):
 @pytest.mark.parametrize(
     "dtype", ivy.int_strs + ['bool'])
 @pytest.mark.parametrize(
-    "as_variable", [True, False])
-@pytest.mark.parametrize(
     "with_out", [True, False])
 @pytest.mark.parametrize(
     "native_array", [True, False])
-def test_bitwise_invert(dtype, as_variable, with_out, native_array):
+def test_bitwise_invert(dtype, with_out, native_array):
     if dtype in ivy.invalid_dtype_strs:
         pytest.skip("invalid dtype")
     x = ivy.array([0, 1, 1], dtype=dtype)
     out = ivy.array([2, 3, 4], dtype=dtype)
-    if as_variable:
-        # float inputs aren't used
-        pytest.skip("only floating point variables are supported")
-        if with_out:
-            pytest.skip("variables do not support out argument")
-        x = ivy.variable(x)
-        out = ivy.variable(out)
     if native_array:
         x = x.data
         out = out.data
@@ -471,25 +442,15 @@ def test_bitwise_invert(dtype, as_variable, with_out, native_array):
 @pytest.mark.parametrize(
     "dtype", ivy.int_strs + ['bool'])
 @pytest.mark.parametrize(
-    "as_variable", [True, False])
-@pytest.mark.parametrize(
     "with_out", [True, False])
 @pytest.mark.parametrize(
     "native_array", [True, False])
-def test_bitwise_or(dtype, as_variable, with_out, native_array):
+def test_bitwise_or(dtype, with_out, native_array):
     if dtype in ivy.invalid_dtype_strs:
         pytest.skip("invalid dtype")
     x1 = ivy.array([0, 1, 1], dtype=dtype)
     x2 = ivy.array([0, 1, 1], dtype=dtype)
     out = ivy.array([2, 3, 4], dtype=dtype)
-    if as_variable:
-        # float inputs aren't used
-        pytest.skip("only floating point variables are supported")
-        if with_out:
-            pytest.skip("variables do not support out argument")
-        x1 = ivy.variable(x1)
-        x2 = ivy.variable(x2)
-        out = ivy.variable(out)
     if native_array:
         x1 = x1.data
         x2 = x2.data
@@ -511,25 +472,15 @@ def test_bitwise_or(dtype, as_variable, with_out, native_array):
 @pytest.mark.parametrize(
     "dtype", ivy.int_strs)
 @pytest.mark.parametrize(
-    "as_variable", [True, False])
-@pytest.mark.parametrize(
     "with_out", [True, False])
 @pytest.mark.parametrize(
     "native_array", [True, False])
-def test_bitwise_right_shift(dtype, as_variable, with_out, native_array):
+def test_bitwise_right_shift(dtype, with_out, native_array):
     if dtype in ivy.invalid_dtype_strs:
         pytest.skip("invalid dtype")
     x1 = ivy.array([0, 1, 1], dtype=dtype)
     x2 = ivy.array([0, 1, 1], dtype=dtype)
     out = ivy.array([2, 3, 4], dtype=dtype)
-    if as_variable:
-        # float inputs aren't used
-        pytest.skip("only floating point variables are supported")
-        if with_out:
-            pytest.skip("variables do not support out argument")
-        x1 = ivy.variable(x1)
-        x2 = ivy.variable(x2)
-        out = ivy.variable(out)
     if native_array:
         x1 = x1.data
         x2 = x2.data
