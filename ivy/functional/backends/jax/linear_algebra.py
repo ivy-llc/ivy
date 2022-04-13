@@ -208,8 +208,7 @@ def eigvalsh(x: JaxArray,
 
 
 def inv(x: JaxArray,
-        out: Optional[JaxArray] = None
-        )\
+        out: Optional[JaxArray] = None)\
         -> JaxArray:
     if jnp.any(jnp.linalg.det(x.astype('float64')) == 0):
         ret = x
@@ -221,34 +220,48 @@ def inv(x: JaxArray,
 
 
 def matrix_rank(vector: JaxArray,
-                rtol: Optional[Union[float, Tuple[float]]] = None) \
+                rtol: Optional[Union[float, Tuple[float]]] = None,
+                out: Optional[JaxArray] = None) \
         -> JaxArray:
         if vector.size == 0:
-            return 0
-        if vector.size == 1:
-            return jnp.count_nonzero(vector)
-        if vector.ndim >2:
-            vector = vector.reshape([-1])
-        return jnp.linalg.matrix_rank(vector, rtol)
+            ret = 0
+        elif vector.size == 1:
+            ret = jnp.count_nonzero(vector)
+        else:
+            if vector.ndim >2:
+                vector = vector.reshape([-1])
+            ret = jnp.linalg.matrix_rank(vector, rtol)
+        if ivy.exists(out):
+            return ivy.inplace_update(out, ret)
+        return ret
 
 
 def cross (x1: JaxArray,
            x2: JaxArray,
-           axis:int = -1) -> JaxArray:
-    return jnp.cross(a= x1, b = x2, axis= axis)
+           axis:int = -1,
+           out: Optional[JaxArray] = None)\
+        -> JaxArray:
+    ret = jnp.cross(a= x1, b = x2, axis= axis)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
 def vecdot(x1: JaxArray,
            x2: JaxArray,
-           axis: int = -1)\
+           axis: int = -1,
+           out: Optional[JaxArray] = None)\
         -> JaxArray:
-    return jnp.tensordot(x1, x2, (axis, axis))
-
+    ret = jnp.tensordot(x1, x2, (axis, axis))
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 # Extra #
 # ------#
 
-def vector_to_skew_symmetric_matrix(vector: JaxArray)\
+def vector_to_skew_symmetric_matrix(vector: JaxArray,
+                                    out: Optional[JaxArray] = None)\
         -> JaxArray:
     batch_shape = list(vector.shape[:-1])
     # BS x 3 x 1
@@ -264,5 +277,7 @@ def vector_to_skew_symmetric_matrix(vector: JaxArray)\
     row2 = jnp.concatenate((a3s, zs, -a1s), -1)
     row3 = jnp.concatenate((-a2s, a1s, zs), -1)
     # BS x 3 x 3
-    return jnp.concatenate((row1, row2, row3), -2)
-
+    ret = jnp.concatenate((row1, row2, row3), -2)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
