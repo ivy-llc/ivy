@@ -310,10 +310,11 @@ def floor_divide(x1: np.ndarray,
                 -> np.ndarray:
     if not isinstance(x2, np.ndarray):
         x2 = np.asarray(x2, dtype=x1.dtype)
-    ret = npa.floor_divide(npa.asarray(x1), npa.asarray(x2))
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
+    else:
+        dtype = np.promote_types(x1.dtype, x2.dtype)
+        x1 = x1.astype(dtype)
+        x2 = x2.astype(dtype)
+    return np.floor_divide(x1, x2, out=out)
 
 
 def sinh(x: np.ndarray,
