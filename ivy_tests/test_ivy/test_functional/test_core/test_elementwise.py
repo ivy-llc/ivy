@@ -1337,3 +1337,29 @@ def test_logaddexp(dtype, as_variable, with_out, native_array):
             # these frameworks do not support native inplace updates
             return
         assert ret.data is (out if native_array else out.data)
+
+
+# logical_and
+@pytest.mark.parametrize(
+    "with_out", [True, False])
+@pytest.mark.parametrize(
+    "native_array", [True, False])
+def test_logical_and(with_out, native_array):
+    x1 = ivy.array([0, 1, 1], dtype='bool')
+    x2 = ivy.array([0, 1, 1], dtype='bool')
+    out = ivy.array([0, 0, 0], dtype='bool')
+    if native_array:
+        x1 = x1.data
+        x2 = x2.data
+        out = out.data
+    if with_out:
+        ret = ivy.logical_and(x1, x2, out=out)
+    else:
+        ret = ivy.logical_and(x1, x2)
+    if with_out:
+        if not native_array:
+            assert ret is out
+        if ivy.current_framework_str() in ["tensorflow", "jax"]:
+            # these frameworks do not support native inplace updates
+            return
+        assert ret.data is (out if native_array else out.data)
