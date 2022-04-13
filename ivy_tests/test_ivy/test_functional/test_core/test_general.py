@@ -216,37 +216,6 @@ def test_arrays_equal(xs_n_res, dtype, dev, call):
     assert res == true_res
 
 
-# equal
-@pytest.mark.parametrize(
-    "x0_n_x1_n_x2_em_n_res", [([0.], [0.], [0.], False, True),
-                              ([0.], [1.], [0.], False, False),
-                              ([0.], [1.], [0.], True, [[True, False, True],
-                                                        [False, True, False],
-                                                        [True, False, True]]),
-                              ({'a': 0}, {'a': 0}, {'a': 1}, True, [[True, True, False],
-                                                                    [True, True, False],
-                                                                    [False, False, True]])])
-@pytest.mark.parametrize(
-    "to_array", [True, False])
-def test_equal(x0_n_x1_n_x2_em_n_res, to_array, dev, call):
-    x0, x1, x2, equality_matrix, true_res = x0_n_x1_n_x2_em_n_res
-    # smoke test
-    if isinstance(x0, list) and to_array:
-        x0 = ivy.array(x0, dev=dev)
-        x1 = ivy.array(x1, dev=dev)
-        x2 = ivy.array(x2, dev=dev)
-    res = ivy.all_equal(x0, x1, x2, equality_matrix=equality_matrix)
-    # value test
-    if equality_matrix:
-        assert np.array_equal(ivy.to_numpy(res), np.array(true_res))
-    else:
-        assert res == true_res
-    # compilation test
-    if call in [helpers.torch_call]:
-        # pytorch scripting does not support variable number of input arguments
-        return
-
-
 # to_numpy
 @pytest.mark.parametrize(
     "object_in", [[], [0.], [1], [True], [[1., 2.]]])
@@ -520,29 +489,6 @@ def test_clip_vector_norm(x_max_norm_n_p_val_clipped, dtype, with_out, tensor_fn
     if call is helpers.torch_call:
         # pytorch jit cannot compile global variables, in this case MIN_DENOMINATOR
         return
-
-
-# round
-@pytest.mark.parametrize(
-    "x_n_x_rounded", [(-0.51, -1), ([1.7], [2.]), ([[0.8, 2.2], [1.51, 0.2]], [[1., 2.], [2., 0.]])])
-@pytest.mark.parametrize(
-    "dtype", ['float32'])
-@pytest.mark.parametrize(
-    "tensor_fn", [ivy.array, helpers.var_fn])
-def test_round(x_n_x_rounded, dtype, tensor_fn, dev, call):
-    # smoke test
-    if (isinstance(x_n_x_rounded[0], Number) or isinstance(x_n_x_rounded[1], Number))\
-            and tensor_fn == helpers.var_fn and call is helpers.mx_call:
-        # mxnet does not support 0-dimensional variables
-        pytest.skip()
-    x = tensor_fn(x_n_x_rounded[0], dtype, dev)
-    ret = ivy.round(x)
-    # type test
-    assert ivy.is_native_array(ret)
-    # cardinality test
-    assert ret.shape == x.shape
-    # value test
-    assert np.array_equal(call(ivy.round, x), np.array(x_n_x_rounded[1]))
 
 
 # floormod
@@ -951,34 +897,6 @@ def test_swapaxes(x_n_ax0_n_ax1, dtype, tensor_fn, dev, call):
     # value test
     assert np.allclose(call(ivy.swapaxes, x, ax0, ax1),
                        np.asarray(ivy.functional.backends.numpy.swapaxes(ivy.to_numpy(x), ax0, ax1)))
-
-
-
-
-# expand_dims
-@pytest.mark.parametrize(
-    "x_n_axis", [(1., 0), (1., -1), ([1.], 0), ([[0., 1., 2., 3.]], -2), ([[[0., 1., 2.], [3., 4., 5.]]], -3)])
-@pytest.mark.parametrize(
-    "dtype", ['float32'])
-@pytest.mark.parametrize(
-    "tensor_fn", [ivy.array, helpers.var_fn])
-def test_expand_dims(x_n_axis, dtype, tensor_fn, dev, call):
-    # smoke test
-    x, axis = x_n_axis
-    if isinstance(x, Number) and tensor_fn == helpers.var_fn and call is helpers.mx_call:
-        # mxnet does not support 0-dimensional variables
-        pytest.skip()
-    x = tensor_fn(x, dtype, dev)
-    ret = ivy.expand_dims(x, axis)
-    # type test
-    assert ivy.is_native_array(ret)
-    # cardinality test
-    expected_shape = list(x.shape)
-    expected_shape.insert(axis, 1)
-    assert ret.shape == tuple(expected_shape)
-    # value test
-    assert np.allclose(call(ivy.expand_dims, x, axis), np.asarray(ivy.functional.backends.numpy.expand_dims(ivy.to_numpy(x), axis)))
-
 
 
 # indices_where
