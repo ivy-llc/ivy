@@ -13,17 +13,24 @@ import ivy
 # Array API Standard #
 # -------------------#
 
-def eigh(x: JaxArray)\
+def eigh(x: JaxArray,
+         out: Optional[JaxArray] = None)\
   ->JaxArray:
-         return jnp.linalg.eigh(x)
+         ret = jnp.linalg.eigh(x)
+
 
 def pinv(x: JaxArray,
-         rtol: Optional[Union[float, Tuple[float]]] = None) \
+         rtol: Optional[Union[float, Tuple[float]]] = None,
+         out: Optional[JaxArray] = None) \
         -> JaxArray:
 
     if rtol is None:
-        return jnp.linalg.pinv(x)
-    return jnp.linalg.pinv(x, rtol)
+        ret = jnp.linalg.pinv(x)
+    else:
+        ret = jnp.linalg.pinv(x, rtol)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
 def matrix_transpose(x: JaxArray)\
