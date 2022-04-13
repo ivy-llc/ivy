@@ -102,7 +102,6 @@
 <li class="toctree-l2"><a class="reference internal" href="general/get_referrers_recursive.html">get_referrers_recursive</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/is_native_array.html">is_native_array</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/is_ivy_array.html">is_ivy_array</a></li>
-<li class="toctree-l2"><a class="reference internal" href="general/is_array.html">is_array</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/copy_array.html">copy_array</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/array_equal.html">array_equal</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/arrays_equal.html">arrays_equal</a></li>
@@ -417,22 +416,18 @@ a key-value structure, and exposes public methods .keys(), .values() and items()
 
 <dl class="py function">
 <dt id="ivy.functional.ivy.general.cumprod">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">cumprod</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">axis</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">0</span></em>, <em class="sig-param"><span class="n">exclusive</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>bool<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">out</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/general.html#cumprod"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.general.cumprod" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the cumulative product of the elements along a given axis.
-Parameters
-———-
-x:</p>
-<blockquote>
-<div><p>Input array.</p>
-</div></blockquote>
-<dl class="simple">
-<dt>axis: </dt><dd><p>int , axis along which the cumulative product is computed. By default 0.</p>
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">cumprod</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">axis</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">0</span></em>, <em class="sig-param"><span class="n">exclusive</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/general.html#cumprod"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.general.cumprod" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the cumulative product of the elements along a given axis.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>array</em>) – Input array.</p></li>
+<li><p><strong>axis</strong> (<em>int</em>) – Axis along which the cumulative product is computed. By default 0.</p></li>
+<li><p><strong>exclusive</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to perform the cumprod exclusively. Defaults is False.</p></li>
+</ul>
 </dd>
-<dt>exclusive: </dt><dd><p>optional bool, Whether to perform the cumprod exclusively. Defaults is False.</p>
-</dd>
-</dl>
-<dl class="simple">
-<dt>return: </dt><dd><p>Input array with cumulatively multiplied elements along axis.</p>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Input array with cumulatively multiplied elements along axis.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -785,23 +780,6 @@ and will also be performed on the native array classes in the backend, when the 
 </dd></dl>
 
 <dl class="py function">
-<dt id="ivy.functional.ivy.general.is_array">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">is_array</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Any</span></em>, <em class="sig-param"><span class="n">exclusive</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span> &#x2192; bool<a class="reference internal" href="../../_modules/ivy/functional/ivy/general.html#is_array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.general.is_array" title="Permalink to this definition">¶</a></dt>
-<dd><p>Determines whether the input x is either an Ivy Array or a Native Array.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>any</em>) – The input to check</p></li>
-<li><p><strong>exclusive</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to check if the data type is exclusively an array, rather than a variable or traced array.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Boolean, whether or not x is an array.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
 <dt id="ivy.functional.ivy.general.is_ivy_array">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">is_ivy_array</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Any</span></em>, <em class="sig-param"><span class="n">exclusive</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span> &#x2192; bool<a class="reference internal" href="../../_modules/ivy/functional/ivy/general.html#is_ivy_array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.general.is_ivy_array" title="Permalink to this definition">¶</a></dt>
 <dd><p>Determines whether the input x is an Ivy Array.</p>
@@ -1072,42 +1050,69 @@ scatter into a zeros array.</p></li>
 <dt id="ivy.functional.ivy.general.to_list">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">to_list</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; List<a class="reference internal" href="../../_modules/ivy/functional/ivy/general.html#to_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.general.to_list" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates a (possibly nested) list from input array.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>x</strong> (<em>array</em>) – Input array.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>A list representation of the input array.</p>
+<blockquote>
+<div><dl class="simple">
+<dt>x:</dt><dd><p>Input array.</p>
 </dd>
 </dl>
+</div></blockquote>
+<dl class="simple">
+<dt>out:</dt><dd><p>A list representation of the input array <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p>
+</dd>
+</dl>
+<p>Examples:
+&gt;&gt;&gt; x = ivy.array([-1, 0, 1])
+&gt;&gt;&gt; y = ivy.to_list(x)
+&gt;&gt;&gt; print(y)
+[-1, 0, 1]
+&gt;&gt;&gt; print(isinstance(y, list))
+True</p>
 </dd></dl>
 
 <dl class="py function">
 <dt id="ivy.functional.ivy.general.to_numpy">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">to_numpy</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; numpy.ndarray<a class="reference internal" href="../../_modules/ivy/functional/ivy/general.html#to_numpy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.general.to_numpy" title="Permalink to this definition">¶</a></dt>
-<dd><p>Converts array into a numpy array.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>x</strong> (<em>array</em>) – Input array.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>A numpy array.</p>
+<dd><p>Converts an array into a numpy array.</p>
+<blockquote>
+<div><dl class="simple">
+<dt>x:</dt><dd><p>input array</p>
 </dd>
 </dl>
+</div></blockquote>
+<dl class="simple">
+<dt>out:</dt><dd><p>a numpy array copying all the element of the array <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p>
+</dd>
+</dl>
+<p>Examples:
+&gt;&gt;&gt; x = ivy.array([-1, 0, 1])
+&gt;&gt;&gt; y = ivy.to_numpy(x)
+&gt;&gt;&gt; print(y)
+array([-1, 0, 1])
+&gt;&gt;&gt; print(type(y))
+&lt;class ‘numpy.ndarray’&gt;</p>
 </dd></dl>
 
 <dl class="py function">
 <dt id="ivy.functional.ivy.general.to_scalar">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">to_scalar</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; numbers.Number<a class="reference internal" href="../../_modules/ivy/functional/ivy/general.html#to_scalar"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.general.to_scalar" title="Permalink to this definition">¶</a></dt>
 <dd><p>Converts an array with a single element into a scalar.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>x</strong> (<em>array</em>) – Input array with a single element.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>A scalar.</p>
+<blockquote>
+<div><dl class="simple">
+<dt>x:</dt><dd><p>Input array with a single element.</p>
 </dd>
 </dl>
+</div></blockquote>
+<dl class="simple">
+<dt>out:</dt><dd><p>a scalar copying the element of the array <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p>
+</dd>
+</dl>
+<p>Examples:
+&gt;&gt;&gt; x = ivy.array([-1])
+&gt;&gt;&gt; y = ivy.to_scalar(x)
+&gt;&gt;&gt; print(y)
+-1
+&gt;&gt;&gt; print(ivy.is_int_dtype(y))
+True</p>
 </dd></dl>
 
 <dl class="py function">
