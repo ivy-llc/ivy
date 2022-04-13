@@ -32,15 +32,20 @@ def pinv(x: torch.Tensor,
     return torch.linalg.pinv(x, rtol, out=out)
 
 
-def matrix_transpose(x: torch.Tensor)\
+def matrix_transpose(x: torch.Tensor,
+                     out: Optional[torch.Tensor] = None)\
         -> torch.Tensor:
-    return torch.swapaxes(x, -1, -2)
+    ret = torch.swapaxes(x, -1, -2)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
 def matrix_rank(vector: torch.Tensor,
-                rtol: Optional[Union[float, Tuple[float]]] = None) \
+                rtol: Optional[Union[float, Tuple[float]]] = None,
+                out: Optional[torch.Tensor] = None) \
         -> torch.Tensor:
-    return torch.linalg.matrix_rank(vector, rtol)
+    return torch.linalg.matrix_rank(vector, rtol, out)
 
 
 def vector_norm(x: torch.Tensor,
@@ -65,18 +70,19 @@ def matrix_norm(x: torch.Tensor,
 
 
 # noinspection PyPep8Naming
-def svd(x:torch.Tensor,full_matrices: bool = True) -> Union[torch.Tensor, Tuple[torch.Tensor,...]]:
-    results=namedtuple("svd", "U S Vh")
+def svd(x: torch.Tensor, full_matrices: bool = True) -> Union[torch.Tensor, Tuple[torch.Tensor,...]]:
+    results = namedtuple("svd", "U S Vh")
 
     U, D, VT = torch.linalg.svd(x, full_matrices=full_matrices)
-    res=results(U, D, VT)
+    res = results(U, D, VT)
     return res
 
 
 def outer(x1: torch.Tensor,
-          x2: torch.Tensor)\
+          x2: torch.Tensor,
+          out: Optional[torch.Tensor] = None)\
         -> torch.Tensor:
-    return torch.outer(x1, x2)
+    return torch.outer(x1, x2, out=out)
 
 
 def diagonal(x: torch.Tensor,
