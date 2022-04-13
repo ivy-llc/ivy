@@ -82,11 +82,13 @@ def max(x: Tensor,
 def var(x: Tensor,
         axis: Optional[Union[int, Tuple[int]]] = None,
         correction: Union[int, float] = 0.0,
-        keepdims: bool = False) \
+        keepdims: bool = False, 
+        out: Optional[Tensor]=None) \
         -> Tensor:
-    m = tf.reduce_mean(x, axis=axis, keepdims=True)
-    return tf.reduce_mean(tf.square(x - m), axis=axis, keepdims=keepdims)
-
+        if ivy.exists(out):
+            return ivy.inplace_update(out, tf.math.reduce_variance(x, axis = axis, keepdims = keepdims))
+        else:
+            return tf.math.reduce_variance(x, axis = axis, keepdims = keepdims)
 
 def std(x: Tensor,
         axis: Optional[Union[int, Tuple[int]]] = None,
