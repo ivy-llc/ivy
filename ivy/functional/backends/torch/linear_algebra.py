@@ -170,23 +170,33 @@ def tensordot(x1: torch.Tensor, x2: torch.Tensor,
 
 
 def trace(x: torch.Tensor,
-          offset: int = 0)\
+          offset: int = 0,
+          out: Optional[torch.Tensor] = None)\
               -> torch.Tensor:
-    return torch.trace(x, offset)
+    ret = torch.trace(x, offset=offset)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
-def det(A:torch.Tensor) \
+def det(A:torch.Tensor,
+        out: Optional[torch.Tensor] = None) \
     -> torch.Tensor:
-    return torch.linalg.det(A)
+    return torch.linalg.det(A, out=out)
 
 
 def cholesky(x: torch.Tensor,
-            upper: bool = False) -> torch.Tensor:
+            upper: bool = False,
+             out: Optional[torch.Tensor] = None)\
+        -> torch.Tensor:
     if not upper:
-        return torch.linalg.cholesky(x)
+        ret = torch.linalg.cholesky(x)
     else:
-        return torch.transpose(torch.linalg.cholesky(torch.transpose(x, dim0=len(x.shape) - 1,dim1=len(x.shape) - 2)),
+        ret = torch.transpose(torch.linalg.cholesky(torch.transpose(x, dim0=len(x.shape) - 1,dim1=len(x.shape) - 2)),
                                dim0=len(x.shape) - 1, dim1=len(x.shape) - 2)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
 def eigvalsh(x: torch.Tensor) -> torch.Tensor:
