@@ -4,15 +4,20 @@ import tensorflow as tf
 from tensorflow.python.types.core import Tensor
 from typing import Tuple, Union, Optional
 
+#local
+import ivy
 
 # Array API Standard #
 # -------------------#
 
 def min(x: Tensor,
         axis: Union[int, Tuple[int]] = None,
-        keepdims: bool = False) \
+        keepdims: bool = False, out: Optional[Tensor]=None) \
         -> Tensor:
-    return tf.math.reduce_min(x, axis = axis, keepdims = keepdims)
+        if ivy.exists(out):
+            return ivy.inplace_update(out, tf.math.reduce_min(x, axis, keepdims))
+        else:
+            return tf.math.reduce_min(x, axis = axis, keepdims = keepdims)
 
 
 def sum(x: Tensor,

@@ -12,18 +12,34 @@ from ivy.framework_handler import current_framework as _cur_framework
 # noinspection PyShadowingBuiltins
 def min(x: Union[ivy.Array, ivy.NativeArray],
         axis: Union[int, Tuple[int]] = None,
-        keepdims: bool = False) \
+        keepdims: bool = False, out: Optional[Union[ivy.Array, ivy.NativeArray]] = None)\
         -> ivy.Array:
     """
     Return the minimum value of the input array x.
-
-    :param x: Input array containing elements to min.
-    :param axis: Axis or axes along which minimum values must be computed, default is None.
-    :param keepdims, optional axis or axes along which minimum values must be computed, default is None.
-    :param f: Machine learning framework. Inferred from inputs if None.
-    :return: array containing minimum value.
+    
+    Parameters
+    ----------
+    x:
+        Input array containing elements to min.
+    axis:
+         axis or axes along which minimum values must be computed.
+         By default, the minimum value must be computed over the entire array.
+         If a tuple of integers, minimum values must be computed over multiple axes. Default: None.
+    keepdims:
+        optional boolean, if True, the reduced axes (dimensions) must be included in the result as 
+        singleton dimensions, and, accordingly, the result must be compatible with
+        the input array (see Broadcasting). 
+        Otherwise, if False, the reduced axes (dimensions) must not be included in the result. 
+        Default: False.
+    out: 
+        optional output array, for writing the result to.
+    
+    Returns
+    ----------
+    return: 
+        array containing minimum value.
     """
-    return _cur_framework.min(x, axis, keepdims)
+    return _cur_framework.min(x, axis, keepdims, out)
 
 
 # noinspection PyShadowingBuiltins
