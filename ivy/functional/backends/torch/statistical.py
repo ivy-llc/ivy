@@ -100,11 +100,22 @@ def mean(x: torch.Tensor,
 # noinspection PyShadowingBuiltins
 def max(x: torch.Tensor,
         axis: Union[int, Tuple[int]] = None,
-        keepdims: bool = False) \
+        keepdims: bool = False, out: Optional[torch.Tensor]=None)\
         -> torch.Tensor:
-    if axis == (): return x
-    if not keepdims and not axis and axis !=0: return torch.amax(input = x)
-    return torch.amax(input = x, dim = axis, keepdim = keepdims)
+    if axis == ():
+        if ivy.exists(out):
+            ivy.inplace_update(out, x)
+        else:
+            return x
+    if not keepdims and not axis and axis != 0:
+        if ivy.exists(out):
+            return ivy.inplace_update(out, torch.amax(input=x))
+        else:
+            return torch.amax(input = x)
+    if ivy.exists(out):
+        ivy.inplace_update(out, torch.amax(input=x, dim=axis, keepdim=keepdims))
+    else:
+        return torch.amax(input = x, dim = axis, keepdim = keepdims)
 
 
 def var(x: torch.Tensor,

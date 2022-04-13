@@ -70,9 +70,13 @@ def mean(x: Tensor,
 
 def max(x: Tensor,
         axis: Union[int, Tuple[int]] = None,
-        keepdims: bool = False) \
+        keepdims: bool = False,
+        out:Optional[Tensor]=None) \
         -> Tensor:
-    return tf.math.reduce_max(x, axis = axis, keepdims = keepdims)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, tf.math.reduce_max(x, axis = axis, keepdims = keepdims))
+    else:
+        return tf.math.reduce_max(x, axis = axis, keepdims = keepdims)
 
   
 def var(x: Tensor,

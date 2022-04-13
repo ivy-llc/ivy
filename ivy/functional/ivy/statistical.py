@@ -15,8 +15,20 @@ def min(x: Union[ivy.Array, ivy.NativeArray],
         keepdims: bool = False, out: Optional[Union[ivy.Array, ivy.NativeArray]] = None)\
         -> ivy.Array:
     """
-    Return the minimum value of the input array x.
+    Calculates the minimum value of the input array x.
     
+    .. note::
+    When the number of elements over which to compute the minimum value is zero, 
+    the minimum value is implementation-defined. Specification-compliant libraries may choose to raise 
+    an error, return a sentinel value (e.g., if x is a floating-point input array, return NaN), or return 
+    the maximum possible value for the input array x data type (e.g., if x is a floating-point array, 
+    return +infinity).
+
+    **Special Cases**
+    For floating-point operands,
+
+    If x_i is NaN, the minimum value is NaN (i.e., NaN values propagate).    
+  
     Parameters
     ----------
     x:
@@ -37,7 +49,9 @@ def min(x: Union[ivy.Array, ivy.NativeArray],
     Returns
     ----------
     return: 
-        array containing minimum value.
+        if the minimum value was computed over the entire array, a zero-dimensional array containing the 
+        minimum value; otherwise, a non-zero-dimensional array containing the minimum values. 
+        The returned array must have the same data type as x.
     """
     return _cur_framework.min(x, axis, keepdims, out)
 
@@ -45,12 +59,18 @@ def min(x: Union[ivy.Array, ivy.NativeArray],
 # noinspection PyShadowingBuiltins
 def max(x: Union[ivy.Array, ivy.NativeArray],
         axis: Union[int, Tuple[int]] = None,
-        keepdims: bool = False) \
+        keepdims: bool = False,
+        out: Optional[Union[ivy.Array, ivy.NativeArray]] = None) \
         -> ivy.Array:
     """
     Calculates the maximum value of the input array ``x``.
     .. note::
-       When the number of elements over which to compute the maximum value is zero, the maximum value is implementation-defined. Specification-compliant libraries may choose to raise an error, return a sentinel value (e.g., if ``x`` is a floating-point input array, return ``NaN``), or return the minimum possible value for the input array ``x`` data type (e.g., if ``x`` is a floating-point array, return ``-infinity``).
+       When the number of elements over which to compute the maximum value is zero, 
+       the maximum value is implementation-defined. Specification-compliant libraries may choose to raise 
+       an error, return a sentinel value (e.g., if ``x`` is a floating-point input array, return ``NaN``), 
+       or return the minimum possible value for the input array ``x`` data type (e.g., if ``x`` is a 
+       floating-point array, return ``-infinity``).
+
     **Special Cases**
     For floating-point operands,
     -   If ``x_i`` is ``NaN``, the maximum value is ``NaN`` (i.e., ``NaN`` values propagate).
@@ -62,14 +82,20 @@ def max(x: Union[ivy.Array, ivy.NativeArray],
     axis: 
         axis or axes along which maximum values must be computed. By default, the maximum value must be computed over the entire array. If a tuple of integers, maximum values must be computed over multiple axes. Default: ``None``.
     keepdims:
-        if ``True``, the reduced axes (dimensions) must be included in the result as singleton dimensions, and, accordingly, the result must be compatible with the input array (see :ref:`broadcasting`). Otherwise, if ``False``, the reduced axes (dimensions) must not be included in the result. Default: ``False``.
-    
+        if ``True``, the reduced axes (dimensions) must be included in the result as singleton dimensions, 
+        and, accordingly, the result must be compatible with the input array (see :ref:`broadcasting`). 
+        Otherwise, if ``False``, the reduced axes (dimensions) must not be included in the result. 
+        Default: ``False``.
+    out: 
+        optional output array, for writing the result to.
     Returns
     -------
-    out: 
-        if the maximum value was computed over the entire array, a zero-dimensional array containing the maximum value; otherwise, a non-zero-dimensional array containing the maximum values. The returned array must have the same data type as ``x``.
+    return: 
+        if the maximum value was computed over the entire array, a zero-dimensional array containing the 
+        maximum value; otherwise, a non-zero-dimensional array containing the maximum values. 
+        The returned array must have the same data type as ``x``.
     """
-    return _cur_framework.max(x, axis, keepdims)
+    return _cur_framework.max(x, axis, keepdims,out=out)
 
 
 
