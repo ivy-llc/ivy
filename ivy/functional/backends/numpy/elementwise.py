@@ -157,9 +157,10 @@ def sqrt(x: np.ndarray,
     return np.sqrt(x, out=out)
 
 
-def isfinite(x: np.ndarray) \
+def isfinite(x: np.ndarray,
+             out: Optional[np.ndarray] = None) \
         -> np.ndarray:
-    return np.asarray(npa.isfinite(npa.asarray(x)))
+    return np.isfinite(x, out=out)
 
 
 def asin(x: np.ndarray,
@@ -168,9 +169,10 @@ def asin(x: np.ndarray,
     return np.arcsin(x, out=out)
 
 
-def isinf(x: np.ndarray)\
+def isinf(x: np.ndarray,
+          out: Optional[np.ndarray] = None)\
         -> np.ndarray:
-    return np.asarray(npa.isinf(npa.asarray(x)))
+    return np.isinf(x, out=out)
 
 
 def asinh(x: np.ndarray,
@@ -209,9 +211,10 @@ def log1p(x: np.ndarray,
     return np.log1p(x, out=out)
 
 
-def isnan(x: np.ndarray)\
+def isnan(x: np.ndarray,
+          out: Optional[np.ndarray] = None)\
         -> np.ndarray:
-    return np.isnan(x)
+    return np.isnan(x, out=out)
 
 
 def less(x1: np.ndarray,
