@@ -155,31 +155,47 @@ def slogdet(x:Union[ivy.Array,ivy.NativeArray],
         return ivy.inplace_update(out, ret)
     return ret
 
+
 def tensordot(x1: JaxArray, x2: JaxArray,
-              axes: Union[int, Tuple[List[int], List[int]]] = 2) \
+              axes: Union[int, Tuple[List[int], List[int]]] = 2,
+              out: Optional[JaxArray] = None) \
         -> JaxArray:
 
-    return jnp.tensordot(x1, x2, axes)
+    ret = jnp.tensordot(x1, x2, axes)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
 def trace(x: JaxArray,
-          offset: int = 0)\
+          offset: int = 0,
+          out: Optional[JaxArray] = None)\
               -> JaxArray:
-    return jax.numpy.trace(x, offset)
+    return jax.numpy.trace(x, offset, out=out)
 
 
-def det(x:jnp.array) \
+def det(x:jnp.array,
+        out: Optional[JaxArray] = None) \
     -> jnp.array:
-    return jnp.linalg.det(x)
+    ret = jnp.linalg.det(x)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
+
 
 def cholesky(x: JaxArray, 
-             upper: bool = False) -> JaxArray:
+             upper: bool = False,
+             out: Optional[JaxArray] = None) -> JaxArray:
     if not upper:
-        return jnp.linalg.cholesky(x)
+        ret = jnp.linalg.cholesky(x)
     else:
         axes = list(range(len(x.shape) - 2)) + [len(x.shape) - 1, len(x.shape) - 2]
-        return jnp.transpose(jnp.linalg.cholesky(jnp.transpose(x, axes=axes)),
+        ret = jnp.transpose(jnp.linalg.cholesky(jnp.transpose(x, axes=axes)),
                         axes=axes)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
+
 
 
 def eigvalsh(x: JaxArray) -> JaxArray:
