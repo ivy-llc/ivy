@@ -80,27 +80,46 @@ def diagonal(x: JaxArray,
     return jnp.diagonal(x, offset, axis1, axis2)
 
 
-def svdvals(x: JaxArray) -> JaxArray:
-    return jnp.linalg.svd(x, compute_uv=False)
+def svdvals(x: JaxArray,
+            out: Optional[JaxArray] = None)\
+        -> JaxArray:
+    ret = jnp.linalg.svd(x, compute_uv=False)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
 def qr(x: JaxArray,
-       mode: str = 'reduced') -> namedtuple('qr', ['Q', 'R']):
+       mode: str = 'reduced',
+       out: Optional[JaxArray] = None) \
+        -> namedtuple('qr', ['Q', 'R']):
     res = namedtuple('qr', ['Q', 'R'])
     q, r = jnp.linalg.qr(x, mode=mode)
-    return res(q, r)
+    ret = res(q, r)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
 def matmul(x1: JaxArray,
-           x2: JaxArray) -> JaxArray:
-    return jnp.matmul(x1, x2)
+           x2: JaxArray,
+           out: Optional[JaxArray] = None)\
+        -> JaxArray:
+    ret = jnp.matmul(x1, x2)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
-def slogdet(x:Union[ivy.Array,ivy.NativeArray],full_matrices: bool = True) -> Union[ivy.Array, Tuple[ivy.Array,...]]:
+def slogdet(x:Union[ivy.Array,ivy.NativeArray],
+            out: Optional[JaxArray] = None)\
+        -> Union[ivy.Array, Tuple[ivy.Array,...]]:
     results = namedtuple("slogdet", "sign logabsdet")
     sign, logabsdet = jnp.linalg.slogdet(x)
-    res = results(sign, logabsdet)
-    return res
+    ret = results(sign, logabsdet)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 def tensordot(x1: JaxArray, x2: JaxArray,
               axes: Union[int, Tuple[List[int], List[int]]] = 2) \
