@@ -143,9 +143,11 @@ def test_add(dtype, as_variable, with_out, native_array):
         if with_out:
             pytest.skip("variables do not support out argument")
         x = ivy.variable(x)
+        y = ivy.variable(y)
         out = ivy.variable(out)
     if native_array:
         x = x.data
+        y = y.data
         out = out.data
     if with_out:
         ret = ivy.add(x, y, out=out)
@@ -269,3 +271,45 @@ def test_atan(dtype, as_variable, with_out, native_array):
             # these frameworks do not support native inplace updates
             return
         assert ret.data is (out if native_array else out.data)
+
+
+# atan2
+@pytest.mark.parametrize(
+    "dtype", ivy.float_strs)
+@pytest.mark.parametrize(
+    "as_variable", [True, False])
+@pytest.mark.parametrize(
+    "with_out", [True, False])
+@pytest.mark.parametrize(
+    "native_array", [True, False])
+def test_atan2(dtype, as_variable, with_out, native_array):
+    if ivy.current_framework_str() == 'torch' and dtype in ['float16', 'bfloat16']:
+        pytest.skip("torch atan2 doesnt allow float16 or bfloat16")
+    if dtype in ivy.invalid_dtype_strs:
+        pytest.skip("invalid dtype")
+    x1 = ivy.array([2, 3, 4], dtype=dtype)
+    x2 = ivy.array([2, 3, 4], dtype=dtype)
+    out = ivy.array([2, 3, 4], dtype=dtype)
+    if as_variable:
+        if with_out:
+            pytest.skip("variables do not support out argument")
+        x1 = ivy.variable(x1)
+        x2 = ivy.variable(x2)
+        out = ivy.variable(out)
+    if native_array:
+        x1 = x1.data
+        x2 = x2.data
+        out = out.data
+    if with_out:
+        ret = ivy.atan2(x1, x2, out=out)
+    else:
+        ret = ivy.atan2(x1, x2)
+    if with_out:
+        if not native_array:
+            assert ret is out
+        if ivy.current_framework_str() in ["tensorflow", "jax"]:
+            # these frameworks do not support native inplace updates
+            return
+        assert ret.data is (out if native_array else out.data)
+
+
