@@ -46,12 +46,23 @@ def _to_array(x):
 
 copy_array = jnp.array
 array_equal = jnp.array_equal
-to_numpy = lambda x: np.asarray(_to_array(x))
-to_numpy.__name__ = 'to_numpy'
-to_scalar = lambda x: x if isinstance(x, Number) else _to_array(x).item()
-to_scalar.__name__ = 'to_scalar'
-to_list = lambda x: _to_array(x).tolist()
-to_list.__name__ = 'to_list'
+
+
+def to_numpy(x: JaxArray) \
+        -> np.ndarray:
+    return np.asarray(_to_array(x))
+
+
+def to_scalar(x: JaxArray) \
+        -> Number:
+    if isinstance(x, Number):
+        return x
+    else:
+        return _to_array(x).item()
+
+def to_list(x: JaxArray) \
+        -> list:
+    return _to_array(x).tolist()
 shape = lambda x, as_tensor=False: jnp.asarray(jnp.shape(x)) if as_tensor else x.shape
 shape.__name__ = 'shape'
 get_num_dims = lambda x, as_tensor=False: jnp.asarray(len(jnp.shape(x))) if as_tensor else len(x.shape)
