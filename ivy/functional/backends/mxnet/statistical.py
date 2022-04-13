@@ -38,7 +38,10 @@ def prod(x, axis=None, keepdims=False):
     return _handle_output(x, axis, keepdims, ret)
 
 
-def mean(x, axis=None, keepdims=False):
+def mean(x: mx.ndarray.ndarray.NDArray,
+         axis: Optional[Union[int, Tuple[int, ...]]] = None,
+         keepdims: bool = False,
+         out: Optional[mx.ndarray.ndarray.NDArray] = None):
     if axis is None:
         num_dims = len(x.shape)
         axis = tuple(range(num_dims))
@@ -49,7 +52,10 @@ def mean(x, axis=None, keepdims=False):
     if x.shape == ():
         x = _flat_array_to_1_dim_array(x)
     ret = mx.nd.mean(x, axis=axis, keepdims=keepdims)
-    return _handle_output(x, axis, keepdims, ret)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, _handle_output(x, axis, keepdims, ret))
+    else:
+        return _handle_output(x, axis, keepdims, ret)
 
 
 def var(x:mx.ndarray.ndarray, axis: Union[int, Tuple[int,...]] = None,
