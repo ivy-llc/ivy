@@ -52,7 +52,9 @@ def mean(x, axis=None, keepdims=False):
     return _handle_output(x, axis, keepdims, ret)
 
 
-def var(x, axis=None, keepdims=False):
+def var(x:mx.ndarray.ndarray, axis: Union[int, Tuple[int,...]] = None,
+    keepdims: bool =False, out: Optional[mx.ndarray.ndarray.NDArray] = None)\
+        -> mx.ndarray.ndarray.NDArray:
     mean_of_x_sqrd = mean(x ** 2, axis, keepdims)
     mean_of_x = mean(x, axis, keepdims)
     is_flat = mean_of_x.shape == ()
@@ -61,8 +63,14 @@ def var(x, axis=None, keepdims=False):
         mean_of_x = _flat_array_to_1_dim_array(mean_of_x)
     ret = mean_of_x_sqrd - mean_of_x ** 2
     if is_flat:
-        return _1_dim_array_to_flat_array(ret)
-    return ret
+        if ivy.exists(out):
+            return ivy.inplace_update(out, _1_dim_array_to_flat_array(ret))
+        else:
+            return _1_dim_array_to_flat_array(ret)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret) 
+    else:
+        return ret
 
 
 def std(x, axis=None, keepdims=False):

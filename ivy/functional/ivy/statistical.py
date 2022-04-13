@@ -88,6 +88,7 @@ def max(x: Union[ivy.Array, ivy.NativeArray],
         Default: ``False``.
     out: 
         optional output array, for writing the result to.
+
     Returns
     -------
     return: 
@@ -102,17 +103,54 @@ def max(x: Union[ivy.Array, ivy.NativeArray],
 def var(x: Union[ivy.Array, ivy.NativeArray],
         axis: Optional[Union[int, Tuple[int]]] = None,
         correction: Union[int, float] = 0.0,
-        keepdims: bool = False) \
+        keepdims: bool = False , 
+        out: Optional[Union[ivy.Array, ivy.NativeArray]] = None) \
         -> ivy.Array:
     """
     Calculates the variance of the input array x.
-    :param x: input array
-    :param axis: axis or axes along which variances must be computed. By default, the variance must be computed over the entire array
-    :param correction: degrees of freedom adjustment
-    :param keepdims: Default: False
-    :return: The returned array must have the same data type as x.
+
+    Special Cases
+    Let N equal the number of elements over which to compute the variance.
+
+    If N - correction is less than or equal to 0, the variance is NaN.
+
+    If x_i is NaN, the variance is NaN (i.e., NaN values propagate).
+
+    Parameters
+    ----------
+    x:
+        input array. Should have a floating-point data type.
+    axis: 
+        axis or axes along which variances must be computed. By default, the variance must be computed over 
+        the entire array. If a tuple of integers, variances must be computed over multiple axes. 
+        Default: None.
+    correction: 
+        degrees of freedom adjustment. Setting this parameter to a value other than 0 has 
+        the effect of adjusting the divisor during the calculation of the variance according to N-c where N 
+        corresponds to the total number of elements over which the variance is computed and c corresponds to 
+        the provided degrees of freedom adjustment. When computing the variance of a population, setting this 
+        parameter to 0 is the standard choice (i.e., the provided array contains data constituting an entire 
+        population). When computing the unbiased sample variance, setting this parameter to 1 is the standard 
+        choice (i.e., the provided array contains data sampled from a larger population; this is commonly 
+        referred to as Bessel's correction). Default: 0.
+
+    keepdims: 
+        if True, the reduced axes (dimensions) must be included in the result as singleton dimensions, 
+        and, accordingly, the result must be compatible with the input array (see Broadcasting). 
+        Otherwise, if False, the reduced axes (dimensions) must not be included in the result. 
+        Default: False.
+
+    out: 
+        optional output array, for writing the result to.
+
+    Returns
+    ----------
+    return: 
+        if the variance was computed over the entire array, a zero-dimensional array containing the 
+        variance; otherwise, a non-zero-dimensional array containing the variances. The returned array 
+        must have the same data type as x.
     """
-    return _cur_framework(x).var(x, axis, correction, keepdims)
+    return _cur_framework(x).var(x, axis, correction, keepdims,out=out)
 
 
 def mean(x: Union[ivy.Array, ivy.NativeArray],
