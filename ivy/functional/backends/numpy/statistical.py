@@ -79,14 +79,18 @@ def prod(x: np.ndarray,
 
 def mean(x: np.ndarray,
          axis: Optional[Union[int, Tuple[int, ...]]] = None,
-         keepdims: bool = False)\
+         keepdims: bool = False,
+         out: Optional[np.ndarray] = None)\
         -> np.ndarray:
     if axis is None:
         num_dims = len(x.shape)
         axis = tuple(range(num_dims))
     elif isinstance(axis, list):
         axis = tuple(axis)
-    return np.mean(x, axis=axis, keepdims=keepdims)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, np.mean(x, axis=axis, keepdims=keepdims))
+    else:
+        return np.mean(x, axis=axis, keepdims=keepdims)
 
 
 def std(x: np.ndarray,
