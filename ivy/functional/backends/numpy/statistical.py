@@ -31,9 +31,13 @@ def max(x: np.ndarray,
 def var(x: np.ndarray,
         axis: Optional[Union[int, Tuple[int]]] = None,
         correction: Union[int, float] = 0.0,
-        keepdims: bool = False) \
+        keepdims: bool = False, 
+        out: Optional[np.ndarray] = None) \
         -> np.ndarray:
-    return np.var(x, axis=axis, keepdims=keepdims)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, np.var(x, axis=axis, keepdims=keepdims))
+    else:
+        return np.var(x, axis=axis, keepdims=keepdims)
 
 
 def sum(x: np.ndarray,
