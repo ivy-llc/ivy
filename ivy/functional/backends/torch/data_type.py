@@ -1,6 +1,6 @@
 # global
 import torch
-from typing import Union, Tuple
+from typing import Union, Tuple, List
 
 # local
 import ivy
@@ -82,6 +82,9 @@ def result_type(*arrays_and_dtypes: Union[torch.tensor, torch.dtype]) -> torch.d
   
 def broadcast_to(x: torch.Tensor, shape: Tuple[int,...]) -> torch.Tensor:
     return torch.broadcast_to(x,shape)
+
+def broadcast_arrays(*arrays: torch.Tensor) -> List[torch.Tensor]:
+    return torch.broadcast_tensors(*arrays)
 
 
 def astype(x: torch.Tensor, dtype: torch.dtype, copy: bool = True)\

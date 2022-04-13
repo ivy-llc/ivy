@@ -1,7 +1,7 @@
 # global
 import numpy as np
 import tensorflow as tf
-from typing import Union, Tuple
+from typing import Union, Tuple, List
 from tensorflow.python.types.core import Tensor
 from tensorflow.python.framework.dtypes import DType
 
@@ -113,6 +113,22 @@ def result_type(*arrays_and_dtypes: Union[Tensor, tf.DType]) -> tf.DType:
 
 def broadcast_to (x: Tensor, shape: Tuple[int, ...])-> Tensor:
     return tf.broadcast_to(x, shape)
+
+def broadcast_arrays(*arrays: Tensor)\
+    -> List[Tensor]:
+    if len(arrays) > 1:
+        desired_shape = tf.broadcast_dynamic_shape(arrays[0].shape, arrays[1].shape)
+        if len(arrays) > 2:
+            for i in range(2, len(arrays)):
+                desired_shape = tf.broadcast_dynamic_shape(desired_shape, arrays[i].shape)
+    else:
+        return [arrays[0]]
+    result = []
+    for tensor in arrays:
+        result.append(tf.broadcast_to(tensor, desired_shape))
+
+    return result
+
 
      
 def astype(x: Tensor, dtype: tf.DType, copy: bool = True)\
