@@ -235,7 +235,7 @@ def cosh(x: Tensor,
 def log10(x: Tensor,
           out: Optional[Tensor] = None) \
         -> Tensor:
-    ret = tf.experimental.numpy.log10(x)
+    ret = tf.math.log(x) / tf.math.log(tf.constant(10., x.dtype))
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
     return ret
