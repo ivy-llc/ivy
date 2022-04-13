@@ -9,7 +9,6 @@ from ivy import inf
 import ivy
 
 
-
 # Array API Standard #
 # -------------------#
 
@@ -163,6 +162,7 @@ def svd(x:Tensor,
         return ivy.inplace_update(out, ret)
     return ret
 
+
 def outer(x1: Tensor,
           x2: Tensor,
           out: Optional[Tensor] = None) \
@@ -203,7 +203,8 @@ def qr(x: tf.Tensor,
 
 
 def matmul(x1: tf.Tensor,
-           x2: tf.Tensor)\
+           x2: tf.Tensor,
+           out: Optional[Tensor] = None)\
         -> tf.Tensor:
     dtype_from = tf.experimental.numpy.promote_types(x1.dtype.as_numpy_dtype, x2.dtype.as_numpy_dtype)
     dtype_from = tf.as_dtype(dtype_from)
@@ -222,6 +223,10 @@ def matmul(x1: tf.Tensor,
             or (len(x1.shape) >= 2 and len(x2.shape) >= 2 and x1.shape[-1] != x2.shape[-2])):
         raise Exception('Error,shapes not compatible')
 
+    x1_padded = False
+    x1_padded_2 = False
+    x2_padded = False
+
     if len(x1.shape) == len(x2.shape) == 1:
         if x1.shape == 0:
             ret = tf.constant(0)
@@ -229,33 +234,31 @@ def matmul(x1: tf.Tensor,
 
             ret = tf.math.multiply(x1, x2)[0]
         ret = tf.cast(ret, dtype=dtype_from)
-        return ret
+        #return ret
 
-    x1_padded = False
-    x1_padded_2 = False
-    x2_padded = False
+    else:
+        if len(x1.shape) == 1:
+            if len(x2.shape) == 2:
+                x1_padded_2 = True
+            elif len(x2.shape) > 2:
+                x1_padded = True
+            x1 = tf.expand_dims(x1, axis=0)
 
-    if len(x1.shape) == 1:
-        if len(x2.shape) == 2:
-            x1_padded_2 = True
-        elif len(x2.shape) > 2:
-            x1_padded = True
-        x1 = tf.expand_dims(x1, axis=0)
+        elif len(x2.shape) == 1 and len(x1.shape) >= 2:
+            x2 = tf.expand_dims(x2, axis=1)
+            x2_padded = True
 
-    elif len(x2.shape) == 1 and len(x1.shape) >= 2:
-        x2 = tf.expand_dims(x2, axis=1)
-        x2_padded = True
-
-    ret = tf.matmul(x1, x2)
+        ret = tf.matmul(x1, x2)
 
     ret = tf.cast(ret, dtype=dtype_from)
     if x1_padded_2:
-        return ret[0]
+        ret = ret[0]
     elif x1_padded:
-        return tf.squeeze(ret, axis=-2)
+        ret = tf.squeeze(ret, axis=-2)
     elif x2_padded:
-        return tf.squeeze(ret, axis=-1)
-
+        ret = tf.squeeze(ret, axis=-1)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
     return ret
 
 
@@ -325,24 +328,29 @@ def eigvalsh(x: Tensor,
 
 
 def matrix_rank(vector: Tensor,
-                rtol: Optional[Union[float, Tuple[float]]] = None)\
+                rtol: Optional[Union[float, Tuple[float]]] = None,
+                out: Optional[Tensor] = None)\
         -> Tensor:
     if rtol is None:
-        return tf.linalg.matrix_rank(vector)
-    if tf.size(vector) == 0:
-        return 0
-    if tf.size(vector) == 1:
-        return tf.math.count_nonzero(vector)
-    vector = tf.reshape(vector,[-1])
-    vector = tf.expand_dims(vector,0)
-    if hasattr(rtol,'dtype'):
-        if rtol.dtype != vector.dtype:
-            promoted_dtype = tf.experimental.numpy.promote_types(rtol.dtype,vector.dtype)
-            vector = tf.cast(vector,promoted_dtype)
-            rtol = tf.cast(rtol,promoted_dtype)
-    return tf.linalg.matrix_rank(vector,rtol)
+        ret = tf.linalg.matrix_rank(vector)
+    elif tf.size(vector) == 0:
+        ret = 0
+    elif tf.size(vector) == 1:
+        ret = tf.math.count_nonzero(vector)
+    else:
+        vector = tf.reshape(vector,[-1])
+        vector = tf.expand_dims(vector,0)
+        if hasattr(rtol,'dtype'):
+            if rtol.dtype != vector.dtype:
+                promoted_dtype = tf.experimental.numpy.promote_types(rtol.dtype,vector.dtype)
+                vector = tf.cast(vector,promoted_dtype)
+                rtol = tf.cast(rtol,promoted_dtype)
+        ret = tf.linalg.matrix_rank(vector,rtol)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
-    
+
 def cross (x1: tf.Tensor,
            x2: tf.Tensor,
            axis:int = -1,
