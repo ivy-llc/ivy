@@ -85,7 +85,7 @@ def matrix_norm(x: np.ndarray,
     return ret
   
   
-  def matrix_power(x: np.ndarray, n: int)\
+def matrix_power(x: np.ndarray, n: int)\
         -> np.ndarray:
     return np.linalg.matrix_power(x, n)
 
