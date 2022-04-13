@@ -81,6 +81,20 @@ def is_ivy_array(x: Any, exclusive: bool = False)\
     return isinstance(x, ivy.Array) and ivy.is_native_array(x.data, exclusive)
 
 
+def is_array(x: Any, exclusive: bool = False)\
+        -> bool:
+    """
+    Determines whether the input x is either an Ivy Array or a Native Array.
+
+    :param x: The input to check
+    :type x: any
+    :param exclusive: Whether to check if the data type is exclusively an array, rather than a variable or traced array.
+    :type exclusive: bool, optional
+    :return: Boolean, whether or not x is an array.
+    """
+    return ivy.is_ivy_array(x, exclusive) or ivy.is_native_array(x, exclusive)
+
+
 # noinspection PyShadowingNames
 def copy_array(x: Union[ivy.Array, ivy.NativeArray])\
         -> Union[ivy.Array, ivy.NativeArray]:
