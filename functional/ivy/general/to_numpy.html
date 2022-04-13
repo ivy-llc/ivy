@@ -273,15 +273,24 @@
 <dl class="py function">
 <dt id="ivy.functional.ivy.general.to_numpy">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">to_numpy</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; numpy.ndarray<a class="reference internal" href="../../../_modules/ivy/functional/ivy/general.html#to_numpy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.general.to_numpy" title="Permalink to this definition">¶</a></dt>
-<dd><p>Converts array into a numpy array.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>x</strong> (<em>array</em>) – Input array.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>A numpy array.</p>
+<dd><p>Converts an array into a numpy array.</p>
+<blockquote>
+<div><dl class="simple">
+<dt>x:</dt><dd><p>input array</p>
 </dd>
 </dl>
+</div></blockquote>
+<dl class="simple">
+<dt>out:</dt><dd><p>a numpy array copying all the element of the array <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p>
+</dd>
+</dl>
+<p>Examples:
+&gt;&gt;&gt; x = ivy.array([-1, 0, 1])
+&gt;&gt;&gt; y = ivy.to_numpy(x)
+&gt;&gt;&gt; print(y)
+array([-1, 0, 1])
+&gt;&gt;&gt; print(type(y))
+&lt;class ‘numpy.ndarray’&gt;</p>
 </dd></dl>
 
 <div class="line-block">
