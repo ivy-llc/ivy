@@ -7,6 +7,7 @@ import pytest
 
 # local
 import ivy
+import ivy_tests.test_ivy.helpers as helpers
 
 
 # abs
@@ -538,6 +539,9 @@ def test_bitwise_xor(dtype, with_out, native_array):
 @pytest.mark.parametrize(
     "native_array", [True, False])
 def test_ceil(dtype, as_variable, with_out, native_array):
+    # docstring test
+    helpers.assert_docstring_examples_run(ivy.ceil)
+    # rest tests out argument
     if ivy.current_framework_str() == 'torch' and dtype == 'float16':
         pytest.skip("torch ceil doesnt allow float16")
     if dtype in ivy.invalid_dtype_strs:

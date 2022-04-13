@@ -582,36 +582,6 @@ def test_floormod(x_n_divisor_n_x_floormod, dtype, with_out, tensor_fn, dev, cal
     assert np.allclose(call(ivy.floormod, x, divisor), np.array(x_n_divisor_n_x_floormod[2]))
 
 
-
-
-# ceil
-@pytest.mark.parametrize(
-    "x_n_x_ceiled", [(2.5, 3.), ([10.7], [11.]), ([[3.8, 2.2], [1.7, 0.2]], [[4., 3.], [2., 1.]])])
-@pytest.mark.parametrize(
-    "dtype", ['float32'])
-@pytest.mark.parametrize(
-    "tensor_fn", [ivy.array, helpers.var_fn])
-def test_ceil(x_n_x_ceiled, dtype, tensor_fn, dev, call):
-    # smoke test
-    if (isinstance(x_n_x_ceiled[0], Number) or isinstance(x_n_x_ceiled[1], Number))\
-            and tensor_fn == helpers.var_fn and call is helpers.mx_call:
-        # mxnet does not support 0-dimensional variables
-        pytest.skip()
-    x = tensor_fn(x_n_x_ceiled[0], dtype, dev)
-    ret = ivy.ceil(x)
-    # type test
-    assert ivy.is_native_array(ret)
-    # cardinality test
-    assert ret.shape == x.shape
-    # value test
-    assert np.allclose(call(ivy.ceil, x), np.array(x_n_x_ceiled[1]))
-    # docstring test
-    helpers.assert_docstring_examples_run(ivy.ceil)
-
-
-
-
-
 # arange
 @pytest.mark.parametrize(
     "stop_n_start_n_step", [[10, None, None], [10, 2, None], [10, 2, 2]])
