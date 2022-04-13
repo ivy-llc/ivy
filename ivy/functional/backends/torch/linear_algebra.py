@@ -74,12 +74,18 @@ def matrix_norm(x: torch.Tensor,
 
 
 # noinspection PyPep8Naming
-def svd(x: torch.Tensor, full_matrices: bool = True) -> Union[torch.Tensor, Tuple[torch.Tensor,...]]:
+def svd(x: torch.Tensor,
+        full_matrices: bool = True,
+        out: Optional[torch.Tensor] = None)\
+        -> Union[torch.Tensor, Tuple[torch.Tensor,...]]:
     results = namedtuple("svd", "U S Vh")
 
     U, D, VT = torch.linalg.svd(x, full_matrices=full_matrices)
-    res = results(U, D, VT)
-    return res
+    ret = results(U, D, VT)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
+
 
 
 def outer(x1: torch.Tensor,
@@ -96,7 +102,9 @@ def diagonal(x: torch.Tensor,
     return torch.diagonal(x, offset=offset, dim1=axis1, dim2=axis2)
 
 
-def svdvals(x: torch.Tensor) -> torch.Tensor:
+def svdvals(x: torch.Tensor,
+            out: Optional[torch.Tensor] = None)\
+        -> torch.Tensor:
     return torch.linalg.svdvals(x)
 
 
