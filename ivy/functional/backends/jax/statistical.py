@@ -12,7 +12,8 @@ from ivy.functional.backends.jax import JaxArray
 
 def min(x: JaxArray,
         axis: Optional[Union[int, Tuple[int, ...]]] = None,
-        keepdims: bool = False, out:Optional[JaxArray]=None)\
+        keepdims: bool = False, 
+        out:Optional[JaxArray]=None)\
         -> JaxArray:
         if ivy.exists(out):
             return ivy.inplace_update(out, jnp.min(x, axis=axis, keepdims=keepdims))
@@ -71,9 +72,13 @@ def prod(x: JaxArray,
 
 def max(x: JaxArray,
         axis: Optional[Union[int, Tuple[int, ...]]] = None,
-        keepdims: bool = False)\
+        keepdims: bool = False, 
+        out:Optional[JaxArray]= None)\
         -> JaxArray:
-    return jnp.max(a=jnp.asarray(x), axis=axis, keepdims=keepdims)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, jnp.max(x, axis=axis, keepdims=keepdims))
+    else:
+        return jnp.max(a=jnp.asarray(x), axis=axis, keepdims=keepdims)
 
 
 def var(x: JaxArray,
