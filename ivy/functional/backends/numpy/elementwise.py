@@ -127,7 +127,10 @@ def multiply(x1: np.ndarray,
 def ceil(x: np.ndarray,
          out: Optional[np.ndarray] = None)\
         -> np.ndarray:
-    ret = np.asarray(npa.ceil(npa.asarray(x)))
+    if 'int' in str(x.dtype):
+        ret = x
+    else:
+        return np.ceil(x, out=out)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
     return ret
