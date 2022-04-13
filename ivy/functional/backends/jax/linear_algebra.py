@@ -33,16 +33,21 @@ def pinv(x: JaxArray,
     return ret
 
 
-def matrix_transpose(x: JaxArray)\
+def matrix_transpose(x: JaxArray,
+                     out: Optional[JaxArray] = None)\
         -> JaxArray:
-    return jnp.swapaxes(x, -1, -2)
+    ret = jnp.swapaxes(x, -1, -2)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
 # noinspection PyUnusedLocal,PyShadowingBuiltins
 def vector_norm(x: JaxArray,
                 axis: Optional[Union[int, Tuple[int]]] = None, 
                 keepdims: bool = False,
-                ord: Union[int, float, Literal[inf, -inf]] = 2)\
+                ord: Union[int, float, Literal[inf, -inf]] = 2,
+                out: Optional[JaxArray] = None)\
         -> JaxArray:
 
     if axis is None:
@@ -51,20 +56,31 @@ def vector_norm(x: JaxArray,
         jnp_normalized_vector = jnp.linalg.norm(x, ord, axis, keepdims)
 
     if jnp_normalized_vector.shape == ():
-        return jnp.expand_dims(jnp_normalized_vector, 0)
-    return jnp_normalized_vector
+        ret = jnp.expand_dims(jnp_normalized_vector, 0)
+    else:
+        ret = jnp_normalized_vector
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
+
 
 
 def matrix_norm(x: JaxArray,
                 ord: Optional[Union[int, float, Literal[inf, - inf, 'fro', 'nuc']]] = 'fro',
-                keepdims: bool = False)\
+                keepdims: bool = False,
+                out: Optional[JaxArray] = None)\
         -> JaxArray:
     if x.size == 0:
         if keepdims:
-            return x.reshape(x.shape[:-2] + (1, 1))
+            ret = x.reshape(x.shape[:-2] + (1, 1))
         else:
-            return x.reshape(x.shape[:-2])
-    return jnp.linalg.norm(x, ord, (-2, -1), keepdims)
+            ret = x.reshape(x.shape[:-2])
+    else:
+        ret = jnp.linalg.norm(x, ord, (-2, -1), keepdims)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
+
 
 
 def svd(x: JaxArray, full_matrices: bool = True) -> Union[JaxArray, Tuple[JaxArray,...]]:
