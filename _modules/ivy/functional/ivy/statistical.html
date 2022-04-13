@@ -388,20 +388,22 @@
 <div class="viewcode-block" id="prod"><a class="viewcode-back" href="../../../../functional/ivy/statistical/prod.html#ivy.functional.ivy.statistical.prod">[docs]</a><span class="k">def</span> <span class="nf">prod</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
          <span class="n">axis</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
          <span class="n">dtype</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-         <span class="n">keepdims</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>\
+         <span class="n">keepdims</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+         <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span>\
         <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Calculates the product of input array x elements.</span>
 
-<span class="sd">    :param x: input array. Should have a numeric data type.</span>
-<span class="sd">    :type x: array</span>
-<span class="sd">    :param axis: axis or axes along which products must be computed. By default, the product must be</span>
-<span class="sd">     computed over the entire array. If a tuple of integers, products must be computed over multiple axes. Default: None.</span>
-<span class="sd">    :type axis: Union[int, Tuple[int, ...]</span>
-<span class="sd">    :param dtype: data type of the returned array. If None,</span>
+<span class="sd">    x: </span>
+<span class="sd">        input array. Should have a numeric data type.</span>
+<span class="sd">    axis: </span>
+<span class="sd">        axis or axes along which products must be computed. By default, the product must be</span>
+<span class="sd">        computed over the entire array. If a tuple of integers, products must be computed over multiple axes. Default: None.</span>
+<span class="sd">    dtype: </span>
+<span class="sd">        data type of the returned array. If None,</span>
 <span class="sd">        if the default data type corresponding to the data type “kind” (integer or floating-point) of x has a smaller </span>
-<span class="sd">         range of values than the data type of x (e.g., x has data type int64 and the default data type is int32,</span>
-<span class="sd">         or x has data type uint64 and the default data type is int64), the returned array must have the same data type as x.</span>
+<span class="sd">        range of values than the data type of x (e.g., x has data type int64 and the default data type is int32,</span>
+<span class="sd">        or x has data type uint64 and the default data type is int64), the returned array must have the same data type as x.</span>
 <span class="sd">        if x has a floating-point data type, the returned array must have the default floating-point data type.</span>
 <span class="sd">        if x has a signed integer data type (e.g., int16), the returned array must have the default integer data type.</span>
 <span class="sd">        if x has an unsigned integer data type (e.g., uint16), the returned array must have an unsigned integer data type</span>
@@ -409,19 +411,19 @@
 <span class="sd">         the returned array must have a uint32 data type).</span>
 <span class="sd">        If the data type (either specified or resolved) differs from the data type of x, the input array should be cast </span>
 <span class="sd">        to the specified data type before computing the product. Default: None.</span>
-<span class="sd">    :type dtype: dtype</span>
-<span class="sd">    :param keepdims: if True, the reduced axes (dimensions) must be included in the result as singleton dimensions, and, </span>
+<span class="sd">    keepdims: </span>
+<span class="sd">        bool, if True, the reduced axes (dimensions) must be included in the result as singleton dimensions, and, </span>
 <span class="sd">    accordingly, the result must be compatible with the input array (see Broadcasting). Otherwise, if False, the reduced axes </span>
 <span class="sd">    (dimensions) must not be included in the result. Default: False.</span>
-<span class="sd">    :type keepdims: bool</span>
-
+<span class="sd">    out:</span>
+<span class="sd">        optional output array, for writing the result to.</span>
 <span class="sd">    Returns</span>
-<span class="sd">    :return out: if the product was computed over the entire array, a zero-dimensional array containing the product; otherwise, </span>
-<span class="sd">    a non-zero-dimensional array containing the products. The returned array must have a data type as described by the dtype </span>
-<span class="sd">    parameter above.</span>
-<span class="sd">    :type out: array</span>
+<span class="sd">    return: </span>
+<span class="sd">        array,  if the product was computed over the entire array, a zero-dimensional array containing the </span>
+<span class="sd">        product; otherwise, a non-zero-dimensional array containing the products. The returned array must </span>
+<span class="sd">        have a data type as described by the dtype parameter above.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">_cur_framework</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">dtype</span><span class="p">,</span> <span class="n">keepdims</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">_cur_framework</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">dtype</span><span class="p">,</span> <span class="n">keepdims</span> <span class="p">,</span><span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="sum"><a class="viewcode-back" href="../../../../functional/ivy/statistical/sum.html#ivy.functional.ivy.statistical.sum">[docs]</a><span class="k">def</span> <span class="nf">sum</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
