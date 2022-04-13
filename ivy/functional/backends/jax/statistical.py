@@ -3,6 +3,7 @@ import jax.numpy as jnp
 from typing import Tuple, Union, Optional
 
 # local
+import ivy
 from ivy.functional.backends.jax import JaxArray
 
 # Array API Standard #
@@ -11,9 +12,12 @@ from ivy.functional.backends.jax import JaxArray
 
 def min(x: JaxArray,
         axis: Optional[Union[int, Tuple[int, ...]]] = None,
-        keepdims: bool = False)\
+        keepdims: bool = False, out:Optional[JaxArray]=None)\
         -> JaxArray:
-    return jnp.min(a=jnp.asarray(x), axis=axis, keepdims=keepdims)
+        if ivy.exists(out):
+            return ivy.inplace_update(out, jnp.min(x, axis=axis, keepdims=keepdims))
+        else:
+            return jnp.min(a=jnp.asarray(x), axis=axis, keepdims=keepdims)
 
 
 def sum(x: JaxArray,

@@ -1,7 +1,9 @@
 from numbers import Number
+from typing import Optional, Tuple,Union
 import mxnet as mx
 
 #Local
+import ivy
 from ivy.functional.backends.mxnet import _flat_array_to_1_dim_array, _1_dim_array_to_flat_array, _handle_output
 
 
@@ -74,7 +76,9 @@ def std(x, axis=None, keepdims=False):
     return red_std
 
 
-def min(x, axis=None, keepdims=False):
+def min(x: mx.ndarray.ndarray.NDArray, axis: Union[int, Tuple[int,...]] = None,
+    keepdims: bool =False, out: Optional[mx.ndarray.ndarray.NDArray] = None)\
+        -> mx.ndarray.ndarray.NDArray:
     if axis is None:
         num_dims = len(x.shape)
         axis = tuple(range(num_dims))
@@ -85,7 +89,10 @@ def min(x, axis=None, keepdims=False):
     if x.shape == ():
         x = _flat_array_to_1_dim_array(x)
     ret = mx.nd.min(x, axis=axis, keepdims=keepdims)
-    return _handle_output(x, axis, keepdims, ret)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, _handle_output(x, axis, keepdims, ret))
+    else:
+        return _handle_output(x, axis, keepdims, ret)
 
 
 def max(x, axis=None, keepdims=False):
