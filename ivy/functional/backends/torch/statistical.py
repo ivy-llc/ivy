@@ -16,7 +16,7 @@ def min(x: torch.Tensor,
         -> torch.Tensor:
     if axis == ():
         if ivy.exists(out):
-            ivy.inplace_update(out, x)
+            return ivy.inplace_update(out, x)
         else:
             return x
     if not keepdims and not axis and axis != 0:
@@ -25,7 +25,7 @@ def min(x: torch.Tensor,
         else:
             return torch.amin(input = x)
     if ivy.exists(out):
-        ivy.inplace_update(out, torch.amin(input=x, dim=axis, keepdim=keepdims))
+        return ivy.inplace_update(out, torch.amin(input=x, dim=axis, keepdim=keepdims))
     else:
         return torch.amin(input = x, dim = axis, keepdim = keepdims)
 
@@ -86,15 +86,22 @@ def prod(x: torch.Tensor,
 
 def mean(x: torch.Tensor,
          axis: Optional[Union[int, Tuple[int, ...]]] = None,
-         keepdims: bool = False)\
+         keepdims: bool = False,
+         out: Optional[torch.Tensor]=None)\
         -> torch.Tensor:
     if axis is None:
         num_dims = len(x.shape)
         axis = list(range(num_dims))
     torch.mean(x, dim=axis, keepdim=keepdims)
     if axis == ():
-        return x
-    return torch.mean(x, dim=axis, keepdim=keepdims)
+        if ivy.exists(out):
+            return ivy.inplace_update(out, x)
+        else:
+            return x
+    if ivy.exists(out):
+        return ivy.inplace_update(out, torch.mean(input=x, dim=axis, keepdim=keepdims))
+    else:
+        return torch.mean(x, dim=axis, keepdim=keepdims)
 
 
 # noinspection PyShadowingBuiltins
@@ -104,7 +111,7 @@ def max(x: torch.Tensor,
         -> torch.Tensor:
     if axis == ():
         if ivy.exists(out):
-            ivy.inplace_update(out, x)
+            return ivy.inplace_update(out, x)
         else:
             return x
     if not keepdims and not axis and axis != 0:
@@ -113,7 +120,7 @@ def max(x: torch.Tensor,
         else:
             return torch.amax(input = x)
     if ivy.exists(out):
-        ivy.inplace_update(out, torch.amax(input=x, dim=axis, keepdim=keepdims))
+        return ivy.inplace_update(out, torch.amax(input=x, dim=axis, keepdim=keepdims))
     else:
         return torch.amax(input = x, dim = axis, keepdim = keepdims)
 

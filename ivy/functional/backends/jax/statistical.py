@@ -41,14 +41,18 @@ def sum(x: JaxArray,
 
 def mean(x: JaxArray,
          axis: Optional[Union[int, Tuple[int, ...]]] = None,
-         keepdims: bool = False)\
+         keepdims: bool = False,
+         out: Optional[JaxArray] = None)\
         -> JaxArray:
     if axis is None:
         num_dims = len(x.shape)
         axis = tuple(range(num_dims))
     elif isinstance(axis, list):
         axis = tuple(axis)
-    return jnp.mean(x, axis=axis, keepdims=keepdims)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, jnp.mean(x, axis=axis, keepdims=keepdims))
+    else:
+        return jnp.mean(x, axis=axis, keepdims=keepdims)
 
 
 def prod(x: JaxArray,
