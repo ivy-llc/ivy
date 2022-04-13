@@ -239,10 +239,11 @@ def divide(x1: np.ndarray,
         -> np.ndarray:
     if not isinstance(x2, np.ndarray):
         x2 = np.asarray(x2, dtype=x1.dtype)
-    ret = npa.divide(npa.asarray(x1), npa.asarray(x2))
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
+    else:
+        promoted_type = np.promote_types(x1.dtype, x2.dtype)
+        x1 = x1.astype(promoted_type)
+        x2 = x2.astype(promoted_type)
+    return np.divide(x1, x2, out=out)
 
 
 def acos(x: np.ndarray,
