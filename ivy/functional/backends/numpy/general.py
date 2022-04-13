@@ -191,7 +191,8 @@ def gather(params: np.ndarray, indices:np.ndarray, axis: Optional[int]=-1, dev:O
     ret = _to_dev(np.take_along_axis(params, indices, axis), dev)
     if ivy.exists(out):
         return ivy.inplace_update(out,ret)
-    return ret
+    else :
+        return ret
 
 def gather_nd(params, indices, dev=None):
     if dev is None:
