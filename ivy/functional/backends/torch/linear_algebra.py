@@ -51,22 +51,26 @@ def matrix_rank(vector: torch.Tensor,
 def vector_norm(x: torch.Tensor,
                 axis: Optional[Union[int, Tuple[int]]] = None,
                 keepdims: bool = False,
-                ord: Union[int, float, Literal[inf, - inf]] = 2)\
+                ord: Union[int, float, Literal[inf, - inf]] = 2,
+                out: Optional[torch.Tensor] = None)\
         -> torch.Tensor:
 
     py_normalized_vector = torch.linalg.vector_norm(x, ord, axis, keepdims)
 
     if py_normalized_vector.shape == ():
-        return torch.unsqueeze(py_normalized_vector, 0)
-
-    return py_normalized_vector
-
+        ret = torch.unsqueeze(py_normalized_vector, 0)
+    else:
+        ret = py_normalized_vector
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 def matrix_norm(x: torch.Tensor,
                 ord: Optional[Union[int, float, Literal[inf, - inf, 'fro', 'nuc']]] ='fro',
-                keepdims: bool = False)\
+                keepdims: bool = False,
+                out: Optional[torch.Tensor] = None)\
         -> torch.Tensor:
-    return torch.linalg.matrix_norm(x, ord=ord, dim=[-2, -1], keepdim=keepdims)
+    return torch.linalg.matrix_norm(x, ord=ord, dim=[-2, -1], keepdim=keepdims, out = out)
 
 
 # noinspection PyPep8Naming
