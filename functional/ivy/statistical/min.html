@@ -220,7 +220,15 @@
 <dl class="py function">
 <dt id="ivy.functional.ivy.statistical.min">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">min</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">axis</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Union<span class="p">[</span>int<span class="p">, </span>Tuple<span class="p">[</span>int<span class="p">]</span><span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">keepdims</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">out</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../../_modules/ivy/functional/ivy/statistical.html#min"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.statistical.min" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the minimum value of the input array x.</p>
+<dd><p>Calculates the minimum value of the input array x.</p>
+<p>When the number of elements over which to compute the minimum value is zero, 
+the minimum value is implementation-defined. Specification-compliant libraries may choose to raise 
+an error, return a sentinel value (e.g., if x is a floating-point input array, return NaN), or return 
+the maximum possible value for the input array x data type (e.g., if x is a floating-point array, 
+return +infinity).</p>
+<p><strong>Special Cases</strong>
+For floating-point operands,</p>
+<p>If x_i is NaN, the minimum value is NaN (i.e., NaN values propagate).</p>
 <dl class="simple">
 <dt>x:</dt><dd><p>Input array containing elements to min.</p>
 </dd>
@@ -238,7 +246,9 @@ Default: False.</p>
 </dd>
 </dl>
 <dl class="simple">
-<dt>return: </dt><dd><p>array containing minimum value.</p>
+<dt>return: </dt><dd><p>if the minimum value was computed over the entire array, a zero-dimensional array containing the 
+minimum value; otherwise, a non-zero-dimensional array containing the minimum values. 
+The returned array must have the same data type as x.</p>
 </dd>
 </dl>
 </dd></dl>
