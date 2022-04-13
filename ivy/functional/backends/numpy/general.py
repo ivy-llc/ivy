@@ -9,6 +9,7 @@ import numpy as np
 from operator import mul as _mul
 from functools import reduce as _reduce
 import multiprocessing as _multiprocessing
+from numbers import Number
 
 # local
 import ivy
@@ -22,12 +23,19 @@ from ivy.functional.backends.numpy.device import _dev_callable, _to_dev
 copy_array = lambda x: x.copy()
 array_equal = np.array_equal
 
-to_numpy = lambda x: x
-to_numpy.__name__ = 'to_numpy'
-to_scalar = lambda x: x.item()
-to_scalar.__name__ = 'to_scalar'
-to_list = lambda x: x.tolist()
-to_list.__name__ = 'to_list'
+
+def to_numpy(x: np.ndarray) \
+        -> np.ndarray:
+    return x
+
+def to_scalar(x: np.ndarray) \
+        -> Number:
+    return x.item()
+
+def to_list(x: np.ndarray) \
+        -> list:
+    return x.tolist()
+
 container_types = lambda: []
 inplace_arrays_supported = lambda: True
 inplace_variables_supported = lambda: True
