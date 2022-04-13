@@ -121,7 +121,8 @@ def max(x: torch.Tensor,
 def var(x: torch.Tensor,
         axis: Optional[Union[int, Tuple[int]]] = None,
         correction: Union[int, float] = 0.0,
-        keepdims: bool = False) \
+        keepdims: bool = False,
+        out: Optional[torch.Tensor]=None) \
         -> torch.Tensor:
     if axis is None:
         num_dims = len(x.shape)
@@ -132,7 +133,10 @@ def var(x: torch.Tensor,
     axis = tuple([i % dims for i in axis])
     for i, a in enumerate(axis):
         x = torch.var(x, dim=a if keepdims else a - i, keepdim=keepdims)
-    return x
+    if ivy.exists(out):
+        return ivy.inplace_update(out, x)
+    else:
+        return x
 
 
 def std(x: torch.Tensor,

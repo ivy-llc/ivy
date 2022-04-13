@@ -84,9 +84,13 @@ def max(x: JaxArray,
 def var(x: JaxArray,
         axis: Optional[Union[int, Tuple[int, ...]]] = None,
         correction: Union[int, float] = 0.0,
-        keepdims: bool = False) \
+        keepdims: bool = False,
+        out: Optional[JaxArray] = None) \
         -> JaxArray:
-    return jnp.var(x, axis=axis, ddof=correction, keepdims=keepdims)
+        if ivy.exists(out):
+            return ivy.inplace_update(out, jnp.var(x, axis=axis, ddof=correction, keepdims=keepdims))
+        else:
+            return jnp.var(x, axis=axis, ddof=correction, keepdims=keepdims)
 
 
 def std(x: JaxArray,
