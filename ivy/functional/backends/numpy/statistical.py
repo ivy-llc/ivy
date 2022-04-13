@@ -2,15 +2,20 @@
 import numpy as np
 from typing import Tuple, Union, Optional
 
+#local
+import ivy
 
 # Array API Standard #
 # -------------------#
 
 def min(x: np.ndarray,
         axis: Union[int, Tuple[int]] = None,
-        keepdims: bool = False) \
+        keepdims: bool = False, out: Optional[np.ndarray] = None)\
         -> np.ndarray:
-    return np.amin(a=x, axis=axis, keepdims=keepdims)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, np.amin(x, axis=axis, keepdims=keepdims))
+    else:
+        return np.amin(a=x, axis=axis, keepdims=keepdims)
 
 
 def max(x: np.ndarray,
