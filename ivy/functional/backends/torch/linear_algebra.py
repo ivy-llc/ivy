@@ -45,7 +45,7 @@ def matrix_rank(vector: torch.Tensor,
                 rtol: Optional[Union[float, Tuple[float]]] = None,
                 out: Optional[torch.Tensor] = None) \
         -> torch.Tensor:
-    return torch.linalg.matrix_rank(vector, rtol, out)
+    return torch.linalg.matrix_rank(vector, rtol, out=out)
 
 
 def vector_norm(x: torch.Tensor,
