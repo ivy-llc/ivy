@@ -28,15 +28,13 @@ float64 = np.dtype('float64')
 # noinspection PyShadowingBuiltins
 bool = np.dtype('bool')
 
-all_dtypes = (int8, int16, int32, int64,
-              uint8, uint16, uint32, uint64,
-              float16, float32, float64)
-valid_dtypes = all_dtypes
+valid_dtypes = (int8, int16, int32, int64,
+                uint8, uint16, uint32, uint64,
+                float16, float32, float64)
 
-all_dtype_strs = ('int8', 'int16', 'int32', 'int64',
-                  'uint8', 'uint16', 'uint32', 'uint64',
-                  'float16', 'float32', 'float64')
-valid_dtype_strs = all_dtypes
+valid_dtype_strs = ('int8', 'int16', 'int32', 'int64',
+                    'uint8', 'uint16', 'uint32', 'uint64',
+                    'float16', 'float32', 'float64')
 invalid_dtype_strs = ('bfloat16',)
 
 

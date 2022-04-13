@@ -22,6 +22,18 @@ num_gpus = lambda: 0
 tpu_is_available = lambda: False
 
 
+def _to_dev(x, dev):
+    if dev is not None:
+        if 'gpu' in dev:
+            raise Exception('Native Numpy does not support GPU placement, consider using Jax instead')
+        elif 'cpu' in dev:
+            pass
+        else:
+            raise Exception('Invalid device specified, must be in the form [ "cpu:idx" | "gpu:idx" ],'
+                            'but found {}'.format(dev))
+    return x
+
+
 class Profiler(BaseProfiler):
 
     def __init__(self, save_dir):

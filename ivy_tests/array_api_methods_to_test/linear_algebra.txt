@@ -4,7 +4,7 @@ det
 #diagonal # fails non-determinstically for jax, due to +0 vs -0 inconsistencies
 eigh
 eigvalsh
-#inv # fails non-deterministically for jax
+#inv # randomly failing health check for jax and torch
 #matmul # failing non-deterministically for torch
 #matrix_norm # fails non-deterministically for jax
 matrix_power
@@ -19,5 +19,5 @@ svd
 svdvals
 tensordot
 #trace # accidentally merged trace when #T in array folder was preventing test from running.
-#vecdot
+vecdot
 vector_norm

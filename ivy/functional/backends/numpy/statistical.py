@@ -2,30 +2,42 @@
 import numpy as np
 from typing import Tuple, Union, Optional
 
+#local
+import ivy
 
 # Array API Standard #
 # -------------------#
 
 def min(x: np.ndarray,
         axis: Union[int, Tuple[int]] = None,
-        keepdims: bool = False) \
+        keepdims: bool = False, out: Optional[np.ndarray] = None)\
         -> np.ndarray:
-    return np.amin(a=x, axis=axis, keepdims=keepdims)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, np.amin(x, axis=axis, keepdims=keepdims))
+    else:
+        return np.amin(a=x, axis=axis, keepdims=keepdims)
 
 
 def max(x: np.ndarray,
         axis: Union[int, Tuple[int]] = None,
-        keepdims: bool = False) \
+        keepdims: bool = False, out: Optional[np.ndarray] = None) \
         -> np.ndarray:
-    return np.amax(a=x, axis=axis, keepdims=keepdims)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, np.amax(x, axis=axis, keepdims=keepdims))
+    else:
+        return np.amax(a=x, axis=axis, keepdims=keepdims)
 
 
 def var(x: np.ndarray,
         axis: Optional[Union[int, Tuple[int]]] = None,
         correction: Union[int, float] = 0.0,
-        keepdims: bool = False) \
+        keepdims: bool = False, 
+        out: Optional[np.ndarray] = None) \
         -> np.ndarray:
-    return np.var(x, axis=axis, keepdims=keepdims)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, np.var(x, axis=axis, keepdims=keepdims))
+    else:
+        return np.var(x, axis=axis, keepdims=keepdims)
 
 
 def sum(x: np.ndarray,
@@ -49,7 +61,8 @@ def sum(x: np.ndarray,
 def prod(x: np.ndarray,
          axis: Optional[Union[int, Tuple[int]]] = None,
          dtype: Optional[np.dtype] = None,
-         keepdims: bool = False)\
+         keepdims: bool = False,
+         out: Optional[np.ndarray] = None)\
         -> np.ndarray:
 
     if dtype == None and np.issubdtype(x.dtype,np.integer):
@@ -61,20 +74,26 @@ def prod(x: np.ndarray,
             dtype = np.int64
         else:
             dtype = np.uint64
-
-    return np.prod(a=x,axis=axis,dtype=dtype,keepdims=keepdims)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, np.prod(x, axis=axis, dtype=dtype, keepdims=keepdims))
+    else:
+        return np.prod(a=x,axis=axis,dtype=dtype,keepdims=keepdims)
 
 
 def mean(x: np.ndarray,
          axis: Optional[Union[int, Tuple[int, ...]]] = None,
-         keepdims: bool = False)\
+         keepdims: bool = False,
+         out: Optional[np.ndarray] = None)\
         -> np.ndarray:
     if axis is None:
         num_dims = len(x.shape)
         axis = tuple(range(num_dims))
     elif isinstance(axis, list):
         axis = tuple(axis)
-    return np.mean(x, axis=axis, keepdims=keepdims)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, np.mean(x, axis=axis, keepdims=keepdims))
+    else:
+        return np.mean(x, axis=axis, keepdims=keepdims)
 
 
 def std(x: np.ndarray,

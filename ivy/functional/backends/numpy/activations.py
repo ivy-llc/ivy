@@ -30,7 +30,10 @@ def gelu(x, approximate=True):
     return 0.5 * x * (1 + _erf(x/np.sqrt(2)))
 
 
-tanh = np.tanh
+def tanh(x: np.ndarray)\
+        -> np.ndarray:
+    return (np.exp(x) - np.exp(-x)) / (np.exp(x) + np.exp(-x))
+
 sigmoid = lambda x: 1 / (1 + np.exp(-x))
 
 
