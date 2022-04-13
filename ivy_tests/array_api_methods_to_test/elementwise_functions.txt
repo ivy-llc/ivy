@@ -42,7 +42,7 @@ multiply
 negative
 positive
 not_equal
-#pow
+pow
 remainder
 round
 #sign # tests are passing but uncommenting causes everything in test_signatures to run

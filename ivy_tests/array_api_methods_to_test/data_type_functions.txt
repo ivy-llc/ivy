@@ -1,5 +1,5 @@
 astype
-#broadcast_arrays
+broadcast_arrays
 broadcast_to
 can_cast
 finfo

@@ -92,6 +92,8 @@ def test_tanh(x, dtype, tensor_fn, dev, call):
     assert ret.shape == x.shape
     # value test
     assert np.allclose(call(ivy.tanh, x), ivy.functional.backends.numpy.tanh(ivy.to_numpy(x)))
+    # docstring test
+    helpers.assert_docstring_examples_run(ivy.tanh)
 
 
 # sigmoid
