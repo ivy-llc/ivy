@@ -313,3 +313,38 @@ def test_atan2(dtype, as_variable, with_out, native_array):
         assert ret.data is (out if native_array else out.data)
 
 
+# atanh
+@pytest.mark.parametrize(
+    "dtype", ivy.float_strs)
+@pytest.mark.parametrize(
+    "as_variable", [True, False])
+@pytest.mark.parametrize(
+    "with_out", [True, False])
+@pytest.mark.parametrize(
+    "native_array", [True, False])
+def test_atanh(dtype, as_variable, with_out, native_array):
+    if ivy.current_framework_str() == 'torch' and dtype == 'float16':
+        pytest.skip("torch atanh doesnt allow float16")
+    if dtype in ivy.invalid_dtype_strs:
+        pytest.skip("invalid dtype")
+    x = ivy.array([0.5, 0.8, 4], dtype=dtype)
+    out = ivy.array([2, 3, 4], dtype=dtype)
+    if as_variable:
+        if with_out:
+            pytest.skip("variables do not support out argument")
+        x = ivy.variable(x)
+        out = ivy.variable(out)
+    if native_array:
+        x = x.data
+        out = out.data
+    if with_out:
+        ret = ivy.atanh(x, out=out)
+    else:
+        ret = ivy.atanh(x)
+    if with_out:
+        if not native_array:
+            assert ret is out
+        if ivy.current_framework_str() in ["tensorflow", "jax"]:
+            # these frameworks do not support native inplace updates
+            return
+        assert ret.data is (out if native_array else out.data)
