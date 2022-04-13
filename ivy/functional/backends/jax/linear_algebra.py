@@ -198,14 +198,26 @@ def cholesky(x: JaxArray,
 
 
 
-def eigvalsh(x: JaxArray) -> JaxArray:
-    return jnp.linalg.eigvalsh(x)
+def eigvalsh(x: JaxArray,
+             out: Optional[JaxArray] = None)\
+        -> JaxArray:
+    ret = jnp.linalg.eigvalsh(x)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
-def inv(x: JaxArray) -> JaxArray:
+def inv(x: JaxArray,
+        out: Optional[JaxArray] = None
+        )\
+        -> JaxArray:
     if jnp.any(jnp.linalg.det(x.astype('float64')) == 0):
-        return x
-    return jnp.linalg.inv(x)
+        ret = x
+    else:
+        ret = jnp.linalg.inv(x)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
 def matrix_rank(vector: JaxArray,
