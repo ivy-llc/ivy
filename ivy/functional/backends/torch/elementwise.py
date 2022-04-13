@@ -37,14 +37,22 @@ def bitwise_invert(x: torch.Tensor,
     return torch.bitwise_not(x, out=out)
 
 
-def isfinite(x: Tensor)\
+def isfinite(x: Tensor,
+             out: Optional[torch.Tensor] = None)\
         -> Tensor:
-    return torch.isfinite(x)
+    ret = torch.isfinite(x)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
-def isinf(x: torch.Tensor) \
+def isinf(x: torch.Tensor,
+          out: Optional[torch.Tensor] = None) \
         -> torch.Tensor:
-    return torch.isinf(x)
+    ret = torch.isinf(x)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
 def _cast_for_binary_op(x1: Tensor, x2: Tensor)\
@@ -152,9 +160,13 @@ def log1p(x: torch.Tensor,
     return torch.log1p(x, out=out)
 
 
-def isnan(x: torch.Tensor)\
+def isnan(x: torch.Tensor,
+          out: Optional[torch.Tensor] = None)\
         -> torch.Tensor:
-    return torch.isnan(x)
+    ret = torch.isnan(x)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
 def less(x1: torch.Tensor,
