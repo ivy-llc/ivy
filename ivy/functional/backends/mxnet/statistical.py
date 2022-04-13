@@ -95,7 +95,9 @@ def min(x: mx.ndarray.ndarray.NDArray, axis: Union[int, Tuple[int,...]] = None,
         return _handle_output(x, axis, keepdims, ret)
 
 
-def max(x, axis=None, keepdims=False):
+def max(x: mx.ndarray.ndarray.NDArray, axis: Union[int, Tuple[int,...]] = None,
+    keepdims: bool =False, out: Optional[mx.ndarray.ndarray.NDArray] = None)\
+        -> mx.ndarray.ndarray.NDArray:
     if axis is None:
         num_dims = len(x.shape)
         axis = tuple(range(num_dims))
@@ -105,8 +107,11 @@ def max(x, axis=None, keepdims=False):
         axis = tuple(axis)
     if x.shape == ():
         x = _flat_array_to_1_dim_array(x)
-    ret = _mx.nd.max(x, axis=axis, keepdims=keepdims)
-    return _handle_output(x, axis, keepdims, ret)
+    ret = mx.nd.max(x, axis=axis, keepdims=keepdims)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, _handle_output(x, axis, keepdims, ret))
+    else:
+        return _handle_output(x, axis, keepdims, ret)
 
 
 # Extra #
