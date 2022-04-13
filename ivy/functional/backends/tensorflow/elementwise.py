@@ -262,7 +262,7 @@ def log2(x: Tensor,
 def log1p(x: Tensor,
           out: Optional[Tensor] = None) \
         -> Tensor:
-    ret = tf.experimental.numpy.log1p(x)
+    ret = tf.math.log1p(x)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
     return ret
