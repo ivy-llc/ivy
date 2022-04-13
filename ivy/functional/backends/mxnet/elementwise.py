@@ -82,16 +82,24 @@ def greater_equal(x1: mx.ndarray.ndarray.NDArray, x2: mx.ndarray.ndarray.NDArray
 
 
 @_handle_flat_arrays_in_out
-def isfinite(x: mx.ndarray.ndarray.NDArray)\
+def isfinite(x: mx.ndarray.ndarray.NDArray,
+             out: Optional[mx.ndarray.ndarray.NDArray] = None)\
         -> mx.ndarray.ndarray.NDArray:
     # ToDo: remove float32 conversion once int8 and uint8 work correctly. Currently 0 returns 0 for these types.
-    return mx.nd.contrib.isfinite(x.astype('float32')).astype('bool')
+    ret = mx.nd.contrib.isfinite(x.astype('float32')).astype('bool')
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
 @_handle_flat_arrays_in_out
-def isinf(x: mx.ndarray.ndarray.NDArray)\
+def isinf(x: mx.ndarray.ndarray.NDArray,
+          out: Optional[mx.ndarray.ndarray.NDArray] = None)\
         -> mx.ndarray.ndarray.NDArray:
-    return mx.nd.contrib.isinf(x.astype('float32')).astype('bool')
+    ret = mx.nd.contrib.isinf(x.astype('float32')).astype('bool')
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
 def sqrt(x: mx.ndarray.ndarray.NDArray,
@@ -107,9 +115,13 @@ def sqrt(x: mx.ndarray.ndarray.NDArray,
 
 
 @_handle_flat_arrays_in_out
-def isnan(x: mx.ndarray.ndarray.NDArray)\
+def isnan(x: mx.ndarray.ndarray.NDArray,
+          out: Optional[mx.ndarray.ndarray.NDArray] = None)\
         -> mx.ndarray.ndarray.NDArray:
-    return mx.nd.contrib.isnan(x).astype('bool')
+    ret = mx.nd.contrib.isnan(x).astype('bool')
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
 @_handle_flat_arrays_in_out
