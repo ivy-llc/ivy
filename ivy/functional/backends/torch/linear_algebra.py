@@ -11,22 +11,25 @@ import ivy
 # Array API Standard #
 # -------------------#
 
-def eigh(x: torch.Tensor)\
+def eigh(x: torch.Tensor,
+         out: Optional[torch.Tensor] = None)\
   ->torch.Tensor:
-     return torch.linalg.eigh(x)
+     return torch.linalg.eigh(x, out=out)
 
 
-def inv(x: torch.Tensor)\
+def inv(x: torch.Tensor,
+        out: Optional[torch.Tensor] = None)\
   ->torch.Tensor:
-    return torch.inverse(x)
+    return torch.inverse(x, out= out)
 
 
 def pinv(x: torch.Tensor,
-         rtol: Optional[Union[float, Tuple[float]]] = None) \
+         rtol: Optional[Union[float, Tuple[float]]] = None,
+         out: Optional[torch.Tensor] = None) \
         -> torch.Tensor:
     if rtol is None:
-        return torch.linalg.pinv(x)
-    return torch.linalg.pinv(x, rtol)
+        return torch.linalg.pinv(x, out=out)
+    return torch.linalg.pinv(x, rtol, out=out)
 
 
 def matrix_transpose(x: torch.Tensor)\
