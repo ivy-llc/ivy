@@ -61,7 +61,8 @@ def sum(x: np.ndarray,
 def prod(x: np.ndarray,
          axis: Optional[Union[int, Tuple[int]]] = None,
          dtype: Optional[np.dtype] = None,
-         keepdims: bool = False)\
+         keepdims: bool = False,
+         out: Optional[np.ndarray] = None)\
         -> np.ndarray:
 
     if dtype == None and np.issubdtype(x.dtype,np.integer):
@@ -73,8 +74,10 @@ def prod(x: np.ndarray,
             dtype = np.int64
         else:
             dtype = np.uint64
-
-    return np.prod(a=x,axis=axis,dtype=dtype,keepdims=keepdims)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, np.prod(x, axis=axis, dtype=dtype, keepdims=keepdims))
+    else:
+        return np.prod(a=x,axis=axis,dtype=dtype,keepdims=keepdims)
 
 
 def mean(x: np.ndarray,
