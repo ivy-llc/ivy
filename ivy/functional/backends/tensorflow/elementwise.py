@@ -115,11 +115,16 @@ def floor(x: Tensor,
     return ret
 
 
-def isfinite(x: Tensor) \
+def isfinite(x: Tensor,
+             out: Optional[Tensor] = None) \
         -> Tensor:
     if ivy.is_int_dtype(x):
-        return tf.ones_like(x, tf.bool)
-    return tf.math.is_finite(x)
+        ret = tf.ones_like(x, tf.bool)
+    else:
+        ret = tf.math.is_finite(x)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
 def asin(x: Tensor,
@@ -131,11 +136,16 @@ def asin(x: Tensor,
     return ret
 
 
-def isinf(x: Tensor) \
+def isinf(x: Tensor,
+          out: Optional[Tensor] = None) \
         -> Tensor:
     if ivy.is_int_dtype(x):
-        return tf.zeros_like(x, tf.bool)
-    return tf.math.is_inf(x)
+        ret = tf.zeros_like(x, tf.bool)
+    else:
+        ret = tf.math.is_inf(x)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
 def _tf_cast(x: Tensor, dtype: tf.dtypes.DType) -> Tensor:
@@ -258,11 +268,16 @@ def log1p(x: Tensor,
     return ret
 
 
-def isnan(x: Tensor)\
+def isnan(x: Tensor,
+          out: Optional[Tensor] = None)\
         -> Tensor:
     if ivy.is_int_dtype(x):
-        return tf.zeros_like(x, tf.bool)
-    return tf.math.is_nan(x)
+        ret = tf.zeros_like(x, tf.bool)
+    else:
+        ret = tf.math.is_nan(x)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
 def less(x1: Tensor,
