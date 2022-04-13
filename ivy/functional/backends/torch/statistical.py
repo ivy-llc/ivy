@@ -3,6 +3,8 @@ torch_scatter = None
 import torch as torch
 from typing import List, Tuple, Union, Optional
 
+#local
+import ivy
 
 # Array API Standard #
 # -------------------#
@@ -10,13 +12,22 @@ from typing import List, Tuple, Union, Optional
 # noinspection PyShadowingBuiltins
 def min(x: torch.Tensor,
         axis: Union[int, Tuple[int]] = None,
-        keepdims: bool = False) \
+        keepdims: bool = False, out: Optional[torch.Tensor]=None)\
         -> torch.Tensor:
     if axis == ():
-        return x
+        if ivy.exists(out):
+            ivy.inplace_update(out, x)
+        else:
+            return x
     if not keepdims and not axis and axis != 0:
-        return torch.amin(input = x)
-    return torch.amin(input = x, dim = axis, keepdim = keepdims)
+        if ivy.exists(out):
+            return ivy.inplace_update(out, torch.amin(input=x))
+        else:
+            return torch.amin(input = x)
+    if ivy.exists(out):
+        ivy.inplace_update(out, torch.amin(input=x, dim=axis, keepdim=keepdims))
+    else:
+        return torch.amin(input = x, dim = axis, keepdim = keepdims)
 
 
 def sum(x: torch.Tensor,
@@ -46,27 +57,6 @@ def sum(x: torch.Tensor,
 
     return torch.sum(input=x, dim=axis, dtype=dtype, keepdim=keepdims)
 
-
-    if dtype == None:
-        if x.dtype in [torch.int8, torch.int16]:
-            dtype = torch.int8
-        elif x.dtype == torch.uint8:
-            dtype = torch.uint8
-        elif x.dtype in [torch.int32, torch.int64]:
-            dtype = torch.int64
-
-    if dim is None:
-        dim = x.dim()-1
-    elif type(dim) == list:
-        torch.sum(input = x, dim = dim)
-    elif type(dim) == tuple:
-        if len(dim) == 0:
-            dim = x.dim() - 1
-        else:
-            return torch.sum(torch.Tensor(
-                [torch.sum(input=x, dim=i, dtype=dtype, keepdim=keepdim) for i in dim]), dtype=dtype)
-
-    return torch.sum(input=x, dim=dim, dtype=dtype, keepdim=keepdim)
 
 def prod(x: torch.Tensor,
          axis: Optional[Union[int, Tuple[int]]] = None,
