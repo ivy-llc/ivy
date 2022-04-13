@@ -33,7 +33,7 @@ def to_scalar(x: np.ndarray) \
     return x.item()
 
 def to_list(x: np.ndarray) \
-        -> object:
+        -> list:
     return x.tolist()
 
 container_types = lambda: []
