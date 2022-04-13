@@ -126,24 +126,31 @@ def qr(x: torch.Tensor,
     return ret
 
 
+
 def matmul(x1: torch.Tensor,
-           x2: torch.Tensor) -> torch.Tensor:
+           x2: torch.Tensor,
+           out: Optional[torch.Tensor] = None) -> torch.Tensor:
     dtype_from = torch.promote_types(x1.dtype, x2.dtype)
     x1 = x1.type(dtype_from)
     x2 = x2.type(dtype_from)
-    ret = torch.matmul(x1, x2)
-    return ret.type(dtype_from)
+    return torch.matmul(x1, x2, out=out).type(dtype_from)
 
 
-def slogdet(x:Union[ivy.Array,ivy.NativeArray],full_matrices: bool = True) -> Union[ivy.Array, Tuple[ivy.Array,...]]:
+def slogdet(x:Union[ivy.Array,ivy.NativeArray],
+            out: Optional[torch.Tensor] = None)\
+        -> Union[ivy.Array, Tuple[ivy.Array,...]]:
     results = namedtuple("slogdet", "sign logabsdet")
     sign, logabsdet = torch.linalg.slogdet(x)
     res = results(sign, logabsdet)
-    return res
+    ret = res
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
 def tensordot(x1: torch.Tensor, x2: torch.Tensor,
-              axes: Union[int, Tuple[List[int], List[int]]] = 2) \
+              axes: Union[int, Tuple[List[int], List[int]]] = 2,
+              out: Optional[torch.Tensor] = None) \
         -> torch.Tensor:
 
     # find the type to promote to
@@ -154,8 +161,12 @@ def tensordot(x1: torch.Tensor, x2: torch.Tensor,
     # handle tensordot for axes==0
     # otherwise call with axes
     if axes == 0:
-        return (x1.reshape(x1.size() + (1,) * x2.dim()) * x2).type(dtype)
-    return torch.tensordot(x1, x2, dims=axes).type(dtype)
+        ret = (x1.reshape(x1.size() + (1,) * x2.dim()) * x2).type(dtype)
+    else:
+        ret = torch.tensordot(x1, x2, dims=axes).type(dtype)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
 def trace(x: torch.Tensor,
