@@ -83,24 +83,35 @@ def matrix_norm(x: JaxArray,
 
 
 
-def svd(x: JaxArray, full_matrices: bool = True) -> Union[JaxArray, Tuple[JaxArray,...]]:
+def svd(x: JaxArray,
+        full_matrices: bool = True,
+        out: Optional[JaxArray] = None)\
+        -> Union[JaxArray, Tuple[JaxArray,...]]:
     results = namedtuple("svd", "U S Vh")
     U, D, VT = jnp.linalg.svd(x, full_matrices=full_matrices)
-    res = results(U, D, VT)
-    return res
+    ret = results(U, D, VT)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
 def outer(x1: JaxArray,
-          x2: JaxArray)\
+          x2: JaxArray,
+          out: Optional[JaxArray] = None)\
         -> JaxArray:
-    return jnp.outer(x1, x2)
+    return jnp.outer(x1, x2, out=out)
 
 
 def diagonal(x: JaxArray,
              offset: int = 0,
              axis1: int = -2,
-             axis2: int = -1) -> JaxArray:
-    return jnp.diagonal(x, offset, axis1, axis2)
+             axis2: int = -1,
+             out: Optional[JaxArray] = None)\
+        -> JaxArray:
+    ret = jnp.diagonal(x, offset, axis1, axis2)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
 def svdvals(x: JaxArray) -> JaxArray:
