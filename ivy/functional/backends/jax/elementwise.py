@@ -102,9 +102,13 @@ def floor(x: JaxArray,
     return ret
 
 
-def isfinite(x: JaxArray)\
+def isfinite(x: JaxArray,
+             out: Optional[JaxArray] = None)\
         -> JaxArray:
-    return jnp.isfinite(x)
+    ret = jnp.isfinite(x)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
 def asin(x: JaxArray,
@@ -116,9 +120,13 @@ def asin(x: JaxArray,
     return ret
 
 
-def isinf(x: JaxArray)\
+def isinf(x: JaxArray,
+          out: Optional[JaxArray] = None)\
         -> JaxArray:
-    return jnp.isinf(x)
+    ret = jnp.isinf(x)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
 def equal(x1: JaxArray,
@@ -247,9 +255,13 @@ def multiply(x1: JaxArray,
     return ret
 
 
-def isnan(x: JaxArray)\
+def isnan(x: JaxArray,
+          out: Optional[JaxArray] = None)\
         -> JaxArray:
-    return jnp.isnan(x)
+    ret = jnp.isnan(x)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
 def less(x1: JaxArray,
