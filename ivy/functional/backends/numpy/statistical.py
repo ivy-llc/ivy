@@ -20,9 +20,12 @@ def min(x: np.ndarray,
 
 def max(x: np.ndarray,
         axis: Union[int, Tuple[int]] = None,
-        keepdims: bool = False) \
+        keepdims: bool = False, out: Optional[np.ndarray] = None) \
         -> np.ndarray:
-    return np.amax(a=x, axis=axis, keepdims=keepdims)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, np.amax(x, axis=axis, keepdims=keepdims))
+    else:
+        return np.amax(a=x, axis=axis, keepdims=keepdims)
 
 
 def var(x: np.ndarray,
