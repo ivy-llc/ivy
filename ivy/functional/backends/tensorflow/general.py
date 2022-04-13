@@ -27,8 +27,13 @@ def is_native_array(x, exclusive=False):
 
 copy_array = tf.identity
 array_equal = tf.experimental.numpy.array_equal
-to_numpy = lambda x: _np.asarray(tf.convert_to_tensor(x))
-to_numpy.__name__ = 'to_numpy'
+
+
+def to_numpy(x: Tensor) \
+        -> _np.ndarray:
+    return _np.asarray(tf.convert_to_tensor(x))
+
+
 to_scalar = lambda x: to_numpy(x).item()
 to_scalar.__name__ = 'to_scalar'
 to_list = lambda x: x.numpy().tolist()

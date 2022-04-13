@@ -159,14 +159,29 @@ def all_equal(*xs: Iterable[Any], equality_matrix: bool = False)\
     return True
 
 
-def to_numpy(x: Union[ivy.Array, ivy.NativeArray])\
+def to_numpy(x: Union[ivy.Array, ivy.NativeArray]) \
         -> np.ndarray:
     """
-    Converts array into a numpy array.
+    Converts an array into a numpy array.
 
-    :param x: Input array.
-    :type x: array
-    :return: A numpy array.
+     Parameters
+     ----------
+     x:
+         input array
+
+
+    Returns
+    -------
+    out:
+       a numpy array copying all the element of the array ``x``.
+
+    Examples:
+    >>> x = ivy.array([-1, 0, 1])
+    >>> y = ivy.to_numpy(x)
+    >>> print(y)
+    array([-1, 0, 1])
+    >>> print(type(y))
+    <class 'numpy.ndarray'>
     """
     return _cur_framework(x).to_numpy(x)
 

@@ -32,7 +32,8 @@ def array_equal(x0, x1):
     return torch.equal(x0, x1)
 
 
-def to_numpy(x) -> np.ndarray:
+def to_numpy(x: torch.Tensor)\
+        -> np.ndarray:
     if isinstance(x, np.ndarray) or isinstance(x, (float, int, bool)):
         return x
     elif torch.is_tensor(x):

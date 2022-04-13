@@ -22,8 +22,12 @@ from ivy.functional.backends.numpy.device import _dev_callable, _to_dev
 copy_array = lambda x: x.copy()
 array_equal = np.array_equal
 
-to_numpy = lambda x: x
-to_numpy.__name__ = 'to_numpy'
+
+def to_numpy(x: np.ndarray) \
+        -> np.ndarray:
+    return x
+
+
 to_scalar = lambda x: x.item()
 to_scalar.__name__ = 'to_scalar'
 to_list = lambda x: x.tolist()
