@@ -105,20 +105,25 @@ def diagonal(x: torch.Tensor,
 def svdvals(x: torch.Tensor,
             out: Optional[torch.Tensor] = None)\
         -> torch.Tensor:
-    return torch.linalg.svdvals(x)
+    return torch.linalg.svdvals(x, out = out)
 
 
 def qr(x: torch.Tensor,
-       mode: str = 'reduced') -> namedtuple('qr', ['Q', 'R']):
+       mode: str = 'reduced',
+       out: Optional[torch.Tensor] = None)\
+       -> namedtuple('qr', ['Q', 'R']):
     res = namedtuple('qr', ['Q', 'R'])
     if mode == 'reduced':
         q, r = torch.qr(x, some=True)
-        return res(q, r)
+        ret = res(q, r)
     elif mode == 'complete':
         q, r = torch.qr(x, some=False)
-        return res(q, r)
+        ret = res(q, r)
     else:
         raise Exception("Only 'reduced' and 'complete' qr modes are allowed for the torch backend.")
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
 def matmul(x1: torch.Tensor,
