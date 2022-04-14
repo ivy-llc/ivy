@@ -379,7 +379,10 @@ def bitwise_or(x1: np.ndarray,
 def trunc(x: np.ndarray,
           out: Optional[np.ndarray] = None) \
         -> np.ndarray:
-    ret = np.asarray(npa.trunc(npa.asarray(x)))
+    if 'int' in str(x.dtype):
+        ret = x
+    else:
+        return np.trunc(x, out=out)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
     return ret
