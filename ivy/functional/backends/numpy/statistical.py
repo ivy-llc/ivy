@@ -103,9 +103,13 @@ def mean(x: np.ndarray,
 def std(x: np.ndarray,
         axis: Optional[Union[int, Tuple[int]]] = None,
         correction: Union[int, float] = 0.0,
-        keepdims: bool = False) \
+        keepdims: bool = False,
+        out: Optional[np.ndarray] = None)\
         -> np.ndarray:
-    return np.std(x, axis=axis, keepdims=keepdims)
+    if  ivy.exists(out):
+        return ivy.inplace_update(out, np.std(x, axis=axis, ddof=correction, keepdims=keepdims))
+    else:
+        return np.std(x, axis=axis, ddof=correction, keepdims=keepdims)
 
 
 # Extra #
