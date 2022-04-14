@@ -66,6 +66,8 @@ def permute_dims(x: np.ndarray,
         -> np.ndarray:
     ret = np.transpose(x, axes)
     if ivy.exists(out):
+        if not ret.flags.c_contiguous:
+            ret = ret.copy(order='C')
         return ivy.inplace_update(out, ret)
     return ret
 
