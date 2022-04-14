@@ -4,6 +4,7 @@ Collection of tests for elementwise functions
 
 # global
 import pytest
+from hypothesis import given, strategies as st
 
 # local
 import ivy
@@ -11,24 +12,20 @@ import ivy_tests.test_ivy.helpers as helpers
 
 
 # abs
-@pytest.mark.parametrize(
-    "dtype", ivy.all_dtype_strs)
-@pytest.mark.parametrize(
-    "as_variable", [True, False])
-@pytest.mark.parametrize(
-    "with_out", [True, False])
-@pytest.mark.parametrize(
-    "native_array", [True, False])
+@given(dtype=helpers.sample(ivy.all_dtype_strs),
+       as_variable=st.booleans(),
+       with_out=st.booleans(),
+       native_array=st.booleans())
 def test_abs(dtype, as_variable, with_out, native_array):
     if dtype in ivy.invalid_dtype_strs:
-        pytest.skip("invalid dtype")
+        return  # invalid dtype
     x = ivy.array([2, 3, 4], dtype=dtype)
     out = ivy.array([2, 3, 4], dtype=dtype)
     if as_variable:
         if not ivy.is_float_dtype(dtype):
-            pytest.skip("only floating point variables are supported")
+            return  # only floating point variables are supported
         if with_out:
-            pytest.skip("variables do not support out argument")
+            return  # variables do not support out argument
         x = ivy.variable(x)
         out = ivy.variable(out)
     if native_array:
