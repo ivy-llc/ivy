@@ -42,4 +42,6 @@ def softmax(x, axis=-1):
     return exp_x / np.sum(exp_x, axis, keepdims=True)
 
 
-softplus = lambda x: np.log(np.exp(x) + 1)
+def softplus(x: np.ndarray)\
+        -> np.ndarray:
+    return np.log(np.exp(x) + 1)
