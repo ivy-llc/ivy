@@ -10,7 +10,7 @@ from ivy.framework_handler import current_framework as _cur_framework
 # Array API Standard #
 # -------------------#
 
-def asarray(x: Union[ivy.Array, ivy.NativeArray],
+def asarray(x: Union[ivy.Array, ivy.NativeArray, List[Number], Tuple[Number]],
              dtype: Optional[Union[ivy.Dtype, str]] = None,
              dev: Optional[Union[ivy.Device, str]] = None
             ) -> ivy.Array:
