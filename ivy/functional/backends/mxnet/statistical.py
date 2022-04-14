@@ -10,7 +10,11 @@ from ivy.functional.backends.mxnet import _flat_array_to_1_dim_array, _1_dim_arr
 # Array API Standard #
 # -------------------#
 
-def sum(x, axis=None, keepdims=False):
+def sum(x: mx.ndarray.ndarray.NDArray,
+         axis: Optional[Union[int, Tuple[int, ...]]] = None,
+         keepdims: bool = False,
+         out: Optional[mx.ndarray.ndarray.NDArray] = None)\
+            -> mx.ndarray.ndarray.NDArray:
     if axis is None:
         num_dims = len(x.shape)
         axis = tuple(range(num_dims))
@@ -21,7 +25,10 @@ def sum(x, axis=None, keepdims=False):
     if x.shape == ():
         x = _flat_array_to_1_dim_array(x)
     ret = mx.nd.sum(x, axis=axis, keepdims=keepdims)
-    return _handle_output(x, axis, keepdims, ret)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, _handle_output(x, axis, keepdims, ret))
+    else:
+        return _handle_output(x, axis, keepdims, ret)
 
 
 def prod(x: mx.ndarray.ndarray.NDArray,
