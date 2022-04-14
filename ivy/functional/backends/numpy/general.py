@@ -43,8 +43,6 @@ inplace_variables_supported = lambda: True
 
 def inplace_update(x, val):
     (x_native, val_native), _ = ivy.args_to_native(x, val)
-    if not val_native.flags.c_contiguous:
-        val_native = val_native.copy(order='C')
     x_native.data = val_native
     if ivy.is_ivy_array(x):
         x.data = x_native
