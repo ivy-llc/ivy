@@ -11,6 +11,13 @@ jobs:
           persist-credentials: false
           submodules: 'recursive'
 
+      - name: Cache hypothesis
+        uses: actions/cache@v3
+        with:
+          path: |
+            .hypothesis
+          key: ${{ runner.os }}-hypothesis
+
       - name: Run TensorFlow Tests
         run: |
           cd ivy
