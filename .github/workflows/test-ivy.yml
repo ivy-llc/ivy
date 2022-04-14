@@ -15,10 +15,11 @@ jobs:
         uses: actions/cache@v3
         with:
           path: |
-            .hypothesis
+            ivy/.hypothesis
           key: ${{ runner.os }}-hypothesis
 
       - name: Run Tests
         run: |
+          cd ivy
           mkdir -p .hypothesis
-          docker run --rm -v `pwd`/ivy:/ivy -v `pwd`/.hypothesis:/.hypothesis unifyai/ivy:latest python3 -m pytest ivy/ivy_tests/test_ivy
+          docker run --rm -v `pwd`:/ivy -v `pwd`/.hypothesis:/.hypothesis unifyai/ivy:latest python3 -m pytest ivy/ivy_tests/test_ivy
