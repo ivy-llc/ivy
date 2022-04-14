@@ -126,12 +126,25 @@ def softmax(x, axis=-1):
     return _cur_framework(x).softmax(x, axis)
 
 
-def softplus(x):
+def softplus(x: Union[ivy.Array, ivy.NativeArray])\
+        -> ivy.Array:
     """
     Applies the softplus function element-wise.
 
-    :param x: Input array.
-    :type x: array
-    :return: The input array with softplus applied element-wise.
+    Parameters
+    ----------
+    x:
+        input array.
+
+    Returns
+    -------
+    out:
+        an array containing the softplus activation of each element in ``x``.
+
+    Examples:
+    >>> x = ivy.array([-0.3461, -0.6491])
+    >>> y = ivy.softplus(x)
+    >>> print(y)
+    [0.5350, 0.4203]
     """
     return _cur_framework(x).softplus(x)

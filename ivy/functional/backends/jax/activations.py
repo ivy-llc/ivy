@@ -36,4 +36,6 @@ def softmax(x, axis=-1):
     return exp_x / jnp.sum(exp_x, axis, keepdims=True)
 
 
-softplus = lambda x: jnp.log(jnp.exp(x) + 1)
+def softplus(x: JaxArray)\
+        -> JaxArray:
+    return jnp.log(jnp.exp(x) + 1)
