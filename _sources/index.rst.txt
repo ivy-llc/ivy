@@ -149,11 +149,11 @@ This is the same for ALL Ivy functions. They can accept tensors from any framewo
 
     import ivy
 
-    jax_concatted = ivy.concatenate((jnp.ones((1,)), jnp.ones((1,))), -1)
-    tf_concatted = ivy.concatenate((tf.ones((1,)), tf.ones((1,))), -1)
-    np_concatted = ivy.concatenate((np.ones((1,)), np.ones((1,))), -1)
-    mx_concatted = ivy.concatenate((mx.nd.ones((1,)), mx.nd.ones((1,))), -1)
-    torch_concatted = ivy.concatenate((torch.ones((1,)), torch.ones((1,))), -1)
+    jax_concatted   = ivy.concat((jnp.ones((1,)), jnp.ones((1,))), -1)
+    tf_concatted    = ivy.concat((tf.ones((1,)), tf.ones((1,))), -1)
+    np_concatted    = ivy.concat((np.ones((1,)), np.ones((1,))), -1)
+    mx_concatted    = ivy.concat((mx.nd.ones((1,)), mx.nd.ones((1,))), -1)
+    torch_concatted = ivy.concat((torch.ones((1,)), torch.ones((1,))), -1)
 
 To see a list of all Ivy methods, type :code:`ivy.` into a python command prompt and press :code:`tab`.
 You should then see output like the following:
