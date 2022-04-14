@@ -93,6 +93,14 @@ def ones(shape: Union[int, Tuple[int], List[int]],
     -------
     out:
         an array containing ones.
+
+    Examples:
+
+    >>>shape = (2,2)
+    >>>y = ivy.ones(shape)
+    >>>print(y)
+    [[1.,  1.],
+       [1.,  1.]]
     """
     return _cur_framework().ones(shape, dtype, device)
 
@@ -334,23 +342,6 @@ def full(shape: Union[int, Tuple[int]], fill_value: Union[int, float], dtype: Op
     :param device: device on which to place the created array. Default: None.
     """
     return _cur_framework().full(shape, fill_value, dtype, device)
-
-
-def ones(shape: Iterable[int], dtype: Union[ivy.Dtype, str] = 'float32', dev: ivy.Device = None)\
-        -> Union[ivy.Array, ivy.NativeArray]:
-    """
-    Returns a new array of given shape and type, filled with ones.
-
-    :param shape: Shape of the new array, e.g. (2, 3).
-    :type shape: sequence of ints
-    :param dtype: The desired data-type for the array in string format, i.e. 'float32' or 'int64'.
-    Default is 'float32'.
-    :type dtype: data-type string, optional
-    :param dev: device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc..
-    :type dev: ivy.Device
-    :return: Tensor of ones with the given shape and dtype.
-    """
-    return _cur_framework().ones(shape, dtype, dev)
 
 
 def from_dlpack(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
