@@ -44,6 +44,8 @@ def flip(x: np.ndarray,
     axis = [item + num_dims if item < 0 else item for item in axis]
     ret = np.flip(x, axis)
     if ivy.exists(out):
+        if not ret.flags.c_contiguous:
+            ret = ret.copy(order='C')
         return ivy.inplace_update(out, ret)
     return ret
 
