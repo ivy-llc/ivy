@@ -107,9 +107,13 @@ def var(x: JaxArray,
 def std(x: JaxArray,
         axis: Optional[Union[int, Tuple[int, ...]]] = None,
         correction: Union[int, float] = 0.0,
-        keepdims: bool = False) \
+        keepdims: bool = False,
+        out: Optional[JaxArray] = None)\
         -> JaxArray:
-    return jnp.std(x, axis=axis, ddof=correction, keepdims=keepdims)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, jnp.std(x, axis=axis, ddof=correction, keepdims=keepdims))
+    else:
+        return jnp.std(x, axis=axis, ddof=correction, keepdims=keepdims)
 
 
 # Extra #
