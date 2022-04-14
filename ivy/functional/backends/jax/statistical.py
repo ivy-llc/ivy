@@ -58,7 +58,8 @@ def mean(x: JaxArray,
 def prod(x: JaxArray,
          axis: Optional[Union[int, Tuple[int, ...]]] = None,
          dtype: Optional[jnp.dtype] = None,
-         keepdims: bool = False)\
+         keepdims: bool = False,
+         out: Optional[JaxArray] = None)\
         -> JaxArray:
 
     if dtype == None and jnp.issubdtype(x.dtype,jnp.integer):
@@ -70,8 +71,10 @@ def prod(x: JaxArray,
             dtype = jnp.int64
         else:
             dtype = jnp.uint64
-
-    return jnp.prod(a=x, axis=axis, dtype=dtype, keepdims=keepdims)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, jnp.prod(x, axis=axis, dtype=dtype, keepdims=keepdims))
+    else:
+        return jnp.prod(a=x, axis=axis, dtype=dtype, keepdims=keepdims)
 
 
 def max(x: JaxArray,
