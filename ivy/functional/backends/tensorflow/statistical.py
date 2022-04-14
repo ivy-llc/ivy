@@ -115,5 +115,9 @@ def std(x: Tensor,
 # Extra #
 # ------#
 
-def einsum(equation, *operands):
-    return tf.einsum(equation, *operands)
+def einsum(equation : str, *operands : Tensor, out : Optional[Tensor]=None)\
+     -> Tensor:
+    if ivy.exists(out):
+        return ivy.inplace_update(out, tf.einsum(equation, *operands))
+    else:
+        return tf.einsum(equation, *operands)
