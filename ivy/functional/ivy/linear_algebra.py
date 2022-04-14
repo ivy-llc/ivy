@@ -47,9 +47,8 @@ def eigh(x: Union[ivy.Array, ivy.NativeArray]) \
     eigenvalues = array([0.17157288, 5.82842712]), eigenvectors = array([[-0.92387953,  0.38268343],
        [ 0.38268343,  0.92387953]])
     """
-    return _cur_framework(x).eigh(x)   
-         
-         
+    return _cur_framework(x).eigh(x)
+
 
 def pinv(x: Union[ivy.Array, ivy.NativeArray],
          rtol: Optional[Union[float, Tuple[float]]] = None) \
@@ -82,7 +81,7 @@ def pinv(x: Union[ivy.Array, ivy.NativeArray],
     return _cur_framework(x).pinv(x, rtol)
 
 
-def matrix_transpose(x: Union[ivy.Array, ivy.NativeArray])\
+def matrix_transpose(x: Union[ivy.Array, ivy.NativeArray]) \
         -> ivy.Array:
     """
     Transposes a matrix (or a stack of matrices) ``x``.
@@ -108,9 +107,8 @@ def matrix_transpose(x: Union[ivy.Array, ivy.NativeArray])\
 def vector_norm(x: Union[ivy.Array, ivy.NativeArray],
                 axis: Optional[Union[int, Tuple[int]]] = None,
                 keepdims: bool = False,
-                ord: Union[int, float, Literal[inf, -inf]] = 2)\
+                ord: Union[int, float, Literal[inf, -inf]] = 2) \
         -> ivy.Array:
-
     """
     Computes the vector norm of a vector (or batch of vectors) ``x``.
 
@@ -171,7 +169,7 @@ def vector_norm(x: Union[ivy.Array, ivy.NativeArray],
     elif ord == 0:
         return ivy.sum(ivy.cast(x != 0, 'float32'), axis, keepdims)
     x_raised = x ** ord
-    return ivy.sum(x_raised, axis, keepdims) ** (1/ord)
+    return ivy.sum(x_raised, axis, keepdims) ** (1 / ord)
 
 
 def svd(x:Union[ivy.Array,ivy.NativeArray],full_matrices: bool = True)->Union[ivy.Array, Tuple[ivy.Array,...]]:
