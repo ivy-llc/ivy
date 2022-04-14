@@ -3,10 +3,11 @@ Collection of tests for statstical functions
 """
 # global
 import pytest
+import numpy as np
 
 # local
 import ivy
-
+import ivy_tests.test_ivy.helpers as helpers
 
 # min
 @pytest.mark.parametrize(
@@ -266,3 +267,38 @@ def test_std(dtype, as_variable, with_out, native_array):
             return
         assert ret.data is (out if native_array else out.data)
 
+
+# einsum
+@pytest.mark.parametrize(
+    "eq_n_op_n_shp", [("ii", (np.arange(25).reshape(5, 5),), ()),
+                      ("ii->i", (np.arange(25).reshape(5, 5),), (5,)),
+                      ("ij,j", (np.arange(25).reshape(5, 5), np.arange(5)), (5,))])
+@pytest.mark.parametrize(
+    "dtype", ['float32'])
+@pytest.mark.parametrize(
+    "with_out", [True, False])
+@pytest.mark.parametrize(
+    "tensor_fn", [ivy.array, helpers.var_fn])
+def test_einsum(eq_n_op_n_shp, dtype, with_out, tensor_fn, dev, call):
+    # smoke test
+    eq, operands, true_shape = eq_n_op_n_shp
+    operands = [tensor_fn(op, dtype, dev) for op in operands]
+    if with_out:
+        out = ivy.zeros(true_shape, dtype=dtype)
+        ret = ivy.einsum(eq, *operands, out=out)
+    else:
+        ret = ivy.einsum(eq, *operands)
+    # type test
+    assert ivy.is_native_array(ret)
+    # cardinality test
+    assert ret.shape == true_shape
+    # value test
+    assert np.allclose(call(ivy.einsum, eq, *operands),
+                       ivy.functional.backends.numpy.einsum(eq, *[ivy.to_numpy(op) for op in operands]))
+    # out test
+    if with_out:
+        assert ret is out
+        if ivy.current_framework_str() in ["tensorflow", "jax"]:
+            # these frameworks do not support native inplace updates
+            return
+        assert ret.data is out.data
