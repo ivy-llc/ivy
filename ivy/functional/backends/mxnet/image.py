@@ -13,22 +13,6 @@ from ivy.functional.backends import mxnet as _ivy
 
 
 def stack_images(images: List[mx.nd.NDArray], desired_aspect_ratio: Tuple[int, int] = (1, 1)) -> mx.nd.NDArray:
-    """
-      Stacks a group of images into a combined windowed image, fitting the desired aspect ratio as closely as possible.
-
-       Parameters
-       ----------
-       images:
-           Sequence of image arrays to be stacked *[batch_shape,height,width,dims]*
-
-       desired_aspect_ratio:
-          desired aspect ratio of the stacked image
-
-       Returns
-       -------
-      out:
-         an array containing the stacked images in a specified aspect ratio/dimensions
-    """
     num_images = len(images)
     if num_images == 0:
         raise Exception('At least 1 image must be provided')
