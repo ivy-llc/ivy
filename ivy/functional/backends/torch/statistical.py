@@ -198,5 +198,11 @@ def std(x: torch.Tensor,
 # Extra #
 # ------#
 
-def einsum(equation, *operands):
-    return torch.einsum(equation, *operands)
+def einsum(equation: str,
+           *operands: torch.Tensor,
+           out: Optional[torch.Tensor]=None) \
+           -> torch.Tensor:
+    if ivy.exists(out):
+        return ivy.inplace_update(out, torch.einsum(equation, *operands))
+    else:
+        return torch.einsum(equation, *operands)

@@ -277,6 +277,8 @@ def std(x: Union[ivy.Array, ivy.NativeArray],
     """
     Calculates the standard deviation of the input array x.
 
+    Parameters
+    ----------
     x: 
         input array. Should have a floating-point data type
     axis:
@@ -311,15 +313,24 @@ def std(x: Union[ivy.Array, ivy.NativeArray],
 # Extra #
 # ------#
 
-def einsum(equation, *operands):
+def einsum(equation:str, *operands:Union[ivy.Array, ivy.NativeArray],
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None)\
+     -> ivy.Array:
     """
     Sums the product of the elements of the input operands along dimensions specified using a notation based on the
     Einstein summation convention.
 
-    :param equation: A str describing the contraction, in the same format as numpy.einsum.
-    :type equation: str
-    :param operands: the inputs to contract (each one an ivy.Array), whose shapes should be consistent with equation.
-    :type operands: seq of arrays
-    :return: The array with sums computed.
+    Parameters
+    ----------
+    equation:
+        A str describing the contraction, in the same format as numpy.einsum.
+    operands: 
+        seq of arrays, the inputs to contract (each one an ivy.Array), whose shapes should be consistent with equation.
+     out:
+        optional output array, for writing the result to.Returns   
+    Returns
+    -------
+    return: 
+        The array with sums computed.
     """
-    return _cur_framework(operands[0]).einsum(equation, *operands)
+    return _cur_framework(operands[0]).einsum(equation, *operands,out=out)
