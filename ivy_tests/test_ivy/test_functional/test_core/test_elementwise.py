@@ -699,7 +699,7 @@ def test_equal(dtype, as_variable, with_out, native_array):
         pytest.skip("invalid dtype")
     x1 = ivy.array([2, 3, 4], dtype=dtype)
     x2 = ivy.array([2, 3, 4], dtype=dtype)
-    out = ivy.array([2, 3, 4], dtype=dtype)
+    out = ivy.array([2, 3, 4], dtype='bool')
     if as_variable:
         if not ivy.is_float_dtype(dtype):
             pytest.skip("only floating point variables are supported")
@@ -707,7 +707,6 @@ def test_equal(dtype, as_variable, with_out, native_array):
             pytest.skip("variables do not support out argument")
         x1 = ivy.variable(x1)
         x2 = ivy.variable(x2)
-        out = ivy.variable(out)
     if native_array:
         x1 = x1.data
         x2 = x2.data
@@ -892,7 +891,7 @@ def test_greater(dtype, as_variable, with_out, native_array):
         pytest.skip("invalid dtype")
     x1 = ivy.array([2, 3, 4], dtype=dtype)
     x2 = ivy.array([2, 3, 4], dtype=dtype)
-    out = ivy.array([2, 3, 4], dtype=dtype)
+    out = ivy.array([2, 3, 4], dtype='bool')
     if as_variable:
         if not ivy.is_float_dtype(dtype):
             pytest.skip("only floating point variables are supported")
@@ -900,7 +899,6 @@ def test_greater(dtype, as_variable, with_out, native_array):
             pytest.skip("variables do not support out argument")
         x1 = ivy.variable(x1)
         x2 = ivy.variable(x2)
-        out = ivy.variable(out)
     if native_array:
         x1 = x1.data
         x2 = x2.data
@@ -932,7 +930,7 @@ def test_greater_equal(dtype, as_variable, with_out, native_array):
         pytest.skip("invalid dtype")
     x1 = ivy.array([2, 3, 4], dtype=dtype)
     x2 = ivy.array([2, 3, 4], dtype=dtype)
-    out = ivy.array([2, 3, 4], dtype=dtype)
+    out = ivy.array([2, 3, 4], dtype='bool')
     if as_variable:
         if not ivy.is_float_dtype(dtype):
             pytest.skip("only floating point variables are supported")
@@ -940,7 +938,6 @@ def test_greater_equal(dtype, as_variable, with_out, native_array):
             pytest.skip("variables do not support out argument")
         x1 = ivy.variable(x1)
         x2 = ivy.variable(x2)
-        out = ivy.variable(out)
     if native_array:
         x1 = x1.data
         x2 = x2.data
@@ -971,14 +968,13 @@ def test_isfinite(dtype, as_variable, with_out, native_array):
     if dtype in ivy.invalid_dtype_strs:
         pytest.skip("invalid dtype")
     x = ivy.array([2, 3, 4], dtype=dtype)
-    out = ivy.array([2, 3, 4], dtype=dtype)
+    out = ivy.array([2, 3, 4], dtype='bool')
     if as_variable:
         if not ivy.is_float_dtype(dtype):
             pytest.skip("only floating point variables are supported")
         if with_out:
             pytest.skip("variables do not support out argument")
         x = ivy.variable(x)
-        out = ivy.variable(out)
     if native_array:
         x = x.data
         out = out.data
@@ -1008,14 +1004,13 @@ def test_isinf(dtype, as_variable, with_out, native_array):
     if dtype in ivy.invalid_dtype_strs:
         pytest.skip("invalid dtype")
     x = ivy.array([2, 3, 4], dtype=dtype)
-    out = ivy.array([2, 3, 4], dtype=dtype)
+    out = ivy.array([2, 3, 4], dtype='bool')
     if as_variable:
         if not ivy.is_float_dtype(dtype):
             pytest.skip("only floating point variables are supported")
         if with_out:
             pytest.skip("variables do not support out argument")
         x = ivy.variable(x)
-        out = ivy.variable(out)
     if native_array:
         x = x.data
         out = out.data
@@ -1045,14 +1040,13 @@ def test_isnan(dtype, as_variable, with_out, native_array):
     if dtype in ivy.invalid_dtype_strs:
         pytest.skip("invalid dtype")
     x = ivy.array([2, 3, 4], dtype=dtype)
-    out = ivy.array([2, 3, 4], dtype=dtype)
+    out = ivy.array([2, 3, 4], dtype='bool')
     if as_variable:
         if not ivy.is_float_dtype(dtype):
             pytest.skip("only floating point variables are supported")
         if with_out:
             pytest.skip("variables do not support out argument")
         x = ivy.variable(x)
-        out = ivy.variable(out)
     if native_array:
         x = x.data
         out = out.data
@@ -1083,7 +1077,7 @@ def test_less(dtype, as_variable, with_out, native_array):
         pytest.skip("invalid dtype")
     x1 = ivy.array([2, 3, 4], dtype=dtype)
     x2 = ivy.array([2, 3, 4], dtype=dtype)
-    out = ivy.array([2, 3, 4], dtype=dtype)
+    out = ivy.array([2, 3, 4], dtype='bool')
     if as_variable:
         if not ivy.is_float_dtype(dtype):
             pytest.skip("only floating point variables are supported")
@@ -1091,7 +1085,6 @@ def test_less(dtype, as_variable, with_out, native_array):
             pytest.skip("variables do not support out argument")
         x1 = ivy.variable(x1)
         x2 = ivy.variable(x2)
-        out = ivy.variable(out)
     if native_array:
         x1 = x1.data
         x2 = x2.data
@@ -1123,7 +1116,7 @@ def test_less_equal(dtype, as_variable, with_out, native_array):
         pytest.skip("invalid dtype")
     x1 = ivy.array([2, 3, 4], dtype=dtype)
     x2 = ivy.array([2, 3, 4], dtype=dtype)
-    out = ivy.array([2, 3, 4], dtype=dtype)
+    out = ivy.array([2, 3, 4], dtype='bool')
     if as_variable:
         if not ivy.is_float_dtype(dtype):
             pytest.skip("only floating point variables are supported")
@@ -1131,7 +1124,6 @@ def test_less_equal(dtype, as_variable, with_out, native_array):
             pytest.skip("variables do not support out argument")
         x1 = ivy.variable(x1)
         x2 = ivy.variable(x2)
-        out = ivy.variable(out)
     if native_array:
         x1 = x1.data
         x2 = x2.data
@@ -1532,7 +1524,7 @@ def test_not_equal(dtype, as_variable, with_out, native_array):
         pytest.skip("invalid dtype")
     x1 = ivy.array([2, 3, 4], dtype=dtype)
     x2 = ivy.array([2, 3, 4], dtype=dtype)
-    out = ivy.array([0, 0, 0], dtype=dtype)
+    out = ivy.array([0, 0, 0], dtype='bool')
     if as_variable:
         if not ivy.is_float_dtype(dtype):
             pytest.skip("only floating point variables are supported")
@@ -1540,7 +1532,6 @@ def test_not_equal(dtype, as_variable, with_out, native_array):
             pytest.skip("variables do not support out argument")
         x1 = ivy.variable(x1)
         x2 = ivy.variable(x2)
-        out = ivy.variable(out)
     if native_array:
         x1 = x1.data
         x2 = x2.data
