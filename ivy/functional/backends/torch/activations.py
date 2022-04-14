@@ -39,5 +39,6 @@ def softmax(x, axis: int = -1):
     return torch.softmax(x, axis)
 
 
-def softplus(x):
+def softplus(x: torch.Tensor)\
+        -> torch.Tensor:
     return torch.nn.functional.softplus(x)
