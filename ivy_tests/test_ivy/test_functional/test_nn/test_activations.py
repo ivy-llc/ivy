@@ -151,3 +151,5 @@ def test_softplus(x, dtype, tensor_fn, dev, call):
     assert ret.shape == x.shape
     # value test
     assert np.allclose(call(ivy.softplus, x), ivy.functional.backends.numpy.softplus(ivy.to_numpy(x)))
+    # docstring test
+    helpers.assert_docstring_examples_run(ivy.softplus)
