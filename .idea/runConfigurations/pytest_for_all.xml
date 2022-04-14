@@ -1,7 +1,7 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="pytest for all" type="tests" factoryName="py.test">
     <module name="ivy" />
-    <option name="INTERPRETER_OPTIONS" value="" />
+    <option name="INTERPRETER_OPTIONS" value=""/>
     <option name="PARENT_ENVS" value="true" />
     <option name="SDK_HOME" value="" />
     <option name="WORKING_DIRECTORY" value="" />
