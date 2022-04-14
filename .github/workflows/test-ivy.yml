@@ -11,7 +11,13 @@ jobs:
           persist-credentials: false
           submodules: 'recursive'
 
+      - name: Cache hypothesis
+        uses: actions/cache@v3
+        with:
+          path: |
+            ivy/.hypothesis
+          key: ${{ runner.os }}-hypothesis
+
       - name: Run Tests
         run: |
           docker run --rm -v `pwd`/ivy:/ivy unifyai/ivy:latest python3 -m pytest ivy/ivy_tests/test_ivy
-          
