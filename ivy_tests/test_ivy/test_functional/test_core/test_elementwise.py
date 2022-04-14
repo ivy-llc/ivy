@@ -2022,8 +2022,6 @@ def test_tanh(dtype, as_variable, with_out, native_array):
 def test_trunc(dtype, as_variable, with_out, native_array):
     if ivy.current_framework_str() == 'torch' and dtype == 'float16':
         pytest.skip("torch trunc doesnt allow float16")
-    # if ivy.current_framework_str() == 'tensorflow' and dtype == 'bfloat16':
-    #     pytest.skip("tf trunc doesnt allow bfloat16")
     if dtype in ivy.invalid_dtype_strs:
         pytest.skip("invalid dtype")
     x = ivy.array([2, 3, 4], dtype=dtype)
