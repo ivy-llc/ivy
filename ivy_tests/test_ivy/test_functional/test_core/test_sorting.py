@@ -22,14 +22,13 @@ def test_argsort(dtype, as_variable, with_out, native_array):
     if dtype in ivy.invalid_dtype_strs:
         pytest.skip("invalid dtype")
     x = ivy.array([2, 3, 4], dtype=dtype)
-    out = ivy.array([2, 3, 4], dtype=dtype)
+    out = ivy.array([2, 3, 4], dtype=ivy.default_int_dtype())
     if as_variable:
         if not ivy.is_float_dtype(dtype):
             pytest.skip("only floating point variables are supported")
         if with_out:
             pytest.skip("variables do not support out argument")
         x = ivy.variable(x)
-        out = ivy.variable(out)
     if native_array:
         x = x.data
         out = out.data
