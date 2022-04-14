@@ -414,6 +414,32 @@ def trace(x: ivy.Array,
     return _cur_framework(x).trace(x, offset)
 
 
+def vecdot(x1: Union[ivy.Array, ivy.NativeArray],
+           x2: Union[ivy.Array, ivy.NativeArray],
+           axis: int = -1)\
+        -> ivy.Array:
+    """
+    Computes the (vector) dot product of two arrays.
+    Parameters
+    ----------
+    x1: array
+        first input array. Should have a numeric data type.
+    x2: array
+        second input array. Must be compatible with ``x1`` (see :ref:`broadcasting`). Should have a numeric data type.
+    axis:int
+        axis over which to compute the dot product. Must be an integer on the interval ``[-N, N)``, where ``N`` is the rank (number of dimensions) of the shape determined according to :ref:`broadcasting`. If specified as a negative integer, the function must determine the axis along which to compute the dot product by counting backward from the last dimension (where ``-1`` refers to the last dimension). By default, the function must compute the dot product over the last axis. Default: ``-1``.
+    Returns
+    -------
+    out: array
+        if ``x1`` and ``x2`` are both one-dimensional arrays, a zero-dimensional containing the dot product; otherwise, a non-zero-dimensional array containing the dot products and having rank ``N-1``, where ``N`` is the rank (number of dimensions) of the shape determined according to :ref:`broadcasting`. The returned array must have a data type determined by :ref:`type-promotion`.
+    **Raises**
+    -   if provided an invalid ``axis``.
+    -   if the size of the axis over which to compute the dot product is not the same for both ``x1`` and ``x2``.
+    """
+
+    return _cur_framework(x1).vecdot(x1, x2, axis)
+
+
 def det(x: ivy.Array) \
     -> ivy.Array:
     """
@@ -425,6 +451,7 @@ def det(x: ivy.Array) \
                dimensional array containing the determinant for each square matrix. The returned array must have the same data type as x.
     """
     return _cur_framework(x).det(x)
+
 
 def cholesky(x: Union[ivy.Array, ivy.NativeArray], 
              upper: bool = False) -> ivy.Array:
@@ -445,6 +472,7 @@ def cholesky(x: Union[ivy.Array, ivy.NativeArray],
     :type out: array
     """
     return  _cur_framework(x).cholesky(x, upper)
+
 
 def eigvalsh(x: Union[ivy.Array, ivy.NativeArray], /) -> ivy.Array:
     """

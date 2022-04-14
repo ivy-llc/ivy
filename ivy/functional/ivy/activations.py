@@ -76,13 +76,28 @@ def gelu(x, approximate=True):
     return _cur_framework(x).gelu(x, approximate)
 
 
-def tanh(x):
+def tanh(x: Union[ivy.Array, ivy.NativeArray])\
+        -> ivy.Array:
     """
-    Applies the tangent hyperbolic function element-wise.
+    Applies the Hyperbolic tangent activation function element-wise.
 
-    :param x: Input array.
-    :type x: array
-    :return: The input array with tanh applied element-wise.
+    Parameters
+     ----------
+    x:
+         input array
+
+    Returns
+    -------
+    ivy.Array
+        The input array with Hyperbolic tangent activation applied element-wise.
+
+    Examples:
+
+    >>> x = ivy.array([0.55 , -0.55])
+    >>> y = ivy.tanh(x)
+    >>> print(y)
+    [0.50, -0.50]
+
     """
     return _cur_framework(x).tanh(x)
 

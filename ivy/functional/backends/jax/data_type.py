@@ -3,7 +3,7 @@ import numpy as np
 import jax
 import jaxlib
 import jax.numpy as jnp
-from typing import Union, Tuple
+from typing import Union, Tuple, List
 
 # local
 import ivy
@@ -117,6 +117,9 @@ def result_type(*arrays_and_dtypes: Union[JaxArray, jnp.dtype]) -> jnp.dtype:
   
 def broadcast_to(x: JaxArray, shape: Tuple[int, ...]) -> JaxArray:
     return jnp.broadcast_to(x, shape)
+
+def broadcast_arrays(*arrays: JaxArray) -> List[JaxArray]:
+    return jnp.broadcast_arrays(*arrays)
 
 
 def astype(x: JaxArray, dtype: jnp.dtype, copy: bool = True) -> JaxArray:
