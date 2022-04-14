@@ -217,7 +217,9 @@ def prod(x: Union[ivy.Array, ivy.NativeArray],
     (dimensions) must not be included in the result. Default: False.
     out:
         optional output array, for writing the result to.
+    
     Returns
+    -------
     return: 
         array,  if the product was computed over the entire array, a zero-dimensional array containing the 
         product; otherwise, a non-zero-dimensional array containing the products. The returned array must 
@@ -229,7 +231,8 @@ def prod(x: Union[ivy.Array, ivy.NativeArray],
 def sum(x: Union[ivy.Array, ivy.NativeArray],
         axis: Optional[Union[int, Tuple[int, ...]]] = None,
         dtype: Optional[Union[ivy.Dtype, str]] = None,
-        keepdims: bool = False) -> ivy.Array:
+        keepdims: bool = False,
+        out: Optional[Union[ivy.Array, ivy.NativeArray]] = None) -> ivy.Array:
     """
     Calculates the sum of the input array ``x``.
     **Special Cases**
@@ -254,13 +257,16 @@ def sum(x: Union[ivy.Array, ivy.NativeArray],
            keyword argument is intended to help prevent data type overflows.
     keepdims:
         if ``True``, the reduced axes (dimensions) must be included in the result as singleton dimensions, and, accordingly, the result must be compatible with the input array (see :ref:`broadcasting`). Otherwise, if ``False``, the reduced axes (dimensions) must not be included in the result. Default: ``False``.
+    out:
+        optional output array, for writing the result to.Returns
+    
     Returns
     -------
-    out:
+    return:
         if the sum was computed over the entire array, a zero-dimensional array containing the sum; otherwise, an array containing the sums. The returned array must have a data type as described by the ``dtype`` parameter above.
     """
 
-    return _cur_framework(x).sum(x, axis, dtype, keepdims)
+    return _cur_framework(x).sum(x, axis, dtype, keepdims, out = out)
 
 def std(x: Union[ivy.Array, ivy.NativeArray],
         axis: Optional[Union[int, Tuple[int, ...]]] = None,
