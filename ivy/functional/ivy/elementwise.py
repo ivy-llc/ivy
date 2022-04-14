@@ -165,17 +165,12 @@ def bitwise_invert(x: Union[ivy.Array, ivy.NativeArray],
 
     Returns
     -------
-    out:
+    out: array
         optional output array, for writing the result to. It must have a shape that the inputs broadcast to.
 
-    Returns
-    -------
-    out: array
-        an array containing the element-wise results. The returned array must have the same data type as x.
-
     Examples:
-    >>> z = ivy.array([1,6,9])
-    >>> y = ivy.bitwise_invert(z)
+    >>> x = ivy.array([1,6,9])
+    >>> y = ivy.bitwise_invert(x)
     >>> print(y)
     """
     return _cur_framework(x).bitwise_invert(x, out)
