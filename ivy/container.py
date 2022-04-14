@@ -6,6 +6,7 @@ Base Container Object
 import re
 import copy
 import termcolor
+import colorama
 import numpy as _np
 import json as _json
 try:
@@ -34,6 +35,7 @@ import ivy
 
 ansi_escape = re.compile(r'\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])')
 base_cont = None
+colorama.init(strip=False)
 
 def _is_jsonable(x):
     try:
