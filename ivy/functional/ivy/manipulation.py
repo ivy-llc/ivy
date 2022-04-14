@@ -84,7 +84,7 @@ def flip(x: Union[ivy.Array, ivy.NativeArray],
 
 
 def expand_dims(x: Union[ivy.Array, ivy.NativeArray],
-                axis: Optional[Union[int, Tuple[int], List[int]]] = None,
+                axis: int = 0,
                 out: Optional[Union[ivy.Array, ivy.NativeArray]] = None) \
         -> ivy.Array:
     """
