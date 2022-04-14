@@ -94,15 +94,25 @@ def var(x:mx.ndarray.ndarray, axis: Union[int, Tuple[int,...]] = None,
         return ret
 
 
-def std(x, axis=None, keepdims=False):
+def std(x: mx.ndarray.ndarray.NDArray,
+         axis: Optional[Union[int, Tuple[int, ...]]] = None,
+         keepdims: bool = False,
+         out: Optional[mx.ndarray.ndarray.NDArray] = None)\
+            -> mx.ndarray.ndarray.NDArray:
     red_var = var(x, axis, keepdims)
     is_flat = red_var.shape == ()
     if is_flat:
         red_var = _flat_array_to_1_dim_array(red_var)
     red_std = red_var ** 0.5
     if is_flat:
-        return _1_dim_array_to_flat_array(red_std)
-    return red_std
+        if ivy.exists(out):
+            return ivy.inplace_update(out, _1_dim_array_to_flat_array(red_std))
+        else:
+            return _1_dim_array_to_flat_array(red_std)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, red_std)
+    else:
+        return red_std
 
 
 def min(x: mx.ndarray.ndarray.NDArray, axis: Union[int, Tuple[int,...]] = None,

@@ -171,18 +171,28 @@ def var(x: torch.Tensor,
 def std(x: torch.Tensor,
         axis: Optional[Union[int, Tuple[int]]] = None,
         correction: Union[int, float] = 0.0,
-        keepdims: bool = False) \
+        keepdims: bool = False, 
+        out: Optional[torch.Tensor]=None) \
         -> torch.Tensor:
     if axis is None:
         num_dims = len(x.shape)
         axis = tuple(range(num_dims))
     if isinstance(axis, int):
-        return torch.std(x, dim=axis, keepdim=keepdims)
+        if ivy.exists(out):
+            return ivy.inplace_update(out,torch.std(x,dim=axis,keepdim=keepdims))
+        else:
+            return torch.std(x, dim=axis, keepdim=keepdims)
     dims = len(x.shape)
     axis = tuple([i % dims for i in axis])
     for i, a in enumerate(axis):
-        x = torch.std(x, dim=a if keepdims else a - i, keepdim=keepdims)
-    return x
+        if ivy.exists(out):
+            x = ivy.inplace_update(out, torch.std(x, dim=a if keepdims else a - i, keepdim=keepdims))
+        else:
+            x = torch.std(x, dim=a if keepdims else a - i, keepdim=keepdims)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, x)
+    else:
+        return x
 
 
 # Extra #
