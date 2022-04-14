@@ -35,10 +35,20 @@ def eigh(x: Union[ivy.Array, ivy.NativeArray]) \
         Each returned array must have the same floating-point data type as ``x``.
     .. note::
        Eigenvalue sort order is left unspecified and is thus implementation-dependent.
+    Examples:
+    >>> x = ivy.array([[1., -2.], [2., 5.]])
+    >>> print(x)
+    array([[ 1., -2.],
+       [ 2.,  5.]])
+    >>> print(type(x[0][0]))
+    <class 'numpy.float64'>
+    >>> e = ivy.linalg.eigh(x)
+    >>> print(e)
+    eigenvalues = array([0.17157288, 5.82842712]), eigenvectors = array([[-0.92387953,  0.38268343],
+       [ 0.38268343,  0.92387953]])
     """
-    return _cur_framework(x).eigh(x)   
-         
-         
+    return _cur_framework(x).eigh(x)
+
 
 def pinv(x: Union[ivy.Array, ivy.NativeArray],
          rtol: Optional[Union[float, Tuple[float]]] = None) \
@@ -55,11 +65,23 @@ def pinv(x: Union[ivy.Array, ivy.NativeArray],
     -------
     out: array
         an array containing the pseudo-inverses. The returned array must have a floating-point data type determined by :ref:`type-promotion` and must have shape ``(..., N, M)`` (i.e., must have the same shape as ``x``, except the innermost two dimensions must be transposed).
+    Examples:
+    >>> x = [[-0.11466662, 0.42658297], [ 0.49410099, -0.1564352], [ 1.48857471, -0.72250516]]
+    >>> y = np.linalg.pinv(x)
+    >>> print(y)
+    array([[1.20039252, 0.4810017 , 0.60459279],
+       [2.56584165, 0.57874327, 0.00554811]])
+
+    # The following checks that x * x+ * x == x and x+ * x * x+ == x+
+    >>> print(np.allclose(x, np.dot(x, np.dot(y, x))))
+    True
+    >>> print(np.allclose(y, np.dot(y, np.dot(x, y))))
+    True
     """
     return _cur_framework(x).pinv(x, rtol)
 
 
-def matrix_transpose(x: Union[ivy.Array, ivy.NativeArray])\
+def matrix_transpose(x: Union[ivy.Array, ivy.NativeArray]) \
         -> ivy.Array:
     """
     Transposes a matrix (or a stack of matrices) ``x``.
@@ -71,6 +93,12 @@ def matrix_transpose(x: Union[ivy.Array, ivy.NativeArray])\
     -------
     out: array
         an array containing the transpose for each matrix and having shape ``(..., N, M)``. The returned array must have the same data type as ``x``.
+    Examples:
+    >>> x = ivy.array([[1 ,0], [ 3, -2 ], [ 8, 2]])
+    >>> y = ivy.matrix_transpose(x)
+    >>> print(y)
+    array([[ 1,  3,  8],
+       [ 0, -2,  2]])
     """
     return _cur_framework(x).matrix_transpose(x)
 
@@ -79,9 +107,8 @@ def matrix_transpose(x: Union[ivy.Array, ivy.NativeArray])\
 def vector_norm(x: Union[ivy.Array, ivy.NativeArray],
                 axis: Optional[Union[int, Tuple[int]]] = None,
                 keepdims: bool = False,
-                ord: Union[int, float, Literal[inf, -inf]] = 2)\
+                ord: Union[int, float, Literal[inf, -inf]] = 2) \
         -> ivy.Array:
-
     """
     Computes the vector norm of a vector (or batch of vectors) ``x``.
 
@@ -126,6 +153,13 @@ def vector_norm(x: Union[ivy.Array, ivy.NativeArray],
     -------
     out:
         an array containing the vector norms. If ``axis`` is ``None``, the returned array must be a zero-dimensional array containing a vector norm. If ``axis`` is a scalar value (``int`` or ``float``), the returned array must have a rank which is one less than the rank of ``x``. If ``axis`` is a ``n``-tuple, the returned array must have a rank which is ``n`` less than the rank of ``x``. The returned array must have a floating-point data type determined by :ref:`type-promotion`.
+    Examples:
+    >>> x = ivy.arange(10, dtype = float)
+    >>> y = ivy.vector_norm(x)
+    >>> print(x)
+    [0. 1. 2. 3. 4. 5. 6. 7. 8. 9.]
+    >>> print(y)
+    16.881943016134134
     """
 
     if ord == -float('inf'):
@@ -135,7 +169,7 @@ def vector_norm(x: Union[ivy.Array, ivy.NativeArray],
     elif ord == 0:
         return ivy.sum(ivy.cast(x != 0, 'float32'), axis, keepdims)
     x_raised = x ** ord
-    return ivy.sum(x_raised, axis, keepdims) ** (1/ord)
+    return ivy.sum(x_raised, axis, keepdims) ** (1 / ord)
 
 
 def svd(x:Union[ivy.Array,ivy.NativeArray],full_matrices: bool = True)->Union[ivy.Array, Tuple[ivy.Array,...]]:
