@@ -10,7 +10,7 @@ from ivy.framework_handler import current_framework as _cur_framework
 # Array API Standard #
 # -------------------#
 
-def asarray(x: Union[ivy.Array, ivy.NativeArray],
+def asarray(x: Union[ivy.Array, ivy.NativeArray, List[Number], Tuple[Number]],
              dtype: Optional[Union[ivy.Dtype, str]] = None,
              dev: Optional[Union[ivy.Device, str]] = None
             ) -> ivy.Array:
@@ -59,7 +59,16 @@ def zeros(shape: Union[int, Tuple[int], List[int]],
     -------
     out:
        an array containing zeros.
-
+       
+       
+    Examples:
+    
+    >>> shape = (3,5)
+    >>> x = ivy.zeros(shape)
+    >>> print(x)
+    [[0., 0., 0., 0., 0.],
+     [0., 0., 0., 0., 0.],
+     [0., 0., 0., 0., 0.]]
     """
     return _cur_framework().zeros(shape, dtype, device)
 
