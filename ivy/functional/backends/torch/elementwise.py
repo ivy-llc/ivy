@@ -17,20 +17,6 @@ def add(x1: torch.Tensor,
     return torch.add(x1, x2, out=out)
 
 
-def pow(x1: torch.Tensor,
-        x2: torch.Tensor,
-        out: Optional[torch.Tensor] = None)\
-        -> torch.Tensor:
-    if not isinstance(x2, Tensor):
-        x2 = torch.tensor(x2, dtype=x1.dtype)
-        return torch.pow(x1, x2, out=out)
-    promoted_type = torch.promote_types(x1.dtype, x2.dtype)
-    ret = torch.pow(x1, x2).type(promoted_type)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
-
-
 def bitwise_xor(x1: torch.Tensor,
                 x2: torch.Tensor,
                 out: Optional[torch.Tensor] = None)\
@@ -51,14 +37,22 @@ def bitwise_invert(x: torch.Tensor,
     return torch.bitwise_not(x, out=out)
 
 
-def isfinite(x: Tensor)\
+def isfinite(x: Tensor,
+             out: Optional[torch.Tensor] = None)\
         -> Tensor:
-    return torch.isfinite(x)
+    ret = torch.isfinite(x)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
-def isinf(x: torch.Tensor) \
+def isinf(x: torch.Tensor,
+          out: Optional[torch.Tensor] = None) \
         -> torch.Tensor:
-    return torch.isinf(x)
+    ret = torch.isinf(x)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
 def _cast_for_binary_op(x1: Tensor, x2: Tensor)\
@@ -166,9 +160,13 @@ def log1p(x: torch.Tensor,
     return torch.log1p(x, out=out)
 
 
-def isnan(x: torch.Tensor)\
+def isnan(x: torch.Tensor,
+          out: Optional[torch.Tensor] = None)\
         -> torch.Tensor:
-    return torch.isnan(x)
+    ret = torch.isnan(x)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
 def less(x1: torch.Tensor,
@@ -334,6 +332,20 @@ def square(x: torch.Tensor,
     return torch.square(x, out=out)
 
 
+def pow(x1: torch.Tensor,
+        x2: torch.Tensor,
+        out: Optional[torch.Tensor] = None)\
+        -> torch.Tensor:
+    if not isinstance(x2, Tensor):
+        x2 = torch.tensor(x2, dtype=x1.dtype)
+        return torch.pow(x1, x2, out=out)
+    promoted_type = torch.promote_types(x1.dtype, x2.dtype)
+    ret = torch.pow(x1, x2).type(promoted_type)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
+
+
 def round(x: torch.Tensor,
           out: Optional[torch.Tensor] = None)\
         -> torch.Tensor:
@@ -451,7 +463,7 @@ def bitwise_right_shift(x1: torch.Tensor,
         x1 = x1.to(promoted_type)
         x2 = x2.to(promoted_type)
     return torch.bitwise_right_shift(x1, x2, out=out)
-
+  
 
 def bitwise_left_shift(x1: torch.Tensor,
                        x2: torch.Tensor,
@@ -475,13 +487,13 @@ def erf(x: torch.Tensor,
     return torch.erf(x, out=out)
 
 
-def minimum(x, y):
+def minimum(x, y, out: Optional[torch.Tensor] = None):
     x_val = torch.tensor(x) if (isinstance(x, int) or isinstance(x, float)) else x
     y_val = torch.tensor(y) if (isinstance(y, int) or isinstance(y, float)) else y
-    return torch.min(x_val, y_val)
+    return torch.min(x_val, y_val, out=out)
 
 
-def maximum(x, y):
+def maximum(x, y, out: Optional[torch.Tensor] = None):
     x_val = torch.tensor(x) if (isinstance(x, int) or isinstance(x, float)) else x
     y_val = torch.tensor(y) if (isinstance(y, int) or isinstance(y, float)) else y
-    return torch.max(x_val, y_val)
+    return torch.max(x_val, y_val, out=out)

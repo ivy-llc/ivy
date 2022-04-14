@@ -15,8 +15,6 @@ chkpt/
 saved_model/
 runtime_analysis/
 with_time_logs/
-venv-ivy/
-venv*
 *.csv
 *.csv#
 *.ods
