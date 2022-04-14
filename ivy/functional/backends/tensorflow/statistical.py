@@ -103,9 +103,13 @@ def var(x: Tensor,
 def std(x: Tensor,
         axis: Optional[Union[int, Tuple[int]]] = None,
         correction: Union[int, float] = 0.0,
-        keepdims: bool = False)\
+        keepdims: bool = False,
+        out : Optional[Tensor]=None)\
         -> Tensor:
-    return tf.experimental.numpy.std(x, axis, keepdims)
+        if ivy.exists(out):
+            return ivy.inplace_update(out, tf.experimental.numpy.std(x, axis = axis, keepdims = keepdims))
+        else:
+            return tf.experimental.numpy.std(x, axis, keepdims)
 
     
 # Extra #
