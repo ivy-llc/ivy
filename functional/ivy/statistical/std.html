@@ -219,22 +219,36 @@
 <h1>std<a class="headerlink" href="#std" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
 <dt id="ivy.functional.ivy.statistical.std">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">std</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">axis</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Union<span class="p">[</span>int<span class="p">, </span>Tuple<span class="p">[</span>int<span class="p">, </span><span class="p">…</span><span class="p">]</span><span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">correction</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>int<span class="p">, </span>float<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">keepdims</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../../_modules/ivy/functional/ivy/statistical.html#std"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.statistical.std" title="Permalink to this definition">¶</a></dt>
-<dd><p>Computes the arithmetic standard deviation along a given axis. The standard deviation is taken over
-the flattened array by default, otherwise over the specified axis.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>array</em>) – Array containing numbers whose standard deviation is desired.</p></li>
-<li><p><strong>axis</strong> (<em>int</em><em> or </em><em>sequence of ints</em>) – Axis or axes along which the means are computed. The default is to compute the mean of the flattened
-array. If this is a tuple of ints, a mean is performed over multiple axes, instead of a single axis
-or all the axes as before.</p></li>
-<li><p><strong>keepdims</strong> (<em>bool</em><em>, </em><em>optional</em>) – If this is set to True, the axes which are reduced are left in the result as dimensions with size
-one. With this option, the result will broadcast correctly against the input array.</p></li>
-</ul>
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">std</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">axis</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Union<span class="p">[</span>int<span class="p">, </span>Tuple<span class="p">[</span>int<span class="p">, </span><span class="p">…</span><span class="p">]</span><span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">correction</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>int<span class="p">, </span>float<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">keepdims</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">out</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../../_modules/ivy/functional/ivy/statistical.html#std"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.statistical.std" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the standard deviation of the input array x.</p>
+<dl class="simple">
+<dt>x: </dt><dd><p>input array. Should have a floating-point data type</p>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>The array with standard deviations computed.</p>
+<dt>axis:</dt><dd><p>axis or axes along which standard deviations must be computed. By default, the standard deviation 
+must be computed over the entire array. If a tuple of integers, standard deviations must be computed 
+over multiple axes. Default: None.</p>
+</dd>
+<dt>correction:</dt><dd><p>degrees of freedom adjustment. Setting this parameter to a value other than 0 has the effect of 
+adjusting the divisor during the calculation of the standard deviation according to N-c where N 
+corresponds to the total number of elements over which the standard deviation is computed and c 
+corresponds to the provided degrees of freedom adjustment. When computing the standard deviation 
+of a population, setting this parameter to 0 is the standard choice (i.e., the provided array 
+contains data constituting an entire population). When computing the corrected sample standard 
+deviation, setting this parameter to 1 is the standard choice (i.e., the provided array contains 
+data sampled from a larger population; this is commonly referred to as Bessel’s correction). 
+Default: 0.</p>
+</dd>
+<dt>keepdims: </dt><dd><p>if True, the reduced axes (dimensions) must be included in the result as singleton 
+dimensions, and, accordingly, the result must be compatible with the input array (see Broadcasting). 
+Otherwise, if False, the reduced axes (dimensions) must not be included in the result. 
+Default: False.</p>
+</dd>
+<dt>out:</dt><dd><p>optional output array, for writing the result to.Returns</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The array with standard deviations computed.</p>
 </dd>
 </dl>
 </dd></dl>

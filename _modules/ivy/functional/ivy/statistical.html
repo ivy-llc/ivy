@@ -417,7 +417,9 @@
 <span class="sd">    (dimensions) must not be included in the result. Default: False.</span>
 <span class="sd">    out:</span>
 <span class="sd">        optional output array, for writing the result to.</span>
+<span class="sd">    </span>
 <span class="sd">    Returns</span>
+<span class="sd">    -------</span>
 <span class="sd">    return: </span>
 <span class="sd">        array,  if the product was computed over the entire array, a zero-dimensional array containing the </span>
 <span class="sd">        product; otherwise, a non-zero-dimensional array containing the products. The returned array must </span>
@@ -429,7 +431,8 @@
 <div class="viewcode-block" id="sum"><a class="viewcode-back" href="../../../../functional/ivy/statistical/sum.html#ivy.functional.ivy.statistical.sum">[docs]</a><span class="k">def</span> <span class="nf">sum</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
         <span class="n">axis</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">dtype</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">keepdims</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+        <span class="n">keepdims</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Calculates the sum of the input array ``x``.</span>
 <span class="sd">    **Special Cases**</span>
@@ -454,35 +457,55 @@
 <span class="sd">           keyword argument is intended to help prevent data type overflows.</span>
 <span class="sd">    keepdims:</span>
 <span class="sd">        if ``True``, the reduced axes (dimensions) must be included in the result as singleton dimensions, and, accordingly, the result must be compatible with the input array (see :ref:`broadcasting`). Otherwise, if ``False``, the reduced axes (dimensions) must not be included in the result. Default: ``False``.</span>
+<span class="sd">    out:</span>
+<span class="sd">        optional output array, for writing the result to.Returns</span>
+<span class="sd">    </span>
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    out:</span>
+<span class="sd">    return:</span>
 <span class="sd">        if the sum was computed over the entire array, a zero-dimensional array containing the sum; otherwise, an array containing the sums. The returned array must have a data type as described by the ``dtype`` parameter above.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">dtype</span><span class="p">,</span> <span class="n">keepdims</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">dtype</span><span class="p">,</span> <span class="n">keepdims</span><span class="p">,</span> <span class="n">out</span> <span class="o">=</span> <span class="n">out</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="std"><a class="viewcode-back" href="../../../../functional/ivy/statistical/std.html#ivy.functional.ivy.statistical.std">[docs]</a><span class="k">def</span> <span class="nf">std</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
         <span class="n">axis</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">correction</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span>
-        <span class="n">keepdims</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>\
-        <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+        <span class="n">keepdims</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span>\
+         <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Computes the arithmetic standard deviation along a given axis. The standard deviation is taken over</span>
-<span class="sd">    the flattened array by default, otherwise over the specified axis.</span>
+<span class="sd">    Calculates the standard deviation of the input array x.</span>
 
-<span class="sd">    :param x: Array containing numbers whose standard deviation is desired.</span>
-<span class="sd">    :type x: array</span>
-<span class="sd">    :param axis: Axis or axes along which the means are computed. The default is to compute the mean of the flattened</span>
-<span class="sd">                    array. If this is a tuple of ints, a mean is performed over multiple axes, instead of a single axis</span>
-<span class="sd">                    or all the axes as before.</span>
-<span class="sd">    :type axis: int or sequence of ints</span>
-<span class="sd">    :param keepdims: If this is set to True, the axes which are reduced are left in the result as dimensions with size</span>
-<span class="sd">                        one. With this option, the result will broadcast correctly against the input array.</span>
-<span class="sd">    :type keepdims: bool, optional</span>
+<span class="sd">    x: </span>
+<span class="sd">        input array. Should have a floating-point data type</span>
+<span class="sd">    axis:</span>
+<span class="sd">        axis or axes along which standard deviations must be computed. By default, the standard deviation </span>
+<span class="sd">        must be computed over the entire array. If a tuple of integers, standard deviations must be computed </span>
+<span class="sd">        over multiple axes. Default: None.</span>
+<span class="sd">    correction:</span>
+<span class="sd">        degrees of freedom adjustment. Setting this parameter to a value other than 0 has the effect of </span>
+<span class="sd">        adjusting the divisor during the calculation of the standard deviation according to N-c where N </span>
+<span class="sd">        corresponds to the total number of elements over which the standard deviation is computed and c </span>
+<span class="sd">        corresponds to the provided degrees of freedom adjustment. When computing the standard deviation </span>
+<span class="sd">        of a population, setting this parameter to 0 is the standard choice (i.e., the provided array </span>
+<span class="sd">        contains data constituting an entire population). When computing the corrected sample standard </span>
+<span class="sd">        deviation, setting this parameter to 1 is the standard choice (i.e., the provided array contains </span>
+<span class="sd">        data sampled from a larger population; this is commonly referred to as Bessel&#39;s correction). </span>
+<span class="sd">        Default: 0.</span>
+<span class="sd">    keepdims: </span>
+<span class="sd">        if True, the reduced axes (dimensions) must be included in the result as singleton </span>
+<span class="sd">        dimensions, and, accordingly, the result must be compatible with the input array (see Broadcasting). </span>
+<span class="sd">        Otherwise, if False, the reduced axes (dimensions) must not be included in the result. </span>
+<span class="sd">        Default: False.</span>
+<span class="sd">    out:</span>
+<span class="sd">        optional output array, for writing the result to.Returns</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
 <span class="sd">    :return: The array with standard deviations computed.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">correction</span><span class="p">,</span> <span class="n">keepdims</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">correction</span><span class="p">,</span> <span class="n">keepdims</span><span class="p">,</span><span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
 
 <span class="c1"># Extra #</span>
