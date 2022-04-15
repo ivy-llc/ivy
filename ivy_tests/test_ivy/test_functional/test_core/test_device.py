@@ -85,7 +85,6 @@ def test_dev_from_str(x, dtype, tensor_fn, dev, call):
         return
 
 
-
 # memory_on_dev
 @pytest.mark.parametrize(
     "dev_to_check", ['cpu', 'gpu:0'])
