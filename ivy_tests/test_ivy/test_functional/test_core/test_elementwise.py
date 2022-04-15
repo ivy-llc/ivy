@@ -1855,7 +1855,6 @@ def test_square(dtype, as_variable, with_out, native_array):
         assert ret.data is (out if native_array else out.data)
 
 
-
 # sqrt
 @pytest.mark.parametrize(
     "dtype", ivy.float_strs)

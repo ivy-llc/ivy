@@ -11,6 +11,7 @@ import ivy
 import ivy.functional.backends.numpy
 import ivy_tests.test_ivy.helpers as helpers
 
+
 # all
 @pytest.mark.parametrize(
     "x", [[1., 2., 3.], [[1., 2., 3.]]])
