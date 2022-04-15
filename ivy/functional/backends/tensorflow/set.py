@@ -10,26 +10,26 @@ def unique_all(x: Tensor) \
     
     UniqueAll = namedtuple(typename = 'unique_all', field_names = ['values', 'indices', 'inverse_indices', 'counts'])
     
-    flat_tensor = tf.reshape(x, [-1])
+    flat_tensor = tf.cast(tf.reshape(x, [-1]), 'float64')
     
     values, inverse_indices, counts = tf.unique_with_counts(flat_tensor)
+    values = tf.cast(values, 'float64') if values.dtype not in ['float32', 'float64']
     
     unique_nan = tf.math.is_nan(values).numpy()
-    idx_dtype = inverse_indices.dtype
 
-    if tf.math.reduce_sum(tf.cast(tf.math.is_nan(values), 'int32')).numpy():
+    if tf.math.reduce_sum(tf.cast(tf.math.is_nan(values), 'float32')).numpy():
         nan_index = tf.where(tf.math.is_nan(flat_tensor)).numpy().reshape([-1])
         non_nan_index = [flat_tensor.numpy().tolist().index(val) for val in values if not tf.math.is_nan(val)]
 
         indices = tf.experimental.numpy.full(fill_value = float('NaN'), shape = values.shape).numpy()
         
         indices[unique_nan] = nan_index
-        indices[~unique_nan] = tf.constant(non_nan_index, dtype = idx_dtype).numpy()
+        indices[~unique_nan] = non_nan_index
     else:
         tensor_list = flat_tensor.numpy().tolist()
-        indices = tf.constant([tensor_list.index(val) for val in values])
+        indices = [tensor_list.index(val) for val in values]
     
-    return UniqueAll(tf.cast(values, x.dtype), tf.constant(indices, dtype = idx_dtype), tf.reshape(inverse_indices, x.shape), counts)
+    return UniqueAll(tf.cast(values, x.dtype), tf.constant(indices, dtype = 'int32'), tf.reshape(inverse_indices, x.shape), counts)
 
 
 def unique_inverse(x: Tensor) \
