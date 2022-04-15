@@ -31,16 +31,24 @@ float64 = tf.float64
 # noinspection PyShadowingBuiltins
 bool = tf.bool
 
-all_dtypes = (int8, int16, int32, int64,
-              uint8, uint16, uint32, uint64,
-              bfloat16, float16, float32, float64)
-valid_dtypes = all_dtypes
+valid_dtypes = (int8, int16, int32, int64,
+                uint8, uint16, uint32, uint64,
+                bfloat16, float16, float32, float64,
+                bool)
 
-all_dtype_strs = ('int8', 'int16', 'int32', 'int64',
-                  'uint8', 'uint16', 'uint32', 'uint64',
-                  'bfloat16', 'float16', 'float32', 'float64')
-valid_dtype_strs = all_dtypes
+# valid
+valid_dtype_strs = ('int8', 'int16', 'int32', 'int64',
+                    'uint8', 'uint16', 'uint32', 'uint64',
+                    'bfloat16', 'float16', 'float32', 'float64',
+                    'bool')
+valid_int_dtype_strs = ('int8', 'int16', 'int32', 'int64',
+                        'uint8', 'uint16', 'uint32', 'uint64')
+valid_float_dtype_strs = ('bfloat16', 'float16', 'float32', 'float64')
+
+# invalid
 invalid_dtype_strs = ()
+invalid_int_dtype_strs = ()
+invalid_float_dtype_strs = ()
 
 
 def closest_valid_dtype(type):
@@ -55,8 +63,6 @@ backend = 'tensorflow'
 # local sub-modules
 from . import activations
 from .activations import *
-from . import constants
-from .constants import *
 from . import creation
 from .creation import *
 from . import data_type

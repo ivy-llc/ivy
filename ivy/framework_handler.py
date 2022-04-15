@@ -107,7 +107,7 @@ def set_framework(f):
     ivy_original_fn_dict.clear()
     for k, v in ivy_original_dict.items():
         if k not in f.__dict__:
-            if k in ivy.all_dtype_strs:
+            if k in ivy.valid_dtype_strs:
                 del ivy.__dict__[k]
                 continue
             f.__dict__[k] = v
