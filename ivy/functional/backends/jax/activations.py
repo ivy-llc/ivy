@@ -2,6 +2,8 @@
 Collection of Jax activation functions, wrapped to fit Ivy syntax and signature.
 """
 
+from typing import Optional
+
 # global
 import jax
 import jax.numpy as jnp
@@ -15,9 +17,17 @@ def relu(x: JaxArray)\
     return jnp.maximum(x, 0)
 
 
-leaky_relu = lambda x, alpha=0.2: jnp.where(x > 0, x, x * alpha)
+def leaky_relu(x: JaxArray, alpha: Optional[float] = 0.2)\
+        -> JaxArray:
+    return jnp.where(x > 0, x, x * alpha)
+
+
 gelu = jax.nn.gelu
-tanh = jnp.tanh
+
+def tanh(x: JaxArray)\
+        -> JaxArray:
+    return jnp.tanh
+
 sigmoid = lambda x: 1 / (1 + jnp.exp(-x))
 
 
@@ -26,4 +36,6 @@ def softmax(x, axis=-1):
     return exp_x / jnp.sum(exp_x, axis, keepdims=True)
 
 
-softplus = lambda x: jnp.log(jnp.exp(x) + 1)
+def softplus(x: JaxArray)\
+        -> JaxArray:
+    return jnp.log(jnp.exp(x) + 1)

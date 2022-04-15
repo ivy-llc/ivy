@@ -83,7 +83,7 @@ def map_fn(module, dev, xn, vc):
 #     # first input
 #     batch_shape, input_channels, output_channels = bs_ic_oc
 #     dev_batch_shape = [int(batch_shape[0]/2)] + batch_shape[1:]
-#     xs[dev0] = ivy.cast(ivy.linspace(ivy.zeros(dev_batch_shape), ivy.ones(dev_batch_shape),
+#     xs[dev0] = ivy.asarray(ivy.linspace(ivy.zeros(dev_batch_shape), ivy.ones(dev_batch_shape),
 #                                          input_channels, dev=dev0), 'float32')
 #
 #     # second device
@@ -93,7 +93,7 @@ def map_fn(module, dev, xn, vc):
 #         devs.append(dev1)
 #
 #         # second input
-#         xs[dev1] = ivy.cast(ivy.linspace(ivy.zeros(dev_batch_shape), ivy.ones(dev_batch_shape),
+#         xs[dev1] = ivy.asarray(ivy.linspace(ivy.zeros(dev_batch_shape), ivy.ones(dev_batch_shape),
 #                                              input_channels, dev=dev1), 'float32')
 #
 #     # combined inputs
@@ -121,7 +121,7 @@ def map_fn(module, dev, xn, vc):
 #         loss_tm1 = loss
 #
 #     # type test
-#     assert ivy.is_array(loss)
+#     assert ivy.is_ivy_array(loss)
 #     assert isinstance(grads, ivy.Container)
 #     # cardinality test
 #     if call is helpers.mx_call:
@@ -130,12 +130,12 @@ def map_fn(module, dev, xn, vc):
 #     else:
 #         assert loss.shape == ()
 #     # value test
-#     assert ivy.reduce_max(ivy.abs(grads.linear0.b)) > 0
-#     assert ivy.reduce_max(ivy.abs(grads.linear0.w)) > 0
-#     assert ivy.reduce_max(ivy.abs(grads.linear1.b)) > 0
-#     assert ivy.reduce_max(ivy.abs(grads.linear1.w)) > 0
-#     assert ivy.reduce_max(ivy.abs(grads.linear2.b)) > 0
-#     assert ivy.reduce_max(ivy.abs(grads.linear2.w)) > 0
+#     assert ivy.max(ivy.abs(grads.linear0.b)) > 0
+#     assert ivy.max(ivy.abs(grads.linear0.w)) > 0
+#     assert ivy.max(ivy.abs(grads.linear1.b)) > 0
+#     assert ivy.max(ivy.abs(grads.linear1.w)) > 0
+#     assert ivy.max(ivy.abs(grads.linear2.b)) > 0
+#     assert ivy.max(ivy.abs(grads.linear2.w)) > 0
 #     # compilation test
 #     if call is helpers.torch_call:
 #         # pytest scripting does not support **kwargs

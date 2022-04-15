@@ -37,6 +37,7 @@ try:
 except ImportError:
     _mx = None
     _mx_nd = None
+from hypothesis import strategies as st
 
 
 def get_ivy_numpy():
@@ -225,3 +226,7 @@ def calls():
 def f_n_calls():
     return [(ivy_fw(), call) for (fw_str, ivy_fw), call in zip(_ivy_fws_dict.items(), _calls)
             if ivy_fw() is not None and fw_str not in _excluded]
+
+
+def sample(iterable):
+    return st.builds(lambda i: iterable[i], st.integers(0, len(iterable) - 1))

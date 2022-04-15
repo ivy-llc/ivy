@@ -80,7 +80,7 @@ class WeConFC(ivy.Module):
         total_batch_size = np.prod(batch_shape)
         reshaped_weights = implicit_weights.reshape(pre_shape=[total_batch_size], post_shape=[-1])
         xs = self._layer_specific_fc(reshaped_weights)
-        x = ivy.concatenate([v for k, v in xs.to_iterator()], -1)
+        x = ivy.concat([v for k, v in xs.to_iterator()], -1)
         ret_flat = self._fc(x)
         return ivy.reshape(ret_flat, batch_shape + [-1])
 

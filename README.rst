@@ -5,6 +5,18 @@
 
     <br/>
     <div align="center">
+    <a href="https://github.com/unifyai/ivy/issues">
+        <img style="float: left; padding-right: 4px; padding-bottom: 4px;" src="https://img.shields.io/github/issues/unifyai/ivy">
+    </a>
+    <a href="https://github.com/unifyai/ivy/network/members">
+        <img style="float: left; padding-right: 4px; padding-bottom: 4px;" src="https://img.shields.io/github/forks/unifyai/ivy">
+    </a>
+    <a href="https://github.com/unifyai/ivy/stargazers">
+        <img style="float: left; padding-right: 4px; padding-bottom: 4px;" src="https://img.shields.io/github/stars/unifyai/ivy">
+    </a>
+    <a href="https://github.com/unifyai/ivy/pulls">
+        <img style="float: left; padding-right: 4px; padding-bottom: 4px;" src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg">
+    </a>
     <a href="https://pypi.org/project/ivy-core">
         <img style="float: left; padding-right: 4px; padding-bottom: 4px;" src="https://badge.fury.io/py/ivy-core.svg">
     </a>
@@ -129,11 +141,11 @@ This is the same for ALL Ivy functions. They can accept tensors from any framewo
 
     import ivy
 
-    jax_concatted = ivy.concatenate((jnp.ones((1,)), jnp.ones((1,))), -1)
-    tf_concatted = ivy.concatenate((tf.ones((1,)), tf.ones((1,))), -1)
-    np_concatted = ivy.concatenate((np.ones((1,)), np.ones((1,))), -1)
-    mx_concatted = ivy.concatenate((mx.nd.ones((1,)), mx.nd.ones((1,))), -1)
-    torch_concatted = ivy.concatenate((torch.ones((1,)), torch.ones((1,))), -1)
+    jax_concatted   = ivy.concat((jnp.ones((1,)), jnp.ones((1,))), -1)
+    tf_concatted    = ivy.concat((tf.ones((1,)), tf.ones((1,))), -1)
+    np_concatted    = ivy.concat((np.ones((1,)), np.ones((1,))), -1)
+    mx_concatted    = ivy.concat((mx.nd.ones((1,)), mx.nd.ones((1,))), -1)
+    torch_concatted = ivy.concat((torch.ones((1,)), torch.ones((1,))), -1)
 
 To see a list of all Ivy methods, type :code:`ivy.` into a python command prompt and press :code:`tab`.
 You should then see output like the following:
@@ -194,8 +206,8 @@ Design
 
 | Ivy can fulfill two distinct purposes:
 |
-| 1. serve as a transpiler between frameworks 🚧
-| 2. serve as a new ML framework with multi-framework support ✅
+| 1. Serve as a transpiler between frameworks 🚧
+| 2. Serve as a new ML framework with multi-framework support ✅
 |
 | The Ivy codebase can then be split into three categories, and can be further split into 8 distinct submodules, each of which fall into one of these three categories as follows:
 
@@ -204,13 +216,13 @@ Design
    :width: 100%
 
 | (a) `Building Blocks <https://lets-unify.ai/ivy/design/building_blocks.html>`_
-| back-end functional APIs ✅
+| Back-end functional APIs ✅
 | Ivy functional API ✅
 | Framework Handler ✅
 | Ivy Compiler 🚧
 |
 | (b) `Ivy as a Transpiler <https://lets-unify.ai/ivy/design/ivy_as_a_transpiler.html>`_
-| front-end functional APIs 🚧
+| Front-end functional APIs 🚧
 |
 | (c) `Ivy as a Framework <https://lets-unify.ai/ivy/design/ivy_as_a_framework.html>`_
 | Ivy stateful API ✅

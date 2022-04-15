@@ -3,7 +3,9 @@ Collection of gradient Ivy functions.
 """
 
 # local
+import ivy
 import ivy as _ivy
+from typing import Union
 from ivy.framework_handler import current_framework as _cur_framework
 
 
@@ -56,7 +58,8 @@ def unset_with_grads():
 
 # Variables #
 
-def variable(x):
+def variable(x: Union[ivy.Array, ivy.NativeArray])\
+        -> ivy.Variable:
     """
     Creates a variable, which supports gradient computation.
 
