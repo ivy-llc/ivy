@@ -9,6 +9,7 @@ import numpy as np
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
 
+
 # min
 @pytest.mark.parametrize(
     "dtype", ivy.all_dtype_strs)

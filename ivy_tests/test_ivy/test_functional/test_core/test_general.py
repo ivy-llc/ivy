@@ -949,8 +949,6 @@ def test_one_hot(ind_n_depth, dtype, tensor_fn, dev, call):
                        np.asarray(ivy.functional.backends.numpy.one_hot(ivy.to_numpy(ind), depth)))
 
 
-
-
 # cumsum
 @pytest.mark.parametrize(
     "x_n_axis", [([[0., 1., 2.]], -1), ([[0., 1., 2.], [2., 1., 0.]], 0), ([[0., 1., 2.], [2., 1., 0.]], 1)])
@@ -985,6 +983,7 @@ def test_cumsum(x_n_axis, dtype, with_out, tensor_fn, dev, call):
             # these frameworks do not support native inplace updates
             assert ret is out
             assert ret.data is out.data    
+
 
 # cumprod
 @pytest.mark.parametrize(
@@ -1023,7 +1022,6 @@ def test_cumprod(x_n_axis, exclusive, dtype, with_out, tensor_fn, dev, call):
             # these frameworks do not support native inplace updates
             assert ret is out
             assert ret.data is out.data
-
 
 
 # scatter_flat
@@ -1152,6 +1150,8 @@ def test_gather(prms_n_inds_n_axis, dtype, with_out, tensor_fn, dev, call):
             # these frameworks do not support native inplace updates
             assert ret is out
             assert ret.data is out.data
+
+
 # gather_nd
 @pytest.mark.parametrize(
     "prms_n_inds", [([[[0.0, 1.0], [2.0, 3.0]], [[0.1, 1.1], [2.1, 3.1]]], [[0, 1], [1, 0]]),
