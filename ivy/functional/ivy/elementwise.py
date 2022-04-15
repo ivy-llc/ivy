@@ -701,7 +701,8 @@ def less(x1: Union[ivy.Array, ivy.NativeArray],
     Examples:
     >>> ivy.set_framework('numpy')
     >>> x = ivy.less([4],[3])
-    >>> print(x)    
+    >>> print(x)
+    [False]
     """
     return _cur_framework(x1).less(x1, x2, out)
 
