@@ -7,28 +7,28 @@ asinh
 atan
 atan2
 atanh
-#bitwise_and
-#bitwise_left_shift
+bitwise_and
+bitwise_left_shift
 bitwise_invert
-#bitwise_or # failing non-deterministically
-#bitwise_right_shift # failing non-deterministically
-#bitwise_xor # failing non-deterministically
+bitwise_or
+bitwise_right_shift
+bitwise_xor
 ceil
 cos
 cosh
 divide
-#equal # failing non-deterministically
+equal
 exp
 expm1
 floor
-#floor_divide # failing non-deterministically
+#floor_divide # failing non deterministically
 greater
 greater_equal
 isfinite
 isinf
 isnan
-less
-#less_equal
+#less # failing non deterministically
+less_equal
 log
 log1p
 log2
@@ -38,12 +38,12 @@ logical_and
 logical_not
 logical_or
 logical_xor
-#multiply # Failing non-deterministically
+multiply
 negative
 positive
-#not_equal # Failing non-deterministically after the update to Array API test suite under commit 2dcf4cf153c8cb37a685467fed91680e1552fc6a
-#pow
-#remainder # Failing non-deterministically 
+not_equal
+pow
+#remainder # failing non deterministically
 round
 #sign # tests are passing but uncommenting causes everything in test_signatures to run
 sin

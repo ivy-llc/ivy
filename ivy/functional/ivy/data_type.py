@@ -2,7 +2,7 @@
 import math
 import numpy as np
 import importlib
-from typing import Union, Tuple
+from typing import Union, Tuple, List
 from numbers import Number
 
 
@@ -19,6 +19,25 @@ Iinfo = None
 
 
 # Dtype Info #
+
+def can_cast(from_: Union[ivy.Dtype, ivy.Array, ivy.NativeArray],
+             to: ivy.Dtype)\
+        -> bool:
+    """
+    Determines if one data type can be cast to another data type according :ref:`type-promotion` rules.
+    Parameters
+    ----------
+    from_: Union[dtype, array]
+        input data type or array from which to cast.
+    to: dtype
+        desired data type.
+    Returns
+    -------
+    out: bool
+        ``True`` if the cast can occur according to :ref:`type-promotion` rules; otherwise, ``False``.
+    """
+    return _cur_framework(from_).can_cast(from_, to)
+
 
 # noinspection PyShadowingBuiltins
 def iinfo(type: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray])\
@@ -87,6 +106,17 @@ def broadcast_to(x: Union[ivy.Array, ivy.NativeArray], shape: Tuple[int,...]) ->
     """
 
     return _cur_framework(x).broadcast_to(x, shape)
+
+def broadcast_arrays(*arrays: Union[ivy.Array, ivy.NativeArray]) -> List[ivy.Array]:
+    """
+
+     Broadcasts one or more arrays against one another.
+
+    :param x:  x (array) – an arbitrary number of to-be broadcasted arrays.
+    :return: out (List[array]) – Each array must have the same shape. Each array must have the same dtype as its corresponding input array.
+    """
+
+    return _cur_framework(arrays[0]).broadcast_arrays(*arrays)
 
 
 def dtype(x: Union[ivy.Array, ivy.NativeArray], as_str: bool = False)\

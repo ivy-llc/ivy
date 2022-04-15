@@ -2,6 +2,8 @@
 Collection of PyTorch activation functions, wrapped to fit Ivy syntax and signature.
 """
 
+from typing import Optional
+
 # global
 import numpy as np
 import torch
@@ -12,7 +14,8 @@ def relu(x: torch.Tensor)\
     return torch.relu(x)
 
 
-def leaky_relu(x, alpha: float = 0.2):
+def leaky_relu(x: torch.Tensor, alpha: Optional[float] = 0.2)\
+        -> torch.Tensor:
     return torch.nn.functional.leaky_relu(x, alpha)
 
 
@@ -22,8 +25,10 @@ def gelu(x, approximate: bool = True):
     return torch.nn.functional.gelu(x)
 
 
-def tanh(x):
+def tanh(x: torch.Tensor)\
+        -> torch.Tensor:
     return torch.tanh(x)
+
 
 
 def sigmoid(x):
@@ -34,5 +39,6 @@ def softmax(x, axis: int = -1):
     return torch.softmax(x, axis)
 
 
-def softplus(x):
+def softplus(x: torch.Tensor)\
+        -> torch.Tensor:
     return torch.nn.functional.softplus(x)
