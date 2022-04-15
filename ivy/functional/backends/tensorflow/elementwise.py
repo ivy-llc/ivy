@@ -115,16 +115,11 @@ def floor(x: Tensor,
     return ret
 
 
-def isfinite(x: Tensor,
-             out: Optional[Tensor] = None) \
+def isfinite(x: Tensor) \
         -> Tensor:
     if ivy.is_int_dtype(x):
-        ret = tf.ones_like(x, tf.bool)
-    else:
-        ret = tf.math.is_finite(x)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
+        return tf.ones_like(x, tf.bool)
+    return tf.math.is_finite(x)
 
 
 def asin(x: Tensor,
@@ -136,16 +131,11 @@ def asin(x: Tensor,
     return ret
 
 
-def isinf(x: Tensor,
-          out: Optional[Tensor] = None) \
+def isinf(x: Tensor) \
         -> Tensor:
     if ivy.is_int_dtype(x):
-        ret = tf.zeros_like(x, tf.bool)
-    else:
-        ret = tf.math.is_inf(x)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
+        return tf.zeros_like(x, tf.bool)
+    return tf.math.is_inf(x)
 
 
 def _tf_cast(x: Tensor, dtype: tf.dtypes.DType) -> Tensor:
@@ -235,7 +225,7 @@ def cosh(x: Tensor,
 def log10(x: Tensor,
           out: Optional[Tensor] = None) \
         -> Tensor:
-    ret = tf.math.log(x) / tf.math.log(tf.constant(10., x.dtype))
+    ret = tf.experimental.numpy.log10(x)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
     return ret
@@ -253,7 +243,7 @@ def log(x: Tensor,
 def log2(x: Tensor,
          out: Optional[Tensor] = None) \
         -> Tensor:
-    ret = tf.math.log(x) / tf.math.log(tf.constant(2., x.dtype))
+    ret = tf.experimental.numpy.log2(x)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
     return ret
@@ -262,22 +252,17 @@ def log2(x: Tensor,
 def log1p(x: Tensor,
           out: Optional[Tensor] = None) \
         -> Tensor:
-    ret = tf.math.log1p(x)
+    ret = tf.experimental.numpy.log1p(x)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
     return ret
 
 
-def isnan(x: Tensor,
-          out: Optional[Tensor] = None)\
+def isnan(x: Tensor)\
         -> Tensor:
     if ivy.is_int_dtype(x):
-        ret = tf.zeros_like(x, tf.bool)
-    else:
-        ret = tf.math.is_nan(x)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
+        return tf.zeros_like(x, tf.bool)
+    return tf.math.is_nan(x)
 
 
 def less(x1: Tensor,

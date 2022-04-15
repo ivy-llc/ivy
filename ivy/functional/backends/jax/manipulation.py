@@ -51,7 +51,7 @@ def flip(x: JaxArray,
 
 
 def expand_dims(x: JaxArray,
-                axis: int = 0,
+                axis: Optional[Union[int, Tuple[int], List[int]]] = None,
                 out: Optional[JaxArray] = None) \
         -> JaxArray:
     try:

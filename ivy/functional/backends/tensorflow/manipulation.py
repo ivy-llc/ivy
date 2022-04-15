@@ -76,7 +76,7 @@ def flip(x: Tensor,
 
 
 def expand_dims(x: Tensor,
-                axis: int = 0,
+                axis: Optional[Union[int, Tuple[int], List[int]]] = None,
                 out: Optional[Tensor] = None) \
         -> Tensor:
     try:

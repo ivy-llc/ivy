@@ -10,11 +10,7 @@ from ivy.functional.backends.mxnet import _flat_array_to_1_dim_array, _1_dim_arr
 # Array API Standard #
 # -------------------#
 
-def sum(x: mx.ndarray.ndarray.NDArray,
-         axis: Optional[Union[int, Tuple[int, ...]]] = None,
-         keepdims: bool = False,
-         out: Optional[mx.ndarray.ndarray.NDArray] = None)\
-            -> mx.ndarray.ndarray.NDArray:
+def sum(x, axis=None, keepdims=False):
     if axis is None:
         num_dims = len(x.shape)
         axis = tuple(range(num_dims))
@@ -25,17 +21,10 @@ def sum(x: mx.ndarray.ndarray.NDArray,
     if x.shape == ():
         x = _flat_array_to_1_dim_array(x)
     ret = mx.nd.sum(x, axis=axis, keepdims=keepdims)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, _handle_output(x, axis, keepdims, ret))
-    else:
-        return _handle_output(x, axis, keepdims, ret)
+    return _handle_output(x, axis, keepdims, ret)
 
 
-def prod(x: mx.ndarray.ndarray.NDArray,
-         axis: Optional[Union[int, Tuple[int, ...]]] = None,
-         keepdims: bool = False,
-         out: Optional[mx.ndarray.ndarray.NDArray] = None)\
-            -> mx.ndarray.ndarray.NDArray:
+def prod(x, axis=None, keepdims=False):
     if axis is None:
         num_dims = len(x.shape)
         axis = tuple(range(num_dims))
@@ -46,17 +35,13 @@ def prod(x: mx.ndarray.ndarray.NDArray,
     if x.shape == ():
         x = _flat_array_to_1_dim_array(x)
     ret = mx.nd.prod(x, axis=axis, keepdims=keepdims)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, _handle_output(x, axis, keepdims, ret))
-    else:
-        return _handle_output(x, axis, keepdims, ret)
+    return _handle_output(x, axis, keepdims, ret)
 
 
 def mean(x: mx.ndarray.ndarray.NDArray,
          axis: Optional[Union[int, Tuple[int, ...]]] = None,
          keepdims: bool = False,
-         out: Optional[mx.ndarray.ndarray.NDArray] = None)\
-             -> mx.ndarray.ndarray.NDArray:
+         out: Optional[mx.ndarray.ndarray.NDArray] = None):
     if axis is None:
         num_dims = len(x.shape)
         axis = tuple(range(num_dims))
@@ -94,25 +79,15 @@ def var(x:mx.ndarray.ndarray, axis: Union[int, Tuple[int,...]] = None,
         return ret
 
 
-def std(x: mx.ndarray.ndarray.NDArray,
-         axis: Optional[Union[int, Tuple[int, ...]]] = None,
-         keepdims: bool = False,
-         out: Optional[mx.ndarray.ndarray.NDArray] = None)\
-            -> mx.ndarray.ndarray.NDArray:
+def std(x, axis=None, keepdims=False):
     red_var = var(x, axis, keepdims)
     is_flat = red_var.shape == ()
     if is_flat:
         red_var = _flat_array_to_1_dim_array(red_var)
     red_std = red_var ** 0.5
     if is_flat:
-        if ivy.exists(out):
-            return ivy.inplace_update(out, _1_dim_array_to_flat_array(red_std))
-        else:
-            return _1_dim_array_to_flat_array(red_std)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, red_std)
-    else:
-        return red_std
+        return _1_dim_array_to_flat_array(red_std)
+    return red_std
 
 
 def min(x: mx.ndarray.ndarray.NDArray, axis: Union[int, Tuple[int,...]] = None,
@@ -156,11 +131,5 @@ def max(x: mx.ndarray.ndarray.NDArray, axis: Union[int, Tuple[int,...]] = None,
 # Extra #
 # ------#
 
-def einsum(equation : str, 
-    *operands : mx.ndarray.ndarray.NDArray,
-    out : Optional[mx.ndarray.ndarray.NDArray] = None)\
-     -> mx.ndarray.ndarray.NDArray:
-    if ivy.exists(out):
-        return ivy.inplace_update(out,mx.np.einsum(equation, *[op.as_np_ndarray() for op in operands]).as_nd_ndarray())
-    else:
-        return mx.np.einsum(equation, *[op.as_np_ndarray() for op in operands]).as_nd_ndarray()
+def einsum(equation, *operands):
+    return mx.np.einsum(equation, *[op.as_np_ndarray() for op in operands]).as_nd_ndarray()

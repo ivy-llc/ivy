@@ -44,14 +44,12 @@ def flip(x: np.ndarray,
     axis = [item + num_dims if item < 0 else item for item in axis]
     ret = np.flip(x, axis)
     if ivy.exists(out):
-        if not ret.flags.c_contiguous:
-            ret = ret.copy(order='C')
         return ivy.inplace_update(out, ret)
     return ret
 
 
 def expand_dims(x: np.ndarray,
-                axis: int = 0,
+                axis: Optional[Union[int, Tuple[int], List[int]]] = None,
                 out: Optional[np.ndarray] = None) \
         -> np.ndarray:
     ret = np.expand_dims(x, axis)
@@ -66,8 +64,6 @@ def permute_dims(x: np.ndarray,
         -> np.ndarray:
     ret = np.transpose(x, axes)
     if ivy.exists(out):
-        if not ret.flags.c_contiguous:
-            ret = ret.copy(order='C')
         return ivy.inplace_update(out, ret)
     return ret
 
@@ -190,8 +186,6 @@ def swapaxes(x: np.ndarray,
         -> np.ndarray:
     ret = np.swapaxes(x, axis0, axis1)
     if ivy.exists(out):
-        if not ret.flags.c_contiguous:
-            ret = ret.copy(order='C')
         return ivy.inplace_update(out, ret)
     return ret
 
