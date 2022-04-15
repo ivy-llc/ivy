@@ -14,7 +14,7 @@ def unique_all(x: Tensor) \
     
     values, inverse_indices, counts = tf.unique_with_counts(flat_tensor)
     values = tf.cast(values, 'float64') if values.dtype not in ['float32', 'float64']
-    
+
     unique_nan = tf.math.is_nan(values).numpy()
 
     if tf.math.reduce_sum(tf.cast(tf.math.is_nan(values), 'float32')).numpy():
