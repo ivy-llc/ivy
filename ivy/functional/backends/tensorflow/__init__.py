@@ -33,12 +33,22 @@ bool = tf.bool
 
 valid_dtypes = (int8, int16, int32, int64,
                 uint8, uint16, uint32, uint64,
-                bfloat16, float16, float32, float64)
+                bfloat16, float16, float32, float64,
+                bool)
 
+# valid
 valid_dtype_strs = ('int8', 'int16', 'int32', 'int64',
                     'uint8', 'uint16', 'uint32', 'uint64',
-                    'bfloat16', 'float16', 'float32', 'float64')
+                    'bfloat16', 'float16', 'float32', 'float64',
+                    'bool')
+valid_int_dtype_strs = ('int8', 'int16', 'int32', 'int64',
+                        'uint8', 'uint16', 'uint32', 'uint64')
+valid_float_dtype_strs = ('bfloat16', 'float16', 'float32', 'float64')
+
+# invalid
 invalid_dtype_strs = ()
+invalid_int_dtype_strs = ()
+invalid_float_dtype_strs = ()
 
 
 def closest_valid_dtype(type):
