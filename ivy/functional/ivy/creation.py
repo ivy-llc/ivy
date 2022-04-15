@@ -10,30 +10,33 @@ from ivy.framework_handler import current_framework as _cur_framework
 # Array API Standard #
 # -------------------#
 
-def asarray(x: Union[ivy.Array, ivy.NativeArray],
+def asarray(x: Union[ivy.Array, ivy.NativeArray, List[Number], Tuple[Number]],
              dtype: Optional[Union[ivy.Dtype, str]] = None,
-             dev: Optional[Union[ivy.Device, str]] = None,
-             ) -> ivy.Array:
-     """
-     Converts the input to an array.
+             dev: Optional[Union[ivy.Device, str]] = None
+            ) -> ivy.Array:
+    """
+    Converts the input to an array.
 
-     Parameters
-     ----------
-     x:
-         input data, in any form that can be converted to an array.
-         This includes lists, lists of tuples, tuples, tuples of tuples, tuples of lists and ndarrays.
+    Parameters
+    ----------
+    x:
+        input data, in any form that can be converted to an array.
+        This includes lists, lists of tuples, tuples, tuples of tuples, tuples of lists and ndarrays.
 
-     dtype:
-         datatype, optional. Datatype is inferred from the input data.
+    dtype:
+        datatype, optional. Datatype is inferred from the input data.
 
-     dev:
-         device on which to place the created array. Default: None.
+    dev:
+        device on which to place the created array. Default: None.
 
-     Returns
-     --------
-     An array interpretation of x.
-     """
-     return _cur_framework(x).asarray(x, dtype, dev)
+    Returns
+    --------
+    An array interpretation of x.
+    """
+    return _cur_framework(x).asarray(x, dtype, dev)
+
+
+array = asarray
 
 
 def zeros(shape: Union[int, Tuple[int], List[int]],
@@ -56,7 +59,16 @@ def zeros(shape: Union[int, Tuple[int], List[int]],
     -------
     out:
        an array containing zeros.
-
+       
+       
+    Examples:
+    
+    >>> shape = (3,5)
+    >>> x = ivy.zeros(shape)
+    >>> print(x)
+    [[0., 0., 0., 0., 0.],
+     [0., 0., 0., 0., 0.],
+     [0., 0., 0., 0., 0.]]
     """
     return _cur_framework().zeros(shape, dtype, device)
 
@@ -341,8 +353,6 @@ def ones(shape: Iterable[int], dtype: Union[ivy.Dtype, str] = 'float32', dev: iv
     return _cur_framework().ones(shape, dtype, dev)
 
 
-
-
 def from_dlpack(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
     """
     Returns a new array containing the data from another (array) object with a ``__dlpack__`` method.
@@ -367,27 +377,6 @@ def from_dlpack(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
 
 # Extra #
 # ------#
-
-
-# noinspection PyShadowingNames
-def array(object_in: Union[List, ivy.Array, ivy.NativeArray], dtype: Union[ivy.Dtype, str] = None,
-          dev: ivy.Device = None) -> Union[ivy.Array, ivy.NativeArray]:
-    """
-    Creates an array.
-
-    :param object_in: An array_like object, which exposes the array interface,
-            an object whose __array__ method returns an array, or any (nested) sequence.
-    :type object_in: array
-    :param dtype: The desired data-type for the array in string format, i.e. 'float32' or 'int64'.
-        If not given, then the type will be determined as the minimum type required to hold the objects in the
-        sequence.
-    :type dtype: data-type string, optional
-    :param dev: device string on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc..
-    :type dev: ivy.Device
-    :return: An array object satisfying the specified requirements, in the form of the selected framework.
-    """
-    return _cur_framework(object_in).array(object_in, dtype, dev)
-
 
 # noinspection PyShadowingNames
 def logspace(start: Union[ivy.Array, ivy.NativeArray, int], stop: Union[ivy.Array, ivy.NativeArray, int],

@@ -12,6 +12,7 @@ from torch.profiler import ProfilerActivity
 from torch.profiler import profile as _profile
 
 # local
+import ivy
 from ivy.functional.ivy.device import Profiler as BaseProfiler
 
 
@@ -25,10 +26,15 @@ def dev(x, as_str=False):
     return dv
 
 
-def to_dev(x, dev: Optional[str] = None):
+def to_dev(x, dev: Optional[str] = None, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     ret = x.to(dev_from_str(dev))
     if isinstance(x, torch.nn.Parameter):
+        if ivy.exists(out):
+            return ivy.inplace_update(out, torch.nn.Parameter(ret))        
         return torch.nn.Parameter(ret)
+    
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
     return ret
 
 

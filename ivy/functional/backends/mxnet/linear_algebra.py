@@ -1,6 +1,6 @@
 # global
 import mxnet as mx
-import numpy as _np
+import numpy as np
 
 from collections import namedtuple
 from mxnet.ndarray.ndarray import NDArray
@@ -22,7 +22,10 @@ def eigh(x: mx.ndarray)\
 
 
 inv = mx.nd.linalg_inverse
-cholesky = lambda x: mx.np.linalg.cholesky(x.as_np_ndarray()).as_nd_ndarray()
+
+
+def inv(x: mx.nd.NDArray) -> mx.nd.NDArray:
+    return mx.nd.linalg.inverse(x)
 
 
 def pinv(x):
@@ -64,7 +67,7 @@ def matrix_norm(x, p=2, axes=None, keepdims=False):
 # noinspection PyPep8Naming
 def svd(x: NDArray, full_matrices: bool = True) -> Union[NDArray, Tuple[NDArray,...]]:
     results=namedtuple("svd", "U S Vh")
-    U, D, VT=_np.linalg.svd(x, full_matrices=full_matrices)
+    U, D, VT=np.linalg.svd(x, full_matrices=full_matrices)
     res=results(U, D, VT)
     return res
 

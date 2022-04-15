@@ -14,6 +14,8 @@ import inspect
 import logging
 import nvidia_smi
 
+from typing import Optional
+
 # noinspection PyUnresolvedReferences
 try:
     nvidia_smi.nvmlInit()
@@ -116,7 +118,7 @@ def dev(x: Union[ivy.Array, ivy.NativeArray], as_str: bool = False)\
 # Conversions
 
 # noinspection PyShadowingNames
-def dev_to_str(dev: [ivy.Device, str])\
+def dev_to_str(dev: Union[ivy.Device, str]) \
         -> str:
     """
     Convert native data type to string representation.
@@ -129,7 +131,7 @@ def dev_to_str(dev: [ivy.Device, str])\
 
 
 # noinspection PyShadowingNames
-def dev_from_str(dev: [ivy.Device, str])\
+def dev_from_str(dev: Union[ivy.Device, str]) \
         -> ivy.Device:
     """
     Convert device string representation to native device type.
@@ -334,18 +336,32 @@ def unset_default_device():
 # Device Allocation #
 
 # noinspection PyShadowingNames
-def to_dev(x: Union[ivy.Array, ivy.NativeArray], dev: ivy.Device = None)\
+def to_dev(x: Union[ivy.Array, ivy.NativeArray], dev: ivy.Device = None, \
+           out: Optional[Union[ivy.Array, ivy.NativeArray]] = None) \
         -> Union[ivy.Array, ivy.NativeArray]:
     """
     Move the input array x to the desired device, specified by device string.
 
-    :param x: Array to move onto the device.
-    :type x: array
-    :param dev: device to move the array to 'cuda:0', 'cuda:1', 'cpu' etc. Keep same device if None.
-    :type dev: Device, optional
-    :return: The array x, but now placed on the target device.
+    Parameters
+    ----------
+    x:
+       input array to be moved to the desired device
+    dev:
+        device to move the input array `x` to
+    out:
+        optional output array, for writing the result to. It must have a shape that the inputs broadcast to.
+
+    Returns
+    -------
+    x:
+        input array x placed on the desired device
+
+    Examples
+    -------
+    >>> x = ivy.array([1., 2., 3.])
+    >>> x = ivy.to_dev(x, dev)
     """
-    return _cur_framework(x).to_dev(x, dev)
+    return _cur_framework(x).to_dev(x, dev, out)
 
 
 # Function Splitting #
@@ -465,7 +481,7 @@ def split_func_call(func: Callable, inputs: Iterable[Union[Union[ivy.Array, ivy.
         output_axes = [input_axes[0]] * num_outputs
     elif isinstance(output_axes, int):
         output_axes = [output_axes] * num_outputs
-    ret = [ivy.concatenate([r[i] for r in rets], output_axes[i]) if ivy.is_native_array(rets[0][i])
+    ret = [ivy.concat([r[i] for r in rets], output_axes[i]) if ivy.is_native_array(rets[0][i])
            else ivy.Container.concat([r[i] for r in rets], output_axes[i]) for i in range(num_outputs)]
     return ret[0] if len(ret) == 1 else ret
 
@@ -776,7 +792,7 @@ def dev_clone_nest(args, kwargs, devs, max_depth=1):
 
 # noinspection PyShadowingNames
 def _concat_unify_array(xs, dev, axis):
-    return ivy.concatenate([ivy.to_dev(x_sub, dev) for x_sub in xs.values()], axis)
+    return ivy.concat([ivy.to_dev(x_sub, dev) for x_sub in xs.values()], axis)
 
 
 # noinspection PyShadowingNames

@@ -20,88 +20,69 @@ import ivy_tests.test_ivy.helpers as helpers
 # Device Queries #
 
 # dev
-# @pytest.mark.parametrize(
-#     "x", [1, [], [1], [[0.0, 1.0], [2.0, 3.0]]])
-# @pytest.mark.parametrize(
-#     "dtype", ['float32'])
-# @pytest.mark.parametrize(
-#     "tensor_fn", [ivy.array, helpers.var_fn])
-# def test_dev(x, dtype, tensor_fn, dev, call):
-#     # smoke test
-#     if (isinstance(x, Number) or len(x) == 0) and tensor_fn == helpers.var_fn and call is helpers.mx_call:
-#         # mxnet does not support 0-dimensional variables
-#         pytest.skip()
-#     x = tensor_fn(x, dtype, dev)
-#     ret = ivy.dev(x)
-#     # type test
-#     assert isinstance(ret, ivy.Device)
-
+@pytest.mark.parametrize(
+    "x", [1, [], [1], [[0.0, 1.0], [2.0, 3.0]]])
+@pytest.mark.parametrize(
+    "dtype", ['float32'])
+@pytest.mark.parametrize(
+    "tensor_fn", [ivy.array, helpers.var_fn])
+def test_dev(x, dtype, tensor_fn, dev, call):
+    # smoke test
+    if (isinstance(x, Number) or len(x) == 0) and tensor_fn == helpers.var_fn and call is helpers.mx_call:
+        # mxnet does not support 0-dimensional variables
+        pytest.skip()
+    x = tensor_fn(x, dtype, dev)
+    ret = ivy.dev(x, as_str=True)
+    # type test
+    assert isinstance(ret, str)
+    # value test
+    assert ret == dev
 
 # dev_to_str
-# @pytest.mark.parametrize(
-#     "x", [1, [], [1], [[0.0, 1.0], [2.0, 3.0]]])
-# @pytest.mark.parametrize(
-#     "dtype", ['float32'])
-# @pytest.mark.parametrize(
-#     "tensor_fn", [ivy.array, helpers.var_fn])
-# def test_dev_to_str(x, dtype, tensor_fn, dev, call):
-#     # smoke test
-#     if (isinstance(x, Number) or len(x) == 0) and tensor_fn == helpers.var_fn and call is helpers.mx_call:
-#         # mxnet does not support 0-dimensional variables
-#         pytest.skip()
-#     x = tensor_fn(x, dtype, dev)
-#     dev = ivy.dev(x)
-#     ret = ivy.dev_to_str(dev)
-#     # type test
-#     assert isinstance(ret, str)
+@pytest.mark.parametrize(
+    "x", [1, [], [1], [[0.0, 1.0], [2.0, 3.0]]])
+@pytest.mark.parametrize(
+    "dtype", ['float32'])
+@pytest.mark.parametrize(
+    "tensor_fn", [ivy.array, helpers.var_fn])
+def test_dev_to_str(x, dtype, tensor_fn, dev, call):
+    # smoke test
+    if (isinstance(x, Number) or len(x) == 0) and tensor_fn == helpers.var_fn and call is helpers.mx_call:
+        # mxnet does not support 0-dimensional variables
+        pytest.skip()
+    x = tensor_fn(x, dtype, dev)
+    dev = ivy.dev(x)
+    ret = ivy.dev_to_str(dev)
+    # type test
+    assert isinstance(ret, str)
 
 
 # dev_from_str
-# @pytest.mark.parametrize(
-#     "x", [1, [], [1], [[0.0, 1.0], [2.0, 3.0]]])
-# @pytest.mark.parametrize(
-#     "dtype", ['float32'])
-# @pytest.mark.parametrize(
-#     "tensor_fn", [ivy.array, helpers.var_fn])
-# def test_dev_from_str(x, dtype, tensor_fn, dev, call):
-#     # smoke test
-#     if (isinstance(x, Number) or len(x) == 0) and tensor_fn == helpers.var_fn and call is helpers.mx_call:
-#         # mxnet does not support 0-dimensional variables
-#         pytest.skip()
-#     x = tensor_fn(x, dtype, dev)
-#     dev = ivy.dev_from_str(dev)
-#     ret = ivy.dev_from_str(ivy.dev(x, as_str=True))
-#     # value test
-#     if call in [helpers.tf_call, helpers.tf_graph_call]:
-#         assert '/' + ':'.join(ret[1:].split(':')[-2:]) == '/' + ':'.join(dev[1:].split(':')[-2:])
-#     elif call is helpers.torch_call:
-#         assert ret.type == dev.type
-#     else:
-#         assert ret == dev
-#     # compilation test
-#     if call is helpers.torch_call:
-#         # pytorch scripting does not handle converting string to device
-#         return
-
-
-# dev
-# @pytest.mark.parametrize(
-#     "x", [1, [], [1], [[0.0, 1.0], [2.0, 3.0]]])
-# @pytest.mark.parametrize(
-#     "dtype", ['float32'])
-# @pytest.mark.parametrize(
-#     "tensor_fn", [ivy.array, helpers.var_fn])
-# def test_dev(x, dtype, tensor_fn, dev, call):
-#     # smoke test
-#     if (isinstance(x, Number) or len(x) == 0) and tensor_fn == helpers.var_fn and call is helpers.mx_call:
-#         # mxnet does not support 0-dimensional variables
-#         pytest.skip()
-#     x = tensor_fn(x, dtype, dev)
-#     ret = ivy.dev(x, as_str=True)
-#     # type test
-#     assert isinstance(ret, str)
-#     # value test
-#     assert ret == dev
+@pytest.mark.parametrize(
+    "x", [1, [], [1], [[0.0, 1.0], [2.0, 3.0]]])
+@pytest.mark.parametrize(
+    "dtype", ['float32'])
+@pytest.mark.parametrize(
+    "tensor_fn", [ivy.array, helpers.var_fn])
+def test_dev_from_str(x, dtype, tensor_fn, dev, call):
+    # smoke test
+    if (isinstance(x, Number) or len(x) == 0) and tensor_fn == helpers.var_fn and call is helpers.mx_call:
+        # mxnet does not support 0-dimensional variables
+        pytest.skip()
+    x = tensor_fn(x, dtype, dev)
+    dev = ivy.dev_from_str(dev)
+    ret = ivy.dev_from_str(ivy.dev(x, as_str=True))
+    # value test
+    if call in [helpers.tf_call, helpers.tf_graph_call]:
+        assert '/' + ':'.join(ret[1:].split(':')[-2:]) == '/' + ':'.join(dev[1:].split(':')[-2:])
+    elif call is helpers.torch_call:
+        assert ret.type == dev.type
+    else:
+        assert ret == dev
+    # compilation test
+    if call is helpers.torch_call:
+        # pytorch scripting does not handle converting string to device
+        return
 
 
 # memory_on_dev
@@ -149,29 +130,51 @@ def test_default_device(dev, call):
 
 
 # to_dev
-# @pytest.mark.parametrize(
-#     "x", [1, [], [1], [[0.0, 1.0], [2.0, 3.0]]])
-# @pytest.mark.parametrize(
-#     "dtype", ['float32'])
-# @pytest.mark.parametrize(
-#     "tensor_fn", [ivy.array, helpers.var_fn])
-# def test_to_dev(x, dtype, tensor_fn, dev, call):
-#     # smoke test
-#     if (isinstance(x, Number) or len(x) == 0) and tensor_fn == helpers.var_fn and call is helpers.mx_call:
-#         # mxnet does not support 0-dimensional variables
-#         pytest.skip()
-#     x = tensor_fn(x, dtype, dev)
-#     dev = ivy.dev(x)
-#     x_on_dev = ivy.to_dev(x, dev)
-#     dev_from_new_x = ivy.dev(x)
-#     # value test
-#     if call in [helpers.tf_call, helpers.tf_graph_call]:
-#         assert '/' + ':'.join(dev_from_new_x[1:].split(':')[-2:]) == '/' + ':'.join(dev[1:].split(':')[-2:])
-#     elif call is helpers.torch_call:
-#         assert dev_from_new_x.type == dev.type
-#     else:
-#         assert dev_from_new_x == dev
+@pytest.mark.parametrize(
+    "x", [1, [], [1], [[0.0, 1.0], [2.0, 3.0]]])
+@pytest.mark.parametrize(
+    "dtype", ['float32'])
+@pytest.mark.parametrize(
+    "tensor_fn", [ivy.array, helpers.var_fn])
+@pytest.mark.parametrize(
+    "with_out", [False, True])
+def test_to_dev(x, dtype, tensor_fn, with_out, dev, call):
+    # smoke test
+    if (isinstance(x, Number) or len(x) == 0) and tensor_fn == helpers.var_fn and call is helpers.mx_call:
+        # mxnet does not support 0-dimensional variables
+        pytest.skip()
 
+    x = tensor_fn(x, dtype, dev)
+
+    # create a dummy array for out that is broadcastable to x
+    out = ivy.zeros(ivy.shape(x)) if with_out else None
+
+    dev = ivy.dev(x)
+    x_on_dev = ivy.to_dev(x, dev, out=out)
+    dev_from_new_x = ivy.dev(x_on_dev)
+    
+    if with_out:
+        # should be the same array test
+        assert np.allclose(ivy.to_numpy(x_on_dev), ivy.to_numpy(out))
+
+        # should be the same device
+        assert ivy.dev(x_on_dev) == ivy.dev(out)
+
+        # check if native arrays are the same
+        if ivy.current_framework_str() in ["tensorflow", "jax"]:
+            # these frameworks do not support native inplace updates
+            return
+
+        assert x_on_dev.data is out.data
+
+    # value test
+    if call in [helpers.tf_call, helpers.tf_graph_call]:
+        assert '/' + ':'.join(dev_from_new_x[1:].split(':')[-2:]) == '/' + ':'.join(dev[1:].split(':')[-2:])
+    elif call is helpers.torch_call:
+        assert dev_from_new_x.type == dev.type
+    else:
+        assert dev_from_new_x == dev
+        
 
 # Function Splitting #
 
@@ -243,219 +246,219 @@ def test_split_func_call_with_cont_input(x0, x1, chunk_size, axis, tensor_fn, de
     assert np.allclose(ivy.to_numpy(c.cont_key), ivy.to_numpy(c_true.cont_key))
 
 
-# @pytest.mark.parametrize(
-#     "x", [[0, 1, 2, 3, 4, 5]])
-# @pytest.mark.parametrize(
-#     "axis", [0])
-# @pytest.mark.parametrize(
-#     "tensor_fn", [ivy.array, helpers.var_fn])
-# @pytest.mark.parametrize(
-#     "devs_as_dict", [True, False])
-# def test_distribute_array(x, axis, tensor_fn, devs_as_dict, dev, call):
-#
-#     # inputs
-#     x = tensor_fn(x, 'float32', dev)
-#
-#     # devices
-#     devs = list()
-#     dev0 = dev
-#     devs.append(dev0)
-#     if 'gpu' in dev and ivy.num_gpus() > 1:
-#         idx = ivy.num_gpus() - 1
-#         dev1 = dev[:-1] + str(idx)
-#         devs.append(dev1)
-#     if devs_as_dict:
-#         devs = dict(zip(devs, [int((1/len(devs))*x.shape[axis])]*len(devs)))
-#
-#     # return
-#     x_split = ivy.dev_dist_array(x, devs, axis)
-#
-#     # shape test
-#     assert x_split[dev0].shape[axis] == math.floor(x.shape[axis] / len(devs))
-#
-#     # value test
-#     assert min([ivy.dev(x_sub, as_str=True) == ds for ds, x_sub in x_split.items()])
+@pytest.mark.parametrize(
+    "x", [[0, 1, 2, 3, 4, 5]])
+@pytest.mark.parametrize(
+    "axis", [0])
+@pytest.mark.parametrize(
+    "tensor_fn", [ivy.array, helpers.var_fn])
+@pytest.mark.parametrize(
+    "devs_as_dict", [True, False])
+def test_distribute_array(x, axis, tensor_fn, devs_as_dict, dev, call):
+
+    # inputs
+    x = tensor_fn(x, 'float32', dev)
+
+    # devices
+    devs = list()
+    dev0 = dev
+    devs.append(dev0)
+    if 'gpu' in dev and ivy.num_gpus() > 1:
+        idx = ivy.num_gpus() - 1
+        dev1 = dev[:-1] + str(idx)
+        devs.append(dev1)
+    if devs_as_dict:
+        devs = dict(zip(devs, [int((1/len(devs))*x.shape[axis])]*len(devs)))
+
+    # return
+    x_split = ivy.dev_dist_array(x, devs, axis)
+
+    # shape test
+    assert x_split[dev0].shape[axis] == math.floor(x.shape[axis] / len(devs))
+
+    # value test
+    assert min([ivy.dev(x_sub, as_str=True) == ds for ds, x_sub in x_split.items()])
 
 
-# @pytest.mark.parametrize(
-#     "x", [[0, 1, 2, 3, 4]])
-# @pytest.mark.parametrize(
-#     "axis", [0])
-# @pytest.mark.parametrize(
-#     "tensor_fn", [ivy.array, helpers.var_fn])
-# def test_clone_array(x, axis, tensor_fn, dev, call):
-#
-#     # inputs
-#     x = tensor_fn(x, 'float32', dev)
-#
-#     # devices
-#     devs = list()
-#     dev0 = dev
-#     devs.append(dev0)
-#     if 'gpu' in dev and ivy.num_gpus() > 1:
-#         idx = ivy.num_gpus() - 1
-#         dev1 = dev[:-1] + str(idx)
-#         devs.append(dev1)
-#
-#     # return
-#     x_split = ivy.dev_clone_array(x, devs)
-#
-#     # shape test
-#     assert x_split[dev0].shape[0] == math.floor(x.shape[axis] / len(devs))
-#
-#     # value test
-#     assert min([ivy.dev(x_sub, as_str=True) == ds for ds, x_sub in x_split.items()])
+@pytest.mark.parametrize(
+    "x", [[0, 1, 2, 3, 4]])
+@pytest.mark.parametrize(
+    "axis", [0])
+@pytest.mark.parametrize(
+    "tensor_fn", [ivy.array, helpers.var_fn])
+def test_clone_array(x, axis, tensor_fn, dev, call):
+
+    # inputs
+    x = tensor_fn(x, 'float32', dev)
+
+    # devices
+    devs = list()
+    dev0 = dev
+    devs.append(dev0)
+    if 'gpu' in dev and ivy.num_gpus() > 1:
+        idx = ivy.num_gpus() - 1
+        dev1 = dev[:-1] + str(idx)
+        devs.append(dev1)
+
+    # return
+    x_split = ivy.dev_clone_array(x, devs)
+
+    # shape test
+    assert x_split[dev0].shape[0] == math.floor(x.shape[axis] / len(devs))
+
+    # value test
+    assert min([ivy.dev(x_sub, as_str=True) == ds for ds, x_sub in x_split.items()])
 
 
-# @pytest.mark.parametrize(
-#     "xs", [([0, 1, 2], [3, 4])])
-# @pytest.mark.parametrize(
-#     "axis", [0])
-# @pytest.mark.parametrize(
-#     "tensor_fn", [ivy.array, helpers.var_fn])
-# def test_unify_array(xs, axis, tensor_fn, dev, call):
-#
-#     # devices and inputs
-#     devs = list()
-#     dev0 = dev
-#     x = {dev0: tensor_fn(xs[0], 'float32', dev0)}
-#     devs.append(dev0)
-#     if 'gpu' in dev and ivy.num_gpus() > 1:
-#         idx = ivy.num_gpus() - 1
-#         dev1 = dev[:-1] + str(idx)
-#         x[dev1] = tensor_fn(xs[1], 'float32', dev1)
-#         devs.append(dev1)
-#
-#     # output
-#     x_unified = ivy.dev_unify_array(ivy.DevDistItem(x), dev0, 'concat', axis)
-#
-#     # shape test
-#     expected_size = 0
-#     for ds in devs:
-#         expected_size += x[ds].shape[axis]
-#     assert x_unified.shape[axis] == expected_size
-#
-#     # value test
-#     assert ivy.dev(x_unified, as_str=True) == dev0
+@pytest.mark.parametrize(
+    "xs", [([0, 1, 2], [3, 4])])
+@pytest.mark.parametrize(
+    "axis", [0])
+@pytest.mark.parametrize(
+    "tensor_fn", [ivy.array, helpers.var_fn])
+def test_unify_array(xs, axis, tensor_fn, dev, call):
+
+    # devices and inputs
+    devs = list()
+    dev0 = dev
+    x = {dev0: tensor_fn(xs[0], 'float32', dev0)}
+    devs.append(dev0)
+    if 'gpu' in dev and ivy.num_gpus() > 1:
+        idx = ivy.num_gpus() - 1
+        dev1 = dev[:-1] + str(idx)
+        x[dev1] = tensor_fn(xs[1], 'float32', dev1)
+        devs.append(dev1)
+
+    # output
+    x_unified = ivy.dev_unify_array(ivy.DevDistItem(x), dev0, 'concat', axis)
+
+    # shape test
+    expected_size = 0
+    for ds in devs:
+        expected_size += x[ds].shape[axis]
+    assert x_unified.shape[axis] == expected_size
+
+    # value test
+    assert ivy.dev(x_unified, as_str=True) == dev0
 
 
-# @pytest.mark.parametrize(
-#     "args", [[[0, 1, 2, 3, 4], 'some_str', ([1, 2])]])
-# @pytest.mark.parametrize(
-#     "kwargs", [{'a': [0, 1, 2, 3, 4], 'b': 'another_str'}])
-# @pytest.mark.parametrize(
-#     "axis", [0])
-# @pytest.mark.parametrize(
-#     "tensor_fn", [ivy.array, helpers.var_fn])
-# def test_distribute_args(args, kwargs, axis, tensor_fn, dev, call):
-#
-#     # inputs
-#     args = [tensor_fn(args[0], 'float32', dev)] + args[1:]
-#     kwargs = {'a': tensor_fn(kwargs['a'], 'float32', dev), 'b': kwargs['b']}
-#
-#     # devices
-#     devs = list()
-#     dev0 = dev
-#     devs.append(dev0)
-#     if 'gpu' in dev and ivy.num_gpus() > 1:
-#         idx = ivy.num_gpus() - 1
-#         dev1 = dev[:-1] + str(idx)
-#         devs.append(dev1)
-#
-#     # returns
-#     dist_args, dist_kwargs = ivy.dev_dist_nest(args, kwargs, devs, axis=axis)
-#
-#     # device specific args
-#     for ds in devs:
-#         assert dist_args.at_dev(ds)
-#         assert dist_kwargs.at_dev(ds)
-#
-#     # value test
-#     assert min([ivy.dev(dist_args_ds[0], as_str=True) == ds
-#                 for ds, dist_args_ds in dist_args.at_devs().items()])
-#     assert min([ivy.dev(dist_kwargs_ds['a'], as_str=True) == ds
-#                 for ds, dist_kwargs_ds in dist_kwargs.at_devs().items()])
+@pytest.mark.parametrize(
+    "args", [[[0, 1, 2, 3, 4], 'some_str', ([1, 2])]])
+@pytest.mark.parametrize(
+    "kwargs", [{'a': [0, 1, 2, 3, 4], 'b': 'another_str'}])
+@pytest.mark.parametrize(
+    "axis", [0])
+@pytest.mark.parametrize(
+    "tensor_fn", [ivy.array, helpers.var_fn])
+def test_distribute_args(args, kwargs, axis, tensor_fn, dev, call):
+
+    # inputs
+    args = [tensor_fn(args[0], 'float32', dev)] + args[1:]
+    kwargs = {'a': tensor_fn(kwargs['a'], 'float32', dev), 'b': kwargs['b']}
+
+    # devices
+    devs = list()
+    dev0 = dev
+    devs.append(dev0)
+    if 'gpu' in dev and ivy.num_gpus() > 1:
+        idx = ivy.num_gpus() - 1
+        dev1 = dev[:-1] + str(idx)
+        devs.append(dev1)
+
+    # returns
+    dist_args, dist_kwargs = ivy.dev_dist_nest(args, kwargs, devs, axis=axis)
+
+    # device specific args
+    for ds in devs:
+        assert dist_args.at_dev(ds)
+        assert dist_kwargs.at_dev(ds)
+
+    # value test
+    assert min([ivy.dev(dist_args_ds[0], as_str=True) == ds
+                for ds, dist_args_ds in dist_args.at_devs().items()])
+    assert min([ivy.dev(dist_kwargs_ds['a'], as_str=True) == ds
+                for ds, dist_kwargs_ds in dist_kwargs.at_devs().items()])
 
 
-# @pytest.mark.parametrize(
-#     "args", [[[0, 1, 2, 3, 4], 'some_str', ([1, 2])]])
-# @pytest.mark.parametrize(
-#     "kwargs", [{'a': [0, 1, 2, 3, 4], 'b': 'another_str'}])
-# @pytest.mark.parametrize(
-#     "axis", [0])
-# @pytest.mark.parametrize(
-#     "tensor_fn", [ivy.array, helpers.var_fn])
-# def test_clone_args(args, kwargs, axis, tensor_fn, dev, call):
-#
-#     # inputs
-#     args = [tensor_fn(args[0], 'float32', dev)] + args[1:]
-#     kwargs = {'a': tensor_fn(kwargs['a'], 'float32', dev), 'b': kwargs['b']}
-#
-#     # devices
-#     devs = list()
-#     dev0 = dev
-#     devs.append(dev0)
-#     if 'gpu' in dev and ivy.num_gpus() > 1:
-#         idx = ivy.num_gpus() - 1
-#         dev1 = dev[:-1] + str(idx)
-#         devs.append(dev1)
-#
-#     # returns
-#     cloned_args, cloned_kwargs = ivy.dev_clone_nest(args, kwargs, devs)
-#
-#     # device specific args
-#     for ds in devs:
-#         assert cloned_args.at_dev(ds)
-#         assert cloned_kwargs.at_dev(ds)
-#
-#     # value test
-#     assert min([ivy.dev(dist_args_ds[0], as_str=True) == ds
-#                 for ds, dist_args_ds in cloned_args.at_devs().items()])
-#     assert min([ivy.dev(dist_kwargs_ds['a'], as_str=True) == ds
-#                 for ds, dist_kwargs_ds in cloned_kwargs.at_devs().items()])
+@pytest.mark.parametrize(
+    "args", [[[0, 1, 2, 3, 4], 'some_str', ([1, 2])]])
+@pytest.mark.parametrize(
+    "kwargs", [{'a': [0, 1, 2, 3, 4], 'b': 'another_str'}])
+@pytest.mark.parametrize(
+    "axis", [0])
+@pytest.mark.parametrize(
+    "tensor_fn", [ivy.array, helpers.var_fn])
+def test_clone_args(args, kwargs, axis, tensor_fn, dev, call):
+
+    # inputs
+    args = [tensor_fn(args[0], 'float32', dev)] + args[1:]
+    kwargs = {'a': tensor_fn(kwargs['a'], 'float32', dev), 'b': kwargs['b']}
+
+    # devices
+    devs = list()
+    dev0 = dev
+    devs.append(dev0)
+    if 'gpu' in dev and ivy.num_gpus() > 1:
+        idx = ivy.num_gpus() - 1
+        dev1 = dev[:-1] + str(idx)
+        devs.append(dev1)
+
+    # returns
+    cloned_args, cloned_kwargs = ivy.dev_clone_nest(args, kwargs, devs)
+
+    # device specific args
+    for ds in devs:
+        assert cloned_args.at_dev(ds)
+        assert cloned_kwargs.at_dev(ds)
+
+    # value test
+    assert min([ivy.dev(dist_args_ds[0], as_str=True) == ds
+                for ds, dist_args_ds in cloned_args.at_devs().items()])
+    assert min([ivy.dev(dist_kwargs_ds['a'], as_str=True) == ds
+                for ds, dist_kwargs_ds in cloned_kwargs.at_devs().items()])
 
 
-# @pytest.mark.parametrize(
-#     "args", [[[[0, 1, 2], [3, 4]], 'some_str', ([1, 2])]])
-# @pytest.mark.parametrize(
-#     "kwargs", [{'a': [[0, 1, 2], [3, 4]], 'b': 'another_str'}])
-# @pytest.mark.parametrize(
-#     "axis", [0])
-# @pytest.mark.parametrize(
-#     "tensor_fn", [ivy.array, helpers.var_fn])
-# def test_unify_args(args, kwargs, axis, tensor_fn, dev, call):
-#
-#     # devices
-#     devs = list()
-#     dev0 = dev
-#     devs.append(dev0)
-#     args_dict = dict()
-#     args_dict[dev0] = tensor_fn(args[0][0], 'float32', dev0)
-#     kwargs_dict = dict()
-#     kwargs_dict[dev0] = tensor_fn(kwargs['a'][0], 'float32', dev0)
-#     if 'gpu' in dev and ivy.num_gpus() > 1:
-#         idx = ivy.num_gpus() - 1
-#         dev1 = dev[:-1] + str(idx)
-#         devs.append(dev1)
-#         args_dict[dev1] = tensor_fn(args[0][1], 'float32', dev1)
-#         kwargs_dict[dev1] = tensor_fn(kwargs['a'][1], 'float32', dev1)
-#
-#         # inputs
-#     args = ivy.DevDistNest([ivy.DevDistItem(args_dict)] + args[1:], devs)
-#     kwargs = ivy.DevDistNest({'a': ivy.DevDistItem(kwargs_dict), 'b': kwargs['b']}, devs)
-#
-#     # outputs
-#     args_uni, kwargs_uni = ivy.dev_unify_nest(args, kwargs, dev0, 'concat', axis=axis)
-#
-#     # shape test
-#     expected_size_arg = 0
-#     expected_size_kwarg = 0
-#     for ds in devs:
-#         expected_size_arg += args._data[0][ds].shape[axis]
-#         expected_size_kwarg += kwargs._data['a'][ds].shape[axis]
-#     assert args_uni[0].shape[axis] == expected_size_arg
-#     assert kwargs_uni['a'].shape[axis] == expected_size_kwarg
-#
-#     # value test
-#     assert ivy.dev(args_uni[0], as_str=True) == dev0
-#     assert ivy.dev(kwargs_uni['a'], as_str=True) == dev0
+@pytest.mark.parametrize(
+    "args", [[[[0, 1, 2], [3, 4]], 'some_str', ([1, 2])]])
+@pytest.mark.parametrize(
+    "kwargs", [{'a': [[0, 1, 2], [3, 4]], 'b': 'another_str'}])
+@pytest.mark.parametrize(
+    "axis", [0])
+@pytest.mark.parametrize(
+    "tensor_fn", [ivy.array, helpers.var_fn])
+def test_unify_args(args, kwargs, axis, tensor_fn, dev, call):
+
+    # devices
+    devs = list()
+    dev0 = dev
+    devs.append(dev0)
+    args_dict = dict()
+    args_dict[dev0] = tensor_fn(args[0][0], 'float32', dev0)
+    kwargs_dict = dict()
+    kwargs_dict[dev0] = tensor_fn(kwargs['a'][0], 'float32', dev0)
+    if 'gpu' in dev and ivy.num_gpus() > 1:
+        idx = ivy.num_gpus() - 1
+        dev1 = dev[:-1] + str(idx)
+        devs.append(dev1)
+        args_dict[dev1] = tensor_fn(args[0][1], 'float32', dev1)
+        kwargs_dict[dev1] = tensor_fn(kwargs['a'][1], 'float32', dev1)
+
+        # inputs
+    args = ivy.DevDistNest([ivy.DevDistItem(args_dict)] + args[1:], devs)
+    kwargs = ivy.DevDistNest({'a': ivy.DevDistItem(kwargs_dict), 'b': kwargs['b']}, devs)
+
+    # outputs
+    args_uni, kwargs_uni = ivy.dev_unify_nest(args, kwargs, dev0, 'concat', axis=axis)
+
+    # shape test
+    expected_size_arg = 0
+    expected_size_kwarg = 0
+    for ds in devs:
+        expected_size_arg += args._data[0][ds].shape[axis]
+        expected_size_kwarg += kwargs._data['a'][ds].shape[axis]
+    assert args_uni[0].shape[axis] == expected_size_arg
+    assert kwargs_uni['a'].shape[axis] == expected_size_kwarg
+
+    # value test
+    assert ivy.dev(args_uni[0], as_str=True) == dev0
+    assert ivy.dev(kwargs_uni['a'], as_str=True) == dev0
