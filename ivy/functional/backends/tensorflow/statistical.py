@@ -23,8 +23,7 @@ def min(x: Tensor,
 def sum(x: Tensor,
         axis: Optional[Union[int,Tuple[int]]] = None,
         dtype: Optional[tf.DType] = None,
-        keepdims: bool = False,
-        out: Optional[Tensor]=None) -> Tensor:
+        keepdims: bool = False) -> Tensor:
 
     if dtype == None:
         if x.dtype in [tf.int8, tf.int16, tf.int32]:
@@ -35,17 +34,14 @@ def sum(x: Tensor,
             dtype = tf.int64
         elif x.dtype == tf.uint64:
             dtype = tf.uint64
-    if ivy.exists(out):
-        return ivy.inplace_update(out, tf.experimental.numpy.sum(x, axis ,dtype, keepdims))
-    else:
-        return tf.experimental.numpy.sum(x, axis, dtype, keepdims)
+
+    return tf.experimental.numpy.sum(x, axis, dtype, keepdims)
 
 
 def prod(x: Tensor,
          axis: Optional[Union[int, Tuple[int]]] = None,
          dtype: Optional[tf.DType] = None,
-         keepdims: bool = False,
-            out: Optional[Tensor]=None)\
+         keepdims: bool = False)\
         -> Tensor:
     if dtype == None:
         if x.dtype in [ tf.int8 , tf.int16,tf.int32]:
@@ -56,10 +52,8 @@ def prod(x: Tensor,
             dtype = tf.int64
         elif x.dtype == tf.uint64 :
             dtype = tf.uint64
-    if ivy.exists(out):
-        return ivy.inplace_update(out, tf.experimental.numpy.prod(x, axis = axis, keepdims = keepdims))    
-    else:
-        return tf.experimental.numpy.prod(x,axis,dtype,keepdims)
+        
+    return tf.experimental.numpy.prod(x,axis,dtype,keepdims)
 
 
 def mean(x: Tensor,
@@ -103,21 +97,13 @@ def var(x: Tensor,
 def std(x: Tensor,
         axis: Optional[Union[int, Tuple[int]]] = None,
         correction: Union[int, float] = 0.0,
-        keepdims: bool = False,
-        out : Optional[Tensor]=None)\
+        keepdims: bool = False)\
         -> Tensor:
-        if ivy.exists(out):
-            return ivy.inplace_update(out, tf.experimental.numpy.std(x, axis = axis, keepdims = keepdims))
-        else:
-            return tf.experimental.numpy.std(x, axis, keepdims)
+    return tf.experimental.numpy.std(x, axis, keepdims)
 
     
 # Extra #
 # ------#
 
-def einsum(equation : str, *operands : Tensor, out : Optional[Tensor]=None)\
-     -> Tensor:
-    if ivy.exists(out):
-        return ivy.inplace_update(out, tf.einsum(equation, *operands))
-    else:
-        return tf.einsum(equation, *operands)
+def einsum(equation, *operands):
+    return tf.einsum(equation, *operands)

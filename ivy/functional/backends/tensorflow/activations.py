@@ -27,8 +27,4 @@ def tanh(x: Tensor)\
 
 sigmoid = tf.nn.sigmoid
 softmax = tf.nn.softmax
-
-
-def softplus(x: Tensor)\
-        -> Tensor:
-    return tf.nn.softplus(x)
+softplus = tf.nn.softplus
