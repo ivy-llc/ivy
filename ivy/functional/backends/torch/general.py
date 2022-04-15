@@ -10,6 +10,7 @@ import torch as torch
 from operator import mul
 from functools import reduce as _reduce
 from typing import List, Optional, Union
+from numbers import Number
 
 
 # local
@@ -32,7 +33,9 @@ def array_equal(x0, x1):
     return torch.equal(x0, x1)
 
 
-def to_numpy(x) -> np.ndarray:
+
+def to_numpy(x: torch.Tensor)\
+        -> np.ndarray:
     if isinstance(x, np.ndarray) or isinstance(x, (float, int, bool)):
         return x
     elif torch.is_tensor(x):
@@ -40,13 +43,15 @@ def to_numpy(x) -> np.ndarray:
     raise ValueError('Expected a pytroch tensor.')
 
 
-def to_scalar(x) -> Union[float, int, bool]:
+def to_scalar(x: torch.Tensor)\
+        -> Number:
     if isinstance(x, (float, int)):
         return x
     return x.item()
 
 
-def to_list(x):
+def to_list(x: torch.Tensor)\
+        -> list:
     if isinstance(x, np.ndarray):
         return x.tolist()
     elif torch.is_tensor(x):
@@ -54,8 +59,12 @@ def to_list(x):
     raise ValueError('Expected a pytroch tensor.')
 
 
-def floormod(x, y):
-    return x % y
+def floormod(x: torch.Tensor, y: torch.Tensor, out: Optional[torch.Tensor] = None)\
+        -> torch.Tensor:
+    ret = x%y
+    if ivy.exists(out):
+        return ivy.inplace_update(out,ret)
+    return ret
 
 
 def unstack(x, axis: int, keepdims: bool = False) -> List[torch.Tensor]:
@@ -72,7 +81,12 @@ def container_types():
 
 
 def inplace_update(x, val):
-    x.data = val
+    (x_native, val_native), _ = ivy.args_to_native(x, val)
+    x_native.data = val_native
+    if ivy.is_ivy_array(x):
+        x.data = x_native
+    else:
+        x = ivy.Array(x_native)
     return x
 
 
@@ -80,28 +94,48 @@ inplace_arrays_supported = lambda: True
 inplace_variables_supported = lambda: True
 
 
-
 def inplace_decrement(x, val):
-    x.data -= val
+    (x_native, val_native), _ = ivy.args_to_native(x, val)
+    x_native.data -= val_native
+    if ivy.is_ivy_array(x):
+        x.data = x_native
+    else:
+        x.data = ivy.Array(x.data)
     return x
 
 
 def inplace_increment(x, val):
-    x.data += val
+    (x_native, val_native), _ = ivy.args_to_native(x, val)
+    x_native.data +=val_native
+    if ivy.is_ivy_array(x):
+        x.data = x_native
+    else:
+        x.data = ivy.Array(x.data)
     return x
 
 
-def cumsum(x, axis: int = 0):
-    return torch.cumsum(x, axis)
+def cumsum(x:torch.Tensor, axis: int = 0, out: Optional[torch.Tensor] = None):
+    if ivy.exists(out):
+        return ivy.inplace_update(out,torch.cumsum(x,axis))
+    else:
+        return torch.cumsum(x, axis)
 
 
-def cumprod(x, axis: int = 0, exclusive: bool = False):
+def cumprod(x: torch.Tensor, axis: int = 0, exclusive: Optional[bool] = False,
+    out:Optional[torch.Tensor]=None)\
+        -> torch.Tensor:
     if exclusive:
         x = torch.transpose(x, axis, -1)
         x = torch.cat((torch.ones_like(x[..., -1:]), x[..., :-1]), -1)
         res = torch.cumprod(x, -1)
-        return torch.transpose(res, axis, -1)
-    return torch.cumprod(x, axis)
+        if ivy.exists(out):
+            return ivy.inplace_update(out,torch.transpose(res, axis, -1))
+        else:
+            return torch.transpose(res, axis, -1)
+    if ivy.exists(out):
+        return ivy.inplace_update(out,torch.cumprod(x, axis))
+    else:
+        return torch.cumprod(x, axis)
 
 
 # noinspection PyShadowingNames
@@ -245,10 +279,16 @@ def scatter_nd(indices, updates, shape=None, tensor=None, reduction='sum', dev=N
 
 
 # noinspection PyShadowingNames
-def gather(params, indices, axis=-1, dev: Optional[str] = None):
+def gather(params: torch.Tensor, indices:torch.Tensor, axis:Optional[int]=-1, dev: Optional[str] = None,out:Optional[torch.Tensor]=None)\
+        -> torch.Tensor:
+
     if dev is None:
         dev = _callable_dev(params)
-    return torch.gather(params, axis, indices.type(torch.int64)).to(dev_from_str(dev))
+    ret = torch.gather(params, axis, indices.type(torch.int64)).to(dev_from_str(dev))
+    if ivy.exists(out):
+        return ivy.inplace_update(out,ret)
+    else:
+        return ret
 
 
 # noinspection PyShadowingNames
@@ -287,62 +327,20 @@ def indices_where(x):
     res = torch.cat([torch.unsqueeze(item, -1) for item in where_x], -1)
     return res
 
+
 # noinspection PyUnresolvedReferences,PyShadowingNames
 def one_hot(indices, depth: int, dev: Optional[str] = None):
     if dev is None:
         dev = _callable_dev(indices)
     return torch.nn.functional.one_hot(indices.type(torch.int64), depth).to(dev_from_str(dev))
 
+
 def shape(x, as_tensor=False) -> Union[torch.Tensor, List[int]]:
     return torch.tensor(x.shape) if as_tensor else x.shape
 
+
 def get_num_dims(x, as_tensor=False) -> Union[torch.Tensor, int]:
     return torch.tensor(len(x.shape)) if as_tensor else len(x.shape)
-
-
-def dtype_bits(dtype_in):
-    dtype_str = dtype_to_str(dtype_in)
-    if 'bool' in dtype_str:
-        return 1
-    return int(dtype_str.replace('torch.', '').replace('uint', '').replace('int', '').replace('bfloat', '').replace(
-        'float', ''))
-
-
-def dtype(x, as_str=False):
-    dt = x.dtype
-    if as_str:
-        return dtype_to_str(dt)
-    return dt
-
-
-def dtype_to_str(dtype_in):
-    if isinstance(dtype_in, str):
-        return dtype_in
-    return {torch.int8: 'int8',
-            torch.int16: 'int16',
-            torch.int32: 'int32',
-            torch.int64: 'int64',
-            torch.uint8: 'uint8',
-            torch.bfloat16: 'bfloat16',
-            torch.float16: 'float16',
-            torch.float32: 'float32',
-            torch.float64: 'float64',
-            torch.bool: 'bool'}[dtype_in]
-
-
-def dtype_from_str(dtype_in: str) -> torch.dtype:
-    if not isinstance(dtype_in, str):
-        return dtype_in
-    return {'int8': torch.int8,
-            'int16': torch.int16,
-            'int32': torch.int32,
-            'int64': torch.int64,
-            'uint8': torch.uint8,
-            'bfloat16': torch.bfloat16,
-            'float16': torch.float16,
-            'float32': torch.float32,
-            'float64': torch.float64,
-            'bool': torch.bool}[dtype_in]
 
 
 def compile(fn, dynamic=True, example_inputs=None, static_argnums=None, static_argnames=None):

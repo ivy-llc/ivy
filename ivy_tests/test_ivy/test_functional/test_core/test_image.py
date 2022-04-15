@@ -16,20 +16,20 @@ import ivy_tests.test_ivy.helpers as helpers
 
 
 # stack_images
-# @pytest.mark.parametrize(
-#     "shp_n_num_n_ar_n_newshp", [((1, 2, 3), 4, (2, 1), (2, 4, 3)),
-#                                 ((8, 8, 3), 9, (1, 1), (24, 24, 3)),
-#                                 ((3, 16, 12, 4), 10, (2, 5), (3, 80, 36, 4)),
-#                                 ((5, 20, 9, 5), 10, (5, 2), (5, 40, 72, 5))])
-# def test_stack_images(shp_n_num_n_ar_n_newshp, dev, call):
-#     # smoke test
-#     shape, num, ar, new_shape = shp_n_num_n_ar_n_newshp
-#     xs = [ivy.ones(shape)] * num
-#     ret = ivy.stack_images(xs, ar)
-#     # type test
-#     assert ivy.is_array(ret)
-#     # cardinality test
-#     assert ret.shape == new_shape
+@pytest.mark.parametrize(
+    "shp_n_num_n_ar_n_newshp", [((1, 2, 3), 4, (2, 1), (2, 4, 3)),
+                                ((8, 8, 3), 9, (1, 1), (24, 24, 3)),
+                                ((3, 16, 12, 4), 10, (2, 5), (3, 80, 36, 4)),
+                                ((5, 20, 9, 5), 10, (5, 2), (5, 40, 72, 5))])
+def test_stack_images(shp_n_num_n_ar_n_newshp, dev, call):
+    # smoke test
+    shape, num, ar, new_shape = shp_n_num_n_ar_n_newshp
+    xs = [ivy.ones(shape)] * num
+    ret = ivy.stack_images(xs, ar)
+    # type test
+    assert ivy.is_ivy_array(ret)
+    # cardinality test
+    assert ret.shape == new_shape
 
 
 # bilinear_resample
@@ -61,35 +61,35 @@ def test_bilinear_resample(x_n_warp, dtype, tensor_fn, dev, call):
 
 
 # gradient_image
-# @pytest.mark.parametrize(
-#     "x_n_dy_n_dx", [([[[[0.], [1.], [2.]], [[5.], [4.], [3.]], [[6.], [8.], [7.]]]],
-#                      [[[[5.], [3.], [1.]], [[1.], [4.], [4.]], [[0.], [0.], [0.]]]],
-#                      [[[[1.], [1.], [0.]], [[-1.], [-1.], [0.]], [[2.], [-1.], [0.]]]])])
-# @pytest.mark.parametrize(
-#     "dtype", ['float32'])
-# @pytest.mark.parametrize(
-#     "tensor_fn", [ivy.array, helpers.var_fn])
-# def test_gradient_image(x_n_dy_n_dx, dtype, tensor_fn, dev, call):
-#     # smoke test
-#     x, dy_true, dx_true = x_n_dy_n_dx
-#     x = tensor_fn(x, dtype, dev)
-#     dy, dx = ivy.gradient_image(x)
-#     # type test
-#     assert ivy.is_array(dy)
-#     assert ivy.is_array(dx)
-#     # cardinality test
-#     assert dy.shape == x.shape
-#     assert dx.shape == x.shape
-#     # value test
-#     dy_np, dx_np = call(ivy.gradient_image, x)
-#     dy_true = ivy.functional.backends.numpy.array(dy_true, dtype)
-#     dx_true = ivy.functional.backends.numpy.array(dx_true, dtype)
-#     assert np.allclose(dy_np, dy_true)
-#     assert np.allclose(dx_np, dx_true)
-#     # compilation test
-#     if call in [helpers.torch_call]:
-#         # torch device cannot be assigned value of string while scripting
-#         return
+@pytest.mark.parametrize(
+    "x_n_dy_n_dx", [([[[[0.], [1.], [2.]], [[5.], [4.], [3.]], [[6.], [8.], [7.]]]],
+                     [[[[5.], [3.], [1.]], [[1.], [4.], [4.]], [[0.], [0.], [0.]]]],
+                     [[[[1.], [1.], [0.]], [[-1.], [-1.], [0.]], [[2.], [-1.], [0.]]]])])
+@pytest.mark.parametrize(
+    "dtype", ['float32'])
+@pytest.mark.parametrize(
+    "tensor_fn", [ivy.array, helpers.var_fn])
+def test_gradient_image(x_n_dy_n_dx, dtype, tensor_fn, dev, call):
+    # smoke test
+    x, dy_true, dx_true = x_n_dy_n_dx
+    x = tensor_fn(x, dtype, dev)
+    dy, dx = ivy.gradient_image(x)
+    # type test
+    assert ivy.is_ivy_array(dy)
+    assert ivy.is_ivy_array(dx)
+    # cardinality test
+    assert dy.shape == x.shape
+    assert dx.shape == x.shape
+    # value test
+    dy_np, dx_np = call(ivy.gradient_image, x)
+    dy_true = ivy.functional.backends.numpy.array(dy_true, dtype)
+    dx_true = ivy.functional.backends.numpy.array(dx_true, dtype)
+    assert np.allclose(dy_np, dy_true)
+    assert np.allclose(dx_np, dx_true)
+    # compilation test
+    if call in [helpers.torch_call]:
+        # torch device cannot be assigned value of string while scripting
+        return
 
 
 # float_img_to_uint8_img

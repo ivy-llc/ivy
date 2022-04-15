@@ -3,6 +3,7 @@ Collection of Jax general functions, wrapped to fit Ivy syntax and signature.
 """
 
 # global
+from optparse import Option
 import jax as jax
 import numpy as np
 import jax.numpy as jnp
@@ -11,7 +12,7 @@ from numbers import Number
 from operator import mul as _mul
 from functools import reduce as _reduce
 from jaxlib.xla_extension import Buffer
-from typing import Iterable
+from typing import Iterable, Optional
 import multiprocessing as _multiprocessing
 from haiku._src.data_structures import FlatMapping
 
@@ -20,48 +21,7 @@ import ivy
 from ivy.functional.ivy.device import default_device
 from ivy.functional.ivy import default_dtype
 from ivy.functional.backends.jax.device import to_dev, _to_array, dev as callable_dev
-
-DTYPE_TO_STR = {jnp.dtype('int8'): 'int8',
-                jnp.dtype('int16'): 'int16',
-                jnp.dtype('int32'): 'int32',
-                jnp.dtype('int64'): 'int64',
-                jnp.dtype('uint8'): 'uint8',
-                jnp.dtype('uint16'): 'uint16',
-                jnp.dtype('uint32'): 'uint32',
-                jnp.dtype('uint64'): 'uint64',
-                jnp.dtype('bfloat16'): 'bfloat16',
-                jnp.dtype('float16'): 'float16',
-                jnp.dtype('float32'): 'float32',
-                jnp.dtype('float64'): 'float64',
-                jnp.dtype('bool'): 'bool',
-
-                jnp.int8: 'int8',
-                jnp.int16: 'int16',
-                jnp.int32: 'int32',
-                jnp.int64: 'int64',
-                jnp.uint8: 'uint8',
-                jnp.uint16: 'uint16',
-                jnp.uint32: 'uint32',
-                jnp.uint64: 'uint64',
-                jnp.bfloat16: 'bfloat16',
-                jnp.float16: 'float16',
-                jnp.float32: 'float32',
-                jnp.float64: 'float64',
-                jnp.bool_: 'bool'}
-
-DTYPE_FROM_STR = {'int8': jnp.dtype('int8'),
-                  'int16': jnp.dtype('int16'),
-                  'int32': jnp.dtype('int32'),
-                  'int64': jnp.dtype('int64'),
-                  'uint8': jnp.dtype('uint8'),
-                  'uint16': jnp.dtype('uint16'),
-                  'uint32': jnp.dtype('uint32'),
-                  'uint64': jnp.dtype('uint64'),
-                  'bfloat16': jnp.dtype('bfloat16'),
-                  'float16': jnp.dtype('float16'),
-                  'float32': jnp.dtype('float32'),
-                  'float64': jnp.dtype('float64'),
-                  'bool': jnp.dtype('bool')}
+from ivy.functional.backends.jax import JaxArray
 
 
 # noinspection PyUnresolvedReferences,PyProtectedMember
@@ -86,18 +46,36 @@ def _to_array(x):
 
 copy_array = jnp.array
 array_equal = jnp.array_equal
-floormod = lambda x, y: x % y
-to_numpy = lambda x: np.asarray(_to_array(x))
-to_numpy.__name__ = 'to_numpy'
-to_scalar = lambda x: x if isinstance(x, Number) else _to_array(x).item()
-to_scalar.__name__ = 'to_scalar'
-to_list = lambda x: _to_array(x).tolist()
-to_list.__name__ = 'to_list'
+
+
+def to_numpy(x: JaxArray) \
+        -> np.ndarray:
+    return np.asarray(_to_array(x))
+
+
+def to_scalar(x: JaxArray) \
+        -> Number:
+    if isinstance(x, Number):
+        return x
+    else:
+        return _to_array(x).item()
+
+def to_list(x: JaxArray) \
+        -> list:
+    return _to_array(x).tolist()
 shape = lambda x, as_tensor=False: jnp.asarray(jnp.shape(x)) if as_tensor else x.shape
 shape.__name__ = 'shape'
 get_num_dims = lambda x, as_tensor=False: jnp.asarray(len(jnp.shape(x))) if as_tensor else len(x.shape)
 
 container_types = lambda: [FlatMapping]
+
+
+def floormod(x: JaxArray, y: JaxArray, out: Optional[JaxArray] = None)\
+        -> JaxArray:
+    ret = x%y
+    if ivy.exists(out):
+        return ivy.inplace_update(out,ret)
+    return ret
 
 
 def unstack(x, axis, keepdims=False):
@@ -112,21 +90,40 @@ def unstack(x, axis, keepdims=False):
 
 
 def inplace_update(x, val):
-    raise Exception('Jax does not support inplace operations')
+    (x_native, val_native), _ = ivy.args_to_native(x, val)
+    if ivy.is_ivy_array(x):
+        x.data = val_native
+    else:
+        x = ivy.Array(val_native)
+    return x
+
 
 inplace_arrays_supported = lambda: False
 inplace_variables_supported = lambda: False
 
-cumsum = jnp.cumsum
+
+def cumsum(x: JaxArray, axis:int=0,out: Optional[JaxArray] = None)\
+    -> JaxArray:
+    if ivy.exists(out):
+        return ivy.inplace_update(out,jnp.cumsum(x,axis))
+    else:
+        return jnp.cumsum(x,axis)
 
 
-def cumprod(x, axis=0, exclusive=False):
+def cumprod(x: JaxArray, axis: int =0, exclusive: Optional[bool]=False, out: Optional[JaxArray] = None)\
+        -> JaxArray:
     if exclusive:
         x = jnp.swapaxes(x, axis, -1)
         x = jnp.concatenate((jnp.ones_like(x[..., -1:]), x[..., :-1]), -1)
         res = jnp.cumprod(x, -1)
-        return jnp.swapaxes(res, axis, -1)
-    return jnp.cumprod(x, axis)
+        if ivy.exists(out):
+            return ivy.inplace_update(out,jnp.copy(jnp.swapaxes(res, axis, -1)))
+        else:
+            return jnp.swapaxes(res, axis, -1)
+    if ivy.exists(out):
+        return ivy.inplace_update(out,jnp.cumprod(x,axis))
+    else:   
+        return jnp.cumprod(x, axis)
 
 
 def scatter_flat(indices, updates, size=None, tensor=None, reduction='sum', dev=None):
@@ -215,10 +212,14 @@ def scatter_nd(indices, updates, shape=None, tensor=None, reduction='sum', dev=N
 
 
 
-def gather(params, indices, axis=-1, dev=None):
+def gather(params : JaxArray, indices: JaxArray, axis : Optional[int] =-1, dev: Optional[str] = None , out: Optional[JaxArray] = None)\
+        ->JaxArray: 
     if dev is None:
         dev = callable_dev(params)
-    return to_dev(jnp.take_along_axis(params, indices, axis), dev)
+    if ivy.exists(out):
+        return ivy.inplace_update(out,to_dev(jnp.take_along_axis(params, indices, axis), dev))
+    else:
+        return to_dev(jnp.take_along_axis(params, indices, axis), dev)
 
 
 def gather_nd(params, indices, dev=None):
@@ -260,38 +261,21 @@ def indices_where(x):
 
 
 def inplace_decrement(x, val):
-    raise Exception('Jax does not support inplace operations')
+    (x_native, val_native), _ = ivy.args_to_native(x, val)
+    if ivy.is_ivy_array(x):
+        x.data -= val_native
+    else:
+        x = ivy.Array(val_native)
+    return x
 
 
 def inplace_increment(x, val):
-    raise Exception('Jax does not support inplace operations')
-
-
-def dtype_bits(dtype_in):
-    dtype_str = dtype_to_str(dtype_in)
-    if 'bool' in dtype_str:
-        return 1
-    return int(dtype_str.replace('uint', '').replace('int', '').replace('bfloat', '').replace('float', ''))
-
-
-
-def dtype(x, as_str=False):
-    dt = x.dtype
-    if as_str:
-        return dtype_to_str(dt)
-    return dt
-
-
-def dtype_to_str(dtype_in):
-    if isinstance(dtype_in, str):
-        return dtype_in
-    return DTYPE_TO_STR[dtype_in]
-
-
-def dtype_from_str(dtype_in):
-    if not isinstance(dtype_in, str):
-        return dtype_in
-    return DTYPE_FROM_STR[dtype_in]
+    (x_native, val_native), _ = ivy.args_to_native(x, val)
+    if ivy.is_ivy_array(x):
+        x.data += val_native
+    else:
+        x = ivy.Array(val_native)
+    return x
 
 
 compile = lambda fn, dynamic=True, example_inputs=None, static_argnums=None, static_argnames=None: \
