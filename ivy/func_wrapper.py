@@ -6,7 +6,7 @@ from types import ModuleType
 
 
 wrapped_modules_n_classes = []
-NON_WRAPPED_METHODS = ['current_framework', 'current_framework_str', 'set_framework', 'get_framework',
+NON_WRAPPED_METHODS = ['copy_nest','current_framework', 'current_framework_str', 'set_framework', 'get_framework',
                        'unset_framework', 'set_debug_mode', 'set_breakpoint_debug_mode', 'set_exception_debug_mode',
                        'unset_debug_mode', 'debug_mode', 'nested_map', 'to_ivy', 'args_to_ivy', 'to_native',
                        'args_to_native', 'default', 'exists', 'set_min_base', 'get_min_base', 'set_min_denominator',
@@ -16,7 +16,8 @@ NON_WRAPPED_METHODS = ['current_framework', 'current_framework_str', 'set_framew
                        'to_ivy_module', 'tree_flatten', 'tree_unflatten', 'start_compiling', 'stop_compiling',
                        'get_compiled', 'index_nest', 'set_nest_at_index', 'map_nest_at_index', 'multi_index_nest',
                        'set_nest_at_indices', 'map_nest_at_indices', 'nested_indices_where', 'map',
-                       'unset_default_device', 'closest_valid_dtype', 'default_dtype', 'dtype_from_str','is_ivy_array']
+                       'unset_default_device', 'closest_valid_dtype', 'default_dtype', 'dtype_from_str','is_ivy_array',
+                       'inplace_update', 'inplace_increment', 'inplace_decrement']
 
 ARRAYLESS_RET_METHODS = ['to_numpy', 'to_list', 'to_scalar', 'shape', 'get_num_dims', 'is_native_array', 'is_ivy_array',
                          'is_variable']
@@ -46,12 +47,19 @@ def _wrap_method(fn):
     if hasattr(fn, 'wrapped') and fn.wrapped:
         return fn
 
-    def _method_wrapped(*args, **kwargs):
+    def _method_wrapped(*args, out=None, **kwargs):
         native_args, native_kwargs = ivy.args_to_native(*args, **kwargs)
-        native_ret = fn(*native_args, **native_kwargs)
+        if ivy.exists(out):
+            native_out = ivy.to_native(out)
+            native_or_ivy_ret = fn(*native_args, out=native_out, **native_kwargs)
+        else:
+            native_or_ivy_ret = fn(*native_args, **native_kwargs)
         if fn.__name__ in ARRAYLESS_RET_METHODS + NESTED_ARRAY_RET_METHODS:
-            return native_ret
-        return ivy.to_ivy(native_ret, nested=True)
+            return native_or_ivy_ret
+        elif ivy.exists(out) and ivy.is_ivy_array(out):
+            out.data = ivy.to_native(native_or_ivy_ret)
+            return out
+        return ivy.to_ivy(native_or_ivy_ret, nested=True)
 
     if hasattr(fn, '__name__'):
         _method_wrapped.__name__ = fn.__name__

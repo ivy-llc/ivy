@@ -4,109 +4,50 @@ Collection of Numpy general functions, wrapped to fit Ivy syntax and signature.
 
 # global
 import logging
+from typing import Optional
 import numpy as np
 from operator import mul as _mul
 from functools import reduce as _reduce
 import multiprocessing as _multiprocessing
+from numbers import Number
 
 # local
 import ivy
 from ivy.functional.ivy import default_dtype
-from ivy.functional.backends.numpy.device import _dev_callable
+from ivy.functional.backends.numpy.device import _dev_callable, _to_dev
 
 # Helpers #
 # --------#
 
-DTYPE_TO_STR = {np.dtype('int8'): 'int8',
-                np.dtype('int16'): 'int16',
-                np.dtype('int32'): 'int32',
-                np.dtype('int64'): 'int64',
-                np.dtype('uint8'): 'uint8',
-                np.dtype('uint16'): 'uint16',
-                np.dtype('uint32'): 'uint32',
-                np.dtype('uint64'): 'uint64',
-                'bfloat16': 'bfloat16',
-                np.dtype('float16'): 'float16',
-                np.dtype('float32'): 'float32',
-                np.dtype('float64'): 'float64',
-                np.dtype('bool'): 'bool',
-
-                np.int8: 'int8',
-                np.int16: 'int16',
-                np.int32: 'int32',
-                np.int64: 'int64',
-                np.uint8: 'uint8',
-                np.uint16: 'uint16',
-                np.uint32: 'uint32',
-                np.uint64: 'uint64',
-                np.float16: 'float16',
-                np.float32: 'float32',
-                np.float64: 'float64',
-                np.bool_: 'bool'}
-
-DTYPE_FROM_STR = {'int8': np.dtype('int8'),
-                'int16': np.dtype('int16'),
-                'int32': np.dtype('int32'),
-                'int64': np.dtype('int64'),
-                'uint8': np.dtype('uint8'),
-                'uint16': np.dtype('uint16'),
-                'uint32': np.dtype('uint32'),
-                'uint64': np.dtype('uint64'),
-                'bfloat16': 'bfloat16',
-                'float16': np.dtype('float16'),
-                'float32': np.dtype('float32'),
-                'float64': np.dtype('float64'),
-                'bool': np.dtype('bool')}
-
-
-
-def dtype(x, as_str=False):
-    dt = x.dtype
-    if as_str:
-        return dtype_to_str(dt)
-    return dt
-
-
-def dtype_to_str(dtype_in):
-    if isinstance(dtype_in, str):
-        return dtype_in
-    return DTYPE_TO_STR[dtype_in]
-
-
-def dtype_from_str(dtype_in):
-    if not isinstance(dtype_in, str):
-        return dtype_in
-    return DTYPE_FROM_STR[dtype_in]
-
-def _to_dev(x, dev):
-    if dev is not None:
-        if 'gpu' in dev:
-            raise Exception('Native Numpy does not support GPU placement, consider using Jax instead')
-        elif 'cpu' in dev:
-            pass
-        else:
-            raise Exception('Invalid device specified, must be in the form [ "cpu:idx" | "gpu:idx" ],'
-                            'but found {}'.format(dev))
-    return x
-
 
 copy_array = lambda x: x.copy()
 array_equal = np.array_equal
-floormod = lambda x, y: np.asarray(x % y)
 
-to_numpy = lambda x: x
-to_numpy.__name__ = 'to_numpy'
-to_scalar = lambda x: x.item()
-to_scalar.__name__ = 'to_scalar'
-to_list = lambda x: x.tolist()
-to_list.__name__ = 'to_list'
+
+def to_numpy(x: np.ndarray) \
+        -> np.ndarray:
+    return x
+
+def to_scalar(x: np.ndarray) \
+        -> Number:
+    return x.item()
+
+def to_list(x: np.ndarray) \
+        -> list:
+    return x.tolist()
+
 container_types = lambda: []
 inplace_arrays_supported = lambda: True
 inplace_variables_supported = lambda: True
 
 
 def inplace_update(x, val):
-    x.data = val
+    (x_native, val_native), _ = ivy.args_to_native(x, val)
+    x_native.data = val_native
+    if ivy.is_ivy_array(x):
+        x.data = x_native
+    else:
+        x = ivy.Array(x_native)
     return x
 
 
@@ -114,6 +55,14 @@ def is_native_array(x, exclusive=False):
     if isinstance(x, np.ndarray):
         return True
     return False
+
+
+def floormod(x: np.ndarray, y: np.ndarray, out: Optional[np.ndarray] = None)\
+        -> np.ndarray:
+    ret = np.asarray(x%y)
+    if ivy.exists(out):
+        return ivy.inplace_update(out,ret)
+    return ret
 
 
 def unstack(x, axis, keepdims=False):
@@ -126,23 +75,48 @@ def unstack(x, axis, keepdims=False):
 
 
 def inplace_decrement(x, val):
-    x -= val
+    (x_native, val_native), _ = ivy.args_to_native(x, val)
+    x_native -= val_native
+    if ivy.is_ivy_array(x):
+        x.data = x_native
+    else:
+        x = ivy.Array(x_native)
     return x
 
 
 def inplace_increment(x, val):
-    x += val
+    (x_native, val_native), _ = ivy.args_to_native(x, val)
+    x_native+= val_native
+    if ivy.is_ivy_array(x):
+        x.data = x_native
+    else:
+        x = ivy.Array(x_native)
     return x
 
-cumsum = np.cumsum
 
-def cumprod(x, axis=0, exclusive=False):
+def cumsum(x:np.ndarray,axis:int=0,out: Optional[np.ndarray] = None)\
+        -> np.ndarray:
+        if ivy.exists(out):
+            return ivy.inplace_update(out,np.cumsum(x,axis))
+        else:
+            return np.cumsum(x,axis)
+
+
+def cumprod(x:np.ndarray, axis:int=0, exclusive:Optional[bool]=False,
+    out:Optional[np.ndarray] = None)\
+        -> np.ndarray:
     if exclusive:
         x = np.swapaxes(x, axis, -1)
         x = np.concatenate((np.ones_like(x[..., -1:]), x[..., :-1]), -1)
         res = np.cumprod(x, -1)
-        return np.swapaxes(res, axis, -1)
-    return np.cumprod(x, axis)
+        if ivy.exists(out):
+            return ivy.inplace_update(out,np.swapaxes(res, axis, -1).copy())
+        else:
+            return np.swapaxes(res, axis, -1)
+    if ivy.exists(out):
+        return ivy.inplace_update(out,np.cumprod(x, axis))  
+    else:
+        return np.cumprod(x, axis)
 
 
 
@@ -218,11 +192,15 @@ def scatter_nd(indices, updates, shape=None, tensor=None, reduction='sum', dev=N
     return _to_dev(target, dev)
 
 
-def gather(params, indices, axis=-1, dev=None):
+def gather(params: np.ndarray, indices:np.ndarray, axis: Optional[int]=-1, dev:Optional[str]=None, out:Optional[np.ndarray] = None)\
+        -> np.ndarray:
     if dev is None:
         dev = _dev_callable(params)
-    return _to_dev(np.take_along_axis(params, indices, axis), dev)
-
+    ret = _to_dev(np.take_along_axis(params, indices, axis), dev)
+    if ivy.exists(out):
+        return ivy.inplace_update(out,ret)
+    else :
+        return ret
 
 def gather_nd(params, indices, dev=None):
     if dev is None:
@@ -265,32 +243,6 @@ def one_hot(indices, depth, dev=None):
 shape = lambda x, as_tensor=False: np.asarray(np.shape(x)) if as_tensor else x.shape
 shape.__name__ = 'shape'
 get_num_dims = lambda x, as_tensor=False: np.asarray(len(np.shape(x))) if as_tensor else len(x.shape)
-
-
-def dtype_bits(dtype_in):
-    dtype_str = dtype_to_str(dtype_in)
-    if 'bool' in dtype_str:
-        return 1
-    return int(dtype_str.replace('uint', '').replace('int', '').replace('bfloat', '').replace('float', ''))
-
-
-def dtype(x, as_str=False):
-    dt = x.dtype
-    if as_str:
-        return dtype_to_str(dt)
-    return dt
-
-
-def dtype_to_str(dtype_in):
-    if isinstance(dtype_in, str):
-        return dtype_in
-    return DTYPE_TO_STR[dtype_in]
-
-
-def dtype_from_str(dtype_in):
-    if not isinstance(dtype_in, str):
-        return dtype_in
-    return DTYPE_FROM_STR[dtype_in]
 
 
 # noinspection PyUnusedLocal

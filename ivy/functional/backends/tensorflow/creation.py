@@ -47,6 +47,9 @@ def asarray(object_in, dtype=None, dev=None, copy=None):
                 return tf.cast(tensor, dtype)
 
 
+array = asarray
+
+
 def zeros(shape: Union[int, Tuple[int]],
           dtype: Optional[Dtype] = None,
           device: Optional[str] = None) \
@@ -134,9 +137,11 @@ def linspace(start, stop, num, axis=None, dev=None):
     with tf.device(ivy.dev_from_str(dev)):
         return tf.linspace(start, stop, num, axis=axis)
 
+
 def meshgrid(*arrays: tf.Tensor, indexing: str = 'xy')\
         -> List[tf.Tensor]:
     return tf.meshgrid(*arrays, indexing=indexing)
+
 
 def eye(n_rows: int,
         n_cols: Optional[int] = None,
@@ -175,27 +180,12 @@ def full(shape, fill_value, dtype=None, device=None):
         return tf.fill(shape, tf.constant(fill_value, dtype=dtype_from_str(default_dtype(dtype, fill_value))))
 
 
-
 def from_dlpack(x):
     return tf.experimental.dlpack.from_dlpack(x)
 
+
 # Extra #
 # ------#
-
-# noinspection PyShadowingNames
-def array(object_in, dtype=None, dev=None):
-    dtype = dtype_from_str(default_dtype(dtype, object_in))
-    dev = default_device(dev)
-    with tf.device(dev_from_str(dev)):
-        try:
-            tensor = tf.convert_to_tensor(object_in, dtype=dtype)
-        except (TypeError, ValueError):
-            tensor = tf.convert_to_tensor(ivy.nested_map(object_in, lambda x: tf.cast(x, dtype)), dtype=dtype)
-        if dtype is None:
-            return tensor
-        return tf.cast(tensor, dtype)
-
-
 
 def logspace(start, stop, num, base=10., axis=None, dev=None):
     power_seq = linspace(start, stop, num, axis, default_device(dev))

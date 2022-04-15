@@ -21,7 +21,7 @@ def unique_inverse(x: Union[ivy.Array, ivy.NativeArray]) \
     return _cur_framework.unique_inverse(x)
 
 
-def unique_values(x: Union[ivy.Array, ivy.NativeArray])\
+def unique_values(x: Union[ivy.Array, ivy.NativeArray], out: Optional[Union[ivy.Array, ivy.NativeArray]] = None) \
         -> ivy.Array:
     """
     Returns the unique elements of an input array ``x``.
@@ -43,7 +43,7 @@ def unique_values(x: Union[ivy.Array, ivy.NativeArray])\
         .. note::
            The order of unique elements is not specified and may vary between implementations.
     """
-    return _cur_framework(x).unique_values(x)
+    return _cur_framework(x).unique_values(x, out)
 
 
 def unique_counts(x: Union[ivy.Array, ivy.NativeArray])\

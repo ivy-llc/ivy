@@ -3,6 +3,7 @@ Collection of TensorFlow general functions, wrapped to fit Ivy syntax and signat
 """
 
 # global
+from typing import Optional
 import ivy
 _round = round
 import numpy as _np
@@ -10,39 +11,11 @@ import tensorflow as tf
 from numbers import Number
 import multiprocessing as _multiprocessing
 from tensorflow.python.types.core import Tensor
+from numbers import Number
 
 # local
 from ivy.functional.ivy.device import default_device
 from ivy.functional.backends.tensorflow.device import _dev_callable, dev_from_str
-
-
-DTYPE_TO_STR = {tf.int8: 'int8',
-                tf.int16: 'int16',
-                tf.int32: 'int32',
-                tf.int64: 'int64',
-                tf.uint8: 'uint8',
-                tf.uint16: 'uint16',
-                tf.uint32: 'uint32',
-                tf.uint64: 'uint64',
-                tf.bfloat16: 'bfloat16',
-                tf.float16: 'float16',
-                tf.float32: 'float32',
-                tf.float64: 'float64',
-                tf.bool: 'bool'}
-
-DTYPE_FROM_STR = {'int8': tf.int8,
-                'int16': tf.int16,
-                'int32': tf.int32,
-                'int64': tf.int64,
-                'uint8': tf.uint8,
-                'uint16': tf.uint16,
-                'uint32': tf.uint32,
-                'uint64': tf.uint64,
-                'bfloat16': tf.bfloat16,
-                'float16': tf.float16,
-                'float32': tf.float32,
-                'float64': tf.float64,
-                'bool': tf.bool}
 
 
 def is_native_array(x, exclusive=False):
@@ -55,13 +28,27 @@ def is_native_array(x, exclusive=False):
 
 copy_array = tf.identity
 array_equal = tf.experimental.numpy.array_equal
-floormod = lambda x, y: x % y
-to_numpy = lambda x: _np.asarray(tf.convert_to_tensor(x))
-to_numpy.__name__ = 'to_numpy'
-to_scalar = lambda x: to_numpy(x).item()
-to_scalar.__name__ = 'to_scalar'
-to_list = lambda x: x.numpy().tolist()
-to_list.__name__ = 'to_list'
+
+def to_numpy(x: Tensor) \
+        -> _np.ndarray:
+    return _np.asarray(tf.convert_to_tensor(x))
+
+
+def to_scalar(x: Tensor) \
+        -> Number:
+    return to_numpy(x).item()
+
+def to_list(x: Tensor) \
+        ->list:
+    return x.numpy().tolist()
+
+
+def floormod(x: tf.Tensor, y: tf.Tensor, out: Optional[tf.Tensor] = None)\
+        -> tf.Tensor:
+    ret = x%y
+    if ivy.exists(out):
+        return ivy.inplace_update(out,ret)
+    return ret
 
 
 def unstack(x, axis, keepdims=False):
@@ -77,10 +64,19 @@ container_types = lambda: []
 
 
 def inplace_update(x, val):
-    if ivy.is_variable(x):
-        x.assign(val)
-        return x
-    raise Exception('TensorFlow does not support inplace operations on non-Variable tensors')
+    (x_native, val_native), _ = ivy.args_to_native(x, val)
+    if ivy.is_variable(x_native):
+        x_native.assign(val_native)
+        if ivy.is_ivy_array(x):
+            x.data = x_native
+        else:
+            x = ivy.Array(x_native)
+    else:
+        if ivy.is_ivy_array(x):
+            x.data = val_native
+        else:
+            x = ivy.Array(val_native)
+    return x
 
 
 inplace_arrays_supported = lambda: False
@@ -88,22 +84,50 @@ inplace_variables_supported = lambda: True
 
 
 def inplace_decrement(x, val):
-    if ivy.is_variable(x):
-        x.assign(x - val)
-        return x
-    raise Exception('TensorFlow does not support inplace operations on non-Variable tensors')
+    (x_native, val_native), _ = ivy.args_to_native(x, val)
+    if ivy.is_variable(x_native):
+        x_native.assign(x_native-val_native)
+        if ivy.is_ivy_array(x):
+            x.data = x_native
+        else:
+            x = ivy.Array(x_native)
+    else:
+        if ivy.is_ivy_array(x):
+            x.data = val_native
+        else:
+            x = ivy.Array(val_native)
+    return x
 
 
 def inplace_increment(x, val):
-    if ivy.is_variable(x):
-        x.assign(x + val)
-        return x
-    raise Exception('TensorFlow does not support inplace operations on non-Variable tensors')
+    (x_native, val_native), _ = ivy.args_to_native(x, val)
+    if ivy.is_variable(x_native):
+        x_native.assign(x_native + val_native)
+        if ivy.is_ivy_array(x):
+            x.data = x_native
+        else:
+            x = ivy.Array(x_native)
+    else:
+        if ivy.is_ivy_array(x):
+            x.data = val_native
+        else:
+            x = ivy.Array(val_native)
+    return x
 
 
-cumsum = tf.cumsum
-cumprod = tf.math.cumprod
+def cumsum(x:tf.Tensor,axis:int=0,out: Optional[tf.Tensor] = None)\
+        -> tf.Tensor:
+        if ivy.exists(out):
+            return ivy.inplace_update(out,tf.math.cumsum(x,axis))
+        else:
+            return tf.math.cumsum(x,axis)
 
+def cumprod(x:tf.Tensor,axis:int=0,exclusive:Optional[bool]=False,out: Optional[tf.Tensor] = None)\
+        -> tf.Tensor:
+    if ivy.exists(out):
+        return ivy.inplace_update(out,tf.math.cumprod(x,axis,exclusive))
+    else:
+        return tf.math.cumprod(x,axis,exclusive)
 
 # noinspection PyShadowingNames
 def scatter_flat(indices, updates, size=None, tensor=None, reduction='sum', dev=None):
@@ -162,6 +186,8 @@ def _parse_ellipsis(so, ndims):
 # noinspection PyShadowingNames
 def scatter_nd(indices, updates, shape=None, tensor=None, reduction='sum', dev=None):
 
+    if ivy.exists(tensor) and not isinstance(updates,Number):
+        tensor= tf.cast(tensor,dtype = updates.dtype) if ivy.dtype_bits(updates.dtype) > ivy.dtype_bits(tensor.dtype) else tensor
     # handle numeric updates
     updates = tf.constant([updates] if isinstance(updates, Number) else updates,
                            dtype=ivy.dtype(tensor, as_str=False) if ivy.exists(tensor)
@@ -223,13 +249,17 @@ def scatter_nd(indices, updates, shape=None, tensor=None, reduction='sum', dev=N
         return res
 
 
-def gather(params, indices, axis=-1, dev=None):
+def gather(params: tf.Tensor, indices:tf.Tensor, axis: Optional[int] =-1, dev: Optional[str]=None, out: Optional[tf.Tensor] = None)\
+        -> tf.Tensor:
     axis = axis % len(indices.shape)
     if dev is None:
         dev = _dev_callable(params)
     with tf.device(dev_from_str(dev)):
-        return tf.gather(params, indices, axis=axis, batch_dims=axis)
-
+        ret = tf.gather(params, indices, axis=axis, batch_dims=axis)
+        if ivy.exists(out):
+            return ivy.inplace_update(out,ret)
+        else:
+            return ret
 
 def gather_nd(params, indices, dev=None):
     if dev is None:
@@ -238,39 +268,12 @@ def gather_nd(params, indices, dev=None):
         return tf.gather_nd(params, indices)
 
 
-def dtype_bits(dtype_in):
-    dtype_str = dtype_to_str(dtype_in)
-    if 'bool' in dtype_str:
-        return 1
-    return int(dtype_str.replace('tf.', '').replace('uint', '').replace('int', '').replace('bfloat', '').replace(
-        'float', ''))
-
-
 def one_hot(indices, depth, dev=None):
     dev = default_device(dev)
     if dev is not None:
         with tf.device(dev_from_str(dev)):
             return tf.one_hot(indices, depth)
     return tf.one_hot(indices, depth)
-
-
-def dtype(x, as_str=False):
-    dt = x.dtype
-    if as_str:
-        return dtype_to_str(dt)
-    return dt
-
-
-def dtype_to_str(dtype_in):
-    if isinstance(dtype_in, str):
-        return dtype_in
-    return DTYPE_TO_STR[dtype_in]
-
-
-def dtype_from_str(dtype_in):
-    if not isinstance(dtype_in, str):
-        return dtype_in
-    return DTYPE_FROM_STR[dtype_in]
 
 
 compile = lambda fn, dynamic=True, example_inputs=None, static_argnums=None, static_argnames=None: tf.function(fn)
