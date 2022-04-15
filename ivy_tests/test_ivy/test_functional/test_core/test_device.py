@@ -137,15 +137,37 @@ def test_default_device(dev, call):
     "dtype", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_to_dev(x, dtype, tensor_fn, dev, call):
+@pytest.mark.parametrize(
+    "with_out", [False, True])
+def test_to_dev(x, dtype, tensor_fn, with_out, dev, call):
     # smoke test
     if (isinstance(x, Number) or len(x) == 0) and tensor_fn == helpers.var_fn and call is helpers.mx_call:
         # mxnet does not support 0-dimensional variables
         pytest.skip()
+
     x = tensor_fn(x, dtype, dev)
+
+    # create a dummy array for out that is broadcastable to x
+    out = ivy.zeros(ivy.shape(x)) if with_out else None
+
     dev = ivy.dev(x)
-    x_on_dev = ivy.to_dev(x, dev)
-    dev_from_new_x = ivy.dev(x)
+    x_on_dev = ivy.to_dev(x, dev, out=out)
+    dev_from_new_x = ivy.dev(x_on_dev)
+    
+    if with_out:
+        # should be the same array test
+        assert np.allclose(ivy.to_numpy(x_on_dev), ivy.to_numpy(out))
+
+        # should be the same device
+        assert ivy.dev(x_on_dev) == ivy.dev(out)
+
+        # check if native arrays are the same
+        if ivy.current_framework_str() in ["tensorflow", "jax"]:
+            # these frameworks do not support native inplace updates
+            return
+
+        assert x_on_dev.data is out.data
+
     # value test
     if call in [helpers.tf_call, helpers.tf_graph_call]:
         assert '/' + ':'.join(dev_from_new_x[1:].split(':')[-2:]) == '/' + ':'.join(dev[1:].split(':')[-2:])
@@ -153,7 +175,7 @@ def test_to_dev(x, dtype, tensor_fn, dev, call):
         assert dev_from_new_x.type == dev.type
     else:
         assert dev_from_new_x == dev
-
+        
 
 # Function Splitting #
 
