@@ -214,6 +214,8 @@
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">import</span> <span class="nn">nvidia_smi</span>
 
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span>
+
 <span class="c1"># noinspection PyUnresolvedReferences</span>
 <span class="k">try</span><span class="p">:</span>
     <span class="n">nvidia_smi</span><span class="o">.</span><span class="n">nvmlInit</span><span class="p">()</span>
@@ -316,7 +318,7 @@
 <span class="c1"># Conversions</span>
 
 <span class="c1"># noinspection PyShadowingNames</span>
-<div class="viewcode-block" id="dev_to_str"><a class="viewcode-back" href="../../../../functional/ivy/device/dev_to_str.html#ivy.functional.ivy.device.dev_to_str">[docs]</a><span class="k">def</span> <span class="nf">dev_to_str</span><span class="p">(</span><span class="n">dev</span><span class="p">:</span> <span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Device</span><span class="p">,</span> <span class="nb">str</span><span class="p">])</span>\
+<div class="viewcode-block" id="dev_to_str"><a class="viewcode-back" href="../../../../functional/ivy/device/dev_to_str.html#ivy.functional.ivy.device.dev_to_str">[docs]</a><span class="k">def</span> <span class="nf">dev_to_str</span><span class="p">(</span><span class="n">dev</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Device</span><span class="p">,</span> <span class="nb">str</span><span class="p">])</span> \
         <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Convert native data type to string representation.</span>
@@ -329,7 +331,7 @@
 
 
 <span class="c1"># noinspection PyShadowingNames</span>
-<div class="viewcode-block" id="dev_from_str"><a class="viewcode-back" href="../../../../functional/ivy/device/dev_from_str.html#ivy.functional.ivy.device.dev_from_str">[docs]</a><span class="k">def</span> <span class="nf">dev_from_str</span><span class="p">(</span><span class="n">dev</span><span class="p">:</span> <span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Device</span><span class="p">,</span> <span class="nb">str</span><span class="p">])</span>\
+<div class="viewcode-block" id="dev_from_str"><a class="viewcode-back" href="../../../../functional/ivy/device/dev_from_str.html#ivy.functional.ivy.device.dev_from_str">[docs]</a><span class="k">def</span> <span class="nf">dev_from_str</span><span class="p">(</span><span class="n">dev</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Device</span><span class="p">,</span> <span class="nb">str</span><span class="p">])</span> \
         <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Device</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Convert device string representation to native device type.</span>
@@ -534,18 +536,32 @@
 <span class="c1"># Device Allocation #</span>
 
 <span class="c1"># noinspection PyShadowingNames</span>
-<div class="viewcode-block" id="to_dev"><a class="viewcode-back" href="../../../../functional/ivy/device/to_dev.html#ivy.functional.ivy.device.to_dev">[docs]</a><span class="k">def</span> <span class="nf">to_dev</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span> <span class="n">dev</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Device</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span>\
+<div class="viewcode-block" id="to_dev"><a class="viewcode-back" href="../../../../functional/ivy/device/to_dev.html#ivy.functional.ivy.device.to_dev">[docs]</a><span class="k">def</span> <span class="nf">to_dev</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span> <span class="n">dev</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Device</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> \
+           <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> \
         <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Move the input array x to the desired device, specified by device string.</span>
 
-<span class="sd">    :param x: Array to move onto the device.</span>
-<span class="sd">    :type x: array</span>
-<span class="sd">    :param dev: device to move the array to &#39;cuda:0&#39;, &#39;cuda:1&#39;, &#39;cpu&#39; etc. Keep same device if None.</span>
-<span class="sd">    :type dev: Device, optional</span>
-<span class="sd">    :return: The array x, but now placed on the target device.</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x:</span>
+<span class="sd">       input array to be moved to the desired device</span>
+<span class="sd">    dev:</span>
+<span class="sd">        device to move the input array `x` to</span>
+<span class="sd">    out:</span>
+<span class="sd">        optional output array, for writing the result to. It must have a shape that the inputs broadcast to.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    x:</span>
+<span class="sd">        input array x placed on the desired device</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    -------</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([1., 2., 3.])</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.to_dev(x, dev)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">to_dev</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dev</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">to_dev</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dev</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span></div>
 
 
 <span class="c1"># Function Splitting #</span>

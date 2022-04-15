@@ -742,7 +742,7 @@ multiprocessing.</p>
 
 <dl class="py function">
 <dt id="ivy.functional.ivy.device.dev_from_str">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">dev_from_str</code><span class="sig-paren">(</span><em class="sig-param">dev: [&lt;class 'ivy.Device'&gt;, &lt;class 'str'&gt;]</em><span class="sig-paren">)</span> &#x2192; ivy.Device<a class="reference internal" href="../../_modules/ivy/functional/ivy/device.html#dev_from_str"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.device.dev_from_str" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">dev_from_str</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dev</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.Device<span class="p">, </span>str<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; ivy.Device<a class="reference internal" href="../../_modules/ivy/functional/ivy/device.html#dev_from_str"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.device.dev_from_str" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert device string representation to native device type.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -756,7 +756,7 @@ multiprocessing.</p>
 
 <dl class="py function">
 <dt id="ivy.functional.ivy.device.dev_to_str">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">dev_to_str</code><span class="sig-paren">(</span><em class="sig-param">dev: [&lt;class 'ivy.Device'&gt;, &lt;class 'str'&gt;]</em><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="../../_modules/ivy/functional/ivy/device.html#dev_to_str"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.device.dev_to_str" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">dev_to_str</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dev</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.Device<span class="p">, </span>str<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="../../_modules/ivy/functional/ivy/device.html#dev_to_str"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.device.dev_to_str" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert native data type to string representation.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -994,19 +994,24 @@ the entire input array at once. This can be useful to reduce memory usage of the
 
 <dl class="py function">
 <dt id="ivy.functional.ivy.device.to_dev">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">to_dev</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">dev</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>ivy.Device<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/device.html#to_dev"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.device.to_dev" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">to_dev</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">dev</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>ivy.Device<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">out</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/device.html#to_dev"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.device.to_dev" title="Permalink to this definition">¶</a></dt>
 <dd><p>Move the input array x to the desired device, specified by device string.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>array</em>) – Array to move onto the device.</p></li>
-<li><p><strong>dev</strong> (<em>Device</em><em>, </em><em>optional</em>) – device to move the array to ‘cuda:0’, ‘cuda:1’, ‘cpu’ etc. Keep same device if None.</p></li>
-</ul>
+<dl class="simple">
+<dt>x:</dt><dd><p>input array to be moved to the desired device</p>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>The array x, but now placed on the target device.</p>
+<dt>dev:</dt><dd><p>device to move the input array <cite>x</cite> to</p>
+</dd>
+<dt>out:</dt><dd><p>optional output array, for writing the result to. It must have a shape that the inputs broadcast to.</p>
 </dd>
 </dl>
+<dl class="simple">
+<dt>x:</dt><dd><p>input array x placed on the desired device</p>
+</dd>
+</dl>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">,</span> <span class="mf">3.</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">to_dev</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dev</span><span class="p">)</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py function">
