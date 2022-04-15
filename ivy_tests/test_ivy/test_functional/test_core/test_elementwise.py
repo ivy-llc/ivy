@@ -4,6 +4,7 @@ Collection of tests for elementwise functions
 
 # global
 import pytest
+from hypothesis import given, strategies as st
 
 # local
 import ivy
@@ -11,24 +12,20 @@ import ivy_tests.test_ivy.helpers as helpers
 
 
 # abs
-@pytest.mark.parametrize(
-    "dtype", ivy.all_dtype_strs)
-@pytest.mark.parametrize(
-    "as_variable", [True, False])
-@pytest.mark.parametrize(
-    "with_out", [True, False])
-@pytest.mark.parametrize(
-    "native_array", [True, False])
+@given(dtype=helpers.sample(ivy.all_dtype_strs),
+       as_variable=st.booleans(),
+       with_out=st.booleans(),
+       native_array=st.booleans())
 def test_abs(dtype, as_variable, with_out, native_array):
     if dtype in ivy.invalid_dtype_strs:
-        pytest.skip("invalid dtype")
+        return  # invalid dtype
     x = ivy.array([2, 3, 4], dtype=dtype)
     out = ivy.array([2, 3, 4], dtype=dtype)
     if as_variable:
         if not ivy.is_float_dtype(dtype):
-            pytest.skip("only floating point variables are supported")
+            return  # only floating point variables are supported
         if with_out:
-            pytest.skip("variables do not support out argument")
+            return  # variables do not support out argument
         x = ivy.variable(x)
         out = ivy.variable(out)
     if native_array:
@@ -49,7 +46,7 @@ def test_abs(dtype, as_variable, with_out, native_array):
 
 # acosh
 @pytest.mark.parametrize(
-    "dtype", ivy.float_strs)
+    "dtype", ivy.all_float_dtype_strs)
 @pytest.mark.parametrize(
     "as_variable", [True, False])
 @pytest.mark.parametrize(
@@ -86,7 +83,7 @@ def test_acosh(dtype, as_variable, with_out, native_array):
 
 # acos
 @pytest.mark.parametrize(
-    "dtype", ivy.float_strs)
+    "dtype", ivy.all_float_dtype_strs)
 @pytest.mark.parametrize(
     "as_variable", [True, False])
 @pytest.mark.parametrize(
@@ -165,7 +162,7 @@ def test_add(dtype, as_variable, with_out, native_array):
 
 # asin
 @pytest.mark.parametrize(
-    "dtype", ivy.float_strs)
+    "dtype", ivy.all_float_dtype_strs)
 @pytest.mark.parametrize(
     "as_variable", [True, False])
 @pytest.mark.parametrize(
@@ -202,7 +199,7 @@ def test_asin(dtype, as_variable, with_out, native_array):
 
 # asinh
 @pytest.mark.parametrize(
-    "dtype", ivy.float_strs)
+    "dtype", ivy.all_float_dtype_strs)
 @pytest.mark.parametrize(
     "as_variable", [True, False])
 @pytest.mark.parametrize(
@@ -239,7 +236,7 @@ def test_asinh(dtype, as_variable, with_out, native_array):
 
 # atan
 @pytest.mark.parametrize(
-    "dtype", ivy.float_strs)
+    "dtype", ivy.all_float_dtype_strs)
 @pytest.mark.parametrize(
     "as_variable", [True, False])
 @pytest.mark.parametrize(
@@ -276,7 +273,7 @@ def test_atan(dtype, as_variable, with_out, native_array):
 
 # atan2
 @pytest.mark.parametrize(
-    "dtype", ivy.float_strs)
+    "dtype", ivy.all_float_dtype_strs)
 @pytest.mark.parametrize(
     "as_variable", [True, False])
 @pytest.mark.parametrize(
@@ -316,7 +313,7 @@ def test_atan2(dtype, as_variable, with_out, native_array):
 
 # atanh
 @pytest.mark.parametrize(
-    "dtype", ivy.float_strs)
+    "dtype", ivy.all_float_dtype_strs)
 @pytest.mark.parametrize(
     "as_variable", [True, False])
 @pytest.mark.parametrize(
@@ -353,7 +350,7 @@ def test_atanh(dtype, as_variable, with_out, native_array):
 
 # bitwise_and
 @pytest.mark.parametrize(
-    "dtype", ivy.int_strs + ['bool'])
+    "dtype", ivy.all_int_dtype_strs + ('bool',))
 @pytest.mark.parametrize(
     "with_out", [True, False])
 @pytest.mark.parametrize(
@@ -383,7 +380,7 @@ def test_bitwise_and(dtype, with_out, native_array):
 
 # bitwise_left_shift
 @pytest.mark.parametrize(
-    "dtype", ivy.int_strs)
+    "dtype", ivy.all_int_dtype_strs)
 @pytest.mark.parametrize(
     "with_out", [True, False])
 @pytest.mark.parametrize(
@@ -413,7 +410,7 @@ def test_bitwise_left_shift(dtype, with_out, native_array):
 
 # bitwise_invert
 @pytest.mark.parametrize(
-    "dtype", ivy.int_strs + ['bool'])
+    "dtype", ivy.all_int_dtype_strs + ('bool',))
 @pytest.mark.parametrize(
     "with_out", [True, False])
 @pytest.mark.parametrize(
@@ -441,7 +438,7 @@ def test_bitwise_invert(dtype, with_out, native_array):
 
 # bitwise_or
 @pytest.mark.parametrize(
-    "dtype", ivy.int_strs + ['bool'])
+    "dtype", ivy.all_int_dtype_strs + ('bool',))
 @pytest.mark.parametrize(
     "with_out", [True, False])
 @pytest.mark.parametrize(
@@ -471,7 +468,7 @@ def test_bitwise_or(dtype, with_out, native_array):
 
 # bitwise_right_shift
 @pytest.mark.parametrize(
-    "dtype", ivy.int_strs)
+    "dtype", ivy.all_int_dtype_strs)
 @pytest.mark.parametrize(
     "with_out", [True, False])
 @pytest.mark.parametrize(
@@ -501,7 +498,7 @@ def test_bitwise_right_shift(dtype, with_out, native_array):
 
 # bitwise_xor
 @pytest.mark.parametrize(
-    "dtype", ivy.int_strs + ['bool'])
+    "dtype", ivy.all_int_dtype_strs + ('bool',))
 @pytest.mark.parametrize(
     "with_out", [True, False])
 @pytest.mark.parametrize(
@@ -573,7 +570,7 @@ def test_ceil(dtype, as_variable, with_out, native_array):
 
 # cos
 @pytest.mark.parametrize(
-    "dtype", ivy.float_strs)
+    "dtype", ivy.all_float_dtype_strs)
 @pytest.mark.parametrize(
     "as_variable", [True, False])
 @pytest.mark.parametrize(
@@ -610,7 +607,7 @@ def test_cos(dtype, as_variable, with_out, native_array):
 
 # cosh
 @pytest.mark.parametrize(
-    "dtype", ivy.float_strs)
+    "dtype", ivy.all_float_dtype_strs)
 @pytest.mark.parametrize(
     "as_variable", [True, False])
 @pytest.mark.parametrize(
@@ -687,7 +684,7 @@ def test_divide(dtype, as_variable, with_out, native_array):
 
 # equal
 @pytest.mark.parametrize(
-    "dtype", list(ivy.all_dtype_strs) + ['bool'])
+    "dtype", ivy.all_dtype_strs + ('bool',))
 @pytest.mark.parametrize(
     "as_variable", [True, False])
 @pytest.mark.parametrize(
@@ -726,7 +723,7 @@ def test_equal(dtype, as_variable, with_out, native_array):
 
 # exp
 @pytest.mark.parametrize(
-    "dtype", ivy.float_strs)
+    "dtype", ivy.all_float_dtype_strs)
 @pytest.mark.parametrize(
     "as_variable", [True, False])
 @pytest.mark.parametrize(
@@ -763,7 +760,7 @@ def test_exp(dtype, as_variable, with_out, native_array):
 
 # expm1
 @pytest.mark.parametrize(
-    "dtype", ivy.float_strs)
+    "dtype", ivy.all_float_dtype_strs)
 @pytest.mark.parametrize(
     "as_variable", [True, False])
 @pytest.mark.parametrize(
@@ -1143,7 +1140,7 @@ def test_less_equal(dtype, as_variable, with_out, native_array):
 
 # log
 @pytest.mark.parametrize(
-    "dtype", ivy.float_strs)
+    "dtype", ivy.all_float_dtype_strs)
 @pytest.mark.parametrize(
     "as_variable", [True, False])
 @pytest.mark.parametrize(
@@ -1180,7 +1177,7 @@ def test_log(dtype, as_variable, with_out, native_array):
 
 # log1p
 @pytest.mark.parametrize(
-    "dtype", ivy.float_strs)
+    "dtype", ivy.all_float_dtype_strs)
 @pytest.mark.parametrize(
     "as_variable", [True, False])
 @pytest.mark.parametrize(
@@ -1217,7 +1214,7 @@ def test_log1p(dtype, as_variable, with_out, native_array):
 
 # log2
 @pytest.mark.parametrize(
-    "dtype", ivy.float_strs)
+    "dtype", ivy.all_float_dtype_strs)
 @pytest.mark.parametrize(
     "as_variable", [True, False])
 @pytest.mark.parametrize(
@@ -1254,7 +1251,7 @@ def test_log2(dtype, as_variable, with_out, native_array):
 
 # log10
 @pytest.mark.parametrize(
-    "dtype", ivy.float_strs)
+    "dtype", ivy.all_float_dtype_strs)
 @pytest.mark.parametrize(
     "as_variable", [True, False])
 @pytest.mark.parametrize(
@@ -1291,7 +1288,7 @@ def test_log10(dtype, as_variable, with_out, native_array):
 
 # logaddexp
 @pytest.mark.parametrize(
-    "dtype", ivy.float_strs)
+    "dtype", ivy.all_float_dtype_strs)
 @pytest.mark.parametrize(
     "as_variable", [True, False])
 @pytest.mark.parametrize(
@@ -1512,7 +1509,7 @@ def test_negative(dtype, as_variable, with_out, native_array):
 
 # not_equal
 @pytest.mark.parametrize(
-    "dtype", list(ivy.all_dtype_strs) + ['bool'])
+    "dtype", ivy.all_dtype_strs + ('bool',))
 @pytest.mark.parametrize(
     "as_variable", [True, False])
 @pytest.mark.parametrize(
@@ -1747,7 +1744,7 @@ def test_sign(dtype, as_variable, with_out, native_array):
 
 # sin
 @pytest.mark.parametrize(
-    "dtype", ivy.float_strs)
+    "dtype", ivy.all_float_dtype_strs)
 @pytest.mark.parametrize(
     "as_variable", [True, False])
 @pytest.mark.parametrize(
@@ -1786,7 +1783,7 @@ def test_sin(dtype, as_variable, with_out, native_array):
 
 # sinh
 @pytest.mark.parametrize(
-    "dtype", ivy.float_strs)
+    "dtype", ivy.all_float_dtype_strs)
 @pytest.mark.parametrize(
     "as_variable", [True, False])
 @pytest.mark.parametrize(
@@ -1858,10 +1855,9 @@ def test_square(dtype, as_variable, with_out, native_array):
         assert ret.data is (out if native_array else out.data)
 
 
-
 # sqrt
 @pytest.mark.parametrize(
-    "dtype", ivy.float_strs)
+    "dtype", ivy.all_float_dtype_strs)
 @pytest.mark.parametrize(
     "as_variable", [True, False])
 @pytest.mark.parametrize(
@@ -1938,7 +1934,7 @@ def test_subtract(dtype, as_variable, with_out, native_array):
 
 # tan
 @pytest.mark.parametrize(
-    "dtype", ivy.float_strs)
+    "dtype", ivy.all_float_dtype_strs)
 @pytest.mark.parametrize(
     "as_variable", [True, False])
 @pytest.mark.parametrize(
@@ -1975,7 +1971,7 @@ def test_tan(dtype, as_variable, with_out, native_array):
 
 # tanh
 @pytest.mark.parametrize(
-    "dtype", ivy.float_strs)
+    "dtype", ivy.all_float_dtype_strs)
 @pytest.mark.parametrize(
     "as_variable", [True, False])
 @pytest.mark.parametrize(

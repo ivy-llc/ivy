@@ -166,4 +166,3 @@ def test_shuffle(x, dtype, tensor_fn, dev, call):
     ivy.seed(0)
     second_shuffle = call(ivy.shuffle, x)
     assert np.array_equal(first_shuffle, second_shuffle)
-

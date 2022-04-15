@@ -24,7 +24,9 @@ def min(x: JaxArray,
 def sum(x: JaxArray,
         axis: Optional[Union[int, Tuple[int, ...]]] = None,
         dtype: Optional[jnp.dtype] = None,
-        keepdims: bool = False) -> JaxArray:
+        keepdims: bool = False,
+        out: Optional[JaxArray] = None)\
+        -> JaxArray:
 
     if dtype == None and jnp.issubdtype(x.dtype, jnp.integer):
         if jnp.issubdtype(x.dtype, jnp.signedinteger) and x.dtype in [jnp.int8, jnp.int16, jnp.int32]:
@@ -35,8 +37,10 @@ def sum(x: JaxArray,
             dtype = jnp.int64
         else:
             dtype = jnp.uint64
-
-    return jnp.sum(a=x, axis=axis, dtype=dtype, keepdims=keepdims)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, jnp.sum(x, axis=axis, dtype=dtype, keepdims=keepdims))
+    else:
+        return jnp.sum(a=x, axis=axis, dtype=dtype, keepdims=keepdims)
 
 
 def mean(x: JaxArray,
@@ -103,13 +107,21 @@ def var(x: JaxArray,
 def std(x: JaxArray,
         axis: Optional[Union[int, Tuple[int, ...]]] = None,
         correction: Union[int, float] = 0.0,
-        keepdims: bool = False) \
+        keepdims: bool = False,
+        out: Optional[JaxArray] = None)\
         -> JaxArray:
-    return jnp.std(x, axis=axis, ddof=correction, keepdims=keepdims)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, jnp.std(x, axis=axis, ddof=correction, keepdims=keepdims))
+    else:
+        return jnp.std(x, axis=axis, ddof=correction, keepdims=keepdims)
 
 
 # Extra #
 # ------#
 
-def einsum(equation, *operands):
-    return jnp.einsum(equation, *operands)
+def einsum(equation: str, *operands: JaxArray, out:Optional[JaxArray]=None)\
+     -> JaxArray:
+    if ivy.exists(out):
+        return ivy.inplace_update(out, jnp.einsum(equation, *operands))
+    else:
+        return jnp.einsum(equation, *operands)
