@@ -506,7 +506,7 @@ def test_swapaxes(dtype, as_variable, with_out, native_array):
 
 # clip
 @pytest.mark.parametrize(
-    "dtype", ivy.all_dtype_strs)
+    "dtype", ivy.all_numeric_dtype_strs)
 @pytest.mark.parametrize(
     "as_variable", [True, False])
 @pytest.mark.parametrize(
