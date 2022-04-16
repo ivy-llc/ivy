@@ -1,6 +1,7 @@
 # global
-from typing import Union, Tuple, Optional, List, Iterable
+import numpy as np
 from numbers import Number
+from typing import Union, Tuple, Optional, List, Iterable
 
 # local
 import ivy
@@ -10,7 +11,7 @@ from ivy.framework_handler import current_framework as _cur_framework
 # Array API Standard #
 # -------------------#
 
-def asarray(x: Union[ivy.Array, ivy.NativeArray, List[Number], Tuple[Number]],
+def asarray(x: Union[ivy.Array, ivy.NativeArray, List[Number], Tuple[Number], np.ndarray],
              dtype: Optional[Union[ivy.Dtype, str]] = None,
              dev: Optional[Union[ivy.Device, str]] = None
             ) -> ivy.Array:
