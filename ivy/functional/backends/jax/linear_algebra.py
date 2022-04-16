@@ -108,7 +108,12 @@ def diagonal(x: JaxArray,
              axis2: int = -1,
              out: Optional[JaxArray] = None)\
         -> JaxArray:
-    ret = jnp.diagonal(x, offset, axis1, axis2)
+    if not x.dtype == bool and not jnp.issubdtype(x.dtype, jnp.integer):
+        ret = jnp.diagonal(x, offset, axis1, axis2)
+        ret_edited = jnp.diagonal(x.at[1/x==-jnp.inf].set(-jnp.inf), offset, axis1, axis2)
+        ret_edited = ret_edited.at[ret_edited==-jnp.inf].set(-0.)
+        ret = ret.at[ret==ret_edited].set(ret_edited[ret==ret_edited])
+    else: ret = jnp.diagonal(x, offset, axis1, axis2)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
     return ret
