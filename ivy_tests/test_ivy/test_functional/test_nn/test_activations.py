@@ -14,16 +14,11 @@ import ivy.functional.backends.numpy as ivy_np
 
 
 # relu
-@pytest.mark.parametrize(
-    "x", [[[-1., 1., 2.]]])
-@pytest.mark.parametrize(
-    "dtype", ivy.all_numeric_dtype_strs)
-@pytest.mark.parametrize(
-    "as_variable", [True, False])
-@pytest.mark.parametrize(
-    "with_out", [True, False])
-@pytest.mark.parametrize(
-    "native_array", [True, False])
+@given(x=st.lists(st.floats()),
+       dtype=helpers.sample(ivy.all_float_dtype_strs),
+       as_variable=st.booleans(),
+       with_out=st.booleans(),
+       native_array=st.booleans())
 def test_relu(x, dtype, as_variable, with_out, native_array, fw):
     if dtype in ivy.invalid_dtype_strs:
         return  # invalid dtype
@@ -55,7 +50,8 @@ def test_relu(x, dtype, as_variable, with_out, native_array, fw):
     # value test
     if dtype == 'bfloat16':
         return  # bfloat16 is not supported by numpy
-    assert np.allclose(ivy.to_numpy(ret), ivy_np.relu(ivy.to_numpy(x)))
+    assert np.allclose(np.nan_to_num(ivy.to_numpy(ret)),
+                       np.nan_to_num(ivy_np.relu(ivy.to_numpy(x))))
 
 
 # leaky_relu
