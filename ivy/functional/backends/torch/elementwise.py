@@ -447,8 +447,9 @@ def remainder(x1: torch.Tensor,
     ret = torch.remainder(x1, x2)
     ret[torch.isnan(ret)] = 0
     if ivy.exists(out):
-        out = ivy.inplace_update(out, ret)
-    return ret
+        return ivy.inplace_update(out, ret)
+    else:
+        return ret
     
 def atanh(x: torch.Tensor,
           out: Optional[torch.Tensor] = None) \
