@@ -1,34 +1,49 @@
 # global
 import copy
 import functools
-from numbers import Number
 from operator import mul
+
 # local
-import ivy
-from . import array_api
-from .array_api import *
+from . import activations
+from .activations import *
 from . import conversions
 from .conversions import *
+from . import creation
+from .creation import *
+from . import data_types
+from .data_types import *
 from . import device
 from .device import *
+from . import elementwise
+from .elementwise import *
 from . import general
 from .general import *
 from . import gradients
 from .gradients import *
 from . import image
 from .image import *
-from . import linalg
-from .linalg import *
-from . import logic
-from .logic import *
-from . import math
-from .math import *
-from . import meta
-from .meta import *
+from . import layers
+from .layers import *
+from . import linear_algebra
+from .linear_algebra import *
+from . import losses
+from .losses import *
+from . import manipulation
+from .manipulation import *
+from . import norms
+from .norms import *
 from . import random
 from .random import *
-from . import reductions
-from .reductions import *
+from . import searching
+from .searching import *
+from . import set
+from .set import *
+from . import sorting
+from .sorting import *
+from . import statistical
+from .statistical import *
+from . import utility
+from .utility import *
 
 
 def _native_wrapper(f):
@@ -40,8 +55,10 @@ def _native_wrapper(f):
     return decor
 
 
-class Array(ArrayWithArrayAPI, ArrayWithDevice, ArrayWithGeneral, ArrayWithGradients, ArrayWithImage, ArrayWithLinalg,
-            ArrayWithLogic, ArrayWithMath, ArrayWithMeta, ArrayWithRandom, ArrayWithReductions):
+class Array(ArrayWithActivations, ArrayWithCreation, ArrayWithDataTypes, ArrayWithDevice, ArrayWithElementwise,
+            ArrayWithGeneral, ArrayWithGradients, ArrayWithImage, ArrayWithLayers, ArrayWithLinearAlgebra,
+            ArrayWithLosses, ArrayWithManipulation, ArrayWithNorms, ArrayWithRandom, ArrayWithSearching, ArrayWithSet,
+            ArrayWithSorting, ArrayWithStatistical, ArrayWithUtility):
 
     def __init__(self, data):
         if ivy.is_ivy_array(data):
