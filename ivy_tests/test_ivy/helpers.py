@@ -236,7 +236,16 @@ def assert_all_close(x, y):
     assert np.allclose(np.nan_to_num(x), np.nan_to_num(y))
 
 
-def test_array_function(dtype, as_variable, with_out, native_array, fw, fn_name, *args, **kwargs):
+def kwargs_to_args_n_kwargs(positional_ratio, kwargs):
+    num_args_n_kwargs = len(kwargs)
+    num_args = int(round(positional_ratio * num_args_n_kwargs))
+    args = [v for v in list(kwargs.values())[:num_args]]
+    kwargs = {k: kwargs[k] for k in list(kwargs.keys())[num_args:]}
+    return args, kwargs
+
+
+def test_array_function(dtype, as_variable, with_out, native_array, positional_ratio, fw, fn_name, **kwargs):
+    args, kwargs = kwargs_to_args_n_kwargs(positional_ratio, kwargs)
     if dtype in ivy.invalid_dtype_strs:
         return  # invalid dtype
     args = ivy.nested_map(args, lambda x: ivy.array(x, dtype=dtype) if isinstance(x, np.ndarray) else x)
