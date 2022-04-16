@@ -9,8 +9,8 @@ from hypothesis import given, strategies as st
 
 # local
 import ivy
-import ivy.functional.backends.numpy
 import ivy_tests.test_ivy.helpers as helpers
+import ivy.functional.backends.numpy as ivy_np
 
 
 # relu
@@ -52,6 +52,10 @@ def test_relu(x, dtype, as_variable, with_out, native_array, fw):
             # these frameworks do not support native inplace updates
             return
         assert ret.data is (out if native_array else out.data)
+    # value test
+    if dtype == 'bfloat16':
+        return  # bfloat16 is not supported by numpy
+    assert np.allclose(ivy.to_numpy(ret), ivy_np.relu(ivy.to_numpy(x)))
 
 
 # leaky_relu
@@ -70,7 +74,7 @@ def test_leaky_relu(x, dtype, tensor_fn, dev, call):
     # cardinality test
     assert ret.shape == x.shape
     # value test
-    assert np.allclose(call(ivy.leaky_relu, x), ivy.functional.backends.numpy.leaky_relu(ivy.to_numpy(x)))
+    assert np.allclose(call(ivy.leaky_relu, x), ivy_np.leaky_relu(ivy.to_numpy(x)))
     # docstring test
     helpers.assert_docstring_examples_run(ivy.leaky_relu)
 
@@ -93,7 +97,7 @@ def test_gelu(x, approx, dtype, tensor_fn, dev, call):
     # cardinality test
     assert ret.shape == x.shape
     # value test
-    assert np.allclose(call(ivy.gelu, x, approx), ivy.functional.backends.numpy.gelu(ivy.to_numpy(x), approx))
+    assert np.allclose(call(ivy.gelu, x, approx), ivy_np.gelu(ivy.to_numpy(x), approx))
 
 
 # tanh
@@ -112,7 +116,7 @@ def test_tanh(x, dtype, tensor_fn, dev, call):
     # cardinality test
     assert ret.shape == x.shape
     # value test
-    assert np.allclose(call(ivy.tanh, x), ivy.functional.backends.numpy.tanh(ivy.to_numpy(x)))
+    assert np.allclose(call(ivy.tanh, x), ivy_np.tanh(ivy.to_numpy(x)))
     # docstring test
     helpers.assert_docstring_examples_run(ivy.tanh)
 
@@ -133,7 +137,7 @@ def test_sigmoid(x, dtype, tensor_fn, dev, call):
     # cardinality test
     assert ret.shape == x.shape
     # value test
-    assert np.allclose(call(ivy.sigmoid, x), ivy.functional.backends.numpy.sigmoid(ivy.to_numpy(x)))
+    assert np.allclose(call(ivy.sigmoid, x), ivy_np.sigmoid(ivy.to_numpy(x)))
 
 
 # softmax
@@ -152,7 +156,7 @@ def test_softmax(x, dtype, tensor_fn, dev, call):
     # cardinality test
     assert ret.shape == x.shape
     # value test
-    assert np.allclose(call(ivy.softmax, x), ivy.functional.backends.numpy.softmax(ivy.to_numpy(x)))
+    assert np.allclose(call(ivy.softmax, x), ivy_np.softmax(ivy.to_numpy(x)))
 
 
 # softplus
@@ -171,6 +175,6 @@ def test_softplus(x, dtype, tensor_fn, dev, call):
     # cardinality test
     assert ret.shape == x.shape
     # value test
-    assert np.allclose(call(ivy.softplus, x), ivy.functional.backends.numpy.softplus(ivy.to_numpy(x)))
+    assert np.allclose(call(ivy.softplus, x), ivy_np.softplus(ivy.to_numpy(x)))
     # docstring test
     helpers.assert_docstring_examples_run(ivy.softplus)
