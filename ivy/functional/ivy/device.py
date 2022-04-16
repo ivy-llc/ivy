@@ -262,7 +262,13 @@ def gpu_is_available() -> bool:
     """
     Determine whether a GPU is available to use, with the backend framework.
 
-    :return: Boolean, as to whether a gpu is available.
+    Returns
+    -------
+    out:
+        Boolean, as to whether a gpu is available.
+
+    Examples:
+    >>> print(ivy.gpu_is_available())
     """
     return _cur_framework().gpu_is_available()
 
