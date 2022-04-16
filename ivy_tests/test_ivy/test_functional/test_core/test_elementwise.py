@@ -684,7 +684,7 @@ def test_divide(dtype, as_variable, with_out, native_array):
 
 # equal
 @pytest.mark.parametrize(
-    "dtype", ivy.all_dtype_strs + ('bool',))
+    "dtype", ivy.all_dtype_strs)
 @pytest.mark.parametrize(
     "as_variable", [True, False])
 @pytest.mark.parametrize(
@@ -1509,7 +1509,7 @@ def test_negative(dtype, as_variable, with_out, native_array):
 
 # not_equal
 @pytest.mark.parametrize(
-    "dtype", ivy.all_dtype_strs + ('bool',))
+    "dtype", ivy.all_dtype_strs)
 @pytest.mark.parametrize(
     "as_variable", [True, False])
 @pytest.mark.parametrize(
