@@ -4,6 +4,7 @@ Collection of tests for elementwise functions
 
 # global
 import pytest
+import numpy as np
 from hypothesis import given, strategies as st
 
 # local
@@ -12,36 +13,13 @@ import ivy_tests.test_ivy.helpers as helpers
 
 
 # abs
-@given(dtype=helpers.sample(ivy.all_numeric_dtype_strs),
+@given(x=st.lists(st.floats()),
+       dtype=helpers.sample(ivy.all_float_dtype_strs),
        as_variable=st.booleans(),
        with_out=st.booleans(),
        native_array=st.booleans())
-def test_abs(dtype, as_variable, with_out, native_array):
-    if dtype in ivy.invalid_dtype_strs:
-        return  # invalid dtype
-    x = ivy.array([2, 3, 4], dtype=dtype)
-    out = ivy.array([2, 3, 4], dtype=dtype)
-    if as_variable:
-        if not ivy.is_float_dtype(dtype):
-            return  # only floating point variables are supported
-        if with_out:
-            return  # variables do not support out argument
-        x = ivy.variable(x)
-        out = ivy.variable(out)
-    if native_array:
-        x = x.data
-        out = out.data
-    if with_out:
-        ret = ivy.abs(x, out=out)
-    else:
-        ret = ivy.abs(x)
-    if with_out:
-        if not native_array:
-            assert ret is out
-        if ivy.current_framework_str() in ["tensorflow", "jax"]:
-            # these frameworks do not support native inplace updates
-            return
-        assert ret.data is (out if native_array else out.data)
+def test_abs(x, dtype, as_variable, with_out, native_array, fw):
+    helpers.test_array_function(dtype, as_variable, with_out, native_array, fw, 'abs', np.asarray(x))
 
 
 # acosh
