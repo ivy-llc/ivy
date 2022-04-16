@@ -244,12 +244,14 @@ def kwargs_to_args_n_kwargs(positional_ratio, kwargs):
     return args, kwargs
 
 
-def test_array_function(dtype, as_variable, with_out, native_array, positional_ratio, fw, fn_name, **kwargs):
-    args, kwargs = kwargs_to_args_n_kwargs(positional_ratio, kwargs)
+def test_array_function(dtype, as_variable, with_out, native_array, positional_ratio, array_instance_method,
+                        fw, fn_name, **all_as_kwargs_np):
+    array_instance_method = array_instance_method and not native_array
+    args_np, kwargs_np = kwargs_to_args_n_kwargs(positional_ratio, all_as_kwargs_np)
     if dtype in ivy.invalid_dtype_strs:
         return  # invalid dtype
-    args = ivy.nested_map(args, lambda x: ivy.array(x, dtype=dtype) if isinstance(x, np.ndarray) else x)
-    kwargs = ivy.nested_map(kwargs, lambda x: ivy.array(x, dtype=dtype) if isinstance(x, np.ndarray) else x)
+    args = ivy.nested_map(args_np, lambda x: ivy.array(x, dtype=dtype) if isinstance(x, np.ndarray) else x)
+    kwargs = ivy.nested_map(kwargs_np, lambda x: ivy.array(x, dtype=dtype) if isinstance(x, np.ndarray) else x)
     if as_variable:
         if not ivy.is_float_dtype(dtype):
             return  # only floating point variables are supported
@@ -259,7 +261,18 @@ def test_array_function(dtype, as_variable, with_out, native_array, positional_r
         kwargs = ivy.nested_map(kwargs, lambda x: ivy.variable(x) if ivy.is_array(x) else x)
     if native_array:
         args, kwargs = ivy.args_to_native(*args, **kwargs)
-    ret = ivy.__dict__[fn_name](*args, **kwargs)
+    arr = None
+    if array_instance_method:
+        arg_idxs = ivy.nested_indices_where(args, ivy.is_array)
+        if arg_idxs:
+            arr = args[0]
+            args = args[1:]
+        else:
+            arr = list(kwargs.values())[0]
+            kwargs = {k: v for k, v in list(kwargs.items())[1:]}
+        ret = arr.__getattribute__(fn_name)(*args, **kwargs)
+    else:
+        ret = ivy.__dict__[fn_name](*args, **kwargs)
     out = ret
     if with_out:
         assert not isinstance(ret, tuple)
@@ -268,7 +281,10 @@ def test_array_function(dtype, as_variable, with_out, native_array, positional_r
             out = ivy.variable(out)
         if native_array:
             out = out.data
-        ret = ivy.__dict__[fn_name](*args, **kwargs, out=out)
+        if array_instance_method:
+            ret = arr.__getattribute__(fn_name)(*args, **kwargs, out=out)
+        else:
+            ret = ivy.__dict__[fn_name](*args, **kwargs, out=out)
         if not native_array:
             assert ret is out
         if fw in ["tensorflow", "jax"]:
@@ -281,8 +297,6 @@ def test_array_function(dtype, as_variable, with_out, native_array, positional_r
     ret_idxs = ivy.nested_indices_where(ret, ivy.is_array)
     ret_flat = ivy.multi_index_nest(ret, ret_idxs)
     ret_np_flat = [ivy.to_numpy(x) for x in ret_flat]
-    args_np = ivy.nested_map(args, lambda x: ivy.to_numpy(x) if ivy.is_array(x) else x)
-    kwargs_np = ivy.nested_map(kwargs, lambda x: ivy.to_numpy(x) if ivy.is_array(x) else x)
     ret_from_np = ivy_np.__dict__[fn_name](*args_np, **kwargs_np)
     ret_from_np_flat = ivy.multi_index_nest(ret_from_np, ret_idxs)
     for ret_np, ret_from_np in zip(ret_np_flat, ret_from_np_flat):

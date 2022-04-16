@@ -18,10 +18,11 @@ import ivy_tests.test_ivy.helpers as helpers
        as_variable=st.booleans(),
        with_out=st.booleans(),
        native_array=st.booleans(),
-       positional_ratio=st.floats(0, 1))
-def test_abs(x, dtype, as_variable, with_out, native_array, positional_ratio, fw):
+       positional_ratio=st.floats(0, 1),
+       array_instance_method=st.booleans())
+def test_abs(x, dtype, as_variable, with_out, native_array, positional_ratio, array_instance_method, fw):
     helpers.test_array_function(
-        dtype, as_variable, with_out, native_array, positional_ratio, fw, 'abs',
+        dtype, as_variable, with_out, native_array, positional_ratio, array_instance_method, fw, 'abs',
         x=np.asarray(x))
 
 
