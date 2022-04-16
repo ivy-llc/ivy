@@ -54,8 +54,6 @@ from . import stateful
 from .stateful import *
 from . import verbosity
 from .array import *
-from ivy.array import ArrayWithDevice, ArrayWithGeneral, ArrayWithGradients, ArrayWithImage, ArrayWithLinalg,\
-    ArrayWithLogic, ArrayWithMath, ArrayWithMeta, ArrayWithRandom, ArrayWithReductions
 
 # data types
 int8 = 'int8'
