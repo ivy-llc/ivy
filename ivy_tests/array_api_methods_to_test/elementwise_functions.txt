@@ -43,7 +43,7 @@ negative
 positive
 not_equal
 pow
-#remainder # failing non deterministically
+remainder 
 round
 #sign # tests are passing but uncommenting causes everything in test_signatures to run
 sin
