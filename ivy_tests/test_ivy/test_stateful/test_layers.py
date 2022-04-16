@@ -148,7 +148,7 @@ def test_multi_head_attention_layer(x_n_s_n_m_n_c_n_gt, with_v, build_mode, dtyp
 # Convolutions #
 # -------------#
 
-#conv1d
+# conv1d
 @pytest.mark.parametrize(
     "x_n_fs_n_pad_n_res", [
         ([[[0.], [3.], [0.]]],
@@ -282,7 +282,7 @@ def test_conv1d_transpose_layer(x_n_fs_n_pad_n_outshp_n_res, with_v, dtype, tens
         return
 
 
-#conv2d
+# conv2d
 @pytest.mark.parametrize(
     "x_n_fs_n_pad_n_res", [([[[[1.], [2.], [3.], [4.], [5.]],
                               [[6.], [7.], [8.], [9.], [10.]],
@@ -730,7 +730,7 @@ def test_lstm_layer(b_t_ic_hc_otf_sctv, with_v, with_initial_state, dtype, tenso
 # Sequential #
 # -----------#
 
-#sequential
+# sequential
 @pytest.mark.parametrize(
     "bs_c_target", [
         ([1, 2], 5, [[[-0.34784955,  0.47909835,  0.7241975 , -0.82175905, -0.43836743],
