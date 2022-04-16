@@ -85,6 +85,9 @@ all_dtype_strs = ('int8', 'int16', 'int32', 'int64',
                   'uint8', 'uint16', 'uint32', 'uint64',
                   'bfloat16', 'float16', 'float32', 'float64',
                   'bool')
+all_numeric_dtype_strs = ('int8', 'int16', 'int32', 'int64',
+                  'uint8', 'uint16', 'uint32', 'uint64',
+                  'bfloat16', 'float16', 'float32', 'float64')
 all_int_dtype_strs = ('int8', 'int16', 'int32', 'int64',
                       'uint8', 'uint16', 'uint32', 'uint64')
 all_float_dtype_strs = ('bfloat16', 'float16', 'float32', 'float64')
