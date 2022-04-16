@@ -81,6 +81,7 @@ def is_ivy_array(x: Any, exclusive: bool = False)\
     """
     return isinstance(x, ivy.Array) and ivy.is_native_array(x.data, exclusive)
 
+
 def is_array(x: Any, exclusive: bool = False)\
         -> bool:
     """
@@ -93,6 +94,19 @@ def is_array(x: Any, exclusive: bool = False)\
     :return: Boolean, whether or not x is an array.
     """
     return ivy.is_ivy_array(x, exclusive) or ivy.is_native_array(x, exclusive)
+
+
+def is_ivy_container(x: Any)\
+        -> bool:
+    """
+    Determines whether the input x is an Ivy Container.
+
+    :param x: The input to check
+    :type x: any
+    :return: Boolean, whether or not x is an ivy container.
+    """
+    return isinstance(x, ivy.Container)
+
 
 # noinspection PyShadowingNames
 def copy_array(x: Union[ivy.Array, ivy.NativeArray])\
