@@ -1,7 +1,7 @@
 # global
 import abc
 
-# ToDo: implement all image methods here as public class methods
+# ToDo: implement all methods here as public instance methods
 
 
 class ArrayWithImage(abc.ABC):
