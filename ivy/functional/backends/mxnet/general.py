@@ -28,7 +28,9 @@ def is_native_array(x, exclusive=False):
     return False
 
 
-copy_array = lambda x: x.copy()
+def copy_array(x: mx.nd.NDArray)\
+        -> mx.nd.NDArray:
+    return x.copy()
 
 @_handle_flat_arrays_in_out
 def array_equal(x0, x1):

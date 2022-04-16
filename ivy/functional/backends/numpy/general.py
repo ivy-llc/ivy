@@ -20,7 +20,11 @@ from ivy.functional.backends.numpy.device import _dev_callable, _to_dev
 # --------#
 
 
-copy_array = lambda x: x.copy()
+def copy_array(x: np.ndarray) \
+        -> np.ndarray:
+    return x.copy()
+
+
 array_equal = np.array_equal
 
 
