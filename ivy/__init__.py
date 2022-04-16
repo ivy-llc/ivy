@@ -54,8 +54,6 @@ from . import stateful
 from .stateful import *
 from . import verbosity
 from .array import *
-from ivy.array import ArrayWithDevice, ArrayWithGeneral, ArrayWithGradients, ArrayWithImage, ArrayWithLinalg,\
-    ArrayWithLogic, ArrayWithMath, ArrayWithMeta, ArrayWithRandom, ArrayWithReductions
 
 # data types
 int8 = 'int8'
@@ -79,23 +77,34 @@ valid_dtypes = (int8, int16, int32, int64,
                 uint8, uint16, uint32, uint64,
                 bfloat16, float16, float32, float64,
                 bool)
+valid_numeric_dtypes = (int8, int16, int32, int64,
+                        uint8, uint16, uint32, uint64,
+                        bfloat16, float16, float32, float64)
+valid_int_dtypes = (int8, int16, int32, int64,
+                    uint8, uint16, uint32, uint64)
+valid_float_dtypes = (bfloat16, float16, float32, float64)
 
 # all
 all_dtype_strs = ('int8', 'int16', 'int32', 'int64',
                   'uint8', 'uint16', 'uint32', 'uint64',
                   'bfloat16', 'float16', 'float32', 'float64',
                   'bool')
+all_numeric_dtype_strs = ('int8', 'int16', 'int32', 'int64',
+                          'uint8', 'uint16', 'uint32', 'uint64',
+                          'bfloat16', 'float16', 'float32', 'float64')
 all_int_dtype_strs = ('int8', 'int16', 'int32', 'int64',
                       'uint8', 'uint16', 'uint32', 'uint64')
 all_float_dtype_strs = ('bfloat16', 'float16', 'float32', 'float64')
 
 # valid
 valid_dtype_strs = all_dtype_strs
+valid_numeric_dtype_strs = all_numeric_dtype_strs
 valid_int_dtype_strs = all_int_dtype_strs
 valid_float_dtype_strs = all_float_dtype_strs
 
 # invalid
 invalid_dtype_strs = ()
+invalid_numeric_dtype_strs = ()
 invalid_int_dtype_strs = ()
 invalid_float_dtype_strs = ()
 
