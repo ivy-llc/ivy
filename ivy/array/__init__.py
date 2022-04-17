@@ -61,6 +61,7 @@ class Array(ArrayWithActivations, ArrayWithCreation, ArrayWithDataTypes, ArrayWi
             ArrayWithSorting, ArrayWithStatistical, ArrayWithUtility):
 
     def __init__(self, data):
+        super().__init__()
         if ivy.is_ivy_array(data):
             self._data = data.data
         else:
