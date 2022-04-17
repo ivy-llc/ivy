@@ -8,4 +8,4 @@ class ContainerWithStatistical(ContainerBase):
 
     def __init__(self):
         import ivy.functional.ivy.statistical as statistical
-        ContainerBase.__init__(self, statistical)
+        ContainerBase.__init__(self, statistical, to_ignore=['einsum'])

@@ -8,4 +8,4 @@ class ContainerWithLinearAlgebra(ContainerBase):
 
     def __init__(self):
         import ivy.functional.ivy.linear_algebra as linear_algebra
-        ContainerBase.__init__(self, linear_algebra)
+        ContainerBase.__init__(self, linear_algebra, to_ignore=['matrix_norm'])
