@@ -8,10 +8,17 @@ from typing import Optional
 import numpy as np
 import torch
 
+# local
+import ivy
 
-def relu(x: torch.Tensor)\
+
+def relu(x: torch.Tensor,
+         out: Optional[torch.Tensor] = None)\
         -> torch.Tensor:
-    return torch.relu(x)
+    ret = torch.relu(x)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
 def leaky_relu(x: torch.Tensor, alpha: Optional[float] = 0.2)\

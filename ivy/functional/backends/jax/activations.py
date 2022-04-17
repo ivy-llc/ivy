@@ -9,12 +9,17 @@ import jax
 import jax.numpy as jnp
 
 # local
+import ivy
 from ivy.functional.backends.jax import JaxArray
 
 
-def relu(x: JaxArray)\
+def relu(x: JaxArray,
+         out: Optional[JaxArray] = None)\
         -> JaxArray:
-    return jnp.maximum(x, 0)
+    ret = jnp.maximum(x, 0)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
 def leaky_relu(x: JaxArray, alpha: Optional[float] = 0.2)\
@@ -27,6 +32,7 @@ gelu = jax.nn.gelu
 def tanh(x: JaxArray)\
         -> JaxArray:
     return jnp.tanh
+
 
 sigmoid = lambda x: 1 / (1 + jnp.exp(-x))
 
