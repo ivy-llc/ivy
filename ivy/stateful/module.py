@@ -5,7 +5,6 @@ Base class for deriving trainable modules
 # global
 import os
 import abc
-import logging
 import ivy.functional.backends.numpy
 import termcolor
 import numpy as np
