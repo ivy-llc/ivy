@@ -94,6 +94,14 @@ def ones(shape: Union[int, Tuple[int], List[int]],
     -------
     out:
         an array containing ones.
+
+    Examples:
+
+    >>> shape = (2,2)
+    >>> y = ivy.ones(shape)
+    >>> print(y)
+    [[1.,  1.],
+       [1.,  1.]]
     """
     return _cur_framework().ones(shape, dtype, device)
 
@@ -124,21 +132,38 @@ def full_like(x: Union[ivy.Array, ivy.NativeArray],
     """
     return _cur_framework(x).full_like(x, fill_value, dtype=dtype, device=device)
 
-def ones_like( x: Union[ivy.Array, ivy.NativeArray],
+
+def ones_like(x: Union[ivy.Array, ivy.NativeArray],
               dtype: Optional[Union[ivy.Dtype, str]] = None,
-              dev: Optional[Union[ivy.Device, str]] = None,
-              ) -> Union[ivy.Array, ivy.NativeArray]:
+              device: Optional[Union[ivy.Device, str]] = None,) \
+        -> ivy.Array:
     """
     Returns a new array filled with ones and having the same shape as an input array x.
 
-    :param x: Input array from which to derive the output array shape.
-    :param dtype: Output array data type. If dtype is None, the output array data type must be inferred from x.
-    Default: None.
-    :param dev: device on which to place the created array. If device is None, the output array device must be inferred from x.
-    Default: None.
-    :return: An array having the same shape as x and filled with ones.
+    Parameters
+    ----------
+    x:
+        input array from which to derive the output array shape.
+    dtype:
+        output array data type. If ``dtype`` is ``None``, the output array data type must be inferred from x.
+        Default: ``None``.
+    device:
+        device on which to place the created array. If device is ``None``, the output array device must be inferred from x.
+        Default: ``None``.
+
+    Returns
+    -------
+    out:
+        an array having the same shape as x and filled with ones.
+
+    Examples:
+
+    >>> x = ivy.array([[0, 1, 2],[3, 4, 5]])
+    >>> y = ivy.ones_like(x)
+    >>> print(y)
+    [[1, 1, 1],[1, 1, 1]]
     """
-    return _cur_framework(x).ones_like(x, dtype, dev)
+    return _cur_framework(x).ones_like(x, dtype, device)
 
 
 def zeros_like(x: Union[ivy.Array, ivy.NativeArray],
@@ -335,23 +360,6 @@ def full(shape: Union[int, Tuple[int]], fill_value: Union[int, float], dtype: Op
     :param device: device on which to place the created array. Default: None.
     """
     return _cur_framework().full(shape, fill_value, dtype, device)
-
-
-def ones(shape: Iterable[int], dtype: Union[ivy.Dtype, str] = 'float32', dev: ivy.Device = None)\
-        -> Union[ivy.Array, ivy.NativeArray]:
-    """
-    Returns a new array of given shape and type, filled with ones.
-
-    :param shape: Shape of the new array, e.g. (2, 3).
-    :type shape: sequence of ints
-    :param dtype: The desired data-type for the array in string format, i.e. 'float32' or 'int64'.
-    Default is 'float32'.
-    :type dtype: data-type string, optional
-    :param dev: device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc..
-    :type dev: ivy.Device
-    :return: Tensor of ones with the given shape and dtype.
-    """
-    return _cur_framework().ones(shape, dtype, dev)
 
 
 def from_dlpack(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
