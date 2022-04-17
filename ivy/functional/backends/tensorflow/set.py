@@ -4,6 +4,8 @@ from tensorflow.python.types.core import Tensor
 from typing import Union, Tuple
 from collections import namedtuple
 
+import ivy
+
 
 def unique_inverse(x: Tensor) \
         -> Tuple[Tensor, Tensor]:
@@ -13,9 +15,12 @@ def unique_inverse(x: Tensor) \
     return out(values, inverse_indices)
 
 
-def unique_values(x: Tensor) \
+def unique_values(x: Tensor, out: Tensor = None) \
         -> Tensor:
-    return tf.unique(tf.reshape(x, [-1]))[0]
+    ret = tf.unique(tf.reshape(x, [-1]))[0]
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
 def unique_counts(x: Tensor) \

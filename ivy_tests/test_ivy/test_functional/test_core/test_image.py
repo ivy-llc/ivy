@@ -60,7 +60,7 @@ def test_bilinear_resample(x_n_warp, dtype, tensor_fn, dev, call):
         return
 
 
-#gradient_image
+# gradient_image
 @pytest.mark.parametrize(
     "x_n_dy_n_dx", [([[[[0.], [1.], [2.]], [[5.], [4.], [3.]], [[6.], [8.], [7.]]]],
                      [[[[5.], [3.], [1.]], [[1.], [4.], [4.]], [[0.], [0.], [0.]]]],
