@@ -6,7 +6,4 @@ from ivy.container.base import ContainerBase
 
 # noinspection PyUnresolvedReferences,PyMissingConstructor
 class ContainerWithElementwise(ContainerBase):
-
-    def __init__(self):
-        import ivy.functional.ivy.elementwise as elementwise
-        self.add_instance_methods(elementwise)
+    pass

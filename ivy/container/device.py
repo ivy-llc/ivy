@@ -6,7 +6,4 @@ from ivy.container.base import ContainerBase
 
 # noinspection PyMissingConstructor
 class ContainerWithDevice(ContainerBase):
-
-    def __init__(self):
-        import ivy.functional.ivy.device as device
-        self.add_instance_methods(device)
+    pass
