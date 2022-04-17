@@ -153,13 +153,6 @@ def vector_norm(x: Union[ivy.Array, ivy.NativeArray],
     -------
     out:
         an array containing the vector norms. If ``axis`` is ``None``, the returned array must be a zero-dimensional array containing a vector norm. If ``axis`` is a scalar value (``int`` or ``float``), the returned array must have a rank which is one less than the rank of ``x``. If ``axis`` is a ``n``-tuple, the returned array must have a rank which is ``n`` less than the rank of ``x``. The returned array must have a floating-point data type determined by :ref:`type-promotion`.
-    Examples:
-    >>> x = ivy.arange(10, dtype = float)
-    >>> y = ivy.vector_norm(x)
-    >>> print(x)
-    [0. 1. 2. 3. 4. 5. 6. 7. 8. 9.]
-    >>> print(y)
-    16.881943016134134
     """
 
     if ord == -float('inf'):
