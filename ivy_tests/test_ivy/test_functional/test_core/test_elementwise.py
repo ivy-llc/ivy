@@ -10,20 +10,22 @@ from hypothesis import given, strategies as st
 # local
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
+import ivy.functional.backends.numpy as ivy_np
 
 
 # abs
-@given(x=st.lists(st.floats()),
-       dtype=helpers.sample(ivy.all_float_dtype_strs),
+@given(dtype=helpers.sample(ivy_np.valid_float_dtype_strs),
        as_variable=st.booleans(),
        with_out=st.booleans(),
-       native_array=st.booleans(),
        positional_ratio=st.floats(0, 1),
-       array_instance_method=st.booleans())
-def test_abs(x, dtype, as_variable, with_out, native_array, positional_ratio, array_instance_method, fw):
+       native_array=st.booleans(),
+       container=st.just(False),
+       instance_method=st.booleans(),
+       x=st.lists(st.floats()))
+def test_abs(dtype, as_variable, with_out, positional_ratio, native_array, container, instance_method, fw, x):
     helpers.test_array_function(
-        dtype, as_variable, with_out, native_array, positional_ratio, array_instance_method, fw, 'abs',
-        x=np.asarray(x))
+        dtype, as_variable, with_out, positional_ratio, native_array, container, instance_method, fw, 'abs',
+        x=np.asarray(x, dtype=dtype))
 
 
 # acosh
