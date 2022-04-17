@@ -9,4 +9,4 @@ class ContainerWithSet(ContainerBase):
 
     def __init__(self):
         import ivy.functional.ivy.set as set
-        ContainerBase.add_instance_methods(self, set)
+        self.add_instance_methods(set)
