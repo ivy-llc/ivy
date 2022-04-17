@@ -10,7 +10,7 @@ import numpy as np
 import ivy
 import ivy.functional.backends.numpy
 import ivy_tests.test_ivy.helpers as helpers
-from ivy.container.container import Container
+from ivy.container import Container
 
 
 # variable

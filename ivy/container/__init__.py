@@ -423,7 +423,7 @@ class Container(ContainerWithActivations, ContainerWithCreation, ContainerWithDa
             if not detect_value_diffs:
                 equal_mat = ivy.ones_like(equal_mat)
             if detect_shape_diffs:
-                shape_equal_mat = ivy.all_equal(*[c.shape if ivy.is_native_array(c) else None for c in containers],
+                shape_equal_mat = ivy.all_equal(*[c.shape if ivy.is_array(c) else None for c in containers],
                                                 equality_matrix=True)
                 equal_mat = ivy.logical_and(equal_mat, shape_equal_mat)
             # noinspection PyTypeChecker
@@ -619,7 +619,7 @@ class Container(ContainerWithActivations, ContainerWithCreation, ContainerWithDa
             if not min([type_n is type_0 for type_n in types]):
                 if isinstance(value_0, Container) or check_types:
                     return False
-            if ivy.is_native_array(value_0):
+            if ivy.is_array(value_0):
                 if check_shapes:
                     shape_0 = value_0.shape
                     shapes = [val.shape for val in values]
@@ -944,7 +944,7 @@ class Container(ContainerWithActivations, ContainerWithCreation, ContainerWithDa
                 return [self._queue_load_sizes_cum[-1]]
             return [0]
         sub_shapes =\
-            [v for k, v in self.map(lambda x, kc: list(x.shape) if self._ivy.is_native_array(x)
+            [v for k, v in self.map(lambda x, kc: list(x.shape) if self._ivy.is_array(x)
                 else ([len(x)] if isinstance(x, (list, tuple, ivy.MultiDev)) else None)).to_iterator() if v]
         if not sub_shapes:
             return sub_shapes
@@ -962,7 +962,7 @@ class Container(ContainerWithActivations, ContainerWithCreation, ContainerWithDa
     def _get_dev(self, as_str=False):
         sub_devs =\
             [v for k, v in self.map(lambda x, kc: self._ivy.dev(x, as_str=as_str)
-            if self._ivy.is_native_array(x) else None).to_iterator() if v]
+            if self._ivy.is_array(x) else None).to_iterator() if v]
         if len(_set(sub_devs)) <= 1:
             return sub_devs[0]
         return None
@@ -1136,7 +1136,7 @@ class Container(ContainerWithActivations, ContainerWithCreation, ContainerWithDa
         :type map_sequences: bool, optional
         :return: Container object with all sub-array dimensions expanded along the axis.
         """
-        return self.map(lambda x, kc: self._ivy.sum(x, axis, keepdims) if self._ivy.is_native_array(x) else x,
+        return self.map(lambda x, kc: self._ivy.sum(x, axis, keepdims) if self._ivy.is_array(x) else x,
                         key_chains, to_apply, prune_unapplied, map_sequences)
 
     def prod(self, axis=None, keepdims=False, key_chains=None, to_apply=True, prune_unapplied=False,
@@ -1163,7 +1163,7 @@ class Container(ContainerWithActivations, ContainerWithCreation, ContainerWithDa
         :type map_sequences: bool, optional
         :return: Container object with all sub-array dimensions expanded along the axis.
         """
-        return self.map(lambda x, kc: self._ivy.prod(x=x, axis=axis, keepdims=keepdims) if self._ivy.is_native_array(x) else x,
+        return self.map(lambda x, kc: self._ivy.prod(x=x, axis=axis, keepdims=keepdims) if self._ivy.is_array(x) else x,
                         key_chains, to_apply, prune_unapplied, map_sequences)
 
     def mean(self, axis=None, keepdims=False, key_chains=None, to_apply=True, prune_unapplied=False,
@@ -1190,7 +1190,7 @@ class Container(ContainerWithActivations, ContainerWithCreation, ContainerWithDa
         :type map_sequences: bool, optional
         :return: Container object with all sub-array dimensions expanded along the axis.
         """
-        return self.map(lambda x, kc: self._ivy.mean(x, axis, keepdims) if self._ivy.is_native_array(x) else x,
+        return self.map(lambda x, kc: self._ivy.mean(x, axis, keepdims) if self._ivy.is_array(x) else x,
                         key_chains, to_apply, prune_unapplied, map_sequences)
 
     def var(self, axis=None, keepdims=False, key_chains=None, to_apply=True, prune_unapplied=False,
@@ -1217,7 +1217,7 @@ class Container(ContainerWithActivations, ContainerWithCreation, ContainerWithDa
         :type map_sequences: bool, optional
         :return: Container object with the variance computed for all sub-arrays.
         """
-        return self.map(lambda x, kc: self._ivy.var(x, axis, keepdims) if self._ivy.is_native_array(x) else x,
+        return self.map(lambda x, kc: self._ivy.var(x, axis, keepdims) if self._ivy.is_array(x) else x,
                         key_chains, to_apply, prune_unapplied, map_sequences)
 
     def std(self, axis=None, keepdims=False, key_chains=None, to_apply=True, prune_unapplied=False,
@@ -1244,7 +1244,7 @@ class Container(ContainerWithActivations, ContainerWithCreation, ContainerWithDa
         :type map_sequences: bool, optional
         :return: Container object with the standard deviation computed for all sub-arrays.
         """
-        return self.map(lambda x, kc: self._ivy.std(x=x, axis=axis, keepdims=keepdims) if self._ivy.is_native_array(x) else x,
+        return self.map(lambda x, kc: self._ivy.std(x=x, axis=axis, keepdims=keepdims) if self._ivy.is_array(x) else x,
                         key_chains, to_apply, prune_unapplied, map_sequences)
 
     def reduce_min(self, axis=None, keepdims=False, key_chains=None, to_apply=True, prune_unapplied=False,
@@ -1271,7 +1271,7 @@ class Container(ContainerWithActivations, ContainerWithCreation, ContainerWithDa
         :type map_sequences: bool, optional
         :return: Container object with all sub-array dimensions expanded along the axis.
         """
-        return self.map(lambda x, kc: self._ivy.reduce_min(x, axis, keepdims) if self._ivy.is_native_array(x) else x,
+        return self.map(lambda x, kc: self._ivy.reduce_min(x, axis, keepdims) if self._ivy.is_array(x) else x,
                         key_chains, to_apply, prune_unapplied, map_sequences)
 
     def reduce_max(self, axis=None, keepdims=False, key_chains=None, to_apply=True, prune_unapplied=False,
@@ -1298,7 +1298,7 @@ class Container(ContainerWithActivations, ContainerWithCreation, ContainerWithDa
         :type map_sequences: bool, optional
         :return: Container object with all sub-array dimensions expanded along the axis.
         """
-        return self.map(lambda x, kc: self._ivy.reduce_max(x, axis, keepdims) if self._ivy.is_native_array(x) else x,
+        return self.map(lambda x, kc: self._ivy.reduce_max(x, axis, keepdims) if self._ivy.is_array(x) else x,
                         key_chains, to_apply, prune_unapplied, map_sequences)
 
     def minimum(self, other, key_chains=None, to_apply=True, prune_unapplied=False,
@@ -1321,7 +1321,7 @@ class Container(ContainerWithActivations, ContainerWithCreation, ContainerWithDa
         """
         is_container = isinstance(other, Container)
         return self.map(lambda x, kc:
-                        self._ivy.minimum(x, other[kc] if is_container else other) if self._ivy.is_native_array(x) else x,
+                        self._ivy.minimum(x, other[kc] if is_container else other) if self._ivy.is_array(x) else x,
                         key_chains, to_apply, prune_unapplied, map_sequences)
 
     def maximum(self, other, key_chains=None, to_apply=True, prune_unapplied=False, map_sequences=False):
@@ -1343,7 +1343,7 @@ class Container(ContainerWithActivations, ContainerWithCreation, ContainerWithDa
         """
         is_container = isinstance(other, Container)
         return self.map(lambda x, kc:
-                        self._ivy.maximum(x, other[kc] if is_container else other) if self._ivy.is_native_array(x) else x,
+                        self._ivy.maximum(x, other[kc] if is_container else other) if self._ivy.is_array(x) else x,
                         key_chains, to_apply, prune_unapplied, map_sequences)
 
     def clip(self, clip_min, clip_max, key_chains=None, to_apply=True, prune_unapplied=False, map_sequences=False):
@@ -1369,7 +1369,7 @@ class Container(ContainerWithActivations, ContainerWithCreation, ContainerWithDa
         max_is_container = isinstance(clip_max, Container)
         return self.map(lambda x, kc:
                         self._ivy.clip(x, clip_min[kc] if min_is_container else clip_min,
-                                       clip_max[kc] if max_is_container else clip_max) if self._ivy.is_native_array(x) else x,
+                                       clip_max[kc] if max_is_container else clip_max) if self._ivy.is_array(x) else x,
                         key_chains, to_apply, prune_unapplied, map_sequences)
 
     def clip_vector_norm(self, max_norm, p, global_norm=False, key_chains=None, to_apply=True,
@@ -1410,7 +1410,7 @@ class Container(ContainerWithActivations, ContainerWithCreation, ContainerWithDa
         return self.map(lambda x, kc:
                         self._ivy.clip_vector_norm(
                             x, max_norm[kc] if max_norm_is_container else max_norm,
-                            p[kc] if p_is_container else p) if self._ivy.is_native_array(x) else x,
+                            p[kc] if p_is_container else p) if self._ivy.is_array(x) else x,
                         key_chains, to_apply, prune_unapplied, map_sequences)
 
     def einsum(self, equation, key_chains=None, to_apply=True, prune_unapplied=False, map_sequences=False):
@@ -1431,7 +1431,7 @@ class Container(ContainerWithActivations, ContainerWithCreation, ContainerWithDa
         :type map_sequences: bool, optional
         :return: Container object with all sub-array dimensions expanded along the axis.
         """
-        return self.map(lambda x, kc: self._ivy.einsum(equation, x) if self._ivy.is_native_array(x) else x,
+        return self.map(lambda x, kc: self._ivy.einsum(equation, x) if self._ivy.is_array(x) else x,
                         key_chains, to_apply, prune_unapplied, map_sequences)
 
     def vector_norm(self, p=2, axis=None, keepdims=False, global_norm=False, key_chains=None, to_apply=True,
@@ -1470,7 +1470,7 @@ class Container(ContainerWithActivations, ContainerWithCreation, ContainerWithDa
             return sum([v for k, v in
                         self.map(lambda x, kc: self._ivy.sum(x ** p)).to_iterator()]) ** (1 / p)
         return self.map(lambda x, kc: self._ivy.vector_norm(x, axis, keepdims, p[kc] if p_is_container else p)
-                        if self._ivy.is_native_array(x) else x, key_chains, to_apply, prune_unapplied, map_sequences)
+                        if self._ivy.is_array(x) else x, key_chains, to_apply, prune_unapplied, map_sequences)
 
     def matrix_norm(self, ord=2, keepdims=False, key_chains=None, to_apply=True, prune_unapplied=False,
                     map_sequences=False):
@@ -1497,7 +1497,7 @@ class Container(ContainerWithActivations, ContainerWithCreation, ContainerWithDa
         :type map_sequences: bool, optional
         :return: Container object with the matrix norms for each sub-array returned.
         """
-        return self.map(lambda x, kc: self._ivy.matrix_norm(x, ord, keepdims) if self._ivy.is_native_array(x) else x,
+        return self.map(lambda x, kc: self._ivy.matrix_norm(x, ord, keepdims) if self._ivy.is_array(x) else x,
                         key_chains, to_apply, prune_unapplied, map_sequences)
 
     def flip(self, axis=None, key_chains=None, to_apply=True, prune_unapplied=False, map_sequences=False):
@@ -1518,7 +1518,7 @@ class Container(ContainerWithActivations, ContainerWithCreation, ContainerWithDa
         :type map_sequences: bool, optional
         :return: Container object with all sub-array dimensions expanded along the axis.
         """
-        return self.map(lambda x, kc: self._ivy.flip(x, axis) if self._ivy.is_native_array(x) else x,
+        return self.map(lambda x, kc: self._ivy.flip(x, axis) if self._ivy.is_array(x) else x,
                         key_chains, to_apply, prune_unapplied, map_sequences)
 
     def shuffle(self, seed_value=None, key_chains=None, to_apply=True, prune_unapplied=False, map_sequences=False,
@@ -1601,7 +1601,7 @@ class Container(ContainerWithActivations, ContainerWithCreation, ContainerWithDa
         :type map_sequences: bool, optional
         :return: Container object with all sub-arrays filled with ones.
         """
-        return self.map(lambda x, kc: self._ivy.ones_like(x) if self._ivy.is_native_array(x) else x, key_chains, to_apply,
+        return self.map(lambda x, kc: self._ivy.ones_like(x) if self._ivy.is_array(x) else x, key_chains, to_apply,
                         prune_unapplied, map_sequences)
 
     def as_zeros(self, key_chains=None, to_apply=True, prune_unapplied=False, map_sequences=False):
@@ -1619,7 +1619,7 @@ class Container(ContainerWithActivations, ContainerWithCreation, ContainerWithDa
         :type map_sequences: bool, optional
         :return: Container object with all sub-arrays filled with zeros.
         """
-        return self.map(lambda x, kc: self._ivy.zeros_like(x) if self._ivy.is_native_array(x) else x, key_chains, to_apply,
+        return self.map(lambda x, kc: self._ivy.zeros_like(x) if self._ivy.is_array(x) else x, key_chains, to_apply,
                         prune_unapplied, map_sequences)
 
     def as_bools(self, assert_is_bool=False, key_chains=None, to_apply=True, prune_unapplied=False,
@@ -1672,7 +1672,7 @@ class Container(ContainerWithActivations, ContainerWithCreation, ContainerWithDa
         :return: Container object with all sub-arrays filled with random uniform values.
         """
         return self.map(lambda x, kc: self._ivy.random_uniform(
-            low, high, x.shape, self._ivy.dev(x)) if self._ivy.is_native_array(x) else x,
+            low, high, x.shape, self._ivy.dev(x)) if self._ivy.is_array(x) else x,
                         key_chains, to_apply, prune_unapplied, map_sequences)
 
     def to_native(self, nested=False, key_chains=None, to_apply=True, prune_unapplied=False, map_sequences=False):
@@ -1736,7 +1736,7 @@ class Container(ContainerWithActivations, ContainerWithCreation, ContainerWithDa
         :type map_sequences: bool, optional
         :return: Container object with all sub-array dimensions expanded along the axis.
         """
-        return self.map(lambda x, kc: self._ivy.expand_dims(x, axis) if self._ivy.is_native_array(x) else x,
+        return self.map(lambda x, kc: self._ivy.expand_dims(x, axis) if self._ivy.is_array(x) else x,
                         key_chains, to_apply, prune_unapplied, map_sequences)
 
     def dev_clone(self, devs):
@@ -1827,7 +1827,7 @@ class Container(ContainerWithActivations, ContainerWithCreation, ContainerWithDa
         dim_size = num_or_size_splits if isinstance(num_or_size_splits, int) else len(num_or_size_splits)
         # noinspection PyTypeChecker
         return self.map(
-            lambda x, kc: self._ivy.split(x, num_or_size_splits, axis, with_remainder) if self._ivy.is_native_array(x)
+            lambda x, kc: self._ivy.split(x, num_or_size_splits, axis, with_remainder) if self._ivy.is_array(x)
             else x, key_chains, to_apply, prune_unapplied, map_sequences).unstack(0, dim_size=dim_size)
 
     def gather(self, indices, axis=-1, key_chains=None, to_apply=True, prune_unapplied=False, map_sequences=False):
@@ -1849,7 +1849,7 @@ class Container(ContainerWithActivations, ContainerWithCreation, ContainerWithDa
         :type map_sequences: bool, optional
         :return: Container object with all sub-array dimensions gathered along the axis.
         """
-        return self.map(lambda x, kc: self._ivy.gather(x, indices, axis) if self._ivy.is_native_array(x) else x,
+        return self.map(lambda x, kc: self._ivy.gather(x, indices, axis) if self._ivy.is_array(x) else x,
                         key_chains, to_apply, prune_unapplied, map_sequences)
 
     def gather_nd(self, indices, key_chains=None, to_apply=True, prune_unapplied=False, map_sequences=False):
@@ -1869,7 +1869,7 @@ class Container(ContainerWithActivations, ContainerWithCreation, ContainerWithDa
         :type map_sequences: bool, optional
         :return: Container object with all sub-array dimensions gathered.
         """
-        return self.map(lambda x, kc: self._ivy.gather_nd(x, indices) if self._ivy.is_native_array(x) else x,
+        return self.map(lambda x, kc: self._ivy.gather_nd(x, indices) if self._ivy.is_array(x) else x,
                         key_chains, to_apply, prune_unapplied, map_sequences)
 
     def repeat(self, repeats, axis=None, key_chains=None, to_apply=True, prune_unapplied=False, map_sequences=False):
@@ -1892,7 +1892,7 @@ class Container(ContainerWithActivations, ContainerWithCreation, ContainerWithDa
         :type map_sequences: bool, optional
         :return: container with each array being repeated along the specified dimension.
         """
-        return self.map(lambda x, kc: self._ivy.repeat(x, repeats, axis) if self._ivy.is_native_array(x) else x,
+        return self.map(lambda x, kc: self._ivy.repeat(x, repeats, axis) if self._ivy.is_array(x) else x,
                         key_chains, to_apply, prune_unapplied, map_sequences)
 
     def swapaxes(self, axis0, axis1, key_chains=None, to_apply=True, prune_unapplied=False, map_sequences=False):
@@ -1914,7 +1914,7 @@ class Container(ContainerWithActivations, ContainerWithCreation, ContainerWithDa
         :type map_sequences: bool, optional
         :return: ivy.Container with each chosen array having the axes swapped.
         """
-        return self.map(lambda x, kc: self._ivy.swapaxes(x, axis0, axis1) if self._ivy.is_native_array(x) else x,
+        return self.map(lambda x, kc: self._ivy.swapaxes(x, axis0, axis1) if self._ivy.is_array(x) else x,
                         key_chains, to_apply, prune_unapplied, map_sequences)
 
     def reshape(self, pre_shape=None, shape_slice=None, post_shape=None, key_chains=None, to_apply=True,
@@ -1945,12 +1945,12 @@ class Container(ContainerWithActivations, ContainerWithCreation, ContainerWithDa
         post_shape = [] if post_shape is None else\
             ([post_shape] if isinstance(post_shape, int) else list(post_shape))
         if shape_slice is None:
-            return self.map(lambda x, kc: self._ivy.reshape(x, pre_shape + post_shape) if self._ivy.is_native_array(x) else x,
+            return self.map(lambda x, kc: self._ivy.reshape(x, pre_shape + post_shape) if self._ivy.is_array(x) else x,
                             key_chains, to_apply, prune_unapplied, map_sequences)
         shape_slice = slice(shape_slice, shape_slice+1) if isinstance(shape_slice, int) else shape_slice
         return self.map(lambda x, kc:
                         self._ivy.reshape(x, pre_shape + list(x.shape[shape_slice]) + post_shape)
-                        if self._ivy.is_native_array(x) else x, key_chains, to_apply, prune_unapplied, map_sequences)
+                        if self._ivy.is_array(x) else x, key_chains, to_apply, prune_unapplied, map_sequences)
 
     def einops_rearrange(self, pattern,  key_chains=None, to_apply=True, prune_unapplied=False, map_sequences=False,
                          **axes_lengths):
@@ -1972,7 +1972,7 @@ class Container(ContainerWithActivations, ContainerWithCreation, ContainerWithDa
         :type axes_lengths: keyword parameter args
         :return: ivy.Container with each array having einops.rearrange applied.
         """
-        return self.map(lambda x, kc: ivy.einops_rearrange(x, pattern, **axes_lengths) if self._ivy.is_native_array(x) else x,
+        return self.map(lambda x, kc: ivy.einops_rearrange(x, pattern, **axes_lengths) if self._ivy.is_array(x) else x,
                         key_chains, to_apply, prune_unapplied, map_sequences)
 
     def einops_reduce(self, pattern,  reduction, key_chains=None, to_apply=True, prune_unapplied=False,
@@ -1997,7 +1997,7 @@ class Container(ContainerWithActivations, ContainerWithCreation, ContainerWithDa
         :type axes_lengths: keyword parameter args
         :return: ivy.Container with each array having einops.reduce applied.
         """
-        return self.map(lambda x, kc: ivy.einops_reduce(x, pattern, reduction, **axes_lengths) if self._ivy.is_native_array(x)
+        return self.map(lambda x, kc: ivy.einops_reduce(x, pattern, reduction, **axes_lengths) if self._ivy.is_array(x)
                         else x, key_chains, to_apply, prune_unapplied, map_sequences)
 
     def einops_repeat(self, pattern, key_chains=None, to_apply=True, prune_unapplied=False,
@@ -2020,7 +2020,7 @@ class Container(ContainerWithActivations, ContainerWithCreation, ContainerWithDa
         :type axes_lengths: keyword parameter args
         :return: ivy.Container with each array having einops.repeat applied.
         """
-        return self.map(lambda x, kc: ivy.einops_repeat(x, pattern, **axes_lengths) if self._ivy.is_native_array(x) else x,
+        return self.map(lambda x, kc: ivy.einops_repeat(x, pattern, **axes_lengths) if self._ivy.is_array(x) else x,
                         key_chains, to_apply, prune_unapplied, map_sequences)
 
     def to_dev(self, dev, key_chains=None, to_apply=True, prune_unapplied=False, map_sequences=False):
@@ -2041,7 +2041,7 @@ class Container(ContainerWithActivations, ContainerWithCreation, ContainerWithDa
         :return: The container, but with each sub-array now placed on the target device.
         """
         return self.map(lambda x, kc: self._ivy.stop_gradient(self._ivy.to_dev(x, dev))
-            if self._ivy.is_native_array(x) else x, key_chains, to_apply, prune_unapplied, map_sequences)
+            if self._ivy.is_array(x) else x, key_chains, to_apply, prune_unapplied, map_sequences)
 
     def stop_gradients(self, preserve_type=True, key_chains=None, to_apply=True, prune_unapplied=False,
                        map_sequences=False):
@@ -2082,7 +2082,7 @@ class Container(ContainerWithActivations, ContainerWithCreation, ContainerWithDa
         :type map_sequences: bool, optional
         :return: container with each array converted to a variable.
         """
-        return self.map(lambda x, kc: self._ivy.variable(x) if self._ivy.is_native_array(x) else x,
+        return self.map(lambda x, kc: self._ivy.variable(x) if self._ivy.is_array(x) else x,
                         key_chains, to_apply, prune_unapplied, map_sequences)
 
     def as_arrays(self, key_chains=None, to_apply=True, prune_unapplied=False, map_sequences=False):
@@ -2102,7 +2102,7 @@ class Container(ContainerWithActivations, ContainerWithCreation, ContainerWithDa
         """
         return self.map(
             lambda x, kc: self._ivy.stop_gradient(x, False) if self._ivy.is_variable(x)
-            else (x if self._ivy.is_native_array(x) else self._ivy.array(x)), key_chains, to_apply, prune_unapplied,
+            else (x if self._ivy.is_array(x) else self._ivy.array(x)), key_chains, to_apply, prune_unapplied,
             map_sequences)
 
     def num_arrays(self, exclusive=False):
@@ -2113,7 +2113,7 @@ class Container(ContainerWithActivations, ContainerWithCreation, ContainerWithDa
                           rather than a variable or traced array.
         :type exclusive: bool, optional
         """
-        return sum(self.map(lambda x, kc: ivy.is_native_array(x, exclusive)).to_iterator_values())
+        return sum(self.map(lambda x, kc: ivy.is_array(x, exclusive)).to_iterator_values())
 
     def size_ordered_arrays(self, exclusive=False):
         """
@@ -2124,7 +2124,7 @@ class Container(ContainerWithActivations, ContainerWithCreation, ContainerWithDa
         :type exclusive: bool, optional
         """
         array_dict = {Container.flatten_key_chain(kc): v
-                      for kc, v in self.to_iterator() if ivy.is_native_array(v, exclusive)}
+                      for kc, v in self.to_iterator() if ivy.is_array(v, exclusive)}
         return ivy.Container(dict(sorted(array_dict.items(), key=lambda item: _reduce(_mul, item[1].shape, 1))),
                              alphabetical_keys=False)
 
@@ -2147,7 +2147,7 @@ class Container(ContainerWithActivations, ContainerWithCreation, ContainerWithDa
         """
         import ivy.functional.backends.numpy
         ret = self.map(
-            lambda x, kc: self._ivy.to_numpy(x) if self._ivy.is_native_array(x) else x, key_chains, to_apply, prune_unapplied,
+            lambda x, kc: self._ivy.to_numpy(x) if self._ivy.is_array(x) else x, key_chains, to_apply, prune_unapplied,
             map_sequences)
         if update_backend:
             ret.set_ivy_backend(ivy.functional.backends.numpy)
@@ -2189,7 +2189,7 @@ class Container(ContainerWithActivations, ContainerWithCreation, ContainerWithDa
         :return: container with each array converted to a list.
         """
         return self.map(
-            lambda x, kc: self._ivy.to_list(x) if self._ivy.is_native_array(x) else x, key_chains, to_apply, prune_unapplied,
+            lambda x, kc: self._ivy.to_list(x) if self._ivy.is_array(x) else x, key_chains, to_apply, prune_unapplied,
             map_sequences)
 
     def to_disk_as_hdf5(self, h5_obj_or_filepath, starting_index=0, mode='a', max_batch_size=None):
@@ -2954,7 +2954,7 @@ class Container(ContainerWithActivations, ContainerWithCreation, ContainerWithDa
 
         :return: A deep copy of the container
         """
-        return self.map(lambda x, kc: ivy.copy_array(x) if ivy.is_native_array(x) else x)
+        return self.map(lambda x, kc: ivy.copy_array(x) if ivy.is_array(x) else x)
 
     def map(self, func, key_chains=None, to_apply=True, prune_unapplied=False, map_sequences=False, inplace=False,
             key_chain=''):
@@ -3357,10 +3357,10 @@ class Container(ContainerWithActivations, ContainerWithCreation, ContainerWithDa
                 # noinspection PyArgumentList
                 rep = v.__repr__(as_repr=False)
             else:
-                if self._ivy.is_native_array(v) and len(list(v.shape)) > 0 and ivy.exists(self._print_limit) and \
+                if self._ivy.is_array(v) and len(list(v.shape)) > 0 and ivy.exists(self._print_limit) and \
                         _reduce(_mul, v.shape) > self._print_limit:
                     rep = (type(v), "shape=", list(v.shape))
-                elif isinstance(v, (list, tuple)) and v and self._ivy.is_native_array(v[0]):
+                elif isinstance(v, (list, tuple)) and v and self._ivy.is_array(v[0]):
                     rep = ("list[{}]".format(len(v)), type(v[0]), "shape=", list(v[0].shape))
                 else:
                     rep = v

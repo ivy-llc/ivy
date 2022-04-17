@@ -8,4 +8,4 @@ class ContainerWithGeneral(ContainerBase):
 
     def __init__(self):
         import ivy.functional.ivy.general as general
-        ContainerBase.__init__(self, general, ['inplace_update'])
+        ContainerBase.__init__(self, general, ['inplace_update', 'unstack', 'gather', 'gather_nd'])
