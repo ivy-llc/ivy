@@ -30,3 +30,19 @@ def test_vector_to_skew_symmetric_matrix(x, dtype, tensor_fn, dev, call):
     # value test
     assert np.allclose(call(ivy.vector_to_skew_symmetric_matrix, x),
                        ivy.functional.backends.numpy.vector_to_skew_symmetric_matrix(ivy.to_numpy(x)))
+
+def test_eigh():
+    # docstring test
+    helpers.assert_docstring_examples_run(ivy.eigh)
+
+def test_pinv():
+    # docstring test
+    helpers.assert_docstring_examples_run(ivy.pinv)
+
+def test_matrix_transpose():
+    # docstring test
+    helpers.assert_docstring_examples_run(ivy.matrix_transpose)
+
+def test_vector_norm():
+    # docstring test
+    helpers.assert_docstring_examples_run(ivy.vector_norm)
