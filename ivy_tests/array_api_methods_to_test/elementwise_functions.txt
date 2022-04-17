@@ -27,7 +27,7 @@ greater_equal
 isfinite
 isinf
 isnan
-#less # failing non deterministically
+less
 less_equal
 log
 log1p
