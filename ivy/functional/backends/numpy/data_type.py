@@ -1,7 +1,7 @@
 # global
 import numpy as np
 import numpy.array_api as npa
-from typing import Union, Tuple
+from typing import Union, Tuple, List
 
 # local
 import ivy
@@ -113,6 +113,9 @@ def result_type(*arrays_and_dtypes: Union[np.ndarray, np.dtype]) -> np.dtype:
   
 def broadcast_to(x: np.ndarray, shape: Tuple[int,...]) -> np.ndarray:
     return np.broadcast_to(x, shape)
+
+def broadcast_arrays(*arrays: np.ndarray) -> List[np.ndarray]:
+    return np.broadcast_arrays(*arrays)
 
 
 def astype(x: np.ndarray, dtype: np.dtype, copy: bool = True)\

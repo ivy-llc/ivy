@@ -9,6 +9,7 @@ import numpy as np
 from operator import mul as _mul
 from functools import reduce as _reduce
 import multiprocessing as _multiprocessing
+from numbers import Number
 
 # local
 import ivy
@@ -22,12 +23,19 @@ from ivy.functional.backends.numpy.device import _dev_callable, _to_dev
 copy_array = lambda x: x.copy()
 array_equal = np.array_equal
 
-to_numpy = lambda x: x
-to_numpy.__name__ = 'to_numpy'
-to_scalar = lambda x: x.item()
-to_scalar.__name__ = 'to_scalar'
-to_list = lambda x: x.tolist()
-to_list.__name__ = 'to_list'
+
+def to_numpy(x: np.ndarray) \
+        -> np.ndarray:
+    return x
+
+def to_scalar(x: np.ndarray) \
+        -> Number:
+    return x.item()
+
+def to_list(x: np.ndarray) \
+        -> list:
+    return x.tolist()
+
 container_types = lambda: []
 inplace_arrays_supported = lambda: True
 inplace_variables_supported = lambda: True
@@ -94,13 +102,21 @@ def cumsum(x:np.ndarray,axis:int=0,out: Optional[np.ndarray] = None)\
             return np.cumsum(x,axis)
 
 
-def cumprod(x, axis=0, exclusive=False):
+def cumprod(x:np.ndarray, axis:int=0, exclusive:Optional[bool]=False,
+    out:Optional[np.ndarray] = None)\
+        -> np.ndarray:
     if exclusive:
         x = np.swapaxes(x, axis, -1)
         x = np.concatenate((np.ones_like(x[..., -1:]), x[..., :-1]), -1)
         res = np.cumprod(x, -1)
-        return np.swapaxes(res, axis, -1)
-    return np.cumprod(x, axis)
+        if ivy.exists(out):
+            return ivy.inplace_update(out,np.swapaxes(res, axis, -1).copy())
+        else:
+            return np.swapaxes(res, axis, -1)
+    if ivy.exists(out):
+        return ivy.inplace_update(out,np.cumprod(x, axis))  
+    else:
+        return np.cumprod(x, axis)
 
 
 
@@ -183,7 +199,8 @@ def gather(params: np.ndarray, indices:np.ndarray, axis: Optional[int]=-1, dev:O
     ret = _to_dev(np.take_along_axis(params, indices, axis), dev)
     if ivy.exists(out):
         return ivy.inplace_update(out,ret)
-    return ret
+    else :
+        return ret
 
 def gather_nd(params, indices, dev=None):
     if dev is None:

@@ -38,12 +38,29 @@ def array_equal(x0, x1):
         x1 = x1.astype('int32')
     return mx.nd.min(mx.nd.broadcast_equal(x0, x1)) == 1
 
-to_numpy = lambda x: x if isinstance(x, _np.ndarray) else (_np.array(x) if isinstance(x, (int, float)) else x.asnumpy())
-to_numpy.__name__ = 'to_numpy'
-to_scalar = lambda x: x if isinstance(x, Number) else x.asscalar().item()
-to_scalar.__name__ = 'to_scalar'
-to_list = lambda x: to_numpy(x).tolist()
-to_list.__name__ = 'to_list'
+
+def to_numpy(x: mx.nd.NDArray) \
+        -> mx.nd.NDArray:
+    if isinstance(x, _np.ndarray):
+        return x
+    else:
+        if isinstance(x, (int, float)):
+            return _np.array(x)
+        else:
+            return x.asnumpy()
+
+def to_scalar(x: mx.nd.NDArray) \
+        -> Number:
+    if isinstance(x, Number):
+        return x
+    else:
+        x.asscalar().item()
+
+
+def to_list(x: mx.nd.NDArray) \
+        -> list:
+    return to_numpy(x).tolist()
+
 
 @_handle_flat_arrays_in_out
 def floormod(x: mx.ndarray.ndarray.NDArray, y: mx.ndarray.ndarray.NDArray, out: Optional[mx.ndarray.ndarray.NDArray] = None)\
@@ -106,15 +123,19 @@ def cumsum(x:mx.ndarray.ndarray.NDArray,axis:int=0,
         else:
             mx.nd.cumsum(x, axis if axis >= 0 else axis % len(x.shape))
 
-def cumprod(x, axis=0, exclusive=False):
+
+def cumprod(x:mx.ndarray.ndarray.NDArray, axis:int=0, exclusive:Optional[bool]=False,
+out: Optional[mx.ndarray.ndarray.NDArray] = None)\
+        -> mx.ndarray.ndarray.NDArray:
     array_stack = [mx.nd.expand_dims(chunk, axis) for chunk in unstack(x, axis)]
     if exclusive:
         array_stack = [mx.nd.ones_like(array_stack[0])] + array_stack[:-1]
     new_array_list = [array_stack[0]]
     for array_chunk in array_stack[1:]:
         new_array_list.append(new_array_list[-1] * array_chunk)
+    if ivy.exists(out):
+        return ivy.inplace_update(out,mx.nd.concat(*new_array_list, dim=axis))
     return mx.nd.concat(*new_array_list, dim=axis)
-
 
 
 # noinspection PyShadowingNames
