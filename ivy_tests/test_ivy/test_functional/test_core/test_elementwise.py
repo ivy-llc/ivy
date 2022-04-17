@@ -417,6 +417,10 @@ def test_bitwise_invert(dtype, with_out, native_array):
             return
         assert ret.data is (out if native_array else out.data)
 
+        # docstring test
+        helpers.assert_docstring_examples_run(ivy.bitwise_invert)
+
+
 
 # bitwise_or
 @pytest.mark.parametrize(

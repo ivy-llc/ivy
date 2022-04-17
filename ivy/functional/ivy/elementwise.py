@@ -156,11 +156,11 @@ def bitwise_invert(x: Union[ivy.Array, ivy.NativeArray],
                    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None) \
         -> ivy.Array:
     """
-    Inverts (flips) each bit for each element x_i of the input array x.
+    Inverts (flips) each bit for each element ``x_i`` of the input array ``x``.
 
     Parameters
     ----------
-    x:
+    x: array
         input array. Should have an integer or boolean data type.
     out:
         optional output array, for writing the result to. It must have a shape that the inputs broadcast to.
@@ -168,7 +168,13 @@ def bitwise_invert(x: Union[ivy.Array, ivy.NativeArray],
     Returns
     -------
     return:
-        an array containing the element-wise results. The returned array must have the same data type as x.
+        an array containing the element-wise results. The returned array must have the same data type as ``x``.
+
+    Examples:
+    >>> x = ivy.array([1,6,9])
+    >>> y = ivy.bitwise_invert(x)
+    >>> print(y)
+    [ -2,  -7, -10]
     """
     return _cur_framework(x).bitwise_invert(x, out)
 
