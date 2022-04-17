@@ -38,7 +38,6 @@ _MIN_BASE = 1e-5
 
 
 # local
-import ivy
 from .array import Array, Variable
 from ivy.container import Container, MultiDevContainer
 from .framework_handler import current_framework, get_framework, set_framework, unset_framework, framework_stack,\
@@ -54,6 +53,12 @@ from . import stateful
 from .stateful import *
 from . import verbosity
 from .array import *
+
+from ivy.functional.ivy import activations, creation, data_type, device, elementwise, general, gradients, image,\
+    layers, linear_algebra, losses, manipulation, norms, random, searching, set, sorting, statistical, utility
+add_instance_methods(
+    Array, [activations, creation, data_type, device, elementwise, general, gradients, image, layers, linear_algebra,
+            losses, manipulation, norms, random, searching, set, sorting, statistical, utility])
 
 # data types
 int8 = 'int8'
