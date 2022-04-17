@@ -253,6 +253,21 @@
     <span class="k">return</span> <span class="n">ret</span></div>
 
 
+<div class="viewcode-block" id="prune_nest_at_index"><a class="viewcode-back" href="../../../../functional/ivy/nest/prune_nest_at_index.html#ivy.functional.ivy.nest.prune_nest_at_index">[docs]</a><span class="k">def</span> <span class="nf">prune_nest_at_index</span><span class="p">(</span><span class="n">nest</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Prune a nested object at a specified index</span>
+
+<span class="sd">    :param nest: The nested object to prune.</span>
+<span class="sd">    :type nest: nested</span>
+<span class="sd">    :param index: A tuple of indices for the index at which to prune.</span>
+<span class="sd">    :type index: tuple of indices</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">index</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">del</span> <span class="n">nest</span><span class="p">[</span><span class="n">index</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">prune_nest_at_index</span><span class="p">(</span><span class="n">nest</span><span class="p">[</span><span class="n">index</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="n">index</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span></div>
+
+
 <div class="viewcode-block" id="set_nest_at_index"><a class="viewcode-back" href="../../../../functional/ivy/nest/set_nest_at_index.html#ivy.functional.ivy.nest.set_nest_at_index">[docs]</a><span class="k">def</span> <span class="nf">set_nest_at_index</span><span class="p">(</span><span class="n">nest</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Set the value of a nested item at a specified index</span>
@@ -297,6 +312,18 @@
 <span class="sd">    :type indices: tuple of tuples of indices</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="p">[</span><span class="n">index_nest</span><span class="p">(</span><span class="n">nest</span><span class="p">,</span> <span class="n">index</span><span class="p">)</span> <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="n">indices</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="prune_nest_at_indices"><a class="viewcode-back" href="../../../../functional/ivy/nest/prune_nest_at_indices.html#ivy.functional.ivy.nest.prune_nest_at_indices">[docs]</a><span class="k">def</span> <span class="nf">prune_nest_at_indices</span><span class="p">(</span><span class="n">nest</span><span class="p">,</span> <span class="n">indices</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Prune a nested object at specified indices.</span>
+
+<span class="sd">    :param nest: The nested object to prune.</span>
+<span class="sd">    :type nest: nested</span>
+<span class="sd">    :param indices: A tuple of tuples of indices for the indices at which to prune.</span>
+<span class="sd">    :type indices: tuple of tuples of indices</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="p">[</span><span class="n">prune_nest_at_index</span><span class="p">(</span><span class="n">nest</span><span class="p">,</span> <span class="n">index</span><span class="p">)</span> <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="n">indices</span><span class="p">]</span></div>
 
 
 <div class="viewcode-block" id="set_nest_at_indices"><a class="viewcode-back" href="../../../../functional/ivy/nest/set_nest_at_indices.html#ivy.functional.ivy.nest.set_nest_at_indices">[docs]</a><span class="k">def</span> <span class="nf">set_nest_at_indices</span><span class="p">(</span><span class="n">nest</span><span class="p">,</span> <span class="n">indices</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>

@@ -14,9 +14,11 @@ Nest
    :caption: Nest
 
    nest/index_nest.rst
+   nest/prune_nest_at_index.rst
    nest/set_nest_at_index.rst
    nest/map_nest_at_index.rst
    nest/multi_index_nest.rst
+   nest/prune_nest_at_indices.rst
    nest/set_nest_at_indices.rst
    nest/map_nest_at_indices.rst
    nest/nested_indices_where.rst

@@ -133,9 +133,11 @@
 <li class="toctree-l1"><a class="reference internal" href="meta.html">Meta</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Nest</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="nest/index_nest.html">index_nest</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nest/prune_nest_at_index.html">prune_nest_at_index</a></li>
 <li class="toctree-l2"><a class="reference internal" href="nest/set_nest_at_index.html">set_nest_at_index</a></li>
 <li class="toctree-l2"><a class="reference internal" href="nest/map_nest_at_index.html">map_nest_at_index</a></li>
 <li class="toctree-l2"><a class="reference internal" href="nest/multi_index_nest.html">multi_index_nest</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nest/prune_nest_at_indices.html">prune_nest_at_indices</a></li>
 <li class="toctree-l2"><a class="reference internal" href="nest/set_nest_at_indices.html">set_nest_at_indices</a></li>
 <li class="toctree-l2"><a class="reference internal" href="nest/map_nest_at_indices.html">map_nest_at_indices</a></li>
 <li class="toctree-l2"><a class="reference internal" href="nest/nested_indices_where.html">nested_indices_where</a></li>
@@ -398,6 +400,34 @@ leaves before applying the method and returning x. If x is not nested, the metho
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>x following the applicable of fn to it’s nested leaves, or x itself if x is not nested.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.nest.prune_nest_at_index">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">prune_nest_at_index</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">nest</span></em>, <em class="sig-param"><span class="n">index</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/nest.html#prune_nest_at_index"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.nest.prune_nest_at_index" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prune a nested object at a specified index</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>nest</strong> (<em>nested</em>) – The nested object to prune.</p></li>
+<li><p><strong>index</strong> (<em>tuple of indices</em>) – A tuple of indices for the index at which to prune.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.nest.prune_nest_at_indices">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">prune_nest_at_indices</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">nest</span></em>, <em class="sig-param"><span class="n">indices</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/nest.html#prune_nest_at_indices"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.nest.prune_nest_at_indices" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prune a nested object at specified indices.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>nest</strong> (<em>nested</em>) – The nested object to prune.</p></li>
+<li><p><strong>indices</strong> (<em>tuple of tuples of indices</em>) – A tuple of tuples of indices for the indices at which to prune.</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
