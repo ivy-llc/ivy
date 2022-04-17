@@ -1,11 +1,11 @@
 # local
-from ivy.array.base import ArrayBase
+from ivy.container.base import ContainerBase
 
 # ToDo: implement all methods here as public instance methods
 
 
-class ArrayWithLinearAlgebra(ArrayBase):
+class ContainerWithLinearAlgebra(ContainerBase):
 
     def __init__(self):
         import ivy.functional.ivy.linear_algebra as linear_algebra
-        ArrayBase.__init__(self, linear_algebra)
+        ContainerBase.__init__(self, linear_algebra)

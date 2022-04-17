@@ -1,11 +1,11 @@
 # local
-from ivy.array.base import ArrayBase
+from ivy.container.base import ContainerBase
 
 # ToDo: implement all methods here as public instance methods
 
 
-class ArrayWithLayers(ArrayBase):
+class ContainerWithLayers(ContainerBase):
 
     def __init__(self):
         import ivy.functional.ivy.layers as layers
-        ArrayBase.__init__(self, layers)
+        ContainerBase.__init__(self, layers)

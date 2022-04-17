@@ -1,11 +1,11 @@
 # local
-from ivy.array.base import ArrayBase
+from ivy.container.base import ContainerBase
 
 # ToDo: implement all methods here as public instance methods
 
 
-class ArrayWithSet(ArrayBase):
+class ContainerWithSet(ContainerBase):
 
     def __init__(self):
         import ivy.functional.ivy.set as set
-        ArrayBase.__init__(self, set)
+        ContainerBase.__init__(self, set)

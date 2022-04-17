@@ -5,13 +5,12 @@ Collection of tests for unified gradient functions
 # global
 import pytest
 import numpy as np
-from numbers import Number
 
 # local
 import ivy
 import ivy.functional.backends.numpy
 import ivy_tests.test_ivy.helpers as helpers
-from ivy.container import Container
+from ivy.container.container import Container
 
 
 # variable

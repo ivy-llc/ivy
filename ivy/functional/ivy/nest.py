@@ -238,7 +238,7 @@ def nested_map(x: Union[Union[ivy.Array, ivy.NativeArray], Iterable], fn: Callab
 
 def copy_nest(nest: Union[Union[ivy.Array, ivy.NativeArray], Iterable], include_derived: bool = False,
               to_mutable: bool = False)\
-        -> Union[Union[ivy.Array, ivy.NativeArray], Iterable]:
+        -> Union[ivy.Array, ivy.NativeArray, Iterable, Dict]:
     """
     Copies a nest deeply, but without copying leaves of the nest, only the nest lists, tuples and dicts are copied.
 

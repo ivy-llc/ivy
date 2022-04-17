@@ -1,11 +1,11 @@
 # local
-from ivy.array.base import ArrayBase
+from ivy.container.base import ContainerBase
 
 # ToDo: implement all methods here as public instance methods
 
 
-class ArrayWithManipulation(ArrayBase):
+class ContainerWithManipulation(ContainerBase):
 
     def __init__(self):
         import ivy.functional.ivy.manipulation as manipulation
-        ArrayBase.__init__(self, manipulation)
+        ContainerBase.__init__(self, manipulation)

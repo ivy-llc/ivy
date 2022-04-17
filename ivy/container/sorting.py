@@ -1,11 +1,11 @@
 # local
-from ivy.array.base import ArrayBase
+from ivy.container.base import ContainerBase
 
 # ToDo: implement all methods here as public instance methods
 
 
-class ArrayWithSorting(ArrayBase):
+class ContainerWithSorting(ContainerBase):
 
     def __init__(self):
         import ivy.functional.ivy.sorting as sorting
-        ArrayBase.__init__(self, sorting)
+        ContainerBase.__init__(self, sorting)

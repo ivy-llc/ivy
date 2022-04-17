@@ -1,7 +1,6 @@
 # global
 import os
 import queue
-import pickle
 import pytest
 import random
 import numpy as np

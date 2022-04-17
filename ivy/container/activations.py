@@ -1,11 +1,11 @@
 # local
-from ivy.array.base import ArrayBase
+from ivy.container.base import ContainerBase
 
 # ToDo: implement all methods here as public instance methods
 
 
-class ArrayWithActivations(ArrayBase):
+class ContainerWithActivations(ContainerBase):
 
     def __init__(self):
         import ivy.functional.ivy.activations as activations
-        ArrayBase.__init__(self, activations)
+        ContainerBase.__init__(self, activations)

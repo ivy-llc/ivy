@@ -1,11 +1,11 @@
 # local
-from ivy.array.base import ArrayBase
+from ivy.container.base import ContainerBase
 
 # ToDo: implement all methods here as public instance methods
 
 
-class ArrayWithNorms(ArrayBase):
+class ContainerWithNorms(ContainerBase):
 
     def __init__(self):
         import ivy.functional.ivy.norms as norms
-        ArrayBase.__init__(self, norms)
+        ContainerBase.__init__(self, norms)

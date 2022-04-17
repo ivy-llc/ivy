@@ -1,11 +1,11 @@
 # local
-from ivy.array.base import ArrayBase
+from ivy.container.base import ContainerBase
 
 # ToDo: implement all methods here as public instance methods
 
 
-class ArrayWithCreation(ArrayBase):
+class ContainerWithCreation(ContainerBase):
 
     def __init__(self):
         import ivy.functional.ivy.creation as creation
-        ArrayBase.__init__(self, creation)
+        ContainerBase.__init__(self, creation)

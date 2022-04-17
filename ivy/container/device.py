@@ -1,11 +1,11 @@
 # local
-from ivy.array.base import ArrayBase
+from ivy.container.base import ContainerBase
 
 # ToDo: implement all methods here as public instance methods
 
 
-class ArrayWithDevice(ArrayBase):
+class ContainerWithDevice(ContainerBase):
 
     def __init__(self):
         import ivy.functional.ivy.device as device
-        ArrayBase.__init__(self, device)
+        ContainerBase.__init__(self, device)

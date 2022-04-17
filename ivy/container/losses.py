@@ -1,11 +1,11 @@
 # local
-from ivy.array.base import ArrayBase
+from ivy.container.base import ContainerBase
 
 # ToDo: implement all methods here as public instance methods
 
 
-class ArrayWithLosses(ArrayBase):
+class ContainerWithLosses(ContainerBase):
 
     def __init__(self):
         import ivy.functional.ivy.losses as losses
-        ArrayBase.__init__(self, losses)
+        ContainerBase.__init__(self, losses)
