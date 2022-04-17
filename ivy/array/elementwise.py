@@ -9,4 +9,4 @@ class ArrayWithElementwise(ArrayBase):
 
     def __init__(self):
         import ivy.functional.ivy.elementwise as elementwise
-        super().__init__(elementwise)
+        ArrayBase.__init__(self, elementwise)
