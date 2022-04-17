@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>arrays_equal &mdash; Ivy 1.0 documentation</title>
+  <title>is_ivy_container &mdash; Ivy 1.0 documentation</title>
   
 
   
@@ -36,8 +36,8 @@
   <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="all_equal" href="all_equal.html" />
-    <link rel="prev" title="array_equal" href="array_equal.html" /> 
+    <link rel="next" title="copy_array" href="copy_array.html" />
+    <link rel="prev" title="is_array" href="is_array.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -103,10 +103,10 @@
 <li class="toctree-l2"><a class="reference internal" href="is_native_array.html">is_native_array</a></li>
 <li class="toctree-l2"><a class="reference internal" href="is_ivy_array.html">is_ivy_array</a></li>
 <li class="toctree-l2"><a class="reference internal" href="is_array.html">is_array</a></li>
-<li class="toctree-l2"><a class="reference internal" href="is_ivy_container.html">is_ivy_container</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">is_ivy_container</a></li>
 <li class="toctree-l2"><a class="reference internal" href="copy_array.html">copy_array</a></li>
 <li class="toctree-l2"><a class="reference internal" href="array_equal.html">array_equal</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">arrays_equal</a></li>
+<li class="toctree-l2"><a class="reference internal" href="arrays_equal.html">arrays_equal</a></li>
 <li class="toctree-l2"><a class="reference internal" href="all_equal.html">all_equal</a></li>
 <li class="toctree-l2"><a class="reference internal" href="to_numpy.html">to_numpy</a></li>
 <li class="toctree-l2"><a class="reference internal" href="to_scalar.html">to_scalar</a></li>
@@ -250,13 +250,13 @@
         
           <li><a href="../general.html">General</a> &raquo;</li>
         
-      <li>arrays_equal</li>
+      <li>is_ivy_container</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../../_sources/functional/ivy/general/arrays_equal.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../../_sources/functional/ivy/general/is_ivy_container.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -269,18 +269,18 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="arrays-equal">
-<h1>arrays_equal<a class="headerlink" href="#arrays-equal" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="is-ivy-container">
+<h1>is_ivy_container<a class="headerlink" href="#is-ivy-container" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
-<dt id="ivy.functional.ivy.general.arrays_equal">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">arrays_equal</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">xs</span><span class="p">:</span> <span class="n">List<span class="p">[</span>Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; bool<a class="reference internal" href="../../../_modules/ivy/functional/ivy/general.html#arrays_equal"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.general.arrays_equal" title="Permalink to this definition">¶</a></dt>
-<dd><p>Determines whether input arrays are equal across all elements.</p>
+<dt id="ivy.functional.ivy.general.is_ivy_container">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">is_ivy_container</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Any</span></em><span class="sig-paren">)</span> &#x2192; bool<a class="reference internal" href="../../../_modules/ivy/functional/ivy/general.html#is_ivy_container"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.general.is_ivy_container" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determines whether the input x is an Ivy Container.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>xs</strong> (<em>sequence of arrays</em>) – Sequence of arrays to compare for equality</p>
+<dd class="field-odd"><p><strong>x</strong> (<em>any</em>) – The input to check</p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Boolean, whether or not all of the input arrays are equal across all elements.</p>
+<dd class="field-even"><p>Boolean, whether or not x is an ivy container.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -300,10 +300,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="all_equal.html" class="btn btn-neutral float-right" title="all_equal" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="copy_array.html" class="btn btn-neutral float-right" title="copy_array" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="array_equal.html" class="btn btn-neutral float-left" title="array_equal" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="is_array.html" class="btn btn-neutral float-left" title="is_array" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
