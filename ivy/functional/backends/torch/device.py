@@ -63,7 +63,7 @@ _callable_dev = dev
 num_gpus = torch.cuda.device_count
 
 
-def gpu_is_available():
+def gpu_is_available() -> bool:
     return torch.cuda.is_available()
 
 
