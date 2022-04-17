@@ -91,6 +91,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../container/activations.html">Activations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../container/base.html">Base</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../container/container.html">Container</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../container/creation.html">Creation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../container/data_types.html">Data types</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../container/device.html">Device</a></li>
@@ -227,11 +228,12 @@
 <span class="c1"># ToDo: implement all methods here as public instance methods</span>
 
 
+<span class="c1"># noinspection PyMissingConstructor</span>
 <div class="viewcode-block" id="ContainerWithStatistical"><a class="viewcode-back" href="../../../container/statistical/ContainerWithStatistical.html#ivy.container.statistical.ContainerWithStatistical">[docs]</a><span class="k">class</span> <span class="nc">ContainerWithStatistical</span><span class="p">(</span><span class="n">ContainerBase</span><span class="p">):</span>
 
 <div class="viewcode-block" id="ContainerWithStatistical.__init__"><a class="viewcode-back" href="../../../container/statistical/ContainerWithStatistical.html#ivy.container.statistical.ContainerWithStatistical.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="kn">import</span> <span class="nn">ivy.functional.ivy.statistical</span> <span class="k">as</span> <span class="nn">statistical</span>
-        <span class="n">ContainerBase</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">statistical</span><span class="p">,</span> <span class="n">to_ignore</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;einsum&#39;</span><span class="p">])</span></div></div>
+        <span class="n">ContainerBase</span><span class="o">.</span><span class="n">add_instance_methods</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">statistical</span><span class="p">,</span> <span class="n">to_ignore</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;einsum&#39;</span><span class="p">])</span></div></div>
 </pre></div>
 
            </div>

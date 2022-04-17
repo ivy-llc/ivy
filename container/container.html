@@ -1,0 +1,379 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Container &mdash; Ivy 1.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Container" href="container/Container.html" />
+    <link rel="prev" title="ContainerBase" href="base/ContainerBase.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> Ivy
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Overview</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../background.html">Background</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../design.html">Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../extensions.html">Extensions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../roadmap.html">Roadmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Container</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="base.html">Base</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Container</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="container/Container.html">Container</a></li>
+<li class="toctree-l2"><a class="reference internal" href="container/MultiDevContainer.html">MultiDevContainer</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="creation.html">Creation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data_types.html">Data types</a></li>
+<li class="toctree-l1"><a class="reference internal" href="device.html">Device</a></li>
+<li class="toctree-l1"><a class="reference internal" href="elementwise.html">Elementwise</a></li>
+<li class="toctree-l1"><a class="reference internal" href="general.html">General</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gradients.html">Gradients</a></li>
+<li class="toctree-l1"><a class="reference internal" href="image.html">Image</a></li>
+<li class="toctree-l1"><a class="reference internal" href="layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="linear_algebra.html">Linear algebra</a></li>
+<li class="toctree-l1"><a class="reference internal" href="losses.html">Losses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="manipulation.html">Manipulation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="random.html">Random</a></li>
+<li class="toctree-l1"><a class="reference internal" href="searching.html">Searching</a></li>
+<li class="toctree-l1"><a class="reference internal" href="set.html">Set</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sorting.html">Sorting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="statistical.html">Statistical</a></li>
+<li class="toctree-l1"><a class="reference internal" href="utility.html">Utility</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Functional</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/compilation.html">Compilation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/constants.html">Constants</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/creation.html">Creation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/data_type.html">Data type</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/device.html">Device</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/elementwise.html">Elementwise</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/general.html">General</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/gradients.html">Gradients</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/image.html">Image</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/linear_algebra.html">Linear algebra</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/losses.html">Losses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/manipulation.html">Manipulation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/meta.html">Meta</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/nest.html">Nest</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/random.html">Random</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/searching.html">Searching</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/set.html">Set</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/sorting.html">Sorting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/statistical.html">Statistical</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/utility.html">Utility</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Stateful</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/converters.html">Converters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/initializers.html">Initializers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/module.html">Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/optimizers.html">Optimizers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/sequential.html">Sequential</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Docs</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../ivy"">Ivy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../mech"">Ivy mech</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../vision"">Ivy vision</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../robot"">Ivy robot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../gym"">Ivy gym</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../memory"">Ivy memory</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../builder"">Ivy builder</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../models"">Ivy models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ecosystem"">Ivy ecosystem</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Ivy</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>Container</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/container/container.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-ivy.container.container">
+<span id="container"></span><h1>Container<a class="headerlink" href="#module-ivy.container.container" title="Permalink to this headline">¶</a></h1>
+<dl class="py class">
+<dt id="ivy.container.container.Container">
+<em class="property">class </em><code class="sig-prename descclassname">ivy.container.container.</code><code class="sig-name descname">Container</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dict_in</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">queues</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">queue_load_sizes</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">container_combine_method</span><span class="o">=</span><span class="default_value">'list_join'</span></em>, <em class="sig-param"><span class="n">queue_timeout</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">print_limit</span><span class="o">=</span><span class="default_value">10</span></em>, <em class="sig-param"><span class="n">key_length_limit</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">print_indent</span><span class="o">=</span><span class="default_value">4</span></em>, <em class="sig-param"><span class="n">print_line_spacing</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">ivyh</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">default_key_color</span><span class="o">=</span><span class="default_value">'green'</span></em>, <em class="sig-param"><span class="n">keyword_color_dict</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">rebuild_child_containers</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">types_to_iteratively_nest</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">alphabetical_keys</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/container/container.html#Container"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.container.container.Container" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="activations/ContainerWithActivations.html#ivy.container.activations.ContainerWithActivations" title="ivy.container.activations.ContainerWithActivations"><code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.container.activations.ContainerWithActivations</span></code></a>, <a class="reference internal" href="creation/ContainerWithCreation.html#ivy.container.creation.ContainerWithCreation" title="ivy.container.creation.ContainerWithCreation"><code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.container.creation.ContainerWithCreation</span></code></a>, <a class="reference internal" href="data_types/ContainerWithDataTypes.html#ivy.container.data_types.ContainerWithDataTypes" title="ivy.container.data_types.ContainerWithDataTypes"><code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.container.data_types.ContainerWithDataTypes</span></code></a>, <a class="reference internal" href="device/ContainerWithDevice.html#ivy.container.device.ContainerWithDevice" title="ivy.container.device.ContainerWithDevice"><code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.container.device.ContainerWithDevice</span></code></a>, <a class="reference internal" href="elementwise/ContainerWithElementwise.html#ivy.container.elementwise.ContainerWithElementwise" title="ivy.container.elementwise.ContainerWithElementwise"><code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.container.elementwise.ContainerWithElementwise</span></code></a>, <a class="reference internal" href="general/ContainerWithGeneral.html#ivy.container.general.ContainerWithGeneral" title="ivy.container.general.ContainerWithGeneral"><code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.container.general.ContainerWithGeneral</span></code></a>, <a class="reference internal" href="gradients/ContainerWithGradients.html#ivy.container.gradients.ContainerWithGradients" title="ivy.container.gradients.ContainerWithGradients"><code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.container.gradients.ContainerWithGradients</span></code></a>, <a class="reference internal" href="image/ContainerWithImage.html#ivy.container.image.ContainerWithImage" title="ivy.container.image.ContainerWithImage"><code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.container.image.ContainerWithImage</span></code></a>, <a class="reference internal" href="layers/ContainerWithLayers.html#ivy.container.layers.ContainerWithLayers" title="ivy.container.layers.ContainerWithLayers"><code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.container.layers.ContainerWithLayers</span></code></a>, <a class="reference internal" href="linear_algebra/ContainerWithLinearAlgebra.html#ivy.container.linear_algebra.ContainerWithLinearAlgebra" title="ivy.container.linear_algebra.ContainerWithLinearAlgebra"><code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.container.linear_algebra.ContainerWithLinearAlgebra</span></code></a>, <a class="reference internal" href="losses/ContainerWithLosses.html#ivy.container.losses.ContainerWithLosses" title="ivy.container.losses.ContainerWithLosses"><code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.container.losses.ContainerWithLosses</span></code></a>, <a class="reference internal" href="manipulation/ContainerWithManipulation.html#ivy.container.manipulation.ContainerWithManipulation" title="ivy.container.manipulation.ContainerWithManipulation"><code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.container.manipulation.ContainerWithManipulation</span></code></a>, <a class="reference internal" href="norms/ContainerWithNorms.html#ivy.container.norms.ContainerWithNorms" title="ivy.container.norms.ContainerWithNorms"><code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.container.norms.ContainerWithNorms</span></code></a>, <a class="reference internal" href="random/ContainerWithRandom.html#ivy.container.random.ContainerWithRandom" title="ivy.container.random.ContainerWithRandom"><code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.container.random.ContainerWithRandom</span></code></a>, <a class="reference internal" href="searching/ContainerWithSearching.html#ivy.container.searching.ContainerWithSearching" title="ivy.container.searching.ContainerWithSearching"><code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.container.searching.ContainerWithSearching</span></code></a>, <a class="reference internal" href="set/ContainerWithSet.html#ivy.container.set.ContainerWithSet" title="ivy.container.set.ContainerWithSet"><code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.container.set.ContainerWithSet</span></code></a>, <a class="reference internal" href="sorting/ContainerWithSorting.html#ivy.container.sorting.ContainerWithSorting" title="ivy.container.sorting.ContainerWithSorting"><code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.container.sorting.ContainerWithSorting</span></code></a>, <a class="reference internal" href="statistical/ContainerWithStatistical.html#ivy.container.statistical.ContainerWithStatistical" title="ivy.container.statistical.ContainerWithStatistical"><code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.container.statistical.ContainerWithStatistical</span></code></a>, <a class="reference internal" href="utility/ContainerWithUtility.html#ivy.container.utility.ContainerWithUtility" title="ivy.container.utility.ContainerWithUtility"><code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.container.utility.ContainerWithUtility</span></code></a></p>
+<dl class="py method">
+<dt id="ivy.container.container.Container.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dict_in</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">queues</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">queue_load_sizes</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">container_combine_method</span><span class="o">=</span><span class="default_value">'list_join'</span></em>, <em class="sig-param"><span class="n">queue_timeout</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">print_limit</span><span class="o">=</span><span class="default_value">10</span></em>, <em class="sig-param"><span class="n">key_length_limit</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">print_indent</span><span class="o">=</span><span class="default_value">4</span></em>, <em class="sig-param"><span class="n">print_line_spacing</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">ivyh</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">default_key_color</span><span class="o">=</span><span class="default_value">'green'</span></em>, <em class="sig-param"><span class="n">keyword_color_dict</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">rebuild_child_containers</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">types_to_iteratively_nest</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">alphabetical_keys</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/container/container.html#Container.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.container.container.Container.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize container object from input dict representation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dict_in</strong> (<em>dict</em><em>, </em><em>optional</em>) – the dictionary the container should wrap around. Default is None.</p></li>
+<li><p><strong>queues</strong> (<em>sequence of multiprocessing queues</em><em>, </em><em>optional</em>) – Sequence of multiprocessing queues, each of which returns containers.
+This enables the current container to be passed around asynchronously while waiting for data.
+Default is None.</p></li>
+<li><p><strong>queue_load_sizes</strong> (<em>sequence of ints</em><em>, </em><em>optional</em>) – Size of leading dimension of the containers returned by each queue. Default is None.</p></li>
+<li><p><strong>container_combine_method</strong> (<em>str</em><em>, </em><em>optional</em>) – The method to use for combining containers arriving from different queues.
+Default is ivy.Container.list_join</p></li>
+<li><p><strong>queue_timeout</strong> (<em>float</em><em>, </em><em>optional</em>) – The timeout when waiting for containers to arrive from the queues. Default is global.</p></li>
+<li><p><strong>print_limit</strong> (<em>int</em><em>, </em><em>optional</em>) – The total array size limit when printing the container. Default is 10.</p></li>
+<li><p><strong>key_length_limit</strong> (<em>int</em><em>, </em><em>optional</em>) – The maximum key length when printing the container. Default is None.</p></li>
+<li><p><strong>print_indent</strong> (<em>int</em><em>, </em><em>optional</em>) – The number of whitespaces to use for indenting when printing the container. Default is 4.</p></li>
+<li><p><strong>print_line_spacing</strong> (<em>int</em><em>, </em><em>optional</em>) – The number of extra newlines to use between keys when printing the container.
+Default is 0.</p></li>
+<li><p><strong>ivyh</strong> (<em>handle to ivy module</em><em>, </em><em>optional</em>) – Handle to ivy module to use for the calculations. Default is None, which results in the global ivy.</p></li>
+<li><p><strong>default_key_color</strong> (<em>str</em><em>, </em><em>optional</em>) – The default key color for printing the container to the terminal. Default is ‘green’.</p></li>
+<li><p><strong>keyword_color_dict</strong> (<em>dict</em><em>, </em><em>optional</em>) – A dict mapping keywords to their termcolor color codes for printing the container.</p></li>
+<li><p><strong>rebuild_child_containers</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to rebuild container found in dict_in with these constructor params.
+Default is False, in which case the original container are kept as are.</p></li>
+<li><p><strong>types_to_iteratively_nest</strong> (<em>seq of iterable types</em>) – The data types to nest iteratively in the dict structure, each type must be
+iterable. Default is None.</p></li>
+<li><p><strong>alphabetical_keys</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to sort the container keys alphabetically, or preserve the dict order.
+Default is True.</p></li>
+<li><p><strong>kwargs</strong> (<em>keyword arguments.</em>) – keyword arguments for dict creation. Default is None.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="ivy.container.container.MultiDevContainer">
+<em class="property">class </em><code class="sig-prename descclassname">ivy.container.container.</code><code class="sig-name descname">MultiDevContainer</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dict_in</span></em>, <em class="sig-param"><span class="n">devs</span></em>, <em class="sig-param"><span class="n">queues</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">queue_load_sizes</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">container_combine_method</span><span class="o">=</span><span class="default_value">'list_join'</span></em>, <em class="sig-param"><span class="n">queue_timeout</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">print_limit</span><span class="o">=</span><span class="default_value">10</span></em>, <em class="sig-param"><span class="n">print_indent</span><span class="o">=</span><span class="default_value">4</span></em>, <em class="sig-param"><span class="n">print_line_spacing</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">ivyh</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">keyword_color_dict</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">rebuild_child_containers</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/container/container.html#MultiDevContainer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.container.container.MultiDevContainer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="container/Container.html#ivy.container.container.Container" title="ivy.container.container.Container"><code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.container.container.Container</span></code></a></p>
+<dl class="py method">
+<dt id="ivy.container.container.MultiDevContainer.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dict_in</span></em>, <em class="sig-param"><span class="n">devs</span></em>, <em class="sig-param"><span class="n">queues</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">queue_load_sizes</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">container_combine_method</span><span class="o">=</span><span class="default_value">'list_join'</span></em>, <em class="sig-param"><span class="n">queue_timeout</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">print_limit</span><span class="o">=</span><span class="default_value">10</span></em>, <em class="sig-param"><span class="n">print_indent</span><span class="o">=</span><span class="default_value">4</span></em>, <em class="sig-param"><span class="n">print_line_spacing</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">ivyh</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">keyword_color_dict</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">rebuild_child_containers</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/container/container.html#MultiDevContainer.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.container.container.MultiDevContainer.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize container object from input dict representation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dict_in</strong> (<em>dict</em><em>, </em><em>optional</em>) – the dictionary the container should wrap around. Default is None.</p></li>
+<li><p><strong>queues</strong> (<em>sequence of multiprocessing queues</em><em>, </em><em>optional</em>) – Sequence of multiprocessing queues, each of which returns containers.
+This enables the current container to be passed around asynchronously while waiting for data.
+Default is None.</p></li>
+<li><p><strong>queue_load_sizes</strong> (<em>sequence of ints</em><em>, </em><em>optional</em>) – Size of leading dimension of the containers returned by each queue. Default is None.</p></li>
+<li><p><strong>container_combine_method</strong> (<em>str</em><em>, </em><em>optional</em>) – The method to use for combining containers arriving from different queues.
+Default is ivy.Container.list_join</p></li>
+<li><p><strong>queue_timeout</strong> (<em>float</em><em>, </em><em>optional</em>) – The timeout when waiting for containers to arrive from the queues. Default is global.</p></li>
+<li><p><strong>print_limit</strong> (<em>int</em><em>, </em><em>optional</em>) – The total array size limit when printing the container. Default is 10.</p></li>
+<li><p><strong>key_length_limit</strong> (<em>int</em><em>, </em><em>optional</em>) – The maximum key length when printing the container. Default is None.</p></li>
+<li><p><strong>print_indent</strong> (<em>int</em><em>, </em><em>optional</em>) – The number of whitespaces to use for indenting when printing the container. Default is 4.</p></li>
+<li><p><strong>print_line_spacing</strong> (<em>int</em><em>, </em><em>optional</em>) – The number of extra newlines to use between keys when printing the container.
+Default is 0.</p></li>
+<li><p><strong>ivyh</strong> (<em>handle to ivy module</em><em>, </em><em>optional</em>) – Handle to ivy module to use for the calculations. Default is None, which results in the global ivy.</p></li>
+<li><p><strong>default_key_color</strong> (<em>str</em><em>, </em><em>optional</em>) – The default key color for printing the container to the terminal. Default is ‘green’.</p></li>
+<li><p><strong>keyword_color_dict</strong> (<em>dict</em><em>, </em><em>optional</em>) – A dict mapping keywords to their termcolor color codes for printing the container.</p></li>
+<li><p><strong>rebuild_child_containers</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to rebuild container found in dict_in with these constructor params.
+Default is False, in which case the original container are kept as are.</p></li>
+<li><p><strong>types_to_iteratively_nest</strong> (<em>seq of iterable types</em>) – The data types to nest iteratively in the dict structure, each type must be
+iterable. Default is None.</p></li>
+<li><p><strong>alphabetical_keys</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to sort the container keys alphabetically, or preserve the dict order.
+Default is True.</p></li>
+<li><p><strong>kwargs</strong> (<em>keyword arguments.</em>) – keyword arguments for dict creation. Default is None.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ivy.container.container.MultiDevContainer.at_dev">
+<code class="sig-name descname">at_dev</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dev</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/container/container.html#MultiDevContainer.at_dev"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.container.container.MultiDevContainer.at_dev" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="ivy.container.container.MultiDevContainer.at_devs">
+<code class="sig-name descname">at_devs</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/container/container.html#MultiDevContainer.at_devs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.container.container.MultiDevContainer.at_devs" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<div class="toctree-wrapper compound">
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="container/Container.html" class="btn btn-neutral float-right" title="Container" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="base/ContainerBase.html" class="btn btn-neutral float-left" title="ContainerBase" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Ivy Team
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
