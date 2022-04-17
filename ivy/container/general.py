@@ -8,10 +8,6 @@ from ivy.container.base import ContainerBase
 # noinspection PyMissingConstructor
 class ContainerWithGeneral(ContainerBase):
 
-    def __init__(self):
-        import ivy.functional.ivy.general as general
-        self.add_instance_methods(general, to_ignore=['inplace_update', 'unstack', 'gather', 'gather_nd'])
-
     def inplace_update(self, dict_in, **config):
         """
         Update the contents of this container inplace, using either a new dict or container.

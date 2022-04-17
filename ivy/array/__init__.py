@@ -26,7 +26,7 @@ from .set import ArrayWithSet
 from .sorting import ArrayWithSorting
 from .statistical import ArrayWithStatistical
 from .utility import ArrayWithUtility
-from .wrapping import add_instance_methods
+from .wrapping import add_ivy_array_instance_methods
 
 
 def _native_wrapper(f):
