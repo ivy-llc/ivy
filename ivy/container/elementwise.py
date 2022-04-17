@@ -9,4 +9,4 @@ class ContainerWithElementwise(ContainerBase):
 
     def __init__(self):
         import ivy.functional.ivy.elementwise as elementwise
-        ContainerBase.add_instance_methods(self, elementwise)
+        self.add_instance_methods(elementwise)

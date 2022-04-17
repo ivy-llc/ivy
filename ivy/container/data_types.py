@@ -9,4 +9,4 @@ class ContainerWithDataTypes(ContainerBase):
 
     def __init__(self):
         import ivy.functional.ivy.data_type as data_type
-        ContainerBase.add_instance_methods(self, data_type)
+        self.add_instance_methods(data_type)
