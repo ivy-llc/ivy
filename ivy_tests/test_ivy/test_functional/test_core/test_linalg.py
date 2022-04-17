@@ -43,6 +43,4 @@ def test_matrix_transpose():
     # docstring test
     helpers.assert_docstring_examples_run(ivy.matrix_transpose)
 
-def test_vector_norm():
-    # docstring test
-    helpers.assert_docstring_examples_run(ivy.vector_norm)
+
