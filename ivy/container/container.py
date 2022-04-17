@@ -36,25 +36,6 @@ class Container(ContainerWithActivations, ContainerWithCreation, ContainerWithDa
             self, dict_in, queues, queue_load_sizes, container_combine_method, queue_timeout, print_limit,
             key_length_limit, print_indent, print_line_spacing, ivyh, default_key_color, keyword_color_dict,
             rebuild_child_containers, types_to_iteratively_nest, alphabetical_keys, **kwargs)
-        ContainerWithActivations.__init__(self)
-        ContainerWithCreation.__init__(self)
-        ContainerWithDataTypes.__init__(self)
-        ContainerWithDevice.__init__(self)
-        ContainerWithElementwise.__init__(self)
-        ContainerWithGeneral.__init__(self)
-        ContainerWithGradients.__init__(self)
-        ContainerWithImage.__init__(self)
-        ContainerWithLayers.__init__(self)
-        ContainerWithLinearAlgebra.__init__(self)
-        ContainerWithLosses.__init__(self)
-        ContainerWithManipulation.__init__(self)
-        ContainerWithNorms.__init__(self)
-        ContainerWithRandom.__init__(self)
-        ContainerWithSearching.__init__(self)
-        ContainerWithSet.__init__(self)
-        ContainerWithSorting.__init__(self)
-        ContainerWithStatistical.__init__(self)
-        ContainerWithUtility.__init__(self)
 
 
 class MultiDevContainer(Container):
