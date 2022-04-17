@@ -12,7 +12,7 @@ from ivy.functional.backends.numpy.data_type import dtype_to_str as np_dtype_to_
 
 def asarray(object_in, dtype: Optional[str] = None, dev: Optional[str] = None, copy: Optional[bool] = None):
     dev = default_device(dev)
-    if isinstance(object_in, torch.Tensor) and dtype is None:
+    if isinstance(object_in, Tensor) and dtype is None:
         dtype = object_in.dtype
     elif isinstance(object_in, (list, tuple, dict)) and len(object_in) != 0 and dtype is None:
         # Temporary fix on type
@@ -46,17 +46,17 @@ def zeros(shape: Union[int, Tuple[int]],
 def ones(shape: Union[int, Tuple[int]],
          dtype: Optional[torch.dtype] = None,
          device: Optional[Union[torch.device, str]] = None) \
-        -> torch.Tensor:
+        -> Tensor:
     dtype_val: torch.dtype = dtype_from_str(dtype)
     dev = default_device(device)
     return torch.ones(shape, dtype=dtype_val, device=dev_from_str(dev))
 
 
-def full_like(x: torch.Tensor,
+def full_like(x: Tensor,
               fill_value: Union[int, float],
               dtype: Optional[Union[torch.dtype, str]] = None,
               device: Optional[Union[torch.device, str]] = None) \
-        -> torch.Tensor:
+        -> Tensor:
     if device is None:
         device = _callable_dev(x)
     if dtype is not None and dtype is str:
@@ -75,10 +75,10 @@ def full_like(x: torch.Tensor,
     return torch.full_like(x, fill_value, dtype=dtype, device=default_device(device))
 
 
-def ones_like(x : torch.Tensor,
+def ones_like(x : Tensor,
               dtype: Optional[Union[torch.dtype, str]] = None,
               dev: Optional[Union[torch.device, str]] = None) \
-        -> torch.Tensor:
+        -> Tensor:
     if dev is None:
         dev = _callable_dev(x)
     if dtype is not None and dtype is str:
@@ -99,10 +99,10 @@ def ones_like(x : torch.Tensor,
     return torch.ones_like(x, device=dev_from_str(dev))
 
 
-def zeros_like(x: torch.Tensor,
+def zeros_like(x: Tensor,
                dtype: Optional[torch.dtype] = None,
                device: Optional[Union[torch.device, str]] = None)\
-            -> torch.Tensor:
+            -> Tensor:
     if device is None:
         device = _callable_dev(x)
     if dtype is not None:
@@ -111,15 +111,15 @@ def zeros_like(x: torch.Tensor,
     return torch.zeros_like(x, device=dev_from_str(device))
 
 
-def tril(x: torch.Tensor,
+def tril(x: Tensor,
          k: int = 0) \
-         -> torch.Tensor:
+         -> Tensor:
     return torch.tril(x, diagonal=k)
 
 
-def triu(x: torch.Tensor,
+def triu(x: Tensor,
          k: int = 0) \
-         -> torch.Tensor:
+         -> Tensor:
     return torch.triu(x, diagonal=k)
     
 
@@ -130,10 +130,10 @@ def empty(shape: Union[int, Tuple[int]],
     return torch.empty(shape, dtype=dtype_from_str(default_dtype(dtype)), device=dev_from_str(default_device(device)))
 
 
-def empty_like(x: torch.Tensor,
+def empty_like(x: Tensor,
               dtype: Optional[Union[torch.dtype, str]] = None,
               dev: Optional[Union[torch.device, str]] = None) \
-        -> torch.Tensor:
+        -> Tensor:
     if dev is None:
         dev = _callable_dev(x)
     if dtype is not None and dtype is str:
@@ -161,15 +161,15 @@ def _differentiable_linspace(start, stop, num, device):
     increment = (stop - start) / n_m_1
     increment_tiled = increment.repeat(n_m_1)
     increments = increment_tiled * torch.linspace(1, n_m_1, n_m_1, device=device)
-    res = torch.cat((torch.unsqueeze(torch.tensor(start), 0), start + increments), 0)
+    res = torch.cat((torch.unsqueeze(Tensor(start), 0), start + increments), 0)
     return res
 
 
 # noinspection PyUnboundLocalVariable,PyShadowingNames
 def linspace(start, stop, num, axis=None, dev=None):
-    num = num.detach().numpy().item() if isinstance(num, torch.Tensor) else num
-    start_is_array = isinstance(start, torch.Tensor)
-    stop_is_array = isinstance(stop, torch.Tensor)
+    num = num.detach().numpy().item() if isinstance(num, Tensor) else num
+    start_is_array = isinstance(start, Tensor)
+    stop_is_array = isinstance(stop, Tensor)
     linspace_method = torch.linspace
     dev = default_device(dev)
     sos_shape = []
@@ -231,7 +231,7 @@ def eye(n_rows: int,
         k: Optional[int] = 0,
         dtype: Optional[torch.dtype] = None,
         device: Optional[torch.device] = None) \
-        -> torch.Tensor:
+        -> Tensor:
     dtype = dtype_from_str(default_dtype(dtype))
     device = dev_from_str(default_device(device))
     if n_cols is None:
@@ -249,8 +249,8 @@ def eye(n_rows: int,
         return torch.zeros([n_rows, n_cols], dtype=dtype, device=device)
 
 
-def meshgrid(*arrays: torch.Tensor, indexing='xy')\
-        -> List[torch.Tensor]:
+def meshgrid(*arrays: Tensor, indexing='xy')\
+        -> List[Tensor]:
     return list(torch.meshgrid(*arrays, indexing=indexing))
 
 
