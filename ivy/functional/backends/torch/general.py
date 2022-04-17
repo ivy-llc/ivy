@@ -39,6 +39,8 @@ def to_numpy(x: torch.Tensor)\
     if isinstance(x, np.ndarray) or isinstance(x, (float, int, bool)):
         return x
     elif torch.is_tensor(x):
+        if x.dtype is torch.bfloat16:
+            x = x.to(torch.float16)
         return x.detach().cpu().numpy()
     raise ValueError('Expected a pytroch tensor.')
 
@@ -100,17 +102,17 @@ def inplace_decrement(x, val):
     if ivy.is_ivy_array(x):
         x.data = x_native
     else:
-        x.data = ivy.Array(x.data)
+        x = ivy.Array(x_native)
     return x
 
 
 def inplace_increment(x, val):
     (x_native, val_native), _ = ivy.args_to_native(x, val)
-    x_native.data +=val_native
+    x_native.data += val_native
     if ivy.is_ivy_array(x):
         x.data = x_native
     else:
-        x.data = ivy.Array(x.data)
+        x = ivy.Array(x_native)
     return x
 
 

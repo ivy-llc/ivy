@@ -320,7 +320,9 @@ def subtract(x1: mx.ndarray.ndarray.NDArray, x2: mx.ndarray.ndarray.NDArray,
 
 # noinspection PyShadowingBuiltins
 @_handle_flat_arrays_in_out
-def abs(x, out=None):
+def abs(x: mx.ndarray.ndarray.NDArray,
+        out: Optional[mx.ndarray.ndarray.NDArray] = None) \
+        -> mx.nd.ndarray.NDArray:
     ret = mx.nd.abs(x)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)

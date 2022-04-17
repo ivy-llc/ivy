@@ -14,13 +14,19 @@ import ivy
 
 def _to_native(x: Any)\
         -> Any:
-    return _to_native(x.data) if isinstance(x, ivy.Array) else x
+    if isinstance(x, ivy.Array):
+        return _to_native(x.data)
+    elif isinstance(x, ivy.Container):
+        return x.to_native()
+    return x
 
 
 def _to_ivy(x: Any)\
         -> Any:
     if isinstance(x, (ivy.Array, ivy.Variable)):
         return x
+    elif isinstance(x, ivy.Container):
+        return x.to_ivy()
     return ivy.Variable(x) if ivy.is_variable(x, exclusive=True) else ivy.Array(x) if ivy.is_native_array(x) else x
 
 
