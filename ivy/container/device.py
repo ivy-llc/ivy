@@ -9,4 +9,4 @@ class ContainerWithDevice(ContainerBase):
 
     def __init__(self):
         import ivy.functional.ivy.device as device
-        ContainerBase.add_instance_methods(self, device)
+        self.add_instance_methods(device)
