@@ -61,7 +61,25 @@ class Array(ArrayWithActivations, ArrayWithCreation, ArrayWithDataTypes, ArrayWi
             ArrayWithSorting, ArrayWithStatistical, ArrayWithUtility):
 
     def __init__(self, data):
-        super().__init__()
+        ArrayWithActivations.__init__(self)
+        ArrayWithCreation.__init__(self)
+        ArrayWithDataTypes.__init__(self)
+        ArrayWithDevice.__init__(self)
+        ArrayWithElementwise.__init__(self)
+        ArrayWithGeneral.__init__(self)
+        ArrayWithGradients.__init__(self)
+        ArrayWithImage.__init__(self)
+        ArrayWithLayers.__init__(self)
+        ArrayWithLinearAlgebra.__init__(self)
+        ArrayWithLosses.__init__(self)
+        ArrayWithManipulation.__init__(self)
+        ArrayWithNorms.__init__(self)
+        ArrayWithRandom.__init__(self)
+        ArrayWithSearching.__init__(self)
+        ArrayWithSet.__init__(self)
+        ArrayWithSorting.__init__(self)
+        ArrayWithStatistical.__init__(self)
+        ArrayWithUtility.__init__(self)
         if ivy.is_ivy_array(data):
             self._data = data.data
         else:
