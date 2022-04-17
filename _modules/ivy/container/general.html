@@ -224,7 +224,6 @@
             
   <h1>Source code for ivy.container.general</h1><div class="highlight"><pre>
 <span></span><span class="c1"># local</span>
-<span class="kn">import</span> <span class="nn">ivy</span>
 <span class="kn">from</span> <span class="nn">ivy.container.base</span> <span class="kn">import</span> <span class="n">ContainerBase</span>
 
 <span class="c1"># ToDo: implement all methods here as public instance methods</span>
@@ -232,99 +231,7 @@
 
 <span class="c1"># noinspection PyMissingConstructor</span>
 <div class="viewcode-block" id="ContainerWithGeneral"><a class="viewcode-back" href="../../../container/general/ContainerWithGeneral.html#ivy.container.general.ContainerWithGeneral">[docs]</a><span class="k">class</span> <span class="nc">ContainerWithGeneral</span><span class="p">(</span><span class="n">ContainerBase</span><span class="p">):</span>
-
-<div class="viewcode-block" id="ContainerWithGeneral.inplace_update"><a class="viewcode-back" href="../../../container/general/ContainerWithGeneral.html#ivy.container.general.ContainerWithGeneral.inplace_update">[docs]</a>    <span class="k">def</span> <span class="nf">inplace_update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dict_in</span><span class="p">,</span> <span class="o">**</span><span class="n">config</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Update the contents of this container inplace, using either a new dict or container.</span>
-<span class="sd">        :param dict_in: New dict or container to update the current container inplace with.</span>
-<span class="sd">        :type dict_in: container or dict</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="c1"># update config</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">update_config</span><span class="p">(</span><span class="o">**</span><span class="n">config</span><span class="p">)</span>
-
-        <span class="c1"># update container values inplace</span>
-        <span class="k">if</span> <span class="n">dict_in</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">return</span>
-        <span class="n">dict_types</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">([</span><span class="nb">dict</span><span class="p">]</span> <span class="o">+</span> <span class="n">ivy</span><span class="o">.</span><span class="n">container_types</span><span class="p">())</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dict_in</span><span class="p">,</span> <span class="n">dict_types</span><span class="p">):</span>
-            <span class="n">dict_in</span> <span class="o">=</span> <span class="n">dict_in</span>
-        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dict_in</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_types_to_iteratively_nest</span><span class="p">)):</span>
-            <span class="n">dict_in</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">([</span><span class="s1">&#39;it_</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="o">.</span><span class="n">zfill</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">dict_in</span><span class="p">)))))</span>
-                                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">dict_in</span><span class="p">))],</span> <span class="n">dict_in</span><span class="p">))</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;invalid input </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">dict_in</span><span class="p">))</span>
-        <span class="n">items</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">dict_in</span><span class="o">.</span><span class="n">items</span><span class="p">())</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_alphabetical_keys</span> <span class="k">else</span> <span class="n">dict_in</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
-        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">items</span><span class="p">:</span>
-            <span class="k">if</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">dict_types</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">)</span> <span class="ow">or</span>
-                                                   <span class="bp">self</span><span class="o">.</span><span class="n">_rebuild_child_containers</span><span class="p">))</span> <span class="ow">or</span> \
-                    <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_types_to_iteratively_nest</span><span class="p">)):</span>
-                <span class="bp">self</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="bp">self</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span></div>
-
-<div class="viewcode-block" id="ContainerWithGeneral.unstack"><a class="viewcode-back" href="../../../container/general/ContainerWithGeneral.html#ivy.container.general.ContainerWithGeneral.unstack">[docs]</a>    <span class="k">def</span> <span class="nf">unstack</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">dim_size</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Unstack containers along specified dimension.</span>
-
-<span class="sd">        :param axis: Dimensions along which to unstack.</span>
-<span class="sd">        :type axis: int</span>
-<span class="sd">        :param keepdims: Whether to keep dimension 1 in the unstack dimensions. Default is False.</span>
-<span class="sd">        :type keepdims: bool, optional</span>
-<span class="sd">        :param dim_size: Size of the dimension to unstack. Determined from inputs by default.</span>
-<span class="sd">        :type dim_size: int, optional</span>
-<span class="sd">        :return: List of containers, unstacked along the specified dimension.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">dim_size</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">dim_size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="n">axis</span><span class="p">]</span>
-        <span class="k">if</span> <span class="n">keepdims</span><span class="p">:</span>
-            <span class="c1"># noinspection PyTypeChecker</span>
-            <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="p">[</span><span class="nb">slice</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="k">if</span> <span class="n">axis</span> <span class="o">==</span> <span class="mi">0</span>
-                         <span class="k">else</span> <span class="nb">tuple</span><span class="p">([</span><span class="nb">slice</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">)]</span> <span class="o">*</span> <span class="n">axis</span> <span class="o">+</span> <span class="p">[</span><span class="nb">slice</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)])]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">dim_size</span><span class="p">)]</span>
-        <span class="c1"># noinspection PyTypeChecker</span>
-        <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="p">[</span><span class="n">i</span> <span class="k">if</span> <span class="n">axis</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">else</span> <span class="nb">tuple</span><span class="p">([</span><span class="nb">slice</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">)]</span> <span class="o">*</span> <span class="n">axis</span> <span class="o">+</span> <span class="p">[</span><span class="n">i</span><span class="p">])]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">dim_size</span><span class="p">)]</span></div>
-
-<div class="viewcode-block" id="ContainerWithGeneral.gather"><a class="viewcode-back" href="../../../container/general/ContainerWithGeneral.html#ivy.container.general.ContainerWithGeneral.gather">[docs]</a>    <span class="k">def</span> <span class="nf">gather</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">indices</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">key_chains</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">to_apply</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">prune_unapplied</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">map_sequences</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Gather slices from all container params at axis according to indices.</span>
-
-<span class="sd">        :param indices: Index array.</span>
-<span class="sd">        :type indices: array</span>
-<span class="sd">        :param axis: The axis from which to gather from. Default is -1.</span>
-<span class="sd">        :type axis: int, optional</span>
-<span class="sd">        :param key_chains: The key-chains to apply or not apply the method to. Default is None.</span>
-<span class="sd">        :type key_chains: list or dict of strs, optional</span>
-<span class="sd">        :param to_apply: If True, the method will be applied to key_chains, otherwise key_chains will be skipped.</span>
-<span class="sd">                         Default is True.</span>
-<span class="sd">        :type to_apply: bool, optional</span>
-<span class="sd">        :param prune_unapplied: Whether to prune key_chains for which the function was not applied. Default is False.</span>
-<span class="sd">        :type prune_unapplied: bool, optional</span>
-<span class="sd">        :param map_sequences: Whether to also map method to sequences (lists, tuples). Default is False.</span>
-<span class="sd">        :type map_sequences: bool, optional</span>
-<span class="sd">        :return: Container object with all sub-array dimensions gathered along the axis.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">kc</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ivy</span><span class="o">.</span><span class="n">gather</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">indices</span><span class="p">,</span> <span class="n">axis</span><span class="p">)</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ivy</span><span class="o">.</span><span class="n">is_array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">else</span> <span class="n">x</span><span class="p">,</span>
-                        <span class="n">key_chains</span><span class="p">,</span> <span class="n">to_apply</span><span class="p">,</span> <span class="n">prune_unapplied</span><span class="p">,</span> <span class="n">map_sequences</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="ContainerWithGeneral.gather_nd"><a class="viewcode-back" href="../../../container/general/ContainerWithGeneral.html#ivy.container.general.ContainerWithGeneral.gather_nd">[docs]</a>    <span class="k">def</span> <span class="nf">gather_nd</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">indices</span><span class="p">,</span> <span class="n">key_chains</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">to_apply</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">prune_unapplied</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">map_sequences</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Gather slices from all container params into a arrays with shape specified by indices.</span>
-
-<span class="sd">        :param indices: Index array.</span>
-<span class="sd">        :type indices: array</span>
-<span class="sd">        :param key_chains: The key-chains to apply or not apply the method to. Default is None.</span>
-<span class="sd">        :type key_chains: list or dict of strs, optional</span>
-<span class="sd">        :param to_apply: If True, the method will be applied to key_chains, otherwise key_chains will be skipped.</span>
-<span class="sd">                         Default is True.</span>
-<span class="sd">        :type to_apply: bool, optional</span>
-<span class="sd">        :param prune_unapplied: Whether to prune key_chains for which the function was not applied. Default is False.</span>
-<span class="sd">        :type prune_unapplied: bool, optional</span>
-<span class="sd">        :param map_sequences: Whether to also map method to sequences (lists, tuples). Default is False.</span>
-<span class="sd">        :type map_sequences: bool, optional</span>
-<span class="sd">        :return: Container object with all sub-array dimensions gathered.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">kc</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ivy</span><span class="o">.</span><span class="n">gather_nd</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">indices</span><span class="p">)</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ivy</span><span class="o">.</span><span class="n">is_array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">else</span> <span class="n">x</span><span class="p">,</span>
-                        <span class="n">key_chains</span><span class="p">,</span> <span class="n">to_apply</span><span class="p">,</span> <span class="n">prune_unapplied</span><span class="p">,</span> <span class="n">map_sequences</span><span class="p">)</span></div></div>
+    <span class="k">pass</span></div>
 </pre></div>
 
            </div>

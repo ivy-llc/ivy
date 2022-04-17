@@ -1108,6 +1108,54 @@ Default is True.</p></li>
 </dd></dl>
 
 <dl class="py method">
+<dt id="ivy.container.base.ContainerBase.gather">
+<code class="sig-name descname">gather</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">indices</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">- 1</span></em>, <em class="sig-param"><span class="n">key_chains</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_apply</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">prune_unapplied</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">map_sequences</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/container/base.html#ContainerBase.gather"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.gather" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gather slices from all container params at axis according to indices.
+:param indices: Index array.
+:type indices: array
+:param axis: The axis from which to gather from. Default is -1.
+:type axis: int, optional
+:param key_chains: The key-chains to apply or not apply the method to. Default is None.
+:type key_chains: list or dict of strs, optional
+:param to_apply: If True, the method will be applied to key_chains, otherwise key_chains will be skipped.</p>
+<blockquote>
+<div><p>Default is True.</p>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>prune_unapplied</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to prune key_chains for which the function was not applied. Default is False.</p></li>
+<li><p><strong>map_sequences</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to also map method to sequences (lists, tuples). Default is False.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Container object with all sub-array dimensions gathered along the axis.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ivy.container.base.ContainerBase.gather_nd">
+<code class="sig-name descname">gather_nd</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">indices</span></em>, <em class="sig-param"><span class="n">key_chains</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_apply</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">prune_unapplied</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">map_sequences</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/container/base.html#ContainerBase.gather_nd"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.gather_nd" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gather slices from all container params into a arrays with shape specified by indices.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>indices</strong> (<em>array</em>) – Index array.</p></li>
+<li><p><strong>key_chains</strong> (<em>list</em><em> or </em><em>dict of strs</em><em>, </em><em>optional</em>) – The key-chains to apply or not apply the method to. Default is None.</p></li>
+<li><p><strong>to_apply</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, the method will be applied to key_chains, otherwise key_chains will be skipped.
+Default is True.</p></li>
+<li><p><strong>prune_unapplied</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to prune key_chains for which the function was not applied. Default is False.</p></li>
+<li><p><strong>map_sequences</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to also map method to sequences (lists, tuples). Default is False.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Container object with all sub-array dimensions gathered.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt id="ivy.container.base.ContainerBase.h5_file_size">
 <em class="property">static </em><code class="sig-name descname">h5_file_size</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">h5_obj_or_filepath</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/container/base.html#ContainerBase.h5_file_size"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.h5_file_size" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get file size of h5 file contents.</p>
@@ -1243,6 +1291,14 @@ Default is True.</p></li>
 <dt id="ivy.container.base.ContainerBase.if_exists">
 <code class="sig-name descname">if_exists</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">key</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/container/base.html#ContainerBase.if_exists"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.if_exists" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the sub-container at the following key if it exists, otherwise None.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ivy.container.base.ContainerBase.inplace_update">
+<code class="sig-name descname">inplace_update</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dict_in</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">config</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/container/base.html#ContainerBase.inplace_update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.inplace_update" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update the contents of this container inplace, using either a new dict or container.
+:param dict_in: New dict or container to update the current container inplace with.
+:type dict_in: container or dict</p>
 </dd></dl>
 
 <dl class="py method">
@@ -2325,6 +2381,24 @@ constructor to their original form.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>Unified container</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ivy.container.base.ContainerBase.unstack">
+<code class="sig-name descname">unstack</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">axis</span></em>, <em class="sig-param"><span class="n">keepdims</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">dim_size</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/container/base.html#ContainerBase.unstack"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.unstack" title="Permalink to this definition">¶</a></dt>
+<dd><p>Unstack containers along specified dimension.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>axis</strong> (<em>int</em>) – Dimensions along which to unstack.</p></li>
+<li><p><strong>keepdims</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to keep dimension 1 in the unstack dimensions. Default is False.</p></li>
+<li><p><strong>dim_size</strong> (<em>int</em><em>, </em><em>optional</em>) – Size of the dimension to unstack. Determined from inputs by default.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>List of containers, unstacked along the specified dimension.</p>
 </dd>
 </dl>
 </dd></dl>
