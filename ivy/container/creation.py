@@ -9,4 +9,4 @@ class ContainerWithCreation(ContainerBase):
 
     def __init__(self):
         import ivy.functional.ivy.creation as creation
-        ContainerBase.add_instance_methods(self, creation)
+        self.add_instance_methods(creation)

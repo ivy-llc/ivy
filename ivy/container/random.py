@@ -9,4 +9,4 @@ class ContainerWithRandom(ContainerBase):
 
     def __init__(self):
         import ivy.functional.ivy.random as random
-        ContainerBase.add_instance_methods(self, random, to_ignore=['shuffle'])
+        self.add_instance_methods(random, to_ignore=['shuffle'])
