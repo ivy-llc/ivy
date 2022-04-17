@@ -233,7 +233,10 @@ def sample(iterable):
 
 
 def assert_all_close(x, y):
-    assert np.allclose(np.nan_to_num(x), np.nan_to_num(y))
+    if ivy.is_ivy_container(x) and ivy.is_ivy_container(y):
+        ivy.Container.multi_map(assert_all_close, [x, y])
+    else:
+        assert np.allclose(np.nan_to_num(x), np.nan_to_num(y))
 
 
 def kwargs_to_args_n_kwargs(positional_ratio, kwargs):
@@ -244,9 +247,16 @@ def kwargs_to_args_n_kwargs(positional_ratio, kwargs):
     return args, kwargs
 
 
-def test_array_function(dtype, as_variable, with_out, native_array, positional_ratio, array_instance_method,
+def as_cont(x):
+    return ivy.Container({'a': x,
+                          'b': {'c': ivy.random_uniform(shape=x.shape),
+                                'd': ivy.random_uniform(shape=x.shape)}})
+
+
+def test_array_function(dtype, as_variable, with_out, positional_ratio, native_array, container, instance_method,
                         fw, fn_name, **all_as_kwargs_np):
-    array_instance_method = array_instance_method and not native_array
+    instance_method = instance_method and (not native_array or container)
+    with_out = with_out and not container
     args_np, kwargs_np = kwargs_to_args_n_kwargs(positional_ratio, all_as_kwargs_np)
     if dtype in ivy.invalid_dtype_strs:
         return  # invalid dtype
@@ -261,9 +271,13 @@ def test_array_function(dtype, as_variable, with_out, native_array, positional_r
         kwargs = ivy.nested_map(kwargs, lambda x: ivy.variable(x) if ivy.is_array(x) else x)
     if native_array:
         args, kwargs = ivy.args_to_native(*args, **kwargs)
+    if container:
+        args = ivy.nested_map(args, lambda x: as_cont(x) if ivy.is_array(x) else x)
+        kwargs = ivy.nested_map(kwargs, lambda x: as_cont(x) if ivy.is_array(x) else x)
     arr = None
-    if array_instance_method:
-        arg_idxs = ivy.nested_indices_where(args, ivy.is_array)
+    type_check_method = ivy.is_ivy_container if container else ivy.is_ivy_array
+    if instance_method:
+        arg_idxs = ivy.nested_indices_where(args, type_check_method, check_nests=True)
         if arg_idxs:
             arr = args[0]
             args = args[1:]
@@ -281,7 +295,7 @@ def test_array_function(dtype, as_variable, with_out, native_array, positional_r
             out = ivy.variable(out)
         if native_array:
             out = out.data
-        if array_instance_method:
+        if instance_method:
             ret = arr.__getattribute__(fn_name)(*args, **kwargs, out=out)
         else:
             ret = ivy.__dict__[fn_name](*args, **kwargs, out=out)
@@ -294,7 +308,7 @@ def test_array_function(dtype, as_variable, with_out, native_array, positional_r
     # value test
     if dtype == 'bfloat16':
         return  # bfloat16 is not supported by numpy
-    ret_idxs = ivy.nested_indices_where(ret, ivy.is_array)
+    ret_idxs = ivy.nested_indices_where(ret, type_check_method, check_nests=True)
     ret_flat = ivy.multi_index_nest(ret, ret_idxs)
     ret_np_flat = [ivy.to_numpy(x) for x in ret_flat]
     ret_from_np = ivy_np.__dict__[fn_name](*args_np, **kwargs_np)

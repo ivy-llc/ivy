@@ -1,17 +1,12 @@
-# global
-import abc
-from typing import Optional, Union
+# local
+from ivy.array.base import ArrayBase
 
 # ToDo: implement all methods here as public instance methods
 
-# local
-import ivy
-
 
 # noinspection PyUnresolvedReferences
-class ArrayWithElementwise(abc.ABC):
+class ArrayWithElementwise(ArrayBase):
 
-    def abs(self,
-            out: Optional[Union[ivy.Array, ivy.NativeArray]] = None)\
-            -> ivy.Array:
-        return ivy.abs(self._data, out=out)
+    def __init__(self):
+        import ivy.functional.ivy.elementwise as elementwise
+        super().__init__(elementwise)
