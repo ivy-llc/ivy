@@ -9,4 +9,4 @@ class ContainerWithActivations(ContainerBase):
 
     def __init__(self):
         import ivy.functional.ivy.activations as activations
-        ContainerBase.add_instance_methods(self, activations)
+        self.add_instance_methods(activations)

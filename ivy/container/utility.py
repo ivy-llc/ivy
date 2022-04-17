@@ -9,4 +9,4 @@ class ContainerWithUtility(ContainerBase):
 
     def __init__(self):
         import ivy.functional.ivy.utility as utility
-        ContainerBase.add_instance_methods(self, utility)
+        self.add_instance_methods(utility)
