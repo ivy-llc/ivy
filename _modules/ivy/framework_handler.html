@@ -349,6 +349,8 @@
 
 
 <div class="viewcode-block" id="get_framework"><a class="viewcode-back" href="../../framework_handler/get_framework.html#ivy.framework_handler.get_framework">[docs]</a><span class="k">def</span> <span class="nf">get_framework</span><span class="p">(</span><span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="c1"># ToDo: change this so that it doesn&#39;t depend at all on the global ivy. Currently all framework-agnostic</span>
+    <span class="c1">#  implementations returned in this module will still use the global ivy backend.</span>
     <span class="k">global</span> <span class="n">ivy_original_dict</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">framework_stack</span><span class="p">:</span>
         <span class="n">ivy_original_dict</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
