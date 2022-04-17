@@ -39,6 +39,8 @@ def to_numpy(x: torch.Tensor)\
     if isinstance(x, np.ndarray) or isinstance(x, (float, int, bool)):
         return x
     elif torch.is_tensor(x):
+        if x.dtype is torch.bfloat16:
+            x = x.to(torch.float16)
         return x.detach().cpu().numpy()
     raise ValueError('Expected a pytroch tensor.')
 
