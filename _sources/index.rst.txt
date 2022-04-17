@@ -320,6 +320,7 @@ Citation
    container/sorting.rst
    container/statistical.rst
    container/utility.rst
+   container/wrapping.rst
 
 
 .. toctree::

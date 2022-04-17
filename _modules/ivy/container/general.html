@@ -110,6 +110,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../container/sorting.html">Sorting</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../container/statistical.html">Statistical</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../container/utility.html">Utility</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../container/wrapping.html">Wrapping</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Functional</span></p>
 <ul>
@@ -231,10 +232,6 @@
 
 <span class="c1"># noinspection PyMissingConstructor</span>
 <div class="viewcode-block" id="ContainerWithGeneral"><a class="viewcode-back" href="../../../container/general/ContainerWithGeneral.html#ivy.container.general.ContainerWithGeneral">[docs]</a><span class="k">class</span> <span class="nc">ContainerWithGeneral</span><span class="p">(</span><span class="n">ContainerBase</span><span class="p">):</span>
-
-<div class="viewcode-block" id="ContainerWithGeneral.__init__"><a class="viewcode-back" href="../../../container/general/ContainerWithGeneral.html#ivy.container.general.ContainerWithGeneral.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="kn">import</span> <span class="nn">ivy.functional.ivy.general</span> <span class="k">as</span> <span class="nn">general</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">add_instance_methods</span><span class="p">(</span><span class="n">general</span><span class="p">,</span> <span class="n">to_ignore</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;inplace_update&#39;</span><span class="p">,</span> <span class="s1">&#39;unstack&#39;</span><span class="p">,</span> <span class="s1">&#39;gather&#39;</span><span class="p">,</span> <span class="s1">&#39;gather_nd&#39;</span><span class="p">])</span></div>
 
 <div class="viewcode-block" id="ContainerWithGeneral.inplace_update"><a class="viewcode-back" href="../../../container/general/ContainerWithGeneral.html#ivy.container.general.ContainerWithGeneral.inplace_update">[docs]</a>    <span class="k">def</span> <span class="nf">inplace_update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dict_in</span><span class="p">,</span> <span class="o">**</span><span class="n">config</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>

@@ -110,6 +110,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../container/sorting.html">Sorting</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../container/statistical.html">Statistical</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../container/utility.html">Utility</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../container/wrapping.html">Wrapping</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Functional</span></p>
 <ul>
@@ -259,26 +260,7 @@
         <span class="n">ContainerBase</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span> <span class="n">dict_in</span><span class="p">,</span> <span class="n">queues</span><span class="p">,</span> <span class="n">queue_load_sizes</span><span class="p">,</span> <span class="n">container_combine_method</span><span class="p">,</span> <span class="n">queue_timeout</span><span class="p">,</span> <span class="n">print_limit</span><span class="p">,</span>
             <span class="n">key_length_limit</span><span class="p">,</span> <span class="n">print_indent</span><span class="p">,</span> <span class="n">print_line_spacing</span><span class="p">,</span> <span class="n">ivyh</span><span class="p">,</span> <span class="n">default_key_color</span><span class="p">,</span> <span class="n">keyword_color_dict</span><span class="p">,</span>
-            <span class="n">rebuild_child_containers</span><span class="p">,</span> <span class="n">types_to_iteratively_nest</span><span class="p">,</span> <span class="n">alphabetical_keys</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="n">ContainerWithActivations</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-        <span class="n">ContainerWithCreation</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-        <span class="n">ContainerWithDataTypes</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-        <span class="n">ContainerWithDevice</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-        <span class="n">ContainerWithElementwise</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-        <span class="n">ContainerWithGeneral</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-        <span class="n">ContainerWithGradients</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-        <span class="n">ContainerWithImage</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-        <span class="n">ContainerWithLayers</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-        <span class="n">ContainerWithLinearAlgebra</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-        <span class="n">ContainerWithLosses</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-        <span class="n">ContainerWithManipulation</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-        <span class="n">ContainerWithNorms</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-        <span class="n">ContainerWithRandom</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-        <span class="n">ContainerWithSearching</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-        <span class="n">ContainerWithSet</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-        <span class="n">ContainerWithSorting</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-        <span class="n">ContainerWithStatistical</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-        <span class="n">ContainerWithUtility</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div></div>
+            <span class="n">rebuild_child_containers</span><span class="p">,</span> <span class="n">types_to_iteratively_nest</span><span class="p">,</span> <span class="n">alphabetical_keys</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div></div>
 
 
 <div class="viewcode-block" id="MultiDevContainer"><a class="viewcode-back" href="../../../container/container/MultiDevContainer.html#ivy.container.container.MultiDevContainer">[docs]</a><span class="k">class</span> <span class="nc">MultiDevContainer</span><span class="p">(</span><span class="n">Container</span><span class="p">):</span>
