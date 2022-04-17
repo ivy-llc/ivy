@@ -29,6 +29,7 @@ from functools import reduce as _reduce
 from typing import Union, Iterable, Dict
 from operator import truediv as _truediv
 from operator import floordiv as _floordiv
+from builtins import set as _set
 
 # local
 from . import activations
@@ -375,7 +376,7 @@ class Container(ContainerWithActivations, ContainerWithCreation, ContainerWithDa
 
         # otherwise, check that the keys are aligned between each container, and apply this method recursively
         return_dict = dict()
-        all_keys = set([item for sublist in [list(cont.keys()) for cont in containers] for item in sublist])
+        all_keys = _set([item for sublist in [list(cont.keys()) for cont in containers] for item in sublist])
         for key in all_keys:
             keys_present = [key in cont for cont in containers]
             return_dict[key] =\
@@ -454,7 +455,7 @@ class Container(ContainerWithActivations, ContainerWithCreation, ContainerWithDa
 
         # otherwise, check that the keys are aligned between each container, and apply this method recursively
         return_dict = dict()
-        all_keys = set([item for sublist in [list(cont.keys()) for cont in containers] for item in sublist])
+        all_keys = _set([item for sublist in [list(cont.keys()) for cont in containers] for item in sublist])
         for key in all_keys:
             keys_present = [key in cont for cont in containers]
             all_keys_present = sum(keys_present) == num_containers
@@ -571,7 +572,7 @@ class Container(ContainerWithActivations, ContainerWithCreation, ContainerWithDa
         """
         if len(containers) == 1:
             return containers[0].all_key_chains()
-        sets = [set(cont.all_key_chains()) for cont in containers]
+        sets = [_set(cont.all_key_chains()) for cont in containers]
         return list(sets[0].intersection(*sets[1:]))
 
     @staticmethod
@@ -606,7 +607,7 @@ class Container(ContainerWithActivations, ContainerWithCreation, ContainerWithDa
             if not common_key_chains:
                 return False
             containers = [cont.at_key_chains(common_key_chains) for cont in containers]
-        keys = set([i for sl in [list(cont.keys()) for cont in containers] for i in sl])
+        keys = _set([i for sl in [list(cont.keys()) for cont in containers] for i in sl])
         # noinspection PyProtectedMember
         for key in keys:
             if not min([key in cont for cont in containers]):
@@ -962,7 +963,7 @@ class Container(ContainerWithActivations, ContainerWithCreation, ContainerWithDa
         sub_devs =\
             [v for k, v in self.map(lambda x, kc: self._ivy.dev(x, as_str=as_str)
             if self._ivy.is_native_array(x) else None).to_iterator() if v]
-        if len(set(sub_devs)) <= 1:
+        if len(_set(sub_devs)) <= 1:
             return sub_devs[0]
         return None
 
@@ -2227,7 +2228,7 @@ class Container(ContainerWithActivations, ContainerWithCreation, ContainerWithDa
                 if key not in h5_obj.keys():
                     dataset_shape = [max_batch_size] + list(value_shape[1:])
                     maxshape = ([None for _ in dataset_shape])
-                    h5_obj.create_dataset(key, dataset_shape, dtype=value_as_np.dtype, maxshape=maxshape)
+                    h5_obj.create_data_set(key, dataset_shape, dtype=value_as_np.dtype, maxshape=maxshape)
                 space_left = max_batch_size - starting_index
                 amount_to_write = min(this_batch_size, space_left)
                 h5_obj[key][starting_index:starting_index + amount_to_write] = value_as_np[0:amount_to_write]
@@ -3436,7 +3437,7 @@ class Container(ContainerWithActivations, ContainerWithCreation, ContainerWithDa
             queue_queries = list(range(query[0].start, query[0].stop, ivy.default(query[0].step, 1)))
         else:
             raise Exception('Invalid slice type, must be one of integer, slice, or sequences of slices.')
-        queue_idxs = set([_np.sum(q >= self._queue_load_sizes_cum).item() for q in queue_queries])
+        queue_idxs = _set([_np.sum(q >= self._queue_load_sizes_cum).item() for q in queue_queries])
         conts = list()
         for i in queue_idxs:
             if i not in self._loaded_containers_from_queues:
