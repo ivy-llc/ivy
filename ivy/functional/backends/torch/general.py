@@ -102,17 +102,17 @@ def inplace_decrement(x, val):
     if ivy.is_ivy_array(x):
         x.data = x_native
     else:
-        x.data = ivy.Array(x.data)
+        x = ivy.Array(x_native)
     return x
 
 
 def inplace_increment(x, val):
     (x_native, val_native), _ = ivy.args_to_native(x, val)
-    x_native.data +=val_native
+    x_native.data += val_native
     if ivy.is_ivy_array(x):
         x.data = x_native
     else:
-        x.data = ivy.Array(x.data)
+        x = ivy.Array(x_native)
     return x
 
 
