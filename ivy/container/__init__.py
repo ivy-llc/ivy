@@ -2228,7 +2228,7 @@ class Container(ContainerWithActivations, ContainerWithCreation, ContainerWithDa
                 if key not in h5_obj.keys():
                     dataset_shape = [max_batch_size] + list(value_shape[1:])
                     maxshape = ([None for _ in dataset_shape])
-                    h5_obj.create_data_set(key, dataset_shape, dtype=value_as_np.dtype, maxshape=maxshape)
+                    h5_obj.create_dataset(key, dataset_shape, dtype=value_as_np.dtype, maxshape=maxshape)
                 space_left = max_batch_size - starting_index
                 amount_to_write = min(this_batch_size, space_left)
                 h5_obj[key][starting_index:starting_index + amount_to_write] = value_as_np[0:amount_to_write]
