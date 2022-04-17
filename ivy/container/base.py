@@ -2028,7 +2028,7 @@ class ContainerBase(dict, abc.ABC):
             lambda x, kc: self._ivy.to_numpy(x) if self._ivy.is_array(x) else x, key_chains, to_apply, prune_unapplied,
             map_sequences)
         if update_backend:
-            ret.set_ivy_backend(ivy.functional.backends.numpy)
+            ret.set_ivy_backend(ivy.get_framework('numpy'))
         return ret
 
     def from_numpy(self, key_chains=None, to_apply=True, prune_unapplied=False, map_sequences=False):
