@@ -40,7 +40,7 @@ _MIN_BASE = 1e-5
 # local
 import ivy
 from .array import Array, Variable
-from .container import Container, MultiDevContainer
+from ivy.container import Container, MultiDevContainer
 from .framework_handler import current_framework, get_framework, set_framework, unset_framework, framework_stack,\
     choose_random_framework, try_import_ivy_jax, try_import_ivy_tf, try_import_ivy_torch, try_import_ivy_mxnet,\
     try_import_ivy_numpy, clear_framework_stack
