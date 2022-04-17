@@ -24,7 +24,7 @@ tpu_is_available = lambda: False
 
 
 
-def gpu_is_available() -> :
+def gpu_is_available() -> bool:
     return False
   
 def _to_dev(x : np.ndarray, dev=None, out : Optional[np.ndarray] = None) -> np.ndarray:
