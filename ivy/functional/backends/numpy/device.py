@@ -22,8 +22,9 @@ dev_from_str = lambda dev: 'cpu'
 clear_mem_on_dev = lambda dev: None
 gpu_is_available = lambda: False
 num_gpus = lambda: 0
-tpu_is_available = lambda: False
 
+def tpu_is_available() -> bool:
+    return False
 
 def _to_dev(x : np.ndarray, dev=None, out : Optional[np.ndarray] = None) -> np.ndarray:
     if dev is not None:

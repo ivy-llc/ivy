@@ -64,7 +64,7 @@ num_gpus = torch.cuda.device_count
 
 
 # noinspection PyUnresolvedReferences
-def tpu_is_available():
+def tpu_is_available() -> bool:
     if importlib.util.find_spec("torch_xla") is not None:
         return True
     return False
