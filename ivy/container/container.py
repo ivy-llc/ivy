@@ -60,10 +60,13 @@ class Container(ContainerWithActivations, ContainerWithCreation, ContainerWithDa
 class MultiDevContainer(Container):
 
     def __init__(self, dict_in, devs, queues=None, queue_load_sizes=None, container_combine_method='list_join',
-                 queue_timeout=None, print_limit=10, print_indent=4, print_line_spacing=0, ivyh=None,
-                 keyword_color_dict=None, rebuild_child_containers=False, **kwargs):
+                 queue_timeout=None, print_limit=10, key_length_limit=None, print_indent=4, print_line_spacing=0,
+                 ivyh=None, default_key_color='green', keyword_color_dict=None, rebuild_child_containers=False,
+                 types_to_iteratively_nest=None, alphabetical_keys=True, **kwargs):
         super().__init__(dict_in, queues, queue_load_sizes, container_combine_method, queue_timeout, print_limit,
-                         print_indent, print_line_spacing, ivyh, keyword_color_dict, rebuild_child_containers, **kwargs)
+                         key_length_limit, print_indent, print_line_spacing, ivyh, default_key_color,
+                         keyword_color_dict, rebuild_child_containers, types_to_iteratively_nest, alphabetical_keys,
+                         **kwargs)
         self._devs = devs
         self._num_devs = len(devs)
 
