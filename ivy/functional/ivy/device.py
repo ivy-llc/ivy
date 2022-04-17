@@ -296,6 +296,7 @@ def tpu_is_available() -> bool:
         
     Examples:
     >>> print(ivy.tpu_is_available())
+    True
     """
     return _cur_framework().tpu_is_available()
 
