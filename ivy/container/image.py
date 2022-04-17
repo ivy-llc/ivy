@@ -6,7 +6,4 @@ from ivy.container.base import ContainerBase
 
 # noinspection PyMissingConstructor
 class ContainerWithImage(ContainerBase):
-
-    def __init__(self):
-        import ivy.functional.ivy.image as image
-        self.add_instance_methods(image)
+    pass

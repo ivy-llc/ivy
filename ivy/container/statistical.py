@@ -6,7 +6,4 @@ from ivy.container.base import ContainerBase
 
 # noinspection PyMissingConstructor
 class ContainerWithStatistical(ContainerBase):
-
-    def __init__(self):
-        import ivy.functional.ivy.statistical as statistical
-        self.add_instance_methods(statistical, to_ignore=['einsum'])
+    pass
