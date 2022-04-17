@@ -4,9 +4,9 @@ from ivy.container.base import ContainerBase
 # ToDo: implement all methods here as public instance methods
 
 
-# noinspection PyUnresolvedReferences
+# noinspection PyUnresolvedReferences,PyMissingConstructor
 class ContainerWithElementwise(ContainerBase):
 
     def __init__(self):
         import ivy.functional.ivy.elementwise as elementwise
-        ContainerBase.__init__(self, elementwise)
+        ContainerBase.add_instance_methods(self, elementwise)
