@@ -28,6 +28,21 @@ def index_nest(nest, index):
     return ret
 
 
+def prune_nest_at_index(nest, index):
+    """
+    Prune a nested object at a specified index
+
+    :param nest: The nested object to prune.
+    :type nest: nested
+    :param index: A tuple of indices for the index at which to prune.
+    :type index: tuple of indices
+    """
+    if len(index) == 1:
+        del nest[index[0]]
+    else:
+        prune_nest_at_index(nest[index[0]], index[1:])
+
+
 def set_nest_at_index(nest, index, value):
     """
     Set the value of a nested item at a specified index
@@ -72,6 +87,18 @@ def multi_index_nest(nest, indices):
     :type indices: tuple of tuples of indices
     """
     return [index_nest(nest, index) for index in indices]
+
+
+def prune_nest_at_indices(nest, indices):
+    """
+    Prune a nested object at specified indices.
+
+    :param nest: The nested object to prune.
+    :type nest: nested
+    :param indices: A tuple of tuples of indices for the indices at which to prune.
+    :type indices: tuple of tuples of indices
+    """
+    [prune_nest_at_index(nest, index) for index in indices]
 
 
 def set_nest_at_indices(nest, indices, values):
