@@ -8,7 +8,7 @@ import numpy as np
 
 # local
 import ivy
-from ivy.container.container import Container
+from ivy.container import Container
 import ivy_tests.test_ivy.helpers as helpers
 
 
