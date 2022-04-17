@@ -8,4 +8,4 @@ class ContainerWithRandom(ContainerBase):
 
     def __init__(self):
         import ivy.functional.ivy.random as random
-        ContainerBase.__init__(self, random)
+        ContainerBase.__init__(self, random, to_ignore=['shuffle'])
