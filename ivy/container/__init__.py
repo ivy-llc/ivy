@@ -31,6 +31,44 @@ from operator import truediv as _truediv
 from operator import floordiv as _floordiv
 
 # local
+from . import activations
+from .activations import *
+from . import creation
+from .creation import *
+from . import data_types
+from .data_types import *
+from . import device
+from .device import *
+from . import elementwise
+from .elementwise import *
+from . import general
+from .general import *
+from . import gradients
+from .gradients import *
+from . import image
+from .image import *
+from . import layers
+from .layers import *
+from . import linear_algebra
+from .linear_algebra import *
+from . import losses
+from .losses import *
+from . import manipulation
+from .manipulation import *
+from . import norms
+from .norms import *
+from . import random
+from .random import *
+from . import searching
+from .searching import *
+from . import set
+from .set import *
+from . import sorting
+from .sorting import *
+from . import statistical
+from .statistical import *
+from . import utility
+from .utility import *
 import ivy
 
 ansi_escape = re.compile(r'\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])')
@@ -53,7 +91,11 @@ def _repr(x):
 
 
 # noinspection PyMissingConstructor
-class Container(dict):
+class Container(ContainerWithActivations, ContainerWithCreation, ContainerWithDataTypes, ContainerWithDevice,
+                ContainerWithElementwise, ContainerWithGeneral, ContainerWithGradients, ContainerWithImage,
+                ContainerWithLayers, ContainerWithLinearAlgebra, ContainerWithLosses, ContainerWithManipulation,
+                ContainerWithNorms, ContainerWithRandom, ContainerWithSearching, ContainerWithSet, ContainerWithSorting,
+                ContainerWithStatistical, ContainerWithUtility):
 
     def __init__(self, dict_in=None, queues=None, queue_load_sizes=None, container_combine_method='list_join',
                  queue_timeout=None, print_limit=10, key_length_limit=None, print_indent=4, print_line_spacing=0,
@@ -102,6 +144,26 @@ class Container(dict):
         :param kwargs: keyword arguments for dict creation. Default is None.
         :type kwargs: keyword arguments.
         """
+        ContainerWithActivations.__init__(self)
+        ContainerWithCreation.__init__(self)
+        ContainerWithDataTypes.__init__(self)
+        ContainerWithDevice.__init__(self)
+        ContainerWithElementwise.__init__(self)
+        ContainerWithGeneral.__init__(self)
+        ContainerWithGradients.__init__(self)
+        ContainerWithImage.__init__(self)
+        ContainerWithLayers.__init__(self)
+        ContainerWithLinearAlgebra.__init__(self)
+        ContainerWithLosses.__init__(self)
+        ContainerWithManipulation.__init__(self)
+        ContainerWithNorms.__init__(self)
+        ContainerWithRandom.__init__(self)
+        ContainerWithSearching.__init__(self)
+        ContainerWithSet.__init__(self)
+        ContainerWithSorting.__init__(self)
+        ContainerWithStatistical.__init__(self)
+        ContainerWithUtility.__init__(self)
+
         self._queues = queues
         self._container_combine_method = container_combine_method
         if ivy.exists(self._queues):
