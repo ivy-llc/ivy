@@ -3,7 +3,6 @@ Base Container Object
 """
 
 # global
-import re
 import colorama
 try:
     # noinspection PyPackageRequirements
@@ -12,6 +11,7 @@ except ModuleNotFoundError:
     _h5py = None
 
 # local
-from ivy.container.container import Container, MultiDevContainer
+from .container import Container, MultiDevContainer
+from .wrapping import add_ivy_container_instance_methods
 
 colorama.init(strip=False)
