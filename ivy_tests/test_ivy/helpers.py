@@ -255,77 +255,131 @@ def kwargs_to_args_n_kwargs(positional_ratio, kwargs):
     return args, kwargs
 
 
+def list_of_length(x, length):
+    return st.lists(x, min_size=length, max_size=length)
+
+
 def as_cont(x):
     return ivy.Container({'a': x,
                           'b': {'c': ivy.random_uniform(shape=x.shape),
                                 'd': ivy.random_uniform(shape=x.shape)}})
 
 
+def as_lists(dtype, as_variable, with_out, native_array, container):
+    if not isinstance(dtype, list):
+        dtype = [dtype]
+    if not isinstance(as_variable, list):
+        as_variable = [as_variable]
+    if not isinstance(with_out, list):
+        with_out = [with_out]
+    if not isinstance(native_array, list):
+        native_array = [native_array]
+    if not isinstance(container, list):
+        container = [container]
+    return dtype, as_variable, with_out, native_array, container
+
+
 def test_array_function(dtype, as_variable, with_out, positional_ratio, native_array, container, instance_method,
                         fw, fn_name, **all_as_kwargs_np):
-    instance_method = instance_method and (not native_array or container)
-    with_out = with_out and not container
+
+    # convert single values to length 1 lists
+    dtype, as_variable, with_out, native_array, container = as_lists(
+        dtype, as_variable, with_out, native_array, container)
+
+    # update variable flags to be compatible with float dtype and with_out args
+    as_variable = [v if ivy.is_float_dtype(d) and not with_out else False for v, d in zip(as_variable, dtype)]
+
+    # update instance_method flag to only be considered if the first term is either an ivy.Array or ivy.Container
+    instance_method = instance_method and (not native_array[0] or container[0])
+
+    # only consider with_out if there are no containers
+    with_out = with_out and not max(container)
+
+    # split the arguments into their positional and keyword components
     args_np, kwargs_np = kwargs_to_args_n_kwargs(positional_ratio, all_as_kwargs_np)
-    if dtype in ivy.invalid_dtype_strs:
-        return  # invalid dtype
-    args = ivy.nested_map(args_np, lambda x: ivy.array(x, dtype=dtype) if isinstance(x, np.ndarray) else x)
-    kwargs = ivy.nested_map(kwargs_np, lambda x: ivy.array(x, dtype=dtype) if isinstance(x, np.ndarray) else x)
-    if as_variable:
-        if not ivy.is_float_dtype(dtype):
-            return  # only floating point variables are supported
-        if with_out:
-            return  # variables do not support out argument
-        args = ivy.nested_map(args, lambda x: ivy.variable(x) if ivy.is_array(x) else x)
-        kwargs = ivy.nested_map(kwargs, lambda x: ivy.variable(x) if ivy.is_array(x) else x)
-    if native_array:
-        args, kwargs = ivy.args_to_native(*args, **kwargs)
-    if container:
-        args = ivy.nested_map(args, lambda x: as_cont(x) if ivy.is_array(x) else x)
-        kwargs = ivy.nested_map(kwargs, lambda x: as_cont(x) if ivy.is_array(x) else x)
-        args_np = ivy.nested_map(args, lambda x: x.to_numpy() if ivy.is_ivy_container(x) else x)
-        kwargs_np = ivy.nested_map(kwargs, lambda x: x.to_numpy() if ivy.is_ivy_container(x) else x)
+
+    # if any of the data types are not supported, skip the test
+    for d in dtype:
+        if d in ivy.invalid_dtype_strs:
+            return  # invalid dtype
+
+    # create args
+    args_idxs = ivy.nested_indices_where(args_np, lambda x: isinstance(x, np.ndarray))
+    arg_np_vals = ivy.multi_index_nest(args_np, args_idxs)
+    num_arg_vals = len(arg_np_vals)
+    arg_array_vals = [ivy.array(x, dtype=d) for x, d in zip(arg_np_vals, dtype[:num_arg_vals])]
+    arg_array_vals = [ivy.variable(x) if v else x for x, v in zip(arg_array_vals, as_variable[:num_arg_vals])]
+    arg_array_vals = [ivy.to_native(x) if n else x for x, n in zip(arg_array_vals, native_array[:num_arg_vals])]
+    arg_array_vals = [as_cont(x) if c else x for x, c in zip(arg_array_vals, container[:num_arg_vals])]
+    args = ivy.copy_nest(args_np, to_mutable=True)
+    ivy.set_nest_at_indices(args, args_idxs, arg_array_vals)
+
+    # create kwargs
+    kwargs_idxs = ivy.nested_indices_where(kwargs_np, lambda x: isinstance(x, np.ndarray))
+    kwarg_np_vals = ivy.multi_index_nest(kwargs_np, kwargs_idxs)
+    kwarg_array_vals = [ivy.array(x, dtype=d) for x, d in zip(kwarg_np_vals, dtype[num_arg_vals:])]
+    kwarg_array_vals = [ivy.variable(x) if v else x for x, v in zip(kwarg_array_vals, as_variable[num_arg_vals:])]
+    kwarg_array_vals = [ivy.to_native(x) if n else x for x, n in zip(kwarg_array_vals, native_array[num_arg_vals:])]
+    kwarg_array_vals = [as_cont(x) if c else x for x, c in zip(kwarg_array_vals, container[num_arg_vals:])]
+    kwargs = ivy.copy_nest(kwargs_np, to_mutable=True)
+    ivy.set_nest_at_indices(kwargs, kwargs_idxs, kwarg_array_vals)
+
+    # create numpy args
+    args_np = ivy.nested_map(args, lambda x: ivy.to_numpy(x) if ivy.is_ivy_container(x) or ivy.is_array(x) else x)
+    kwargs_np = ivy.nested_map(kwargs, lambda x: ivy.to_numpy(x) if ivy.is_ivy_container(x) or ivy.is_array(x) else x)
+
+    # run either as an instance method or from the API directly
     instance = None
-    type_check_method = ivy.is_ivy_container if container else ivy.is_ivy_array
     if instance_method:
-        arg_idxs = ivy.nested_indices_where(args, type_check_method, check_nests=True)
-        if arg_idxs:
-            instance_idx = arg_idxs[-1]
+        is_instance = [(not n) or c for n, c in zip(native_array, container)]
+        arg_is_instance = is_instance[:num_arg_vals]
+        kwarg_is_instance = is_instance[num_arg_vals:]
+        if arg_is_instance and max(arg_is_instance):
+            i = 0
+            for i, a in enumerate(arg_is_instance):
+                if a:
+                    break
+            instance_idx = args_idxs[i]
             instance = ivy.index_nest(args, instance_idx)
             args = ivy.copy_nest(args, to_mutable=True)
             ivy.prune_nest_at_index(args, instance_idx)
         else:
-            kwarg_idxs = ivy.nested_indices_where(kwargs, type_check_method, check_nests=True)
-            instance_idx = kwarg_idxs[-1]
+            i = 0
+            for i, a in enumerate(kwarg_is_instance):
+                if a:
+                    break
+            instance_idx = kwargs_idxs[i]
             instance = ivy.index_nest(kwargs, instance_idx)
             kwargs = ivy.copy_nest(kwargs, to_mutable=True)
             ivy.prune_nest_at_index(kwargs, instance_idx)
         ret = instance.__getattribute__(fn_name)(*args, **kwargs)
     else:
         ret = ivy.__dict__[fn_name](*args, **kwargs)
+
+    # assert idx of return if the idx of the out array provided
     out = ret
     if with_out:
         assert not isinstance(ret, tuple)
         assert ivy.is_array(ret)
-        if as_variable:
-            out = ivy.variable(out)
-        if native_array:
+        if max(native_array):
             out = out.data
         if instance_method:
             ret = instance.__getattribute__(fn_name)(*args, **kwargs, out=out)
         else:
             ret = ivy.__dict__[fn_name](*args, **kwargs, out=out)
-        if not native_array:
+        if not max(native_array):
             assert ret is out
         if fw in ["tensorflow", "jax"]:
             # these frameworks do not support native inplace updates
             return
-        assert ret.data is (out if native_array else out.data)
+        assert ret.data is (out if max(native_array) else out.data)
+
     # value test
     if not isinstance(ret, tuple):
         ret = (ret,)
     if dtype == 'bfloat16':
         return  # bfloat16 is not supported by numpy
-    ret_idxs = ivy.nested_indices_where(ret, ivy.is_ivy_array, check_nests=True)
+    ret_idxs = ivy.nested_indices_where(ret, ivy.is_ivy_array)
     ret_flat = ivy.multi_index_nest(ret, ret_idxs)
     ret_np_flat = [ivy.to_numpy(x) for x in ret_flat]
     ret_from_np = ivy_np.__dict__[fn_name](*args_np, **kwargs_np)
