@@ -3,11 +3,7 @@ Collection of helpers for ivy unit tests
 """
 
 # global
-import ivy
-try:
-    import numpy as _np
-except ImportError:
-    _np = None
+import numpy as np
 try:
     import jax.numpy as _jnp
 except ImportError:
@@ -37,6 +33,11 @@ try:
 except ImportError:
     _mx = None
     _mx_nd = None
+from hypothesis import strategies as st
+
+# local
+import ivy
+import ivy.functional.backends.numpy as ivy_np
 
 
 def get_ivy_numpy():
@@ -97,9 +98,9 @@ def _convert_vars(vars_in, from_type, to_type_callable=None, keep_other=True, to
             return_val = _convert_vars(var, from_type, to_type_callable)
             new_vars.append(return_val)
         elif isinstance(var, from_type):
-            if isinstance(var, _np.ndarray):
-                if var.dtype == _np.float64:
-                    var = var.astype(_np.float32)
+            if isinstance(var, np.ndarray):
+                if var.dtype == np.float64:
+                    var = var.astype(np.float32)
                 if bool(sum([stride < 0 for stride in var.strides])):
                     var = var.copy()
             if to_type_callable:
@@ -122,8 +123,8 @@ def np_call(func, *args, **kwargs):
 
 
 def jnp_call(func, *args, **kwargs):
-    new_args = _convert_vars(args, _np.ndarray, _jnp.asarray)
-    new_kw_vals = _convert_vars(kwargs.values(), _np.ndarray, _jnp.asarray)
+    new_args = _convert_vars(args, np.ndarray, _jnp.asarray)
+    new_kw_vals = _convert_vars(kwargs.values(), np.ndarray, _jnp.asarray)
     new_kwargs = dict(zip(kwargs.keys(), new_kw_vals))
     output = func(*new_args, **new_kwargs)
     if isinstance(output, tuple):
@@ -133,8 +134,8 @@ def jnp_call(func, *args, **kwargs):
 
 
 def tf_call(func, *args, **kwargs):
-    new_args = _convert_vars(args, _np.ndarray, _tf.convert_to_tensor)
-    new_kw_vals = _convert_vars(kwargs.values(), _np.ndarray, _tf.convert_to_tensor)
+    new_args = _convert_vars(args, np.ndarray, _tf.convert_to_tensor)
+    new_kw_vals = _convert_vars(kwargs.values(), np.ndarray, _tf.convert_to_tensor)
     new_kwargs = dict(zip(kwargs.keys(), new_kw_vals))
     output = func(*new_args, **new_kwargs)
     if isinstance(output, tuple):
@@ -144,8 +145,8 @@ def tf_call(func, *args, **kwargs):
 
 
 def tf_graph_call(func, *args, **kwargs):
-    new_args = _convert_vars(args, _np.ndarray, _tf.convert_to_tensor)
-    new_kw_vals = _convert_vars(kwargs.values(), _np.ndarray, _tf.convert_to_tensor)
+    new_args = _convert_vars(args, np.ndarray, _tf.convert_to_tensor)
+    new_kw_vals = _convert_vars(kwargs.values(), np.ndarray, _tf.convert_to_tensor)
     new_kwargs = dict(zip(kwargs.keys(), new_kw_vals))
 
     @_tf.function
@@ -161,8 +162,8 @@ def tf_graph_call(func, *args, **kwargs):
 
 
 def torch_call(func, *args, **kwargs):
-    new_args = _convert_vars(args, _np.ndarray, _torch.from_numpy)
-    new_kw_vals = _convert_vars(kwargs.values(), _np.ndarray, _torch.from_numpy)
+    new_args = _convert_vars(args, np.ndarray, _torch.from_numpy)
+    new_kw_vals = _convert_vars(kwargs.values(), np.ndarray, _torch.from_numpy)
     new_kwargs = dict(zip(kwargs.keys(), new_kw_vals))
     output = func(*new_args, **new_kwargs)
     if isinstance(output, tuple):
@@ -172,8 +173,8 @@ def torch_call(func, *args, **kwargs):
 
 
 def mx_call(func, *args, **kwargs):
-    new_args = _convert_vars(args, _np.ndarray, _mx_nd.array)
-    new_kw_items = _convert_vars(kwargs.values(), _np.ndarray, _mx_nd.array)
+    new_args = _convert_vars(args, np.ndarray, _mx_nd.array)
+    new_kw_items = _convert_vars(kwargs.values(), np.ndarray, _mx_nd.array)
     new_kwargs = dict(zip(kwargs.keys(), new_kw_items))
     output = func(*new_args, **new_kwargs)
     if isinstance(output, tuple):
@@ -192,14 +193,22 @@ def assert_compilable(fn):
         raise e
 
 
-def assert_docstring_examples_run(fn):
+def docstring_examples_run(fn):
+    if not hasattr(fn, '__name__'):
+        return True
     fn_name = fn.__name__
+    if fn_name not in ivy.framework_handler.ivy_original_dict:
+        return True
     docstring = ivy.framework_handler.ivy_original_dict[fn_name].__doc__
     if docstring is None:
         return True
     executable_lines = [line.split('>>>')[1][1:] for line in docstring.split('\n') if '>>>' in line]
     for line in executable_lines:
-        exec(line)
+        # noinspection PyBroadException
+        try:
+            exec(line)
+        except Exception:
+            return False
     return True
 
 
@@ -209,7 +218,7 @@ def var_fn(a, b=None, c=None):
 
 def exclude(exclusion_list):
     global _excluded
-    _excluded = _excluded + list(set(exclusion_list) - set(_excluded))
+    _excluded += list(set(exclusion_list) - set(_excluded))
 
 
 def frameworks():
@@ -225,3 +234,103 @@ def calls():
 def f_n_calls():
     return [(ivy_fw(), call) for (fw_str, ivy_fw), call in zip(_ivy_fws_dict.items(), _calls)
             if ivy_fw() is not None and fw_str not in _excluded]
+
+
+def sample(iterable):
+    return st.builds(lambda i: iterable[i], st.integers(0, len(iterable) - 1))
+
+
+def assert_all_close(x, y):
+    if ivy.is_ivy_container(x) and ivy.is_ivy_container(y):
+        ivy.Container.multi_map(assert_all_close, [x, y])
+    else:
+        assert np.allclose(np.nan_to_num(x), np.nan_to_num(y))
+
+
+def kwargs_to_args_n_kwargs(positional_ratio, kwargs):
+    num_args_n_kwargs = len(kwargs)
+    num_args = int(round(positional_ratio * num_args_n_kwargs))
+    args = [v for v in list(kwargs.values())[:num_args]]
+    kwargs = {k: kwargs[k] for k in list(kwargs.keys())[num_args:]}
+    return args, kwargs
+
+
+def as_cont(x):
+    return ivy.Container({'a': x,
+                          'b': {'c': ivy.random_uniform(shape=x.shape),
+                                'd': ivy.random_uniform(shape=x.shape)}})
+
+
+def test_array_function(dtype, as_variable, with_out, positional_ratio, native_array, container, instance_method,
+                        fw, fn_name, **all_as_kwargs_np):
+    instance_method = instance_method and (not native_array or container)
+    with_out = with_out and not container
+    args_np, kwargs_np = kwargs_to_args_n_kwargs(positional_ratio, all_as_kwargs_np)
+    if dtype in ivy.invalid_dtype_strs:
+        return  # invalid dtype
+    args = ivy.nested_map(args_np, lambda x: ivy.array(x, dtype=dtype) if isinstance(x, np.ndarray) else x)
+    kwargs = ivy.nested_map(kwargs_np, lambda x: ivy.array(x, dtype=dtype) if isinstance(x, np.ndarray) else x)
+    if as_variable:
+        if not ivy.is_float_dtype(dtype):
+            return  # only floating point variables are supported
+        if with_out:
+            return  # variables do not support out argument
+        args = ivy.nested_map(args, lambda x: ivy.variable(x) if ivy.is_array(x) else x)
+        kwargs = ivy.nested_map(kwargs, lambda x: ivy.variable(x) if ivy.is_array(x) else x)
+    if native_array:
+        args, kwargs = ivy.args_to_native(*args, **kwargs)
+    if container:
+        args = ivy.nested_map(args, lambda x: as_cont(x) if ivy.is_array(x) else x)
+        kwargs = ivy.nested_map(kwargs, lambda x: as_cont(x) if ivy.is_array(x) else x)
+        args_np = ivy.nested_map(args, lambda x: x.to_numpy() if ivy.is_ivy_container(x) else x)
+        kwargs_np = ivy.nested_map(kwargs, lambda x: x.to_numpy() if ivy.is_ivy_container(x) else x)
+    instance = None
+    type_check_method = ivy.is_ivy_container if container else ivy.is_ivy_array
+    if instance_method:
+        arg_idxs = ivy.nested_indices_where(args, type_check_method, check_nests=True)
+        if arg_idxs:
+            instance_idx = arg_idxs[-1]
+            instance = ivy.index_nest(args, instance_idx)
+            args = ivy.copy_nest(args, to_mutable=True)
+            ivy.prune_nest_at_index(args, instance_idx)
+        else:
+            kwarg_idxs = ivy.nested_indices_where(kwargs, type_check_method, check_nests=True)
+            instance_idx = kwarg_idxs[-1]
+            instance = ivy.index_nest(kwargs, instance_idx)
+            kwargs = ivy.copy_nest(kwargs, to_mutable=True)
+            ivy.prune_nest_at_index(kwargs, instance_idx)
+        ret = instance.__getattribute__(fn_name)(*args, **kwargs)
+    else:
+        ret = ivy.__dict__[fn_name](*args, **kwargs)
+    out = ret
+    if with_out:
+        assert not isinstance(ret, tuple)
+        assert ivy.is_array(ret)
+        if as_variable:
+            out = ivy.variable(out)
+        if native_array:
+            out = out.data
+        if instance_method:
+            ret = instance.__getattribute__(fn_name)(*args, **kwargs, out=out)
+        else:
+            ret = ivy.__dict__[fn_name](*args, **kwargs, out=out)
+        if not native_array:
+            assert ret is out
+        if fw in ["tensorflow", "jax"]:
+            # these frameworks do not support native inplace updates
+            return
+        assert ret.data is (out if native_array else out.data)
+    # value test
+    if not isinstance(ret, tuple):
+        ret = (ret,)
+    if dtype == 'bfloat16':
+        return  # bfloat16 is not supported by numpy
+    ret_idxs = ivy.nested_indices_where(ret, ivy.is_ivy_array, check_nests=True)
+    ret_flat = ivy.multi_index_nest(ret, ret_idxs)
+    ret_np_flat = [ivy.to_numpy(x) for x in ret_flat]
+    ret_from_np = ivy_np.__dict__[fn_name](*args_np, **kwargs_np)
+    if not isinstance(ret_from_np, tuple):
+        ret_from_np = (ret_from_np,)
+    ret_from_np_flat = ivy.multi_index_nest(ret_from_np, ret_idxs)
+    for ret_np, ret_from_np in zip(ret_np_flat, ret_from_np_flat):
+        assert_all_close(ret_np, ret_from_np)

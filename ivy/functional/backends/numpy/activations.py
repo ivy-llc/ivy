@@ -12,9 +12,10 @@ except (ImportError, ModuleNotFoundError):
     _erf = None
 
 
-def relu(x: np.ndarray)\
+def relu(x: np.ndarray,
+         out: Optional[np.ndarray] = None)\
         -> np.ndarray:
-    return np.maximum(x, 0)
+    return np.maximum(x, 0, out=out)
 
 
 def leaky_relu(x: np.ndarray, alpha: Optional[float] = 0.2)\
@@ -30,7 +31,10 @@ def gelu(x, approximate=True):
     return 0.5 * x * (1 + _erf(x/np.sqrt(2)))
 
 
-tanh = np.tanh
+def tanh(x: np.ndarray)\
+        -> np.ndarray:
+    return (np.exp(x) - np.exp(-x)) / (np.exp(x) + np.exp(-x))
+
 sigmoid = lambda x: 1 / (1 + np.exp(-x))
 
 
@@ -39,4 +43,6 @@ def softmax(x, axis=-1):
     return exp_x / np.sum(exp_x, axis, keepdims=True)
 
 
-softplus = lambda x: np.log(np.exp(x) + 1)
+def softplus(x: np.ndarray)\
+        -> np.ndarray:
+    return np.log(np.exp(x) + 1)

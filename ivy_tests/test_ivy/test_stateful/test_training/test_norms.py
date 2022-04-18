@@ -3,12 +3,8 @@ Collection of tests for training normalization layers
 """
 
 # global
-import pytest
 
 # local
-import ivy
-import ivy_tests.test_ivy.helpers as helpers
-from ivy.container import Container
 
 
 # layer norm

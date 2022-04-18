@@ -5,7 +5,6 @@ Collection of tests for unified gradient functions
 # global
 import pytest
 import numpy as np
-from numbers import Number
 
 # local
 import ivy
@@ -252,7 +251,7 @@ def test_layerwise_gradient_descent_update(ws_n_grads_n_lr_n_wsnew, dtype, tenso
         return
 
 
-#lars_update
+# lars_update
 @pytest.mark.parametrize(
     "ws_n_grads_n_lr_n_wsnew", [(Container({'a': [3.], 'b': [3.]}), Container({'a': [6.], 'b': [6.]}),
                                  Container({'a': [0.1], 'b': [0.2]}), Container({'a': [2.7], 'b': [2.4]}))])
@@ -356,7 +355,7 @@ def test_layerwise_adam_update(ws_n_grads_n_lr_n_wsnew, dtype, tensor_fn, dev, c
         return
 
 
-#lamb_update
+# lamb_update
 @pytest.mark.parametrize(
     "ws_n_grads_n_lr_n_wsnew", [(Container({'a': [3.], 'b': [3.]}), Container({'a': [6.], 'b': [6.]}),
                                  Container({'a': [0.1], 'b': [0.2]}), Container({'a': [2.7], 'b': [2.4]}))])
