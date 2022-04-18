@@ -269,7 +269,8 @@ def gpu_is_available() -> bool:
     out:
         Boolean, as to whether a gpu is available.
 
-    Examples:
+    Examples
+    --------
     >>> print(ivy.gpu_is_available())
     True
     """
