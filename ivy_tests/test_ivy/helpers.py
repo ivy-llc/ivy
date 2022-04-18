@@ -281,11 +281,16 @@ def test_array_function(dtype, as_variable, with_out, positional_ratio, native_a
     if instance_method:
         arg_idxs = ivy.nested_indices_where(args, type_check_method, check_nests=True)
         if arg_idxs:
-            instance = args[0]
-            args = args[1:]
+            instance_idx = arg_idxs[-1]
+            instance = ivy.index_nest(args, instance_idx)
+            args = ivy.copy_nest(args, to_mutable=True)
+            ivy.prune_nest_at_index(args, instance_idx)
         else:
-            instance = list(kwargs.values())[0]
-            kwargs = {k: v for k, v in list(kwargs.items())[1:]}
+            kwarg_idxs = ivy.nested_indices_where(kwargs, type_check_method, check_nests=True)
+            instance_idx = kwarg_idxs[-1]
+            instance = ivy.index_nest(kwargs, instance_idx)
+            kwargs = ivy.copy_nest(kwargs, to_mutable=True)
+            ivy.prune_nest_at_index(kwargs, instance_idx)
         ret = instance.__getattribute__(fn_name)(*args, **kwargs)
     else:
         ret = ivy.__dict__[fn_name](*args, **kwargs)
