@@ -294,7 +294,8 @@ def tpu_is_available() -> bool:
     out:
         Boolean, as to whether a tpu is available.
         
-    Examples:
+    Examples
+    --------
     >>> print(ivy.tpu_is_available())
     True
     """
