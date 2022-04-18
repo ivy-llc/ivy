@@ -697,6 +697,11 @@ def less(x1: Union[ivy.Array, ivy.NativeArray],
     -------
     return:
         an array containing the element-wise results. The returned array must have a data type of ``bool``.
+        
+    Examples:
+    >>> x = ivy.less(ivy.array([1,2,3]),ivy.array([2,2,2]))
+    >>> print(x)   
+    [ True, False, False]
     """
     return _cur_framework(x1).less(x1, x2, out)
 
