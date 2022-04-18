@@ -19,7 +19,7 @@ NON_WRAPPED_METHODS = ['copy_nest','current_framework', 'current_framework_str',
                        'unset_default_device', 'closest_valid_dtype', 'default_dtype', 'dtype_from_str', 'is_ivy_array',
                        'is_ivy_container', 'inplace_update', 'inplace_increment', 'inplace_decrement',
                        'prune_nest_at_index', 'prune_nest_at_indices', 'is_array', 'is_native_array']
-
+METHODS_W_CONT_SUPPORT = ['multi_head_attention']
 ARRAYLESS_RET_METHODS = ['to_numpy', 'to_list', 'to_scalar', 'shape', 'get_num_dims', 'is_native_array', 'is_ivy_array',
                          'is_variable']
 NESTED_ARRAY_RET_METHODS = ['unstack', 'split']
@@ -63,7 +63,8 @@ def _wrap_method(fn):
         return ivy.to_ivy(native_or_ivy_ret, nested=True)
 
     def _method_wrapped(*args, out=None, **kwargs):
-        if not hasattr(ivy.Container, fn.__name__):
+        fn_name = fn.__name__
+        if not hasattr(ivy.Container, fn.__name__) or fn_name in METHODS_W_CONT_SUPPORT:
             return _method_w_native_handled(*args, out=out, **kwargs)
         arg_idxs = ivy.nested_indices_where(args, ivy.is_ivy_container, check_nests=True)
         if arg_idxs:
