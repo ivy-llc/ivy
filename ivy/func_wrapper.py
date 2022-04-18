@@ -6,7 +6,7 @@ from types import ModuleType
 
 
 wrapped_modules_n_classes = []
-NON_WRAPPED_METHODS = ['copy_nest','current_framework', 'current_framework_str', 'set_framework', 'get_framework',
+NON_WRAPPED_METHODS = ['copy_nest', 'current_framework', 'current_framework_str', 'set_framework', 'get_framework',
                        'unset_framework', 'set_debug_mode', 'set_breakpoint_debug_mode', 'set_exception_debug_mode',
                        'unset_debug_mode', 'debug_mode', 'nested_map', 'to_ivy', 'args_to_ivy', 'to_native',
                        'args_to_native', 'default', 'exists', 'set_min_base', 'get_min_base', 'set_min_denominator',
@@ -22,8 +22,7 @@ NON_WRAPPED_METHODS = ['copy_nest','current_framework', 'current_framework_str',
 METHODS_W_CONT_SUPPORT = ['multi_head_attention', 'execute_with_gradients', 'adam_step', 'optimizer_update',
                           'gradient_descent_update', 'lars_update', 'adam_update', 'lamb_update', 'stable_divide',
                           'stable_pow']
-ARRAYLESS_RET_METHODS = ['to_numpy', 'to_list', 'to_scalar', 'shape', 'get_num_dims', 'is_native_array', 'is_ivy_array',
-                         'is_variable']
+ARRAYLESS_RET_METHODS = ['to_numpy', 'to_list', 'to_scalar', 'is_native_array', 'is_ivy_array', 'is_variable']
 NESTED_ARRAY_RET_METHODS = ['unstack', 'split']
 
 FW_FN_KEYWORDS = {'numpy': [],
