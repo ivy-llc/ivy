@@ -71,8 +71,6 @@ def test_leaky_relu(x, dtype, tensor_fn, dev, call):
     assert ret.shape == x.shape
     # value test
     assert np.allclose(call(ivy.leaky_relu, x), ivy_np.leaky_relu(ivy.to_numpy(x)))
-    # docstring test
-    helpers.assert_docstring_examples_run(ivy.leaky_relu)
 
 
 # gelu
@@ -115,8 +113,6 @@ def test_tanh(x, dtype, tensor_fn, dev, call):
     assert ret.shape == x.shape
     # value test
     assert np.allclose(call(ivy.tanh, x), ivy_np.tanh(ivy.to_numpy(x)))
-    # docstring test
-    helpers.assert_docstring_examples_run(ivy.tanh)
 
 
 # sigmoid
@@ -174,5 +170,3 @@ def test_softplus(x, dtype, tensor_fn, dev, call):
     assert ret.shape == x.shape
     # value test
     assert np.allclose(call(ivy.softplus, x), ivy_np.softplus(ivy.to_numpy(x)))
-    # docstring test
-    helpers.assert_docstring_examples_run(ivy.softplus)
