@@ -274,17 +274,19 @@ def test_array_function(dtype, as_variable, with_out, positional_ratio, native_a
     if container:
         args = ivy.nested_map(args, lambda x: as_cont(x) if ivy.is_array(x) else x)
         kwargs = ivy.nested_map(kwargs, lambda x: as_cont(x) if ivy.is_array(x) else x)
-    arr = None
+        args_np = ivy.nested_map(args, lambda x: x.to_numpy() if ivy.is_ivy_container(x) else x)
+        kwargs_np = ivy.nested_map(kwargs, lambda x: x.to_numpy() if ivy.is_ivy_container(x) else x)
+    instance = None
     type_check_method = ivy.is_ivy_container if container else ivy.is_ivy_array
     if instance_method:
         arg_idxs = ivy.nested_indices_where(args, type_check_method, check_nests=True)
         if arg_idxs:
-            arr = args[0]
+            instance = args[0]
             args = args[1:]
         else:
-            arr = list(kwargs.values())[0]
+            instance = list(kwargs.values())[0]
             kwargs = {k: v for k, v in list(kwargs.items())[1:]}
-        ret = arr.__getattribute__(fn_name)(*args, **kwargs)
+        ret = instance.__getattribute__(fn_name)(*args, **kwargs)
     else:
         ret = ivy.__dict__[fn_name](*args, **kwargs)
     out = ret
@@ -296,7 +298,7 @@ def test_array_function(dtype, as_variable, with_out, positional_ratio, native_a
         if native_array:
             out = out.data
         if instance_method:
-            ret = arr.__getattribute__(fn_name)(*args, **kwargs, out=out)
+            ret = instance.__getattribute__(fn_name)(*args, **kwargs, out=out)
         else:
             ret = ivy.__dict__[fn_name](*args, **kwargs, out=out)
         if not native_array:
@@ -306,12 +308,16 @@ def test_array_function(dtype, as_variable, with_out, positional_ratio, native_a
             return
         assert ret.data is (out if native_array else out.data)
     # value test
+    if not isinstance(ret, tuple):
+        ret = (ret,)
     if dtype == 'bfloat16':
         return  # bfloat16 is not supported by numpy
-    ret_idxs = ivy.nested_indices_where(ret, type_check_method, check_nests=True)
+    ret_idxs = ivy.nested_indices_where(ret, ivy.is_ivy_array, check_nests=True)
     ret_flat = ivy.multi_index_nest(ret, ret_idxs)
     ret_np_flat = [ivy.to_numpy(x) for x in ret_flat]
     ret_from_np = ivy_np.__dict__[fn_name](*args_np, **kwargs_np)
+    if not isinstance(ret_from_np, tuple):
+        ret_from_np = (ret_from_np,)
     ret_from_np_flat = ivy.multi_index_nest(ret_from_np, ret_idxs)
     for ret_np, ret_from_np in zip(ret_np_flat, ret_from_np_flat):
         assert_all_close(ret_np, ret_from_np)
