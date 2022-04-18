@@ -1785,7 +1785,7 @@ class ContainerBase(dict, abc.ABC):
         :type map_sequences: bool, optional
         :return: Container object with all sub-array dimensions gathered along the axis.
         """
-        return self.map(lambda x, kc: self._ivy.gather(x, indices, axis) if self._ivy.is_native_array(x) else x,
+        return self.map(lambda x, kc: self._ivy.gather(x, indices, axis) if self._ivy.is_native_array(x) or isinstance(x, ivy.Array) else x,
                         key_chains, to_apply, prune_unapplied, map_sequences)
 
     def gather_nd(self, indices, key_chains=None, to_apply=True, prune_unapplied=False, map_sequences=False):
@@ -1805,7 +1805,7 @@ class ContainerBase(dict, abc.ABC):
         :type map_sequences: bool, optional
         :return: Container object with all sub-array dimensions gathered.
         """
-        return self.map(lambda x, kc: self._ivy.gather_nd(x, indices) if self._ivy.is_array(x) else x,
+        return self.map(lambda x, kc: self._ivy.gather_nd(x, indices) if self._ivy.is_native_array(x) or isinstance(x, ivy.Array) else x,
                         key_chains, to_apply, prune_unapplied, map_sequences)
 
     def repeat(self, repeats, axis=None, key_chains=None, to_apply=True, prune_unapplied=False, map_sequences=False):
