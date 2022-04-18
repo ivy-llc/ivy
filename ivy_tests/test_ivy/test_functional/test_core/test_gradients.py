@@ -204,7 +204,7 @@ def test_gradient_descent_update(ws_n_grads_n_lr_n_wsnew, dtype, tensor_fn, dev,
     # smoke test
     ws_raw, dcdws_raw, lr, ws_raw_new = ws_n_grads_n_lr_n_wsnew
     ws = ws_raw.map(lambda x, _: ivy.variable(ivy.array(x)))
-    dcdws = dcdws_raw.map(lambda x, _: ivy.array(x))
+    dcdws = dcdws_raw.map(lambda x, _: ivy.variable(ivy.array(x)))
     ws_true_new = ws_raw_new.map(lambda x, _: ivy.variable(ivy.array(x)))
     ws_new = ivy.gradient_descent_update(ws, dcdws, lr)
     # type test
@@ -233,8 +233,8 @@ def test_layerwise_gradient_descent_update(ws_n_grads_n_lr_n_wsnew, dtype, tenso
     # smoke test
     ws_raw, dcdws_raw, lr_raw, ws_raw_new = ws_n_grads_n_lr_n_wsnew
     ws = ws_raw.map(lambda x, _: ivy.variable(ivy.array(x)))
-    dcdws = dcdws_raw.map(lambda x, _: ivy.array(x))
-    lr = lr_raw.map(lambda x, _: ivy.array(x))
+    dcdws = dcdws_raw.map(lambda x, _: ivy.variable(ivy.array(x)))
+    lr = lr_raw.map(lambda x, _: ivy.variable(ivy.array(x)))
     ws_true_new = ws_raw_new.map(lambda x, _: ivy.variable(ivy.array(x)))
     ws_new = ivy.gradient_descent_update(ws, dcdws, lr)
     # type test
