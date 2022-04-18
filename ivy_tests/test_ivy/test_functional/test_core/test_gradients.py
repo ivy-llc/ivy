@@ -5,7 +5,6 @@ Collection of tests for unified gradient functions
 # global
 import pytest
 import numpy as np
-from numbers import Number
 
 # local
 import ivy
