@@ -239,7 +239,6 @@ def test_to_numpy(object_in, dtype, tensor_fn, dev, call):
     # value test
     assert np.allclose(ivy.to_numpy(tensor_fn(object_in, dtype, dev)), np.array(object_in).astype(dtype))
     # compilation test
-    helpers.assert_docstring_examples_run(ivy.to_numpy)
     if call in [helpers.torch_call]:
         # pytorch scripting does not support numpy conversion
         return
@@ -267,7 +266,6 @@ def test_to_scalar(object_in, dtype, tensor_fn, dev, call):
     # value test
     assert ivy.to_scalar(tensor_fn(object_in, dtype, dev)) == true_val
     # compilation test
-    helpers.assert_docstring_examples_run(ivy.to_scalar)
     if call in [helpers.torch_call]:
         # pytorch scripting does not support scalar conversion
         return
@@ -297,7 +295,6 @@ def test_to_list(object_in, dtype, tensor_fn, dev, call):
     assert np.allclose(np.asarray(ivy.to_list(tensor_fn(object_in, dtype, dev))),
                        np.array(object_in).astype(dtype))
     # compilation test
-    helpers.assert_docstring_examples_run(ivy.to_list)
     if call in [helpers.torch_call]:
         # pytorch scripting does not support list conversion
         return
