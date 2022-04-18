@@ -290,7 +290,7 @@ def test_einsum(eq_n_op_n_shp, dtype, with_out, tensor_fn, dev, call):
     else:
         ret = ivy.einsum(eq, *operands)
     # type test
-    assert ivy.is_native_array(ret)
+    assert ivy.is_ivy_array(ret)
     # cardinality test
     assert ret.shape == true_shape
     # value test
