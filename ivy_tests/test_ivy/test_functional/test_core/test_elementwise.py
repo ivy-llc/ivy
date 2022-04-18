@@ -19,7 +19,7 @@ import ivy.functional.backends.numpy as ivy_np
        with_out=st.booleans(),
        positional_ratio=st.floats(0, 1),
        native_array=st.booleans(),
-       container=st.just(False),
+       container=st.booleans(),
        instance_method=st.booleans(),
        x=st.lists(st.floats()))
 def test_abs(dtype, as_variable, with_out, positional_ratio, native_array, container, instance_method, fw, x):
