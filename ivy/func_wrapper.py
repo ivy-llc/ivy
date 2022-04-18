@@ -17,7 +17,8 @@ NON_WRAPPED_METHODS = ['copy_nest','current_framework', 'current_framework_str',
                        'get_compiled', 'index_nest', 'set_nest_at_index', 'map_nest_at_index', 'multi_index_nest',
                        'set_nest_at_indices', 'map_nest_at_indices', 'nested_indices_where', 'map',
                        'unset_default_device', 'closest_valid_dtype', 'default_dtype', 'dtype_from_str', 'is_ivy_array',
-                       'is_ivy_container', 'inplace_update', 'inplace_increment', 'inplace_decrement']
+                       'is_ivy_container', 'inplace_update', 'inplace_increment', 'inplace_decrement',
+                       'prune_nest_at_index', 'prune_nest_at_indices']
 
 ARRAYLESS_RET_METHODS = ['to_numpy', 'to_list', 'to_scalar', 'shape', 'get_num_dims', 'is_native_array', 'is_ivy_array',
                          'is_variable']
@@ -47,7 +48,7 @@ def _wrap_method(fn):
     if hasattr(fn, 'wrapped') and fn.wrapped:
         return fn
 
-    def _method_wrapped(*args, out=None, **kwargs):
+    def _method_w_native_handled(*args, out=None, **kwargs):
         native_args, native_kwargs = ivy.args_to_native(*args, **kwargs)
         if ivy.exists(out):
             native_out = ivy.to_native(out)
@@ -60,6 +61,25 @@ def _wrap_method(fn):
             out.data = ivy.to_native(native_or_ivy_ret)
             return out
         return ivy.to_ivy(native_or_ivy_ret, nested=True)
+
+    def _method_wrapped(*args, out=None, **kwargs):
+        if not hasattr(ivy.Container, fn.__name__):
+            return _method_w_native_handled(*args, out=out, **kwargs)
+        arg_idxs = ivy.nested_indices_where(args, ivy.is_ivy_container, check_nests=True)
+        if arg_idxs:
+            cont_idx = arg_idxs[-1]
+            cont = ivy.index_nest(args, cont_idx)
+            a = ivy.copy_nest(args, to_mutable=True)
+            ivy.prune_nest_at_index(a, cont_idx)
+            return cont.__getattribute__(fn.__name__)(*a, **kwargs)
+        kwarg_idxs = ivy.nested_indices_where(kwargs, ivy.is_ivy_container, check_nests=True)
+        if kwarg_idxs:
+            cont_idx = kwarg_idxs[-1]
+            cont = ivy.index_nest(kwargs, cont_idx)
+            kw = ivy.copy_nest(kwargs, to_mutable=True)
+            ivy.prune_nest_at_index(kw, cont_idx)
+            return cont.__getattribute__(fn.__name__)(*args, **kw)
+        return _method_w_native_handled(*args, out=out, **kwargs)
 
     if hasattr(fn, '__name__'):
         _method_wrapped.__name__ = fn.__name__
