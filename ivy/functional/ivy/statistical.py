@@ -275,7 +275,12 @@ def std(x: Union[ivy.Array, ivy.NativeArray],
         out: Optional[Union[ivy.Array, ivy.NativeArray]] = None)\
          -> ivy.Array:
     """
-    Calculates the standard deviation of the input array x.
+    Calculates the standard deviation of the input array ``x``.
+    **Special Cases**
+    Let ``N`` equal the number of elements over which to compute the standard deviation.
+    -   If ``N`` is ``0``, the standard deviation is ``0`` (i.e., the empty standard deviation).
+    For floating-point operands,
+    -   If ``x_i`` is ``NaN``, the standard deviation is ``NaN`` (i.e., ``NaN`` values propagate).
 
     Parameters
     ----------
@@ -305,7 +310,15 @@ def std(x: Union[ivy.Array, ivy.NativeArray],
 
     Returns
     -------
-    :return: The array with standard deviations computed.
+    return:
+        if the sum was computed over the entire array, a zero-dimensional array containing the standard deviation; otherwise, an array containing the standard deviations. 
+        The returned array must have a data type as described by the ``dtype`` parameter above.
+
+    Examples
+    --------
+    >>> x = ivy.array([-1, 0, 1])
+    >>> y = ivy.std(x)
+    >>> print(x)
     """
     return _cur_framework(x).std(x, axis, correction, keepdims,out=out)
 
