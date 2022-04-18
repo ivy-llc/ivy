@@ -4,24 +4,45 @@ Collection of Ivy loss functions.
 
 # local
 import ivy
-
+from typing import Optional, Union
 
 # Extra #
 # ------#
 
-def cross_entropy(true, pred, axis=-1, epsilon=1e-7):
+def cross_entropy(true: Union[ivy.Array, ivy.NativeArray],
+                  pred: Union[ivy.Array, ivy.NativeArray],
+                  axis: Optional[int] = -1,
+                  epsilon: Optional[float] = 1e-7)\
+        -> ivy.Array:
     """
-    Computes cross entropy between predicted and true discrete distrubtions.
+    Computes cross-entropy between predicted and true discrete distributions.
 
-    :param true: True labels
-    :type true: array
-    :param pred: predicted labels.
-    :type pred: array
-    :param axis: The class dimension, default is -1.
-    :type axis: int, optional
-    :param epsilon: small constant to add to log functions, default is 1e-7
-    :type epsilon: float, optional
-    :return: The cross entropy loss
+    Parameters
+    ----------
+    true:
+        input array containing true labels.
+    pred:
+        input array containing the predicted labels.
+    axis:
+        the axis along which to compute the cross-entropy. If axis is ``-1``, the cross-entropy will be computed along the last dimension. Default: ``-1``.
+    epsilon:
+        a float in [0.0, 1.0] specifying the amount of smoothing when calculating the loss. If epsilon is ``0``, no smoothing will be applied.
+        Default: ``1e-7``.
+
+    Returns
+    -------
+    out:
+        The cross-entropy loss between the given distributions
+
+    Examples:
+
+    >>> x = ivy.array([0, 0, 1, 0])
+    >>> y1 = ivy.array([0.25, 0.25, 0.25, 0.25])
+    >>> print(ivy.cross_entropy(x, y1))
+    1.3862943611198906
+    >>> y2 = ivy.array([0.1, 0.1, 0.7, 0.1])
+    >>> print(ivy.cross_entropy(x, y2))
+    0.35667494393873245
     """
     pred = ivy.clip(pred, epsilon, 1 - epsilon)
     log_pred = ivy.log(pred)
