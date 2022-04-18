@@ -190,7 +190,16 @@ def std(x: Union[ivy.Array, ivy.NativeArray],
         correction: Union[int, float] = 0.0,
         keepdims: bool = False)\
         -> ivy.Array:
+
+        
     """
+    Calculates the std of the input array ``x``.
+    **Special Cases**
+    Let ``N`` equal the number of elements over which to compute the std.
+    -   If ``N`` is ``0``, the std is ``0`` (i.e., the empty std).
+    For floating-point operands,
+    -   If ``x_i`` is ``NaN``, the std is ``NaN`` (i.e., ``NaN`` values propagate).
+
     Computes the arithmetic standard deviation along a given axis. The standard deviation is taken over
     the flattened array by default, otherwise over the specified axis.
 
@@ -204,6 +213,20 @@ def std(x: Union[ivy.Array, ivy.NativeArray],
                         one. With this option, the result will broadcast correctly against the input array.
     :type keepdims: bool, optional
     :return: The array with standard deviations computed.
+
+    Returns 
+    -------
+    out:
+        if the sum std computed over the entire array, a zero-dimensional array containing the std; otherwise, an array containing the stds. The returned array must have a data type as described by the ``dtype`` parameter above.
+
+    Examples
+    --------
+
+    >>> x = ivy.array([-1, 0, 1])
+    >>> y = ivy.std(x)
+    >>> print(y)
+    0.816496580927726
+    
     """
     return _cur_framework(x).std(x, axis, correction, keepdims)
 
