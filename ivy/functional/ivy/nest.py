@@ -28,6 +28,21 @@ def index_nest(nest, index):
     return ret
 
 
+def prune_nest_at_index(nest, index):
+    """
+    Prune a nested object at a specified index
+
+    :param nest: The nested object to prune.
+    :type nest: nested
+    :param index: A tuple of indices for the index at which to prune.
+    :type index: tuple of indices
+    """
+    if len(index) == 1:
+        del nest[index[0]]
+    else:
+        prune_nest_at_index(nest[index[0]], index[1:])
+
+
 def set_nest_at_index(nest, index, value):
     """
     Set the value of a nested item at a specified index
@@ -72,6 +87,18 @@ def multi_index_nest(nest, indices):
     :type indices: tuple of tuples of indices
     """
     return [index_nest(nest, index) for index in indices]
+
+
+def prune_nest_at_indices(nest, indices):
+    """
+    Prune a nested object at specified indices.
+
+    :param nest: The nested object to prune.
+    :type nest: nested
+    :param indices: A tuple of tuples of indices for the indices at which to prune.
+    :type indices: tuple of tuples of indices
+    """
+    [prune_nest_at_index(nest, index) for index in indices]
 
 
 def set_nest_at_indices(nest, indices, values):
@@ -234,6 +261,42 @@ def nested_map(x: Union[Union[ivy.Array, ivy.NativeArray], Iterable], fn: Callab
         return class_instance({k: nested_map(v, fn, include_derived, to_mutable, max_depth, depth+1)
                                for k, v in x.items()})
     return fn(x)
+
+
+def nested_any(nest: Iterable,
+               fn: Callable,
+               check_nests: bool = False,
+               _base: bool = True)\
+        -> bool:
+    """
+    Checks the leaf nodes of nest x via function fn, and returns True if any evaluate to True, else False.
+
+    :param nest: The nest to check the leaves of.
+    :type nest: nest of any
+    :param fn: The conditon function, returning True or False.
+    :type fn: callable
+    :param check_nests: Whether to also check the nests for the condition, not only nest leaves. Default is False.
+    :type check_nests: bool, optional
+    :param _base: Whether the current function call is the first function call in the recursive stack.
+                  Used internally, do not set manually.
+    :type _base: bool, do not set
+    :return: A boolean, whether the function evaluates to true for any leaf node.
+    """
+    if isinstance(nest, (tuple, list)):
+        for i, item in enumerate(nest):
+            if nested_any(item, fn, check_nests, False):
+                return True
+        if check_nests and fn(nest):
+            return True
+    elif isinstance(nest, dict):
+        for k, v in nest.items():
+            if nested_any(v, fn, check_nests, False):
+                return True
+        if check_nests and fn(nest):
+            return True
+    elif fn(nest):
+        return True
+    return False
 
 
 def copy_nest(nest: Union[Union[ivy.Array, ivy.NativeArray], Iterable], include_derived: bool = False,

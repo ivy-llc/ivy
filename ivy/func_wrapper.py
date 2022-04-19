@@ -6,7 +6,7 @@ from types import ModuleType
 
 
 wrapped_modules_n_classes = []
-NON_WRAPPED_METHODS = ['copy_nest','current_framework', 'current_framework_str', 'set_framework', 'get_framework',
+NON_WRAPPED_METHODS = ['copy_nest', 'current_framework', 'current_framework_str', 'set_framework', 'get_framework',
                        'unset_framework', 'set_debug_mode', 'set_breakpoint_debug_mode', 'set_exception_debug_mode',
                        'unset_debug_mode', 'debug_mode', 'nested_map', 'to_ivy', 'args_to_ivy', 'to_native',
                        'args_to_native', 'default', 'exists', 'set_min_base', 'get_min_base', 'set_min_denominator',
@@ -17,10 +17,12 @@ NON_WRAPPED_METHODS = ['copy_nest','current_framework', 'current_framework_str',
                        'get_compiled', 'index_nest', 'set_nest_at_index', 'map_nest_at_index', 'multi_index_nest',
                        'set_nest_at_indices', 'map_nest_at_indices', 'nested_indices_where', 'map',
                        'unset_default_device', 'closest_valid_dtype', 'default_dtype', 'dtype_from_str', 'is_ivy_array',
-                       'is_ivy_container', 'inplace_update', 'inplace_increment', 'inplace_decrement']
-
-ARRAYLESS_RET_METHODS = ['to_numpy', 'to_list', 'to_scalar', 'shape', 'get_num_dims', 'is_native_array', 'is_ivy_array',
-                         'is_variable']
+                       'is_ivy_container', 'inplace_update', 'inplace_increment', 'inplace_decrement',
+                       'prune_nest_at_index', 'prune_nest_at_indices', 'is_array', 'is_native_array', 'nested_any']
+METHODS_W_CONT_SUPPORT = ['multi_head_attention', 'execute_with_gradients', 'adam_step', 'optimizer_update',
+                          'gradient_descent_update', 'lars_update', 'adam_update', 'lamb_update', 'stable_divide',
+                          'stable_pow']
+ARRAYLESS_RET_METHODS = ['to_numpy', 'to_list', 'to_scalar', 'is_native_array', 'is_ivy_array', 'is_variable']
 NESTED_ARRAY_RET_METHODS = ['unstack', 'split']
 
 FW_FN_KEYWORDS = {'numpy': [],
@@ -47,7 +49,7 @@ def _wrap_method(fn):
     if hasattr(fn, 'wrapped') and fn.wrapped:
         return fn
 
-    def _method_wrapped(*args, out=None, **kwargs):
+    def _method_w_native_handled(*args, out=None, **kwargs):
         native_args, native_kwargs = ivy.args_to_native(*args, **kwargs)
         if ivy.exists(out):
             native_out = ivy.to_native(out)
@@ -60,6 +62,15 @@ def _wrap_method(fn):
             out.data = ivy.to_native(native_or_ivy_ret)
             return out
         return ivy.to_ivy(native_or_ivy_ret, nested=True)
+
+    def _method_wrapped(*args, out=None, **kwargs):
+        fn_name = fn.__name__
+        if not hasattr(ivy.Container, fn_name) or fn_name in METHODS_W_CONT_SUPPORT:
+            return _method_w_native_handled(*args, out=out, **kwargs)
+        if ivy.nested_any(args, ivy.is_ivy_container, check_nests=True) or \
+                ivy.nested_any(kwargs, ivy.is_ivy_container, check_nests=True):
+            return getattr(ivy.Container, fn_name)(*args, **kwargs)
+        return _method_w_native_handled(*args, out=out, **kwargs)
 
     if hasattr(fn, '__name__'):
         _method_wrapped.__name__ = fn.__name__
