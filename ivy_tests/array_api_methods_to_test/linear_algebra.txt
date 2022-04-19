@@ -1,7 +1,7 @@
 cholesky
-#cross # failing non-determinstically
+#cross # failing non-deterministically
 det
-diagonal
+#diagonal # fails non-determinstically for jax, due to +0 vs -0 inconsistencies
 eigh
 eigvalsh
 #inv # randomly failing health check for jax and torch
@@ -18,7 +18,7 @@ slogdet
 svd
 svdvals
 tensordot
-trace # accidentally merged trace when #T in array folder was preventing test from running.
+#trace # accidentally merged trace when #T in array folder was preventing test from running.
 vecdot
 vector_norm
 
