@@ -37,7 +37,7 @@ def test_vector_to_skew_symmetric_matrix(x, dtype, tensor_fn, dev, call):
 @given(dtype=helpers.list_of_length(helpers.sample(ivy_np.valid_float_dtype_strs), 2),
        as_variable=helpers.list_of_length(st.booleans(), 2),
        with_out=st.booleans(),
-       positional_ratio=st.floats(0, 1),
+       num_positional_args=st.integers(0, 2),
        native_array=helpers.list_of_length(st.booleans(), 2),
        container=helpers.list_of_length(st.booleans(), 2),
        instance_method=st.booleans(),
@@ -45,11 +45,11 @@ def test_vector_to_skew_symmetric_matrix(x, dtype, tensor_fn, dev, call):
        b=st.integers(1, 50),
        c=st.integers(1, 50),
        seed=st.integers(0, 2**32 - 1))
-def test_matmul(dtype, as_variable, with_out, positional_ratio, native_array, container, instance_method, fw,
+def test_matmul(dtype, as_variable, with_out, num_positional_args, native_array, container, instance_method, fw,
                 a, b, c, seed):
     np.random.seed(seed)
     helpers.test_array_function(
-        dtype, as_variable, with_out, positional_ratio, native_array, container, instance_method, fw, 'matmul',
+        dtype, as_variable, with_out, num_positional_args, native_array, container, instance_method, fw, 'matmul',
         rtol=1e-02, atol=1e-02,
         x1 = np.random.uniform(size=(a, b)).astype(dtype[0]),
         x2 = np.random.uniform(size=(b, c)).astype(dtype[1]))

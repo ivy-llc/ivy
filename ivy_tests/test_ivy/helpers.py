@@ -247,11 +247,9 @@ def assert_all_close(x, y, rtol=1e-05, atol=1e-08):
         assert np.allclose(np.nan_to_num(x), np.nan_to_num(y), rtol=rtol, atol=atol), '{} != {}'.format(x, y)
 
 
-def kwargs_to_args_n_kwargs(positional_ratio, kwargs):
-    num_args_n_kwargs = len(kwargs)
-    num_args = int(round(positional_ratio * num_args_n_kwargs))
-    args = [v for v in list(kwargs.values())[:num_args]]
-    kwargs = {k: kwargs[k] for k in list(kwargs.keys())[num_args:]}
+def kwargs_to_args_n_kwargs(num_positional_args, kwargs):
+    args = [v for v in list(kwargs.values())[:num_positional_args]]
+    kwargs = {k: kwargs[k] for k in list(kwargs.keys())[num_positional_args:]}
     return args, kwargs
 
 
@@ -279,7 +277,7 @@ def as_lists(dtype, as_variable, with_out, native_array, container):
     return dtype, as_variable, with_out, native_array, container
 
 
-def test_array_function(dtype, as_variable, with_out, positional_ratio, native_array, container, instance_method,
+def test_array_function(dtype, as_variable, with_out, num_positional_args, native_array, container, instance_method,
                         fw, fn_name, rtol=1e-05, atol=1e-08, **all_as_kwargs_np):
 
     # convert single values to length 1 lists
@@ -296,7 +294,7 @@ def test_array_function(dtype, as_variable, with_out, positional_ratio, native_a
     with_out = with_out and not max(container)
 
     # split the arguments into their positional and keyword components
-    args_np, kwargs_np = kwargs_to_args_n_kwargs(positional_ratio, all_as_kwargs_np)
+    args_np, kwargs_np = kwargs_to_args_n_kwargs(num_positional_args, all_as_kwargs_np)
 
     # change all data types so that they are supported by this framework
     dtype = ['float32' if d in ivy.invalid_dtype_strs else d for d in dtype]
