@@ -166,7 +166,8 @@ def matrix_power(x: Tensor, n: int)\
         n, bit = divmod(n, 2)
         if bit:
             result = z if result is None else (result @ z)
-
+    # replace any -0 with 0
+    result = tf.where(tf.equal(result, -0), tf.zeros_like(result), result)
     return result
 
 
