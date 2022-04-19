@@ -240,11 +240,11 @@ def sample(iterable):
     return st.builds(lambda i: iterable[i], st.integers(0, len(iterable) - 1))
 
 
-def assert_all_close(x, y):
+def assert_all_close(x, y, rtol=1e-05, atol=1e-08):
     if ivy.is_ivy_container(x) and ivy.is_ivy_container(y):
         ivy.Container.multi_map(assert_all_close, [x, y])
     else:
-        assert np.allclose(np.nan_to_num(x), np.nan_to_num(y))
+        assert np.allclose(np.nan_to_num(x), np.nan_to_num(y), rtol=rtol, atol=atol), '{} != {}'.format(x, y)
 
 
 def kwargs_to_args_n_kwargs(positional_ratio, kwargs):
@@ -280,7 +280,7 @@ def as_lists(dtype, as_variable, with_out, native_array, container):
 
 
 def test_array_function(dtype, as_variable, with_out, positional_ratio, native_array, container, instance_method,
-                        fw, fn_name, **all_as_kwargs_np):
+                        fw, fn_name, rtol=1e-05, atol=1e-08, **all_as_kwargs_np):
 
     # convert single values to length 1 lists
     dtype, as_variable, with_out, native_array, container = as_lists(
@@ -387,4 +387,4 @@ def test_array_function(dtype, as_variable, with_out, positional_ratio, native_a
         ret_from_np = (ret_from_np,)
     ret_from_np_flat = ivy.multi_index_nest(ret_from_np, ret_idxs)
     for ret_np, ret_from_np in zip(ret_np_flat, ret_from_np_flat):
-        assert_all_close(ret_np, ret_from_np)
+        assert_all_close(ret_np, ret_from_np, rtol=rtol, atol=atol)
