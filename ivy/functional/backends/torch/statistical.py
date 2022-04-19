@@ -179,16 +179,16 @@ def std(x: torch.Tensor,
         axis = tuple(range(num_dims))
     if isinstance(axis, int):
         if ivy.exists(out):
-            return ivy.inplace_update(out,torch.std(x,dim=axis,keepdim=keepdims))
+            return ivy.inplace_update(out,torch.std(x,dim=axis,keepdim=keepdims, unbiased=False))
         else:
-            return torch.std(x, dim=axis, keepdim=keepdims)
+            return torch.std(x, dim=axis, keepdim=keepdims, unbiased=False)
     dims = len(x.shape)
     axis = tuple([i % dims for i in axis])
     for i, a in enumerate(axis):
         if ivy.exists(out):
-            x = ivy.inplace_update(out, torch.std(x, dim=a if keepdims else a - i, keepdim=keepdims))
+            x = ivy.inplace_update(out, torch.std(x, dim=a if keepdims else a - i, keepdim=keepdims, unbiased=False))
         else:
-            x = torch.std(x, dim=a if keepdims else a - i, keepdim=keepdims)
+            x = torch.std(x, dim=a if keepdims else a - i, keepdim=keepdims, unbiased=False)
     if ivy.exists(out):
         return ivy.inplace_update(out, x)
     else:
