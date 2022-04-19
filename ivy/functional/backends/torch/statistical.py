@@ -157,11 +157,11 @@ def var(x: torch.Tensor,
         num_dims = len(x.shape)
         axis = tuple(range(num_dims))
     if isinstance(axis, int):
-        return torch.var(x, dim=axis, keepdim=keepdims)
+        return torch.var(x, dim=axis, keepdim=keepdims, unbiased=False)
     dims = len(x.shape)
     axis = tuple([i % dims for i in axis])
     for i, a in enumerate(axis):
-        x = torch.var(x, dim=a if keepdims else a - i, keepdim=keepdims)
+        x = torch.var(x, dim=a if keepdims else a - i, keepdim=keepdims, unbiased=False)
     if ivy.exists(out):
         return ivy.inplace_update(out, x)
     else:
