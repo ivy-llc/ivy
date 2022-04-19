@@ -682,17 +682,17 @@ def test_container_mean(dev, call):
     assert np.allclose(ivy.to_numpy(container_mean.b.d), np.array([6.]))
 
 
-# def test_container_var(dev, call):
-#     dict_in = {'a': ivy.array([1., 2., 3.], dev=dev),
-#                'b': {'c': ivy.array([2., 4., 6.], dev=dev), 'd': ivy.array([3., 6., 9.], dev=dev)}}
-#     container = Container(dict_in)
-#     container_var = container.var()
-#     assert np.allclose(ivy.to_numpy(container_var['a']), np.array([2 / 3]))
-#     assert np.allclose(ivy.to_numpy(container_var.a), np.array([2 / 3]))
-#     assert np.allclose(ivy.to_numpy(container_var['b']['c']), np.array([8 / 3]))
-#     assert np.allclose(ivy.to_numpy(container_var.b.c), np.array([8 / 3]))
-#     assert np.allclose(ivy.to_numpy(container_var['b']['d']), np.array([6.]))
-#     assert np.allclose(ivy.to_numpy(container_var.b.d), np.array([6.]))
+def test_container_var(dev, call):
+    dict_in = {'a': ivy.array([1., 2., 3.], dev=dev),
+               'b': {'c': ivy.array([2., 4., 6.], dev=dev), 'd': ivy.array([3., 6., 9.], dev=dev)}}
+    container = Container(dict_in)
+    container_var = container.var()
+    assert np.allclose(ivy.to_numpy(container_var['a']), np.array([2 / 3]))
+    assert np.allclose(ivy.to_numpy(container_var.a), np.array([2 / 3]))
+    assert np.allclose(ivy.to_numpy(container_var['b']['c']), np.array([8 / 3]))
+    assert np.allclose(ivy.to_numpy(container_var.b.c), np.array([8 / 3]))
+    assert np.allclose(ivy.to_numpy(container_var['b']['d']), np.array([6.]))
+    assert np.allclose(ivy.to_numpy(container_var.b.d), np.array([6.]))
 
 
 # def test_container_std(dev, call):
