@@ -1,10 +1,6 @@
 # global
 import numpy as np
 import torch
-from torch import (
-    Tensor,
-    device
-)
 from typing import Union, Tuple, List, Optional, Dict
 from numbers import Number
 
@@ -15,7 +11,7 @@ from ivy.functional.backends.numpy.data_type import dtype_to_str as np_dtype_to_
 
 def asarray(object_in, dtype: Optional[str] = None, dev: Optional[str] = None, copy: Optional[bool] = None):
     dev = default_device(dev)
-    if isinstance(object_in, Tensor) and dtype is None:
+    if isinstance(object_in, torch.Tensor) and dtype is None:
         dtype = object_in.dtype
     elif isinstance(object_in, (list, tuple, dict)) and len(object_in) != 0 and dtype is None:
         # Temporary fix on type
@@ -41,25 +37,25 @@ array = asarray
 
 def zeros(shape: Union[int, Tuple[int]],
           dtype: Optional[torch.dtype] = None,
-          device: Optional[device] = None) \
-        -> Tensor:
+          device: Optional[torch.device] = None) \
+        -> torch.Tensor:
     return torch.zeros(shape, dtype=dtype_from_str(default_dtype(dtype)), device=dev_from_str(default_device(device)))
 
 
 def ones(shape: Union[int, Tuple[int]],
          dtype: Optional[torch.dtype] = None,
-         device: Optional[Union[device, str]] = None) \
-        -> Tensor:
+         device: Optional[Union[torch.device, str]] = None) \
+        -> torch.Tensor:
     dtype_val: torch.dtype = dtype_from_str(dtype)
     dev = default_device(device)
     return torch.ones(shape, dtype=dtype_val, device=dev_from_str(dev))
 
 
-def full_like(x: Tensor,
+def full_like(x: torch.Tensor,
               fill_value: Union[int, float],
               dtype: Optional[Union[torch.dtype, str]] = None,
-              device: Optional[Union[device, str]] = None) \
-        -> Tensor:
+              device: Optional[Union[torch.device, str]] = None) \
+        -> torch.Tensor:
     if device is None:
         device = _callable_dev(x)
     if dtype is not None and dtype is str:
@@ -78,10 +74,10 @@ def full_like(x: Tensor,
     return torch.full_like(x, fill_value, dtype=dtype, device=default_device(device))
 
 
-def ones_like(x : Tensor,
+def ones_like(x : torch.Tensor,
               dtype: Optional[Union[torch.dtype, str]] = None,
-              dev: Optional[Union[device, str]] = None) \
-        -> Tensor:
+              dev: Optional[Union[torch.device, str]] = None) \
+        -> torch.Tensor:
     if dev is None:
         dev = _callable_dev(x)
     if dtype is not None and dtype is str:
@@ -102,10 +98,10 @@ def ones_like(x : Tensor,
     return torch.ones_like(x, device=dev_from_str(dev))
 
 
-def zeros_like(x: Tensor,
+def zeros_like(x: torch.Tensor,
                dtype: Optional[torch.dtype] = None,
-               device: Optional[Union[device, str]] = None)\
-            -> Tensor:
+               device: Optional[Union[torch.device, str]] = None)\
+            -> torch.Tensor:
     if device is None:
         device = _callable_dev(x)
     if dtype is not None:
@@ -114,29 +110,29 @@ def zeros_like(x: Tensor,
     return torch.zeros_like(x, device=dev_from_str(device))
 
 
-def tril(x: Tensor,
+def tril(x: torch.Tensor,
          k: int = 0) \
-         -> Tensor:
+         -> torch.Tensor:
     return torch.tril(x, diagonal=k)
 
 
-def triu(x: Tensor,
+def triu(x: torch.Tensor,
          k: int = 0) \
-         -> Tensor:
+         -> torch.Tensor:
     return torch.triu(x, diagonal=k)
     
 
 def empty(shape: Union[int, Tuple[int]],
           dtype: Optional[torch.dtype] = None,
-          device: Optional[device] = None) \
-        -> Tensor:
+          device: Optional[torch.device] = None) \
+        -> torch.Tensor:
     return torch.empty(shape, dtype=dtype_from_str(default_dtype(dtype)), device=dev_from_str(default_device(device)))
 
 
-def empty_like(x: Tensor,
+def empty_like(x: torch.Tensor,
               dtype: Optional[Union[torch.dtype, str]] = None,
-              dev: Optional[Union[device, str]] = None) \
-        -> Tensor:
+              dev: Optional[Union[torch.device, str]] = None) \
+        -> torch.Tensor:
     if dev is None:
         dev = _callable_dev(x)
     if dtype is not None and dtype is str:
@@ -170,9 +166,9 @@ def _differentiable_linspace(start, stop, num, device):
 
 # noinspection PyUnboundLocalVariable,PyShadowingNames
 def linspace(start, stop, num, axis=None, dev=None):
-    num = num.detach().numpy().item() if isinstance(num, Tensor) else num
-    start_is_array = isinstance(start, Tensor)
-    stop_is_array = isinstance(stop, Tensor)
+    num = num.detach().numpy().item() if isinstance(num, torch.Tensor) else num
+    start_is_array = isinstance(start, torch.Tensor)
+    stop_is_array = isinstance(stop, torch.Tensor)
     linspace_method = torch.linspace
     dev = default_device(dev)
     sos_shape = []
@@ -233,8 +229,8 @@ def eye(n_rows: int,
         n_cols: Optional[int] = None,
         k: Optional[int] = 0,
         dtype: Optional[torch.dtype] = None,
-        device: Optional[device] = None) \
-        -> Tensor:
+        device: Optional[torch.device] = None) \
+        -> torch.Tensor:
     dtype = dtype_from_str(default_dtype(dtype))
     device = dev_from_str(default_device(device))
     if n_cols is None:
@@ -252,8 +248,8 @@ def eye(n_rows: int,
         return torch.zeros([n_rows, n_cols], dtype=dtype, device=device)
 
 
-def meshgrid(*arrays: Tensor, indexing='xy')\
-        -> List[Tensor]:
+def meshgrid(*arrays: torch.Tensor, indexing='xy')\
+        -> List[torch.Tensor]:
     return list(torch.meshgrid(*arrays, indexing=indexing))
 
 

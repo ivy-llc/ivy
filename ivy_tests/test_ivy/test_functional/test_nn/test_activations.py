@@ -93,7 +93,7 @@ def test_gelu(x, approx, dtype, tensor_fn, dev, call):
     # value test
     assert np.allclose(call(ivy.gelu, x, approx), ivy_np.gelu(ivy.to_numpy(x), approx))
     # docstrings test
-    helpers.assert_docstring_examples_run(ivy.gelu)
+    helpers.docstring_examples_run(ivy.gelu)
     
 
 # tanh
