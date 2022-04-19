@@ -106,7 +106,7 @@ def test_gpu_is_available():
     helpers.docstring_examples_run(ivy.gpu_is_available)
 
 def test_tpu_is_available():
-    helpers.assert_docstring_examples_run(ivy.tpu_is_available)
+    helpers.docstring_examples_run(ivy.tpu_is_available)
 
 # Device Allocation #
 
