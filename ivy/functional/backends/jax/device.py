@@ -85,7 +85,8 @@ def _dev_is_available(base_dev):
         return False
 
 
-gpu_is_available = lambda: _dev_is_available('gpu')
+def gpu_is_available() -> bool:
+    return _dev_is_available('gpu')
 
 
 def num_gpus():
