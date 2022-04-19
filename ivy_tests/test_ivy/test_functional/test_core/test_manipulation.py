@@ -170,6 +170,8 @@ def test_permute_dims(dtype, as_variable, with_out, native_array):
 @pytest.mark.parametrize(
     "native_array", [True, False])
 def test_reshape(dtype, as_variable, with_out, native_array):
+    # docstring test
+    helpers.assert_docstring_examples_run(ivy.reshape)   
     if dtype in ivy.invalid_dtype_strs:
         pytest.skip("invalid dtype")
     x = ivy.array([1, 2, 3, 4], dtype=dtype)
