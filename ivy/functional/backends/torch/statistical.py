@@ -135,11 +135,11 @@ def var(x: torch.Tensor,
         num_dims = len(x.shape)
         axis = tuple(range(num_dims))
     if isinstance(axis, int):
-        return torch.var(x, dim=axis, keepdim=keepdims)
+        return torch.var(x, dim=axis, keepdim=keepdims, unbiased=False)
     dims = len(x.shape)
     axis = tuple([i % dims for i in axis])
     for i, a in enumerate(axis):
-        x = torch.var(x, dim=a if keepdims else a - i, keepdim=keepdims)
+        x = torch.var(x, dim=a if keepdims else a - i, keepdim=keepdims, unbiased=False)
     if ivy.exists(out):
         return ivy.inplace_update(out, x)
     else:
@@ -149,18 +149,28 @@ def var(x: torch.Tensor,
 def std(x: torch.Tensor,
         axis: Optional[Union[int, Tuple[int]]] = None,
         correction: Union[int, float] = 0.0,
-        keepdims: bool = False) \
+        keepdims: bool = False,
+        out: Optional[torch.Tensor]=None) \
         -> torch.Tensor:
     if axis is None:
         num_dims = len(x.shape)
         axis = tuple(range(num_dims))
     if isinstance(axis, int):
-        return torch.std(x, dim=axis, keepdim=keepdims)
+        if ivy.exists(out):
+            return ivy.inplace_update(out,torch.std(x,dim=axis,keepdim=keepdims, unbiased=False))
+        else:
+            return torch.std(x, dim=axis, keepdim=keepdims, unbiased=False)
     dims = len(x.shape)
     axis = tuple([i % dims for i in axis])
     for i, a in enumerate(axis):
-        x = torch.std(x, dim=a if keepdims else a - i, keepdim=keepdims)
-    return x
+        if ivy.exists(out):
+            x = ivy.inplace_update(out, torch.std(x, dim=a if keepdims else a - i, keepdim=keepdims, unbiased=False))
+        else:
+            x = torch.std(x, dim=a if keepdims else a - i, keepdim=keepdims, unbiased=False)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, x)
+    else:
+        return x
 
 
 # Extra #
