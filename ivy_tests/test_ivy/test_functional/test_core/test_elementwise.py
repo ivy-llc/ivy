@@ -856,7 +856,7 @@ def test_floor_divide(dtype, as_variable, with_out, native_array):
         assert ret.data is (out if native_array else out.data)
 
 
-# r
+# greater
 @pytest.mark.parametrize(
     "dtype", ivy.all_numeric_dtype_strs)
 @pytest.mark.parametrize(
