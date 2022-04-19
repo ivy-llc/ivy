@@ -65,7 +65,6 @@ def vector_norm(x: JaxArray,
     return ret
 
 
-
 def matrix_norm(x: JaxArray,
                 ord: Optional[Union[int, float, Literal[inf, - inf, 'fro', 'nuc']]] = 'fro',
                 keepdims: bool = False,
