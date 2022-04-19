@@ -1,12 +1,12 @@
 cholesky
-#cross # fails non-determinstically
+#cross # failing non-determinstically
 det
 diagonal
 eigh
 eigvalsh
-#inv # fails non-determinstically for jax
-#matmul # fails non-determinstically for torch
-#matrix_norm # fails non-determinstically for jax
+#inv # randomly failing health check for jax and torch
+#matmul # failing non-deterministically for torch
+#matrix_norm # fails non-deterministically for jax
 #matrix_power
 matrix_rank
 matrix_transpose
