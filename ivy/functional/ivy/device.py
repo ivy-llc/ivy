@@ -1112,33 +1112,31 @@ def dev_unify_nest(args: Type[MultiDev], kwargs: Type[MultiDev], dev, mode, axis
 class DevMapper(abc.ABC):
 
     def __init__(self, fn, ret_fn, queue_class, worker_class, devs, timeout=None, constant=None, unique=None):
-    """
-    Device Mapper base class.
+        """
+        Device Mapper base class.
 
-    Parameters
-    ----------
-    fn : callable
-        The function which the device mapper parallelises across devices.
-    ret_fn : callable
-        The function which receives the ivy.MultiDevIter as input, and produces a single device output.
-    queue_class : class: class
-        The class to use for creating queues.
-    worker_class : class: class
-        The class to use for creating parallel workers.
-    devs : sequence of str
-        A list of devices on which to parallelise the function.
-    timeout : float, optional
-        The timeout for getting items from the queues. Default is global.
-    constant : dict of any, optional
-        A dict of keyword arguments which are the same for each process. Default is None.
-    unique : dict of iterables of any, optional
-        A dict of keyword argument sequences which are unique for each process. Default is None.
+        Parameters
+        ----------
+        fn : callable
+            The function which the device mapper parallelises across devices.
+        ret_fn : callable
+            The function which receives the ivy.MultiDevIter as input, and produces a single device output.
+        queue_class : class: class
+            The class to use for creating queues.
+        worker_class : class: class
+            The class to use for creating parallel workers.
+        devs : sequence of str
+            A list of devices on which to parallelise the function.
+        timeout : float, optional
+            The timeout for getting items from the queues. Default is global.
+        constant : dict of any, optional
+            A dict of keyword arguments which are the same for each process. Default is None.
+        unique : dict of iterables of any, optional
+            A dict of keyword argument sequences which are unique for each process. Default is None.
 
-    Returns
-    -------
-
-    
-    """
+        Returns
+        -------   
+        """
         constant_kwargs = ivy.default(constant, {})
         unique_kwargs = ivy.default(unique, {})
         self._fn = fn
