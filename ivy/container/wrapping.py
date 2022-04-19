@@ -5,7 +5,7 @@ import ivy
 def _wrap_fn(fn_name):
     def new_fn(*args, key_chains=None, to_apply=True, prune_unapplied=False, **kwargs):
         arg_cont_idxs = [[i] for i, a in enumerate(args) if ivy.is_ivy_container(a)]
-        kwarg_cont_idxs = [[k] for k, v in kwargs.values() if ivy.is_ivy_container(v)]
+        kwarg_cont_idxs = [[k] for k, v in kwargs.items() if ivy.is_ivy_container(v)]
         arg_conts = ivy.multi_index_nest(args, arg_cont_idxs)
         num_arg_conts = len(arg_conts)
         kwarg_conts = ivy.multi_index_nest(kwargs, kwarg_cont_idxs)
