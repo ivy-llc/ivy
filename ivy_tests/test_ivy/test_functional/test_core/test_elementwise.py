@@ -866,8 +866,6 @@ def test_floor_divide(dtype, as_variable, with_out, native_array):
 @pytest.mark.parametrize(
     "native_array", [True, False])
 def test_greater(dtype, as_variable, with_out, native_array):
-    # docstring test
-    helpers.assert_docstring_examples_run(ivy.greater)
     if dtype in ivy.invalid_dtype_strs:
         pytest.skip("invalid dtype")
     x1 = ivy.array([2, 3, 4], dtype=dtype)
@@ -1054,8 +1052,6 @@ def test_isnan(dtype, as_variable, with_out, native_array):
 @pytest.mark.parametrize(
     "native_array", [True, False])
 def test_less(dtype, as_variable, with_out, native_array):
-    # docstring test
-    helpers.assert_docstring_examples_run(ivy.less)
     if dtype in ivy.invalid_dtype_strs:
         pytest.skip("invalid dtype")
     x1 = ivy.array([2, 3, 4], dtype=dtype)
