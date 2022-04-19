@@ -489,7 +489,15 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Determine whether a GPU is available to use, with the backend framework.</span>
 
-<span class="sd">    :return: Boolean, as to whether a gpu is available.</span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    out:</span>
+<span class="sd">        Boolean, as to whether a gpu is available.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; print(ivy.gpu_is_available())</span>
+<span class="sd">    True</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">()</span><span class="o">.</span><span class="n">gpu_is_available</span><span class="p">()</span></div>
 
