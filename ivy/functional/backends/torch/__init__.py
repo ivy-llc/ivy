@@ -5,6 +5,8 @@ import torch as torch
 # local
 import ivy
 
+torch.set_default_dtype(torch.float64)
+
 # noinspection PyUnresolvedReferences
 use = ivy.framework_handler.ContextManager(sys.modules[__name__])
 
