@@ -170,7 +170,6 @@ def test_conv1d(x_n_filters_n_pad_n_res, dtype, tensor_fn, dev, call):
     # value test
     assert np.allclose(call(ivy.conv1d, x, filters, 1, padding),
                        ivy.to_numpy(true_res))
-    helpers.assert_docstring_examples_run(ivy.conv1d)
 
 
 # conv1d_transpose
