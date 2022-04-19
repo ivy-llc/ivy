@@ -344,7 +344,6 @@ def cholesky(x: tf.Tensor,
     return ret
 
 
-
 def eigvalsh(x: Tensor,
              out: Optional[Tensor] = None)\
         -> Tensor:
