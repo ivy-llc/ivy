@@ -102,6 +102,8 @@ def test_memory_on_dev(dev_to_check, dev, call):
         # global variables aren't supported for pytorch scripting
         pytest.skip()
 
+def test_gpu_is_available():
+    helpers.assert_docstring_examples_run(ivy.gpu_is_available)
 
 # Device Allocation #
 
