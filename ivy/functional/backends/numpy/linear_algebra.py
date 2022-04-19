@@ -172,7 +172,6 @@ def tensordot(x1: np.ndarray, x2: np.ndarray,
     return ret
 
 
-
 def trace(x: np.ndarray,
           offset: int = 0,
           out: Optional[np.ndarray] = None) \
