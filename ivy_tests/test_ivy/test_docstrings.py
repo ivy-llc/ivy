@@ -6,7 +6,7 @@ def test_docstrings():
     failures = list()
     success = True
     for k, v in ivy.__dict__.items():
-        if k in ['namedtuple', 'Dtype'] or helpers.docstring_examples_run(v):
+        if k in ['namedtuple', 'DType'] or helpers.docstring_examples_run(v):
             continue
         success = False
         failures.append(k)
