@@ -10,18 +10,24 @@ import ivy
 # ------#
 
 def cross_entropy(true, pred, axis=-1, epsilon=1e-7):
-    """
-    Computes cross entropy between predicted and true discrete distrubtions.
+    """Computes cross entropy between predicted and true discrete distrubtions.
 
-    :param true: True labels
-    :type true: array
-    :param pred: predicted labels.
-    :type pred: array
-    :param axis: The class dimension, default is -1.
-    :type axis: int, optional
-    :param epsilon: small constant to add to log functions, default is 1e-7
-    :type epsilon: float, optional
-    :return: The cross entropy loss
+    Parameters
+    ----------
+    true : array
+        True labels
+    pred : array
+        predicted labels.
+    axis : int, optional
+        The class dimension, default is -1.
+    epsilon : float, optional
+        small constant to add to log functions, default is 1e-7
+
+    Returns
+    -------
+    type
+        The cross entropy loss
+
     """
     pred = ivy.clip(pred, epsilon, 1 - epsilon)
     log_pred = ivy.log(pred)
@@ -31,16 +37,22 @@ def cross_entropy(true, pred, axis=-1, epsilon=1e-7):
 
 # noinspection PyUnresolvedReferences
 def binary_cross_entropy(true, pred, epsilon=1e-7):
-    """
-    Computes the binary cross entropy loss.
+    """Computes the binary cross entropy loss.
 
-    :param true: true labels
-    :type true: array
-    :param pred: Predicted labels
-    :type pred: array
-    :param epsilon: small constant to add to log functions, default is 1e-7
-    :type epsilon: float, optional
-    :return: The binary cross entropy loss array.
+    Parameters
+    ----------
+    true : array
+        true labels
+    pred : array
+        Predicted labels
+    epsilon : float, optional
+        small constant to add to log functions, default is 1e-7
+
+    Returns
+    -------
+    type
+        The binary cross entropy loss array.
+
     """
     pred = ivy.clip(pred, epsilon, 1-epsilon)
     # noinspection PyTypeChecker
@@ -48,18 +60,24 @@ def binary_cross_entropy(true, pred, epsilon=1e-7):
 
 
 def sparse_cross_entropy(true, pred, axis=-1, epsilon=1e-7):
-    """
-    Computes sparse cross entropy between logits and labels.
+    """Computes sparse cross entropy between logits and labels.
 
-    :param true: True labels as logits.
-    :type true: array
-    :param pred: predicted labels as logits.
-    :type pred: array
-    :param axis: The class dimension, default is -1.
-    :type axis: int, optional
-    :param epsilon: small constant to add to log functions, default is 1e-7
-    :type epsilon: float, optional
-    :return: The sparse cross entropy loss
+    Parameters
+    ----------
+    true : array
+        True labels as logits.
+    pred : array
+        predicted labels as logits.
+    axis : int, optional
+        The class dimension, default is -1.
+    epsilon : float, optional
+        small constant to add to log functions, default is 1e-7
+
+    Returns
+    -------
+    type
+        The sparse cross entropy loss
+
     """
     true = ivy.one_hot(true, pred.shape[axis])
     return cross_entropy(true, pred, axis, epsilon)
