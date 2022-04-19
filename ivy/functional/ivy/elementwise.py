@@ -353,6 +353,11 @@ def greater(x1: Union[ivy.Array, ivy.NativeArray],
     :param x2: Input array.
     :param f: Machine learning framework. Inferred from inputs if None.
     :return: an array containing the element-wise results. The returned array must have a data type of bool.
+    
+    Examples:
+    >>> x = ivy.greater(ivy.array([1,2,3]),ivy.array([2,2,2]))
+    >>> print(x)
+    [False, False,  True]    
     """
     return _cur_framework(x1, x2).greater(x1, x2, out)
 
