@@ -126,7 +126,6 @@ def qr(x: torch.Tensor,
     return ret
 
 
-
 def matmul(x1: torch.Tensor,
            x2: torch.Tensor,
            out: Optional[torch.Tensor] = None) -> torch.Tensor:
@@ -136,9 +135,9 @@ def matmul(x1: torch.Tensor,
     return torch.matmul(x1, x2, out=out).type(dtype_from)
 
 
-def slogdet(x:Union[ivy.Array,ivy.NativeArray],
+def slogdet(x: Union[ivy.Array, ivy.NativeArray],
             out: Optional[torch.Tensor] = None)\
-        -> Union[ivy.Array, Tuple[ivy.Array,...]]:
+        -> Union[ivy.Array, Tuple[ivy.Array, ...]]:
     results = namedtuple("slogdet", "sign logabsdet")
     sign, logabsdet = torch.linalg.slogdet(x)
     res = results(sign, logabsdet)

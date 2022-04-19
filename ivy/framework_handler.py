@@ -125,6 +125,8 @@ def set_framework(f):
 
 
 def get_framework(f=None):
+    # ToDo: change this so that it doesn't depend at all on the global ivy. Currently all framework-agnostic
+    #  implementations returned in this module will still use the global ivy backend.
     global ivy_original_dict
     if not framework_stack:
         ivy_original_dict = ivy.__dict__.copy()

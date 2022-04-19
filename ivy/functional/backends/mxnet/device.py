@@ -4,11 +4,13 @@ Collection of MXNet general functions, wrapped to fit Ivy syntax and signature.
 
 # global
 import os
+
 _round = round
 import mxnet as mx
 from mxnet import profiler as _profiler
 
 # local
+import ivy
 from ivy.functional.ivy.device import Profiler as BaseProfiler
 
 
@@ -19,9 +21,14 @@ def dev(x, as_str=False):
     return dv
 
 
-def to_dev(x, dev=None):
+def to_dev(x, dev=None, out=None):
     if dev is not None:
-        return x.as_in_context(dev_from_str(dev))
+        ret = x.as_in_context(dev_from_str(dev))
+        if ivy.exists(out):
+            return ivy.inplace_update(out, ret)
+        return ret 
+    if ivy.exists(out):
+        return ivy.inplace_update(out, x)
     return x
 
 
@@ -46,9 +53,12 @@ def dev_from_str(dev):
     return mx.context.Context(dev, idx)
 
 
+def gpu_is_available() -> bool:
+    return mx.context.num_gpus() > 0
+
+
 clear_mem_on_dev = lambda dev: None
 _callable_dev = dev
-gpu_is_available = lambda: mx.context.num_gpus() > 0
 num_gpus = lambda: mx.context.num_gpus()
 tpu_is_available = lambda: False
 

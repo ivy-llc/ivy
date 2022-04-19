@@ -8,10 +8,18 @@ from typing import Optional
 import tensorflow as tf
 from tensorflow.python.types.core import Tensor
 
+# local
+import ivy
 
-def relu(x: Tensor) \
+
+
+def relu(x: Tensor,
+         out: Optional[Tensor] = None)\
         -> Tensor:
-    return tf.nn.relu(x)
+    ret = tf.nn.relu(x)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
 def leaky_relu(x: Tensor, alpha: Optional[float] = 0.2) \
@@ -30,6 +38,9 @@ def tanh(x: Tensor)\
         -> Tensor:
     return tf.nn.tanh(x)
 
-
 softmax = tf.nn.softmax
-softplus = tf.nn.softplus
+
+
+def softplus(x: Tensor)\
+        -> Tensor:
+    return tf.nn.softplus(x)

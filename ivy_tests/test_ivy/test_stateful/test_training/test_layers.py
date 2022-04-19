@@ -3,13 +3,8 @@ Collection of tests for training unified neural network layers
 """
 
 # global
-import pytest
-import numpy as np
 
 # local
-import ivy
-import ivy_tests.test_ivy.helpers as helpers
-from ivy.container import Container
 
 
 # Linear #
