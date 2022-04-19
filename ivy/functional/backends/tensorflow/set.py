@@ -23,16 +23,18 @@ def unique_all(x: Tensor) \
 
     if tf.math.reduce_sum(tf.cast(tf.math.is_nan(values), 'float32')).numpy():
         nan_index = tf.where(tf.math.is_nan(flat_tensor)).numpy().reshape([-1])
-        non_nan_index = [tensor_list.index(val) for val in values if not tf.math.is_nan(val)]
+        non_nan_index = tf.experimental.numpy.array([tensor_list.index(val) for val in values if not tf.math.is_nan(val)])
 
         indices = tf.experimental.numpy.full(fill_value = float('NaN'), shape = values.shape).numpy()
         
         indices[unique_nan] = nan_index
         indices[~unique_nan] = non_nan_index
+        indices = tf.convert_to_tensor(indices)
     else:
         indices = tf.experimental.numpy.array([tensor_list.index(val) for val in values])
+        indices = tf.convert_to_tensor(indices)
     
-    return UniqueAll(tf.cast(values, x.dtype), tf.convert_to_tensor(indices, dtype = 'int32'), tf.reshape(inverse_indices, x.shape), counts)
+    return UniqueAll(tf.cast(values, x.dtype), tf.cast(indices, dtype = 'int32'), tf.reshape(inverse_indices, x.shape), counts)
 
 
 def unique_inverse(x: Tensor) \
