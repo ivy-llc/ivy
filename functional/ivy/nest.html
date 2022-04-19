@@ -141,6 +141,7 @@
 <li class="toctree-l2"><a class="reference internal" href="nest/set_nest_at_indices.html">set_nest_at_indices</a></li>
 <li class="toctree-l2"><a class="reference internal" href="nest/map_nest_at_indices.html">map_nest_at_indices</a></li>
 <li class="toctree-l2"><a class="reference internal" href="nest/nested_indices_where.html">nested_indices_where</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nest/nest_has_any.html">nest_has_any</a></li>
 <li class="toctree-l2"><a class="reference internal" href="nest/all_nested_indices.html">all_nested_indices</a></li>
 <li class="toctree-l2"><a class="reference internal" href="nest/map.html">map</a></li>
 <li class="toctree-l2"><a class="reference internal" href="nest/nested_map.html">nested_map</a></li>
@@ -357,6 +358,26 @@ Used internally, do not set manually.</p></li>
 <li><p><strong>nest</strong> (<em>nested</em>) – The nested object to slice.</p></li>
 <li><p><strong>indices</strong> (<em>tuple of tuples of indices</em>) – A tuple of tuples of indices to apply.</p></li>
 </ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.nest.nest_has_any">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">nest_has_any</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">nest</span><span class="p">:</span> <span class="n">Iterable</span></em>, <em class="sig-param"><span class="n">fn</span><span class="p">:</span> <span class="n">Callable</span></em>, <em class="sig-param"><span class="n">check_nests</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">_base</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">True</span></em><span class="sig-paren">)</span> &#x2192; bool<a class="reference internal" href="../../_modules/ivy/functional/ivy/nest.html#nest_has_any"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.nest.nest_has_any" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks the leaf nodes of nest x via function fn, and returns True if any evaluate to True, else False.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>nest</strong> (<em>nest of any</em>) – The nest to check the leaves of.</p></li>
+<li><p><strong>fn</strong> (<em>callable</em>) – The conditon function, returning True or False.</p></li>
+<li><p><strong>check_nests</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to also check the nests for the condition, not only nest leaves. Default is False.</p></li>
+<li><p><strong>_base</strong> (<em>bool</em><em>, </em><em>do not set</em>) – Whether the current function call is the first function call in the recursive stack.
+Used internally, do not set manually.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A boolean, whether the function evaluates to true for any leaf node.</p>
 </dd>
 </dl>
 </dd></dl>
