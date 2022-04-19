@@ -38,7 +38,6 @@ def eigh(x: Union[ivy.Array, ivy.NativeArray]) \
     """
     return _cur_framework(x).eigh(x)   
          
-         
 
 def pinv(x: Union[ivy.Array, ivy.NativeArray],
          rtol: Optional[Union[float, Tuple[float]]] = None) \
