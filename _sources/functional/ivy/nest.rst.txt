@@ -22,9 +22,9 @@ Nest
    nest/set_nest_at_indices.rst
    nest/map_nest_at_indices.rst
    nest/nested_indices_where.rst
-   nest/nest_has_any.rst
    nest/all_nested_indices.rst
    nest/map.rst
    nest/nested_map.rst
+   nest/nested_any.rst
    nest/copy_nest.rst
 
