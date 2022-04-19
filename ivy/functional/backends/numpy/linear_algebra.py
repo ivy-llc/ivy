@@ -11,6 +11,7 @@ from collections import namedtuple
 # Array API Standard #
 # -------------------#
 
+
 def eigh(x: np.ndarray,
          out: Optional[np.ndarray] = None)\
     -> np.ndarray:
