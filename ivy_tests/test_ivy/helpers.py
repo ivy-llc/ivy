@@ -298,10 +298,8 @@ def test_array_function(dtype, as_variable, with_out, positional_ratio, native_a
     # split the arguments into their positional and keyword components
     args_np, kwargs_np = kwargs_to_args_n_kwargs(positional_ratio, all_as_kwargs_np)
 
-    # if any of the data types are not supported, skip the test
-    for d in dtype:
-        if d in ivy.invalid_dtype_strs:
-            return  # invalid dtype
+    # change all data types so that they are supported by this framework
+    dtype = ['float32' if d in ivy.invalid_dtype_strs else d for d in dtype]
 
     # create args
     args_idxs = ivy.nested_indices_where(args_np, lambda x: isinstance(x, np.ndarray))
