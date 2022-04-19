@@ -11,22 +11,28 @@ import ivy
 
 # noinspection PyUnresolvedReferences
 def layer_norm(x, normalized_idxs, epsilon=None, scale=None, offset=None, new_std=None):
-    """
-    Applies Layer Normalization over a mini-batch of inputs
+    """Applies Layer Normalization over a mini-batch of inputs
 
-    :param x: Input array
-    :type x: array
-    :param normalized_idxs: Indices to apply the normalization to.
-    :type normalized_idxs: int or sequence of ints
-    :param epsilon: small constant to add to the denominator, use global ivy._MIN_BASE by default.
-    :type epsilon: float, optional
-    :param scale: Learnable gamma variables for post-multiplication, default is None.
-    :type scale: array, optional
-    :param offset: Learnable beta variables for post-addition, default is None.
-    :type offset: array, optional
-    :param new_std: The standard deviation of the new normalized values. Default is 1.
-    :type new_std: float, optional
-    :return: The layer after applying layer normalization.
+    Parameters
+    ----------
+    x : array
+        Input array
+    normalized_idxs : int or sequence of ints
+        Indices to apply the normalization to.
+    epsilon : float, optional
+        small constant to add to the denominator, use global ivy._MIN_BASE by default.
+    scale : array, optional
+        Learnable gamma variables for post-multiplication, default is None.
+    offset : array, optional
+        Learnable beta variables for post-addition, default is None.
+    new_std : float, optional
+        The standard deviation of the new normalized values. Default is 1.
+
+    Returns
+    -------
+    type
+        The layer after applying layer normalization.
+
     """
     mean = ivy.mean(x, normalized_idxs, keepdims=True)
     var = ivy.var(x, normalized_idxs, keepdims=True)

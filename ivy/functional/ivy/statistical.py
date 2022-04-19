@@ -217,9 +217,7 @@ def prod(x: Union[ivy.Array, ivy.NativeArray],
     (dimensions) must not be included in the result. Default: False.
     out:
         optional output array, for writing the result to.
-    
     Returns
-    -------
     return: 
         array,  if the product was computed over the entire array, a zero-dimensional array containing the 
         product; otherwise, a non-zero-dimensional array containing the products. The returned array must 
@@ -231,8 +229,7 @@ def prod(x: Union[ivy.Array, ivy.NativeArray],
 def sum(x: Union[ivy.Array, ivy.NativeArray],
         axis: Optional[Union[int, Tuple[int, ...]]] = None,
         dtype: Optional[Union[ivy.Dtype, str]] = None,
-        keepdims: bool = False,
-        out: Optional[Union[ivy.Array, ivy.NativeArray]] = None) -> ivy.Array:
+        keepdims: bool = False) -> ivy.Array:
     """
     Calculates the sum of the input array ``x``.
     **Special Cases**
@@ -257,80 +254,62 @@ def sum(x: Union[ivy.Array, ivy.NativeArray],
            keyword argument is intended to help prevent data type overflows.
     keepdims:
         if ``True``, the reduced axes (dimensions) must be included in the result as singleton dimensions, and, accordingly, the result must be compatible with the input array (see :ref:`broadcasting`). Otherwise, if ``False``, the reduced axes (dimensions) must not be included in the result. Default: ``False``.
-    out:
-        optional output array, for writing the result to.Returns
-    
     Returns
     -------
-    return:
+    out:
         if the sum was computed over the entire array, a zero-dimensional array containing the sum; otherwise, an array containing the sums. The returned array must have a data type as described by the ``dtype`` parameter above.
     """
 
-    return _cur_framework(x).sum(x, axis, dtype, keepdims, out = out)
+    return _cur_framework(x).sum(x, axis, dtype, keepdims)
+
 
 def std(x: Union[ivy.Array, ivy.NativeArray],
         axis: Optional[Union[int, Tuple[int, ...]]] = None,
         correction: Union[int, float] = 0.0,
-        keepdims: bool = False,
-        out: Optional[Union[ivy.Array, ivy.NativeArray]] = None)\
-         -> ivy.Array:
-    """
-    Calculates the standard deviation of the input array x.
+        keepdims: bool = False) \
+        -> ivy.Array:
+    """Computes the arithmetic standard deviation along a given axis. The standard deviation is taken over
+    the flattened array by default, otherwise over the specified axis.
 
     Parameters
     ----------
-    x: 
-        input array. Should have a floating-point data type
-    axis:
-        axis or axes along which standard deviations must be computed. By default, the standard deviation 
-        must be computed over the entire array. If a tuple of integers, standard deviations must be computed 
-        over multiple axes. Default: None.
-    correction:
-        degrees of freedom adjustment. Setting this parameter to a value other than 0 has the effect of 
-        adjusting the divisor during the calculation of the standard deviation according to N-c where N 
-        corresponds to the total number of elements over which the standard deviation is computed and c 
-        corresponds to the provided degrees of freedom adjustment. When computing the standard deviation 
-        of a population, setting this parameter to 0 is the standard choice (i.e., the provided array 
-        contains data constituting an entire population). When computing the corrected sample standard 
-        deviation, setting this parameter to 1 is the standard choice (i.e., the provided array contains 
-        data sampled from a larger population; this is commonly referred to as Bessel's correction). 
-        Default: 0.
-    keepdims: 
-        if True, the reduced axes (dimensions) must be included in the result as singleton 
-        dimensions, and, accordingly, the result must be compatible with the input array (see Broadcasting). 
-        Otherwise, if False, the reduced axes (dimensions) must not be included in the result. 
-        Default: False.
-    out:
-        optional output array, for writing the result to.Returns
+    x : array
+        Array containing numbers whose standard deviation is desired.
+    axis : int or sequence of ints
+        Axis or axes along which the means are computed. The default is to compute the mean of the flattened
+        array. If this is a tuple of ints, a mean is performed over multiple axes, instead of a single axis
+        or all the axes as before.
+    keepdims : bool, optional
+        If this is set to True, the axes which are reduced are left in the result as dimensions with size
+        one. With this option, the result will broadcast correctly against the input array.
 
     Returns
     -------
-    :return: The array with standard deviations computed.
+    type
+        The array with standard deviations computed.
+
     """
-    return _cur_framework(x).std(x, axis, correction, keepdims,out=out)
+    return _cur_framework(x).std(x, axis, correction, keepdims)
 
 
 # Extra #
 # ------#
 
-def einsum(equation:str, *operands:Union[ivy.Array, ivy.NativeArray],
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None)\
-     -> ivy.Array:
-    """
-    Sums the product of the elements of the input operands along dimensions specified using a notation based on the
+def einsum(equation, *operands):
+    """Sums the product of the elements of the input operands along dimensions specified using a notation based on the
     Einstein summation convention.
 
     Parameters
     ----------
-    equation:
+    equation : str
         A str describing the contraction, in the same format as numpy.einsum.
-    operands: 
-        seq of arrays, the inputs to contract (each one an ivy.Array), whose shapes should be consistent with equation.
-     out:
-        optional output array, for writing the result to.Returns   
+    operands : seq of arrays
+        the inputs to contract (each one an ivy.Array), whose shapes should be consistent with equation.
+
     Returns
     -------
-    return: 
+    type
         The array with sums computed.
+
     """
-    return _cur_framework(operands[0]).einsum(equation, *operands,out=out)
+    return _cur_framework(operands[0]).einsum(equation, *operands)
