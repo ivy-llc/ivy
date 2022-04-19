@@ -32,7 +32,7 @@ def unique_all(x: Tensor) \
     else:
         indices = tf.experimental.numpy.array([tensor_list.index(val) for val in values])
     
-    return UniqueAll(tf.cast(values, x.dtype), tf.constant(indices, dtype = 'int32'), tf.reshape(inverse_indices, x.shape), counts)
+    return UniqueAll(tf.cast(values, x.dtype), tf.convert_to_tensor(indices, dtype = 'int32'), tf.reshape(inverse_indices, x.shape), counts)
 
 
 def unique_inverse(x: Tensor) \
