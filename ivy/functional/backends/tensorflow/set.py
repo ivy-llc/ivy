@@ -30,7 +30,7 @@ def unique_all(x: Tensor) \
         indices[unique_nan] = nan_index
         indices[~unique_nan] = non_nan_index
     else:
-        indices = [tensor_list.index(val) for val in values]
+        indices = tf.experimental.numpy.array([tensor_list.index(val) for val in values])
     
     return UniqueAll(tf.cast(values, x.dtype), tf.constant(indices, dtype = 'int32'), tf.reshape(inverse_indices, x.shape), counts)
 
