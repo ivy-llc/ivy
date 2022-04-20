@@ -38,7 +38,7 @@ import ivy_tests.test_ivy.helpers as helpers
 #
 #     def loss_fn(v):
 #         out = model(x_in, v=v)
-#         return ivy.reduce_mean((out - target) ** 2)[0]
+#         return ivy.mean((out - target) ** 2)
 #
 #     for step in range(100):
 #         loss, grads = ivy.execute_with_gradients(loss_fn, model.v)
