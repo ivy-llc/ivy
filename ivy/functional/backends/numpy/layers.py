@@ -8,10 +8,10 @@ import numpy as np
 
 def conv1d(x: np.ndarray,
            filters: np.ndarray,
-           strides,
-           padding,
-           data_format='NWC',
-           dilations=1)\
+           strides: int,
+           padding: str,
+           data_format: str = 'NWC',
+           dilations: int = 1)\
            -> np.ndarray:
     x_shape = (1,) + x.shape
     filter_shape = (1,) + filters.shape
