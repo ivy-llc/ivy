@@ -465,14 +465,14 @@
                 <span class="s1">&#39;mean&#39;</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="o">.</span><span class="n">_mean_unify</span><span class="p">}[</span><span class="n">mode</span><span class="p">](</span><span class="n">containers</span><span class="p">,</span> <span class="n">dev</span><span class="p">,</span> <span class="n">axis</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="ContainerBase.concat"><a class="viewcode-back" href="../../../container/base/ContainerBase.html#ivy.container.base.ContainerBase.concat">[docs]</a>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">concat</span><span class="p">(</span><span class="n">containers</span><span class="p">,</span> <span class="n">dim</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">concat</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Concatenate containers together along the specified dimension.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        containers : sequence of Container objects</span>
+<span class="sd">        xs : sequence of Container objects</span>
 <span class="sd">            containers to concatenate</span>
-<span class="sd">        dim : int</span>
+<span class="sd">        axis : int</span>
 <span class="sd">            dimension along which to concatenate</span>
 <span class="sd">        config : dict, optional</span>
 <span class="sd">            The configuration for the containers. Default is the same as container0.</span>
@@ -480,27 +480,25 @@
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">            Concatenated containers</span>
-
 <span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="n">container0</span> <span class="o">=</span> <span class="n">containers</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">container0</span> <span class="o">=</span> <span class="n">xs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">config</span><span class="p">):</span>
             <span class="n">config</span> <span class="o">=</span> <span class="n">container0</span><span class="o">.</span><span class="n">config</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">container0</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">)</span> <span class="k">else</span> <span class="p">{}</span>
 
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">container0</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">):</span>
             <span class="n">return_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
             <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">container0</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-                <span class="n">return_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">container</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="k">for</span> <span class="n">container</span> <span class="ow">in</span> <span class="n">containers</span><span class="p">],</span> <span class="n">dim</span><span class="p">,</span> <span class="n">config</span><span class="p">)</span>
+                <span class="n">return_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">container</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="k">for</span> <span class="n">container</span> <span class="ow">in</span> <span class="n">xs</span><span class="p">],</span> <span class="n">axis</span><span class="p">,</span> <span class="n">config</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">return_dict</span><span class="p">,</span> <span class="o">**</span><span class="n">config</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="c1"># noinspection PyProtectedMember</span>
             <span class="n">ivyh</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">default</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">config</span><span class="p">[</span><span class="s1">&#39;ivyh&#39;</span><span class="p">],</span> <span class="n">ivy</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
             <span class="c1"># noinspection PyBroadException</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">containers</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-                    <span class="k">return</span> <span class="n">ivyh</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">ivyh</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">dim</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">containers</span><span class="p">],</span> <span class="n">dim</span><span class="p">)</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">xs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">ivyh</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">ivyh</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">axis</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">xs</span><span class="p">],</span> <span class="n">axis</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="k">return</span> <span class="n">ivyh</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">containers</span><span class="p">,</span> <span class="n">dim</span><span class="p">)</span>
+                    <span class="k">return</span> <span class="n">ivyh</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">axis</span><span class="p">)</span>
             <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Container concat operation only valid for containers of arrays&#39;</span><span class="p">)</span></div>
 
