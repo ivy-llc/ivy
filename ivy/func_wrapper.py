@@ -18,7 +18,8 @@ NON_WRAPPED_METHODS = ['copy_nest', 'current_framework', 'current_framework_str'
                        'set_nest_at_indices', 'map_nest_at_indices', 'nested_indices_where', 'map',
                        'unset_default_device', 'closest_valid_dtype', 'default_dtype', 'dtype_from_str', 'is_ivy_array',
                        'is_ivy_container', 'inplace_update', 'inplace_increment', 'inplace_decrement',
-                       'prune_nest_at_index', 'prune_nest_at_indices', 'is_array', 'is_native_array', 'nested_any']
+                       'prune_nest_at_index', 'prune_nest_at_indices', 'is_array', 'is_native_array', 'nested_any',
+                       'fn_array_spec']
 METHODS_W_CONT_SUPPORT = ['multi_head_attention', 'execute_with_gradients', 'adam_step', 'optimizer_update',
                           'gradient_descent_update', 'lars_update', 'adam_update', 'lamb_update', 'stable_divide',
                           'stable_pow']
