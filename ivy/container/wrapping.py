@@ -4,6 +4,20 @@ import ivy
 
 def _wrap_fn(fn_name):
     def new_fn(*args, key_chains=None, to_apply=True, prune_unapplied=False, **kwargs):
+        data_idx = ivy.__dict__[fn_name].array_spec[0]
+        if data_idx[0][0] != 0 and args and ivy.is_ivy_container(args[0]):
+            # if the method has been called as an instance method, and self should not be the first positional arg,
+            # then we need to re-arrange and place self in the correct location in the args or kwargs
+            self = args[0]
+            args = args[1:]
+            if len(args) > data_idx[0][0]:
+                args = ivy.copy_nest(args, to_mutable=True)
+                data_idx = [data_idx[0][0]] + data_idx[1:]
+                ivy.insert_into_nest_at_index(args, data_idx, self)
+            else:
+                kwargs = ivy.copy_nest(kwargs, to_mutable=True)
+                data_idx = [data_idx[0][1]] + data_idx[1:]
+                ivy.insert_into_nest_at_index(kwargs, data_idx, self)
         arg_cont_idxs = [[i] for i, a in enumerate(args) if ivy.is_ivy_container(a)]
         kwarg_cont_idxs = [[k] for k, v in kwargs.items() if ivy.is_ivy_container(v)]
         arg_conts = ivy.multi_index_nest(args, arg_cont_idxs)
