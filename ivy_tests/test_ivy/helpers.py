@@ -384,3 +384,36 @@ def test_array_function(dtype, as_variable, with_out, num_positional_args, nativ
     ret_from_np_flat = ivy.multi_index_nest(ret_from_np, ret_idxs)
     for ret_np, ret_from_np in zip(ret_np_flat, ret_from_np_flat):
         assert_all_close(ret_np, ret_from_np, rtol=rtol, atol=atol)
+
+
+# Hypothesis #
+# -----------#
+
+@st.composite
+def array_dtypes(draw, na=st.shared(st.integers(), key='num_arrays')):
+    size = na if isinstance(na, int) else draw(na)
+    return draw(st.lists(sample(ivy_np.valid_float_dtype_strs), min_size=size, max_size=size))
+
+
+@st.composite
+def array_bools(draw, na=st.shared(st.integers(), key='num_arrays')):
+    size = na if isinstance(na, int) else draw(na)
+    return draw(st.lists(st.booleans(), min_size=size, max_size=size))
+
+
+@st.composite
+def lists(draw, arg, min_size=None, max_size=None):
+    if isinstance(min_size, str):
+        min_size = draw(st.shared(st.integers(), key=min_size))
+    if isinstance(max_size, str):
+        max_size = draw(st.shared(st.integers(), key=max_size))
+    return draw(st.lists(arg, min_size=min_size, max_size=max_size))
+
+
+@st.composite
+def integers(draw, min_value=None, max_value=None):
+    if isinstance(min_value, str):
+        min_value = draw(st.shared(st.integers(), key=min_value))
+    if isinstance(max_value, str):
+        max_value = draw(st.shared(st.integers(), key=max_value))
+    return draw(st.integers(min_value=min_value, max_value=max_value))
