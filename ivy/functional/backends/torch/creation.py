@@ -47,7 +47,7 @@ def ones(shape: Union[int, Tuple[int]],
          dtype: Optional[torch.dtype] = None,
          device: Optional[Union[torch.device, str]] = None) \
         -> torch.Tensor:
-    dtype_val: torch.dtype = dtype_from_str(dtype)
+    dtype_val: torch.dtype = torch.float32 if dtype is None else dtype_from_str(dtype)
     dev = default_device(device)
     return torch.ones(shape, dtype=dtype_val, device=dev_from_str(dev))
 
