@@ -11,10 +11,10 @@ from ivy.functional.backends.jax import JaxArray
 
 def conv1d(x: JaxArray,
            filters: JaxArray,
-           strides,
-           padding,
-           data_format='NWC',
-           dilations=1)\
+           strides: int,
+           padding: str,
+           data_format: str = 'NWC',
+           dilations: int = 1)\
            -> JaxArray:
     strides = (strides,) if isinstance(strides, int) else strides
     dilations = (dilations,) if isinstance(dilations, int) else dilations
