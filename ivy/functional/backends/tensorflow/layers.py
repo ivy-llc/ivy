@@ -9,10 +9,10 @@ from tensorflow.python.types.core import Tensor
 
 def conv1d(x: Tensor,
            filters: Tensor,
-           strides,
-           padding,
-           data_format='NWC',
-           dilations=1)\
+           strides: int,
+           padding: str,
+           data_format: str = 'NWC',
+           dilations: int = 1)\
            -> Tensor:
     if data_format == 'NCW':
         x = tf.transpose(x, (0, 1, 2))
