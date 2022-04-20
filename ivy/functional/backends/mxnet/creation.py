@@ -10,6 +10,10 @@ from ivy.functional.backends.mxnet import _mxnet_init_context
 from ivy.functional.backends.mxnet import _1_dim_array_to_flat_array
 
 
+# Array API Standard #
+# -------------------#
+
+
 def asarray(object_in, dtype: Optional[str] = None, dev: Optional[str] = None, copy: Optional[bool] = None):
     # mxnet don't have asarray implementation, haven't properly tested
     cont = _mxnet_init_context(default_device(dev))
@@ -31,9 +35,6 @@ def asarray(object_in, dtype: Optional[str] = None, dev: Optional[str] = None, c
         else:
             dtype = dtype_to_str(default_dtype(dtype, object_in))
             return mx.nd.array(object_in, cont, dtype=default_dtype(dtype, object_in))
-
-
-array = asarray
 
 
 def zeros(shape: Union[int, Tuple[int]],
@@ -120,6 +121,7 @@ def linspace(start, stop, num, axis=None, dev=None):
         res = mx.nd.swapaxes(res, axis, -1)
     return res
 
+
 def eye(n_rows: int,
         n_cols: Optional[int] = None,
         k: Optional[int] = 0,
@@ -128,6 +130,7 @@ def eye(n_rows: int,
         -> mx.ndarray.ndarray.NDArray:
     cont = _mxnet_init_context(default_device(device))
     return mx.nd.eye(n_rows, n_cols, k, ctx=cont).astype(dtype)
+
 
 # noinspection PyUnresolvedReferences
 def arange(stop, start=0, step=1, dtype=None, dev=None):
@@ -166,6 +169,9 @@ def from_dlpack(x):
 
 # Extra #
 # ------#
+
+array = asarray
+
 
 def logspace(start, stop, num, base=10., axis=None, dev=None):
     power_seq = linspace(start, stop, num, axis, default_device(dev))
