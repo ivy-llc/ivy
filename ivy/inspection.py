@@ -97,3 +97,9 @@ def fn_array_spec(fn):
         a_idxs = [[(i, k)] + a for a in a_idxs]
         array_idxs += a_idxs
     return array_idxs
+
+
+def add_array_specs():
+    for k, v in ivy.__dict__.items():
+        if callable(v) and k[0].islower():
+            v.array_spec = fn_array_spec(v)
