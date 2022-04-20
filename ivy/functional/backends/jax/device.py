@@ -96,7 +96,8 @@ def num_gpus():
         return 0
 
 
-tpu_is_available = lambda: _dev_is_available('tpu')
+def tpu_is_available() -> bool: 
+    return _dev_is_available('tpu')
 
 
 # noinspection PyMethodMayBeStatic

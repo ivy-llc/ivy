@@ -73,7 +73,7 @@ def gpu_is_available() -> bool:
     return len(tf.config.list_physical_devices('GPU')) > 0
 
 
-def tpu_is_available():
+def tpu_is_available() -> bool:
     try:
         resolver = tf.distribute.cluster_resolver.TPUClusterResolver()
         tf.config.experimental_connect_to_cluster(resolver)
