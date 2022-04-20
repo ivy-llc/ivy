@@ -14,7 +14,7 @@ def _wrap_fn(fn_name):
             kwargs = ivy.copy_nest(kwargs, to_mutable=True)
             data_idx = [data_idx[0][1]] + data_idx[1:]
             ivy.insert_into_nest_at_index(kwargs, data_idx, self._data)
-        return fn(self._data, *args, **kwargs)
+        return fn(*args, **kwargs)
     return new_fn
 
 
