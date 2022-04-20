@@ -65,7 +65,7 @@ def sort(x: Union[ivy.Array, ivy.NativeArray],
 
     Returns:
     _______
-    return:
+     out:
         An array with the same dtype and shape as `values`, with the elements sorted along the given `axis`.
     """
     return _cur_framework(x).sort(x, axis, descending, stable, out)
