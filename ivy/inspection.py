@@ -16,15 +16,47 @@ def _is_optional(typ):
     return False
 
 
-def _is_iterable(typ):
+def _is_union(typ):
     # noinspection PyBroadException
     try:
         rep = typ.__repr__().split('.')[1]
-        if rep.startswith('List') or rep.startswith('Tuple') or rep.startswith('Dict') or rep.startswith('Set'):
+        if rep.startswith('Union'):
             return True
     except:
         pass
     return False
+
+
+def _is_dict(typ):
+    # noinspection PyBroadException
+    try:
+        rep = typ.__repr__().split('.')[1]
+        if rep.startswith('Dict'):
+            return True
+    except:
+        pass
+    return False
+
+
+def _is_iterable(typ):
+    # noinspection PyBroadException
+    try:
+        rep = typ.__repr__().split('.')[1]
+        if rep.startswith('List') or rep.startswith('Tuple'):
+            return True
+    except:
+        pass
+    return False
+
+
+def _correct_index(is_opt, is_dict, is_iter):
+    if is_opt:
+        return ['optional']
+    elif is_dict:
+        return [str]
+    elif is_iter:
+        return [int]
+    return []
 
 
 def _get_array_idxs(typ, idx_so_far=None):
@@ -33,12 +65,18 @@ def _get_array_idxs(typ, idx_so_far=None):
     if not hasattr(typ, '__args__'):
         return these_idxs
     is_opt = _is_optional(typ)
+    is_union = _is_union(typ)
+    is_dict = _is_dict(typ)
     is_iter = _is_iterable(typ)
-    for i, a in enumerate(typ.__args__):
-        if a is ivy.NativeArray:
-            these_idxs.append(idx_so_far + (['optional'] if is_opt else ([int] if is_iter else [])))
+    for a in typ.__args__:
+        a_repr = repr(a)
+        if '[' not in a_repr and ']' not in a_repr and \
+                'ivy.' in a_repr and ('.Array' in a_repr or '.NativeArray' in a_repr):
+            these_idxs.append(idx_so_far + _correct_index(is_opt, is_dict, is_iter))
+            if is_union:
+                break
         else:
-            these_idxs += _get_array_idxs(a, idx_so_far + (['optional'] if is_opt else ([int] if is_iter else [])))
+            these_idxs += _get_array_idxs(a, idx_so_far + _correct_index(is_opt, is_dict, is_iter))
     return these_idxs
 
 
@@ -54,7 +92,8 @@ def fn_array_spec(fn):
     array_idxs = list()
     for i, (k, v) in enumerate(type_hints.items()):
         a_idxs = _get_array_idxs(v)
-        if a_idxs:
-            a_idxs = [[(i, k)] + a for a in a_idxs]
-            array_idxs += a_idxs
+        if not a_idxs:
+            continue
+        a_idxs = [[(i, k)] + a for a in a_idxs]
+        array_idxs += a_idxs
     return array_idxs
