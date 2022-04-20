@@ -258,7 +258,11 @@ def nested_map(x: Union[Union[ivy.Array, ivy.NativeArray], Iterable],
     :type _dict_check_fn: callable, used internally
     :return: x following the applicable of fn to it's nested leaves, or x itself if x is not nested.
     """
-    include_derived = ivy.default(include_derived, {tuple: False, list: False, dict: False})
+    if not ivy.exists(include_derived):
+        include_derived = {}
+    for t in (tuple, list, dict):
+        if t not in include_derived:
+            include_derived[t] = False
     if ivy.exists(max_depth) and _depth > max_depth:
         return x
     class_instance = type(x)
