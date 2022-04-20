@@ -35,7 +35,7 @@ def _to_ivy(x: Any)\
 
 def to_ivy(x: Union[Union[ivy.Array, ivy.NativeArray], Iterable],
            nested: bool = False,
-           include_derived: bool = False)\
+           include_derived: Dict[type, bool] = None)\
         -> Union[Union[ivy.Array, ivy.NativeArray], Iterable]:
     """
     Returns the input array converted to an ivy.Array instances if it is an array type, otherwise the input is
@@ -58,7 +58,7 @@ def to_ivy(x: Union[Union[ivy.Array, ivy.NativeArray], Iterable],
 
 
 def args_to_ivy(*args: Iterable[Any],
-                include_derived: bool = False,
+                include_derived: Dict[type, bool] = None,
                 **kwargs: Dict[str, Any])\
         -> Tuple[Iterable[Any], Dict[str, Any]]:
     """
@@ -80,7 +80,7 @@ def args_to_ivy(*args: Iterable[Any],
 
 def to_native(x: Union[Union[ivy.Array, ivy.NativeArray], Iterable],
               nested: bool = False,
-              include_derived: bool = False)\
+              include_derived: Dict[type, bool] = None)\
         -> Union[Union[ivy.Array, ivy.NativeArray], Iterable]:
     """
     Returns the input item in it's native backend framework form if it is an ivy.Array or ivy.Variable instance.
@@ -103,7 +103,7 @@ def to_native(x: Union[Union[ivy.Array, ivy.NativeArray], Iterable],
 
 
 def args_to_native(*args: Iterable[Any],
-                   include_derived: bool = False,
+                   include_derived: Dict[type, bool] = None,
                    **kwargs: Dict[str, Any],
                    )\
         -> Tuple[Iterable[Any], Dict[str, Any]]:
