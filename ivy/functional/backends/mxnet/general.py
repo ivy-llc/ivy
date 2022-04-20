@@ -30,8 +30,8 @@ def is_native_array(x, exclusive=False):
 
 copy_array = lambda x: x.copy()
 
-@_handle_flat_arrays_in_out
-def array_equal(x0, x1):
+def array_equal(x0: mx.nd.NDArray, x1: mx.nd.NDArray) \
+        -> bool:
     if ivy.dtype(x0, as_str=True) == 'bool':
         x0 = x0.astype('int32')
     if ivy.dtype(x1, as_str=True) == 'bool':

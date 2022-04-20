@@ -44,7 +44,10 @@ def _to_array(x):
 
 
 copy_array = jnp.array
-array_equal = jnp.array_equal
+def array_equal(x0: JaxArray, x1: JaxArray) \
+        -> bool:
+    return jnp.array_equal(x0,x1)
+
 to_numpy = lambda x: np.asarray(_to_array(x))
 to_numpy.__name__ = 'to_numpy'
 to_scalar = lambda x: x if isinstance(x, Number) else _to_array(x).item()
