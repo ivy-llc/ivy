@@ -17,62 +17,62 @@ import ivy_tests.test_ivy.helpers as helpers
 
 
 # linear
-# @pytest.mark.parametrize(
-#     "bs_ic_oc", [([1, 2], 4, 5)])
-# @pytest.mark.parametrize(
-#     "with_v", [True, False])
-# @pytest.mark.parametrize(
-#     "dtype", ['float32'])
-# @pytest.mark.parametrize(
-#     "tensor_fn", [ivy.array, helpers.var_fn])
-# def test_linear_layer_training(bs_ic_oc, with_v, dtype, tensor_fn, dev, compile_graph, call):
-#     # smoke test
-#     if call is helpers.np_call:
-#         # NumPy does not support gradients
-#         pytest.skip()
-#     batch_shape, input_channels, output_channels = bs_ic_oc
-#     x = ivy.cast(ivy.linspace(ivy.zeros(batch_shape, dev=dev),
-#                               ivy.ones(batch_shape, dev=dev), input_channels), 'float32')
-#     if with_v:
-#         np.random.seed(0)
-#         wlim = (6 / (output_channels + input_channels)) ** 0.5
-#         w = ivy.variable(ivy.array(np.random.uniform(-wlim, wlim, (output_channels, input_channels)),
-#                                    'float32', dev=dev))
-#         b = ivy.variable(ivy.zeros([output_channels], dev=dev))
-#         v = Container({'w': w, 'b': b})
-#     else:
-#         v = None
-#     linear_layer = ivy.Linear(input_channels, output_channels, dev=dev, v=v)
-#
-#     def loss_fn(x_, v_):
-#         out = linear_layer(x_, v=v_)
-#         return ivy.reduce_mean(out)[0]
-#
-#     def train_step(x_, v_):
-#         lss, grds = ivy.execute_with_gradients(lambda _v_: loss_fn(x_, _v_), v_)
-#         v_ = ivy.gradient_descent_update(linear_layer.v, grds, 1e-3)
-#         return lss, grds, v_
-#
-#     # train
-#     loss_tm1 = 1e12
-#     loss = None
-#     grads = None
-#     for i in range(10):
-#         loss, grads, linear_layer.v = train_step(x, linear_layer.v)
-#         assert ivy.to_scalar(loss) < ivy.to_scalar(loss_tm1)
-#         loss_tm1 = loss
-#
-#     # type test
-#     assert ivy.is_array(loss)
-#     assert isinstance(grads, ivy.Container)
-#     # cardinality test
-#     if call is helpers.mx_call:
-#         # mxnet slicing cannot reduce dimension to zero
-#         assert loss.shape == (1,)
-#     else:
-#         assert loss.shape == ()
-#     # value test
-#     assert (abs(grads).reduce_max() > 0).all_true()
+@pytest.mark.parametrize(
+    "bs_ic_oc", [([1, 2], 4, 5)])
+@pytest.mark.parametrize(
+    "with_v", [True, False])
+@pytest.mark.parametrize(
+    "dtype", ['float32'])
+@pytest.mark.parametrize(
+    "tensor_fn", [ivy.array, helpers.var_fn])
+def test_linear_layer_training(bs_ic_oc, with_v, dtype, tensor_fn, dev, compile_graph, call):
+    # smoke test
+    if call is helpers.np_call:
+        # NumPy does not support gradients
+        pytest.skip()
+    batch_shape, input_channels, output_channels = bs_ic_oc
+    x = ivy.astype(ivy.linspace(ivy.zeros(batch_shape, device=dev),
+                              ivy.ones(batch_shape, device=dev), input_channels), 'float32')
+    if with_v:
+        np.random.seed(0)
+        wlim = (6 / (output_channels + input_channels)) ** 0.5
+        w = ivy.variable(ivy.array(np.random.uniform(-wlim, wlim, (output_channels, input_channels)),
+                                   'float32', dev=dev))
+        b = ivy.variable(ivy.zeros([output_channels], device=dev))
+        v = ivy.Container({'w': w, 'b': b})
+    else:
+        v = None
+    linear_layer = ivy.Linear(input_channels, output_channels, dev=dev, v=v)
+
+    def loss_fn(x_, v_):
+        out = linear_layer(x_, v=v_)
+        return ivy.mean(out)
+
+    def train_step(x_, v_):
+        lss, grds = ivy.execute_with_gradients(lambda _v_: loss_fn(x_, _v_), v_)
+        v_ = ivy.gradient_descent_update(linear_layer.v, grds, 1e-3)
+        return lss, grds, v_
+
+    # train
+    loss_tm1 = 1e12
+    loss = None
+    grads = None
+    for i in range(10):
+        loss, grads, linear_layer.v = train_step(x, linear_layer.v)
+        assert ivy.to_scalar(loss) < ivy.to_scalar(loss_tm1)
+        loss_tm1 = loss
+
+    # type test
+    assert ivy.is_array(loss)
+    assert isinstance(grads, ivy.Container)
+    # cardinality test
+    if call is helpers.mx_call:
+        # mxnet slicing cannot reduce dimension to zero
+        assert loss.shape == (1,)
+    else:
+        assert loss.shape == ()
+    # value test
+    assert (abs(grads).max() > 0).all_true()
 
 
 # Convolutions #
@@ -696,12 +696,12 @@ def test_conv3d_transpose_layer_training(x_n_fs_n_pad_n_outshp_n_oc, with_v, dty
 #         pytest.skip()
 #     # smoke test
 #     b, t, input_channels, hidden_channels, output_true_flat, state_c_true_val = b_t_ic_hc_otf_sctv
-#     x = ivy.cast(ivy.linspace(ivy.zeros([b, t], dev=dev), ivy.ones([b, t], dev=dev), input_channels),
+#     x = ivy.astype(ivy.linspace(ivy.zeros([b, t], device=dev), ivy.ones([b, t], device=dev), input_channels),
 #                  'float32')
 #     if with_v:
-#         kernel = ivy.variable(ivy.ones([input_channels, 4*hidden_channels], dev=dev)*0.5)
-#         recurrent_kernel = ivy.variable(ivy.ones([hidden_channels, 4*hidden_channels], dev=dev)*0.5)
-#         v = Container({'input': {'layer_0': {'w': kernel}},
+#         kernel = ivy.variable(ivy.ones([input_channels, 4*hidden_channels], device=dev)*0.5)
+#         recurrent_kernel = ivy.variable(ivy.ones([hidden_channels, 4*hidden_channels], device=dev)*0.5)
+#         v = ivy.Container({'input': {'layer_0': {'w': kernel}},
 #                        'recurrent': {'layer_0': {'w': recurrent_kernel}}})
 #     else:
 #         v = None
@@ -709,7 +709,7 @@ def test_conv3d_transpose_layer_training(x_n_fs_n_pad_n_outshp_n_oc, with_v, dty
 #
 #     def loss_fn(x_, v_):
 #         out, (state_h, state_c) = lstm_layer(x_, v=v_)
-#         return ivy.reduce_mean(out)[0]
+#         return ivy.mean(out)
 #
 #     def train_step(x_, v_):
 #         lss, grds = ivy.execute_with_gradients(lambda _v_: loss_fn(x_, _v_), v_)
@@ -735,7 +735,7 @@ def test_conv3d_transpose_layer_training(x_n_fs_n_pad_n_outshp_n_oc, with_v, dty
 #     else:
 #         assert loss.shape == ()
 #     # value test
-#     assert (abs(grads).reduce_max() > 0).all_true()
+#     assert (abs(grads).max() > 0).all_true()
 
 
 # Sequential #
@@ -743,81 +743,81 @@ def test_conv3d_transpose_layer_training(x_n_fs_n_pad_n_outshp_n_oc, with_v, dty
 
 
 # sequential
-# @pytest.mark.parametrize(
-#     "bs_c", [([1, 2], 5)])
-# @pytest.mark.parametrize(
-#     "with_v", [True, False])
-# @pytest.mark.parametrize(
-#     "seq_v", [True, False])
-# @pytest.mark.parametrize(
-#     "dtype", ['float32'])
-# @pytest.mark.parametrize(
-#     "tensor_fn", [ivy.array, helpers.var_fn])
-# def test_sequential_layer_training(bs_c, with_v, seq_v, dtype, tensor_fn, dev, compile_graph, call):
-#     # smoke test
-#     if call is helpers.np_call:
-#         # NumPy does not support gradients
-#         pytest.skip()
-#     batch_shape, channels = bs_c
-#     x = ivy.cast(ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), channels), 'float32')
-#     if with_v:
-#         np.random.seed(0)
-#         wlim = (6 / (channels + channels)) ** 0.5
-#         v = Container(
-#             {'submodules':
-#                       {'v0':
-#                            {'w': ivy.variable(ivy.array(np.random.uniform(
-#                                -wlim, wlim, (channels, channels)), 'float32', dev=dev)),
-#                                'b': ivy.variable(ivy.zeros([channels], dev=dev))},
-#                        'v1':
-#                            {'w': ivy.variable(ivy.array(np.random.uniform(
-#                                -wlim, wlim, (channels, channels)), 'float32', dev=dev)),
-#                                'b': ivy.variable(ivy.zeros([channels], dev=dev))},
-#                        'v2':
-#                            {'w': ivy.variable(ivy.array(np.random.uniform(
-#                                -wlim, wlim, (channels, channels)), 'float32', dev=dev)),
-#                                'b': ivy.variable(ivy.zeros([channels], dev=dev))}}})
-#     else:
-#         v = None
-#     if seq_v:
-#         seq = ivy.Sequential(ivy.Linear(channels, channels, dev=dev),
-#                              ivy.Linear(channels, channels, dev=dev),
-#                              ivy.Linear(channels, channels, dev=dev),
-#                              v=v if with_v else None, dev=dev)
-#     else:
-#         seq = ivy.Sequential(ivy.Linear(channels, channels, dev=dev,
-#                                         v=v['submodules']['v0'] if with_v else None),
-#                              ivy.Linear(channels, channels, dev=dev,
-#                                         v=v['submodules']['v1'] if with_v else None),
-#                              ivy.Linear(channels, channels, dev=dev,
-#                                         v=v['submodules']['v2'] if with_v else None), dev=dev)
-#
-#     def loss_fn(x_, v_):
-#         out = seq(x_, v=v_)
-#         return ivy.reduce_mean(out)[0]
-#
-#     def train_step(x_, v_):
-#         lss, grds = ivy.execute_with_gradients(lambda _v_: loss_fn(x_, _v_), v_)
-#         v_ = ivy.gradient_descent_update(seq.v, grds, 1e-3)
-#         return lss, grds, v_
-#
-#     # train
-#     loss_tm1 = 1e12
-#     loss = None
-#     grads = None
-#     for i in range(10):
-#         loss, grads, seq.v = train_step(x, seq.v)
-#         assert ivy.to_scalar(loss) < ivy.to_scalar(loss_tm1)
-#         loss_tm1 = loss
-#
-#     # type test
-#     assert ivy.is_array(loss)
-#     assert isinstance(grads, ivy.Container)
-#     # cardinality test
-#     if call is helpers.mx_call:
-#         # mxnet slicing cannot reduce dimension to zero
-#         assert loss.shape == (1,)
-#     else:
-#         assert loss.shape == ()
-#     # value test
-#     assert (abs(grads).reduce_max() > 0).all_true()
+@pytest.mark.parametrize(
+    "bs_c", [([1, 2], 5)])
+@pytest.mark.parametrize(
+    "with_v", [True, False])
+@pytest.mark.parametrize(
+    "seq_v", [True, False])
+@pytest.mark.parametrize(
+    "dtype", ['float32'])
+@pytest.mark.parametrize(
+    "tensor_fn", [ivy.array, helpers.var_fn])
+def test_sequential_layer_training(bs_c, with_v, seq_v, dtype, tensor_fn, dev, compile_graph, call):
+    # smoke test
+    if call is helpers.np_call:
+        # NumPy does not support gradients
+        pytest.skip()
+    batch_shape, channels = bs_c
+    x = ivy.astype(ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), channels), 'float32')
+    if with_v:
+        np.random.seed(0)
+        wlim = (6 / (channels + channels)) ** 0.5
+        v = ivy.Container(
+            {'submodules':
+                      {'v0':
+                           {'w': ivy.variable(ivy.array(np.random.uniform(
+                               -wlim, wlim, (channels, channels)), 'float32', dev=dev)),
+                               'b': ivy.variable(ivy.zeros([channels], device=dev))},
+                       'v1':
+                           {'w': ivy.variable(ivy.array(np.random.uniform(
+                               -wlim, wlim, (channels, channels)), 'float32', dev=dev)),
+                               'b': ivy.variable(ivy.zeros([channels], device=dev))},
+                       'v2':
+                           {'w': ivy.variable(ivy.array(np.random.uniform(
+                               -wlim, wlim, (channels, channels)), 'float32', dev=dev)),
+                               'b': ivy.variable(ivy.zeros([channels], device=dev))}}})
+    else:
+        v = None
+    if seq_v:
+        seq = ivy.Sequential(ivy.Linear(channels, channels, dev=dev),
+                             ivy.Linear(channels, channels, dev=dev),
+                             ivy.Linear(channels, channels, dev=dev),
+                             v=v if with_v else None, dev=dev)
+    else:
+        seq = ivy.Sequential(ivy.Linear(channels, channels, dev=dev,
+                                        v=v['submodules']['v0'] if with_v else None),
+                             ivy.Linear(channels, channels, dev=dev,
+                                        v=v['submodules']['v1'] if with_v else None),
+                             ivy.Linear(channels, channels, dev=dev,
+                                        v=v['submodules']['v2'] if with_v else None), dev=dev)
+
+    def loss_fn(x_, v_):
+        out = seq(x_, v=v_)
+        return ivy.mean(out)
+
+    def train_step(x_, v_):
+        lss, grds = ivy.execute_with_gradients(lambda _v_: loss_fn(x_, _v_), v_)
+        v_ = ivy.gradient_descent_update(seq.v, grds, 1e-3)
+        return lss, grds, v_
+
+    # train
+    loss_tm1 = 1e12
+    loss = None
+    grads = None
+    for i in range(10):
+        loss, grads, seq.v = train_step(x, seq.v)
+        assert ivy.to_scalar(loss) < ivy.to_scalar(loss_tm1)
+        loss_tm1 = loss
+
+    # type test
+    assert ivy.is_array(loss)
+    assert isinstance(grads, ivy.Container)
+    # cardinality test
+    if call is helpers.mx_call:
+        # mxnet slicing cannot reduce dimension to zero
+        assert loss.shape == (1,)
+    else:
+        assert loss.shape == ()
+    # value test
+    assert (abs(grads).max() > 0).all_true()
