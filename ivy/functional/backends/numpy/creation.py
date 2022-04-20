@@ -9,6 +9,10 @@ from ivy.functional.ivy import default_dtype
 from ivy.functional.backends.numpy.device import _to_dev
 
 
+# Array API Standard #
+# -------------------#
+
+
 def asarray(object_in, dtype=None, dev=None, copy=None):
     # If copy=none then try using existing memory buffer
     if isinstance(object_in, np.ndarray) and dtype is None:
@@ -26,9 +30,6 @@ def asarray(object_in, dtype=None, dev=None, copy=None):
         return _to_dev(np.copy(np.asarray(object_in, dtype=dtype)), dev)
     else:
         return _to_dev(np.asarray(object_in, dtype=dtype), dev)
-
-
-array = asarray
 
 
 def zeros(shape: Union[int, Tuple[int], List[int]],
@@ -160,6 +161,9 @@ def from_dlpack(x):
 
 # Extra #
 # ------#
+
+array = asarray
+
 
 def logspace(start, stop, num, base=10., axis=None, dev=None):
     if axis is None:
