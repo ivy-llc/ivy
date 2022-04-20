@@ -240,14 +240,14 @@ class ContainerBase(dict, abc.ABC):
                 'mean': ivy.Container._mean_unify}[mode](containers, dev, axis)
 
     @staticmethod
-    def concat(containers, dim, config=None):
+    def concat(xs, axis, config=None):
         """Concatenate containers together along the specified dimension.
 
         Parameters
         ----------
-        containers : sequence of Container objects
+        xs : sequence of Container objects
             containers to concatenate
-        dim : int
+        axis : int
             dimension along which to concatenate
         config : dict, optional
             The configuration for the containers. Default is the same as container0.
@@ -255,27 +255,25 @@ class ContainerBase(dict, abc.ABC):
         Returns
         -------
             Concatenated containers
-
         """
-
-        container0 = containers[0]
+        container0 = xs[0]
         if not ivy.exists(config):
             config = container0.config if isinstance(container0, ivy.Container) else {}
 
         if isinstance(container0, ivy.Container):
             return_dict = dict()
             for key in container0.keys():
-                return_dict[key] = ivy.Container.concat([container[key] for container in containers], dim, config)
+                return_dict[key] = ivy.Container.concat([container[key] for container in xs], axis, config)
             return ivy.Container(return_dict, **config)
         else:
             # noinspection PyProtectedMember
             ivyh = ivy.default(lambda: config['ivyh'], ivy, True)
             # noinspection PyBroadException
             try:
-                if len(containers[0].shape) == 0:
-                    return ivyh.concat([ivyh.reshape(item, [1] * (dim + 1)) for item in containers], dim)
+                if len(xs[0].shape) == 0:
+                    return ivyh.concat([ivyh.reshape(item, [1] * (axis + 1)) for item in xs], axis)
                 else:
-                    return ivyh.concat(containers, dim)
+                    return ivyh.concat(xs, axis)
             except Exception as e:
                 raise Exception(str(e) + '\nContainer concat operation only valid for containers of arrays')
 
