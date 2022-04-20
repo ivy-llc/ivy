@@ -60,6 +60,17 @@ def set_nest_at_index(nest, index, value):
         set_nest_at_index(nest[index[0]], index[1:], value)
 
 
+def insert_into_nest_at_index(nest, index, value):
+    if len(index) == 1:
+        idx = index[0]
+        if isinstance(nest, list):
+            nest.insert(idx, value)
+        else:
+            nest[index[0]] = value
+    else:
+        insert_into_nest_at_index(nest[index[0]], index[1:], value)
+
+
 def map_nest_at_index(nest, index, fn):
     """
     Map a function to the value of a nested item at a specified index
@@ -115,6 +126,22 @@ def set_nest_at_indices(nest, indices, values):
     if not isinstance(values, (list, tuple)):
         values = [values]*len(indices)
     [set_nest_at_index(nest, index, value) for index, value in zip(indices, values)]
+
+
+def insert_into_nest_at_indices(nest, indices, values):
+    """
+    Insert a value into the nested item at specified indices with specified values.
+
+    :param nest: The nested object to insert into.
+    :type nest: nested
+    :param indices: A tuple of tuples of indices for the indices at which to insert values.
+    :type indices: tuple of tuples of indices
+    :param values: The new values for inserting.
+    :type values: sequence of any
+    """
+    if not isinstance(values, (list, tuple)):
+        values = [values]*len(indices)
+    [insert_into_nest_at_index(nest, index, value) for index, value in zip(indices, values)]
 
 
 def map_nest_at_indices(nest, indices, fn):
