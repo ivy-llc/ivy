@@ -3,8 +3,11 @@ Collection of tests for training normalization layers
 """
 
 # global
+import pytest
 
 # local
+import ivy
+import ivy_tests.test_ivy.helpers as helpers
 
 
 # layer norm
@@ -26,7 +29,7 @@ Collection of tests for training normalization layers
 #     x, normalized_shape = x_n_ns
 #     x = tensor_fn(x, dtype, dev)
 #     if with_v:
-#         v = Container({'scale': ivy.variable(ivy.ones(normalized_shape)),
+#         v = ivy.Container({'scale': ivy.variable(ivy.ones(normalized_shape)),
 #                        'offset': ivy.variable(ivy.zeros(normalized_shape))})
 #     else:
 #         v = None
@@ -34,7 +37,7 @@ Collection of tests for training normalization layers
 #
 #     def loss_fn(v_):
 #         out = norm_layer(x, v=v_)
-#         return ivy.reduce_mean(out)[0]
+#         return ivy.mean(out)
 #
 #     # train
 #     loss_tm1 = 1e12
@@ -56,4 +59,4 @@ Collection of tests for training normalization layers
 #     else:
 #         assert loss.shape == ()
 #     # value test
-#     assert (abs(grads).reduce_max() > 0).all_true()
+#     assert (abs(grads).max() > 0).all_true()

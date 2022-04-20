@@ -68,62 +68,62 @@ NATIVE_MODULES = {'torch': TorchModule,
 
 
 # to_ivy_module
-# @pytest.mark.parametrize(
-#     "bs_ic_oc", [([1, 2], 4, 5)])
-# @pytest.mark.parametrize(
-#     "from_class_and_args", [True, False])
-# @pytest.mark.parametrize(
-#     "inplace_update", [True, False])
-# def test_to_ivy_module(bs_ic_oc, from_class_and_args, inplace_update, dev, call):
-#     # smoke test
-#     if call not in [helpers.torch_call, helpers.jnp_call]:
-#         # Currently only implemented for PyTorch
-#         pytest.skip()
-#     batch_shape, input_channels, output_channels = bs_ic_oc
-#     x = ivy.cast(ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), input_channels), 'float32')
-#     natvie_module_class = NATIVE_MODULES[ivy.current_framework_str()]
-#     if from_class_and_args:
-#         ivy_module = ivy.to_ivy_module(native_module_class=natvie_module_class,
-#                                        args=[input_channels, output_channels],
-#                                        dev=dev, inplace_update=inplace_update)
-#     else:
-#         if call is helpers.jnp_call:
-#             def forward_fn(*a, **kw):
-#                 model = natvie_module_class(input_channels, output_channels)
-#                 return model(*a, **kw)
-#             native_module = hk.transform(forward_fn)
-#         else:
-#             native_module = natvie_module_class(input_channels, output_channels)
-#         ivy_module = ivy.to_ivy_module(native_module, dev=dev, inplace_update=inplace_update)
-#
-#     def loss_fn(v_=None):
-#         out = ivy_module(x, v=v_)
-#         return ivy.reduce_mean(out)[0]
-#
-#     # train
-#     loss_tm1 = 1e12
-#     loss = None
-#     grads = None
-#     loss_fn()  # for on-call mode
-#
-#     if inplace_update:
-#         # inplace_update mode does not support gradient propagation
-#         return
-#
-#     for i in range(10):
-#         loss, grads = ivy.execute_with_gradients(loss_fn, ivy_module.v)
-#         ivy_module.v = ivy.gradient_descent_update(ivy_module.v, grads, 1e-3)
-#         assert loss < loss_tm1
-#         loss_tm1 = loss
-#
-#     # type test
-#     assert ivy.is_array(loss)
-#     assert isinstance(grads, ivy.Container)
-#     # cardinality test
-#     if call is helpers.mx_call:
-#         # mxnet slicing cannot reduce dimension to zero
-#         assert loss.shape == (1,)
-#     else:
-#         assert loss.shape == ()
-#     # value test
-#     assert (abs(grads).reduce_max() > 0).all_true()
+@pytest.mark.parametrize(
+    "bs_ic_oc", [([1, 2], 4, 5)])
+@pytest.mark.parametrize(
+    "from_class_and_args", [True, False])
+@pytest.mark.parametrize(
+    "inplace_update", [True, False])
+def test_to_ivy_module(bs_ic_oc, from_class_and_args, inplace_update, dev, call):
+    # smoke test
+    if call not in [helpers.torch_call, helpers.jnp_call]:
+        # Currently only implemented for PyTorch
+        pytest.skip()
+    batch_shape, input_channels, output_channels = bs_ic_oc
+    x = ivy.astype(ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), input_channels), 'float32')
+    natvie_module_class = NATIVE_MODULES[ivy.current_framework_str()]
+    if from_class_and_args:
+        ivy_module = ivy.to_ivy_module(native_module_class=natvie_module_class,
+                                       args=[input_channels, output_channels],
+                                       dev=dev, inplace_update=inplace_update)
+    else:
+        if call is helpers.jnp_call:
+            def forward_fn(*a, **kw):
+                model = natvie_module_class(input_channels, output_channels)
+                return model(*a, **kw)
+            native_module = hk.transform(forward_fn)
+        else:
+            native_module = natvie_module_class(input_channels, output_channels)
+        ivy_module = ivy.to_ivy_module(native_module, dev=dev, inplace_update=inplace_update)
+
+    def loss_fn(v_=None):
+        out = ivy_module(x, v=v_)
+        return ivy.mean(out)
+
+    # train
+    loss_tm1 = 1e12
+    loss = None
+    grads = None
+    loss_fn()  # for on-call mode
+
+    if inplace_update:
+        # inplace_update mode does not support gradient propagation
+        return
+
+    for i in range(10):
+        loss, grads = ivy.execute_with_gradients(loss_fn, ivy_module.v)
+        ivy_module.v = ivy.gradient_descent_update(ivy_module.v, grads, 1e-3)
+        assert loss < loss_tm1
+        loss_tm1 = loss
+
+    # type test
+    assert ivy.is_array(loss)
+    assert isinstance(grads, ivy.Container)
+    # cardinality test
+    if call is helpers.mx_call:
+        # mxnet slicing cannot reduce dimension to zero
+        assert loss.shape == (1,)
+    else:
+        assert loss.shape == ()
+    # value test
+    assert (abs(grads).max() > 0).all_true()
