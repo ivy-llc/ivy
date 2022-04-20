@@ -56,7 +56,7 @@ class TrainableModuleWithSplit(ivy.Module):
 
 def loss_fn(module, x_, v_):
     out = module(x_, v=v_)
-    return ivy.mean(out)[0]
+    return ivy.mean(out)
 
 
 def map_fn(module, dev, xn, vc):
@@ -64,82 +64,82 @@ def map_fn(module, dev, xn, vc):
 
 
 # distributed training
-# @pytest.mark.parametrize(
-#     "bs_ic_oc", [([2, 1], 4, 5)])
-# def test_distributed_training(bs_ic_oc, dev, call):
-#     # smoke test
-#     if call is helpers.np_call:
-#         # NumPy does not support gradients
-#         pytest.skip()
-#
-#     # devices and inputs
-#     devs = list()
-#     xs = dict()
-#
-#     # first device
-#     dev0 = dev
-#     devs.append(dev0)
-#
-#     # first input
-#     batch_shape, input_channels, output_channels = bs_ic_oc
-#     dev_batch_shape = [int(batch_shape[0]/2)] + batch_shape[1:]
-#     xs[dev0] = ivy.asarray(ivy.linspace(ivy.zeros(dev_batch_shape), ivy.ones(dev_batch_shape),
-#                                          input_channels, dev=dev0), 'float32')
-#
-#     # second device
-#     if 'gpu' in dev and ivy.num_gpus() > 1:
-#         idx = ivy.num_gpus() - 1
-#         dev1 = dev[:-1] + str(idx)
-#         devs.append(dev1)
-#
-#         # second input
-#         xs[dev1] = ivy.asarray(ivy.linspace(ivy.zeros(dev_batch_shape), ivy.ones(dev_batch_shape),
-#                                              input_channels, dev=dev1), 'float32')
-#
-#     # combined inputs
-#     x = ivy.DevDistItem(xs)
-#
-#     # module
-#     module = TrainableModule(input_channels, output_channels, dev=dev0)
-#     module.build()
-#
-#     # optimizer
-#     optim = ivy.SGD(1e-4)
-#
-#     # train
-#     loss_tm1 = 1e12
-#     loss = None
-#     grads = None
-#     for i in range(10):
-#         loss_n_grads = ivy.MultiDevIter(
-#             ivy.map(map_fn,
-#                     constant={'module': module, 'dev': dev0},
-#                     unique={'xn': x.values(), 'vc': module.v.dev_clone(devs).values()}), devs)
-#         loss, grads = ivy.dev_unify_iter(loss_n_grads, dev0, 'mean', transpose=True)
-#         module.v = optim.step(module.v, grads)
-#         assert loss < loss_tm1
-#         loss_tm1 = loss
-#
-#     # type test
-#     assert ivy.is_ivy_array(loss)
-#     assert isinstance(grads, ivy.Container)
-#     # cardinality test
-#     if call is helpers.mx_call:
-#         # mxnet slicing cannot reduce dimension to zero
-#         assert loss.shape == (1,)
-#     else:
-#         assert loss.shape == ()
-#     # value test
-#     assert ivy.max(ivy.abs(grads.linear0.b)) > 0
-#     assert ivy.max(ivy.abs(grads.linear0.w)) > 0
-#     assert ivy.max(ivy.abs(grads.linear1.b)) > 0
-#     assert ivy.max(ivy.abs(grads.linear1.w)) > 0
-#     assert ivy.max(ivy.abs(grads.linear2.b)) > 0
-#     assert ivy.max(ivy.abs(grads.linear2.w)) > 0
-#     # compilation test
-#     if call is helpers.torch_call:
-#         # pytest scripting does not support **kwargs
-#         return
+@pytest.mark.parametrize(
+    "bs_ic_oc", [([2, 1], 4, 5)])
+def test_distributed_training(bs_ic_oc, dev, call):
+    # smoke test
+    if call is helpers.np_call:
+        # NumPy does not support gradients
+        pytest.skip()
+
+    # devices and inputs
+    devs = list()
+    xs = dict()
+
+    # first device
+    dev0 = dev
+    devs.append(dev0)
+
+    # first input
+    batch_shape, input_channels, output_channels = bs_ic_oc
+    dev_batch_shape = [int(batch_shape[0]/2)] + batch_shape[1:]
+    xs[dev0] = ivy.asarray(ivy.linspace(ivy.zeros(dev_batch_shape), ivy.ones(dev_batch_shape),
+                                         input_channels, dev=dev0), 'float32')
+
+    # second device
+    if 'gpu' in dev and ivy.num_gpus() > 1:
+        idx = ivy.num_gpus() - 1
+        dev1 = dev[:-1] + str(idx)
+        devs.append(dev1)
+
+        # second input
+        xs[dev1] = ivy.asarray(ivy.linspace(ivy.zeros(dev_batch_shape), ivy.ones(dev_batch_shape),
+                                             input_channels, dev=dev1), 'float32')
+
+    # combined inputs
+    x = ivy.DevDistItem(xs)
+
+    # module
+    module = TrainableModule(input_channels, output_channels, dev=dev0)
+    module.build()
+
+    # optimizer
+    optim = ivy.SGD(1e-4)
+
+    # train
+    loss_tm1 = 1e12
+    loss = None
+    grads = None
+    for i in range(10):
+        loss_n_grads = ivy.MultiDevIter(
+            ivy.map(map_fn,
+                    constant={'module': module, 'dev': dev0},
+                    unique={'xn': x.values(), 'vc': module.v.dev_clone(devs).values()}), devs)
+        loss, grads = ivy.dev_unify_iter(loss_n_grads, dev0, 'mean', transpose=True)
+        module.v = optim.step(module.v, grads)
+        assert loss < loss_tm1
+        loss_tm1 = loss
+
+    # type test
+    assert ivy.is_ivy_array(loss)
+    assert isinstance(grads, ivy.Container)
+    # cardinality test
+    if call is helpers.mx_call:
+        # mxnet slicing cannot reduce dimension to zero
+        assert loss.shape == (1,)
+    else:
+        assert loss.shape == ()
+    # value test
+    assert ivy.max(ivy.abs(grads.linear0.b)) > 0
+    assert ivy.max(ivy.abs(grads.linear0.w)) > 0
+    assert ivy.max(ivy.abs(grads.linear1.b)) > 0
+    assert ivy.max(ivy.abs(grads.linear1.w)) > 0
+    assert ivy.max(ivy.abs(grads.linear2.b)) > 0
+    assert ivy.max(ivy.abs(grads.linear2.w)) > 0
+    # compilation test
+    if call is helpers.torch_call:
+        # pytest scripting does not support **kwargs
+        return
 
 
 # distributed multiprocess training
@@ -166,7 +166,7 @@ def map_fn(module, dev, xn, vc):
 #     # first input
 #     batch_shape, input_channels, output_channels = bs_ic_oc
 #     dev_batch_shape = [int(batch_shape[0]/2)] + batch_shape[1:]
-#     xs[dev0] = ivy.cast(ivy.linspace(ivy.zeros(dev_batch_shape), ivy.ones(dev_batch_shape),
+#     xs[dev0] = ivy.astype(ivy.linspace(ivy.zeros(dev_batch_shape), ivy.ones(dev_batch_shape),
 #                                          input_channels, dev=dev0), 'float32')
 #
 #     # second device
@@ -176,7 +176,7 @@ def map_fn(module, dev, xn, vc):
 #         devs.append(dev1)
 #
 #         # second input
-#         xs[dev1] = ivy.cast(ivy.linspace(ivy.zeros(dev_batch_shape), ivy.ones(dev_batch_shape),
+#         xs[dev1] = ivy.astype(ivy.linspace(ivy.zeros(dev_batch_shape), ivy.ones(dev_batch_shape),
 #                                              input_channels, dev=dev1), 'float32')
 #
 #     # combined inputs
@@ -221,12 +221,12 @@ def map_fn(module, dev, xn, vc):
 #     else:
 #         assert loss.shape == ()
 #     # value test
-#     assert ivy.reduce_max(ivy.abs(grads.linear0.b)) > 0
-#     assert ivy.reduce_max(ivy.abs(grads.linear0.w)) > 0
-#     assert ivy.reduce_max(ivy.abs(grads.linear1.b)) > 0
-#     assert ivy.reduce_max(ivy.abs(grads.linear1.w)) > 0
-#     assert ivy.reduce_max(ivy.abs(grads.linear2.b)) > 0
-#     assert ivy.reduce_max(ivy.abs(grads.linear2.w)) > 0
+#     assert ivy.max(ivy.abs(grads.linear0.b)) > 0
+#     assert ivy.max(ivy.abs(grads.linear0.w)) > 0
+#     assert ivy.max(ivy.abs(grads.linear1.b)) > 0
+#     assert ivy.max(ivy.abs(grads.linear1.w)) > 0
+#     assert ivy.max(ivy.abs(grads.linear2.b)) > 0
+#     assert ivy.max(ivy.abs(grads.linear2.w)) > 0
 #     # delete dev mapper
 #     dev_mapper.__del__()
 #     del dev_mapper
@@ -256,7 +256,7 @@ def map_fn(module, dev, xn, vc):
 #     # first input
 #     batch_shape, input_channels, output_channels = bs_ic_oc
 #     dev_batch_shape = [int(batch_shape[0]/2)] + batch_shape[1:]
-#     xs[dev0] = ivy.cast(ivy.linspace(ivy.zeros(dev_batch_shape), ivy.ones(dev_batch_shape),
+#     xs[dev0] = ivy.astype(ivy.linspace(ivy.zeros(dev_batch_shape), ivy.ones(dev_batch_shape),
 #                                          input_channels, dev=dev0), 'float32')
 #
 #     # second device
@@ -266,7 +266,7 @@ def map_fn(module, dev, xn, vc):
 #         devs.append(dev1)
 #
 #         # second input
-#         xs[dev1] = ivy.cast(ivy.linspace(ivy.zeros(dev_batch_shape), ivy.ones(dev_batch_shape),
+#         xs[dev1] = ivy.astype(ivy.linspace(ivy.zeros(dev_batch_shape), ivy.ones(dev_batch_shape),
 #                                              input_channels, dev=dev1), 'float32')
 #
 #     # combined inputs
@@ -326,7 +326,7 @@ def map_fn(module, dev, xn, vc):
 #     else:
 #         assert loss.shape == ()
 #     # value test
-#     assert (abs(grads).reduce_max() > 0).all_true()
+#     assert (abs(grads).max() > 0).all_true()
 
 
 # to_ivy_module_distributed
@@ -456,7 +456,7 @@ def map_fn(module, dev, xn, vc):
 #
 #     # input
 #     batch_shape, input_channels, output_channels = bs_ic_oc
-#     x = ivy.cast(ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape),
+#     x = ivy.astype(ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape),
 #                               input_channels, dev=dev0), 'float32')
 #
 #     # module for processes
@@ -502,12 +502,12 @@ def map_fn(module, dev, xn, vc):
 #     else:
 #         assert loss.shape == ()
 #     # value test
-#     assert ivy.reduce_max(ivy.abs(grads.linear0.b)) > 0
-#     assert ivy.reduce_max(ivy.abs(grads.linear0.w)) > 0
-#     assert ivy.reduce_max(ivy.abs(grads.linear1.b)) > 0
-#     assert ivy.reduce_max(ivy.abs(grads.linear1.w)) > 0
-#     assert ivy.reduce_max(ivy.abs(grads.linear2.b)) > 0
-#     assert ivy.reduce_max(ivy.abs(grads.linear2.w)) > 0
+#     assert ivy.max(ivy.abs(grads.linear0.b)) > 0
+#     assert ivy.max(ivy.abs(grads.linear0.w)) > 0
+#     assert ivy.max(ivy.abs(grads.linear1.b)) > 0
+#     assert ivy.max(ivy.abs(grads.linear1.w)) > 0
+#     assert ivy.max(ivy.abs(grads.linear2.b)) > 0
+#     assert ivy.max(ivy.abs(grads.linear2.w)) > 0
 #     # delete dev manager
 #     dev_manager.__del__()
 #     del dev_manager
