@@ -240,18 +240,16 @@ def sample(iterable):
     return st.builds(lambda i: iterable[i], st.integers(0, len(iterable) - 1))
 
 
-def assert_all_close(x, y):
+def assert_all_close(x, y, rtol=1e-05, atol=1e-08):
     if ivy.is_ivy_container(x) and ivy.is_ivy_container(y):
         ivy.Container.multi_map(assert_all_close, [x, y])
     else:
-        assert np.allclose(np.nan_to_num(x), np.nan_to_num(y))
+        assert np.allclose(np.nan_to_num(x), np.nan_to_num(y), rtol=rtol, atol=atol), '{} != {}'.format(x, y)
 
 
-def kwargs_to_args_n_kwargs(positional_ratio, kwargs):
-    num_args_n_kwargs = len(kwargs)
-    num_args = int(round(positional_ratio * num_args_n_kwargs))
-    args = [v for v in list(kwargs.values())[:num_args]]
-    kwargs = {k: kwargs[k] for k in list(kwargs.keys())[num_args:]}
+def kwargs_to_args_n_kwargs(num_positional_args, kwargs):
+    args = [v for v in list(kwargs.values())[:num_positional_args]]
+    kwargs = {k: kwargs[k] for k in list(kwargs.keys())[num_positional_args:]}
     return args, kwargs
 
 
@@ -279,8 +277,8 @@ def as_lists(dtype, as_variable, with_out, native_array, container):
     return dtype, as_variable, with_out, native_array, container
 
 
-def test_array_function(dtype, as_variable, with_out, positional_ratio, native_array, container, instance_method,
-                        fw, fn_name, **all_as_kwargs_np):
+def test_array_function(dtype, as_variable, with_out, num_positional_args, native_array, container, instance_method,
+                        fw, fn_name, rtol=1e-05, atol=1e-08, **all_as_kwargs_np):
 
     # convert single values to length 1 lists
     dtype, as_variable, with_out, native_array, container = as_lists(
@@ -296,12 +294,10 @@ def test_array_function(dtype, as_variable, with_out, positional_ratio, native_a
     with_out = with_out and not max(container)
 
     # split the arguments into their positional and keyword components
-    args_np, kwargs_np = kwargs_to_args_n_kwargs(positional_ratio, all_as_kwargs_np)
+    args_np, kwargs_np = kwargs_to_args_n_kwargs(num_positional_args, all_as_kwargs_np)
 
-    # if any of the data types are not supported, skip the test
-    for d in dtype:
-        if d in ivy.invalid_dtype_strs:
-            return  # invalid dtype
+    # change all data types so that they are supported by this framework
+    dtype = ['float32' if d in ivy.invalid_dtype_strs else d for d in dtype]
 
     # create args
     args_idxs = ivy.nested_indices_where(args_np, lambda x: isinstance(x, np.ndarray))
@@ -387,4 +383,37 @@ def test_array_function(dtype, as_variable, with_out, positional_ratio, native_a
         ret_from_np = (ret_from_np,)
     ret_from_np_flat = ivy.multi_index_nest(ret_from_np, ret_idxs)
     for ret_np, ret_from_np in zip(ret_np_flat, ret_from_np_flat):
-        assert_all_close(ret_np, ret_from_np)
+        assert_all_close(ret_np, ret_from_np, rtol=rtol, atol=atol)
+
+
+# Hypothesis #
+# -----------#
+
+@st.composite
+def array_dtypes(draw, na=st.shared(st.integers(), key='num_arrays')):
+    size = na if isinstance(na, int) else draw(na)
+    return draw(st.lists(sample(ivy_np.valid_float_dtype_strs), min_size=size, max_size=size))
+
+
+@st.composite
+def array_bools(draw, na=st.shared(st.integers(), key='num_arrays')):
+    size = na if isinstance(na, int) else draw(na)
+    return draw(st.lists(st.booleans(), min_size=size, max_size=size))
+
+
+@st.composite
+def lists(draw, arg, min_size=None, max_size=None):
+    if isinstance(min_size, str):
+        min_size = draw(st.shared(st.integers(), key=min_size))
+    if isinstance(max_size, str):
+        max_size = draw(st.shared(st.integers(), key=max_size))
+    return draw(st.lists(arg, min_size=min_size, max_size=max_size))
+
+
+@st.composite
+def integers(draw, min_value=None, max_value=None):
+    if isinstance(min_value, str):
+        min_value = draw(st.shared(st.integers(), key=min_value))
+    if isinstance(max_value, str):
+        max_value = draw(st.shared(st.integers(), key=max_value))
+    return draw(st.integers(min_value=min_value, max_value=max_value))
