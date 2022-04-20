@@ -1,20 +1,13 @@
+# global
+from typing import get_type_hints
+
 # local
 import ivy
 
 
 def _wrap_fn(fn_name):
     def new_fn(self, *args, **kwargs):
-        arg_array_idxs = ivy.nested_indices_where(args, ivy.is_ivy_array)
-        if arg_array_idxs:
-            args = ivy.copy_nest(args, to_mutable=True)
-            ivy.set_nest_at_index(args, arg_array_idxs[0], self._data)
-        else:
-            kwarg_array_idxs = ivy.nested_indices_where(kwargs, ivy.is_ivy_array)
-            if not kwarg_array_idxs:
-                raise Exception('no array arguments found')
-            kwargs = ivy.copy_nest(kwargs, to_mutable=True)
-            ivy.set_nest_at_index(kwargs, kwarg_array_idxs[0], self._data)
-        return ivy.__dict__[fn_name](*args, **kwargs)
+        return ivy.__dict__[fn_name](self._data, *args, **kwargs)
     return new_fn
 
 
