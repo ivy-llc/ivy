@@ -135,10 +135,12 @@
 <li class="toctree-l2"><a class="reference internal" href="nest/index_nest.html">index_nest</a></li>
 <li class="toctree-l2"><a class="reference internal" href="nest/prune_nest_at_index.html">prune_nest_at_index</a></li>
 <li class="toctree-l2"><a class="reference internal" href="nest/set_nest_at_index.html">set_nest_at_index</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nest/insert_into_nest_at_index.html">insert_into_nest_at_index</a></li>
 <li class="toctree-l2"><a class="reference internal" href="nest/map_nest_at_index.html">map_nest_at_index</a></li>
 <li class="toctree-l2"><a class="reference internal" href="nest/multi_index_nest.html">multi_index_nest</a></li>
 <li class="toctree-l2"><a class="reference internal" href="nest/prune_nest_at_indices.html">prune_nest_at_indices</a></li>
 <li class="toctree-l2"><a class="reference internal" href="nest/set_nest_at_indices.html">set_nest_at_indices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nest/insert_into_nest_at_indices.html">insert_into_nest_at_indices</a></li>
 <li class="toctree-l2"><a class="reference internal" href="nest/map_nest_at_indices.html">map_nest_at_indices</a></li>
 <li class="toctree-l2"><a class="reference internal" href="nest/nested_indices_where.html">nested_indices_where</a></li>
 <li class="toctree-l2"><a class="reference internal" href="nest/all_nested_indices.html">all_nested_indices</a></li>
@@ -294,6 +296,26 @@ Used internally, do not set manually.</p></li>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>nest</strong> (<em>nested</em>) – The nested object to index.</p></li>
 <li><p><strong>index</strong> (<em>tuple of indices</em>) – A tuple of indices for indexing.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.nest.insert_into_nest_at_index">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">insert_into_nest_at_index</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">nest</span></em>, <em class="sig-param"><span class="n">index</span></em>, <em class="sig-param"><span class="n">value</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/nest.html#insert_into_nest_at_index"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.nest.insert_into_nest_at_index" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.nest.insert_into_nest_at_indices">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">insert_into_nest_at_indices</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">nest</span></em>, <em class="sig-param"><span class="n">indices</span></em>, <em class="sig-param"><span class="n">values</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/nest.html#insert_into_nest_at_indices"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.nest.insert_into_nest_at_indices" title="Permalink to this definition">¶</a></dt>
+<dd><p>Insert a value into the nested item at specified indices with specified values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>nest</strong> (<em>nested</em>) – The nested object to insert into.</p></li>
+<li><p><strong>indices</strong> (<em>tuple of tuples of indices</em>) – A tuple of tuples of indices for the indices at which to insert values.</p></li>
+<li><p><strong>values</strong> (<em>sequence of any</em>) – The new values for inserting.</p></li>
 </ul>
 </dd>
 </dl>

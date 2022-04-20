@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>all_nested_indices &mdash; Ivy 1.0 documentation</title>
+  <title>insert_into_nest_at_index &mdash; Ivy 1.0 documentation</title>
   
 
   
@@ -36,8 +36,8 @@
   <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="map" href="map.html" />
-    <link rel="prev" title="nested_indices_where" href="nested_indices_where.html" /> 
+    <link rel="next" title="map_nest_at_index" href="map_nest_at_index.html" />
+    <link rel="prev" title="set_nest_at_index" href="set_nest_at_index.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -135,7 +135,7 @@
 <li class="toctree-l2"><a class="reference internal" href="index_nest.html">index_nest</a></li>
 <li class="toctree-l2"><a class="reference internal" href="prune_nest_at_index.html">prune_nest_at_index</a></li>
 <li class="toctree-l2"><a class="reference internal" href="set_nest_at_index.html">set_nest_at_index</a></li>
-<li class="toctree-l2"><a class="reference internal" href="insert_into_nest_at_index.html">insert_into_nest_at_index</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">insert_into_nest_at_index</a></li>
 <li class="toctree-l2"><a class="reference internal" href="map_nest_at_index.html">map_nest_at_index</a></li>
 <li class="toctree-l2"><a class="reference internal" href="multi_index_nest.html">multi_index_nest</a></li>
 <li class="toctree-l2"><a class="reference internal" href="prune_nest_at_indices.html">prune_nest_at_indices</a></li>
@@ -143,7 +143,7 @@
 <li class="toctree-l2"><a class="reference internal" href="insert_into_nest_at_indices.html">insert_into_nest_at_indices</a></li>
 <li class="toctree-l2"><a class="reference internal" href="map_nest_at_indices.html">map_nest_at_indices</a></li>
 <li class="toctree-l2"><a class="reference internal" href="nested_indices_where.html">nested_indices_where</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">all_nested_indices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="all_nested_indices.html">all_nested_indices</a></li>
 <li class="toctree-l2"><a class="reference internal" href="map.html">map</a></li>
 <li class="toctree-l2"><a class="reference internal" href="nested_map.html">nested_map</a></li>
 <li class="toctree-l2"><a class="reference internal" href="nested_any.html">nested_any</a></li>
@@ -229,13 +229,13 @@
         
           <li><a href="../nest.html">Nest</a> &raquo;</li>
         
-      <li>all_nested_indices</li>
+      <li>insert_into_nest_at_index</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../../_sources/functional/ivy/nest/all_nested_indices.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../../_sources/functional/ivy/nest/insert_into_nest_at_index.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -248,27 +248,12 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="all-nested-indices">
-<h1>all_nested_indices<a class="headerlink" href="#all-nested-indices" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="insert-into-nest-at-index">
+<h1>insert_into_nest_at_index<a class="headerlink" href="#insert-into-nest-at-index" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
-<dt id="ivy.functional.ivy.nest.all_nested_indices">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">all_nested_indices</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">nest</span><span class="p">:</span> <span class="n">Iterable</span></em>, <em class="sig-param"><span class="n">include_nests</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">_index</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>List<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">_base</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">True</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>Iterable<span class="p">, </span>bool<span class="p">]</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/nest.html#all_nested_indices"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.nest.all_nested_indices" title="Permalink to this definition">¶</a></dt>
-<dd><p>Checks the leaf nodes of nested x via function fn, and returns all nest indices where the method evaluates as True.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>nest</strong> (<em>nest of any</em>) – The nest to check the leaves of.</p></li>
-<li><p><strong>include_nests</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to also include indices of the nests themselves, not only leaves. Default is False.</p></li>
-<li><p><strong>_index</strong> (<em>list of tuples of indices</em><em>, </em><em>do not set</em>) – The indices detected so far. None at the beginning. Used internally, do not set manually.</p></li>
-<li><p><strong>_base</strong> (<em>bool</em><em>, </em><em>do not set</em>) – Whether the current function call is the first function call in the recursive stack.
-Used internally, do not set manually.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>A set of indices for the nest where the function evaluated as True.</p>
-</dd>
-</dl>
-</dd></dl>
+<dt id="ivy.functional.ivy.nest.insert_into_nest_at_index">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">insert_into_nest_at_index</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">nest</span></em>, <em class="sig-param"><span class="n">index</span></em>, <em class="sig-param"><span class="n">value</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/nest.html#insert_into_nest_at_index"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.nest.insert_into_nest_at_index" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 <div class="line-block">
 <div class="line"><br /></div>
@@ -285,10 +270,10 @@ Used internally, do not set manually.</p></li>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="map.html" class="btn btn-neutral float-right" title="map" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="map_nest_at_index.html" class="btn btn-neutral float-right" title="map_nest_at_index" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="nested_indices_where.html" class="btn btn-neutral float-left" title="nested_indices_where" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="set_nest_at_index.html" class="btn btn-neutral float-left" title="set_nest_at_index" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
