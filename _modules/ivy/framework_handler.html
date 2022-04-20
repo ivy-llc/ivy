@@ -337,6 +337,8 @@
                 <span class="k">continue</span>
             <span class="n">f</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
         <span class="n">specific_v</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="s1">&#39;array_spec&#39;</span><span class="p">):</span>
+            <span class="n">specific_v</span><span class="o">.</span><span class="n">array_spec</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">array_spec</span>
         <span class="n">ivy</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">specific_v</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">specific_v</span><span class="p">,</span> <span class="n">collections</span><span class="o">.</span><span class="n">Hashable</span><span class="p">):</span>
             <span class="k">try</span><span class="p">:</span>
