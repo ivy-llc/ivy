@@ -4,7 +4,7 @@ Collection of Ivy functions for nested objects.
 
 # global
 from builtins import map as _map
-from typing import Callable, Any, Union, List, Optional, Dict, Iterable
+from typing import Callable, Any, Union, List, Tuple, Optional, Dict, Iterable
 
 # local
 import ivy
@@ -158,8 +158,13 @@ def map_nest_at_indices(nest, indices, fn):
     [map_nest_at_index(nest, index, fn) for index in indices]
 
 
-def nested_indices_where(nest: Iterable, fn: Callable, check_nests: bool = False, _index: List = None,
-                         _base: bool = True) -> Union[Iterable, bool]:
+def nested_indices_where(nest: Iterable,
+                         fn: Callable,
+                         check_nests: bool = False,
+                         to_ignore: Union[type, Tuple[type]] = None,
+                         _index: List = None,
+                         _base: bool = True)\
+        -> Union[Iterable, bool]:
     """
     Checks the leaf nodes of nested x via function fn, and returns all nest indices where the method evaluates as True.
 
@@ -167,6 +172,8 @@ def nested_indices_where(nest: Iterable, fn: Callable, check_nests: bool = False
     :type nest: nest of any
     :param fn: The conditon function, returning True or False.
     :type fn: callable
+    :param to_ignore: A type or sequence of types to ignore when recursing
+    :type to_ignore: type or sequence of types, optional
     :param check_nests: Whether to also check the nests for the condition, not only nest leaves. Default is False.
     :type check_nests: bool, optional
     :param _index: The indices detected so far. None at the beginning. Used internally, do not set manually.
@@ -176,14 +183,17 @@ def nested_indices_where(nest: Iterable, fn: Callable, check_nests: bool = False
     :type _base: bool, do not set
     :return: A set of indices for the nest where the function evaluated as True.
     """
+    to_ignore = ivy.default(to_ignore, ())
     _index = list() if _index is None else _index
-    if isinstance(nest, (tuple, list)):
-        _indices = [nested_indices_where(item, fn, check_nests, _index + [i], False) for i, item in enumerate(nest)]
+    if isinstance(nest, (tuple, list)) and not isinstance(nest, to_ignore):
+        _indices = [nested_indices_where(item, fn, check_nests, to_ignore, _index + [i], False)
+                    for i, item in enumerate(nest)]
         _indices = [idx for idxs in _indices if idxs for idx in idxs]
         if check_nests and fn(nest):
             _indices.append(_index)
-    elif isinstance(nest, dict):
-        _indices = [nested_indices_where(v, fn, check_nests, _index + [k], False) for k, v in nest.items()]
+    elif isinstance(nest, dict) and not isinstance(nest, to_ignore):
+        _indices = [nested_indices_where(v, fn, check_nests, to_ignore, _index + [k], False)
+                    for k, v in nest.items()]
         _indices = [idx for idxs in _indices if idxs for idx in idxs]
         if check_nests and fn(nest):
             _indices.append(_index)
