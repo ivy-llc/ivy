@@ -282,7 +282,11 @@ def nested_map(x: Union[Union[ivy.Array, ivy.NativeArray], Iterable],
                                tuple_check_fn, list_check_fn, dict_check_fn) for i in x]
         if to_mutable:
             return ret_list
-        return class_instance(tuple(ret_list))
+        elif hasattr(x, '_fields'):
+            # noinspection PyProtectedMember
+            return class_instance(**dict(zip(x._fields, ret_list)))
+        else:
+            return class_instance(ret_list)
     elif list_check_fn(x, list):
         return class_instance([nested_map(i, fn, include_derived, to_mutable, max_depth, _depth+1,
                                           tuple_check_fn, list_check_fn, dict_check_fn) for i in x])
