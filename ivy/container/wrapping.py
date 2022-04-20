@@ -18,8 +18,8 @@ def _wrap_fn(fn_name):
                 kwargs = ivy.copy_nest(kwargs, to_mutable=True)
                 data_idx = [data_idx[0][1]] + [0 if idx is int else idx for idx in data_idx[1:]]
                 ivy.insert_into_nest_at_index(kwargs, data_idx, self)
-        arg_cont_idxs = [[i] for i, a in enumerate(args) if ivy.is_ivy_container(a)]
-        kwarg_cont_idxs = [[k] for k, v in kwargs.items() if ivy.is_ivy_container(v)]
+        arg_cont_idxs = ivy.nested_indices_where(args, ivy.is_ivy_container, to_ignore=ivy.Container)
+        kwarg_cont_idxs = ivy.nested_indices_where(kwargs, ivy.is_ivy_container, to_ignore=ivy.Container)
         arg_conts = ivy.multi_index_nest(args, arg_cont_idxs)
         num_arg_conts = len(arg_conts)
         kwarg_conts = ivy.multi_index_nest(kwargs, kwarg_cont_idxs)
