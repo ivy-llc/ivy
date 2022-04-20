@@ -56,7 +56,6 @@ def to_ivy(x: Union[Union[ivy.Array, ivy.NativeArray], Iterable],
     -------
     type
         the input in it's native framework form in the case of ivy.Array or ivy.Variable instances.
-
     """
     if nested:
         return ivy.nested_map(x, _to_ivy, include_derived)
@@ -76,7 +75,8 @@ def args_to_ivy(*args: Iterable[Any],
         The positional arguments to check
     include_derived :
         Whether to also recursive for classes derived from tuple, list and dict. Default is False.
-
+    kwargs :
+        The key-word arguments to check
     Returns
     -------
     type
@@ -111,7 +111,6 @@ def to_native(x: Union[Union[ivy.Array, ivy.NativeArray], Iterable],
     -------
     type
         the input in it's native framework form in the case of ivy.Array or ivy.Variable instances.
-
     """
     if nested:
         return ivy.nested_map(x, _to_native, include_derived)

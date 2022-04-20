@@ -402,11 +402,12 @@ def array_bools(draw, na=st.shared(st.integers(), key='num_arrays')):
 
 
 @st.composite
-def lists(draw, arg, min_size=None, max_size=None):
+def lists(draw, arg, min_size=None, max_size=None, size_bounds=None):
+    ints = st.integers(size_bounds[0], size_bounds[1]) if size_bounds else st.integers()
     if isinstance(min_size, str):
-        min_size = draw(st.shared(st.integers(), key=min_size))
+        min_size = draw(st.shared(ints, key=min_size))
     if isinstance(max_size, str):
-        max_size = draw(st.shared(st.integers(), key=max_size))
+        max_size = draw(st.shared(ints, key=max_size))
     return draw(st.lists(arg, min_size=min_size, max_size=max_size))
 
 

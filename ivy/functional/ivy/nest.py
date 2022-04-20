@@ -4,7 +4,7 @@ Collection of Ivy functions for nested objects.
 
 # global
 from builtins import map as _map
-from typing import Callable, Any, Union, List, Dict, Iterable
+from typing import Callable, Any, Union, List, Tuple, Dict, Iterable
 
 # local
 import ivy
@@ -282,8 +282,15 @@ def map(fn: Callable, constant: Dict[str, Any] = None, unique: Dict[str, Iterabl
     return rets
 
 
-def nested_map(x: Union[Union[ivy.Array, ivy.NativeArray], Iterable], fn: Callable, include_derived: bool = False,
-               to_mutable: bool = False, max_depth: int = None, depth: int = 0)\
+def nested_map(x: Union[Union[ivy.Array, ivy.NativeArray], Iterable],
+               fn: Callable,
+               include_derived: Dict[type, bool] = None,
+               to_mutable: bool = False,
+               max_depth: int = None,
+               _depth: int = 0,
+               _tuple_check_fn: callable = None,
+               _list_check_fn: callable = None,
+               _dict_check_fn: callable = None)\
         -> Union[Union[ivy.Array, ivy.NativeArray], Iterable, Dict]:
     """Applies a function on x in a nested manner, whereby all dicts, lists and tuples are traversed to their lowest
     leaves before applying the method and returning x. If x is not nested, the method is applied to x directly.
@@ -300,8 +307,14 @@ def nested_map(x: Union[Union[ivy.Array, ivy.NativeArray], Iterable], fn: Callab
         Whether to convert the nest to a mutable form, changing all tuples to lists. Default is False.
     max_depth :
         The maximum nested depth to reach. Default is 1. Increase this if the nest is deeper.
-    depth :
-        Placeholder for tracking the recursive depth, do not yet this parameter.
+    _depth :
+        Placeholder for tracking the recursive depth, do not set this parameter.
+    _tuple_check_fn :
+        Placeholder for the tuple check function, do not set this parameter.
+    _list_check_fn :
+        Placeholder for the list check function, do not set this parameter.
+    _dict_check_fn :
+        Placeholder for the dict check function, do not set this parameter.
 
     Returns
     -------
@@ -309,21 +322,33 @@ def nested_map(x: Union[Union[ivy.Array, ivy.NativeArray], Iterable], fn: Callab
         x following the applicable of fn to it's nested leaves, or x itself if x is not nested.
 
     """
-    if ivy.exists(max_depth) and depth > max_depth:
+    if not ivy.exists(include_derived):
+        include_derived = {}
+    for t in (tuple, list, dict):
+        if t not in include_derived:
+            include_derived[t] = False
+    if ivy.exists(max_depth) and _depth > max_depth:
         return x
     class_instance = type(x)
-    check_fn = (lambda x_, t: isinstance(x, t)) if include_derived else (lambda x_, t: type(x) is t)
-    if check_fn(x, tuple):
-        ret_list = [nested_map(i, fn, include_derived, to_mutable, max_depth, depth + 1) for i in x]
+    tuple_check_fn = ivy.default(
+        _tuple_check_fn, (lambda x_, t: isinstance(x, t)) if include_derived[tuple] else (lambda x_, t: type(x) is t))
+    list_check_fn = ivy.default(
+        _list_check_fn, (lambda x_, t: isinstance(x, t)) if include_derived[list] else (lambda x_, t: type(x) is t))
+    dict_check_fn = ivy.default(
+        _dict_check_fn, (lambda x_, t: isinstance(x, t)) if include_derived[dict] else (lambda x_, t: type(x) is t))
+    if tuple_check_fn(x, tuple):
+        ret_list = [nested_map(i, fn, include_derived, to_mutable, max_depth, _depth + 1,
+                               tuple_check_fn, list_check_fn, dict_check_fn) for i in x]
         if to_mutable:
             return ret_list
         return class_instance(tuple(ret_list))
-    elif check_fn(x, list):
-        return class_instance([nested_map(i, fn, include_derived, to_mutable, max_depth, depth+1) for i in x])
-    elif check_fn(x, dict):
+    elif list_check_fn(x, list):
+        return class_instance([nested_map(i, fn, include_derived, to_mutable, max_depth, _depth+1,
+                                          tuple_check_fn, list_check_fn, dict_check_fn) for i in x])
+    elif dict_check_fn(x, dict):
         class_instance = type(x)
-        return class_instance({k: nested_map(v, fn, include_derived, to_mutable, max_depth, depth+1)
-                               for k, v in x.items()})
+        return class_instance({k: nested_map(v, fn, include_derived, to_mutable, max_depth, _depth+1,
+                                             tuple_check_fn, list_check_fn, dict_check_fn) for k, v in x.items()})
     return fn(x)
 
 

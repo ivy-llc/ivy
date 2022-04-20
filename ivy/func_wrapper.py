@@ -50,7 +50,7 @@ def _wrap_method(fn):
         return fn
 
     def _method_w_native_handled(*args, out=None, **kwargs):
-        native_args, native_kwargs = ivy.args_to_native(*args, **kwargs)
+        native_args, native_kwargs = ivy.args_to_native(*args, **kwargs, include_derived={tuple: True})
         if ivy.exists(out):
             native_out = ivy.to_native(out)
             native_or_ivy_ret = fn(*native_args, out=native_out, **native_kwargs)
@@ -61,7 +61,7 @@ def _wrap_method(fn):
         elif ivy.exists(out) and ivy.is_ivy_array(out):
             out.data = ivy.to_native(native_or_ivy_ret)
             return out
-        return ivy.to_ivy(native_or_ivy_ret, nested=True)
+        return ivy.to_ivy(native_or_ivy_ret, nested=True, include_derived={tuple: True})
 
     def _method_wrapped(*args, out=None, **kwargs):
         fn_name = fn.__name__
