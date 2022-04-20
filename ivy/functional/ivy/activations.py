@@ -120,10 +120,10 @@ def sigmoid(x):
        an array containing the sigmoid activation of each element in ``x``.
 
     Examples:
-    >>> x = ivy.array([-1, 0, 1])
+    >>> x = ivy.array([-1., 1., 2.])
     >>> y = ivy.sigmoid(x)
     >>> print(y)
-    [0.268, 0.5, 0.731]
+    [0.268, 0.5, 0.880]
     """
     return _cur_framework(x).sigmoid(x)
 

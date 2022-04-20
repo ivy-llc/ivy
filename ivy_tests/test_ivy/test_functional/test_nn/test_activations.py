@@ -131,7 +131,7 @@ def test_sigmoid(x, dtype, tensor_fn, dev, call):
     # value test
     assert np.allclose(call(ivy.sigmoid, x), ivy.functional.backends.numpy.sigmoid(ivy.to_numpy(x)))
     # docstring test
-    helpers.assert_docstring_examples_run(ivy.sigmoid)
+    helpers.docstring_examples_run(ivy.sigmoid)
 
 
 
