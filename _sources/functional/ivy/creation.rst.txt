@@ -13,6 +13,7 @@ Creation
    :maxdepth: -1
    :caption: Creation
 
+   creation/arange.rst
    creation/asarray.rst
    creation/zeros.rst
    creation/ones.rst
@@ -30,5 +31,4 @@ Creation
    creation/full.rst
    creation/from_dlpack.rst
    creation/logspace.rst
-   creation/arange.rst
 
