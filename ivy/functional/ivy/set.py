@@ -11,12 +11,19 @@ from ivy.framework_handler import current_framework as _cur_framework
 
 def unique_inverse(x: Union[ivy.Array, ivy.NativeArray]) \
         -> Tuple[ivy.Array, ivy.Array]:
-    """
-    Returns a tuple of two arrays, one being the unique elements of an input array x and the other one the indices from
+    """Returns a tuple of two arrays, one being the unique elements of an input array x and the other one the indices from
     the set of uniques elements that reconstruct x.
 
-    :param x: input array.
-    :return: tuple of two arrays (values, inverse_indices)
+    Parameters
+    ----------
+    x :
+        input array.
+
+    Returns
+    -------
+    type
+        tuple of two arrays (values, inverse_indices)
+
     """
     return _cur_framework.unique_inverse(x)
 
@@ -48,12 +55,19 @@ def unique_values(x: Union[ivy.Array, ivy.NativeArray], out: Optional[Union[ivy.
 
 def unique_counts(x: Union[ivy.Array, ivy.NativeArray])\
         -> Tuple[ivy.Array, ivy.Array]:
-    """
-    Returns the unique elements of an input array x and the corresponding counts for each unique element in x.
+    """Returns the unique elements of an input array x and the corresponding counts for each unique element in x.
 
-    :param x: input array. If x has more than one dimension, the function must flatten x and return the unique elements of the flattened array.
-    :return: a namedtuple (values, counts) whose
-            -first element must have the field name values and must be an array containing the unique elements of x. The array must have the same data type as x.
-            -second element must have the field name counts and must be an array containing the number of times each unique element occurs in x. The returned array must have same shape as values and must have the default array index data type.
+    Parameters
+    ----------
+    x :
+        input array. If x has more than one dimension, the function must flatten x and return the unique elements of the flattened array.
+
+    Returns
+    -------
+    type
+        a namedtuple (values, counts) whose
+        -first element must have the field name values and must be an array containing the unique elements of x. The array must have the same data type as x.
+        -second element must have the field name counts and must be an array containing the number of times each unique element occurs in x. The returned array must have same shape as values and must have the default array index data type.
+
     """
     return _cur_framework(x).unique_counts(x)
