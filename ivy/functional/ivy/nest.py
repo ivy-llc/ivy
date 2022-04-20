@@ -267,13 +267,13 @@ def nested_map(x: Union[Union[ivy.Array, ivy.NativeArray], Iterable],
         return x
     class_instance = type(x)
     tuple_check_fn = ivy.default(
-        _tuple_check_fn, (lambda x_, t_: isinstance(x, t_)) if include_derived[tuple]
+        _tuple_check_fn, (lambda x_, t_: isinstance(x_, t_)) if include_derived[tuple]
         else (lambda x_, t_: type(x_) is t_))
     list_check_fn = ivy.default(
-        _list_check_fn, (lambda x_, t_: isinstance(x, t_)) if include_derived[list]
+        _list_check_fn, (lambda x_, t_: isinstance(x_, t_)) if include_derived[list]
         else (lambda x_, t_: type(x_) is t_))
     dict_check_fn = ivy.default(
-        _dict_check_fn, (lambda x_, t_: isinstance(x, t_)) if include_derived[dict]
+        _dict_check_fn, (lambda x_, t_: isinstance(x_, t_)) if include_derived[dict]
         else (lambda x_, t_: type(x_) is t_))
     if tuple_check_fn(x, tuple):
         ret_list = [nested_map(i, fn, include_derived, to_mutable, max_depth, _depth + 1,
