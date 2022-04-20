@@ -178,10 +178,10 @@ def multi_head_attention(x, scale, num_heads, context=None, mask=None, to_q_fn=N
 
 def conv1d(x: Union[ivy.Array, ivy.NativeArray],
            filters: Union[ivy.Array, ivy.NativeArray],
-           strides,
-           padding,
-           data_format='NWC',
-           dilations=1)\
+           strides: int,
+           padding: str,
+           data_format: str = 'NWC',
+           dilations: int = 1)\
            -> ivy.Array:
     """
     Computes a 1-D convolution given 3-D input x and filters arrays.
