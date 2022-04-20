@@ -12,11 +12,11 @@ def _wrap_fn(fn_name):
             args = args[1:]
             if len(args) > data_idx[0][0]:
                 args = ivy.copy_nest(args, to_mutable=True)
-                data_idx = [data_idx[0][0]] + data_idx[1:]
+                data_idx = [data_idx[0][0]] + [0 if idx is int else idx for idx in data_idx[1:]]
                 ivy.insert_into_nest_at_index(args, data_idx, self)
             else:
                 kwargs = ivy.copy_nest(kwargs, to_mutable=True)
-                data_idx = [data_idx[0][1]] + data_idx[1:]
+                data_idx = [data_idx[0][1]] + [0 if idx is int else idx for idx in data_idx[1:]]
                 ivy.insert_into_nest_at_index(kwargs, data_idx, self)
         arg_cont_idxs = [[i] for i, a in enumerate(args) if ivy.is_ivy_container(a)]
         kwarg_cont_idxs = [[k] for k, v in kwargs.items() if ivy.is_ivy_container(v)]
