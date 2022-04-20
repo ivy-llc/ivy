@@ -4,7 +4,7 @@ Collection of Ivy functions for nested objects.
 
 # global
 from builtins import map as _map
-from typing import Callable, Any, Union, List, Tuple, Dict, Iterable
+from typing import Callable, Any, Union, List, Optional, Dict, Iterable
 
 # local
 import ivy
@@ -226,13 +226,13 @@ def map(fn: Callable, constant: Dict[str, Any] = None, unique: Dict[str, Iterabl
 
 def nested_map(x: Union[Union[ivy.Array, ivy.NativeArray], Iterable],
                fn: Callable,
-               include_derived: Dict[type, bool] = None,
+               include_derived: Optional[Union[Dict[type, bool], bool]] = None,
                to_mutable: bool = False,
                max_depth: int = None,
                _depth: int = 0,
-               _tuple_check_fn: callable = None,
-               _list_check_fn: callable = None,
-               _dict_check_fn: callable = None)\
+               _tuple_check_fn: Optional[callable] = None,
+               _list_check_fn: Optional[callable] = None,
+               _dict_check_fn: Optional[callable] = None)\
         -> Union[Union[ivy.Array, ivy.NativeArray], Iterable, Dict]:
     """
     Applies a function on x in a nested manner, whereby all dicts, lists and tuples are traversed to their lowest
@@ -258,7 +258,9 @@ def nested_map(x: Union[Union[ivy.Array, ivy.NativeArray], Iterable],
     :type _dict_check_fn: callable, used internally
     :return: x following the applicable of fn to it's nested leaves, or x itself if x is not nested.
     """
-    if not ivy.exists(include_derived):
+    if include_derived is True:
+        include_derived = {tuple: True, list: True, dict: True}
+    elif not include_derived:
         include_derived = {}
     for t in (tuple, list, dict):
         if t not in include_derived:
