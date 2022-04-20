@@ -77,6 +77,8 @@ def _wrap_method(fn):
         _method_wrapped.__name__ = fn.__name__
     _method_wrapped.wrapped = True
     _method_wrapped.inner_fn = fn
+    if hasattr(fn, 'array_spec'):
+        _method_wrapped.array_spec = fn.array_spec
     if hasattr(fn, 'reduce'):
         _method_wrapped.reduce = fn.reduce
 
