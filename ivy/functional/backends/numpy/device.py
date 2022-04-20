@@ -20,8 +20,9 @@ dev_to_str = lambda dev: 'cpu'
 dev_from_str = lambda dev: 'cpu'
 clear_mem_on_dev = lambda dev: None
 num_gpus = lambda: 0
-tpu_is_available = lambda: False
 
+def tpu_is_available() -> bool:
+    return False
 
 
 def gpu_is_available() -> bool:
