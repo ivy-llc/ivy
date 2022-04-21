@@ -10,6 +10,7 @@ import torch as torch
 from operator import mul
 from functools import reduce as _reduce
 from typing import List, Optional, Union
+from numbers import Number
 
 
 # local
@@ -32,21 +33,27 @@ def array_equal(x0, x1):
     return torch.equal(x0, x1)
 
 
-def to_numpy(x) -> np.ndarray:
+
+def to_numpy(x: torch.Tensor)\
+        -> np.ndarray:
     if isinstance(x, np.ndarray) or isinstance(x, (float, int, bool)):
         return x
     elif torch.is_tensor(x):
+        if x.dtype is torch.bfloat16:
+            x = x.to(torch.float16)
         return x.detach().cpu().numpy()
     raise ValueError('Expected a pytroch tensor.')
 
 
-def to_scalar(x) -> Union[float, int, bool]:
+def to_scalar(x: torch.Tensor)\
+        -> Number:
     if isinstance(x, (float, int)):
         return x
     return x.item()
 
 
-def to_list(x):
+def to_list(x: torch.Tensor)\
+        -> list:
     if isinstance(x, np.ndarray):
         return x.tolist()
     elif torch.is_tensor(x):
@@ -95,31 +102,42 @@ def inplace_decrement(x, val):
     if ivy.is_ivy_array(x):
         x.data = x_native
     else:
-        x.data = ivy.Array(x.data)
+        x = ivy.Array(x_native)
     return x
 
 
 def inplace_increment(x, val):
     (x_native, val_native), _ = ivy.args_to_native(x, val)
-    x_native.data +=val_native
+    x_native.data += val_native
     if ivy.is_ivy_array(x):
         x.data = x_native
     else:
-        x.data = ivy.Array(x.data)
+        x = ivy.Array(x_native)
     return x
 
 
-def cumsum(x, axis: int = 0):
-    return torch.cumsum(x, axis)
+def cumsum(x:torch.Tensor, axis: int = 0, out: Optional[torch.Tensor] = None):
+    if ivy.exists(out):
+        return ivy.inplace_update(out,torch.cumsum(x,axis))
+    else:
+        return torch.cumsum(x, axis)
 
 
-def cumprod(x, axis: int = 0, exclusive: bool = False):
+def cumprod(x: torch.Tensor, axis: int = 0, exclusive: Optional[bool] = False,
+    out:Optional[torch.Tensor]=None)\
+        -> torch.Tensor:
     if exclusive:
         x = torch.transpose(x, axis, -1)
         x = torch.cat((torch.ones_like(x[..., -1:]), x[..., :-1]), -1)
         res = torch.cumprod(x, -1)
-        return torch.transpose(res, axis, -1)
-    return torch.cumprod(x, axis)
+        if ivy.exists(out):
+            return ivy.inplace_update(out,torch.transpose(res, axis, -1))
+        else:
+            return torch.transpose(res, axis, -1)
+    if ivy.exists(out):
+        return ivy.inplace_update(out,torch.cumprod(x, axis))
+    else:
+        return torch.cumprod(x, axis)
 
 
 # noinspection PyShadowingNames

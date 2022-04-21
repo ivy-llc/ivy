@@ -44,10 +44,11 @@ def bitwise_xor(x1: np.ndarray,
         -> np.ndarray:
     if not isinstance(x2, np.ndarray):
         x2 = np.asarray(x2, dtype=x1.dtype)
-    ret = npa.bitwise_xor(npa.asarray(x1), npa.asarray(x2))
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
+    else:
+        dtype = np.promote_types(x1.dtype, x2.dtype)
+        x1 = x1.astype(dtype)
+        x2 = x2.astype(dtype)
+    return np.bitwise_xor(x1, x2, out=out)
 
 
 def exp(x: np.ndarray,
@@ -126,7 +127,10 @@ def multiply(x1: np.ndarray,
 def ceil(x: np.ndarray,
          out: Optional[np.ndarray] = None)\
         -> np.ndarray:
-    ret = np.asarray(npa.ceil(npa.asarray(x)))
+    if 'int' in str(x.dtype):
+        ret = x
+    else:
+        return np.ceil(x, out=out)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
     return ret
@@ -153,9 +157,10 @@ def sqrt(x: np.ndarray,
     return np.sqrt(x, out=out)
 
 
-def isfinite(x: np.ndarray) \
+def isfinite(x: np.ndarray,
+             out: Optional[np.ndarray] = None) \
         -> np.ndarray:
-    return np.asarray(npa.isfinite(npa.asarray(x)))
+    return np.isfinite(x, out=out)
 
 
 def asin(x: np.ndarray,
@@ -164,9 +169,10 @@ def asin(x: np.ndarray,
     return np.arcsin(x, out=out)
 
 
-def isinf(x: np.ndarray)\
+def isinf(x: np.ndarray,
+          out: Optional[np.ndarray] = None)\
         -> np.ndarray:
-    return np.asarray(npa.isinf(npa.asarray(x)))
+    return np.isinf(x, out=out)
 
 
 def asinh(x: np.ndarray,
@@ -205,9 +211,10 @@ def log1p(x: np.ndarray,
     return np.log1p(x, out=out)
 
 
-def isnan(x: np.ndarray)\
+def isnan(x: np.ndarray,
+          out: Optional[np.ndarray] = None)\
         -> np.ndarray:
-    return np.isnan(x)
+    return np.isnan(x, out=out)
 
 
 def less(x1: np.ndarray,
@@ -235,10 +242,11 @@ def divide(x1: np.ndarray,
         -> np.ndarray:
     if not isinstance(x2, np.ndarray):
         x2 = np.asarray(x2, dtype=x1.dtype)
-    ret = npa.divide(npa.asarray(x1), npa.asarray(x2))
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
+    else:
+        promoted_type = np.promote_types(x1.dtype, x2.dtype)
+        x1 = x1.astype(promoted_type)
+        x2 = x2.astype(promoted_type)
+    return np.divide(x1, x2, out=out)
 
 
 def acos(x: np.ndarray,
@@ -305,10 +313,11 @@ def floor_divide(x1: np.ndarray,
                 -> np.ndarray:
     if not isinstance(x2, np.ndarray):
         x2 = np.asarray(x2, dtype=x1.dtype)
-    ret = npa.floor_divide(npa.asarray(x1), npa.asarray(x2))
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
+    else:
+        dtype = np.promote_types(x1.dtype, x2.dtype)
+        x1 = x1.astype(dtype)
+        x2 = x2.astype(dtype)
+    return np.floor_divide(x1, x2, out=out)
 
 
 def sinh(x: np.ndarray,
@@ -345,7 +354,10 @@ def remainder(x1: np.ndarray,
 def round(x: np.ndarray,
           out: Optional[np.ndarray] = None)\
         -> np.ndarray:
-    ret = np.asarray(npa.round(npa.asarray(x)))
+    if 'int' in str(x.dtype):
+        ret = x
+    else:
+        return np.round(x, out=out)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
     return ret
@@ -367,7 +379,10 @@ def bitwise_or(x1: np.ndarray,
 def trunc(x: np.ndarray,
           out: Optional[np.ndarray] = None) \
         -> np.ndarray:
-    ret = np.asarray(npa.trunc(npa.asarray(x)))
+    if 'int' in str(x.dtype):
+        ret = x
+    else:
+        return np.trunc(x, out=out)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
     return ret
@@ -437,9 +452,10 @@ def tan(x: np.ndarray,
     return np.tan(x, out=out)
 
 
-def atan(x: np.ndarray) \
+def atan(x: np.ndarray,
+         out: Optional[np.ndarray] = None) \
         -> np.ndarray:
-    return np.arctan(x)
+    return np.arctan(x, out=out)
 
 
 def atanh(x: np.ndarray,
