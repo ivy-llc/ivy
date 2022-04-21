@@ -164,6 +164,14 @@ def reshape(x: Union[ivy.Array, ivy.NativeArray],
                         In this case, the value is inferred from the length of the array and remaining dimensions.
     :type newshape: int or sequence of ints
     :return: Reshaped array.
+    
+    Examples:
+    >>> x = ivy.array([[1,2,3], [4,5,6]])
+    >>> y = ivy.reshape(x, (3,2))
+    >>> print(y)
+    [[1, 2],
+     [3, 4],
+     [5, 6]] 
     """
     return _cur_framework(x).reshape(x, shape, copy, out)
 
