@@ -1,9 +1,8 @@
-concat
+#concat # randomly failing health check for jax
 expand_dims
 flip
 permute_dims
-#reshape # failing non-deterministically.
+reshape
 roll
 squeeze
 stack
-

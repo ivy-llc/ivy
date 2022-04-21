@@ -1,6 +1,5 @@
 # global
 import numpy as np
-import numpy.array_api as npa
 from typing import Union, Tuple, Optional, List
 
 
@@ -16,6 +15,7 @@ def all(x: np.ndarray,
 # noinspection PyShadowingBuiltins
 def any(x: np.ndarray,
         axis: Optional[Union[int, Tuple[int], List[int]]] = None,
-        keepdims: bool = False)\
+        keepdims: bool = False,
+        out: Optional[np.ndarray] =None)\
         -> np.ndarray:
-    return np.asarray(npa.any(npa.asarray(x), axis=axis, keepdims=keepdims))
+    return np.asarray(np.any(x, axis=axis, keepdims=keepdims, out=out))

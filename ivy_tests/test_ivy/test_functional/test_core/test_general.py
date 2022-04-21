@@ -135,7 +135,7 @@ def test_array(object_in, dtype, from_numpy, dev, call):
     # smoke test
     ret = ivy.array(object_in, dtype, dev)
     # type test
-    assert ivy.is_native_array(ret)
+    assert ivy.is_ivy_array(ret)
     # cardinality test
     assert ret.shape == np.array(object_in).shape
     # value test
@@ -159,7 +159,7 @@ def test_copy_array(x, dtype, dev, call):
     x = ivy.array(x, dtype, dev)
     ret = ivy.copy_array(x)
     # type test
-    assert ivy.is_native_array(ret)
+    assert ivy.is_ivy_array(ret)
     # cardinality test
     assert ret.shape == x.shape
     # value test
@@ -188,9 +188,9 @@ def test_array_equal(x0_n_x1_n_res, dtype, dev, call):
     x1 = ivy.array(x1, dtype, dev)
     res = ivy.array_equal(x0, x1)
     # type test
-    assert ivy.is_native_array(x0)
-    assert ivy.is_native_array(x1)
-    assert isinstance(res, bool) or ivy.is_native_array(res)
+    assert ivy.is_ivy_array(x0)
+    assert ivy.is_ivy_array(x1)
+    assert isinstance(res, bool) or ivy.is_ivy_array(res)
     # value test
     assert res == true_res
 
@@ -208,43 +208,12 @@ def test_arrays_equal(xs_n_res, dtype, dev, call):
     x2 = ivy.array(xs[2], dtype, dev)
     res = ivy.arrays_equal([x0, x1, x2])
     # type test
-    assert ivy.is_native_array(x0)
-    assert ivy.is_native_array(x1)
-    assert ivy.is_native_array(x2)
-    assert isinstance(res, bool) or ivy.is_native_array(res)
+    assert ivy.is_ivy_array(x0)
+    assert ivy.is_ivy_array(x1)
+    assert ivy.is_ivy_array(x2)
+    assert isinstance(res, bool) or ivy.is_ivy_array(res)
     # value test
     assert res == true_res
-
-
-# equal
-@pytest.mark.parametrize(
-    "x0_n_x1_n_x2_em_n_res", [([0.], [0.], [0.], False, True),
-                              ([0.], [1.], [0.], False, False),
-                              ([0.], [1.], [0.], True, [[True, False, True],
-                                                        [False, True, False],
-                                                        [True, False, True]]),
-                              ({'a': 0}, {'a': 0}, {'a': 1}, True, [[True, True, False],
-                                                                    [True, True, False],
-                                                                    [False, False, True]])])
-@pytest.mark.parametrize(
-    "to_array", [True, False])
-def test_equal(x0_n_x1_n_x2_em_n_res, to_array, dev, call):
-    x0, x1, x2, equality_matrix, true_res = x0_n_x1_n_x2_em_n_res
-    # smoke test
-    if isinstance(x0, list) and to_array:
-        x0 = ivy.array(x0, dev=dev)
-        x1 = ivy.array(x1, dev=dev)
-        x2 = ivy.array(x2, dev=dev)
-    res = ivy.all_equal(x0, x1, x2, equality_matrix=equality_matrix)
-    # value test
-    if equality_matrix:
-        assert np.array_equal(ivy.to_numpy(res), np.array(true_res))
-    else:
-        assert res == true_res
-    # compilation test
-    if call in [helpers.torch_call]:
-        # pytorch scripting does not support variable number of input arguments
-        return
 
 
 # to_numpy
@@ -348,7 +317,7 @@ def test_shape(object_in, dtype, as_tensor, tensor_fn, dev, call):
     ret = ivy.shape(tensor_fn(object_in, dtype, dev), as_tensor)
     # type test
     if as_tensor:
-        assert ivy.is_native_array(ret)
+        assert ivy.is_ivy_array(ret)
     else:
         assert isinstance(ret, tuple)
         ret = ivy.array(ret)
@@ -379,7 +348,7 @@ def test_get_num_dims(object_in, dtype, as_tensor, tensor_fn, dev, call):
     ret = ivy.get_num_dims(tensor_fn(object_in, dtype, dev), as_tensor)
     # type test
     if as_tensor:
-        assert ivy.is_native_array(ret)
+        assert ivy.is_ivy_array(ret)
     else:
         assert isinstance(ret, int)
         ret = ivy.array(ret)
@@ -410,7 +379,7 @@ def test_minimum(xy, dtype, tensor_fn, dev, call):
     y = tensor_fn(xy[1], dtype, dev)
     ret = ivy.minimum(x, y)
     # type test
-    assert ivy.is_native_array(ret)
+    assert ivy.is_ivy_array(ret)
     # cardinality test
     if len(x.shape) > len(y.shape):
         assert ret.shape == x.shape
@@ -437,7 +406,7 @@ def test_maximum(xy, dtype, tensor_fn, dev, call):
     y = tensor_fn(xy[1], dtype, dev)
     ret = ivy.maximum(x, y)
     # type test
-    assert ivy.is_native_array(ret)
+    assert ivy.is_ivy_array(ret)
     # cardinality test
     if len(x.shape) > len(y.shape):
         assert ret.shape == x.shape
@@ -470,7 +439,7 @@ def test_clip(x_min_n_max, dtype, tensor_fn, dev, call):
         pytest.skip()
     ret = ivy.clip(x, min_val, max_val)
     # type test
-    assert ivy.is_native_array(ret)
+    assert ivy.is_ivy_array(ret)
     # cardinality test
     max_shape = max([x.shape, min_val.shape, max_val.shape], key=lambda x_: len(x_))
     assert ret.shape == max_shape
@@ -506,7 +475,7 @@ def test_clip_vector_norm(x_max_norm_n_p_val_clipped, dtype, with_out, tensor_fn
     else:
         ret = ivy.clip_vector_norm(x, max_norm, p_val)
     # type test
-    assert ivy.is_native_array(ret)
+    assert ivy.is_ivy_array(ret)
     # cardinality test
     assert ret.shape == (x.shape if len(x.shape) else (1,))
     # value test
@@ -520,29 +489,6 @@ def test_clip_vector_norm(x_max_norm_n_p_val_clipped, dtype, with_out, tensor_fn
     if call is helpers.torch_call:
         # pytorch jit cannot compile global variables, in this case MIN_DENOMINATOR
         return
-
-
-# round
-@pytest.mark.parametrize(
-    "x_n_x_rounded", [(-0.51, -1), ([1.7], [2.]), ([[0.8, 2.2], [1.51, 0.2]], [[1., 2.], [2., 0.]])])
-@pytest.mark.parametrize(
-    "dtype", ['float32'])
-@pytest.mark.parametrize(
-    "tensor_fn", [ivy.array, helpers.var_fn])
-def test_round(x_n_x_rounded, dtype, tensor_fn, dev, call):
-    # smoke test
-    if (isinstance(x_n_x_rounded[0], Number) or isinstance(x_n_x_rounded[1], Number))\
-            and tensor_fn == helpers.var_fn and call is helpers.mx_call:
-        # mxnet does not support 0-dimensional variables
-        pytest.skip()
-    x = tensor_fn(x_n_x_rounded[0], dtype, dev)
-    ret = ivy.round(x)
-    # type test
-    assert ivy.is_native_array(ret)
-    # cardinality test
-    assert ret.shape == x.shape
-    # value test
-    assert np.array_equal(call(ivy.round, x), np.array(x_n_x_rounded[1]))
 
 
 # floormod
@@ -570,7 +516,7 @@ def test_floormod(x_n_divisor_n_x_floormod, dtype, with_out, tensor_fn, dev, cal
     else:
         ret = ivy.floormod(x,divisor)
     # type test
-    assert ivy.is_native_array(ret)
+    assert ivy.is_ivy_array(ret)
     # cardinality test
     assert ret.shape == x.shape
     if with_out:
@@ -580,36 +526,6 @@ def test_floormod(x_n_divisor_n_x_floormod, dtype, with_out, tensor_fn, dev, cal
             assert ret.data is out.data    
     # value test
     assert np.allclose(call(ivy.floormod, x, divisor), np.array(x_n_divisor_n_x_floormod[2]))
-
-
-
-
-# ceil
-@pytest.mark.parametrize(
-    "x_n_x_ceiled", [(2.5, 3.), ([10.7], [11.]), ([[3.8, 2.2], [1.7, 0.2]], [[4., 3.], [2., 1.]])])
-@pytest.mark.parametrize(
-    "dtype", ['float32'])
-@pytest.mark.parametrize(
-    "tensor_fn", [ivy.array, helpers.var_fn])
-def test_ceil(x_n_x_ceiled, dtype, tensor_fn, dev, call):
-    # smoke test
-    if (isinstance(x_n_x_ceiled[0], Number) or isinstance(x_n_x_ceiled[1], Number))\
-            and tensor_fn == helpers.var_fn and call is helpers.mx_call:
-        # mxnet does not support 0-dimensional variables
-        pytest.skip()
-    x = tensor_fn(x_n_x_ceiled[0], dtype, dev)
-    ret = ivy.ceil(x)
-    # type test
-    assert ivy.is_native_array(ret)
-    # cardinality test
-    assert ret.shape == x.shape
-    # value test
-    assert np.allclose(call(ivy.ceil, x), np.array(x_n_x_ceiled[1]))
-    # docstring test
-    helpers.assert_docstring_examples_run(ivy.ceil)
-
-
-
 
 
 # arange
@@ -641,7 +557,7 @@ def test_arange(stop_n_start_n_step, dtype, tensor_fn, dev, call):
         args.append(step)
     ret = ivy.arange(*args, dtype=dtype, dev=dev)
     # type test
-    assert ivy.is_native_array(ret)
+    assert ivy.is_ivy_array(ret)
     # cardinality test
     assert ret.shape == (int((ivy.to_list(stop) -
                               (ivy.to_list(start) if start else 0))/(ivy.to_list(step) if step else 1)),)
@@ -669,7 +585,7 @@ def test_linspace(start_n_stop_n_num_n_axis, dtype, tensor_fn, dev, call):
     stop = tensor_fn(stop, dtype, dev)
     ret = ivy.linspace(start, stop, num, axis, dev=dev)
     # type test
-    assert ivy.is_native_array(ret)
+    assert ivy.is_ivy_array(ret)
     # cardinality test
     target_shape = list(start.shape)
     target_shape.insert(axis + 1 if (axis and axis != -1) else len(target_shape), num)
@@ -698,7 +614,7 @@ def test_logspace(start_n_stop_n_num_n_base_n_axis, dtype, tensor_fn, dev, call)
     stop = tensor_fn(stop, dtype, dev)
     ret = ivy.logspace(start, stop, num, base, axis, dev=dev)
     # type test
-    assert ivy.is_native_array(ret)
+    assert ivy.is_ivy_array(ret)
     # cardinality test
     target_shape = list(start.shape)
     target_shape.insert(axis + 1 if (axis and axis != -1) else len(target_shape), num)
@@ -807,7 +723,7 @@ def test_repeat(x_n_reps_n_axis, dtype, tensor_fn, dev, call):
     else:
         ret = ivy.repeat(x, reps, axis)
     # type test
-    assert ivy.is_native_array(ret)
+    assert ivy.is_ivy_array(ret)
     # cardinality test
     if x.shape == ():
         expected_shape = [reps_raw] if isinstance(reps_raw, int) else list(reps_raw)
@@ -873,7 +789,7 @@ def test_zero_pad(x_n_pw, dtype, tensor_fn, dev, call):
     pw = ivy.array(pw_raw, 'int32', dev)
     ret = ivy.zero_pad(x, pw)
     # type test
-    assert ivy.is_native_array(ret)
+    assert ivy.is_ivy_array(ret)
     # cardinality test
     x_shape = [1] if x.shape == () else x.shape
     expected_shape = tuple([int(item + pw_[0] + pw_[1]) for item, pw_ in zip(x_shape, pw_raw)])
@@ -920,7 +836,7 @@ def test_fourier_encode(x_n_mf_n_nb_n_gt, dtype, tensor_fn, dev, call):
         max_freq = tensor_fn(max_freq, dtype, dev)
     ret = ivy.fourier_encode(x, max_freq, num_bands)
     # type test
-    assert ivy.is_native_array(ret)
+    assert ivy.is_ivy_array(ret)
     # cardinality test
     x_shape = [1] if x.shape == () else list(x.shape)
     expected_shape = x_shape + [1 + 2*num_bands]
@@ -947,7 +863,7 @@ def test_constant_pad(x_n_pw_n_val, dtype, tensor_fn, dev, call):
     pw = ivy.array(pw_raw, 'int32', dev)
     ret = ivy.constant_pad(x, pw, val)
     # type test
-    assert ivy.is_native_array(ret)
+    assert ivy.is_ivy_array(ret)
     # cardinality test
     x_shape = [1] if x.shape == () else x.shape
     expected_shape = tuple([int(item + pw_[0] + pw_[1]) for item, pw_ in zip(x_shape, pw_raw)])
@@ -973,7 +889,7 @@ def test_swapaxes(x_n_ax0_n_ax1, dtype, tensor_fn, dev, call):
     x = tensor_fn(x, dtype, dev)
     ret = ivy.swapaxes(x, ax0, ax1)
     # type test
-    assert ivy.is_native_array(ret)
+    assert ivy.is_ivy_array(ret)
     # cardinality test
     expected_shape = list(x.shape)
     expected_shape[ax0], expected_shape[ax1] = expected_shape[ax1], expected_shape[ax0]
@@ -981,34 +897,6 @@ def test_swapaxes(x_n_ax0_n_ax1, dtype, tensor_fn, dev, call):
     # value test
     assert np.allclose(call(ivy.swapaxes, x, ax0, ax1),
                        np.asarray(ivy.functional.backends.numpy.swapaxes(ivy.to_numpy(x), ax0, ax1)))
-
-
-
-
-# expand_dims
-@pytest.mark.parametrize(
-    "x_n_axis", [(1., 0), (1., -1), ([1.], 0), ([[0., 1., 2., 3.]], -2), ([[[0., 1., 2.], [3., 4., 5.]]], -3)])
-@pytest.mark.parametrize(
-    "dtype", ['float32'])
-@pytest.mark.parametrize(
-    "tensor_fn", [ivy.array, helpers.var_fn])
-def test_expand_dims(x_n_axis, dtype, tensor_fn, dev, call):
-    # smoke test
-    x, axis = x_n_axis
-    if isinstance(x, Number) and tensor_fn == helpers.var_fn and call is helpers.mx_call:
-        # mxnet does not support 0-dimensional variables
-        pytest.skip()
-    x = tensor_fn(x, dtype, dev)
-    ret = ivy.expand_dims(x, axis)
-    # type test
-    assert ivy.is_native_array(ret)
-    # cardinality test
-    expected_shape = list(x.shape)
-    expected_shape.insert(axis, 1)
-    assert ret.shape == tuple(expected_shape)
-    # value test
-    assert np.allclose(call(ivy.expand_dims, x, axis), np.asarray(ivy.functional.backends.numpy.expand_dims(ivy.to_numpy(x), axis)))
-
 
 
 # indices_where
@@ -1026,88 +914,12 @@ def test_indices_where(x, dtype, tensor_fn, dev, call):
     x = tensor_fn(x, dtype, dev)
     ret = ivy.indices_where(x)
     # type test
-    assert ivy.is_native_array(ret)
+    assert ivy.is_ivy_array(ret)
     # cardinality test
     assert len(ret.shape) == 2
     assert ret.shape[-1] == len(x.shape)
     # value test
     assert np.allclose(call(ivy.indices_where, x), np.asarray(ivy.functional.backends.numpy.indices_where(ivy.to_numpy(x))))
-
-
-# isnan
-@pytest.mark.parametrize(
-    "x_n_res", [([True], [False]),
-                ([[0., float('nan')], [float('nan'), 3.]],
-                 [[False, True], [True, False]])])
-@pytest.mark.parametrize(
-    "dtype", ['float32'])
-@pytest.mark.parametrize(
-    "tensor_fn", [ivy.array, helpers.var_fn])
-def test_isnan(x_n_res, dtype, tensor_fn, dev, call):
-    x, res = x_n_res
-    # smoke test
-    if isinstance(x, Number) and tensor_fn == helpers.var_fn and call is helpers.mx_call:
-        # mxnet does not support 0-dimensional variables
-        pytest.skip()
-    x = tensor_fn(x, dtype, dev)
-    ret = ivy.isnan(x)
-    # type test
-    assert ivy.is_native_array(ret)
-    # cardinality test
-    assert ret.shape == x.shape
-    # value test
-    assert np.allclose(call(ivy.isnan, x), res)
-
-
-# isinf
-@pytest.mark.parametrize(
-    "x_n_res", [([True], [False]),
-                ([[0., float('inf')], [float('nan'), -float('inf')]],
-                 [[False, True], [False, True]])])
-@pytest.mark.parametrize(
-    "dtype", ['float32'])
-@pytest.mark.parametrize(
-    "tensor_fn", [ivy.array, helpers.var_fn])
-def test_isinf(x_n_res, dtype, tensor_fn, dev, call):
-    x, res = x_n_res
-    # smoke test
-    if isinstance(x, Number) and tensor_fn == helpers.var_fn and call is helpers.mx_call:
-        # mxnet does not support 0-dimensional variables
-        pytest.skip()
-    x = tensor_fn(x, dtype, dev)
-    ret = ivy.isinf(x)
-    # type test
-    assert ivy.is_native_array(ret)
-    # cardinality test
-    assert ret.shape == x.shape
-    # value test
-    assert np.allclose(call(ivy.isinf, x), res)
-
-
-# isfinite
-@pytest.mark.parametrize(
-    "x_n_res", [([True], [True]),
-                ([[0., float('inf')], [float('nan'), 3.]],
-                 [[True, False], [False, True]])])
-@pytest.mark.parametrize(
-    "dtype", ['float32'])
-@pytest.mark.parametrize(
-    "tensor_fn", [ivy.array, helpers.var_fn])
-def test_isfinite(x_n_res, dtype, tensor_fn, dev, call):
-    x, res = x_n_res
-    # smoke test
-    if isinstance(x, Number) and tensor_fn == helpers.var_fn and call is helpers.mx_call:
-        # mxnet does not support 0-dimensional variables
-        pytest.skip()
-    x = tensor_fn(x, dtype, dev)
-    ret = ivy.isfinite(x)
-    # type test
-    assert ivy.is_native_array(ret)
-    # cardinality test
-    assert ret.shape == x.shape
-    # value test
-    assert np.allclose(call(ivy.isfinite, x), res)
-
 
 
 # one_hot
@@ -1126,14 +938,12 @@ def test_one_hot(ind_n_depth, dtype, tensor_fn, dev, call):
     ind = ivy.array(ind, 'int32', dev)
     ret = ivy.one_hot(ind, depth, dev)
     # type test
-    assert ivy.is_native_array(ret)
+    assert ivy.is_ivy_array(ret)
     # cardinality test
     assert ret.shape == ind.shape + (depth,)
     # value test
     assert np.allclose(call(ivy.one_hot, ind, depth, dev),
                        np.asarray(ivy.functional.backends.numpy.one_hot(ivy.to_numpy(ind), depth)))
-
-
 
 
 # cumsum
@@ -1142,18 +952,34 @@ def test_one_hot(ind_n_depth, dtype, tensor_fn, dev, call):
 @pytest.mark.parametrize(
     "dtype", ['float32'])
 @pytest.mark.parametrize(
+    "with_out", [True, False])    
+@pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_cumsum(x_n_axis, dtype, tensor_fn, dev, call):
+def test_cumsum(x_n_axis, dtype, with_out, tensor_fn, dev, call):
     # smoke test
     x, axis = x_n_axis
     x = ivy.array(x, dtype, dev)
-    ret = ivy.cumsum(x, axis)
+    if with_out:
+        if ivy.exists(axis):
+            out = ivy.zeros(x.shape)
+            ret = ivy.cumsum(x,axis,out=out)
+        else:
+            out = ivy.zeros(ivy.reshape(x,(-1,)).shape)
+            ret = ivy.cumsum(x,axis,out=out)    
+    else:
+        ret = ivy.cumsum(x, axis)
     # type test
-    assert ivy.is_native_array(ret)
+    assert ivy.is_ivy_array(ret)
     # cardinality test
     assert ret.shape == x.shape
     # value test
     assert np.allclose(call(ivy.cumsum, x, axis), np.asarray(ivy.functional.backends.numpy.cumsum(ivy.to_numpy(x), axis)))
+    # out test
+    if with_out:
+        if not ivy.current_framework_str() in ["tensorflow", "jax"]:
+            # these frameworks do not support native inplace updates
+            assert ret is out
+            assert ret.data is out.data    
 
 
 # cumprod
@@ -1164,21 +990,35 @@ def test_cumsum(x_n_axis, dtype, tensor_fn, dev, call):
 @pytest.mark.parametrize(
     "dtype", ['float32'])
 @pytest.mark.parametrize(
+    "with_out", [True, False])     
+@pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_cumprod(x_n_axis, exclusive, dtype, tensor_fn, dev, call):
+def test_cumprod(x_n_axis, exclusive, dtype, with_out, tensor_fn, dev, call):
     # smoke test
     x, axis = x_n_axis
     x = ivy.array(x, dtype, dev)
-    ret = ivy.cumprod(x, axis, exclusive)
+    if with_out:
+        if ivy.exists(axis):
+            out = ivy.zeros(x.shape)
+            ret = ivy.cumprod(x,axis,exclusive=exclusive,out=out)
+        else:
+            out = ivy.zeros(ivy.reshape(x,(-1,)).shape)
+            ret = ivy.cumprod(x,axis,exclusive=exclusive,out=out)
+    else:
+        ret = ivy.cumprod(x, axis, exclusive)
     # type test
-    assert ivy.is_native_array(ret)
+    assert ivy.is_ivy_array(ret)
     # cardinality test
     assert ret.shape == x.shape
     # value test
     assert np.allclose(call(ivy.cumprod, x, axis, exclusive),
                        np.asarray(ivy.functional.backends.numpy.cumprod(ivy.to_numpy(x), axis, exclusive)))
-
-
+    # out test
+    if with_out:
+        if not ivy.current_framework_str() in ["tensorflow", "jax"]:
+            # these frameworks do not support native inplace updates
+            assert ret is out
+            assert ret.data is out.data
 
 
 # scatter_flat
@@ -1209,7 +1049,7 @@ def test_scatter_flat(inds_n_upd_n_size_n_tnsr_n_wdup, red, dtype, tensor_fn, de
             else tensor_fn(tensor, dtype, dev)
     ret = ivy.scatter_flat(inds, upd, size, tensor, red, dev)
     # type test
-    assert ivy.is_native_array(ret)
+    assert ivy.is_ivy_array(ret)
     # cardinality test
     if size:
         assert ret.shape == (size,)
@@ -1257,7 +1097,7 @@ def test_scatter_nd(inds_n_upd_n_shape_tnsr_n_wdup, red, dtype, tensor_fn, dev, 
             else tensor_fn(tensor, dtype, dev)
     ret = ivy.scatter_nd(inds, upd, shape, tensor, red, dev)
     # type test
-    assert ivy.is_native_array(ret)
+    assert ivy.is_ivy_array(ret)
     # cardinality test
     if shape:
         assert tuple(ret.shape) == tuple(shape)
@@ -1281,20 +1121,32 @@ def test_scatter_nd(inds_n_upd_n_shape_tnsr_n_wdup, red, dtype, tensor_fn, dev, 
 @pytest.mark.parametrize(
     "dtype", ['float32'])
 @pytest.mark.parametrize(
+    "with_out", [True, False])    
+@pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_gather(prms_n_inds_n_axis, dtype, tensor_fn, dev, call):
+def test_gather(prms_n_inds_n_axis, dtype, with_out, tensor_fn, dev, call):
     # smoke test
     prms, inds, axis = prms_n_inds_n_axis
     prms = tensor_fn(prms, dtype, dev)
     inds = ivy.array(inds, 'int32', dev)
-    ret = ivy.gather(prms, inds, axis, dev)
+    if with_out:
+        out = ivy.zeros(inds.shape) 
+        ret = ivy.gather(prms, inds, axis, dev, out=out)
+    else:
+        ret = ivy.gather(prms, inds, axis, dev)
     # type test
-    assert ivy.is_native_array(ret)
+    assert ivy.is_ivy_array(ret)
     # cardinality test
     assert ret.shape == inds.shape
     # value test
     assert np.allclose(call(ivy.gather, prms, inds, axis, dev),
                        np.asarray(ivy.functional.backends.numpy.gather(ivy.to_numpy(prms), ivy.to_numpy(inds), axis)))
+    # out test 
+    if with_out:
+        if not ivy.current_framework_str() in ["tensorflow", "jax"]:
+            # these frameworks do not support native inplace updates
+            assert ret is out
+            assert ret.data is out.data
 
 
 # gather_nd
@@ -1313,7 +1165,7 @@ def test_gather_nd(prms_n_inds, dtype, tensor_fn, dev, call):
     inds = ivy.array(inds, 'int32', dev)
     ret = ivy.gather_nd(prms, inds, dev)
     # type test
-    assert ivy.is_native_array(ret)
+    assert ivy.is_ivy_array(ret)
     # cardinality test
     assert ret.shape == inds.shape[:-1] + prms.shape[inds.shape[-1]:]
     # value test
@@ -1338,7 +1190,7 @@ def test_linear_resample(x_n_samples_n_axis_n_y_true, dtype, tensor_fn, dev, cal
     x = tensor_fn(x, dtype, dev)
     ret = ivy.linear_resample(x, samples, axis)
     # type test
-    assert ivy.is_native_array(ret)
+    assert ivy.is_ivy_array(ret)
     # cardinality test
     x_shape = list(x.shape)
     num_x_dims = len(x_shape)
@@ -1385,7 +1237,7 @@ def test_default(x_n_dv, dtype, tensor_fn, dev, call):
     dv = tensor_fn(dv, dtype, dev)
     ret = ivy.default(x, dv)
     # type test
-    assert ivy.is_native_array(ret)
+    assert ivy.is_ivy_array(ret)
     # value test
     y_true = ivy.to_numpy(x if x is not None else dv)
     assert np.allclose(call(ivy.default, x, dv), y_true)
@@ -1623,37 +1475,37 @@ def test_framework_setting_with_multiprocessing(dev, call):
 #     ivy.unset_framework()
 
 
-# def test_class_ivy_handles(dev, call):
-#
-#     if call is helpers.np_call:
-#         # Numpy is the conflicting framework being tested against
-#         pytest.skip()
-#
-#     class ArrayGen:
-#
-#         def __init__(self, ivyh):
-#             self._ivy = ivyh
-#
-#         def get_array(self):
-#             return self._ivy.array([0., 1., 2.])
-#
-#     # create instance
-#     ag = ArrayGen(ivy.get_framework())
-#
-#     # create array from array generator
-#     x = ag.get_array()
-#
-#     # verify this is not a numpy array
-#     assert not isinstance(x, np.ndarray)
-#
-#     # change global framework to numpy
-#     ivy.set_framework('numpy')
-#
-#     # create another array from array generator
-#     x = ag.get_array()
-#
-#     # verify this is not still a numpy array
-#     assert not isinstance(x, np.ndarray)
+def test_class_ivy_handles(dev, call):
+
+    if call is helpers.np_call:
+        # Numpy is the conflicting framework being tested against
+        pytest.skip()
+
+    class ArrayGen:
+
+        def __init__(self, ivyh):
+            self._ivy = ivyh
+
+        def get_array(self):
+            return self._ivy.array([0., 1., 2.])
+
+    # create instance
+    ag = ArrayGen(ivy.get_framework())
+
+    # create array from array generator
+    x = ag.get_array()
+
+    # verify this is not a numpy array
+    assert not isinstance(x, np.ndarray)
+
+    # change global framework to numpy
+    ivy.set_framework('numpy')
+
+    # create another array from array generator
+    x = ag.get_array()
+
+    # verify this is not still a numpy array
+    assert not isinstance(x, np.ndarray)
 
 
 # einops_rearrange
@@ -1670,7 +1522,7 @@ def test_einops_rearrange(x_n_pattern_n_newx, dtype, tensor_fn, dev, call):
     ret = ivy.einops_rearrange(x, pattern)
     true_ret = einops.rearrange(ivy.to_native(x), pattern)
     # type test
-    assert ivy.is_native_array(ret)
+    assert ivy.is_ivy_array(ret)
     # cardinality test
     assert list(ret.shape) == list(true_ret.shape)
     # value test
@@ -1691,7 +1543,7 @@ def test_einops_reduce(x_n_pattern_n_red_n_newx, dtype, tensor_fn, dev, call):
     ret = ivy.einops_reduce(x, pattern, reduction)
     true_ret = einops.reduce(ivy.to_native(x), pattern, reduction)
     # type test
-    assert ivy.is_native_array(ret)
+    assert ivy.is_ivy_array(ret)
     # cardinality test
     assert list(ret.shape) == list(true_ret.shape)
     # value test
@@ -1713,7 +1565,7 @@ def test_einops_repeat(x_n_pattern_n_al_n_newx, dtype, tensor_fn, dev, call):
     ret = ivy.einops_repeat(x, pattern, **axes_lengths)
     true_ret = einops.repeat(ivy.to_native(x), pattern, **axes_lengths)
     # type test
-    assert ivy.is_native_array(ret)
+    assert ivy.is_ivy_array(ret)
     # cardinality test
     assert list(ret.shape) == list(true_ret.shape)
     # value test

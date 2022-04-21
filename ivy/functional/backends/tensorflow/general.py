@@ -11,6 +11,7 @@ import tensorflow as tf
 from numbers import Number
 import multiprocessing as _multiprocessing
 from tensorflow.python.types.core import Tensor
+from numbers import Number
 
 # local
 from ivy.functional.ivy.device import default_device
@@ -26,15 +27,30 @@ def is_native_array(x, exclusive=False):
 
 
 copy_array = tf.identity
+
+
 def array_equal (x0: Tensor, x1: Tensor) \
         -> bool:
     return tf.experimental.numpy.array_equal(x0, x1)
 
-to_numpy = lambda x: _np.asarray(tf.convert_to_tensor(x))
+  
+def to_numpy(x: Tensor) \
+        -> _np.ndarray:
+    return _np.asarray(tf.convert_to_tensor(x))
+
+
+def to_scalar(x: Tensor) \
+        -> Number:
+    return to_numpy(x).item()
+
+  
+def to_list(x: Tensor) \
+        ->list:
+    return x.numpy().tolist()
+
+
 to_numpy.__name__ = 'to_numpy'
-to_scalar = lambda x: to_numpy(x).item()
 to_scalar.__name__ = 'to_scalar'
-to_list = lambda x: x.numpy().tolist()
 to_list.__name__ = 'to_list'
 
 
@@ -110,9 +126,19 @@ def inplace_increment(x, val):
     return x
 
 
-cumsum = tf.cumsum
-cumprod = tf.math.cumprod
+def cumsum(x:tf.Tensor,axis:int=0,out: Optional[tf.Tensor] = None)\
+        -> tf.Tensor:
+        if ivy.exists(out):
+            return ivy.inplace_update(out,tf.math.cumsum(x,axis))
+        else:
+            return tf.math.cumsum(x,axis)
 
+def cumprod(x:tf.Tensor,axis:int=0,exclusive:Optional[bool]=False,out: Optional[tf.Tensor] = None)\
+        -> tf.Tensor:
+    if ivy.exists(out):
+        return ivy.inplace_update(out,tf.math.cumprod(x,axis,exclusive))
+    else:
+        return tf.math.cumprod(x,axis,exclusive)
 
 # noinspection PyShadowingNames
 def scatter_flat(indices, updates, size=None, tensor=None, reduction='sum', dev=None):
@@ -234,13 +260,17 @@ def scatter_nd(indices, updates, shape=None, tensor=None, reduction='sum', dev=N
         return res
 
 
-def gather(params, indices, axis=-1, dev=None):
+def gather(params: tf.Tensor, indices:tf.Tensor, axis: Optional[int] =-1, dev: Optional[str]=None, out: Optional[tf.Tensor] = None)\
+        -> tf.Tensor:
     axis = axis % len(indices.shape)
     if dev is None:
         dev = _dev_callable(params)
     with tf.device(dev_from_str(dev)):
-        return tf.gather(params, indices, axis=axis, batch_dims=axis)
-
+        ret = tf.gather(params, indices, axis=axis, batch_dims=axis)
+        if ivy.exists(out):
+            return ivy.inplace_update(out,ret)
+        else:
+            return ret
 
 def gather_nd(params, indices, dev=None):
     if dev is None:
