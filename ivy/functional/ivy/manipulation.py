@@ -29,7 +29,7 @@ def roll(x: Union[ivy.Array, ivy.NativeArray],
 
     Returns
     -------
-     out:
+     return:
         an output array having the same data type as ``x`` and whose elements, relative to ``x``, are shifted.
     """
     return _cur_framework(x).roll(x, shift, axis, out)
@@ -52,7 +52,7 @@ def squeeze(x: Union[ivy.Array, ivy.NativeArray],
 
     Returns
     -------
-     out:
+     return:
         an output array having the same data type and elements as ``x``.
     """
     return _cur_framework(x).squeeze(x, axis, out)
@@ -76,7 +76,7 @@ def flip(x: Union[ivy.Array, ivy.NativeArray],
 
     Returns
     -------
-     out:
+     return:
         an output array having the same data type and shape as ``x`` and whose elements, relative to ``x``, are reordered.
     """
 
@@ -99,7 +99,7 @@ def expand_dims(x: Union[ivy.Array, ivy.NativeArray],
 
     Returns
     -------
-     out:
+     return:
         array with the number of dimensions increased by onearray
 
     """
@@ -124,7 +124,7 @@ def permute_dims(x: Union[ivy.Array, ivy.NativeArray],
 
     Returns
     -------
-     out:
+     return:
         an array containing the axes permutation. The returned array must have the same data type as x.
     """
     return _cur_framework(x).permute_dims(x, axes, out)
@@ -147,7 +147,7 @@ def stack(arrays: Union[Tuple[ivy.Array], List[ivy.Array], Tuple[ivy.NativeArray
 
     Returns
     --------
-     out:
+     return:
         an output array having rank ``N+1``, where ``N`` is the rank (number of dimensions) of ``x``. If the input arrays have different data types, normal :ref:`type-promotion` must apply. If the input arrays have the same data type, the output array must have the same data type as the input arrays.
         .. note::
            This specification leaves type promotion between data type families (i.e., ``intxx`` and ``floatxx``) unspecified.
@@ -173,7 +173,7 @@ def reshape(x: Union[ivy.Array, ivy.NativeArray],
 
     Returns
     -------
-     out:
+     return:
         Reshaped array.
 
     """
@@ -197,7 +197,7 @@ def concat(xs: Union[Tuple[Union[ivy.Array, ivy.NativeArray], ...], List[Union[i
 
     Returns
     -------
-     out:
+     return:
         The concatenated array.
 
     """
@@ -227,7 +227,7 @@ def split(x: Union[ivy.Array, ivy.NativeArray], num_or_size_splits: Union[int, I
 
     Returns
     -------
-     out:
+     return:
         A list of sub-arrays.
 
     """
@@ -252,7 +252,7 @@ def repeat(x: Union[ivy.Array, ivy.NativeArray], repeats: Union[int, Iterable[in
 
     Returns
     -------
-     out:
+     return:
         The repeated output array.
 
     """
@@ -274,7 +274,7 @@ def tile(x: Union[ivy.Array, ivy.NativeArray],
 
     Returns
     -------
-     out:
+     return:
         The tiled output array.
 
     """
@@ -300,7 +300,7 @@ def constant_pad(x: Union[ivy.Array, ivy.NativeArray],
 
     Returns
     -------
-     out:
+     return:
         Padded array of rank equal to x with shape increased according to pad_width.
 
     """
@@ -323,7 +323,7 @@ def zero_pad(x: Union[ivy.Array, ivy.NativeArray],
 
     Returns
     -------
-     out:
+     return:
         Padded array of rank equal to x with shape increased according to pad_width.
 
     """
@@ -348,7 +348,7 @@ def swapaxes(x: Union[ivy.Array, ivy.NativeArray],
 
     Returns
     -------
-     out:
+     return:
         x with its axes permuted.
 
     """
@@ -377,7 +377,7 @@ def clip(x: Union[ivy.Array, ivy.NativeArray],
 
     Returns
     -------
-     out:
+     return:
         An array with the elements of x, but where values < x_min are replaced with x_min,
         and those > x_max with x_max.
 
