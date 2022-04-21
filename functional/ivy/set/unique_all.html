@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>unique_counts &mdash; Ivy 1.0 documentation</title>
+  <title>unique_all &mdash; Ivy 1.0 documentation</title>
   
 
   
@@ -36,8 +36,8 @@
   <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="Sorting" href="../sorting.html" />
-    <link rel="prev" title="unique_values" href="unique_values.html" /> 
+    <link rel="next" title="unique_inverse" href="unique_inverse.html" />
+    <link rel="prev" title="Set" href="../set.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -136,10 +136,10 @@
 <li class="toctree-l1"><a class="reference internal" href="../random.html">Random</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../searching.html">Searching</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../set.html">Set</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="unique_all.html">unique_all</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">unique_all</a></li>
 <li class="toctree-l2"><a class="reference internal" href="unique_inverse.html">unique_inverse</a></li>
 <li class="toctree-l2"><a class="reference internal" href="unique_values.html">unique_values</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">unique_counts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="unique_counts.html">unique_counts</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../sorting.html">Sorting</a></li>
@@ -217,13 +217,13 @@
         
           <li><a href="../set.html">Set</a> &raquo;</li>
         
-      <li>unique_counts</li>
+      <li>unique_all</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../../_sources/functional/ivy/set/unique_counts.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../../_sources/functional/ivy/set/unique_all.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -236,20 +236,43 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="unique-counts">
-<h1>unique_counts<a class="headerlink" href="#unique-counts" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="unique-all">
+<h1>unique_all<a class="headerlink" href="#unique-all" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
-<dt id="ivy.functional.ivy.set.unique_counts">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">unique_counts</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; Tuple<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.array.Array<span class="p">]</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/set.html#unique_counts"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.set.unique_counts" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the unique elements of an input array x and the corresponding counts for each unique element in x.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>x</strong> – input array. If x has more than one dimension, the function must flatten x and return the unique elements of the flattened array.</p>
+<dt id="ivy.functional.ivy.set.unique_all">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">unique_all</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; Tuple<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.array.Array<span class="p">, </span>ivy.array.Array<span class="p">, </span>ivy.array.Array<span class="p">]</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/set.html#unique_all"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.set.unique_all" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the unique elements of an input array <code class="docutils literal notranslate"><span class="pre">x</span></code>, the first occurring indices for each unique element in <code class="docutils literal notranslate"><span class="pre">x</span></code>, the indices from the set of unique elements that reconstruct <code class="docutils literal notranslate"><span class="pre">x</span></code>, and the corresponding counts for each unique element in <code class="docutils literal notranslate"><span class="pre">x</span></code>.
+.. admonition:: Data-dependent output shape</p>
+<blockquote>
+<div><dl class="field-list simple">
+<dt class="field-odd">class</dt>
+<dd class="field-odd"><p>important</p>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>a namedtuple (values, counts) whose
--first element must have the field name values and must be an array containing the unique elements of x. The array must have the same data type as x.
--second element must have the field name counts and must be an array containing the number of times each unique element occurs in x. The returned array must have same shape as values and must have the default array index data type.</p>
+</dl>
+<p>The shapes of two of the output arrays for this function depend on the data values in the input array; hence, array libraries which build computation graphs (e.g., JAX, Dask, etc.) may find this function difficult to implement without knowing array values. Accordingly, such libraries may choose to omit this function. See <span class="xref std std-ref">data-dependent-output-shapes</span> section for more details.</p>
+</div></blockquote>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Uniqueness should be determined based on value equality (i.e., <code class="docutils literal notranslate"><span class="pre">x_i</span> <span class="pre">==</span> <span class="pre">x_j</span></code>). For input arrays having floating-point data types, value-based equality implies the following behavior.
+-   As <code class="docutils literal notranslate"><span class="pre">nan</span></code> values compare as <code class="docutils literal notranslate"><span class="pre">False</span></code>, <code class="docutils literal notranslate"><span class="pre">nan</span></code> values should be considered distinct.
+-   As <code class="docutils literal notranslate"><span class="pre">-0</span></code> and <code class="docutils literal notranslate"><span class="pre">+0</span></code> compare as <code class="docutils literal notranslate"><span class="pre">True</span></code>, signed zeros should not be considered distinct, and the corresponding unique element will be implementation-dependent (e.g., an implementation could choose to return <code class="docutils literal notranslate"><span class="pre">-0</span></code> if <code class="docutils literal notranslate"><span class="pre">-0</span></code> occurs before <code class="docutils literal notranslate"><span class="pre">+0</span></code>).
+As signed zeros are not distinct, using <code class="docutils literal notranslate"><span class="pre">inverse_indices</span></code> to reconstruct the input array is not guaranteed to return an array having the exact same values.
+Each <code class="docutils literal notranslate"><span class="pre">nan</span></code> value should have a count of one, while the counts for signed zeros should be aggregated as a single count.</p>
+</div>
+<dl class="simple">
+<dt>x: array</dt><dd><p>input array. If <code class="docutils literal notranslate"><span class="pre">x</span></code> has more than one dimension, the function must flatten <code class="docutils literal notranslate"><span class="pre">x</span></code> and return the unique elements of the flattened array.</p>
+</dd>
+</dl>
+<dl>
+<dt>out: Tuple[array, array, array, array]</dt><dd><p>a namedtuple <code class="docutils literal notranslate"><span class="pre">(values,</span> <span class="pre">indices,</span> <span class="pre">inverse_indices,</span> <span class="pre">counts)</span></code> whose
+- first element must have the field name <code class="docutils literal notranslate"><span class="pre">values</span></code> and must be an array containing the unique elements of <code class="docutils literal notranslate"><span class="pre">x</span></code>. The array must have the same data type as <code class="docutils literal notranslate"><span class="pre">x</span></code>.
+- second element must have the field name <code class="docutils literal notranslate"><span class="pre">indices</span></code> and must be an array containing the indices (first occurrences) of <code class="docutils literal notranslate"><span class="pre">x</span></code> that result in <code class="docutils literal notranslate"><span class="pre">values</span></code>. The array must have the same shape as <code class="docutils literal notranslate"><span class="pre">values</span></code> and must have the default array index data type.
+- third element must have the field name <code class="docutils literal notranslate"><span class="pre">inverse_indices</span></code> and must be an array containing the indices of <code class="docutils literal notranslate"><span class="pre">values</span></code> that reconstruct <code class="docutils literal notranslate"><span class="pre">x</span></code>. The array must have the same shape as <code class="docutils literal notranslate"><span class="pre">x</span></code> and must have the default array index data type.
+- fourth element must have the field name <code class="docutils literal notranslate"><span class="pre">counts</span></code> and must be an array containing the number of times each unique element occurs in <code class="docutils literal notranslate"><span class="pre">x</span></code>. The returned array must have same shape as <code class="docutils literal notranslate"><span class="pre">values</span></code> and must have the default array index data type.
+.. note:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">The</span> <span class="n">order</span> <span class="n">of</span> <span class="n">unique</span> <span class="n">elements</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">specified</span> <span class="ow">and</span> <span class="n">may</span> <span class="n">vary</span> <span class="n">between</span> <span class="n">implementations</span><span class="o">.</span>
+</pre></div>
+</div>
 </dd>
 </dl>
 </dd></dl>
@@ -269,10 +292,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../sorting.html" class="btn btn-neutral float-right" title="Sorting" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="unique_inverse.html" class="btn btn-neutral float-right" title="unique_inverse" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="unique_values.html" class="btn btn-neutral float-left" title="unique_values" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="../set.html" class="btn btn-neutral float-left" title="Set" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

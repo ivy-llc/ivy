@@ -13,6 +13,7 @@ Set
    :maxdepth: -1
    :caption: Set
 
+   set/unique_all.rst
    set/unique_inverse.rst
    set/unique_values.rst
    set/unique_counts.rst
