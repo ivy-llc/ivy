@@ -290,9 +290,6 @@ def test_array_function(dtype, as_variable, with_out, num_positional_args, nativ
     # update instance_method flag to only be considered if the first term is either an ivy.Array or ivy.Container
     instance_method = instance_method and (not native_array[0] or container[0])
 
-    # only consider with_out if there are no containers
-    with_out = with_out and not max(container)
-
     # split the arguments into their positional and keyword components
     args_np, kwargs_np = kwargs_to_args_n_kwargs(num_positional_args, all_as_kwargs_np)
 
@@ -356,16 +353,19 @@ def test_array_function(dtype, as_variable, with_out, num_positional_args, nativ
     out = ret
     if with_out:
         assert not isinstance(ret, tuple)
-        assert ivy.is_array(ret)
-        if max(native_array):
-            out = out.data
+        if max(container):
+            assert ivy.is_ivy_container(ret)
+        else:
+            assert ivy.is_array(ret)
+            if max(native_array):
+                out = out.data
         if instance_method:
             ret = instance.__getattribute__(fn_name)(*args, **kwargs, out=out)
         else:
             ret = ivy.__dict__[fn_name](*args, **kwargs, out=out)
-        if not max(native_array):
+        if max(container) or not max(native_array):
             assert ret is out
-        if fw in ["tensorflow", "jax"]:
+        if max(container) or fw in ["tensorflow", "jax"]:
             # these frameworks do not support native inplace updates
             return
         assert ret.data is (out if max(native_array) else out.data)
