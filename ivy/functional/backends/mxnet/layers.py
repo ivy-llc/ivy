@@ -7,7 +7,13 @@ import math
 import mxnet as mx
 
 
-def conv1d(x, filters, strides, padding, data_format='NWC', dilations=1):
+def conv1d(x: mx.nd.NDArray,
+           filters: mx.nd.NDArray,
+           strides: int,
+           padding: str,
+           data_format: str ='NWC',
+           dilations: int = 1)\
+           -> mx.nd.NDArray:
     if data_format == 'NWC':
         x = mx.nd.transpose(x, (0, 2, 1))
     filter_shape = filters.shape[0:-2]

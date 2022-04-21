@@ -290,9 +290,6 @@ def test_array_function(dtype, as_variable, with_out, num_positional_args, nativ
     # update instance_method flag to only be considered if the first term is either an ivy.Array or ivy.Container
     instance_method = instance_method and (not native_array[0] or container[0])
 
-    # only consider with_out if there are no containers
-    with_out = with_out and not max(container)
-
     # split the arguments into their positional and keyword components
     args_np, kwargs_np = kwargs_to_args_n_kwargs(num_positional_args, all_as_kwargs_np)
 
@@ -356,16 +353,19 @@ def test_array_function(dtype, as_variable, with_out, num_positional_args, nativ
     out = ret
     if with_out:
         assert not isinstance(ret, tuple)
-        assert ivy.is_array(ret)
-        if max(native_array):
-            out = out.data
+        if max(container):
+            assert ivy.is_ivy_container(ret)
+        else:
+            assert ivy.is_array(ret)
+            if max(native_array):
+                out = out.data
         if instance_method:
             ret = instance.__getattribute__(fn_name)(*args, **kwargs, out=out)
         else:
             ret = ivy.__dict__[fn_name](*args, **kwargs, out=out)
-        if not max(native_array):
+        if max(container) or not max(native_array):
             assert ret is out
-        if fw in ["tensorflow", "jax"]:
+        if max(container) or fw in ["tensorflow", "jax"]:
             # these frameworks do not support native inplace updates
             return
         assert ret.data is (out if max(native_array) else out.data)
@@ -402,11 +402,12 @@ def array_bools(draw, na=st.shared(st.integers(), key='num_arrays')):
 
 
 @st.composite
-def lists(draw, arg, min_size=None, max_size=None):
+def lists(draw, arg, min_size=None, max_size=None, size_bounds=None):
+    ints = st.integers(size_bounds[0], size_bounds[1]) if size_bounds else st.integers()
     if isinstance(min_size, str):
-        min_size = draw(st.shared(st.integers(), key=min_size))
+        min_size = draw(st.shared(ints, key=min_size))
     if isinstance(max_size, str):
-        max_size = draw(st.shared(st.integers(), key=max_size))
+        max_size = draw(st.shared(ints, key=max_size))
     return draw(st.lists(arg, min_size=min_size, max_size=max_size))
 
 

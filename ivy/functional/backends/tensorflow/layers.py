@@ -5,8 +5,22 @@ Collection of TensorFlow network layers, wrapped to fit Ivy syntax and signature
 # global
 import tensorflow as tf
 
-conv1d = lambda x, filters, strides, padding, data_format='NWC', dilations=1:\
-    tf.nn.conv1d(x, filters, strides, padding, data_format, dilations)
+from tensorflow.python.types.core import Tensor
+
+def conv1d(x: Tensor,
+           filters: Tensor,
+           strides: int,
+           padding: str,
+           data_format: str = 'NWC',
+           dilations: int = 1)\
+           -> Tensor:
+    if data_format == 'NCW':
+        x = tf.transpose(x, (0, 1, 2))
+    res = tf.nn.conv1d(x, filters, strides, padding, 'NWC', dilations)
+    if data_format == 'NCW':
+        res = tf.transpose(res, (0, 1, 2))
+    return res
+
 conv1d_transpose = lambda x, filters, strides, padding, output_shape=None, data_format='NWC', dilations=1:\
     tf.nn.conv1d_transpose(x, filters, output_shape, strides, padding, data_format, dilations)
 

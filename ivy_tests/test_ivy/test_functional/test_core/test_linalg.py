@@ -50,6 +50,6 @@ def test_matmul(dtype, as_variable, with_out, num_positional_args, native_array,
     np.random.seed(seed)
     helpers.test_array_function(
         dtype, as_variable, with_out, num_positional_args, native_array, container, instance_method, fw, 'matmul',
-        rtol=1e-02, atol=1e-02,
+        rtol=5e-02, atol=5e-02,
         x1 = np.random.uniform(size=(a, b)).astype(dtype[0]),
         x2 = np.random.uniform(size=(b, c)).astype(dtype[1]))

@@ -175,15 +175,24 @@ def reshape(x: Union[ivy.Array, ivy.NativeArray],
     -------
      ret
         Reshaped array.
+    Examples:
+    --------
+    >>> x = ivy.array([[1,2,3], [4,5,6]])
+    >>> y = ivy.reshape(x, (3,2))
+    >>> print(y)
+    [[1, 2],
+     [3, 4],
+     [5, 6]] 
 
     """
     return _cur_framework(x).reshape(x, shape, copy, out)
 
 
-def concat(xs: Union[Tuple[Union[ivy.Array, ivy.NativeArray], ...], List[Union[ivy.Array, ivy.NativeArray]]],
+def concat(xs: Union[Tuple[Union[ivy.Array, ivy.NativeArray, ivy.Container]],
+                     List[Union[ivy.Array, ivy.NativeArray, ivy.Container]]],
            axis: Optional[int] = 0,
-           out: Optional[Union[ivy.Array, ivy.NativeArray]] = None) \
-        -> Union[ivy.Array, ivy.NativeArray]:
+           out: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None)\
+        -> Union[ivy.Array, ivy.Container]:
     """Casts an array to a specified type.
 
     Parameters
@@ -197,7 +206,6 @@ def concat(xs: Union[Tuple[Union[ivy.Array, ivy.NativeArray], ...], List[Union[i
     -------
      ret
         The concatenated array.
-
     """
     return _cur_framework(xs[0]).concat(xs, axis, out)
 

@@ -136,6 +136,26 @@ class ContainerBase(dict, abc.ABC):
     # --------------#
 
     @staticmethod
+    def handle_inplace(ret, out):
+        """Returns an inplace update of out, provided it is not None, by updating with the values in ret.
+
+        Parameters
+        ----------
+        ret:
+            The container with the return values
+        out:
+            The optional out container, which is primed for being overwritten if it exists
+
+        Returns
+        -------
+            The out container, but filled with the values from the ret container
+        """
+        if ivy.exists(out):
+            out.inplace_update(ret)
+            ret = out
+        return ret
+
+    @staticmethod
     def list_join(containers, config=None):
         """Join containers of lists together along the specified dimension.
 
@@ -249,6 +269,7 @@ class ContainerBase(dict, abc.ABC):
 
         Returns
         -------
+            ret
             Concatenated containers
         """
 
@@ -274,6 +295,7 @@ class ContainerBase(dict, abc.ABC):
                 raise Exception(str(e) + '\nContainer concat operation only valid for containers of arrays')
 
     @staticmethod
+
     def stack(containers, dim, config=None):
         """Stack containers together along the specified dimension.
 
@@ -1223,7 +1245,7 @@ class ContainerBase(dict, abc.ABC):
             Container object with all sub-array dimensions expanded along the axis.
 
         """
-        return self.map(lambda x, kc: self._ivy.sum(x, axis, keepdims) if self._ivy.is_native_array(x) or isinstance(x, ivy.Array) else x,
+        return self.map(lambda x, kc: self._ivy.sum(x, axis=axis, keepdims=keepdims) if self._ivy.is_native_array(x) or isinstance(x, ivy.Array) else x,
                         key_chains, to_apply, prune_unapplied, map_sequences)
 
     def prod(self, axis=None, keepdims=False, key_chains=None, to_apply=True, prune_unapplied=False,

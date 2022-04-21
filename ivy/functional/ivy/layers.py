@@ -4,6 +4,7 @@ Collection of Ivy neural network layers in functional form.
 
 # global
 import numpy as np
+from typing import Union
 
 # local
 import ivy
@@ -197,7 +198,13 @@ def multi_head_attention(x, scale, num_heads, context=None, mask=None, to_q_fn=N
 
 # Convolutions #
 
-def conv1d(x, filters, strides, padding, data_format='NWC', dilations=1):
+def conv1d(x: Union[ivy.Array, ivy.NativeArray],
+           filters: Union[ivy.Array, ivy.NativeArray],
+           strides: int,
+           padding: str,
+           data_format: str = 'NWC',
+           dilations: int = 1)\
+           -> ivy.Array:
     """Computes a 1-D convolution given 3-D input x and filters arrays.
 
     Parameters
@@ -220,6 +227,13 @@ def conv1d(x, filters, strides, padding, data_format='NWC', dilations=1):
      ret
         The result of the convolution operation.
 
+    Examples:
+    --------
+    >>> x = ivy.asarray([[[0.], [3.], [0.]]]) #NWC
+    >>> filters = ivy.array([[[0.]], [[1.]], [[0.]]]) #WIO
+    >>> result = ivy.conv1d(x, filters, (1,), 'SAME', 'NWC', (1,))
+    >>> print(result)
+    [[[0. 3. 0.]]]
     """
     return _cur_framework(x).conv1d(x, filters, strides, padding, data_format, dilations)
 
