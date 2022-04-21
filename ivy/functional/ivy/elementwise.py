@@ -353,6 +353,11 @@ def greater(x1: Union[ivy.Array, ivy.NativeArray],
     :param x2: Input array.
     :param f: Machine learning framework. Inferred from inputs if None.
     :return: an array containing the element-wise results. The returned array must have a data type of bool.
+    
+    Examples:
+    >>> x = ivy.greater(ivy.array([1,2,3]),ivy.array([2,2,2]))
+    >>> print(x)
+    [False, False,  True]    
     """
     return _cur_framework(x1, x2).greater(x1, x2, out)
 
@@ -697,6 +702,11 @@ def less(x1: Union[ivy.Array, ivy.NativeArray],
     -------
     return:
         an array containing the element-wise results. The returned array must have a data type of ``bool``.
+        
+    Examples:
+    >>> x = ivy.less(ivy.array([1,2,3]),ivy.array([2,2,2]))
+    >>> print(x)   
+    [ True, False, False]
     """
     return _cur_framework(x1).less(x1, x2, out)
 
@@ -1117,9 +1127,10 @@ def trunc(x: Union[ivy.Array, ivy.NativeArray],
     return _cur_framework(x).trunc(x, out)
 
 
-def abs(x: Union[ivy.Array, ivy.NativeArray],
-        out: Optional[Union[ivy.Array, ivy.NativeArray]] = None) \
-        -> ivy.Array:
+def abs(x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        *,
+        out: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None) \
+        -> Union[ivy.Array, ivy.Container]:
     """
     Calculates the absolute value for each element ``x_i`` of the input array ``x`` (i.e., the element-wise result has the same magnitude as the respective element in ``x`` but has positive sign).
 

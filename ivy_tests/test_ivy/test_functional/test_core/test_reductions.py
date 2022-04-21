@@ -12,29 +12,6 @@ import ivy.functional.backends.numpy
 import ivy_tests.test_ivy.helpers as helpers
 
 
-# einsum
-@pytest.mark.parametrize(
-    "eq_n_op_n_shp", [("ii", (np.arange(25).reshape(5, 5),), ()),
-                      ("ii->i", (np.arange(25).reshape(5, 5),), (5,)),
-                      ("ij,j", (np.arange(25).reshape(5, 5), np.arange(5)), (5,))])
-@pytest.mark.parametrize(
-    "dtype", ['float32'])
-@pytest.mark.parametrize(
-    "tensor_fn", [ivy.array, helpers.var_fn])
-def test_einsum(eq_n_op_n_shp, dtype, tensor_fn, dev, call):
-    # smoke test
-    eq, operands, true_shape = eq_n_op_n_shp
-    operands = [tensor_fn(op, dtype, dev) for op in operands]
-    ret = ivy.einsum(eq, *operands)
-    # type test
-    assert ivy.is_native_array(ret)
-    # cardinality test
-    assert ret.shape == true_shape
-    # value test
-    assert np.allclose(call(ivy.einsum, eq, *operands),
-                       ivy.functional.backends.numpy.einsum(eq, *[ivy.to_numpy(op) for op in operands]))
-
-
 # all
 @pytest.mark.parametrize(
     "x", [[1., 2., 3.], [[1., 2., 3.]]])
@@ -67,7 +44,7 @@ def test_all(x, axis, kd, dtype, with_out,  tensor_fn, dev, call):
     else:
         ret = ivy.all(x, axis, kd)
     # type test
-    assert ivy.is_native_array(ret)
+    assert ivy.is_ivy_array(ret)
     # cardinality test
     assert ret.shape == tuple(expected_shape)
     if with_out:
@@ -112,7 +89,7 @@ def test_any(x, axis, kd, dtype, with_out,  tensor_fn, dev, call):
     else:
         ret = ivy.any(x, axis, kd)
     # type test
-    assert ivy.is_native_array(ret)
+    assert ivy.is_ivy_array(ret)
     # cardinality test
     assert ret.shape == tuple(expected_shape)
     if with_out:

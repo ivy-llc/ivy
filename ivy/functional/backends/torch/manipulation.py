@@ -70,7 +70,7 @@ def flip(x: torch.Tensor,
 
 
 def expand_dims(x: torch.Tensor,
-                axis: Optional[Union[int, Tuple[int], List[int]]] = None,
+                axis: int = 0,
                 out: Optional[torch.Tensor] = None)\
         -> torch.Tensor:
     ret = torch.unsqueeze(x, axis)
