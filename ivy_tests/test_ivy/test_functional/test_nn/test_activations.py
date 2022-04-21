@@ -148,9 +148,7 @@ def test_softmax(x, dtype, tensor_fn, dev, call):
     # cardinality test
     assert ret.shape == x.shape
     # value test
-    assert np.allclose(call(ivy.softmax, x), ivy_np.softmax(ivy.to_numpy(x)))
-    # docstring test
-    helpers.assert_docstring_examples_run(ivy.softmax)
+    assert np.allclose(call(ivy.sigmoid, x), ivy_np.softmax(ivy.to_numpy(x)))
 
 
 # softplus
