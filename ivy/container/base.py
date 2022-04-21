@@ -254,45 +254,6 @@ class ContainerBase(dict, abc.ABC):
                 'sum': ivy.Container._sum_unify,
                 'mean': ivy.Container._mean_unify}[mode](containers, dev, axis)
 
-    @staticmethod
-    def concat(containers, dim, config=None):
-        """Concatenate containers together along the specified dimension.
-
-        Parameters
-        ----------
-        containers
-            containers to concatenate
-        dim
-            dimension along which to concatenate
-        config
-            The configuration for the containers. Default is the same as container0.
-
-        Returns
-        -------
-            ret
-            Concatenated containers
-        """
-
-        container0 = containers[0]
-        if not ivy.exists(config):
-            config = container0.config if isinstance(container0, ivy.Container) else {}
-
-        if isinstance(container0, ivy.Container):
-            return_dict = dict()
-            for key in container0.keys():
-                return_dict[key] = ivy.Container.concat([container[key] for container in containers], dim, config)
-            return ivy.Container(return_dict, **config)
-        else:
-            # noinspection PyProtectedMember
-            ivyh = ivy.default(lambda: config['ivyh'], ivy, True)
-            # noinspection PyBroadException
-            try:
-                if len(containers[0].shape) == 0:
-                    return ivyh.concat([ivyh.reshape(item, [1] * (dim + 1)) for item in containers], dim)
-                else:
-                    return ivyh.concat(containers, dim)
-            except Exception as e:
-                raise Exception(str(e) + '\nContainer concat operation only valid for containers of arrays')
 
     @staticmethod
 
