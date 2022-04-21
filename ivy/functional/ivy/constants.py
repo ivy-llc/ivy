@@ -17,5 +17,8 @@ nan = math.nan
 inf = math.inf
 """IEEE 754 floating-point representation of (positive) infinity."""
 
+newaxis = None
+"""An alias for None which is useful for indexing arrays."""
+
 # Extra #
 # ------#

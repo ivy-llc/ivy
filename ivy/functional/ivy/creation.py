@@ -11,6 +11,40 @@ from ivy.framework_handler import current_framework as _cur_framework
 # Array API Standard #
 # -------------------#
 
+def arange(stop: Number, start: Number = 0, step: Number = 1, dtype: ivy.Dtype = None, dev: ivy.Device = None,
+           ) -> Union[ivy.Array, ivy.NativeArray]:
+    """
+    Returns evenly spaced values within a given interval, with the spacing being specified.
+
+    Values are generated within the half-open interval [start, stop) (in other words, the interval including start but
+    excluding stop). For integer arguments the function is equivalent to the Python built-in range function,
+    but returns an array in the chosen ml_framework rather than a list.
+
+    See :math:`linspace` for a certain number of evenly spaced values in an interval.
+
+    :param stop: End of interval. The interval does not include this value, except in some cases where step is not an
+                integer and floating point round-off affects the length of out.
+    :type stop: number
+    :param start: Start of interval. The interval includes this value. The default start value is 0.
+    :type start: number, optional
+    :param step: Spacing between values. For any output out, this is the distance between two adjacent values,
+                    out[i+1] - out[i]. The default step size is 1. If step is specified as a position argument,
+                    start must also be given.
+    :type step: number, optional
+    :param dtype: The desired data-type for the array in string format, i.e. 'float32' or 'int64'.
+        If not given, then the type will be determined as the minimum type required to hold the objects in the
+        sequence.
+    :type dtype: data-type string, optional
+    :param dev: device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
+    :type dev: ivy.Device
+    :return: Tensor of evenly spaced values.
+
+            For floating point arguments, the length of the result is ceil((stop - start)/step).
+            Because of floating point overflow, this rule may result in the last element of out being greater than stop.
+    """
+    return _cur_framework().arange(stop, start, step, dtype, dev)
+
+
 def asarray(x: Union[ivy.Array, ivy.NativeArray, List[Number], Tuple[Number], np.ndarray],
              dtype: Optional[Union[ivy.Dtype, str]] = None,
              dev: Optional[Union[ivy.Device, str]] = None
@@ -37,9 +71,6 @@ def asarray(x: Union[ivy.Array, ivy.NativeArray, List[Number], Tuple[Number], np
     return _cur_framework(x).asarray(x, dtype, dev)
 
 
-array = asarray
-
-
 def zeros(shape: Union[int, Tuple[int], List[int]],
           dtype: Optional[ivy.Dtype] = None,
           device: Optional[ivy.Device] = None)\
@@ -60,7 +91,6 @@ def zeros(shape: Union[int, Tuple[int], List[int]],
     -------
     out:
        an array containing zeros.
-       
        
     Examples:
     
@@ -387,6 +417,9 @@ def from_dlpack(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
 # Extra #
 # ------#
 
+array = asarray
+
+
 # noinspection PyShadowingNames
 def logspace(start: Union[ivy.Array, ivy.NativeArray, int], stop: Union[ivy.Array, ivy.NativeArray, int],
              num: int, base: float = 10., axis: int = None, dev: ivy.Device = None)\
@@ -411,39 +444,3 @@ def logspace(start: Union[ivy.Array, ivy.NativeArray, int], stop: Union[ivy.Arra
     :return: Tensor of evenly-spaced values.
     """
     return _cur_framework(start).logspace(start, stop, num, base, axis, dev)
-
-
-# noinspection PyShadowingNames
-def arange(stop: Number, start: Number = 0, step: Number = 1, dtype: ivy.Dtype = None, dev: ivy.Device = None,
-           ) -> Union[ivy.Array, ivy.NativeArray]:
-    """
-    Returns evenly spaced values within a given interval, with the spacing being specified.
-
-    Values are generated within the half-open interval [start, stop) (in other words, the interval including start but
-    excluding stop). For integer arguments the function is equivalent to the Python built-in range function,
-    but returns an array in the chosen ml_framework rather than a list.
-
-    See :math:`linspace` for a certain number of evenly spaced values in an interval.
-
-    :param stop: End of interval. The interval does not include this value, except in some cases where step is not an
-                integer and floating point round-off affects the length of out.
-    :type stop: number
-    :param start: Start of interval. The interval includes this value. The default start value is 0.
-    :type start: number, optional
-    :param step: Spacing between values. For any output out, this is the distance between two adjacent values,
-                    out[i+1] - out[i]. The default step size is 1. If step is specified as a position argument,
-                    start must also be given.
-    :type step: number, optional
-    :param dtype: The desired data-type for the array in string format, i.e. 'float32' or 'int64'.
-        If not given, then the type will be determined as the minimum type required to hold the objects in the
-        sequence.
-    :type dtype: data-type string, optional
-    :param dev: device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
-    :type dev: ivy.Device
-    :return: Tensor of evenly spaced values.
-
-            For floating point arguments, the length of the result is ceil((stop - start)/step).
-            Because of floating point overflow, this rule may result in the last element of out being greater than stop.
-    """
-    return _cur_framework().arange(stop, start, step, dtype, dev)
-

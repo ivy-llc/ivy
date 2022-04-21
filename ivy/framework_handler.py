@@ -112,6 +112,8 @@ def set_framework(f):
                 continue
             f.__dict__[k] = v
         specific_v = f.__dict__[k]
+        if hasattr(v, 'array_spec'):
+            specific_v.array_spec = v.array_spec
         ivy.__dict__[k] = specific_v
         if isinstance(specific_v, collections.Hashable):
             try:

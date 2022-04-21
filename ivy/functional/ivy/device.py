@@ -297,7 +297,15 @@ def tpu_is_available() -> bool:
     """
     Determine whether a TPU is available to use, with the backend framework.
 
-    :return: Boolean, as to whether a tpu is available.
+    Returns
+    -------
+    out:
+        Boolean, as to whether a tpu is available.
+        
+    Examples
+    --------
+    >>> print(ivy.tpu_is_available())
+    True
     """
     return _cur_framework().tpu_is_available()
 
