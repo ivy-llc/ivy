@@ -6,7 +6,7 @@ from types import ModuleType
 
 
 wrapped_modules_n_classes = []
-NON_WRAPPED_METHODS = ['is_variable', 'copy_nest', 'current_framework', 'current_framework_str', 'set_framework', 'get_framework',
+NON_WRAPPED_METHODS = ['copy_nest', 'current_framework', 'current_framework_str', 'set_framework', 'get_framework',
                        'unset_framework', 'set_debug_mode', 'set_breakpoint_debug_mode', 'set_exception_debug_mode',
                        'unset_debug_mode', 'debug_mode', 'nested_map', 'to_ivy', 'args_to_ivy', 'to_native',
                        'args_to_native', 'default', 'exists', 'set_min_base', 'get_min_base', 'set_min_denominator',
