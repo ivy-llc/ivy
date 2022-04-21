@@ -67,10 +67,6 @@ def to_list(x: JaxArray) \
         -> list:
     return _to_array(x).tolist()
 
-to_numpy.__name__ = 'to_numpy'
-to_scalar.__name__ = 'to_scalar'
-to_list.__name__ = 'to_list'
-
   
 shape = lambda x, as_tensor=False: jnp.asarray(jnp.shape(x)) if as_tensor else x.shape
 shape.__name__ = 'shape'
