@@ -506,6 +506,7 @@ def matrix_rank(vector: Union[ivy.Array, ivy.NativeArray],
                 rtol: Optional[Union[float, Tuple[float]]] = None) \
         -> Union[ivy.Array, ivy.NativeArray]:
     """
+    
     Returns the rank (i.e., number of non-zero singular values) of a matrix (or a stack of matrices).
 
     Parameters:
