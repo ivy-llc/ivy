@@ -70,7 +70,10 @@ def _wrap_method(fn):
             return _method_w_native_handled(*args, out=out, **kwargs)
         if ivy.nested_any(args, ivy.is_ivy_container, check_nests=True) or \
                 ivy.nested_any(kwargs, ivy.is_ivy_container, check_nests=True):
-            f = getattr(ivy.Container, fn_name)
+            if args and ivy.is_ivy_container(args[0]):
+                f = getattr(ivy.Container, fn_name)
+            else:
+                f = getattr(ivy.StaticContainer, fn_name)
             if 'out' in f.__code__.co_varnames:
                 return f(*args, out=out, **kwargs)
             return f(*args, **kwargs)
