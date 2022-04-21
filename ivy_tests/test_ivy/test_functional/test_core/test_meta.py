@@ -342,93 +342,93 @@ import ivy_tests.test_ivy.helpers as helpers
 
 
 # reptile step
-@pytest.mark.parametrize(
-    "inner_grad_steps", [1, 2, 3])
-@pytest.mark.parametrize(
-    "batched", [True, False])
-@pytest.mark.parametrize(
-    "stop_gradients", [True, False])
-@pytest.mark.parametrize(
-    "num_tasks", [1, 2])
-@pytest.mark.parametrize(
-    "return_inner_v", ['first', 'all', False])
-def test_reptile_step(dev, call, inner_grad_steps, batched, stop_gradients, num_tasks, return_inner_v):
-    if call in [helpers.np_call, helpers.mx_call]:
-        # Numpy does not support gradients, jax does not support gradients on custom nested classes,
-        # and mxnet does not support only_inputs argument to mx.autograd.grad
-        pytest.skip()
-
-    # config
-    inner_learning_rate = 1e-2
-
-    # create variable
-    if batched:
-        variables = ivy.Container(
-            {'latent': ivy.variable(ivy.repeat(ivy.array([[1.]], dev=dev), num_tasks, 0))})
-    else:
-        variables = ivy.Container({'latent': ivy.variable(ivy.array([1.], dev=dev))})
-
-    # batch
-    batch = ivy.Container({'x': ivy.arange(num_tasks + 1, 1, dtype='float32')})
-
-    # inner cost function
-    def inner_cost_fn(batch_in, v):
-        cost = 0
-        batch_size = batch_in.shape[0]
-        for sub_batch_in, sub_v in zip(batch_in.unstack(0, keepdims=True), v.unstack(0, keepdims=True)):
-            cost = cost - (sub_batch_in['x'] * sub_v['latent'] ** 2)[0]
-        return cost / batch_size
-
-    # numpy
-    latent_np = ivy.to_numpy(variables.latent[0:1])
-    batch_np = batch.map(lambda x, kc: ivy.to_numpy(x))
-
-    # loss grad function
-    def loss_grad_fn(sub_batch_in, w_in):
-        return -2 * sub_batch_in['x'][0] * w_in
-
-    # true gradient
-    true_outer_grads = list()
-    for sub_batch in batch_np.unstack(0, True, num_tasks):
-        ws = list()
-        grads = list()
-        ws.append(latent_np)
-        for step in range(inner_grad_steps):
-            update_grad = loss_grad_fn(sub_batch, ws[-1])
-            w = ws[-1] - inner_learning_rate * update_grad
-            grads.append(update_grad)
-            ws.append(w)
-        grads.append(loss_grad_fn(sub_batch, ws[-1]))
-
-        # true outer grad
-        true_outer_grad = sum(grads) / len(grads)
-        true_outer_grads.append(true_outer_grad)
-    true_outer_grad = (sum(true_outer_grads) / len(true_outer_grads)) / inner_learning_rate
-
-    # true cost
-    true_cost_dict = \
-        {1: {1: -1.0202, 2: -1.5509},
-         2: {1: -1.0409441, 2: -1.6042916},
-         3: {1: -1.0622487, 2: -1.6603187}}
-    true_cost = true_cost_dict[inner_grad_steps][num_tasks]
-
-    # meta update
-    rets = ivy.reptile_step(batch, inner_cost_fn, variables, inner_grad_steps, inner_learning_rate,
-                            batched=batched, return_inner_v=return_inner_v, stop_gradients=stop_gradients)
-    calc_cost = rets[0]
-    if stop_gradients:
-        assert not ivy.is_variable(calc_cost, exclusive=True)
-    assert np.allclose(ivy.to_scalar(calc_cost), true_cost)
-    outer_grads = rets[1]
-    assert not ivy.is_variable(outer_grads)
-    assert np.allclose(ivy.to_numpy(outer_grads.latent[0]), np.array(true_outer_grad))
-    if return_inner_v:
-        inner_v_rets = rets[2]
-        assert isinstance(inner_v_rets, ivy.Container)
-        if return_inner_v == 'all':
-            assert list(inner_v_rets.shape) == [num_tasks, 1]
-        elif return_inner_v == 'first':
-            assert list(inner_v_rets.shape) == [1, 1]
+# @pytest.mark.parametrize(
+#     "inner_grad_steps", [1, 2, 3])
+# @pytest.mark.parametrize(
+#     "batched", [True, False])
+# @pytest.mark.parametrize(
+#     "stop_gradients", [True, False])
+# @pytest.mark.parametrize(
+#     "num_tasks", [1, 2])
+# @pytest.mark.parametrize(
+#     "return_inner_v", ['first', 'all', False])
+# def test_reptile_step(dev, call, inner_grad_steps, batched, stop_gradients, num_tasks, return_inner_v):
+#     if call in [helpers.np_call, helpers.mx_call]:
+#         # Numpy does not support gradients, jax does not support gradients on custom nested classes,
+#         # and mxnet does not support only_inputs argument to mx.autograd.grad
+#         pytest.skip()
+#
+#     # config
+#     inner_learning_rate = 1e-2
+#
+#     # create variable
+#     if batched:
+#         variables = ivy.Container(
+#             {'latent': ivy.variable(ivy.repeat(ivy.array([[1.]], dev=dev), num_tasks, 0))})
+#     else:
+#         variables = ivy.Container({'latent': ivy.variable(ivy.array([1.], dev=dev))})
+#
+#     # batch
+#     batch = ivy.Container({'x': ivy.arange(num_tasks + 1, 1, dtype='float32')})
+#
+#     # inner cost function
+#     def inner_cost_fn(batch_in, v):
+#         cost = 0
+#         batch_size = batch_in.shape[0]
+#         for sub_batch_in, sub_v in zip(batch_in.unstack(0, keepdims=True), v.unstack(0, keepdims=True)):
+#             cost = cost - (sub_batch_in['x'] * sub_v['latent'] ** 2)[0]
+#         return cost / batch_size
+#
+#     # numpy
+#     latent_np = ivy.to_numpy(variables.latent[0:1])
+#     batch_np = batch.map(lambda x, kc: ivy.to_numpy(x))
+#
+#     # loss grad function
+#     def loss_grad_fn(sub_batch_in, w_in):
+#         return -2 * sub_batch_in['x'][0] * w_in
+#
+#     # true gradient
+#     true_outer_grads = list()
+#     for sub_batch in batch_np.unstack(0, True, num_tasks):
+#         ws = list()
+#         grads = list()
+#         ws.append(latent_np)
+#         for step in range(inner_grad_steps):
+#             update_grad = loss_grad_fn(sub_batch, ws[-1])
+#             w = ws[-1] - inner_learning_rate * update_grad
+#             grads.append(update_grad)
+#             ws.append(w)
+#         grads.append(loss_grad_fn(sub_batch, ws[-1]))
+#
+#         # true outer grad
+#         true_outer_grad = sum(grads) / len(grads)
+#         true_outer_grads.append(true_outer_grad)
+#     true_outer_grad = (sum(true_outer_grads) / len(true_outer_grads)) / inner_learning_rate
+#
+#     # true cost
+#     true_cost_dict = \
+#         {1: {1: -1.0202, 2: -1.5509},
+#          2: {1: -1.0409441, 2: -1.6042916},
+#          3: {1: -1.0622487, 2: -1.6603187}}
+#     true_cost = true_cost_dict[inner_grad_steps][num_tasks]
+#
+#     # meta update
+#     rets = ivy.reptile_step(batch, inner_cost_fn, variables, inner_grad_steps, inner_learning_rate,
+#                             batched=batched, return_inner_v=return_inner_v, stop_gradients=stop_gradients)
+#     calc_cost = rets[0]
+#     if stop_gradients:
+#         assert not ivy.is_variable(calc_cost, exclusive=True)
+#     assert np.allclose(ivy.to_scalar(calc_cost), true_cost)
+#     outer_grads = rets[1]
+#     assert not ivy.is_variable(outer_grads)
+#     assert np.allclose(ivy.to_numpy(outer_grads.latent[0]), np.array(true_outer_grad))
+#     if return_inner_v:
+#         inner_v_rets = rets[2]
+#         assert isinstance(inner_v_rets, ivy.Container)
+#         if return_inner_v == 'all':
+#             assert list(inner_v_rets.shape) == [num_tasks, 1]
+#         elif return_inner_v == 'first':
+#             assert list(inner_v_rets.shape) == [1, 1]
 
 
 # Second Order #
