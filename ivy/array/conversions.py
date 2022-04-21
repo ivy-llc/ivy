@@ -49,6 +49,8 @@ def to_ivy(x: Union[Union[ivy.Array, ivy.NativeArray], Iterable],
         Whether to apply the conversion on arguments in a nested manner. If so, all dicts, lists and
         tuples will be traversed to their lowest leaves in search of ivy.Array and ivy.Variable instances.
         Default is False.
+    include_derived
+        Whether to also recursive for classes derived from tuple, list and dict. Default is False.
 
     Returns
     -------
@@ -71,6 +73,8 @@ def args_to_ivy(*args: Iterable[Any],
     ----------
     args
         The positional arguments to check
+    include_derived
+        Whether to also recursive for classes derived from tuple, list and dict. Default is False.
     kwargs
         The key-word arguments to check
 
