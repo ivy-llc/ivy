@@ -4,49 +4,35 @@ Collection of tests for sorting functions
 
 # global
 import pytest
+import numpy as np
+from hypothesis import given, strategies as st
 
 # local
 import ivy
+import ivy_tests.test_ivy.helpers as helpers
 
 
 # concat
-@pytest.mark.parametrize(
-    "dtype", ivy.all_dtype_strs)
-@pytest.mark.parametrize(
-    "as_variable", [True, False])
-@pytest.mark.parametrize(
-    "with_out", [True, False])
-@pytest.mark.parametrize(
-    "native_array", [True, False])
-def test_concat(dtype, as_variable, with_out, native_array):
-    if dtype in ivy.invalid_dtype_strs:
-        pytest.skip("invalid dtype")
-    x1 = ivy.array([2, 3, 4], dtype=dtype)
-    x2 = ivy.array([2, 3, 4], dtype=dtype)
-    out = ivy.array([2, 3, 4, 5, 6, 7], dtype=dtype)
-    if as_variable:
-        if not ivy.is_float_dtype(dtype):
-            pytest.skip("only floating point variables are supported")
-        if with_out:
-            pytest.skip("variables do not support out argument")
-        x1 = ivy.variable(x1)
-        x2 = ivy.variable(x2)
-        out = ivy.variable(out)
-    if native_array:
-        x1 = x1.data
-        x2 = x2.data
-        out = out.data
-    if with_out:
-        ret = ivy.concat([x1, x2], out=out)
-    else:
-        ret = ivy.concat([x1, x2])
-    if with_out:
-        if not native_array:
-            assert ret is out
-        if ivy.current_framework_str() in ["tensorflow", "jax"]:
-            # these frameworks do not support native inplace updates
-            return
-        assert ret.data is (out if native_array else out.data)
+@given(common_shape=helpers.lists(st.integers(2, 3), min_size='num_dims', max_size='num_dims', size_bounds=[1, 3]),
+       unique_idx=helpers.integers(0, 'num_dims'),
+       unique_dims=helpers.lists(st.integers(2, 3), min_size='num_arrays', max_size='num_arrays', size_bounds=[2, 3]),
+       dtype=helpers.array_dtypes(),
+       as_variable=helpers.array_bools(),
+       with_out=st.booleans(),
+       num_positional_args=st.integers(0, 1),
+       native_array=helpers.array_bools(),
+       container=helpers.array_bools(),
+       instance_method=st.booleans(),
+       seed=st.integers(0, 2**32 - 1))
+def test_concat(common_shape, unique_idx, unique_dims, dtype, as_variable, with_out,
+                num_positional_args, native_array, container, instance_method, seed, fw):
+    np.random.seed(seed)
+    xs = [np.random.uniform(size=common_shape[:unique_idx] + [ud] + common_shape[unique_idx:]).astype(dt)
+          for ud, dt in zip(unique_dims, dtype)]
+    helpers.test_array_function(
+        dtype, as_variable, with_out, num_positional_args, native_array, container, instance_method, fw, 'concat',
+        xs=xs,
+        axis=unique_idx)
 
 
 # expand_dims

@@ -60,7 +60,9 @@ def gpu_is_available() -> bool:
 clear_mem_on_dev = lambda dev: None
 _callable_dev = dev
 num_gpus = lambda: mx.context.num_gpus()
-tpu_is_available = lambda: False
+
+def tpu_is_available() -> bool: 
+    return False
 
 
 class Profiler(BaseProfiler):
