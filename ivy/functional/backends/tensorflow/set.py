@@ -11,16 +11,13 @@ def unique_all(x: Tensor) \
         -> Tuple[Tensor, Tensor, Tensor, Tensor]:
     UniqueAll = namedtuple(typename='unique_all', field_names=['values', 'indices', 'inverse_indices', 'counts'])
 
-    flat_tensor = tf.cast(tf.reshape(x, [-1]), 'float64')
-
+    flat_tensor = tf.reshape(x, [-1])
     values, inverse_indices, counts = tf.unique_with_counts(flat_tensor)
-    values = tf.cast(values, 'float64') if values.dtype not in [tf.float32, tf.float64] else values
-
-    unique_nan = tf.math.is_nan(values).numpy()
-
+    # values = tf.cast(values, 'float64') if values.dtype not in [tf.float32, tf.float64] else values
     tensor_list = flat_tensor.numpy().tolist()
+    if x.dtype.is_floating and tf.math.reduce_sum(tf.cast(tf.math.is_nan(values), 'float32')).numpy():
+        unique_nan = tf.math.is_nan(values).numpy()
 
-    if tf.math.reduce_sum(tf.cast(tf.math.is_nan(values), 'float32')).numpy():
         nan_index = tf.where(tf.math.is_nan(flat_tensor)).numpy().reshape([-1])
         non_nan_index = tf.experimental.numpy.array(
             [tensor_list.index(val) for val in values if not tf.math.is_nan(val)])
