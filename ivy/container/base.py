@@ -56,7 +56,7 @@ def _repr(x):
 # noinspection PyMissingConstructor
 class ContainerBase(dict, abc.ABC):
 
-    def init__(self, dict_in=None, queues=None, queue_load_sizes=None, container_combine_method='list_join',
+    def __init__(self, dict_in=None, queues=None, queue_load_sizes=None, container_combine_method='list_join',
                queue_timeout=None, print_limit=10, key_length_limit=None, print_indent=4, print_line_spacing=0,
                ivyh=None, default_key_color='green', keyword_color_dict=None, rebuild_child_containers=False,
                types_to_iteratively_nest=None, alphabetical_keys=True, **kwargs):
