@@ -154,10 +154,10 @@ def _train_tasks_with_for_loop(batch, inner_sub_batch_fn, outer_sub_batch_fn, in
         all_grads.append(grads)
     if order == 1:
         if return_inner_v:
-            return total_cost / num_tasks, sum(all_grads) / num_tasks, ivy.Container.concat(updated_ivs_to_return, 0)
+            return total_cost / num_tasks, sum(all_grads) / num_tasks, ivy.concat(updated_ivs_to_return, 0)
         return total_cost / num_tasks, sum(all_grads) / num_tasks
     if return_inner_v:
-        return total_cost / num_tasks, ivy.Container.concat(updated_ivs_to_return, 0)
+        return total_cost / num_tasks, ivy.concat(updated_ivs_to_return, 0)
     return total_cost / num_tasks
 
 
