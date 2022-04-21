@@ -365,6 +365,26 @@
     <span class="c1"># Class Methods #</span>
     <span class="c1"># --------------#</span>
 
+<div class="viewcode-block" id="ContainerBase.handle_inplace"><a class="viewcode-back" href="../../../container/base/ContainerBase.html#ivy.container.base.ContainerBase.handle_inplace">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">handle_inplace</span><span class="p">(</span><span class="n">ret</span><span class="p">,</span> <span class="n">out</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Returns an inplace update of out, provided it is not None, by updating with the values in ret.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        ret:</span>
+<span class="sd">            The container with the return values</span>
+<span class="sd">        out:</span>
+<span class="sd">            The optional out container, which is primed for being overwritten if it exists</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">            The out container, but filled with the values from the ret container</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">out</span><span class="p">):</span>
+            <span class="n">out</span><span class="o">.</span><span class="n">inplace_update</span><span class="p">(</span><span class="n">ret</span><span class="p">)</span>
+            <span class="n">ret</span> <span class="o">=</span> <span class="n">out</span>
+        <span class="k">return</span> <span class="n">ret</span></div>
+
 <div class="viewcode-block" id="ContainerBase.list_join"><a class="viewcode-back" href="../../../container/base/ContainerBase.html#ivy.container.base.ContainerBase.list_join">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">list_join</span><span class="p">(</span><span class="n">containers</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Join containers of lists together along the specified dimension.</span>

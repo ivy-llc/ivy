@@ -1227,6 +1227,21 @@ Default is True.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt id="ivy.container.base.ContainerBase.handle_inplace">
+<em class="property">static </em><code class="sig-name descname">handle_inplace</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ret</span></em>, <em class="sig-param"><span class="n">out</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/container/base.html#ContainerBase.handle_inplace"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.handle_inplace" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns an inplace update of out, provided it is not None, by updating with the values in ret.</p>
+<dl class="simple">
+<dt>ret:</dt><dd><p>The container with the return values</p>
+</dd>
+<dt>out:</dt><dd><p>The optional out container, which is primed for being overwritten if it exists</p>
+</dd>
+</dl>
+<blockquote>
+<div><p>The out container, but filled with the values from the ret container</p>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py method">
 <dt id="ivy.container.base.ContainerBase.has_key">
 <code class="sig-name descname">has_key</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">query_key</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/container/base.html#ContainerBase.has_key"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.has_key" title="Permalink to this definition">¶</a></dt>
 <dd><p>Determine whether container object has specified key somewhere in the nested structure</p>
