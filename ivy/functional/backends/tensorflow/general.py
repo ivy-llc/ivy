@@ -49,11 +49,6 @@ def to_list(x: Tensor) \
     return x.numpy().tolist()
 
 
-to_numpy.__name__ = 'to_numpy'
-to_scalar.__name__ = 'to_scalar'
-to_list.__name__ = 'to_list'
-
-
 def floormod(x: tf.Tensor, y: tf.Tensor, out: Optional[tf.Tensor] = None)\
         -> tf.Tensor:
     ret = x%y
