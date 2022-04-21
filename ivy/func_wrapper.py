@@ -6,7 +6,7 @@ from types import ModuleType
 
 
 wrapped_modules_n_classes = []
-NON_WRAPPED_METHODS = ['copy_nest', 'current_framework', 'current_framework_str', 'set_framework', 'get_framework',
+NON_WRAPPED_METHODS = ['is_variable', 'copy_nest', 'current_framework', 'current_framework_str', 'set_framework', 'get_framework',
                        'unset_framework', 'set_debug_mode', 'set_breakpoint_debug_mode', 'set_exception_debug_mode',
                        'unset_debug_mode', 'debug_mode', 'nested_map', 'to_ivy', 'args_to_ivy', 'to_native',
                        'args_to_native', 'default', 'exists', 'set_min_base', 'get_min_base', 'set_min_denominator',
@@ -70,7 +70,10 @@ def _wrap_method(fn):
             return _method_w_native_handled(*args, out=out, **kwargs)
         if ivy.nested_any(args, ivy.is_ivy_container, check_nests=True) or \
                 ivy.nested_any(kwargs, ivy.is_ivy_container, check_nests=True):
-            f = getattr(ivy.Container, fn_name)
+            if args and ivy.is_ivy_container(args[0]):
+                f = getattr(ivy.Container, fn_name)
+            else:
+                f = getattr(ivy.StaticContainer, fn_name)
             if 'out' in f.__code__.co_varnames:
                 return f(*args, out=out, **kwargs)
             return f(*args, **kwargs)
