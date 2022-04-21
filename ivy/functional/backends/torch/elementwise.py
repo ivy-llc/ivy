@@ -1,8 +1,7 @@
 # global
 import torch
-from torch import Tensor
 import typing
-import math
+from torch import Tensor
 from typing import Optional
 
 # local

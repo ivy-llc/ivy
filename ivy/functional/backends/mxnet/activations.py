@@ -8,10 +8,17 @@ from typing import Optional
 import numpy as _np
 import mxnet as _mx
 
+# local
+import ivy
 
-def relu(x: _mx.nd.NDArray)\
+
+def relu(x: _mx.nd.NDArray,
+         out: Optional[_mx.nd.NDArray] = None)\
         -> _mx.nd.NDArray:
-    return _mx.nd.relu(x)
+    ret = _mx.nd.relu(x)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
 def leaky_relu(x: _mx.nd.NDArray, alpha: Optional[float] = 0.2)\
@@ -27,7 +34,8 @@ def gelu(x, approximate=True):
 
 def tanh(x: _mx.nd.NDArray)\
         -> _mx.nd.NDArray: 
-    return _mx.nd.tanh
+    return _mx.nd.tanh(x)
+
 
 sigmoid = _mx.nd.sigmoid
 softmax = lambda x, axis=-1: _mx.nd.softmax(x, axis=axis)

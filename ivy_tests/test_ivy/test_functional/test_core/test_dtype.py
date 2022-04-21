@@ -16,18 +16,19 @@ import ivy_tests.test_ivy.helpers as helpers
 
 
 # dtype objects
-# def test_dtype_instances(dev, call):
-#     assert ivy.exists(ivy.int8)
-#     assert ivy.exists(ivy.int16)
-#     assert ivy.exists(ivy.int32)
-#     assert ivy.exists(ivy.int64)
-#     assert ivy.exists(ivy.uint8)
-#     assert ivy.exists(ivy.uint16)
-#     assert ivy.exists(ivy.uint32)
-#     assert ivy.exists(ivy.uint64)
-#     assert ivy.exists(ivy.float32)
-#     assert ivy.exists(ivy.float64)
-#     assert ivy.exists(ivy.bool)
+def test_dtype_instances(dev, call):
+    assert ivy.exists(ivy.int8)
+    assert ivy.exists(ivy.int16)
+    assert ivy.exists(ivy.int32)
+    assert ivy.exists(ivy.int64)
+    assert ivy.exists(ivy.uint8)
+    if ivy.current_framework_str() != 'torch':
+        assert ivy.exists(ivy.uint16)
+        assert ivy.exists(ivy.uint32)
+        assert ivy.exists(ivy.uint64)
+    assert ivy.exists(ivy.float32)
+    assert ivy.exists(ivy.float64)
+    assert ivy.exists(ivy.bool)
 
 
 # is_int_dtype
