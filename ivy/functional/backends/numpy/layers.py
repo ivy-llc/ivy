@@ -6,9 +6,22 @@ Collection of Numpy network layers, wrapped to fit Ivy syntax and signature.
 import numpy as np
 
 
-def conv1d(*_):
-    raise Exception('Convolutions not yet implemented for numpy library')
-
+def conv1d(x: np.ndarray,
+           filters: np.ndarray,
+           strides: int,
+           padding: str,
+           data_format: str = 'NWC',
+           dilations: int = 1)\
+           -> np.ndarray:
+    x_shape = (1,) + x.shape
+    filter_shape = (1,) + filters.shape
+    x_strides = (x.strides[0],) + x.strides
+    filter_strides = (filters.strides[0],) + filters.strides
+    x = np.lib.stride_tricks.as_strided(x, shape=x_shape, strides=x_strides)
+    filters = np.lib.stride_tricks.as_strided(filters, shape=filter_shape, strides=filter_strides)
+    res = conv2d(x, filters, strides, padding, data_format, dilations)
+    res = np.lib.stride_tricks.as_strided(res, shape=res.shape[1:], strides=res.strides[1:])
+    return res
 
 def conv1d_transpose(*_):
     raise Exception('Convolutions not yet implemented for numpy library')
