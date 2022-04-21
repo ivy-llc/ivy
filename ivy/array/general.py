@@ -6,5 +6,3 @@ import abc
 
 class ArrayWithGeneral(abc.ABC):
     pass
-
-

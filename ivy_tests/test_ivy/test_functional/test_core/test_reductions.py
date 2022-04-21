@@ -44,7 +44,7 @@ def test_all(x, axis, kd, dtype, with_out,  tensor_fn, dev, call):
     else:
         ret = ivy.all(x, axis, kd)
     # type test
-    assert ivy.is_native_array(ret)
+    assert ivy.is_ivy_array(ret)
     # cardinality test
     assert ret.shape == tuple(expected_shape)
     if with_out:
@@ -89,7 +89,7 @@ def test_any(x, axis, kd, dtype, with_out,  tensor_fn, dev, call):
     else:
         ret = ivy.any(x, axis, kd)
     # type test
-    assert ivy.is_native_array(ret)
+    assert ivy.is_ivy_array(ret)
     # cardinality test
     assert ret.shape == tuple(expected_shape)
     if with_out:

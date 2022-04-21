@@ -1,7 +1,6 @@
 # global
 import os
 import queue
-import pickle
 import pytest
 import random
 import numpy as np
@@ -683,30 +682,30 @@ def test_container_mean(dev, call):
     assert np.allclose(ivy.to_numpy(container_mean.b.d), np.array([6.]))
 
 
-# def test_container_var(dev, call):
-#     dict_in = {'a': ivy.array([1., 2., 3.], dev=dev),
-#                'b': {'c': ivy.array([2., 4., 6.], dev=dev), 'd': ivy.array([3., 6., 9.], dev=dev)}}
-#     container = Container(dict_in)
-#     container_var = container.var()
-#     assert np.allclose(ivy.to_numpy(container_var['a']), np.array([2 / 3]))
-#     assert np.allclose(ivy.to_numpy(container_var.a), np.array([2 / 3]))
-#     assert np.allclose(ivy.to_numpy(container_var['b']['c']), np.array([8 / 3]))
-#     assert np.allclose(ivy.to_numpy(container_var.b.c), np.array([8 / 3]))
-#     assert np.allclose(ivy.to_numpy(container_var['b']['d']), np.array([6.]))
-#     assert np.allclose(ivy.to_numpy(container_var.b.d), np.array([6.]))
+def test_container_var(dev, call):
+    dict_in = {'a': ivy.array([1., 2., 3.], dev=dev),
+               'b': {'c': ivy.array([2., 4., 6.], dev=dev), 'd': ivy.array([3., 6., 9.], dev=dev)}}
+    container = Container(dict_in)
+    container_var = container.var()
+    assert np.allclose(ivy.to_numpy(container_var['a']), np.array([2 / 3]))
+    assert np.allclose(ivy.to_numpy(container_var.a), np.array([2 / 3]))
+    assert np.allclose(ivy.to_numpy(container_var['b']['c']), np.array([8 / 3]))
+    assert np.allclose(ivy.to_numpy(container_var.b.c), np.array([8 / 3]))
+    assert np.allclose(ivy.to_numpy(container_var['b']['d']), np.array([6.]))
+    assert np.allclose(ivy.to_numpy(container_var.b.d), np.array([6.]))
 
 
-# def test_container_std(dev, call):
-#     dict_in = {'a': ivy.array([1., 2., 3.], dev=dev),
-#                'b': {'c': ivy.array([2., 4., 6.], dev=dev), 'd': ivy.array([3., 6., 9.], dev=dev)}}
-#     container = Container(dict_in)
-#     container_std = container.std()
-#     assert np.allclose(ivy.to_numpy(container_std['a']), np.array([2 / 3]) ** 0.5)
-#     assert np.allclose(ivy.to_numpy(container_std.a), np.array([2 / 3]) ** 0.5)
-#     assert np.allclose(ivy.to_numpy(container_std['b']['c']), np.array([8 / 3]) ** 0.5)
-#     assert np.allclose(ivy.to_numpy(container_std.b.c), np.array([8 / 3]) ** 0.5)
-#     assert np.allclose(ivy.to_numpy(container_std['b']['d']), np.array([6.]) ** 0.5)
-#     assert np.allclose(ivy.to_numpy(container_std.b.d), np.array([6.]) ** 0.5)
+def test_container_std(dev, call):
+    dict_in = {'a': ivy.array([1., 2., 3.], dev=dev),
+               'b': {'c': ivy.array([2., 4., 6.], dev=dev), 'd': ivy.array([3., 6., 9.], dev=dev)}}
+    container = Container(dict_in)
+    container_std = container.std()
+    assert np.allclose(ivy.to_numpy(container_std['a']), np.array([2 / 3]) ** 0.5)
+    assert np.allclose(ivy.to_numpy(container_std.a), np.array([2 / 3]) ** 0.5)
+    assert np.allclose(ivy.to_numpy(container_std['b']['c']), np.array([8 / 3]) ** 0.5)
+    assert np.allclose(ivy.to_numpy(container_std.b.c), np.array([8 / 3]) ** 0.5)
+    assert np.allclose(ivy.to_numpy(container_std['b']['d']), np.array([6.]) ** 0.5)
+    assert np.allclose(ivy.to_numpy(container_std.b.d), np.array([6.]) ** 0.5)
 
 
 def test_container_minimum(dev, call):
@@ -1442,19 +1441,19 @@ def test_container_stop_gradients(dev, call):
 
     # without key_chains specification
     container_stopped_grads = container.stop_gradients()
-    assert ivy.is_native_array(container_stopped_grads['a'])
-    assert ivy.is_native_array(container_stopped_grads.a)
-    assert ivy.is_native_array(container_stopped_grads['b']['c'])
-    assert ivy.is_native_array(container_stopped_grads.b.c)
-    assert ivy.is_native_array(container_stopped_grads['b']['d'])
-    assert ivy.is_native_array(container_stopped_grads.b.d)
+    assert ivy.is_ivy_array(container_stopped_grads['a'])
+    assert ivy.is_ivy_array(container_stopped_grads.a)
+    assert ivy.is_ivy_array(container_stopped_grads['b']['c'])
+    assert ivy.is_ivy_array(container_stopped_grads.b.c)
+    assert ivy.is_ivy_array(container_stopped_grads['b']['d'])
+    assert ivy.is_ivy_array(container_stopped_grads.b.d)
 
     # with key_chains to apply
     container_stopped_grads = container.stop_gradients(key_chains=['a', 'b/c'])
-    assert ivy.is_native_array(container_stopped_grads['a'])
-    assert ivy.is_native_array(container_stopped_grads.a)
-    assert ivy.is_native_array(container_stopped_grads['b']['c'])
-    assert ivy.is_native_array(container_stopped_grads.b.c)
+    assert ivy.is_ivy_array(container_stopped_grads['a'])
+    assert ivy.is_ivy_array(container_stopped_grads.a)
+    assert ivy.is_ivy_array(container_stopped_grads['b']['c'])
+    assert ivy.is_ivy_array(container_stopped_grads.b.c)
     if call is not helpers.np_call:
         # Numpy does not support variables or gradients
         assert ivy.is_variable(container_stopped_grads['b']['d'])
@@ -1462,10 +1461,10 @@ def test_container_stop_gradients(dev, call):
 
     # with key_chains to apply pruned
     container_stopped_grads = container.stop_gradients(key_chains=['a', 'b/c'], prune_unapplied=True)
-    assert ivy.is_native_array(container_stopped_grads['a'])
-    assert ivy.is_native_array(container_stopped_grads.a)
-    assert ivy.is_native_array(container_stopped_grads['b']['c'])
-    assert ivy.is_native_array(container_stopped_grads.b.c)
+    assert ivy.is_ivy_array(container_stopped_grads['a'])
+    assert ivy.is_ivy_array(container_stopped_grads.a)
+    assert ivy.is_ivy_array(container_stopped_grads['b']['c'])
+    assert ivy.is_ivy_array(container_stopped_grads.b.c)
     assert 'b/d' not in container_stopped_grads
 
     # with key_chains to not apply
@@ -1475,8 +1474,8 @@ def test_container_stop_gradients(dev, call):
         # Numpy does not support variables or gradients
         assert ivy.is_variable(container_stopped_grads['a'])
         assert ivy.is_variable(container_stopped_grads.a)
-    assert ivy.is_native_array(container_stopped_grads['b']['c'])
-    assert ivy.is_native_array(container_stopped_grads.b.c)
+    assert ivy.is_ivy_array(container_stopped_grads['b']['c'])
+    assert ivy.is_ivy_array(container_stopped_grads.b.c)
     if call is not helpers.np_call:
         # Numpy does not support variables or gradients
         assert ivy.is_variable(container_stopped_grads['b']['d'])
@@ -1486,8 +1485,8 @@ def test_container_stop_gradients(dev, call):
     container_stopped_grads = container.stop_gradients(key_chains=Container({'a': None, 'b': {'d': None}}),
                                                        to_apply=False, prune_unapplied=True)
     assert 'a' not in container_stopped_grads
-    assert ivy.is_native_array(container_stopped_grads['b']['c'])
-    assert ivy.is_native_array(container_stopped_grads.b.c)
+    assert ivy.is_ivy_array(container_stopped_grads['b']['c'])
+    assert ivy.is_ivy_array(container_stopped_grads.b.c)
     assert 'b/d' not in container_stopped_grads
 
 
@@ -1497,12 +1496,12 @@ def test_container_as_variables(dev, call):
                      'd': ivy.array([[[2., 4.], [6., 8.]], [[10., 12.], [14., 16.]]], dev=dev)}}
     container = Container(dict_in)
 
-    assert ivy.is_native_array(container['a'])
-    assert ivy.is_native_array(container.a)
-    assert ivy.is_native_array(container['b']['c'])
-    assert ivy.is_native_array(container.b.c)
-    assert ivy.is_native_array(container['b']['d'])
-    assert ivy.is_native_array(container.b.d)
+    assert ivy.is_ivy_array(container['a'])
+    assert ivy.is_ivy_array(container.a)
+    assert ivy.is_ivy_array(container['b']['c'])
+    assert ivy.is_ivy_array(container.b.c)
+    assert ivy.is_ivy_array(container['b']['d'])
+    assert ivy.is_ivy_array(container.b.d)
 
     variable_cont = container.as_variables()
 
@@ -1532,12 +1531,12 @@ def test_container_as_arrays(dev, call):
 
     # without key_chains specification
     container_as_arrays = container.as_arrays()
-    assert ivy.is_native_array(container_as_arrays['a'])
-    assert ivy.is_native_array(container_as_arrays.a)
-    assert ivy.is_native_array(container_as_arrays['b']['c'])
-    assert ivy.is_native_array(container_as_arrays.b.c)
-    assert ivy.is_native_array(container_as_arrays['b']['d'])
-    assert ivy.is_native_array(container_as_arrays.b.d)
+    assert ivy.is_ivy_array(container_as_arrays['a'])
+    assert ivy.is_ivy_array(container_as_arrays.a)
+    assert ivy.is_ivy_array(container_as_arrays['b']['c'])
+    assert ivy.is_ivy_array(container_as_arrays.b.c)
+    assert ivy.is_ivy_array(container_as_arrays['b']['d'])
+    assert ivy.is_ivy_array(container_as_arrays.b.d)
 
 
 def test_container_num_arrays(dev, call):
@@ -1575,12 +1574,12 @@ def test_container_to_numpy(dev, call):
     container = Container(dict_in)
 
     # before conversion
-    assert ivy.is_native_array(container['a'])
-    assert ivy.is_native_array(container.a)
-    assert ivy.is_native_array(container['b']['c'])
-    assert ivy.is_native_array(container.b.c)
-    assert ivy.is_native_array(container['b']['d'])
-    assert ivy.is_native_array(container.b.d)
+    assert ivy.is_ivy_array(container['a'])
+    assert ivy.is_ivy_array(container.a)
+    assert ivy.is_ivy_array(container['b']['c'])
+    assert ivy.is_ivy_array(container.b.c)
+    assert ivy.is_ivy_array(container['b']['d'])
+    assert ivy.is_ivy_array(container.b.d)
 
     # after conversion
     container_to_numpy = container.to_numpy()
@@ -1608,12 +1607,12 @@ def test_container_from_numpy(dev, call):
 
     # after conversion
     container_from_numpy = container.from_numpy()
-    assert ivy.is_native_array(container_from_numpy['a'])
-    assert ivy.is_native_array(container_from_numpy.a)
-    assert ivy.is_native_array(container_from_numpy['b']['c'])
-    assert ivy.is_native_array(container_from_numpy.b.c)
-    assert ivy.is_native_array(container_from_numpy['b']['d'])
-    assert ivy.is_native_array(container_from_numpy.b.d)
+    assert ivy.is_ivy_array(container_from_numpy['a'])
+    assert ivy.is_ivy_array(container_from_numpy.a)
+    assert ivy.is_ivy_array(container_from_numpy['b']['c'])
+    assert ivy.is_ivy_array(container_from_numpy.b.c)
+    assert ivy.is_ivy_array(container_from_numpy['b']['d'])
+    assert ivy.is_ivy_array(container_from_numpy.b.d)
 
 
 def test_container_arrays_as_lists(dev, call):
@@ -1622,12 +1621,12 @@ def test_container_arrays_as_lists(dev, call):
                      'd': ivy.array([[[2., 4.], [6., 8.]], [[10., 12.], [14., 16.]]], dev=dev)}}
     container = Container(dict_in)
 
-    assert ivy.is_native_array(container['a'])
-    assert ivy.is_native_array(container.a)
-    assert ivy.is_native_array(container['b']['c'])
-    assert ivy.is_native_array(container.b.c)
-    assert ivy.is_native_array(container['b']['d'])
-    assert ivy.is_native_array(container.b.d)
+    assert ivy.is_ivy_array(container['a'])
+    assert ivy.is_ivy_array(container.a)
+    assert ivy.is_ivy_array(container['b']['c'])
+    assert ivy.is_ivy_array(container.b.c)
+    assert ivy.is_ivy_array(container['b']['d'])
+    assert ivy.is_ivy_array(container.b.d)
 
     # without key_chains specification
     container_arrays_as_lists = container.arrays_as_lists()
