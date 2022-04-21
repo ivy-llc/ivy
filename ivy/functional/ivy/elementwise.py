@@ -1127,9 +1127,10 @@ def trunc(x: Union[ivy.Array, ivy.NativeArray],
     return _cur_framework(x).trunc(x, out)
 
 
-def abs(x: Union[ivy.Array, ivy.NativeArray],
-        out: Optional[Union[ivy.Array, ivy.NativeArray]] = None) \
-        -> ivy.Array:
+def abs(x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        *,
+        out: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None) \
+        -> Union[ivy.Array, ivy.Container]:
     """
     Calculates the absolute value for each element ``x_i`` of the input array ``x`` (i.e., the element-wise result has the same magnitude as the respective element in ``x`` but has positive sign).
 
