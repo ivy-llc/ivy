@@ -3,6 +3,7 @@ Collection of tests for unified gradient functions
 """
 
 # global
+from numbers import Number
 import pytest
 import numpy as np
 
@@ -139,58 +140,55 @@ def test_stop_gradient(x_raw, dtype, tensor_fn, dev, call):
 
 
 # execute_with_gradients
-# @pytest.mark.parametrize(
-#     "func_n_xs_n_ty_n_te_n_tg", [(lambda xs_in: (xs_in['w'] * xs_in['w'])[0],
-#                                   Container({'w': [3.]}), np.array(9.), None, {'w': np.array([6.])}),
-#                                  (lambda xs_in: ((xs_in['w'] * xs_in['w'])[0], xs_in['w'] * 1.5),
-#                                   Container({'w': [3.]}), np.array(9.), np.array([4.5]), {'w': np.array([6.])}),
-#                                  (lambda xs_in: (xs_in['w1'] * xs_in['w2'])[0],
-#                                   Container({'w1': [3.], 'w2': [5.]}), np.array(15.), None,
-#                                   {'w1': np.array([5.]), 'w2': np.array([3.])})])
-# @pytest.mark.parametrize(
-#     "dtype", ['float32'])
-# @pytest.mark.parametrize(
-#     "tensor_fn", [ivy.array])
-# def test_execute_with_gradients(func_n_xs_n_ty_n_te_n_tg, dtype, tensor_fn, dev, compile_graph, call):
-#     # smoke test
-#     func, xs_raw, true_y, true_extra, true_dydxs = func_n_xs_n_ty_n_te_n_tg
-#     xs = xs_raw.map(lambda x, _: ivy.variable(ivy.array(x)))
-#     grad_fn = lambda xs_: ivy.execute_with_gradients(func, xs_)
-#     # compile if this mode is set
-#     if compile_graph and call is helpers.torch_call:
-#         # Currently only PyTorch is supported for ivy compilation
-#         grad_fn = ivy.compile_graph(grad_fn, xs)
-#     if true_extra is None:
-#         y, dydxs = grad_fn(xs)
-#         extra_out = None
-#     else:
-#         y, dydxs, extra_out = grad_fn(xs)
-#     # type test
-#     assert ivy.is_array(y) or isinstance(y, Number)
-#     if call is not helpers.np_call:
-#         assert isinstance(dydxs, dict)
-#     # cardinality test
-#     if call is not helpers.mx_call:
-#         # mxnet cannot slice array down to shape (), it remains fixed at size (1,)
-#         assert y.shape == true_y.shape
-#     if call is not helpers.np_call:
-#         for (g, g_true) in zip(dydxs.values(), true_dydxs.values()):
-#             assert g.shape == g_true.shape
-#     # value test
-#     xs = xs_raw.map(lambda x, _: ivy.variable(ivy.array(x)))
-#     if true_extra is None:
-#         y, dydxs = call(ivy.execute_with_gradients, func, xs)
-#     else:
-#         y, dydxs, extra_out = call(ivy.execute_with_gradients, func, xs)
-#     assert np.allclose(y, true_y)
-#     if true_extra:
-#         assert np.allclose(extra_out, true_extra)
-#     if call is helpers.np_call:
-#         # numpy doesn't support autodiff
-#         assert dydxs is None
-#     else:
-#         for (g, g_true) in zip(dydxs.values(), true_dydxs.values()):
-#             assert np.allclose(ivy.to_numpy(g), g_true)
+@pytest.mark.parametrize(
+    "func_n_xs_n_ty_n_te_n_tg", [(lambda xs_in: (xs_in['w'] * xs_in['w'])[0],
+                                  Container({'w': [3.]}), np.array(9.), None, {'w': np.array([6.])}),
+                                 (lambda xs_in: ((xs_in['w'] * xs_in['w'])[0], xs_in['w'] * 1.5),
+                                  Container({'w': [3.]}), np.array(9.), np.array([4.5]), {'w': np.array([6.])}),
+                                 (lambda xs_in: (xs_in['w1'] * xs_in['w2'])[0],
+                                  Container({'w1': [3.], 'w2': [5.]}), np.array(15.), None,
+                                  {'w1': np.array([5.]), 'w2': np.array([3.])})])
+@pytest.mark.parametrize(
+    "dtype", ['float32'])
+@pytest.mark.parametrize(
+    "tensor_fn", [ivy.array])
+def test_execute_with_gradients(func_n_xs_n_ty_n_te_n_tg, dtype, tensor_fn, dev, compile_graph, call):
+    # smoke test
+    func, xs_raw, true_y, true_extra, true_dydxs = func_n_xs_n_ty_n_te_n_tg
+    xs = xs_raw.map(lambda x, _: ivy.variable(ivy.array(x)))
+    grad_fn = lambda xs_: ivy.execute_with_gradients(func, xs_)
+    # TODO compile if this mode is set when ivy.compile is implemented
+    if true_extra is None:
+        y, dydxs = grad_fn(xs)
+        extra_out = None
+    else:
+        y, dydxs, extra_out = grad_fn(xs)
+    # type test
+    assert ivy.is_array(y) or isinstance(y, Number)
+    if call is not helpers.np_call:
+        assert isinstance(dydxs, dict)
+    # cardinality test
+    if call is not helpers.mx_call:
+        # mxnet cannot slice array down to shape (), it remains fixed at size (1,)
+        assert y.shape == true_y.shape
+    if call is not helpers.np_call:
+        for (g, g_true) in zip(dydxs.values(), true_dydxs.values()):
+            assert g.shape == g_true.shape
+    # value test
+    xs = xs_raw.map(lambda x, _: ivy.variable(ivy.array(x)))
+    if true_extra is None:
+        y, dydxs = call(ivy.execute_with_gradients, func, xs)
+    else:
+        y, dydxs, extra_out = call(ivy.execute_with_gradients, func, xs)
+    assert np.allclose(y, true_y)
+    if true_extra:
+        assert np.allclose(extra_out, true_extra)
+    if call is helpers.np_call:
+        # numpy doesn't support autodiff
+        assert dydxs is None
+    else:
+        for (g, g_true) in zip(dydxs.values(), true_dydxs.values()):
+            assert np.allclose(ivy.to_numpy(g), g_true)
 
 
 # gradient_descent_update
