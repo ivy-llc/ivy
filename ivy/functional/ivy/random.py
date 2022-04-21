@@ -16,21 +16,21 @@ def random_uniform(low=0.0, high=1.0, shape=None, dev=None):
 
     Parameters
     ----------
-    low :
+    low
         Lower boundary of the output interval. All values generated will be greater than or equal to low.
         The default value is 0.
-    high :
+    high
         Upper boundary of the output interval. All values generated will be less than high.
         The default value is 1.0.
-    shape :
+    shape
         Output shape. If the given shape is, e.g., (m, n, k), then m * n * k samples are drawn.
         If size is None (default), a single value is returned.
-    dev :
+    dev
         device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. (Default value = None)
 
     Returns
     -------
-     out:
+     ret
         Drawn samples from the parameterized uniform distribution.
 
     """
@@ -42,19 +42,19 @@ def random_normal(mean=0.0, std=1.0, shape=None, dev=None):
 
     Parameters
     ----------
-    mean :
+    mean
         The mean of the normal distribution to sample from. Default is 0.
-    std :
+    std
         The standard deviation of the normal distribution to sample from. Default is 1.
-    shape :
+    shape
         Output shape. If the given shape is, e.g., (m, n, k), then m * n * k samples are drawn.
         If size is None (default), a single value is returned.
-    dev :
+    dev
         device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. (Default value = None)
 
     Returns
     -------
-     out:
+     ret
         Drawn samples from the parameterized uniform distribution.
 
     """
@@ -67,23 +67,23 @@ def multinomial(population_size, num_samples, batch_size, probs=None, replace=Tr
 
     Parameters
     ----------
-    population_size :
+    population_size
         The size of the population from which to draw samples.
-    num_samples :
+    num_samples
         Number of independent samples to draw from the population.
-    batch_size :
+    batch_size
         Number of times to draw a new set of samples from the population.
-    probs :
+    probs
         The unnormalized probabilities for all elemtns in population,
         default is uniform *[batch_shape, num_classes]*
-    replace :
+    replace
         Whether to replace samples once they've been drawn. Default is True.
-    dev :
+    dev
         device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. (Default value = None)
 
     Returns
     -------
-     out:
+     ret
         Drawn samples indices from the multinomial distribution.
 
     """
@@ -95,13 +95,13 @@ def randint(low, high, shape, dev=None):
 
     Parameters
     ----------
-    low :
+    low
         Lowest integer to be drawn from the distribution.
-    high :
+    high
         One above the highest integer to be drawn from the distribution.
-    shape :
+    shape
         a tuple defining the shape of the output tensor.
-    dev :
+    dev
         device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. (Default value = None)
 
     Returns
@@ -116,7 +116,7 @@ def seed(seed_value=0):
 
     Parameters
     ----------
-    seed_value :
+    seed_value
         Seed for random number generation, must be a positive integer. (Default value = 0)
 
     Returns
@@ -131,12 +131,12 @@ def shuffle(x):
 
     Parameters
     ----------
-    x :
+    x
         An array object, in the specific Machine learning framework.
 
     Returns
     -------
-     out:
+     ret
         An array object, shuffled along the first dimension.
 
     """

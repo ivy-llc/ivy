@@ -20,17 +20,18 @@ def relu(x: Union[ivy.Array, ivy.NativeArray],
 
      Parameters
      ----------
-     x:
+     x
          input array
-    out:
+    out
         optional output array, for writing the result to. It must have a shape that the inputs broadcast to.
 
     Returns
-    -------
-    return:
+     -------
+    ret
        an array containing the rectified linear unit activation of each element in ``x``.
 
     Examples:
+    --------
     >>> x = ivy.array([-1, 0, 1])
     >>> y = ivy.relu(x)
     >>> print(y)
@@ -45,9 +46,9 @@ def leaky_relu(x: Union[ivy.Array, ivy.NativeArray], alpha: Optional[float] = 0.
 
     Parameters
     ----------
-    x :
+    x
         Input array.
-    alpha :
+    alpha
         Negative slope for ReLU.
 
     Returns
@@ -56,6 +57,7 @@ def leaky_relu(x: Union[ivy.Array, ivy.NativeArray], alpha: Optional[float] = 0.
         The input array with leaky relu applied element-wise.
 
     Examples:
+    ---------
     >>> x = ivy.array([0.39, -0.85])
     >>> y = ivy.leaky_relu(x)
     >>> print(y)
@@ -70,9 +72,9 @@ def gelu(x, approximate=True):
 
     Parameters
     ----------
-    x :
+    x
         Input array.
-    approximate :
+    approximate
         Whether to approximate, default is True.
 
     Returns
@@ -90,7 +92,7 @@ def tanh(x: Union[ivy.Array, ivy.NativeArray])\
 
     Parameters
      ----------
-    x:
+    x
          input array
 
     Returns
@@ -99,6 +101,7 @@ def tanh(x: Union[ivy.Array, ivy.NativeArray])\
         The input array with Hyperbolic tangent activation applied element-wise.
 
     Examples:
+    ---------
 
     >>> x = ivy.array([0.55 , -0.55])
     >>> y = ivy.tanh(x)
@@ -114,7 +117,7 @@ def sigmoid(x):
 
     Parameters
     ----------
-    x :
+    x
         Input array.
 
     Returns
@@ -130,9 +133,9 @@ def softmax(x, axis=-1):
 
     Parameters
     ----------
-    x :
+    x
         Input array.
-    axis :
+    axis
         The dimension softmax would be performed on. The default is -1 which indicates the last dimension.
 
     Returns
@@ -149,13 +152,14 @@ def softplus(x: Union[ivy.Array, ivy.NativeArray])\
 
     Parameters
     ----------
-    x :
+    x
         input array.
 
     Returns
     -------
         an array containing the softplus activation of each element in ``x``.
     Examples:
+    ---------
     >>> x = ivy.array([-0.3461, -0.6491])
     >>> y = ivy.softplus(x)
     >>> print(y)

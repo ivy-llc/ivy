@@ -22,16 +22,16 @@ def linear(x, weight, bias=None):
 
     Parameters
     ----------
-    x :
+    x
         The input x compute linear transformation on. *[outer_batch_shape,inner_batch_shape,in_features]*
-    weight :
+    weight
         The weight matrix. *[outer_batch_shape,out_features,in_features]*
-    bias :
+    bias
         The bias vector, default is None. *[outer_batch_shape,out_features]*
 
     Returns
     -------
-     out:
+     ret
         Result array of the linear transformation. *[outer_batch_shape,inner_batch_shape,out_features]*
 
     """
@@ -66,16 +66,16 @@ def dropout(x, prob, scale=True):
 
     Parameters
     ----------
-    x :
+    x
         The input array x to perform dropout on.
-    prob :
+    prob
         The probability of zeroing out each array element.
-    scale :
+    scale
         Whether to scale the output by 1/(1-prob), default is True.
 
     Returns
     -------
-     out:
+     ret
         Result array of the linear transformation. *[N,∗,out_features]*
 
     """
@@ -93,15 +93,15 @@ def scaled_dot_product_attention(q, k, v, scale, mask=None):
 
     Parameters
     ----------
-    q :
+    q
         The queries *[batch_shape,num_queries,feat_dim]*.
-    k :
+    k
         The keys *[batch_shape,num_keys,feat_dim]*.
-    v :
+    v
         The values *[batch_shape,num_keys,feat_dim]*.
-    scale :
+    scale
         The value by which to scale the query-key pairs before softmax.
-    mask :
+    mask
         The mask to apply to the query-key values. Default is None. *[batch_shape,num_queries,num_keys]*
 
     Returns
@@ -132,29 +132,29 @@ def multi_head_attention(x, scale, num_heads, context=None, mask=None, to_q_fn=N
 
     Parameters
     ----------
-    x :
+    x
         The array to determine the queries from *[batch_shape,num_queries,x_feat_dim]*.
-    scale :
+    scale
         The value by which to scale the query-key similarity measure before softmax.
-    num_heads :
+    num_heads
         The number of attention heads to use.
-    context :
+    context
         The array to determine the keys and values from. Default is None.
         *[batch_shape,num_keys,cont_feat_dim]*.
-    mask :
+    mask
         The mask to apply to the query-key values. Default is None. *[batch_shape,num_queries,num_keys]*
-    to_q_fn :
+    to_q_fn
         The function to compute queries from input x, returning queries
         *[batch_shape,num_queries,numheads×feat_dim]*. (Default value = None)
-    to_kv_fn :
+    to_kv_fn
         The function to compute keys and values from the context. (Default value = None)
-    to_out_fn :
+    to_out_fn
         The function to compute the output from the scaled dot-product attention. (Default value = None)
-    to_q_v :
+    to_q_v
         The variables for function to_q_fn. Default is None.
-    to_kv_v :
+    to_kv_v
         The variables for function to_kv_fn. Default is None.
-    to_out_v :
+    to_out_v
         The variables for function to_out_fn. Default is None.
 
     Returns
@@ -202,22 +202,22 @@ def conv1d(x, filters, strides, padding, data_format='NWC', dilations=1):
 
     Parameters
     ----------
-    x :
+    x
         Input image *[batch_size,w,d_in]*.
-    filters :
+    filters
         Convolution filters *[fw,d_in,d_out]*.
-    strides :
+    strides
         The stride of the sliding window for each dimension of input.
-    padding :
+    padding
         SAME" or "VALID" indicating the algorithm, or list indicating the per-dimension paddings.
-    data_format :
+    data_format
         NWC" or "NCW". Defaults to "NWC".
-    dilations :
+    dilations
         The dilation factor for each dimension of input. (Default value = 1)
 
     Returns
     -------
-     out:
+     ret
         The result of the convolution operation.
 
     """
@@ -229,24 +229,24 @@ def conv1d_transpose(x, filters, strides, padding, output_shape=None, data_forma
 
     Parameters
     ----------
-    x :
+    x
         Input image *[batch_size,w,d_in]*.
-    filters :
+    filters 
         Convolution filters *[fw,d_in,d_out]*.
-    strides :
+    strides 
         The stride of the sliding window for each dimension of input.
-    padding :
+    padding 
         SAME" or "VALID" indicating the algorithm, or list indicating the per-dimension paddings.
-    output_shape :
+    output_shape 
         Shape of the output (Default value = None)
-    data_format :
+    data_format 
         NWC" or "NCW". Defaults to "NWC".
-    dilations :
+    dilations 
         The dilation factor for each dimension of input. (Default value = 1)
 
     Returns
     -------
-     out:
+     ret
         The result of the transpose convolution operation.
 
     """
@@ -258,22 +258,22 @@ def conv2d(x, filters, strides, padding, data_format='NHWC', dilations=1):
 
     Parameters
     ----------
-    x :
+    x 
         Input image *[batch_size,h,w,d_in]*.
-    filters :
+    filters 
         Convolution filters *[fh,fw,d_in,d_out]*.
-    strides :
+    strides 
         The stride of the sliding window for each dimension of input.
-    padding :
+    padding 
         SAME" or "VALID" indicating the algorithm, or list indicating the per-dimension paddings.
-    data_format :
+    data_format 
         NHWC" or "NCHW". Defaults to "NHWC".
-    dilations :
+    dilations 
         The dilation factor for each dimension of input. (Default value = 1)
 
     Returns
     -------
-     out:
+     ret
         The result of the convolution operation.
 
     """
@@ -285,24 +285,24 @@ def conv2d_transpose(x, filters, strides, padding, output_shape=None, data_forma
 
     Parameters
     ----------
-    x :
+    x 
         Input image *[batch_size,h,w,d_in]*.
-    filters :
+    filters 
         Convolution filters *[fh,fw,d_in,d_out]*.
-    strides :
+    strides 
         The stride of the sliding window for each dimension of input.
-    padding :
+    padding 
         SAME" or "VALID" indicating the algorithm, or list indicating the per-dimension paddings.
-    output_shape :
+    output_shape 
         Shape of the output (Default value = None)
-    data_format :
+    data_format 
         NHWC" or "NCHW". Defaults to "NHWC".
-    dilations :
+    dilations 
         The dilation factor for each dimension of input. (Default value = 1)
 
     Returns
     -------
-     out:
+     ret
         The result of the transpose convolution operation.
 
     """
@@ -314,22 +314,22 @@ def depthwise_conv2d(x, filters, strides, padding, data_format='NHWC', dilations
 
     Parameters
     ----------
-    x :
+    x 
         Input image *[batch_size,h,w,d]*.
-    filters :
+    filters 
         Convolution filters *[fh,fw,d]*.
-    strides :
+    strides 
         The stride of the sliding window for each dimension of input.
-    padding :
+    padding 
         SAME" or "VALID" indicating the algorithm, or list indicating the per-dimension paddings.
-    data_format :
+    data_format 
         NHWC" or "NCHW". Defaults to "NHWC".
-    dilations :
+    dilations 
         The dilation factor for each dimension of input. (Default value = 1)
 
     Returns
     -------
-     out:
+     ret
         The result of the convolution operation.
 
     """
@@ -342,22 +342,22 @@ def conv3d(x, filters, strides, padding, data_format='NDHWC', dilations=1):
 
     Parameters
     ----------
-    x :
+    x 
         Input volume *[batch_size,d,h,w,d_in]*.
-    filters :
+    filters 
         Convolution filters *[fd,fh,fw,d_in,d_out]*.
-    strides :
+    strides 
         The stride of the sliding window for each dimension of input.
-    padding :
+    padding 
         SAME" or "VALID" indicating the algorithm, or list indicating the per-dimension paddings.
-    data_format :
+    data_format 
         NDHWC" or "NCDHW". Defaults to "NDHWC".
-    dilations :
+    dilations 
         The dilation factor for each dimension of input. (Default value = 1)
 
     Returns
     -------
-     out:
+     ret
         The result of the convolution operation.
 
     """
@@ -369,24 +369,24 @@ def conv3d_transpose(x, filters, strides, padding, output_shape=None, data_forma
 
     Parameters
     ----------
-    x :
+    x 
         Input image *[batch_size,d,h,w,d_in]*.
-    filters :
+    filters 
         Convolution filters *[fd,fh,fw,d_in,d_out]*.
-    strides :
+    strides 
         The stride of the sliding window for each dimension of input.
-    padding :
+    padding 
         SAME" or "VALID" indicating the algorithm, or list indicating the per-dimension paddings.
-    output_shape :
+    output_shape 
         Shape of the output (Default value = None)
-    data_format :
+    data_format 
         NDHWC" or "NCDHW". Defaults to "NDHWC".
-    dilations :
+    dilations 
         The dilation factor for each dimension of input. (Default value = 1)
 
     Returns
     -------
-     out:
+     ret
         The result of the transpose convolution operation.
 
     """
@@ -400,24 +400,24 @@ def lstm_update(x, init_h, init_c, kernel, recurrent_kernel, bias=None, recurren
 
     Parameters
     ----------
-    x :
+    x 
         input tensor of LSTM layer *[batch_shape, t, in]*.
-    init_h :
+    init_h 
         initial state tensor for the cell output *[batch_shape, out]*.
-    init_c :
+    init_c 
         initial state tensor for the cell hidden state *[batch_shape, out]*.
-    kernel :
+    kernel 
         weights for cell kernel *[in, 4 x out]*.
-    recurrent_kernel :
+    recurrent_kernel 
         weights for cell recurrent kernel *[out, 4 x out]*.
-    bias :
+    bias 
         bias for cell kernel *[4 x out]*. (Default value = None)
-    recurrent_bias :
+    recurrent_bias 
         bias for cell recurrent kernel *[4 x out]*. (Default value = None)
 
     Returns
     -------
-     out:
+     ret
         hidden state for all timesteps *[batch_shape,t,out]* and cell state for last timestep *[batch_shape,out]*
 
     """

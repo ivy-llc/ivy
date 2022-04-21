@@ -18,9 +18,9 @@ def index_nest(nest, index):
 
     Parameters
     ----------
-    nest :
+    nest
         The nested object to index.
-    index :
+    index
         A tuple of indices for indexing.
 
     Returns
@@ -38,9 +38,9 @@ def prune_nest_at_index(nest, index):
 
     Parameters
     ----------
-    nest :
+    nest
         The nested object to prune.
-    index :
+    index
         A tuple of indices for the index at which to prune.
 
     Returns
@@ -58,11 +58,11 @@ def set_nest_at_index(nest, index, value):
 
     Parameters
     ----------
-    nest :
+    nest
         The nested object to update.
-    index :
+    index
         A tuple of indices for the index at which to update.
-    value :
+    value
         The new value for updating.
 
     Returns
@@ -80,11 +80,11 @@ def map_nest_at_index(nest, index, fn):
 
     Parameters
     ----------
-    nest :
+    nest
         The nested object to update.
-    index :
+    index
         A tuple of indices for the index at which to update.
-    fn :
+    fn
         The function to perform on the nest at the given index.
 
     Returns
@@ -102,9 +102,9 @@ def multi_index_nest(nest, indices):
 
     Parameters
     ----------
-    nest :
+    nest
         The nested object to slice.
-    indices :
+    indices
         A tuple of tuples of indices to apply.
 
     Returns
@@ -119,9 +119,9 @@ def prune_nest_at_indices(nest, indices):
 
     Parameters
     ----------
-    nest :
+    nest
         The nested object to prune.
-    indices :
+    indices
         A tuple of tuples of indices for the indices at which to prune.
 
     Returns
@@ -136,11 +136,11 @@ def set_nest_at_indices(nest, indices, values):
 
     Parameters
     ----------
-    nest :
+    nest
         The nested object to update.
-    indices :
+    indices
         A tuple of tuples of indices for the indices at which to update.
-    values :
+    values
         The new values for updating.
 
     Returns
@@ -157,11 +157,11 @@ def map_nest_at_indices(nest, indices, fn):
 
     Parameters
     ----------
-    nest :
+    nest
         The nested object to update.
-    indices :
+    indices
         A tuple of tuples of indices for the indices at which to update.
-    fn :
+    fn
         The function to perform on the nest at the given index.
 
     Returns
@@ -177,21 +177,21 @@ def nested_indices_where(nest: Iterable, fn: Callable, check_nests: bool = False
 
     Parameters
     ----------
-    nest :
+    nest
         The nest to check the leaves of.
-    fn :
+    fn
         The conditon function, returning True or False.
-    check_nests :
+    check_nests
         Whether to also check the nests for the condition, not only nest leaves. Default is False.
-    _index :
+    _index
         The indices detected so far. None at the beginning. Used internally, do not set manually.
-    _base :
+    _base
         Whether the current function call is the first function call in the recursive stack.
         Used internally, do not set manually.
 
     Returns
     -------
-     out:
+     ret
         A set of indices for the nest where the function evaluated as True.
 
     """
@@ -220,19 +220,19 @@ def all_nested_indices(nest: Iterable, include_nests: bool = False, _index: List
 
     Parameters
     ----------
-    nest :
+    nest
         The nest to check the leaves of.
-    include_nests :
+    include_nests
         Whether to also include indices of the nests themselves, not only leaves. Default is False.
-    _index :
+    _index
         The indices detected so far. None at the beginning. Used internally, do not set manually.
-    _base :
+    _base
         Whether the current function call is the first function call in the recursive stack.
         Used internally, do not set manually.
 
     Returns
     -------
-     out:
+     ret
         A set of indices for the nest where the function evaluated as True.
 
     """
@@ -259,18 +259,18 @@ def map(fn: Callable, constant: Dict[str, Any] = None, unique: Dict[str, Iterabl
 
     Parameters
     ----------
-    fn :
+    fn
         The function to map onto x.
-    constant :
+    constant
         keyword arguments which remain constant between each function call. Default is None.
-    unique :
+    unique
         keyword arguments which are unique for each function call. Default is None.
-    mean :
+    mean
         Whether to compute the mean across the return values, and return this mean. Default is False.
 
     Returns
     -------
-     out:
+     ret
         x following the applicable of fn to each of it's iterated items.
 
     """
@@ -290,28 +290,28 @@ def nested_map(x: Union[Union[ivy.Array, ivy.NativeArray], Iterable], fn: Callab
 
     Parameters
     ----------
-    x :
+    x
         The item to apply the mapped function to.
-    fn :
+    fn
         The function to map onto x.
-    include_derived :
+    include_derived
         Whether to also recursive for classes derived from tuple, list and dict. Default is False.
-    to_mutable :
+    to_mutable 
         Whether to convert the nest to a mutable form, changing all tuples to lists. Default is False.
-    max_depth :
+    max_depth 
         The maximum nested depth to reach. Default is 1. Increase this if the nest is deeper.
-    _depth :
+    _depth 
         Placeholder for tracking the recursive depth, do not set this parameter.
-    _tuple_check_fn :
+    _tuple_check_fn 
         Placeholder for the tuple check function, do not set this parameter.
-    _list_check_fn :
+    _list_check_fn 
         Placeholder for the list check function, do not set this parameter.
-    _dict_check_fn :
+    _dict_check_fn 
         Placeholder for the dict check function, do not set this parameter.
 
     Returns
-    -------
-    return
+     -------
+    ret
         x following the applicable of fn to it's nested leaves, or x itself if x is not nested.
 
     """
@@ -342,19 +342,19 @@ def nested_any(nest: Iterable,
 
     Parameters
     ----------
-    nest :
+    nest 
         The nest to check the leaves of.
-    fn :
+    fn 
         The conditon function, returning True or False.
-    check_nests :
+    check_nests 
         Whether to also check the nests for the condition, not only nest leaves. Default is False.
-    _base :
+    _base 
         Whether the current function call is the first function call in the recursive stack.
         Used internally, do not set manually.
 
     Returns
-    -------
-    return
+     -------
+    ret
         A boolean, whether the function evaluates to true for any leaf node.
 
     """
@@ -382,16 +382,16 @@ def copy_nest(nest: Union[Union[ivy.Array, ivy.NativeArray], Iterable], include_
 
     Parameters
     ----------
-    nest :
+    nest 
         The nest to copy.
-    include_derived :
+    include_derived 
         Whether to also recursive for classes derived from tuple, list and dict. Default is False.
-    to_mutable :
+    to_mutable 
         Whether to convert the nest to a mutable form, changing all tuples to lists. Default is False.
 
     Returns
-    -------
-    return
+     -------
+    ret
         The copied nest.
 
     """

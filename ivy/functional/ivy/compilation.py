@@ -21,16 +21,16 @@ def compile(func: Callable, dynamic: bool = True, example_inputs: Union[Any, Tup
 
     Parameters
     ----------
-    func :
+    func
         Function to be compiled.
-    dynamic :
+    dynamic
         Whether to compile all conditional branches, regardless of inputs during first invocation.
-    example_inputs :
+    example_inputs
         Example of inputs to the function to be compiled.
         Required for torch in non-dynamic mode, unused by other frameworks.
-    static_argnums :
+    static_argnums
         The argument numbers which should be treated as static for compiling. Default is None.
-    static_argnames :
+    static_argnames
         The argument names which should be treated as static for compiling. Default is None.
 
     Returns

@@ -19,14 +19,14 @@ def stack_images(images, desired_aspect_ratio=(1, 1)):
 
     Parameters
     ----------
-    images :
+    images
         Sequence of image arrays to be stacked *[batch_shape,height,width,dims]* .
-    desired_aspect_ratio :
+    desired_aspect_ratio
         Desired aspect ratio of stacked image. (Default value = (1)
 
     Returns
     -------
-     out:
+     ret
         Stacked image, suitable for viewing in a single window.
 
     """
@@ -38,14 +38,14 @@ def bilinear_resample(x, warp):
 
     Parameters
     ----------
-    x :
+    x
         Input image *[batch_shape,h,w,dims]*.
-    warp :
+    warp
         Warp array *[batch_shape,num_samples,2]*
 
     Returns
     -------
-     out:
+     ret
         Image after bilinear re-sampling.
 
     """
@@ -57,12 +57,12 @@ def gradient_image(x):
 
     Parameters
     ----------
-    x :
+    x
         Input image *[batch_shape, h, w, d]* .
 
     Returns
     -------
-     out:
+     ret
         Gradient images dy *[batch_shape,h,w,d]* and dx *[batch_shape,h,w,d]* .
 
     """
@@ -74,12 +74,12 @@ def float_img_to_uint8_img(x):
 
     Parameters
     ----------
-    x :
+    x
         Input float image *[batch_shape,h,w]*.
 
     Returns
     -------
-     out:
+     ret
         The new encoded uint8 image *[batch_shape,h,w,4]* .
 
     """
@@ -95,12 +95,12 @@ def uint8_img_to_float_img(x):
 
     Parameters
     ----------
-    x :
+    x
         Input uint8 image *[batch_shape,h,w,4]*.
 
     Returns
     -------
-     out:
+     ret
         The new float image *[batch_shape,h,w]*
 
     """
@@ -116,18 +116,18 @@ def random_crop(x, crop_size, batch_shape=None, image_dims=None):
 
     Parameters
     ----------
-    x :
+    x
         Input images to crop *[batch_shape,h,w,f]*
-    crop_size :
+    crop_size
         The 2D crop size.
-    batch_shape :
+    batch_shape
         Shape of batch. Inferred from inputs if None. (Default value = None)
-    image_dims :
+    image_dims
         Image dimensions. Inferred from inputs in None. (Default value = None)
 
     Returns
     -------
-     out:
+     ret
         The new cropped image *[batch_shape,nh,nw,f]*
 
     """
@@ -169,16 +169,16 @@ def linear_resample(x: Union[ivy.Array, ivy.NativeArray], num_samples: int, axis
 
     Parameters
     ----------
-    x :
+    x
         Input array
-    num_samples :
+    num_samples
         The number of interpolated samples to take.
-    axis :
+    axis
         The axis along which to perform the resample. Default is last dimension.
 
     Returns
     -------
-     out:
+     ret
         The array after the linear resampling.
 
     """

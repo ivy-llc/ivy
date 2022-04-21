@@ -23,25 +23,25 @@ def arange(stop: Number, start: Number = 0, step: Number = 1, dtype: ivy.Dtype =
 
     Parameters
     ----------
-    stop :
+    stop
         End of interval. The interval does not include this value, except in some cases where step is not an
         integer and floating point round-off affects the length of out.
-    start :
+    start
         Start of interval. The interval includes this value. The default start value is 0.
-    step :
+    step
         Spacing between values. For any output out, this is the distance between two adjacent values,
         out[i+1] - out[i]. The default step size is 1. If step is specified as a position argument,
         start must also be given.
-    dtype :
+    dtype
         The desired data-type for the array in string format, i.e. 'float32' or 'int64'.
         If not given, then the type will be determined as the minimum type required to hold the objects in the
         sequence.
-    dev :
+    dev
         device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
 
     Returns
     -------
-     out:
+     ret
         Tensor of evenly spaced values.
 
         For floating point arguments, the length of the result is ceil((stop - start)/step).
@@ -60,14 +60,14 @@ def asarray(x: Union[ivy.Array, ivy.NativeArray, List[Number], Tuple[Number], np
 
     Parameters
     ----------
-    x:
+    x
         input data, in any form that can be converted to an array.
         This includes lists, lists of tuples, tuples, tuples of tuples, tuples of lists and ndarrays.
 
-    dtype:
+    dtype
         datatype, optional. Datatype is inferred from the input data.
 
-    dev:
+    dev
         device on which to place the created array. Default: None.
 
     Returns
@@ -86,19 +86,20 @@ def zeros(shape: Union[int, Tuple[int], List[int]],
 
     Parameters
     ----------
-    shape:
+    shape
        output array shape.
-    dtype:
-       output array data type. If ``dtype`` is ``None``, the output array data type must be the default floating-point data type. Default: ``None``.
-    device:
+    dtype
+       output array data type. If ``dtype`` is ``None``, the output array data type must be the default floating-point data type. Default  ``None``.
+    device
        device on which to place the created array. Default: ``None``.
 
     Returns
-    -------
-    return:
+     -------
+    ret
        an array containing zeros.
 
     Examples:
+    ---------
 
     >>> shape = (3,5)
     >>> x = ivy.zeros(shape)
@@ -119,19 +120,20 @@ def ones(shape: Union[int, Tuple[int], List[int]],
 
     Parameters
     ----------
-    shape:
+    shape
         output array shape.
-    dtype:
-        output array data type. If ``dtype`` is ``None``, the output array data type must be the default floating-point data type. Default: ``None``.
-    device:
+    dtype
+        output array data type. If ``dtype`` is ``None``, the output array data type must be the default floating-point data type. Default  ``None``.
+    device
         device on which to place the created array. Default: ``None``.
 
     Returns
-    -------
-    return:
+     -------
+    ret
         an array containing ones.
 
     Examples:
+    ---------
 
     >>> shape = (2,2)
     >>> y = ivy.ones(shape)
@@ -151,20 +153,25 @@ def full_like(x: Union[ivy.Array, ivy.NativeArray],
     Returns a new array filled with fill_value and having the same shape as an input array x.
 
     Parameters
-    x:input array from which to derive the output array shape.
+    x
+        input array from which to derive the output array shape.
 
-    fill_value: Scalar fill value
+    fill_value
+        Scalar fill value
 
-    dtype:output array data type.
+    dtype
+        output array data type.
     If dtype is None, the output array data type must be inferred from x.
-    Default: None.
+    Default  None.
 
-    device:device on which to place the created array.
+    device
+        device on which to place the created array.
     If device is None,the output array device must be inferred from x.
-    Default: None.
+    Default
+        None.
 
     Returns
-    out:an array having the same shape as x and where every element is equal to fill_value.
+    returnan array having the same shape as x and where every element is equal to fill_value.
     """
     return _cur_framework(x).full_like(x, fill_value, dtype=dtype, device=device)
 
@@ -178,21 +185,22 @@ def ones_like(x: Union[ivy.Array, ivy.NativeArray],
 
     Parameters
     ----------
-    x:
+    x
         input array from which to derive the output array shape.
-    dtype:
+    dtype
         output array data type. If ``dtype`` is ``None``, the output array data type must be inferred from x.
-        Default: ``None``.
-    device:
+        Default  ``None``.
+    device
         device on which to place the created array. If device is ``None``, the output array device must be inferred from x.
         Default: ``None``.
 
     Returns
-    -------
-    return:
+     -------
+    ret
         an array having the same shape as x and filled with ones.
 
     Examples:
+    ---------
 
     >>> x = ivy.array([[0, 1, 2],[3, 4, 5]])
     >>> y = ivy.ones_like(x)
@@ -210,17 +218,17 @@ def zeros_like(x: Union[ivy.Array, ivy.NativeArray],
 
     Parameters
     ----------
-    x :
+    x
         The shape and data-type of x define these same attributes of the returned array.
-    dtype :
+    dtype
         The desired data-type for the array in string format, i.e. 'float32' or 'int64'.
         If not given, then the type of the original array is used.
-    dev :
+    dev
         device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. Same as x if None.
 
     Returns
     -------
-     out:
+     ret
         Tensor of zeros with the same shape and type as a, unless dtype provided which overrides.
 
     """
@@ -235,15 +243,15 @@ def tril(x: Union[ivy.Array, ivy.NativeArray],
 
     Parameters
     ----------
-    x:
+    x
         input array having shape (..., M, N) and whose innermost two dimensions form MxN matrices.
-    k:
+    k
         diagonal above which to zero elements. If k = 0, the diagonal is the main diagonal. If k < 0, the diagonal is
         below the main diagonal. If k > 0, the diagonal is above the main diagonal. Default: 0.
 
     Returns
-    -------
-    return:
+     -------
+    ret
         an array containing the lower triangular part(s). The returned array must have the same shape and data type as
         x. All elements above the specified diagonal k must be zeroed. The returned array should be allocated on the
         same device as x.
@@ -259,15 +267,15 @@ def triu(x: Union[ivy.Array, ivy.NativeArray],
 
     Parameters
     ----------
-    x:
+    x
         input array having shape (..., M, N) and whose innermost two dimensions form MxN matrices.
-    k:
+    k
         diagonal below which to zero elements. If k = 0, the diagonal is the main diagonal. If k < 0, the diagonal is
         below the main diagonal. If k > 0, the diagonal is above the main diagonal. Default: 0.
 
     Returns
-    -------
-    return:
+     -------
+    ret
         an array containing the upper triangular part(s). The returned array must have the same shape and data type as
         x. All elements below the specified diagonal k must be zeroed. The returned array should be allocated on the
         same device as x.
@@ -283,17 +291,17 @@ def empty(shape: Union[int, Tuple[int], List[int]],
 
     Parameters
     ----------
-    shape :
+    shape
         output array shape.
-    dtype :
+    dtype
         output array data type. If dtype is None, the output array data type must be the default
         floating-point data type. Default: None.
-    device :
+    device
         device on which to place the created array. Default: None.
 
     Returns
-    -------
-    return:
+     -------
+    ret
         an uninitialized array having a specified shape
 
     """
@@ -308,16 +316,16 @@ def empty_like(x: Union[ivy.Array, ivy.NativeArray],
 
     Parameters
     ----------
-    x :
+    x
         input array from which to derive the output array shape.
-    dtype :
-        output array data type. If dtype is None, the output array data type must be inferred from x. Default: None.
-    dev :
+    dtype
+        output array data type. If dtype is None, the output array data type must be inferred from x. Default  None.
+    dev
         device on which to place the created array. If device is None, the output array device must be inferred from x. Default: None.
 
     Returns
-    -------
-    return:
+     -------
+    ret
         an array having the same shape as x and containing uninitialized data.
 
     """
@@ -336,23 +344,23 @@ def eye(n_rows: int,
 
     Parameters
     ----------
-    n_rows :
+    n_rows
         number of rows in the output array.
-    n_cols :
+    n_cols
         number of columns in the output array. If None, the default number of columns in the output array is
         equal to n_rows. Default: None.
-    k :
+    k
         index of the diagonal. A positive value refers to an upper diagonal, a negative value to a lower diagonal,
         and 0 to the main diagonal. Default: 0.
-    dtype :
+    dtype
         output array data type. If dtype is None, the output array data type must be the default floating-
         point data type. Default: None.
-    device:
+    device
          device on which to place the created array.
 
     Returns
-    -------
-    return:
+     -------
+    ret
         device on which to place the created array. Default: None.
 
     """
@@ -369,20 +377,20 @@ def linspace(start: Union[ivy.Array, ivy.NativeArray, int], stop: Union[ivy.Arra
 
     Parameters
     ----------
-    start :
+    start
         First entry in the range.
-    stop :
+    stop
         Final entry in the range.
-    num :
+    num
         Number of values to generate.
-    axis :
+    axis
         Axis along which the operation is performed.
-    dev :
+    dev
         device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
 
     Returns
-    -------
-    return:
+     -------
+    ret
         Tensor of evenly-spaced values.
 
     """
@@ -395,13 +403,13 @@ def meshgrid(*arrays: Union[ivy.Array, ivy.NativeArray], indexing: Optional[str]
     Returns coordinate matrices from coordinate vectors.
     Parameters
     ----------
-    arrays: array
+    arrays
         an arbitrary number of one-dimensional arrays representing grid coordinates. Each array should have the same numeric data type.
-    indexing: str
+    indexing
         Cartesian ``'xy'`` or matrix ``'ij'`` indexing of output. If provided zero or one one-dimensional vector(s) (i.e., the zero- and one-dimensional cases, respectively), the ``indexing`` keyword has no effect and should be ignored. Default: ``'xy'``.
     Returns
-    -------
-    return: List[array]
+     -------
+    ret List[array]
         list of N arrays, where ``N`` is the number of provided one-dimensional input arrays. Each returned array must have rank ``N``. For ``N`` one-dimensional arrays having lengths ``Ni = len(xi)``,
         - if matrix indexing ``ij``, then each returned array must have the shape ``(N1, N2, N3, ..., Nn)``.
         - if Cartesian indexing ``xy``, then each returned array must have shape ``(N2, N1, N3, ..., Nn)``.
@@ -418,17 +426,17 @@ def zeros_like(x: Union[ivy.Array, ivy.NativeArray], dtype: ivy.Dtype = None, de
 
     Parameters
     ----------
-    x :
+    x
         The shape and data-type of x define these same attributes of the returned array.
-    dtype :
+    dtype
         The desired data-type for the array in string format, i.e. 'float32' or 'int64'.
         If not given, then the type of the original array is used.
-    dev :
+    dev
         device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. Same as x if None.
 
     Returns
-    -------
-    return:
+     -------
+    ret
         Tensor of zeros with the same shape and type as a, unless dtype provided which overrides.
 
     """
@@ -442,13 +450,13 @@ def full(shape: Union[int, Tuple[int]], fill_value: Union[int, float], dtype: Op
 
     Parameters
     ----------
-    shape :
+    shape
         output array shape.
-    fill_value :
+    fill_value
         fill value.
-    dtype :
+    dtype
         output array data type.
-    device :
+    device
         device on which to place the created array. Default: None.
 
     Returns
@@ -464,12 +472,12 @@ def from_dlpack(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
 
     Parameters
     ----------
-    x: object
+    x  object
         input (array) object.
 
     Returns
-    -------
-    return: array
+     -------
+    ret
         an array containing the data in `x`.
 
         .. admonition:: Note
@@ -496,22 +504,22 @@ def logspace(start: Union[ivy.Array, ivy.NativeArray, int], stop: Union[ivy.Arra
 
     Parameters
     ----------
-    start :
+    start
         First entry in the range.
-    stop :
+    stop
         Final entry in the range.
-    num :
+    num
         Number of values to generate.
-    base :
+    base
         The base of the log space. Default is 10.0
-    axis :
+    axis
         Axis along which the operation is performed.
-    dev :
+    dev
         device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
 
     Returns
-    -------
-    return:
+     -------
+    ret
         Tensor of evenly-spaced values.
 
     """

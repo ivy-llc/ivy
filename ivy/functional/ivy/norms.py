@@ -15,22 +15,22 @@ def layer_norm(x, normalized_idxs, epsilon=None, scale=None, offset=None, new_st
 
     Parameters
     ----------
-    x :
+    x
         Input array
-    normalized_idxs :
+    normalized_idxs
         Indices to apply the normalization to.
-    epsilon :
+    epsilon
         small constant to add to the denominator, use global ivy._MIN_BASE by default.
-    scale :
+    scale
         Learnable gamma variables for post-multiplication, default is None.
-    offset :
+    offset
         Learnable beta variables for post-addition, default is None.
-    new_std :
+    new_std
         The standard deviation of the new normalized values. Default is 1.
 
     Returns
     -------
-     out:
+     ret
         The layer after applying layer normalization.
 
     """

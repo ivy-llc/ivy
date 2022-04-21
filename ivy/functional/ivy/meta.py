@@ -187,55 +187,55 @@ def fomaml_step(batch, inner_cost_fn, outer_cost_fn, variables, inner_grad_steps
 
     Parameters
     ----------
-    batch :
+    batch
         The input batch
-    inner_cost_fn :
+    inner_cost_fn
         callable for the inner loop cost function, receving task-specific sub-batch,
         inner vars and outer vars
-    outer_cost_fn :
+    outer_cost_fn
         callable for the outer loop cost function, receving task-specific sub-batch,
         inner vars and outer vars. If None, the cost from the inner loop will also be
         optimized in the outer loop.
-    variables :
+    variables
         Variables to be optimized during the meta step
-    inner_grad_steps :
+    inner_grad_steps
         Number of gradient steps to perform during the inner loop.
-    inner_learning_rate :
+    inner_learning_rate
         The learning rate of the inner loop.
-    inner_optimization_step :
+    inner_optimization_step
         The function used for the inner loop optimization.
         Default is ivy.gradient_descent_update.
-    inner_batch_fn :
+    inner_batch_fn
         Function to apply to the task sub-batch, before passing to the inner_cost_fn.
         Default is None.
-    outer_batch_fn :
+    outer_batch_fn
         Function to apply to the task sub-batch, before passing to the outer_cost_fn.
         Default is None.
-    average_across_steps :
+    average_across_steps 
         Whether to average the inner loop steps for the outer loop update. Default is False.
-    batched :
+    batched 
         Whether to batch along the time dimension, and run the meta steps in batch. Default is True.
-    inner_v :
+    inner_v 
         Nested variable keys to be optimized during the inner loop, with same keys and boolean values. (Default value = None)
-    keep_inner_v :
+    keep_inner_v 
         If True, the key chains in inner_v will be kept, otherwise they will be removed.
         Default is True.
-    outer_v :
+    outer_v 
         Nested variable keys to be optimized during the inner loop, with same keys and boolean values. (Default value = None)
-    keep_outer_v :
+    keep_outer_v 
         If True, the key chains in inner_v will be kept, otherwise they will be removed.
         Default is True.
-    return_inner_v :
+    return_inner_v 
         Either 'first', 'all', or False. 'first' means the variables for the first task inner loop
         will also be returned. variables for all tasks will be returned with 'all'. Default is False.
-    num_tasks :
+    num_tasks 
         Number of unique tasks to inner-loop optimize for the meta step. Determined from batch by default.
-    stop_gradients :
+    stop_gradients 
         Whether to stop the gradients of the cost. Default is True.
 
     Returns
-    -------
-    return
+     -------
+    ret
         The cost and the gradients with respect to the outer loop variables.
 
     """
@@ -261,32 +261,32 @@ def reptile_step(batch, cost_fn, variables, inner_grad_steps, inner_learning_rat
 
     Parameters
     ----------
-    batch :
+    batch 
         The input batch
-    cost_fn :
+    cost_fn 
         callable for the cost function, receivng the task-specific sub-batch and variables
-    variables :
+    variables 
         Variables to be optimized
-    inner_grad_steps :
+    inner_grad_steps 
         Number of gradient steps to perform during the inner loop.
-    inner_learning_rate :
+    inner_learning_rate 
         The learning rate of the inner loop.
-    inner_optimization_step :
+    inner_optimization_step 
         The function used for the inner loop optimization.
         Default is ivy.gradient_descent_update.
-    batched :
+    batched 
         Whether to batch along the time dimension, and run the meta steps in batch. Default is True.
-    return_inner_v :
+    return_inner_v 
         Either 'first', 'all', or False. 'first' means the variables for the first task inner loop
         will also be returned. variables for all tasks will be returned with 'all'. Default is False.
-    num_tasks :
+    num_tasks 
         Number of unique tasks to inner-loop optimize for the meta step. Determined from batch by default.
-    stop_gradients :
+    stop_gradients 
         Whether to stop the gradients of the cost. Default is True.
 
     Returns
-    -------
-    return
+     -------
+    ret
         The cost and the gradients with respect to the outer loop variables.
 
     """
@@ -315,54 +315,54 @@ def maml_step(batch, inner_cost_fn, outer_cost_fn, variables, inner_grad_steps, 
 
     Parameters
     ----------
-    batch :
+    batch 
         The input batch
-    inner_cost_fn :
+    inner_cost_fn 
         callable for the inner loop cost function, receing sub-batch, inner vars and outer vars
-    outer_cost_fn :
+    outer_cost_fn 
         callable for the outer loop cost function, receving task-specific sub-batch,
         inner vars and outer vars. If None, the cost from the inner loop will also be
         optimized in the outer loop.
-    variables :
+    variables 
         Variables to be optimized during the meta step
-    inner_grad_steps :
+    inner_grad_steps 
         Number of gradient steps to perform during the inner loop.
-    inner_learning_rate :
+    inner_learning_rate 
         The learning rate of the inner loop.
-    inner_optimization_step :
+    inner_optimization_step 
         The function used for the inner loop optimization.
         Default is ivy.gradient_descent_update.
-    inner_batch_fn :
+    inner_batch_fn 
         Function to apply to the task sub-batch, before passing to the inner_cost_fn.
         Default is None.
-    outer_batch_fn :
+    outer_batch_fn 
         Function to apply to the task sub-batch, before passing to the outer_cost_fn.
         Default is None.
-    average_across_steps :
+    average_across_steps 
         Whether to average the inner loop steps for the outer loop update. Default is False.
-    batched :
+    batched 
         Whether to batch along the time dimension, and run the meta steps in batch. Default is True.
-    inner_v :
+    inner_v 
         Nested variable keys to be optimized during the inner loop, with same keys and boolean values. (Default value = None)
-    keep_inner_v :
+    keep_inner_v 
         If True, the key chains in inner_v will be kept, otherwise they will be removed.
         Default is True.
-    outer_v :
+    outer_v 
         Nested variable keys to be optimized during the inner loop, with same keys and boolean values. (Default value = None)
-    keep_outer_v :
+    keep_outer_v 
         If True, the key chains in inner_v will be kept, otherwise they will be removed.
         Default is True.
-    return_inner_v :
+    return_inner_v 
         Either 'first', 'all', or False. 'first' means the variables for the first task inner loop
         will also be returned. variables for all tasks will be returned with 'all'. Default is False.
-    num_tasks :
+    num_tasks 
         Number of unique tasks to inner-loop optimize for the meta step. Determined from batch by default.
-    stop_gradients :
+    stop_gradients 
         Whether to stop the gradients of the cost. Default is True.
 
     Returns
-    -------
-    return
+     -------
+    ret
         The cost and the gradients with respect to the outer loop variables.
 
     """

@@ -14,18 +14,18 @@ def cross_entropy(true, pred, axis=-1, epsilon=1e-7):
 
     Parameters
     ----------
-    true :
+    true
         True labels
-    pred :
+    pred
         predicted labels.
-    axis :
+    axis
         The class dimension, default is -1.
-    epsilon :
+    epsilon
         small constant to add to log functions, default is 1e-7
 
     Returns
     -------
-     out:
+     ret
         The cross entropy loss
 
     """
@@ -41,16 +41,16 @@ def binary_cross_entropy(true, pred, epsilon=1e-7):
 
     Parameters
     ----------
-    true :
+    true
         true labels
-    pred :
+    pred
         Predicted labels
-    epsilon :
+    epsilon
         small constant to add to log functions, default is 1e-7
 
     Returns
     -------
-     out:
+     ret
         The binary cross entropy loss array.
 
     """
@@ -64,18 +64,18 @@ def sparse_cross_entropy(true, pred, axis=-1, epsilon=1e-7):
 
     Parameters
     ----------
-    true :
+    true
         True labels as logits.
-    pred :
+    pred
         predicted labels as logits.
-    axis :
+    axis
         The class dimension, default is -1.
-    epsilon :
+    epsilon
         small constant to add to log functions, default is 1e-7
 
     Returns
     -------
-     out:
+     ret
         The sparse cross entropy loss
 
     """

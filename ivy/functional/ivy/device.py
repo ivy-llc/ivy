@@ -73,7 +73,7 @@ def get_all_arrays_on_dev(dev):
 
     Parameters
     ----------
-    dev :
+    dev
 
 
     Returns
@@ -97,7 +97,7 @@ def num_arrays_on_dev(dev):
 
     Parameters
     ----------
-    dev :
+    dev
 
 
     Returns
@@ -113,7 +113,7 @@ def print_all_arrays_on_dev(dev):
 
     Parameters
     ----------
-    dev :
+    dev
 
 
     Returns
@@ -132,14 +132,14 @@ def dev(x: Union[ivy.Array, ivy.NativeArray], as_str: bool = False)\
 
     Parameters
     ----------
-    x :
+    x
         Tensor for which to get the device handle.
-    as_str :
+    as_str
         Whether or not to return the dev in string format. Default is False.
 
     Returns
     -------
-     out:
+     ret
         Device handle for the array, in native framework format.
 
     """
@@ -155,12 +155,12 @@ def dev_to_str(dev: Union[ivy.Device, str]) \
 
     Parameters
     ----------
-    dev :
+    dev
         The device handle to convert to string.
 
     Returns
     -------
-     out:
+     ret
         Device string e.g. 'cuda:0'.
 
     """
@@ -174,12 +174,12 @@ def dev_from_str(dev: Union[ivy.Device, str]) \
 
     Parameters
     ----------
-    dev :
+    dev
         The device string to conver to native device handle.
 
     Returns
     -------
-     out:
+     ret
         Native device handle.
 
     """
@@ -195,7 +195,7 @@ def clear_mem_on_dev(dev: ivy.Device)\
 
     Parameters
     ----------
-    dev :
+    dev
         The device string to conver to native device handle.
 
     Returns
@@ -212,12 +212,12 @@ def total_mem_on_dev(dev: ivy.Device)\
 
     Parameters
     ----------
-    dev :
+    dev
         The device string to conver to native device handle.
 
     Returns
     -------
-     out:
+     ret
         The total memory on the device in GB.
 
     """
@@ -239,14 +239,14 @@ def used_mem_on_dev(dev: ivy.Device, process_specific=False)\
 
     Parameters
     ----------
-    dev :
+    dev
         The device string to conver to native device handle.
-    process_specific :
+    process_specific
         Whether the check the memory used by this python process alone. Default is False.
 
     Returns
     -------
-     out:
+     ret
         The used memory on the device in GB.
 
     """
@@ -274,14 +274,14 @@ def percent_used_mem_on_dev(dev: ivy.Device, process_specific=False)\
 
     Parameters
     ----------
-    dev :
+    dev
         The device string to conver to native device handle.
-    process_specific :
+    process_specific
         Whether the check the memory used by this python process alone. Default is False.
 
     Returns
     -------
-     out:
+     ret
         The percentage used memory on the device.
 
     """
@@ -311,12 +311,12 @@ def dev_util(dev: ivy.Device)\
 
     Parameters
     ----------
-    dev :
+    dev
         The device string of the device to query utilization for.
 
     Returns
     -------
-     out:
+     ret
         The device utilization (%)
 
     """
@@ -339,8 +339,8 @@ def gpu_is_available() -> bool:
     ----------
 
     Returns
-    -------
-    return :
+     -------
+    ret
         Boolean, as to whether a gpu is available.
 
     Examples
@@ -400,12 +400,12 @@ def default_device(dev=None):
 
     Parameters
     ----------
-    dev :
+    dev
          (Default value = None)
 
     Returns
     -------
-     out:
+     ret
 
 
     """
@@ -426,7 +426,7 @@ def set_default_device(dev):
 
     Parameters
     ----------
-    dev :
+    dev
 
 
     Returns
@@ -456,16 +456,16 @@ def to_dev(x: Union[ivy.Array, ivy.NativeArray], dev: ivy.Device = None, \
 
     Parameters
     ----------
-    x:
+    x
        input array to be moved to the desired device
-    dev:
+    dev
         device to move the input array `x` to
-    out:
+    out
         optional output array, for writing the result to. It must have a shape that the inputs broadcast to.
 
     Returns
-    -------
-    x:
+     -------
+    ret
         input array x placed on the desired device
 
     Examples
@@ -485,12 +485,12 @@ def split_factor(dev=None):
 
     Parameters
     ----------
-    dev :
+    dev
         The device to query the split factor for. Sets the default device by default.
 
     Returns
     -------
-     out:
+     ret
         The split factor for the specified device.
 
     """
@@ -509,9 +509,9 @@ def set_split_factor(factor, dev=None):
 
     Parameters
     ----------
-    factor :
+    factor
         The factor to set the device-specific split factor to.
-    dev :
+    dev
         The device to set the split factor for. Sets the default device by default.
 
     Returns
@@ -535,29 +535,29 @@ def split_func_call(func: Callable, inputs: Iterable[Union[Union[ivy.Array, ivy.
 
     Parameters
     ----------
-    func :
+    func
         The function to be called.
-    inputs :
+    inputs
         A list of inputs to pass into the function.
-    mode :
+    mode
         The mode by which to unify the return values, must be one of [ concat | mean | sum ]
-    max_chunk_size :
+    max_chunk_size
         The maximum size of each of the chunks to be fed into the function.
-    chunk_size :
+    chunk_size
         The size of each of the chunks to be fed into the function. Specifying this arg overwrites the
         global split factor. Default is None.
-    input_axes :
+    input_axes
         The axes along which to split each of the inputs, before passing to the function. Default is 0.
-    output_axes :
+    output_axes
         The axes along which to concat each of the returned outputs. Default is same as fist input axis.
-    stop_gradients :
+    stop_gradients
         Whether to stop the gradients for each computed return. Default is False.
-    dev :
+    dev
         The device to set the split factor for. Sets the default device by default.
 
     Returns
-    -------
-    return
+     -------
+    ret
         The return from the function, following input splitting and re-concattenation.
 
     """
@@ -701,13 +701,10 @@ class MultiDevIter(MultiDev):
 
         Parameters
         ----------
-        dev :
+        dev
 
 
-        Returns
-        -------
-
-        """
+"""
         return [x[dev] if isinstance(x, MultiDevItem) else x for x in self._data]
 
     def at_devs(self):
@@ -744,13 +741,10 @@ class MultiDevNest(MultiDevIter):
 
         Parameters
         ----------
-        dev :
+        dev
 
 
-        Returns
-        -------
-
-        """
+"""
         return ivy.nested_map(self._data, lambda x: x[dev] if isinstance(x, MultiDevItem) else x,
                               max_depth=self._max_depth)
 
@@ -783,19 +777,19 @@ def dev_dist_array(x, devs: Union[Iterable[str], Dict[str, int]], axis=0):
 
     Parameters
     ----------
-    x :
+    x
         The array to distribute across devices.
-    devs :
+    devs
         The devices to distribute the array across.
-    axis :
+    axis
         The axis along which to split the array. Default is 0.
-    devs: Union[Iterable[str] :
+    devs
 
-    Dict:
+    Dict
 
     Returns
-    -------
-    return
+     -------
+    ret
         array distributed across the target devices
 
     """
@@ -809,19 +803,19 @@ def dev_dist(x, devs: Union[Iterable[str], Dict[str, int]], axis=0):
 
     Parameters
     ----------
-    x :
+    x
         The input array or container to distribute across devices.
-    devs :
+    devs
         The devices to distribute the input across.
-    axis :
+    axis
         The axis along which to split the input. Default is 0.
-    devs: Union[Iterable[str] :
+    devs
 
-    Dict:
+    Dict
 
     Returns
-    -------
-    return
+     -------
+    ret
         array or container distributed across the target devices
 
     """
@@ -837,19 +831,19 @@ def dev_dist_iter(xs, devs: Union[Iterable[str], Dict[str, int]], axis=0):
 
     Parameters
     ----------
-    xs :
+    xs
         The iterable of items to distribute.
-    devs :
+    devs
         The devices to distribute the iterable elements across.
-    axis :
+    axis
         The axis along which to split the arrays in the iterable xs. Default is 0.
-    devs: Union[Iterable[str] :
+    devs
 
-    Dict:
+    Dict
 
     Returns
-    -------
-    return
+     -------
+    ret
         iterable with each element distributed to the target devices
 
     """
@@ -863,24 +857,24 @@ def dev_dist_nest(args, kwargs, devs: Union[Iterable[str], Dict[str, int]], axis
 
     Parameters
     ----------
-    args :
+    args
         The positional nested arguments to distribute.
-    kwargs :
+    kwargs
         The keyword nested arguments to distribute.
-    devs :
+    devs
         The devices to distribute the nested arguments across.
-    axis :
+    axis
         The axis along which to split the arrays in the arguments. Default is 0.
-    max_depth :
+    max_depth
         The maximum nested depth to reach. Default is 1. Increase this if the nest is deeper.
-    devs:
+    devs
 
-    Dict:
+    Dict
 
 
     Returns
-    -------
-    return
+     -------
+    ret
         nested arguments distributed to the target devices
 
     """
@@ -916,14 +910,14 @@ def dev_clone_array(x, devs):
 
     Parameters
     ----------
-    x :
+    x
         The array to clone across devices.
-    devs :
+    devs
         The devices to clone the array to.
 
     Returns
-    -------
-    return
+     -------
+    ret
         array cloned to each of the target devices
 
     """
@@ -935,14 +929,14 @@ def dev_clone(x, devs):
 
     Parameters
     ----------
-    x :
+    x
         The input array or container to clone to each device.
-    devs :
+    devs
         The devices to clone the input to.
 
     Returns
-    -------
-    return
+     -------
+    ret
         array or container distributed across the target devices
 
     """
@@ -958,14 +952,14 @@ def dev_clone_iter(xs, devs):
 
     Parameters
     ----------
-    xs :
+    xs
         The iterable of items to clone.
-    devs :
+    devs
         The devices to clone each of the iterable elements to.
 
     Returns
-    -------
-    return
+     -------
+    ret
         iterable with each element cloned to each of the target devices
 
     """
@@ -979,18 +973,18 @@ def dev_clone_nest(args, kwargs, devs, max_depth=1):
 
     Parameters
     ----------
-    args :
+    args
         The positional arguments to clone.
-    kwargs :
+    kwargs
         The keyword arguments to clone.
-    devs :
+    devs
         The devices to clone the arguments to.
-    max_depth :
+    max_depth
         The maximum nested depth to reach. Default is 1. Increase this if the nest is deeper.
 
     Returns
-    -------
-    return
+     -------
+    ret
         arguments cloned to each of the target devices
 
     """
@@ -1024,18 +1018,18 @@ def dev_unify_array(xs, dev, mode, axis=0):
 
     Parameters
     ----------
-    xs :
+    xs
         The list of arrays to unify onto the specified device.
-    dev :
+    dev
         The device to unify the arrays to.
-    mode :
+    mode
         The mode by which to unify, must be one of [ concat | mean | sum ]
-    axis :
+    axis
         The axis along which to concattenate the array, if concat mode is set. Default is 0.
 
     Returns
-    -------
-    return
+     -------
+    ret
         array unified to the target device
 
     """
@@ -1050,18 +1044,18 @@ def dev_unify(xs, dev, mode, axis=0):
 
     Parameters
     ----------
-    xs :
+    xs
         The list of sub-arrays to unify onto the specified device.
-    dev :
+    dev
         The device to unify the sub-arrays to.
-    mode :
+    mode
         The mode by which to unify, must be one of [ concat | mean | sum ]
-    axis :
+    axis
         The axis along which to concattenate the array, if concat mode is set. Default is 0.
 
     Returns
-    -------
-    return
+     -------
+    ret
         array unified to the target device
 
     """
@@ -1084,20 +1078,20 @@ def dev_unify_iter(xs, dev, mode, axis=0, transpose=False):
 
     Parameters
     ----------
-    xs :
+    xs
         The iterable of items to unify.
-    dev :
+    dev
         The device to unify the elements of the iterable to.
-    mode :
+    mode
         The mode by which to unify, must be one of [ concat | mean | sum ]
-    axis :
+    axis
         The axis along which to concattenate the sub-arrays. Default is 0.
-    transpose :
+    transpose
         Whether to transpose the first and second dimensions of the iterator. Default is False.
 
     Returns
-    -------
-    return
+     -------
+    ret
         iterable with each element unified to a single target devices
 
     """
@@ -1118,26 +1112,26 @@ def dev_unify_nest(args: Type[MultiDev], kwargs: Type[MultiDev], dev, mode, axis
 
     Parameters
     ----------
-    args :
+    args
         The nested positional arguments to unify.
-    kwargs :
+    kwargs
         The nested keyword arguments to unify.
-    dev :
+    dev
         The device to unify the nested arguments to.
-    mode :
+    mode
         The mode by which to unify, must be one of [ concat | mean | sum ]
-    axis :
+    axis
         The axis along which to concattenate the sub-arrays. Default is 0.
-    max_depth :
+    max_depth
         The maximum nested depth to reach. Default is 1. Increase this if the nest is deeper.
-    args: Type[MultiDev] :
+    args
 
-    kwargs: Type[MultiDev] :
+    kwargs
 
 
     Returns
-    -------
-    return
+     -------
+    ret
         nested arguments unified to the target device
 
     """
@@ -1157,27 +1151,24 @@ class DevMapper(abc.ABC):
 
         Parameters
         ----------
-        fn :
+        fn
             The function which the device mapper parallelises across devices.
-        ret_fn :
+        ret_fn
             The function which receives the ivy.MultiDevIter as input, and produces a single device output.
-        queue_class :
+        queue_class
             The class to use for creating queues.
-        worker_class :
+        worker_class
             The class to use for creating parallel workers.
-        devs :
+        devs
             A list of devices on which to parallelise the function.
-        timeout :
+        timeout
             The timeout for getting items from the queues. Default is global.
-        constant :
+        constant
             A dict of keyword arguments which are the same for each process. Default is None.
-        unique :
+        unique
             A dict of keyword argument sequences which are unique for each process. Default is None.
 
-        Returns
-        -------
-
-        """
+"""
         constant_kwargs = ivy.default(constant, {})
         unique_kwargs = ivy.default(unique, {})
         self._fn = fn
@@ -1235,14 +1226,12 @@ class DevMapper(abc.ABC):
 
         Parameters
         ----------
-        used_devs :
+        used_devs
             The devices used in the current mapping pass. Default is all devs.
-        split_factors :
+        split_factors
             The updated split factors 0 < sf < 1 for each device. Default is None.
-        kwargs :
+        kwargs
             The MutliDevice keyword arguments to map the function to.
-        **kwargs :
-
 
         Returns
         -------
@@ -1305,37 +1294,34 @@ class DevManager:
 
         Parameters
         ----------
-        dev_mapper :
+        dev_mapper
             The pre-built device mapper used by the manager internally. (Default value = None)
-        devs :
+        devs
             The devices to distribute and clone the arguments across.
-        da_dim_size :
+        da_dim_size
             The size of the dimension along which the device allocation splitting is performed. (Default value = None)
-        safety_factor :
+        safety_factor
             The factor by which to be safe in the avoidance of OOM GPU errors. Default is 1.1.
-        min_dev_dim_size :
+        min_dev_dim_size
             The minimum dimension size to pass to a device. Default is 0.
-        max_dev_dim_step_ratio :
+        max_dev_dim_step_ratio
             The maximum step ratio for changing the dimension for a device. Default is 0.1.
-        min_unit_dev_tune_steps :
+        min_unit_dev_tune_steps
             The minimum number of tune steps to make when optimizing with unit step size.
             Default is 10.
-        min_sf_tune_steps :
+        min_sf_tune_steps
             Minimum number of split factor tune steps. Default is 10.
-        starting_split_factor :
+        starting_split_factor
             The initial device-specific split factor. Default is 0.
-        max_split_factor_step_size :
+        max_split_factor_step_size
             The maximum step size for changing the split factor for a device.
             Default is 0.05.
-        tune_dev_alloc :
+        tune_dev_alloc
             Whether to tune the device split sizes internally based on device utilization tracking,
             and use the provided values for initialization. Default is True.
-        tune_dev_splits :
+        tune_dev_splits
             Whether to tune the per-device split sizes internally. Default is True.
-        Returns
-        -------
-
-        """
+"""
         with_dev_mapping = True if ivy.exists(dev_mapper) else False
         tune_dev_alloc = False if not with_dev_mapping else tune_dev_alloc
         self._dev_mapper = dev_mapper
@@ -1432,13 +1418,10 @@ class DevManager:
 
         Parameters
         ----------
-        oom :
+        oom
              (Default value = False)
 
-        Returns
-        -------
-
-        """
+"""
         if self._tuned:
             return
         new_dev_utils = dict(sorted({k: dev_util(k) for k in self._devs_keys}.items(), key=lambda item: item[1]))
@@ -1563,13 +1546,10 @@ class DevManager:
 
         Parameters
         ----------
-        oom :
+        oom
              (Default value = False)
 
-        Returns
-        -------
-
-        """
+"""
         if self._tuned:
             return
         if oom:
@@ -1671,13 +1651,13 @@ class DevManager:
 
         Parameters
         ----------
-        cloned :
+        cloned
             The MutliDevice keyword arguments which are already cloned. Default is None.
-        to_clone :
+        to_clone
             The MutliDevice keyword arguments to clone and map to the function. Default is None.
-        distributed :
+        distributed
             The MutliDevice keyword arguments which already distributed. Default is None.
-        to_distribute :
+        to_distribute
             The MutliDevice keyword arguments to distribute and map to the function. Default is None.
 
         Returns
@@ -1725,13 +1705,10 @@ class DevManager:
 
         Parameters
         ----------
-        batch_size :
+        batch_size
 
 
-        Returns
-        -------
-
-        """
+"""
         self._dim_size = batch_size
         if self._tune_da:
             self._max_dev_dim_step_size = max(int(round(self._max_dev_dim_step_ratio * self._dim_size)), 1)
