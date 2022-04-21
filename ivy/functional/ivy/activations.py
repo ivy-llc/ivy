@@ -12,7 +12,8 @@ from ivy.framework_handler import current_framework as _cur_framework
 # Extra #
 # ------#
 
-def relu(x: Union[ivy.Array, ivy.NativeArray])\
+def relu(x: Union[ivy.Array, ivy.NativeArray],
+         out: Optional[Union[ivy.Array, ivy.NativeArray]] = None)\
         -> ivy.Array:
     """
     Applies the rectified linear unit function element-wise.
@@ -21,7 +22,8 @@ def relu(x: Union[ivy.Array, ivy.NativeArray])\
      ----------
      x:
          input array
-
+    out:
+        optional output array, for writing the result to. It must have a shape that the inputs broadcast to.
 
     Returns
     -------
@@ -34,7 +36,7 @@ def relu(x: Union[ivy.Array, ivy.NativeArray])\
     >>> print(y)
     [-0.0, 0.0, 1.0]
     """
-    return _cur_framework(x).relu(x)
+    return _cur_framework(x).relu(x, out)
 
 
 def leaky_relu(x: Union[ivy.Array, ivy.NativeArray], alpha: Optional[float] = 0.2)\
