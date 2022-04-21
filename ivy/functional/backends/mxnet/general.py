@@ -36,6 +36,13 @@ def array_equal(x0: mx.nd.NDArray, x1: mx.nd.NDArray) \
         x0 = x0.astype('int32')
     if ivy.dtype(x1, as_str=True) == 'bool':
         x1 = x1.astype('int32')
+    """
+    Examples:
+    >>> array_equal([1, 2], [1, 2])
+    True
+    >>> array_equal([1, 2], [1, 2, 3])
+    False
+    """
     return mx.nd.min(mx.nd.broadcast_equal(x0, x1)) == 1
 
 

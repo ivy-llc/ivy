@@ -31,6 +31,13 @@ def copy_array(x):
 
 def array_equal(x0:torch.Tensor, x1:torch.Tensor) \
         -> bool:
+    """
+    Examples:
+    >>> array_equal([1, 2], [1, 2])
+    True
+    >>> array_equal([1, 2], [1, 2, 3])
+    False
+    """
     return torch.equal(x0, x1)
 
 

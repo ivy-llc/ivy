@@ -48,6 +48,13 @@ copy_array = jnp.array
 
 def array_equal(x0: JaxArray, x1: JaxArray) \
         -> bool:
+    """
+    Examples:
+    >>> array_equal([1, 2], [1, 2])
+    True
+    >>> array_equal([1, 2], [1, 2, 3])
+    False
+    """
     return jnp.array_equal(x0,x1)
 
 

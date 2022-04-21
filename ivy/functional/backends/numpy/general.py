@@ -23,6 +23,13 @@ from ivy.functional.backends.numpy.device import _dev_callable, _to_dev
 copy_array = lambda x: x.copy()
 def array_equal(x0:np.ndarray, x1:np.ndarray) \
         -> bool:
+    """
+    Examples:
+    >>> array_equal([1, 2], [1, 2])
+    True
+    >>> array_equal([1, 2], [1, 2, 3])
+    False
+    """
     return np.array_equal(x0, x1)
     
 
