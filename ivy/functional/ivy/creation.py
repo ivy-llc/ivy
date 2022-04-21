@@ -400,7 +400,7 @@ def from_dlpack(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
 def logspace(start: Union[ivy.Array, ivy.NativeArray, int, float],
              stop: Union[ivy.Array, ivy.NativeArray, int, float],
              num: Optional[int] = 50,
-             base: Optional[ivy.Array, ivy.NativeArray, float, int] = 10.0,
+             base: Optional[float] = 10.0,
              axis: Optional[int] = None,
              dtype: ivy.Dtype = None,
              device: ivy.Device = None)\
