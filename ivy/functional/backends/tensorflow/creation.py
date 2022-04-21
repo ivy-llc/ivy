@@ -189,7 +189,7 @@ def from_dlpack(x):
 # Extra #
 # ------#
 
-def logspace(start, stop, num, base=10., axis=None, dtype = None,device = None):
+def logspace(start, stop, num, base=10., axis=None, dtype = None,dev = None):
     if axis is None:
         axis = -1
-    return to_dev(tf.experimental.numpy.logspace(start, stop, base=base, axis=axis, dtype=dtype),dev=device)
+    return to_dev(tf.experimental.numpy.logspace(start, stop, base=base, axis=axis, dtype=dtype), dev=dev)

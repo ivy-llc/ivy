@@ -270,21 +270,16 @@ def eye(n_rows: int,
         device: Optional[ivy.Device] = None) \
         -> ivy.Array:
     """
-   Returns a two-dimensional array with ones on the k h diagonal and zeros elsewhere.
+    Returns a two-dimensional array with ones on the k h diagonal and zeros elsewhere.
 
-    Parameters
-    n_rows (int) – number of rows in the output array.
-
-    n_cols (Optional[int]) – number of columns in the output array. If None, the default number of columns in the output array is equal to n_rows. Default: None.
-
-    k (int) – index of the diagonal. A positive value refers to an upper diagonal, a negative value to a lower diagonal, and 0 to the main diagonal. Default: 0.
-
-    dtype (Optional[dtype]) – output array data type. If dtype is None, the output array data type must be the default floating-point data type. Default: None.
-
-    device (Optional[device]) – device on which to place the created array. Default: None.
-
-    Returns
-    out (array) – an array where all elements are equal to zero, except for the k h diagonal, whose values are equal to one.
+    :param n_rows: number of rows in the output array.
+    :param n_cols: number of columns in the output array. If None, the default number of columns in the output array is
+               equal to n_rows. Default: None.
+    :param k: index of the diagonal. A positive value refers to an upper diagonal, a negative value to a lower diagonal,
+          and 0 to the main diagonal. Default: 0.
+    :param dtype: output array data type. If dtype is None, the output array data type must be the default floating-
+              point data type. Default: None.
+    :return: an array where all elements are equal to zero, except for the k h diagonal, whose values are equal to one.
 
 
      Examples:
@@ -403,7 +398,7 @@ def logspace(start: Union[ivy.Array, ivy.NativeArray, int, float],
              base: Optional[float] = 10.0,
              axis: Optional[int] = None,
              dtype: ivy.Dtype = None,
-             device: ivy.Device = None)\
+             dev: ivy.Device = None)\
         -> Union[ivy.Array, ivy.NativeArray]:
     """
     Generates a certain number of evenly-spaced values in log space, in an interval along a given axis.
@@ -422,8 +417,8 @@ def logspace(start: Union[ivy.Array, ivy.NativeArray, int, float],
     :type axis: int,Optional
     :param dtype : The type of the output array. If dtype is not given, the data type is inferred from start and stop.
     :type dtype: ivy.Dtype
-    :param device: device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
-    :type device: ivy.Device
+    :param dev: device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
+    :type dev: ivy.Device
     :return: Tensor of evenly-spaced values.
 
     Examples:
@@ -431,7 +426,7 @@ def logspace(start: Union[ivy.Array, ivy.NativeArray, int, float],
     >>> print(y)
    [ 100.        ,  215.443469  ,  464.15888336, 1000.        ]
     """
-    return _cur_framework(start).logspace(start, stop, num, base, axis,dtype, device)
+    return _cur_framework(start).logspace(start, stop, num, base, axis,dtype, dev)
 
 
 # noinspection PyShadowingNames
