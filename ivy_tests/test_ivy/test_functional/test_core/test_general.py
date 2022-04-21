@@ -612,7 +612,7 @@ def test_logspace(start_n_stop_n_num_n_base_n_axis, dtype, tensor_fn, dev, call)
         pytest.skip()
     start = tensor_fn(start, dtype, dev)
     stop = tensor_fn(stop, dtype, dev)
-    ret = ivy.logspace(start, stop, num, base, axis, device=dev)
+    ret = ivy.logspace(start, stop, num, base, axis, dev=dev)
     # type test
     assert ivy.is_ivy_array(ret)
     # cardinality test
