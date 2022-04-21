@@ -1,5 +1,9 @@
 # class placeholders
 
+class Container:
+    pass
+
+
 class NativeArray:
     pass
 
@@ -38,9 +42,9 @@ _MIN_BASE = 1e-5
 
 
 # local
-import ivy
-from .array import Array, Variable
-from .container import Container, MultiDevContainer
+from .array import Array, Variable, add_ivy_array_instance_methods
+from .array.conversions import *
+from .container import Container, MultiDevContainer, add_ivy_container_instance_methods
 from .framework_handler import current_framework, get_framework, set_framework, unset_framework, framework_stack,\
     choose_random_framework, try_import_ivy_jax, try_import_ivy_tf, try_import_ivy_torch, try_import_ivy_mxnet,\
     try_import_ivy_numpy, clear_framework_stack
@@ -53,7 +57,18 @@ from .functional import *
 from . import stateful
 from .stateful import *
 from . import verbosity
-from .array import *
+from .inspection import fn_array_spec, add_array_specs
+add_array_specs()
+
+# add instance methods to Ivy Array and Container
+from ivy.functional.ivy import activations, creation, data_type, device, elementwise, general, gradients, image,\
+    layers, linear_algebra, losses, manipulation, norms, random, searching, set, sorting, statistical, utility
+add_ivy_array_instance_methods(
+    Array, [activations, creation, data_type, device, elementwise, general, gradients, image, layers, linear_algebra,
+            losses, manipulation, norms, random, searching, set, sorting, statistical, utility])
+add_ivy_container_instance_methods(
+    Container, [activations, creation, data_type, device, elementwise, general, gradients, image, layers,
+                linear_algebra, losses, manipulation, norms, random, searching, set, sorting, statistical, utility])
 
 # data types
 int8 = 'int8'

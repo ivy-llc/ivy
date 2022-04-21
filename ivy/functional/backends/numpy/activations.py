@@ -12,9 +12,10 @@ except (ImportError, ModuleNotFoundError):
     _erf = None
 
 
-def relu(x: np.ndarray)\
+def relu(x: np.ndarray,
+         out: Optional[np.ndarray] = None)\
         -> np.ndarray:
-    return np.maximum(x, 0)
+    return np.maximum(x, 0, out=out)
 
 
 def leaky_relu(x: np.ndarray, alpha: Optional[float] = 0.2)\

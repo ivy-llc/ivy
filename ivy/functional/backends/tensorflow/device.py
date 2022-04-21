@@ -66,11 +66,14 @@ def dev_from_str(dev):
 
 clear_mem_on_dev = lambda dev: None
 _dev_callable = dev
-gpu_is_available = lambda: len(tf.config.list_physical_devices('GPU')) > 0
 num_gpus = lambda: len(tf.config.list_physical_devices('GPU'))
 
 
-def tpu_is_available():
+def gpu_is_available() -> bool:
+    return len(tf.config.list_physical_devices('GPU')) > 0
+
+
+def tpu_is_available() -> bool:
     try:
         resolver = tf.distribute.cluster_resolver.TPUClusterResolver()
         tf.config.experimental_connect_to_cluster(resolver)
