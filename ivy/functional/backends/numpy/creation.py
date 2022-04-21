@@ -151,7 +151,11 @@ def arange(stop, start=0, step=1, dtype=None, dev=None):
     return res
 
 
-def full(shape, fill_value, dtype=None, device=None):
+def full(shape: Union[int, Tuple[int]],
+         fill_value: Union[int, float],
+         dtype: Optional[np.dtype] = None,
+         device: Optional[str] = None) \
+        -> np.ndarray:
     return _to_dev(np.full(shape, fill_value, dtype_from_str(default_dtype(dtype, fill_value))), device)
 
 
