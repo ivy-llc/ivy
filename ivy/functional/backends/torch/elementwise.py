@@ -443,7 +443,12 @@ def remainder(x1: torch.Tensor,
               out: Optional[torch.Tensor] = None)\
         -> torch.Tensor:
     x1, x2 = _cast_for_binary_op(x1, x2)
-    return torch.remainder(x1, x2, out=out)
+    ret = torch.remainder(x1, x2)
+    ret[torch.isnan(ret)] = 0
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    else:
+        return ret
 
 
 def atanh(x: torch.Tensor,
