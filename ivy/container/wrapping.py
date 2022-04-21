@@ -3,7 +3,7 @@ import ivy
 
 
 def _wrap_fn(fn_name):
-    def new_fn(*args, key_chains=None, to_apply=True, prune_unapplied=False, **kwargs):
+    def new_fn(*args, key_chains=None, to_apply=True, prune_unapplied=False, out=None, **kwargs):
         data_idx = ivy.__dict__[fn_name].array_spec[0]
         if not (data_idx[0][0] == 0 and len(data_idx[0]) == 1) and args and ivy.is_ivy_container(args[0]):
             # if the method has been called as an instance method, and self should not be the first positional arg,
@@ -38,7 +38,11 @@ def _wrap_fn(fn_name):
             ivy.set_nest_at_indices(kw, kwarg_cont_idxs, kwarg_vals)
             return fn(*a, **kw)
 
-        return ivy.Container.multi_map(map_fn, conts, key_chains, to_apply, prune_unapplied)
+        ret = ivy.Container.multi_map(map_fn, conts, key_chains, to_apply, prune_unapplied)
+        if ivy.exists(out):
+            out.inplace_update(ret)
+            ret = out
+        return ret
 
     return new_fn
 
