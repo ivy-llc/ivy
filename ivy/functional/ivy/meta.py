@@ -235,7 +235,7 @@ def fomaml_step(batch, inner_cost_fn, outer_cost_fn, variables, inner_grad_steps
 
     Returns
     -------
-    type
+    return
         The cost and the gradients with respect to the outer loop variables.
 
     """
@@ -286,7 +286,7 @@ def reptile_step(batch, cost_fn, variables, inner_grad_steps, inner_learning_rat
 
     Returns
     -------
-    type
+    return
         The cost and the gradients with respect to the outer loop variables.
 
     """
@@ -362,7 +362,7 @@ def maml_step(batch, inner_cost_fn, outer_cost_fn, variables, inner_grad_steps, 
 
     Returns
     -------
-    type
+    return
         The cost and the gradients with respect to the outer loop variables.
 
     """

@@ -27,7 +27,7 @@ def relu(x: Union[ivy.Array, ivy.NativeArray],
 
     Returns
     -------
-    out:
+    return:
        an array containing the rectified linear unit activation of each element in ``x``.
 
     Examples:

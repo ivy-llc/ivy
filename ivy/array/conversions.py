@@ -14,17 +14,6 @@ import ivy
 
 def _to_native(x: Any)\
         -> Any:
-    """
-
-    Parameters
-    ----------
-    x: Any :
-
-
-    Returns
-    -------
-
-    """
     if isinstance(x, ivy.Array):
         return _to_native(x.data)
     elif isinstance(x, ivy.Container):
@@ -34,17 +23,6 @@ def _to_native(x: Any)\
 
 def _to_ivy(x: Any)\
         -> Any:
-    """
-
-    Parameters
-    ----------
-    x: Any :
-
-
-    Returns
-    -------
-
-    """
     if isinstance(x, (ivy.Array, ivy.Variable)):
         return x
     elif isinstance(x, ivy.Container):
@@ -73,22 +51,9 @@ def to_ivy(x: Union[Union[ivy.Array, ivy.NativeArray], Iterable],
         Default is False.
     include_derived :
         Whether to also recursive for classes derived from tuple, list and dict. Default is False.
-    x: Union[Union[ivy.Array :
-
-    ivy.NativeArray] :
-
-    Iterable] :
-
-    nested: bool :
-         (Default value = False)
-    include_derived: Dict[type :
-
-    bool] :
-         (Default value = None)
-
     Returns
     -------
-    type
+    return
         the input in it's native framework form in the case of ivy.Array or ivy.Variable instances.
 
     """
@@ -112,20 +77,9 @@ def args_to_ivy(*args: Iterable[Any],
         Whether to also recursive for classes derived from tuple, list and dict. Default is False.
     kwargs :
         The key-word arguments to check
-    *args: Iterable[Any] :
-
-    include_derived: Dict[type :
-
-    bool] :
-         (Default value = None)
-    **kwargs: Dict[str :
-
-    Any] :
-
-
     Returns
     -------
-    type
+    return
         the same arguments, with any nested arrays converted to ivy.Array or ivy.Variable instances.
 
     """
@@ -155,7 +109,7 @@ def to_native(x: Union[Union[ivy.Array, ivy.NativeArray], Iterable],
 
     Returns
     -------
-    type
+    return
         the input in it's native framework form in the case of ivy.Array or ivy.Variable instances.
 
     """
@@ -183,7 +137,7 @@ def args_to_native(*args: Iterable[Any],
 
     Returns
     -------
-    type
+    return
         the same arguments, with any nested ivy.Array or ivy.Variable instances converted to their native form.
 
     """

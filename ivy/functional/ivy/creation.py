@@ -95,7 +95,7 @@ def zeros(shape: Union[int, Tuple[int], List[int]],
 
     Returns
     -------
-    out:
+    return:
        an array containing zeros.
 
     Examples:
@@ -128,7 +128,7 @@ def ones(shape: Union[int, Tuple[int], List[int]],
 
     Returns
     -------
-    out:
+    return:
         an array containing ones.
 
     Examples:
@@ -189,7 +189,7 @@ def ones_like(x: Union[ivy.Array, ivy.NativeArray],
 
     Returns
     -------
-    out:
+    return:
         an array having the same shape as x and filled with ones.
 
     Examples:
@@ -243,7 +243,7 @@ def tril(x: Union[ivy.Array, ivy.NativeArray],
 
     Returns
     -------
-    out:
+    return:
         an array containing the lower triangular part(s). The returned array must have the same shape and data type as
         x. All elements above the specified diagonal k must be zeroed. The returned array should be allocated on the
         same device as x.
@@ -267,7 +267,7 @@ def triu(x: Union[ivy.Array, ivy.NativeArray],
 
     Returns
     -------
-    out:
+    return:
         an array containing the upper triangular part(s). The returned array must have the same shape and data type as
         x. All elements below the specified diagonal k must be zeroed. The returned array should be allocated on the
         same device as x.
@@ -293,7 +293,7 @@ def empty(shape: Union[int, Tuple[int], List[int]],
 
     Returns
     -------
-    out:
+    return:
         an uninitialized array having a specified shape
 
     """
@@ -317,7 +317,7 @@ def empty_like(x: Union[ivy.Array, ivy.NativeArray],
 
     Returns
     -------
-    out:
+    return:
         an array having the same shape as x and containing uninitialized data.
 
     """
@@ -352,7 +352,7 @@ def eye(n_rows: int,
 
     Returns
     -------
-    out:
+    return:
         device on which to place the created array. Default: None.
 
     """
@@ -382,7 +382,7 @@ def linspace(start: Union[ivy.Array, ivy.NativeArray, int], stop: Union[ivy.Arra
 
     Returns
     -------
-    out:
+    return:
         Tensor of evenly-spaced values.
 
     """
@@ -401,7 +401,7 @@ def meshgrid(*arrays: Union[ivy.Array, ivy.NativeArray], indexing: Optional[str]
         Cartesian ``'xy'`` or matrix ``'ij'`` indexing of output. If provided zero or one one-dimensional vector(s) (i.e., the zero- and one-dimensional cases, respectively), the ``indexing`` keyword has no effect and should be ignored. Default: ``'xy'``.
     Returns
     -------
-    out: List[array]
+    return: List[array]
         list of N arrays, where ``N`` is the number of provided one-dimensional input arrays. Each returned array must have rank ``N``. For ``N`` one-dimensional arrays having lengths ``Ni = len(xi)``,
         - if matrix indexing ``ij``, then each returned array must have the shape ``(N1, N2, N3, ..., Nn)``.
         - if Cartesian indexing ``xy``, then each returned array must have shape ``(N2, N1, N3, ..., Nn)``.
@@ -428,7 +428,7 @@ def zeros_like(x: Union[ivy.Array, ivy.NativeArray], dtype: ivy.Dtype = None, de
 
     Returns
     -------
-    out:
+    return:
         Tensor of zeros with the same shape and type as a, unless dtype provided which overrides.
 
     """
@@ -469,7 +469,7 @@ def from_dlpack(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
 
     Returns
     -------
-    out: array
+    return: array
         an array containing the data in `x`.
 
         .. admonition:: Note
@@ -511,7 +511,7 @@ def logspace(start: Union[ivy.Array, ivy.NativeArray, int], stop: Union[ivy.Arra
 
     Returns
     -------
-    out:
+    return:
         Tensor of evenly-spaced values.
 
     """

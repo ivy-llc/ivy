@@ -80,7 +80,7 @@ def nonzero(x: Union[ivy.Array, ivy.NativeArray])\
 
     Returns
     -------
-    out:
+    return:
         a tuple of `k` arrays, one for each dimension of `x` and each of size `n` (where `n` is the total number of non-zero elements), containing the indices of the non-zero elements in that dimension. The indices must be returned in row-major, C-style order. The returned array must have the default array index data type.
     """
     return _cur_framework(x).nonzero(x)

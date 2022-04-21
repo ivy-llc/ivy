@@ -21,7 +21,7 @@ def unique_inverse(x: Union[ivy.Array, ivy.NativeArray]) \
 
     Returns
     -------
-    type
+    return
         tuple of two arrays (values, inverse_indices)
 
     """
@@ -45,7 +45,7 @@ def unique_values(x: Union[ivy.Array, ivy.NativeArray], out: Optional[Union[ivy.
         input array. If ``x`` has more than one dimension, the function must flatten ``x`` and return the unique elements of the flattened array.
     Returns
     -------
-    out: array
+    return: array
         an array containing the set of unique elements in ``x``. The returned array must have the same data type as ``x``.
         .. note::
            The order of unique elements is not specified and may vary between implementations.
@@ -64,7 +64,7 @@ def unique_counts(x: Union[ivy.Array, ivy.NativeArray])\
 
     Returns
     -------
-    type
+    return
         a namedtuple (values, counts) whose
         -first element must have the field name values and must be an array containing the unique elements of x. The array must have the same data type as x.
         -second element must have the field name counts and must be an array containing the number of times each unique element occurs in x. The returned array must have same shape as values and must have the default array index data type.

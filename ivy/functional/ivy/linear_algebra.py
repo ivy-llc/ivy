@@ -29,7 +29,7 @@ def eigh(x: Union[ivy.Array, ivy.NativeArray]) \
         input array having shape ``(..., M, M)`` and whose innermost two dimensions form square matrices. Must have a floating-point data type.
     Returns
     -------
-    out: Tuple[array]
+    return: Tuple[array]
         a namedtuple (``eigenvalues``, ``eigenvectors``) whose
         -   first element must have the field name ``eigenvalues`` (corresponding to ``L`` above) and must be an array consisting of computed eigenvalues. The array containing the eigenvalues must have shape ``(..., M)``.
         -   second element have have the field name ``eigenvectors`` (corresponding to ``Q`` above) and must be an array where the columns of the inner most matrices contain the computed eigenvectors. These matrices must be orthogonal. The array containing the eigenvectors must have shape ``(..., M, M)``.
@@ -53,7 +53,7 @@ def pinv(x: Union[ivy.Array, ivy.NativeArray],
         relative tolerance for small singular values. Singular values approximately less than or equal to ``rtol * largest_singular_value`` are set to zero. If a ``float``, the value is equivalent to a zero-dimensional array having a floating-point data type determined by :ref:`type-promotion` (as applied to ``x``) and must be broadcast against each matrix. If an ``array``, must have a floating-point data type and must be compatible with ``shape(x)[:-2]`` (see :ref:`broadcasting`). If ``None``, the default value is ``max(M, N) * eps``, where ``eps`` must be the machine epsilon associated with the floating-point data type determined by :ref:`type-promotion` (as applied to ``x``). Default: ``None``.
     Returns
     -------
-    out: array
+    return: array
         an array containing the pseudo-inverses. The returned array must have a floating-point data type determined by :ref:`type-promotion` and must have shape ``(..., N, M)`` (i.e., must have the same shape as ``x``, except the innermost two dimensions must be transposed).
     """
     return _cur_framework(x).pinv(x, rtol)
@@ -69,7 +69,7 @@ def matrix_transpose(x: Union[ivy.Array, ivy.NativeArray]) \
         input array having shape ``(..., M, N)`` and whose innermost two dimensions form ``MxN`` matrices.
     Returns
     -------
-    out: array
+    return: array
         an array containing the transpose for each matrix and having shape ``(..., N, M)``. The returned array must have the same data type as ``x``.
     """
     return _cur_framework(x).matrix_transpose(x)
@@ -123,7 +123,7 @@ def vector_norm(x: Union[ivy.Array, ivy.NativeArray],
 
     Returns
     -------
-    out:
+    return:
         an array containing the vector norms. If ``axis`` is ``None``, the returned array must be a zero-dimensional array containing a vector norm. If ``axis`` is a scalar value (``int`` or ``float``), the returned array must have a rank which is one less than the rank of ``x``. If ``axis`` is a ``n``-tuple, the returned array must have a rank which is ``n`` less than the rank of ``x``. The returned array must have a floating-point data type determined by :ref:`type-promotion`.
     """
 
@@ -186,7 +186,7 @@ def outer(x1: Union[ivy.Array, ivy.NativeArray],
 
     Returns
     -------
-    out (array) – a two-dimensional array containing the outer product and whose shape is (N, M).
+    return (array) – a two-dimensional array containing the outer product and whose shape is (N, M).
     The returned array must have a data type determined by Type Promotion Rules.
     out(M, N) ndarray, optional
     A location where the result is stored
@@ -219,7 +219,7 @@ def diagonal(x: ivy.Array,
 
     Returns
     -------
-    out:
+    return:
         an array containing the diagonals and whose shape is determined by removing the last two dimensions and appending a dimension equal to the size of the resulting diagonals. The returned array must have the same data type as ``x``.
     """
     return _cur_framework(x).diagonal(x, offset, axis1=axis1, axis2=axis2)
@@ -304,7 +304,7 @@ def qr(x: ivy.Array,
 
     Returns
     -------
-    out:
+    return:
         a namedtuple (Q, R) whose
         - first element must have the field name Q and must be an array whose shape depends on the value of mode and contain matrices with orthonormal columns. If mode is 'complete', the array must have shape (..., M, M). If mode is 'reduced', the array must have shape (..., M, K), where K = min(M, N). The first x.ndim-2 dimensions must have the same size as those of the input array x.
         - second element must have the field name R and must be an array whose shape depends on the value of mode and contain upper-triangular matrices. If mode is 'complete', the array must have shape (..., M, N). If mode is 'reduced', the array must have shape (..., K, N), where K = min(M, N). The first x.ndim-2 dimensions must have the same size as those of the input x.
@@ -327,7 +327,7 @@ def matmul(x1: Union[ivy.Array, ivy.NativeArray],
 
     Returns
     -------
-    out(array):
+    return(array):
         if both x1 and x2 are one-dimensional arrays having shape (N,), a zero-dimensional array containing the inner product as its only element.
         if x1 is a two-dimensional array having shape (M, K) and x2 is a two-dimensional array having shape (K, N), a two-dimensional array containing the conventional matrix product and having shape (M, N).
         if x1 is a one-dimensional array having shape (K,) and x2 is an array having shape (..., K, N), an array having shape (..., N) (i.e., prepended dimensions during vector-to-matrix promotion must be removed) and containing the conventional matrix product.
@@ -459,7 +459,7 @@ def vecdot(x1: Union[ivy.Array, ivy.NativeArray],
         axis over which to compute the dot product. Must be an integer on the interval ``[-N, N)``, where ``N`` is the rank (number of dimensions) of the shape determined according to :ref:`broadcasting`. If specified as a negative integer, the function must determine the axis along which to compute the dot product by counting backward from the last dimension (where ``-1`` refers to the last dimension). By default, the function must compute the dot product over the last axis. Default: ``-1``.
     Returns
     -------
-    out: array
+    return: array
         if ``x1`` and ``x2`` are both one-dimensional arrays, a zero-dimensional containing the dot product; otherwise, a non-zero-dimensional array containing the dot products and having rank ``N-1``, where ``N`` is the rank (number of dimensions) of the shape determined according to :ref:`broadcasting`. The returned array must have a data type determined by :ref:`type-promotion`.
     **Raises**
     -   if provided an invalid ``axis``.

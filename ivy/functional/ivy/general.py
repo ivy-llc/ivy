@@ -266,7 +266,7 @@ def to_numpy(x: Union[ivy.Array, ivy.NativeArray]) \
 
     Returns
     -------
-    out:
+    return:
        a numpy array copying all the element of the array ``x``.
 
     Examples:
@@ -293,7 +293,7 @@ def to_scalar(x: Union[ivy.Array, ivy.NativeArray]) \
 
     Returns
     -------
-    out:
+    return:
        a scalar copying the element of the array ``x``.
 
     Examples:
@@ -320,7 +320,7 @@ def to_list(x: Union[ivy.Array, ivy.NativeArray]) \
 
     Returns
     -------
-    out:
+    return:
        A list representation of the input array ``x``.
 
     Examples:
@@ -762,7 +762,7 @@ def einops_rearrange(x: Union[ivy.Array, ivy.NativeArray], pattern: str, **axes_
 
     Returns
     -------
-    type
+    return
         New array with einops.rearrange having been applied.
 
     """
@@ -786,7 +786,7 @@ def einops_reduce(x: Union[ivy.Array, ivy.NativeArray], pattern: str, reduction:
 
     Returns
     -------
-    type
+    return
         New array with einops.reduce having been applied.
 
     """
@@ -808,7 +808,7 @@ def einops_repeat(x: Union[ivy.Array, ivy.NativeArray], pattern: str, **axes_len
 
     Returns
     -------
-    type
+    return
         New array with einops.repeat having been applied.
 
     """
@@ -885,7 +885,7 @@ def stable_divide(numerator: Any, denominator: Any, min_denominator: float = Non
 
     Returns
     -------
-    type
+    return
         The new item following the numerically stable division.
 
     """
@@ -914,7 +914,7 @@ def stable_pow(base: Any, exponent: Any, min_base: float = None) \
 
     Returns
     -------
-    type
+    return
         The new item following the numerically stable division.
 
     """
@@ -997,7 +997,7 @@ def container_types():
 
     Returns
     -------
-    type
+    return
         a key-value structure, and exposes public methods .keys(), .values() and items().
 
     """
@@ -1052,7 +1052,7 @@ def supports_inplace(x):
 
     Returns
     -------
-    type
+    return
         Boolean, whether or not inplace operations are supported for x.
 
     """
@@ -1073,7 +1073,7 @@ def assert_supports_inplace(x):
 
     Returns
     -------
-    type
+    return
         True if support, raises exception otherwise
 
     """
@@ -1096,7 +1096,7 @@ def inplace_update(x, val):
 
     Returns
     -------
-    type
+    return
         The array following the in-place update.
 
     """
@@ -1115,7 +1115,7 @@ def inplace_decrement(x, val):
 
     Returns
     -------
-    type
+    return
         The array following the in-place decrement.
 
     """
@@ -1134,7 +1134,7 @@ def inplace_increment(x, val):
 
     Returns
     -------
-    type
+    return
         The array following the in-place increment.
 
     """
@@ -1210,7 +1210,7 @@ def scatter_flat(indices: Union[ivy.Array, ivy.NativeArray], updates: Union[ivy.
 
     Returns
     -------
-    type
+    return
         New array of given shape, with the values scattered at the indices.
 
     """
@@ -1242,7 +1242,7 @@ def scatter_nd(indices: Union[ivy.Array, ivy.NativeArray], updates: Union[ivy.Ar
 
     Returns
     -------
-    type
+    return
         New array of given shape, with the values scattered at the indices.
 
     """
@@ -1293,7 +1293,7 @@ def gather_nd(params: Union[ivy.Array, ivy.NativeArray], indices: Union[ivy.Arra
 
     Returns
     -------
-    type
+    return
         New array of given shape, with the values gathered at the indices.
 
     """
@@ -1312,7 +1312,7 @@ def multiprocessing(context: str = None):
 
     Returns
     -------
-    type
+    return
         Multiprocessing module
 
     """
@@ -1330,7 +1330,7 @@ def indices_where(x: Union[ivy.Array, ivy.NativeArray]) \
 
     Returns
     -------
-    type
+    return
         Indices for where the boolean array is True.
 
     """
@@ -1353,7 +1353,7 @@ def one_hot(indices: Union[ivy.Array, ivy.NativeArray], depth: int, dev: ivy.Dev
 
     Returns
     -------
-    type
+    return
         Tensor of zeros with the same shape and type as a, unless dtype provided which overrides.
 
     """
@@ -1373,7 +1373,7 @@ def shape(x: Union[ivy.Array, ivy.NativeArray], as_array: bool = False) \
 
     Returns
     -------
-    type
+    return
         Shape of the array
 
     """
@@ -1392,7 +1392,7 @@ def get_num_dims(x: Union[ivy.Array, ivy.NativeArray], as_array: bool = False) -
 
     Returns
     -------
-    type
+    return
         Shape of the array
 
     """

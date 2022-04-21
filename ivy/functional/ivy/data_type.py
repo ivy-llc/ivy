@@ -31,7 +31,7 @@ def can_cast(from_: Union[ivy.Dtype, ivy.Array, ivy.NativeArray],
         desired data type.
     Returns
     -------
-    out:
+    return:
         ``True`` if the cast can occur according to :ref:`type-promotion` rules; otherwise, ``False``.
     """
     return _cur_framework(from_).can_cast(from_, to)
@@ -50,7 +50,7 @@ def iinfo(type: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray]) \
 
     Returns
     -------
-    out:
+    return:
         a class with that encapsules the following attributes:
         - **bits**: *int*
           number of bits occupied by the type.
@@ -75,7 +75,7 @@ def finfo(type: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray]) \
 
     Returns
     -------
-    out:
+    return:
         an object having the followng attributes:
         - **bits**: *int*
           number of bits occupied by the floating-point data type.
@@ -606,7 +606,7 @@ def closest_valid_dtype(type: Union[ivy.Dtype, str, None]) \
 
     Returns
     -------
-    type
+    return
         The closest valid data type as a native ivy.Dtype
 
     """
@@ -624,7 +624,7 @@ def is_int_dtype(dtype_in: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray, Num
 
     Returns
     -------
-    type
+    return
         Whether or not the data type is an integer data type
 
     """
@@ -650,7 +650,7 @@ def is_float_dtype(dtype_in: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray, N
 
     Returns
     -------
-    type
+    return
         Whether or not the data type is a floating point data type
 
     """
@@ -676,7 +676,7 @@ def result_type(*arrays_and_dtypes: Union[ivy.Array, ivy.NativeArray, ivy.Dtype]
         an arbitrary number of input arrays and/or dtypes.
     Returns
     -------
-    out:
+    return:
         the dtype resulting from an operation involving the input arrays and dtypes.
     """
     return _cur_framework(arrays_and_dtypes[0]).result_type(arrays_and_dtypes)
@@ -693,7 +693,7 @@ def valid_dtype(dtype_in: Union[ivy.Dtype, str, None]) \
 
     Returns
     -------
-    type
+    return
         Boolean, whether or not the data-type string is supported.
 
     """
@@ -713,7 +713,7 @@ def invalid_dtype(dtype_in: Union[ivy.Dtype, str, None]) \
 
     Returns
     -------
-    type
+    return
         Boolean, whether the data-type string is un-supported.
 
     """
@@ -735,7 +735,7 @@ def convert_dtype(dtype_in: Union[ivy.Dtype, str], backend: str) \
 
     Returns
     -------
-    type
+    return
         The data-type in the current ivy backend format
 
     """

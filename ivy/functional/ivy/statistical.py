@@ -47,8 +47,8 @@ def min(x: Union[ivy.Array, ivy.NativeArray],
         optional output array, for writing the result to.
     
     Returns
-    ----------
-     out:
+    -------
+    return
         if the minimum value was computed over the entire array, a zero-dimensional array containing the 
         minimum value; otherwise, a non-zero-dimensional array containing the minimum values. 
         The returned array must have the same data type as x.
@@ -91,7 +91,7 @@ def max(x: Union[ivy.Array, ivy.NativeArray],
 
     Returns
     -------
-     out:
+     return:
         if the maximum value was computed over the entire array, a zero-dimensional array containing the 
         maximum value; otherwise, a non-zero-dimensional array containing the maximum values. 
         The returned array must have the same data type as ``x``.
@@ -144,8 +144,8 @@ def var(x: Union[ivy.Array, ivy.NativeArray],
         optional output array, for writing the result to.
 
     Returns
-    ----------
-     out:
+    -------
+    return
         if the variance was computed over the entire array, a zero-dimensional array containing the 
         variance; otherwise, a non-zero-dimensional array containing the variances. The returned array 
         must have the same data type as x.
@@ -177,7 +177,7 @@ def mean(x: Union[ivy.Array, ivy.NativeArray],
     
     Returns
     -------
-     out:
+     return
         array, if the arithmetic mean was computed over the entire array, a zero-dimensional array containing the arithmetic mean; otherwise, a non-zero-dimensional array containing the arithmetic means. The returned array must have the same data type as ``x``.
         .. note::
            While this specification recommends that this function only accept input arrays having a floating-point data type, specification-compliant array libraries may choose to accept input arrays having an integer data type. While mixed data type promotion is implementation-defined, if the input array ``x`` has an integer data type, the returned array must have the default floating-point data type.
@@ -220,7 +220,7 @@ def prod(x: Union[ivy.Array, ivy.NativeArray],
     
     Returns
     -------
-     out:
+     return
         array,  if the product was computed over the entire array, a zero-dimensional array containing the 
         product; otherwise, a non-zero-dimensional array containing the products. The returned array must 
         have a data type as described by the dtype parameter above.
@@ -262,7 +262,7 @@ def sum(x: Union[ivy.Array, ivy.NativeArray],
     
     Returns
     -------
-     out:
+     return
         if the sum was computed over the entire array, a zero-dimensional array containing the sum; otherwise, an array containing the sums. The returned array must have a data type as described by the ``dtype`` parameter above.
     """
 
@@ -305,7 +305,7 @@ def std(x: Union[ivy.Array, ivy.NativeArray],
 
     Returns
     -------
-    :return: The array with standard deviations computed.
+    return: The array with standard deviations computed.
     """
     return _cur_framework(x).std(x, axis, correction, keepdims,out=out)
 
@@ -330,7 +330,7 @@ def einsum(equation:str, *operands:Union[ivy.Array, ivy.NativeArray],
         optional output array, for writing the result to.Returns   
     Returns
     -------
-     out:
+     return
         The array with sums computed.
     """
     return _cur_framework(operands[0]).einsum(equation, *operands,out=out)

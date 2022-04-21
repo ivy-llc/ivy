@@ -37,7 +37,7 @@ def all(x: Union[ivy.Array, ivy.NativeArray],
 
     Returns
     -------
-    out:
+    return:
         if a logical AND reduction was performed over the entire array, the returned array must be a zero-dimensional array containing the test result; otherwise, the returned array must be a non-zero-dimensional array containing the test results. The returned array must have a data type of ``bool``.
     """
     return _cur_framework(x).all(x, axis, keepdims, out=out)
@@ -72,7 +72,7 @@ def any(x: Union[ivy.Array, ivy.NativeArray],
 
     Returns
     -------
-    out:
+    return:
         if a logical OR reduction was performed over the entire array, the returned array must be a zero-dimensional array containing the test result; otherwise, the returned array must be a non-zero-dimensional array containing the test results. The returned array must have a data type of ``bool``.
     """
     return _cur_framework(x).any(x, axis, keepdims, out=out)

@@ -1087,7 +1087,7 @@ def positive(x: Union[ivy.Array, ivy.NativeArray],
 
     Returns
     -------
-    type
+    return
         A new array with the positive value of each element in x.
 
     """
@@ -1105,7 +1105,7 @@ def square(x: Union[ivy.Array, ivy.NativeArray],
 
     Returns
     -------
-    type
+    return
         an array containing the evaluated result for each element in x.
 
     """
@@ -1154,7 +1154,7 @@ def round(x: Union[ivy.Array, ivy.NativeArray],
 
     Returns
     -------
-    type
+    return
         An array of the same shape and type as x, with the elements rounded to integers.
 
     """
@@ -1185,7 +1185,7 @@ def trunc(x: Union[ivy.Array, ivy.NativeArray],
 
     Returns
     -------
-    type
+    return
         an array containing the values before the decimal point for each element ``x``. The returned array must have
         the same data type as x.
 
@@ -1238,7 +1238,7 @@ def tan(x: Union[ivy.Array, ivy.NativeArray],
 
     Returns
     -------
-    type
+    return
         The tangent of x element-wise.
 
     """
@@ -1336,7 +1336,7 @@ def tanh(x: Union[ivy.Array, ivy.NativeArray],
 
     Returns
     -------
-    type
+    return
         A new array with the hyperbolic tangent of the elements of x.
 
     """
@@ -1355,7 +1355,7 @@ def atanh(x: Union[ivy.Array, ivy.NativeArray],
 
     Returns
     -------
-    type
+    return
         an array containing the inverse hyperbolic tangent of each element in x. The returned array must have a floating-point data type determined by Type Promotion Rules.
 
     """
@@ -1402,7 +1402,7 @@ def divide(x1: Union[ivy.Array, ivy.NativeArray],
 
     Returns
     -------
-    type
+    return
         an array containing the element-wise results. The returned array must have a floating-point data type
         determined by Type Promotion Rules.
 
@@ -1559,7 +1559,7 @@ def equal(x1: Union[ivy.Array, ivy.NativeArray],
 
     Returns
     -------
-    type
+    return
         an array containing the element-wise results. The returned array must have a data type of bool.
 
     """
@@ -1582,7 +1582,7 @@ def erf(x: Union[ivy.Array, ivy.NativeArray],
 
     Returns
     -------
-    type
+    return
         The Gauss error function of x.
 
     """
@@ -1604,7 +1604,7 @@ def minimum(x: Union[ivy.Array, ivy.NativeArray],
 
     Returns
     -------
-    type
+    return
         An array with the elements of x, but clipped to not exceed the y values.
 
     """
@@ -1626,7 +1626,7 @@ def maximum(x: Union[ivy.Array, ivy.NativeArray, Number],
 
     Returns
     -------
-    type
+    return
         An array with the elements of x, but clipped to not be lower than the y values.
 
     """

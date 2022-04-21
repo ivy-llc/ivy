@@ -340,7 +340,7 @@ def gpu_is_available() -> bool:
 
     Returns
     -------
-    out :
+    return :
         Boolean, as to whether a gpu is available.
 
     Examples
@@ -557,7 +557,7 @@ def split_func_call(func: Callable, inputs: Iterable[Union[Union[ivy.Array, ivy.
 
     Returns
     -------
-    type
+    return
         The return from the function, following input splitting and re-concattenation.
 
     """
@@ -795,7 +795,7 @@ def dev_dist_array(x, devs: Union[Iterable[str], Dict[str, int]], axis=0):
 
     Returns
     -------
-    type
+    return
         array distributed across the target devices
 
     """
@@ -821,7 +821,7 @@ def dev_dist(x, devs: Union[Iterable[str], Dict[str, int]], axis=0):
 
     Returns
     -------
-    type
+    return
         array or container distributed across the target devices
 
     """
@@ -849,7 +849,7 @@ def dev_dist_iter(xs, devs: Union[Iterable[str], Dict[str, int]], axis=0):
 
     Returns
     -------
-    type
+    return
         iterable with each element distributed to the target devices
 
     """
@@ -880,7 +880,7 @@ def dev_dist_nest(args, kwargs, devs: Union[Iterable[str], Dict[str, int]], axis
 
     Returns
     -------
-    type
+    return
         nested arguments distributed to the target devices
 
     """
@@ -923,7 +923,7 @@ def dev_clone_array(x, devs):
 
     Returns
     -------
-    type
+    return
         array cloned to each of the target devices
 
     """
@@ -942,7 +942,7 @@ def dev_clone(x, devs):
 
     Returns
     -------
-    type
+    return
         array or container distributed across the target devices
 
     """
@@ -965,7 +965,7 @@ def dev_clone_iter(xs, devs):
 
     Returns
     -------
-    type
+    return
         iterable with each element cloned to each of the target devices
 
     """
@@ -990,7 +990,7 @@ def dev_clone_nest(args, kwargs, devs, max_depth=1):
 
     Returns
     -------
-    type
+    return
         arguments cloned to each of the target devices
 
     """
@@ -1035,7 +1035,7 @@ def dev_unify_array(xs, dev, mode, axis=0):
 
     Returns
     -------
-    type
+    return
         array unified to the target device
 
     """
@@ -1061,7 +1061,7 @@ def dev_unify(xs, dev, mode, axis=0):
 
     Returns
     -------
-    type
+    return
         array unified to the target device
 
     """
@@ -1097,7 +1097,7 @@ def dev_unify_iter(xs, dev, mode, axis=0, transpose=False):
 
     Returns
     -------
-    type
+    return
         iterable with each element unified to a single target devices
 
     """
@@ -1137,7 +1137,7 @@ def dev_unify_nest(args: Type[MultiDev], kwargs: Type[MultiDev], dev, mode, axis
 
     Returns
     -------
-    type
+    return
         nested arguments unified to the target device
 
     """
