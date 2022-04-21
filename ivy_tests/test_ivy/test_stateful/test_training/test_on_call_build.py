@@ -106,7 +106,7 @@ class WeConFC(ivy.Module):
 #
 #     def loss_fn(v_=None):
 #         out = we_con_net(x, v=v_)
-#         return ivy.reduce_mean(out)[0]
+#         return ivy.mean(out)
 #
 #     # train
 #     loss_tm1 = 1e12
@@ -129,7 +129,7 @@ class WeConFC(ivy.Module):
 #     else:
 #         assert loss.shape == ()
 #     # value test
-#     assert (abs(grads).reduce_max() > 0).all_true()
+#     assert (abs(grads).max() > 0).all_true()
 
 
 # HyperNetwork #
@@ -224,7 +224,7 @@ class HyperHypoNet(ivy.Module):
 #
 #     def loss_fn(v_=None):
 #         out = hyper_hypo_net(x, v=v_)
-#         return ivy.reduce_mean(out)[0]
+#         return ivy.mean(out)
 #
 #     # train
 #     loss_tm1 = 1e12
@@ -247,4 +247,4 @@ class HyperHypoNet(ivy.Module):
 #     else:
 #         assert loss.shape == ()
 #     # value test
-#     assert (abs(grads).reduce_max() > 0).all_true()
+#     assert (abs(grads).max() > 0).all_true()
