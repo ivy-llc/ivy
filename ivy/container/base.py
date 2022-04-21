@@ -141,6 +141,26 @@ class ContainerBase(dict, abc.ABC):
     # --------------#
 
     @staticmethod
+    def handle_inplace(ret, out):
+        """Returns an inplace update of out, provided it is not None, by updating with the values in ret.
+
+        Parameters
+        ----------
+        ret:
+            The container with the return values
+        out:
+            The optional out container, which is primed for being overwritten if it exists
+
+        Returns
+        -------
+            The out container, but filled with the values from the ret container
+        """
+        if ivy.exists(out):
+            out.inplace_update(ret)
+            ret = out
+        return ret
+
+    @staticmethod
     def list_join(containers, config=None):
         """Join containers of lists together along the specified dimension.
 
