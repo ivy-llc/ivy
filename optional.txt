@@ -1,6 +1,7 @@
 h5py
 pytest
 networkx
+hypothesis
 matplotlib
 opencv-python # mod_name=cv2
 jax

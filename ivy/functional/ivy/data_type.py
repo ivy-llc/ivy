@@ -2,7 +2,7 @@
 import math
 import numpy as np
 import importlib
-from typing import Union, Tuple
+from typing import Union, Tuple, List
 from numbers import Number
 
 
@@ -107,6 +107,17 @@ def broadcast_to(x: Union[ivy.Array, ivy.NativeArray], shape: Tuple[int,...]) ->
 
     return _cur_framework(x).broadcast_to(x, shape)
 
+def broadcast_arrays(*arrays: Union[ivy.Array, ivy.NativeArray]) -> List[ivy.Array]:
+    """
+
+     Broadcasts one or more arrays against one another.
+
+    :param x:  x (array) – an arbitrary number of to-be broadcasted arrays.
+    :return: out (List[array]) – Each array must have the same shape. Each array must have the same dtype as its corresponding input array.
+    """
+
+    return _cur_framework(arrays[0]).broadcast_arrays(*arrays)
+
 
 def dtype(x: Union[ivy.Array, ivy.NativeArray], as_str: bool = False)\
         -> ivy.Dtype:
@@ -137,6 +148,7 @@ def astype(x: Union[ivy.Array, ivy.NativeArray], dtype: ivy.Dtype, copy: bool = 
     :return: an array having the specified data type. The returned array must have the same shape as x.
     """
     return _cur_framework(x).astype(x, dtype, copy)
+
 
 # Extra #
 # ------#

@@ -10,6 +10,11 @@ from ivy import dtype_from_str, default_dtype, dev_from_str, default_device, sha
 from ivy.functional.backends.torch.device import _callable_dev
 from ivy.functional.backends.numpy.data_type import dtype_to_str as np_dtype_to_str
 
+
+# Array API Standard #
+# -------------------#
+
+
 def asarray(object_in, dtype: Optional[str] = None, dev: Optional[str] = None, copy: Optional[bool] = None):
     dev = default_device(dev)
     if isinstance(object_in, torch.Tensor) and dtype is None:
@@ -31,9 +36,6 @@ def asarray(object_in, dtype: Optional[str] = None, dev: Optional[str] = None, c
         return torch.as_tensor(object_in, dtype=dtype).clone().detach().to(dev_from_str(dev))
     else:
         return torch.as_tensor(object_in, dtype=dtype).to(dev_from_str(dev))
-
-
-array = asarray
 
 
 def zeros(shape: Union[int, Tuple[int]],
@@ -95,7 +97,6 @@ def ones_like(x : torch.Tensor,
         return torch.ones_like(x, dtype=type_dict[dtype], device=dev_from_str(dev))
     else:
         return torch.ones_like(x, dtype= dtype, device=dev_from_str(dev))
-
     return torch.ones_like(x, device=dev_from_str(dev))
 
 
@@ -107,7 +108,6 @@ def zeros_like(x: torch.Tensor,
         device = _callable_dev(x)
     if dtype is not None:
         return torch.zeros_like(x, dtype=dtype, device=dev_from_str(device))
-
     return torch.zeros_like(x, device=dev_from_str(device))
 
 
@@ -226,6 +226,7 @@ def linspace(start, stop, num, axis=None, dev=None):
         res = torch.transpose(res, axis, -1)
     return res.to(dev_from_str(dev))
 
+
 def eye(n_rows: int,
         n_cols: Optional[int] = None,
         k: Optional[int] = 0,
@@ -276,6 +277,9 @@ def from_dlpack(x):
 
 # Extra #
 # ------#
+
+array = asarray
+
 
 def logspace(start, stop, num, base=10., axis=None, dev=None):
     power_seq = linspace(start, stop, num, axis, default_device(dev))

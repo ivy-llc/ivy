@@ -5,7 +5,6 @@ Collection of tests for unified gradient functions
 # global
 import pytest
 import numpy as np
-from numbers import Number
 
 # local
 import ivy
@@ -66,7 +65,7 @@ def test_is_variable(object_in, dtype, dev, call):
     non_var_res = ivy.is_variable(non_var)
     var_res = ivy.is_variable(var)
     # type test
-    assert ivy.is_native_array(non_var)
+    assert ivy.is_ivy_array(non_var)
     if call is not helpers.np_call:
         assert ivy.is_variable(var)
     if call in [helpers.np_call, helpers.jnp_call]:
@@ -102,7 +101,7 @@ def test_variable_data(object_in, dtype, dev, call):
         if call is not helpers.mx_call:
             # jax variables and their data are the same instance
             assert not ivy.is_variable(var_data, exclusive=True)
-        assert ivy.is_native_array(var_data)
+        assert ivy.is_ivy_array(var_data)
     # cardinality test
     assert var_data.shape == var.shape
     # value test
@@ -123,7 +122,7 @@ def test_stop_gradient(x_raw, dtype, tensor_fn, dev, call):
     ret = ivy.stop_gradient(x)
     # type test
     if fn_name == 'array':
-        assert ivy.is_native_array(ret)
+        assert ivy.is_ivy_array(ret)
     elif call is not helpers.np_call:
         # Numpy does not support variables, is_variable() always returns False
         assert ivy.is_variable(ret)
@@ -252,7 +251,7 @@ def test_layerwise_gradient_descent_update(ws_n_grads_n_lr_n_wsnew, dtype, tenso
         return
 
 
-#lars_update
+# lars_update
 @pytest.mark.parametrize(
     "ws_n_grads_n_lr_n_wsnew", [(Container({'a': [3.], 'b': [3.]}), Container({'a': [6.], 'b': [6.]}),
                                  Container({'a': [0.1], 'b': [0.2]}), Container({'a': [2.7], 'b': [2.4]}))])
@@ -356,7 +355,7 @@ def test_layerwise_adam_update(ws_n_grads_n_lr_n_wsnew, dtype, tensor_fn, dev, c
         return
 
 
-#lamb_update
+# lamb_update
 @pytest.mark.parametrize(
     "ws_n_grads_n_lr_n_wsnew", [(Container({'a': [3.], 'b': [3.]}), Container({'a': [6.], 'b': [6.]}),
                                  Container({'a': [0.1], 'b': [0.2]}), Container({'a': [2.7], 'b': [2.4]}))])
