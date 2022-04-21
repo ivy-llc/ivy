@@ -11,7 +11,7 @@ from ivy.container.base import ContainerBase
 # noinspection PyMissingConstructor,PyMethodParameters
 class ContainerWithLinearAlgebra(ContainerBase):
 
-    def matmul(x1: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+    def matmul(self: ivy.Container,
                x2: Union[ivy.Container, ivy.Array, ivy.NativeArray],
                key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
                to_apply: bool = True,
@@ -19,11 +19,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
                out: Optional[ivy.Container] = None)\
             -> ivy.Container:
         kw = {}
-        conts = {}
-        if ivy.is_array(x1):
-            kw['x1'] = x1
-        else:
-            conts['x1'] = x1
+        conts = {'x1': self}
         if ivy.is_array(x2):
             kw['x2'] = x2
         else:

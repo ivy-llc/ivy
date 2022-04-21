@@ -497,8 +497,7 @@ def split_func_call(func: Callable, inputs: Iterable[Union[Union[ivy.Array, ivy.
         output_axes = [input_axes[0]] * num_outputs
     elif isinstance(output_axes, int):
         output_axes = [output_axes] * num_outputs
-    ret = [ivy.concat([r[i] for r in rets], output_axes[i]) if ivy.is_array(rets[0][i])
-           else ivy.Container.concat([r[i] for r in rets], output_axes[i]) for i in range(num_outputs)]
+    ret = [ivy.concat([r[i] for r in rets], output_axes[i]) for i in range(num_outputs)]
     return ret[0] if len(ret) == 1 else ret
 
 
