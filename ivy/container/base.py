@@ -1237,7 +1237,7 @@ class ContainerBase(dict, abc.ABC):
             Container object with all sub-array dimensions expanded along the axis.
 
         """
-        return self.map(lambda x, kc: self._ivy.sum(x, axis, keepdims) if self._ivy.is_native_array(x) or isinstance(x, ivy.Array) else x,
+        return self.map(lambda x, kc: self._ivy.sum(x, axis=axis, keepdims=keepdims) if self._ivy.is_native_array(x) or isinstance(x, ivy.Array) else x,
                         key_chains, to_apply, prune_unapplied, map_sequences)
 
     def prod(self, axis=None, keepdims=False, key_chains=None, to_apply=True, prune_unapplied=False,
