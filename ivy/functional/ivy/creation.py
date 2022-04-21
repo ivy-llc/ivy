@@ -270,21 +270,16 @@ def eye(n_rows: int,
         device: Optional[ivy.Device] = None) \
         -> ivy.Array:
     """
-   Returns a two-dimensional array with ones on the k h diagonal and zeros elsewhere.
+    Returns a two-dimensional array with ones on the k h diagonal and zeros elsewhere.
 
-    Parameters
-    n_rows (int) – number of rows in the output array.
-
-    n_cols (Optional[int]) – number of columns in the output array. If None, the default number of columns in the output array is equal to n_rows. Default: None.
-
-    k (int) – index of the diagonal. A positive value refers to an upper diagonal, a negative value to a lower diagonal, and 0 to the main diagonal. Default: 0.
-
-    dtype (Optional[dtype]) – output array data type. If dtype is None, the output array data type must be the default floating-point data type. Default: None.
-
-    device (Optional[device]) – device on which to place the created array. Default: None.
-
-    Returns
-    out (array) – an array where all elements are equal to zero, except for the k h diagonal, whose values are equal to one.
+    :param n_rows: number of rows in the output array.
+    :param n_cols: number of columns in the output array. If None, the default number of columns in the output array is
+               equal to n_rows. Default: None.
+    :param k: index of the diagonal. A positive value refers to an upper diagonal, a negative value to a lower diagonal,
+          and 0 to the main diagonal. Default: 0.
+    :param dtype: output array data type. If dtype is None, the output array data type must be the default floating-
+              point data type. Default: None.
+    :return: an array where all elements are equal to zero, except for the k h diagonal, whose values are equal to one.
 
 
      Examples:
@@ -293,6 +288,7 @@ def eye(n_rows: int,
     [[1, 0],[0, 1]]
     """
     return _cur_framework().eye(n_rows, n_cols, k, dtype, device)
+
 
 # noinspection PyShadowingNames
 def linspace(start: Union[ivy.Array, ivy.NativeArray, int], stop: Union[ivy.Array, ivy.NativeArray, int],
