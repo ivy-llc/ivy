@@ -8,6 +8,28 @@ import ivy
 from ivy.functional.backends.jax import JaxArray
 
 
+def unique_all(x: JaxArray) \
+        -> Tuple[JaxArray, JaxArray, JaxArray, JaxArray]:
+    UniqueAll = namedtuple(typename='unique_all', field_names=['values', 'indices', 'inverse_indices', 'counts'])
+
+    values, indices, inverse_indices, counts = jnp.unique(x, return_index=True, return_counts=True,
+                                                          return_inverse=True)
+    nan_count = jnp.sum(jnp.isnan(x)).item()
+
+    if nan_count > 1:
+        values = jnp.concatenate((values, jnp.full(fill_value=jnp.nan, shape=(nan_count - 1,), dtype=values.dtype)),
+                                 axis=0)
+        counts = jnp.concatenate((counts[:-1], jnp.full(fill_value=1, shape=(nan_count,), dtype=counts.dtype)), axis=0)
+
+        nan_idx = jnp.where(jnp.isnan(x.flatten()))[0]
+
+        indices = jnp.concatenate((indices[:-1], nan_idx), axis=0).astype(indices.dtype)
+    else:
+        pass
+
+    return UniqueAll(values.astype(x.dtype), indices, jnp.reshape(inverse_indices, x.shape), counts)
+
+
 def unique_inverse(x: JaxArray) \
         -> Tuple[JaxArray, JaxArray]:
     out = namedtuple('unique_inverse', ['values', 'inverse_indices'])
