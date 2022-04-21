@@ -3,7 +3,7 @@ import os
 import pytest
 from typing import Dict
 from hypothesis import settings
-settings.register_profile("default", max_examples=100)
+settings.register_profile("default", max_examples=100, deadline=None)
 settings.load_profile("default")
 
 # local
@@ -29,7 +29,7 @@ if 'ARRAY_API_TESTS_MODULE' not in os.environ:
     os.environ['ARRAY_API_TESTS_MODULE'] = 'ivy.functional.backends.numpy'
 
 @pytest.fixture(autouse=True)
-def run_around_tests(dev, f, compile_graph, implicit, call):
+def run_around_tests(dev, f, compile_graph, implicit, call, fw):
     if 'gpu' in dev and call is helpers.np_call:
         # Numpy does not support GPU
         pytest.skip()
@@ -78,8 +78,8 @@ def pytest_generate_tests(metafunc):
             for compile_graph in compile_modes:
                 for implicit in implicit_modes:
                     configs.append(
-                        (dev, TEST_FRAMEWORKS[f_str](), compile_graph, implicit, TEST_CALL_METHODS[f_str]))
-    metafunc.parametrize('dev,f,compile_graph,implicit,call', configs)
+                        (dev, TEST_FRAMEWORKS[f_str](), compile_graph, implicit, TEST_CALL_METHODS[f_str], f_str))
+    metafunc.parametrize('dev,f,compile_graph,implicit,call,fw', configs)
 
 
 def pytest_addoption(parser):
