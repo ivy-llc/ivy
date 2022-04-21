@@ -225,7 +225,7 @@ class ContainerBase(dict, abc.ABC):
 
     @staticmethod
     def _concat_unify(containers, dev, axis=0):
-        return ivy.Container.concat([cont.to_dev(dev) for cont in containers.values()], axis)
+        return ivy.concat([cont.to_dev(dev) for cont in containers.values()], axis)
 
     @staticmethod
     def _sum_unify(containers, dev, _=None, _1=None):
