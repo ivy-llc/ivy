@@ -70,7 +70,13 @@ def matrix_transpose(x: Union[ivy.Array, ivy.NativeArray])\
     Returns
     -------
     out: array
-        an array containing the transpose for each matrix and having shape ``(..., N, M)``. The returned array must have the same data type as ``x``.
+        an array containing the transpose for each matrix and having shape ``(..., N, M)``. The returned array must have the same data type as ``x``
+        
+    Examples:
+    >>> x = ivy.array([1,6,9])
+    >>> y = ivy.bitwise_invert(x)
+    >>> print(y)
+    [ -2,  -7, -10]
     """
     return _cur_framework(x).matrix_transpose(x)
 
@@ -523,7 +529,11 @@ def matrix_rank(vector: Union[ivy.Array, ivy.NativeArray],
     Returns:
     out:
     (array) – an array containing the ranks.
-
+    
+    Examples:
+    >>> x = ivy.array([[1,2,3],[4,5,6],[7,8,9]])
+    >>> print('Matrix rank is',ivy.matrix_rank(x))
+    Matrix rank is 2
     """
     return _cur_framework(vector).matrix_rank(vector, rtol)
 
