@@ -8,8 +8,6 @@ from tensorflow.python.framework.dtypes import DType
 import ivy
 from ivy.functional.backends.tensorflow import Dtype
 from ivy import dev_from_str, default_device, dtype_from_str, default_dtype, dtype_to_str
-# noinspection PyProtectedMember
-from ivy.functional.backends.tensorflow.device import to_dev
 
 
 def asarray(object_in, dtype=None, dev=None, copy=None):
@@ -189,7 +187,6 @@ def from_dlpack(x):
 # Extra #
 # ------#
 
-def logspace(start, stop, num, base=10., axis=None, dtype = None,dev = None):
-    if axis is None:
-        axis = -1
-    return to_dev(tf.experimental.numpy.logspace(start, stop, base=base, axis=axis, dtype=dtype), dev=dev)
+def logspace(start, stop, num, base=10., axis=None, dev=None):
+    power_seq = linspace(start, stop, num, axis, default_device(dev))
+    return base ** power_seq
