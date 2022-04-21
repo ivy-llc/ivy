@@ -429,7 +429,7 @@ def logspace(start: Union[ivy.Array, ivy.NativeArray, int, float],
     Examples:
     >>> y = ivy.logspace(2,3,num=4)
     >>> print(y)
-    [ 100.0000,  215.443469,   464.15888336, 1000.0000]
+   [ 100.        ,  215.443469  ,  464.15888336, 1000.        ]
     """
     return _cur_framework(start).logspace(start, stop, num, base, axis,dtype, device)
 
