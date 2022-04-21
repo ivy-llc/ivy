@@ -86,7 +86,7 @@ def test_container_concat(dev, call):
                              'b': {'c': ivy.array([2], dev=dev), 'd': ivy.array([3], dev=dev)}})
     container_1 = Container({'a': ivy.array([4], dev=dev),
                              'b': {'c': ivy.array([5], dev=dev), 'd': ivy.array([6], dev=dev)}})
-    container_concatenated = ivy.Container.concat([container_0, container_1], 0)
+    container_concatenated = ivy.concat([container_0, container_1], 0)
     assert np.allclose(ivy.to_numpy(container_concatenated['a']), np.array([1, 4]))
     assert np.allclose(ivy.to_numpy(container_concatenated.a), np.array([1, 4]))
     assert np.allclose(ivy.to_numpy(container_concatenated['b']['c']), np.array([2, 5]))
