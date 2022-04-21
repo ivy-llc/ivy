@@ -1,5 +1,9 @@
 # class placeholders
 
+class Container:
+    pass
+
+
 class NativeArray:
     pass
 
