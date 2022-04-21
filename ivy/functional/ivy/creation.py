@@ -397,8 +397,13 @@ def from_dlpack(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
 # ------#
 
 # noinspection PyShadowingNames
-def logspace(start: Union[ivy.Array, ivy.NativeArray, int], stop: Union[ivy.Array, ivy.NativeArray, int],
-             num: int, base: float = 10., axis: int = None, dev: ivy.Device = None)\
+def logspace(start: Union[ivy.Array, ivy.NativeArray, int, float],
+             stop: Union[ivy.Array, ivy.NativeArray, int, float],
+             num: Optional[int] = 50,
+             base: Optional[ivy.Array, ivy.NativeArray, float, int] = 10.0,
+             axis: Optional[int] = None,
+             dtype: ivy.Dtype = None,
+             device: ivy.Device = None)\
         -> Union[ivy.Array, ivy.NativeArray]:
     """
     Generates a certain number of evenly-spaced values in log space, in an interval along a given axis.
@@ -409,17 +414,24 @@ def logspace(start: Union[ivy.Array, ivy.NativeArray, int], stop: Union[ivy.Arra
     :type start: array
     :param stop: Final entry in the range.
     :type stop: array
-    :param num: Number of values to generate.
-    :type num: int
+    :param num: Number of values to generate. Default is 50
+    :type num: int, Optional
     :param base: The base of the log space. Default is 10.0
     :type base: float, optional
     :param axis: Axis along which the operation is performed.
-    :type axis: int
-    :param dev: device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
-    :type dev: ivy.Device
+    :type axis: int,Optional
+    :param dtype : The type of the output array. If dtype is not given, the data type is inferred from start and stop.
+    :type dtype: ivy.Dtype
+    :param device: device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
+    :type device: ivy.Device
     :return: Tensor of evenly-spaced values.
+
+    Examples:
+    >>> y = ivy.logspace(2,3,num=4)
+    >>> print(y)
+    [ 100.0000,  215.443469,   464.15888336, 1000.0000]
     """
-    return _cur_framework(start).logspace(start, stop, num, base, axis, dev)
+    return _cur_framework(start).logspace(start, stop, num, base, axis,dtype, device)
 
 
 # noinspection PyShadowingNames

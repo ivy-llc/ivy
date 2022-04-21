@@ -161,7 +161,7 @@ def from_dlpack(x):
 # Extra #
 # ------#
 
-def logspace(start, stop, num, base=10., axis=None, dev=None):
+def logspace(start, stop, num, base=10., axis=None, dtype=None, dev=None):
     if axis is None:
         axis = -1
-    return _to_dev(np.logspace(start, stop, num, base=base, axis=axis), dev)
+    return _to_dev(np.logspace(start, stop, num, base=base, axis=axis, dtype=dtype), dev)

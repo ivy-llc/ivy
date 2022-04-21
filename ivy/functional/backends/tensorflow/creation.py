@@ -187,6 +187,5 @@ def from_dlpack(x):
 # Extra #
 # ------#
 
-def logspace(start, stop, num, base=10., axis=None, dev=None):
-    power_seq = linspace(start, stop, num, axis, default_device(dev))
-    return base ** power_seq
+def logspace(start, stop, num, base=10., axis=None, dtype=None, dev=None):
+    return tf.experimental.numpy.logspace(start, stop, num, base=base, axis=axis, dtype=dtype)

@@ -157,7 +157,7 @@ def from_dlpack(x):
 # Extra #
 # ------#
 
-def logspace(start, stop, num, base=10., axis=None, dev=None):
+def logspace(start, stop, num, base=10., axis=None, dtype=None, dev=None):
     if axis is None:
         axis = -1
-    return to_dev(jnp.logspace(start, stop, num, base=base, axis=axis), default_device(dev))
+    return to_dev(jnp.logspace(start, stop, num, base=base, axis=axis, dtype=dtype), default_device(dev))
