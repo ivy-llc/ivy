@@ -265,7 +265,11 @@ def arange(stop: Number, start: Number = 0, step: Number = 1, dtype: Optional[st
         return torch.arange(start, stop, step=step, device=dev_from_str(dev))
 
 
-def full(shape, fill_value, dtype=None, device=None):
+def full(shape: Union[int, Tuple[int, ...]],
+         fill_value: Union[int, float],
+         dtype: Optional[torch.dtype] = None,
+         device: Optional[torch.device] = None) \
+        -> Tensor:
     return torch.full(
         shape_to_tuple(shape), fill_value, dtype=dtype_from_str(default_dtype(dtype, fill_value)),
         device=default_device(device))
