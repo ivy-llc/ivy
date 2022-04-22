@@ -287,13 +287,13 @@ def std(x: Union[ivy.Array, ivy.NativeArray],
 
     Parameters
     ----------
-    x: 
+    x
         input array. Should have a floating-point data type.
-    axis:
+    axis
         axis or axes along which standard deviations must be computed. By default, the standard deviation 
         must be computed over the entire array. If a tuple of integers, standard deviations must be computed 
         over multiple axes. Default: None.
-    correction:
+    correction
         degrees of freedom adjustment. Setting this parameter to a value other than ``0`` has the effect of 
         adjusting the divisor during the calculation of the standard deviation according to ``N-c`` where ``N`` 
         corresponds to the total number of elements over which the standard deviation is computed and ``c`` 
@@ -303,17 +303,17 @@ def std(x: Union[ivy.Array, ivy.NativeArray],
         deviation, setting this parameter to ``1`` is the standard choice (i.e., the provided array contains 
         data sampled from a larger population; this is commonly referred to as Bessel's correction). 
         Default: ``0``.
-    keepdims: 
+    keepdims
         if ``True``, the reduced axes (dimensions) must be included in the result as singleton 
         dimensions, and, accordingly, the result must be compatible with the input array (see Broadcasting). 
         Otherwise, if ``False``, the reduced axes (dimensions) must not be included in the result. 
         Default: ``False``.
-    out:
+    out
         optional output array, for writing the result to.
 
     Returns
     -------
-    ret:
+    ret
         if the sum was computed over the entire array, a zero-dimensional array containing the standard deviation; otherwise, an array containing the standard deviations. 
         The returned array must have a data type as described by the ``dtype`` parameter above.
 
