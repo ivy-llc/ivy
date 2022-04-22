@@ -38,7 +38,8 @@ def tanh(x: np.ndarray)\
 sigmoid = lambda x: 1 / (1 + np.exp(-x))
 
 
-def softmax(x, axis=-1):
+def softmax(x: np.ndarray, axis: Optional[int] = -1)\
+        -> np.ndarray:
     exp_x = np.exp(x)
     return exp_x / np.sum(exp_x, axis, keepdims=True)
 
