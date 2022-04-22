@@ -147,25 +147,26 @@ def astype(x: Union[ivy.Array, ivy.NativeArray], dtype: ivy.Dtype, copy: bool = 
 
     Parameters
     ----------
-
-    x: array
+    x
         array to cast.
-    dtype: dtype
+    dtype
         desired data type.
-    copy: bool
+    copy
         specifies whether to copy an array when the specified ``dtype`` matches the data type of the input array ``x``. If ``True``, a newly allocated array must always be returned. If ``False`` and the specified ``dtype`` matches the data type of the input array, the input array must be returned; otherwise, a newly allocated must be returned. Default: ``True``.
 
     Returns
     -------
-    out: array
+    ret
         an array having the specified data type. The returned array must have the same shape as ``x``.
     
-    Examples:
-    >>> x = ivy.array([1.0, 2.0])
+    Examples
+    --------
+    >>> x = ivy.array([1, 2])
     >>> dtype = ivy.float64
     >>> y = ivy.astype(x, dtype)
     >>> print(y)
-    [1.0, 2.0]
+    [1., 2.]
+    
     """
     return _cur_framework(x).astype(x, dtype, copy)
 
