@@ -319,9 +319,9 @@ def std(x: Union[ivy.Array, ivy.NativeArray],
 
     Examples
     --------
-    >>> x = ivy.array([-1, 0, 1])
+    >>> x = ivy.array([-1., 0., 1.])
     >>> y = ivy.std(x)
-    >>> print(x)
+    >>> print(y)
     0.816496580927726
     
     """
