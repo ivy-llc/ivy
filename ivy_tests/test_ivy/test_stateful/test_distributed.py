@@ -514,63 +514,60 @@ def test_distributed_training(bs_ic_oc, dev, call):
 
 
 # device manager unwrapped tuning
-# @pytest.mark.parametrize(
-#     # "bs_ic_oc", [([384, 1], 2048, 2048)])
-#     "bs_ic_oc", [([2, 1], 4, 5)])
-# def test_device_manager_unwrapped_tuning(bs_ic_oc, dev, call):
-#     # smoke test
-#     if call is helpers.np_call:
-#         # NumPy does not support gradients
-#         pytest.skip()
-#
-#     if call is not helpers.torch_call:
-#         # ToDo: add support for other frameworks, currently only supported for torch
-#         pytest.skip()
-#
-#     # input
-#     batch_shape, input_channels, output_channels = bs_ic_oc
-#     x = ivy.cast(ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape),
-#                               input_channels, dev=dev), 'float32')
-#
-#     # optimizer
-#     optim = ivy.SGD(1e-4)
-#
-#     # device manager
-#     dev_manager = ivy.DevManager(devs=[dev], tune_dev_alloc=False)
-#
-#     # module
-#     module = TrainableModuleWithSplit(input_channels, output_channels,
-#                                       dev=dev, store_vars=True)  # , hidden_size=2048)
-#     module.build()
-#
-#     # train
-#     loss_tm1 = 1e12
-#     loss = None
-#     grads = None
-#     # for i in range(1000):
-#     for i in range(10):
-#         loss, grads = map_fn(module, dev, x, module.v)
-#         dev_manager.tune_step()
-#         module.v = optim.step(module.v, grads)
-#         assert loss < loss_tm1
-#         loss_tm1 = loss
-#
-#     # type test
-#     assert ivy.is_array(loss)
-#     assert isinstance(grads, ivy.Container)
-#     # cardinality test
-#     if call is helpers.mx_call:
-#         # mxnet slicing cannot reduce dimension to zero
-#         assert loss.shape == (1,)
-#     else:
-#         assert loss.shape == ()
-#     # value test
-#     assert ivy.reduce_max(ivy.abs(grads.linear0.b)) > 0
-#     assert ivy.reduce_max(ivy.abs(grads.linear0.w)) > 0
-#     assert ivy.reduce_max(ivy.abs(grads.linear1.b)) > 0
-#     assert ivy.reduce_max(ivy.abs(grads.linear1.w)) > 0
-#     assert ivy.reduce_max(ivy.abs(grads.linear2.b)) > 0
-#     assert ivy.reduce_max(ivy.abs(grads.linear2.w)) > 0
-#     # delete dev manager
-#     dev_manager.__del__()
-#     del dev_manager
+@pytest.mark.parametrize(
+    # "bs_ic_oc", [([384, 1], 2048, 2048)])
+    "bs_ic_oc", [([2, 1], 4, 5)])
+def test_device_manager_unwrapped_tuning(bs_ic_oc, dev, call):
+    # smoke test
+    if call is helpers.np_call:
+        # NumPy does not support gradients
+        pytest.skip()
+
+
+    # input
+    batch_shape, input_channels, output_channels = bs_ic_oc
+    x = ivy.astype(ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape),
+                              input_channels, dev=dev), 'float32')
+
+    # optimizer
+    optim = ivy.SGD(1e-4)
+
+    # device manager
+    dev_manager = ivy.DevManager(devs=[dev], tune_dev_alloc=False)
+
+    # module
+    module = TrainableModuleWithSplit(input_channels, output_channels,
+                                      dev=dev, store_vars=True)  # , hidden_size=2048)
+    module.build()
+
+    # train
+    loss_tm1 = 1e12
+    loss = None
+    grads = None
+    # for i in range(1000):
+    for i in range(10):
+        loss, grads = map_fn(module, dev, x, module.v)
+        dev_manager.tune_step()
+        module.v = optim.step(module.v, grads)
+        assert loss < loss_tm1
+        loss_tm1 = loss
+
+    # type test
+    assert ivy.is_array(loss)
+    assert isinstance(grads, ivy.Container)
+    # cardinality test
+    if call is helpers.mx_call:
+        # mxnet slicing cannot reduce dimension to zero
+        assert loss.shape == (1,)
+    else:
+        assert loss.shape == ()
+    # value test
+    assert ivy.max(ivy.abs(grads.linear0.b)) > 0
+    assert ivy.max(ivy.abs(grads.linear0.w)) > 0
+    assert ivy.max(ivy.abs(grads.linear1.b)) > 0
+    assert ivy.max(ivy.abs(grads.linear1.w)) > 0
+    assert ivy.max(ivy.abs(grads.linear2.b)) > 0
+    assert ivy.max(ivy.abs(grads.linear2.w)) > 0
+    # delete dev manager
+    dev_manager.__del__()
+    del dev_manager
