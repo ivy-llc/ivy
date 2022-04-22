@@ -29,7 +29,8 @@ def copy_array(x):
     return x.clone()
 
 
-def array_equal(x0, x1):
+def array_equal(x0:torch.Tensor, x1:torch.Tensor) \
+        -> bool:
     return torch.equal(x0, x1)
 
 

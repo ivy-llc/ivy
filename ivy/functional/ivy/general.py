@@ -181,11 +181,30 @@ def array_equal(x0: Union[ivy.Array, ivy.NativeArray], x1: Union[ivy.Array, ivy.
     x1
         The second input array to compare.
 
+    dtype
+        array data type
+        
     Returns
-    -------
-     ret
+    ----------
+    ret
         Boolean, whether or not the input arrays are equal across all elements.
-
+        
+    Examples:
+    >>> x = ivy.array([1,0,1])
+    >>> y = ivy.array([1,0,-1])
+    >>> z = ivy.array_equal(x,y)
+    >>> print(z)
+    False
+    >>> a = ivy.array([1, 2])
+    >>> b = ivy.array([1, 2])
+    >>> c = ivy.array_equal(a,b)
+    >>> print(c)
+    True
+    >>> i = ivy.array([1, 2])
+    >>> j = ivy.array([1, 2, 3])
+    >>> k = ivy.array_equal(i,j)
+    >>> print(k)
+    False
     """
     return _cur_framework(x0).array_equal(x0, x1)
 
