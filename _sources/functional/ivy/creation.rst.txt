@@ -27,7 +27,6 @@ Creation
    creation/eye.rst
    creation/linspace.rst
    creation/meshgrid.rst
-   creation/zeros_like.rst
    creation/full.rst
    creation/from_dlpack.rst
    creation/logspace.rst
