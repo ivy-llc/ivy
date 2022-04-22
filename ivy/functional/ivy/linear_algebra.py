@@ -398,31 +398,9 @@ def trace(x: ivy.Array,
 
     Parameters
     ----------
-<<<<<<< HEAD
-    x:
-        This is an array.
-
-    Return
-    ----------
-    Out:
-
-        This function returns two values -
-            sum:
-                The sum of the diagonals along an axis.
-    Examples
-    --------
-    >>> x = ivy.array([[1.0, 2.0],[3.0, 4.0]])
-    >>> offset = 0
-    >>> y = ivy.trace(x, offset)
-    >>> print(y)
-    [5.0]
-      
-=======
->>>>>>> 0ff564a861bb80a2b20ffbfb6fc0650441f2c186
-
     x: array
          input array having shape ``(..., M, N)`` and whose innermost two dimensions form ``MxN`` matrices. Should have a numeric data type.
-     offset: int
+    offset: int
          offset specifying the off-diagonal relative to the main diagonal.
          -   ``offset = 0``: the main diagonal.
          -   ``offset > 0``: off-diagonal above the main diagonal.
