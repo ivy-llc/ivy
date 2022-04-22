@@ -351,11 +351,36 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Determines whether two input arrays are equal across all elements.</span>
 
-<span class="sd">    :param x0: The first input array to compare.</span>
-<span class="sd">    :type x0: array</span>
-<span class="sd">    :param x1: The second input array to compare.</span>
-<span class="sd">    :type x1: array</span>
-<span class="sd">    :return: Boolean, whether or not the input arrays are equal across all elements.</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x0:</span>
+<span class="sd">        The first input array to compare.</span>
+<span class="sd">    x1:</span>
+<span class="sd">        The second input array to compare.v</span>
+<span class="sd">    dtype: </span>
+<span class="sd">        array data type</span>
+<span class="sd">        </span>
+<span class="sd">    Returns</span>
+<span class="sd">    ----------</span>
+<span class="sd">    out:</span>
+<span class="sd">        Boolean, whether or not the input arrays are equal across all elements.</span>
+<span class="sd">        </span>
+<span class="sd">    Examples:</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([1,0,1])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.array([1,0,-1])</span>
+<span class="sd">    &gt;&gt;&gt; z = ivy.array_equal(x,y)</span>
+<span class="sd">    &gt;&gt;&gt; print(z)</span>
+<span class="sd">    False</span>
+<span class="sd">    &gt;&gt;&gt; a = ivy.array([1, 2])</span>
+<span class="sd">    &gt;&gt;&gt; b = ivy.array([1, 2])</span>
+<span class="sd">    &gt;&gt;&gt; c = ivy.array_equal(a,b)</span>
+<span class="sd">    &gt;&gt;&gt; print(c)</span>
+<span class="sd">    True</span>
+<span class="sd">    &gt;&gt;&gt; i = ivy.array([1, 2])</span>
+<span class="sd">    &gt;&gt;&gt; j = ivy.array([1, 2, 3])</span>
+<span class="sd">    &gt;&gt;&gt; k = ivy.array_equal(i,j)</span>
+<span class="sd">    &gt;&gt;&gt; print(k)</span>
+<span class="sd">    False</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x0</span><span class="p">)</span><span class="o">.</span><span class="n">array_equal</span><span class="p">(</span><span class="n">x0</span><span class="p">,</span> <span class="n">x1</span><span class="p">)</span></div>
 

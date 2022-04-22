@@ -323,17 +323,34 @@ Default is False.</p></li>
 <dt id="ivy.functional.ivy.general.array_equal">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">array_equal</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x0</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">x1</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; bool<a class="reference internal" href="../../_modules/ivy/functional/ivy/general.html#array_equal"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.general.array_equal" title="Permalink to this definition">¶</a></dt>
 <dd><p>Determines whether two input arrays are equal across all elements.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>x0</strong> (<em>array</em>) – The first input array to compare.</p></li>
-<li><p><strong>x1</strong> (<em>array</em>) – The second input array to compare.</p></li>
-</ul>
+<dl class="simple">
+<dt>x0:</dt><dd><p>The first input array to compare.</p>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Boolean, whether or not the input arrays are equal across all elements.</p>
+<dt>x1:</dt><dd><p>The second input array to compare.v</p>
+</dd>
+<dt>dtype: </dt><dd><p>array data type</p>
 </dd>
 </dl>
+<dl class="simple">
+<dt>out:</dt><dd><p>Boolean, whether or not the input arrays are equal across all elements.</p>
+</dd>
+</dl>
+<p>Examples:
+&gt;&gt;&gt; x = ivy.array([1,0,1])
+&gt;&gt;&gt; y = ivy.array([1,0,-1])
+&gt;&gt;&gt; z = ivy.array_equal(x,y)
+&gt;&gt;&gt; print(z)
+False
+&gt;&gt;&gt; a = ivy.array([1, 2])
+&gt;&gt;&gt; b = ivy.array([1, 2])
+&gt;&gt;&gt; c = ivy.array_equal(a,b)
+&gt;&gt;&gt; print(c)
+True
+&gt;&gt;&gt; i = ivy.array([1, 2])
+&gt;&gt;&gt; j = ivy.array([1, 2, 3])
+&gt;&gt;&gt; k = ivy.array_equal(i,j)
+&gt;&gt;&gt; print(k)
+False</p>
 </dd></dl>
 
 <dl class="py function">
