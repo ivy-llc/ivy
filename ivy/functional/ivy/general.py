@@ -656,8 +656,18 @@ def get_min_denominator()\
         -> float:
     """
     Get the global minimum denominator used by ivy for numerically stable division.
+
+    Returns
+    -------
+    out:
+       A float number of the global minimum denominator.
+
+    Examples:
+    >>> x = get_min_denominator()
+    >>> print(x)
+    0.01
+
     """
-    # noinspection PyProtectedMember
     return ivy._MIN_DENOMINATOR
 
 
