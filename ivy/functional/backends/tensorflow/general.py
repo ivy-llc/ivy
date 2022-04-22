@@ -31,13 +31,6 @@ copy_array = tf.identity
 
 def array_equal (x0: Tensor, x1: Tensor) \
         -> bool:
-    """
-    Examples:
-    >>> array_equal([1, 2], [1, 2])
-    True
-    >>> array_equal([1, 2], [1, 2, 3])
-    False
-    """
     return tf.experimental.numpy.array_equal(x0, x1)
 
   

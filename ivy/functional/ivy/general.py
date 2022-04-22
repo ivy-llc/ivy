@@ -146,6 +146,10 @@ def array_equal(x0: Union[ivy.Array, ivy.NativeArray], x1: Union[ivy.Array, ivy.
     >>> z = ivy.array_equal(x,y)
     >>> print(z)
     False
+    >>> array_equal([1, 2], [1, 2])
+    True
+    >>> array_equal([1, 2], [1, 2, 3])
+    False
     
     """
     return _cur_framework(x0).array_equal(x0, x1)
