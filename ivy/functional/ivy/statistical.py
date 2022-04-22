@@ -268,6 +268,7 @@ def sum(x: Union[ivy.Array, ivy.NativeArray],
 
     return _cur_framework(x).sum(x, axis, dtype, keepdims, out = out)
 
+
 def std(x: Union[ivy.Array, ivy.NativeArray],
         axis: Optional[Union[int, Tuple[int, ...]]] = None,
         correction: Union[int, float] = 0.0,
@@ -275,39 +276,56 @@ def std(x: Union[ivy.Array, ivy.NativeArray],
         out: Optional[Union[ivy.Array, ivy.NativeArray]] = None)\
          -> ivy.Array:
     """
-    Calculates the standard deviation of the input array x.
+    Calculates the standard deviation of the input array ``x``.
+    
+    **Special Cases**
+    
+    Let ``N`` equal the number of elements over which to compute the standard deviation.
+    
+    -   If ``N`` is ``0``, the standard deviation is ``0`` (i.e., the empty standard deviation).
+    -   If ``x_i`` is ``NaN``, the standard deviation is ``NaN`` (i.e., ``NaN`` values propagate).
 
     Parameters
     ----------
     x: 
-        input array. Should have a floating-point data type
+        input array. Should have a floating-point data type.
     axis:
         axis or axes along which standard deviations must be computed. By default, the standard deviation 
         must be computed over the entire array. If a tuple of integers, standard deviations must be computed 
         over multiple axes. Default: None.
     correction:
-        degrees of freedom adjustment. Setting this parameter to a value other than 0 has the effect of 
-        adjusting the divisor during the calculation of the standard deviation according to N-c where N 
-        corresponds to the total number of elements over which the standard deviation is computed and c 
+        degrees of freedom adjustment. Setting this parameter to a value other than ``0`` has the effect of 
+        adjusting the divisor during the calculation of the standard deviation according to ``N-c`` where ``N`` 
+        corresponds to the total number of elements over which the standard deviation is computed and ``c`` 
         corresponds to the provided degrees of freedom adjustment. When computing the standard deviation 
-        of a population, setting this parameter to 0 is the standard choice (i.e., the provided array 
+        of a population, setting this parameter to ``0`` is the standard choice (i.e., the provided array 
         contains data constituting an entire population). When computing the corrected sample standard 
-        deviation, setting this parameter to 1 is the standard choice (i.e., the provided array contains 
+        deviation, setting this parameter to ``1`` is the standard choice (i.e., the provided array contains 
         data sampled from a larger population; this is commonly referred to as Bessel's correction). 
-        Default: 0.
+        Default: ``0``.
     keepdims: 
-        if True, the reduced axes (dimensions) must be included in the result as singleton 
+        if ``True``, the reduced axes (dimensions) must be included in the result as singleton 
         dimensions, and, accordingly, the result must be compatible with the input array (see Broadcasting). 
-        Otherwise, if False, the reduced axes (dimensions) must not be included in the result. 
-        Default: False.
+        Otherwise, if ``False``, the reduced axes (dimensions) must not be included in the result. 
+        Default: ``False``.
     out:
-        optional output array, for writing the result to.Returns
+        optional output array, for writing the result to.
 
     Returns
     -------
-    :return: The array with standard deviations computed.
+    ret:
+        if the sum was computed over the entire array, a zero-dimensional array containing the standard deviation; otherwise, an array containing the standard deviations. 
+        The returned array must have a data type as described by the ``dtype`` parameter above.
+
+    Examples
+    --------
+    >>> x = ivy.array([-1, 0, 1])
+    >>> y = ivy.std(x)
+    >>> print(x)
+    0.816496580927726
+    
     """
-    return _cur_framework(x).std(x, axis, correction, keepdims,out=out)
+    return _cur_framework(x).std(x, axis, correction, keepdims, out=out)
 
 
 # Extra #
