@@ -21,4 +21,3 @@ tensordot
 #trace # accidentally merged trace when #T in array folder was preventing test from running.
 vecdot
 vector_norm
-
