@@ -408,6 +408,14 @@ def trace(x: ivy.Array,
         This function returns two values -
             sum:
                 The sum of the diagonals along an axis.
+    Examples
+    --------
+    >>> x = ivy.array([[1.0, 2.0],[3.0, 4.0]])
+    >>> offset = 0
+    >>> y = ivy.trace(x, offset)
+    >>> print(y)
+    [5.0]
+      
 
     """
 
