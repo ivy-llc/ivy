@@ -263,24 +263,35 @@
 <dl class="py function">
 <dt id="ivy.functional.ivy.data_type.astype">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">astype</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">dtype</span><span class="p">:</span> <span class="n">ivy.Dtype</span></em>, <em class="sig-param"><span class="n">copy</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">True</span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../../_modules/ivy/functional/ivy/data_type.html#astype"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.data_type.astype" title="Permalink to this definition">¶</a></dt>
-<dd><p>Copies an array to a specified data type irrespective of Type Promotion Rules.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>x</strong> – array to cast.</p>
+<dd><p>Copies an array to a specified data type irrespective of <span class="xref std std-ref">type-promotion</span> rules.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Casting floating-point <code class="docutils literal notranslate"><span class="pre">NaN</span></code> and <code class="docutils literal notranslate"><span class="pre">infinity</span></code> values to integral data types is not specified and is implementation-dependent.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>When casting a boolean input array to a numeric data type, a value of <code class="docutils literal notranslate"><span class="pre">True</span></code> must cast to a numeric value equal to <code class="docutils literal notranslate"><span class="pre">1</span></code>, and a value of <code class="docutils literal notranslate"><span class="pre">False</span></code> must cast to a numeric value equal to <code class="docutils literal notranslate"><span class="pre">0</span></code>.
+When casting a numeric input array to <code class="docutils literal notranslate"><span class="pre">bool</span></code>, a value of <code class="docutils literal notranslate"><span class="pre">0</span></code> must cast to <code class="docutils literal notranslate"><span class="pre">False</span></code>, and a non-zero value must cast to <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p>
+</div>
+<dl class="simple">
+<dt>x</dt><dd><p>array to cast.</p>
 </dd>
-<dt class="field-even">Dtype</dt>
-<dd class="field-even"><p>desired data type.</p>
+<dt>dtype</dt><dd><p>desired data type.</p>
 </dd>
-<dt class="field-odd">Copy</dt>
-<dd class="field-odd"><p>(bool) specifies whether to copy an array when the specified dtype matches the data type of the input array x.
-If True, a newly allocated array must always be returned.
-If False and the specified dtype matches the data type of the input array, the input array must be returned; otherwise, a newly allocated must be returned.
-Default: True.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>an array having the specified data type. The returned array must have the same shape as x.</p>
+<dt>copy</dt><dd><p>specifies whether to copy an array when the specified <code class="docutils literal notranslate"><span class="pre">dtype</span></code> matches the data type of the input array <code class="docutils literal notranslate"><span class="pre">x</span></code>. If <code class="docutils literal notranslate"><span class="pre">True</span></code>, a newly allocated array must always be returned. If <code class="docutils literal notranslate"><span class="pre">False</span></code> and the specified <code class="docutils literal notranslate"><span class="pre">dtype</span></code> matches the data type of the input array, the input array must be returned; otherwise, a newly allocated must be returned. Default: <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p>
 </dd>
 </dl>
+<dl class="simple">
+<dt>ret</dt><dd><p>an array having the specified data type. The returned array must have the same shape as <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p>
+</dd>
+</dl>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dtype</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">float64</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dtype</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+<span class="go">[1., 2.]</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <div class="line-block">
