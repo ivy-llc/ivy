@@ -493,6 +493,7 @@
 
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">dtype</span><span class="p">,</span> <span class="n">keepdims</span><span class="p">,</span> <span class="n">out</span> <span class="o">=</span> <span class="n">out</span><span class="p">)</span></div>
 
+
 <div class="viewcode-block" id="std"><a class="viewcode-back" href="../../../../functional/ivy/statistical/std.html#ivy.functional.ivy.statistical.std">[docs]</a><span class="k">def</span> <span class="nf">std</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
         <span class="n">axis</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">correction</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span>
@@ -500,39 +501,56 @@
         <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span>\
          <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Calculates the standard deviation of the input array x.</span>
+<span class="sd">    Calculates the standard deviation of the input array ``x``.</span>
+<span class="sd">    </span>
+<span class="sd">    **Special Cases**</span>
+<span class="sd">    </span>
+<span class="sd">    Let ``N`` equal the number of elements over which to compute the standard deviation.</span>
+<span class="sd">    </span>
+<span class="sd">    -   If ``N`` is ``0``, the standard deviation is ``0`` (i.e., the empty standard deviation).</span>
+<span class="sd">    -   If ``x_i`` is ``NaN``, the standard deviation is ``NaN`` (i.e., ``NaN`` values propagate).</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    x: </span>
-<span class="sd">        input array. Should have a floating-point data type</span>
+<span class="sd">        input array. Should have a floating-point data type.</span>
 <span class="sd">    axis:</span>
 <span class="sd">        axis or axes along which standard deviations must be computed. By default, the standard deviation </span>
 <span class="sd">        must be computed over the entire array. If a tuple of integers, standard deviations must be computed </span>
 <span class="sd">        over multiple axes. Default: None.</span>
 <span class="sd">    correction:</span>
-<span class="sd">        degrees of freedom adjustment. Setting this parameter to a value other than 0 has the effect of </span>
-<span class="sd">        adjusting the divisor during the calculation of the standard deviation according to N-c where N </span>
-<span class="sd">        corresponds to the total number of elements over which the standard deviation is computed and c </span>
+<span class="sd">        degrees of freedom adjustment. Setting this parameter to a value other than ``0`` has the effect of </span>
+<span class="sd">        adjusting the divisor during the calculation of the standard deviation according to ``N-c`` where ``N`` </span>
+<span class="sd">        corresponds to the total number of elements over which the standard deviation is computed and ``c`` </span>
 <span class="sd">        corresponds to the provided degrees of freedom adjustment. When computing the standard deviation </span>
-<span class="sd">        of a population, setting this parameter to 0 is the standard choice (i.e., the provided array </span>
+<span class="sd">        of a population, setting this parameter to ``0`` is the standard choice (i.e., the provided array </span>
 <span class="sd">        contains data constituting an entire population). When computing the corrected sample standard </span>
-<span class="sd">        deviation, setting this parameter to 1 is the standard choice (i.e., the provided array contains </span>
+<span class="sd">        deviation, setting this parameter to ``1`` is the standard choice (i.e., the provided array contains </span>
 <span class="sd">        data sampled from a larger population; this is commonly referred to as Bessel&#39;s correction). </span>
-<span class="sd">        Default: 0.</span>
+<span class="sd">        Default: ``0``.</span>
 <span class="sd">    keepdims: </span>
-<span class="sd">        if True, the reduced axes (dimensions) must be included in the result as singleton </span>
+<span class="sd">        if ``True``, the reduced axes (dimensions) must be included in the result as singleton </span>
 <span class="sd">        dimensions, and, accordingly, the result must be compatible with the input array (see Broadcasting). </span>
-<span class="sd">        Otherwise, if False, the reduced axes (dimensions) must not be included in the result. </span>
-<span class="sd">        Default: False.</span>
+<span class="sd">        Otherwise, if ``False``, the reduced axes (dimensions) must not be included in the result. </span>
+<span class="sd">        Default: ``False``.</span>
 <span class="sd">    out:</span>
-<span class="sd">        optional output array, for writing the result to.Returns</span>
+<span class="sd">        optional output array, for writing the result to.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    :return: The array with standard deviations computed.</span>
+<span class="sd">    ret:</span>
+<span class="sd">        if the sum was computed over the entire array, a zero-dimensional array containing the standard deviation; otherwise, an array containing the standard deviations. </span>
+<span class="sd">        The returned array must have a data type as described by the ``dtype`` parameter above.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([-1, 0, 1])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.std(x)</span>
+<span class="sd">    &gt;&gt;&gt; print(x)</span>
+<span class="sd">    0.816496580927726</span>
+<span class="sd">    </span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">correction</span><span class="p">,</span> <span class="n">keepdims</span><span class="p">,</span><span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">correction</span><span class="p">,</span> <span class="n">keepdims</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
 
 <span class="c1"># Extra #</span>
