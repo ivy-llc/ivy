@@ -512,13 +512,13 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    x: </span>
+<span class="sd">    x</span>
 <span class="sd">        input array. Should have a floating-point data type.</span>
-<span class="sd">    axis:</span>
+<span class="sd">    axis</span>
 <span class="sd">        axis or axes along which standard deviations must be computed. By default, the standard deviation </span>
 <span class="sd">        must be computed over the entire array. If a tuple of integers, standard deviations must be computed </span>
 <span class="sd">        over multiple axes. Default: None.</span>
-<span class="sd">    correction:</span>
+<span class="sd">    correction</span>
 <span class="sd">        degrees of freedom adjustment. Setting this parameter to a value other than ``0`` has the effect of </span>
 <span class="sd">        adjusting the divisor during the calculation of the standard deviation according to ``N-c`` where ``N`` </span>
 <span class="sd">        corresponds to the total number of elements over which the standard deviation is computed and ``c`` </span>
@@ -528,17 +528,17 @@
 <span class="sd">        deviation, setting this parameter to ``1`` is the standard choice (i.e., the provided array contains </span>
 <span class="sd">        data sampled from a larger population; this is commonly referred to as Bessel&#39;s correction). </span>
 <span class="sd">        Default: ``0``.</span>
-<span class="sd">    keepdims: </span>
+<span class="sd">    keepdims</span>
 <span class="sd">        if ``True``, the reduced axes (dimensions) must be included in the result as singleton </span>
 <span class="sd">        dimensions, and, accordingly, the result must be compatible with the input array (see Broadcasting). </span>
 <span class="sd">        Otherwise, if ``False``, the reduced axes (dimensions) must not be included in the result. </span>
 <span class="sd">        Default: ``False``.</span>
-<span class="sd">    out:</span>
+<span class="sd">    out</span>
 <span class="sd">        optional output array, for writing the result to.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    ret:</span>
+<span class="sd">    ret</span>
 <span class="sd">        if the sum was computed over the entire array, a zero-dimensional array containing the standard deviation; otherwise, an array containing the standard deviations. </span>
 <span class="sd">        The returned array must have a data type as described by the ``dtype`` parameter above.</span>
 
