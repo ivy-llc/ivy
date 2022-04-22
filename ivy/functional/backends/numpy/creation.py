@@ -74,8 +74,8 @@ def ones_like(x : np.ndarray,
 
 
 def zeros_like(x: np.ndarray,
-               dtype: Optional[np.dtype] =None,
-               dev:  Optional[str]  =None)\
+               dtype: Optional[np.dtype] = None,
+               dev:  Optional[str] = None)\
             -> np.ndarray:
     if dtype:
         dtype = 'bool_' if dtype == 'bool' else dtype
@@ -151,7 +151,7 @@ def arange(stop, start=0, step=1, dtype=None, dev=None):
     return res
 
 
-def full(shape: Union[int, Tuple[int]],
+def full(shape: Union[int, Tuple[int, ...]],
          fill_value: Union[int, float],
          dtype: Optional[np.dtype] = None,
          device: Optional[str] = None) \
