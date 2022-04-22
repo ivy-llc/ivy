@@ -176,7 +176,7 @@ def arange(stop, start=0, step=1, dtype=None, dev=None):
         return tf.range(start, stop, delta=step, dtype=dtype)
 
 
-def full(shape: Union[int, Tuple[int]],
+def full(shape: Union[int, Tuple[int, ...]],
          fill_value: Union[int, float],
          dtype: Optional[Dtype] = None,
          device: Optional[str] = None) \
