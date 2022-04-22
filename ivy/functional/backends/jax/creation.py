@@ -146,7 +146,11 @@ def arange(stop, start=0, step=1, dtype=None, dev=None):
     return to_dev(jnp.arange(start, stop, step=step, dtype=dtype), default_device(dev))
 
 
-def full(shape, fill_value, dtype=None, device=None):
+def full(shape: Union[int, Tuple[int, ...]],
+         fill_value: Union[int, float],
+         dtype: Optional[jnp.dtype] = None,
+         device: Optional[jaxlib.xla_extension.Device] = None) \
+        -> JaxArray:
     return to_dev(jnp.full(shape, fill_value, dtype_from_str(default_dtype(dtype, fill_value))),
                   default_device(device))
 
