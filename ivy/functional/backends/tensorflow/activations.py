@@ -30,7 +30,7 @@ def leaky_relu(x: Tensor, alpha: Optional[float] = 0.2) \
 gelu = lambda x, approximate=True: tf.nn.gelu(x, approximate)
 
 
-def sigmoid(x):
+def sigmoid(x: Tensor) -> Tensor:
     return tf.nn.sigmoid(x)
 
 

@@ -2,7 +2,7 @@
 expand_dims
 flip
 permute_dims
-#reshape # still randomly failing healthcheck with numpy.
+#reshape # still randomly failing healthcheck https://github.com/data-apis/array-api-tests/issues/115
 roll
 squeeze
 stack

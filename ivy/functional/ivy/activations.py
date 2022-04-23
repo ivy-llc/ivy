@@ -104,26 +104,29 @@ def tanh(x: Union[ivy.Array, ivy.NativeArray])\
     return _cur_framework(x).tanh(x)
 
 
-def sigmoid(x):
+def sigmoid(x: Union[ivy.Array, ivy.NativeArray])\
+        -> ivy.Array:
     """
     Applies the sigmoid function element-wise.
 
     Parameters
     ----------
-    x:
+    x
         input array.
 
 
     Returns
     -------
-    out:
+    ret
        an array containing the sigmoid activation of each element in ``x``.
 
-    Examples:
+    Examples
+    --------
     >>> x = ivy.array([-1., 1., 2.])
     >>> y = ivy.sigmoid(x)
     >>> print(y)
     [0.268, 0.5, 0.880]
+
     """
     return _cur_framework(x).sigmoid(x)
 

@@ -129,8 +129,7 @@ def test_sigmoid(x, dtype, tensor_fn, dev, call):
     # cardinality test
     assert ret.shape == x.shape
     # value test
-    assert np.allclose(call(ivy.sigmoid, x), ivy.functional.backends.numpy.sigmoid(ivy.to_numpy(x)))
-
+    assert np.allclose(call(ivy.sigmoid, x), ivy_np.sigmoid(ivy.to_numpy(x)))
 
 
 # softmax
