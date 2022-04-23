@@ -615,27 +615,40 @@
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">svdvals</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="trace"><a class="viewcode-back" href="../../../../functional/ivy/linear_algebra/trace.html#ivy.functional.ivy.linear_algebra.trace">[docs]</a><span class="k">def</span> <span class="nf">trace</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
-          <span class="n">offset</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span>\
-               <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+<div class="viewcode-block" id="trace"><a class="viewcode-back" href="../../../../functional/ivy/linear_algebra/trace.html#ivy.functional.ivy.linear_algebra.trace">[docs]</a><span class="k">def</span> <span class="nf">trace</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span> <span class="n">offset</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span>\
+        <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Computes the sum of the diagonal of an array.</span>
+<span class="sd">    Returns the sum along the specified diagonals of a matrix (or a stack of matrices) ``x``.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    x:</span>
-<span class="sd">        This is an array.</span>
+<span class="sd">    x</span>
+<span class="sd">        input array having shape ``(..., M, N)`` and whose innermost two dimensions form ``MxN`` matrices. Should have a numeric data type.</span>
+<span class="sd">    offset</span>
+<span class="sd">        offset specifying the off-diagonal relative to the main diagonal.</span>
+<span class="sd">        -   ``offset = 0``: the main diagonal.</span>
+<span class="sd">        -   ``offset &gt; 0``: off-diagonal above the main diagonal.</span>
+<span class="sd">        -   ``offset &lt; 0``: off-diagonal below the main diagonal.</span>
+<span class="sd">        </span>
+<span class="sd">        Default: ``0``.</span>
 
-<span class="sd">    Return</span>
-<span class="sd">    ----------</span>
-<span class="sd">    Out:</span>
-
-<span class="sd">        This function returns two values -</span>
-<span class="sd">            sum:</span>
-<span class="sd">                The sum of the diagonals along an axis.</span>
-
+<span class="sd">     Returns</span>
+<span class="sd">     -------</span>
+<span class="sd">     ret</span>
+<span class="sd">         an array containing the traces and whose shape is determined by removing the last two dimensions and storing the traces in the last array dimension. For example, if ``x`` has rank ``k`` and shape ``(I, J, K, ..., L, M, N)``, then an output array has rank ``k-2`` and shape ``(I, J, K, ..., L)`` where</span>
+<span class="sd">         ::</span>
+<span class="sd">           out[i, j, k, ..., l] = trace(a[i, j, k, ..., l, :, :])</span>
+<span class="sd">         The returned array must have the same data type as ``x``.</span>
+<span class="sd">     </span>
+<span class="sd">     Examples</span>
+<span class="sd">     --------</span>
+<span class="sd">     &gt;&gt;&gt; x = ivy.array([[1.0, 2.0],[3.0, 4.0]])</span>
+<span class="sd">     &gt;&gt;&gt; offset = 0</span>
+<span class="sd">     &gt;&gt;&gt; y = ivy.trace(x, offset)</span>
+<span class="sd">     &gt;&gt;&gt; print(y)</span>
+<span class="sd">     5.0</span>
+<span class="sd">     </span>
 <span class="sd">    &quot;&quot;&quot;</span>
-
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">offset</span><span class="p">)</span></div>
 
 
