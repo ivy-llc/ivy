@@ -390,27 +390,40 @@ def svdvals(x: Union[ivy.Array, ivy.NativeArray],) \
     return _cur_framework(x).svdvals(x)
 
 
-def trace(x: ivy.Array,
-          offset: int = 0)\
-               -> ivy.Array:
+def trace(x: Union[ivy.Array, ivy.NativeArray], offset: int = 0)\
+        -> ivy.Array:
     """
-    Computes the sum of the diagonal of an array.
+    Returns the sum along the specified diagonals of a matrix (or a stack of matrices) ``x``.
 
     Parameters
     ----------
-    x:
-        This is an array.
+    x
+        input array having shape ``(..., M, N)`` and whose innermost two dimensions form ``MxN`` matrices. Should have a numeric data type.
+    offset
+        offset specifying the off-diagonal relative to the main diagonal.
+        -   ``offset = 0``: the main diagonal.
+        -   ``offset > 0``: off-diagonal above the main diagonal.
+        -   ``offset < 0``: off-diagonal below the main diagonal.
+        
+        Default: ``0``.
 
-    Return
-    ----------
-    Out:
-
-        This function returns two values -
-            sum:
-                The sum of the diagonals along an axis.
-
+     Returns
+     -------
+     ret
+         an array containing the traces and whose shape is determined by removing the last two dimensions and storing the traces in the last array dimension. For example, if ``x`` has rank ``k`` and shape ``(I, J, K, ..., L, M, N)``, then an output array has rank ``k-2`` and shape ``(I, J, K, ..., L)`` where
+         ::
+           out[i, j, k, ..., l] = trace(a[i, j, k, ..., l, :, :])
+         The returned array must have the same data type as ``x``.
+     
+     Examples
+     --------
+     >>> x = ivy.array([[1.0, 2.0],[3.0, 4.0]])
+     >>> offset = 0
+     >>> y = ivy.trace(x, offset)
+     >>> print(y)
+     5.0
+     
     """
-
     return _cur_framework(x).trace(x, offset)
 
 
