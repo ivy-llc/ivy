@@ -31,7 +31,7 @@ def gelu(x, approximate=True):
     return 0.5 * x * (1 + _erf(x/np.sqrt(2)))
 
 
-def sigmoid(x):
+def sigmoid(x: np.ndarray) -> np.ndarray:
     return 1 / (1 + np.exp(-x))
 
   
