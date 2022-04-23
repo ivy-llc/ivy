@@ -186,17 +186,6 @@ def vecdot(x1: np.ndarray,
     return ret
 
 
-def vecdot(x1: np.ndarray, 
-           x2: np.ndarray,
-           axis: int = -1,
-           out: Optional[np.ndarray] = None)\
-        -> np.ndarray:
-    ret =  np.tensordot(x1, x2, axes=(axis, axis))
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
-
-
 def det(x: np.ndarray,
         out: Optional[np.ndarray] = None) \
         -> np.ndarray:
