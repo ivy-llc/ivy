@@ -37,12 +37,12 @@ def tanh(x: torch.Tensor)\
     return torch.tanh(x)
 
 
-
-def sigmoid(x):
+def sigmoid(x: torch.Tensor) -> torch.Tensor:
     return torch.sigmoid(x)
 
 
-def softmax(x, axis: int = -1):
+def softmax(x: torch.Tensor, axis: Optional[int] = -1)\
+        -> torch.Tensor:
     return torch.softmax(x, axis)
 
 

@@ -145,14 +145,15 @@ def ones(shape: Union[int, Tuple[int], List[int]],
 
 
 def full_like(x: Union[ivy.Array, ivy.NativeArray],
-              fill_value: Union[int, float], *,
+              fill_value: Union[int, float],
               dtype: Optional[Union[ivy.Dtype, str]] = None,
-              device: Optional[Union[ivy.Device, str]] = None,
-              ) -> ivy.Array:
+              device: Optional[Union[ivy.Device, str]] = None) \
+        -> ivy.Array:
     """
-    Returns a new array filled with fill_value and having the same shape as an input array x.
+    Returns a new array filled with ``fill_value`` and having the same ``shape`` as an input array ``x``.
 
     Parameters
+    ----------
     x
         input array from which to derive the output array shape.
 
@@ -160,18 +161,25 @@ def full_like(x: Union[ivy.Array, ivy.NativeArray],
         Scalar fill value
 
     dtype
-        output array data type.
-    If dtype is None, the output array data type must be inferred from x.
-    Default  None.
+        output array data type. If ``dtype`` is `None`, the output array data type must be inferred from ``x``.
+        Default: ``None``.
 
     device
-        device on which to place the created array.
-    If device is None,the output array device must be inferred from x.
-    Default
-        None.
+        device on which to place the created array. If ``device`` is ``None``, the output array device must be inferred from ``x``.
+        Default: ``None``.
 
     Returns
-    returnan array having the same shape as x and where every element is equal to fill_value.
+    -------
+    ret:
+        an array having the same shape as ``x`` and where every element is equal to ``fill_value``.
+
+    Examples
+    --------
+    >>> x = ivy.array([1, 2, 3, 4, 5, 6])
+    >>> fill_value = 1
+    >>> y = ivy.full_like(x, fill_value)
+    >>> print(y)
+    [1, 1, 1, 1, 1, 1]
     """
     return _cur_framework(x).full_like(x, fill_value, dtype=dtype, device=device)
 
@@ -212,27 +220,38 @@ def ones_like(x: Union[ivy.Array, ivy.NativeArray],
 
 def zeros_like(x: Union[ivy.Array, ivy.NativeArray],
                dtype: Optional[Union[ivy.Dtype, str]] = None,
-               dev: Optional[Union[ivy.Device, str]] = None) \
-        -> Union[ivy.Array, ivy.NativeArray]:
-    """Returns an array of zeros with the same shape and type as x, unless dtype provided which overrides.
+               device: Optional[Union[ivy.Device, str]] = None)\
+        -> ivy.Array:
+    """
+    Returns a new array filled with zeros and having the same ``shape`` as an input array ``x``.
 
     Parameters
     ----------
     x
-        The shape and data-type of x define these same attributes of the returned array.
+         input array from which to derive the output array shape.
+
     dtype
-        The desired data-type for the array in string format, i.e. 'float32' or 'int64'.
-        If not given, then the type of the original array is used.
-    dev
-        device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. Same as x if None.
+        output array data type. If ``dtype`` is ``None``, the output array data type must be inferred from ``x``.
+        Default: ``None``.
+
+    device
+        device on which to place the created array. If ``device`` is ``None``, the output array device must be inferred from ``x``.
+        Default: ``None``.
 
     Returns
     -------
-     ret
-        Tensor of zeros with the same shape and type as a, unless dtype provided which overrides.
+    ret
+        an array having the same shape as ``x`` and filled with ``zeros``.
 
+    Examples
+    --------
+    >>> x = ivy.array([[0, 1, 2],[3, 4, 5]])
+    >>> y = ivy.zeros_like(x)
+    >>> print(y)
+    [[0, 0, 0],
+       [0, 0, 0]]
     """
-    return _cur_framework(x).zeros_like(x, dtype, dev)
+    return _cur_framework(x).zeros_like(x, dtype, device)
 
 
 def tril(x: Union[ivy.Array, ivy.NativeArray],
@@ -420,33 +439,13 @@ def meshgrid(*arrays: Union[ivy.Array, ivy.NativeArray], indexing: Optional[str]
     return _cur_framework().meshgrid(*arrays, indexing=indexing)
 
 
-def zeros_like(x: Union[ivy.Array, ivy.NativeArray], dtype: ivy.Dtype = None, dev: ivy.Device = None,
-               ) -> Union[ivy.Array, ivy.NativeArray]:
-    """Returns an array of zeros with the same shape and type as x, unless dtype provided which overrides.
-
-    Parameters
-    ----------
-    x
-        The shape and data-type of x define these same attributes of the returned array.
-    dtype
-        The desired data-type for the array in string format, i.e. 'float32' or 'int64'.
-        If not given, then the type of the original array is used.
-    dev
-        device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. Same as x if None.
-
-    Returns
-     -------
-    ret
-        Tensor of zeros with the same shape and type as a, unless dtype provided which overrides.
-
+def full(shape: Union[int, Tuple[int, ...]],
+         fill_value: Union[int, float],
+         dtype: Optional[ivy.Dtype] = None,
+         device: Optional[ivy.Device] = None) \
+        -> ivy.Array:
     """
-    return _cur_framework(x).zeros_like(x, dtype, dev)
-
-
-# noinspection PyShadowingNames
-def full(shape: Union[int, Tuple[int]], fill_value: Union[int, float], dtype: Optional[ivy.Dtype] = None,
-         device: Optional[ivy.Device] = None):
-    """Returns a new array having a specified shape and filled with fill_value.
+    Returns a new array having a specified ``shape`` and filled with ``fill_value``.
 
     Parameters
     ----------
@@ -455,13 +454,23 @@ def full(shape: Union[int, Tuple[int]], fill_value: Union[int, float], dtype: Op
     fill_value
         fill value.
     dtype
-        output array data type.
+        output array data type. If ``dtype`` is `None`, the output array data type must be inferred from ``fill_value``. If the fill value is an ``int``, the output array data type must be the default integer data type. If the fill value is a ``float``, the output array data type must be the default floating-point data type. If the fill value is a ``bool``, the output array must have boolean data type. Default: ``None``.
     device
-        device on which to place the created array. Default: None.
+        device on which to place the created array. Default: ``None``.
 
     Returns
     -------
+    ret
+        an array where every element is equal to `fill_value`.
 
+    Examples
+    --------
+    >>> shape = (2,2)
+    >>> fill_value = 10
+    >>> y = ivy.full(shape, fill_value)
+    >>> print(y)
+    [[10, 10],
+     [10, 10]]
     """
     return _cur_framework().full(shape, fill_value, dtype, device)
 
