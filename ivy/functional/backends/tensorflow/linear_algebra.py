@@ -199,10 +199,21 @@ def trace(x: tf.Tensor,
     return tf.trace(x, offset)
 
 
+<<<<<<< Updated upstream
 def det(x:tf.Tensor,
         name:Optional[str]=None) \
     -> tf.Tensor:
     return tf.linalg.det(x,name)
+=======
+def det(x: Tensor,
+        out: Optional[Tensor] = None) \
+    -> Tensor:
+    ret = tf.linalg.det(x)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
+
+>>>>>>> Stashed changes
 
 def cholesky(x: tf.Tensor,
             upper: bool = False) -> tf.Tensor:

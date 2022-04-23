@@ -138,9 +138,17 @@ def trace(x: torch.Tensor,
     return torch.trace(x, offset)
 
 
+<<<<<<< Updated upstream
 def det(A:torch.Tensor) \
     -> torch.Tensor:
     return torch.linalg.det(A)
+=======
+def det(x: torch.Tensor,
+        out: Optional[torch.Tensor] = None) \
+    -> torch.Tensor:
+    return torch.linalg.det(x, out=out)
+
+>>>>>>> Stashed changes
 
 def cholesky(x: torch.Tensor,
             upper: bool = False) -> torch.Tensor:

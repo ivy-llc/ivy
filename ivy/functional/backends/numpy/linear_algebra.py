@@ -121,9 +121,30 @@ def trace(x: np.ndarray,
     return np.trace(x, offset)
 
 
+<<<<<<< Updated upstream
 def det(x: np.array) \
         -> np.array:
     return np.linalg.det(x)
+=======
+def vecdot(x1: np.ndarray, 
+           x2: np.ndarray,
+           axis: int = -1,
+           out: Optional[np.ndarray] = None)\
+        -> np.ndarray:
+    ret =  np.tensordot(x1, x2, axes=(axis, axis))
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
+
+
+def det(x: np.ndarray,
+        out: Optional[np.ndarray] = None) \
+        -> np.ndarray:
+    ret =  np.linalg.det(x)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
+>>>>>>> Stashed changes
 
 
 def cholesky(x: np.ndarray,

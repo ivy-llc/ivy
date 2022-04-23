@@ -120,9 +120,20 @@ def trace(x: JaxArray,
     return jax.numpy.trace(x, offset)
 
 
+<<<<<<< Updated upstream
 def det(x:jnp.array) \
     -> jnp.array:
     return jnp.linalg.det(x)
+=======
+def det(x: JaxArray,
+        out: Optional[JaxArray] = None) \
+    -> JaxArray:
+    ret = jnp.linalg.det(x)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
+
+>>>>>>> Stashed changes
 
 def cholesky(x: JaxArray, 
              upper: bool = False) -> JaxArray:
