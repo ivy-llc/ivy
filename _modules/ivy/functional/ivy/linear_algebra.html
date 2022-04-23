@@ -740,29 +740,37 @@
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="matrix_rank"><a class="viewcode-back" href="../../../../functional/ivy/linear_algebra/matrix_rank.html#ivy.functional.ivy.linear_algebra.matrix_rank">[docs]</a><span class="k">def</span> <span class="nf">matrix_rank</span><span class="p">(</span><span class="n">vector</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+<div class="viewcode-block" id="matrix_rank"><a class="viewcode-back" href="../../../../functional/ivy/linear_algebra/matrix_rank.html#ivy.functional.ivy.linear_algebra.matrix_rank">[docs]</a><span class="k">def</span> <span class="nf">matrix_rank</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
                 <span class="n">rtol</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> \
         <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns the rank (i.e., number of non-zero singular values) of a matrix (or a stack of matrices).</span>
 
-<span class="sd">    Parameters:</span>
-<span class="sd">    x:</span>
-<span class="sd">    (array) – input array having shape (..., M, N) and whose innermost two dimensions form MxN matrices. Should have a floating-point data type.</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x</span>
+<span class="sd">        input array having shape ``(..., M, N)`` and whose innermost two dimensions form ``MxN`` matrices. Should have a floating-point data type.</span>
 
-<span class="sd">    rtol:</span>
-<span class="sd">    (Optional[Union[float, array]]) – relative tolerance for small singular values.</span>
-<span class="sd">    Singular values approximately less than or equal to rtol * largest_singular_value are set to zero.</span>
-<span class="sd">    If a float, the value is equivalent to a zero-dimensional array having a floating-point data type determined by Type Promotion Rules (as applied to x) and must be broadcast against each matrix.</span>
-<span class="sd">    If an array, must have a floating-point data type and must be compatible with shape(x)[:-2] .</span>
-<span class="sd">    If None, the default value is max(M, N) * eps, where eps must be the machine epsilon associated with the floating-point data type determined by Type Promotion Rules (as applied to x). Default: None.</span>
+<span class="sd">    rtol</span>
+<span class="sd">        (Optional[Union[float, array]]) – relative tolerance for small singular values.</span>
+<span class="sd">        Singular values approximately less than or equal to ``rtol * largest_singular_value`` are set to zero.</span>
+<span class="sd">        If a ``float``, the value is equivalent to a zero-dimensional array having a floating-point data type determined by :ref:`type-promotion` (as applied to ``x``) and must be broadcast against each matrix.</span>
+<span class="sd">        If an ``array``, must have a floating-point data type and must be compatible with ``shape(x)[:-2]`` (see :ref:`broadcasting`).</span>
+<span class="sd">        If ``None``, the default value is ``max(M, N) * eps``, where ``eps`` must be the machine epsilon associated with the floating-point data type determined by :ref:`type-promotion` (as applied to ``x``). Default: ``None``.</span>
 
-<span class="sd">    Returns:</span>
-<span class="sd">    out:</span>
-<span class="sd">    (array) – an array containing the ranks.</span>
-
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        an array containing the ranks. The returned array must have a floating-point data type determined by :ref:`type-promotion` and must have shape ``(...)`` (i.e., must have a shape equal to ``shape(x)[:-2]``).</span>
+<span class="sd">    </span>
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[1., 2.], [3., 4.]])</span>
+<span class="sd">    &gt;&gt;&gt; ivy.matrix_rank(x)</span>
+<span class="sd">    2</span>
+<span class="sd">    </span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">vector</span><span class="p">)</span><span class="o">.</span><span class="n">matrix_rank</span><span class="p">(</span><span class="n">vector</span><span class="p">,</span> <span class="n">rtol</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">matrix_rank</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">rtol</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="cross"><a class="viewcode-back" href="../../../../functional/ivy/linear_algebra/cross.html#ivy.functional.ivy.linear_algebra.cross">[docs]</a><span class="k">def</span> <span class="nf">cross</span><span class="p">(</span><span class="n">x1</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
