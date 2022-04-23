@@ -32,12 +32,13 @@ def gelu(x, approximate=True):
     return _mx.nd.LeakyReLU(x, act_type='gelu')
 
 
+def sigmoid(x):
+    return _mx.nd.sigmoid(x)
+
+
 def tanh(x: _mx.nd.NDArray)\
         -> _mx.nd.NDArray: 
     return _mx.nd.tanh(x)
-
-
-sigmoid = _mx.nd.sigmoid
 
 
 def softmax(x: _mx.nd.NDArray, axis: Optional[int] = -1)\
