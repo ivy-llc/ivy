@@ -27,7 +27,13 @@ def conv1d_transpose(*_):
     raise Exception('Convolutions not yet implemented for numpy library')
 
 
-def conv2d(x, filters, strides, padding, data_format='NHWC', dilations=1):
+def conv2d(x: np.ndarray,
+           filters: np.ndarray,
+           strides: int,
+           padding: str,
+           data_format: str = 'NHWC',
+           dilations: int = 1)\
+           -> np.ndarray:
     filter_shape = filters.shape[0:2]
     filter_shape = list(filter_shape)
     if data_format == 'NCHW':

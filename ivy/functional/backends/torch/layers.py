@@ -51,7 +51,13 @@ def conv1d_transpose(x, filters, strides: int, padding: str, output_shape: Optio
 
 
 # noinspection PyUnresolvedReferences
-def conv2d(x, filters, strides: int, padding: str, data_format: str = 'NHWC', dilations: int = 1):
+def conv2d(x: torch.Tensor,
+           filters: torch.Tensor,
+           strides: int,
+           padding: str,
+           data_format: str = 'NHWC',
+           dilations: int = 1)\
+           -> torch.Tensor:
     filter_shape = list(filters.shape[0:2])
     filters = filters.permute(3, 2, 0, 1)
     if data_format == 'NHWC':
