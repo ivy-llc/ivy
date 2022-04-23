@@ -229,13 +229,13 @@ def cross (x1: np.ndarray,
     return ret
 
 
-def matrix_rank(vector: np.ndarray,
+def matrix_rank(x: np.ndarray,
                 rtol: Optional[Union[float, Tuple[float]]] = None,
                 out: Optional[np.ndarray] = None) \
         -> np.ndarray:
     if rtol is None:
-        ret =  np.linalg.matrix_rank(vector)
-    ret =  np.linalg.matrix_rank(vector, rtol)
+        ret =  np.linalg.matrix_rank(x)
+    ret =  np.linalg.matrix_rank(x, rtol)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
     return ret
