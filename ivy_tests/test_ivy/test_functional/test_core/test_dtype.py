@@ -16,41 +16,19 @@ import ivy_tests.test_ivy.helpers as helpers
 
 
 # dtype objects
-# def test_dtype_instances(dev, call):
-#     assert ivy.exists(ivy.int8)
-#     assert ivy.exists(ivy.int16)
-#     assert ivy.exists(ivy.int32)
-#     assert ivy.exists(ivy.int64)
-#     assert ivy.exists(ivy.uint8)
-#     assert ivy.exists(ivy.uint16)
-#     assert ivy.exists(ivy.uint32)
-#     assert ivy.exists(ivy.uint64)
-#     assert ivy.exists(ivy.float32)
-#     assert ivy.exists(ivy.float64)
-#     assert ivy.exists(ivy.bool)
-
-
-# cast
-@pytest.mark.parametrize(
-    "object_in", [[1], [True], [[1., 2.]]])
-@pytest.mark.parametrize(
-    "starting_dtype", ['float32', 'int32', 'bool'])
-@pytest.mark.parametrize(
-    "target_dtype", ['float32', 'int32', 'bool'])
-def test_cast(object_in, starting_dtype, target_dtype, dev, call):
-    # smoke test
-    x = ivy.array(object_in, starting_dtype, dev)
-    ret = ivy.cast(x, target_dtype)
-    # type test
-    assert ivy.is_array(ret)
-    # cardinality test
-    assert ret.shape == x.shape
-    # value test
-    assert ivy.dtype(ret, as_str=True) == target_dtype
-    # compilation test
-    if call in [helpers.torch_call]:
-        # pytorch scripting does not support .type() method
-        return
+def test_dtype_instances(dev, call):
+    assert ivy.exists(ivy.int8)
+    assert ivy.exists(ivy.int16)
+    assert ivy.exists(ivy.int32)
+    assert ivy.exists(ivy.int64)
+    assert ivy.exists(ivy.uint8)
+    if ivy.current_framework_str() != 'torch':
+        assert ivy.exists(ivy.uint16)
+        assert ivy.exists(ivy.uint32)
+        assert ivy.exists(ivy.uint64)
+    assert ivy.exists(ivy.float32)
+    assert ivy.exists(ivy.float64)
+    assert ivy.exists(ivy.bool)
 
 
 # is_int_dtype

@@ -2,33 +2,65 @@
 Collection of Ivy activation functions.
 """
 
+from typing import Union, Optional
+
 # local
+import ivy
 from ivy.framework_handler import current_framework as _cur_framework
 
 
 # Extra #
 # ------#
 
-def relu(x):
+def relu(x: Union[ivy.Array, ivy.NativeArray],
+         out: Optional[Union[ivy.Array, ivy.NativeArray]] = None)\
+        -> ivy.Array:
     """
     Applies the rectified linear unit function element-wise.
 
-    :param x: Input array.
-    :type x: array
-    :return: The input array with relu applied element-wise.
+     Parameters
+     ----------
+     x:
+         input array
+    out:
+        optional output array, for writing the result to. It must have a shape that the inputs broadcast to.
+
+    Returns
+    -------
+    out:
+       an array containing the rectified linear unit activation of each element in ``x``.
+
+    Examples:
+    >>> x = ivy.array([-1, 0, 1])
+    >>> y = ivy.relu(x)
+    >>> print(y)
+    [-0.0, 0.0, 1.0]
     """
-    return _cur_framework(x).relu(x)
+    return _cur_framework(x).relu(x, out)
 
 
-def leaky_relu(x, alpha=0.2):
-    """
-    Applies the leaky rectified linear unit function element-wise.
+def leaky_relu(x: Union[ivy.Array, ivy.NativeArray], alpha: Optional[float] = 0.2)\
+        -> ivy.Array:
+    """Applies the leaky rectified linear unit function element-wise.
 
-    :param x: Input array.
-    :type x: array
-    :param alpha: Negative slope for ReLU
-    :type alpha: float
-    :return: The input array with leaky relu applied element-wise.
+    Parameters
+    ----------
+    x : ivy.Array or ivy.NativeArray
+        Input array.
+    alpha : float, default=0.2
+        Negative slope for ReLU.
+
+    Returns
+    -------
+    ivy.Array
+        The input array with leaky relu applied element-wise.
+
+    Examples:
+    >>> x = ivy.array([0.39, -0.85])
+    >>> y = ivy.leaky_relu(x)
+    >>> print(y)
+    [0.39, -0.17]
+
     """
     return _cur_framework(x).leaky_relu(x, alpha)
 
@@ -46,47 +78,104 @@ def gelu(x, approximate=True):
     return _cur_framework(x).gelu(x, approximate)
 
 
-def tanh(x):
+def tanh(x: Union[ivy.Array, ivy.NativeArray])\
+        -> ivy.Array:
     """
-    Applies the tangent hyperbolic function element-wise.
+    Applies the Hyperbolic tangent activation function element-wise.
 
-    :param x: Input array.
-    :type x: array
-    :return: The input array with tanh applied element-wise.
+    Parameters
+     ----------
+    x:
+         input array
+
+    Returns
+    -------
+    ivy.Array
+        The input array with Hyperbolic tangent activation applied element-wise.
+
+    Examples:
+
+    >>> x = ivy.array([0.55 , -0.55])
+    >>> y = ivy.tanh(x)
+    >>> print(y)
+    [0.50, -0.50]
+
     """
     return _cur_framework(x).tanh(x)
 
 
-def sigmoid(x):
+def sigmoid(x: Union[ivy.Array, ivy.NativeArray])\
+        -> ivy.Array:
     """
     Applies the sigmoid function element-wise.
 
-    :param x: Input array.
-    :type x: array
-    :return: The input array with sigmoid applied element-wise.
+    Parameters
+    ----------
+    x
+        input array.
+
+
+    Returns
+    -------
+    ret
+       an array containing the sigmoid activation of each element in ``x``.
+
+    Examples
+    --------
+    >>> x = ivy.array([-1., 1., 2.])
+    >>> y = ivy.sigmoid(x)
+    >>> print(y)
+    [0.268, 0.5, 0.880]
+
     """
     return _cur_framework(x).sigmoid(x)
 
 
-def softmax(x, axis=-1):
+def softmax(x: Union[ivy.Array, ivy.NativeArray], axis: Optional[int] = -1)\
+        -> ivy.Array:
     """
     Applies the softmax function element-wise.
 
-    :param x: Input array.
-    :type x: array
-    :param axis: The dimension softmax would be performed on. The default is -1 which indicates the last dimension.
-    :type axis: int, optional
-    :return: The input array with softmax applied element-wise.
+    Parameters
+    ----------
+    x:
+        Input array.
+    axis:
+        The dimension softmax would be performed on. The default is -1 which indicates the last dimension.
+
+    Returns
+    -------
+    out:
+        The input array with softmax applied element-wise.
+
+    Examples:
+    >>> x = ivy.array([-1.0, 0, 1.0])
+    >>> y = ivy.softmax(x)
+    >>> print(y)
+    [0.09003057, 0.24472847, 0.66524096]
     """
     return _cur_framework(x).softmax(x, axis)
 
 
-def softplus(x):
+def softplus(x: Union[ivy.Array, ivy.NativeArray])\
+        -> ivy.Array:
     """
     Applies the softplus function element-wise.
 
-    :param x: Input array.
-    :type x: array
-    :return: The input array with softplus applied element-wise.
+    Parameters
+    ----------
+    x:
+        input array.
+
+    Returns
+    -------
+    out:
+        an array containing the softplus activation of each element in ``x``.
+
+    Examples:
+    >>> x = ivy.array([-0.3461, -0.6491])
+    >>> y = ivy.softplus(x)
+    >>> print(y)
+    [0.5350, 0.4203]
     """
     return _cur_framework(x).softplus(x)

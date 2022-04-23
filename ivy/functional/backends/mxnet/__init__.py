@@ -25,16 +25,39 @@ float64 = np.float64
 # noinspection PyShadowingBuiltins
 bool = np.bool
 
-all_dtypes = (int8, int32, int64,
-              uint8,
-              float16, float32, float64)
-valid_dtypes = all_dtypes
+valid_dtypes = (int8, int32, int64,
+                uint8,
+                float16, float32, float64,
+                bool)
+valid_numeric_dtypes = (int8, int32, int64,
+                        uint8,
+                        float16, float32, float64)
+valid_int_dtypes = (int8, int32, int64,
+                    uint8)
+valid_float_dtypes = (float16, float32, float64)
 
-all_dtype_strs = ('int8', 'int32', 'int64',
-                  'uint8',
-                  'float16', 'float32', 'float64')
-valid_dtype_strs = all_dtypes
-invalid_dtype_strs = ('int16', 'uint16', 'uint32', 'uint64', 'bfloat16')
+# valid
+valid_dtype_strs = ('int8', 'int32', 'int64',
+                    'uint8',
+                    'float16', 'float32', 'float64',
+                    'bool')
+valid_numeric_dtype_strs = ('int8', 'int32', 'int64',
+                            'uint8',
+                            'float16', 'float32', 'float64')
+valid_int_dtype_strs = ('int8', 'int32', 'int64',
+                        'uint8')
+valid_float_dtype_strs = ('float16', 'float32', 'float64')
+
+# invalid
+invalid_dtype_strs = ('int16',
+                      'uint16', 'uint32', 'uint64',
+                      'bfloat16')
+invalid_numeric_dtype_strs = ('int16',
+                              'uint16', 'uint32', 'uint64',
+                              'bfloat16')
+invalid_int_dtype_strs = ('int16',
+                          'uint16', 'uint32', 'uint64')
+invalid_float_dtype_strs = ('bfloat16',)
 
 
 def closest_valid_dtype(type):
@@ -98,11 +121,11 @@ def _handle_flat_arrays_in_out(fn, include_out=True):
             expanded = True
             return _flat_array_to_1_dim_array(x)
 
-        args_expanded = ivy.nested_map(args, lambda x: expand(x) if ivy.is_array(x) and len(x.shape) == 0 else x)
-        kwargs_expanded = ivy.nested_map(kwargs, lambda x: expand(x) if ivy.is_array(x) and len(x.shape) == 0 else x)
+        args_expanded = ivy.nested_map(args, lambda x: expand(x) if ivy.is_native_array(x) and len(x.shape) == 0 else x)
+        kwargs_expanded = ivy.nested_map(kwargs, lambda x: expand(x) if ivy.is_native_array(x) and len(x.shape) == 0 else x)
         ret = fn(*args_expanded, **kwargs_expanded)
         if expanded and include_out:
-            return ivy.nested_map(ret, lambda x: _1_dim_array_to_flat_array(x) if ivy.is_array(x) else x)
+            return ivy.nested_map(ret, lambda x: _1_dim_array_to_flat_array(x) if ivy.is_native_array(x) else x)
         return ret
     return wrapped_fn
 
@@ -114,8 +137,6 @@ def _handle_output(x, axis, keepdims, ret):
 # local sub-modules
 from . import activations
 from .activations import *
-from . import constants
-from .constants import *
 from . import creation
 from .creation import *
 from . import data_type

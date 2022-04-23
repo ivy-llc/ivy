@@ -2,7 +2,7 @@
 import math
 import numpy as np
 import importlib
-from typing import Union, Tuple
+from typing import Union, Tuple, List
 from numbers import Number
 
 
@@ -19,6 +19,25 @@ Iinfo = None
 
 
 # Dtype Info #
+
+def can_cast(from_: Union[ivy.Dtype, ivy.Array, ivy.NativeArray],
+             to: ivy.Dtype)\
+        -> bool:
+    """
+    Determines if one data type can be cast to another data type according :ref:`type-promotion` rules.
+    Parameters
+    ----------
+    from_: Union[dtype, array]
+        input data type or array from which to cast.
+    to: dtype
+        desired data type.
+    Returns
+    -------
+    out: bool
+        ``True`` if the cast can occur according to :ref:`type-promotion` rules; otherwise, ``False``.
+    """
+    return _cur_framework(from_).can_cast(from_, to)
+
 
 # noinspection PyShadowingBuiltins
 def iinfo(type: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray])\
@@ -88,6 +107,17 @@ def broadcast_to(x: Union[ivy.Array, ivy.NativeArray], shape: Tuple[int,...]) ->
 
     return _cur_framework(x).broadcast_to(x, shape)
 
+def broadcast_arrays(*arrays: Union[ivy.Array, ivy.NativeArray]) -> List[ivy.Array]:
+    """
+
+     Broadcasts one or more arrays against one another.
+
+    :param x:  x (array) – an arbitrary number of to-be broadcasted arrays.
+    :return: out (List[array]) – Each array must have the same shape. Each array must have the same dtype as its corresponding input array.
+    """
+
+    return _cur_framework(arrays[0]).broadcast_arrays(*arrays)
+
 
 def dtype(x: Union[ivy.Array, ivy.NativeArray], as_str: bool = False)\
         -> ivy.Dtype:
@@ -104,23 +134,41 @@ def dtype(x: Union[ivy.Array, ivy.NativeArray], as_str: bool = False)\
 
 
 # noinspection PyShadowingNames
-def cast(x: Union[ivy.Array, ivy.NativeArray], dtype: ivy.Dtype)\
-        -> Union[ivy.Array, ivy.NativeArray]:
+def astype(x: Union[ivy.Array, ivy.NativeArray], dtype: ivy.Dtype, copy: bool = True)\
+         -> ivy.Array:
     """
-    Casts an array to a specified type.
+    Copies an array to a specified data type irrespective of :ref:`type-promotion` rules.
 
-    :param x: Input array containing elements to cast.
-    :type x: array
-    :param dtype: The desired data-type for the array in string format, i.e. 'float32' or 'int64'.
-            If not given, then the type will be determined as the minimum type required to hold the objects in the
-            sequence.
-    :type dtype: data-type string
-    :return: A new array of the same shape as input array a, with data type given by dtype.
+    .. note::
+       Casting floating-point ``NaN`` and ``infinity`` values to integral data types is not specified and is implementation-dependent.
+    .. note::
+       When casting a boolean input array to a numeric data type, a value of ``True`` must cast to a numeric value equal to ``1``, and a value of ``False`` must cast to a numeric value equal to ``0``.
+       When casting a numeric input array to ``bool``, a value of ``0`` must cast to ``False``, and a non-zero value must cast to ``True``.
+
+    Parameters
+    ----------
+    x
+        array to cast.
+    dtype
+        desired data type.
+    copy
+        specifies whether to copy an array when the specified ``dtype`` matches the data type of the input array ``x``. If ``True``, a newly allocated array must always be returned. If ``False`` and the specified ``dtype`` matches the data type of the input array, the input array must be returned; otherwise, a newly allocated must be returned. Default: ``True``.
+
+    Returns
+    -------
+    ret
+        an array having the specified data type. The returned array must have the same shape as ``x``.
+    
+    Examples
+    --------
+    >>> x = ivy.array([1, 2])
+    >>> dtype = ivy.float64
+    >>> y = ivy.astype(x, dtype)
+    >>> print(y)
+    [1., 2.]
+    
     """
-    return _cur_framework(x).cast(x, dtype)
-
-
-astype = cast
+    return _cur_framework(x).astype(x, dtype, copy)
 
 
 # Extra #
@@ -231,7 +279,7 @@ def default_int_dtype(input = None, int_dtype: Union[ivy.Dtype, str] = None, as_
         _assert_int_dtype_correct_formatting(ivy.dtype_to_str(int_dtype))
         return int_dtype
     elif ivy.exists(input):
-        if ivy.is_array(input):
+        if ivy.is_native_array(input):
             ret = ivy.dtype(input)
         elif isinstance(input, np.ndarray):
             ret = input.dtype
@@ -291,7 +339,7 @@ def default_float_dtype(input = None,float_dtype: Union[ivy.Dtype, str] = None, 
         _assert_float_dtype_correct_formatting(ivy.dtype_to_str(float_dtype))
         return float_dtype
     elif ivy.exists(input):
-        if ivy.is_array(input):
+        if ivy.is_native_array(input):
             ret = ivy.dtype(input)
         elif isinstance(input, np.ndarray):
             ret = input.dtype
@@ -424,7 +472,7 @@ def is_int_dtype(dtype_in: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray, Num
     :param dtype_in: Datatype to test
     :return: Whether or not the data type is an integer data type
     """
-    if ivy.is_array(dtype_in):
+    if ivy.is_native_array(dtype_in):
         dtype_in = ivy.dtype(dtype_in)
     elif isinstance(dtype_in, np.ndarray):
         return 'int' in dtype_in.dtype.name
@@ -443,7 +491,7 @@ def is_float_dtype(dtype_in: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray, N
     :param dtype_in: Datatype to test
     :return: Whether or not the data type is a floating point data type
     """
-    if ivy.is_array(dtype_in):
+    if ivy.is_native_array(dtype_in):
         dtype_in = ivy.dtype(dtype_in)
     elif isinstance(dtype_in, np.ndarray):
         return 'float' in dtype_in.dtype.name

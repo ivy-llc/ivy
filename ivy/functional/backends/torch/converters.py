@@ -3,11 +3,12 @@ Converter from PyTorch Modules to Ivy Modules
 """
 
 # global
+import torch
 from collections import OrderedDict
 
 # local
 import ivy
-import torch
+
 
 
 class IvyModule(ivy.Module):

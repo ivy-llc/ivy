@@ -3,9 +3,14 @@ import numpy as np
 from typing import Union, Tuple, Optional, List
 
 # local
-from .general import dtype_from_str, default_dtype
+from .data_type import dtype_from_str
+from ivy.functional.ivy import default_dtype
 # noinspection PyProtectedMember
-from ivy.functional.backends.numpy.general import _to_dev
+from ivy.functional.backends.numpy.device import _to_dev
+
+
+# Array API Standard #
+# -------------------#
 
 
 def asarray(object_in, dtype=None, dev=None, copy=None):
@@ -69,8 +74,8 @@ def ones_like(x : np.ndarray,
 
 
 def zeros_like(x: np.ndarray,
-               dtype: Optional[np.dtype] =None,
-               dev:  Optional[str]  =None)\
+               dtype: Optional[np.dtype] = None,
+               dev:  Optional[str] = None)\
             -> np.ndarray:
     if dtype:
         dtype = 'bool_' if dtype == 'bool' else dtype
@@ -117,6 +122,12 @@ def linspace(start, stop, num, axis=None, dev=None):
         axis = -1
     return _to_dev(np.linspace(start, stop, num, axis=axis), dev)
 
+
+def meshgrid(*arrays: np.ndarray, indexing: str = 'xy')\
+        -> List[np.ndarray]:
+    return np.meshgrid(*arrays, indexing=indexing)
+
+
 def eye(n_rows: int,
         n_cols: Optional[int] = None,
         k: Optional[int] = 0,
@@ -125,6 +136,7 @@ def eye(n_rows: int,
         -> np.ndarray:
     dtype = dtype_from_str(default_dtype(dtype))
     return _to_dev(np.eye(n_rows, n_cols, k, dtype), device)
+
 
 # noinspection PyShadowingNames
 def arange(stop, start=0, step=1, dtype=None, dev=None):
@@ -139,19 +151,22 @@ def arange(stop, start=0, step=1, dtype=None, dev=None):
     return res
 
 
-def full(shape, fill_value, dtype=None, device=None):
+def full(shape: Union[int, Tuple[int, ...]],
+         fill_value: Union[int, float],
+         dtype: Optional[np.dtype] = None,
+         device: Optional[str] = None) \
+        -> np.ndarray:
     return _to_dev(np.full(shape, fill_value, dtype_from_str(default_dtype(dtype, fill_value))), device)
 
 
-meshgrid = lambda *xs, indexing='ij': np.meshgrid(*xs, indexing=indexing)
+def from_dlpack(x):
+    return np.from_dlpack(x)
 
 
 # Extra #
 # ------#
 
-# noinspection PyShadowingNames
-def array(object_in, dtype=None, dev=None):
-    return _to_dev(np.array(object_in, dtype=default_dtype(dtype, object_in)), dev)
+array = asarray
 
 
 def logspace(start, stop, num, base=10., axis=None, dev=None):

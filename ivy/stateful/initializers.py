@@ -14,7 +14,7 @@ class Constant:
         """
         Create internal variables for the layer
         """
-        return ivy.variable(ivy.ones(var_shape, dev=dev) * self._constant)
+        return ivy.variable(ivy.ones(var_shape, device=dev) * self._constant)
 
 
 class Zeros(Constant):

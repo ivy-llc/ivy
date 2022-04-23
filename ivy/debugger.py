@@ -26,7 +26,7 @@ def _wrap_method_for_debugging(fn):
     def _method_wrapped(*args, **kwargs):
 
         def _check_nans(x):
-            if ivy.is_array(x) and ivy.has_nans(x):
+            if ivy.is_native_array(x) and ivy.has_nans(x):
                 if debug_mode_val == 'exception':
                     raise Exception('found nans in {}'.format(x))
                 else:

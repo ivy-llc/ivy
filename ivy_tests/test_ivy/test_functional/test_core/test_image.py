@@ -16,20 +16,20 @@ import ivy_tests.test_ivy.helpers as helpers
 
 
 # stack_images
-# @pytest.mark.parametrize(
-#     "shp_n_num_n_ar_n_newshp", [((1, 2, 3), 4, (2, 1), (2, 4, 3)),
-#                                 ((8, 8, 3), 9, (1, 1), (24, 24, 3)),
-#                                 ((3, 16, 12, 4), 10, (2, 5), (3, 80, 36, 4)),
-#                                 ((5, 20, 9, 5), 10, (5, 2), (5, 40, 72, 5))])
-# def test_stack_images(shp_n_num_n_ar_n_newshp, dev, call):
-#     # smoke test
-#     shape, num, ar, new_shape = shp_n_num_n_ar_n_newshp
-#     xs = [ivy.ones(shape)] * num
-#     ret = ivy.stack_images(xs, ar)
-#     # type test
-#     assert ivy.is_array(ret)
-#     # cardinality test
-#     assert ret.shape == new_shape
+@pytest.mark.parametrize(
+    "shp_n_num_n_ar_n_newshp", [((1, 2, 3), 4, (2, 1), (2, 4, 3)),
+                                ((8, 8, 3), 9, (1, 1), (24, 24, 3)),
+                                ((3, 16, 12, 4), 10, (2, 5), (3, 80, 36, 4)),
+                                ((5, 20, 9, 5), 10, (5, 2), (5, 40, 72, 5))])
+def test_stack_images(shp_n_num_n_ar_n_newshp, dev, call):
+    # smoke test
+    shape, num, ar, new_shape = shp_n_num_n_ar_n_newshp
+    xs = [ivy.ones(shape)] * num
+    ret = ivy.stack_images(xs, ar)
+    # type test
+    assert ivy.is_ivy_array(ret)
+    # cardinality test
+    assert ret.shape == new_shape
 
 
 # bilinear_resample
@@ -48,7 +48,7 @@ def test_bilinear_resample(x_n_warp, dtype, tensor_fn, dev, call):
     warp = tensor_fn(warp, dtype, dev)
     ret = ivy.bilinear_resample(x, warp)
     # type test
-    assert ivy.is_array(ret)
+    assert ivy.is_ivy_array(ret)
     # cardinality test
     assert ret.shape == warp.shape[:-1] + x.shape[-1:]
     # value test
@@ -61,35 +61,35 @@ def test_bilinear_resample(x_n_warp, dtype, tensor_fn, dev, call):
 
 
 # gradient_image
-# @pytest.mark.parametrize(
-#     "x_n_dy_n_dx", [([[[[0.], [1.], [2.]], [[5.], [4.], [3.]], [[6.], [8.], [7.]]]],
-#                      [[[[5.], [3.], [1.]], [[1.], [4.], [4.]], [[0.], [0.], [0.]]]],
-#                      [[[[1.], [1.], [0.]], [[-1.], [-1.], [0.]], [[2.], [-1.], [0.]]]])])
-# @pytest.mark.parametrize(
-#     "dtype", ['float32'])
-# @pytest.mark.parametrize(
-#     "tensor_fn", [ivy.array, helpers.var_fn])
-# def test_gradient_image(x_n_dy_n_dx, dtype, tensor_fn, dev, call):
-#     # smoke test
-#     x, dy_true, dx_true = x_n_dy_n_dx
-#     x = tensor_fn(x, dtype, dev)
-#     dy, dx = ivy.gradient_image(x)
-#     # type test
-#     assert ivy.is_array(dy)
-#     assert ivy.is_array(dx)
-#     # cardinality test
-#     assert dy.shape == x.shape
-#     assert dx.shape == x.shape
-#     # value test
-#     dy_np, dx_np = call(ivy.gradient_image, x)
-#     dy_true = ivy.functional.backends.numpy.array(dy_true, dtype)
-#     dx_true = ivy.functional.backends.numpy.array(dx_true, dtype)
-#     assert np.allclose(dy_np, dy_true)
-#     assert np.allclose(dx_np, dx_true)
-#     # compilation test
-#     if call in [helpers.torch_call]:
-#         # torch device cannot be assigned value of string while scripting
-#         return
+@pytest.mark.parametrize(
+    "x_n_dy_n_dx", [([[[[0.], [1.], [2.]], [[5.], [4.], [3.]], [[6.], [8.], [7.]]]],
+                     [[[[5.], [3.], [1.]], [[1.], [4.], [4.]], [[0.], [0.], [0.]]]],
+                     [[[[1.], [1.], [0.]], [[-1.], [-1.], [0.]], [[2.], [-1.], [0.]]]])])
+@pytest.mark.parametrize(
+    "dtype", ['float32'])
+@pytest.mark.parametrize(
+    "tensor_fn", [ivy.array, helpers.var_fn])
+def test_gradient_image(x_n_dy_n_dx, dtype, tensor_fn, dev, call):
+    # smoke test
+    x, dy_true, dx_true = x_n_dy_n_dx
+    x = tensor_fn(x, dtype, dev)
+    dy, dx = ivy.gradient_image(x)
+    # type test
+    assert ivy.is_ivy_array(dy)
+    assert ivy.is_ivy_array(dx)
+    # cardinality test
+    assert dy.shape == x.shape
+    assert dx.shape == x.shape
+    # value test
+    dy_np, dx_np = call(ivy.gradient_image, x)
+    dy_true = ivy.functional.backends.numpy.array(dy_true, dtype)
+    dx_true = ivy.functional.backends.numpy.array(dx_true, dtype)
+    assert np.allclose(dy_np, dy_true)
+    assert np.allclose(dx_np, dx_true)
+    # compilation test
+    if call in [helpers.torch_call]:
+        # torch device cannot be assigned value of string while scripting
+        return
 
 
 # float_img_to_uint8_img
@@ -108,7 +108,7 @@ def test_float_img_to_uint8_img(fi_tui, tensor_fn, dev, call):
     true_uint8_img = np.array(true_uint8_img)
     uint8_img = ivy.float_img_to_uint8_img(float_img)
     # type test
-    assert ivy.is_array(float_img)
+    assert ivy.is_ivy_array(float_img)
     # cardinality test
     assert uint8_img.shape == true_uint8_img.shape
     # value test
@@ -134,7 +134,7 @@ def test_uint8_img_to_float_img(ui_tfi, dev, call):
     true_float_img = np.array(true_float_img)
     float_img = ivy.uint8_img_to_float_img(uint8_img)
     # type test
-    assert ivy.is_array(float_img)
+    assert ivy.is_ivy_array(float_img)
     # cardinality test
     assert float_img.shape == true_float_img.shape
     # value test
@@ -160,7 +160,7 @@ def test_random_crop(xshp_n_cs, dev, call):
     x = ivy.einops_repeat(ivy.reshape(ivy.arange(x_size), x_shape[1:]), '... -> b ...', b=batch_size)
     cropped = ivy.random_crop(x, crop_size)
     # type test
-    assert ivy.is_array(cropped)
+    assert ivy.is_ivy_array(cropped)
     # cardinality test
     true_shape = [item for item in x_shape]
     true_shape[-3] = crop_size[0]
