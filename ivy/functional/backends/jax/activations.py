@@ -30,7 +30,7 @@ def leaky_relu(x: JaxArray, alpha: Optional[float] = 0.2)\
 gelu = jax.nn.gelu
 
 
-def sigmoid(x):
+def sigmoid(x: JaxArray) -> JaxArray:
     return 1 / (1 + jnp.exp(-x))
 
 
