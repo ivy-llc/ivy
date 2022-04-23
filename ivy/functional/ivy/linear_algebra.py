@@ -453,15 +453,29 @@ def vecdot(x1: Union[ivy.Array, ivy.NativeArray],
     return _cur_framework(x1).vecdot(x1, x2, axis)
 
 
-def det(x: ivy.Array) \
-    -> ivy.Array:
+def det(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
     """
-    Returns the determinant of a square matrix (or a stack of square matrices) x.
+    Returns the determinant of a square matrix (or a stack of square matrices) ``x``.
 
-    :param x:  input array having shape (..., M, M) and whose innermost two dimensions form square matrices. Should
-               have a floating-point data type.
-    :return :  if x is a two-dimensional array, a zero-dimensional array containing the determinant; otherwise, a non-zero
-               dimensional array containing the determinant for each square matrix. The returned array must have the same data type as x.
+    Parameters
+    ----------
+    x
+        input array having shape ``(..., M, M)`` and whose innermost two dimensions form square matrices.
+        Should have a floating-point data type.
+
+    Returns
+    -------
+    ret
+        if ``x`` is a two-dimensional array, a zero-dimensional array containing the determinant; otherwise, a non-zero
+        dimensional array containing the determinant for each square matrix. The returned array must have the same data type as ``x``.
+
+    Examples
+    --------
+    >>> x = ivy.array([ [[1, 2], [3, 4]], [[1, 2], [2, 1]] ])
+    >>> out = ivy.det(x)
+    >>> print(out)
+    [-2., -3.]
+
     """
     return _cur_framework(x).det(x)
 
