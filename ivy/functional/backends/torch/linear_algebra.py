@@ -172,7 +172,7 @@ def trace(x: torch.Tensor,
           offset: int = 0,
           out: Optional[torch.Tensor] = None)\
               -> torch.Tensor:
-    ret = torch.trace(x, offset=offset)
+    ret = torch.trace(x)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
     return ret
