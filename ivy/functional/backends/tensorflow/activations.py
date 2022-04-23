@@ -12,6 +12,7 @@ from tensorflow.python.types.core import Tensor
 import ivy
 
 
+
 def relu(x: Tensor,
          out: Optional[Tensor] = None)\
         -> Tensor:
@@ -21,21 +22,23 @@ def relu(x: Tensor,
     return ret
 
 
-def leaky_relu(x: Tensor, alpha: Optional[float] = 0.2)\
+def leaky_relu(x: Tensor, alpha: Optional[float] = 0.2) \
         -> Tensor:
     return tf.nn.leaky_relu(x, alpha)
 
 
 gelu = lambda x, approximate=True: tf.nn.gelu(x, approximate)
 
+
+def sigmoid(x):
+    return tf.nn.sigmoid(x)
+
+
 def tanh(x: Tensor)\
         -> Tensor:
     return tf.nn.tanh(x)
 
-
-sigmoid = tf.nn.sigmoid
-
-
+  
 def softmax(x: Tensor, axis: Optional[int] = -1)\
     -> Tensor:
     return tf.nn.softmax(x, axis)
