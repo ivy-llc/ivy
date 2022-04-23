@@ -1382,7 +1382,7 @@ def test_cache_fn_with_args(dev, call):
 #         x_ = np.array([0., 1., 2.])
 #         for _ in range(2000):
 #             try:
-#                 ivy.reduce_mean(x_)
+#                 ivy.mean(x_)
 #             except TypeError:
 #                 return False
 #         ivy.unset_framework()
@@ -1399,7 +1399,7 @@ def test_cache_fn_with_args(dev, call):
 #     # start local original framework loop
 #     ivy.set_framework(fws)
 #     for _ in range(2000):
-#         ivy.reduce_mean(x)
+#         ivy.mean(x)
 #     ivy.unset_framework()
 #
 #     assert not thread.join()
