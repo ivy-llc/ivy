@@ -471,7 +471,7 @@ def det(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
 
     Examples
     --------
-    >>> x = ivy.array([ [[1, 2], [3, 4]], [[1, 2], [2, 1]] ])
+    >>> x = ivy.array([ [[1., 2.], [3., 4.]], [[1., 2.], [2., 1.]] ])
     >>> out = ivy.det(x)
     >>> print(out)
     [-2., -3.]
