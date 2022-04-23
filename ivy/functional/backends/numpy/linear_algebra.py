@@ -240,6 +240,11 @@ def matrix_rank(vector: np.ndarray,
         return ivy.inplace_update(out, ret)
     return ret
 
+
+# Extra #
+# ------#
+
+
 def vector_to_skew_symmetric_matrix(vector: np.ndarray,
                                     out: Optional[np.ndarray] = None) \
         -> np.ndarray:
