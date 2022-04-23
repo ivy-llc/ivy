@@ -286,7 +286,7 @@ def trace(x: tf.Tensor,
           offset: int = 0,
           out: Optional[Tensor] = None)\
               -> tf.Tensor:
-    ret = tf.trace(x, offset)
+    ret = tf.linalg.trace(x, offset)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
     return ret
