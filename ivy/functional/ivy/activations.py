@@ -108,9 +108,22 @@ def sigmoid(x):
     """
     Applies the sigmoid function element-wise.
 
-    :param x: Input array.
-    :type x: array
-    :return: The input array with sigmoid applied element-wise.
+    Parameters
+    ----------
+    x:
+        input array.
+
+
+    Returns
+    -------
+    out:
+       an array containing the sigmoid activation of each element in ``x``.
+
+    Examples:
+    >>> x = ivy.array([-1., 1., 2.])
+    >>> y = ivy.sigmoid(x)
+    >>> print(y)
+    [0.268, 0.5, 0.880]
     """
     return _cur_framework(x).sigmoid(x)
 
