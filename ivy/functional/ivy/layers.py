@@ -242,19 +242,36 @@ def conv2d(x, filters, strides, padding, data_format='NHWC', dilations=1):
     """
     Computes a 2-D convolution given 4-D input x and filters arrays.
 
-    :param x: Input image *[batch_size,h,w,d_in]*.
-    :type x: array
-    :param filters: Convolution filters *[fh,fw,d_in,d_out]*.
-    :type filters: array
-    :param strides: The stride of the sliding window for each dimension of input.
-    :type strides: int or sequence of ints
-    :param padding: "SAME" or "VALID" indicating the algorithm, or list indicating the per-dimension paddings.
-    :type padding: string or sequence of ints
-    :param data_format: "NHWC" or "NCHW". Defaults to "NHWC".
-    :type data_format: string
-    :param dilations: The dilation factor for each dimension of input.
-    :type dilations: int or sequence of ints
-    :return: The result of the convolution operation.
+    Parameters
+    ----------
+    x:
+        Input image *[batch_size,h,w,d_in]*.
+    
+    filters:
+        Convolution filters *[fh,fw,d_in,d_out]*.
+    
+    strides:
+        The stride of the sliding window for each dimension of input.
+    
+    padding:
+        "SAME" or "VALID" indicating the algorithm, or list indicating the per-dimension paddings.
+
+    data_format:
+        "NHWC" or "NCHW". Defaults to "NHWC".
+    
+    dilations:
+        The dilation factor for each dimension of input.
+    
+    Returns
+    --------
+         The result of the convolution operation.
+    
+    Examples:
+    >>> x = ivy.array([[[[1.], [2.0],[3.]], [[1.], [2.0],[3.]],[[1.], [2.0],[3.]]]]) #NHWC
+    >>> filters = ivy.array([[[[0.]],[[1.]], [[0.]]],[[[0.]],[[1.]], [[0.]]],[[[0.]],[[1.]], [[0.]]]]) #HWIO
+    >>> result = ivy.conv2d(x, filters, (1,), 'SAME', 'NHWC', (1,))
+    >>> print(result)
+    [[[[2.],[4.],[6.]],[[3.],[6.],[9.]],[[2.],[4.],[6.]]]]
     """
     return _cur_framework(x).conv2d(x, filters, strides, padding, data_format, dilations)
 
