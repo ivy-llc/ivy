@@ -178,10 +178,10 @@ def trace(x: torch.Tensor,
     return ret
 
 
-def det(A:torch.Tensor,
+def det(x: torch.Tensor,
         out: Optional[torch.Tensor] = None) \
     -> torch.Tensor:
-    return torch.linalg.det(A, out=out)
+    return torch.linalg.det(x, out=out)
 
 
 def cholesky(x: torch.Tensor,
