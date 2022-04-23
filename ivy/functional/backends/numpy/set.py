@@ -6,6 +6,30 @@ from packaging import version
 
 import ivy
 
+
+def unique_all(x: np.ndarray) \
+        -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
+    UniqueAll = namedtuple(typename='unique_all', field_names=['values', 'indices', 'inverse_indices', 'counts'])
+
+    values, indices, inverse_indices, counts = np.unique(x, return_index=True, return_counts=True,
+                                                         return_inverse=True)
+    nan_count = np.sum(np.isnan(x)).item()
+
+    if (nan_count > 1) & (np.sum(np.isnan(values)).item() == 1):
+        counts[np.where(np.isnan(values))[0]] = 1
+        counts = np.append(counts, np.full(fill_value=1, shape=(nan_count - 1,))).astype('int32')
+
+        values = np.append(values, np.full(fill_value=np.nan, shape=(nan_count - 1,)), axis=0)
+
+        nan_idx = np.where(np.isnan(x.flatten()))[0]
+
+        indices = np.concatenate((indices[:-1], nan_idx), axis=0).astype('int32')
+    else:
+        pass
+
+    return UniqueAll(values.astype(x.dtype), indices, np.reshape(inverse_indices, x.shape).astype('int32'), counts)
+
+
 def unique_inverse(x: np.ndarray) \
         -> Tuple[np.ndarray, np.ndarray]:
     out = namedtuple('unique_inverse', ['values', 'inverse_indices'])

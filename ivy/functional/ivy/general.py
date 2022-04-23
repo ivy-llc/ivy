@@ -81,6 +81,7 @@ def is_ivy_array(x: Any, exclusive: bool = False)\
     """
     return isinstance(x, ivy.Array) and ivy.is_native_array(x.data, exclusive)
 
+
 def is_array(x: Any, exclusive: bool = False)\
         -> bool:
     """
@@ -93,6 +94,19 @@ def is_array(x: Any, exclusive: bool = False)\
     :return: Boolean, whether or not x is an array.
     """
     return ivy.is_ivy_array(x, exclusive) or ivy.is_native_array(x, exclusive)
+
+
+def is_ivy_container(x: Any)\
+        -> bool:
+    """
+    Determines whether the input x is an Ivy Container.
+
+    :param x: The input to check
+    :type x: any
+    :return: Boolean, whether or not x is an ivy container.
+    """
+    return isinstance(x, ivy.Container)
+
 
 # noinspection PyShadowingNames
 def copy_array(x: Union[ivy.Array, ivy.NativeArray])\
@@ -126,11 +140,36 @@ def array_equal(x0: Union[ivy.Array, ivy.NativeArray], x1: Union[ivy.Array, ivy.
     """
     Determines whether two input arrays are equal across all elements.
 
-    :param x0: The first input array to compare.
-    :type x0: array
-    :param x1: The second input array to compare.
-    :type x1: array
-    :return: Boolean, whether or not the input arrays are equal across all elements.
+    Parameters
+    ----------
+    x0:
+        The first input array to compare.
+    x1:
+        The second input array to compare.v
+    dtype: 
+        array data type
+        
+    Returns
+    ----------
+    out:
+        Boolean, whether or not the input arrays are equal across all elements.
+        
+    Examples:
+    >>> x = ivy.array([1,0,1])
+    >>> y = ivy.array([1,0,-1])
+    >>> z = ivy.array_equal(x,y)
+    >>> print(z)
+    False
+    >>> a = ivy.array([1, 2])
+    >>> b = ivy.array([1, 2])
+    >>> c = ivy.array_equal(a,b)
+    >>> print(c)
+    True
+    >>> i = ivy.array([1, 2])
+    >>> j = ivy.array([1, 2, 3])
+    >>> k = ivy.array_equal(i,j)
+    >>> print(k)
+    False
     """
     return _cur_framework(x0).array_equal(x0, x1)
 

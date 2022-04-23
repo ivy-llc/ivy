@@ -4,6 +4,7 @@ Collection of Ivy neural network layers in functional form.
 
 # global
 import numpy as np
+from typing import Union
 
 # local
 import ivy
@@ -175,23 +176,41 @@ def multi_head_attention(x, scale, num_heads, context=None, mask=None, to_q_fn=N
 
 # Convolutions #
 
-def conv1d(x, filters, strides, padding, data_format='NWC', dilations=1):
+def conv1d(x: Union[ivy.Array, ivy.NativeArray],
+           filters: Union[ivy.Array, ivy.NativeArray],
+           strides: int,
+           padding: str,
+           data_format: str = 'NWC',
+           dilations: int = 1)\
+           -> ivy.Array:
     """
     Computes a 1-D convolution given 3-D input x and filters arrays.
+    
+    Parameters
+    ----------
+    x:
+        Input image *[batch_size,w,d_in]*.
+    filters:
+        Convolution filters *[fw,d_in,d_out]*.
+    strides:
+        The stride of the sliding window for each dimension of input.
+    padding:
+        "SAME" or "VALID" indicating the algorithm, or list indicating the per-dimension paddings.
+    data_format:
+        "NWC" or "NCW". Defaults to "NWC".
+    dilations:
+        The dilation factor for each dimension of input.
+        
+    Returns
+    --------
+        The result of the convolution operation.
 
-    :param x: Input image *[batch_size,w,d_in]*.
-    :type x: array
-    :param filters: Convolution filters *[fw,d_in,d_out]*.
-    :type filters: array
-    :param strides: The stride of the sliding window for each dimension of input.
-    :type strides: int or sequence of ints
-    :param padding: "SAME" or "VALID" indicating the algorithm, or list indicating the per-dimension paddings.
-    :type padding: string or sequence of ints
-    :param data_format: "NWC" or "NCW". Defaults to "NWC".
-    :type data_format: string
-    :param dilations: The dilation factor for each dimension of input.
-    :type dilations: int or sequence of ints
-    :return: The result of the convolution operation.
+    Examples:
+    >>> x = ivy.asarray([[[0.], [3.], [0.]]]) #NWC
+    >>> filters = ivy.array([[[0.]], [[1.]], [[0.]]]) #WIO
+    >>> result = ivy.conv1d(x, filters, (1,), 'SAME', 'NWC', (1,))
+    >>> print(result)
+    [[[0. 3. 0.]]]
     """
     return _cur_framework(x).conv1d(x, filters, strides, padding, data_format, dilations)
 

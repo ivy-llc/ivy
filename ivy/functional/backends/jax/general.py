@@ -47,9 +47,11 @@ def _to_array(x):
 def copy_array(x: JaxArray) \
         -> JaxArray:
     return jnp.array(x)
+  
 
-
-array_equal = jnp.array_equal
+def array_equal(x0: JaxArray, x1: JaxArray) \
+        -> bool:
+    return jnp.array_equal(x0,x1)
 
 
 def to_numpy(x: JaxArray) \
@@ -67,6 +69,8 @@ def to_scalar(x: JaxArray) \
 def to_list(x: JaxArray) \
         -> list:
     return _to_array(x).tolist()
+
+  
 shape = lambda x, as_tensor=False: jnp.asarray(jnp.shape(x)) if as_tensor else x.shape
 shape.__name__ = 'shape'
 get_num_dims = lambda x, as_tensor=False: jnp.asarray(len(jnp.shape(x))) if as_tensor else len(x.shape)

@@ -14,6 +14,10 @@ from jax.interpreters.xla import _DeviceArray
 from jax.dlpack import from_dlpack as jax_from_dlpack
 
 
+# Array API Standard #
+# -------------------#
+
+
 def ones(shape: Union[int, Tuple[int], List[int]],
          dtype: Optional[jnp.dtype] = None,
          device: Optional[jaxlib.xla_extension.Device] = None) \
@@ -113,9 +117,6 @@ def asarray(object_in, dtype: Optional[str] = None, dev: Optional[str] = None, c
         return to_dev(jnp.asarray(object_in, dtype=dtype), dev)
 
 
-array = asarray
-
-
 def linspace(start, stop, num, axis=None, dev=None):
     if axis is None:
         axis = -1
@@ -145,7 +146,11 @@ def arange(stop, start=0, step=1, dtype=None, dev=None):
     return to_dev(jnp.arange(start, stop, step=step, dtype=dtype), default_device(dev))
 
 
-def full(shape, fill_value, dtype=None, device=None):
+def full(shape: Union[int, Tuple[int, ...]],
+         fill_value: Union[int, float],
+         dtype: Optional[jnp.dtype] = None,
+         device: Optional[jaxlib.xla_extension.Device] = None) \
+        -> JaxArray:
     return to_dev(jnp.full(shape, fill_value, dtype_from_str(default_dtype(dtype, fill_value))),
                   default_device(device))
 
@@ -156,6 +161,9 @@ def from_dlpack(x):
 
 # Extra #
 # ------#
+
+array = asarray
+
 
 def logspace(start, stop, num, base=10., axis=None, dev=None):
     if axis is None:

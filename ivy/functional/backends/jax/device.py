@@ -28,11 +28,11 @@ def _to_array(x):
 def dev(x, as_str=False):
     if isinstance(x, jax.interpreters.partial_eval.DynamicJaxprTracer):
         return None
-    dv = _to_array(x).device_buffer.device
     try:
+        dv = _to_array(x).device_buffer.device
         dv = dv()
     except:
-        pass
+        dv = jax.devices()[0]
     if as_str:
         return dev_to_str(dv)
     return dv
@@ -85,7 +85,8 @@ def _dev_is_available(base_dev):
         return False
 
 
-gpu_is_available = lambda: _dev_is_available('gpu')
+def gpu_is_available() -> bool:
+    return _dev_is_available('gpu')
 
 
 def num_gpus():
@@ -95,7 +96,8 @@ def num_gpus():
         return 0
 
 
-tpu_is_available = lambda: _dev_is_available('tpu')
+def tpu_is_available() -> bool: 
+    return _dev_is_available('tpu')
 
 
 # noinspection PyMethodMayBeStatic

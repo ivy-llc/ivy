@@ -31,8 +31,11 @@ def copy_array(x: Tensor) \
     return tf.identity(x)
 
 
-array_equal = tf.experimental.numpy.array_equal
+def array_equal(x0: Tensor, x1: Tensor) \
+        -> bool:
+    return tf.experimental.numpy.array_equal(x0, x1)
 
+  
 def to_numpy(x: Tensor) \
         -> _np.ndarray:
     return _np.asarray(tf.convert_to_tensor(x))
@@ -42,6 +45,7 @@ def to_scalar(x: Tensor) \
         -> Number:
     return to_numpy(x).item()
 
+  
 def to_list(x: Tensor) \
         ->list:
     return x.numpy().tolist()

@@ -10,6 +10,10 @@ from ivy.functional.backends.tensorflow import Dtype
 from ivy import dev_from_str, default_device, dtype_from_str, default_dtype, dtype_to_str
 
 
+# Array API Standard #
+# -------------------#
+
+
 def asarray(object_in, dtype=None, dev=None, copy=None):
     dev = default_device(dev)
     with tf.device(dev_from_str(dev)):
@@ -47,9 +51,6 @@ def asarray(object_in, dtype=None, dev=None, copy=None):
                 return tf.cast(tensor, dtype)
 
 
-array = asarray
-
-
 def zeros(shape: Union[int, Tuple[int]],
           dtype: Optional[Dtype] = None,
           device: Optional[str] = None) \
@@ -80,7 +81,7 @@ def full_like(x: Tensor,
         return tf.experimental.numpy.full_like(x, fill_value, dtype=dtype)
 
 
-def ones_like(x : Tensor,
+def ones_like(x: Tensor,
               dtype: Optional[Union[DType, str, None]] = None,
               dev: Optional[str] = None) \
         -> Tensor:
@@ -175,7 +176,11 @@ def arange(stop, start=0, step=1, dtype=None, dev=None):
         return tf.range(start, stop, delta=step, dtype=dtype)
 
 
-def full(shape, fill_value, dtype=None, device=None):
+def full(shape: Union[int, Tuple[int, ...]],
+         fill_value: Union[int, float],
+         dtype: Optional[Dtype] = None,
+         device: Optional[str] = None) \
+        -> Tensor:
     with tf.device(dev_from_str(default_device(device))):
         return tf.fill(shape, tf.constant(fill_value, dtype=dtype_from_str(default_dtype(dtype, fill_value))))
 
@@ -186,6 +191,9 @@ def from_dlpack(x):
 
 # Extra #
 # ------#
+
+array = asarray
+
 
 def logspace(start, stop, num, base=10., axis=None, dev=None):
     power_seq = linspace(start, stop, num, axis, default_device(dev))

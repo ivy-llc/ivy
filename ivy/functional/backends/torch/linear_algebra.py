@@ -41,11 +41,11 @@ def matrix_transpose(x: torch.Tensor,
     return ret
 
 
-def matrix_rank(vector: torch.Tensor,
+def matrix_rank(x: torch.Tensor,
                 rtol: Optional[Union[float, Tuple[float]]] = None,
                 out: Optional[torch.Tensor] = None) \
         -> torch.Tensor:
-    return torch.linalg.matrix_rank(vector, rtol, out=out)
+    return torch.linalg.matrix_rank(x, rtol, out=out)
 
 
 def vector_norm(x: torch.Tensor,
@@ -126,7 +126,6 @@ def qr(x: torch.Tensor,
     return ret
 
 
-
 def matmul(x1: torch.Tensor,
            x2: torch.Tensor,
            out: Optional[torch.Tensor] = None) -> torch.Tensor:
@@ -136,9 +135,9 @@ def matmul(x1: torch.Tensor,
     return torch.matmul(x1, x2, out=out).type(dtype_from)
 
 
-def slogdet(x:Union[ivy.Array,ivy.NativeArray],
+def slogdet(x: Union[ivy.Array, ivy.NativeArray],
             out: Optional[torch.Tensor] = None)\
-        -> Union[ivy.Array, Tuple[ivy.Array,...]]:
+        -> Union[ivy.Array, Tuple[ivy.Array, ...]]:
     results = namedtuple("slogdet", "sign logabsdet")
     sign, logabsdet = torch.linalg.slogdet(x)
     res = results(sign, logabsdet)
@@ -173,16 +172,16 @@ def trace(x: torch.Tensor,
           offset: int = 0,
           out: Optional[torch.Tensor] = None)\
               -> torch.Tensor:
-    ret = torch.trace(x, offset=offset)
+    ret = torch.trace(x)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
     return ret
 
 
-def det(A:torch.Tensor,
+def det(x: torch.Tensor,
         out: Optional[torch.Tensor] = None) \
     -> torch.Tensor:
-    return torch.linalg.det(A, out=out)
+    return torch.linalg.det(x, out=out)
 
 
 def cholesky(x: torch.Tensor,
