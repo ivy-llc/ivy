@@ -50,7 +50,7 @@ def unique_inverse(x: Union[ivy.Array, ivy.NativeArray]) \
     :param x: input array.
     :return: tuple of two arrays (values, inverse_indices)
     """
-    return _cur_framework.unique_inverse(x)
+    return _cur_framework(x).unique_inverse(x)
 
 
 def unique_values(x: Union[ivy.Array, ivy.NativeArray], out: Optional[Union[ivy.Array, ivy.NativeArray]] = None) \
