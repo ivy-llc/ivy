@@ -114,9 +114,23 @@ def copy_array(x: Union[ivy.Array, ivy.NativeArray])\
     """
     Copy an array.
 
-    :param x: The array to copy
-    :type x: array
-    :return: A copy of the input array.
+    Parameters
+    ----------
+    x
+        input array to copy
+
+    Returns
+    -------
+    ret
+       a copy of the input array ``x``.
+
+    Examples
+    --------
+    >>> x = ivy.array([-1, 0, 1])
+    >>> y = ivy.copy_array(x)
+    >>> print(y)
+    ivy.array([-1, 0, 1])
+    
     """
     return _cur_framework(x).copy_array(x)
 

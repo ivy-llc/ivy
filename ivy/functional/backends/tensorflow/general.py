@@ -26,10 +26,12 @@ def is_native_array(x, exclusive=False):
     return False
 
 
-copy_array = tf.identity
+def copy_array(x: Tensor) \
+        -> Tensor:
+    return tf.identity(x)
 
 
-def array_equal (x0: Tensor, x1: Tensor) \
+def array_equal(x0: Tensor, x1: Tensor) \
         -> bool:
     return tf.experimental.numpy.array_equal(x0, x1)
 
