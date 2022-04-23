@@ -274,6 +274,8 @@ def test_conv2d(x_n_filters_n_pad_n_res, dtype, tensor_fn, dev, call):
     assert ret.shape == true_res.shape
     # value test
     assert np.allclose(call(ivy.conv2d, x, filters, 1, padding), ivy.to_numpy(true_res))
+    #doctring test
+    helpers.docstring_examples_run(ivy.conv2d)
 
 
 # conv2d_transpose
