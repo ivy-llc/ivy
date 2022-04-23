@@ -70,13 +70,7 @@ def matrix_transpose(x: Union[ivy.Array, ivy.NativeArray])\
     Returns
     -------
     out: array
-        an array containing the transpose for each matrix and having shape ``(..., N, M)``. The returned array must have the same data type as ``x``
-        
-    Examples:
-    >>> x = ivy.array([1,6,9])
-    >>> y = ivy.bitwise_invert(x)
-    >>> print(y)
-    [ -2,  -7, -10]
+        an array containing the transpose for each matrix and having shape ``(..., N, M)``. The returned array must have the same data type as ``x``.
     """
     return _cur_framework(x).matrix_transpose(x)
 
