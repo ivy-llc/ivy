@@ -179,9 +179,9 @@ def trace(x: JaxArray,
     return jax.numpy.trace(x, offset, out=out)
 
 
-def det(x:jnp.array,
+def det(x: JaxArray,
         out: Optional[JaxArray] = None) \
-    -> jnp.array:
+    -> JaxArray:
     ret = jnp.linalg.det(x)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
