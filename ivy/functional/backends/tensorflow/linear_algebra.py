@@ -327,25 +327,25 @@ def eigvalsh(x: Tensor,
     return ret
 
 
-def matrix_rank(vector: Tensor,
+def matrix_rank(x: Tensor,
                 rtol: Optional[Union[float, Tuple[float]]] = None,
                 out: Optional[Tensor] = None)\
         -> Tensor:
     if rtol is None:
-        ret = tf.linalg.matrix_rank(vector)
-    elif tf.size(vector) == 0:
+        ret = tf.linalg.matrix_rank(x)
+    elif tf.size(x) == 0:
         ret = 0
-    elif tf.size(vector) == 1:
-        ret = tf.math.count_nonzero(vector)
+    elif tf.size(x) == 1:
+        ret = tf.math.count_nonzero(x)
     else:
-        vector = tf.reshape(vector,[-1])
-        vector = tf.expand_dims(vector,0)
-        if hasattr(rtol,'dtype'):
-            if rtol.dtype != vector.dtype:
-                promoted_dtype = tf.experimental.numpy.promote_types(rtol.dtype,vector.dtype)
-                vector = tf.cast(vector,promoted_dtype)
-                rtol = tf.cast(rtol,promoted_dtype)
-        ret = tf.linalg.matrix_rank(vector,rtol)
+        x = tf.reshape(x, [-1])
+        x = tf.expand_dims(x, 0)
+        if hasattr(rtol, 'dtype'):
+            if rtol.dtype != x.dtype:
+                promoted_dtype = tf.experimental.numpy.promote_types(rtol.dtype, x.dtype)
+                x = tf.cast(x, promoted_dtype)
+                rtol = tf.cast(rtol, promoted_dtype)
+        ret = tf.linalg.matrix_rank(x, rtol)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
     return ret
