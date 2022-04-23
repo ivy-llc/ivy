@@ -238,7 +238,13 @@ def conv1d_transpose(x, filters, strides, padding, output_shape=None, data_forma
     return _cur_framework(x).conv1d_transpose(x, filters, strides, padding, output_shape, data_format, dilations)
 
 
-def conv2d(x, filters, strides, padding, data_format='NHWC', dilations=1):
+def conv2d(x: Union[ivy.Array, ivy.NativeArray],
+           filters: Union[ivy.Array, ivy.NativeArray],
+           strides: int,
+           padding: str,
+           data_format: str = 'NHWC',
+           dilations: int = 1)\
+           -> ivy.Array:
     """
     Computes a 2-D convolution given 4-D input x and filters arrays.
 
