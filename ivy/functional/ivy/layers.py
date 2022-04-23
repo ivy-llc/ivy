@@ -407,7 +407,7 @@ def lstm_update(x, init_h, init_c, kernel, recurrent_kernel, bias=None, recurren
         ft = ivy.sigmoid(Wif_xt + Whf_htm1)
         gt = ivy.tanh(Wig_xt + Whg_htm1)
         ot = ivy.sigmoid(Wio_xt + Who_htm1)
-        ct = ft * ctm1 + it * gt
+        ct = ft*ctm1 + it*gt
         ht = ot * ivy.tanh(ct)
 
         hts_list.append(ivy.expand_dims(ht, -2))
