@@ -4,7 +4,7 @@ Collection of Ivy functions for nested objects.
 
 # global
 from builtins import map as _map
-from typing import Callable, Any, Union, List, Dict, Iterable
+from typing import Callable, Any, Union, List, Tuple, Optional, Dict, Iterable
 
 # local
 import ivy
@@ -58,6 +58,17 @@ def set_nest_at_index(nest, index, value):
         nest[index[0]] = value
     else:
         set_nest_at_index(nest[index[0]], index[1:], value)
+
+
+def insert_into_nest_at_index(nest, index, value):
+    if len(index) == 1:
+        idx = index[0]
+        if isinstance(nest, list):
+            nest.insert(idx, value)
+        else:
+            nest[index[0]] = value
+    else:
+        insert_into_nest_at_index(nest[index[0]], index[1:], value)
 
 
 def map_nest_at_index(nest, index, fn):
@@ -117,6 +128,22 @@ def set_nest_at_indices(nest, indices, values):
     [set_nest_at_index(nest, index, value) for index, value in zip(indices, values)]
 
 
+def insert_into_nest_at_indices(nest, indices, values):
+    """
+    Insert a value into the nested item at specified indices with specified values.
+
+    :param nest: The nested object to insert into.
+    :type nest: nested
+    :param indices: A tuple of tuples of indices for the indices at which to insert values.
+    :type indices: tuple of tuples of indices
+    :param values: The new values for inserting.
+    :type values: sequence of any
+    """
+    if not isinstance(values, (list, tuple)):
+        values = [values]*len(indices)
+    [insert_into_nest_at_index(nest, index, value) for index, value in zip(indices, values)]
+
+
 def map_nest_at_indices(nest, indices, fn):
     """
     Map a function to the values of a nested item at the specified indices
@@ -131,8 +158,13 @@ def map_nest_at_indices(nest, indices, fn):
     [map_nest_at_index(nest, index, fn) for index in indices]
 
 
-def nested_indices_where(nest: Iterable, fn: Callable, check_nests: bool = False, _index: List = None,
-                         _base: bool = True) -> Union[Iterable, bool]:
+def nested_indices_where(nest: Iterable,
+                         fn: Callable,
+                         check_nests: bool = False,
+                         to_ignore: Union[type, Tuple[type]] = None,
+                         _index: List = None,
+                         _base: bool = True)\
+        -> Union[Iterable, bool]:
     """
     Checks the leaf nodes of nested x via function fn, and returns all nest indices where the method evaluates as True.
 
@@ -140,6 +172,8 @@ def nested_indices_where(nest: Iterable, fn: Callable, check_nests: bool = False
     :type nest: nest of any
     :param fn: The conditon function, returning True or False.
     :type fn: callable
+    :param to_ignore: A type or sequence of types to ignore when recursing
+    :type to_ignore: type or sequence of types, optional
     :param check_nests: Whether to also check the nests for the condition, not only nest leaves. Default is False.
     :type check_nests: bool, optional
     :param _index: The indices detected so far. None at the beginning. Used internally, do not set manually.
@@ -149,14 +183,17 @@ def nested_indices_where(nest: Iterable, fn: Callable, check_nests: bool = False
     :type _base: bool, do not set
     :return: A set of indices for the nest where the function evaluated as True.
     """
+    to_ignore = ivy.default(to_ignore, ())
     _index = list() if _index is None else _index
-    if isinstance(nest, (tuple, list)):
-        _indices = [nested_indices_where(item, fn, check_nests, _index + [i], False) for i, item in enumerate(nest)]
+    if isinstance(nest, (tuple, list)) and not isinstance(nest, to_ignore):
+        _indices = [nested_indices_where(item, fn, check_nests, to_ignore, _index + [i], False)
+                    for i, item in enumerate(nest)]
         _indices = [idx for idxs in _indices if idxs for idx in idxs]
         if check_nests and fn(nest):
             _indices.append(_index)
-    elif isinstance(nest, dict):
-        _indices = [nested_indices_where(v, fn, check_nests, _index + [k], False) for k, v in nest.items()]
+    elif isinstance(nest, dict) and not isinstance(nest, to_ignore):
+        _indices = [nested_indices_where(v, fn, check_nests, to_ignore, _index + [k], False)
+                    for k, v in nest.items()]
         _indices = [idx for idxs in _indices if idxs for idx in idxs]
         if check_nests and fn(nest):
             _indices.append(_index)
@@ -224,8 +261,15 @@ def map(fn: Callable, constant: Dict[str, Any] = None, unique: Dict[str, Iterabl
     return rets
 
 
-def nested_map(x: Union[Union[ivy.Array, ivy.NativeArray], Iterable], fn: Callable, include_derived: bool = False,
-               to_mutable: bool = False, max_depth: int = None, depth: int = 0)\
+def nested_map(x: Union[Union[ivy.Array, ivy.NativeArray], Iterable],
+               fn: Callable,
+               include_derived: Optional[Union[Dict[type, bool], bool]] = None,
+               to_mutable: bool = False,
+               max_depth: int = None,
+               _depth: int = 0,
+               _tuple_check_fn: Optional[callable] = None,
+               _list_check_fn: Optional[callable] = None,
+               _dict_check_fn: Optional[callable] = None)\
         -> Union[Union[ivy.Array, ivy.NativeArray], Iterable, Dict]:
     """
     Applies a function on x in a nested manner, whereby all dicts, lists and tuples are traversed to their lowest
@@ -241,25 +285,52 @@ def nested_map(x: Union[Union[ivy.Array, ivy.NativeArray], Iterable], fn: Callab
     :type to_mutable: bool, optional
     :param max_depth: The maximum nested depth to reach. Default is 1. Increase this if the nest is deeper.
     :type max_depth: int, optional
-    :param depth: Placeholder for tracking the recursive depth, do not yet this parameter.
-    :type depth: int, used internally
+    :param _depth: Placeholder for tracking the recursive depth, do not set this parameter.
+    :type _depth: int, used internally
+    :param _tuple_check_fn: Placeholder for the tuple check function, do not set this parameter.
+    :type _tuple_check_fn: callable, used internally
+    :param _list_check_fn: Placeholder for the list check function, do not set this parameter.
+    :type _list_check_fn: callable, used internally
+    :param _dict_check_fn: Placeholder for the dict check function, do not set this parameter.
+    :type _dict_check_fn: callable, used internally
     :return: x following the applicable of fn to it's nested leaves, or x itself if x is not nested.
     """
-    if ivy.exists(max_depth) and depth > max_depth:
+    if include_derived is True:
+        include_derived = {tuple: True, list: True, dict: True}
+    elif not include_derived:
+        include_derived = {}
+    for t in (tuple, list, dict):
+        if t not in include_derived:
+            include_derived[t] = False
+    if ivy.exists(max_depth) and _depth > max_depth:
         return x
     class_instance = type(x)
-    check_fn = (lambda x_, t: isinstance(x, t)) if include_derived else (lambda x_, t: type(x) is t)
-    if check_fn(x, tuple):
-        ret_list = [nested_map(i, fn, include_derived, to_mutable, max_depth, depth + 1) for i in x]
+    tuple_check_fn = ivy.default(
+        _tuple_check_fn, (lambda x_, t_: isinstance(x_, t_)) if include_derived[tuple]
+        else (lambda x_, t_: type(x_) is t_))
+    list_check_fn = ivy.default(
+        _list_check_fn, (lambda x_, t_: isinstance(x_, t_)) if include_derived[list]
+        else (lambda x_, t_: type(x_) is t_))
+    dict_check_fn = ivy.default(
+        _dict_check_fn, (lambda x_, t_: isinstance(x_, t_)) if include_derived[dict]
+        else (lambda x_, t_: type(x_) is t_))
+    if tuple_check_fn(x, tuple):
+        ret_list = [nested_map(i, fn, include_derived, to_mutable, max_depth, _depth + 1,
+                               tuple_check_fn, list_check_fn, dict_check_fn) for i in x]
         if to_mutable:
             return ret_list
-        return class_instance(tuple(ret_list))
-    elif check_fn(x, list):
-        return class_instance([nested_map(i, fn, include_derived, to_mutable, max_depth, depth+1) for i in x])
-    elif check_fn(x, dict):
+        elif hasattr(x, '_fields'):
+            # noinspection PyProtectedMember
+            return class_instance(**dict(zip(x._fields, ret_list)))
+        else:
+            return class_instance(ret_list)
+    elif list_check_fn(x, list):
+        return class_instance([nested_map(i, fn, include_derived, to_mutable, max_depth, _depth+1,
+                                          tuple_check_fn, list_check_fn, dict_check_fn) for i in x])
+    elif dict_check_fn(x, dict):
         class_instance = type(x)
-        return class_instance({k: nested_map(v, fn, include_derived, to_mutable, max_depth, depth+1)
-                               for k, v in x.items()})
+        return class_instance({k: nested_map(v, fn, include_derived, to_mutable, max_depth, _depth+1,
+                                             tuple_check_fn, list_check_fn, dict_check_fn) for k, v in x.items()})
     return fn(x)
 
 

@@ -536,7 +536,7 @@ def remainder(x1: Tensor,
               out: Optional[Tensor] = None)\
         -> Tensor:
     x1, x2 = _cast_for_binary_op(x1, x2)
-    ret = tf.experimental.numpy.remainder(x1, x2)
+    ret = tf.math.floormod(x1, x2)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
     return ret

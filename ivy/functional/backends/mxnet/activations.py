@@ -41,8 +41,9 @@ def tanh(x: _mx.nd.NDArray)\
     return _mx.nd.tanh(x)
 
 
-
-softmax = lambda x, axis=-1: _mx.nd.softmax(x, axis=axis)
+def softmax(x: _mx.nd.NDArray, axis: Optional[int] = -1)\
+    -> _mx.nd.NDArray:
+    return _mx.nd.softmax(x, axis = axis)
 
 
 def softplus(x: _mx.nd.NDArray)\

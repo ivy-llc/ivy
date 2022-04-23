@@ -151,13 +151,6 @@ def test_multi_head_attention(x_n_s_n_m_n_c_n_gt, dtype, tensor_fn, dev, call):
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
 def test_conv1d(x_n_filters_n_pad_n_res, dtype, tensor_fn, dev, call):
-    if call in [helpers.tf_call, helpers.tf_graph_call] and 'cpu' in dev:
-        # tf conv1d does not work when CUDA is installed, but array is on CPU
-        pytest.skip()
-    if call in [helpers.np_call, helpers.jnp_call]:
-        # numpy and jax do not yet support conv1d
-        pytest.skip()
-    # smoke test
     x, filters, padding, true_res = x_n_filters_n_pad_n_res
     x = tensor_fn(x, dtype, dev)
     filters = tensor_fn(filters, dtype, dev)
