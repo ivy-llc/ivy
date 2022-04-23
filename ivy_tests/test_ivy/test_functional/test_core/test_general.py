@@ -169,8 +169,6 @@ def test_copy_array(x, dtype, dev, call):
     if call in [helpers.torch_call]:
         # pytorch scripting does not support string devices
         return
-    # docstring test
-    helpers.assert_docstring_examples_run(ivy.copy_array)
 
 
 # array_equal
