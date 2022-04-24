@@ -5,6 +5,7 @@ Collection of PyTorch general functions, wrapped to fit Ivy syntax and signature
 # global
 import os
 import importlib
+
 torch_scatter = None
 import torch
 from typing import Optional
@@ -59,12 +60,15 @@ def clear_mem_on_dev(dev):
 
 
 _callable_dev = dev
-gpu_is_available = torch.cuda.is_available
 num_gpus = torch.cuda.device_count
 
 
+def gpu_is_available() -> bool:
+    return torch.cuda.is_available()
+
+
 # noinspection PyUnresolvedReferences
-def tpu_is_available():
+def tpu_is_available() -> bool:
     if importlib.util.find_spec("torch_xla") is not None:
         return True
     return False

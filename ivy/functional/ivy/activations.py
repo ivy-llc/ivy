@@ -104,26 +104,55 @@ def tanh(x: Union[ivy.Array, ivy.NativeArray])\
     return _cur_framework(x).tanh(x)
 
 
-def sigmoid(x):
+def sigmoid(x: Union[ivy.Array, ivy.NativeArray])\
+        -> ivy.Array:
     """
     Applies the sigmoid function element-wise.
 
-    :param x: Input array.
-    :type x: array
-    :return: The input array with sigmoid applied element-wise.
+    Parameters
+    ----------
+    x
+        input array.
+
+
+    Returns
+    -------
+    ret
+       an array containing the sigmoid activation of each element in ``x``.
+
+    Examples
+    --------
+    >>> x = ivy.array([-1., 1., 2.])
+    >>> y = ivy.sigmoid(x)
+    >>> print(y)
+    [0.268, 0.5, 0.880]
+
     """
     return _cur_framework(x).sigmoid(x)
 
 
-def softmax(x, axis=-1):
+def softmax(x: Union[ivy.Array, ivy.NativeArray], axis: Optional[int] = -1)\
+        -> ivy.Array:
     """
     Applies the softmax function element-wise.
 
-    :param x: Input array.
-    :type x: array
-    :param axis: The dimension softmax would be performed on. The default is -1 which indicates the last dimension.
-    :type axis: int, optional
-    :return: The input array with softmax applied element-wise.
+    Parameters
+    ----------
+    x:
+        Input array.
+    axis:
+        The dimension softmax would be performed on. The default is -1 which indicates the last dimension.
+
+    Returns
+    -------
+    out:
+        The input array with softmax applied element-wise.
+
+    Examples:
+    >>> x = ivy.array([-1.0, 0, 1.0])
+    >>> y = ivy.softmax(x)
+    >>> print(y)
+    [0.09003057, 0.24472847, 0.66524096]
     """
     return _cur_framework(x).softmax(x, axis)
 
