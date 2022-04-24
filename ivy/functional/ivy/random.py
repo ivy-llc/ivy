@@ -16,33 +16,36 @@ import ivy
 
 def random_uniform(low: float = 0.0, 
                    high: float = 1.0,
-                   shape: Optional[Union[ivy.Dtype, str]] = None,
+                   shape: Optional[Union[int, Tuple[int, ...]]] = None,
                    dev: Optional[ivy.Device] = None)\
         -> ivy.array:
     """
+    Draws samples from a uniform distribution. Samples are uniformly distributed over the half-open 
+    interval ``[low, high)`` (includes ``low``, but excludes ``high``). In other words, any value within the given 
+    interval is equally likely to be drawn by uniform.
+    
     Parameters
     -----------
     low
-        Lower boundary of the output interval. All values generated will be greter than or equal to low.
+        Lower boundary of the output interval. All values generated will be greater than or equal to ``low``.
     high
-        Upper boundary of the output intercal. All the values genrated will be lesser than than high..
+        Upper boundary of the output interval. All the values generated will be less than ``high``.
     shape
-        If the given shape is, e.g (m, n, k), then m * n * k samples are drawn.
-        If size is None (Default), a single value is returned.
+        If the given shape is, e.g ``(m, n, k)``, then ``m * n * k`` samples are drawn. If size is ``None`` 
+        (Default), a single value is returned.
     dev
-        device on which to create the array 'cuda 0', 'cuda:1', 'cpu' etc.
+        device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
 
     Returns
     -------
-    ivy.Array
-        Drawn samples from the parameterized uniform distribution
+    ret
+        Drawn samples from the parameterized uniform distribution.
 
     Examples
     --------
-    >>> x = ivy.array([0.0, 2.0])
-    >>> y = ivy.random_uniform(0.0,1.0,None)
+    >>> y = ivy.random_uniform(0.0, 2.0)
     >>> print(y)
-    [1.0]
+    1.2382110357284546
     
     """
     return _cur_framework().random_uniform(low, high, shape, dev)
