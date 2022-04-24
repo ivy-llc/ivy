@@ -3,9 +3,8 @@ Collection of PyTorch random functions, wrapped to fit Ivy syntax and signature.
 """
 
 # global
-
 import torch
-from typing import Optional, List
+from typing import Optional, List, Union, Tuple
 
 # local
 import ivy
@@ -15,13 +14,14 @@ from ivy.functional.ivy.device import default_device
 # Extra #
 # ------#
 
-def random_uniform(low: float = 0.0, high: float = 1.0, shape: Optional[List[int]] = None, dev: ivy.Device = None):
+def random_uniform(low: float = 0.0,
+                   high: float = 1.0,
+                   shape: Optional[Union[int, Tuple[int, ...]]] = None,
+                   dev: Optional[ivy.Device] = None) -> torch.Tensor:
     rand_range = high - low
     if shape is None:
-        true_shape: List[int] = []
-    else:
-        true_shape: List[int] = shape
-    return torch.rand(true_shape, device=default_device(dev)) * rand_range + low
+        shape = []
+    return torch.rand(shape, device=default_device(dev)) * rand_range + low
 
 
 def random_normal(mean: float = 0.0, std: float = 1.0, shape: Optional[List[int]] = None, dev: ivy.Device = None):
