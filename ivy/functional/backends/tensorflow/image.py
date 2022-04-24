@@ -1,16 +1,11 @@
 """
 Collection of TensorFlow image functions, wrapped to fit Ivy syntax and signature.
 """
-from typing import List, Union, Tuple
+
 # global
 import math
 from functools import reduce as _reduce
 from operator import mul as _mul
-
-from tensorflow.python.types.core import Tensor
-
-import ivy
-
 tfa = None
 import tensorflow as tf
 import tensorflow_probability as tfp
@@ -18,7 +13,7 @@ import tensorflow_probability as tfp
 from ivy.functional.backends import tensorflow as _ivy
 
 
-def stack_images(images: List[tf.Tensor], desired_aspect_ratio: Tuple[int, int] = (1, 1)) -> tf.Tensor:
+def stack_images(images, desired_aspect_ratio=(1, 1)):
     num_images = len(images)
     if num_images == 0:
         raise Exception('At least 1 image must be provided')
@@ -27,15 +22,15 @@ def stack_images(images: List[tf.Tensor], desired_aspect_ratio: Tuple[int, int] 
     num_batch_dims = len(batch_shape)
     if num_images == 1:
         return images[0]
-    img_ratio = image_dims[0] / image_dims[1]
-    desired_img_ratio = desired_aspect_ratio[0] / desired_aspect_ratio[1]
-    stack_ratio = img_ratio * desired_img_ratio
-    stack_height = (num_images / stack_ratio) ** 0.5
+    img_ratio = image_dims[0]/image_dims[1]
+    desired_img_ratio = desired_aspect_ratio[0]/desired_aspect_ratio[1]
+    stack_ratio = img_ratio*desired_img_ratio
+    stack_height = (num_images/stack_ratio)**0.5
     stack_height_int = math.ceil(stack_height)
-    stack_width_int = math.ceil(num_images / stack_height)
+    stack_width_int = math.ceil(num_images/stack_height)
     image_rows = list()
     for i in range(stack_width_int):
-        images_to_concat = images[i * stack_height_int:(i + 1) * stack_height_int]
+        images_to_concat = images[i*stack_height_int:(i+1)*stack_height_int]
         images_to_concat += [_ivy.zeros_like(images[0])] * (stack_height_int - len(images_to_concat))
         image_rows.append(_ivy.concat(images_to_concat, num_batch_dims))
     return _ivy.concat(image_rows, num_batch_dims + 1)
@@ -46,12 +41,11 @@ def linear_resample(x, num_samples, axis=-1):
     num_x_dims = len(x_shape)
     axis = axis % num_x_dims
     num_vals = x.shape[axis]
-    x_post_shape = x_shape[axis + 1:]
+    x_post_shape = x_shape[axis+1:]
     xp = tf.range(num_vals, dtype=tf.float32)
-    x_coords = tf.range(num_samples, dtype=tf.float32) * ((num_vals - 1) / (num_samples - 1))
+    x_coords = tf.range(num_samples, dtype=tf.float32) * ((num_vals-1)/(num_samples-1))
     x_coords = x_coords + xp[0:1]
-    return tfp.math.interp_regular_1d_grid(x_coords, 0, num_vals - 1, x, axis=axis)
-
+    return tfp.math.interp_regular_1d_grid(x_coords, 0, num_vals-1, x, axis=axis)
 
 def bilinear_resample(x, warp):
     batch_shape = _ivy.shape(x)[:-3]
