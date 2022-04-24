@@ -217,13 +217,32 @@ def meshgrid(*arrays: torch.Tensor, indexing='xy')\
 
 
 # noinspection PyShadowingNames
-def arange(stop: Number, start: Number = 0, step: Number = 1, dtype: Optional[str] = None,
-           dev: Optional[str] = None):
-    dev = default_device(dev)
-    if dtype is not None:
-        return torch.arange(start, stop, step=step, dtype=dtype_from_str(dtype), device=dev_from_str(dev))
+def arange(start, stop=None, step=1, dtype=None, dev=None):
+
+    if stop is None:
+        stop = start
+        start = 0
+    if (step > 0 and start > stop) or (step < 0 and start < stop):
+        if isinstance(stop, float):
+            stop = float(start)
+        else:
+            stop = start
+
+    dev = dev_from_str(default_device(dev))
+
+    if dtype is None:
+        if isinstance(start, int) and isinstance(stop, int) and isinstance(step, int):
+            return torch.arange(start, stop, step=step, dtype=torch.int64, device=dev).to(torch.int32)
+        else:
+            return torch.arange(start, stop, step=step, device=dev)
     else:
-        return torch.arange(start, stop, step=step, device=dev_from_str(dev))
+        dtype = dtype_from_str(default_dtype(dtype))
+        if dtype in [torch.int8, torch.uint8, torch.int16]:
+            return torch.arange(start, stop, step=step, dtype=torch.int64, device=dev).to(dtype)
+        else:
+            return torch.range(start, stop, step=step, dtype=dtype, device=dev)
+
+
 
 
 def full(shape: Union[int, Tuple[int, ...]],
