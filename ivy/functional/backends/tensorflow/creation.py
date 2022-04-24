@@ -169,11 +169,31 @@ def eye(n_rows: int,
 
 
 # noinspection PyShadowingNames
-def arange(stop, start=0, step=1, dtype=None, dev=None):
-    dtype = tf.__dict__[dtype] if dtype else dtype
-    dev = default_device(dev)
-    with tf.device(dev_from_str(dev)):
-        return tf.range(start, stop, delta=step, dtype=dtype)
+def arange(start, stop=None, step=1, dtype=None, dev=None):
+
+    if stop is None:
+        stop = start
+        start = 0
+    if (step > 0 and start > stop) or (step < 0 and start < stop):
+        if isinstance(stop, float):
+            stop = float(start)
+        else:
+            stop = start
+
+    dev = dev_from_str(default_device(dev))
+    with tf.device(dev):
+
+        if dtype is None:
+            if isinstance(start, int) and isinstance(stop, int) and isinstance(step, int):
+                return tf.cast(tf.range(start, stop, delta=step, dtype=tf.int64), tf.int32)
+            else:
+                return tf.range(start, stop, delta=step)
+        else:
+            dtype = dtype_from_str(default_dtype(dtype))
+            if dtype in [tf.int8, tf.uint8, tf.int16, tf.uint16, tf.uint32, tf.uint64]:
+                return tf.cast(tf.range(start, stop, delta=step, dtype=tf.int64), dtype)
+            else:
+                return tf.range(start, stop, delta=step, dtype=dtype)
 
 
 def full(shape: Union[int, Tuple[int, ...]],
