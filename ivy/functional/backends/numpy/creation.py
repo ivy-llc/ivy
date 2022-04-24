@@ -9,6 +9,10 @@ from ivy.functional.ivy import default_dtype
 from ivy.functional.backends.numpy.device import _to_dev
 
 
+# Array API Standard #
+# -------------------#
+
+
 def asarray(object_in, dtype=None, dev=None, copy=None):
     # If copy=none then try using existing memory buffer
     if isinstance(object_in, np.ndarray) and dtype is None:
@@ -26,9 +30,6 @@ def asarray(object_in, dtype=None, dev=None, copy=None):
         return _to_dev(np.copy(np.asarray(object_in, dtype=dtype)), dev)
     else:
         return _to_dev(np.asarray(object_in, dtype=dtype), dev)
-
-
-array = asarray
 
 
 def zeros(shape: Union[int, Tuple[int], List[int]],
@@ -73,8 +74,8 @@ def ones_like(x : np.ndarray,
 
 
 def zeros_like(x: np.ndarray,
-               dtype: Optional[np.dtype] =None,
-               dev:  Optional[str]  =None)\
+               dtype: Optional[np.dtype] = None,
+               dev:  Optional[str] = None)\
             -> np.ndarray:
     if dtype:
         dtype = 'bool_' if dtype == 'bool' else dtype
@@ -138,7 +139,7 @@ def eye(n_rows: int,
 
 
 # noinspection PyShadowingNames
-def arange(stop, start=0, step=1, dtype=None, dev=None):
+def arange(start, stop=None, step=1, dtype=None, dev=None):
     if dtype:
         dtype = dtype_from_str(dtype)
     res = _to_dev(np.arange(start, stop, step=step, dtype=dtype), dev)
@@ -150,7 +151,11 @@ def arange(stop, start=0, step=1, dtype=None, dev=None):
     return res
 
 
-def full(shape, fill_value, dtype=None, device=None):
+def full(shape: Union[int, Tuple[int, ...]],
+         fill_value: Union[int, float],
+         dtype: Optional[np.dtype] = None,
+         device: Optional[str] = None) \
+        -> np.ndarray:
     return _to_dev(np.full(shape, fill_value, dtype_from_str(default_dtype(dtype, fill_value))), device)
 
 
@@ -160,6 +165,9 @@ def from_dlpack(x):
 
 # Extra #
 # ------#
+
+array = asarray
+
 
 def logspace(start, stop, num, base=10., axis=None, dev=None):
     if axis is None:

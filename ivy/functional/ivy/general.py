@@ -21,6 +21,7 @@ INF = float('inf')
 TIMEOUT = 15.0
 TMP_DIR = '/tmp'
 
+
 def get_referrers_recursive(item, depth=0, max_depth=None, seen_set=None, local_set=None):
     seen_set = ivy.default(seen_set, set())
     local_set = ivy.default(local_set, set())
@@ -81,15 +82,55 @@ def is_ivy_array(x: Any, exclusive: bool = False)\
     return isinstance(x, ivy.Array) and ivy.is_native_array(x.data, exclusive)
 
 
+def is_array(x: Any, exclusive: bool = False)\
+        -> bool:
+    """
+    Determines whether the input x is either an Ivy Array or a Native Array.
+
+    :param x: The input to check
+    :type x: any
+    :param exclusive: Whether to check if the data type is exclusively an array, rather than a variable or traced array.
+    :type exclusive: bool, optional
+    :return: Boolean, whether or not x is an array.
+    """
+    return ivy.is_ivy_array(x, exclusive) or ivy.is_native_array(x, exclusive)
+
+
+def is_ivy_container(x: Any)\
+        -> bool:
+    """
+    Determines whether the input x is an Ivy Container.
+
+    :param x: The input to check
+    :type x: any
+    :return: Boolean, whether or not x is an ivy container.
+    """
+    return isinstance(x, ivy.Container)
+
+
 # noinspection PyShadowingNames
 def copy_array(x: Union[ivy.Array, ivy.NativeArray])\
         -> Union[ivy.Array, ivy.NativeArray]:
     """
     Copy an array.
 
-    :param x: The array to copy
-    :type x: array
-    :return: A copy of the input array.
+    Parameters
+    ----------
+    x
+        input array to copy
+
+    Returns
+    -------
+    ret
+       a copy of the input array ``x``.
+
+    Examples
+    --------
+    >>> x = ivy.array([-1, 0, 1])
+    >>> y = ivy.copy_array(x)
+    >>> print(y)
+    ivy.array([-1, 0, 1])
+    
     """
     return _cur_framework(x).copy_array(x)
 
@@ -99,11 +140,36 @@ def array_equal(x0: Union[ivy.Array, ivy.NativeArray], x1: Union[ivy.Array, ivy.
     """
     Determines whether two input arrays are equal across all elements.
 
-    :param x0: The first input array to compare.
-    :type x0: array
-    :param x1: The second input array to compare.
-    :type x1: array
-    :return: Boolean, whether or not the input arrays are equal across all elements.
+    Parameters
+    ----------
+    x0:
+        The first input array to compare.
+    x1:
+        The second input array to compare.v
+    dtype: 
+        array data type
+        
+    Returns
+    ----------
+    out:
+        Boolean, whether or not the input arrays are equal across all elements.
+        
+    Examples:
+    >>> x = ivy.array([1,0,1])
+    >>> y = ivy.array([1,0,-1])
+    >>> z = ivy.array_equal(x,y)
+    >>> print(z)
+    False
+    >>> a = ivy.array([1, 2])
+    >>> b = ivy.array([1, 2])
+    >>> c = ivy.array_equal(a,b)
+    >>> print(c)
+    True
+    >>> i = ivy.array([1, 2])
+    >>> j = ivy.array([1, 2, 3])
+    >>> k = ivy.array_equal(i,j)
+    >>> print(k)
+    False
     """
     return _cur_framework(x0).array_equal(x0, x1)
 
@@ -159,42 +225,88 @@ def all_equal(*xs: Iterable[Any], equality_matrix: bool = False)\
     return True
 
 
-def to_numpy(x: Union[ivy.Array, ivy.NativeArray])\
+def to_numpy(x: Union[ivy.Array, ivy.NativeArray]) \
         -> np.ndarray:
     """
-    Converts array into a numpy array.
+    Converts an array into a numpy array.
 
-    :param x: Input array.
-    :type x: array
-    :return: A numpy array.
+     Parameters
+     ----------
+     x:
+         input array
+
+
+    Returns
+    -------
+    out:
+       a numpy array copying all the element of the array ``x``.
+
+    Examples:
+    >>> x = ivy.array([-1, 0, 1])
+    >>> y = ivy.to_numpy(x)
+    >>> print(y)
+    array([-1, 0, 1])
+    >>> print(type(y))
+    <class 'numpy.ndarray'>
     """
     return _cur_framework(x).to_numpy(x)
 
 
-def to_scalar(x: Union[ivy.Array, ivy.NativeArray])\
+def to_scalar(x: Union[ivy.Array, ivy.NativeArray]) \
         -> Number:
     """
     Converts an array with a single element into a scalar.
 
-    :param x: Input array with a single element.
-    :type x: array
-    :return: A scalar.
+     Parameters
+     ----------
+     x:
+         Input array with a single element.
+
+
+    Returns
+    -------
+    out:
+       a scalar copying the element of the array ``x``.
+
+    Examples:
+    >>> x = ivy.array([-1])
+    >>> y = ivy.to_scalar(x)
+    >>> print(y)
+    -1
+    >>> print(ivy.is_int_dtype(y))
+    True
     """
     return _cur_framework(x).to_scalar(x)
 
 
-def to_list(x: Union[ivy.Array, ivy.NativeArray])\
+def to_list(x: Union[ivy.Array, ivy.NativeArray]) \
         -> List:
     """
     Creates a (possibly nested) list from input array.
 
-    :param x: Input array.
-    :type x: array
-    :return: A list representation of the input array.
+     Parameters
+     ----------
+     x:
+         Input array.
+
+
+    Returns
+    -------
+    out:
+       A list representation of the input array ``x``.
+
+    Examples:
+    >>> x = ivy.array([-1, 0, 1])
+    >>> y = ivy.to_list(x)
+    >>> print(y)
+    [-1, 0, 1]
+    >>> print(isinstance(y, list))
+    True
     """
     return _cur_framework(x).to_list(x)
 
-def clip_vector_norm(x: Union[ivy.Array, ivy.NativeArray], max_norm: float, p: float = 2.0, 
+
+def clip_vector_norm(x: Union[ivy.Array, ivy.NativeArray], max_norm: float, p: float = 2.0,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None)\
         -> Union[ivy.Array, ivy.NativeArray]:
     """
@@ -245,7 +357,6 @@ def clip_matrix_norm(x: Union[ivy.Array, ivy.NativeArray], max_norm: float, p: f
     return ratios * x
 
 
-
 def floormod(x: Union[ivy.Array, ivy.NativeArray], y: Union[ivy.Array, ivy.NativeArray], out: Optional[Union[ivy.Array, ivy.NativeArray]] = None)\
         -> Union[ivy.Array, ivy.NativeArray]:
     """
@@ -264,9 +375,7 @@ def floormod(x: Union[ivy.Array, ivy.NativeArray], y: Union[ivy.Array, ivy.Nativ
     return:
         An array of the same shape and type as x, with the elements floor modded.
     """
-    return _cur_framework(x).floormod(x, y,out)
-
-
+    return _cur_framework(x).floormod(x, y, out)
 
 
 def unstack(x: Union[ivy.Array, ivy.NativeArray], axis: int, keepdims: bool = False)\
@@ -313,7 +422,7 @@ def fourier_encode(x: Union[ivy.Array, ivy.NativeArray], max_freq: Union[float, 
         scales = ivy.linspace(1., max_freq / 2, num_bands, dev=dev(x))
     else:
         if ivy.backend == 'torch' and isinstance(max_freq,float):
-            scales = ivy.logspace(0., ivy.log(ivy.array(max_freq / 2)) / math.log(10), num_bands, base=10, dev=dev(x))            
+            scales = ivy.logspace(0., ivy.log(ivy.array(max_freq / 2)) / math.log(10), num_bands, base=10, dev=dev(x))
         else:
             scales = ivy.logspace(0., ivy.log(max_freq / 2) / math.log(10), num_bands, base=10, dev=dev(x))
     scales = ivy.astype(scales, ivy.dtype(x))
@@ -323,12 +432,11 @@ def fourier_encode(x: Union[ivy.Array, ivy.NativeArray], max_freq: Union[float, 
     cos_x = ivy.cos(x)
     if flatten:
         orig_x = x_in
-        sin_x = ivy.reshape(sin_x, [-1, num_bands*dim])
-        cos_x = ivy.reshape(cos_x, [-1, num_bands*dim])
+        sin_x = ivy.reshape(sin_x, [-1, num_bands * dim])
+        cos_x = ivy.reshape(cos_x, [-1, num_bands * dim])
     if concat:
         return ivy.concat([orig_x, sin_x, cos_x], -1)
     return sin_x, cos_x
-
 
 
 def value_is_nan(x: Union[ivy.Array, ivy.NativeArray, Number], include_infs: bool = True)\
@@ -412,6 +520,7 @@ def default(x: Any, default_val: Any, catch_exceptions: bool = False, rev: bool 
     else:
         x = x() if x_callable else x
     return x if exists(x) else default_val() if default_callable else default_val
+
 
 def shape_to_tuple(shape: Union[int, Tuple[int], List[int]]):
     """
@@ -577,8 +686,6 @@ def set_min_denominator(val: float)\
     ivy._MIN_DENOMINATOR = val
 
 
-
-
 def get_min_base()\
         -> float:
     """
@@ -598,6 +705,7 @@ def set_min_base(val: float)\
     """
     ivy._MIN_BASE = val
 
+
 def stable_divide(numerator: Any, denominator: Any, min_denominator: float = None) -> Any:
     """
     Divide the numerator by the denominator, with min denominator added to the denominator for numerical stability.
@@ -612,6 +720,7 @@ def stable_divide(numerator: Any, denominator: Any, min_denominator: float = Non
     """
     # noinspection PyProtectedMember
     return numerator / (denominator + default(min_denominator, ivy._MIN_DENOMINATOR))
+
 
 def stable_pow(base: Any, exponent: Any, min_base: float = None)\
         -> Any:
@@ -692,6 +801,7 @@ def set_tmp_dir(tmp_dr):
     """
     global TMP_DIR
     TMP_DIR = tmp_dr
+
 
 def container_types():
     """
@@ -815,7 +925,7 @@ def cumsum(x: Union[ivy.Array, ivy.NativeArray], axis: int = 0,
 
 
 def cumprod(x: Union[ivy.Array, ivy.NativeArray], axis: int = 0, exclusive: Optional[bool] = False,
-        out: Optional[Union[ivy.Array, ivy.NativeArray]] = None)\
+            out: Optional[Union[ivy.Array, ivy.NativeArray]] = None) \
         -> Union[ivy.Array, ivy.NativeArray]:
     """
     Returns the cumulative product of the elements along a given axis.
@@ -827,13 +937,13 @@ def cumprod(x: Union[ivy.Array, ivy.NativeArray], axis: int = 0, exclusive: Opti
         int , axis along which the cumulative product is computed. By default 0.
     exclusive: 
         optional bool, Whether to perform the cumprod exclusively. Defaults is False.
-    
+
     Returns
     -------
     return: 
         Input array with cumulatively multiplied elements along axis.
     """
-    return _cur_framework(x).cumprod(x, axis, exclusive,out=out)
+    return _cur_framework(x).cumprod(x, axis, exclusive, out=out)
 
 
 # noinspection PyShadowingNames
@@ -929,7 +1039,6 @@ def gather_nd(params: Union[ivy.Array, ivy.NativeArray], indices: Union[ivy.Arra
     :return: New array of given shape, with the values gathered at the indices.
     """
     return _cur_framework(params).gather_nd(params, indices, dev)
-
 
 
 def multiprocessing(context: str = None):

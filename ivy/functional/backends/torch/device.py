@@ -5,6 +5,7 @@ Collection of PyTorch general functions, wrapped to fit Ivy syntax and signature
 # global
 import os
 import importlib
+
 torch_scatter = None
 import torch
 from typing import Optional
@@ -12,6 +13,7 @@ from torch.profiler import ProfilerActivity
 from torch.profiler import profile as _profile
 
 # local
+import ivy
 from ivy.functional.ivy.device import Profiler as BaseProfiler
 
 
@@ -25,10 +27,15 @@ def dev(x, as_str=False):
     return dv
 
 
-def to_dev(x, dev: Optional[str] = None):
+def to_dev(x, dev: Optional[str] = None, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     ret = x.to(dev_from_str(dev))
     if isinstance(x, torch.nn.Parameter):
+        if ivy.exists(out):
+            return ivy.inplace_update(out, torch.nn.Parameter(ret))        
         return torch.nn.Parameter(ret)
+    
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
     return ret
 
 
@@ -53,12 +60,15 @@ def clear_mem_on_dev(dev):
 
 
 _callable_dev = dev
-gpu_is_available = torch.cuda.is_available
 num_gpus = torch.cuda.device_count
 
 
+def gpu_is_available() -> bool:
+    return torch.cuda.is_available()
+
+
 # noinspection PyUnresolvedReferences
-def tpu_is_available():
+def tpu_is_available() -> bool:
     if importlib.util.find_spec("torch_xla") is not None:
         return True
     return False

@@ -5,6 +5,7 @@ Collection of Jax device functions, wrapped to fit Ivy syntax and signature.
 # global
 import os
 import jax
+import ivy
 
 # local
 from ivy.functional.ivy.device import Profiler as BaseProfiler
@@ -27,11 +28,11 @@ def _to_array(x):
 def dev(x, as_str=False):
     if isinstance(x, jax.interpreters.partial_eval.DynamicJaxprTracer):
         return None
-    dv = _to_array(x).device_buffer.device
     try:
+        dv = _to_array(x).device_buffer.device
         dv = dv()
     except:
-        pass
+        dv = jax.devices()[0]
     if as_str:
         return dev_to_str(dv)
     return dv
@@ -40,11 +41,13 @@ def dev(x, as_str=False):
 _callable_dev = dev
 
 
-def to_dev(x, dev=None):
+def to_dev(x, dev=None, out=None):
     if dev is not None:
         cur_dev = dev_to_str(_callable_dev(x))
         if cur_dev != dev:
             x = jax.device_put(x, dev_from_str(dev))
+    if ivy.exists(out):
+        return ivy.inplace_update(out, x)
     return x
 
 
@@ -82,7 +85,8 @@ def _dev_is_available(base_dev):
         return False
 
 
-gpu_is_available = lambda: _dev_is_available('gpu')
+def gpu_is_available() -> bool:
+    return _dev_is_available('gpu')
 
 
 def num_gpus():
@@ -92,7 +96,8 @@ def num_gpus():
         return 0
 
 
-tpu_is_available = lambda: _dev_is_available('tpu')
+def tpu_is_available() -> bool: 
+    return _dev_is_available('tpu')
 
 
 # noinspection PyMethodMayBeStatic

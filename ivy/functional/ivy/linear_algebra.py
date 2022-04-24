@@ -390,27 +390,40 @@ def svdvals(x: Union[ivy.Array, ivy.NativeArray],) \
     return _cur_framework(x).svdvals(x)
 
 
-def trace(x: ivy.Array,
-          offset: int = 0)\
-               -> ivy.Array:
+def trace(x: Union[ivy.Array, ivy.NativeArray], offset: int = 0)\
+        -> ivy.Array:
     """
-    Computes the sum of the diagonal of an array.
+    Returns the sum along the specified diagonals of a matrix (or a stack of matrices) ``x``.
 
     Parameters
     ----------
-    x:
-        This is an array.
+    x
+        input array having shape ``(..., M, N)`` and whose innermost two dimensions form ``MxN`` matrices. Should have a numeric data type.
+    offset
+        offset specifying the off-diagonal relative to the main diagonal.
+        -   ``offset = 0``: the main diagonal.
+        -   ``offset > 0``: off-diagonal above the main diagonal.
+        -   ``offset < 0``: off-diagonal below the main diagonal.
+        
+        Default: ``0``.
 
-    Return
-    ----------
-    Out:
-
-        This function returns two values -
-            sum:
-                The sum of the diagonals along an axis.
-
+     Returns
+     -------
+     ret
+         an array containing the traces and whose shape is determined by removing the last two dimensions and storing the traces in the last array dimension. For example, if ``x`` has rank ``k`` and shape ``(I, J, K, ..., L, M, N)``, then an output array has rank ``k-2`` and shape ``(I, J, K, ..., L)`` where
+         ::
+           out[i, j, k, ..., l] = trace(a[i, j, k, ..., l, :, :])
+         The returned array must have the same data type as ``x``.
+     
+     Examples
+     --------
+     >>> x = ivy.array([[1.0, 2.0],[3.0, 4.0]])
+     >>> offset = 0
+     >>> y = ivy.trace(x, offset)
+     >>> print(y)
+     5.0
+     
     """
-
     return _cur_framework(x).trace(x, offset)
 
 
@@ -440,15 +453,29 @@ def vecdot(x1: Union[ivy.Array, ivy.NativeArray],
     return _cur_framework(x1).vecdot(x1, x2, axis)
 
 
-def det(x: ivy.Array) \
-    -> ivy.Array:
+def det(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
     """
-    Returns the determinant of a square matrix (or a stack of square matrices) x.
+    Returns the determinant of a square matrix (or a stack of square matrices) ``x``.
 
-    :param x:  input array having shape (..., M, M) and whose innermost two dimensions form square matrices. Should
-               have a floating-point data type.
-    :return :  if x is a two-dimensional array, a zero-dimensional array containing the determinant; otherwise, a non-zero
-               dimensional array containing the determinant for each square matrix. The returned array must have the same data type as x.
+    Parameters
+    ----------
+    x
+        input array having shape ``(..., M, M)`` and whose innermost two dimensions form square matrices.
+        Should have a floating-point data type.
+
+    Returns
+    -------
+    ret
+        if ``x`` is a two-dimensional array, a zero-dimensional array containing the determinant; otherwise, a non-zero
+        dimensional array containing the determinant for each square matrix. The returned array must have the same data type as ``x``.
+
+    Examples
+    --------
+    >>> x = ivy.array([ [[1., 2.], [3., 4.]], [[1., 2.], [2., 1.]] ])
+    >>> out = ivy.det(x)
+    >>> print(out)
+    [-2., -3.]
+
     """
     return _cur_framework(x).det(x)
 
@@ -502,29 +529,37 @@ def inv(x: Union[ivy.Array, ivy.NativeArray])\
     return _cur_framework(x).inv(x)
 
 
-def matrix_rank(vector: Union[ivy.Array, ivy.NativeArray],
+def matrix_rank(x: Union[ivy.Array, ivy.NativeArray],
                 rtol: Optional[Union[float, Tuple[float]]] = None) \
         -> Union[ivy.Array, ivy.NativeArray]:
     """
     Returns the rank (i.e., number of non-zero singular values) of a matrix (or a stack of matrices).
 
-    Parameters:
-    x:
-    (array) – input array having shape (..., M, N) and whose innermost two dimensions form MxN matrices. Should have a floating-point data type.
+    Parameters
+    ----------
+    x
+        input array having shape ``(..., M, N)`` and whose innermost two dimensions form ``MxN`` matrices. Should have a floating-point data type.
 
-    rtol:
-    (Optional[Union[float, array]]) – relative tolerance for small singular values.
-    Singular values approximately less than or equal to rtol * largest_singular_value are set to zero.
-    If a float, the value is equivalent to a zero-dimensional array having a floating-point data type determined by Type Promotion Rules (as applied to x) and must be broadcast against each matrix.
-    If an array, must have a floating-point data type and must be compatible with shape(x)[:-2] .
-    If None, the default value is max(M, N) * eps, where eps must be the machine epsilon associated with the floating-point data type determined by Type Promotion Rules (as applied to x). Default: None.
+    rtol
+        (Optional[Union[float, array]]) – relative tolerance for small singular values.
+        Singular values approximately less than or equal to ``rtol * largest_singular_value`` are set to zero.
+        If a ``float``, the value is equivalent to a zero-dimensional array having a floating-point data type determined by :ref:`type-promotion` (as applied to ``x``) and must be broadcast against each matrix.
+        If an ``array``, must have a floating-point data type and must be compatible with ``shape(x)[:-2]`` (see :ref:`broadcasting`).
+        If ``None``, the default value is ``max(M, N) * eps``, where ``eps`` must be the machine epsilon associated with the floating-point data type determined by :ref:`type-promotion` (as applied to ``x``). Default: ``None``.
 
-    Returns:
-    out:
-    (array) – an array containing the ranks.
-
+    Returns
+    -------
+    ret
+        an array containing the ranks. The returned array must have a floating-point data type determined by :ref:`type-promotion` and must have shape ``(...)`` (i.e., must have a shape equal to ``shape(x)[:-2]``).
+    
+    Examples
+    --------
+    >>> x = ivy.array([[1., 2.], [3., 4.]])
+    >>> ivy.matrix_rank(x)
+    2
+    
     """
-    return _cur_framework(vector).matrix_rank(vector, rtol)
+    return _cur_framework(x).matrix_rank(x, rtol)
 
 
 def cross(x1: Union[ivy.Array, ivy.NativeArray],

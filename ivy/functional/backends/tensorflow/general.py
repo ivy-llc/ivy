@@ -11,6 +11,7 @@ import tensorflow as tf
 from numbers import Number
 import multiprocessing as _multiprocessing
 from tensorflow.python.types.core import Tensor
+from numbers import Number
 
 # local
 from ivy.functional.ivy.device import default_device
@@ -25,14 +26,29 @@ def is_native_array(x, exclusive=False):
     return False
 
 
-copy_array = tf.identity
-array_equal = tf.experimental.numpy.array_equal
-to_numpy = lambda x: _np.asarray(tf.convert_to_tensor(x))
-to_numpy.__name__ = 'to_numpy'
-to_scalar = lambda x: to_numpy(x).item()
-to_scalar.__name__ = 'to_scalar'
-to_list = lambda x: x.numpy().tolist()
-to_list.__name__ = 'to_list'
+def copy_array(x: Tensor) \
+        -> Tensor:
+    return tf.identity(x)
+
+
+def array_equal(x0: Tensor, x1: Tensor) \
+        -> bool:
+    return tf.experimental.numpy.array_equal(x0, x1)
+
+  
+def to_numpy(x: Tensor) \
+        -> _np.ndarray:
+    return _np.asarray(tf.convert_to_tensor(x))
+
+
+def to_scalar(x: Tensor) \
+        -> Number:
+    return to_numpy(x).item()
+
+  
+def to_list(x: Tensor) \
+        ->list:
+    return x.numpy().tolist()
 
 
 def floormod(x: tf.Tensor, y: tf.Tensor, out: Optional[tf.Tensor] = None)\

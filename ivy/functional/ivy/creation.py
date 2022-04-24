@@ -1,6 +1,7 @@
 # global
-from typing import Union, Tuple, Optional, List, Iterable
+import numpy as np
 from numbers import Number
+from typing import Union, Tuple, Optional, List, Iterable
 
 # local
 import ivy
@@ -10,7 +11,41 @@ from ivy.framework_handler import current_framework as _cur_framework
 # Array API Standard #
 # -------------------#
 
-def asarray(x: Union[ivy.Array, ivy.NativeArray],
+def arange(start: Number, stop: Number = None, step: Number = 1, dtype: ivy.Dtype = None, dev: ivy.Device = None,
+           ) -> Union[ivy.Array, ivy.NativeArray]:
+    """
+    Returns evenly spaced values within a given interval, with the spacing being specified.
+
+    Values are generated within the half-open interval [start, stop) (in other words, the interval including start but
+    excluding stop). For integer arguments the function is equivalent to the Python built-in range function,
+    but returns an array in the chosen ml_framework rather than a list.
+
+    See :math:`linspace` for a certain number of evenly spaced values in an interval.
+
+    :param stop: End of interval. The interval does not include this value, except in some cases where step is not an
+                integer and floating point round-off affects the length of out.
+    :type stop: number
+    :param start: Start of interval. The interval includes this value. The default start value is 0.
+    :type start: number, optional
+    :param step: Spacing between values. For any output out, this is the distance between two adjacent values,
+                    out[i+1] - out[i]. The default step size is 1. If step is specified as a position argument,
+                    start must also be given.
+    :type step: number, optional
+    :param dtype: The desired data-type for the array in string format, i.e. 'float32' or 'int64'.
+        If not given, then the type will be determined as the minimum type required to hold the objects in the
+        sequence.
+    :type dtype: data-type string, optional
+    :param dev: device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
+    :type dev: ivy.Device
+    :return: Tensor of evenly spaced values.
+
+            For floating point arguments, the length of the result is ceil((stop - start)/step).
+            Because of floating point overflow, this rule may result in the last element of out being greater than stop.
+    """
+    return _cur_framework().arange(start, stop, step, dtype, dev)
+
+
+def asarray(x: Union[ivy.Array, ivy.NativeArray, List[Number], Tuple[Number], np.ndarray],
              dtype: Optional[Union[ivy.Dtype, str]] = None,
              dev: Optional[Union[ivy.Device, str]] = None
             ) -> ivy.Array:
@@ -36,9 +71,6 @@ def asarray(x: Union[ivy.Array, ivy.NativeArray],
     return _cur_framework(x).asarray(x, dtype, dev)
 
 
-array = asarray
-
-
 def zeros(shape: Union[int, Tuple[int], List[int]],
           dtype: Optional[ivy.Dtype] = None,
           device: Optional[ivy.Device] = None)\
@@ -59,7 +91,15 @@ def zeros(shape: Union[int, Tuple[int], List[int]],
     -------
     out:
        an array containing zeros.
-
+       
+    Examples:
+    
+    >>> shape = (3,5)
+    >>> x = ivy.zeros(shape)
+    >>> print(x)
+    [[0., 0., 0., 0., 0.],
+     [0., 0., 0., 0., 0.],
+     [0., 0., 0., 0., 0.]]
     """
     return _cur_framework().zeros(shape, dtype, device)
 
@@ -84,70 +124,127 @@ def ones(shape: Union[int, Tuple[int], List[int]],
     -------
     out:
         an array containing ones.
+
+    Examples:
+
+    >>> shape = (2,2)
+    >>> y = ivy.ones(shape)
+    >>> print(y)
+    [[1.,  1.],
+       [1.,  1.]]
     """
     return _cur_framework().ones(shape, dtype, device)
 
 
 def full_like(x: Union[ivy.Array, ivy.NativeArray],
-              fill_value: Union[int, float], *,
+              fill_value: Union[int, float],
               dtype: Optional[Union[ivy.Dtype, str]] = None,
-              device: Optional[Union[ivy.Device, str]] = None,
-              ) -> ivy.Array:
+              device: Optional[Union[ivy.Device, str]] = None) \
+        -> ivy.Array:
     """
-    Returns a new array filled with fill_value and having the same shape as an input array x.
+    Returns a new array filled with ``fill_value`` and having the same ``shape`` as an input array ``x``.
 
     Parameters
-    x:input array from which to derive the output array shape.
+    ----------
+    x
+        input array from which to derive the output array shape.
 
-    fill_value: Scalar fill value
+    fill_value
+        Scalar fill value
 
-    dtype:output array data type.
-    If dtype is None, the output array data type must be inferred from x.
-    Default: None.
+    dtype
+        output array data type. If ``dtype`` is `None`, the output array data type must be inferred from ``x``.
+        Default: ``None``.
 
-    device:device on which to place the created array.
-    If device is None,the output array device must be inferred from x.
-    Default: None.
+    device
+        device on which to place the created array. If ``device`` is ``None``, the output array device must be inferred from ``x``.
+        Default: ``None``.
 
     Returns
-    out:an array having the same shape as x and where every element is equal to fill_value.
+    -------
+    ret:
+        an array having the same shape as ``x`` and where every element is equal to ``fill_value``.
+
+    Examples
+    --------
+    >>> x = ivy.array([1, 2, 3, 4, 5, 6])
+    >>> fill_value = 1
+    >>> y = ivy.full_like(x, fill_value)
+    >>> print(y)
+    [1, 1, 1, 1, 1, 1]
+    
     """
     return _cur_framework(x).full_like(x, fill_value, dtype=dtype, device=device)
 
-def ones_like( x: Union[ivy.Array, ivy.NativeArray],
+
+def ones_like(x: Union[ivy.Array, ivy.NativeArray],
               dtype: Optional[Union[ivy.Dtype, str]] = None,
-              dev: Optional[Union[ivy.Device, str]] = None,
-              ) -> Union[ivy.Array, ivy.NativeArray]:
+              device: Optional[Union[ivy.Device, str]] = None,) \
+        -> ivy.Array:
     """
     Returns a new array filled with ones and having the same shape as an input array x.
 
-    :param x: Input array from which to derive the output array shape.
-    :param dtype: Output array data type. If dtype is None, the output array data type must be inferred from x.
-    Default: None.
-    :param dev: device on which to place the created array. If device is None, the output array device must be inferred from x.
-    Default: None.
-    :return: An array having the same shape as x and filled with ones.
+    Parameters
+    ----------
+    x:
+        input array from which to derive the output array shape.
+    dtype:
+        output array data type. If ``dtype`` is ``None``, the output array data type must be inferred from x.
+        Default: ``None``.
+    device:
+        device on which to place the created array. If device is ``None``, the output array device must be inferred from x.
+        Default: ``None``.
+
+    Returns
+    -------
+    out:
+        an array having the same shape as x and filled with ones.
+
+    Examples:
+
+    >>> x = ivy.array([[0, 1, 2],[3, 4, 5]])
+    >>> y = ivy.ones_like(x)
+    >>> print(y)
+    [[1, 1, 1],[1, 1, 1]]
     """
-    return _cur_framework(x).ones_like(x, dtype, dev)
+    return _cur_framework(x).ones_like(x, dtype, device)
 
 
 def zeros_like(x: Union[ivy.Array, ivy.NativeArray],
                dtype: Optional[Union[ivy.Dtype, str]] = None,
-               dev: Optional[Union[ivy.Device, str]] = None)\
-        -> Union[ivy.Array, ivy.NativeArray]:
+               device: Optional[Union[ivy.Device, str]] = None)\
+        -> ivy.Array:
     """
-    Returns an array of zeros with the same shape and type as x, unless dtype provided which overrides.
+    Returns a new array filled with zeros and having the same ``shape`` as an input array ``x``.
 
-    :param x: The shape and data-type of x define these same attributes of the returned array.
-    :type x: array
-    :param dtype: The desired data-type for the array in string format, i.e. 'float32' or 'int64'.
-                    If not given, then the type of the original array is used.
-    :type dtype: data-type string, optional
-    :param dev: device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. Same as x if None.
-    :type dev: ivy.Device, optional
-    :return: Tensor of zeros with the same shape and type as a, unless dtype provided which overrides.
+    Parameters
+    ----------
+    x
+         input array from which to derive the output array shape.
+
+    dtype
+        output array data type. If ``dtype`` is ``None``, the output array data type must be inferred from ``x``.
+        Default: ``None``.
+
+    device
+        device on which to place the created array. If ``device`` is ``None``, the output array device must be inferred from ``x``.
+        Default: ``None``.
+
+    Returns
+    -------
+    ret
+        an array having the same shape as ``x`` and filled with ``zeros``.
+
+    Examples
+    --------
+    >>> x = ivy.array([[0, 1, 2],[3, 4, 5]])
+    >>> y = ivy.zeros_like(x)
+    >>> print(y)
+    [[0, 0, 0],
+       [0, 0, 0]]
+       
     """
-    return _cur_framework(x).zeros_like(x, dtype, dev)
+    return _cur_framework(x).zeros_like(x, dtype, device)
 
 
 def tril(x: Union[ivy.Array, ivy.NativeArray],
@@ -296,52 +393,44 @@ def meshgrid(*arrays: Union[ivy.Array, ivy.NativeArray], indexing: Optional[str]
     return _cur_framework().meshgrid(*arrays, indexing=indexing)
 
 
-def zeros_like(x: Union[ivy.Array, ivy.NativeArray], dtype: ivy.Dtype = None, dev: ivy.Device = None,
-               ) -> Union[ivy.Array, ivy.NativeArray]:
+def full(shape: Union[int, Tuple[int, ...]],
+         fill_value: Union[int, float],
+         dtype: Optional[ivy.Dtype] = None,
+         device: Optional[ivy.Device] = None) \
+        -> ivy.Array:
     """
-    Returns an array of zeros with the same shape and type as x, unless dtype provided which overrides.
+    Returns a new array having a specified ``shape`` and filled with ``fill_value``.
 
-    :param x: The shape and data-type of x define these same attributes of the returned array.
-    :type x: array
-    :param dtype: The desired data-type for the array in string format, i.e. 'float32' or 'int64'.
-                    If not given, then the type of the original array is used.
-    :type dtype: data-type string, optional
-    :param dev: device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. Same as x if None.
-    :type dev: ivy.Device, optional
-    :return: Tensor of zeros with the same shape and type as a, unless dtype provided which overrides.
-    """
-    return _cur_framework(x).zeros_like(x, dtype, dev)
+    Parameters
+    ----------
+    shape
+        output array shape.
 
+    fill_value
+        fill value.
 
-# noinspection PyShadowingNames
-def full(shape: Union[int, Tuple[int]], fill_value: Union[int, float], dtype: Optional[ivy.Dtype] = None,
-         device: Optional[ivy.Device] = None):
-    """
-    Returns a new array having a specified shape and filled with fill_value.
+    dtype
+        output array data type. If ``dtype`` is `None`, the output array data type must be inferred from ``fill_value``. If the fill value is an ``int``, the output array data type must be the default integer data type. If the fill value is a ``float``, the output array data type must be the default floating-point data type. If the fill value is a ``bool``, the output array must have boolean data type. Default: ``None``.
+ 
+    device
+        device on which to place the created array. Default: ``None``.
 
-    :param shape: output array shape.
-    :param fill_value: fill value.
-    :param dtype: output array data type.
-    :param device: device on which to place the created array. Default: None.
+    Returns
+    -------
+    ret
+        an array where every element is equal to `fill_value`.
+
+    Examples
+    --------
+    >>> shape = (2,2)
+    >>> fill_value = 10
+    >>> y = ivy.full(shape, fill_value)
+    >>> print(y)
+    [[10, 10],
+       [10, 10]]
+       
     """
     return _cur_framework().full(shape, fill_value, dtype, device)
-
-
-def ones(shape: Iterable[int], dtype: Union[ivy.Dtype, str] = 'float32', dev: ivy.Device = None)\
-        -> Union[ivy.Array, ivy.NativeArray]:
-    """
-    Returns a new array of given shape and type, filled with ones.
-
-    :param shape: Shape of the new array, e.g. (2, 3).
-    :type shape: sequence of ints
-    :param dtype: The desired data-type for the array in string format, i.e. 'float32' or 'int64'.
-    Default is 'float32'.
-    :type dtype: data-type string, optional
-    :param dev: device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc..
-    :type dev: ivy.Device
-    :return: Tensor of ones with the given shape and dtype.
-    """
-    return _cur_framework().ones(shape, dtype, dev)
 
 
 def from_dlpack(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
@@ -369,6 +458,9 @@ def from_dlpack(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
 # Extra #
 # ------#
 
+array = asarray
+
+
 # noinspection PyShadowingNames
 def logspace(start: Union[ivy.Array, ivy.NativeArray, int], stop: Union[ivy.Array, ivy.NativeArray, int],
              num: int, base: float = 10., axis: int = None, dev: ivy.Device = None)\
@@ -393,39 +485,3 @@ def logspace(start: Union[ivy.Array, ivy.NativeArray, int], stop: Union[ivy.Arra
     :return: Tensor of evenly-spaced values.
     """
     return _cur_framework(start).logspace(start, stop, num, base, axis, dev)
-
-
-# noinspection PyShadowingNames
-def arange(stop: Number, start: Number = 0, step: Number = 1, dtype: ivy.Dtype = None, dev: ivy.Device = None,
-           ) -> Union[ivy.Array, ivy.NativeArray]:
-    """
-    Returns evenly spaced values within a given interval, with the spacing being specified.
-
-    Values are generated within the half-open interval [start, stop) (in other words, the interval including start but
-    excluding stop). For integer arguments the function is equivalent to the Python built-in range function,
-    but returns an array in the chosen ml_framework rather than a list.
-
-    See :math:`linspace` for a certain number of evenly spaced values in an interval.
-
-    :param stop: End of interval. The interval does not include this value, except in some cases where step is not an
-                integer and floating point round-off affects the length of out.
-    :type stop: number
-    :param start: Start of interval. The interval includes this value. The default start value is 0.
-    :type start: number, optional
-    :param step: Spacing between values. For any output out, this is the distance between two adjacent values,
-                    out[i+1] - out[i]. The default step size is 1. If step is specified as a position argument,
-                    start must also be given.
-    :type step: number, optional
-    :param dtype: The desired data-type for the array in string format, i.e. 'float32' or 'int64'.
-        If not given, then the type will be determined as the minimum type required to hold the objects in the
-        sequence.
-    :type dtype: data-type string, optional
-    :param dev: device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
-    :type dev: ivy.Device
-    :return: Tensor of evenly spaced values.
-
-            For floating point arguments, the length of the result is ceil((stop - start)/step).
-            Because of floating point overflow, this rule may result in the last element of out being greater than stop.
-    """
-    return _cur_framework().arange(stop, start, step, dtype, dev)
-

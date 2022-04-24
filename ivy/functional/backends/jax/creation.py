@@ -4,7 +4,7 @@ import jax.numpy as jnp
 from typing import Union, Optional, Tuple, List
 
 # local
-from ivy import dtype_from_str
+from ivy import dtype_from_str, dev_from_str
 from ivy.functional.backends.jax import JaxArray
 from ivy.functional.backends.jax.device import to_dev
 from ivy.functional.ivy.device import default_device
@@ -12,6 +12,10 @@ from ivy.functional.ivy import default_dtype
 from jaxlib.xla_extension import Buffer, Device, DeviceArray
 from jax.interpreters.xla import _DeviceArray
 from jax.dlpack import from_dlpack as jax_from_dlpack
+
+
+# Array API Standard #
+# -------------------#
 
 
 def ones(shape: Union[int, Tuple[int], List[int]],
@@ -113,9 +117,6 @@ def asarray(object_in, dtype: Optional[str] = None, dev: Optional[str] = None, c
         return to_dev(jnp.asarray(object_in, dtype=dtype), dev)
 
 
-array = asarray
-
-
 def linspace(start, stop, num, axis=None, dev=None):
     if axis is None:
         axis = -1
@@ -140,12 +141,26 @@ def eye(n_rows: int,
 
 
 # noinspection PyShadowingNames
-def arange(stop, start=0, step=1, dtype=None, dev=None):
-    dtype = dtype_from_str(dtype)
-    return to_dev(jnp.arange(start, stop, step=step, dtype=dtype), default_device(dev))
+def arange(start, stop=None, step=1, dtype=None, dev=None):
+    if dtype:
+        dtype = dtype_from_str(dtype)
+    res = to_dev(jnp.arange(start, stop, step=step, dtype=dtype), dev)
+    if not dtype:
+        if res.dtype == jnp.float64:
+            return res.astype(jnp.float32)
+        elif res.dtype == jnp.int64:
+            return res.astype(jnp.int32)
+    return res
 
 
-def full(shape, fill_value, dtype=None, device=None):
+
+
+
+def full(shape: Union[int, Tuple[int, ...]],
+         fill_value: Union[int, float],
+         dtype: Optional[jnp.dtype] = None,
+         device: Optional[jaxlib.xla_extension.Device] = None) \
+        -> JaxArray:
     return to_dev(jnp.full(shape, fill_value, dtype_from_str(default_dtype(dtype, fill_value))),
                   default_device(device))
 
@@ -156,6 +171,9 @@ def from_dlpack(x):
 
 # Extra #
 # ------#
+
+array = asarray
+
 
 def logspace(start, stop, num, base=10., axis=None, dev=None):
     if axis is None:
