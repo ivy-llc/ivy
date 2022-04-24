@@ -4,7 +4,7 @@ import jax.numpy as jnp
 from typing import Union, Optional, Tuple, List
 
 # local
-from ivy import dtype_from_str
+from ivy import dtype_from_str, dev_from_str
 from ivy.functional.backends.jax import JaxArray
 from ivy.functional.backends.jax.device import to_dev
 from ivy.functional.ivy.device import default_device
@@ -141,9 +141,19 @@ def eye(n_rows: int,
 
 
 # noinspection PyShadowingNames
-def arange(stop, start=0, step=1, dtype=None, dev=None):
-    dtype = dtype_from_str(dtype)
-    return to_dev(jnp.arange(start, stop, step=step, dtype=dtype), default_device(dev))
+def arange(start, stop=None, step=1, dtype=None, dev=None):
+    if dtype:
+        dtype = dtype_from_str(dtype)
+    res = to_dev(jnp.arange(start, stop, step=step, dtype=dtype), dev)
+    if not dtype:
+        if res.dtype == jnp.float64:
+            return res.astype(jnp.float32)
+        elif res.dtype == jnp.int64:
+            return res.astype(jnp.int32)
+    return res
+
+
+
 
 
 def full(shape: Union[int, Tuple[int, ...]],
