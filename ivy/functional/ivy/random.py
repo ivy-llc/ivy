@@ -2,42 +2,48 @@
 Collection of random Ivy functions
 """
 
+# global 
+from typing import Optional, Union
+
 # local
 from ivy.framework_handler import current_framework as _cur_framework
+import ivy
 
 
 # Extra #
-import ivy
-from typing import Optional,Union
 # ------#
 
-def random_uniform(low: float = 0.0, high: float = 1.0,
+
+def random_uniform(low: float = 0.0, 
+                   high: float = 1.0,
                    shape: Optional[Union[ivy.Dtype, str]] = None,
                    dev: Optional[ivy.Device] = None)\
         -> ivy.array:
     """
     Parameters
     -----------
-    low: float
+    low
         Lower boundary of the output interval. All values generated will be greter than or equal to low.
-    high: float
+    high
         Upper boundary of the output intercal. All the values genrated will be lesser than than high..
-    shape:
+    shape
         If the given shape is, e.g (m, n, k), then m * n * k samples are drawn.
-            If size is None(Default), a single value is returned
-    dev:
-        device on which to create the array 'cuda 0', 'cuda:1' , 'cpu' etc.
+        If size is None (Default), a single value is returned.
+    dev
+        device on which to create the array 'cuda 0', 'cuda:1', 'cpu' etc.
 
     Returns
     -------
     ivy.Array
         Drawn samples from the parameterized uniform distribution
 
-      Examples:
-        >>> x = ivy.array([0.0, 2.0])
-        >>> y = ivy.random_uniform(0.0,1.0,None)
-        >>> print(y)
-        [1.0]
+    Examples
+    --------
+    >>> x = ivy.array([0.0, 2.0])
+    >>> y = ivy.random_uniform(0.0,1.0,None)
+    >>> print(y)
+    [1.0]
+    
     """
     return _cur_framework().random_uniform(low, high, shape, dev)
 
