@@ -303,26 +303,30 @@ If size is None (default), a single value is returned.</p></li>
 
 <dl class="py function">
 <dt id="ivy.functional.ivy.random.random_uniform">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">random_uniform</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">low</span><span class="o">=</span><span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">high</span><span class="o">=</span><span class="default_value">1.0</span></em>, <em class="sig-param"><span class="n">shape</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">dev</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/random.html#random_uniform"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.random.random_uniform" title="Permalink to this definition">¶</a></dt>
-<dd><p>Draws samples from a uniform distribution.
-Samples are uniformly distributed over the half-open interval [low, high) (includes low, but excludes high).
-In other words, any value within the given interval is equally likely to be drawn by uniform.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>low</strong> (<em>float</em>) – Lower boundary of the output interval. All values generated will be greater than or equal to low.
-The default value is 0.</p></li>
-<li><p><strong>high</strong> (<em>float</em>) – Upper boundary of the output interval. All values generated will be less than high.
-The default value is 1.0.</p></li>
-<li><p><strong>shape</strong> (<em>sequence of ints</em>) – Output shape. If the given shape is, e.g., (m, n, k), then m * n * k samples are drawn.
-If size is None (default), a single value is returned.</p></li>
-<li><p><strong>dev</strong> (<em>ivy.Device</em>) – device on which to create the array ‘cuda:0’, ‘cuda:1’, ‘cpu’ etc.</p></li>
-</ul>
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">random_uniform</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">low</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">high</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">1.0</span></em>, <em class="sig-param"><span class="n">shape</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Union<span class="p">[</span>int<span class="p">, </span>Tuple<span class="p">[</span>int<span class="p">, </span><span class="p">…</span><span class="p">]</span><span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">dev</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>ivy.Device<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; &lt;module ‘ivy.array’ from ‘/home/runner/work/ivy/ivy/ivy/ivy/array/__init__.py’&gt;<a class="reference internal" href="../../_modules/ivy/functional/ivy/random.html#random_uniform"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.random.random_uniform" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draws samples from a uniform distribution. Samples are uniformly distributed over the half-open 
+interval <code class="docutils literal notranslate"><span class="pre">[low,</span> <span class="pre">high)</span></code> (includes <code class="docutils literal notranslate"><span class="pre">low</span></code>, but excludes <code class="docutils literal notranslate"><span class="pre">high</span></code>). In other words, any value within the given 
+interval is equally likely to be drawn by uniform.</p>
+<dl class="simple">
+<dt>low</dt><dd><p>Lower boundary of the output interval. All values generated will be greater than or equal to <code class="docutils literal notranslate"><span class="pre">low</span></code>.</p>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Drawn samples from the parameterized uniform distribution.</p>
+<dt>high</dt><dd><p>Upper boundary of the output interval. All the values generated will be less than <code class="docutils literal notranslate"><span class="pre">high</span></code>.</p>
+</dd>
+<dt>shape</dt><dd><p>If the given shape is, e.g <code class="docutils literal notranslate"><span class="pre">(m,</span> <span class="pre">n,</span> <span class="pre">k)</span></code>, then <code class="docutils literal notranslate"><span class="pre">m</span> <span class="pre">*</span> <span class="pre">n</span> <span class="pre">*</span> <span class="pre">k</span></code> samples are drawn. If size is <code class="docutils literal notranslate"><span class="pre">None</span></code> 
+(Default), a single value is returned.</p>
+</dd>
+<dt>dev</dt><dd><p>device on which to create the array ‘cuda:0’, ‘cuda:1’, ‘cpu’ etc.</p>
 </dd>
 </dl>
+<dl class="simple">
+<dt>ret</dt><dd><p>Drawn samples from the parameterized uniform distribution.</p>
+</dd>
+</dl>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">random_uniform</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+<span class="go">ivy.array(1.89150229)</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py function">

@@ -227,31 +227,51 @@
 <span class="sd">Collection of random Ivy functions</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
+<span class="c1"># global </span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Tuple</span>
+
 <span class="c1"># local</span>
 <span class="kn">from</span> <span class="nn">ivy.framework_handler</span> <span class="kn">import</span> <span class="n">current_framework</span> <span class="k">as</span> <span class="n">_cur_framework</span>
+<span class="kn">import</span> <span class="nn">ivy</span>
 
 
 <span class="c1"># Extra #</span>
 <span class="c1"># ------#</span>
 
-<div class="viewcode-block" id="random_uniform"><a class="viewcode-back" href="../../../../functional/ivy/random/random_uniform.html#ivy.functional.ivy.random.random_uniform">[docs]</a><span class="k">def</span> <span class="nf">random_uniform</span><span class="p">(</span><span class="n">low</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">high</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dev</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Draws samples from a uniform distribution.</span>
-<span class="sd">    Samples are uniformly distributed over the half-open interval [low, high) (includes low, but excludes high).</span>
-<span class="sd">    In other words, any value within the given interval is equally likely to be drawn by uniform.</span>
 
-<span class="sd">    :param low: Lower boundary of the output interval. All values generated will be greater than or equal to low.</span>
-<span class="sd">                The default value is 0.</span>
-<span class="sd">    :type low: float</span>
-<span class="sd">    :param high: Upper boundary of the output interval. All values generated will be less than high.</span>
-<span class="sd">                The default value is 1.0.</span>
-<span class="sd">    :type high: float</span>
-<span class="sd">    :param shape: Output shape. If the given shape is, e.g., (m, n, k), then m * n * k samples are drawn.</span>
-<span class="sd">                    If size is None (default), a single value is returned.</span>
-<span class="sd">    :type shape: sequence of ints</span>
-<span class="sd">    :param dev: device on which to create the array &#39;cuda:0&#39;, &#39;cuda:1&#39;, &#39;cpu&#39; etc.</span>
-<span class="sd">    :type dev: ivy.Device</span>
-<span class="sd">    :return: Drawn samples from the parameterized uniform distribution.</span>
+<div class="viewcode-block" id="random_uniform"><a class="viewcode-back" href="../../../../functional/ivy/random/random_uniform.html#ivy.functional.ivy.random.random_uniform">[docs]</a><span class="k">def</span> <span class="nf">random_uniform</span><span class="p">(</span><span class="n">low</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span> 
+                   <span class="n">high</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span>
+                   <span class="n">shape</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                   <span class="n">dev</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Device</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span>\
+        <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Draws samples from a uniform distribution. Samples are uniformly distributed over the half-open </span>
+<span class="sd">    interval ``[low, high)`` (includes ``low``, but excludes ``high``). In other words, any value within the given </span>
+<span class="sd">    interval is equally likely to be drawn by uniform.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    -----------</span>
+<span class="sd">    low</span>
+<span class="sd">        Lower boundary of the output interval. All values generated will be greater than or equal to ``low``.</span>
+<span class="sd">    high</span>
+<span class="sd">        Upper boundary of the output interval. All the values generated will be less than ``high``.</span>
+<span class="sd">    shape</span>
+<span class="sd">        If the given shape is, e.g ``(m, n, k)``, then ``m * n * k`` samples are drawn. If size is ``None`` </span>
+<span class="sd">        (Default), a single value is returned.</span>
+<span class="sd">    dev</span>
+<span class="sd">        device on which to create the array &#39;cuda:0&#39;, &#39;cuda:1&#39;, &#39;cpu&#39; etc.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        Drawn samples from the parameterized uniform distribution.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.random_uniform(0.0, 2.0)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    ivy.array(1.89150229)</span>
+<span class="sd">    </span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">()</span><span class="o">.</span><span class="n">random_uniform</span><span class="p">(</span><span class="n">low</span><span class="p">,</span> <span class="n">high</span><span class="p">,</span> <span class="n">shape</span><span class="p">,</span> <span class="n">dev</span><span class="p">)</span></div>
 
