@@ -139,7 +139,7 @@ def eye(n_rows: int,
 
 
 # noinspection PyShadowingNames
-def arange(stop, start=0, step=1, dtype=None, dev=None):
+def arange(start, stop=None, step=1, dtype=None, dev=None):
     if dtype:
         dtype = dtype_from_str(dtype)
     res = _to_dev(np.arange(start, stop, step=step, dtype=dtype), dev)
