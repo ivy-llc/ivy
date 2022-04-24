@@ -3,7 +3,7 @@ Collection of random Ivy functions
 """
 
 # global 
-from typing import Optional, Union
+from typing import Optional, Union, Tuple
 
 # local
 from ivy.framework_handler import current_framework as _cur_framework
