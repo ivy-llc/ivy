@@ -45,7 +45,7 @@ def random_uniform(low: float = 0.0,
     --------
     >>> y = ivy.random_uniform(0.0, 2.0)
     >>> print(y)
-    1.2382110357284546
+    ivy.array(1.89150229)
     
     """
     return _cur_framework().random_uniform(low, high, shape, dev)
