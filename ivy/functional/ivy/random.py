@@ -2,31 +2,51 @@
 Collection of random Ivy functions
 """
 
+# global 
+from typing import Optional, Union, Tuple
+
 # local
 from ivy.framework_handler import current_framework as _cur_framework
+import ivy
 
 
 # Extra #
 # ------#
 
-def random_uniform(low=0.0, high=1.0, shape=None, dev=None):
-    """
-    Draws samples from a uniform distribution.
-    Samples are uniformly distributed over the half-open interval [low, high) (includes low, but excludes high).
-    In other words, any value within the given interval is equally likely to be drawn by uniform.
 
-    :param low: Lower boundary of the output interval. All values generated will be greater than or equal to low.
-                The default value is 0.
-    :type low: float
-    :param high: Upper boundary of the output interval. All values generated will be less than high.
-                The default value is 1.0.
-    :type high: float
-    :param shape: Output shape. If the given shape is, e.g., (m, n, k), then m * n * k samples are drawn.
-                    If size is None (default), a single value is returned.
-    :type shape: sequence of ints
-    :param dev: device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
-    :type dev: ivy.Device
-    :return: Drawn samples from the parameterized uniform distribution.
+def random_uniform(low: float = 0.0, 
+                   high: float = 1.0,
+                   shape: Optional[Union[int, Tuple[int, ...]]] = None,
+                   dev: Optional[ivy.Device] = None)\
+        -> ivy.array:
+    """
+    Draws samples from a uniform distribution. Samples are uniformly distributed over the half-open 
+    interval ``[low, high)`` (includes ``low``, but excludes ``high``). In other words, any value within the given 
+    interval is equally likely to be drawn by uniform.
+    
+    Parameters
+    -----------
+    low
+        Lower boundary of the output interval. All values generated will be greater than or equal to ``low``.
+    high
+        Upper boundary of the output interval. All the values generated will be less than ``high``.
+    shape
+        If the given shape is, e.g ``(m, n, k)``, then ``m * n * k`` samples are drawn. If size is ``None`` 
+        (Default), a single value is returned.
+    dev
+        device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
+
+    Returns
+    -------
+    ret
+        Drawn samples from the parameterized uniform distribution.
+
+    Examples
+    --------
+    >>> y = ivy.random_uniform(0.0, 2.0)
+    >>> print(y)
+    ivy.array(1.89150229)
+    
     """
     return _cur_framework().random_uniform(low, high, shape, dev)
 
