@@ -172,7 +172,7 @@ def trace(x: np.ndarray,
           offset: int = 0,
           out: Optional[np.ndarray] = None) \
         -> np.ndarray:
-    return np.trace(x, offset, out=out)
+    return np.trace(x, offset=offset, axis1=-2, axis2=-1, dtype=x.dtype, out=out)
 
 
 def vecdot(x1: np.ndarray, 
@@ -186,9 +186,9 @@ def vecdot(x1: np.ndarray,
     return ret
 
 
-def det(x: np.array,
+def det(x: np.ndarray,
         out: Optional[np.ndarray] = None) \
-        -> np.array:
+        -> np.ndarray:
     ret =  np.linalg.det(x)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
@@ -229,19 +229,21 @@ def cross (x1: np.ndarray,
     return ret
 
 
-def matrix_rank(vector: np.ndarray,
+def matrix_rank(x: np.ndarray,
                 rtol: Optional[Union[float, Tuple[float]]] = None,
                 out: Optional[np.ndarray] = None) \
         -> np.ndarray:
     if rtol is None:
-        ret =  np.linalg.matrix_rank(vector)
-    ret =  np.linalg.matrix_rank(vector, rtol)
+        ret =  np.linalg.matrix_rank(x)
+    ret =  np.linalg.matrix_rank(x, rtol)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
     return ret
 
+
 # Extra #
 # ------#
+
 
 def vector_to_skew_symmetric_matrix(vector: np.ndarray,
                                     out: Optional[np.ndarray] = None) \
