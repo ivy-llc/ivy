@@ -39,8 +39,11 @@ def add(x1: Union[ivy.Array, ivy.NativeArray],
         -> ivy.Array:
     """
     Calculates the sum for each element ``x1_i`` of the input array ``x1`` with the respective element ``x2_i`` of the input array ``x2``.
+    
     **Special cases**
+    
     For floating-point operands,
+    
     - If either ``x1_i`` or ``x2_i`` is ``NaN``, the result is ``NaN``.
     - If ``x1_i`` is ``+infinity`` and ``x2_i`` is ``-infinity``, the result is ``NaN``.
     - If ``x1_i`` is ``-infinity`` and ``x2_i`` is ``+infinity``, the result is ``NaN``.
@@ -58,20 +61,32 @@ def add(x1: Union[ivy.Array, ivy.NativeArray],
     - If ``x1_i`` is a nonzero finite number and ``x2_i`` is either ``+0`` or ``-0``, the result is ``x1_i``.
     - If ``x1_i`` is a nonzero finite number and ``x2_i`` is ``-x1_i``, the result is ``+0``.
     - In the remaining cases, when neither ``infinity``, ``+0``, ``-0``, nor a ``NaN`` is involved, and the operands have the same mathematical sign or have different magnitudes, the sum must be computed and rounded to the nearest representable value according to IEEE 754-2019 and a supported round mode. If the magnitude is too large to represent, the operation overflows and the result is an `infinity` of appropriate mathematical sign.
+    
     .. note::
        Floating-point addition is a commutative operation, but not always associative.
+    
     Parameters
     ----------
-    x1: array
+    x1
         first input array. Should have a numeric data type.
-    x2: array
+    x2
         second input array. Must be compatible with ``x1`` (see :ref:`broadcasting`). Should have a numeric data type.
-    out:
+    out
         optional output array, for writing the result to. It must have a shape that the inputs broadcast to.
+    
     Returns
     -------
-    return: array
+    ret
         an array containing the element-wise sums. The returned array must have a data type determined by :ref:`type-promotion`.
+
+    Examples
+    --------
+    >>> x = ivy.array([1, 2, 3])
+    >>> y = ivy.array([4, 5, 6])
+    >>> z = ivy.add(x, y)
+    >>> print(z)
+    ivy.array([5, 7, 9])
+    
     """
     return _cur_framework(x1, x2).add(x1, x2, out)
 
@@ -175,7 +190,7 @@ def bitwise_invert(x: Union[ivy.Array, ivy.NativeArray],
     >>> x = ivy.array([1, 6, 9])
     >>> y = ivy.bitwise_invert(x)
     >>> print(y)
-    [-2, -7, -10]
+    ivy.array([-2, -7, -10])
     
     """
     return _cur_framework(x).bitwise_invert(x, out)
@@ -239,7 +254,7 @@ def ceil(x: Union[ivy.Array, ivy.NativeArray],
     >>> x = ivy.array([0.1, 0, -0.1])
     >>> y = ivy.ceil(x)
     >>> print(y)
-    [1.0, 0.0, -0.0]
+    ivy.array([1.0, 0.0, -0.0])
     """
     return _cur_framework(x).ceil(x, out)
 
@@ -363,9 +378,9 @@ def greater(x1: Union[ivy.Array, ivy.NativeArray],
     :return: an array containing the element-wise results. The returned array must have a data type of bool.
     
     Examples:
-    >>> x = ivy.greater(ivy.array([1,2,3]),ivy.array([2,2,2]))
+    >>> x = ivy.greater(ivy.array([1, 2, 3]), ivy.array([2, 2, 2]))
     >>> print(x)
-    [False, False,  True]    
+    ivy.array([False, False,  True])
     """
     return _cur_framework(x1, x2).greater(x1, x2, out)
 
@@ -714,7 +729,7 @@ def less(x1: Union[ivy.Array, ivy.NativeArray],
     Examples:
     >>> x = ivy.less(ivy.array([1,2,3]),ivy.array([2,2,2]))
     >>> print(x)   
-    [ True, False, False]
+    ivy.array([True, False, False])
     """
     return _cur_framework(x1).less(x1, x2, out)
 
