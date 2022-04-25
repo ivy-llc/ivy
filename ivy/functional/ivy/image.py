@@ -70,17 +70,26 @@ def gradient_image(x):
 
 
 def float_img_to_uint8_img(x):
-    """Converts an image of floats into a bit-cast 4-channel image of uint8s, which can be saved to disk.
-
+    """
+    Converts an image of floats into a bit-cast 4-channel image of uint8s, which can be saved to disk.
     Parameters
     ----------
-    x
-        Input float image *[batch_shape,h,w]*.
+    x:
+        Input float image [batch_shape,h,w].
+
+    dtype:
+        array data type.
 
     Returns
     -------
-     ret
-        The new encoded uint8 image *[batch_shape,h,w,4]* .
+    out:
+        The new encoded uint8 image [batch_shape,h,w,4] .
+
+	 Example
+    >>> x = ivy.array([0, 0.5, 0.503, 1], dtype=float)
+    >>> y = ivy.float_img_to_uint8_img(x)
+    >>> print(y)
+    array([  0, 128, 128, 255], dtype=uint8)
 
     """
     x_np = ivy.to_numpy(x)
