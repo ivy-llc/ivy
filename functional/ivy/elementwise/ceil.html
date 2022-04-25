@@ -310,20 +310,23 @@
 <li><p>If <code class="docutils literal notranslate"><span class="pre">x_i</span></code> is <code class="docutils literal notranslate"><span class="pre">NaN</span></code>, the result is <code class="docutils literal notranslate"><span class="pre">NaN</span></code>.</p></li>
 </ul>
 <dl class="simple">
-<dt>x:</dt><dd><p>input array. Should have a numeric data type.</p>
+<dt>x</dt><dd><p>input array. Should have a numeric data type.</p>
 </dd>
-<dt>out:</dt><dd><p>optional output array, for writing the result to. It must have a shape that the inputs broadcast to.</p>
-</dd>
-</dl>
-<dl class="simple">
-<dt>return:</dt><dd><p>an array containing the rounded result for each element in <code class="docutils literal notranslate"><span class="pre">x</span></code>. The returned array must have the same data type as <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p>
+<dt>out</dt><dd><p>optional output array, for writing the result to. It must have a shape that the inputs broadcast to.</p>
 </dd>
 </dl>
-<p>Examples:
-&gt;&gt;&gt; x = ivy.array([0.1, 0, -0.1])
-&gt;&gt;&gt; y = ivy.ceil(x)
-&gt;&gt;&gt; print(y)
-ivy.array([1.0, 0.0, -0.0])</p>
+<blockquote>
+<div><dl class="simple">
+<dt>ret</dt><dd><p>an array containing the rounded result for each element in <code class="docutils literal notranslate"><span class="pre">x</span></code>. The returned array must have the same data type as <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p>
+</dd>
+</dl>
+</div></blockquote>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.1</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+<span class="go">ivy.array([1.0, 0.0, -0.0])</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <div class="line-block">

@@ -252,22 +252,22 @@
 <li><p>If <code class="docutils literal notranslate"><span class="pre">N</span></code> is <code class="docutils literal notranslate"><span class="pre">0</span></code>, the standard deviation is <code class="docutils literal notranslate"><span class="pre">0</span></code> (i.e., the empty standard deviation).</p></li>
 <li><p>If <code class="docutils literal notranslate"><span class="pre">x_i</span></code> is <code class="docutils literal notranslate"><span class="pre">NaN</span></code>, the standard deviation is <code class="docutils literal notranslate"><span class="pre">NaN</span></code> (i.e., <code class="docutils literal notranslate"><span class="pre">NaN</span></code> values propagate).</p></li>
 </ul>
-<dl class="simple">
-<dt>x</dt><dd><p>input array. Should have a floating-point data type.</p>
+<dl>
+<dt>x</dt><dd><p>input array. Should have a floating-point data type</p>
 </dd>
 <dt>axis</dt><dd><p>axis or axes along which standard deviations must be computed. By default, the standard deviation 
 must be computed over the entire array. If a tuple of integers, standard deviations must be computed 
 over multiple axes. Default: None.</p>
 </dd>
-<dt>correction</dt><dd><p>degrees of freedom adjustment. Setting this parameter to a value other than <code class="docutils literal notranslate"><span class="pre">0</span></code> has the effect of 
-adjusting the divisor during the calculation of the standard deviation according to <code class="docutils literal notranslate"><span class="pre">N-c</span></code> where <code class="docutils literal notranslate"><span class="pre">N</span></code> 
-corresponds to the total number of elements over which the standard deviation is computed and <code class="docutils literal notranslate"><span class="pre">c</span></code> 
-corresponds to the provided degrees of freedom adjustment. When computing the standard deviation 
+<dt>correction</dt><dd><p>degrees of freedom adjustment. Setting this parameter to a value other than 0 has the effect of 
+adjusting the divisor during the calculation of the standard deviation according to N-c where N 
+corresponds to the total number of elements over which the standard deviation is computed and c</p>
+<p>corresponds to the provided degrees of freedom adjustment. When computing the standard deviation 
 of a population, setting this parameter to <code class="docutils literal notranslate"><span class="pre">0</span></code> is the standard choice (i.e., the provided array 
 contains data constituting an entire population). When computing the corrected sample standard 
 deviation, setting this parameter to <code class="docutils literal notranslate"><span class="pre">1</span></code> is the standard choice (i.e., the provided array contains 
-data sampled from a larger population; this is commonly referred to as Bessel’s correction). 
-Default: <code class="docutils literal notranslate"><span class="pre">0</span></code>.</p>
+data sampled from a larger population; this is commonly referred to as Bessel’s correction).</p>
+<p>Default: <code class="docutils literal notranslate"><span class="pre">0</span></code>.</p>
 </dd>
 <dt>keepdims</dt><dd><p>if <code class="docutils literal notranslate"><span class="pre">True</span></code>, the reduced axes (dimensions) must be included in the result as singleton 
 dimensions, and, accordingly, the result must be compatible with the input array (see Broadcasting). 

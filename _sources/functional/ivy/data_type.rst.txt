@@ -40,12 +40,18 @@ Data type
    data_type/invalid_dtype.rst
    data_type/convert_dtype.rst
    data_type/DefaultDtype:
+    """ """
+
     # noinspection PyShadowingNames
     def __init__.rst
    data_type/DefaultFloatDtype:
+    """ """
+
     # noinspection PyShadowingNames
     def __init__.rst
    data_type/DefaultIntDtype:
+    """ """
+
     # noinspection PyShadowingNames
     def __init__.rst
 

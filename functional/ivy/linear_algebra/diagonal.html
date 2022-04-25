@@ -264,26 +264,25 @@
 <dd><p>Returns the specified diagonals of a matrix (or a stack of matrices) <code class="docutils literal notranslate"><span class="pre">x</span></code>.
 Parameters
 ———-
-x:</p>
+x</p>
 <blockquote>
 <div><p>input array having shape <code class="docutils literal notranslate"><span class="pre">(...,</span> <span class="pre">M,</span> <span class="pre">N)</span></code> and whose innermost two dimensions form <code class="docutils literal notranslate"><span class="pre">MxN</span></code> matrices.</p>
 </div></blockquote>
 <dl class="simple">
-<dt>offset:</dt><dd><p>offset specifying the off-diagonal relative to the main diagonal.
+<dt>offset</dt><dd><p>offset specifying the off-diagonal relative to the main diagonal.
 - <code class="docutils literal notranslate"><span class="pre">offset</span> <span class="pre">=</span> <span class="pre">0</span></code>: the main diagonal.
 - <code class="docutils literal notranslate"><span class="pre">offset</span> <span class="pre">&gt;</span> <span class="pre">0</span></code>: off-diagonal above the main diagonal.
 - <code class="docutils literal notranslate"><span class="pre">offset</span> <span class="pre">&lt;</span> <span class="pre">0</span></code>: off-diagonal below the main diagonal.
 Default: <cite>0</cite>.</p>
 </dd>
-<dt>axis1:</dt><dd><p>axis to be used as the first axis of the 2-D sub-arrays from which the diagonals should be taken.
+<dt>axis1</dt><dd><p>axis to be used as the first axis of the 2-D sub-arrays from which the diagonals should be taken.
 Defaults to first axis (0).</p>
 </dd>
-<dt>axis2:</dt><dd><p>axis to be used as the second axis of the 2-D sub-arrays from which the diagonals should be taken.
+<dt>axis2</dt><dd><p>axis to be used as the second axis of the 2-D sub-arrays from which the diagonals should be taken.
 Defaults to second axis (1).</p>
 </dd>
-</dl>
-<dl class="simple">
-<dt>out:</dt><dd><p>an array containing the diagonals and whose shape is determined by removing the last two dimensions and appending a dimension equal to the size of the resulting diagonals. The returned array must have the same data type as <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p>
+<dt>Returns</dt><dd></dd>
+<dt>ret</dt><dd><p>an array containing the diagonals and whose shape is determined by removing the last two dimensions and appending a dimension equal to the size of the resulting diagonals. The returned array must have the same data type as <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p>
 </dd>
 </dl>
 </dd></dl>

@@ -285,14 +285,16 @@
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">split_factor</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dev</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/device.html#split_factor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.device.split_factor" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the global split factor for a given device, which can be used to scale batch splitting chunk sizes for the
 device across the codebase. Default global value for each device is 1.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>dev</strong> (<em>Device</em><em>, </em><em>optional</em>) – The device to query the split factor for. Sets the default device by default.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>The split factor for the specified device.</p>
+<dl class="simple">
+<dt>dev</dt><dd><p>The device to query the split factor for. Sets the default device by default.</p>
 </dd>
 </dl>
+<blockquote>
+<div><dl class="simple">
+<dt>ret</dt><dd><p>The split factor for the specified device.</p>
+</dd>
+</dl>
+</div></blockquote>
 </dd></dl>
 
 <div class="line-block">

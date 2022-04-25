@@ -299,20 +299,22 @@
 <dd><p>Shifts the bits of each element <code class="docutils literal notranslate"><span class="pre">x1_i</span></code> of the input array <code class="docutils literal notranslate"><span class="pre">x1</span></code> to the left by appending <code class="docutils literal notranslate"><span class="pre">x2_i</span></code> (i.e., the respective element in the input array <code class="docutils literal notranslate"><span class="pre">x2</span></code>) zeros to the right of <code class="docutils literal notranslate"><span class="pre">x1_i</span></code>.
 Parameters
 ———-
-x1: array</p>
+x1</p>
 <blockquote>
 <div><p>first input array. Should have an integer data type.</p>
 </div></blockquote>
 <dl class="simple">
-<dt>x2: array</dt><dd><p>second input array. Must be compatible with <code class="docutils literal notranslate"><span class="pre">x1</span></code> (see <span class="xref std std-ref">broadcasting</span>). Should have an integer data type. Each element must be greater than or equal to <code class="docutils literal notranslate"><span class="pre">0</span></code>.</p>
+<dt>x2</dt><dd><p>second input array. Must be compatible with <code class="docutils literal notranslate"><span class="pre">x1</span></code> (see <span class="xref std std-ref">broadcasting</span>). Should have an integer data type. Each element must be greater than or equal to <code class="docutils literal notranslate"><span class="pre">0</span></code>.</p>
 </dd>
-<dt>out:</dt><dd><p>optional output array, for writing the result to. It must have a shape that the inputs broadcast to.</p>
-</dd>
-</dl>
-<dl class="simple">
-<dt>return: array</dt><dd><p>an array containing the element-wise results. The returned array must have a data type determined by <span class="xref std std-ref">type-promotion</span>.</p>
+<dt>out</dt><dd><p>optional output array, for writing the result to. It must have a shape that the inputs broadcast to.</p>
 </dd>
 </dl>
+<blockquote>
+<div><dl class="simple">
+<dt>ret</dt><dd><p>an array containing the element-wise results. The returned array must have a data type determined by <span class="xref std std-ref">type-promotion</span>.</p>
+</dd>
+</dl>
+</div></blockquote>
 </dd></dl>
 
 <div class="line-block">

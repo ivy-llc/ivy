@@ -253,14 +253,14 @@ For floating-point operands,
 -   If <code class="docutils literal notranslate"><span class="pre">x_i</span></code> is <code class="docutils literal notranslate"><span class="pre">NaN</span></code>, the sum is <code class="docutils literal notranslate"><span class="pre">NaN</span></code> (i.e., <code class="docutils literal notranslate"><span class="pre">NaN</span></code> values propagate).
 Parameters
 ———-
-x:</p>
+x</p>
 <blockquote>
 <div><p>input array. Should have a numeric data type.</p>
 </div></blockquote>
 <dl>
-<dt>axis:</dt><dd><p>axis or axes along which sums must be computed. By default, the sum must be computed over the entire array. If a tuple of integers, sums must be computed over multiple axes. Default: <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+<dt>axis</dt><dd><p>axis or axes along which sums must be computed. By default, the sum must be computed over the entire array. If a tuple of integers, sums must be computed over multiple axes. Default  <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
 </dd>
-<dt>dtype:</dt><dd><p>data type of the returned array. If <code class="docutils literal notranslate"><span class="pre">None</span></code>,
+<dt>dtype</dt><dd><p>data type of the returned array. If <code class="docutils literal notranslate"><span class="pre">None</span></code>,
 -   if the default data type corresponding to the data type “kind” (integer or floating-point) of <code class="docutils literal notranslate"><span class="pre">x</span></code> has a smaller range of values than the data type of <code class="docutils literal notranslate"><span class="pre">x</span></code> (e.g., <code class="docutils literal notranslate"><span class="pre">x</span></code> has data type <code class="docutils literal notranslate"><span class="pre">int64</span></code> and the default data type is <code class="docutils literal notranslate"><span class="pre">int32</span></code>, or <code class="docutils literal notranslate"><span class="pre">x</span></code> has data type <code class="docutils literal notranslate"><span class="pre">uint64</span></code> and the default data type is <code class="docutils literal notranslate"><span class="pre">int64</span></code>), the returned array must have the same data type as <code class="docutils literal notranslate"><span class="pre">x</span></code>.
 -   if <code class="docutils literal notranslate"><span class="pre">x</span></code> has a floating-point data type, the returned array must have the default floating-point data type.
 -   if <code class="docutils literal notranslate"><span class="pre">x</span></code> has a signed integer data type (e.g., <code class="docutils literal notranslate"><span class="pre">int16</span></code>), the returned array must have the default integer data type.
@@ -271,15 +271,17 @@ If the data type (either specified or resolved) differs from the data type of <c
 </pre></div>
 </div>
 </dd>
-<dt>keepdims:</dt><dd><p>if <code class="docutils literal notranslate"><span class="pre">True</span></code>, the reduced axes (dimensions) must be included in the result as singleton dimensions, and, accordingly, the result must be compatible with the input array (see <span class="xref std std-ref">broadcasting</span>). Otherwise, if <code class="docutils literal notranslate"><span class="pre">False</span></code>, the reduced axes (dimensions) must not be included in the result. Default: <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
+<dt>keepdims</dt><dd><p>if <code class="docutils literal notranslate"><span class="pre">True</span></code>, the reduced axes (dimensions) must be included in the result as singleton dimensions, and, accordingly, the result must be compatible with the input array (see  ref:<cite>broadcasting</cite>). Otherwise, if <code class="docutils literal notranslate"><span class="pre">False</span></code>, the reduced axes (dimensions) must not be included in the result. Default: <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
 </dd>
-<dt>out:</dt><dd><p>optional output array, for writing the result to.Returns</p>
-</dd>
-</dl>
-<dl class="simple">
-<dt>return:</dt><dd><p>if the sum was computed over the entire array, a zero-dimensional array containing the sum; otherwise, an array containing the sums. The returned array must have a data type as described by the <code class="docutils literal notranslate"><span class="pre">dtype</span></code> parameter above.</p>
+<dt>out</dt><dd><p>optional output array, for writing the result to.Returns</p>
 </dd>
 </dl>
+<blockquote>
+<div><dl class="simple">
+<dt>ret</dt><dd><p>if the sum was computed over the entire array, a zero-dimensional array containing the sum; otherwise, an array containing the sums. The returned array must have a data type as described by the <code class="docutils literal notranslate"><span class="pre">dtype</span></code> parameter above.</p>
+</dd>
+</dl>
+</div></blockquote>
 </dd></dl>
 
 <div class="line-block">

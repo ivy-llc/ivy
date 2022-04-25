@@ -284,17 +284,18 @@
 <dt id="ivy.functional.ivy.device.percent_used_mem_on_dev">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">percent_used_mem_on_dev</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dev</span><span class="p">:</span> <span class="n">ivy.Device</span></em>, <em class="sig-param"><span class="n">process_specific</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span> &#x2192; float<a class="reference internal" href="../../../_modules/ivy/functional/ivy/device.html#percent_used_mem_on_dev"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.device.percent_used_mem_on_dev" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the percentage used memory for a given device string. In case of CPU, the used RAM is returned.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>dev</strong> (<em>Device</em>) – The device string to conver to native device handle.</p></li>
-<li><p><strong>process_specific</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether the check the memory used by this python process alone. Default is False.</p></li>
-</ul>
+<dl class="simple">
+<dt>dev</dt><dd><p>The device string to conver to native device handle.</p>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>The percentage used memory on the device.</p>
+<dt>process_specific</dt><dd><p>Whether the check the memory used by this python process alone. Default is False.</p>
 </dd>
 </dl>
+<blockquote>
+<div><dl class="simple">
+<dt>ret</dt><dd><p>The percentage used memory on the device.</p>
+</dd>
+</dl>
+</div></blockquote>
 </dd></dl>
 
 <div class="line-block">

@@ -263,19 +263,18 @@
 <dl class="py function">
 <dt id="ivy.functional.ivy.data_type.can_cast">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">can_cast</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">from_</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.Dtype<span class="p">, </span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">to</span><span class="p">:</span> <span class="n">ivy.Dtype</span></em><span class="sig-paren">)</span> &#x2192; bool<a class="reference internal" href="../../../_modules/ivy/functional/ivy/data_type.html#can_cast"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.data_type.can_cast" title="Permalink to this definition">¶</a></dt>
-<dd><p>Determines if one data type can be cast to another data type according <span class="xref std std-ref">type-promotion</span> rules.
+<dd><p>Determines if one data type can be cast to another data type accordingref:<cite>type-promotion</cite> rules.
 Parameters
 ———-
-<a href="#id1"><span class="problematic" id="id2">from_</span></a>: Union[dtype, array]</p>
+<a href="#id1"><span class="problematic" id="id2">from_</span></a></p>
 <blockquote>
 <div><p>input data type or array from which to cast.</p>
 </div></blockquote>
 <dl class="simple">
-<dt>to: dtype</dt><dd><p>desired data type.</p>
+<dt>to</dt><dd><p>desired data type.</p>
 </dd>
-</dl>
-<dl class="simple">
-<dt>out: bool</dt><dd><p><code class="docutils literal notranslate"><span class="pre">True</span></code> if the cast can occur according to <span class="xref std std-ref">type-promotion</span> rules; otherwise, <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
+<dt>Returns</dt><dd></dd>
+<dt>ret</dt><dd><p><code class="docutils literal notranslate"><span class="pre">True</span></code> if the cast can occur according toref:<cite>type-promotion</cite> rules; otherwise, <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
 </dd>
 </dl>
 </dd></dl>

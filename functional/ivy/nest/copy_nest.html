@@ -254,16 +254,15 @@
 <dt id="ivy.functional.ivy.nest.copy_nest">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">copy_nest</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">nest</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">, </span>Iterable<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">include_derived</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">to_mutable</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">, </span>Iterable<span class="p">, </span>Dict<span class="p">]</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/nest.html#copy_nest"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.nest.copy_nest" title="Permalink to this definition">¶</a></dt>
 <dd><p>Copies a nest deeply, but without copying leaves of the nest, only the nest lists, tuples and dicts are copied.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>nest</strong> (<em>nested</em>) – The nest to copy.</p></li>
-<li><p><strong>include_derived</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to also recursive for classes derived from tuple, list and dict. Default is False.</p></li>
-<li><p><strong>to_mutable</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to convert the nest to a mutable form, changing all tuples to lists. Default is False.</p></li>
-</ul>
+<dl class="simple">
+<dt>nest </dt><dd><p>The nest to copy.</p>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>The copied nest.</p>
+<dt>include_derived </dt><dd><p>Whether to also recursive for classes derived from tuple, list and dict. Default is False.</p>
+</dd>
+<dt>to_mutable </dt><dd><p>Whether to convert the nest to a mutable form, changing all tuples to lists. Default is False.</p>
+</dd>
+<dt>Returns</dt><dd></dd>
+<dt>ret</dt><dd><p>The copied nest.</p>
 </dd>
 </dl>
 </dd></dl>

@@ -254,18 +254,17 @@
 <dl class="py function">
 <dt id="ivy.functional.ivy.creation.empty">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">empty</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">shape</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>int<span class="p">, </span>Tuple<span class="p">[</span>int<span class="p">]</span><span class="p">, </span>List<span class="p">[</span>int<span class="p">]</span><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">dtype</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>ivy.Dtype<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">device</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>ivy.Device<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../../_modules/ivy/functional/ivy/creation.html#empty"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.creation.empty" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a new array of given shape and type, filled with zeros.
-:param shape: output array shape.
-:param dtype: output array data type. If dtype is None, the output array data type must be the default</p>
-<blockquote>
-<div><p>floating-point data type. Default: None.</p>
-</div></blockquote>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>device</strong> – device on which to place the created array. Default: None.</p>
+<dd><p>Return a new array of given shape and type, filled with zeros.</p>
+<dl class="simple">
+<dt>shape</dt><dd><p>output array shape.</p>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>an uninitialized array having a specified shape</p>
+<dt>dtype</dt><dd><p>output array data type. If dtype is None, the output array data type must be the default
+floating-point data type. Default: None.</p>
+</dd>
+<dt>device</dt><dd><p>device on which to place the created array. Default: None.</p>
+</dd>
+<dt>Returns</dt><dd></dd>
+<dt>ret</dt><dd><p>an uninitialized array having a specified shape</p>
 </dd>
 </dl>
 </dd></dl>

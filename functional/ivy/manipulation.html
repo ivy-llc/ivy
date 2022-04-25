@@ -254,56 +254,61 @@
 <p>Given an interval, values outside the interval are clipped to the interval edges (element-wise).
 For example, if an interval of [0, 1] is specified, values smaller than 0 become 0,
 and values larger than 1 become 1.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>array</em>) – Input array containing elements to clip.</p></li>
-<li><p><strong>x_min</strong> (<em>scalar</em><em> or </em><em>array</em>) – Minimum value.</p></li>
-<li><p><strong>x_max</strong> (<em>scalar</em><em> or </em><em>array</em>) – Maximum value.</p></li>
-</ul>
+<dl class="simple">
+<dt>x </dt><dd><p>Input array containing elements to clip.</p>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>An array with the elements of x, but where values &lt; x_min are replaced with x_min,
+<dt>x_min </dt><dd><p>Minimum value.</p>
+</dd>
+<dt>x_max </dt><dd><p>Maximum value.</p>
+</dd>
+</dl>
+<blockquote>
+<div><dl class="simple">
+<dt>ret</dt><dd><p>An array with the elements of x, but where values &lt; x_min are replaced with x_min,
 and those &gt; x_max with x_max.</p>
 </dd>
 </dl>
+</div></blockquote>
 </dd></dl>
 
 <dl class="py function">
 <dt id="ivy.functional.ivy.manipulation.concat">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">concat</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">xs</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>Tuple<span class="p">[</span>Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">, </span><a class="reference internal" href="../../container/container/Container.html#ivy.container.container.Container" title="ivy.container.container.Container">ivy.container.container.Container</a><span class="p">]</span><span class="p">]</span><span class="p">, </span>List<span class="p">[</span>Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">, </span><a class="reference internal" href="../../container/container/Container.html#ivy.container.container.Container" title="ivy.container.container.Container">ivy.container.container.Container</a><span class="p">]</span><span class="p">]</span><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">axis</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>int<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">0</span></em>, <em class="sig-param"><span class="n">out</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">, </span><a class="reference internal" href="../../container/container/Container.html#ivy.container.container.Container" title="ivy.container.container.Container">ivy.container.container.Container</a><span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.array.Array<span class="p">, </span><a class="reference internal" href="../../container/container/Container.html#ivy.container.container.Container" title="ivy.container.container.Container">ivy.container.container.Container</a><span class="p">]</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/manipulation.html#concat"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.manipulation.concat" title="Permalink to this definition">¶</a></dt>
 <dd><p>Casts an array to a specified type.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>xs</strong> (<em>sequence of arrays</em>) – The input arrays must have the same shape, except in the dimension corresponding to axis
-(the first, by default).</p></li>
-<li><p><strong>axis</strong> (<em>int</em><em>, </em><em>optional</em>) – The axis along which the arrays will be joined. Default is -1.</p></li>
-</ul>
+<dl class="simple">
+<dt>xs </dt><dd><p>The input arrays must have the same shape, except in the dimension corresponding to axis
+(the first, by default).</p>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>The concatenated array.</p>
+<dt>axis </dt><dd><p>The axis along which the arrays will be joined. Default is -1.</p>
 </dd>
 </dl>
+<blockquote>
+<div><dl class="simple">
+<dt>ret</dt><dd><p>The concatenated array.</p>
+</dd>
+</dl>
+</div></blockquote>
 </dd></dl>
 
 <dl class="py function">
 <dt id="ivy.functional.ivy.manipulation.constant_pad">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">constant_pad</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">pad_width</span><span class="p">:</span> <span class="n">Iterable<span class="p">[</span>Tuple<span class="p">[</span>int<span class="p">]</span><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">value</span><span class="p">:</span> <span class="n">numbers.Number</span> <span class="o">=</span> <span class="default_value">0</span></em>, <em class="sig-param"><span class="n">out</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/manipulation.html#constant_pad"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.manipulation.constant_pad" title="Permalink to this definition">¶</a></dt>
 <dd><p>Pads an array with a constant value.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>array</em>) – Input array to pad.</p></li>
-<li><p><strong>pad_width</strong> (<em>sequence of tuples of ints</em>) – Number of values padded to the edges of each axis.
-Specified as ((before_1, after_1), … (before_N, after_N)), where N is number of axes of x.</p></li>
-<li><p><strong>value</strong> (<em>float</em><em> or </em><em>int</em><em>, </em><em>default zero</em>) – The constant value to pad the array with.</p></li>
-</ul>
+<dl class="simple">
+<dt>x </dt><dd><p>Input array to pad.</p>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Padded array of rank equal to x with shape increased according to pad_width.</p>
+<dt>pad_width </dt><dd><p>Number of values padded to the edges of each axis.
+Specified as ((before_1, after_1), … (before_N, after_N)), where N is number of axes of x.</p>
+</dd>
+<dt>value </dt><dd><p>The constant value to pad the array with.</p>
 </dd>
 </dl>
+<blockquote>
+<div><dl class="simple">
+<dt>ret</dt><dd><p>Padded array of rank equal to x with shape increased according to pad_width.</p>
+</dd>
+</dl>
+</div></blockquote>
 </dd></dl>
 
 <dl class="py function">
@@ -311,17 +316,18 @@ Specified as ((before_1, after_1), … (before_N, after_N)), where N is number o
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">expand_dims</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">axis</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">0</span></em>, <em class="sig-param"><span class="n">out</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../_modules/ivy/functional/ivy/manipulation.html#expand_dims"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.manipulation.expand_dims" title="Permalink to this definition">¶</a></dt>
 <dd><p>Expands the shape of an array.
 Inserts a new axis that will appear at the axis position in the expanded array shape.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>array</em>) – Input array.</p></li>
-<li><p><strong>axis</strong> (<em>int</em>) – Position in the expanded axes where the new axis is placed.</p></li>
-</ul>
+<dl class="simple">
+<dt>x </dt><dd><p>Input array.</p>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>array with the number of dimensions increased by onearray</p>
+<dt>axis </dt><dd><p>Position in the expanded axes where the new axis is placed.</p>
 </dd>
 </dl>
+<blockquote>
+<div><dl class="simple">
+<dt>ret</dt><dd><p>array with the number of dimensions increased by onearray</p>
+</dd>
+</dl>
+</div></blockquote>
 </dd></dl>
 
 <dl class="py function">
@@ -329,17 +335,19 @@ Inserts a new axis that will appear at the axis position in the expanded array s
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">flip</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">axis</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Union<span class="p">[</span>int<span class="p">, </span>Tuple<span class="p">[</span>int<span class="p">]</span><span class="p">, </span>List<span class="p">[</span>int<span class="p">]</span><span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">out</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../_modules/ivy/functional/ivy/manipulation.html#flip"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.manipulation.flip" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reverses the order of elements in an array along the given axis. The shape of the array must be preserved.</p>
 <dl class="simple">
-<dt>x:</dt><dd><p>input array.</p>
+<dt>x</dt><dd><p>input array.</p>
 </dd>
-<dt>axis:</dt><dd><p>axis (or axes) along which to flip. If <code class="docutils literal notranslate"><span class="pre">axis</span></code> is <code class="docutils literal notranslate"><span class="pre">None</span></code>, the function must flip all input array axes. If <code class="docutils literal notranslate"><span class="pre">axis</span></code> is negative, the function must count from the last dimension. If provided more than one axis, the function must flip only the specified axes. Default: <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+<dt>axis</dt><dd><p>axis (or axes) along which to flip. If <code class="docutils literal notranslate"><span class="pre">axis</span></code> is <code class="docutils literal notranslate"><span class="pre">None</span></code>, the function must flip all input array axes. If <code class="docutils literal notranslate"><span class="pre">axis</span></code> is negative, the function must count from the last dimension. If provided more than one axis, the function must flip only the specified axes. Default  <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
 </dd>
-<dt>out:</dt><dd><p>optional output array, for writing the result to. It must have a shape that the inputs broadcast to.</p>
-</dd>
-</dl>
-<dl class="simple">
-<dt>return:</dt><dd><p>an output array having the same data type and shape as <code class="docutils literal notranslate"><span class="pre">x</span></code> and whose elements, relative to <code class="docutils literal notranslate"><span class="pre">x</span></code>, are reordered.</p>
+<dt>out</dt><dd><p>optional output array, for writing the result to. It must have a shape that the inputs broadcast to.</p>
 </dd>
 </dl>
+<blockquote>
+<div><dl class="simple">
+<dt>ret</dt><dd><p>an output array having the same data type and shape as <code class="docutils literal notranslate"><span class="pre">x</span></code> and whose elements, relative to <code class="docutils literal notranslate"><span class="pre">x</span></code>, are reordered.</p>
+</dd>
+</dl>
+</div></blockquote>
 </dd></dl>
 
 <dl class="py function">
@@ -347,63 +355,67 @@ Inserts a new axis that will appear at the axis position in the expanded array s
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">permute_dims</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">axes</span><span class="p">:</span> <span class="n">Tuple<span class="p">[</span>int<span class="p">, </span><span class="p">…</span><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">out</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../_modules/ivy/functional/ivy/manipulation.html#permute_dims"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.manipulation.permute_dims" title="Permalink to this definition">¶</a></dt>
 <dd><p>Permutes the axes (dimensions) of an array x.</p>
 <dl class="simple">
-<dt>x:</dt><dd><p>input array.</p>
+<dt>x</dt><dd><p>input array.</p>
 </dd>
-<dt>axes:</dt><dd><p>tuple containing a permutation of (0, 1, …, N-1) where N is the number of axes (dimensions) of x.</p>
+<dt>axes</dt><dd><p>tuple containing a permutation of (0, 1, …, N-1) where N is the number of axes (dimensions) of x.</p>
 </dd>
-<dt>out:</dt><dd><p>optional output array, for writing the result to. It must have a shape that the inputs broadcast to.</p>
-</dd>
-</dl>
-<dl class="simple">
-<dt>return:</dt><dd><p>an array containing the axes permutation. The returned array must have the same data type as x.</p>
+<dt>out</dt><dd><p>optional output array, for writing the result to. It must have a shape that the inputs broadcast to.</p>
 </dd>
 </dl>
+<blockquote>
+<div><dl class="simple">
+<dt>ret</dt><dd><p>an array containing the axes permutation. The returned array must have the same data type as x.</p>
+</dd>
+</dl>
+</div></blockquote>
 </dd></dl>
 
 <dl class="py function">
 <dt id="ivy.functional.ivy.manipulation.repeat">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">repeat</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">repeats</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>int<span class="p">, </span>Iterable<span class="p">[</span>int<span class="p">]</span><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">axis</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>int<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">out</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/manipulation.html#repeat"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.manipulation.repeat" title="Permalink to this definition">¶</a></dt>
 <dd><p>Repeat values along a given dimension</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>array</em>) – Input array.</p></li>
-<li><p><strong>repeats</strong> (<em>int</em><em> or </em><em>sequence of ints.</em>) – The number of repetitions for each element. repeats is broadcast to fit the shape of the given axis.</p></li>
-<li><p><strong>axis</strong> (<em>int</em><em>, </em><em>optional</em>) – The axis along which to repeat values.
-By default, use the flattened input array, and return a flat output array.</p></li>
-</ul>
+<dl class="simple">
+<dt>x </dt><dd><p>Input array.</p>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>The repeated output array.</p>
+<dt>repeats </dt><dd><p>The number of repetitions for each element. repeats is broadcast to fit the shape of the given axis.</p>
+</dd>
+<dt>axis </dt><dd><p>The axis along which to repeat values.
+By default, use the flattened input array, and return a flat output array.</p>
 </dd>
 </dl>
+<blockquote>
+<div><dl class="simple">
+<dt>ret</dt><dd><p>The repeated output array.</p>
+</dd>
+</dl>
+</div></blockquote>
 </dd></dl>
 
 <dl class="py function">
 <dt id="ivy.functional.ivy.manipulation.reshape">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">reshape</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">shape</span><span class="p">:</span> <span class="n">Tuple<span class="p">[</span>int<span class="p">, </span><span class="p">…</span><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">copy</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>bool<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">out</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../_modules/ivy/functional/ivy/manipulation.html#reshape"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.manipulation.reshape" title="Permalink to this definition">¶</a></dt>
 <dd><p>Gives a new shape to an array without changing its data.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>array</em>) – Tensor to be reshaped.</p></li>
-<li><p><strong>newshape</strong> (<em>int</em><em> or </em><em>sequence of ints</em>) – The new shape should be compatible with the original shape. One shape dimension can be -1.
-In this case, the value is inferred from the length of the array and remaining dimensions.</p></li>
-</ul>
+<dl class="simple">
+<dt>x </dt><dd><p>Tensor to be reshaped.</p>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Reshaped array.</p>
+<dt>newshape </dt><dd><p>The new shape should be compatible with the original shape. One shape dimension can be -1.
+In this case, the value is inferred from the length of the array and remaining dimensions.</p>
 </dd>
 </dl>
-<p>Examples:
-&gt;&gt;&gt; x = ivy.array([[1,2,3], [4,5,6]])
-&gt;&gt;&gt; y = ivy.reshape(x, (3,2))
-&gt;&gt;&gt; print(y)
-ivy.array([[1, 2],</p>
 <blockquote>
-<div><p>[3, 4],
-[5, 6]])</p>
+<div><dl class="simple">
+<dt>ret</dt><dd><p>Reshaped array.</p>
+</dd>
+</dl>
 </div></blockquote>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+<span class="go">ivy.array([[1, 2],</span>
+<span class="go">           [3, 4],</span>
+<span class="go">           [5, 6]])</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py function">
@@ -412,43 +424,48 @@ ivy.array([[1, 2],</p>
 <dd><p>Rolls array elements along a specified axis. Array elements that roll beyond the last position are re-introduced at the first position. Array elements that roll beyond the first position are re-introduced at the last position.
 Parameters
 ———-
-x: array</p>
+x</p>
 <blockquote>
 <div><p>input array.</p>
 </div></blockquote>
 <dl class="simple">
-<dt>shift: Union[int, Tuple[int, …]]</dt><dd><p>number of places by which the elements are shifted. If <code class="docutils literal notranslate"><span class="pre">shift</span></code> is a tuple, then <code class="docutils literal notranslate"><span class="pre">axis</span></code> must be a tuple of the same size, and each of the given axes must be shifted by the corresponding element in <code class="docutils literal notranslate"><span class="pre">shift</span></code>. If <code class="docutils literal notranslate"><span class="pre">shift</span></code> is an <code class="docutils literal notranslate"><span class="pre">int</span></code> and <code class="docutils literal notranslate"><span class="pre">axis</span></code> a tuple, then the same <code class="docutils literal notranslate"><span class="pre">shift</span></code> must be used for all specified axes. If a shift is positive, then array elements must be shifted positively (toward larger indices) along the dimension of <code class="docutils literal notranslate"><span class="pre">axis</span></code>. If a shift is negative, then array elements must be shifted negatively (toward smaller indices) along the dimension of <code class="docutils literal notranslate"><span class="pre">axis</span></code>.</p>
+<dt>shift</dt><dd><p>number of places by which the elements are shifted. If <code class="docutils literal notranslate"><span class="pre">shift</span></code> is a tuple, then <code class="docutils literal notranslate"><span class="pre">axis</span></code> must be a tuple of the same size, and each of the given axes must be shifted by the corresponding element in <code class="docutils literal notranslate"><span class="pre">shift</span></code>. If <code class="docutils literal notranslate"><span class="pre">shift</span></code> is an <code class="docutils literal notranslate"><span class="pre">int</span></code> and <code class="docutils literal notranslate"><span class="pre">axis</span></code> a tuple, then the same <code class="docutils literal notranslate"><span class="pre">shift</span></code> must be used for all specified axes. If a shift is positive, then array elements must be shifted positively (toward larger indices) along the dimension of <code class="docutils literal notranslate"><span class="pre">axis</span></code>. If a shift is negative, then array elements must be shifted negatively (toward smaller indices) along the dimension of <code class="docutils literal notranslate"><span class="pre">axis</span></code>.</p>
 </dd>
-<dt>axis: Optional[Union[int, Tuple[int, …]]]</dt><dd><p>axis (or axes) along which elements to shift. If <code class="docutils literal notranslate"><span class="pre">axis</span></code> is <code class="docutils literal notranslate"><span class="pre">None</span></code>, the array must be flattened, shifted, and then restored to its original shape. Default: <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+<dt>axis</dt><dd><p>axis (or axes) along which elements to shift. If <code class="docutils literal notranslate"><span class="pre">axis</span></code> is <code class="docutils literal notranslate"><span class="pre">None</span></code>, the array must be flattened, shifted, and then restored to its original shape. Default  <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
 </dd>
-<dt>out:</dt><dd><p>optional output array, for writing the result to. It must have a shape that the inputs broadcast to.</p>
-</dd>
-</dl>
-<dl class="simple">
-<dt>return: array</dt><dd><p>an output array having the same data type as <code class="docutils literal notranslate"><span class="pre">x</span></code> and whose elements, relative to <code class="docutils literal notranslate"><span class="pre">x</span></code>, are shifted.</p>
+<dt>out</dt><dd><p>optional output array, for writing the result to. It must have a shape that the inputs broadcast to.</p>
 </dd>
 </dl>
+<blockquote>
+<div><dl class="simple">
+<dt>ret</dt><dd><p>an output array having the same data type as <code class="docutils literal notranslate"><span class="pre">x</span></code> and whose elements, relative to <code class="docutils literal notranslate"><span class="pre">x</span></code>, are shifted.</p>
+</dd>
+</dl>
+</div></blockquote>
 </dd></dl>
 
 <dl class="py function">
 <dt id="ivy.functional.ivy.manipulation.split">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">split</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">num_or_size_splits</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Union<span class="p">[</span>int<span class="p">, </span>Iterable<span class="p">[</span>int<span class="p">]</span><span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">axis</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">0</span></em>, <em class="sig-param"><span class="n">with_remainder</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/manipulation.html#split"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.manipulation.split" title="Permalink to this definition">¶</a></dt>
 <dd><p>Splits an array into multiple sub-arrays.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>array</em>) – Tensor to be divided into sub-arrays.</p></li>
-<li><p><strong>num_or_size_splits</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of equal arrays to divide the array into along the given axis if an integer.
-The size of each split element if a sequence of integers.
-Default is to divide into as many 1-dimensional arrays as the axis dimension.</p></li>
-<li><p><strong>axis</strong> (<em>int</em><em>, </em><em>optional</em>) – The axis along which to split, default is 0.</p></li>
-<li><p><strong>with_remainder</strong> (<em>bool</em><em>, </em><em>optional</em>) – If the tensor does not split evenly, then store the last remainder entry. Default is False.</p></li>
-</ul>
+<dl class="simple">
+<dt>x </dt><dd><p>Tensor to be divided into sub-arrays.</p>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>A list of sub-arrays.</p>
+<dt>num_or_size_splits </dt><dd><p>Number of equal arrays to divide the array into along the given axis if an integer.
+The size of each split element if a sequence of integers.
+Default is to divide into as many 1-dimensional arrays as the axis dimension.</p>
+</dd>
+<dt>axis </dt><dd><p>The axis along which to split, default is 0.</p>
+</dd>
+<dt>with_remainder </dt><dd><p>If the tensor does not split evenly, then store the last remainder entry. Default is False.</p>
 </dd>
 </dl>
+<blockquote>
+<div><dl class="simple">
+<dt>ret</dt><dd><p>A list of sub-arrays.</p>
+</dd>
+</dl>
+</div></blockquote>
 </dd></dl>
 
 <dl class="py function">
@@ -457,20 +474,22 @@ Default is to divide into as many 1-dimensional arrays as the axis dimension.</p
 <dd><p>Removes singleton dimensions (axes) from <code class="docutils literal notranslate"><span class="pre">x</span></code>.
 Parameters
 ———-
-x: array</p>
+x</p>
 <blockquote>
 <div><p>input array.</p>
 </div></blockquote>
 <dl class="simple">
-<dt>axis: Union[int, Tuple[int, …]]</dt><dd><p>axis (or axes) to squeeze. If a specified axis has a size greater than one, a <code class="docutils literal notranslate"><span class="pre">ValueError</span></code> must be raised.</p>
+<dt>axis</dt><dd><p>axis (or axes) to squeeze. If a specified axis has a size greater than one, a <code class="docutils literal notranslate"><span class="pre">ValueError</span></code> must be raised.</p>
 </dd>
-<dt>out:</dt><dd><p>optional output array, for writing the result to. It must have a shape that the inputs broadcast to.</p>
-</dd>
-</dl>
-<dl class="simple">
-<dt>return: array</dt><dd><p>an output array having the same data type and elements as <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p>
+<dt>out</dt><dd><p>optional output array, for writing the result to. It must have a shape that the inputs broadcast to.</p>
 </dd>
 </dl>
+<blockquote>
+<div><dl class="simple">
+<dt>ret</dt><dd><p>an output array having the same data type and elements as <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p>
+</dd>
+</dl>
+</div></blockquote>
 </dd></dl>
 
 <dl class="py function">
@@ -478,74 +497,80 @@ x: array</p>
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">stack</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">arrays</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>Tuple<span class="p">[</span>ivy.array.Array<span class="p">]</span><span class="p">, </span>List<span class="p">[</span>ivy.array.Array<span class="p">]</span><span class="p">, </span>Tuple<span class="p">[</span>ivy.NativeArray<span class="p">]</span><span class="p">, </span>List<span class="p">[</span>ivy.NativeArray<span class="p">]</span><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">axis</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">0</span></em>, <em class="sig-param"><span class="n">out</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../_modules/ivy/functional/ivy/manipulation.html#stack"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.manipulation.stack" title="Permalink to this definition">¶</a></dt>
 <dd><p>Joins a sequence of arrays along a new axis.</p>
 <dl class="simple">
-<dt>arrays:</dt><dd><p>input arrays to join. Each array must have the same shape.</p>
+<dt>arrays</dt><dd><p>input arrays to join. Each array must have the same shape.</p>
 </dd>
-<dt>axis:</dt><dd><p>axis along which the arrays will be joined. Providing an <code class="docutils literal notranslate"><span class="pre">axis</span></code> specifies the index of the new axis in the dimensions of the result. For example, if <code class="docutils literal notranslate"><span class="pre">axis</span></code> is <code class="docutils literal notranslate"><span class="pre">0</span></code>, the new axis will be the first dimension and the output array will have shape <code class="docutils literal notranslate"><span class="pre">(N,</span> <span class="pre">A,</span> <span class="pre">B,</span> <span class="pre">C)</span></code>; if <code class="docutils literal notranslate"><span class="pre">axis</span></code> is <code class="docutils literal notranslate"><span class="pre">1</span></code>, the new axis will be the second dimension and the output array will have shape <code class="docutils literal notranslate"><span class="pre">(A,</span> <span class="pre">N,</span> <span class="pre">B,</span> <span class="pre">C)</span></code>; and, if <code class="docutils literal notranslate"><span class="pre">axis</span></code> is <code class="docutils literal notranslate"><span class="pre">-1</span></code>, the new axis will be the last dimension and the output array will have shape <code class="docutils literal notranslate"><span class="pre">(A,</span> <span class="pre">B,</span> <span class="pre">C,</span> <span class="pre">N)</span></code>. A valid <code class="docutils literal notranslate"><span class="pre">axis</span></code> must be on the interval <code class="docutils literal notranslate"><span class="pre">[-N,</span> <span class="pre">N)</span></code>, where <code class="docutils literal notranslate"><span class="pre">N</span></code> is the rank (number of dimensions) of <code class="docutils literal notranslate"><span class="pre">x</span></code>. If provided an <code class="docutils literal notranslate"><span class="pre">axis</span></code> outside of the required interval, the function must raise an exception. Default: <code class="docutils literal notranslate"><span class="pre">0</span></code>.</p>
+<dt>axis</dt><dd><p>axis along which the arrays will be joined. Providing an <code class="docutils literal notranslate"><span class="pre">axis</span></code> specifies the index of the new axis in the dimensions of the result. For example, if <code class="docutils literal notranslate"><span class="pre">axis</span></code> is <code class="docutils literal notranslate"><span class="pre">0</span></code>, the new axis will be the first dimension and the output array will have shape <code class="docutils literal notranslate"><span class="pre">(N,</span> <span class="pre">A,</span> <span class="pre">B,</span> <span class="pre">C)</span></code>; if <code class="docutils literal notranslate"><span class="pre">axis</span></code> is <code class="docutils literal notranslate"><span class="pre">1</span></code>, the new axis will be the second dimension and the output array will have shape <code class="docutils literal notranslate"><span class="pre">(A,</span> <span class="pre">N,</span> <span class="pre">B,</span> <span class="pre">C)</span></code>; and, if <code class="docutils literal notranslate"><span class="pre">axis</span></code> is <code class="docutils literal notranslate"><span class="pre">-1</span></code>, the new axis will be the last dimension and the output array will have shape <code class="docutils literal notranslate"><span class="pre">(A,</span> <span class="pre">B,</span> <span class="pre">C,</span> <span class="pre">N)</span></code>. A valid <code class="docutils literal notranslate"><span class="pre">axis</span></code> must be on the interval <code class="docutils literal notranslate"><span class="pre">[-N,</span> <span class="pre">N)</span></code>, where <code class="docutils literal notranslate"><span class="pre">N</span></code> is the rank (number of dimensions) of <code class="docutils literal notranslate"><span class="pre">x</span></code>. If provided an <code class="docutils literal notranslate"><span class="pre">axis</span></code> outside of the required interval, the function must raise an exception. Default: <code class="docutils literal notranslate"><span class="pre">0</span></code>.</p>
 </dd>
-<dt>out:</dt><dd><p>optional output array, for writing the result to. It must have a shape that the inputs broadcast to.</p>
+<dt>out</dt><dd><p>optional output array, for writing the result to. It must have a shape that the inputs broadcast to.</p>
 </dd>
 </dl>
-<dl>
-<dt>return:</dt><dd><p>an output array having rank <code class="docutils literal notranslate"><span class="pre">N+1</span></code>, where <code class="docutils literal notranslate"><span class="pre">N</span></code> is the rank (number of dimensions) of <code class="docutils literal notranslate"><span class="pre">x</span></code>. If the input arrays have different data types, normal <span class="xref std std-ref">type-promotion</span> must apply. If the input arrays have the same data type, the output array must have the same data type as the input arrays.
+<blockquote>
+<div><dl>
+<dt>ret</dt><dd><p>an output array having rank <code class="docutils literal notranslate"><span class="pre">N+1</span></code>, where <code class="docutils literal notranslate"><span class="pre">N</span></code> is the rank (number of dimensions) of <code class="docutils literal notranslate"><span class="pre">x</span></code>. If the input arrays have different data types, normal ref:<cite>type-promotion</cite> must apply. If the input arrays have the same data type, the output array must have the same data type as the input arrays.
 .. note:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>This specification leaves type promotion between data type families (i.e., ``intxx`` and ``floatxx``) unspecified.
 </pre></div>
 </div>
 </dd>
 </dl>
+</div></blockquote>
 </dd></dl>
 
 <dl class="py function">
 <dt id="ivy.functional.ivy.manipulation.swapaxes">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">swapaxes</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">axis0</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">axis1</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">out</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/manipulation.html#swapaxes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.manipulation.swapaxes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Interchange two axes of an array.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>array</em>) – Input array.</p></li>
-<li><p><strong>axis0</strong> (<em>int</em>) – First axis to be swapped.</p></li>
-<li><p><strong>axis1</strong> (<em>int</em>) – Second axis to be swapped.</p></li>
-</ul>
+<dl class="simple">
+<dt>x </dt><dd><p>Input array.</p>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>x with its axes permuted.</p>
+<dt>axis0 </dt><dd><p>First axis to be swapped.</p>
+</dd>
+<dt>axis1 </dt><dd><p>Second axis to be swapped.</p>
 </dd>
 </dl>
+<blockquote>
+<div><dl class="simple">
+<dt>ret</dt><dd><p>x with its axes permuted.</p>
+</dd>
+</dl>
+</div></blockquote>
 </dd></dl>
 
 <dl class="py function">
 <dt id="ivy.functional.ivy.manipulation.tile">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">tile</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">reps</span><span class="p">:</span> <span class="n">Iterable<span class="p">[</span>int<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">out</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/manipulation.html#tile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.manipulation.tile" title="Permalink to this definition">¶</a></dt>
 <dd><p>Constructs an array by repeating x the number of times given by reps.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>array</em>) – Input array.</p></li>
-<li><p><strong>reps</strong> (<em>sequence of ints</em>) – The number of repetitions of x along each axis.</p></li>
-</ul>
+<dl class="simple">
+<dt>x </dt><dd><p>Input array.</p>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>The tiled output array.</p>
+<dt>reps </dt><dd><p>The number of repetitions of x along each axis.</p>
 </dd>
 </dl>
+<blockquote>
+<div><dl class="simple">
+<dt>ret</dt><dd><p>The tiled output array.</p>
+</dd>
+</dl>
+</div></blockquote>
 </dd></dl>
 
 <dl class="py function">
 <dt id="ivy.functional.ivy.manipulation.zero_pad">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">zero_pad</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">pad_width</span><span class="p">:</span> <span class="n">Iterable<span class="p">[</span>Tuple<span class="p">[</span>int<span class="p">]</span><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">out</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/manipulation.html#zero_pad"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.manipulation.zero_pad" title="Permalink to this definition">¶</a></dt>
 <dd><p>Pads an array with zeros.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>array</em>) – Input array to pad.</p></li>
-<li><p><strong>pad_width</strong> (<em>sequence of tuples of ints</em>) – Number of values padded to the edges of each axis.
-Specified as ((before_1, after_1), … (before_N, after_N)), where N is number of axes of x.</p></li>
-</ul>
+<dl class="simple">
+<dt>x </dt><dd><p>Input array to pad.</p>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Padded array of rank equal to x with shape increased according to pad_width.</p>
+<dt>pad_width </dt><dd><p>Number of values padded to the edges of each axis.
+Specified as ((before_1, after_1), … (before_N, after_N)), where N is number of axes of x.</p>
 </dd>
 </dl>
+<blockquote>
+<div><dl class="simple">
+<dt>ret</dt><dd><p>Padded array of rank equal to x with shape increased according to pad_width.</p>
+</dd>
+</dl>
+</div></blockquote>
 </dd></dl>
 
 <div class="toctree-wrapper compound">

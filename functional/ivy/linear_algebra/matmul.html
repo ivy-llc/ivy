@@ -263,13 +263,12 @@
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">matmul</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x1</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">x2</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../../_modules/ivy/functional/ivy/linear_algebra.html#matmul"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.linear_algebra.matmul" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes the matrix product.</p>
 <dl class="simple">
-<dt>x1:</dt><dd><p>x1 (array) – first input array. Should have a numeric data type. Must have at least one dimension.</p>
+<dt>x1</dt><dd><p>first input array. Should have a numeric data type. Must have at least one dimension.</p>
 </dd>
-<dt>x2:</dt><dd><p>x2 (array) – second input array. Should have a numeric data type. Must have at least one dimension.</p>
+<dt>x2</dt><dd><p>second input array. Should have a numeric data type. Must have at least one dimension.</p>
 </dd>
-</dl>
-<dl class="simple">
-<dt>out(array):</dt><dd><p>if both x1 and x2 are one-dimensional arrays having shape (N,), a zero-dimensional array containing the inner product as its only element.
+<dt>Returns</dt><dd></dd>
+<dt>ret</dt><dd><p>if both x1 and x2 are one-dimensional arrays having shape (N,), a zero-dimensional array containing the inner product as its only element.
 if x1 is a two-dimensional array having shape (M, K) and x2 is a two-dimensional array having shape (K, N), a two-dimensional array containing the conventional matrix product and having shape (M, N).
 if x1 is a one-dimensional array having shape (K,) and x2 is an array having shape (…, K, N), an array having shape (…, N) (i.e., prepended dimensions during vector-to-matrix promotion must be removed) and containing the conventional matrix product.
 if x1 is an array having shape (…, M, K) and x2 is a one-dimensional array having shape (K,), an array having shape (…, M) (i.e., appended dimensions during vector-to-matrix promotion must be removed) and containing the conventional matrix product.

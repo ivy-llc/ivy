@@ -254,17 +254,19 @@
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">flip</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">axis</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Union<span class="p">[</span>int<span class="p">, </span>Tuple<span class="p">[</span>int<span class="p">]</span><span class="p">, </span>List<span class="p">[</span>int<span class="p">]</span><span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">out</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../../_modules/ivy/functional/ivy/manipulation.html#flip"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.manipulation.flip" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reverses the order of elements in an array along the given axis. The shape of the array must be preserved.</p>
 <dl class="simple">
-<dt>x:</dt><dd><p>input array.</p>
+<dt>x</dt><dd><p>input array.</p>
 </dd>
-<dt>axis:</dt><dd><p>axis (or axes) along which to flip. If <code class="docutils literal notranslate"><span class="pre">axis</span></code> is <code class="docutils literal notranslate"><span class="pre">None</span></code>, the function must flip all input array axes. If <code class="docutils literal notranslate"><span class="pre">axis</span></code> is negative, the function must count from the last dimension. If provided more than one axis, the function must flip only the specified axes. Default: <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+<dt>axis</dt><dd><p>axis (or axes) along which to flip. If <code class="docutils literal notranslate"><span class="pre">axis</span></code> is <code class="docutils literal notranslate"><span class="pre">None</span></code>, the function must flip all input array axes. If <code class="docutils literal notranslate"><span class="pre">axis</span></code> is negative, the function must count from the last dimension. If provided more than one axis, the function must flip only the specified axes. Default  <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
 </dd>
-<dt>out:</dt><dd><p>optional output array, for writing the result to. It must have a shape that the inputs broadcast to.</p>
-</dd>
-</dl>
-<dl class="simple">
-<dt>return:</dt><dd><p>an output array having the same data type and shape as <code class="docutils literal notranslate"><span class="pre">x</span></code> and whose elements, relative to <code class="docutils literal notranslate"><span class="pre">x</span></code>, are reordered.</p>
+<dt>out</dt><dd><p>optional output array, for writing the result to. It must have a shape that the inputs broadcast to.</p>
 </dd>
 </dl>
+<blockquote>
+<div><dl class="simple">
+<dt>ret</dt><dd><p>an output array having the same data type and shape as <code class="docutils literal notranslate"><span class="pre">x</span></code> and whose elements, relative to <code class="docutils literal notranslate"><span class="pre">x</span></code>, are reordered.</p>
+</dd>
+</dl>
+</div></blockquote>
 </dd></dl>
 
 <div class="line-block">

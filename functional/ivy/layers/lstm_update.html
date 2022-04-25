@@ -250,22 +250,28 @@
 <dt id="ivy.functional.ivy.layers.lstm_update">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">lstm_update</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">init_h</span></em>, <em class="sig-param"><span class="n">init_c</span></em>, <em class="sig-param"><span class="n">kernel</span></em>, <em class="sig-param"><span class="n">recurrent_kernel</span></em>, <em class="sig-param"><span class="n">bias</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">recurrent_bias</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/layers.html#lstm_update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.layers.lstm_update" title="Permalink to this definition">¶</a></dt>
 <dd><p>Perform long-short term memory update by unrolling time dimension of input array.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>array</em>) – input tensor of LSTM layer <em>[batch_shape, t, in]</em>.</p></li>
-<li><p><strong>init_h</strong> (<em>array</em>) – initial state tensor for the cell output <em>[batch_shape, out]</em>.</p></li>
-<li><p><strong>init_c</strong> (<em>array</em>) – initial state tensor for the cell hidden state <em>[batch_shape, out]</em>.</p></li>
-<li><p><strong>kernel</strong> (<em>array</em>) – weights for cell kernel <em>[in, 4 x out]</em>.</p></li>
-<li><p><strong>recurrent_kernel</strong> (<em>array</em>) – weights for cell recurrent kernel <em>[out, 4 x out]</em>.</p></li>
-<li><p><strong>bias</strong> (<em>array</em>) – bias for cell kernel <em>[4 x out]</em>.</p></li>
-<li><p><strong>recurrent_bias</strong> (<em>array</em>) – bias for cell recurrent kernel <em>[4 x out]</em>.</p></li>
-</ul>
+<dl class="simple">
+<dt>x </dt><dd><p>input tensor of LSTM layer <em>[batch_shape, t, in]</em>.</p>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>hidden state for all timesteps <em>[batch_shape,t,out]</em> and cell state for last timestep <em>[batch_shape,out]</em></p>
+<dt>init_h </dt><dd><p>initial state tensor for the cell output <em>[batch_shape, out]</em>.</p>
+</dd>
+<dt>init_c </dt><dd><p>initial state tensor for the cell hidden state <em>[batch_shape, out]</em>.</p>
+</dd>
+<dt>kernel </dt><dd><p>weights for cell kernel <em>[in, 4 x out]</em>.</p>
+</dd>
+<dt>recurrent_kernel </dt><dd><p>weights for cell recurrent kernel <em>[out, 4 x out]</em>.</p>
+</dd>
+<dt>bias </dt><dd><p>bias for cell kernel <em>[4 x out]</em>. (Default value = None)</p>
+</dd>
+<dt>recurrent_bias </dt><dd><p>bias for cell recurrent kernel <em>[4 x out]</em>. (Default value = None)</p>
 </dd>
 </dl>
+<blockquote>
+<div><dl class="simple">
+<dt>ret</dt><dd><p>hidden state for all timesteps <em>[batch_shape,t,out]</em> and cell state for last timestep <em>[batch_shape,out]</em></p>
+</dd>
+</dl>
+</div></blockquote>
 </dd></dl>
 
 <div class="line-block">

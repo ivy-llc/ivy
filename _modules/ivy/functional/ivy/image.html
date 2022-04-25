@@ -240,49 +240,73 @@
 <span class="c1"># ------#</span>
 
 <div class="viewcode-block" id="stack_images"><a class="viewcode-back" href="../../../../functional/ivy/image/stack_images.html#ivy.functional.ivy.image.stack_images">[docs]</a><span class="k">def</span> <span class="nf">stack_images</span><span class="p">(</span><span class="n">images</span><span class="p">,</span> <span class="n">desired_aspect_ratio</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Stacks a group of images into a combined windowed image, fitting the desired aspect ratio as closely as possible.</span>
+    <span class="sd">&quot;&quot;&quot;Stacks a group of images into a combined windowed image, fitting the desired aspect ratio as closely as possible.</span>
 
-<span class="sd">    :param images: Sequence of image arrays to be stacked *[batch_shape,height,width,dims]* .</span>
-<span class="sd">    :type images: sequence of arrays</span>
-<span class="sd">    :param desired_aspect_ratio: Desired aspect ratio of stacked image.</span>
-<span class="sd">    :type desired_aspect_ratio: sequence of ints</span>
-<span class="sd">    :return: Stacked image, suitable for viewing in a single window.</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    images</span>
+<span class="sd">        Sequence of image arrays to be stacked *[batch_shape,height,width,dims]* .</span>
+<span class="sd">    desired_aspect_ratio</span>
+<span class="sd">        Desired aspect ratio of stacked image. (Default value = (1)</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">     ret</span>
+<span class="sd">        Stacked image, suitable for viewing in a single window.</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">images</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">stack_images</span><span class="p">(</span><span class="n">images</span><span class="p">,</span> <span class="n">desired_aspect_ratio</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="bilinear_resample"><a class="viewcode-back" href="../../../../functional/ivy/image/bilinear_resample.html#ivy.functional.ivy.image.bilinear_resample">[docs]</a><span class="k">def</span> <span class="nf">bilinear_resample</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">warp</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Performs bilinearly re-sampling on input image.</span>
+    <span class="sd">&quot;&quot;&quot;Performs bilinearly re-sampling on input image.</span>
 
-<span class="sd">    :param x: Input image *[batch_shape,h,w,dims]*.</span>
-<span class="sd">    :type x: array</span>
-<span class="sd">    :param warp: Warp array *[batch_shape,num_samples,2]*</span>
-<span class="sd">    :type warp: array</span>
-<span class="sd">    :return: Image after bilinear re-sampling.</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x</span>
+<span class="sd">        Input image *[batch_shape,h,w,dims]*.</span>
+<span class="sd">    warp</span>
+<span class="sd">        Warp array *[batch_shape,num_samples,2]*</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">     ret</span>
+<span class="sd">        Image after bilinear re-sampling.</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">bilinear_resample</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">warp</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="gradient_image"><a class="viewcode-back" href="../../../../functional/ivy/image/gradient_image.html#ivy.functional.ivy.image.gradient_image">[docs]</a><span class="k">def</span> <span class="nf">gradient_image</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Computes image gradients (dy, dx) for each channel.</span>
+    <span class="sd">&quot;&quot;&quot;Computes image gradients (dy, dx) for each channel.</span>
 
-<span class="sd">    :param x: Input image *[batch_shape, h, w, d]* .</span>
-<span class="sd">    :type x: array</span>
-<span class="sd">    :return: Gradient images dy *[batch_shape,h,w,d]* and dx *[batch_shape,h,w,d]* .</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x</span>
+<span class="sd">        Input image *[batch_shape, h, w, d]* .</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">     ret</span>
+<span class="sd">        Gradient images dy *[batch_shape,h,w,d]* and dx *[batch_shape,h,w,d]* .</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">gradient_image</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="float_img_to_uint8_img"><a class="viewcode-back" href="../../../../functional/ivy/image/float_img_to_uint8_img.html#ivy.functional.ivy.image.float_img_to_uint8_img">[docs]</a><span class="k">def</span> <span class="nf">float_img_to_uint8_img</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Converts an image of floats into a bit-cast 4-channel image of uint8s, which can be saved to disk.</span>
+    <span class="sd">&quot;&quot;&quot;Converts an image of floats into a bit-cast 4-channel image of uint8s, which can be saved to disk.</span>
 
-<span class="sd">    :param x: Input float image *[batch_shape,h,w]*.</span>
-<span class="sd">    :type x: array</span>
-<span class="sd">    :return: The new encoded uint8 image *[batch_shape,h,w,4]* .</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x</span>
+<span class="sd">        Input float image *[batch_shape,h,w]*.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">     ret</span>
+<span class="sd">        The new encoded uint8 image *[batch_shape,h,w,4]* .</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">x_np</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
     <span class="n">x_shape</span> <span class="o">=</span> <span class="n">x_np</span><span class="o">.</span><span class="n">shape</span>
@@ -292,12 +316,18 @@
 
 
 <div class="viewcode-block" id="uint8_img_to_float_img"><a class="viewcode-back" href="../../../../functional/ivy/image/uint8_img_to_float_img.html#ivy.functional.ivy.image.uint8_img_to_float_img">[docs]</a><span class="k">def</span> <span class="nf">uint8_img_to_float_img</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Converts an image of uint8 values into a bit-cast float image.</span>
+    <span class="sd">&quot;&quot;&quot;Converts an image of uint8 values into a bit-cast float image.</span>
 
-<span class="sd">    :param x: Input uint8 image *[batch_shape,h,w,4]*.</span>
-<span class="sd">    :type x: array</span>
-<span class="sd">    :return: The new float image *[batch_shape,h,w]*</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x</span>
+<span class="sd">        Input uint8 image *[batch_shape,h,w,4]*.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">     ret</span>
+<span class="sd">        The new float image *[batch_shape,h,w]*</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">x_np</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
     <span class="n">x_shape</span> <span class="o">=</span> <span class="n">x_np</span><span class="o">.</span><span class="n">shape</span>
@@ -307,18 +337,24 @@
 
 
 <div class="viewcode-block" id="random_crop"><a class="viewcode-back" href="../../../../functional/ivy/image/random_crop.html#ivy.functional.ivy.image.random_crop">[docs]</a><span class="k">def</span> <span class="nf">random_crop</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">crop_size</span><span class="p">,</span> <span class="n">batch_shape</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">image_dims</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Randomly crops the input images.</span>
+    <span class="sd">&quot;&quot;&quot;Randomly crops the input images.</span>
 
-<span class="sd">    :param x: Input images to crop *[batch_shape,h,w,f]*</span>
-<span class="sd">    :type x: array</span>
-<span class="sd">    :param crop_size: The 2D crop size.</span>
-<span class="sd">    :type crop_size: sequence of ints</span>
-<span class="sd">    :param batch_shape: Shape of batch. Inferred from inputs if None.</span>
-<span class="sd">    :type batch_shape: sequence of ints, optional</span>
-<span class="sd">    :param image_dims: Image dimensions. Inferred from inputs in None.</span>
-<span class="sd">    :type image_dims: sequence of ints, optional</span>
-<span class="sd">    :return: The new cropped image *[batch_shape,nh,nw,f]*</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x</span>
+<span class="sd">        Input images to crop *[batch_shape,h,w,f]*</span>
+<span class="sd">    crop_size</span>
+<span class="sd">        The 2D crop size.</span>
+<span class="sd">    batch_shape</span>
+<span class="sd">        Shape of batch. Inferred from inputs if None. (Default value = None)</span>
+<span class="sd">    image_dims</span>
+<span class="sd">        Image dimensions. Inferred from inputs in None. (Default value = None)</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">     ret</span>
+<span class="sd">        The new cropped image *[batch_shape,nh,nw,f]*</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">x_shape</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span>
@@ -354,16 +390,22 @@
 
 <div class="viewcode-block" id="linear_resample"><a class="viewcode-back" href="../../../../functional/ivy/image/linear_resample.html#ivy.functional.ivy.image.linear_resample">[docs]</a><span class="k">def</span> <span class="nf">linear_resample</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span> <span class="n">num_samples</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">axis</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>\
         <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Performs linear re-sampling on input image.</span>
+    <span class="sd">&quot;&quot;&quot;Performs linear re-sampling on input image.</span>
 
-<span class="sd">    :param x: Input array</span>
-<span class="sd">    :type x: array</span>
-<span class="sd">    :param num_samples: The number of interpolated samples to take.</span>
-<span class="sd">    :type num_samples: int</span>
-<span class="sd">    :param axis: The axis along which to perform the resample. Default is last dimension.</span>
-<span class="sd">    :type axis: int, optional</span>
-<span class="sd">    :return: The array after the linear resampling.</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x</span>
+<span class="sd">        Input array</span>
+<span class="sd">    num_samples</span>
+<span class="sd">        The number of interpolated samples to take.</span>
+<span class="sd">    axis</span>
+<span class="sd">        The axis along which to perform the resample. Default is last dimension.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">     ret</span>
+<span class="sd">        The array after the linear resampling.</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">linear_resample</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">num_samples</span><span class="p">,</span> <span class="n">axis</span><span class="p">)</span></div>
 </pre></div>

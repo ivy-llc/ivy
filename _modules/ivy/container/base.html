@@ -282,60 +282,55 @@
 <div class="viewcode-block" id="ContainerBase"><a class="viewcode-back" href="../../../container/base/ContainerBase.html#ivy.container.base.ContainerBase">[docs]</a><span class="k">class</span> <span class="nc">ContainerBase</span><span class="p">(</span><span class="nb">dict</span><span class="p">,</span> <span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">):</span>
 
 <div class="viewcode-block" id="ContainerBase.__init__"><a class="viewcode-back" href="../../../container/base/ContainerBase.html#ivy.container.base.ContainerBase.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dict_in</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">queues</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">queue_load_sizes</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">container_combine_method</span><span class="o">=</span><span class="s1">&#39;list_join&#39;</span><span class="p">,</span>
-                 <span class="n">queue_timeout</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">print_limit</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">key_length_limit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">print_indent</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">print_line_spacing</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-                 <span class="n">ivyh</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">default_key_color</span><span class="o">=</span><span class="s1">&#39;green&#39;</span><span class="p">,</span> <span class="n">keyword_color_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">rebuild_child_containers</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-                 <span class="n">types_to_iteratively_nest</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">alphabetical_keys</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Initialize container object from input dict representation.</span>
+               <span class="n">queue_timeout</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">print_limit</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">key_length_limit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">print_indent</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">print_line_spacing</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+               <span class="n">ivyh</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">default_key_color</span><span class="o">=</span><span class="s1">&#39;green&#39;</span><span class="p">,</span> <span class="n">keyword_color_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">rebuild_child_containers</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+               <span class="n">types_to_iteratively_nest</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">alphabetical_keys</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialize container object from input dict representation.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        dict_in : dict_in: dict, optional</span>
+<span class="sd">        dict_in</span>
 <span class="sd">            the dictionary the container should wrap around. Default is None.</span>
-<span class="sd">        queues : sequence of multiprocessing queues, optional</span>
+<span class="sd">        queues</span>
 <span class="sd">            Sequence of multiprocessing queues, each of which returns containers.</span>
 <span class="sd">            This enables the current container to be passed around asynchronously while waiting for data.</span>
 <span class="sd">            Default is None.</span>
-<span class="sd">        queue_load_sizes : sequence of ints, optional</span>
+<span class="sd">        queue_load_sizes</span>
 <span class="sd">            Size of leading dimension of the containers returned by each queue. Default is None.</span>
-<span class="sd">        container_combine_method : str, optional</span>
+<span class="sd">        container_combine_method</span>
 <span class="sd">            The method to use for combining containers arriving from different queues.</span>
 <span class="sd">            Default is ivy.Container.list_join</span>
-<span class="sd">        queue_timeout : float, optional</span>
+<span class="sd">        queue_timeout</span>
 <span class="sd">            The timeout when waiting for containers to arrive from the queues. Default is global.</span>
-<span class="sd">        print_limit : int_limit: int, optional</span>
+<span class="sd">        print_limit</span>
 <span class="sd">            The total array size limit when printing the container. Default is 10.</span>
-<span class="sd">        key_length_limit : int, optional</span>
+<span class="sd">        key_length_limit</span>
 <span class="sd">            The maximum key length when printing the container. Default is None.</span>
-<span class="sd">        print_indent : int_indent: int, optional</span>
+<span class="sd">        print_indent</span>
 <span class="sd">            The number of whitespaces to use for indenting when printing the container. Default is 4.</span>
-<span class="sd">        print_line_spacing : int_line_spacing: int, optional</span>
+<span class="sd">        print_line_spacing</span>
 <span class="sd">            The number of extra newlines to use between keys when printing the container.</span>
 <span class="sd">            Default is 0.</span>
-<span class="sd">        ivyh : handle to ivy module, optional</span>
+<span class="sd">        ivyh</span>
 <span class="sd">            Handle to ivy module to use for the calculations. Default is None, which results in the global ivy.</span>
-<span class="sd">        default_key_color : str, optional</span>
+<span class="sd">        default_key_color</span>
 <span class="sd">            The default key color for printing the container to the terminal. Default is &#39;green&#39;.</span>
-<span class="sd">        keyword_color_dict : dict: dict, optional</span>
+<span class="sd">        keyword_color_dict</span>
 <span class="sd">            A dict mapping keywords to their termcolor color codes for printing the container. (Default value = None)</span>
-<span class="sd">        rebuild_child_containers : bool, optional</span>
+<span class="sd">        rebuild_child_containers</span>
 <span class="sd">            Whether to rebuild container found in dict_in with these constructor params.</span>
 <span class="sd">            Default is False, in which case the original container are kept as are.</span>
-<span class="sd">        types_to_iteratively_nest : seq of iterable types</span>
+<span class="sd">        types_to_iteratively_nest</span>
 <span class="sd">            The data types to nest iteratively in the dict structure, each type must be</span>
 <span class="sd">            iterable. Default is None.</span>
-<span class="sd">        alphabetical_keys : bool, optional</span>
+<span class="sd">        alphabetical_keys</span>
 <span class="sd">            Whether to sort the container keys alphabetically, or preserve the dict order.</span>
 <span class="sd">            Default is True.</span>
-<span class="sd">        kwargs : keyword arguments.</span>
+<span class="sd">        kwargs</span>
 <span class="sd">            keyword arguments for dict creation. Default is None.</span>
-<span class="sd">        **kwargs :</span>
-
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">_queues</span> <span class="o">=</span> <span class="n">queues</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_container_combine_method</span> <span class="o">=</span> <span class="n">container_combine_method</span>
         <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_queues</span><span class="p">):</span>
@@ -391,9 +386,9 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        containers : sequence of Container objects</span>
+<span class="sd">        containers</span>
 <span class="sd">            containers to list join</span>
-<span class="sd">        config : dict, optional</span>
+<span class="sd">        config</span>
 <span class="sd">            The configuration for the containers. Default is the same as container0.</span>
 
 <span class="sd">        Returns</span>
@@ -423,11 +418,11 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        containers : sequence of Container objects</span>
+<span class="sd">        containers</span>
 <span class="sd">            containers to list stack</span>
-<span class="sd">        dim : int</span>
+<span class="sd">        dim</span>
 <span class="sd">            dimension along which to list stack</span>
-<span class="sd">        config : dict, optional</span>
+<span class="sd">        config</span>
 <span class="sd">            The configuration for the containers. Default is the same as container0.</span>
 
 <span class="sd">        Returns</span>
@@ -466,13 +461,13 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        containers : sequence of Container objects</span>
+<span class="sd">        containers</span>
 <span class="sd">            containers to unify</span>
-<span class="sd">        dev : ivy.Device</span>
+<span class="sd">        dev</span>
 <span class="sd">            The device to unify the containers to.</span>
-<span class="sd">        mode : str</span>
+<span class="sd">        mode</span>
 <span class="sd">            The mode by which to unify, must be one of [ concat | mean | sum ]</span>
-<span class="sd">        axis : int, optional</span>
+<span class="sd">        axis</span>
 <span class="sd">            The axis along which to concattenate the container, if concat mode is set. Default is 0.</span>
 
 <span class="sd">        Returns</span>
@@ -484,17 +479,19 @@
                 <span class="s1">&#39;sum&#39;</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="o">.</span><span class="n">_sum_unify</span><span class="p">,</span>
                 <span class="s1">&#39;mean&#39;</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="o">.</span><span class="n">_mean_unify</span><span class="p">}[</span><span class="n">mode</span><span class="p">](</span><span class="n">containers</span><span class="p">,</span> <span class="n">dev</span><span class="p">,</span> <span class="n">axis</span><span class="p">)</span></div>
 
+
 <div class="viewcode-block" id="ContainerBase.stack"><a class="viewcode-back" href="../../../container/base/ContainerBase.html#ivy.container.base.ContainerBase.stack">[docs]</a>    <span class="nd">@staticmethod</span>
+
     <span class="k">def</span> <span class="nf">stack</span><span class="p">(</span><span class="n">containers</span><span class="p">,</span> <span class="n">dim</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Stack containers together along the specified dimension.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        containers : sequence of Container objects</span>
+<span class="sd">        containers</span>
 <span class="sd">            containers to stack</span>
-<span class="sd">        dim : int</span>
+<span class="sd">        dim</span>
 <span class="sd">            dimension along which to stack</span>
-<span class="sd">        config : dict, optional</span>
+<span class="sd">        config</span>
 <span class="sd">            The configuration for the containers. Default is the same as container0.</span>
 
 <span class="sd">        Returns</span>
@@ -531,11 +528,10 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        containers : sequence of Container objects</span>
+<span class="sd">        containers</span>
 <span class="sd">            containers to compare</span>
-<span class="sd">        config : dict, optional</span>
+<span class="sd">        config</span>
 <span class="sd">            The configuration for the containers. Default is the same as container_rightmost.</span>
-
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">            Combined containers</span>
@@ -572,25 +568,25 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        containers : sequence of Container objects</span>
+<span class="sd">        containers</span>
 <span class="sd">            containers to compare</span>
-<span class="sd">        mode : str, optional</span>
+<span class="sd">        mode</span>
 <span class="sd">            The mode of the diff operation, returning either all keys and values,</span>
 <span class="sd">            only those that are consist across the containers, or only the differences. Default is all.</span>
-<span class="sd">        diff_keys : str or list of strs, optional</span>
+<span class="sd">        diff_keys</span>
 <span class="sd">            The key/keys to add to the returned container when differences are found. Default is &quot;diff&quot;.</span>
-<span class="sd">        detect_key_diffs : bool, optional</span>
+<span class="sd">        detect_key_diffs</span>
 <span class="sd">            Whether to treat different keys as detected differences.</span>
 <span class="sd">            If not, the keys among the input containers are simply combined without flagging</span>
 <span class="sd">            differences. Default is True.</span>
-<span class="sd">        detect_value_diffs : bool, optional</span>
+<span class="sd">        detect_value_diffs</span>
 <span class="sd">            Whether to treat different values as detected differences. Default is True.</span>
-<span class="sd">        detect_shape_diffs : bool, optional</span>
+<span class="sd">        detect_shape_diffs</span>
 <span class="sd">            Whether to treat different array shapes as detected differences. Default is True.</span>
-<span class="sd">        config : dict, optional</span>
+<span class="sd">        config</span>
 <span class="sd">            The configuration for the containers. Default is the same as container0.</span>
-<span class="sd">        *containers :</span>
-<span class="sd">            </span>
+<span class="sd">        *containers</span>
+
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -682,23 +678,23 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        containers : sequence of Container objects</span>
+<span class="sd">        containers</span>
 <span class="sd">            containers to compare</span>
-<span class="sd">        mode : str, optional</span>
+<span class="sd">        mode</span>
 <span class="sd">            The mode of the diff operation, returning either all keys and values,</span>
 <span class="sd">            only those that are consist across the containers, or only the differences. Default is all.</span>
-<span class="sd">        diff_keys : str or list of strs, optional</span>
+<span class="sd">        diff_keys</span>
 <span class="sd">            The key/keys to add to the returned container when differences are found. Default is &quot;diff&quot;.</span>
-<span class="sd">        detect_key_diffs : bool, optional</span>
+<span class="sd">        detect_key_diffs</span>
 <span class="sd">            Whether to treat different keys as detected differences.</span>
 <span class="sd">            If not, the keys among the input containers are simply combined without flagging</span>
 <span class="sd">            differences. Default is True.</span>
-<span class="sd">        detect_shape_diffs : bool, optional</span>
+<span class="sd">        detect_shape_diffs</span>
 <span class="sd">            Whether to treat different array shapes as detected differences. Default is True.</span>
-<span class="sd">        config : dict, optional</span>
+<span class="sd">        config</span>
 <span class="sd">            The configuration for the containers. Default is the same as container0.</span>
-<span class="sd">        *containers :</span>
-<span class="sd">            </span>
+<span class="sd">        *containers</span>
+
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -714,21 +710,21 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        func : python function</span>
+<span class="sd">        func</span>
 <span class="sd">            Function to apply to each container entry.</span>
-<span class="sd">        containers : sequence of Container objects</span>
+<span class="sd">        containers</span>
 <span class="sd">            containers to map.</span>
-<span class="sd">        key_chains : list or dict of strs, optional</span>
+<span class="sd">        key_chains</span>
 <span class="sd">            The key-chains to apply or not apply the method to. Default is None.</span>
-<span class="sd">        to_apply : bool, optional</span>
+<span class="sd">        to_apply</span>
 <span class="sd">            If True, the method will be applied to key_chains, otherwise key_chains will be skipped.</span>
 <span class="sd">            Default is True.</span>
-<span class="sd">        prune_unapplied : bool, optional</span>
+<span class="sd">        prune_unapplied</span>
 <span class="sd">            Whether to prune key_chains for which the function was not applied,</span>
 <span class="sd">            otherwise the leftmost container value is used. Default is False.</span>
-<span class="sd">        key_chain : str</span>
+<span class="sd">        key_chain</span>
 <span class="sd">            Chain of keys for this dict entry (Default value = &#39;&#39;)</span>
-<span class="sd">        config : dict, optional</span>
+<span class="sd">        config</span>
 <span class="sd">            The configuration for the containers. Default is the same as container0.</span>
 
 <span class="sd">        Returns</span>
@@ -767,7 +763,7 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        containers : list of containers</span>
+<span class="sd">        containers</span>
 <span class="sd">            Containers to check.</span>
 
 <span class="sd">        Returns</span>
@@ -787,24 +783,24 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        containers : sequence of Container objects</span>
+<span class="sd">        containers</span>
 <span class="sd">            containers to check.</span>
-<span class="sd">        check_types : bool, optional</span>
+<span class="sd">        check_types</span>
 <span class="sd">            Whether to check if the datatypes of the leaf nodes are the same. Default is True.</span>
-<span class="sd">        check_shapes : bool, optional</span>
+<span class="sd">        check_shapes</span>
 <span class="sd">            Whether to check if the shapes of the leaf nodes are the same. Default is True.</span>
-<span class="sd">        same_arrays : bool, optional</span>
+<span class="sd">        same_arrays</span>
 <span class="sd">            Whether to check if the arrays are the exact same instances. Default is True.</span>
-<span class="sd">        arrays_equal : bool, optional</span>
+<span class="sd">        arrays_equal</span>
 <span class="sd">            Whether to check if the arrays have equal values. Default is True.</span>
-<span class="sd">        key_chains : list or dict of strs, optional</span>
+<span class="sd">        key_chains</span>
 <span class="sd">            The key-chains to apply or not apply the method to. Default is None.</span>
-<span class="sd">        to_apply : bool, optional</span>
+<span class="sd">        to_apply</span>
 <span class="sd">            If True, the method will be applied to key_chains, otherwise key_chains will be skipped.</span>
 <span class="sd">            Default is True.</span>
-<span class="sd">        partial : bool, optional</span>
+<span class="sd">        partial</span>
 <span class="sd">            Whether to also check for partially complete sub-containers. Default is False.</span>
-<span class="sd">        key_chain : str</span>
+<span class="sd">        key_chain</span>
 <span class="sd">            Chain of keys for this dict entry (Default value = &#39;&#39;)</span>
 
 <span class="sd">        Returns</span>
@@ -859,26 +855,23 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        containers : sequence of Container objects</span>
+<span class="sd">        containers</span>
 <span class="sd">            containers to check.</span>
-<span class="sd">        check_types : bool, optional</span>
+<span class="sd">        check_types</span>
 <span class="sd">            Whether to check if the datatypes of the leaf nodes are the same. Default is True.</span>
-<span class="sd">        check_shapes : bool, optional</span>
+<span class="sd">        check_shapes</span>
 <span class="sd">            Whether to check if the shapes of the leaf nodes are the same. Default is True.</span>
-<span class="sd">        same_arrays : bool, optional</span>
+<span class="sd">        same_arrays</span>
 <span class="sd">            Whether to check if the arrays are the exact same instances. Default is True.</span>
-<span class="sd">        arrays_equal : bool, optional</span>
+<span class="sd">        arrays_equal</span>
 <span class="sd">            Whether to check if the arrays have equal values. Default is True.</span>
-<span class="sd">        key_chains : list or dict of strs, optional</span>
+<span class="sd">        key_chains</span>
 <span class="sd">            The key-chains to apply or not apply the method to. Default is None.</span>
-<span class="sd">        to_apply : bool, optional</span>
+<span class="sd">        to_apply</span>
 <span class="sd">            If True, the method will be applied to key_chains, otherwise key_chains will be skipped.</span>
 <span class="sd">            Default is True.</span>
-<span class="sd">        partial : bool, optional</span>
+<span class="sd">        partial</span>
 <span class="sd">            Whether to also check for partially complete sub-containers. Default is False.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">assert</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="o">.</span><span class="n">identical</span><span class="p">(</span>
@@ -892,20 +885,20 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        containers : sequence of Container objects</span>
+<span class="sd">        containers</span>
 <span class="sd">            containers to check.</span>
-<span class="sd">        check_types : bool, optional</span>
+<span class="sd">        check_types</span>
 <span class="sd">            Whether to also check whether the datatypes of the leaf nodes are the same. Default is True.</span>
-<span class="sd">        check_shapes : bool, optional</span>
+<span class="sd">        check_shapes</span>
 <span class="sd">            Whether to also check whether the shapes of the leaf nodes are the same. Default is True.</span>
-<span class="sd">        key_chains : list or dict of strs, optional</span>
+<span class="sd">        key_chains</span>
 <span class="sd">            The key-chains to apply or not apply the method to. Default is None.</span>
-<span class="sd">        to_apply : bool, optional</span>
+<span class="sd">        to_apply</span>
 <span class="sd">            If True, the method will be applied to key_chains, otherwise key_chains will be skipped.</span>
 <span class="sd">            Default is True.</span>
-<span class="sd">        partial : bool, optional</span>
+<span class="sd">        partial</span>
 <span class="sd">            Whether to also check for partially complete sub-containers. Default is False.</span>
-<span class="sd">        key_chain : str</span>
+<span class="sd">        key_chain</span>
 <span class="sd">            Chain of keys for this dict entry (Default value = &#39;&#39;)</span>
 
 <span class="sd">        Returns</span>
@@ -923,22 +916,19 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        containers : sequence of Container objects</span>
+<span class="sd">        containers</span>
 <span class="sd">            containers to check.</span>
-<span class="sd">        check_types : bool, optional</span>
+<span class="sd">        check_types</span>
 <span class="sd">            Whether to also check whether the datatypes of the leaf nodes are the same. Default is True.</span>
-<span class="sd">        check_shapes : bool, optional</span>
+<span class="sd">        check_shapes</span>
 <span class="sd">            Whether to also check whether the shapes of the leaf nodes are the same. Default is True.</span>
-<span class="sd">        key_chains : list or dict of strs, optional</span>
+<span class="sd">        key_chains</span>
 <span class="sd">            The key-chains to apply or not apply the method to. Default is None.</span>
-<span class="sd">        to_apply : bool, optional</span>
+<span class="sd">        to_apply</span>
 <span class="sd">            If True, the method will be applied to key_chains, otherwise key_chains will be skipped.</span>
 <span class="sd">            Default is True.</span>
-<span class="sd">        partial : bool, optional</span>
+<span class="sd">        partial</span>
 <span class="sd">            Whether to also check for partially complete sub-containers. Default is False.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">assert</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="o">.</span><span class="n">identical_structure</span><span class="p">(</span><span class="n">containers</span><span class="p">,</span> <span class="n">check_types</span><span class="p">,</span> <span class="n">check_shapes</span><span class="p">,</span> <span class="n">key_chains</span><span class="p">,</span> <span class="n">to_apply</span><span class="p">,</span> <span class="n">partial</span><span class="p">),</span>\
@@ -950,11 +940,8 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        containers : sequence of Container objects</span>
+<span class="sd">        containers</span>
 <span class="sd">            containers to check.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">containers</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span>
@@ -972,9 +959,9 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        containers : sequence of Container objects</span>
+<span class="sd">        containers</span>
 <span class="sd">            containers to check.</span>
-<span class="sd">        exclusive : bool, optional</span>
+<span class="sd">        exclusive</span>
 <span class="sd">            Whether to check if the data type is exclusively an array, rather than a variable</span>
 <span class="sd">            or traced array. (Default value = False)</span>
 
@@ -999,14 +986,14 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        h5_obj_or_filepath : str or h5 obj</span>
+<span class="sd">        h5_obj_or_filepath</span>
 <span class="sd">            Filepath where the container object is saved to disk, or h5 object.</span>
-<span class="sd">        slice_obj : slice_obj: slice or sequence of slices</span>
+<span class="sd">        slice_obj</span>
 <span class="sd">            slice object to slice all h5 elements. (Default value = slice(None))</span>
-<span class="sd">        alphabetical_keys : bool, optional</span>
+<span class="sd">        alphabetical_keys</span>
 <span class="sd">            Whether to sort the container keys alphabetically, or preserve the dict order.</span>
 <span class="sd">            Default is True.</span>
-<span class="sd">        ivyh : handle to ivy module, optional</span>
+<span class="sd">        ivyh</span>
 <span class="sd">            Handle to ivy module to use for the calculations. Default is None, which results in the global ivy.</span>
 
 <span class="sd">        Returns</span>
@@ -1038,9 +1025,9 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        pickle_filepath : str</span>
+<span class="sd">        pickle_filepath</span>
 <span class="sd">            Filepath where the container object is saved to disk.</span>
-<span class="sd">        ivyh : handle to ivy module, optional</span>
+<span class="sd">        ivyh</span>
 <span class="sd">            Handle to ivy module to use for the calculations. Default is None, which results in the global ivy.</span>
 
 <span class="sd">        Returns</span>
@@ -1058,9 +1045,9 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        json_filepath : str</span>
+<span class="sd">        json_filepath</span>
 <span class="sd">            Filepath where the container object is saved to disk.</span>
-<span class="sd">        ivyh : handle to ivy module, optional</span>
+<span class="sd">        ivyh</span>
 <span class="sd">            Handle to ivy module to use for the calculations. Default is None, which results in the global ivy.</span>
 
 <span class="sd">        Returns</span>
@@ -1077,7 +1064,7 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        h5_obj_or_filepath : str or h5 obj</span>
+<span class="sd">        h5_obj_or_filepath</span>
 <span class="sd">            Filepath where the container object is saved to disk, or h5 object.</span>
 
 <span class="sd">        Returns</span>
@@ -1112,13 +1099,10 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        h5_obj_or_filepath : str or h5 obj</span>
+<span class="sd">        h5_obj_or_filepath</span>
 <span class="sd">            Filepath where the container object is saved to disk, or h5 object.</span>
-<span class="sd">        seed_value : int</span>
+<span class="sd">        seed_value</span>
 <span class="sd">            random seed to use for array shuffling (Default value = 0)</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">_h5py</span><span class="p">):</span>
@@ -1148,11 +1132,11 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        containers : sequence of Container objects</span>
+<span class="sd">        containers</span>
 <span class="sd">            containers to reduce</span>
-<span class="sd">        reduction : callable with single list input x</span>
+<span class="sd">        reduction</span>
 <span class="sd">            the reduction function</span>
-<span class="sd">        config : dict, optional</span>
+<span class="sd">        config</span>
 <span class="sd">            The configuration for the containers. Default is the same as container0.</span>
 
 <span class="sd">        Returns</span>
@@ -1182,17 +1166,14 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        key_chain :</span>
-<span class="sd">            </span>
-<span class="sd">        replacement :</span>
+<span class="sd">        key_chain</span>
+<span class="sd">            param replacement: (Default value = &#39;__&#39;)</span>
+<span class="sd">        above_height</span>
+<span class="sd">            Default value = None)</span>
+<span class="sd">        below_depth</span>
+<span class="sd">            Default value = None)</span>
+<span class="sd">        replacement</span>
 <span class="sd">             (Default value = &#39;__&#39;)</span>
-<span class="sd">        above_height :</span>
-<span class="sd">             (Default value = None)</span>
-<span class="sd">        below_depth :</span>
-<span class="sd">             (Default value = None)</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># noinspection RegExpSingleCharAlternation</span>
@@ -1214,13 +1195,9 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        key :</span>
-<span class="sd">            </span>
-<span class="sd">        max_length :</span>
-<span class="sd">            </span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
+<span class="sd">        key</span>
+<span class="sd">            param max_length:</span>
+<span class="sd">        max_length</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">key_len</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
@@ -1234,7 +1211,7 @@
     <span class="c1"># ----------------#</span>
 
     <span class="k">def</span> <span class="nf">_get_shape</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        
+
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
             <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_queues</span><span class="p">):</span>
                 <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_queue_load_sizes_cum</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span>
@@ -1253,7 +1230,7 @@
                 <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">_np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="n">sub_shapes_array</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">_np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">min_num_dims</span><span class="p">)</span><span class="o">*</span><span class="nb">float</span><span class="p">(</span><span class="s1">&#39;nan&#39;</span><span class="p">))</span><span class="o">.</span><span class="n">tolist</span><span class="p">()]</span>
 
     <span class="k">def</span> <span class="nf">_get_shapes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        
+
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">kc</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span> <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="s1">&#39;shape&#39;</span><span class="p">)</span> <span class="k">else</span> <span class="kc">None</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_get_dev</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">as_str</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
@@ -1332,13 +1309,9 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        dict_in : container or dict</span>
+<span class="sd">        dict_in</span>
 <span class="sd">            New dict or container to update the current container inplace with.</span>
-<span class="sd">        **config :</span>
-<span class="sd">            </span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
+<span class="sd">        **config</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
 
@@ -1370,11 +1343,7 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        ivyh :</span>
-<span class="sd">            </span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
+<span class="sd">        ivyh</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_ivy</span> <span class="o">=</span> <span class="n">ivyh</span>
@@ -1387,16 +1356,16 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        assert_is_bool : bool: bool, optional</span>
+<span class="sd">        assert_is_bool</span>
 <span class="sd">            Whether or not to assert each entry is of type Boolean. (Default value = False)</span>
-<span class="sd">        key_chains : list or dict of strs, optional</span>
+<span class="sd">        key_chains</span>
 <span class="sd">            The key-chains to apply or not apply the method to. Default is None.</span>
-<span class="sd">        to_apply : bool, optional</span>
+<span class="sd">        to_apply</span>
 <span class="sd">            If True, the method will be applied to key_chains, otherwise key_chains will be skipped.</span>
 <span class="sd">            Default is True.</span>
-<span class="sd">        prune_unapplied : bool, optional</span>
+<span class="sd">        prune_unapplied</span>
 <span class="sd">            Whether to prune key_chains for which the function was not applied. Default is False.</span>
-<span class="sd">        map_sequences : bool, optional</span>
+<span class="sd">        map_sequences</span>
 <span class="sd">            Whether to also map method to sequences (lists, tuples). Default is False.</span>
 
 <span class="sd">        Returns</span>
@@ -1413,16 +1382,16 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        assert_is_bool : bool: bool, optional</span>
+<span class="sd">        assert_is_bool</span>
 <span class="sd">            Whether or not to assert each entry is of type Boolean. (Default value = False)</span>
-<span class="sd">        key_chains : list or dict of strs, optional</span>
+<span class="sd">        key_chains</span>
 <span class="sd">            The key-chains to apply or not apply the method to. Default is None.</span>
-<span class="sd">        to_apply : bool, optional</span>
+<span class="sd">        to_apply</span>
 <span class="sd">            If True, the method will be applied to key_chains, otherwise key_chains will be skipped.</span>
 <span class="sd">            Default is True.</span>
-<span class="sd">        prune_unapplied : bool, optional</span>
+<span class="sd">        prune_unapplied</span>
 <span class="sd">            Whether to prune key_chains for which the function was not applied. Default is False.</span>
-<span class="sd">        map_sequences : bool, optional</span>
+<span class="sd">        map_sequences</span>
 <span class="sd">            Whether to also map method to sequences (lists, tuples). Default is False.</span>
 
 <span class="sd">        Returns</span>
@@ -1439,22 +1408,22 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        axis : int or sequence of ints</span>
+<span class="sd">        axis</span>
 <span class="sd">            Axis or axes along which a sum is performed. The default, axis=None, will sum all of the elements</span>
 <span class="sd">            of the input array. If axis is negative it counts from the last to the first axis. If axis is a</span>
 <span class="sd">            tuple of ints, a sum is performed on all of the axes specified in the tuple instead of a single</span>
 <span class="sd">            axis or all the axes as before.</span>
-<span class="sd">        keepdims : bool, optional</span>
+<span class="sd">        keepdims</span>
 <span class="sd">            If this is set to True, the axes which are reduced are left in the result as dimensions with</span>
 <span class="sd">            size one. With this option, the result will broadcast correctly against the input array. (Default value = False)</span>
-<span class="sd">        key_chains : list or dict of strs, optional</span>
+<span class="sd">        key_chains</span>
 <span class="sd">            The key-chains to apply or not apply the method to. Default is None.</span>
-<span class="sd">        to_apply : bool, optional</span>
+<span class="sd">        to_apply</span>
 <span class="sd">            If True, the method will be applied to key_chains, otherwise key_chains will be skipped.</span>
 <span class="sd">            Default is True.</span>
-<span class="sd">        prune_unapplied : bool, optional</span>
+<span class="sd">        prune_unapplied</span>
 <span class="sd">            Whether to prune key_chains for which the function was not applied. Default is False.</span>
-<span class="sd">        map_sequences : bool, optional</span>
+<span class="sd">        map_sequences</span>
 <span class="sd">            Whether to also map method to sequences (lists, tuples). Default is False.</span>
 
 <span class="sd">        Returns</span>
@@ -1471,22 +1440,22 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        axis : int or sequence of ints</span>
+<span class="sd">        axis</span>
 <span class="sd">            Axis or axes along which a product is performed. The default, axis=None, will multiply all of the</span>
 <span class="sd">            elements of the input array. If axis is negative it counts from the last to the first axis. If axis</span>
 <span class="sd">            is a tuple of ints, a multiplication is performed on all of the axes specified in the tuple instead</span>
 <span class="sd">            of a single axis or all the axes as before.</span>
-<span class="sd">        keepdims : bool, optional</span>
+<span class="sd">        keepdims</span>
 <span class="sd">            If this is set to True, the axes which are reduced are left in the result as dimensions with</span>
 <span class="sd">            size one. With this option, the result will broadcast correctly against the input array. (Default value = False)</span>
-<span class="sd">        key_chains : list or dict of strs, optional</span>
+<span class="sd">        key_chains</span>
 <span class="sd">            The key-chains to apply or not apply the method to. Default is None.</span>
-<span class="sd">        to_apply : bool, optional</span>
+<span class="sd">        to_apply</span>
 <span class="sd">            If True, the method will be applied to key_chains, otherwise key_chains will be skipped.</span>
 <span class="sd">            Default is True.</span>
-<span class="sd">        prune_unapplied : bool, optional</span>
+<span class="sd">        prune_unapplied</span>
 <span class="sd">            Whether to prune key_chains for which the function was not applied. Default is False.</span>
-<span class="sd">        map_sequences : bool, optional</span>
+<span class="sd">        map_sequences</span>
 <span class="sd">            Whether to also map method to sequences (lists, tuples). Default is False.</span>
 
 <span class="sd">        Returns</span>
@@ -1503,22 +1472,22 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        axis : int or sequence of ints</span>
+<span class="sd">        axis</span>
 <span class="sd">            Axis or axes along which a mean is performed. The default, axis=None, will mean all of the elements</span>
 <span class="sd">            of the input array. If axis is negative it counts from the last to the first axis. If axis is a</span>
 <span class="sd">            tuple of ints, a mean is performed on all of the axes specified in the tuple instead of a single</span>
 <span class="sd">            axis or all the axes as before.</span>
-<span class="sd">        keepdims : bool, optional</span>
+<span class="sd">        keepdims</span>
 <span class="sd">            If this is set to True, the axes which are reduced are left in the result as dimensions with</span>
 <span class="sd">            size one. With this option, the result will broadcast correctly against the input array. (Default value = False)</span>
-<span class="sd">        key_chains : list or dict of strs, optional</span>
+<span class="sd">        key_chains</span>
 <span class="sd">            The key-chains to apply or not apply the method to. Default is None.</span>
-<span class="sd">        to_apply : bool, optional</span>
+<span class="sd">        to_apply</span>
 <span class="sd">            If True, the method will be applied to key_chains, otherwise key_chains will be skipped.</span>
 <span class="sd">            Default is True.</span>
-<span class="sd">        prune_unapplied : bool, optional</span>
+<span class="sd">        prune_unapplied</span>
 <span class="sd">            Whether to prune key_chains for which the function was not applied. Default is False.</span>
-<span class="sd">        map_sequences : bool, optional</span>
+<span class="sd">        map_sequences</span>
 <span class="sd">            Whether to also map method to sequences (lists, tuples). Default is False.</span>
 
 <span class="sd">        Returns</span>
@@ -1535,22 +1504,22 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        axis : int or sequence of ints</span>
+<span class="sd">        axis</span>
 <span class="sd">            Axis or axes along which a var is performed. The default, axis=None, will var all of the elements</span>
 <span class="sd">            of the input array. If axis is negative it counts from the last to the first axis. If axis is a</span>
 <span class="sd">            tuple of ints, a var is performed on all of the axes specified in the tuple instead of a single</span>
 <span class="sd">            axis or all the axes as before.</span>
-<span class="sd">        keepdims : bool, optional</span>
+<span class="sd">        keepdims</span>
 <span class="sd">            If this is set to True, the axes which are reduced are left in the result as dimensions with</span>
 <span class="sd">            size one. With this option, the result will broadcast correctly against the input array. (Default value = False)</span>
-<span class="sd">        key_chains : list or dict of strs, optional</span>
+<span class="sd">        key_chains</span>
 <span class="sd">            The key-chains to apply or not apply the method to. Default is None.</span>
-<span class="sd">        to_apply : bool, optional</span>
+<span class="sd">        to_apply</span>
 <span class="sd">            If True, the method will be applied to key_chains, otherwise key_chains will be skipped.</span>
 <span class="sd">            Default is True.</span>
-<span class="sd">        prune_unapplied : bool, optional</span>
+<span class="sd">        prune_unapplied</span>
 <span class="sd">            Whether to prune key_chains for which the function was not applied. Default is False.</span>
-<span class="sd">        map_sequences : bool, optional</span>
+<span class="sd">        map_sequences</span>
 <span class="sd">            Whether to also map method to sequences (lists, tuples). Default is False.</span>
 
 <span class="sd">        Returns</span>
@@ -1567,22 +1536,22 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        axis : int or sequence of ints</span>
+<span class="sd">        axis</span>
 <span class="sd">            Axis or axes along which a var is performed. The default, axis=None, will var all of the elements</span>
 <span class="sd">            of the input array. If axis is negative it counts from the last to the first axis. If axis is a</span>
 <span class="sd">            tuple of ints, a var is performed on all of the axes specified in the tuple instead of a single</span>
 <span class="sd">            axis or all the axes as before.</span>
-<span class="sd">        keepdims : bool, optional</span>
+<span class="sd">        keepdims</span>
 <span class="sd">            If this is set to True, the axes which are reduced are left in the result as dimensions with</span>
 <span class="sd">            size one. With this option, the result will broadcast correctly against the input array. (Default value = False)</span>
-<span class="sd">        key_chains : list or dict of strs, optional</span>
+<span class="sd">        key_chains</span>
 <span class="sd">            The key-chains to apply or not apply the method to. Default is None.</span>
-<span class="sd">        to_apply : bool, optional</span>
+<span class="sd">        to_apply</span>
 <span class="sd">            If True, the method will be applied to key_chains, otherwise key_chains will be skipped.</span>
 <span class="sd">            Default is True.</span>
-<span class="sd">        prune_unapplied : bool, optional</span>
+<span class="sd">        prune_unapplied</span>
 <span class="sd">            Whether to prune key_chains for which the function was not applied. Default is False.</span>
-<span class="sd">        map_sequences : bool, optional</span>
+<span class="sd">        map_sequences</span>
 <span class="sd">            Whether to also map method to sequences (lists, tuples). Default is False.</span>
 
 <span class="sd">        Returns</span>
@@ -1599,22 +1568,22 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        axis : int or sequence of ints</span>
+<span class="sd">        axis</span>
 <span class="sd">            Axis or axes along which a min is performed. The default, axis=None, will min all of the elements</span>
 <span class="sd">            of the input array. If axis is negative it counts from the last to the first axis. If axis is a</span>
 <span class="sd">            tuple of ints, a min is performed on all of the axes specified in the tuple instead of a single</span>
 <span class="sd">            axis or all the axes as before.</span>
-<span class="sd">        keepdims : bool, optional</span>
+<span class="sd">        keepdims</span>
 <span class="sd">            If this is set to True, the axes which are reduced are left in the result as dimensions with</span>
 <span class="sd">            size one. With this option, the result will broadcast correctly against the input array. (Default value = False)</span>
-<span class="sd">        key_chains : list or dict of strs, optional</span>
+<span class="sd">        key_chains</span>
 <span class="sd">            The key-chains to apply or not apply the method to. Default is None.</span>
-<span class="sd">        to_apply : bool, optional</span>
+<span class="sd">        to_apply</span>
 <span class="sd">            If True, the method will be applied to key_chains, otherwise key_chains will be skipped.</span>
 <span class="sd">            Default is True.</span>
-<span class="sd">        prune_unapplied : bool, optional</span>
+<span class="sd">        prune_unapplied</span>
 <span class="sd">            Whether to prune key_chains for which the function was not applied. Default is False.</span>
-<span class="sd">        map_sequences : bool, optional</span>
+<span class="sd">        map_sequences</span>
 <span class="sd">            Whether to also map method to sequences (lists, tuples). Default is False.</span>
 
 <span class="sd">        Returns</span>
@@ -1631,22 +1600,22 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        axis : int or sequence of ints</span>
+<span class="sd">        axis</span>
 <span class="sd">            Axis or axes along which a max is performed. The default, axis=None, will max all of the elements</span>
 <span class="sd">            of the input array. If axis is negative it counts from the last to the first axis. If axis is a</span>
 <span class="sd">            tuple of ints, a max is performed on all of the axes specified in the tuple instead of a single</span>
 <span class="sd">            axis or all the axes as before.</span>
-<span class="sd">        keepdims : bool, optional</span>
+<span class="sd">        keepdims</span>
 <span class="sd">            If this is set to True, the axes which are reduced are left in the result as dimensions with</span>
 <span class="sd">            size one. With this option, the result will broadcast correctly against the input array. (Default value = False)</span>
-<span class="sd">        key_chains : list or dict of strs, optional</span>
+<span class="sd">        key_chains</span>
 <span class="sd">            The key-chains to apply or not apply the method to. Default is None.</span>
-<span class="sd">        to_apply : bool, optional</span>
+<span class="sd">        to_apply</span>
 <span class="sd">            If True, the method will be applied to key_chains, otherwise key_chains will be skipped.</span>
 <span class="sd">            Default is True.</span>
-<span class="sd">        prune_unapplied : bool, optional</span>
+<span class="sd">        prune_unapplied</span>
 <span class="sd">            Whether to prune key_chains for which the function was not applied. Default is False.</span>
-<span class="sd">        map_sequences : bool, optional</span>
+<span class="sd">        map_sequences</span>
 <span class="sd">            Whether to also map method to sequences (lists, tuples). Default is False.</span>
 
 <span class="sd">        Returns</span>
@@ -1663,16 +1632,16 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        other : Ivy container or number</span>
+<span class="sd">        other</span>
 <span class="sd">            The other container or number to compute the minimum against.</span>
-<span class="sd">        key_chains : list or dict of strs, optional</span>
+<span class="sd">        key_chains</span>
 <span class="sd">            The key-chains to apply or not apply the method to. Default is None.</span>
-<span class="sd">        to_apply : bool, optional</span>
+<span class="sd">        to_apply</span>
 <span class="sd">            If True, the method will be applied to key_chains, otherwise key_chains will be skipped.</span>
 <span class="sd">            Default is True.</span>
-<span class="sd">        prune_unapplied : bool, optional</span>
+<span class="sd">        prune_unapplied</span>
 <span class="sd">            Whether to prune key_chains for which the function was not applied. Default is False.</span>
-<span class="sd">        map_sequences : bool, optional</span>
+<span class="sd">        map_sequences</span>
 <span class="sd">            Whether to also map method to sequences (lists, tuples). Default is False.</span>
 
 <span class="sd">        Returns</span>
@@ -1690,16 +1659,16 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        other : Ivy container or number</span>
+<span class="sd">        other</span>
 <span class="sd">            The other container or number to compute the maximum against.</span>
-<span class="sd">        key_chains : list or dict of strs, optional</span>
+<span class="sd">        key_chains</span>
 <span class="sd">            The key-chains to apply or not apply the method to. Default is None.</span>
-<span class="sd">        to_apply : bool, optional</span>
+<span class="sd">        to_apply</span>
 <span class="sd">            If True, the method will be applied to key_chains, otherwise key_chains will be skipped.</span>
 <span class="sd">            Default is True.</span>
-<span class="sd">        prune_unapplied : bool, optional</span>
+<span class="sd">        prune_unapplied</span>
 <span class="sd">            Whether to prune key_chains for which the function was not applied. Default is False.</span>
-<span class="sd">        map_sequences : bool, optional</span>
+<span class="sd">        map_sequences</span>
 <span class="sd">            Whether to also map method to sequences (lists, tuples). Default is False.</span>
 
 <span class="sd">        Returns</span>
@@ -1717,18 +1686,18 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        clip_min : Ivy container or number</span>
+<span class="sd">        clip_min</span>
 <span class="sd">            The minimum container or number to clip against.</span>
-<span class="sd">        clip_max : Ivy container or number</span>
+<span class="sd">        clip_max</span>
 <span class="sd">            The maximum container or number to clip against.</span>
-<span class="sd">        key_chains : list or dict of strs, optional</span>
+<span class="sd">        key_chains</span>
 <span class="sd">            The key-chains to apply or not apply the method to. Default is None.</span>
-<span class="sd">        to_apply : bool, optional</span>
+<span class="sd">        to_apply</span>
 <span class="sd">            If True, the method will be applied to key_chains, otherwise key_chains will be skipped.</span>
 <span class="sd">            Default is True.</span>
-<span class="sd">        prune_unapplied : bool, optional</span>
+<span class="sd">        prune_unapplied</span>
 <span class="sd">            Whether to prune key_chains for which the function was not applied. Default is False.</span>
-<span class="sd">        map_sequences : bool, optional</span>
+<span class="sd">        map_sequences</span>
 <span class="sd">            Whether to also map method to sequences (lists, tuples). Default is False.</span>
 
 <span class="sd">        Returns</span>
@@ -1749,20 +1718,20 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        max_norm : Ivy container or number</span>
+<span class="sd">        max_norm</span>
 <span class="sd">            The max norm container or number to clip against.</span>
-<span class="sd">        p : Ivy container or number</span>
+<span class="sd">        p</span>
 <span class="sd">            The p-value for computing the p-norm container or number.</span>
-<span class="sd">        global_norm : bool, optional</span>
+<span class="sd">        global_norm</span>
 <span class="sd">            Whether to compute the norm across all the concattenated sub-arrays. Default is False.</span>
-<span class="sd">        key_chains : list or dict of strs, optional</span>
+<span class="sd">        key_chains</span>
 <span class="sd">            The key-chains to apply or not apply the method to. Default is None.</span>
-<span class="sd">        to_apply : bool, optional</span>
+<span class="sd">        to_apply</span>
 <span class="sd">            If True, the method will be applied to key_chains, otherwise key_chains will be skipped.</span>
 <span class="sd">            Default is True.</span>
-<span class="sd">        prune_unapplied : bool, optional</span>
+<span class="sd">        prune_unapplied</span>
 <span class="sd">            Whether to prune key_chains for which the function was not applied. Default is False.</span>
-<span class="sd">        map_sequences : bool, optional</span>
+<span class="sd">        map_sequences</span>
 <span class="sd">            Whether to also map method to sequences (lists, tuples). Default is False.</span>
 
 <span class="sd">        Returns</span>
@@ -1795,16 +1764,16 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        equation : str</span>
+<span class="sd">        equation</span>
 <span class="sd">            A str describing the contraction, in the same format as numpy.einsum.</span>
-<span class="sd">        key_chains : list or dict of strs, optional</span>
+<span class="sd">        key_chains</span>
 <span class="sd">            The key-chains to apply or not apply the method to. Default is None.</span>
-<span class="sd">        to_apply : bool, optional</span>
+<span class="sd">        to_apply</span>
 <span class="sd">            If True, the method will be applied to key_chains, otherwise key_chains will be skipped.</span>
 <span class="sd">            Default is True.</span>
-<span class="sd">        prune_unapplied : bool, optional</span>
+<span class="sd">        prune_unapplied</span>
 <span class="sd">            Whether to prune key_chains for which the function was not applied. Default is False.</span>
-<span class="sd">        map_sequences : bool, optional</span>
+<span class="sd">        map_sequences</span>
 <span class="sd">            Whether to also map method to sequences (lists, tuples). Default is False.</span>
 
 <span class="sd">        Returns</span>
@@ -1821,25 +1790,25 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        p : int or str or container, optional</span>
+<span class="sd">        p</span>
 <span class="sd">            Order of the norm. Default is 2.</span>
-<span class="sd">        axis : int or sequence of ints, optional</span>
+<span class="sd">        axis</span>
 <span class="sd">            If axis is an integer, it specifies the axis of x along which to compute the vector norms.</span>
 <span class="sd">            Default is None, in which case the flattened array is considered.</span>
-<span class="sd">        keepdims : bool, optional</span>
+<span class="sd">        keepdims</span>
 <span class="sd">            If this is set to True, the axes which are normed over are left in the result as dimensions</span>
 <span class="sd">            with size one. With this option the result will broadcast correctly against the original x.</span>
 <span class="sd">            Default is False.</span>
-<span class="sd">        global_norm : bool, optional</span>
+<span class="sd">        global_norm</span>
 <span class="sd">            Whether to compute the norm across all the concattenated sub-arrays. Default is False.</span>
-<span class="sd">        key_chains : list or dict of strs, optional</span>
+<span class="sd">        key_chains</span>
 <span class="sd">            The key-chains to apply or not apply the method to. Default is None.</span>
-<span class="sd">        to_apply : bool, optional</span>
+<span class="sd">        to_apply</span>
 <span class="sd">            If True, the method will be applied to key_chains, otherwise key_chains will be skipped.</span>
 <span class="sd">            Default is True.</span>
-<span class="sd">        prune_unapplied : bool, optional</span>
+<span class="sd">        prune_unapplied</span>
 <span class="sd">            Whether to prune key_chains for which the function was not applied. Default is False.</span>
-<span class="sd">        map_sequences : bool, optional</span>
+<span class="sd">        map_sequences</span>
 <span class="sd">            Whether to also map method to sequences (lists, tuples). Default is False.</span>
 
 <span class="sd">        Returns</span>
@@ -1864,26 +1833,26 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        p : int or str, optional</span>
+<span class="sd">        p</span>
 <span class="sd">            Order of the norm. Default is 2.</span>
-<span class="sd">        axis : int or sequence of ints, optional</span>
+<span class="sd">        axis</span>
 <span class="sd">            If axis is an integer, it specifies the axis of x along which to compute the matrix norms.</span>
 <span class="sd">            Default is None, in which case the flattened array is considered.</span>
-<span class="sd">        keepdims : bool, optional</span>
+<span class="sd">        keepdims</span>
 <span class="sd">            If this is set to True, the axes which are normed over are left in the result as dimensions</span>
 <span class="sd">            with size one. With this option the result will broadcast correctly against the original x.</span>
 <span class="sd">            Default is False.</span>
-<span class="sd">        key_chains : list or dict of strs, optional</span>
+<span class="sd">        key_chains</span>
 <span class="sd">            The key-chains to apply or not apply the method to. Default is None.</span>
-<span class="sd">        to_apply : bool, optional</span>
+<span class="sd">        to_apply</span>
 <span class="sd">            If True, the method will be applied to key_chains, otherwise key_chains will be skipped.</span>
 <span class="sd">            Default is True.</span>
-<span class="sd">        prune_unapplied : bool, optional</span>
+<span class="sd">        prune_unapplied</span>
 <span class="sd">            Whether to prune key_chains for which the function was not applied. Default is False.</span>
-<span class="sd">        map_sequences : bool, optional</span>
+<span class="sd">        map_sequences</span>
 <span class="sd">            Whether to also map method to sequences (lists, tuples). Default is False.</span>
-<span class="sd">        ord :</span>
-<span class="sd">             (Default value = 2)</span>
+<span class="sd">        ord</span>
+<span class="sd">            Default value = 2)</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -1899,16 +1868,16 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        axis : None or int or sequence of ints, optional</span>
+<span class="sd">        axis</span>
 <span class="sd">            Axis or axes along which to flip over. The default, axis=None, will flip over all axes.</span>
-<span class="sd">        key_chains : list or dict of strs, optional</span>
+<span class="sd">        key_chains</span>
 <span class="sd">            The key-chains to apply or not apply the method to. Default is None.</span>
-<span class="sd">        to_apply : bool, optional</span>
+<span class="sd">        to_apply</span>
 <span class="sd">            If True, the method will be applied to key_chains, otherwise key_chains will be skipped.</span>
 <span class="sd">            Default is True.</span>
-<span class="sd">        prune_unapplied : bool, optional</span>
+<span class="sd">        prune_unapplied</span>
 <span class="sd">            Whether to prune key_chains for which the function was not applied. Default is False.</span>
-<span class="sd">        map_sequences : bool, optional</span>
+<span class="sd">        map_sequences</span>
 <span class="sd">            Whether to also map method to sequences (lists, tuples). Default is False.</span>
 
 <span class="sd">        Returns</span>
@@ -1925,22 +1894,19 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        seed_value : int</span>
+<span class="sd">        seed_value</span>
 <span class="sd">            random seed to use for array shuffling (Default value = None)</span>
-<span class="sd">        key_chains : list or dict of strs, optional</span>
+<span class="sd">        key_chains</span>
 <span class="sd">            The key-chains to apply or not apply the method to. Default is None.</span>
-<span class="sd">        to_apply : bool, optional</span>
+<span class="sd">        to_apply</span>
 <span class="sd">            If True, the method will be applied to key_chains, otherwise key_chains will be skipped.</span>
 <span class="sd">            Default is True.</span>
-<span class="sd">        prune_unapplied : bool, optional</span>
+<span class="sd">        prune_unapplied</span>
 <span class="sd">            Whether to prune key_chains for which the function was not applied. Default is False.</span>
-<span class="sd">        map_sequences : bool, optional</span>
+<span class="sd">        map_sequences</span>
 <span class="sd">            Whether to also map method to sequences (lists, tuples). Default is False.</span>
-<span class="sd">        key_chain : str</span>
+<span class="sd">        key_chain</span>
 <span class="sd">            Chain of keys for this dict entry (Default value = &#39;&#39;)</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">return_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
@@ -1976,7 +1942,7 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        slice_key : str</span>
+<span class="sd">        slice_key</span>
 <span class="sd">            key to slice container at.</span>
 
 <span class="sd">        Returns</span>
@@ -1999,14 +1965,14 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        key_chains : list or dict of strs, optional</span>
+<span class="sd">        key_chains</span>
 <span class="sd">            The key-chains to apply or not apply the method to. Default is None.</span>
-<span class="sd">        to_apply : bool, optional</span>
+<span class="sd">        to_apply</span>
 <span class="sd">            If True, the method will be applied to key_chains, otherwise key_chains will be skipped.</span>
 <span class="sd">            Default is True.</span>
-<span class="sd">        prune_unapplied : bool, optional</span>
+<span class="sd">        prune_unapplied</span>
 <span class="sd">            Whether to prune key_chains for which the function was not applied. Default is False.</span>
-<span class="sd">        map_sequences : bool, optional</span>
+<span class="sd">        map_sequences</span>
 <span class="sd">            Whether to also map method to sequences (lists, tuples). Default is False.</span>
 
 <span class="sd">        Returns</span>
@@ -2022,14 +1988,14 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        key_chains : list or dict of strs, optional</span>
+<span class="sd">        key_chains</span>
 <span class="sd">            The key-chains to apply or not apply the method to. Default is None.</span>
-<span class="sd">        to_apply : bool, optional</span>
+<span class="sd">        to_apply</span>
 <span class="sd">            If True, the method will be applied to key_chains, otherwise key_chains will be skipped.</span>
 <span class="sd">            Default is True.</span>
-<span class="sd">        prune_unapplied : bool, optional</span>
+<span class="sd">        prune_unapplied</span>
 <span class="sd">            Whether to prune key_chains for which the function was not applied. Default is False.</span>
-<span class="sd">        map_sequences : bool, optional</span>
+<span class="sd">        map_sequences</span>
 <span class="sd">            Whether to also map method to sequences (lists, tuples). Default is False.</span>
 
 <span class="sd">        Returns</span>
@@ -2046,16 +2012,16 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        assert_is_bool : bool: bool, optional</span>
+<span class="sd">        assert_is_bool</span>
 <span class="sd">            Whether or not to assert the entry is of type Boolean. (Default value = False)</span>
-<span class="sd">        key_chains : list or dict of strs, optional</span>
+<span class="sd">        key_chains</span>
 <span class="sd">            The key-chains to apply or not apply the method to. Default is None.</span>
-<span class="sd">        to_apply : bool, optional</span>
+<span class="sd">        to_apply</span>
 <span class="sd">            If True, the method will be applied to key_chains, otherwise key_chains will be skipped.</span>
 <span class="sd">            Default is True.</span>
-<span class="sd">        prune_unapplied : bool, optional</span>
+<span class="sd">        prune_unapplied</span>
 <span class="sd">            Whether to prune key_chains for which the function was not applied. Default is False.</span>
-<span class="sd">        map_sequences : bool, optional</span>
+<span class="sd">        map_sequences</span>
 <span class="sd">            Whether to also map method to sequences (lists, tuples). Default is False.</span>
 
 <span class="sd">        Returns</span>
@@ -2078,20 +2044,20 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        low : float</span>
+<span class="sd">        low</span>
 <span class="sd">            Lower boundary of the output interval. All values generated will be greater than or equal to low.</span>
 <span class="sd">            The default value is 0.</span>
-<span class="sd">        high : float</span>
+<span class="sd">        high</span>
 <span class="sd">            Upper boundary of the output interval. All values generated will be less than high.</span>
 <span class="sd">            The default value is 1.0.</span>
-<span class="sd">        key_chains : list or dict of strs, optional</span>
+<span class="sd">        key_chains</span>
 <span class="sd">            The key-chains to apply or not apply the method to. Default is None.</span>
-<span class="sd">        to_apply : bool, optional</span>
+<span class="sd">        to_apply</span>
 <span class="sd">            If True, the method will be applied to key_chains, otherwise key_chains will be skipped.</span>
 <span class="sd">            Default is True.</span>
-<span class="sd">        prune_unapplied : bool, optional</span>
+<span class="sd">        prune_unapplied</span>
 <span class="sd">            Whether to prune key_chains for which the function was not applied. Default is False.</span>
-<span class="sd">        map_sequences : bool, optional</span>
+<span class="sd">        map_sequences</span>
 <span class="sd">            Whether to also map method to sequences (lists, tuples). Default is False.</span>
 
 <span class="sd">        Returns</span>
@@ -2108,18 +2074,18 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        nested : bool, optional</span>
+<span class="sd">        nested</span>
 <span class="sd">            Whether to apply the conversion on arguments in a nested manner. If so, all dicts, lists and</span>
 <span class="sd">            tuples will be traversed to their lowest leaves in search of ivy.Array and ivy.Variable</span>
 <span class="sd">            instances. Default is False.</span>
-<span class="sd">        key_chains : list or dict of strs, optional</span>
+<span class="sd">        key_chains</span>
 <span class="sd">            The key-chains to apply or not apply the method to. Default is None.</span>
-<span class="sd">        to_apply : bool, optional</span>
+<span class="sd">        to_apply</span>
 <span class="sd">            If True, the method will be applied to key_chains, otherwise key_chains will be skipped.</span>
 <span class="sd">            Default is True.</span>
-<span class="sd">        prune_unapplied : bool, optional</span>
+<span class="sd">        prune_unapplied</span>
 <span class="sd">            Whether to prune key_chains for which the function was not applied. Default is False.</span>
-<span class="sd">        map_sequences : bool, optional</span>
+<span class="sd">        map_sequences</span>
 <span class="sd">            Whether to also map method to sequences (lists, tuples). Default is False.</span>
 
 <span class="sd">        Returns</span>
@@ -2135,18 +2101,18 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        nested : bool, optional</span>
+<span class="sd">        nested</span>
 <span class="sd">            Whether to apply the conversion on arguments in a nested manner. If so, all dicts, lists and</span>
 <span class="sd">            tuples will be traversed to their lowest leaves in search of ivy.Array and ivy.Variable</span>
 <span class="sd">            instances. Default is False.</span>
-<span class="sd">        key_chains : list or dict of strs, optional</span>
+<span class="sd">        key_chains</span>
 <span class="sd">            The key-chains to apply or not apply the method to. Default is None.</span>
-<span class="sd">        to_apply : bool, optional</span>
+<span class="sd">        to_apply</span>
 <span class="sd">            If True, the method will be applied to key_chains, otherwise key_chains will be skipped.</span>
 <span class="sd">            Default is True.</span>
-<span class="sd">        prune_unapplied : bool, optional</span>
+<span class="sd">        prune_unapplied</span>
 <span class="sd">            Whether to prune key_chains for which the function was not applied. Default is False.</span>
-<span class="sd">        map_sequences : bool, optional</span>
+<span class="sd">        map_sequences</span>
 <span class="sd">            Whether to also map method to sequences (lists, tuples). Default is False.</span>
 
 <span class="sd">        Returns</span>
@@ -2162,16 +2128,16 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        axis : int</span>
+<span class="sd">        axis</span>
 <span class="sd">            Axis along which to expand dimensions of the sub-arrays.</span>
-<span class="sd">        key_chains : list or dict of strs, optional</span>
+<span class="sd">        key_chains</span>
 <span class="sd">            The key-chains to apply or not apply the method to. Default is None.</span>
-<span class="sd">        to_apply : bool, optional</span>
+<span class="sd">        to_apply</span>
 <span class="sd">            If True, the method will be applied to key_chains, otherwise key_chains will be skipped.</span>
 <span class="sd">            Default is True.</span>
-<span class="sd">        prune_unapplied : bool, optional</span>
+<span class="sd">        prune_unapplied</span>
 <span class="sd">            Whether to prune key_chains for which the function was not applied. Default is False.</span>
-<span class="sd">        map_sequences : bool, optional</span>
+<span class="sd">        map_sequences</span>
 <span class="sd">            Whether to also map method to sequences (lists, tuples). Default is False.</span>
 
 <span class="sd">        Returns</span>
@@ -2187,7 +2153,7 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        devs : sequence of str</span>
+<span class="sd">        devs</span>
 <span class="sd">            The devices on which to clone the container.</span>
 
 <span class="sd">        Returns</span>
@@ -2202,21 +2168,13 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        devs : sequence of strs or dict of split sizes</span>
+<span class="sd">        devs</span>
 <span class="sd">            The devices along which to distribute the container.</span>
-<span class="sd">        axis : int, optional</span>
+<span class="sd">        axis</span>
 <span class="sd">            The axis along which to split the arrays at the container leaves. Default is 0.</span>
-<span class="sd">        devs: Union[Iterable[str] :</span>
-<span class="sd">            </span>
-<span class="sd">        Dict[str :</span>
-<span class="sd">            </span>
-<span class="sd">        int]] :</span>
-<span class="sd">            </span>
-
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">            a set of distributed sub-containers across the specified devices.</span>
-
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">split_arg</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">devs</span><span class="o">.</span><span class="n">values</span><span class="p">())</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">devs</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span> <span class="k">else</span> <span class="nb">len</span><span class="p">(</span><span class="n">devs</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ivy</span><span class="o">.</span><span class="n">DevDistItem</span><span class="p">(</span>
@@ -2229,9 +2187,9 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        devs : sequence of str</span>
+<span class="sd">        devs</span>
 <span class="sd">            The devices along which to distribute each array in the container.</span>
-<span class="sd">        axis : int, optional</span>
+<span class="sd">        axis</span>
 <span class="sd">            The axis along which to split the arrays at the container leaves. Default is 0.</span>
 
 <span class="sd">        Returns</span>
@@ -2247,11 +2205,11 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        axis : int</span>
+<span class="sd">        axis</span>
 <span class="sd">            Dimensions along which to unstack.</span>
-<span class="sd">        keepdims : bool, optional</span>
+<span class="sd">        keepdims</span>
 <span class="sd">            Whether to keep dimension 1 in the unstack dimensions. Default is False.</span>
-<span class="sd">        dim_size : int, optional</span>
+<span class="sd">        dim_size</span>
 <span class="sd">            Size of the dimension to unstack. Determined from inputs by default.</span>
 
 <span class="sd">        Returns</span>
@@ -2274,23 +2232,23 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        num_or_size_splits : int, optional</span>
+<span class="sd">        num_or_size_splits</span>
 <span class="sd">            Number of equal arrays to divide the array into along the given axis if an integer.</span>
 <span class="sd">            The size of each split element if a sequence of integers.</span>
 <span class="sd">            Default is to divide into as many 1-dimensional arrays as the axis dimension.</span>
-<span class="sd">        axis : int, optional</span>
+<span class="sd">        axis</span>
 <span class="sd">            The axis along which to split, default is 0.</span>
-<span class="sd">        with_remainder : bool, optional</span>
+<span class="sd">        with_remainder</span>
 <span class="sd">            If the tensor does not split evenly, then store the last remainder entry.</span>
 <span class="sd">            Default is False.</span>
-<span class="sd">        key_chains : list or dict of strs, optional</span>
+<span class="sd">        key_chains</span>
 <span class="sd">            The key-chains to apply or not apply the method to. Default is None.</span>
-<span class="sd">        to_apply : bool, optional</span>
+<span class="sd">        to_apply</span>
 <span class="sd">            If True, the method will be applied to key_chains, otherwise key_chains will be skipped.</span>
 <span class="sd">            Default is True.</span>
-<span class="sd">        prune_unapplied : bool, optional</span>
+<span class="sd">        prune_unapplied</span>
 <span class="sd">            Whether to prune key_chains for which the function was not applied. Default is False.</span>
-<span class="sd">        map_sequences : bool, optional</span>
+<span class="sd">        map_sequences</span>
 <span class="sd">            Whether to also map method to sequences (lists, tuples). Default is False.</span>
 
 <span class="sd">        Returns</span>
@@ -2309,18 +2267,18 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        indices : array</span>
+<span class="sd">        indices</span>
 <span class="sd">            Index array.</span>
-<span class="sd">        axis : int, optional</span>
+<span class="sd">        axis</span>
 <span class="sd">            The axis from which to gather from. Default is -1.</span>
-<span class="sd">        key_chains : list or dict of strs, optional</span>
+<span class="sd">        key_chains</span>
 <span class="sd">            The key-chains to apply or not apply the method to. Default is None.</span>
-<span class="sd">        to_apply : bool, optional</span>
+<span class="sd">        to_apply</span>
 <span class="sd">            If True, the method will be applied to key_chains, otherwise key_chains will be skipped.</span>
 <span class="sd">            Default is True.</span>
-<span class="sd">        prune_unapplied : bool, optional</span>
+<span class="sd">        prune_unapplied</span>
 <span class="sd">            Whether to prune key_chains for which the function was not applied. Default is False.</span>
-<span class="sd">        map_sequences : bool, optional</span>
+<span class="sd">        map_sequences</span>
 <span class="sd">            Whether to also map method to sequences (lists, tuples). Default is False.</span>
 
 <span class="sd">        Returns</span>
@@ -2336,16 +2294,16 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        indices : array</span>
+<span class="sd">        indices</span>
 <span class="sd">            Index array.</span>
-<span class="sd">        key_chains : list or dict of strs, optional</span>
+<span class="sd">        key_chains</span>
 <span class="sd">            The key-chains to apply or not apply the method to. Default is None.</span>
-<span class="sd">        to_apply : bool, optional</span>
+<span class="sd">        to_apply</span>
 <span class="sd">            If True, the method will be applied to key_chains, otherwise key_chains will be skipped.</span>
 <span class="sd">            Default is True.</span>
-<span class="sd">        prune_unapplied : bool, optional</span>
+<span class="sd">        prune_unapplied</span>
 <span class="sd">            Whether to prune key_chains for which the function was not applied. Default is False.</span>
-<span class="sd">        map_sequences : bool, optional</span>
+<span class="sd">        map_sequences</span>
 <span class="sd">            Whether to also map method to sequences (lists, tuples). Default is False.</span>
 
 <span class="sd">        Returns</span>
@@ -2361,19 +2319,19 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        repeats : int or sequence of ints.</span>
+<span class="sd">        repeats</span>
 <span class="sd">            Number of repetitions for each element. repeats is broadcast to fit the shape of the given axis.</span>
-<span class="sd">        axis : int, optional</span>
+<span class="sd">        axis</span>
 <span class="sd">            The axis along which to repeat values.</span>
 <span class="sd">            By default, use the flattened input array, and return a flat output array.</span>
-<span class="sd">        key_chains : list or dict of strs, optional</span>
+<span class="sd">        key_chains</span>
 <span class="sd">            The key-chains to apply or not apply the method to. Default is None.</span>
-<span class="sd">        to_apply : bool, optional</span>
+<span class="sd">        to_apply</span>
 <span class="sd">            If True, the method will be applied to key_chains, otherwise key_chains will be skipped.</span>
 <span class="sd">            Default is True.</span>
-<span class="sd">        prune_unapplied : bool, optional</span>
+<span class="sd">        prune_unapplied</span>
 <span class="sd">            Whether to prune key_chains for which the function was not applied. Default is False.</span>
-<span class="sd">        map_sequences : bool, optional</span>
+<span class="sd">        map_sequences</span>
 <span class="sd">            Whether to also map method to sequences (lists, tuples). Default is False.</span>
 
 <span class="sd">        Returns</span>
@@ -2389,18 +2347,18 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        axis0 : int</span>
+<span class="sd">        axis0</span>
 <span class="sd">            First axis to be swapped.</span>
-<span class="sd">        axis1 : int</span>
+<span class="sd">        axis1</span>
 <span class="sd">            Second axis to be swapped.</span>
-<span class="sd">        key_chains : list or dict of strs, optional</span>
+<span class="sd">        key_chains</span>
 <span class="sd">            The key-chains to apply or not apply the method to. Default is None.</span>
-<span class="sd">        to_apply : bool, optional</span>
+<span class="sd">        to_apply</span>
 <span class="sd">            If True, the method will be applied to key_chains, otherwise key_chains will be skipped.</span>
 <span class="sd">            Default is True.</span>
-<span class="sd">        prune_unapplied : bool, optional</span>
+<span class="sd">        prune_unapplied</span>
 <span class="sd">            Whether to prune key_chains for which the function was not applied. Default is False.</span>
-<span class="sd">        map_sequences : bool, optional</span>
+<span class="sd">        map_sequences</span>
 <span class="sd">            Whether to also map method to sequences (lists, tuples). Default is False.</span>
 
 <span class="sd">        Returns</span>
@@ -2418,20 +2376,20 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        pre_shape : int or sequence of ints, optional</span>
+<span class="sd">        pre_shape</span>
 <span class="sd">            The first elements in the new array shape. (Default value = None)</span>
-<span class="sd">        shape_slice : int or sequence of ints, optional</span>
+<span class="sd">        shape_slice</span>
 <span class="sd">            The slice of the original shape to use in the new shape. Default is None.</span>
-<span class="sd">        post_shape : sequence of ints, optional</span>
+<span class="sd">        post_shape</span>
 <span class="sd">            The final elements in the new array shape. Default is None.</span>
-<span class="sd">        key_chains : list or dict of strs, optional</span>
+<span class="sd">        key_chains</span>
 <span class="sd">            The key-chains to apply or not apply the method to. Default is None.</span>
-<span class="sd">        to_apply : bool, optional</span>
+<span class="sd">        to_apply</span>
 <span class="sd">            If True, the method will be applied to key_chains, otherwise key_chains will be skipped.</span>
 <span class="sd">            Default is True.</span>
-<span class="sd">        prune_unapplied : bool, optional</span>
+<span class="sd">        prune_unapplied</span>
 <span class="sd">            Whether to prune key_chains for which the function was not applied. Default is False.</span>
-<span class="sd">        map_sequences : bool, optional</span>
+<span class="sd">        map_sequences</span>
 <span class="sd">            Whether to also map method to sequences (lists, tuples). Default is False.</span>
 
 <span class="sd">        Returns</span>
@@ -2457,21 +2415,21 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        pattern : str</span>
+<span class="sd">        pattern</span>
 <span class="sd">            Rearrangement pattern.</span>
-<span class="sd">        key_chains : list or dict of strs, optional</span>
+<span class="sd">        key_chains</span>
 <span class="sd">            The key-chains to apply or not apply the method to. Default is None.</span>
-<span class="sd">        to_apply : bool, optional</span>
+<span class="sd">        to_apply</span>
 <span class="sd">            If True, the method will be applied to key_chains, otherwise key_chains will be skipped.</span>
 <span class="sd">            Default is True.</span>
-<span class="sd">        prune_unapplied : bool, optional</span>
+<span class="sd">        prune_unapplied</span>
 <span class="sd">            Whether to prune key_chains for which the function was not applied. Default is False.</span>
-<span class="sd">        map_sequences : bool, optional</span>
+<span class="sd">        map_sequences</span>
 <span class="sd">            Whether to also map method to sequences (lists, tuples). Default is False.</span>
-<span class="sd">        axes_lengths : keyword parameter args</span>
+<span class="sd">        axes_lengths</span>
 <span class="sd">            Any additional specifications for dimensions.</span>
-<span class="sd">        **axes_lengths :</span>
-<span class="sd">            </span>
+<span class="sd">        **axes_lengths</span>
+
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -2487,23 +2445,22 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        pattern : str</span>
+<span class="sd">        pattern</span>
 <span class="sd">            Reduction pattern.</span>
-<span class="sd">        reduction : str or callable</span>
+<span class="sd">        reduction</span>
 <span class="sd">            One of available reductions (&#39;min&#39;, &#39;max&#39;, &#39;sum&#39;, &#39;mean&#39;, &#39;prod&#39;), or callable.</span>
-<span class="sd">        key_chains : list or dict of strs, optional</span>
+<span class="sd">        key_chains</span>
 <span class="sd">            The key-chains to apply or not apply the method to. Default is None.</span>
-<span class="sd">        to_apply : bool, optional</span>
+<span class="sd">        to_apply</span>
 <span class="sd">            If True, the method will be applied to key_chains, otherwise key_chains will be skipped.</span>
 <span class="sd">            Default is True.</span>
-<span class="sd">        prune_unapplied : bool, optional</span>
+<span class="sd">        prune_unapplied</span>
 <span class="sd">            Whether to prune key_chains for which the function was not applied. Default is False.</span>
-<span class="sd">        map_sequences : bool, optional</span>
+<span class="sd">        map_sequences</span>
 <span class="sd">            Whether to also map method to sequences (lists, tuples). Default is False.</span>
-<span class="sd">        axes_lengths : keyword parameter args</span>
+<span class="sd">        axes_lengths</span>
 <span class="sd">            Any additional specifications for dimensions.</span>
-<span class="sd">        **axes_lengths :</span>
-<span class="sd">            </span>
+<span class="sd">        **axes_lengths</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -2519,21 +2476,20 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        pattern : str</span>
+<span class="sd">        pattern</span>
 <span class="sd">            Rearrangement pattern.</span>
-<span class="sd">        key_chains : list or dict of strs, optional</span>
+<span class="sd">        key_chains</span>
 <span class="sd">            The key-chains to apply or not apply the method to. Default is None.</span>
-<span class="sd">        to_apply : bool, optional</span>
+<span class="sd">        to_apply</span>
 <span class="sd">            If True, the method will be applied to key_chains, otherwise key_chains will be skipped.</span>
 <span class="sd">            Default is True.</span>
-<span class="sd">        prune_unapplied : bool, optional</span>
+<span class="sd">        prune_unapplied</span>
 <span class="sd">            Whether to prune key_chains for which the function was not applied. Default is False.</span>
-<span class="sd">        map_sequences : bool, optional</span>
+<span class="sd">        map_sequences</span>
 <span class="sd">            Whether to also map method to sequences (lists, tuples). Default is False.</span>
-<span class="sd">        axes_lengths : keyword parameter args</span>
+<span class="sd">        axes_lengths</span>
 <span class="sd">            Any additional specifications for dimensions.</span>
-<span class="sd">        **axes_lengths :</span>
-<span class="sd">            </span>
+<span class="sd">        **axes_lengths</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -2548,16 +2504,16 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        dev : ivy.Device, optional</span>
+<span class="sd">        dev</span>
 <span class="sd">            device to move the array to &#39;cuda:0&#39;, &#39;cuda:1&#39;, &#39;cpu&#39; etc. Keep same device if None.</span>
-<span class="sd">        key_chains : list or dict of strs, optional</span>
+<span class="sd">        key_chains</span>
 <span class="sd">            The key-chains to apply or not apply the method to. Default is None.</span>
-<span class="sd">        to_apply : bool, optional</span>
+<span class="sd">        to_apply</span>
 <span class="sd">            If True, the method will be applied to key_chains, otherwise key_chains will be skipped.</span>
 <span class="sd">            Default is True.</span>
-<span class="sd">        prune_unapplied : bool, optional</span>
+<span class="sd">        prune_unapplied</span>
 <span class="sd">            Whether to prune key_chains for which the function was not applied. Default is False.</span>
-<span class="sd">        map_sequences : bool, optional</span>
+<span class="sd">        map_sequences</span>
 <span class="sd">            Whether to also map method to sequences (lists, tuples). Default is False.</span>
 
 <span class="sd">        Returns</span>
@@ -2574,19 +2530,19 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        preserve_type :</span>
+<span class="sd">        preserve_type</span>
 <span class="sd">            Whether to preserve the input type (ivy.Variable or ivy.Array),</span>
 <span class="sd">            otherwise an array is always returned. Default is True.</span>
-<span class="sd">        preserve_type :</span>
+<span class="sd">        preserve_type</span>
 <span class="sd">            bool, optional (Default value = True)</span>
-<span class="sd">        key_chains : list or dict of strs, optional</span>
+<span class="sd">        key_chains</span>
 <span class="sd">            The key-chains to apply or not apply the method to. Default is None.</span>
-<span class="sd">        to_apply : bool, optional</span>
+<span class="sd">        to_apply</span>
 <span class="sd">            If True, the method will be applied to key_chains, otherwise key_chains will be skipped.</span>
 <span class="sd">            Default is True.</span>
-<span class="sd">        prune_unapplied : bool, optional</span>
+<span class="sd">        prune_unapplied</span>
 <span class="sd">            Whether to prune key_chains for which the function was not applied. Default is False.</span>
-<span class="sd">        map_sequences : bool, optional</span>
+<span class="sd">        map_sequences</span>
 <span class="sd">            Whether to also map method to sequences (lists, tuples). Default is False.</span>
 
 <span class="sd">        Returns</span>
@@ -2604,14 +2560,14 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        key_chains : list or dict of strs, optional</span>
+<span class="sd">        key_chains</span>
 <span class="sd">            The key-chains to apply or not apply the method to. Default is None.</span>
-<span class="sd">        to_apply : bool, optional</span>
+<span class="sd">        to_apply</span>
 <span class="sd">            If True, the method will be applied to key_chains, otherwise key_chains will be skipped.</span>
 <span class="sd">            Default is True.</span>
-<span class="sd">        prune_unapplied : bool, optional</span>
+<span class="sd">        prune_unapplied</span>
 <span class="sd">            Whether to prune key_chains for which the function was not applied. Default is False.</span>
-<span class="sd">        map_sequences : bool, optional</span>
+<span class="sd">        map_sequences</span>
 <span class="sd">            Whether to also map method to sequences (lists, tuples). Default is False.</span>
 
 <span class="sd">        Returns</span>
@@ -2627,14 +2583,14 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        key_chains : list or dict of strs, optional</span>
+<span class="sd">        key_chains</span>
 <span class="sd">            The key-chains to apply or not apply the method to. Default is None.</span>
-<span class="sd">        to_apply : bool, optional</span>
+<span class="sd">        to_apply</span>
 <span class="sd">            If True, the method will be applied to key_chains, otherwise key_chains will be skipped.</span>
 <span class="sd">            Default is True.</span>
-<span class="sd">        prune_unapplied : bool, optional</span>
+<span class="sd">        prune_unapplied</span>
 <span class="sd">            Whether to prune key_chains for which the function was not applied. Default is False.</span>
-<span class="sd">        map_sequences : bool, optional</span>
+<span class="sd">        map_sequences</span>
 <span class="sd">            Whether to also map method to sequences (lists, tuples). Default is False.</span>
 
 <span class="sd">        Returns</span>
@@ -2652,12 +2608,9 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        exclusive : bool, optional</span>
+<span class="sd">        exclusive</span>
 <span class="sd">            Whether to check if the data type is exclusively an array,</span>
 <span class="sd">            rather than a variable or traced array. (Default value = False)</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">kc</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_array</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">exclusive</span><span class="p">))</span><span class="o">.</span><span class="n">to_iterator_values</span><span class="p">())</span></div>
@@ -2667,12 +2620,9 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        exclusive : bool, optional</span>
+<span class="sd">        exclusive</span>
 <span class="sd">            Whether to check if the data type is exclusively an array,</span>
 <span class="sd">            rather than a variable or traced array. (Default value = False)</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">array_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="o">.</span><span class="n">flatten_key_chain</span><span class="p">(</span><span class="n">kc</span><span class="p">):</span> <span class="n">v</span>
@@ -2685,16 +2635,16 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        key_chains : list or dict of strs, optional</span>
+<span class="sd">        key_chains</span>
 <span class="sd">            The key-chains to apply or not apply the method to. Default is None.</span>
-<span class="sd">        to_apply : bool, optional</span>
+<span class="sd">        to_apply</span>
 <span class="sd">            If True, the method will be applied to key_chains, otherwise key_chains will be skipped.</span>
 <span class="sd">            Default is True.</span>
-<span class="sd">        prune_unapplied : bool, optional</span>
+<span class="sd">        prune_unapplied</span>
 <span class="sd">            Whether to prune key_chains for which the function was not applied. Default is False.</span>
-<span class="sd">        map_sequences : bool, optional</span>
+<span class="sd">        map_sequences</span>
 <span class="sd">            Whether to also map method to sequences (lists, tuples). Default is False.</span>
-<span class="sd">        update_backend : bool, optional</span>
+<span class="sd">        update_backend</span>
 <span class="sd">            Whether to update the ivy backend of the returned container to numpy. Default is True.</span>
 
 <span class="sd">        Returns</span>
@@ -2715,14 +2665,14 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        key_chains : list or dict of strs, optional</span>
+<span class="sd">        key_chains</span>
 <span class="sd">            The key-chains to apply or not apply the method to. Default is None.</span>
-<span class="sd">        to_apply : bool, optional</span>
+<span class="sd">        to_apply</span>
 <span class="sd">            If True, the method will be applied to key_chains, otherwise key_chains will be skipped.</span>
 <span class="sd">            Default is True.</span>
-<span class="sd">        prune_unapplied : bool, optional</span>
+<span class="sd">        prune_unapplied</span>
 <span class="sd">            Whether to prune key_chains for which the function was not applied. Default is False.</span>
-<span class="sd">        map_sequences : bool, optional</span>
+<span class="sd">        map_sequences</span>
 <span class="sd">            Whether to also map method to sequences (lists, tuples). Default is False.</span>
 
 <span class="sd">        Returns</span>
@@ -2740,14 +2690,14 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        key_chains : list or dict of strs, optional</span>
+<span class="sd">        key_chains</span>
 <span class="sd">            The key-chains to apply or not apply the method to. Default is None.</span>
-<span class="sd">        to_apply : bool, optional</span>
+<span class="sd">        to_apply</span>
 <span class="sd">            If True, the method will be applied to key_chains, otherwise key_chains will be skipped.</span>
 <span class="sd">            Default is True.</span>
-<span class="sd">        prune_unapplied : bool, optional</span>
+<span class="sd">        prune_unapplied</span>
 <span class="sd">            Whether to prune key_chains for which the function was not applied. Default is False.</span>
-<span class="sd">        map_sequences : bool, optional</span>
+<span class="sd">        map_sequences</span>
 <span class="sd">            Whether to also map method to sequences (lists, tuples). Default is False.</span>
 
 <span class="sd">        Returns</span>
@@ -2764,17 +2714,14 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        h5_obj_or_filepath : str or h5 object</span>
+<span class="sd">        h5_obj_or_filepath</span>
 <span class="sd">            Filepath for where to save the container to disk, or h5 object.</span>
-<span class="sd">        starting_index : int</span>
+<span class="sd">        starting_index</span>
 <span class="sd">            Batch index for which to start writing to file, if it already exists (Default value = 0)</span>
-<span class="sd">        mode : str</span>
+<span class="sd">        mode</span>
 <span class="sd">            H5 read/write mode for writing to disk, [&#39;r&#39;, &#39;r+&#39;, &#39;w&#39;, &#39;w-&#39;, &#39;a&#39;], default is &#39;a&#39;.</span>
-<span class="sd">        max_batch_size : int</span>
+<span class="sd">        max_batch_size</span>
 <span class="sd">            Maximum batch size for the container on disk, this is useful if later appending to file. (Default value = None)</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">_h5py</span><span class="p">):</span>
@@ -2809,11 +2756,8 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        pickle_filepath : str</span>
+<span class="sd">        pickle_filepath</span>
 <span class="sd">            Filepath for where to save the container to disk.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">_pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">to_native</span><span class="p">()</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(),</span> <span class="nb">open</span><span class="p">(</span><span class="n">pickle_filepath</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">))</span></div>
@@ -2823,12 +2767,8 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        return_dict :</span>
-<span class="sd">             (Default value = None)</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">            </span>
+<span class="sd">        return_dict</span>
+<span class="sd">            Default value = None)</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">return_dict</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -2846,11 +2786,8 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        json_filepath : str</span>
+<span class="sd">        json_filepath</span>
 <span class="sd">            Filepath for where to save the container to disk.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
 
@@ -2858,16 +2795,6 @@
             <span class="n">_json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">to_jsonable</span><span class="p">()</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(),</span> <span class="n">json_data_file</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="ContainerBase.to_list"><a class="viewcode-back" href="../../../container/base/ContainerBase.html#ivy.container.base.ContainerBase.to_list">[docs]</a>    <span class="k">def</span> <span class="nf">to_list</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">            :return: Container as nested list.</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">return_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">):</span>
@@ -2878,15 +2805,15 @@
 
 <div class="viewcode-block" id="ContainerBase.to_raw"><a class="viewcode-back" href="../../../container/base/ContainerBase.html#ivy.container.base.ContainerBase.to_raw">[docs]</a>    <span class="k">def</span> <span class="nf">to_raw</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            constructor to their original form.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">            constructor to their original form.</span>
-<span class="sd">            </span>
-<span class="sd">            :return: Container data in it&#39;s raw form.</span>
+<span class="sd">             ret</span>
+<span class="sd">             Container data in it&#39;s raw form.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">return_item</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
@@ -2908,7 +2835,7 @@
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">            :return: Container as nested dict.</span>
+<span class="sd">            ret Container as nested dict.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">return_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
@@ -2924,16 +2851,16 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        key_chain :</span>
-<span class="sd">             (Default value = &#39;&#39;)</span>
-<span class="sd">        leaf_keys_only :</span>
-<span class="sd">             (Default value = False)</span>
-<span class="sd">        include_empty :</span>
-<span class="sd">             (Default value = False)</span>
+<span class="sd">        key_chain</span>
+<span class="sd">            Default value = &#39;&#39;)</span>
+<span class="sd">        leaf_keys_only</span>
+<span class="sd">            Default value = False)</span>
+<span class="sd">        include_empty</span>
+<span class="sd">            Default value = False)</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">            :return: Iterator for the container elements.</span>
+<span class="sd">            Iterator for the container elements.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
@@ -2951,12 +2878,12 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        include_empty :</span>
-<span class="sd">             (Default value = False)</span>
+<span class="sd">        include_empty</span>
+<span class="sd">            Default value = False)</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">            :return: Iterator for the container values.</span>
+<span class="sd">            Iterator for the container values.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
@@ -2971,16 +2898,16 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        key_chain :</span>
-<span class="sd">             (Default value = &#39;&#39;)</span>
-<span class="sd">        leaf_keys_only :</span>
-<span class="sd">             (Default value = False)</span>
-<span class="sd">        include_empty :</span>
-<span class="sd">             (Default value = False)</span>
+<span class="sd">        key_chain</span>
+<span class="sd">            Default value = &#39;&#39;)</span>
+<span class="sd">        leaf_keys_only</span>
+<span class="sd">            Default value = False)</span>
+<span class="sd">        include_empty</span>
+<span class="sd">            Default value = False)</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">            :return: Iterator for the container elements.</span>
+<span class="sd">            Iterator for the container elements.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
@@ -3002,7 +2929,8 @@
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">            :return: Container as flat list.</span>
+<span class="sd">            ret</span>
+<span class="sd">                Container as flat list.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">list</span><span class="p">([</span><span class="n">item</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_iterator</span><span class="p">()])</span></div>
@@ -3012,7 +2940,7 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        flat_list : sequence of arrays</span>
+<span class="sd">        flat_list</span>
 <span class="sd">            flat list of values to populate container with.</span>
 
 <span class="sd">        Returns</span>
@@ -3031,16 +2959,16 @@
 
 <div class="viewcode-block" id="ContainerBase.has_key"><a class="viewcode-back" href="../../../container/base/ContainerBase.html#ivy.container.base.ContainerBase.has_key">[docs]</a>    <span class="k">def</span> <span class="nf">has_key</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query_key</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Determine whether container object has specified key somewhere in the nested structure</span>
-<span class="sd">        </span>
-<span class="sd">        :return: Boolean</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        query_key :</span>
-<span class="sd">            </span>
+<span class="sd">        query_key</span>
+
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
+<span class="sd">        ret</span>
+<span class="sd">            Boolean</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">has_key</span> <span class="o">=</span> <span class="kc">False</span>
@@ -3050,13 +2978,9 @@
 
 <span class="sd">            Parameters</span>
 <span class="sd">            ----------</span>
-<span class="sd">            x :</span>
-<span class="sd">                </span>
-<span class="sd">            kc :</span>
-<span class="sd">                </span>
-
-<span class="sd">            Returns</span>
-<span class="sd">            -------</span>
+<span class="sd">            x</span>
+<span class="sd">                param kc:</span>
+<span class="sd">            kc</span>
 
 <span class="sd">            &quot;&quot;&quot;</span>
             <span class="k">nonlocal</span> <span class="n">has_key</span>
@@ -3069,16 +2993,16 @@
 
 <div class="viewcode-block" id="ContainerBase.has_key_chain"><a class="viewcode-back" href="../../../container/base/ContainerBase.html#ivy.container.base.ContainerBase.has_key_chain">[docs]</a>    <span class="k">def</span> <span class="nf">has_key_chain</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key_chain</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Determine whether container object has specified key-chain</span>
-<span class="sd">        </span>
-<span class="sd">        :return: Boolean</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        key_chain :</span>
-<span class="sd">            </span>
+<span class="sd">        key_chain</span>
+
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
+<span class="sd">        ret</span>
+<span class="sd">            Boolean</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">keys</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;[/.]&#39;</span><span class="p">,</span> <span class="n">key_chain</span><span class="p">)</span>
@@ -3095,14 +3019,10 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        sub_cont_to_find : ivy.Container</span>
+<span class="sd">        sub_cont_to_find</span>
 <span class="sd">            The sub-container to find.</span>
-<span class="sd">        partial : bool, optional</span>
+<span class="sd">        partial</span>
 <span class="sd">            Whether to also check for partially complete sub-containers. Default is False.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">            str</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
 
@@ -3126,9 +3046,9 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        sub_cont : ivy.Container</span>
+<span class="sd">        sub_cont</span>
 <span class="sd">            The sub-container to check.</span>
-<span class="sd">        partial : bool, optional</span>
+<span class="sd">        partial</span>
 <span class="sd">            Whether to also check for partially complete sub-containers. Default is False.</span>
 
 <span class="sd">        Returns</span>
@@ -3144,13 +3064,10 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        sub_cont : ivy.Container</span>
+<span class="sd">        sub_cont</span>
 <span class="sd">            The sub-container to check.</span>
-<span class="sd">        partial : bool, optional</span>
+<span class="sd">        partial</span>
 <span class="sd">            Whether to also check for partially complete sub-containers. Default is False.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
@@ -3168,22 +3085,31 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        sub_struc_to_find : ivy.Container</span>
+<span class="sd">        sub_struc_to_find</span>
 <span class="sd">            The sub-container to find.</span>
-<span class="sd">        check_shapes : bool, optional</span>
+<span class="sd">        check_shapes</span>
 <span class="sd">            Whether to check array shapes in the sub-structure. Default is True.</span>
-<span class="sd">        partial : bool, optional</span>
+<span class="sd">        partial</span>
 <span class="sd">            Whether to also check for partially complete sub-containers. Default is False.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">            str</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="n">key_chain_found</span> <span class="o">=</span> <span class="kc">False</span>
 
         <span class="k">def</span> <span class="nf">_check_sub_cont</span><span class="p">(</span><span class="n">sub_cont</span><span class="p">,</span> <span class="n">kc</span><span class="p">):</span>
+            <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">            Parameters</span>
+<span class="sd">            ----------</span>
+<span class="sd">            sub_cont</span>
+<span class="sd">                param kc:</span>
+<span class="sd">            kc</span>
+
+
+<span class="sd">            Returns</span>
+<span class="sd">            -------</span>
+
+<span class="sd">            &quot;&quot;&quot;</span>
             <span class="n">sub_struc_key_chains</span> <span class="o">=</span> <span class="n">sub_struc_to_find</span><span class="o">.</span><span class="n">all_key_chains</span><span class="p">()</span>
             <span class="n">kcs_in_sub_cont</span> <span class="o">=</span> <span class="p">[</span><span class="n">kc</span> <span class="ow">in</span> <span class="n">sub_cont</span> <span class="k">for</span> <span class="n">kc</span> <span class="ow">in</span> <span class="n">sub_struc_key_chains</span><span class="p">]</span>
             <span class="k">if</span> <span class="n">kcs_in_sub_cont</span> <span class="ow">and</span> <span class="nb">min</span><span class="p">(</span><span class="n">kcs_in_sub_cont</span><span class="p">)</span> <span class="ow">and</span> \
@@ -3202,16 +3128,12 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        sub_cont : ivy.Container</span>
+<span class="sd">        sub_cont</span>
 <span class="sd">            The sub-container to check.</span>
-<span class="sd">        check_shapes : bool, optional</span>
+<span class="sd">        check_shapes</span>
 <span class="sd">            Whether to check array shapes in the sub-structure. Default is True.</span>
-<span class="sd">        partial : bool, optional</span>
+<span class="sd">        partial</span>
 <span class="sd">            Whether to also check for partially complete sub-containers. Default is False.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">            Bool</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="kc">True</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">find_sub_structure</span><span class="p">(</span><span class="n">sub_cont</span><span class="p">,</span> <span class="n">check_shapes</span><span class="p">,</span> <span class="n">partial</span><span class="p">),</span> <span class="nb">str</span><span class="p">)</span> <span class="k">else</span> <span class="kc">False</span></div>
@@ -3222,15 +3144,12 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        sub_cont : ivy.Container</span>
+<span class="sd">        sub_cont</span>
 <span class="sd">            The sub-container to check.</span>
-<span class="sd">        check_shapes : bool, optional</span>
+<span class="sd">        check_shapes</span>
 <span class="sd">            Whether to check array shapes in the sub-structure. Default is True.</span>
-<span class="sd">        partial : bool, optional</span>
+<span class="sd">        partial</span>
 <span class="sd">            Whether to also check for partially complete sub-containers. Default is False.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
@@ -3249,9 +3168,9 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        include_infs : bool, optional</span>
+<span class="sd">        include_infs</span>
 <span class="sd">            Whether to include infs and -infs in the check. Default is True.</span>
-<span class="sd">        leafwise : bool, optional</span>
+<span class="sd">        leafwise</span>
 <span class="sd">            Whether to apply the check leaf-wise, and return a container of booleans. Default is False,</span>
 <span class="sd">            in which case the check is applied across the entire container, returning a single boolean.</span>
 
@@ -3270,13 +3189,13 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        queries : sequence of strs or single str</span>
+<span class="sd">        queries</span>
 <span class="sd">            The keys to query.</span>
-<span class="sd">        ignore_none : bool, optional</span>
+<span class="sd">        ignore_none</span>
 <span class="sd">            Whether to ignore None input. Default is True.</span>
-<span class="sd">        containing : bool, optional</span>
+<span class="sd">        containing</span>
 <span class="sd">            Whether to include keys which only contain the query substrings. Default is False.</span>
-<span class="sd">        ignore_key_errors : bool, optional</span>
+<span class="sd">        ignore_key_errors</span>
 <span class="sd">            Whether to ignore Key-errors when trying to access the dict. Default is False.</span>
 
 <span class="sd">        Returns</span>
@@ -3295,10 +3214,10 @@
 
 <span class="sd">            Parameters</span>
 <span class="sd">            ----------</span>
-<span class="sd">            x :</span>
-<span class="sd">                </span>
-<span class="sd">            kc :</span>
-<span class="sd">                </span>
+<span class="sd">            x</span>
+<span class="sd">                param kc:</span>
+<span class="sd">            kc</span>
+
 
 <span class="sd">            Returns</span>
 <span class="sd">            -------</span>
@@ -3316,18 +3235,18 @@
 
 <div class="viewcode-block" id="ContainerBase.at_key_chain"><a class="viewcode-back" href="../../../container/base/ContainerBase.html#ivy.container.base.ContainerBase.at_key_chain">[docs]</a>    <span class="k">def</span> <span class="nf">at_key_chain</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key_chain</span><span class="p">,</span> <span class="n">ignore_key_errors</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Query container object at a specified key-chain</span>
-<span class="sd">        </span>
-<span class="sd">        :return: sub-container or value at specified key chain</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        key_chain :</span>
-<span class="sd">            </span>
-<span class="sd">        ignore_key_errors :</span>
+<span class="sd">        key_chain</span>
+<span class="sd">            param ignore_key_errors: (Default value = False)</span>
+<span class="sd">        ignore_key_errors</span>
 <span class="sd">             (Default value = False)</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
+<span class="sd">        ret</span>
+<span class="sd">            sub-container or value at specified key chain</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">keys</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;[/.]&#39;</span><span class="p">,</span> <span class="n">key_chain</span><span class="p">)</span>
@@ -3343,20 +3262,20 @@
 
 <div class="viewcode-block" id="ContainerBase.at_key_chains"><a class="viewcode-back" href="../../../container/base/ContainerBase.html#ivy.container.base.ContainerBase.at_key_chains">[docs]</a>    <span class="k">def</span> <span class="nf">at_key_chains</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key_chains</span><span class="p">,</span> <span class="n">ignore_none</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ignore_key_errors</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Query container object at specified key-chains, either as list or nested dict.</span>
-<span class="sd">        </span>
-<span class="sd">        :return: sub-container containing only the specified key chains</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        key_chains :</span>
-<span class="sd">            </span>
-<span class="sd">        ignore_none :</span>
+<span class="sd">        key_chains</span>
+<span class="sd">            param ignore_none: (Default value = True)</span>
+<span class="sd">        ignore_key_errors</span>
+<span class="sd">            Default value = False)</span>
+<span class="sd">        ignore_none</span>
 <span class="sd">             (Default value = True)</span>
-<span class="sd">        ignore_key_errors :</span>
-<span class="sd">             (Default value = False)</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
+<span class="sd">        type</span>
+<span class="sd">            sub-container containing only the specified key chains</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">key_chains</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">ignore_none</span><span class="p">:</span>
@@ -3376,12 +3295,8 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        include_empty :</span>
-<span class="sd">             (Default value = False)</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">            </span>
+<span class="sd">        include_empty</span>
+<span class="sd">            Default value = False)</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">[</span><span class="n">kc</span> <span class="k">for</span> <span class="n">kc</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_iterator</span><span class="p">(</span><span class="n">include_empty</span><span class="o">=</span><span class="n">include_empty</span><span class="p">)]</span></div>
@@ -3391,30 +3306,26 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        sub_str :</span>
-<span class="sd">            </span>
-<span class="sd">        include_empty :</span>
+<span class="sd">        sub_str</span>
+<span class="sd">            param include_empty: (Default value = False)</span>
+<span class="sd">        include_empty</span>
 <span class="sd">             (Default value = False)</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">            </span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">[</span><span class="n">kc</span> <span class="k">for</span> <span class="n">kc</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_iterator</span><span class="p">(</span><span class="n">include_empty</span><span class="o">=</span><span class="n">include_empty</span><span class="p">)</span> <span class="k">if</span> <span class="n">sub_str</span> <span class="ow">in</span> <span class="n">kc</span><span class="p">]</span></div>
 
 <div class="viewcode-block" id="ContainerBase.set_at_keys"><a class="viewcode-back" href="../../../container/base/ContainerBase.html#ivy.container.base.ContainerBase.set_at_keys">[docs]</a>    <span class="k">def</span> <span class="nf">set_at_keys</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target_dict</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Set values of container object at specified keys</span>
-<span class="sd">        </span>
-<span class="sd">        :return: new container with updated value at each key</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        target_dict :</span>
-<span class="sd">            </span>
+<span class="sd">        target_dict</span>
+
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
+<span class="sd">        type</span>
+<span class="sd">            new container with updated value at each key</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">return_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
@@ -3429,20 +3340,20 @@
 
 <div class="viewcode-block" id="ContainerBase.set_at_key_chain"><a class="viewcode-back" href="../../../container/base/ContainerBase.html#ivy.container.base.ContainerBase.set_at_key_chain">[docs]</a>    <span class="k">def</span> <span class="nf">set_at_key_chain</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key_chain</span><span class="p">,</span> <span class="n">val</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Set value of container object at a specified key-chain</span>
-<span class="sd">        </span>
-<span class="sd">        :return: new container with updated value at key chain</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        key_chain :</span>
-<span class="sd">            </span>
-<span class="sd">        val :</span>
-<span class="sd">            </span>
-<span class="sd">        inplace :</span>
-<span class="sd">             (Default value = False)</span>
+<span class="sd">        key_chain</span>
+<span class="sd">            param val:</span>
+<span class="sd">        inplace</span>
+<span class="sd">            Default value = False)</span>
+<span class="sd">        val</span>
+
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
+<span class="sd">        ret</span>
+<span class="sd">            new container with updated value at key chain</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">keys</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;[/.]&#39;</span><span class="p">,</span> <span class="n">key_chain</span><span class="p">)</span>
@@ -3460,20 +3371,20 @@
 
 <div class="viewcode-block" id="ContainerBase.overwrite_at_key_chain"><a class="viewcode-back" href="../../../container/base/ContainerBase.html#ivy.container.base.ContainerBase.overwrite_at_key_chain">[docs]</a>    <span class="k">def</span> <span class="nf">overwrite_at_key_chain</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key_chain</span><span class="p">,</span> <span class="n">val</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Overwrite value of container object at a specified key-chain</span>
-<span class="sd">        </span>
-<span class="sd">        :return: new container with updated value at key chain, provided it existed before.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        key_chain :</span>
-<span class="sd">            </span>
-<span class="sd">        val :</span>
-<span class="sd">            </span>
-<span class="sd">        inplace :</span>
-<span class="sd">             (Default value = False)</span>
+<span class="sd">        key_chain</span>
+<span class="sd">            param val:</span>
+<span class="sd">        inplace</span>
+<span class="sd">            Default value = False)</span>
+<span class="sd">        val</span>
+
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
+<span class="sd">        ret</span>
+<span class="sd">            new container with updated value at key chain, provided it existed before.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">keys</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;[/.]&#39;</span><span class="p">,</span> <span class="n">key_chain</span><span class="p">)</span>
@@ -3493,20 +3404,20 @@
 
 <div class="viewcode-block" id="ContainerBase.set_at_key_chains"><a class="viewcode-back" href="../../../container/base/ContainerBase.html#ivy.container.base.ContainerBase.set_at_key_chains">[docs]</a>    <span class="k">def</span> <span class="nf">set_at_key_chains</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target_dict</span><span class="p">,</span> <span class="n">return_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Set values of container object at specified key-chains</span>
-<span class="sd">        </span>
-<span class="sd">        :return: new container with updated values at the key chains</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        target_dict :</span>
-<span class="sd">            </span>
-<span class="sd">        return_dict :</span>
+<span class="sd">        target_dict</span>
+<span class="sd">            param return_dict: (Default value = None)</span>
+<span class="sd">        inplace</span>
+<span class="sd">            Default value = False)</span>
+<span class="sd">        return_dict</span>
 <span class="sd">             (Default value = None)</span>
-<span class="sd">        inplace :</span>
-<span class="sd">             (Default value = False)</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
+<span class="sd">        ret</span>
+<span class="sd">            new container with updated values at the key chains</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">return_dict</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -3523,20 +3434,20 @@
 
 <div class="viewcode-block" id="ContainerBase.overwrite_at_key_chains"><a class="viewcode-back" href="../../../container/base/ContainerBase.html#ivy.container.base.ContainerBase.overwrite_at_key_chains">[docs]</a>    <span class="k">def</span> <span class="nf">overwrite_at_key_chains</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target_dict</span><span class="p">,</span> <span class="n">return_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Overwrite values of container object at specified key-chains</span>
-<span class="sd">        </span>
-<span class="sd">        :return: new container with updated values at the key chains, provided they existed before.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        target_dict :</span>
-<span class="sd">            </span>
-<span class="sd">        return_dict :</span>
+<span class="sd">        target_dict</span>
+<span class="sd">            param return_dict: (Default value = None)</span>
+<span class="sd">        inplace</span>
+<span class="sd">            Default value = False)</span>
+<span class="sd">        return_dict</span>
 <span class="sd">             (Default value = None)</span>
-<span class="sd">        inplace :</span>
-<span class="sd">             (Default value = False)</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
+<span class="sd">        ret</span>
+<span class="sd">            new container with updated values at the key chains, provided they existed before.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">return_dict</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -3555,18 +3466,18 @@
 
 <div class="viewcode-block" id="ContainerBase.prune_keys"><a class="viewcode-back" href="../../../container/base/ContainerBase.html#ivy.container.base.ContainerBase.prune_keys">[docs]</a>    <span class="k">def</span> <span class="nf">prune_keys</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query_keys</span><span class="p">,</span> <span class="n">ignore_none</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Recursively prune set of keys</span>
-<span class="sd">        </span>
-<span class="sd">        :return: Container with key-chains containing the specified keys pruned.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        query_keys :</span>
-<span class="sd">            </span>
-<span class="sd">        ignore_none :</span>
+<span class="sd">        query_keys</span>
+<span class="sd">            param ignore_none: (Default value = True)</span>
+<span class="sd">        ignore_none</span>
 <span class="sd">             (Default value = True)</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
+<span class="sd">        ret</span>
+<span class="sd">            Container with key-chains containing the specified keys pruned.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">query_keys</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">ignore_none</span><span class="p">:</span>
@@ -3580,10 +3491,10 @@
 
 <span class="sd">            Parameters</span>
 <span class="sd">            ----------</span>
-<span class="sd">            x :</span>
-<span class="sd">                </span>
-<span class="sd">            kc :</span>
-<span class="sd">                </span>
+<span class="sd">            x</span>
+<span class="sd">                param kc:</span>
+<span class="sd">            kc</span>
+
 
 <span class="sd">            Returns</span>
 <span class="sd">            -------</span>
@@ -3600,16 +3511,16 @@
 
 <div class="viewcode-block" id="ContainerBase.prune_key_chain"><a class="viewcode-back" href="../../../container/base/ContainerBase.html#ivy.container.base.ContainerBase.prune_key_chain">[docs]</a>    <span class="k">def</span> <span class="nf">prune_key_chain</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key_chain</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Recursively prune chain of keys, specified as &#39;key1/key2/key3/...&#39;</span>
-<span class="sd">        </span>
-<span class="sd">        :return: Container with keys in key chain pruned.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        key_chain :</span>
-<span class="sd">            </span>
+<span class="sd">        key_chain</span>
+
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
+<span class="sd">        ret</span>
+<span class="sd">            Container with keys in key chain pruned.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">keys_in_chain</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;[/.]&#39;</span><span class="p">,</span> <span class="n">key_chain</span><span class="p">)</span>
@@ -3634,18 +3545,18 @@
 
 <div class="viewcode-block" id="ContainerBase.prune_key_chains"><a class="viewcode-back" href="../../../container/base/ContainerBase.html#ivy.container.base.ContainerBase.prune_key_chains">[docs]</a>    <span class="k">def</span> <span class="nf">prune_key_chains</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key_chains</span><span class="p">,</span> <span class="n">ignore_none</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Recursively prune set of key chains</span>
-<span class="sd">        </span>
-<span class="sd">        :return: Container with keys in the set of key chains pruned.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        key_chains :</span>
-<span class="sd">            </span>
-<span class="sd">        ignore_none :</span>
+<span class="sd">        key_chains</span>
+<span class="sd">            param ignore_none: (Default value = True)</span>
+<span class="sd">        ignore_none</span>
 <span class="sd">             (Default value = True)</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
+<span class="sd">        ret</span>
+<span class="sd">            Container with keys in the set of key chains pruned.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">key_chains</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">ignore_none</span><span class="p">:</span>
@@ -3662,22 +3573,22 @@
 
 <div class="viewcode-block" id="ContainerBase.format_key_chains"><a class="viewcode-back" href="../../../container/base/ContainerBase.html#ivy.container.base.ContainerBase.format_key_chains">[docs]</a>    <span class="k">def</span> <span class="nf">format_key_chains</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">format_fn</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Format all key-chains, using the formatting function</span>
-<span class="sd">        </span>
-<span class="sd">        :return: Container with the same key-chain structure, but the key strings formatted.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        format_fn :</span>
-<span class="sd">            </span>
+<span class="sd">        format_fn</span>
+
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
+<span class="sd">        ret</span>
+<span class="sd">            Container with the same key-chain structure, but the key strings formatted.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">({</span><span class="n">format_fn</span><span class="p">(</span><span class="n">k</span><span class="p">):</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_iterator</span><span class="p">()})</span></div>
 
 <div class="viewcode-block" id="ContainerBase.sort_by_key"><a class="viewcode-back" href="../../../container/base/ContainerBase.html#ivy.container.base.ContainerBase.sort_by_key">[docs]</a>    <span class="k">def</span> <span class="nf">sort_by_key</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        
+
         <span class="n">new_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">):</span>
@@ -3690,18 +3601,18 @@
 <div class="viewcode-block" id="ContainerBase.prune_empty"><a class="viewcode-back" href="../../../container/base/ContainerBase.html#ivy.container.base.ContainerBase.prune_empty">[docs]</a>    <span class="k">def</span> <span class="nf">prune_empty</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keep_nones</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">base</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Recursively prunes empty keys from the container dict structure.</span>
 <span class="sd">        Returns None if the entire container is empty.</span>
-<span class="sd">        </span>
-<span class="sd">        :return: Container with empty keys pruned.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        keep_nones :</span>
-<span class="sd">             (Default value = False)</span>
-<span class="sd">        base :</span>
-<span class="sd">             (Default value = True)</span>
+<span class="sd">        keep_nones</span>
+<span class="sd">            Default value = False)</span>
+<span class="sd">        base</span>
+<span class="sd">            Default value = True)</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
+<span class="sd">        ret</span>
+<span class="sd">            Container with empty keys pruned.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">out_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
@@ -3723,9 +3634,9 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        absolute : str, optional</span>
+<span class="sd">        absolute</span>
 <span class="sd">            The absolute key to detect in the key chains. (Default value = None)</span>
-<span class="sd">        containing : str, optional</span>
+<span class="sd">        containing</span>
 <span class="sd">            A substring to check each key for, when deciding which keys to prune. (Default value = None)</span>
 
 <span class="sd">        Returns</span>
@@ -3753,9 +3664,9 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        absolute : sequence of strs, optional</span>
+<span class="sd">        absolute</span>
 <span class="sd">            The absolute key to detect in the key chains. (Default value = None)</span>
-<span class="sd">        containing : sequence of strs, optional</span>
+<span class="sd">        containing</span>
 <span class="sd">            A substring to check each key for, when deciding which keys to prune. (Default value = None)</span>
 
 <span class="sd">        Returns</span>
@@ -3784,15 +3695,12 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        keychain_mapping : dict</span>
+<span class="sd">        keychain_mapping</span>
 <span class="sd">            A dict with keys as old key-chains and values as new key-chains.</span>
-<span class="sd">        keep_orig : bool, optional</span>
+<span class="sd">        keep_orig</span>
 <span class="sd">            Whether to keep the original keys, or start from a new empty container. Default is True.</span>
-<span class="sd">        replace : bool, optional</span>
+<span class="sd">        replace</span>
 <span class="sd">            Whether to replace the old key-chains by the new ones. Default is True.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">new_cont</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span> <span class="k">if</span> <span class="n">keep_orig</span> <span class="k">else</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">()</span>
@@ -3808,15 +3716,12 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        mapping : dict</span>
+<span class="sd">        mapping</span>
 <span class="sd">            A dict with keys as old key-chains and values as new key-chains.</span>
-<span class="sd">        keep_orig : bool, optional</span>
+<span class="sd">        keep_orig</span>
 <span class="sd">            Whether to keep the original keys, are start from a new container. Default is True.</span>
-<span class="sd">        replace : bool, optional</span>
+<span class="sd">        replace</span>
 <span class="sd">            Whether to replace the old key-chains by the new ones. Default is True.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">new_cont</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span> <span class="k">if</span> <span class="n">keep_orig</span> <span class="k">else</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">()</span>
@@ -3843,16 +3748,12 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        include_empty :</span>
-<span class="sd">             (Default value = False)</span>
-<span class="sd">        above_height :</span>
-<span class="sd">             (Default value = None)</span>
-<span class="sd">        below_depth :</span>
-<span class="sd">             (Default value = None)</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">            </span>
+<span class="sd">        include_empty</span>
+<span class="sd">            Default value = False)</span>
+<span class="sd">        above_height</span>
+<span class="sd">            Default value = None)</span>
+<span class="sd">        below_depth</span>
+<span class="sd">            Default value = None)</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">({</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="o">.</span><span class="n">flatten_key_chain</span><span class="p">(</span><span class="n">kc</span><span class="p">,</span> <span class="n">above_height</span><span class="o">=</span><span class="n">above_height</span><span class="p">,</span> <span class="n">below_depth</span><span class="o">=</span><span class="n">below_depth</span><span class="p">):</span> <span class="n">v</span>
@@ -3860,28 +3761,24 @@
 
 <div class="viewcode-block" id="ContainerBase.copy"><a class="viewcode-back" href="../../../container/base/ContainerBase.html#ivy.container.base.ContainerBase.copy">[docs]</a>    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Create a copy of this container.</span>
-<span class="sd">        </span>
-<span class="sd">        :return: A copy of the container</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
+<span class="sd">            A copy of the container</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(),</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="ContainerBase.deep_copy"><a class="viewcode-back" href="../../../container/base/ContainerBase.html#ivy.container.base.ContainerBase.deep_copy">[docs]</a>    <span class="k">def</span> <span class="nf">deep_copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Create a deep copy (copying all internal tensors) of this container.</span>
-<span class="sd">        </span>
-<span class="sd">        :return: A deep copy of the container</span>
+
+<span class="sd">       return: A deep copy of the container</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">kc</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">copy_array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">else</span> <span class="n">x</span><span class="p">)</span></div>
@@ -3892,22 +3789,22 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        func : python function</span>
+<span class="sd">        func</span>
 <span class="sd">            Function to apply to each container entry</span>
-<span class="sd">        key_chains : list or dict of strs, optional</span>
+<span class="sd">        key_chains</span>
 <span class="sd">            The key-chains to apply or not apply the method to. Default is None.</span>
-<span class="sd">        to_apply : bool, optional</span>
+<span class="sd">        to_apply</span>
 <span class="sd">            If True, the method will be applied to key_chains, otherwise key_chains will be skipped.</span>
 <span class="sd">            Default is True.</span>
-<span class="sd">        prune_unapplied : bool, optional</span>
+<span class="sd">        prune_unapplied</span>
 <span class="sd">            Whether to prune key_chains for which the function was not applied. Default is False.</span>
-<span class="sd">        map_sequences : bool, optional</span>
+<span class="sd">        map_sequences</span>
 <span class="sd">            Whether to also map method to sequences (lists, tuples). Default is False.</span>
-<span class="sd">        inplace : bool, optional</span>
+<span class="sd">        inplace</span>
 <span class="sd">            Whether to apply the mapping inplace, or return a new container. Default is False.</span>
-<span class="sd">        map_sequences : bool, optional</span>
+<span class="sd">        map_sequences</span>
 <span class="sd">            Whether to also map to sequences (lists and tuples). Default is False.</span>
-<span class="sd">        key_chain : str</span>
+<span class="sd">        key_chain</span>
 <span class="sd">            Chain of keys for this dict entry (Default value = &#39;&#39;)</span>
 
 <span class="sd">        Returns</span>
@@ -3948,20 +3845,20 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        func : python function</span>
+<span class="sd">        func</span>
 <span class="sd">            Function to apply to each sub-container</span>
-<span class="sd">        key_chains : list or dict of strs, optional</span>
+<span class="sd">        key_chains</span>
 <span class="sd">            The key-chains to apply or not apply the method to. Default is None.</span>
-<span class="sd">        to_apply : bool, optional</span>
+<span class="sd">        to_apply</span>
 <span class="sd">            If True, the method will be applied to key_chains, otherwise key_chains will be skipped.</span>
 <span class="sd">            Default is True.</span>
-<span class="sd">        prune_unapplied : bool, optional</span>
+<span class="sd">        prune_unapplied</span>
 <span class="sd">            Whether to prune key_chains for which the function was not applied. Default is False.</span>
-<span class="sd">        inplace : bool, optional</span>
+<span class="sd">        inplace</span>
 <span class="sd">            Whether to apply the mapping inplace, or return a new container. Default is False.</span>
-<span class="sd">        key_chain : str</span>
+<span class="sd">        key_chain</span>
 <span class="sd">            Chain of keys for this dict entry (Default value = &#39;&#39;)</span>
-<span class="sd">        include_self : bool, optional</span>
+<span class="sd">        include_self</span>
 <span class="sd">            Whether to also apply the (possiby in-place) function to this container. Default is True.</span>
 
 <span class="sd">        Returns</span>
@@ -3998,21 +3895,22 @@
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">            :return: New datatype container</span>
+<span class="sd">            ret</span>
+<span class="sd">             New datatype container</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">_</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ivy</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="n">x</span><span class="p">))</span></div>
 
 <div class="viewcode-block" id="ContainerBase.with_entries_as_lists"><a class="viewcode-back" href="../../../container/base/ContainerBase.html#ivy.container.base.ContainerBase.with_entries_as_lists">[docs]</a>    <span class="k">def</span> <span class="nf">with_entries_as_lists</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        
+
         <span class="k">def</span> <span class="nf">to_list</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">_</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
             <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">            Parameters</span>
 <span class="sd">            ----------</span>
-<span class="sd">            x :</span>
-<span class="sd">                </span>
-<span class="sd">            _ :</span>
+<span class="sd">            x</span>
+<span class="sd">                param _: (Default value = &#39;&#39;)</span>
+<span class="sd">            _</span>
 <span class="sd">                 (Default value = &#39;&#39;)</span>
 
 <span class="sd">            Returns</span>
@@ -4027,20 +3925,20 @@
 
 <div class="viewcode-block" id="ContainerBase.reshape_like"><a class="viewcode-back" href="../../../container/base/ContainerBase.html#ivy.container.base.ContainerBase.reshape_like">[docs]</a>    <span class="k">def</span> <span class="nf">reshape_like</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target_dict</span><span class="p">,</span> <span class="n">leading_shape</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">return_cont</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Set shapes of container entries to shapes specified by new container with the same key structure</span>
-<span class="sd">        </span>
-<span class="sd">        :return: new container with values of updated shapes</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        target_dict :</span>
-<span class="sd">            </span>
-<span class="sd">        leading_shape :</span>
-<span class="sd">             (Default value = None)</span>
-<span class="sd">        return_cont :</span>
+<span class="sd">        target_dict</span>
+<span class="sd">            param leading_shape: (Default value = None)</span>
+<span class="sd">        return_cont</span>
+<span class="sd">            Default value = None)</span>
+<span class="sd">        leading_shape</span>
 <span class="sd">             (Default value = None)</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
+<span class="sd">        ret</span>
+<span class="sd">            new container with values of updated shapes</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">leading_shape</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ivy</span><span class="o">.</span><span class="n">default</span><span class="p">(</span><span class="n">leading_shape</span><span class="p">,</span> <span class="nb">list</span><span class="p">())</span>
@@ -4058,15 +3956,12 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        key :</span>
-<span class="sd">            </span>
-<span class="sd">        value :</span>
-<span class="sd">            </span>
-<span class="sd">        inplace :</span>
-<span class="sd">             (Default value = True)</span>
+<span class="sd">        key</span>
+<span class="sd">            param value:</span>
+<span class="sd">        inplace</span>
+<span class="sd">            Default value = True)</span>
+<span class="sd">        value</span>
 
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
@@ -4078,11 +3973,8 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        key :</span>
-<span class="sd">            </span>
+<span class="sd">        key</span>
 
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
@@ -4095,11 +3987,8 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        key :</span>
-<span class="sd">            </span>
+<span class="sd">        key</span>
 
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
@@ -4112,13 +4001,10 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        depth_cutoff :</span>
-<span class="sd">            </span>
-<span class="sd">        inplace :</span>
+<span class="sd">        depth_cutoff</span>
+<span class="sd">            param inplace: (Default value = False)</span>
+<span class="sd">        inplace</span>
 <span class="sd">             (Default value = False)</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">total_depth</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_depth</span>
@@ -4139,13 +4025,10 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        height_cutoff :</span>
-<span class="sd">            </span>
-<span class="sd">        inplace :</span>
+<span class="sd">        height_cutoff</span>
+<span class="sd">            param inplace: (Default value = False)</span>
+<span class="sd">        inplace</span>
 <span class="sd">             (Default value = False)</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">copy</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
@@ -4180,13 +4063,10 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        key_slice :</span>
-<span class="sd">            </span>
-<span class="sd">        all_depths :</span>
+<span class="sd">        key_slice</span>
+<span class="sd">            param all_depths: (Default value = False)</span>
+<span class="sd">        all_depths</span>
 <span class="sd">             (Default value = False)</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">top_depth</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_depth</span>
@@ -4213,13 +4093,10 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        print_limit :</span>
-<span class="sd">            </span>
-<span class="sd">        inplace :</span>
+<span class="sd">        print_limit</span>
+<span class="sd">            param inplace: (Default value = False)</span>
+<span class="sd">        inplace</span>
 <span class="sd">             (Default value = False)</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">def</span> <span class="nf">_update_print_limit</span><span class="p">(</span><span class="n">cont</span><span class="p">,</span> <span class="n">_</span><span class="p">):</span>
@@ -4236,11 +4113,8 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        inplace :</span>
-<span class="sd">             (Default value = False)</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
+<span class="sd">        inplace</span>
+<span class="sd">            Default value = False)</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">with_print_limit</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">inplace</span><span class="p">)</span></div>
@@ -4250,13 +4124,10 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        key_length_limit :</span>
-<span class="sd">            </span>
-<span class="sd">        inplace :</span>
+<span class="sd">        key_length_limit</span>
+<span class="sd">            param inplace: (Default value = False)</span>
+<span class="sd">        inplace</span>
 <span class="sd">             (Default value = False)</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">def</span> <span class="nf">_update_key_length_limit</span><span class="p">(</span><span class="n">cont</span><span class="p">,</span> <span class="n">_</span><span class="p">):</span>
@@ -4272,11 +4143,8 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        inplace :</span>
-<span class="sd">             (Default value = False)</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
+<span class="sd">        inplace</span>
+<span class="sd">            Default value = False)</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">with_key_length_limit</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">inplace</span><span class="p">)</span></div>
@@ -4286,13 +4154,10 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        print_indent :</span>
-<span class="sd">            </span>
-<span class="sd">        inplace :</span>
+<span class="sd">        print_indent</span>
+<span class="sd">            param inplace: (Default value = False)</span>
+<span class="sd">        inplace</span>
 <span class="sd">             (Default value = False)</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">def</span> <span class="nf">_update_print_indent</span><span class="p">(</span><span class="n">cont</span><span class="p">,</span> <span class="n">_</span><span class="p">):</span>
@@ -4308,13 +4173,10 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        print_line_spacing :</span>
-<span class="sd">            </span>
-<span class="sd">        inplace :</span>
+<span class="sd">        print_line_spacing</span>
+<span class="sd">            param inplace: (Default value = False)</span>
+<span class="sd">        inplace</span>
 <span class="sd">             (Default value = False)</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">def</span> <span class="nf">_update_print_line_spacing</span><span class="p">(</span><span class="n">cont</span><span class="p">,</span> <span class="n">_</span><span class="p">):</span>
@@ -4330,13 +4192,10 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        default_key_color :</span>
-<span class="sd">            </span>
-<span class="sd">        inplace :</span>
+<span class="sd">        default_key_color</span>
+<span class="sd">            param inplace: (Default value = False)</span>
+<span class="sd">        inplace</span>
 <span class="sd">             (Default value = False)</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">def</span> <span class="nf">_update_default_key_color</span><span class="p">(</span><span class="n">cont</span><span class="p">,</span> <span class="n">_</span><span class="p">):</span>
@@ -4352,11 +4211,8 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        ivy_backend :</span>
-<span class="sd">            </span>
+<span class="sd">        ivy_backend</span>
 
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ivyh</span><span class="o">=</span><span class="n">ivy_backend</span><span class="p">)</span></div>
@@ -4366,17 +4222,14 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        ivy_backend :</span>
-<span class="sd">            </span>
+<span class="sd">        ivy_backend</span>
 
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_local_ivy</span> <span class="o">=</span> <span class="n">ivy_backend</span></div>
 
 <div class="viewcode-block" id="ContainerBase.show"><a class="viewcode-back" href="../../../container/base/ContainerBase.html#ivy.container.base.ContainerBase.show">[docs]</a>    <span class="k">def</span> <span class="nf">show</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        
+
         <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
 
     <span class="c1"># noinspection PyUnresolvedReferences</span>
@@ -4385,11 +4238,8 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        sub_cont_or_keychain :</span>
-<span class="sd">            </span>
+<span class="sd">        sub_cont_or_keychain</span>
 
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
 
@@ -4619,7 +4469,7 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        query : slice or str</span>
+<span class="sd">        query slice or str</span>
 <span class="sd">            slice object, key or key chain to query all container elements.</span>
 
 <span class="sd">        Returns</span>
@@ -4661,9 +4511,9 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        query : slice or str</span>
+<span class="sd">        query slice or str</span>
 <span class="sd">            slice object, key or key chain at which to set all container elements.</span>
-<span class="sd">        val : ivy.Container, array, or other</span>
+<span class="sd">        val ivy.Container, array, or other</span>
 <span class="sd">            The value to set at the desired query.</span>
 
 <span class="sd">        Returns</span>
@@ -4833,7 +4683,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">_ivy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        
+
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">default</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_local_ivy</span><span class="p">,</span> <span class="n">ivy</span><span class="p">)</span>
 
     <span class="nd">@_ivy</span><span class="o">.</span><span class="n">setter</span>
@@ -4864,21 +4714,22 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">ivy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        
+
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ivy</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">config</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        
+
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_config</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">max_depth</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        
+
         <span class="n">kcs</span> <span class="o">=</span> <span class="p">[</span><span class="n">kc</span> <span class="k">for</span> <span class="n">kc</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_iterator_keys</span><span class="p">(</span><span class="n">include_empty</span><span class="o">=</span><span class="kc">True</span><span class="p">)]</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">kcs</span><span class="p">:</span>
             <span class="k">return</span> <span class="mi">0</span>
         <span class="k">return</span> <span class="nb">max</span><span class="p">([</span><span class="nb">len</span><span class="p">(</span><span class="n">kc</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">))</span> <span class="k">for</span> <span class="n">kc</span> <span class="ow">in</span> <span class="n">kcs</span><span class="p">])</span></div>
+
 </pre></div>
 
            </div>

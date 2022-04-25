@@ -244,15 +244,15 @@
 <span class="sd">    Shifts the bits of each element ``x1_i`` of the input array ``x1`` to the left by appending ``x2_i`` (i.e., the respective element in the input array ``x2``) zeros to the right of ``x1_i``.</span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    x1: array</span>
+<span class="sd">    x1</span>
 <span class="sd">        first input array. Should have an integer data type.</span>
-<span class="sd">    x2: array</span>
+<span class="sd">    x2</span>
 <span class="sd">        second input array. Must be compatible with ``x1`` (see :ref:`broadcasting`). Should have an integer data type. Each element must be greater than or equal to ``0``.</span>
-<span class="sd">    out:</span>
+<span class="sd">    out</span>
 <span class="sd">        optional output array, for writing the result to. It must have a shape that the inputs broadcast to.</span>
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    return: array</span>
+<span class="sd">     ret</span>
 <span class="sd">        an array containing the element-wise results. The returned array must have a data type determined by :ref:`type-promotion`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">)</span><span class="o">.</span><span class="n">bitwise_left_shift</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span></div>
@@ -301,7 +301,8 @@
 <span class="sd">    </span>
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    ret</span>
+<span class="sd">     ret</span>
+
 <span class="sd">        an array containing the element-wise sums. The returned array must have a data type determined by :ref:`type-promotion`.</span>
 
 <span class="sd">    Examples</span>
@@ -324,15 +325,15 @@
 <span class="sd">    Computes the bitwise XOR of the underlying binary representation of each element ``x1_i`` of the input array ``x1`` with the respective element ``x2_i`` of the input array ``x2``.</span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    x1: array</span>
+<span class="sd">    x1</span>
 <span class="sd">        first input array. Should have an integer or boolean data type.</span>
-<span class="sd">    x2: array</span>
+<span class="sd">    x2</span>
 <span class="sd">        second input array. Must be compatible with ``x1`` (see :ref:`broadcasting`). Should have an integer or boolean data type.</span>
-<span class="sd">    out:</span>
+<span class="sd">    out</span>
 <span class="sd">        optional output array, for writing the result to. It must have a shape that the inputs broadcast to.</span>
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    return: array</span>
+<span class="sd">     ret</span>
 <span class="sd">        an array containing the element-wise results. The returned array must have a data type determined by :ref:`type-promotion`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">)</span><span class="o">.</span><span class="n">bitwise_xor</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span></div>
@@ -352,13 +353,13 @@
 <span class="sd">    - If ``x_i`` is ``-infinity``, the result is ``+0``.</span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    x: array</span>
+<span class="sd">    x</span>
 <span class="sd">        input array. Should have a floating-point data type.</span>
-<span class="sd">    out:</span>
+<span class="sd">    out</span>
 <span class="sd">        optional output array, for writing the result to. It must have a shape that the inputs broadcast to.</span>
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    return: array</span>
+<span class="sd">     ret</span>
 <span class="sd">        an array containing the evaluated exponential function result for each element in ``x``. The returned array must have a floating-point data type determined by :ref:`type-promotion`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span></div>
@@ -380,13 +381,13 @@
 <span class="sd">    - If ``x_i`` is ``-infinity``, the result is ``-1``.</span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    x: array</span>
+<span class="sd">    x</span>
 <span class="sd">        input array. Should have a numeric data type.</span>
-<span class="sd">    out:</span>
+<span class="sd">    out</span>
 <span class="sd">        optional output array, for writing the result to. It must have a shape that the inputs broadcast to.</span>
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    return: array</span>
+<span class="sd">     ret</span>
 <span class="sd">        an array containing the evaluated result for each element in ``x``. The returned array must have a floating-point data type determined by :ref:`type-promotion`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">expm1</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span></div>
@@ -400,15 +401,15 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    x:</span>
+<span class="sd">    x</span>
 <span class="sd">        input array. Should have an integer or boolean data type.</span>
-<span class="sd">    out:</span>
+<span class="sd">    out</span>
 <span class="sd">        optional output array, for writing the result to. It must have a shape that the inputs broadcast to.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    ret:</span>
-<span class="sd">        an array containing the element-wise results. The returned array must have the same data type as ``x``.</span>
+<span class="sd">     ret</span>
+<span class="sd">        an array containing the element-wise results. The returned array must have the same data type as x.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
@@ -430,16 +431,16 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    x1:</span>
+<span class="sd">    x1</span>
 <span class="sd">        first input array. Should have an integer or boolean data type.</span>
-<span class="sd">    x2:</span>
+<span class="sd">    x2</span>
 <span class="sd">        second input array. Must be compatible with ``x1`` (see :ref:`broadcasting`). Should have an integer or boolean data type.</span>
-<span class="sd">    out:</span>
+<span class="sd">    out</span>
 <span class="sd">        optional output array, for writing the result to. It must have a shape that the inputs broadcast to.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    return:</span>
+<span class="sd">     ret</span>
 <span class="sd">        an array containing the element-wise results. The returned array must have a data type determined by :ref:`type-promotion`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">)</span><span class="o">.</span><span class="n">bitwise_and</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span></div>
@@ -465,17 +466,18 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    x:</span>
+<span class="sd">    x</span>
 <span class="sd">        input array. Should have a numeric data type.</span>
-<span class="sd">    out:</span>
+<span class="sd">    out</span>
 <span class="sd">        optional output array, for writing the result to. It must have a shape that the inputs broadcast to.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    return:</span>
+<span class="sd">     ret</span>
 <span class="sd">        an array containing the rounded result for each element in ``x``. The returned array must have the same data type as ``x``.</span>
-<span class="sd">        </span>
+
 <span class="sd">    Examples:</span>
+<span class="sd">    ---------</span>
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([0.1, 0, -0.1])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.ceil(x)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
@@ -504,14 +506,14 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    x:</span>
+<span class="sd">    x</span>
 <span class="sd">        input array. Should have a numeric data type.</span>
-<span class="sd">    out:</span>
+<span class="sd">    out</span>
 <span class="sd">        optional output array, for writing the result to. It must have a shape that the inputs broadcast to.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    return:</span>
+<span class="sd">     ret</span>
 <span class="sd">        an array containing the rounded result for each element in ``x``. The returned array must have the same data type as ``x``.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span></div>
@@ -525,14 +527,14 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    x:</span>
+<span class="sd">    x</span>
 <span class="sd">       input array. Should have a numeric data type.</span>
-<span class="sd">   out:</span>
+<span class="sd">   out</span>
 <span class="sd">        optional output array, for writing the result to. It must have a shape that the inputs broadcast to.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    return:</span>
+<span class="sd">     ret</span>
 <span class="sd">       an array containing test results. An element ``out_i`` is ``True`` if ``x_i`` is finite and ``False`` otherwise. The returned array must have a data type of ``bool``.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span></div>
@@ -556,14 +558,14 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    x: array</span>
+<span class="sd">    x</span>
 <span class="sd">        input array. Should have a floating-point data type.</span>
-<span class="sd">    out:</span>
+<span class="sd">    out</span>
 <span class="sd">        optional output array, for writing the result to. It must have a shape that the inputs broadcast to.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    return: array</span>
+<span class="sd">     ret</span>
 <span class="sd">        an array containing the inverse sine of each element in ``x``. The returned array must have a floating-point data type determined by :ref:`type-promotion`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">asin</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span></div>
@@ -576,14 +578,14 @@
 <span class="sd">    Tests each element x_i of the input array x to determine if equal to positive or negative infinity.</span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    x:</span>
+<span class="sd">    x</span>
 <span class="sd">        input array. Should have a numeric data type.</span>
-<span class="sd">    out:</span>
+<span class="sd">    out</span>
 <span class="sd">        optional output array, for writing the result to. It must have a shape that the inputs broadcast to.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    return:</span>
+<span class="sd">     ret</span>
 <span class="sd">        an array containing test results. An element out_i is True if x_i is either positive or negative infinity and False otherwise. The returned array must have a data type of bool.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">isinf</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span></div>
@@ -591,19 +593,27 @@
 
 <div class="viewcode-block" id="greater"><a class="viewcode-back" href="../../../../functional/ivy/elementwise/greater.html#ivy.functional.ivy.elementwise.greater">[docs]</a><span class="k">def</span> <span class="nf">greater</span><span class="p">(</span><span class="n">x1</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
             <span class="n">x2</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
-            <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span>\
+            <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> \
         <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Computes the truth value of x1_i &lt; x2_i for each element x1_i of the input array x1 with the respective</span>
+    <span class="sd">&quot;&quot;&quot;Computes the truth value of x1_i &lt; x2_i for each element x1_i of the input array x1 with the respective</span>
 <span class="sd">    element x2_i of the input array x2.</span>
 
-<span class="sd">    :param x1: Input array.</span>
-<span class="sd">    :param x2: Input array.</span>
-<span class="sd">    :param f: Machine learning framework. Inferred from inputs if None.</span>
-<span class="sd">    :return: an array containing the element-wise results. The returned array must have a data type of bool.</span>
-<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x1</span>
+<span class="sd">        Input array.</span>
+<span class="sd">    x2</span>
+<span class="sd">        Input array.</span>
+<span class="sd">    f</span>
+<span class="sd">        Machine learning framework. Inferred from inputs if None.</span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">     ret</span>
+<span class="sd">        an array containing the element-wise results. The returned array must have a data type of bool.</span>
+
 <span class="sd">    Examples:</span>
-<span class="sd">    &gt;&gt;&gt; x = ivy.greater(ivy.array([1, 2, 3]), ivy.array([2, 2, 2]))</span>
+<span class="sd">    ---------</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.greater(ivy.array([1,2,3]),ivy.array([2,2,2]))</span>
 <span class="sd">    &gt;&gt;&gt; print(x)</span>
 <span class="sd">    ivy.array([False, False,  True])</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -612,15 +622,23 @@
 
 <div class="viewcode-block" id="greater_equal"><a class="viewcode-back" href="../../../../functional/ivy/elementwise/greater_equal.html#ivy.functional.ivy.elementwise.greater_equal">[docs]</a><span class="k">def</span> <span class="nf">greater_equal</span><span class="p">(</span><span class="n">x1</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
                   <span class="n">x2</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
-                  <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span>\
+                  <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> \
         <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Computes the truth value of x1_i &gt;= x2_i for each element x1_i of the input array x1 with the respective</span>
+    <span class="sd">&quot;&quot;&quot;Computes the truth value of x1_i &gt;= x2_i for each element x1_i of the input array x1 with the respective</span>
 <span class="sd">    element x2_i of the input array x2.</span>
 
-<span class="sd">    :param x1: first input array. May have any data type.</span>
-<span class="sd">    :param x2: second input array. Must be compatible with x1 (with Broadcasting). May have any data type.</span>
-<span class="sd">    :return: an array containing the element-wise results. The returned array must have a data type of bool.</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x1</span>
+<span class="sd">        first input array. May have any data type.</span>
+<span class="sd">    x2</span>
+<span class="sd">        second input array. Must be compatible with x1 (with Broadcasting). May have any data type.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">     ret</span>
+<span class="sd">        an array containing the element-wise results. The returned array must have a data type of bool.</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">)</span><span class="o">.</span><span class="n">greater_equal</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span></div>
 
@@ -628,13 +646,21 @@
 <div class="viewcode-block" id="less_equal"><a class="viewcode-back" href="../../../../functional/ivy/elementwise/less_equal.html#ivy.functional.ivy.elementwise.less_equal">[docs]</a><span class="k">def</span> <span class="nf">less_equal</span><span class="p">(</span><span class="n">x1</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
                <span class="n">x2</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
                <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Computes the truth value of x1_i &lt;= x2_i for each element x1_i of the input array x1 with the respective</span>
+    <span class="sd">&quot;&quot;&quot;Computes the truth value of x1_i &lt;= x2_i for each element x1_i of the input array x1 with the respective</span>
 <span class="sd">    element x2_i of the input array x2.</span>
 
-<span class="sd">    :param x1: first input array. May have any data type.</span>
-<span class="sd">    :param x2: second input array. Must be compatible with x1 (with Broadcasting). May have any data type.</span>
-<span class="sd">    :return: an array containing the element-wise results. The returned array must have a data type of bool.</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x1</span>
+<span class="sd">        first input array. May have any data type.</span>
+<span class="sd">    x2</span>
+<span class="sd">        second input array. Must be compatible with x1 (with Broadcasting). May have any data type.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">     ret</span>
+<span class="sd">        an array containing the element-wise results. The returned array must have a data type of bool.</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">)</span><span class="o">.</span><span class="n">less_equal</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span></div>
 
@@ -666,16 +692,16 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    x1:</span>
+<span class="sd">    x1</span>
 <span class="sd">        first input array. Should have a numeric data type.</span>
-<span class="sd">    x2:</span>
-<span class="sd">        second input array. Must be compatible with ``x1`` (see :ref:`Broadcasting`). Should have a numeric data type.</span>
-<span class="sd">    out:</span>
+<span class="sd">    x2</span>
+<span class="sd">        second input array. Must be compatible with ``x1`` (see  ref:`Broadcasting`). Should have a numeric data type.</span>
+<span class="sd">    out</span>
 <span class="sd">        optional output array, for writing the result to. It must have a shape that the inputs broadcast to.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    return:</span>
+<span class="sd">     ret</span>
 <span class="sd">        an array containing the element-wise products. The returned array must have a data type determined by :ref:`Type Promotion Rules`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">)</span><span class="o">.</span><span class="n">multiply</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span></div>
@@ -699,14 +725,14 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    x:</span>
+<span class="sd">    x</span>
 <span class="sd">        input array whose elements each represent the area of a hyperbolic sector. Should have a floating-point data type.</span>
-<span class="sd">    out:</span>
+<span class="sd">    out</span>
 <span class="sd">        optional output array, for writing the result to. It must have a shape that the inputs broadcast to.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    return:</span>
+<span class="sd">     ret</span>
 <span class="sd">        an array containing the inverse hyperbolic sine of each element in ``x``. The returned array must have a floating-point data type determined by :ref:`type-promotion`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">asinh</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span></div>
@@ -723,14 +749,14 @@
 <span class="sd">    - If ``x_i`` is greater than ``0``, the result is ``+1``.</span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    x: array</span>
+<span class="sd">    x</span>
 <span class="sd">        input array. Should have a numeric data type.</span>
-<span class="sd">    out:</span>
+<span class="sd">    out</span>
 <span class="sd">        optional output array, for writing the result to. It must have a shape that the inputs broadcast to.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    return: array</span>
+<span class="sd">      return</span>
 <span class="sd">        an array containing the evaluated result for each element in ``x``. The returned array must have the same data type as ``x``.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span></div>
@@ -753,14 +779,14 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    x:</span>
+<span class="sd">    x</span>
 <span class="sd">        input array. Should have a floating-point data type.</span>
-<span class="sd">    out:</span>
+<span class="sd">    out</span>
 <span class="sd">        optional output array, for writing the result to. It must have a shape that the inputs broadcast to.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    return:</span>
+<span class="sd">      return</span>
 <span class="sd">        an array containing the square root of each element in ``x``. The returned array must have a floating-point data type determined by :ref:`type-promotion`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span></div>
@@ -784,14 +810,14 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    x:</span>
+<span class="sd">    x</span>
 <span class="sd">        input array whose elements each represent a hyperbolic angle. Should have a floating-point data type.</span>
-<span class="sd">    out:</span>
+<span class="sd">    out</span>
 <span class="sd">        optional output array, for writing the result to. It must have a shape that the inputs broadcast to.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    return:</span>
+<span class="sd">      return</span>
 <span class="sd">        an array containing the hyperbolic cosine of each element in ``x``. The returned array must have a floating-point data type determined by :ref:`type-promotion`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -812,14 +838,14 @@
 <span class="sd">    - If ``x_i`` is ``+infinity``, the result is ``+infinity``.</span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    x: array</span>
+<span class="sd">    x</span>
 <span class="sd">        input array. Should have a floating-point data type.</span>
-<span class="sd">    out:</span>
+<span class="sd">    out</span>
 <span class="sd">        optional output array, for writing the result to. It must have a shape that the inputs broadcast to.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    return: array</span>
+<span class="sd">      return</span>
 <span class="sd">        an array containing the evaluated natural logarithm for each element in ``x``. The returned array must have a floating-point data type determined by :ref:`type-promotion`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span></div>
@@ -843,14 +869,14 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    x:</span>
+<span class="sd">    x</span>
 <span class="sd">        input array. Should have a floating-point data type.</span>
-<span class="sd">    out:</span>
+<span class="sd">    out</span>
 <span class="sd">        optional output array, for writing the result to. It must have a shape that the inputs broadcast to.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    return:</span>
+<span class="sd">      return</span>
 <span class="sd">        an array containing the evaluated base ``2`` logarithm for each element in ``x``. The returned array must have a floating-point data type determined by :ref:`type-promotion`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">log2</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span></div>
@@ -874,14 +900,14 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    x:</span>
+<span class="sd">    x</span>
 <span class="sd">        input array. Should have a floating-point data type.</span>
-<span class="sd">    out:</span>
+<span class="sd">    out</span>
 <span class="sd">        optional output array, for writing the result to. It must have a shape that the inputs broadcast to.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    return:</span>
+<span class="sd">      return</span>
 <span class="sd">        an array containing the evaluated base ``10`` logarithm for each element in ``x``. The returned array must have a floating-point data type determined by :ref:`type-promotion`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span></div>
@@ -896,14 +922,14 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    x:</span>
+<span class="sd">    x</span>
 <span class="sd">        input array.</span>
-<span class="sd">    out:</span>
+<span class="sd">    out</span>
 <span class="sd">        optional output array, for writing the result to. It must have a shape that the inputs broadcast to.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    return:</span>
+<span class="sd">      return</span>
 <span class="sd">        a new array containing the evaluated result for each element in x.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">log1p</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span></div>
@@ -917,14 +943,14 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    x:</span>
+<span class="sd">    x</span>
 <span class="sd">        input array. Should have a numeric data type.</span>
-<span class="sd">    out:</span>
+<span class="sd">    out</span>
 <span class="sd">        optional output array, for writing the result to. It must have a shape that the inputs broadcast to.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    return:</span>
+<span class="sd">      return</span>
 <span class="sd">        an array containing test results. An element ``out_i`` is ``True`` if ``x_i`` is ``NaN`` and ``False`` otherwise. The returned array should have a data type of ``bool``.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span></div>
@@ -939,19 +965,20 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    x1:</span>
+<span class="sd">    x1</span>
 <span class="sd">        first input array. Should have a numeric data type.</span>
-<span class="sd">    x2:</span>
-<span class="sd">        second input array. Must be compatible with ``x1`` (see :ref:`broadcasting`). Should have a numeric data type.</span>
-<span class="sd">    out:</span>
+<span class="sd">    x2</span>
+<span class="sd">        second input array. Must be compatible with ``x1`` (see  ref:`broadcasting`). Should have a numeric data type.</span>
+<span class="sd">    out</span>
 <span class="sd">        optional output array, for writing the result to. It must have a shape that the inputs broadcast to.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    return:</span>
+<span class="sd">      return</span>
 <span class="sd">        an array containing the element-wise results. The returned array must have a data type of ``bool``.</span>
-<span class="sd">        </span>
+
 <span class="sd">    Examples:</span>
+<span class="sd">    ---------</span>
 <span class="sd">    &gt;&gt;&gt; x = ivy.less(ivy.array([1,2,3]),ivy.array([2,2,2]))</span>
 <span class="sd">    &gt;&gt;&gt; print(x)   </span>
 <span class="sd">    ivy.array([True, False, False])</span>
@@ -977,14 +1004,14 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    x:</span>
+<span class="sd">    x</span>
 <span class="sd">        input array whose elements are each expressed in radians. Should have a floating-point data type.</span>
-<span class="sd">    out:</span>
+<span class="sd">    out</span>
 <span class="sd">        optional output array, for writing the result to. It must have a shape that the inputs broadcast to.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    return:</span>
+<span class="sd">      return</span>
 <span class="sd">        an array containing the cosine of each element in ``x``. The returned array must have a floating-point data type determined by :ref:`type-promotion`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span></div>
@@ -1007,14 +1034,14 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    x:</span>
+<span class="sd">    x</span>
 <span class="sd">        input array. Should have a floating-point data type.</span>
-<span class="sd">    out:</span>
+<span class="sd">    out</span>
 <span class="sd">        optional output array, for writing the result to. It must have a shape that the inputs broadcast to.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    return:</span>
+<span class="sd">      return</span>
 <span class="sd">        an array containing the inverse cosine of each element in x. The returned array must have a floating-point data type determined by :ref:`type-promotion`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">acos</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span></div>
@@ -1031,14 +1058,14 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    x:</span>
+<span class="sd">    x</span>
 <span class="sd">        input array. Should have a boolean data type.</span>
-<span class="sd">    out:</span>
+<span class="sd">    out</span>
 <span class="sd">        optional output array, for writing the result to. It must have a shape that the inputs broadcast to.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    return:</span>
+<span class="sd">     ret</span>
 <span class="sd">        an array containing the element-wise results. The returned array must have a data type of ``bool``.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">logical_not</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span></div>
@@ -1052,16 +1079,16 @@
 <span class="sd">    Computes the bitwise XOR of the underlying binary representation of each element ``x1_i`` of the input array ``x1`` with the respective element ``x2_i`` of the input array ``x2``.</span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    x1: array</span>
+<span class="sd">    x1</span>
 <span class="sd">        first input array. Should have an integer or boolean data type.</span>
-<span class="sd">    x2: array</span>
+<span class="sd">    x2</span>
 <span class="sd">        second input array. Must be compatible with ``x1`` (see :ref:`broadcasting`). Should have an integer or boolean data type.</span>
 <span class="sd">    out:</span>
 <span class="sd">        optional output array, for writing the result to. It must have a shape that the inputs broadcast to.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    return: array</span>
+<span class="sd">     ret</span>
 <span class="sd">        an array containing the element-wise results. The returned array must have a data type determined by :ref:`type-promotion`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">)</span><span class="o">.</span><span class="n">logical_xor</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span></div>
@@ -1079,16 +1106,16 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    x1:</span>
+<span class="sd">    x1</span>
 <span class="sd">        first input array. Should have a boolean data type.</span>
-<span class="sd">    x2:</span>
+<span class="sd">    x2</span>
 <span class="sd">        second input array. Must be compatible with ``x1`` (see :ref:`broadcasting`). Should have a boolean data type.</span>
-<span class="sd">    out:</span>
+<span class="sd">    out</span>
 <span class="sd">        optional output array, for writing the result to. It must have a shape that the inputs broadcast to.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    return:</span>
+<span class="sd">      return</span>
 <span class="sd">        out (array) – an array containing the element-wise results. The returned array must have a data type of ``bool``.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">)</span><span class="o">.</span><span class="n">logical_or</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span></div>
@@ -1103,17 +1130,17 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    x1:</span>
+<span class="sd">    x1</span>
 <span class="sd">        first input array. Should have a boolean data type.</span>
-<span class="sd">    x2:</span>
+<span class="sd">    x2</span>
 <span class="sd">        second input array. Must be compatible with x1.</span>
 <span class="sd">        Should have a boolean data type.</span>
-<span class="sd">    out:</span>
+<span class="sd">    out</span>
 <span class="sd">        optional output array, for writing the result to. It must have a shape that the inputs broadcast to.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    return:</span>
+<span class="sd">      return</span>
 <span class="sd">        out (array) – an array containing the element-wise results.</span>
 <span class="sd">        The returned array must have a data type of bool.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -1125,30 +1152,30 @@
         <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Calculates an implementation-dependent approximation to the inverse hyperbolic cosine, having domain ``[+1, +infinity]`` and codomain ``[+0, +infinity]``, for each element ``x_i`` of the input array ``x``.</span>
-<span class="sd">    </span>
+
 <span class="sd">    **Special cases**</span>
 
 <span class="sd">    For floating-point operands,</span>
-<span class="sd">    </span>
+
 <span class="sd">    - If ``x_i`` is ``NaN``, the result is ``NaN``.</span>
 <span class="sd">    - If ``x_i`` is less than ``1``, the result is ``NaN``.</span>
 <span class="sd">    - If ``x_i`` is ``1``, the result is ``+0``.</span>
 <span class="sd">    - If ``x_i`` is ``+infinity``, the result is ``+infinity``.</span>
-<span class="sd">    </span>
+
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    x:</span>
+<span class="sd">    x</span>
 <span class="sd">        input array whose elements each represent the area of a hyperbolic sector. Should have a floating-point data type.</span>
-<span class="sd">    out:</span>
+<span class="sd">    out</span>
 <span class="sd">        optional output array, for writing the result to. It must have a shape that the inputs broadcast to.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    return:</span>
+<span class="sd">      return</span>
 <span class="sd">        an array containing the inverse hyperbolic cosine of each element in x. The returned array must have a floating-point data type determined by :ref:`type-promotion`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">acosh</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span></div>
-    
+
 
 <div class="viewcode-block" id="sin"><a class="viewcode-back" href="../../../../functional/ivy/elementwise/sin.html#ivy.functional.ivy.elementwise.sin">[docs]</a><span class="k">def</span> <span class="nf">sin</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
         <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span>\
@@ -1167,14 +1194,14 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    x:</span>
+<span class="sd">    x</span>
 <span class="sd">        input array whose elements are each expressed in radians. Should have a floating-point data type.</span>
-<span class="sd">    out:</span>
+<span class="sd">    out</span>
 <span class="sd">        optional output array, for writing the result to. It must have a shape that the inputs broadcast to.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    return:</span>
+<span class="sd">      return</span>
 <span class="sd">        an array containing the sine of each element in ``x``. The returned array must have a floating-point data type determined by :ref:`type-promotion`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span></div>
@@ -1182,11 +1209,18 @@
 
 <div class="viewcode-block" id="negative"><a class="viewcode-back" href="../../../../functional/ivy/elementwise/negative.html#ivy.functional.ivy.elementwise.negative">[docs]</a><span class="k">def</span> <span class="nf">negative</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
              <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Computes the numerical negative of each element</span>
-<span class="sd">    </span>
-<span class="sd">    :param x: Input array</span>
-<span class="sd">    :return: an array containing the evaluated result for each element in x </span>
+    <span class="sd">&quot;&quot;&quot;Computes the numerical negative of each element</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x</span>
+<span class="sd">        Input array</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">      return</span>
+<span class="sd">        an array containing the evaluated result for each element in x</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">negative</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span></div>
 
@@ -1199,16 +1233,16 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    x1:</span>
+<span class="sd">    x1</span>
 <span class="sd">        first input array. Should have a numeric data type.</span>
-<span class="sd">    x2:</span>
-<span class="sd">        second input array. Must be compatible with ``x1`` (see :ref:`broadcasting`). Should have a numeric data type.</span>
-<span class="sd">    out:</span>
+<span class="sd">    x2</span>
+<span class="sd">        second input array. Must be compatible with ``x1`` (see  ref:`broadcasting`). Should have a numeric data type.</span>
+<span class="sd">    out</span>
 <span class="sd">        optional output array, for writing the result to. It must have a shape that the inputs broadcast to.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    return:</span>
+<span class="sd">      return</span>
 <span class="sd">        an array containing the element-wise results. The returned array must have a data type of ``bool``.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">)</span><span class="o">.</span><span class="n">not_equal</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span></div>
@@ -1218,14 +1252,22 @@
                  <span class="n">x2</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
                  <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span>\
         <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Rounds the result of dividing each element x1_i of the input array x1 by the respective element x2_i</span>
+    <span class="sd">&quot;&quot;&quot;Rounds the result of dividing each element x1_i of the input array x1 by the respective element x2_i</span>
 <span class="sd">    of the input array x2 to the greatest (i.e., closest to +infinity) integer-value number that is not</span>
 <span class="sd">    greater than the division result.</span>
 
-<span class="sd">    :param x1: first input array. Must have a numeric data type.</span>
-<span class="sd">    :param x2: second input array. Must be compatible with x1 (with Broadcasting). Must have a numeric data type.</span>
-<span class="sd">    :return: an array containing the element-wise results. The returned array must have a numeric data type.</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x1</span>
+<span class="sd">        first input array. Must have a numeric data type.</span>
+<span class="sd">    x2</span>
+<span class="sd">        second input array. Must be compatible with x1 (with Broadcasting). Must have a numeric data type.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">      return</span>
+<span class="sd">        an array containing the element-wise results. The returned array must have a numeric data type.</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">)</span><span class="o">.</span><span class="n">floor_divide</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span></div>
 
@@ -1239,16 +1281,16 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    x1:</span>
+<span class="sd">    x1</span>
 <span class="sd">        first input array. Should have an integer or boolean data type.</span>
-<span class="sd">    x2:</span>
+<span class="sd">    x2</span>
 <span class="sd">        second input array. Must be compatible with ``x1`` (see :ref:`broadcasting`). Should have an integer or boolean data type.</span>
-<span class="sd">    out:</span>
+<span class="sd">    out</span>
 <span class="sd">        optional output array, for writing the result to. It must have a shape that the inputs broadcast to.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    return:</span>
+<span class="sd">      return</span>
 <span class="sd">        an array containing the element-wise results. The returned array must have a data type determined by :ref:`type-promotion`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">)</span><span class="o">.</span><span class="n">bitwise_or</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span></div>
@@ -1258,27 +1300,27 @@
          <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Calculates an implementation-dependent approximation to the hyperbolic sine, having domain ``[-infinity, +infinity]`` and codomain ``[-infinity, +infinity]``, for each element ``x_i`` of the input array ``x``.</span>
-<span class="sd">    </span>
+
 <span class="sd">    **Special cases**</span>
-<span class="sd">    </span>
+
 <span class="sd">    For floating-point operands,</span>
-<span class="sd">    </span>
+
 <span class="sd">    - If ``x_i`` is ``NaN``, the result is ``NaN``.</span>
 <span class="sd">    - If ``x_i`` is ``+0``, the result is ``+0``.</span>
 <span class="sd">    - If ``x_i`` is ``-0``, the result is ``-0``.</span>
 <span class="sd">    - If ``x_i`` is ``+infinity``, the result is ``+infinity``.</span>
 <span class="sd">    - If ``x_i`` is ``-infinity``, the result is ``-infinity``.</span>
-<span class="sd">    </span>
+
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    x: </span>
+<span class="sd">    x</span>
 <span class="sd">        input array whose elements each represent a hyperbolic angle. Should have a floating-point data type.</span>
-<span class="sd">    out:</span>
+<span class="sd">    out</span>
 <span class="sd">        optional output array, for writing the result to. It must have a shape that the inputs broadcast to.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    return:</span>
+<span class="sd">      return</span>
 <span class="sd">        an array containing the hyperbolic sine of each element in ``x``. The returned array must have a floating-point data type determined by :ref:`type-promotion`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">sinh</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span></div>
@@ -1287,21 +1329,36 @@
 <div class="viewcode-block" id="positive"><a class="viewcode-back" href="../../../../functional/ivy/elementwise/positive.html#ivy.functional.ivy.elementwise.positive">[docs]</a><span class="k">def</span> <span class="nf">positive</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
              <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span>\
         <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Returns a new array with the positive value of each element in x.</span>
+    <span class="sd">&quot;&quot;&quot;Returns a new array with the positive value of each element in x.</span>
 
-<span class="sd">    :param x: Input array.</span>
-<span class="sd">    :return: A new array with the positive value of each element in x.</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x</span>
+<span class="sd">        Input array.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">     -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        A new array with the positive value of each element in x.</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">positive</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="square"><a class="viewcode-back" href="../../../../functional/ivy/elementwise/square.html#ivy.functional.ivy.elementwise.square">[docs]</a><span class="k">def</span> <span class="nf">square</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
            <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    each element x_i of the input array x.</span>
-<span class="sd">    :param x: Input array.</span>
-<span class="sd">    :return: an array containing the evaluated result for each element in x.</span>
+    <span class="sd">&quot;&quot;&quot;each element x_i of the input array x.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x</span>
+<span class="sd">        Input array.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">     -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        an array containing the evaluated result for each element in x.</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">square</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span></div>
 
@@ -1309,7 +1366,7 @@
 <div class="viewcode-block" id="logaddexp"><a class="viewcode-back" href="../../../../functional/ivy/elementwise/logaddexp.html#ivy.functional.ivy.elementwise.logaddexp">[docs]</a><span class="k">def</span> <span class="nf">logaddexp</span><span class="p">(</span><span class="n">x1</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
               <span class="n">x2</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
               <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    
+
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Calculates the logarithm of the sum of exponentiations ``log(exp(x1) + exp(x2))`` for each element ``x1_i`` of the input array ``x1`` with the respective element ``x2_i`` of the input array ``x2``.</span>
 <span class="sd">    **Special cases**</span>
@@ -1320,16 +1377,16 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    x1: </span>
+<span class="sd">    x1</span>
 <span class="sd">        first input array. Should have a floating-point data type.</span>
-<span class="sd">    x2: </span>
+<span class="sd">    x2</span>
 <span class="sd">        second input array. Must be compatible with ``x1`` (see :ref:`broadcasting`). Should have a floating-point data type.</span>
-<span class="sd">    out:</span>
+<span class="sd">    out</span>
 <span class="sd">        optional output array, for writing the result to. It must have a shape that the inputs broadcast to.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    return:</span>
+<span class="sd">      return</span>
 <span class="sd">        an array containing the element-wise results. The returned array must have a floating-point data type determined by :ref:`type-promotion`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -1337,23 +1394,28 @@
 
 
 <div class="viewcode-block" id="round"><a class="viewcode-back" href="../../../../functional/ivy/elementwise/round.html#ivy.functional.ivy.elementwise.round">[docs]</a><span class="k">def</span> <span class="nf">round</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
-          <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span>\
+          <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> \
         <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Rounds the values of an array to the nearest integer, element-wise.</span>
+    <span class="sd">&quot;&quot;&quot;Rounds the values of an array to the nearest integer, element-wise.</span>
 
-<span class="sd">    :param x: Input array containing elements to round.</span>
-<span class="sd">    :type x: array</span>
-<span class="sd">    :return: An array of the same shape and type as x, with the elements rounded to integers.</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x</span>
+<span class="sd">        Input array containing elements to round.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">     -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        An array of the same shape and type as x, with the elements rounded to integers.</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="trunc"><a class="viewcode-back" href="../../../../functional/ivy/elementwise/trunc.html#ivy.functional.ivy.elementwise.trunc">[docs]</a><span class="k">def</span> <span class="nf">trunc</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
-          <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span>\
+          <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> \
         <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Rounds each element x_i of the input array x to the integer-valued number that is closest to but no greater than</span>
+    <span class="sd">&quot;&quot;&quot;Rounds each element x_i of the input array x to the integer-valued number that is closest to but no greater than</span>
 <span class="sd">    x_i.</span>
 
 
@@ -1367,10 +1429,17 @@
 <span class="sd">    - If ``x_i`` is ``-0``, the result is ``-0``.</span>
 <span class="sd">    - If ``x_i`` is ``NaN``, the result is ``NaN``.</span>
 
-<span class="sd">    :param x: input array. Should have a numeric data type.</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x</span>
+<span class="sd">        input array. Should have a numeric data type.</span>
 
-<span class="sd">    :return: an array containing the values before the decimal point for each element ``x``. The returned array must have</span>
-<span class="sd">     the same data type as x.</span>
+<span class="sd">    Returns</span>
+<span class="sd">     -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        an array containing the values before the decimal point for each element ``x``. The returned array must have</span>
+<span class="sd">        the same data type as x.</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">trunc</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span></div>
 
@@ -1395,14 +1464,14 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    x:</span>
+<span class="sd">    x</span>
 <span class="sd">        input array. Should have a numeric data type.</span>
-<span class="sd">    out:</span>
+<span class="sd">    out</span>
 <span class="sd">        optional output array, for writing the result to. It must have a shape that the inputs broadcast to.</span>
 
 <span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    return:</span>
+<span class="sd">     -------</span>
+<span class="sd">    ret</span>
 <span class="sd">        an array containing the absolute value of each element in ``x``. The returned array must have the same data type as ``x``.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span></div>
@@ -1411,13 +1480,19 @@
 <div class="viewcode-block" id="tan"><a class="viewcode-back" href="../../../../functional/ivy/elementwise/tan.html#ivy.functional.ivy.elementwise.tan">[docs]</a><span class="k">def</span> <span class="nf">tan</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
         <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span>\
         <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Computes tangent element-wise.</span>
+    <span class="sd">&quot;&quot;&quot;Computes tangent element-wise.</span>
 <span class="sd">    Equivalent to f.sin(x)/f.cos(x) element-wise.</span>
 
-<span class="sd">    :param x: Input array, in radians (2*pi radian equals 360 degrees).</span>
-<span class="sd">    :type x: array</span>
-<span class="sd">    :return: The tangent of x element-wise.</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x</span>
+<span class="sd">        Input array, in radians (2*pi radian equals 360 degrees).</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">     -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        The tangent of x element-wise.</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">tan</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span></div>
 
@@ -1436,14 +1511,14 @@
 <span class="sd">    - If ``x_i`` is ``-infinity``, the result is an implementation-dependent approximation to ``-π/2``.</span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    x: array</span>
+<span class="sd">    x</span>
 <span class="sd">        input array. Should have a floating-point data type.</span>
-<span class="sd">    out:</span>
+<span class="sd">    out</span>
 <span class="sd">        optional output array, for writing the result to. It must have a shape that the inputs broadcast to.</span>
 
 <span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    return: array</span>
+<span class="sd">     -------</span>
+<span class="sd">    ret</span>
 <span class="sd">        an array containing the inverse tangent of each element in ``x``. The returned array must have a floating-point data type determined by :ref:`type-promotion`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">atan</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span></div>
@@ -1483,20 +1558,20 @@
 <span class="sd">    - If ``x1_i`` is ``+infinity`` and ``x2_i`` is ``-infinity``, the result is an approximation to ``+3π/4``.</span>
 <span class="sd">    - If ``x1_i`` is ``-infinity`` and ``x2_i`` is ``+infinity``, the result is an approximation to ``-π/4``.</span>
 <span class="sd">    - If ``x1_i`` is ``-infinity`` and ``x2_i`` is ``-infinity``, the result is an approximation to ``-3π/4``.</span>
-<span class="sd">    </span>
+
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    x1:</span>
+<span class="sd">    x1</span>
 <span class="sd">        input array corresponding to the y-coordinates. Should have a floating-point data type.</span>
-<span class="sd">    </span>
-<span class="sd">    x2:</span>
+
+<span class="sd">    x2</span>
 <span class="sd">        input array corresponding to the x-coordinates. Must be compatible with ``x1``. Should have a floating-point data type.</span>
-<span class="sd">    out:</span>
+<span class="sd">    out</span>
 <span class="sd">        optional output array, for writing the result to. It must have a shape that the inputs broadcast to.</span>
 
 <span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    return:</span>
+<span class="sd">     -------</span>
+<span class="sd">    ret</span>
 <span class="sd">        an array containing the inverse tangent of the quotient ``x1/x2``. The returned array must have a floating-point data type.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x1</span><span class="p">)</span><span class="o">.</span><span class="n">atan2</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span></div>
@@ -1504,11 +1579,18 @@
 
 <div class="viewcode-block" id="tanh"><a class="viewcode-back" href="../../../../functional/ivy/elementwise/tanh.html#ivy.functional.ivy.elementwise.tanh">[docs]</a><span class="k">def</span> <span class="nf">tanh</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
          <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Returns a new array with the hyperbolic tangent of the elements of x.</span>
+    <span class="sd">&quot;&quot;&quot;Returns a new array with the hyperbolic tangent of the elements of x.</span>
 
-<span class="sd">    :param x: Input array.</span>
-<span class="sd">    :return: A new array with the hyperbolic tangent of the elements of x.</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x</span>
+<span class="sd">        Input array.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">     -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        A new array with the hyperbolic tangent of the elements of x.</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">tanh</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span></div>
 
@@ -1516,11 +1598,18 @@
 <div class="viewcode-block" id="atanh"><a class="viewcode-back" href="../../../../functional/ivy/elementwise/atanh.html#ivy.functional.ivy.elementwise.atanh">[docs]</a><span class="k">def</span> <span class="nf">atanh</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
           <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> \
         <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Returns a new array with the inverse hyperbolic tangent of the elements of x.</span>
+    <span class="sd">&quot;&quot;&quot;Returns a new array with the inverse hyperbolic tangent of the elements of x.</span>
 
-<span class="sd">    :param x: input array whose elements each represent the area of a hyperbolic sector. Should have a floating-point data type.</span>
-<span class="sd">    :return:an array containing the inverse hyperbolic tangent of each element in x. The returned array must have a floating-point data type determined by Type Promotion Rules.</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x</span>
+<span class="sd">        input array whose elements each represent the area of a hyperbolic sector. Should have a floating-point data type.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">     -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        an array containing the inverse hyperbolic tangent of each element in x. The returned array must have a floating-point data type determined by Type Promotion Rules.</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">atanh</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span></div>
 
@@ -1535,16 +1624,16 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    x1:</span>
+<span class="sd">    x1</span>
 <span class="sd">        first input array. Should have a numeric data type.</span>
-<span class="sd">    x2:</span>
-<span class="sd">        second input array. Must be compatible with ``x1`` (see :ref:`broadcasting`). Should have a numeric data type.</span>
-<span class="sd">    out:</span>
+<span class="sd">    x2</span>
+<span class="sd">        second input array. Must be compatible with ``x1`` (see  ref:`broadcasting`). Should have a numeric data type.</span>
+<span class="sd">    out</span>
 <span class="sd">        optional output array, for writing the result to. It must have a shape that the inputs broadcast to.</span>
 
 <span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    return:</span>
+<span class="sd">     -------</span>
+<span class="sd">    ret</span>
 <span class="sd">        an array containing the element-wise differences.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x1</span><span class="p">)</span><span class="o">.</span><span class="n">subtract</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span></div>
@@ -1553,19 +1642,27 @@
 <div class="viewcode-block" id="divide"><a class="viewcode-back" href="../../../../functional/ivy/elementwise/divide.html#ivy.functional.ivy.elementwise.divide">[docs]</a><span class="k">def</span> <span class="nf">divide</span><span class="p">(</span><span class="n">x1</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
            <span class="n">x2</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
            <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Calculates the division for each element x1_i of the input array x1 with the respective element x2_i of the</span>
+    <span class="sd">&quot;&quot;&quot;Calculates the division for each element x1_i of the input array x1 with the respective element x2_i of the</span>
 <span class="sd">    input array x2.</span>
 
-<span class="sd">    :param x1: dividend input array. Should have a numeric data type.</span>
-<span class="sd">    :param x2: divisor input array. Must be compatible with x1 (see Broadcasting). Should have a numeric data type.</span>
-<span class="sd">    :return: an array containing the element-wise results. The returned array must have a floating-point data type</span>
-<span class="sd">             determined by Type Promotion Rules.</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x1</span>
+<span class="sd">        dividend input array. Should have a numeric data type.</span>
+<span class="sd">    x2</span>
+<span class="sd">        divisor input array. Must be compatible with x1 (see Broadcasting). Should have a numeric data type.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">     -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        an array containing the element-wise results. The returned array must have a floating-point data type</span>
+<span class="sd">        determined by Type Promotion Rules.</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">)</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="pow"><a class="viewcode-back" href="../../../../functional/ivy/elementwise/pow.html#ivy.functional.ivy.elementwise.pow">[docs]</a><span class="k">def</span> <span class="nf">pow</span><span class="p">(</span><span class="n">x1</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span> 
+<div class="viewcode-block" id="pow"><a class="viewcode-back" href="../../../../functional/ivy/elementwise/pow.html#ivy.functional.ivy.elementwise.pow">[docs]</a><span class="k">def</span> <span class="nf">pow</span><span class="p">(</span><span class="n">x1</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
         <span class="n">x2</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
         <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -1601,16 +1698,16 @@
 <span class="sd">    - If ``x1_i`` is less than ``0``, ``x1_i`` is a finite number, ``x2_i`` is a finite number, and ``x2_i`` is not an integer value, the result is ``NaN``.</span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    x1: array</span>
+<span class="sd">    x1</span>
 <span class="sd">        first input array whose elements correspond to the exponentiation base. Should have a numeric data type.</span>
-<span class="sd">    x2: array</span>
+<span class="sd">    x2</span>
 <span class="sd">        second input array whose elements correspond to the exponentiation exponent. Must be compatible with ``x1`` (see :ref:`broadcasting`). Should have a numeric data type.</span>
-<span class="sd">    out:</span>
+<span class="sd">    out</span>
 <span class="sd">        optional output array, for writing the result to. It must have a shape that the inputs broadcast to.</span>
 
 <span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    return: array</span>
+<span class="sd">     -------</span>
+<span class="sd">    ret</span>
 <span class="sd">        an array containing the element-wise results. The returned array must have a data type determined by :ref:`type-promotion`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">)</span><span class="o">.</span><span class="n">pow</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span></div>
@@ -1656,16 +1753,16 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    x1:</span>
+<span class="sd">    x1</span>
 <span class="sd">        dividend input array. Should have a numeric data type.</span>
-<span class="sd">    x2:</span>
-<span class="sd">        divisor input array. Must be compatible with ``x1`` (see :ref:`Broadcasting`). Should have a numeric data type.</span>
-<span class="sd">    out:</span>
+<span class="sd">    x2</span>
+<span class="sd">        divisor input array. Must be compatible with ``x1`` (see  ref:`Broadcasting`). Should have a numeric data type.</span>
+<span class="sd">    out</span>
 <span class="sd">        optional output array, for writing the result to. It must have a shape that the inputs broadcast to.</span>
 
 <span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    return:</span>
+<span class="sd">     -------</span>
+<span class="sd">    ret</span>
 <span class="sd">        an array containing the element-wise results. Each element-wise result must have the same sign as the respective element ``x2_i``. The returned array must have a data type determined by :ref:`Type Promotion Rules`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">)</span><span class="o">.</span><span class="n">remainder</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span></div>
@@ -1683,32 +1780,40 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    x1:</span>
+<span class="sd">    x1</span>
 <span class="sd">        first input array. Should have an integer data type.</span>
-<span class="sd">    x2:</span>
-<span class="sd">        second input array. Must be compatible with ``x1`` (see :ref:`broadcasting`). Should have an integer data type. Each element must be greater than or equal to 0.</span>
-<span class="sd">    out:</span>
+<span class="sd">    x2</span>
+<span class="sd">        second input array. Must be compatible with ``x1`` (see  ref:`broadcasting`). Should have an integer data type. Each element must be greater than or equal to 0.</span>
+<span class="sd">    out</span>
 <span class="sd">        optional output array, for writing the result to. It must have a shape that the inputs broadcast to.</span>
 
 <span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    return:</span>
+<span class="sd">     -------</span>
+<span class="sd">    ret</span>
 <span class="sd">        out (array) – an array containing the element-wise results. The returned array must have a data type determined by :ref:`Type Promotion Rules`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">)</span><span class="o">.</span><span class="n">bitwise_right_shift</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span></div>
 
-  
+
 <div class="viewcode-block" id="equal"><a class="viewcode-back" href="../../../../functional/ivy/elementwise/equal.html#ivy.functional.ivy.elementwise.equal">[docs]</a><span class="k">def</span> <span class="nf">equal</span><span class="p">(</span><span class="n">x1</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
           <span class="n">x2</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
           <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span>\
         <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Computes the truth value of x1_i == x2_i for each element x1_i of the input array x1 with the respective</span>
+    <span class="sd">&quot;&quot;&quot;Computes the truth value of x1_i == x2_i for each element x1_i of the input array x1 with the respective</span>
 <span class="sd">    element x2_i of the input array x2.</span>
 
-<span class="sd">    :param x1: first input array. May have any data type.</span>
-<span class="sd">    :param x2: second input array. Must be compatible with x1 (with Broadcasting). May have any data type.</span>
-<span class="sd">    :return: an array containing the element-wise results. The returned array must have a data type of bool.</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x1</span>
+<span class="sd">        first input array. May have any data type.</span>
+<span class="sd">    x2</span>
+<span class="sd">        second input array. Must be compatible with x1 (with Broadcasting). May have any data type.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">     -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        an array containing the element-wise results. The returned array must have a data type of bool.</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">)</span><span class="o">.</span><span class="n">equal</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span></div>
 
@@ -1720,12 +1825,18 @@
 <div class="viewcode-block" id="erf"><a class="viewcode-back" href="../../../../functional/ivy/elementwise/erf.html#ivy.functional.ivy.elementwise.erf">[docs]</a><span class="k">def</span> <span class="nf">erf</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
         <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span>\
         <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Computes the Gauss error function of x element-wise.</span>
+    <span class="sd">&quot;&quot;&quot;Computes the Gauss error function of x element-wise.</span>
 
-<span class="sd">    :param x: Value to compute exponential for.</span>
-<span class="sd">    :type x: array</span>
-<span class="sd">    :return: The Gauss error function of x.</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x</span>
+<span class="sd">        Value to compute exponential for.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">     -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        The Gauss error function of x.</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">erf</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span></div>
 
@@ -1734,14 +1845,20 @@
             <span class="n">y</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
             <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span>\
         <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Returns the min of x and y (i.e. x &lt; y ? x : y) element-wise.</span>
+    <span class="sd">&quot;&quot;&quot;Returns the min of x and y (i.e. x &lt; y ? x : y) element-wise.</span>
 
-<span class="sd">    :param x: Input array containing elements to minimum threshold.</span>
-<span class="sd">    :type x: array</span>
-<span class="sd">    :param y: Tensor containing minimum values, must be broadcastable to x.</span>
-<span class="sd">    :type y: array</span>
-<span class="sd">    :return: An array with the elements of x, but clipped to not exceed the y values.</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x</span>
+<span class="sd">        Input array containing elements to minimum threshold.</span>
+<span class="sd">    y</span>
+<span class="sd">        Tensor containing minimum values, must be broadcastable to x.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">     -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        An array with the elements of x, but clipped to not exceed the y values.</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">minimum</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span></div>
 
@@ -1750,14 +1867,20 @@
             <span class="n">y</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">Number</span><span class="p">],</span>
             <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span>\
         <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Returns the max of x and y (i.e. x &gt; y ? x : y) element-wise.</span>
+    <span class="sd">&quot;&quot;&quot;Returns the max of x and y (i.e. x &gt; y ? x : y) element-wise.</span>
 
-<span class="sd">    :param x: Input array containing elements to maximum threshold.</span>
-<span class="sd">    :type x: array</span>
-<span class="sd">    :param y: Tensor containing maximum values, must be broadcastable to x.</span>
-<span class="sd">    :type y: array</span>
-<span class="sd">    :return: An array with the elements of x, but clipped to not be lower than the y values.</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x</span>
+<span class="sd">        Input array containing elements to maximum threshold.</span>
+<span class="sd">    y</span>
+<span class="sd">        Tensor containing maximum values, must be broadcastable to x.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">     -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        An array with the elements of x, but clipped to not be lower than the y values.</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span></div>
 </pre></div>

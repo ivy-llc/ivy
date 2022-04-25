@@ -239,13 +239,18 @@
 <span class="c1"># ------#</span>
 
 <div class="viewcode-block" id="index_nest"><a class="viewcode-back" href="../../../../functional/ivy/nest/index_nest.html#ivy.functional.ivy.nest.index_nest">[docs]</a><span class="k">def</span> <span class="nf">index_nest</span><span class="p">(</span><span class="n">nest</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Index a nested object, using a tuple of indices or keys in the case of dicts.</span>
+    <span class="sd">&quot;&quot;&quot;Index a nested object, using a tuple of indices or keys in the case of dicts.</span>
 
-<span class="sd">    :param nest: The nested object to index.</span>
-<span class="sd">    :type nest: nested</span>
-<span class="sd">    :param index: A tuple of indices for indexing.</span>
-<span class="sd">    :type index: tuple of indices</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    nest</span>
+<span class="sd">        The nested object to index.</span>
+<span class="sd">    index</span>
+<span class="sd">        A tuple of indices for indexing.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">ret</span> <span class="o">=</span> <span class="n">nest</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">index</span><span class="p">:</span>
@@ -254,13 +259,18 @@
 
 
 <div class="viewcode-block" id="prune_nest_at_index"><a class="viewcode-back" href="../../../../functional/ivy/nest/prune_nest_at_index.html#ivy.functional.ivy.nest.prune_nest_at_index">[docs]</a><span class="k">def</span> <span class="nf">prune_nest_at_index</span><span class="p">(</span><span class="n">nest</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Prune a nested object at a specified index</span>
+    <span class="sd">&quot;&quot;&quot;Prune a nested object at a specified index</span>
 
-<span class="sd">    :param nest: The nested object to prune.</span>
-<span class="sd">    :type nest: nested</span>
-<span class="sd">    :param index: A tuple of indices for the index at which to prune.</span>
-<span class="sd">    :type index: tuple of indices</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    nest</span>
+<span class="sd">        The nested object to prune.</span>
+<span class="sd">    index</span>
+<span class="sd">        A tuple of indices for the index at which to prune.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">index</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
         <span class="k">del</span> <span class="n">nest</span><span class="p">[</span><span class="n">index</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
@@ -269,15 +279,20 @@
 
 
 <div class="viewcode-block" id="set_nest_at_index"><a class="viewcode-back" href="../../../../functional/ivy/nest/set_nest_at_index.html#ivy.functional.ivy.nest.set_nest_at_index">[docs]</a><span class="k">def</span> <span class="nf">set_nest_at_index</span><span class="p">(</span><span class="n">nest</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Set the value of a nested item at a specified index</span>
+    <span class="sd">&quot;&quot;&quot;Set the value of a nested item at a specified index</span>
 
-<span class="sd">    :param nest: The nested object to update.</span>
-<span class="sd">    :type nest: nested</span>
-<span class="sd">    :param index: A tuple of indices for the index at which to update.</span>
-<span class="sd">    :type index: tuple of indices</span>
-<span class="sd">    :param value: The new value for updating.</span>
-<span class="sd">    :type value: any</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    nest</span>
+<span class="sd">        The nested object to update.</span>
+<span class="sd">    index</span>
+<span class="sd">        A tuple of indices for the index at which to update.</span>
+<span class="sd">    value</span>
+<span class="sd">        The new value for updating.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">index</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
         <span class="n">nest</span><span class="p">[</span><span class="n">index</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="n">value</span>
@@ -297,15 +312,20 @@
 
 
 <div class="viewcode-block" id="map_nest_at_index"><a class="viewcode-back" href="../../../../functional/ivy/nest/map_nest_at_index.html#ivy.functional.ivy.nest.map_nest_at_index">[docs]</a><span class="k">def</span> <span class="nf">map_nest_at_index</span><span class="p">(</span><span class="n">nest</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">fn</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Map a function to the value of a nested item at a specified index</span>
+    <span class="sd">&quot;&quot;&quot;Map a function to the value of a nested item at a specified index</span>
 
-<span class="sd">    :param nest: The nested object to update.</span>
-<span class="sd">    :type nest: nested</span>
-<span class="sd">    :param index: A tuple of indices for the index at which to update.</span>
-<span class="sd">    :type index: tuple of indices</span>
-<span class="sd">    :param fn: The function to perform on the nest at the given index.</span>
-<span class="sd">    :type fn: callable</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    nest</span>
+<span class="sd">        The nested object to update.</span>
+<span class="sd">    index</span>
+<span class="sd">        A tuple of indices for the index at which to update.</span>
+<span class="sd">    fn</span>
+<span class="sd">        The function to perform on the nest at the given index.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">index</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
         <span class="n">nest</span><span class="p">[</span><span class="n">index</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="n">fn</span><span class="p">(</span><span class="n">nest</span><span class="p">[</span><span class="n">index</span><span class="p">[</span><span class="mi">0</span><span class="p">]])</span>
@@ -314,39 +334,54 @@
 
 
 <div class="viewcode-block" id="multi_index_nest"><a class="viewcode-back" href="../../../../functional/ivy/nest/multi_index_nest.html#ivy.functional.ivy.nest.multi_index_nest">[docs]</a><span class="k">def</span> <span class="nf">multi_index_nest</span><span class="p">(</span><span class="n">nest</span><span class="p">,</span> <span class="n">indices</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Repeatedly index a nested object, using a tuple of tuples of indices or keys in the case of dicts.</span>
+    <span class="sd">&quot;&quot;&quot;Repeatedly index a nested object, using a tuple of tuples of indices or keys in the case of dicts.</span>
 
-<span class="sd">    :param nest: The nested object to slice.</span>
-<span class="sd">    :type nest: nested</span>
-<span class="sd">    :param indices: A tuple of tuples of indices to apply.</span>
-<span class="sd">    :type indices: tuple of tuples of indices</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    nest</span>
+<span class="sd">        The nested object to slice.</span>
+<span class="sd">    indices</span>
+<span class="sd">        A tuple of tuples of indices to apply.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="p">[</span><span class="n">index_nest</span><span class="p">(</span><span class="n">nest</span><span class="p">,</span> <span class="n">index</span><span class="p">)</span> <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="n">indices</span><span class="p">]</span></div>
 
 
 <div class="viewcode-block" id="prune_nest_at_indices"><a class="viewcode-back" href="../../../../functional/ivy/nest/prune_nest_at_indices.html#ivy.functional.ivy.nest.prune_nest_at_indices">[docs]</a><span class="k">def</span> <span class="nf">prune_nest_at_indices</span><span class="p">(</span><span class="n">nest</span><span class="p">,</span> <span class="n">indices</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Prune a nested object at specified indices.</span>
+    <span class="sd">&quot;&quot;&quot;Prune a nested object at specified indices.</span>
 
-<span class="sd">    :param nest: The nested object to prune.</span>
-<span class="sd">    :type nest: nested</span>
-<span class="sd">    :param indices: A tuple of tuples of indices for the indices at which to prune.</span>
-<span class="sd">    :type indices: tuple of tuples of indices</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    nest</span>
+<span class="sd">        The nested object to prune.</span>
+<span class="sd">    indices</span>
+<span class="sd">        A tuple of tuples of indices for the indices at which to prune.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="p">[</span><span class="n">prune_nest_at_index</span><span class="p">(</span><span class="n">nest</span><span class="p">,</span> <span class="n">index</span><span class="p">)</span> <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="n">indices</span><span class="p">]</span></div>
 
 
 <div class="viewcode-block" id="set_nest_at_indices"><a class="viewcode-back" href="../../../../functional/ivy/nest/set_nest_at_indices.html#ivy.functional.ivy.nest.set_nest_at_indices">[docs]</a><span class="k">def</span> <span class="nf">set_nest_at_indices</span><span class="p">(</span><span class="n">nest</span><span class="p">,</span> <span class="n">indices</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Set the value of a nested item at specified indices with specified values.</span>
+    <span class="sd">&quot;&quot;&quot;Set the value of a nested item at specified indices with specified values.</span>
 
-<span class="sd">    :param nest: The nested object to update.</span>
-<span class="sd">    :type nest: nested</span>
-<span class="sd">    :param indices: A tuple of tuples of indices for the indices at which to update.</span>
-<span class="sd">    :type indices: tuple of tuples of indices</span>
-<span class="sd">    :param values: The new values for updating.</span>
-<span class="sd">    :type values: sequence of any</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    nest</span>
+<span class="sd">        The nested object to update.</span>
+<span class="sd">    indices</span>
+<span class="sd">        A tuple of tuples of indices for the indices at which to update.</span>
+<span class="sd">    values</span>
+<span class="sd">        The new values for updating.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
         <span class="n">values</span> <span class="o">=</span> <span class="p">[</span><span class="n">values</span><span class="p">]</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">indices</span><span class="p">)</span>
@@ -370,15 +405,20 @@
 
 
 <div class="viewcode-block" id="map_nest_at_indices"><a class="viewcode-back" href="../../../../functional/ivy/nest/map_nest_at_indices.html#ivy.functional.ivy.nest.map_nest_at_indices">[docs]</a><span class="k">def</span> <span class="nf">map_nest_at_indices</span><span class="p">(</span><span class="n">nest</span><span class="p">,</span> <span class="n">indices</span><span class="p">,</span> <span class="n">fn</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Map a function to the values of a nested item at the specified indices</span>
+    <span class="sd">&quot;&quot;&quot;Map a function to the values of a nested item at the specified indices</span>
 
-<span class="sd">    :param nest: The nested object to update.</span>
-<span class="sd">    :type nest: nested</span>
-<span class="sd">    :param indices: A tuple of tuples of indices for the indices at which to update.</span>
-<span class="sd">    :type indices: tuple of tuples of indices</span>
-<span class="sd">    :param fn: The function to perform on the nest at the given index.</span>
-<span class="sd">    :type fn: callable</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    nest</span>
+<span class="sd">        The nested object to update.</span>
+<span class="sd">    indices</span>
+<span class="sd">        A tuple of tuples of indices for the indices at which to update.</span>
+<span class="sd">    fn</span>
+<span class="sd">        The function to perform on the nest at the given index.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="p">[</span><span class="n">map_nest_at_index</span><span class="p">(</span><span class="n">nest</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">fn</span><span class="p">)</span> <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="n">indices</span><span class="p">]</span></div>
 
@@ -390,23 +430,26 @@
                          <span class="n">_index</span><span class="p">:</span> <span class="n">List</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                          <span class="n">_base</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>\
         <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">Iterable</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Checks the leaf nodes of nested x via function fn, and returns all nest indices where the method evaluates as True.</span>
+    <span class="sd">&quot;&quot;&quot;Checks the leaf nodes of nested x via function fn, and returns all nest indices where the method evaluates as True.</span>
 
-<span class="sd">    :param nest: The nest to check the leaves of.</span>
-<span class="sd">    :type nest: nest of any</span>
-<span class="sd">    :param fn: The conditon function, returning True or False.</span>
-<span class="sd">    :type fn: callable</span>
-<span class="sd">    :param to_ignore: A type or sequence of types to ignore when recursing</span>
-<span class="sd">    :type to_ignore: type or sequence of types, optional</span>
-<span class="sd">    :param check_nests: Whether to also check the nests for the condition, not only nest leaves. Default is False.</span>
-<span class="sd">    :type check_nests: bool, optional</span>
-<span class="sd">    :param _index: The indices detected so far. None at the beginning. Used internally, do not set manually.</span>
-<span class="sd">    :type _index: list of tuples of indices, do not set</span>
-<span class="sd">    :param _base: Whether the current function call is the first function call in the recursive stack.</span>
-<span class="sd">                  Used internally, do not set manually.</span>
-<span class="sd">    :type _base: bool, do not set</span>
-<span class="sd">    :return: A set of indices for the nest where the function evaluated as True.</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    nest</span>
+<span class="sd">        The nest to check the leaves of.</span>
+<span class="sd">    fn</span>
+<span class="sd">        The conditon function, returning True or False.</span>
+<span class="sd">    check_nests</span>
+<span class="sd">        Whether to also check the nests for the condition, not only nest leaves. Default is False.</span>
+<span class="sd">    _index</span>
+<span class="sd">        The indices detected so far. None at the beginning. Used internally, do not set manually.</span>
+<span class="sd">    _base</span>
+<span class="sd">        Whether the current function call is the first function call in the recursive stack.</span>
+<span class="sd">        Used internally, do not set manually.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">     ret</span>
+<span class="sd">        A set of indices for the nest where the function evaluated as True.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">to_ignore</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">default</span><span class="p">(</span><span class="n">to_ignore</span><span class="p">,</span> <span class="p">())</span>
     <span class="n">_index</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span> <span class="k">if</span> <span class="n">_index</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">_index</span>
@@ -432,19 +475,25 @@
 
 <div class="viewcode-block" id="all_nested_indices"><a class="viewcode-back" href="../../../../functional/ivy/nest/all_nested_indices.html#ivy.functional.ivy.nest.all_nested_indices">[docs]</a><span class="k">def</span> <span class="nf">all_nested_indices</span><span class="p">(</span><span class="n">nest</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">include_nests</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">_index</span><span class="p">:</span> <span class="n">List</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">_base</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>\
         <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">Iterable</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Checks the leaf nodes of nested x via function fn, and returns all nest indices where the method evaluates as True.</span>
+    <span class="sd">&quot;&quot;&quot;Checks the leaf nodes of nested x via function fn, and returns all nest indices where the method evaluates as True.</span>
 
-<span class="sd">    :param nest: The nest to check the leaves of.</span>
-<span class="sd">    :type nest: nest of any</span>
-<span class="sd">    :param include_nests: Whether to also include indices of the nests themselves, not only leaves. Default is False.</span>
-<span class="sd">    :type include_nests: bool, optional</span>
-<span class="sd">    :param _index: The indices detected so far. None at the beginning. Used internally, do not set manually.</span>
-<span class="sd">    :type _index: list of tuples of indices, do not set</span>
-<span class="sd">    :param _base: Whether the current function call is the first function call in the recursive stack.</span>
-<span class="sd">                  Used internally, do not set manually.</span>
-<span class="sd">    :type _base: bool, do not set</span>
-<span class="sd">    :return: A set of indices for the nest where the function evaluated as True.</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    nest</span>
+<span class="sd">        The nest to check the leaves of.</span>
+<span class="sd">    include_nests</span>
+<span class="sd">        Whether to also include indices of the nests themselves, not only leaves. Default is False.</span>
+<span class="sd">    _index</span>
+<span class="sd">        The indices detected so far. None at the beginning. Used internally, do not set manually.</span>
+<span class="sd">    _base</span>
+<span class="sd">        Whether the current function call is the first function call in the recursive stack.</span>
+<span class="sd">        Used internally, do not set manually.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">     ret</span>
+<span class="sd">        A set of indices for the nest where the function evaluated as True.</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">_index</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span> <span class="k">if</span> <span class="n">_index</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">_index</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">nest</span><span class="p">,</span> <span class="p">(</span><span class="nb">tuple</span><span class="p">,</span> <span class="nb">list</span><span class="p">)):</span>
@@ -465,18 +514,24 @@
 <span class="c1"># noinspection PyShadowingBuiltins</span>
 <div class="viewcode-block" id="map"><a class="viewcode-back" href="../../../../functional/ivy/nest/map.html#ivy.functional.ivy.nest.map">[docs]</a><span class="k">def</span> <span class="nf">map</span><span class="p">(</span><span class="n">fn</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">constant</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">unique</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">mean</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>\
         <span class="o">-&gt;</span> <span class="n">List</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Applies a function on each item of an iterable x.</span>
+    <span class="sd">&quot;&quot;&quot;Applies a function on each item of an iterable x.</span>
 
-<span class="sd">    :param fn: The function to map onto x.</span>
-<span class="sd">    :type fn: callable</span>
-<span class="sd">    :param constant: keyword arguments which remain constant between each function call. Default is None.</span>
-<span class="sd">    :type constant: dict of any, optional</span>
-<span class="sd">    :param unique: keyword arguments which are unique for each function call. Default is None.</span>
-<span class="sd">    :type unique: dict of iterables of any, optional</span>
-<span class="sd">    :param mean: Whether to compute the mean across the return values, and return this mean. Default is False.</span>
-<span class="sd">    :type mean: bool, optional</span>
-<span class="sd">    :return: x following the applicable of fn to each of it&#39;s iterated items.</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    fn</span>
+<span class="sd">        The function to map onto x.</span>
+<span class="sd">    constant</span>
+<span class="sd">        keyword arguments which remain constant between each function call. Default is None.</span>
+<span class="sd">    unique</span>
+<span class="sd">        keyword arguments which are unique for each function call. Default is None.</span>
+<span class="sd">    mean</span>
+<span class="sd">        Whether to compute the mean across the return values, and return this mean. Default is False.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">     ret</span>
+<span class="sd">        x following the applicable of fn to each of it&#39;s iterated items.</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">c</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">default</span><span class="p">(</span><span class="n">constant</span><span class="p">,</span> <span class="p">{})</span>
     <span class="n">u</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">default</span><span class="p">(</span><span class="n">unique</span><span class="p">,</span> <span class="p">{})</span>
@@ -496,29 +551,34 @@
                <span class="n">_list_check_fn</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">callable</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                <span class="n">_dict_check_fn</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">callable</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span>\
         <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Dict</span><span class="p">]:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Applies a function on x in a nested manner, whereby all dicts, lists and tuples are traversed to their lowest</span>
+    <span class="sd">&quot;&quot;&quot;Applies a function on x in a nested manner, whereby all dicts, lists and tuples are traversed to their lowest</span>
 <span class="sd">    leaves before applying the method and returning x. If x is not nested, the method is applied to x directly.</span>
 
-<span class="sd">    :param x: The item to apply the mapped function to.</span>
-<span class="sd">    :type x: any</span>
-<span class="sd">    :param fn: The function to map onto x.</span>
-<span class="sd">    :type fn: callable</span>
-<span class="sd">    :param include_derived: Whether to also recursive for classes derived from tuple, list and dict. Default is False.</span>
-<span class="sd">    :type include_derived: bool, optional</span>
-<span class="sd">    :param to_mutable: Whether to convert the nest to a mutable form, changing all tuples to lists. Default is False.</span>
-<span class="sd">    :type to_mutable: bool, optional</span>
-<span class="sd">    :param max_depth: The maximum nested depth to reach. Default is 1. Increase this if the nest is deeper.</span>
-<span class="sd">    :type max_depth: int, optional</span>
-<span class="sd">    :param _depth: Placeholder for tracking the recursive depth, do not set this parameter.</span>
-<span class="sd">    :type _depth: int, used internally</span>
-<span class="sd">    :param _tuple_check_fn: Placeholder for the tuple check function, do not set this parameter.</span>
-<span class="sd">    :type _tuple_check_fn: callable, used internally</span>
-<span class="sd">    :param _list_check_fn: Placeholder for the list check function, do not set this parameter.</span>
-<span class="sd">    :type _list_check_fn: callable, used internally</span>
-<span class="sd">    :param _dict_check_fn: Placeholder for the dict check function, do not set this parameter.</span>
-<span class="sd">    :type _dict_check_fn: callable, used internally</span>
-<span class="sd">    :return: x following the applicable of fn to it&#39;s nested leaves, or x itself if x is not nested.</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x</span>
+<span class="sd">        The item to apply the mapped function to.</span>
+<span class="sd">    fn</span>
+<span class="sd">        The function to map onto x.</span>
+<span class="sd">    include_derived</span>
+<span class="sd">        Whether to also recursive for classes derived from tuple, list and dict. Default is False.</span>
+<span class="sd">    to_mutable </span>
+<span class="sd">        Whether to convert the nest to a mutable form, changing all tuples to lists. Default is False.</span>
+<span class="sd">    max_depth </span>
+<span class="sd">        The maximum nested depth to reach. Default is 1. Increase this if the nest is deeper.</span>
+<span class="sd">    _depth </span>
+<span class="sd">        Placeholder for tracking the recursive depth, do not set this parameter.</span>
+<span class="sd">    _tuple_check_fn </span>
+<span class="sd">        Placeholder for the tuple check function, do not set this parameter.</span>
+<span class="sd">    _list_check_fn </span>
+<span class="sd">        Placeholder for the list check function, do not set this parameter.</span>
+<span class="sd">    _dict_check_fn </span>
+<span class="sd">        Placeholder for the dict check function, do not set this parameter.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">     -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        x following the applicable of fn to it&#39;s nested leaves, or x itself if x is not nested.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">include_derived</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
         <span class="n">include_derived</span> <span class="o">=</span> <span class="p">{</span><span class="nb">tuple</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="nb">list</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="nb">dict</span><span class="p">:</span> <span class="kc">True</span><span class="p">}</span>
@@ -564,19 +624,25 @@
                <span class="n">check_nests</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
                <span class="n">_base</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>\
         <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Checks the leaf nodes of nest x via function fn, and returns True if any evaluate to True, else False.</span>
+    <span class="sd">&quot;&quot;&quot;Checks the leaf nodes of nest x via function fn, and returns True if any evaluate to True, else False.</span>
 
-<span class="sd">    :param nest: The nest to check the leaves of.</span>
-<span class="sd">    :type nest: nest of any</span>
-<span class="sd">    :param fn: The conditon function, returning True or False.</span>
-<span class="sd">    :type fn: callable</span>
-<span class="sd">    :param check_nests: Whether to also check the nests for the condition, not only nest leaves. Default is False.</span>
-<span class="sd">    :type check_nests: bool, optional</span>
-<span class="sd">    :param _base: Whether the current function call is the first function call in the recursive stack.</span>
-<span class="sd">                  Used internally, do not set manually.</span>
-<span class="sd">    :type _base: bool, do not set</span>
-<span class="sd">    :return: A boolean, whether the function evaluates to true for any leaf node.</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    nest </span>
+<span class="sd">        The nest to check the leaves of.</span>
+<span class="sd">    fn </span>
+<span class="sd">        The conditon function, returning True or False.</span>
+<span class="sd">    check_nests </span>
+<span class="sd">        Whether to also check the nests for the condition, not only nest leaves. Default is False.</span>
+<span class="sd">    _base </span>
+<span class="sd">        Whether the current function call is the first function call in the recursive stack.</span>
+<span class="sd">        Used internally, do not set manually.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">     -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        A boolean, whether the function evaluates to true for any leaf node.</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">nest</span><span class="p">,</span> <span class="p">(</span><span class="nb">tuple</span><span class="p">,</span> <span class="nb">list</span><span class="p">)):</span>
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">item</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">nest</span><span class="p">):</span>
@@ -598,16 +664,22 @@
 <div class="viewcode-block" id="copy_nest"><a class="viewcode-back" href="../../../../functional/ivy/nest/copy_nest.html#ivy.functional.ivy.nest.copy_nest">[docs]</a><span class="k">def</span> <span class="nf">copy_nest</span><span class="p">(</span><span class="n">nest</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span> <span class="n">Iterable</span><span class="p">],</span> <span class="n">include_derived</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
               <span class="n">to_mutable</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>\
         <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Dict</span><span class="p">]:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Copies a nest deeply, but without copying leaves of the nest, only the nest lists, tuples and dicts are copied.</span>
+    <span class="sd">&quot;&quot;&quot;Copies a nest deeply, but without copying leaves of the nest, only the nest lists, tuples and dicts are copied.</span>
 
-<span class="sd">    :param nest: The nest to copy.</span>
-<span class="sd">    :type nest: nested</span>
-<span class="sd">    :param include_derived: Whether to also recursive for classes derived from tuple, list and dict. Default is False.</span>
-<span class="sd">    :type include_derived: bool, optional</span>
-<span class="sd">    :param to_mutable: Whether to convert the nest to a mutable form, changing all tuples to lists. Default is False.</span>
-<span class="sd">    :type to_mutable: bool, optional</span>
-<span class="sd">    :return: The copied nest.</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    nest </span>
+<span class="sd">        The nest to copy.</span>
+<span class="sd">    include_derived </span>
+<span class="sd">        Whether to also recursive for classes derived from tuple, list and dict. Default is False.</span>
+<span class="sd">    to_mutable </span>
+<span class="sd">        Whether to convert the nest to a mutable form, changing all tuples to lists. Default is False.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">     -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        The copied nest.</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">class_instance</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">nest</span><span class="p">)</span>
     <span class="n">check_fn</span> <span class="o">=</span> <span class="p">(</span><span class="k">lambda</span> <span class="n">x_</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">nest</span><span class="p">,</span> <span class="n">t</span><span class="p">))</span> <span class="k">if</span> <span class="n">include_derived</span> <span class="k">else</span> <span class="p">(</span><span class="k">lambda</span> <span class="n">x_</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="nb">type</span><span class="p">(</span><span class="n">nest</span><span class="p">)</span> <span class="ow">is</span> <span class="n">t</span><span class="p">)</span>

@@ -277,79 +277,107 @@
 
 
 <div class="viewcode-block" id="random_normal"><a class="viewcode-back" href="../../../../functional/ivy/random/random_normal.html#ivy.functional.ivy.random.random_normal">[docs]</a><span class="k">def</span> <span class="nf">random_normal</span><span class="p">(</span><span class="n">mean</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">std</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dev</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Draws samples from a normal distribution.</span>
+    <span class="sd">&quot;&quot;&quot;Draws samples from a normal distribution.</span>
 
-<span class="sd">    :param mean: The mean of the normal distribution to sample from. Default is 0.</span>
-<span class="sd">    :type mean: float</span>
-<span class="sd">    :param std: The standard deviation of the normal distribution to sample from. Default is 1.</span>
-<span class="sd">    :type std: float</span>
-<span class="sd">    :param shape: Output shape. If the given shape is, e.g., (m, n, k), then m * n * k samples are drawn.</span>
-<span class="sd">                    If size is None (default), a single value is returned.</span>
-<span class="sd">    :param dev: device on which to create the array &#39;cuda:0&#39;, &#39;cuda:1&#39;, &#39;cpu&#39; etc.</span>
-<span class="sd">    :type dev: ivy.Device</span>
-<span class="sd">    :return: Drawn samples from the parameterized uniform distribution.</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    mean</span>
+<span class="sd">        The mean of the normal distribution to sample from. Default is 0.</span>
+<span class="sd">    std</span>
+<span class="sd">        The standard deviation of the normal distribution to sample from. Default is 1.</span>
+<span class="sd">    shape</span>
+<span class="sd">        Output shape. If the given shape is, e.g., (m, n, k), then m * n * k samples are drawn.</span>
+<span class="sd">        If size is None (default), a single value is returned.</span>
+<span class="sd">    dev</span>
+<span class="sd">        device on which to create the array &#39;cuda:0&#39;, &#39;cuda:1&#39;, &#39;cpu&#39; etc. (Default value = None)</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">     ret</span>
+<span class="sd">        Drawn samples from the parameterized uniform distribution.</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">()</span><span class="o">.</span><span class="n">random_normal</span><span class="p">(</span><span class="n">mean</span><span class="p">,</span> <span class="n">std</span><span class="p">,</span> <span class="n">shape</span><span class="p">,</span> <span class="n">dev</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="multinomial"><a class="viewcode-back" href="../../../../functional/ivy/random/multinomial.html#ivy.functional.ivy.random.multinomial">[docs]</a><span class="k">def</span> <span class="nf">multinomial</span><span class="p">(</span><span class="n">population_size</span><span class="p">,</span> <span class="n">num_samples</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">,</span> <span class="n">probs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">replace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">dev</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Draws samples from a multinomial distribution. Specifcally, returns a tensor where each row contains num_samples</span>
+    <span class="sd">&quot;&quot;&quot;Draws samples from a multinomial distribution. Specifcally, returns a tensor where each row contains num_samples</span>
 <span class="sd">    indices sampled from the multinomial probability distribution located in the corresponding row of tensor input.</span>
 
-<span class="sd">    :param population_size: The size of the population from which to draw samples.</span>
-<span class="sd">    :type population_size: int</span>
-<span class="sd">    :param num_samples: Number of independent samples to draw from the population.</span>
-<span class="sd">    :type num_samples: int</span>
-<span class="sd">    :param batch_size: Number of times to draw a new set of samples from the population.</span>
-<span class="sd">    :type num_samples: int</span>
-<span class="sd">    :param probs: The unnormalized probabilities for all elemtns in population,</span>
-<span class="sd">                        default is uniform *[batch_shape, num_classes]*</span>
-<span class="sd">    :type probs: array, optional</span>
-<span class="sd">    :param replace: Whether to replace samples once they&#39;ve been drawn. Default is True.</span>
-<span class="sd">    :type replace: bool, optional</span>
-<span class="sd">    :param dev: device on which to create the array &#39;cuda:0&#39;, &#39;cuda:1&#39;, &#39;cpu&#39; etc.</span>
-<span class="sd">    :type dev: ivy.Device</span>
-<span class="sd">    :return: Drawn samples indices from the multinomial distribution.</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    population_size</span>
+<span class="sd">        The size of the population from which to draw samples.</span>
+<span class="sd">    num_samples</span>
+<span class="sd">        Number of independent samples to draw from the population.</span>
+<span class="sd">    batch_size</span>
+<span class="sd">        Number of times to draw a new set of samples from the population.</span>
+<span class="sd">    probs</span>
+<span class="sd">        The unnormalized probabilities for all elemtns in population,</span>
+<span class="sd">        default is uniform *[batch_shape, num_classes]*</span>
+<span class="sd">    replace</span>
+<span class="sd">        Whether to replace samples once they&#39;ve been drawn. Default is True.</span>
+<span class="sd">    dev</span>
+<span class="sd">        device on which to create the array &#39;cuda:0&#39;, &#39;cuda:1&#39;, &#39;cpu&#39; etc. (Default value = None)</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">     ret</span>
+<span class="sd">        Drawn samples indices from the multinomial distribution.</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">()</span><span class="o">.</span><span class="n">multinomial</span><span class="p">(</span><span class="n">population_size</span><span class="p">,</span> <span class="n">num_samples</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">,</span> <span class="n">probs</span><span class="p">,</span> <span class="n">replace</span><span class="p">,</span> <span class="n">dev</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="randint"><a class="viewcode-back" href="../../../../functional/ivy/random/randint.html#ivy.functional.ivy.random.randint">[docs]</a><span class="k">def</span> <span class="nf">randint</span><span class="p">(</span><span class="n">low</span><span class="p">,</span> <span class="n">high</span><span class="p">,</span> <span class="n">shape</span><span class="p">,</span> <span class="n">dev</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Returns a tensor filled with random integers generated uniformly between low (inclusive) and high (exclusive).</span>
+    <span class="sd">&quot;&quot;&quot;Returns a tensor filled with random integers generated uniformly between low (inclusive) and high (exclusive).</span>
 
-<span class="sd">    :param low: Lowest integer to be drawn from the distribution.</span>
-<span class="sd">    :type low: int</span>
-<span class="sd">    :param high: One above the highest integer to be drawn from the distribution.</span>
-<span class="sd">    :type high: int</span>
-<span class="sd">    :param shape: a tuple defining the shape of the output tensor.</span>
-<span class="sd">    :type shape: sequence of ints</span>
-<span class="sd">    :param dev: device on which to create the array &#39;cuda:0&#39;, &#39;cuda:1&#39;, &#39;cpu&#39; etc.</span>
-<span class="sd">    :type dev: ivy.Device</span>
-<span class="sd">    :return:</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    low</span>
+<span class="sd">        Lowest integer to be drawn from the distribution.</span>
+<span class="sd">    high</span>
+<span class="sd">        One above the highest integer to be drawn from the distribution.</span>
+<span class="sd">    shape</span>
+<span class="sd">        a tuple defining the shape of the output tensor.</span>
+<span class="sd">    dev</span>
+<span class="sd">        device on which to create the array &#39;cuda:0&#39;, &#39;cuda:1&#39;, &#39;cpu&#39; etc. (Default value = None)</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">()</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="n">low</span><span class="p">,</span> <span class="n">high</span><span class="p">,</span> <span class="n">shape</span><span class="p">,</span> <span class="n">dev</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="seed"><a class="viewcode-back" href="../../../../functional/ivy/random/seed.html#ivy.functional.ivy.random.seed">[docs]</a><span class="k">def</span> <span class="nf">seed</span><span class="p">(</span><span class="n">seed_value</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Sets the seed for random number generation.</span>
+    <span class="sd">&quot;&quot;&quot;Sets the seed for random number generation.</span>
 
-<span class="sd">    :param seed_value: Seed for random number generation, must be a positive integer.</span>
-<span class="sd">    :type seed_value: int</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    seed_value</span>
+<span class="sd">        Seed for random number generation, must be a positive integer. (Default value = 0)</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">()</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="n">seed_value</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="shuffle"><a class="viewcode-back" href="../../../../functional/ivy/random/shuffle.html#ivy.functional.ivy.random.shuffle">[docs]</a><span class="k">def</span> <span class="nf">shuffle</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Shuffles the given array along axis 0.</span>
+    <span class="sd">&quot;&quot;&quot;Shuffles the given array along axis 0.</span>
 
-<span class="sd">    :param x: An array object, in the specific Machine learning framework.</span>
-<span class="sd">    :type x: array</span>
-<span class="sd">    :return: An array object, shuffled along the first dimension.</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x</span>
+<span class="sd">        An array object, in the specific Machine learning framework.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">     ret</span>
+<span class="sd">        An array object, shuffled along the first dimension.</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">shuffle</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
 </pre></div>

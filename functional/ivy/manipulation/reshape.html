@@ -253,27 +253,27 @@
 <dt id="ivy.functional.ivy.manipulation.reshape">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">reshape</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">shape</span><span class="p">:</span> <span class="n">Tuple<span class="p">[</span>int<span class="p">, </span><span class="p">…</span><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">copy</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>bool<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">out</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../../_modules/ivy/functional/ivy/manipulation.html#reshape"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.manipulation.reshape" title="Permalink to this definition">¶</a></dt>
 <dd><p>Gives a new shape to an array without changing its data.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>array</em>) – Tensor to be reshaped.</p></li>
-<li><p><strong>newshape</strong> (<em>int</em><em> or </em><em>sequence of ints</em>) – The new shape should be compatible with the original shape. One shape dimension can be -1.
-In this case, the value is inferred from the length of the array and remaining dimensions.</p></li>
-</ul>
+<dl class="simple">
+<dt>x </dt><dd><p>Tensor to be reshaped.</p>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Reshaped array.</p>
+<dt>newshape </dt><dd><p>The new shape should be compatible with the original shape. One shape dimension can be -1.
+In this case, the value is inferred from the length of the array and remaining dimensions.</p>
 </dd>
 </dl>
-<p>Examples:
-&gt;&gt;&gt; x = ivy.array([[1,2,3], [4,5,6]])
-&gt;&gt;&gt; y = ivy.reshape(x, (3,2))
-&gt;&gt;&gt; print(y)
-ivy.array([[1, 2],</p>
 <blockquote>
-<div><p>[3, 4],
-[5, 6]])</p>
+<div><dl class="simple">
+<dt>ret</dt><dd><p>Reshaped array.</p>
+</dd>
+</dl>
 </div></blockquote>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+<span class="go">ivy.array([[1, 2],</span>
+<span class="go">           [3, 4],</span>
+<span class="go">           [5, 6]])</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <div class="line-block">

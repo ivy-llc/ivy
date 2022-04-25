@@ -255,12 +255,11 @@
 <dt id="ivy.functional.ivy.creation.from_dlpack">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">from_dlpack</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../../_modules/ivy/functional/ivy/creation.html#from_dlpack"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.creation.from_dlpack" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a new array containing the data from another (array) object with a <code class="docutils literal notranslate"><span class="pre">__dlpack__</span></code> method.</p>
-<dl class="simple">
-<dt>x: object</dt><dd><p>input (array) object.</p>
-</dd>
-</dl>
 <dl>
-<dt>out: array</dt><dd><p>an array containing the data in <cite>x</cite>.</p>
+<dt>x  object</dt><dd><p>input (array) object.</p>
+</dd>
+<dt>Returns</dt><dd></dd>
+<dt>ret</dt><dd><p>an array containing the data in <cite>x</cite>.</p>
 <div class="note admonition">
 <p class="admonition-title">Note</p>
 <p>The returned array may be either a copy or a view. See <span class="xref std std-ref">data-interchange</span> for details.</p>

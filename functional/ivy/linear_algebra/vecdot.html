@@ -264,18 +264,17 @@
 <dd><p>Computes the (vector) dot product of two arrays.
 Parameters
 ———-
-x1: array</p>
+x1</p>
 <blockquote>
 <div><p>first input array. Should have a numeric data type.</p>
 </div></blockquote>
 <dl class="simple">
-<dt>x2: array</dt><dd><p>second input array. Must be compatible with <code class="docutils literal notranslate"><span class="pre">x1</span></code> (see <span class="xref std std-ref">broadcasting</span>). Should have a numeric data type.</p>
+<dt>x2</dt><dd><p>second input array. Must be compatible with <code class="docutils literal notranslate"><span class="pre">x1</span></code> (see <span class="xref std std-ref">broadcasting</span>). Should have a numeric data type.</p>
 </dd>
-<dt>axis:int</dt><dd><p>axis over which to compute the dot product. Must be an integer on the interval <code class="docutils literal notranslate"><span class="pre">[-N,</span> <span class="pre">N)</span></code>, where <code class="docutils literal notranslate"><span class="pre">N</span></code> is the rank (number of dimensions) of the shape determined according to <span class="xref std std-ref">broadcasting</span>. If specified as a negative integer, the function must determine the axis along which to compute the dot product by counting backward from the last dimension (where <code class="docutils literal notranslate"><span class="pre">-1</span></code> refers to the last dimension). By default, the function must compute the dot product over the last axis. Default: <code class="docutils literal notranslate"><span class="pre">-1</span></code>.</p>
+<dt>axis</dt><dd><p>axis over which to compute the dot product. Must be an integer on the interval <code class="docutils literal notranslate"><span class="pre">[-N,</span> <span class="pre">N)</span></code>, where <code class="docutils literal notranslate"><span class="pre">N</span></code> is the rank (number of dimensions) of the shape determined according to <span class="xref std std-ref">broadcasting</span>. If specified as a negative integer, the function must determine the axis along which to compute the dot product by counting backward from the last dimension (where <code class="docutils literal notranslate"><span class="pre">-1</span></code> refers to the last dimension). By default, the function must compute the dot product over the last axis. Default: <code class="docutils literal notranslate"><span class="pre">-1</span></code>.</p>
 </dd>
-</dl>
-<dl class="simple">
-<dt>out: array</dt><dd><p>if <code class="docutils literal notranslate"><span class="pre">x1</span></code> and <code class="docutils literal notranslate"><span class="pre">x2</span></code> are both one-dimensional arrays, a zero-dimensional containing the dot product; otherwise, a non-zero-dimensional array containing the dot products and having rank <code class="docutils literal notranslate"><span class="pre">N-1</span></code>, where <code class="docutils literal notranslate"><span class="pre">N</span></code> is the rank (number of dimensions) of the shape determined according to <span class="xref std std-ref">broadcasting</span>. The returned array must have a data type determined by <span class="xref std std-ref">type-promotion</span>.</p>
+<dt>Returns</dt><dd></dd>
+<dt>ret</dt><dd><p>if <code class="docutils literal notranslate"><span class="pre">x1</span></code> and <code class="docutils literal notranslate"><span class="pre">x2</span></code> are both one-dimensional arrays, a zero-dimensional containing the dot product; otherwise, a non-zero-dimensional array containing the dot products and having rank <code class="docutils literal notranslate"><span class="pre">N-1</span></code>, where <code class="docutils literal notranslate"><span class="pre">N</span></code> is the rank (number of dimensions) of the shape determined according to <span class="xref std std-ref">broadcasting</span>. The returned array must have a data type determined by <span class="xref std std-ref">type-promotion</span>.</p>
 </dd>
 </dl>
 <p><strong>Raises</strong>

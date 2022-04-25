@@ -301,21 +301,20 @@
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">gather</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">params</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">indices</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">axis</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">- 1</span></em>, <em class="sig-param"><span class="n">dev</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>ivy.Device<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">out</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/general.html#gather"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.general.gather" title="Permalink to this definition">¶</a></dt>
 <dd><p>Gather slices from params at axis according to indices.</p>
 <dl class="simple">
-<dt>paramas:</dt><dd><p>array, the array from which to gather values.</p>
+<dt>paramas</dt><dd><p>array, the array from which to gather values.</p>
 </dd>
-<dt>indices: </dt><dd><p>array, index array.</p>
+<dt>indices</dt><dd><p>array, index array.</p>
 </dd>
-<dt>axis: </dt><dd><p>optional int, the axis from which to gather from. Default is -1.</p>
+<dt>axis</dt><dd><p>optional int, the axis from which to gather from. Default is -1.</p>
 </dd>
-<dt>dev: </dt><dd><p>optional ivy.Device, device on which to create the array ‘cuda:0’, ‘cuda:1’, ‘cpu’ etc. Same as x if None.</p>
+<dt>dev</dt><dd><p>optional ivy.Device, device on which to create the array ‘cuda:0’, ‘cuda:1’, ‘cpu’ etc. Same as x if None.</p>
 </dd>
-<dt>out: </dt><dd><p>optional output array, for writing the result to.</p>
-</dd>
-</dl>
-<dl class="simple">
-<dt>return: </dt><dd><p>New array with the values gathered at the specified indices along the specified axis.</p>
+<dt>out</dt><dd><p>optional output array, for writing the result to.</p>
 </dd>
 </dl>
+<blockquote>
+<div><p>New array with the values gathered at the specified indices along the specified axis.</p>
+</div></blockquote>
 </dd></dl>
 
 <div class="line-block">

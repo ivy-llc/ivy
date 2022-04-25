@@ -252,19 +252,21 @@
 <dt id="ivy.functional.ivy.gradients.stop_gradient">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">stop_gradient</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">preserve_type</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/gradients.html#stop_gradient"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.gradients.stop_gradient" title="Permalink to this definition">¶</a></dt>
 <dd><p>Stops gradient computation.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>array</em>) – Array for which to stop the gradient.</p></li>
-<li><p><strong>preserve_type</strong> – Whether to preserve the input type (ivy.Variable or ivy.Array),
-otherwise an array is always returned. Default is True.</p></li>
-<li><p><strong>preserve_type</strong> – bool, optional</p></li>
-</ul>
+<dl class="simple">
+<dt>x </dt><dd><p>Array for which to stop the gradient.</p>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>The same array x, but with no gradient information.</p>
+<dt>preserve_type </dt><dd><p>Whether to preserve the input type (ivy.Variable or ivy.Array),
+otherwise an array is always returned. Default is True.</p>
+</dd>
+<dt>preserve_type </dt><dd><p>bool, optional (Default value = True)</p>
 </dd>
 </dl>
+<blockquote>
+<div><dl class="simple">
+<dt>ret</dt><dd><p>The same array x, but with no gradient information.</p>
+</dd>
+</dl>
+</div></blockquote>
 </dd></dl>
 
 <div class="line-block">

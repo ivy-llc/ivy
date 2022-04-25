@@ -262,13 +262,19 @@
 <dt id="ivy.functional.ivy.linear_algebra.outer">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">outer</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x1</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">x2</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../../_modules/ivy/functional/ivy/linear_algebra.html#outer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.linear_algebra.outer" title="Permalink to this definition">¶</a></dt>
 <dd><p>returns the outer product of two vectors x1 and x2.</p>
-<p>x1 (array) – first one-dimensional input array of size N. Should have a numeric data type.
+<p>x1 
+first one-dimensional input array of size N. Should have a numeric data type.
 a(M,) array_like
 First input vector. Input is flattened if not already 1-dimensional.</p>
-<p>x2 (array) – second one-dimensional input array of size M. Should have a numeric data type.
+<p>x2 
+second one-dimensional input array of size M. Should have a numeric data type.
 b(N,) array_like
 Second input vector. Input is flattened if not already 1-dimensional.</p>
-<p>out (array) – a two-dimensional array containing the outer product and whose shape is (N, M).
+<dl class="simple">
+<dt>Returns</dt><dd></dd>
+</dl>
+<p>ret
+a two-dimensional array containing the outer product and whose shape is (N, M).
 The returned array must have a data type determined by Type Promotion Rules.
 out(M, N) ndarray, optional
 A location where the result is stored</p>

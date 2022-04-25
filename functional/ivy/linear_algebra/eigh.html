@@ -271,11 +271,10 @@
 <p>Whether an array library explicitly checks whether an input array is a symmetric matrix (or a stack of symmetric matrices) is implementation-defined.</p>
 </div>
 <dl class="simple">
-<dt>x: array</dt><dd><p>input array having shape <code class="docutils literal notranslate"><span class="pre">(...,</span> <span class="pre">M,</span> <span class="pre">M)</span></code> and whose innermost two dimensions form square matrices. Must have a floating-point data type.</p>
+<dt>x</dt><dd><p>input array having shape <code class="docutils literal notranslate"><span class="pre">(...,</span> <span class="pre">M,</span> <span class="pre">M)</span></code> and whose innermost two dimensions form square matrices. Must have a floating-point data type.</p>
 </dd>
-</dl>
-<dl class="simple">
-<dt>out: Tuple[array]</dt><dd><p>a namedtuple (<code class="docutils literal notranslate"><span class="pre">eigenvalues</span></code>, <code class="docutils literal notranslate"><span class="pre">eigenvectors</span></code>) whose
+<dt>Returns</dt><dd></dd>
+<dt>ret Tuple[array]</dt><dd><p>a namedtuple (<code class="docutils literal notranslate"><span class="pre">eigenvalues</span></code>, <code class="docutils literal notranslate"><span class="pre">eigenvectors</span></code>) whose
 -   first element must have the field name <code class="docutils literal notranslate"><span class="pre">eigenvalues</span></code> (corresponding to <code class="docutils literal notranslate"><span class="pre">L</span></code> above) and must be an array consisting of computed eigenvalues. The array containing the eigenvalues must have shape <code class="docutils literal notranslate"><span class="pre">(...,</span> <span class="pre">M)</span></code>.
 -   second element have have the field name <code class="docutils literal notranslate"><span class="pre">eigenvectors</span></code> (corresponding to <code class="docutils literal notranslate"><span class="pre">Q</span></code> above) and must be an array where the columns of the inner most matrices contain the computed eigenvectors. These matrices must be orthogonal. The array containing the eigenvectors must have shape <code class="docutils literal notranslate"><span class="pre">(...,</span> <span class="pre">M,</span> <span class="pre">M)</span></code>.
 Each returned array must have the same floating-point data type as <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p>

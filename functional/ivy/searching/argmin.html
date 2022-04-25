@@ -242,24 +242,27 @@
 <dt id="ivy.functional.ivy.searching.argmin">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">argmin</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">axis</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>int<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">keepdims</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>bool<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../../_modules/ivy/functional/ivy/searching.html#argmin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.searching.argmin" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the indices of the minimum values along a specified axis. When the minimum value occurs multiple times, only the indices corresponding to the first occurrence are returned</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> – input array. Should have a numeric data type.</p></li>
-<li><p><strong>axis</strong> – axis along which to search. If None, the function must return the index of the minimum value of the flattened
-array. Default = None.</p></li>
-<li><p><strong>keepdims</strong> – if True, the reduced axes (dimensions) must be included in the result as singleton dimensions, and,
-accordingly, the result must be compatible with the input array (see Broadcasting). Otherwise, if False,
-the reduced axes (dimensions) must not be included in the result. Default = False.</p></li>
-<li><p><strong>out</strong> – if axis is None, a zero-dimensional array containing the index of the first occurrence of the minimum value;
-otherwise, a non-zero-dimensional array containing the indices of the minimum values.
-The returned array must have the default array index data type.</p></li>
-</ul>
+<dl class="simple">
+<dt>x </dt><dd><p>input array. Should have a numeric data type.</p>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Array containing the indices of the minimum values across the specified axis.</p>
+<dt>axis </dt><dd><p>axis along which to search. If None, the function must return the index of the minimum value of the flattened
+array. Default = None.</p>
+</dd>
+<dt>keepdims </dt><dd><p>if True, the reduced axes (dimensions) must be included in the result as singleton dimensions, and,
+accordingly, the result must be compatible with the input array (see Broadcasting). Otherwise, if False,
+the reduced axes (dimensions) must not be included in the result. Default = False.</p>
+</dd>
+<dt>out </dt><dd><p>if axis is None, a zero-dimensional array containing the index of the first occurrence of the minimum value;
+otherwise, a non-zero-dimensional array containing the indices of the minimum values.
+The returned array must have the default array index data type.</p>
 </dd>
 </dl>
+<blockquote>
+<div><dl class="simple">
+<dt>ret</dt><dd><p>Array containing the indices of the minimum values across the specified axis.</p>
+</dd>
+</dl>
+</div></blockquote>
 </dd></dl>
 
 <div class="line-block">

@@ -284,18 +284,19 @@
 <dt id="ivy.functional.ivy.device.dev_unify_iter">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">dev_unify_iter</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">xs</span></em>, <em class="sig-param"><span class="n">dev</span></em>, <em class="sig-param"><span class="n">mode</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">transpose</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/device.html#dev_unify_iter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.device.dev_unify_iter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Unify elements of the iterbale xs to a single target device.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>xs</strong> (<em>iterable of any</em>) – The iterable of items to unify.</p></li>
-<li><p><strong>dev</strong> (<em>Device</em>) – The device to unify the elements of the iterable to.</p></li>
-<li><p><strong>mode</strong> (<em>str</em>) – The mode by which to unify, must be one of [ concat | mean | sum ]</p></li>
-<li><p><strong>axis</strong> (<em>int</em><em>, </em><em>optional</em>) – The axis along which to concattenate the sub-arrays. Default is 0.</p></li>
-<li><p><strong>transpose</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to transpose the first and second dimensions of the iterator. Default is False.</p></li>
-</ul>
+<dl class="simple">
+<dt>xs</dt><dd><p>The iterable of items to unify.</p>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>iterable with each element unified to a single target devices</p>
+<dt>dev</dt><dd><p>The device to unify the elements of the iterable to.</p>
+</dd>
+<dt>mode</dt><dd><p>The mode by which to unify, must be one of [ concat | mean | sum ]</p>
+</dd>
+<dt>axis</dt><dd><p>The axis along which to concattenate the sub-arrays. Default is 0.</p>
+</dd>
+<dt>transpose</dt><dd><p>Whether to transpose the first and second dimensions of the iterator. Default is False.</p>
+</dd>
+<dt>Returns</dt><dd></dd>
+<dt>ret</dt><dd><p>iterable with each element unified to a single target devices</p>
 </dd>
 </dl>
 </dd></dl>

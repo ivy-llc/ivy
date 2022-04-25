@@ -243,18 +243,18 @@
 <span class="sd">    Rolls array elements along a specified axis. Array elements that roll beyond the last position are re-introduced at the first position. Array elements that roll beyond the first position are re-introduced at the last position.</span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    x: array</span>
+<span class="sd">    x</span>
 <span class="sd">        input array.</span>
-<span class="sd">    shift: Union[int, Tuple[int, ...]]</span>
+<span class="sd">    shift</span>
 <span class="sd">        number of places by which the elements are shifted. If ``shift`` is a tuple, then ``axis`` must be a tuple of the same size, and each of the given axes must be shifted by the corresponding element in ``shift``. If ``shift`` is an ``int`` and ``axis`` a tuple, then the same ``shift`` must be used for all specified axes. If a shift is positive, then array elements must be shifted positively (toward larger indices) along the dimension of ``axis``. If a shift is negative, then array elements must be shifted negatively (toward smaller indices) along the dimension of ``axis``.</span>
-<span class="sd">    axis: Optional[Union[int, Tuple[int, ...]]]</span>
-<span class="sd">        axis (or axes) along which elements to shift. If ``axis`` is ``None``, the array must be flattened, shifted, and then restored to its original shape. Default: ``None``.</span>
-<span class="sd">    out:</span>
+<span class="sd">    axis</span>
+<span class="sd">        axis (or axes) along which elements to shift. If ``axis`` is ``None``, the array must be flattened, shifted, and then restored to its original shape. Default  ``None``.</span>
+<span class="sd">    out</span>
 <span class="sd">        optional output array, for writing the result to. It must have a shape that the inputs broadcast to.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    return: array</span>
+<span class="sd">     ret</span>
 <span class="sd">        an output array having the same data type as ``x`` and whose elements, relative to ``x``, are shifted.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">roll</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">shift</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span></div>
@@ -262,46 +262,46 @@
 
 <div class="viewcode-block" id="squeeze"><a class="viewcode-back" href="../../../../functional/ivy/manipulation/squeeze.html#ivy.functional.ivy.manipulation.squeeze">[docs]</a><span class="k">def</span> <span class="nf">squeeze</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
             <span class="n">axis</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">]],</span>
-            <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span>\
+            <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> \
         <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Removes singleton dimensions (axes) from ``x``.</span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    x: array</span>
+<span class="sd">    x</span>
 <span class="sd">        input array.</span>
-<span class="sd">    axis: Union[int, Tuple[int, ...]]</span>
+<span class="sd">    axis</span>
 <span class="sd">        axis (or axes) to squeeze. If a specified axis has a size greater than one, a ``ValueError`` must be raised.</span>
-<span class="sd">    out:</span>
+<span class="sd">    out</span>
 <span class="sd">        optional output array, for writing the result to. It must have a shape that the inputs broadcast to.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    return: array</span>
+<span class="sd">     ret</span>
 <span class="sd">        an output array having the same data type and elements as ``x``.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="flip"><a class="viewcode-back" href="../../../../functional/ivy/manipulation/flip.html#ivy.functional.ivy.manipulation.flip">[docs]</a><span class="k">def</span> <span class="nf">flip</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
-        <span class="n">axis</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-         <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span>\
+         <span class="n">axis</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+         <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> \
         <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Reverses the order of elements in an array along the given axis. The shape of the array must be preserved.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    x:</span>
+<span class="sd">    x</span>
 <span class="sd">        input array.</span>
-<span class="sd">    axis:</span>
-<span class="sd">        axis (or axes) along which to flip. If ``axis`` is ``None``, the function must flip all input array axes. If ``axis`` is negative, the function must count from the last dimension. If provided more than one axis, the function must flip only the specified axes. Default: ``None``.</span>
-<span class="sd">    out:</span>
+<span class="sd">    axis</span>
+<span class="sd">        axis (or axes) along which to flip. If ``axis`` is ``None``, the function must flip all input array axes. If ``axis`` is negative, the function must count from the last dimension. If provided more than one axis, the function must flip only the specified axes. Default  ``None``.</span>
+<span class="sd">    out</span>
 <span class="sd">        optional output array, for writing the result to. It must have a shape that the inputs broadcast to.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    return:</span>
+<span class="sd">     ret</span>
 <span class="sd">        an output array having the same data type and shape as ``x`` and whose elements, relative to ``x``, are reordered.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -312,38 +312,44 @@
                 <span class="n">axis</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
                 <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> \
         <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Expands the shape of an array.</span>
+    <span class="sd">&quot;&quot;&quot;Expands the shape of an array.</span>
 <span class="sd">    Inserts a new axis that will appear at the axis position in the expanded array shape.</span>
 
-<span class="sd">    :param x: Input array.</span>
-<span class="sd">    :type x: array</span>
-<span class="sd">    :param axis: Position in the expanded axes where the new axis is placed.</span>
-<span class="sd">    :type axis: int</span>
-<span class="sd">    :return: array with the number of dimensions increased by onearray</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x </span>
+<span class="sd">        Input array.</span>
+<span class="sd">    axis </span>
+<span class="sd">        Position in the expanded axes where the new axis is placed.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">     ret</span>
+<span class="sd">        array with the number of dimensions increased by onearray</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="permute_dims"><a class="viewcode-back" href="../../../../functional/ivy/manipulation/permute_dims.html#ivy.functional.ivy.manipulation.permute_dims">[docs]</a><span class="k">def</span> <span class="nf">permute_dims</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
                  <span class="n">axes</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span>
-                 <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span>\
+                 <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> \
         <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Permutes the axes (dimensions) of an array x.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    x:</span>
+<span class="sd">    x</span>
 <span class="sd">        input array.</span>
-<span class="sd">    axes:</span>
+<span class="sd">    axes</span>
 <span class="sd">        tuple containing a permutation of (0, 1, ..., N-1) where N is the number of axes (dimensions) of x.</span>
-<span class="sd">    out:</span>
+<span class="sd">    out</span>
 <span class="sd">        optional output array, for writing the result to. It must have a shape that the inputs broadcast to.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    return:</span>
+<span class="sd">     ret</span>
 <span class="sd">        an array containing the axes permutation. The returned array must have the same data type as x.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">permute_dims</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axes</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span></div>
@@ -351,23 +357,23 @@
 
 <div class="viewcode-block" id="stack"><a class="viewcode-back" href="../../../../functional/ivy/manipulation/stack.html#ivy.functional.ivy.manipulation.stack">[docs]</a><span class="k">def</span> <span class="nf">stack</span><span class="p">(</span><span class="n">arrays</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">],</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]],</span>
           <span class="n">axis</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> \
-          <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+        <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Joins a sequence of arrays along a new axis.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    arrays:</span>
+<span class="sd">    arrays</span>
 <span class="sd">        input arrays to join. Each array must have the same shape.</span>
-<span class="sd">    axis:</span>
+<span class="sd">    axis</span>
 <span class="sd">        axis along which the arrays will be joined. Providing an ``axis`` specifies the index of the new axis in the dimensions of the result. For example, if ``axis`` is ``0``, the new axis will be the first dimension and the output array will have shape ``(N, A, B, C)``; if ``axis`` is ``1``, the new axis will be the second dimension and the output array will have shape ``(A, N, B, C)``; and, if ``axis`` is ``-1``, the new axis will be the last dimension and the output array will have shape ``(A, B, C, N)``. A valid ``axis`` must be on the interval ``[-N, N)``, where ``N`` is the rank (number of dimensions) of ``x``. If provided an ``axis`` outside of the required interval, the function must raise an exception. Default: ``0``.</span>
-<span class="sd">    out:</span>
+<span class="sd">    out</span>
 <span class="sd">        optional output array, for writing the result to. It must have a shape that the inputs broadcast to.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    --------</span>
-<span class="sd">    return:</span>
-<span class="sd">        an output array having rank ``N+1``, where ``N`` is the rank (number of dimensions) of ``x``. If the input arrays have different data types, normal :ref:`type-promotion` must apply. If the input arrays have the same data type, the output array must have the same data type as the input arrays.</span>
+<span class="sd">     ret</span>
+<span class="sd">        an output array having rank ``N+1``, where ``N`` is the rank (number of dimensions) of ``x``. If the input arrays have different data types, normal ref:`type-promotion` must apply. If the input arrays have the same data type, the output array must have the same data type as the input arrays.</span>
 <span class="sd">        .. note::</span>
 <span class="sd">           This specification leaves type promotion between data type families (i.e., ``intxx`` and ``floatxx``) unspecified.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -378,19 +384,24 @@
 <div class="viewcode-block" id="reshape"><a class="viewcode-back" href="../../../../functional/ivy/manipulation/reshape.html#ivy.functional.ivy.manipulation.reshape">[docs]</a><span class="k">def</span> <span class="nf">reshape</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
             <span class="n">shape</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span>
             <span class="n">copy</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-            <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span>\
+            <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> \
         <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Gives a new shape to an array without changing its data.</span>
+    <span class="sd">&quot;&quot;&quot;Gives a new shape to an array without changing its data.</span>
 
-<span class="sd">    :param x: Tensor to be reshaped.</span>
-<span class="sd">    :type x: array</span>
-<span class="sd">    :param newshape: The new shape should be compatible with the original shape. One shape dimension can be -1.</span>
-<span class="sd">                        In this case, the value is inferred from the length of the array and remaining dimensions.</span>
-<span class="sd">    :type newshape: int or sequence of ints</span>
-<span class="sd">    :return: Reshaped array.</span>
-<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x </span>
+<span class="sd">        Tensor to be reshaped.</span>
+<span class="sd">    newshape </span>
+<span class="sd">        The new shape should be compatible with the original shape. One shape dimension can be -1.</span>
+<span class="sd">        In this case, the value is inferred from the length of the array and remaining dimensions.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">     ret</span>
+<span class="sd">        Reshaped array.</span>
 <span class="sd">    Examples:</span>
+<span class="sd">    --------</span>
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([[1,2,3], [4,5,6]])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.reshape(x, (3,2))</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
@@ -406,15 +417,19 @@
            <span class="n">axis</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
            <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span>\
         <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">]:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Casts an array to a specified type.</span>
+    <span class="sd">&quot;&quot;&quot;Casts an array to a specified type.</span>
 
-<span class="sd">    :param xs: The input arrays must have the same shape, except in the dimension corresponding to axis</span>
-<span class="sd">                        (the first, by default).</span>
-<span class="sd">    :type xs: sequence of arrays</span>
-<span class="sd">    :param axis: The axis along which the arrays will be joined. Default is -1.</span>
-<span class="sd">    :type axis: int, optional</span>
-<span class="sd">    :return: The concatenated array.</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    xs </span>
+<span class="sd">        The input arrays must have the same shape, except in the dimension corresponding to axis</span>
+<span class="sd">        (the first, by default).</span>
+<span class="sd">    axis </span>
+<span class="sd">        The axis along which the arrays will be joined. Default is -1.</span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">     ret</span>
+<span class="sd">        The concatenated array.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">xs</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span></div>
 
@@ -425,55 +440,73 @@
 
 <div class="viewcode-block" id="split"><a class="viewcode-back" href="../../../../functional/ivy/manipulation/split.html#ivy.functional.ivy.manipulation.split">[docs]</a><span class="k">def</span> <span class="nf">split</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span> <span class="n">num_or_size_splits</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">axis</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
           <span class="n">with_remainder</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Splits an array into multiple sub-arrays.</span>
+    <span class="sd">&quot;&quot;&quot;Splits an array into multiple sub-arrays.</span>
 
-<span class="sd">    :param x: Tensor to be divided into sub-arrays.</span>
-<span class="sd">    :type x: array</span>
-<span class="sd">    :param num_or_size_splits: Number of equal arrays to divide the array into along the given axis if an integer.</span>
-<span class="sd">                               The size of each split element if a sequence of integers.</span>
-<span class="sd">                               Default is to divide into as many 1-dimensional arrays as the axis dimension.</span>
-<span class="sd">    :type num_or_size_splits: int, optional</span>
-<span class="sd">    :param axis: The axis along which to split, default is 0.</span>
-<span class="sd">    :type axis: int, optional</span>
-<span class="sd">    :param with_remainder: If the tensor does not split evenly, then store the last remainder entry. Default is False.</span>
-<span class="sd">    :type with_remainder: bool, optional</span>
-<span class="sd">    :return: A list of sub-arrays.</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x </span>
+<span class="sd">        Tensor to be divided into sub-arrays.</span>
+<span class="sd">    num_or_size_splits </span>
+<span class="sd">        Number of equal arrays to divide the array into along the given axis if an integer.</span>
+<span class="sd">        The size of each split element if a sequence of integers.</span>
+<span class="sd">        Default is to divide into as many 1-dimensional arrays as the axis dimension.</span>
+<span class="sd">    axis </span>
+<span class="sd">        The axis along which to split, default is 0.</span>
+<span class="sd">    with_remainder </span>
+<span class="sd">        If the tensor does not split evenly, then store the last remainder entry. Default is False.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">     ret</span>
+<span class="sd">        A list of sub-arrays.</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">num_or_size_splits</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">with_remainder</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="repeat"><a class="viewcode-back" href="../../../../functional/ivy/manipulation/repeat.html#ivy.functional.ivy.manipulation.repeat">[docs]</a><span class="k">def</span> <span class="nf">repeat</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span> <span class="n">repeats</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">int</span><span class="p">]],</span>
            <span class="n">axis</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-           <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span>\
+           <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> \
         <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Repeat values along a given dimension</span>
+    <span class="sd">&quot;&quot;&quot;Repeat values along a given dimension</span>
 
-<span class="sd">    :param x: Input array.</span>
-<span class="sd">    :type x: array</span>
-<span class="sd">    :param repeats: The number of repetitions for each element. repeats is broadcast to fit the shape of the given axis.</span>
-<span class="sd">    :type repeats: int or sequence of ints.</span>
-<span class="sd">    :param axis: The axis along which to repeat values.</span>
-<span class="sd">                  By default, use the flattened input array, and return a flat output array.</span>
-<span class="sd">    :type axis: int, optional</span>
-<span class="sd">    :return: The repeated output array.</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x </span>
+<span class="sd">        Input array.</span>
+<span class="sd">    repeats </span>
+<span class="sd">        The number of repetitions for each element. repeats is broadcast to fit the shape of the given axis.</span>
+<span class="sd">    axis </span>
+<span class="sd">        The axis along which to repeat values.</span>
+<span class="sd">        By default, use the flattened input array, and return a flat output array.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">     ret</span>
+<span class="sd">        The repeated output array.</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">repeats</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="tile"><a class="viewcode-back" href="../../../../functional/ivy/manipulation/tile.html#ivy.functional.ivy.manipulation.tile">[docs]</a><span class="k">def</span> <span class="nf">tile</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
          <span class="n">reps</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
-         <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span>\
+         <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> \
         <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Constructs an array by repeating x the number of times given by reps.</span>
+    <span class="sd">&quot;&quot;&quot;Constructs an array by repeating x the number of times given by reps.</span>
 
-<span class="sd">    :param x: Input array.</span>
-<span class="sd">    :type x: array</span>
-<span class="sd">    :param reps: The number of repetitions of x along each axis.</span>
-<span class="sd">    :type reps: sequence of ints</span>
-<span class="sd">    :return: The tiled output array.</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x </span>
+<span class="sd">        Input array.</span>
+<span class="sd">    reps </span>
+<span class="sd">        The number of repetitions of x along each axis.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">     ret</span>
+<span class="sd">        The tiled output array.</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">reps</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span></div>
 
@@ -481,36 +514,48 @@
 <div class="viewcode-block" id="constant_pad"><a class="viewcode-back" href="../../../../functional/ivy/manipulation/constant_pad.html#ivy.functional.ivy.manipulation.constant_pad">[docs]</a><span class="k">def</span> <span class="nf">constant_pad</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
                  <span class="n">pad_width</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">]],</span>
                  <span class="n">value</span><span class="p">:</span> <span class="n">Number</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-                 <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span>\
+                 <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> \
         <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Pads an array with a constant value.</span>
+    <span class="sd">&quot;&quot;&quot;Pads an array with a constant value.</span>
 
-<span class="sd">    :param x: Input array to pad.</span>
-<span class="sd">    :type x: array</span>
-<span class="sd">    :param pad_width: Number of values padded to the edges of each axis.</span>
-<span class="sd">                      Specified as ((before_1, after_1), … (before_N, after_N)), where N is number of axes of x.</span>
-<span class="sd">    :type pad_width: sequence of tuples of ints</span>
-<span class="sd">    :param value: The constant value to pad the array with.</span>
-<span class="sd">    :type value: float or int, default zero</span>
-<span class="sd">    :return: Padded array of rank equal to x with shape increased according to pad_width.</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x </span>
+<span class="sd">        Input array to pad.</span>
+<span class="sd">    pad_width </span>
+<span class="sd">        Number of values padded to the edges of each axis.</span>
+<span class="sd">        Specified as ((before_1, after_1), … (before_N, after_N)), where N is number of axes of x.</span>
+<span class="sd">    value </span>
+<span class="sd">        The constant value to pad the array with.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">     ret</span>
+<span class="sd">        Padded array of rank equal to x with shape increased according to pad_width.</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">constant_pad</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">pad_width</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="zero_pad"><a class="viewcode-back" href="../../../../functional/ivy/manipulation/zero_pad.html#ivy.functional.ivy.manipulation.zero_pad">[docs]</a><span class="k">def</span> <span class="nf">zero_pad</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
              <span class="n">pad_width</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">]],</span>
-             <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span>\
+             <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> \
         <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Pads an array with zeros.</span>
+    <span class="sd">&quot;&quot;&quot;Pads an array with zeros.</span>
 
-<span class="sd">    :param x: Input array to pad.</span>
-<span class="sd">    :type x: array</span>
-<span class="sd">    :param pad_width: Number of values padded to the edges of each axis.</span>
-<span class="sd">                      Specified as ((before_1, after_1), … (before_N, after_N)), where N is number of axes of x.</span>
-<span class="sd">    :type pad_width: sequence of tuples of ints</span>
-<span class="sd">    :return: Padded array of rank equal to x with shape increased according to pad_width.</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x </span>
+<span class="sd">        Input array to pad.</span>
+<span class="sd">    pad_width </span>
+<span class="sd">        Number of values padded to the edges of each axis.</span>
+<span class="sd">        Specified as ((before_1, after_1), … (before_N, after_N)), where N is number of axes of x.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">     ret</span>
+<span class="sd">        Padded array of rank equal to x with shape increased according to pad_width.</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">zero_pad</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">pad_width</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span></div>
 
@@ -518,18 +563,24 @@
 <div class="viewcode-block" id="swapaxes"><a class="viewcode-back" href="../../../../functional/ivy/manipulation/swapaxes.html#ivy.functional.ivy.manipulation.swapaxes">[docs]</a><span class="k">def</span> <span class="nf">swapaxes</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
              <span class="n">axis0</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
              <span class="n">axis1</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-             <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span>\
+             <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> \
         <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Interchange two axes of an array.</span>
+    <span class="sd">&quot;&quot;&quot;Interchange two axes of an array.</span>
 
-<span class="sd">    :param x: Input array.</span>
-<span class="sd">    :type x: array</span>
-<span class="sd">    :param axis0: First axis to be swapped.</span>
-<span class="sd">    :type axis0: int</span>
-<span class="sd">    :param axis1: Second axis to be swapped.</span>
-<span class="sd">    :type axis1: int</span>
-<span class="sd">    :return: x with its axes permuted.</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x </span>
+<span class="sd">        Input array.</span>
+<span class="sd">    axis0 </span>
+<span class="sd">        First axis to be swapped.</span>
+<span class="sd">    axis1 </span>
+<span class="sd">        Second axis to be swapped.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">     ret</span>
+<span class="sd">        x with its axes permuted.</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">swapaxes</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis0</span><span class="p">,</span> <span class="n">axis1</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span></div>
 
@@ -537,23 +588,29 @@
 <div class="viewcode-block" id="clip"><a class="viewcode-back" href="../../../../functional/ivy/manipulation/clip.html#ivy.functional.ivy.manipulation.clip">[docs]</a><span class="k">def</span> <span class="nf">clip</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
          <span class="n">x_min</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Number</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]],</span>
          <span class="n">x_max</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Number</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]],</span>
-         <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span>\
+         <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> \
         <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Clips (limits) the values in an array.</span>
+    <span class="sd">&quot;&quot;&quot;Clips (limits) the values in an array.</span>
 
 <span class="sd">    Given an interval, values outside the interval are clipped to the interval edges (element-wise).</span>
 <span class="sd">    For example, if an interval of [0, 1] is specified, values smaller than 0 become 0,</span>
 <span class="sd">    and values larger than 1 become 1.</span>
 
-<span class="sd">    :param x: Input array containing elements to clip.</span>
-<span class="sd">    :type x: array</span>
-<span class="sd">    :param x_min: Minimum value.</span>
-<span class="sd">    :type x_min: scalar or array</span>
-<span class="sd">    :param x_max: Maximum value.</span>
-<span class="sd">    :type x_max: scalar or array</span>
-<span class="sd">    :return: An array with the elements of x, but where values &lt; x_min are replaced with x_min,</span>
-<span class="sd">                and those &gt; x_max with x_max.</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x </span>
+<span class="sd">        Input array containing elements to clip.</span>
+<span class="sd">    x_min </span>
+<span class="sd">        Minimum value.</span>
+<span class="sd">    x_max </span>
+<span class="sd">        Maximum value.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">     ret</span>
+<span class="sd">        An array with the elements of x, but where values &lt; x_min are replaced with x_min,</span>
+<span class="sd">        and those &gt; x_max with x_max.</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">x_min</span><span class="p">,</span> <span class="n">x_max</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span></div>
 </pre></div>

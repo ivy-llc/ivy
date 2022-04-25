@@ -262,20 +262,22 @@
 <dt id="ivy.functional.ivy.linear_algebra.tensordot">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">tensordot</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x1</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">x2</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">axes</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>int<span class="p">, </span>Tuple<span class="p">[</span>List<span class="p">[</span>int<span class="p">]</span><span class="p">, </span>List<span class="p">[</span>int<span class="p">]</span><span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">2</span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../../_modules/ivy/functional/ivy/linear_algebra.html#tensordot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.linear_algebra.tensordot" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a tensor contraction of x1 and x2 over specific axes.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>x1</strong> (<em>array</em>) – First input array. Should have a numeric data type.</p></li>
-<li><p><strong>x2</strong> (<em>array</em>) – second input array. Must be compatible with x1 for all non-contracted axes.
-Should have a numeric data type.</p></li>
-<li><p><strong>axes</strong> (<em>int</em><em> or </em><em>tuple of ints</em><em>, or </em><em>tuple of sequences of ints.
-Default is 2.</em>) – The axes to contract over.</p></li>
-</ul>
+<dl>
+<dt>x1</dt><dd><p>First input array. Should have a numeric data type.</p>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>The tensor contraction of x1 and x2 over the specified axes.</p>
+<dt>x2</dt><dd><p>second input array. Must be compatible with x1 for all non-contracted axes.
+Should have a numeric data type.</p>
+</dd>
+<dt>axes</dt><dd><p>The axes to contract over.</p>
+<p>Default is 2.</p>
 </dd>
 </dl>
+<blockquote>
+<div><dl class="simple">
+<dt>ret</dt><dd><p>The tensor contraction of x1 and x2 over the specified axes.</p>
+</dd>
+</dl>
+</div></blockquote>
 </dd></dl>
 
 <div class="line-block">

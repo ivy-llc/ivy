@@ -253,14 +253,16 @@
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">variable_data</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/gradients.html#variable_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.gradients.variable_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Some backends wrap arrays in a dedicated variable class. For those frameworks, this function returns that wrapped
 array. For frameworks which do not have a dedicated variable class, the function returns the data passed in.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>x</strong> (<em>variable</em>) – An ivy variable.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>The internal data stored by the variable</p>
+<dl class="simple">
+<dt>x </dt><dd><p>An ivy variable.</p>
 </dd>
 </dl>
+<blockquote>
+<div><dl class="simple">
+<dt>ret</dt><dd><p>The internal data stored by the variable</p>
+</dd>
+</dl>
+</div></blockquote>
 </dd></dl>
 
 <div class="line-block">

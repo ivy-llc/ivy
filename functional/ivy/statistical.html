@@ -246,21 +246,23 @@
 <dd><p>Sums the product of the elements of the input operands along dimensions specified using a notation based on the
 Einstein summation convention.</p>
 <dl>
-<dt>equation:</dt><dd><p>A str describing the contraction, in the same format as numpy.einsum.</p>
+<dt>equation</dt><dd><p>A str describing the contraction, in the same format as numpy.einsum.</p>
 </dd>
-<dt>operands: </dt><dd><blockquote>
+<dt>operands</dt><dd><blockquote>
 <div><p>seq of arrays, the inputs to contract (each one an ivy.Array), whose shapes should be consistent with equation.</p>
 </div></blockquote>
 <dl class="simple">
-<dt>out:</dt><dd><p>optional output array, for writing the result to.Returns</p>
+<dt>out</dt><dd><p>optional output array, for writing the result to.Returns</p>
 </dd>
 </dl>
 </dd>
 </dl>
-<dl class="simple">
-<dt>return: </dt><dd><p>The array with sums computed.</p>
+<blockquote>
+<div><dl class="simple">
+<dt>ret</dt><dd><p>The array with sums computed.</p>
 </dd>
 </dl>
+</div></blockquote>
 </dd></dl>
 
 <dl class="py function">
@@ -279,24 +281,26 @@ floating-point array, return ``-infinity``).
 For floating-point operands,
 -   If <code class="docutils literal notranslate"><span class="pre">x_i</span></code> is <code class="docutils literal notranslate"><span class="pre">NaN</span></code>, the maximum value is <code class="docutils literal notranslate"><span class="pre">NaN</span></code> (i.e., <code class="docutils literal notranslate"><span class="pre">NaN</span></code> values propagate).</p>
 <dl class="simple">
-<dt>x: </dt><dd><p>input array. Should have a numeric data type.</p>
+<dt>x</dt><dd><p>input array. Should have a numeric data type.</p>
 </dd>
-<dt>axis: </dt><dd><p>axis or axes along which maximum values must be computed. By default, the maximum value must be computed over the entire array. If a tuple of integers, maximum values must be computed over multiple axes. Default: <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+<dt>axis</dt><dd><p>axis or axes along which maximum values must be computed. By default, the maximum value must be computed over the entire array. If a tuple of integers, maximum values must be computed over multiple axes. Default: <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
 </dd>
-<dt>keepdims:</dt><dd><p>if <code class="docutils literal notranslate"><span class="pre">True</span></code>, the reduced axes (dimensions) must be included in the result as singleton dimensions, 
+<dt>keepdims</dt><dd><p>if <code class="docutils literal notranslate"><span class="pre">True</span></code>, the reduced axes (dimensions) must be included in the result as singleton dimensions, 
 and, accordingly, the result must be compatible with the input array (see <span class="xref std std-ref">broadcasting</span>). 
 Otherwise, if <code class="docutils literal notranslate"><span class="pre">False</span></code>, the reduced axes (dimensions) must not be included in the result. 
 Default: <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
 </dd>
-<dt>out: </dt><dd><p>optional output array, for writing the result to.</p>
+<dt>out</dt><dd><p>optional output array, for writing the result to.</p>
 </dd>
 </dl>
-<dl class="simple">
-<dt>return: </dt><dd><p>if the maximum value was computed over the entire array, a zero-dimensional array containing the 
+<blockquote>
+<div><dl class="simple">
+<dt>ret</dt><dd><p>if the maximum value was computed over the entire array, a zero-dimensional array containing the 
 maximum value; otherwise, a non-zero-dimensional array containing the maximum values. 
 The returned array must have the same data type as <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p>
 </dd>
 </dl>
+</div></blockquote>
 </dd></dl>
 
 <dl class="py function">
@@ -309,26 +313,28 @@ Let <code class="docutils literal notranslate"><span class="pre">N</span></code>
 -   If <code class="docutils literal notranslate"><span class="pre">x_i</span></code> is <code class="docutils literal notranslate"><span class="pre">NaN</span></code>, the arithmetic mean is <code class="docutils literal notranslate"><span class="pre">NaN</span></code> (i.e., <code class="docutils literal notranslate"><span class="pre">NaN</span></code> values propagate).
 Parameters
 ———-
-x:</p>
+x</p>
 <blockquote>
 <div><p>input array. Should have a floating-point data type.</p>
 </div></blockquote>
 <dl class="simple">
-<dt>axis: </dt><dd><p>axis or axes along which arithmetic means must be computed. By default, the mean must be computed over the entire array. If a tuple of integers, arithmetic means must be computed over multiple axes. Default: <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+<dt>axis</dt><dd><p>axis or axes along which arithmetic means must be computed. By default, the mean must be computed over the entire array. If a tuple of integers, arithmetic means must be computed over multiple axes. Default: <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
 </dd>
-<dt>keepdims: </dt><dd><p>bool, if <code class="docutils literal notranslate"><span class="pre">True</span></code>, the reduced axes (dimensions) must be included in the result as singleton dimensions, and, accordingly, the result must be compatible with the input array (see <span class="xref std std-ref">broadcasting</span>). Otherwise, if <code class="docutils literal notranslate"><span class="pre">False</span></code>, the reduced axes (dimensions) must not be included in the result. Default: <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
+<dt>keepdims</dt><dd><p>bool, if <code class="docutils literal notranslate"><span class="pre">True</span></code>, the reduced axes (dimensions) must be included in the result as singleton dimensions, and, accordingly, the result must be compatible with the input array (see <span class="xref std std-ref">broadcasting</span>). Otherwise, if <code class="docutils literal notranslate"><span class="pre">False</span></code>, the reduced axes (dimensions) must not be included in the result. Default: <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
 </dd>
-<dt>out: </dt><dd><p>optional output array, for writing the result to.</p>
+<dt>out</dt><dd><p>optional output array, for writing the result to.</p>
 </dd>
 </dl>
-<dl>
-<dt>return: </dt><dd><p>array, if the arithmetic mean was computed over the entire array, a zero-dimensional array containing the arithmetic mean; otherwise, a non-zero-dimensional array containing the arithmetic means. The returned array must have the same data type as <code class="docutils literal notranslate"><span class="pre">x</span></code>.
+<blockquote>
+<div><dl>
+<dt>ret</dt><dd><p>array, if the arithmetic mean was computed over the entire array, a zero-dimensional array containing the arithmetic mean; otherwise, a non-zero-dimensional array containing the arithmetic means. The returned array must have the same data type as <code class="docutils literal notranslate"><span class="pre">x</span></code>.
 .. note:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>While this specification recommends that this function only accept input arrays having a floating-point data type, specification-compliant array libraries may choose to accept input arrays having an integer data type. While mixed data type promotion is implementation-defined, if the input array ``x`` has an integer data type, the returned array must have the default floating-point data type.
 </pre></div>
 </div>
 </dd>
 </dl>
+</div></blockquote>
 </dd></dl>
 
 <dl class="py function">
@@ -344,23 +350,22 @@ return +infinity).</p>
 For floating-point operands,</p>
 <p>If x_i is NaN, the minimum value is NaN (i.e., NaN values propagate).</p>
 <dl class="simple">
-<dt>x:</dt><dd><p>Input array containing elements to min.</p>
+<dt>x</dt><dd><p>Input array containing elements to min.</p>
 </dd>
-<dt>axis:</dt><dd><p>axis or axes along which minimum values must be computed.
+<dt>axis</dt><dd><p>axis or axes along which minimum values must be computed.
 By default, the minimum value must be computed over the entire array.
 If a tuple of integers, minimum values must be computed over multiple axes. Default: None.</p>
 </dd>
-<dt>keepdims:</dt><dd><p>optional boolean, if True, the reduced axes (dimensions) must be included in the result as 
+<dt>keepdims</dt><dd><p>optional boolean, if True, the reduced axes (dimensions) must be included in the result as 
 singleton dimensions, and, accordingly, the result must be compatible with
 the input array (see Broadcasting). 
 Otherwise, if False, the reduced axes (dimensions) must not be included in the result. 
 Default: False.</p>
 </dd>
-<dt>out: </dt><dd><p>optional output array, for writing the result to.</p>
+<dt>out</dt><dd><p>optional output array, for writing the result to.</p>
 </dd>
-</dl>
-<dl class="simple">
-<dt>return: </dt><dd><p>if the minimum value was computed over the entire array, a zero-dimensional array containing the 
+<dt>Returns</dt><dd></dd>
+<dt>ret</dt><dd><p>if the minimum value was computed over the entire array, a zero-dimensional array containing the 
 minimum value; otherwise, a non-zero-dimensional array containing the minimum values. 
 The returned array must have the same data type as x.</p>
 </dd>
@@ -372,12 +377,12 @@ The returned array must have the same data type as x.</p>
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">prod</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">axis</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Union<span class="p">[</span>int<span class="p">, </span>Tuple<span class="p">[</span>int<span class="p">]</span><span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">dtype</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Union<span class="p">[</span>ivy.Dtype<span class="p">, </span>str<span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">keepdims</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">out</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../_modules/ivy/functional/ivy/statistical.html#prod"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.statistical.prod" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates the product of input array x elements.</p>
 <dl>
-<dt>x: </dt><dd><p>input array. Should have a numeric data type.</p>
+<dt>x</dt><dd><p>input array. Should have a numeric data type.</p>
 </dd>
-<dt>axis: </dt><dd><p>axis or axes along which products must be computed. By default, the product must be
+<dt>axis</dt><dd><p>axis or axes along which products must be computed. By default, the product must be
 computed over the entire array. If a tuple of integers, products must be computed over multiple axes. Default: None.</p>
 </dd>
-<dt>dtype: </dt><dd><p>data type of the returned array. If None,
+<dt>dtype</dt><dd><p>data type of the returned array. If None,
 if the default data type corresponding to the data type “kind” (integer or floating-point) of x has a smaller 
 range of values than the data type of x (e.g., x has data type int64 and the default data type is int32,
 or x has data type uint64 and the default data type is int64), the returned array must have the same data type as x.
@@ -391,21 +396,23 @@ the returned array must have a uint32 data type).</p>
 <p>If the data type (either specified or resolved) differs from the data type of x, the input array should be cast 
 to the specified data type before computing the product. Default: None.</p>
 </dd>
-<dt>keepdims: </dt><dd><p>bool, if True, the reduced axes (dimensions) must be included in the result as singleton dimensions, and,</p>
+<dt>keepdims</dt><dd><p>bool, if True, the reduced axes (dimensions) must be included in the result as singleton dimensions, and,</p>
 </dd>
 </dl>
 <p>accordingly, the result must be compatible with the input array (see Broadcasting). Otherwise, if False, the reduced axes 
 (dimensions) must not be included in the result. Default: False.
-out:</p>
+out</p>
 <blockquote>
 <div><p>optional output array, for writing the result to.</p>
 </div></blockquote>
-<dl class="simple">
-<dt>return: </dt><dd><p>array,  if the product was computed over the entire array, a zero-dimensional array containing the 
+<blockquote>
+<div><dl class="simple">
+<dt>ret</dt><dd><p>array,  if the product was computed over the entire array, a zero-dimensional array containing the 
 product; otherwise, a non-zero-dimensional array containing the products. The returned array must 
 have a data type as described by the dtype parameter above.</p>
 </dd>
 </dl>
+</div></blockquote>
 </dd></dl>
 
 <dl class="py function">
@@ -418,22 +425,22 @@ have a data type as described by the dtype parameter above.</p>
 <li><p>If <code class="docutils literal notranslate"><span class="pre">N</span></code> is <code class="docutils literal notranslate"><span class="pre">0</span></code>, the standard deviation is <code class="docutils literal notranslate"><span class="pre">0</span></code> (i.e., the empty standard deviation).</p></li>
 <li><p>If <code class="docutils literal notranslate"><span class="pre">x_i</span></code> is <code class="docutils literal notranslate"><span class="pre">NaN</span></code>, the standard deviation is <code class="docutils literal notranslate"><span class="pre">NaN</span></code> (i.e., <code class="docutils literal notranslate"><span class="pre">NaN</span></code> values propagate).</p></li>
 </ul>
-<dl class="simple">
-<dt>x</dt><dd><p>input array. Should have a floating-point data type.</p>
+<dl>
+<dt>x</dt><dd><p>input array. Should have a floating-point data type</p>
 </dd>
 <dt>axis</dt><dd><p>axis or axes along which standard deviations must be computed. By default, the standard deviation 
 must be computed over the entire array. If a tuple of integers, standard deviations must be computed 
 over multiple axes. Default: None.</p>
 </dd>
-<dt>correction</dt><dd><p>degrees of freedom adjustment. Setting this parameter to a value other than <code class="docutils literal notranslate"><span class="pre">0</span></code> has the effect of 
-adjusting the divisor during the calculation of the standard deviation according to <code class="docutils literal notranslate"><span class="pre">N-c</span></code> where <code class="docutils literal notranslate"><span class="pre">N</span></code> 
-corresponds to the total number of elements over which the standard deviation is computed and <code class="docutils literal notranslate"><span class="pre">c</span></code> 
-corresponds to the provided degrees of freedom adjustment. When computing the standard deviation 
+<dt>correction</dt><dd><p>degrees of freedom adjustment. Setting this parameter to a value other than 0 has the effect of 
+adjusting the divisor during the calculation of the standard deviation according to N-c where N 
+corresponds to the total number of elements over which the standard deviation is computed and c</p>
+<p>corresponds to the provided degrees of freedom adjustment. When computing the standard deviation 
 of a population, setting this parameter to <code class="docutils literal notranslate"><span class="pre">0</span></code> is the standard choice (i.e., the provided array 
 contains data constituting an entire population). When computing the corrected sample standard 
 deviation, setting this parameter to <code class="docutils literal notranslate"><span class="pre">1</span></code> is the standard choice (i.e., the provided array contains 
-data sampled from a larger population; this is commonly referred to as Bessel’s correction). 
-Default: <code class="docutils literal notranslate"><span class="pre">0</span></code>.</p>
+data sampled from a larger population; this is commonly referred to as Bessel’s correction).</p>
+<p>Default: <code class="docutils literal notranslate"><span class="pre">0</span></code>.</p>
 </dd>
 <dt>keepdims</dt><dd><p>if <code class="docutils literal notranslate"><span class="pre">True</span></code>, the reduced axes (dimensions) must be included in the result as singleton 
 dimensions, and, accordingly, the result must be compatible with the input array (see Broadcasting). 
@@ -467,14 +474,14 @@ For floating-point operands,
 -   If <code class="docutils literal notranslate"><span class="pre">x_i</span></code> is <code class="docutils literal notranslate"><span class="pre">NaN</span></code>, the sum is <code class="docutils literal notranslate"><span class="pre">NaN</span></code> (i.e., <code class="docutils literal notranslate"><span class="pre">NaN</span></code> values propagate).
 Parameters
 ———-
-x:</p>
+x</p>
 <blockquote>
 <div><p>input array. Should have a numeric data type.</p>
 </div></blockquote>
 <dl>
-<dt>axis:</dt><dd><p>axis or axes along which sums must be computed. By default, the sum must be computed over the entire array. If a tuple of integers, sums must be computed over multiple axes. Default: <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+<dt>axis</dt><dd><p>axis or axes along which sums must be computed. By default, the sum must be computed over the entire array. If a tuple of integers, sums must be computed over multiple axes. Default  <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
 </dd>
-<dt>dtype:</dt><dd><p>data type of the returned array. If <code class="docutils literal notranslate"><span class="pre">None</span></code>,
+<dt>dtype</dt><dd><p>data type of the returned array. If <code class="docutils literal notranslate"><span class="pre">None</span></code>,
 -   if the default data type corresponding to the data type “kind” (integer or floating-point) of <code class="docutils literal notranslate"><span class="pre">x</span></code> has a smaller range of values than the data type of <code class="docutils literal notranslate"><span class="pre">x</span></code> (e.g., <code class="docutils literal notranslate"><span class="pre">x</span></code> has data type <code class="docutils literal notranslate"><span class="pre">int64</span></code> and the default data type is <code class="docutils literal notranslate"><span class="pre">int32</span></code>, or <code class="docutils literal notranslate"><span class="pre">x</span></code> has data type <code class="docutils literal notranslate"><span class="pre">uint64</span></code> and the default data type is <code class="docutils literal notranslate"><span class="pre">int64</span></code>), the returned array must have the same data type as <code class="docutils literal notranslate"><span class="pre">x</span></code>.
 -   if <code class="docutils literal notranslate"><span class="pre">x</span></code> has a floating-point data type, the returned array must have the default floating-point data type.
 -   if <code class="docutils literal notranslate"><span class="pre">x</span></code> has a signed integer data type (e.g., <code class="docutils literal notranslate"><span class="pre">int16</span></code>), the returned array must have the default integer data type.
@@ -485,15 +492,17 @@ If the data type (either specified or resolved) differs from the data type of <c
 </pre></div>
 </div>
 </dd>
-<dt>keepdims:</dt><dd><p>if <code class="docutils literal notranslate"><span class="pre">True</span></code>, the reduced axes (dimensions) must be included in the result as singleton dimensions, and, accordingly, the result must be compatible with the input array (see <span class="xref std std-ref">broadcasting</span>). Otherwise, if <code class="docutils literal notranslate"><span class="pre">False</span></code>, the reduced axes (dimensions) must not be included in the result. Default: <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
+<dt>keepdims</dt><dd><p>if <code class="docutils literal notranslate"><span class="pre">True</span></code>, the reduced axes (dimensions) must be included in the result as singleton dimensions, and, accordingly, the result must be compatible with the input array (see  ref:<cite>broadcasting</cite>). Otherwise, if <code class="docutils literal notranslate"><span class="pre">False</span></code>, the reduced axes (dimensions) must not be included in the result. Default: <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
 </dd>
-<dt>out:</dt><dd><p>optional output array, for writing the result to.Returns</p>
-</dd>
-</dl>
-<dl class="simple">
-<dt>return:</dt><dd><p>if the sum was computed over the entire array, a zero-dimensional array containing the sum; otherwise, an array containing the sums. The returned array must have a data type as described by the <code class="docutils literal notranslate"><span class="pre">dtype</span></code> parameter above.</p>
+<dt>out</dt><dd><p>optional output array, for writing the result to.Returns</p>
 </dd>
 </dl>
+<blockquote>
+<div><dl class="simple">
+<dt>ret</dt><dd><p>if the sum was computed over the entire array, a zero-dimensional array containing the sum; otherwise, an array containing the sums. The returned array must have a data type as described by the <code class="docutils literal notranslate"><span class="pre">dtype</span></code> parameter above.</p>
+</dd>
+</dl>
+</div></blockquote>
 </dd></dl>
 
 <dl class="py function">
@@ -505,13 +514,13 @@ Let N equal the number of elements over which to compute the variance.</p>
 <p>If N - correction is less than or equal to 0, the variance is NaN.</p>
 <p>If x_i is NaN, the variance is NaN (i.e., NaN values propagate).</p>
 <dl class="simple">
-<dt>x:</dt><dd><p>input array. Should have a floating-point data type.</p>
+<dt>x</dt><dd><p>input array. Should have a floating-point data type.</p>
 </dd>
-<dt>axis: </dt><dd><p>axis or axes along which variances must be computed. By default, the variance must be computed over 
+<dt>axis</dt><dd><p>axis or axes along which variances must be computed. By default, the variance must be computed over 
 the entire array. If a tuple of integers, variances must be computed over multiple axes. 
 Default: None.</p>
 </dd>
-<dt>correction: </dt><dd><p>degrees of freedom adjustment. Setting this parameter to a value other than 0 has 
+<dt>correction</dt><dd><p>degrees of freedom adjustment. Setting this parameter to a value other than 0 has 
 the effect of adjusting the divisor during the calculation of the variance according to N-c where N 
 corresponds to the total number of elements over which the variance is computed and c corresponds to 
 the provided degrees of freedom adjustment. When computing the variance of a population, setting this 
@@ -520,16 +529,15 @@ population). When computing the unbiased sample variance, setting this parameter
 choice (i.e., the provided array contains data sampled from a larger population; this is commonly 
 referred to as Bessel’s correction). Default: 0.</p>
 </dd>
-<dt>keepdims: </dt><dd><p>if True, the reduced axes (dimensions) must be included in the result as singleton dimensions, 
+<dt>keepdims</dt><dd><p>if True, the reduced axes (dimensions) must be included in the result as singleton dimensions, 
 and, accordingly, the result must be compatible with the input array (see Broadcasting). 
 Otherwise, if False, the reduced axes (dimensions) must not be included in the result. 
 Default: False.</p>
 </dd>
-<dt>out: </dt><dd><p>optional output array, for writing the result to.</p>
+<dt>out</dt><dd><p>optional output array, for writing the result to.</p>
 </dd>
-</dl>
-<dl class="simple">
-<dt>return: </dt><dd><p>if the variance was computed over the entire array, a zero-dimensional array containing the 
+<dt>Returns</dt><dd></dd>
+<dt>ret</dt><dd><p>if the variance was computed over the entire array, a zero-dimensional array containing the 
 variance; otherwise, a non-zero-dimensional array containing the variances. The returned array 
 must have the same data type as x.</p>
 </dd>

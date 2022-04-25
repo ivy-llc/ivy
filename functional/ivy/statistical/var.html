@@ -251,13 +251,13 @@ Let N equal the number of elements over which to compute the variance.</p>
 <p>If N - correction is less than or equal to 0, the variance is NaN.</p>
 <p>If x_i is NaN, the variance is NaN (i.e., NaN values propagate).</p>
 <dl class="simple">
-<dt>x:</dt><dd><p>input array. Should have a floating-point data type.</p>
+<dt>x</dt><dd><p>input array. Should have a floating-point data type.</p>
 </dd>
-<dt>axis: </dt><dd><p>axis or axes along which variances must be computed. By default, the variance must be computed over 
+<dt>axis</dt><dd><p>axis or axes along which variances must be computed. By default, the variance must be computed over 
 the entire array. If a tuple of integers, variances must be computed over multiple axes. 
 Default: None.</p>
 </dd>
-<dt>correction: </dt><dd><p>degrees of freedom adjustment. Setting this parameter to a value other than 0 has 
+<dt>correction</dt><dd><p>degrees of freedom adjustment. Setting this parameter to a value other than 0 has 
 the effect of adjusting the divisor during the calculation of the variance according to N-c where N 
 corresponds to the total number of elements over which the variance is computed and c corresponds to 
 the provided degrees of freedom adjustment. When computing the variance of a population, setting this 
@@ -266,16 +266,15 @@ population). When computing the unbiased sample variance, setting this parameter
 choice (i.e., the provided array contains data sampled from a larger population; this is commonly 
 referred to as Bessel’s correction). Default: 0.</p>
 </dd>
-<dt>keepdims: </dt><dd><p>if True, the reduced axes (dimensions) must be included in the result as singleton dimensions, 
+<dt>keepdims</dt><dd><p>if True, the reduced axes (dimensions) must be included in the result as singleton dimensions, 
 and, accordingly, the result must be compatible with the input array (see Broadcasting). 
 Otherwise, if False, the reduced axes (dimensions) must not be included in the result. 
 Default: False.</p>
 </dd>
-<dt>out: </dt><dd><p>optional output array, for writing the result to.</p>
+<dt>out</dt><dd><p>optional output array, for writing the result to.</p>
 </dd>
-</dl>
-<dl class="simple">
-<dt>return: </dt><dd><p>if the variance was computed over the entire array, a zero-dimensional array containing the 
+<dt>Returns</dt><dd></dd>
+<dt>ret</dt><dd><p>if the variance was computed over the entire array, a zero-dimensional array containing the 
 variance; otherwise, a non-zero-dimensional array containing the variances. The returned array 
 must have the same data type as x.</p>
 </dd>

@@ -256,18 +256,16 @@
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">zeros</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">shape</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>int<span class="p">, </span>Tuple<span class="p">[</span>int<span class="p">]</span><span class="p">, </span>List<span class="p">[</span>int<span class="p">]</span><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">dtype</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>ivy.Dtype<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">device</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>ivy.Device<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../../_modules/ivy/functional/ivy/creation.html#zeros"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.creation.zeros" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a new array having a specified <code class="docutils literal notranslate"><span class="pre">shape</span></code> and filled with zeros.</p>
 <dl class="simple">
-<dt>shape:</dt><dd><p>output array shape.</p>
+<dt>shape</dt><dd><p>output array shape.</p>
 </dd>
-<dt>dtype:</dt><dd><p>output array data type. If <code class="docutils literal notranslate"><span class="pre">dtype</span></code> is <code class="docutils literal notranslate"><span class="pre">None</span></code>, the output array data type must be the default floating-point data type. Default: <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+<dt>dtype</dt><dd><p>output array data type. If <code class="docutils literal notranslate"><span class="pre">dtype</span></code> is <code class="docutils literal notranslate"><span class="pre">None</span></code>, the output array data type must be the default floating-point data type. Default  <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
 </dd>
-<dt>device:</dt><dd><p>device on which to place the created array. Default: <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+<dt>device</dt><dd><p>device on which to place the created array. Default: <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+</dd>
+<dt>Returns</dt><dd></dd>
+<dt>ret</dt><dd><p>an array containing zeros.</p>
 </dd>
 </dl>
-<dl class="simple">
-<dt>out:</dt><dd><p>an array containing zeros.</p>
-</dd>
-</dl>
-<p>Examples:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">shape</span> <span class="o">=</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>

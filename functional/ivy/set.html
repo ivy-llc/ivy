@@ -279,12 +279,11 @@ Each <code class="docutils literal notranslate"><span class="pre">nan</span></co
 <dt id="ivy.functional.ivy.set.unique_counts">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">unique_counts</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; Tuple<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.array.Array<span class="p">]</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/set.html#unique_counts"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.set.unique_counts" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the unique elements of an input array x and the corresponding counts for each unique element in x.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>x</strong> – input array. If x has more than one dimension, the function must flatten x and return the unique elements of the flattened array.</p>
+<dl class="simple">
+<dt>x</dt><dd><p>input array. If x has more than one dimension, the function must flatten x and return the unique elements of the flattened array.</p>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>a namedtuple (values, counts) whose
+<dt>Returns</dt><dd></dd>
+<dt>ret</dt><dd><p>a namedtuple (values, counts) whose
 -first element must have the field name values and must be an array containing the unique elements of x. The array must have the same data type as x.
 -second element must have the field name counts and must be an array containing the number of times each unique element occurs in x. The returned array must have same shape as values and must have the default array index data type.</p>
 </dd>
@@ -296,12 +295,11 @@ Each <code class="docutils literal notranslate"><span class="pre">nan</span></co
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">unique_inverse</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; Tuple<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.array.Array<span class="p">]</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/set.html#unique_inverse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.set.unique_inverse" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a tuple of two arrays, one being the unique elements of an input array x and the other one the indices from
 the set of uniques elements that reconstruct x.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>x</strong> – input array.</p>
+<dl class="simple">
+<dt>x</dt><dd><p>input array.</p>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>tuple of two arrays (values, inverse_indices)</p>
+<dt>Returns</dt><dd></dd>
+<dt>ret</dt><dd><p>tuple of two arrays (values, inverse_indices)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -325,12 +323,11 @@ the set of uniques elements that reconstruct x.</p>
 -   As <code class="docutils literal notranslate"><span class="pre">nan</span></code> values compare as <code class="docutils literal notranslate"><span class="pre">False</span></code>, <code class="docutils literal notranslate"><span class="pre">nan</span></code> values should be considered distinct.
 -   As <code class="docutils literal notranslate"><span class="pre">-0</span></code> and <code class="docutils literal notranslate"><span class="pre">+0</span></code> compare as <code class="docutils literal notranslate"><span class="pre">True</span></code>, signed zeros should not be considered distinct, and the corresponding unique element will be implementation-dependent (e.g., an implementation could choose to return <code class="docutils literal notranslate"><span class="pre">-0</span></code> if <code class="docutils literal notranslate"><span class="pre">-0</span></code> occurs before <code class="docutils literal notranslate"><span class="pre">+0</span></code>).</p>
 </div>
-<dl class="simple">
-<dt>x: array</dt><dd><p>input array. If <code class="docutils literal notranslate"><span class="pre">x</span></code> has more than one dimension, the function must flatten <code class="docutils literal notranslate"><span class="pre">x</span></code> and return the unique elements of the flattened array.</p>
-</dd>
-</dl>
 <dl>
-<dt>out: array</dt><dd><p>an array containing the set of unique elements in <code class="docutils literal notranslate"><span class="pre">x</span></code>. The returned array must have the same data type as <code class="docutils literal notranslate"><span class="pre">x</span></code>.
+<dt>x</dt><dd><p>input array. If <code class="docutils literal notranslate"><span class="pre">x</span></code> has more than one dimension, the function must flatten <code class="docutils literal notranslate"><span class="pre">x</span></code> and return the unique elements of the flattened array.</p>
+</dd>
+<dt>Returns</dt><dd></dd>
+<dt>ret</dt><dd><p>an array containing the set of unique elements in <code class="docutils literal notranslate"><span class="pre">x</span></code>. The returned array must have the same data type as <code class="docutils literal notranslate"><span class="pre">x</span></code>.
 .. note:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">The</span> <span class="n">order</span> <span class="n">of</span> <span class="n">unique</span> <span class="n">elements</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">specified</span> <span class="ow">and</span> <span class="n">may</span> <span class="n">vary</span> <span class="n">between</span> <span class="n">implementations</span><span class="o">.</span>
 </pre></div>

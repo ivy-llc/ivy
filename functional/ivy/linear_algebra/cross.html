@@ -261,27 +261,26 @@
 <dl class="py function">
 <dt id="ivy.functional.ivy.linear_algebra.cross">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">cross</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x1</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">x2</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">axis</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">- 1</span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../../_modules/ivy/functional/ivy/linear_algebra.html#cross"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.linear_algebra.cross" title="Permalink to this definition">¶</a></dt>
-<dd><p>The cross product of 3-element vectors. If x1 and x2 are multi-dimensional arrays 
-(i.e., both have a rank greater than 1), then the cross-product of each pair of corresponding 
+<dd><p>The cross product of 3-element vectors. If x1 and x2 are multi-dimensional arrays
+(i.e., both have a rank greater than 1), then the cross-product of each pair of corresponding
 3-element vectors is independently computed.</p>
-<p>Parameters
-:param x1: first input array. Should have a numeric data type.
-:type x1: array
-:param x2: second input array. Must have the same shape as x1. Should have a numeric data type.
-:type x2: array
-:param axis: the axis (dimension) of x1 and x2 containing the vectors for which to compute the cross product.</p>
+<p>Parameters</p>
+<dl class="simple">
+<dt>x1</dt><dd><p>first input array. Should have a numeric data type.</p>
+</dd>
+<dt>x2</dt><dd><p>second input array. Must have the same shape as x1. Should have a numeric data type.</p>
+</dd>
+<dt>axis</dt><dd><p>the axis (dimension) of x1 and x2 containing the vectors for which to compute the cross product.
+If set to -1, the function computes the cross product for vectors defined by the last axis (dimension).
+Default: -1.</p>
+</dd>
+</dl>
 <blockquote>
-<div><dl class="simple">
-<dt>If set to -1, the function computes the cross product for vectors defined by the last axis (dimension).</dt><dd><p>Default: -1.</p>
-</dd>
-</dl>
+<div><blockquote>
+<div><p>an array containing the cross products. The returned array must have a data type determined</p>
 </div></blockquote>
-<dl class="field-list simple">
-<dt class="field-odd">Returnout</dt>
-<dd class="field-odd"><p>an array containing the cross products. The returned array must have a data type determined
-by Type Promotion Rules.</p>
-</dd>
-</dl>
+<p>by Type Promotion Rules.</p>
+</div></blockquote>
 </dd></dl>
 
 <div class="line-block">

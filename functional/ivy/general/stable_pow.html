@@ -300,16 +300,15 @@
 <dt id="ivy.functional.ivy.general.stable_pow">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">stable_pow</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">base</span><span class="p">:</span> <span class="n">Any</span></em>, <em class="sig-param"><span class="n">exponent</span><span class="p">:</span> <span class="n">Any</span></em>, <em class="sig-param"><span class="n">min_base</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>float<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; Any<a class="reference internal" href="../../../_modules/ivy/functional/ivy/general.html#stable_pow"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.general.stable_pow" title="Permalink to this definition">¶</a></dt>
 <dd><p>Raise the base by the power, with MIN_BASE added to the base when exponent &gt; 1 for numerical stability.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>base</strong> (<em>any valid numerator</em><em>, </em><em>including containers</em>) – The numerator of the division.</p></li>
-<li><p><strong>exponent</strong> (<em>any valid denominator</em><em>, </em><em>including containers</em>) – The denominator of the division.</p></li>
-<li><p><strong>min_base</strong> (<em>float</em><em>, </em><em>optional</em>) – The minimum base to use, use global ivy._MIN_BASE by default.</p></li>
-</ul>
+<dl class="simple">
+<dt>base </dt><dd><p>The numerator of the division.</p>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>The new item following the numerically stable division.</p>
+<dt>exponent </dt><dd><p>The denominator of the division.</p>
+</dd>
+<dt>min_base </dt><dd><p>The minimum base to use, use global ivy._MIN_BASE by default.</p>
+</dd>
+<dt>Returns</dt><dd></dd>
+<dt>ret</dt><dd><p>The new item following the numerically stable division.</p>
 </dd>
 </dl>
 </dd></dl>

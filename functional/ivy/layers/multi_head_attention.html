@@ -250,26 +250,35 @@
 <dt id="ivy.functional.ivy.layers.multi_head_attention">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">multi_head_attention</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">scale</span></em>, <em class="sig-param"><span class="n">num_heads</span></em>, <em class="sig-param"><span class="n">context</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">mask</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_q_fn</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_kv_fn</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_out_fn</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_q_v</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_kv_v</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_out_v</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/layers.html#multi_head_attention"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.layers.multi_head_attention" title="Permalink to this definition">¶</a></dt>
 <dd><p>Applies multi-head attention to inputs x.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>array</em>) – The array to determine the queries from <em>[batch_shape,num_queries,x_feat_dim]</em>.</p></li>
-<li><p><strong>scale</strong> (<em>float</em>) – The value by which to scale the query-key similarity measure before softmax.</p></li>
-<li><p><strong>num_heads</strong> (<em>int</em>) – The number of attention heads to use.</p></li>
-<li><p><strong>context</strong> (<em>array</em><em>, </em><em>optional</em>) – The array to determine the keys and values from. Default is None.
-<em>[batch_shape,num_keys,cont_feat_dim]</em>.</p></li>
-<li><p><strong>mask</strong> (<em>array</em><em>, </em><em>optional</em>) – The mask to apply to the query-key values. Default is None. <em>[batch_shape,num_queries,num_keys]</em></p></li>
-<li><p><strong>to_q_fn</strong> (<em>callable</em>) – The function to compute queries from input x, returning queries
-<em>[batch_shape,num_queries,numheads×feat_dim]</em>.</p></li>
-<li><p><strong>to_kv_fn</strong> (<em>callable</em>) – The function to compute keys and values from the context.</p></li>
-<li><p><strong>to_out_fn</strong> (<em>callable</em>) – The function to compute the output from the scaled dot-product attention.</p></li>
-<li><p><strong>to_q_v</strong> (<em>variables array</em><em>, </em><em>optional</em>) – The variables for function to_q_fn. Default is None.</p></li>
-<li><p><strong>to_kv_v</strong> (<em>variables array</em><em>, </em><em>optional</em>) – The variables for function to_kv_fn. Default is None.</p></li>
-<li><p><strong>to_out_v</strong> (<em>variables array</em><em>, </em><em>optional</em>) – The variables for function to_out_fn. Default is None.</p></li>
-</ul>
+<dl class="simple">
+<dt>x</dt><dd><p>The array to determine the queries from <em>[batch_shape,num_queries,x_feat_dim]</em>.</p>
+</dd>
+<dt>scale</dt><dd><p>The value by which to scale the query-key similarity measure before softmax.</p>
+</dd>
+<dt>num_heads</dt><dd><p>The number of attention heads to use.</p>
+</dd>
+<dt>context</dt><dd><p>The array to determine the keys and values from. Default is None.
+<em>[batch_shape,num_keys,cont_feat_dim]</em>.</p>
+</dd>
+<dt>mask</dt><dd><p>The mask to apply to the query-key values. Default is None. <em>[batch_shape,num_queries,num_keys]</em></p>
+</dd>
+<dt>to_q_fn</dt><dd><p>The function to compute queries from input x, returning queries
+<em>[batch_shape,num_queries,numheads×feat_dim]</em>. (Default value = None)</p>
+</dd>
+<dt>to_kv_fn</dt><dd><p>The function to compute keys and values from the context. (Default value = None)</p>
+</dd>
+<dt>to_out_fn</dt><dd><p>The function to compute the output from the scaled dot-product attention. (Default value = None)</p>
+</dd>
+<dt>to_q_v</dt><dd><p>The variables for function to_q_fn. Default is None.</p>
+</dd>
+<dt>to_kv_v</dt><dd><p>The variables for function to_kv_fn. Default is None.</p>
+</dd>
+<dt>to_out_v</dt><dd><p>The variables for function to_out_fn. Default is None.</p>
 </dd>
 </dl>
-<p>:return The output following application of multi-head attention. <em>[batch_shape,num_queries,out_feat_dim]</em></p>
+<blockquote>
+<div><p>The output following application of multi-head attention. <em>[batch_shape,num_queries,out_feat_dim]</em></p>
+</div></blockquote>
 </dd></dl>
 
 <div class="line-block">

@@ -255,23 +255,22 @@ return +infinity).</p>
 For floating-point operands,</p>
 <p>If x_i is NaN, the minimum value is NaN (i.e., NaN values propagate).</p>
 <dl class="simple">
-<dt>x:</dt><dd><p>Input array containing elements to min.</p>
+<dt>x</dt><dd><p>Input array containing elements to min.</p>
 </dd>
-<dt>axis:</dt><dd><p>axis or axes along which minimum values must be computed.
+<dt>axis</dt><dd><p>axis or axes along which minimum values must be computed.
 By default, the minimum value must be computed over the entire array.
 If a tuple of integers, minimum values must be computed over multiple axes. Default: None.</p>
 </dd>
-<dt>keepdims:</dt><dd><p>optional boolean, if True, the reduced axes (dimensions) must be included in the result as 
+<dt>keepdims</dt><dd><p>optional boolean, if True, the reduced axes (dimensions) must be included in the result as 
 singleton dimensions, and, accordingly, the result must be compatible with
 the input array (see Broadcasting). 
 Otherwise, if False, the reduced axes (dimensions) must not be included in the result. 
 Default: False.</p>
 </dd>
-<dt>out: </dt><dd><p>optional output array, for writing the result to.</p>
+<dt>out</dt><dd><p>optional output array, for writing the result to.</p>
 </dd>
-</dl>
-<dl class="simple">
-<dt>return: </dt><dd><p>if the minimum value was computed over the entire array, a zero-dimensional array containing the 
+<dt>Returns</dt><dd></dd>
+<dt>ret</dt><dd><p>if the minimum value was computed over the entire array, a zero-dimensional array containing the 
 minimum value; otherwise, a non-zero-dimensional array containing the minimum values. 
 The returned array must have the same data type as x.</p>
 </dd>

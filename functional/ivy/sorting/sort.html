@@ -241,23 +241,25 @@
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">sort</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">axis</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">- 1</span></em>, <em class="sig-param"><span class="n">descending</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">stable</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">True</span></em>, <em class="sig-param"><span class="n">out</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../../_modules/ivy/functional/ivy/sorting.html#sort"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.sorting.sort" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a sorted copy of an array</p>
 <dl class="simple">
-<dt>x:</dt><dd><p>input array</p>
+<dt>x</dt><dd><p>input array</p>
 </dd>
-<dt>axis:</dt><dd><p>axis along which to sort. If set to <code class="docutils literal notranslate"><span class="pre">-1</span></code>, the function must sort along the last axis. Default: <code class="docutils literal notranslate"><span class="pre">-1</span></code>.</p>
+<dt>axis</dt><dd><p>axis along which to sort. If set to <code class="docutils literal notranslate"><span class="pre">-1</span></code>, the function must sort along the last axis. Default: <code class="docutils literal notranslate"><span class="pre">-1</span></code>.</p>
 </dd>
-<dt>descending:</dt><dd><p>direction: The direction in which to sort the values</p>
+<dt>descending</dt><dd><p>direction  The direction in which to sort the values</p>
 </dd>
-<dt>stable:</dt><dd><p>sort stability. If <code class="docutils literal notranslate"><span class="pre">True</span></code>,
+<dt>stable</dt><dd><p>sort stability. If <code class="docutils literal notranslate"><span class="pre">True</span></code>,
 the returned indices must maintain the relative order of <code class="docutils literal notranslate"><span class="pre">x</span></code> values which compare as equal.
 If <code class="docutils literal notranslate"><span class="pre">False</span></code>, the returned indices may or may not maintain the relative order of <code class="docutils literal notranslate"><span class="pre">x</span></code> values which compare as equal (i.e., the relative order of <code class="docutils literal notranslate"><span class="pre">x</span></code> values which compare as equal is implementation-dependent). Default: <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p>
 </dd>
-<dt>out:</dt><dd><p>optional output array, for writing the result to. It must have a shape that the inputs broadcast to.</p>
+<dt>out</dt><dd><p>optional output array, for writing the result to. It must have a shape that the inputs broadcast to.</p>
 </dd>
 </dl>
-<dl class="simple">
-<dt>return:</dt><dd><p>An array with the same dtype and shape as <cite>values</cite>, with the elements sorted along the given <cite>axis</cite>.</p>
+<blockquote>
+<div><dl class="simple">
+<dt>return</dt><dd><p>An array with the same dtype and shape as <cite>values</cite>, with the elements sorted along the given <cite>axis</cite>.</p>
 </dd>
 </dl>
+</div></blockquote>
 </dd></dl>
 
 <div class="line-block">

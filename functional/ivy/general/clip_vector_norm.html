@@ -302,22 +302,24 @@
 <dd><p>Clips (limits) the vector p-norm of an array.
 Parameters
 ———-
-x:</p>
+x</p>
 <blockquote>
 <div><p>array, input array containing elements to clip.</p>
 </div></blockquote>
 <dl class="simple">
-<dt>max_norm: </dt><dd><p>float, the maximum value of the array norm.</p>
+<dt>max_norm</dt><dd><p>float, the maximum value of the array norm.</p>
 </dd>
-<dt>p:</dt><dd><p>optional float, the p-value for computing the p-norm. Default is 2.</p>
+<dt>p</dt><dd><p>optional float, the p-value for computing the p-norm. Default is 2.</p>
 </dd>
-<dt>out:</dt><dd><p>optional output array, for writing the result to. It must have a shape that the inputs broadcast to.</p>
-</dd>
-</dl>
-<dl class="simple">
-<dt>return:</dt><dd><p>An array with the vector norm downscaled to the max norm if needed.</p>
+<dt>out</dt><dd><p>optional output array, for writing the result to. It must have a shape that the inputs broadcast to.</p>
 </dd>
 </dl>
+<blockquote>
+<div><dl class="simple">
+<dt>ret</dt><dd><p>An array with the vector norm downscaled to the max norm if needed.</p>
+</dd>
+</dl>
+</div></blockquote>
 </dd></dl>
 
 <div class="line-block">

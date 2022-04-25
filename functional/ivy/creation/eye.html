@@ -255,26 +255,23 @@
 <dt id="ivy.functional.ivy.creation.eye">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">eye</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">n_rows</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">n_cols</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>int<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">k</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>int<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">0</span></em>, <em class="sig-param"><span class="n">dtype</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>ivy.Dtype<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">device</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>ivy.Device<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../../_modules/ivy/functional/ivy/creation.html#eye"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.creation.eye" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a two-dimensional array with ones on the k h diagonal and zeros elsewhere.</p>
-<p>Parameters
-:param n_rows: number of rows in the output array.
-:param n_cols: number of columns in the output array. If None, the default number of columns in the output array is</p>
-<blockquote>
-<div><p>equal to n_rows. Default: None.</p>
-</div></blockquote>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>k</strong> – index of the diagonal. A positive value refers to an upper diagonal, a negative value to a lower diagonal,
-and 0 to the main diagonal. Default: 0.</p></li>
-<li><p><strong>dtype</strong> – output array data type. If dtype is None, the output array data type must be the default floating-
-point data type. Default: None.</p></li>
-</ul>
+<p>Parameters</p>
+<dl class="simple">
+<dt>n_rows</dt><dd><p>number of rows in the output array.</p>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>device on which to place the created array. Default: None.</p>
+<dt>n_cols</dt><dd><p>number of columns in the output array. If None, the default number of columns in the output array is
+equal to n_rows. Default: None.</p>
 </dd>
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>an array where all elements are equal to zero, except for the k h diagonal, whose values are equal to one.</p>
+<dt>k</dt><dd><p>index of the diagonal. A positive value refers to an upper diagonal, a negative value to a lower diagonal,
+and 0 to the main diagonal. Default: 0.</p>
+</dd>
+<dt>dtype</dt><dd><p>output array data type. If dtype is None, the output array data type must be the default floating-
+point data type. Default: None.</p>
+</dd>
+<dt>device</dt><dd><p>device on which to place the created array.</p>
+</dd>
+<dt>Returns</dt><dd></dd>
+<dt>ret</dt><dd><p>device on which to place the created array. Default: None.</p>
 </dd>
 </dl>
 </dd></dl>

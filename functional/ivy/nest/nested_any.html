@@ -254,18 +254,18 @@
 <dt id="ivy.functional.ivy.nest.nested_any">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">nested_any</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">nest</span><span class="p">:</span> <span class="n">Iterable</span></em>, <em class="sig-param"><span class="n">fn</span><span class="p">:</span> <span class="n">Callable</span></em>, <em class="sig-param"><span class="n">check_nests</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">_base</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">True</span></em><span class="sig-paren">)</span> &#x2192; bool<a class="reference internal" href="../../../_modules/ivy/functional/ivy/nest.html#nested_any"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.nest.nested_any" title="Permalink to this definition">¶</a></dt>
 <dd><p>Checks the leaf nodes of nest x via function fn, and returns True if any evaluate to True, else False.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>nest</strong> (<em>nest of any</em>) – The nest to check the leaves of.</p></li>
-<li><p><strong>fn</strong> (<em>callable</em>) – The conditon function, returning True or False.</p></li>
-<li><p><strong>check_nests</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to also check the nests for the condition, not only nest leaves. Default is False.</p></li>
-<li><p><strong>_base</strong> (<em>bool</em><em>, </em><em>do not set</em>) – Whether the current function call is the first function call in the recursive stack.
-Used internally, do not set manually.</p></li>
-</ul>
+<dl class="simple">
+<dt>nest </dt><dd><p>The nest to check the leaves of.</p>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>A boolean, whether the function evaluates to true for any leaf node.</p>
+<dt>fn </dt><dd><p>The conditon function, returning True or False.</p>
+</dd>
+<dt>check_nests </dt><dd><p>Whether to also check the nests for the condition, not only nest leaves. Default is False.</p>
+</dd>
+<dt>_base </dt><dd><p>Whether the current function call is the first function call in the recursive stack.
+Used internally, do not set manually.</p>
+</dd>
+<dt>Returns</dt><dd></dd>
+<dt>ret</dt><dd><p>A boolean, whether the function evaluates to true for any leaf node.</p>
 </dd>
 </dl>
 </dd></dl>

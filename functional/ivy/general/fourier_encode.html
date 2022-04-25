@@ -300,21 +300,26 @@
 <dt id="ivy.functional.ivy.general.fourier_encode">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">fourier_encode</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">max_freq</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>float<span class="p">, </span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">num_bands</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">4</span></em>, <em class="sig-param"><span class="n">linear</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">concat</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">True</span></em>, <em class="sig-param"><span class="n">flatten</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">, </span>Tuple<span class="p">]</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/general.html#fourier_encode"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.general.fourier_encode" title="Permalink to this definition">¶</a></dt>
 <dd><p>Pads an array with fourier encodings.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>array</em>) – Input array to encode.</p></li>
-<li><p><strong>max_freq</strong> (<em>float</em>) – The maximum frequency of the encoding.</p></li>
-<li><p><strong>num_bands</strong> (<em>int</em><em>, </em><em>optional</em>) – The number of frequency bands for the encoding. Default is 4.</p></li>
-<li><p><strong>linear</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to space the frequency bands linearly as opposed to geometrically. Default is False.</p></li>
-<li><p><strong>concat</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to concatenate the position, sin and cos values, or return seperately. Default is True.</p></li>
-<li><p><strong>flatten</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to flatten the position dimension into the batch dimension. Default is False.</p></li>
-</ul>
+<dl class="simple">
+<dt>x </dt><dd><p>Input array to encode.</p>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>New array with the final dimension expanded, and the encodings stored in this channel.</p>
+<dt>max_freq </dt><dd><p>The maximum frequency of the encoding.</p>
+</dd>
+<dt>num_bands </dt><dd><p>The number of frequency bands for the encoding. Default is 4.</p>
+</dd>
+<dt>linear </dt><dd><p>Whether to space the frequency bands linearly as opposed to geometrically. Default is False.</p>
+</dd>
+<dt>concat </dt><dd><p>Whether to concatenate the position, sin and cos values, or return seperately. Default is True.</p>
+</dd>
+<dt>flatten </dt><dd><p>Whether to flatten the position dimension into the batch dimension. Default is False.</p>
 </dd>
 </dl>
+<blockquote>
+<div><dl class="simple">
+<dt>ret</dt><dd><p>New array with the final dimension expanded, and the encodings stored in this channel.</p>
+</dd>
+</dl>
+</div></blockquote>
 </dd></dl>
 
 <div class="line-block">

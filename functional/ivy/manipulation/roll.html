@@ -255,22 +255,24 @@
 <dd><p>Rolls array elements along a specified axis. Array elements that roll beyond the last position are re-introduced at the first position. Array elements that roll beyond the first position are re-introduced at the last position.
 Parameters
 ———-
-x: array</p>
+x</p>
 <blockquote>
 <div><p>input array.</p>
 </div></blockquote>
 <dl class="simple">
-<dt>shift: Union[int, Tuple[int, …]]</dt><dd><p>number of places by which the elements are shifted. If <code class="docutils literal notranslate"><span class="pre">shift</span></code> is a tuple, then <code class="docutils literal notranslate"><span class="pre">axis</span></code> must be a tuple of the same size, and each of the given axes must be shifted by the corresponding element in <code class="docutils literal notranslate"><span class="pre">shift</span></code>. If <code class="docutils literal notranslate"><span class="pre">shift</span></code> is an <code class="docutils literal notranslate"><span class="pre">int</span></code> and <code class="docutils literal notranslate"><span class="pre">axis</span></code> a tuple, then the same <code class="docutils literal notranslate"><span class="pre">shift</span></code> must be used for all specified axes. If a shift is positive, then array elements must be shifted positively (toward larger indices) along the dimension of <code class="docutils literal notranslate"><span class="pre">axis</span></code>. If a shift is negative, then array elements must be shifted negatively (toward smaller indices) along the dimension of <code class="docutils literal notranslate"><span class="pre">axis</span></code>.</p>
+<dt>shift</dt><dd><p>number of places by which the elements are shifted. If <code class="docutils literal notranslate"><span class="pre">shift</span></code> is a tuple, then <code class="docutils literal notranslate"><span class="pre">axis</span></code> must be a tuple of the same size, and each of the given axes must be shifted by the corresponding element in <code class="docutils literal notranslate"><span class="pre">shift</span></code>. If <code class="docutils literal notranslate"><span class="pre">shift</span></code> is an <code class="docutils literal notranslate"><span class="pre">int</span></code> and <code class="docutils literal notranslate"><span class="pre">axis</span></code> a tuple, then the same <code class="docutils literal notranslate"><span class="pre">shift</span></code> must be used for all specified axes. If a shift is positive, then array elements must be shifted positively (toward larger indices) along the dimension of <code class="docutils literal notranslate"><span class="pre">axis</span></code>. If a shift is negative, then array elements must be shifted negatively (toward smaller indices) along the dimension of <code class="docutils literal notranslate"><span class="pre">axis</span></code>.</p>
 </dd>
-<dt>axis: Optional[Union[int, Tuple[int, …]]]</dt><dd><p>axis (or axes) along which elements to shift. If <code class="docutils literal notranslate"><span class="pre">axis</span></code> is <code class="docutils literal notranslate"><span class="pre">None</span></code>, the array must be flattened, shifted, and then restored to its original shape. Default: <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+<dt>axis</dt><dd><p>axis (or axes) along which elements to shift. If <code class="docutils literal notranslate"><span class="pre">axis</span></code> is <code class="docutils literal notranslate"><span class="pre">None</span></code>, the array must be flattened, shifted, and then restored to its original shape. Default  <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
 </dd>
-<dt>out:</dt><dd><p>optional output array, for writing the result to. It must have a shape that the inputs broadcast to.</p>
-</dd>
-</dl>
-<dl class="simple">
-<dt>return: array</dt><dd><p>an output array having the same data type as <code class="docutils literal notranslate"><span class="pre">x</span></code> and whose elements, relative to <code class="docutils literal notranslate"><span class="pre">x</span></code>, are shifted.</p>
+<dt>out</dt><dd><p>optional output array, for writing the result to. It must have a shape that the inputs broadcast to.</p>
 </dd>
 </dl>
+<blockquote>
+<div><dl class="simple">
+<dt>ret</dt><dd><p>an output array having the same data type as <code class="docutils literal notranslate"><span class="pre">x</span></code> and whose elements, relative to <code class="docutils literal notranslate"><span class="pre">x</span></code>, are shifted.</p>
+</dd>
+</dl>
+</div></blockquote>
 </dd></dl>
 
 <div class="line-block">

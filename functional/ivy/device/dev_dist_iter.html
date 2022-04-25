@@ -284,16 +284,19 @@
 <dt id="ivy.functional.ivy.device.dev_dist_iter">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">dev_dist_iter</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">xs</span></em>, <em class="sig-param"><span class="n">devs</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>Iterable<span class="p">[</span>str<span class="p">]</span><span class="p">, </span>Dict<span class="p">[</span>str<span class="p">, </span>int<span class="p">]</span><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">0</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/device.html#dev_dist_iter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.device.dev_dist_iter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Distribute elements of the iterbale xs across the specified devices.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>xs</strong> (<em>iterable of any</em>) – The iterable of items to distribute.</p></li>
-<li><p><strong>devs</strong> (<em>sequence of strs</em><em> or </em><em>dict of split sizes</em>) – The devices to distribute the iterable elements across.</p></li>
-<li><p><strong>axis</strong> (<em>int</em><em>, </em><em>optional</em>) – The axis along which to split the arrays in the iterable xs. Default is 0.</p></li>
-</ul>
+<dl class="simple">
+<dt>xs</dt><dd><p>The iterable of items to distribute.</p>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>iterable with each element distributed to the target devices</p>
+<dt>devs</dt><dd><p>The devices to distribute the iterable elements across.</p>
+</dd>
+<dt>axis</dt><dd><p>The axis along which to split the arrays in the iterable xs. Default is 0.</p>
+</dd>
+</dl>
+<p>devs</p>
+<p>Dict</p>
+<dl class="simple">
+<dt>Returns</dt><dd></dd>
+<dt>ret</dt><dd><p>iterable with each element distributed to the target devices</p>
 </dd>
 </dl>
 </dd></dl>

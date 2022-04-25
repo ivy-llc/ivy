@@ -243,11 +243,10 @@
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">nonzero</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; Tuple<span class="p">[</span>ivy.array.Array<span class="p">]</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/searching.html#nonzero"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.searching.nonzero" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the indices of the array elements which are non-zero.</p>
 <dl class="simple">
-<dt>x:</dt><dd><p>input array. Must have a positive rank. If <cite>x</cite> is zero-dimensional, the function must raise an exception.</p>
+<dt>x</dt><dd><p>input array. Must have a positive rank. If <cite>x</cite> is zero-dimensional, the function must raise an exception.</p>
 </dd>
-</dl>
-<dl class="simple">
-<dt>out:</dt><dd><p>a tuple of <cite>k</cite> arrays, one for each dimension of <cite>x</cite> and each of size <cite>n</cite> (where <cite>n</cite> is the total number of non-zero elements), containing the indices of the non-zero elements in that dimension. The indices must be returned in row-major, C-style order. The returned array must have the default array index data type.</p>
+<dt>Returns</dt><dd></dd>
+<dt>ret</dt><dd><p>a tuple of <cite>k</cite> arrays, one for each dimension of <cite>x</cite> and each of size <cite>n</cite> (where <cite>n</cite> is the total number of non-zero elements), containing the indices of the non-zero elements in that dimension. The indices must be returned in row-major, C-style order. The returned array must have the default array index data type.</p>
 </dd>
 </dl>
 </dd></dl>

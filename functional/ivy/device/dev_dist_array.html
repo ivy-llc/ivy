@@ -284,16 +284,19 @@
 <dt id="ivy.functional.ivy.device.dev_dist_array">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">dev_dist_array</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">devs</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>Iterable<span class="p">[</span>str<span class="p">]</span><span class="p">, </span>Dict<span class="p">[</span>str<span class="p">, </span>int<span class="p">]</span><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">0</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/device.html#dev_dist_array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.device.dev_dist_array" title="Permalink to this definition">¶</a></dt>
 <dd><p>Distribute an array across the specified devices, returning a list of sub-arrays, each on a different device.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>array</em>) – The array to distribute across devices.</p></li>
-<li><p><strong>devs</strong> (<em>sequence of strs</em><em> or </em><em>dict of split sizes</em>) – The devices to distribute the array across.</p></li>
-<li><p><strong>axis</strong> (<em>int</em><em>, </em><em>optional</em>) – The axis along which to split the array. Default is 0.</p></li>
-</ul>
+<dl class="simple">
+<dt>x</dt><dd><p>The array to distribute across devices.</p>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>array distributed across the target devices</p>
+<dt>devs</dt><dd><p>The devices to distribute the array across.</p>
+</dd>
+<dt>axis</dt><dd><p>The axis along which to split the array. Default is 0.</p>
+</dd>
+</dl>
+<p>devs</p>
+<p>Dict</p>
+<dl class="simple">
+<dt>Returns</dt><dd></dd>
+<dt>ret</dt><dd><p>array distributed across the target devices</p>
 </dd>
 </dl>
 </dd></dl>

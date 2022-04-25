@@ -241,47 +241,46 @@
 <code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dict_in</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">queues</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">queue_load_sizes</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">container_combine_method</span><span class="o">=</span><span class="default_value">'list_join'</span></em>, <em class="sig-param"><span class="n">queue_timeout</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">print_limit</span><span class="o">=</span><span class="default_value">10</span></em>, <em class="sig-param"><span class="n">key_length_limit</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">print_indent</span><span class="o">=</span><span class="default_value">4</span></em>, <em class="sig-param"><span class="n">print_line_spacing</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">ivyh</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">default_key_color</span><span class="o">=</span><span class="default_value">'green'</span></em>, <em class="sig-param"><span class="n">keyword_color_dict</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">rebuild_child_containers</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">types_to_iteratively_nest</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">alphabetical_keys</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/container/container.html#Container.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.container.container.Container.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initialize container object from input dict representation.</p>
 <dl class="simple">
-<dt>dict_in<span class="classifier">dict_in: dict, optional</span></dt><dd><p>the dictionary the container should wrap around. Default is None.</p>
+<dt>dict_in</dt><dd><p>the dictionary the container should wrap around. Default is None.</p>
 </dd>
-<dt>queues<span class="classifier">sequence of multiprocessing queues, optional</span></dt><dd><p>Sequence of multiprocessing queues, each of which returns containers.
+<dt>queues</dt><dd><p>Sequence of multiprocessing queues, each of which returns containers.
 This enables the current container to be passed around asynchronously while waiting for data.
 Default is None.</p>
 </dd>
-<dt>queue_load_sizes<span class="classifier">sequence of ints, optional</span></dt><dd><p>Size of leading dimension of the containers returned by each queue. Default is None.</p>
+<dt>queue_load_sizes</dt><dd><p>Size of leading dimension of the containers returned by each queue. Default is None.</p>
 </dd>
-<dt>container_combine_method<span class="classifier">str, optional</span></dt><dd><p>The method to use for combining containers arriving from different queues.
+<dt>container_combine_method</dt><dd><p>The method to use for combining containers arriving from different queues.
 Default is ivy.Container.list_join</p>
 </dd>
-<dt>queue_timeout<span class="classifier">float, optional</span></dt><dd><p>The timeout when waiting for containers to arrive from the queues. Default is global.</p>
+<dt>queue_timeout</dt><dd><p>The timeout when waiting for containers to arrive from the queues. Default is global.</p>
 </dd>
-<dt>print_limit<span class="classifier">int_limit: int, optional</span></dt><dd><p>The total array size limit when printing the container. Default is 10.</p>
+<dt>print_limit</dt><dd><p>The total array size limit when printing the container. Default is 10.</p>
 </dd>
-<dt>key_length_limit<span class="classifier">int, optional</span></dt><dd><p>The maximum key length when printing the container. Default is None.</p>
+<dt>key_length_limit</dt><dd><p>The maximum key length when printing the container. Default is None.</p>
 </dd>
-<dt>print_indent<span class="classifier">int_indent: int, optional</span></dt><dd><p>The number of whitespaces to use for indenting when printing the container. Default is 4.</p>
+<dt>print_indent</dt><dd><p>The number of whitespaces to use for indenting when printing the container. Default is 4.</p>
 </dd>
-<dt>print_line_spacing<span class="classifier">int_line_spacing: int, optional</span></dt><dd><p>The number of extra newlines to use between keys when printing the container.
+<dt>print_line_spacing</dt><dd><p>The number of extra newlines to use between keys when printing the container.
 Default is 0.</p>
 </dd>
-<dt>ivyh<span class="classifier">handle to ivy module, optional</span></dt><dd><p>Handle to ivy module to use for the calculations. Default is None, which results in the global ivy.</p>
+<dt>ivyh</dt><dd><p>Handle to ivy module to use for the calculations. Default is None, which results in the global ivy.</p>
 </dd>
-<dt>default_key_color<span class="classifier">str, optional</span></dt><dd><p>The default key color for printing the container to the terminal. Default is ‘green’.</p>
+<dt>default_key_color</dt><dd><p>The default key color for printing the container to the terminal. Default is ‘green’.</p>
 </dd>
-<dt>keyword_color_dict<span class="classifier">dict: dict, optional</span></dt><dd><p>A dict mapping keywords to their termcolor color codes for printing the container. (Default value = None)</p>
+<dt>keyword_color_dict</dt><dd><p>A dict mapping keywords to their termcolor color codes for printing the container. (Default value = None)</p>
 </dd>
-<dt>rebuild_child_containers<span class="classifier">bool, optional</span></dt><dd><p>Whether to rebuild container found in dict_in with these constructor params.
+<dt>rebuild_child_containers</dt><dd><p>Whether to rebuild container found in dict_in with these constructor params.
 Default is False, in which case the original container are kept as are.</p>
 </dd>
-<dt>types_to_iteratively_nest<span class="classifier">seq of iterable types</span></dt><dd><p>The data types to nest iteratively in the dict structure, each type must be
+<dt>types_to_iteratively_nest</dt><dd><p>The data types to nest iteratively in the dict structure, each type must be
 iterable. Default is None.</p>
 </dd>
-<dt>alphabetical_keys<span class="classifier">bool, optional</span></dt><dd><p>Whether to sort the container keys alphabetically, or preserve the dict order.
+<dt>alphabetical_keys</dt><dd><p>Whether to sort the container keys alphabetically, or preserve the dict order.
 Default is True.</p>
 </dd>
-<dt>kwargs<span class="classifier">keyword arguments.</span></dt><dd><p>keyword arguments for dict creation. Default is None.</p>
+<dt>kwargs</dt><dd><p>keyword arguments for dict creation. Default is None.</p>
 </dd>
 </dl>
-<p><a href="#id1"><span class="problematic" id="id2">**</span></a>kwargs :</p>
 </dd></dl>
 
 </dd></dl>
@@ -295,47 +294,46 @@ Default is True.</p>
 <code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dict_in</span></em>, <em class="sig-param"><span class="n">devs</span></em>, <em class="sig-param"><span class="n">queues</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">queue_load_sizes</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">container_combine_method</span><span class="o">=</span><span class="default_value">'list_join'</span></em>, <em class="sig-param"><span class="n">queue_timeout</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">print_limit</span><span class="o">=</span><span class="default_value">10</span></em>, <em class="sig-param"><span class="n">key_length_limit</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">print_indent</span><span class="o">=</span><span class="default_value">4</span></em>, <em class="sig-param"><span class="n">print_line_spacing</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">ivyh</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">default_key_color</span><span class="o">=</span><span class="default_value">'green'</span></em>, <em class="sig-param"><span class="n">keyword_color_dict</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">rebuild_child_containers</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">types_to_iteratively_nest</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">alphabetical_keys</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/container/container.html#MultiDevContainer.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.container.container.MultiDevContainer.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initialize container object from input dict representation.</p>
 <dl class="simple">
-<dt>dict_in<span class="classifier">dict_in: dict, optional</span></dt><dd><p>the dictionary the container should wrap around. Default is None.</p>
+<dt>dict_in</dt><dd><p>the dictionary the container should wrap around. Default is None.</p>
 </dd>
-<dt>queues<span class="classifier">sequence of multiprocessing queues, optional</span></dt><dd><p>Sequence of multiprocessing queues, each of which returns containers.
+<dt>queues</dt><dd><p>Sequence of multiprocessing queues, each of which returns containers.
 This enables the current container to be passed around asynchronously while waiting for data.
 Default is None.</p>
 </dd>
-<dt>queue_load_sizes<span class="classifier">sequence of ints, optional</span></dt><dd><p>Size of leading dimension of the containers returned by each queue. Default is None.</p>
+<dt>queue_load_sizes</dt><dd><p>Size of leading dimension of the containers returned by each queue. Default is None.</p>
 </dd>
-<dt>container_combine_method<span class="classifier">str, optional</span></dt><dd><p>The method to use for combining containers arriving from different queues.
+<dt>container_combine_method</dt><dd><p>The method to use for combining containers arriving from different queues.
 Default is ivy.Container.list_join</p>
 </dd>
-<dt>queue_timeout<span class="classifier">float, optional</span></dt><dd><p>The timeout when waiting for containers to arrive from the queues. Default is global.</p>
+<dt>queue_timeout</dt><dd><p>The timeout when waiting for containers to arrive from the queues. Default is global.</p>
 </dd>
-<dt>print_limit<span class="classifier">int_limit: int, optional</span></dt><dd><p>The total array size limit when printing the container. Default is 10.</p>
+<dt>print_limit</dt><dd><p>The total array size limit when printing the container. Default is 10.</p>
 </dd>
-<dt>key_length_limit<span class="classifier">int, optional</span></dt><dd><p>The maximum key length when printing the container. Default is None.</p>
+<dt>key_length_limit</dt><dd><p>The maximum key length when printing the container. Default is None.</p>
 </dd>
-<dt>print_indent<span class="classifier">int_indent: int, optional</span></dt><dd><p>The number of whitespaces to use for indenting when printing the container. Default is 4.</p>
+<dt>print_indent</dt><dd><p>The number of whitespaces to use for indenting when printing the container. Default is 4.</p>
 </dd>
-<dt>print_line_spacing<span class="classifier">int_line_spacing: int, optional</span></dt><dd><p>The number of extra newlines to use between keys when printing the container.
+<dt>print_line_spacing</dt><dd><p>The number of extra newlines to use between keys when printing the container.
 Default is 0.</p>
 </dd>
-<dt>ivyh<span class="classifier">handle to ivy module, optional</span></dt><dd><p>Handle to ivy module to use for the calculations. Default is None, which results in the global ivy.</p>
+<dt>ivyh</dt><dd><p>Handle to ivy module to use for the calculations. Default is None, which results in the global ivy.</p>
 </dd>
-<dt>default_key_color<span class="classifier">str, optional</span></dt><dd><p>The default key color for printing the container to the terminal. Default is ‘green’.</p>
+<dt>default_key_color</dt><dd><p>The default key color for printing the container to the terminal. Default is ‘green’.</p>
 </dd>
-<dt>keyword_color_dict<span class="classifier">dict: dict, optional</span></dt><dd><p>A dict mapping keywords to their termcolor color codes for printing the container. (Default value = None)</p>
+<dt>keyword_color_dict</dt><dd><p>A dict mapping keywords to their termcolor color codes for printing the container. (Default value = None)</p>
 </dd>
-<dt>rebuild_child_containers<span class="classifier">bool, optional</span></dt><dd><p>Whether to rebuild container found in dict_in with these constructor params.
+<dt>rebuild_child_containers</dt><dd><p>Whether to rebuild container found in dict_in with these constructor params.
 Default is False, in which case the original container are kept as are.</p>
 </dd>
-<dt>types_to_iteratively_nest<span class="classifier">seq of iterable types</span></dt><dd><p>The data types to nest iteratively in the dict structure, each type must be
+<dt>types_to_iteratively_nest</dt><dd><p>The data types to nest iteratively in the dict structure, each type must be
 iterable. Default is None.</p>
 </dd>
-<dt>alphabetical_keys<span class="classifier">bool, optional</span></dt><dd><p>Whether to sort the container keys alphabetically, or preserve the dict order.
+<dt>alphabetical_keys</dt><dd><p>Whether to sort the container keys alphabetically, or preserve the dict order.
 Default is True.</p>
 </dd>
-<dt>kwargs<span class="classifier">keyword arguments.</span></dt><dd><p>keyword arguments for dict creation. Default is None.</p>
+<dt>kwargs</dt><dd><p>keyword arguments for dict creation. Default is None.</p>
 </dd>
 </dl>
-<p><a href="#id3"><span class="problematic" id="id4">**</span></a>kwargs :</p>
 </dd></dl>
 
 <dl class="py method">

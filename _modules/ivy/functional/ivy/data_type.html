@@ -230,11 +230,9 @@
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">List</span>
 <span class="kn">from</span> <span class="nn">numbers</span> <span class="kn">import</span> <span class="n">Number</span>
 
-
 <span class="c1"># local</span>
 <span class="kn">import</span> <span class="nn">ivy</span>
 <span class="kn">from</span> <span class="nn">ivy.framework_handler</span> <span class="kn">import</span> <span class="n">current_framework</span> <span class="k">as</span> <span class="n">_cur_framework</span>
-
 
 <span class="c1"># Array API Standard #</span>
 <span class="c1"># -------------------#</span>
@@ -246,38 +244,38 @@
 <span class="c1"># Dtype Info #</span>
 
 <div class="viewcode-block" id="can_cast"><a class="viewcode-back" href="../../../../functional/ivy/data_type/can_cast.html#ivy.functional.ivy.data_type.can_cast">[docs]</a><span class="k">def</span> <span class="nf">can_cast</span><span class="p">(</span><span class="n">from_</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
-             <span class="n">to</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">)</span>\
+             <span class="n">to</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">)</span> \
         <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Determines if one data type can be cast to another data type according :ref:`type-promotion` rules.</span>
+<span class="sd">    Determines if one data type can be cast to another data type accordingref:`type-promotion` rules.</span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    from_: Union[dtype, array]</span>
+<span class="sd">    from_</span>
 <span class="sd">        input data type or array from which to cast.</span>
-<span class="sd">    to: dtype</span>
+<span class="sd">    to</span>
 <span class="sd">        desired data type.</span>
 <span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    out: bool</span>
-<span class="sd">        ``True`` if the cast can occur according to :ref:`type-promotion` rules; otherwise, ``False``.</span>
+<span class="sd">     -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        ``True`` if the cast can occur according toref:`type-promotion` rules; otherwise, ``False``.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">from_</span><span class="p">)</span><span class="o">.</span><span class="n">can_cast</span><span class="p">(</span><span class="n">from_</span><span class="p">,</span> <span class="n">to</span><span class="p">)</span></div>
 
 
 <span class="c1"># noinspection PyShadowingBuiltins</span>
-<div class="viewcode-block" id="iinfo"><a class="viewcode-back" href="../../../../functional/ivy/data_type/iinfo.html#ivy.functional.ivy.data_type.iinfo">[docs]</a><span class="k">def</span> <span class="nf">iinfo</span><span class="p">(</span><span class="nb">type</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">])</span>\
+<div class="viewcode-block" id="iinfo"><a class="viewcode-back" href="../../../../functional/ivy/data_type/iinfo.html#ivy.functional.ivy.data_type.iinfo">[docs]</a><span class="k">def</span> <span class="nf">iinfo</span><span class="p">(</span><span class="nb">type</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">])</span> \
         <span class="o">-&gt;</span> <span class="n">Iinfo</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Machine limits for integer data types.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    type:</span>
+<span class="sd">    type</span>
 <span class="sd">        the kind of integer data-type about which to get information.</span>
 
 <span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    out:</span>
+<span class="sd">     -------</span>
+<span class="sd">    ret</span>
 <span class="sd">        a class with that encapsules the following attributes:</span>
 <span class="sd">        - **bits**: *int*</span>
 <span class="sd">          number of bits occupied by the type.</span>
@@ -290,19 +288,19 @@
 
 
 <span class="c1"># noinspection PyShadowingBuiltins</span>
-<div class="viewcode-block" id="finfo"><a class="viewcode-back" href="../../../../functional/ivy/data_type/finfo.html#ivy.functional.ivy.data_type.finfo">[docs]</a><span class="k">def</span> <span class="nf">finfo</span><span class="p">(</span><span class="nb">type</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">])</span>\
+<div class="viewcode-block" id="finfo"><a class="viewcode-back" href="../../../../functional/ivy/data_type/finfo.html#ivy.functional.ivy.data_type.finfo">[docs]</a><span class="k">def</span> <span class="nf">finfo</span><span class="p">(</span><span class="nb">type</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">])</span> \
         <span class="o">-&gt;</span> <span class="n">Finfo</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Machine limits for floating-point data types.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    type:</span>
+<span class="sd">    type</span>
 <span class="sd">        the kind of floating-point data-type about which to get information.</span>
 
 <span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    out:</span>
+<span class="sd">     -------</span>
+<span class="sd">    ret</span>
 <span class="sd">        an object having the followng attributes:</span>
 <span class="sd">        - **bits**: *int*</span>
 <span class="sd">          number of bits occupied by the floating-point data type.</span>
@@ -318,47 +316,68 @@
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span><span class="o">.</span><span class="n">finfo</span><span class="p">(</span><span class="nb">type</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="broadcast_to"><a class="viewcode-back" href="../../../../functional/ivy/data_type/broadcast_to.html#ivy.functional.ivy.data_type.broadcast_to">[docs]</a><span class="k">def</span> <span class="nf">broadcast_to</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span> <span class="n">shape</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span><span class="o">...</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="broadcast_to"><a class="viewcode-back" href="../../../../functional/ivy/data_type/broadcast_to.html#ivy.functional.ivy.data_type.broadcast_to">[docs]</a><span class="k">def</span> <span class="nf">broadcast_to</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span> <span class="n">shape</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Broadcasts an array to a specified shape</span>
 
-<span class="sd">     Broadcasts an array to a specified shape</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x</span>
+<span class="sd">        x (array) – array to broadcast.</span>
+<span class="sd">    shape</span>
+<span class="sd">        shape (Tuple[int, ...]) – array shape. Must be compatible with x (see Broadcasting). If \</span>
+<span class="sd">        the array is incompatible with the specified shape, the function should raise an \</span>
+<span class="sd">        exception.</span>
 
-<span class="sd">    :param x:  x (array) – array to broadcast.</span>
-<span class="sd">    :param shape: shape (Tuple[int, ...]) – array shape. Must be compatible with x (see Broadcasting). If \</span>
-<span class="sd">                  the array is incompatible with the specified shape, the function should raise an \</span>
-<span class="sd">                  exception.</span>
-<span class="sd">    :return: out (array) – an array having a specified shape. Must have the same data type as x.</span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">     ret</span>
+<span class="sd">        out (array) – an array having a specified shape. Must have the same data type as x.</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">broadcast_to</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">shape</span><span class="p">)</span></div>
 
+
 <div class="viewcode-block" id="broadcast_arrays"><a class="viewcode-back" href="../../../../functional/ivy/data_type/broadcast_arrays.html#ivy.functional.ivy.data_type.broadcast_arrays">[docs]</a><span class="k">def</span> <span class="nf">broadcast_arrays</span><span class="p">(</span><span class="o">*</span><span class="n">arrays</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Broadcasts one or more arrays against one another.</span>
 
-<span class="sd">     Broadcasts one or more arrays against one another.</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x</span>
+<span class="sd">        x (array) – an arbitrary number of to-be broadcasted arrays.</span>
 
-<span class="sd">    :param x:  x (array) – an arbitrary number of to-be broadcasted arrays.</span>
-<span class="sd">    :return: out (List[array]) – Each array must have the same shape. Each array must have the same dtype as its corresponding input array.</span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">     ret</span>
+<span class="sd">        out (List[array]) – Each array must have the same shape. Each array must have the same dtype as its corresponding input array.</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">arrays</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">broadcast_arrays</span><span class="p">(</span><span class="o">*</span><span class="n">arrays</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="dtype"><a class="viewcode-back" href="../../../../functional/ivy/data_type/dtype.html#ivy.functional.ivy.data_type.dtype">[docs]</a><span class="k">def</span> <span class="nf">dtype</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span> <span class="n">as_str</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>\
+<div class="viewcode-block" id="dtype"><a class="viewcode-back" href="../../../../functional/ivy/data_type/dtype.html#ivy.functional.ivy.data_type.dtype">[docs]</a><span class="k">def</span> <span class="nf">dtype</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span> <span class="n">as_str</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> \
         <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Get the data type for input array x.</span>
+    <span class="sd">&quot;&quot;&quot;Get the data type for input array x.</span>
 
-<span class="sd">    :param x: Tensor for which to get the data type.</span>
-<span class="sd">    :type x: array</span>
-<span class="sd">    :param as_str: Whether or not to return the dtype in string format. Default is False.</span>
-<span class="sd">    :type as_str: bool, optional</span>
-<span class="sd">    :return: Data type of the array</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x</span>
+<span class="sd">        Tensor for which to get the data type.</span>
+<span class="sd">    as_str</span>
+<span class="sd">        Whether or not to return the dtype in string format. Default is False.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">     ret</span>
+<span class="sd">        Data type of the array</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">as_str</span><span class="p">)</span></div>
 
 
 <span class="c1"># noinspection PyShadowingNames</span>
+
 <div class="viewcode-block" id="astype"><a class="viewcode-back" href="../../../../functional/ivy/data_type/astype.html#ivy.functional.ivy.data_type.astype">[docs]</a><span class="k">def</span> <span class="nf">astype</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span> <span class="n">dtype</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="n">copy</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>\
          <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -405,6 +424,8 @@
 
 
 <div class="viewcode-block" id="DefaultDtype"><a class="viewcode-back" href="../../../../functional/ivy/data_type.html#ivy.functional.ivy.data_type.DefaultDtype">[docs]</a><span class="k">class</span> <span class="nc">DefaultDtype</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot; &quot;&quot;&quot;</span>
+
     <span class="c1"># noinspection PyShadowingNames</span>
 <div class="viewcode-block" id="DefaultDtype.__init__"><a class="viewcode-back" href="../../../../functional/ivy/data_type.html#ivy.functional.ivy.data_type.DefaultDtype.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dtype</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span> <span class="o">=</span> <span class="n">dtype</span></div>
@@ -419,6 +440,8 @@
 
 
 <div class="viewcode-block" id="DefaultFloatDtype"><a class="viewcode-back" href="../../../../functional/ivy/data_type.html#ivy.functional.ivy.data_type.DefaultFloatDtype">[docs]</a><span class="k">class</span> <span class="nc">DefaultFloatDtype</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot; &quot;&quot;&quot;</span>
+
     <span class="c1"># noinspection PyShadowingNames</span>
 <div class="viewcode-block" id="DefaultFloatDtype.__init__"><a class="viewcode-back" href="../../../../functional/ivy/data_type.html#ivy.functional.ivy.data_type.DefaultFloatDtype.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">float_dtype</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_float_dtype</span> <span class="o">=</span> <span class="n">float_dtype</span></div>
@@ -433,6 +456,8 @@
 
 
 <div class="viewcode-block" id="DefaultIntDtype"><a class="viewcode-back" href="../../../../functional/ivy/data_type.html#ivy.functional.ivy.data_type.DefaultIntDtype">[docs]</a><span class="k">class</span> <span class="nc">DefaultIntDtype</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot; &quot;&quot;&quot;</span>
+
     <span class="c1"># noinspection PyShadowingNames</span>
 <div class="viewcode-block" id="DefaultIntDtype.__init__"><a class="viewcode-back" href="../../../../functional/ivy/data_type.html#ivy.functional.ivy.data_type.DefaultIntDtype.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">float_dtype</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_float_dtype</span> <span class="o">=</span> <span class="n">float_dtype</span></div>
@@ -447,58 +472,123 @@
 
 
 <div class="viewcode-block" id="dtype_bits"><a class="viewcode-back" href="../../../../functional/ivy/data_type/dtype_bits.html#ivy.functional.ivy.data_type.dtype_bits">[docs]</a><span class="k">def</span> <span class="nf">dtype_bits</span><span class="p">(</span><span class="n">dtype_in</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Get the number of bits used for representing the input data type.</span>
+    <span class="sd">&quot;&quot;&quot;Get the number of bits used for representing the input data type.</span>
 
-<span class="sd">    :param dtype_in: The data type to determine the number of bits for.</span>
-<span class="sd">    :return: The number of bits used to represent the data type.</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    dtype_in</span>
+<span class="sd">        The data type to determine the number of bits for.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">     ret</span>
+<span class="sd">        The number of bits used to represent the data type.</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">dtype_in</span><span class="p">)</span><span class="o">.</span><span class="n">dtype_bits</span><span class="p">(</span><span class="n">dtype_in</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="dtype_to_str"><a class="viewcode-back" href="../../../../functional/ivy/data_type/dtype_to_str.html#ivy.functional.ivy.data_type.dtype_to_str">[docs]</a><span class="k">def</span> <span class="nf">dtype_to_str</span><span class="p">(</span><span class="n">dtype_in</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="nb">str</span><span class="p">])</span>\
+<div class="viewcode-block" id="dtype_to_str"><a class="viewcode-back" href="../../../../functional/ivy/data_type/dtype_to_str.html#ivy.functional.ivy.data_type.dtype_to_str">[docs]</a><span class="k">def</span> <span class="nf">dtype_to_str</span><span class="p">(</span><span class="n">dtype_in</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="nb">str</span><span class="p">])</span> \
         <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Convert native data type to string representation.</span>
+    <span class="sd">&quot;&quot;&quot;Convert native data type to string representation.</span>
 
-<span class="sd">    :param dtype_in: The data type to convert to string.</span>
-<span class="sd">    :type dtype_in: data type</span>
-<span class="sd">    :return: data type string &#39;float32&#39;</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    dtype_in</span>
+<span class="sd">        The data type to convert to string.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">     ret</span>
+<span class="sd">        data type string &#39;float32&#39;</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span><span class="o">.</span><span class="n">dtype_to_str</span><span class="p">(</span><span class="n">dtype_in</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="dtype_from_str"><a class="viewcode-back" href="../../../../functional/ivy/data_type/dtype_from_str.html#ivy.functional.ivy.data_type.dtype_from_str">[docs]</a><span class="k">def</span> <span class="nf">dtype_from_str</span><span class="p">(</span><span class="n">dtype_in</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="nb">str</span><span class="p">])</span>\
+<div class="viewcode-block" id="dtype_from_str"><a class="viewcode-back" href="../../../../functional/ivy/data_type/dtype_from_str.html#ivy.functional.ivy.data_type.dtype_from_str">[docs]</a><span class="k">def</span> <span class="nf">dtype_from_str</span><span class="p">(</span><span class="n">dtype_in</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="nb">str</span><span class="p">])</span> \
         <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Convert data type string representation to native data type.</span>
+    <span class="sd">&quot;&quot;&quot;Convert data type string representation to native data type.</span>
 
-<span class="sd">    :param dtype_in: The data type string to convert to native data type.</span>
-<span class="sd">    :return: data type e.g. ivy.float32.</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    dtype_in</span>
+<span class="sd">        The data type string to convert to native data type.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">     ret</span>
+<span class="sd">        data type e.g. ivy.float32.</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span><span class="o">.</span><span class="n">dtype_from_str</span><span class="p">(</span><span class="n">dtype_in</span><span class="p">)</span></div>
 
 
 <span class="c1"># noinspection PyShadowingNames</span>
 <span class="k">def</span> <span class="nf">_assert_dtype_correct_formatting</span><span class="p">(</span><span class="n">dtype</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="nb">str</span><span class="p">]):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    dtype</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">assert</span> <span class="s1">&#39;int&#39;</span> <span class="ow">in</span> <span class="n">dtype</span> <span class="ow">or</span> <span class="s1">&#39;float&#39;</span> <span class="ow">in</span> <span class="n">dtype</span> <span class="ow">or</span> <span class="s1">&#39;bool&#39;</span> <span class="ow">in</span> <span class="n">dtype</span>
 
 
 <span class="c1"># noinspection PyShadowingNames</span>
 <span class="k">def</span> <span class="nf">_assert_int_dtype_correct_formatting</span><span class="p">(</span><span class="n">dtype</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="nb">str</span><span class="p">]):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    dtype</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">assert</span> <span class="s1">&#39;int&#39;</span> <span class="ow">in</span> <span class="n">dtype</span>
 
 
 <span class="c1"># noinspection PyShadowingNames</span>
 <span class="k">def</span> <span class="nf">_assert_float_dtype_correct_formatting</span><span class="p">(</span><span class="n">dtype</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="nb">str</span><span class="p">]):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    dtype</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">assert</span> <span class="s1">&#39;float&#39;</span> <span class="ow">in</span> <span class="n">dtype</span>
 
 
 <span class="c1"># noinspection PyShadowingNames</span>
-<div class="viewcode-block" id="default_int_dtype"><a class="viewcode-back" href="../../../../functional/ivy/data_type/default_int_dtype.html#ivy.functional.ivy.data_type.default_int_dtype">[docs]</a><span class="k">def</span> <span class="nf">default_int_dtype</span><span class="p">(</span><span class="nb">input</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">int_dtype</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">as_str</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>\
+<div class="viewcode-block" id="default_int_dtype"><a class="viewcode-back" href="../../../../functional/ivy/data_type/default_int_dtype.html#ivy.functional.ivy.data_type.default_int_dtype">[docs]</a><span class="k">def</span> <span class="nf">default_int_dtype</span><span class="p">(</span><span class="nb">input</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">int_dtype</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">as_str</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> \
         <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Return the input int dtype if provided, otherwise return the global default int dtype.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    input</span>
+<span class="sd">         (Default value = None)</span>
+<span class="sd">    int_dtype</span>
+
+<span class="sd">    str]</span>
+<span class="sd">         (Default value = None)</span>
+<span class="sd">    as_str</span>
+<span class="sd">         (Default value = False)</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">        Return the input int dtype if provided, otherwise return the global default int dtype.</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">int_dtype</span><span class="p">):</span>
         <span class="n">_assert_int_dtype_correct_formatting</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">dtype_to_str</span><span class="p">(</span><span class="n">int_dtype</span><span class="p">))</span>
@@ -509,27 +599,27 @@
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
             <span class="n">ret</span> <span class="o">=</span> <span class="nb">input</span><span class="o">.</span><span class="n">dtype</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)):</span>
-            <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">nested_indices_where</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">&gt;</span> <span class="mi">9223372036854775807</span> <span class="ow">and</span> <span class="n">x</span><span class="o">!=</span><span class="n">ivy</span><span class="o">.</span><span class="n">inf</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">nested_indices_where</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span> <span class="o">&gt;</span> <span class="mi">9223372036854775807</span> <span class="ow">and</span> <span class="n">x</span> <span class="o">!=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">inf</span><span class="p">):</span>
                 <span class="n">ret</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">uint64</span>
-            <span class="k">elif</span> <span class="n">ivy</span><span class="o">.</span><span class="n">nested_indices_where</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">&gt;</span> <span class="mi">2147483647</span> <span class="ow">and</span> <span class="n">x</span><span class="o">!=</span><span class="n">ivy</span><span class="o">.</span><span class="n">inf</span><span class="p">):</span>
+            <span class="k">elif</span> <span class="n">ivy</span><span class="o">.</span><span class="n">nested_indices_where</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span> <span class="o">&gt;</span> <span class="mi">2147483647</span> <span class="ow">and</span> <span class="n">x</span> <span class="o">!=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">inf</span><span class="p">):</span>
                 <span class="n">ret</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">int64</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">def_dtype</span> <span class="o">=</span> <span class="n">default_dtype</span><span class="p">()</span>
                 <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_int_dtype</span><span class="p">(</span><span class="n">def_dtype</span><span class="p">):</span>
                     <span class="n">ret</span> <span class="o">=</span> <span class="n">def_dtype</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="n">ret</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">int32</span>     
+                    <span class="n">ret</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">int32</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">Number</span><span class="p">):</span>
-            <span class="k">if</span> <span class="nb">input</span> <span class="o">&gt;</span> <span class="mi">9223372036854775807</span> <span class="ow">and</span> <span class="nb">input</span><span class="o">!=</span><span class="n">ivy</span><span class="o">.</span><span class="n">inf</span> <span class="ow">and</span> <span class="n">ivy</span><span class="o">.</span><span class="n">backend</span> <span class="o">!=</span> <span class="s1">&#39;torch&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">input</span> <span class="o">&gt;</span> <span class="mi">9223372036854775807</span> <span class="ow">and</span> <span class="nb">input</span> <span class="o">!=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">inf</span> <span class="ow">and</span> <span class="n">ivy</span><span class="o">.</span><span class="n">backend</span> <span class="o">!=</span> <span class="s1">&#39;torch&#39;</span><span class="p">:</span>
                 <span class="n">ret</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">uint64</span>
-            <span class="k">elif</span> <span class="nb">input</span> <span class="o">&gt;</span> <span class="mi">2147483647</span> <span class="ow">and</span> <span class="nb">input</span><span class="o">!=</span><span class="n">ivy</span><span class="o">.</span><span class="n">inf</span><span class="p">:</span>
+            <span class="k">elif</span> <span class="nb">input</span> <span class="o">&gt;</span> <span class="mi">2147483647</span> <span class="ow">and</span> <span class="nb">input</span> <span class="o">!=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">inf</span><span class="p">:</span>
                 <span class="n">ret</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">int64</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">def_dtype</span> <span class="o">=</span> <span class="n">default_dtype</span><span class="p">()</span>
                 <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_int_dtype</span><span class="p">(</span><span class="n">def_dtype</span><span class="p">):</span>
                     <span class="n">ret</span> <span class="o">=</span> <span class="n">def_dtype</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="n">ret</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">int32</span>     
+                    <span class="n">ret</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">int32</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">global</span> <span class="n">default_int_dtype_stack</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">default_int_dtype_stack</span><span class="p">:</span>
@@ -544,21 +634,38 @@
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">dtype_to_str</span><span class="p">(</span><span class="n">ret</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">dtype_from_str</span><span class="p">(</span><span class="n">ret</span><span class="p">)</span></div>
 
-<span class="c1">#len(get_binary_from_float(x)) &gt;24 and int(get_binary_from_float(x)[24:])&gt;0)</span>
+
+<span class="c1"># len(get_binary_from_float(x)) &gt;24 and int(get_binary_from_float(x)[24:])&gt;0)</span>
 <span class="k">def</span> <span class="nf">_check_float64</span><span class="p">(</span><span class="nb">input</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">math</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="nb">input</span><span class="p">):</span>
-        <span class="n">tmp</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="nb">input</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)</span>
+        <span class="n">tmp</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="nb">input</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)</span>
         <span class="n">Exponent</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="nb">input</span><span class="p">))))</span> <span class="k">if</span> <span class="nb">input</span> <span class="o">!=</span> <span class="mi">0</span> <span class="k">else</span> <span class="mi">0</span>
-        <span class="n">mant</span> <span class="o">=</span> <span class="nb">bin</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">tmp</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;0b&#39;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="p">(</span><span class="nb">input</span><span class="o">&gt;</span><span class="mf">3.4028235</span> <span class="o">*</span> <span class="mi">10</span><span class="o">**</span><span class="mi">38</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">mant</span><span class="p">)</span> <span class="o">&gt;</span><span class="mi">24</span> <span class="ow">and</span> <span class="nb">int</span><span class="p">(</span><span class="n">mant</span><span class="p">[</span><span class="mi">24</span><span class="p">:])</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">Exponent</span> <span class="o">&lt;</span> <span class="o">-</span><span class="mi">126</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">Exponent</span><span class="o">&gt;</span><span class="mi">127</span><span class="p">)</span> 
+        <span class="n">mant</span> <span class="o">=</span> <span class="nb">bin</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">tmp</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;0b&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">(</span><span class="nb">input</span> <span class="o">&gt;</span> <span class="mf">3.4028235</span> <span class="o">*</span> <span class="mi">10</span> <span class="o">**</span> <span class="mi">38</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">mant</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">24</span> <span class="ow">and</span> <span class="nb">int</span><span class="p">(</span><span class="n">mant</span><span class="p">[</span><span class="mi">24</span><span class="p">:])</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">Exponent</span> <span class="o">&lt;</span> <span class="o">-</span><span class="mi">126</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span>
+                <span class="n">Exponent</span> <span class="o">&gt;</span> <span class="mi">127</span><span class="p">)</span>
     <span class="k">return</span> <span class="kc">False</span>
 
 
 <span class="c1"># noinspection PyShadowingNames</span>
-<div class="viewcode-block" id="default_float_dtype"><a class="viewcode-back" href="../../../../functional/ivy/data_type/default_float_dtype.html#ivy.functional.ivy.data_type.default_float_dtype">[docs]</a><span class="k">def</span> <span class="nf">default_float_dtype</span><span class="p">(</span><span class="nb">input</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span><span class="n">float_dtype</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">as_str</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>\
+<div class="viewcode-block" id="default_float_dtype"><a class="viewcode-back" href="../../../../functional/ivy/data_type/default_float_dtype.html#ivy.functional.ivy.data_type.default_float_dtype">[docs]</a><span class="k">def</span> <span class="nf">default_float_dtype</span><span class="p">(</span><span class="nb">input</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">float_dtype</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">as_str</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> \
         <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Return the input float dtype if provided, otherwise return the global default float dtype.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    input</span>
+<span class="sd">         (Default value = None)</span>
+<span class="sd">    float_dtype</span>
+
+<span class="sd">    str]</span>
+<span class="sd">         (Default value = None)</span>
+<span class="sd">    as_str</span>
+<span class="sd">         (Default value = False)</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">        Return the input float dtype if provided, otherwise return the global default float dtype.</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">float_dtype</span><span class="p">):</span>
         <span class="n">_assert_float_dtype_correct_formatting</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">dtype_to_str</span><span class="p">(</span><span class="n">float_dtype</span><span class="p">))</span>
@@ -569,14 +676,14 @@
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
             <span class="n">ret</span> <span class="o">=</span> <span class="nb">input</span><span class="o">.</span><span class="n">dtype</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)):</span>
-            <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">nested_indices_where</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span>  <span class="n">_check_float64</span><span class="p">(</span><span class="n">x</span><span class="p">)):</span>
+            <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">nested_indices_where</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">_check_float64</span><span class="p">(</span><span class="n">x</span><span class="p">)):</span>
                 <span class="n">ret</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">float64</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">def_dtype</span> <span class="o">=</span> <span class="n">default_dtype</span><span class="p">()</span>
                 <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_float_dtype</span><span class="p">(</span><span class="n">def_dtype</span><span class="p">):</span>
                     <span class="n">ret</span> <span class="o">=</span> <span class="n">def_dtype</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="n">ret</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">float32</span>     
+                    <span class="n">ret</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">float32</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">Number</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">_check_float64</span><span class="p">(</span><span class="nb">input</span><span class="p">):</span>
                 <span class="n">ret</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">float64</span>
@@ -585,7 +692,7 @@
                 <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_float_dtype</span><span class="p">(</span><span class="n">def_dtype</span><span class="p">):</span>
                     <span class="n">ret</span> <span class="o">=</span> <span class="n">def_dtype</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="n">ret</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">float32</span>     
+                    <span class="n">ret</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">float32</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">global</span> <span class="n">default_float_dtype_stack</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">default_float_dtype_stack</span><span class="p">:</span>
@@ -602,10 +709,25 @@
 
 
 <span class="c1"># noinspection PyShadowingNames</span>
-<div class="viewcode-block" id="default_dtype"><a class="viewcode-back" href="../../../../functional/ivy/data_type/default_dtype.html#ivy.functional.ivy.data_type.default_dtype">[docs]</a><span class="k">def</span> <span class="nf">default_dtype</span><span class="p">(</span><span class="n">dtype</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">item</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">as_str</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>\
+<div class="viewcode-block" id="default_dtype"><a class="viewcode-back" href="../../../../functional/ivy/data_type/default_dtype.html#ivy.functional.ivy.data_type.default_dtype">[docs]</a><span class="k">def</span> <span class="nf">default_dtype</span><span class="p">(</span><span class="n">dtype</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">item</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">as_str</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> \
         <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Return the input dtype if provided, otherwise return the global default dtype.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    dtype</span>
+
+<span class="sd">    str]</span>
+<span class="sd">         (Default value = None)</span>
+<span class="sd">    item</span>
+<span class="sd">         (Default value = None)</span>
+<span class="sd">    as_str</span>
+<span class="sd">         (Default value = False)</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">        Return the input dtype if provided, otherwise return the global default dtype.</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">dtype</span><span class="p">):</span>
         <span class="n">_assert_dtype_correct_formatting</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">dtype_to_str</span><span class="p">(</span><span class="n">dtype</span><span class="p">))</span>
@@ -614,9 +736,9 @@
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">,</span> <span class="nb">dict</span><span class="p">))</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">item</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">pass</span>
         <span class="k">elif</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_float_dtype</span><span class="p">(</span><span class="n">item</span><span class="p">):</span>
-            <span class="k">return</span> <span class="n">default_float_dtype</span><span class="p">(</span><span class="n">item</span><span class="p">,</span><span class="n">as_str</span><span class="o">=</span><span class="n">as_str</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">default_float_dtype</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">as_str</span><span class="o">=</span><span class="n">as_str</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_int_dtype</span><span class="p">(</span><span class="n">item</span><span class="p">):</span>
-            <span class="k">return</span> <span class="n">default_int_dtype</span><span class="p">(</span><span class="n">item</span><span class="p">,</span><span class="n">as_str</span><span class="o">=</span><span class="n">as_str</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">default_int_dtype</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">as_str</span><span class="o">=</span><span class="n">as_str</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">as_str</span><span class="p">:</span>
             <span class="k">return</span> <span class="s1">&#39;bool&#39;</span>
         <span class="k">else</span><span class="p">:</span>
@@ -637,6 +759,16 @@
 
 <span class="c1"># noinspection PyShadowingNames</span>
 <div class="viewcode-block" id="set_default_dtype"><a class="viewcode-back" href="../../../../functional/ivy/data_type/set_default_dtype.html#ivy.functional.ivy.data_type.set_default_dtype">[docs]</a><span class="k">def</span> <span class="nf">set_default_dtype</span><span class="p">(</span><span class="n">dtype</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="nb">str</span><span class="p">]):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    dtype</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">dtype</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">dtype_to_str</span><span class="p">(</span><span class="n">dtype</span><span class="p">)</span>
     <span class="n">_assert_dtype_correct_formatting</span><span class="p">(</span><span class="n">dtype</span><span class="p">)</span>
     <span class="k">global</span> <span class="n">default_dtype_stack</span>
@@ -644,6 +776,7 @@
 
 
 <div class="viewcode-block" id="unset_default_dtype"><a class="viewcode-back" href="../../../../functional/ivy/data_type/unset_default_dtype.html#ivy.functional.ivy.data_type.unset_default_dtype">[docs]</a><span class="k">def</span> <span class="nf">unset_default_dtype</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot; &quot;&quot;&quot;</span>
     <span class="k">global</span> <span class="n">default_dtype_stack</span>
     <span class="k">if</span> <span class="n">default_dtype_stack</span><span class="p">:</span>
         <span class="n">default_dtype_stack</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span></div>
@@ -651,6 +784,16 @@
 
 <span class="c1"># noinspection PyShadowingNames</span>
 <div class="viewcode-block" id="set_default_int_dtype"><a class="viewcode-back" href="../../../../functional/ivy/data_type/set_default_int_dtype.html#ivy.functional.ivy.data_type.set_default_int_dtype">[docs]</a><span class="k">def</span> <span class="nf">set_default_int_dtype</span><span class="p">(</span><span class="n">int_dtype</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="nb">str</span><span class="p">]):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    int_dtype</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">int_dtype</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">dtype_to_str</span><span class="p">(</span><span class="n">int_dtype</span><span class="p">)</span>
     <span class="n">_assert_int_dtype_correct_formatting</span><span class="p">(</span><span class="n">int_dtype</span><span class="p">)</span>
     <span class="k">global</span> <span class="n">default_int_dtype_stack</span>
@@ -658,6 +801,7 @@
 
 
 <div class="viewcode-block" id="unset_default_int_dtype"><a class="viewcode-back" href="../../../../functional/ivy/data_type/unset_default_int_dtype.html#ivy.functional.ivy.data_type.unset_default_int_dtype">[docs]</a><span class="k">def</span> <span class="nf">unset_default_int_dtype</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot; &quot;&quot;&quot;</span>
     <span class="k">global</span> <span class="n">default_int_dtype_stack</span>
     <span class="k">if</span> <span class="n">default_int_dtype_stack</span><span class="p">:</span>
         <span class="n">default_int_dtype_stack</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span></div>
@@ -665,6 +809,16 @@
 
 <span class="c1"># noinspection PyShadowingNames</span>
 <div class="viewcode-block" id="set_default_float_dtype"><a class="viewcode-back" href="../../../../functional/ivy/data_type/set_default_float_dtype.html#ivy.functional.ivy.data_type.set_default_float_dtype">[docs]</a><span class="k">def</span> <span class="nf">set_default_float_dtype</span><span class="p">(</span><span class="n">float_dtype</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="nb">str</span><span class="p">]):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    float_dtype</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">float_dtype</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">dtype_to_str</span><span class="p">(</span><span class="n">float_dtype</span><span class="p">)</span>
     <span class="n">_assert_float_dtype_correct_formatting</span><span class="p">(</span><span class="n">float_dtype</span><span class="p">)</span>
     <span class="k">global</span> <span class="n">default_float_dtype_stack</span>
@@ -672,30 +826,45 @@
 
 
 <div class="viewcode-block" id="unset_default_float_dtype"><a class="viewcode-back" href="../../../../functional/ivy/data_type/unset_default_float_dtype.html#ivy.functional.ivy.data_type.unset_default_float_dtype">[docs]</a><span class="k">def</span> <span class="nf">unset_default_float_dtype</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot; &quot;&quot;&quot;</span>
     <span class="k">global</span> <span class="n">default_float_dtype_stack</span>
     <span class="k">if</span> <span class="n">default_float_dtype_stack</span><span class="p">:</span>
         <span class="n">default_float_dtype_stack</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span></div>
 
 
 <span class="c1"># noinspection PyShadowingBuiltins</span>
-<div class="viewcode-block" id="closest_valid_dtype"><a class="viewcode-back" href="../../../../functional/ivy/data_type/closest_valid_dtype.html#ivy.functional.ivy.data_type.closest_valid_dtype">[docs]</a><span class="k">def</span> <span class="nf">closest_valid_dtype</span><span class="p">(</span><span class="nb">type</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">])</span>\
+<div class="viewcode-block" id="closest_valid_dtype"><a class="viewcode-back" href="../../../../functional/ivy/data_type/closest_valid_dtype.html#ivy.functional.ivy.data_type.closest_valid_dtype">[docs]</a><span class="k">def</span> <span class="nf">closest_valid_dtype</span><span class="p">(</span><span class="nb">type</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">])</span> \
         <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Determines the closest valid datatype to the datatype passed as input.</span>
+    <span class="sd">&quot;&quot;&quot;Determines the closest valid datatype to the datatype passed as input.</span>
 
-<span class="sd">    :param type: The data type for which to check the closest valid type for.</span>
-<span class="sd">    :return: The closest valid data type as a native ivy.Dtype</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    type</span>
+<span class="sd">        The data type for which to check the closest valid type for.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">     -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        The closest valid data type as a native ivy.Dtype</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="nb">type</span><span class="p">)</span><span class="o">.</span><span class="n">closest_valid_dtype</span><span class="p">(</span><span class="nb">type</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="is_int_dtype"><a class="viewcode-back" href="../../../../functional/ivy/data_type/is_int_dtype.html#ivy.functional.ivy.data_type.is_int_dtype">[docs]</a><span class="k">def</span> <span class="nf">is_int_dtype</span><span class="p">(</span><span class="n">dtype_in</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">Number</span><span class="p">])</span>\
+<div class="viewcode-block" id="is_int_dtype"><a class="viewcode-back" href="../../../../functional/ivy/data_type/is_int_dtype.html#ivy.functional.ivy.data_type.is_int_dtype">[docs]</a><span class="k">def</span> <span class="nf">is_int_dtype</span><span class="p">(</span><span class="n">dtype_in</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">Number</span><span class="p">])</span> \
         <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Determine whether the input data type is an int data-type.</span>
+    <span class="sd">&quot;&quot;&quot;Determine whether the input data type is an int data-type.</span>
 
-<span class="sd">    :param dtype_in: Datatype to test</span>
-<span class="sd">    :return: Whether or not the data type is an integer data type</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    dtype_in</span>
+<span class="sd">        Datatype to test</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">     -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        Whether or not the data type is an integer data type</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_native_array</span><span class="p">(</span><span class="n">dtype_in</span><span class="p">):</span>
         <span class="n">dtype_in</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="n">dtype_in</span><span class="p">)</span>
@@ -708,13 +877,20 @@
     <span class="k">return</span> <span class="s1">&#39;int&#39;</span> <span class="ow">in</span> <span class="n">dtype_to_str</span><span class="p">(</span><span class="n">dtype_in</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="is_float_dtype"><a class="viewcode-back" href="../../../../functional/ivy/data_type/is_float_dtype.html#ivy.functional.ivy.data_type.is_float_dtype">[docs]</a><span class="k">def</span> <span class="nf">is_float_dtype</span><span class="p">(</span><span class="n">dtype_in</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">Number</span><span class="p">])</span>\
+<div class="viewcode-block" id="is_float_dtype"><a class="viewcode-back" href="../../../../functional/ivy/data_type/is_float_dtype.html#ivy.functional.ivy.data_type.is_float_dtype">[docs]</a><span class="k">def</span> <span class="nf">is_float_dtype</span><span class="p">(</span><span class="n">dtype_in</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">Number</span><span class="p">])</span> \
         <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Determine whether the input data type is an float data-type.</span>
+    <span class="sd">&quot;&quot;&quot;Determine whether the input data type is an float data-type.</span>
 
-<span class="sd">    :param dtype_in: Datatype to test</span>
-<span class="sd">    :return: Whether or not the data type is a floating point data type</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    dtype_in</span>
+<span class="sd">        Datatype to test</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">     -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        Whether or not the data type is a floating point data type</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_native_array</span><span class="p">(</span><span class="n">dtype_in</span><span class="p">):</span>
         <span class="n">dtype_in</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="n">dtype_in</span><span class="p">)</span>
@@ -734,52 +910,72 @@
 <span class="sd">       If provided mixed dtypes (e.g., integer and floating-point), the returned dtype will be implementation-specific.</span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    arrays_and_dtypes:</span>
+<span class="sd">    arrays_and_dtypes</span>
 <span class="sd">        an arbitrary number of input arrays and/or dtypes.</span>
 <span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    out:</span>
+<span class="sd">     -------</span>
+<span class="sd">    ret</span>
 <span class="sd">        the dtype resulting from an operation involving the input arrays and dtypes.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">arrays_and_dtypes</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">result_type</span><span class="p">(</span><span class="n">arrays_and_dtypes</span><span class="p">)</span></div>
 
-  
-<div class="viewcode-block" id="valid_dtype"><a class="viewcode-back" href="../../../../functional/ivy/data_type/valid_dtype.html#ivy.functional.ivy.data_type.valid_dtype">[docs]</a><span class="k">def</span> <span class="nf">valid_dtype</span><span class="p">(</span><span class="n">dtype_in</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">])</span>\
-        <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Determines whether the provided data type is support by the current framework.</span>
 
-<span class="sd">    :param dtype_in: The data type for which to check for backend support</span>
-<span class="sd">    :return: Boolean, whether or not the data-type string is supported.</span>
+<div class="viewcode-block" id="valid_dtype"><a class="viewcode-back" href="../../../../functional/ivy/data_type/valid_dtype.html#ivy.functional.ivy.data_type.valid_dtype">[docs]</a><span class="k">def</span> <span class="nf">valid_dtype</span><span class="p">(</span><span class="n">dtype_in</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">])</span> \
+        <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Determines whether the provided data type is support by the current framework.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    dtype_in</span>
+<span class="sd">        The data type for which to check for backend support</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">     -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        Boolean, whether or not the data-type string is supported.</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">dtype_in</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">return</span> <span class="kc">True</span>
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">dtype_to_str</span><span class="p">(</span><span class="n">dtype_in</span><span class="p">)</span> <span class="ow">in</span> <span class="n">ivy</span><span class="o">.</span><span class="n">valid_dtype_strs</span></div>
 
 
-<div class="viewcode-block" id="invalid_dtype"><a class="viewcode-back" href="../../../../functional/ivy/data_type/invalid_dtype.html#ivy.functional.ivy.data_type.invalid_dtype">[docs]</a><span class="k">def</span> <span class="nf">invalid_dtype</span><span class="p">(</span><span class="n">dtype_in</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">])</span>\
+<div class="viewcode-block" id="invalid_dtype"><a class="viewcode-back" href="../../../../functional/ivy/data_type/invalid_dtype.html#ivy.functional.ivy.data_type.invalid_dtype">[docs]</a><span class="k">def</span> <span class="nf">invalid_dtype</span><span class="p">(</span><span class="n">dtype_in</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">])</span> \
         <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Determines whether the provided data type is not support by the current framework.</span>
+    <span class="sd">&quot;&quot;&quot;Determines whether the provided data type is not support by the current framework.</span>
 
-<span class="sd">    :param dtype_in: The data type for which to check for backend non-support</span>
-<span class="sd">    :return: Boolean, whether the data-type string is un-supported.</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    dtype_in</span>
+<span class="sd">        The data type for which to check for backend non-support</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">     -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        Boolean, whether the data-type string is un-supported.</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">dtype_in</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">return</span> <span class="kc">False</span>
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">dtype_to_str</span><span class="p">(</span><span class="n">dtype_in</span><span class="p">)</span> <span class="ow">in</span> <span class="n">ivy</span><span class="o">.</span><span class="n">invalid_dtype_strs</span></div>
 
 
-<div class="viewcode-block" id="convert_dtype"><a class="viewcode-back" href="../../../../functional/ivy/data_type/convert_dtype.html#ivy.functional.ivy.data_type.convert_dtype">[docs]</a><span class="k">def</span> <span class="nf">convert_dtype</span><span class="p">(</span><span class="n">dtype_in</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="n">backend</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span>\
+<div class="viewcode-block" id="convert_dtype"><a class="viewcode-back" href="../../../../functional/ivy/data_type/convert_dtype.html#ivy.functional.ivy.data_type.convert_dtype">[docs]</a><span class="k">def</span> <span class="nf">convert_dtype</span><span class="p">(</span><span class="n">dtype_in</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="n">backend</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> \
         <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Converts a data type from one backend framework representation to another.</span>
+    <span class="sd">&quot;&quot;&quot;Converts a data type from one backend framework representation to another.</span>
 
-<span class="sd">    :param dtype_in: The data-type to convert, in the specified backend representation</span>
-<span class="sd">    :type dtype_in: data type</span>
-<span class="sd">    :param backend: The backend framework the dtype_in is represented in.</span>
-<span class="sd">    :type backend: str</span>
-<span class="sd">    :return: The data-type in the current ivy backend format</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    dtype_in</span>
+<span class="sd">        The data-type to convert, in the specified backend representation</span>
+<span class="sd">    backend</span>
+<span class="sd">        The backend framework the dtype_in is represented in.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">     -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        The data-type in the current ivy backend format</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">valid_backends</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;numpy&#39;</span><span class="p">,</span> <span class="s1">&#39;jax&#39;</span><span class="p">,</span> <span class="s1">&#39;tensorflow&#39;</span><span class="p">,</span> <span class="s1">&#39;torch&#39;</span><span class="p">,</span> <span class="s1">&#39;mxnet&#39;</span><span class="p">]</span>
     <span class="k">if</span> <span class="n">backend</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">valid_backends</span><span class="p">:</span>

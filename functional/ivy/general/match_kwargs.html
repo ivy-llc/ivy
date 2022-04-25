@@ -300,18 +300,20 @@
 <dt id="ivy.functional.ivy.general.match_kwargs">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">match_kwargs</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">kwargs</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">receivers</span></em>, <em class="sig-param"><span class="n">allow_duplicates</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/general.html#match_kwargs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.general.match_kwargs" title="Permalink to this definition">¶</a></dt>
 <dd><p>Match keyword arguments to either class or function receivers.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>kwargs</strong> (<em>dict of any</em>) – Keyword arguments to match.</p></li>
-<li><p><strong>receivers</strong> (<em>callables and/or classes</em>) – Functions and/or classes to match the keyword arguments to.</p></li>
-<li><p><strong>allow_duplicates</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to allow one keyword argument to be used for multiple receivers. Default is False.</p></li>
-</ul>
+<dl class="simple">
+<dt>kwargs </dt><dd><p>Keyword arguments to match.</p>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Sequence of keyword arguments split as best as possible.</p>
+<dt>receivers </dt><dd><p>Functions and/or classes to match the keyword arguments to.</p>
+</dd>
+<dt>allow_duplicates </dt><dd><p>Whether to allow one keyword argument to be used for multiple receivers. Default is False.</p>
 </dd>
 </dl>
+<blockquote>
+<div><dl class="simple">
+<dt>ret</dt><dd><p>Sequence of keyword arguments split as best as possible.</p>
+</dd>
+</dl>
+</div></blockquote>
 </dd></dl>
 
 <div class="line-block">
