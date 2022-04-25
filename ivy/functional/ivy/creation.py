@@ -11,7 +11,7 @@ from ivy.framework_handler import current_framework as _cur_framework
 # Array API Standard #
 # -------------------#
 
-def arange(stop: Number, start: Number = 0, step: Number = 1, dtype: ivy.Dtype = None, dev: ivy.Device = None,
+def arange(start: Number, stop: Number = None, step: Number = 1, dtype: ivy.Dtype = None, dev: ivy.Device = None,
            ) -> Union[ivy.Array, ivy.NativeArray]:
     """Returns evenly spaced values within a given interval, with the spacing being specified.
 
@@ -48,7 +48,7 @@ def arange(stop: Number, start: Number = 0, step: Number = 1, dtype: ivy.Dtype =
         Because of floating point overflow, this rule may result in the last element of out being greater than stop.
 
     """
-    return _cur_framework().arange(stop, start, step, dtype, dev)
+    return _cur_framework().arange(start, stop, step, dtype, dev)
 
 
 def asarray(x: Union[ivy.Array, ivy.NativeArray, List[Number], Tuple[Number], np.ndarray],

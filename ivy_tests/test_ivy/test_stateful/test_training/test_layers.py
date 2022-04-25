@@ -676,66 +676,66 @@ def test_conv3d_transpose_layer_training(x_n_fs_n_pad_n_outshp_n_oc, with_v, dty
 # LSTM #
 # -----#
 
-# @pytest.mark.parametrize(
-#     "b_t_ic_hc_otf_sctv", [
-#         (2, 3, 4, 5, [0.93137765, 0.9587628, 0.96644664, 0.93137765, 0.9587628, 0.96644664], 3.708991),
-#     ])
-# @pytest.mark.parametrize(
-#     "with_v", [False])
-# @pytest.mark.parametrize(
-#     "dtype", ['float32'])
-# @pytest.mark.parametrize(
-#     "tensor_fn", [ivy.array])
-# def test_lstm_layer_training(b_t_ic_hc_otf_sctv, with_v, dtype, tensor_fn, dev, compile_graph, call):
-#     # smoke test
-#     if call is helpers.np_call:
-#         # NumPy does not support gradients
-#         pytest.skip()
-#     if call is helpers.mx_call:
-#         # to_scalar syncrhonization issues
-#         pytest.skip()
-#     # smoke test
-#     b, t, input_channels, hidden_channels, output_true_flat, state_c_true_val = b_t_ic_hc_otf_sctv
-#     x = ivy.astype(ivy.linspace(ivy.zeros([b, t], device=dev), ivy.ones([b, t], device=dev), input_channels),
-#                  'float32')
-#     if with_v:
-#         kernel = ivy.variable(ivy.ones([input_channels, 4*hidden_channels], device=dev)*0.5)
-#         recurrent_kernel = ivy.variable(ivy.ones([hidden_channels, 4*hidden_channels], device=dev)*0.5)
-#         v = ivy.Container({'input': {'layer_0': {'w': kernel}},
-#                        'recurrent': {'layer_0': {'w': recurrent_kernel}}})
-#     else:
-#         v = None
-#     lstm_layer = ivy.LSTM(input_channels, hidden_channels, dev=dev, v=v)
-#
-#     def loss_fn(x_, v_):
-#         out, (state_h, state_c) = lstm_layer(x_, v=v_)
-#         return ivy.mean(out)
-#
-#     def train_step(x_, v_):
-#         lss, grds = ivy.execute_with_gradients(lambda _v_: loss_fn(x_, _v_), v_)
-#         v_ = ivy.gradient_descent_update(lstm_layer.v, grds, 1e-3)
-#         return lss, grds, v_
-#
-#     # train
-#     loss_tm1 = 1e12
-#     loss = None
-#     grads = None
-#     for i in range(10):
-#         loss, grads, lstm_layer.v = train_step(x, lstm_layer.v)
-#         assert ivy.to_scalar(loss) < ivy.to_scalar(loss_tm1)
-#         loss_tm1 = loss
-#
-#     # type test
-#     assert ivy.is_array(loss)
-#     assert isinstance(grads, ivy.Container)
-#     # cardinality test
-#     if call is helpers.mx_call:
-#         # mxnet slicing cannot reduce dimension to zero
-#         assert loss.shape == (1,)
-#     else:
-#         assert loss.shape == ()
-#     # value test
-#     assert (abs(grads).max() > 0).all_true()
+@pytest.mark.parametrize(
+    "b_t_ic_hc_otf_sctv", [
+        (2, 3, 4, 5, [0.93137765, 0.9587628, 0.96644664, 0.93137765, 0.9587628, 0.96644664], 3.708991),
+    ])
+@pytest.mark.parametrize(
+    "with_v", [False])
+@pytest.mark.parametrize(
+    "dtype", ['float32'])
+@pytest.mark.parametrize(
+    "tensor_fn", [ivy.array])
+def test_lstm_layer_training(b_t_ic_hc_otf_sctv, with_v, dtype, tensor_fn, dev, compile_graph, call):
+    # smoke test
+    if call is helpers.np_call:
+        # NumPy does not support gradients
+        pytest.skip()
+    if call is helpers.mx_call:
+        # to_scalar syncrhonization issues
+        pytest.skip()
+    # smoke test
+    b, t, input_channels, hidden_channels, output_true_flat, state_c_true_val = b_t_ic_hc_otf_sctv
+    x = ivy.astype(ivy.linspace(ivy.zeros([b, t], device=dev), ivy.ones([b, t], device=dev), input_channels),
+                 'float32')
+    if with_v:
+        kernel = ivy.variable(ivy.ones([input_channels, 4*hidden_channels], device=dev)*0.5)
+        recurrent_kernel = ivy.variable(ivy.ones([hidden_channels, 4*hidden_channels], device=dev)*0.5)
+        v = ivy.Container({'input': {'layer_0': {'w': kernel}},
+                       'recurrent': {'layer_0': {'w': recurrent_kernel}}})
+    else:
+        v = None
+    lstm_layer = ivy.LSTM(input_channels, hidden_channels, dev=dev, v=v)
+
+    def loss_fn(x_, v_):
+        out, (state_h, state_c) = lstm_layer(x_, v=v_)
+        return ivy.mean(out)
+
+    def train_step(x_, v_):
+        lss, grds = ivy.execute_with_gradients(lambda _v_: loss_fn(x_, _v_), v_)
+        v_ = ivy.gradient_descent_update(lstm_layer.v, grds, 1e-3)
+        return lss, grds, v_
+
+    # train
+    loss_tm1 = 1e12
+    loss = None
+    grads = None
+    for i in range(10):
+        loss, grads, lstm_layer.v = train_step(x, lstm_layer.v)
+        assert ivy.to_scalar(loss) < ivy.to_scalar(loss_tm1)
+        loss_tm1 = loss
+
+    # type test
+    assert ivy.is_array(loss)
+    assert isinstance(grads, ivy.Container)
+    # cardinality test
+    if call is helpers.mx_call:
+        # mxnet slicing cannot reduce dimension to zero
+        assert loss.shape == (1,)
+    else:
+        assert loss.shape == ()
+    # value test
+    assert (abs(grads).max() > 0).all_true()
 
 
 # Sequential #
