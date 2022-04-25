@@ -102,18 +102,17 @@ def expand_dims(x: Union[ivy.Array, ivy.NativeArray],
     Returns
     -------
     ret
-
         an array with its dimension added by one in a given ``axis``.
 
     Examples 
     --------
-    >>> x = ivy.array([[0,1],[1,0]])
+    >>> x = ivy.array([[0, 1], [1, 0]])
     >>> y = ivy.expand_dims(x)
     >>> print(y)
-    ivy.array([[[0,1],
-                [1,0]]])
+    ivy.array([[[0, 1],
+                [1, 0]]])
     >>> print(x.shape, y.shape)
-    (2,2) (1,2,2)
+    (2, 2) (1, 2, 2)
 
     """
     return _cur_framework(x).expand_dims(x, axis, out)
