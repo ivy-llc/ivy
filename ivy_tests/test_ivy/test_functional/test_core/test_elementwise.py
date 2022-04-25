@@ -72,6 +72,8 @@ def test_acos(dtype, as_variable, with_out, num_positional_args, native_array, c
 @pytest.mark.parametrize(
     "native_array", [True, False])
 def test_add(dtype, as_variable, with_out, native_array):
+    # Doc string test
+    helpers.docstring_examples_run(ivy.add)
     if ivy.current_framework_str() == 'numpy' and dtype == 'float16':
         pytest.skip("numpy array api doesnt support float16")
     if dtype in ivy.invalid_dtype_strs:
@@ -102,6 +104,8 @@ def test_add(dtype, as_variable, with_out, native_array):
             # these frameworks do not support native inplace updates
             return
         assert ret.data is (out if native_array else out.data)
+
+
 
 
 # asin
