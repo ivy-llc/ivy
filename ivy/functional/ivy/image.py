@@ -1,16 +1,19 @@
+"""
+Collection of image Ivy functions.
+"""
+
 # local
 import ivy as ivy
 import numpy as _np
 from operator import mul as _mul
 from functools import reduce as _reduce
 from ivy.framework_handler import current_framework as _cur_framework
-from typing import Union, Tuple, List
+from typing import Union, List, Tuple
 
 
 # Extra #
 # ------#
 
-<<<<<<< HEAD
 def stack_images(images: List[Union[ivy.Array, ivy.Array, ivy.NativeArray]],
                  desired_aspect_ratio: Tuple[int, int] = (1, 1)) -> ivy.Array:
     """
@@ -44,23 +47,6 @@ def stack_images(images: List[Union[ivy.Array, ivy.Array, ivy.NativeArray]],
             [1., 1., 1.],
             [0., 0., 0.],
             [0., 0., 0.]]]
-=======
-def stack_images(images, desired_aspect_ratio=(1, 1)):
-    """Stacks a group of images into a combined windowed image, fitting the desired aspect ratio as closely as possible.
-
-    Parameters
-    ----------
-    images
-        Sequence of image arrays to be stacked *[batch_shape,height,width,dims]* .
-    desired_aspect_ratio
-        Desired aspect ratio of stacked image. (Default value = (1)
-
-    Returns
-    -------
-     ret
-        Stacked image, suitable for viewing in a single window.
-
->>>>>>> 9caf4cb44a302c0ba594d99a06063f2f3d055d9f
     """
     return _cur_framework(images[0]).stack_images(images, desired_aspect_ratio)
 
@@ -185,7 +171,7 @@ def random_crop(x, crop_size, batch_shape=None, image_dims=None):
     y_offsets = _np.random.randint(0, margins[1] + 1, [flat_batch_size]).tolist()
 
     # list of 1 x NH x NW x F
-    cropped_list = [img[..., xo:xo+crop_size[0], yo:yo+crop_size[1], :] for img, xo, yo
+    cropped_list = [img[..., xo:xo + crop_size[0], yo:yo + crop_size[1], :] for img, xo, yo
                     in zip(ivy.unstack(x_flat, 0, True), x_offsets, y_offsets)]
 
     # FBS x NH x NW x F
@@ -195,7 +181,7 @@ def random_crop(x, crop_size, batch_shape=None, image_dims=None):
     return ivy.reshape(flat_cropped, batch_shape + crop_size + [num_channels])
 
 
-def linear_resample(x: Union[ivy.Array, ivy.NativeArray], num_samples: int, axis: int = -1)\
+def linear_resample(x: Union[ivy.Array, ivy.NativeArray], num_samples: int, axis: int = -1) \
         -> Union[ivy.Array, ivy.NativeArray]:
     """Performs linear re-sampling on input image.
 
