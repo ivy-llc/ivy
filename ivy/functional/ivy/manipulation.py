@@ -88,25 +88,25 @@ def expand_dims(x: Union[ivy.Array, ivy.NativeArray],
                 out: Optional[Union[ivy.Array, ivy.NativeArray]] = None) \
         -> ivy.Array:
     """
-    Expands the shape of an array.
-    Inserts a new axis that will appear at the axis position in the expanded array shape.
+    Expands the shape of an array by inserting a new axis with the size of one. This new axis will appear at the ``axis`` position in the expanded array shape.
     
     Parameters
     ----------
-    x:
+    x
         input array.
-    axis:
-        position in the axes the dimension to be added on the expanded dims. If ``x`` has the rank of ``N``, the ``axis`` need to be between ``[-N-1, N]``. Default: ``0``.
-    out:
+    axis
+        position in the expanded array where a new axis (dimension) of size one will be added. If array ``x`` has the rank of ``N``, the ``axis`` need to be between ``[-N-1, N]``. Default: ``0``.
+    out
         optional output array, for writing the result to. It must have a shape that the inputs broadcast to.
 
     Returns
     -------
-    return:
-        an array with its dimension added by one in a given ``axis``
+    ret
 
-    Examples:  
-    
+        an array with its dimension added by one in a given ``axis``.
+
+    Examples 
+    --------
     >>> x = ivy.array([[0,1],[1,0]])
     >>> y = ivy.expand_dims(x)
     >>> print(y)
@@ -114,6 +114,7 @@ def expand_dims(x: Union[ivy.Array, ivy.NativeArray],
                 [1,0]]])
     >>> print(x.shape, y.shape)
     (2,2) (1,2,2)
+
     """
     return _cur_framework(x).expand_dims(x, axis, out)
 
