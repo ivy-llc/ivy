@@ -4,8 +4,10 @@ Collection of MXNet random functions, wrapped to fit Ivy syntax and signature.
 
 # global
 import mxnet as mx
+from typing import Optional, Union, Tuple
 
 # local
+import ivy
 from ivy.functional.ivy.device import default_device
 # noinspection PyProtectedMember
 from ivy.functional.backends.mxnet import _mxnet_init_context
@@ -16,7 +18,11 @@ from ivy.functional.backends.mxnet import _1_dim_array_to_flat_array
 # Extra #
 # ------#
 
-def random_uniform(low=0., high=1., shape=None, dev=None):
+def random_uniform(low: float = 0.0,
+                   high: float = 1.0,
+                   shape: Optional[Union[int, Tuple[int, ...]]] = None,
+                   dev: Optional[ivy.Device] = None)\
+        -> mx.ndarray.ndarray.NDArray:
     if isinstance(low, mx.nd.NDArray):
         low = low.asscalar()
     if isinstance(high, mx.nd.NDArray):

@@ -15,49 +15,73 @@ from typing import Union
 # ------#
 
 def stack_images(images, desired_aspect_ratio=(1, 1)):
-    """
-    Stacks a group of images into a combined windowed image, fitting the desired aspect ratio as closely as possible.
+    """Stacks a group of images into a combined windowed image, fitting the desired aspect ratio as closely as possible.
 
-    :param images: Sequence of image arrays to be stacked *[batch_shape,height,width,dims]* .
-    :type images: sequence of arrays
-    :param desired_aspect_ratio: Desired aspect ratio of stacked image.
-    :type desired_aspect_ratio: sequence of ints
-    :return: Stacked image, suitable for viewing in a single window.
+    Parameters
+    ----------
+    images
+        Sequence of image arrays to be stacked *[batch_shape,height,width,dims]* .
+    desired_aspect_ratio
+        Desired aspect ratio of stacked image. (Default value = (1)
+
+    Returns
+    -------
+     ret
+        Stacked image, suitable for viewing in a single window.
+
     """
     return _cur_framework(images[0]).stack_images(images, desired_aspect_ratio)
 
 
 def bilinear_resample(x, warp):
-    """
-    Performs bilinearly re-sampling on input image.
+    """Performs bilinearly re-sampling on input image.
 
-    :param x: Input image *[batch_shape,h,w,dims]*.
-    :type x: array
-    :param warp: Warp array *[batch_shape,num_samples,2]*
-    :type warp: array
-    :return: Image after bilinear re-sampling.
+    Parameters
+    ----------
+    x
+        Input image *[batch_shape,h,w,dims]*.
+    warp
+        Warp array *[batch_shape,num_samples,2]*
+
+    Returns
+    -------
+     ret
+        Image after bilinear re-sampling.
+
     """
     return _cur_framework(x).bilinear_resample(x, warp)
 
 
 def gradient_image(x):
-    """
-    Computes image gradients (dy, dx) for each channel.
+    """Computes image gradients (dy, dx) for each channel.
 
-    :param x: Input image *[batch_shape, h, w, d]* .
-    :type x: array
-    :return: Gradient images dy *[batch_shape,h,w,d]* and dx *[batch_shape,h,w,d]* .
+    Parameters
+    ----------
+    x
+        Input image *[batch_shape, h, w, d]* .
+
+    Returns
+    -------
+     ret
+        Gradient images dy *[batch_shape,h,w,d]* and dx *[batch_shape,h,w,d]* .
+
     """
     return _cur_framework(x).gradient_image(x)
 
 
 def float_img_to_uint8_img(x):
-    """
-    Converts an image of floats into a bit-cast 4-channel image of uint8s, which can be saved to disk.
+    """Converts an image of floats into a bit-cast 4-channel image of uint8s, which can be saved to disk.
 
-    :param x: Input float image *[batch_shape,h,w]*.
-    :type x: array
-    :return: The new encoded uint8 image *[batch_shape,h,w,4]* .
+    Parameters
+    ----------
+    x
+        Input float image *[batch_shape,h,w]*.
+
+    Returns
+    -------
+     ret
+        The new encoded uint8 image *[batch_shape,h,w,4]* .
+
     """
     x_np = ivy.to_numpy(x)
     x_shape = x_np.shape
@@ -67,12 +91,18 @@ def float_img_to_uint8_img(x):
 
 
 def uint8_img_to_float_img(x):
-    """
-    Converts an image of uint8 values into a bit-cast float image.
+    """Converts an image of uint8 values into a bit-cast float image.
 
-    :param x: Input uint8 image *[batch_shape,h,w,4]*.
-    :type x: array
-    :return: The new float image *[batch_shape,h,w]*
+    Parameters
+    ----------
+    x
+        Input uint8 image *[batch_shape,h,w,4]*.
+
+    Returns
+    -------
+     ret
+        The new float image *[batch_shape,h,w]*
+
     """
     x_np = ivy.to_numpy(x)
     x_shape = x_np.shape
@@ -82,18 +112,24 @@ def uint8_img_to_float_img(x):
 
 
 def random_crop(x, crop_size, batch_shape=None, image_dims=None):
-    """
-    Randomly crops the input images.
+    """Randomly crops the input images.
 
-    :param x: Input images to crop *[batch_shape,h,w,f]*
-    :type x: array
-    :param crop_size: The 2D crop size.
-    :type crop_size: sequence of ints
-    :param batch_shape: Shape of batch. Inferred from inputs if None.
-    :type batch_shape: sequence of ints, optional
-    :param image_dims: Image dimensions. Inferred from inputs in None.
-    :type image_dims: sequence of ints, optional
-    :return: The new cropped image *[batch_shape,nh,nw,f]*
+    Parameters
+    ----------
+    x
+        Input images to crop *[batch_shape,h,w,f]*
+    crop_size
+        The 2D crop size.
+    batch_shape
+        Shape of batch. Inferred from inputs if None. (Default value = None)
+    image_dims
+        Image dimensions. Inferred from inputs in None. (Default value = None)
+
+    Returns
+    -------
+     ret
+        The new cropped image *[batch_shape,nh,nw,f]*
+
     """
 
     x_shape = x.shape
@@ -129,15 +165,21 @@ def random_crop(x, crop_size, batch_shape=None, image_dims=None):
 
 def linear_resample(x: Union[ivy.Array, ivy.NativeArray], num_samples: int, axis: int = -1)\
         -> Union[ivy.Array, ivy.NativeArray]:
-    """
-    Performs linear re-sampling on input image.
+    """Performs linear re-sampling on input image.
 
-    :param x: Input array
-    :type x: array
-    :param num_samples: The number of interpolated samples to take.
-    :type num_samples: int
-    :param axis: The axis along which to perform the resample. Default is last dimension.
-    :type axis: int, optional
-    :return: The array after the linear resampling.
+    Parameters
+    ----------
+    x
+        Input array
+    num_samples
+        The number of interpolated samples to take.
+    axis
+        The axis along which to perform the resample. Default is last dimension.
+
+    Returns
+    -------
+     ret
+        The array after the linear resampling.
+
     """
     return _cur_framework(x).linear_resample(x, num_samples, axis)
