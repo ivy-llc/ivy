@@ -322,7 +322,7 @@ def std(x: Union[ivy.Array, ivy.NativeArray],
     >>> x = ivy.array([-1., 0., 1.])
     >>> y = ivy.std(x)
     >>> print(y)
-    0.816496580927726
+    ivy.array(0.8164966)
     
     """
     return _cur_framework(x).std(x, axis, correction, keepdims, out=out)

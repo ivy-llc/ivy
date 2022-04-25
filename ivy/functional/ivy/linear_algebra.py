@@ -421,7 +421,7 @@ def trace(x: Union[ivy.Array, ivy.NativeArray], offset: int = 0)\
      >>> offset = 0
      >>> y = ivy.trace(x, offset)
      >>> print(y)
-     5.0
+     ivy.array(5.)
      
     """
     return _cur_framework(x).trace(x, offset)
@@ -474,7 +474,7 @@ def det(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
     >>> x = ivy.array([ [[1., 2.], [3., 4.]], [[1., 2.], [2., 1.]] ])
     >>> out = ivy.det(x)
     >>> print(out)
-    [-2., -3.]
+    ivy.array([-2., -3.])
 
     """
     return _cur_framework(x).det(x)
@@ -556,7 +556,7 @@ def matrix_rank(x: Union[ivy.Array, ivy.NativeArray],
     --------
     >>> x = ivy.array([[1., 2.], [3., 4.]])
     >>> ivy.matrix_rank(x)
-    2
+    ivy.array(2)
     
     """
     return _cur_framework(x).matrix_rank(x, rtol)
