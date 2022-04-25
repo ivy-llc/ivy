@@ -415,7 +415,7 @@
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([1, 6, 9])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.bitwise_invert(x)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    [-2, -7, -10]</span>
+<span class="sd">    ivy.array([-2, -7, -10])</span>
 <span class="sd">    </span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">bitwise_invert</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span></div>
@@ -479,7 +479,7 @@
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([0.1, 0, -0.1])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.ceil(x)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    [1.0, 0.0, -0.0]</span>
+<span class="sd">    ivy.array([1.0, 0.0, -0.0])</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span></div>
 
@@ -603,9 +603,9 @@
 <span class="sd">    :return: an array containing the element-wise results. The returned array must have a data type of bool.</span>
 <span class="sd">    </span>
 <span class="sd">    Examples:</span>
-<span class="sd">    &gt;&gt;&gt; x = ivy.greater(ivy.array([1,2,3]),ivy.array([2,2,2]))</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.greater(ivy.array([1, 2, 3]), ivy.array([2, 2, 2]))</span>
 <span class="sd">    &gt;&gt;&gt; print(x)</span>
-<span class="sd">    [False, False,  True]    </span>
+<span class="sd">    ivy.array([False, False,  True])</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">)</span><span class="o">.</span><span class="n">greater</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span></div>
 
@@ -954,7 +954,7 @@
 <span class="sd">    Examples:</span>
 <span class="sd">    &gt;&gt;&gt; x = ivy.less(ivy.array([1,2,3]),ivy.array([2,2,2]))</span>
 <span class="sd">    &gt;&gt;&gt; print(x)   </span>
-<span class="sd">    [ True, False, False]</span>
+<span class="sd">    ivy.array([True, False, False])</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x1</span><span class="p">)</span><span class="o">.</span><span class="n">less</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span></div>
 

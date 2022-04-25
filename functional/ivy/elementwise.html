@@ -586,7 +586,7 @@ The mathematical signs of <code class="docutils literal notranslate"><span class
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">9</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">bitwise_invert</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
-<span class="go">[-2, -7, -10]</span>
+<span class="go">ivy.array([-2, -7, -10])</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -705,7 +705,7 @@ x1: array</p>
 &gt;&gt;&gt; x = ivy.array([0.1, 0, -0.1])
 &gt;&gt;&gt; y = ivy.ceil(x)
 &gt;&gt;&gt; print(y)
-[1.0, 0.0, -0.0]</p>
+ivy.array([1.0, 0.0, -0.0])</p>
 </dd></dl>
 
 <dl class="py function">
@@ -932,9 +932,9 @@ element x2_i of the input array x2.</p>
 </dd>
 </dl>
 <p>Examples:
-&gt;&gt;&gt; x = ivy.greater(ivy.array([1,2,3]),ivy.array([2,2,2]))
+&gt;&gt;&gt; x = ivy.greater(ivy.array([1, 2, 3]), ivy.array([2, 2, 2]))
 &gt;&gt;&gt; print(x)
-[False, False,  True]</p>
+ivy.array([False, False,  True])</p>
 </dd></dl>
 
 <dl class="py function">
@@ -1032,7 +1032,7 @@ x:</p>
 <p>Examples:
 &gt;&gt;&gt; x = ivy.less(ivy.array([1,2,3]),ivy.array([2,2,2]))
 &gt;&gt;&gt; print(x)   
-[ True, False, False]</p>
+ivy.array([True, False, False])</p>
 </dd></dl>
 
 <dl class="py function">

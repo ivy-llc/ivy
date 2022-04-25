@@ -251,14 +251,13 @@
 </dd>
 </dl>
 <dl class="simple">
-<dt>ivy.Array</dt><dd><p>The input array with Hyperbolic tangent activation applied element-wise.</p>
+<dt>ret</dt><dd><p>The input array with Hyperbolic tangent activation applied element-wise.</p>
 </dd>
 </dl>
-<p>Examples:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.55</span> <span class="p">,</span> <span class="o">-</span><span class="mf">0.55</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">tanh</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
-<span class="go">[0.50, -0.50]</span>
+<span class="go">ivy.array([0.50, -0.50])</span>
 </pre></div>
 </div>
 </dd></dl>
