@@ -172,7 +172,10 @@ def trace(x: torch.Tensor,
           offset: int = 0,
           out: Optional[torch.Tensor] = None)\
               -> torch.Tensor:
-    ret = torch.trace(x)
+    desired_dtype = x.dtype
+    ret = torch.diagonal(x, offset=offset, dim1=-2, dim2=-1)
+    ret = torch.sum(ret, dim=-1)
+    ret = ret.type(desired_dtype)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
     return ret
