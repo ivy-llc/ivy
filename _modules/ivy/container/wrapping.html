@@ -226,6 +226,8 @@
 <span></span><span class="c1"># local</span>
 <span class="kn">import</span> <span class="nn">ivy</span>
 
+<span class="n">TO_IGNORE</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;is_variable&#39;</span><span class="p">,</span> <span class="s1">&#39;is_ivy_array&#39;</span><span class="p">,</span> <span class="s1">&#39;is_native_array&#39;</span><span class="p">,</span> <span class="s1">&#39;is_array&#39;</span><span class="p">]</span>
+
 
 <span class="k">def</span> <span class="nf">_wrap_fn</span><span class="p">(</span><span class="n">fn_name</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">new_fn</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">key_chains</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">to_apply</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">prune_unapplied</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -273,6 +275,7 @@
 
 
 <div class="viewcode-block" id="add_ivy_container_instance_methods"><a class="viewcode-back" href="../../../container/wrapping/add_ivy_container_instance_methods.html#ivy.container.wrapping.add_ivy_container_instance_methods">[docs]</a><span class="k">def</span> <span class="nf">add_ivy_container_instance_methods</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">modules</span><span class="p">,</span> <span class="n">to_ignore</span><span class="o">=</span><span class="p">()):</span>
+    <span class="n">to_ignore</span> <span class="o">=</span> <span class="n">TO_IGNORE</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="n">to_ignore</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">module</span> <span class="ow">in</span> <span class="n">modules</span><span class="p">:</span>
         <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">module</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">if</span> <span class="n">key</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">key</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">isupper</span><span class="p">()</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">callable</span><span class="p">(</span><span class="n">val</span><span class="p">)</span> <span class="ow">or</span> \
