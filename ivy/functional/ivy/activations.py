@@ -30,11 +30,12 @@ def relu(x: Union[ivy.Array, ivy.NativeArray],
     out:
        an array containing the rectified linear unit activation of each element in ``x``.
 
-    Examples:
-    >>> x = ivy.array([-1, 0, 1])
+    Examples
+    --------
+    >>> x = ivy.array([-1., 0., 1.])
     >>> y = ivy.relu(x)
     >>> print(y)
-    [-0.0, 0.0, 1.0]
+    ivy.array([0., 0., 1.])
     """
     return _cur_framework(x).relu(x, out)
 
@@ -59,7 +60,7 @@ def leaky_relu(x: Union[ivy.Array, ivy.NativeArray], alpha: Optional[float] = 0.
     >>> x = ivy.array([0.39, -0.85])
     >>> y = ivy.leaky_relu(x)
     >>> print(y)
-    [0.39, -0.17]
+    ivy.array([0.39, -0.17])
 
     """
     return _cur_framework(x).leaky_relu(x, alpha)
@@ -90,15 +91,15 @@ def tanh(x: Union[ivy.Array, ivy.NativeArray])\
 
     Returns
     -------
-    ivy.Array
+    ret
         The input array with Hyperbolic tangent activation applied element-wise.
 
-    Examples:
-
+    Examples
+    --------
     >>> x = ivy.array([0.55 , -0.55])
     >>> y = ivy.tanh(x)
     >>> print(y)
-    [0.50, -0.50]
+    ivy.array([0.50, -0.50])
 
     """
     return _cur_framework(x).tanh(x)
@@ -125,7 +126,7 @@ def sigmoid(x: Union[ivy.Array, ivy.NativeArray])\
     >>> x = ivy.array([-1., 1., 2.])
     >>> y = ivy.sigmoid(x)
     >>> print(y)
-    [0.268, 0.5, 0.880]
+    ivy.array([0.268, 0.5, 0.880]
 
     """
     return _cur_framework(x).sigmoid(x)
@@ -152,7 +153,7 @@ def softmax(x: Union[ivy.Array, ivy.NativeArray], axis: Optional[int] = -1)\
     >>> x = ivy.array([-1.0, 0, 1.0])
     >>> y = ivy.softmax(x)
     >>> print(y)
-    [0.09003057, 0.24472847, 0.66524096]
+    ivy.array([0.09003057, 0.24472847, 0.66524096])
     """
     return _cur_framework(x).softmax(x, axis)
 
@@ -176,6 +177,6 @@ def softplus(x: Union[ivy.Array, ivy.NativeArray])\
     >>> x = ivy.array([-0.3461, -0.6491])
     >>> y = ivy.softplus(x)
     >>> print(y)
-    [0.5350, 0.4203]
+    ivy.array([0.5350, 0.4203])
     """
     return _cur_framework(x).softplus(x)

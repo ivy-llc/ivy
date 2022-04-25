@@ -210,7 +210,7 @@ def conv1d(x: Union[ivy.Array, ivy.NativeArray],
     >>> filters = ivy.array([[[0.]], [[1.]], [[0.]]]) #WIO
     >>> result = ivy.conv1d(x, filters, (1,), 'SAME', 'NWC', (1,))
     >>> print(result)
-    [[[0. 3. 0.]]]
+    ivy.array([[[0.], [3.], [0.]]])
     """
     return _cur_framework(x).conv1d(x, filters, strides, padding, data_format, dilations)
 
