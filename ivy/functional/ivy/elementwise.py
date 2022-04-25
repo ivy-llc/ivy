@@ -85,7 +85,7 @@ def add(x1: Union[ivy.Array, ivy.NativeArray],
     >>> y = ivy.array([4, 5, 6])
     >>> z = ivy.add(x, y)
     >>> print(z)
-    [5, 7, 9]
+    ivy.array([5, 7, 9])
     
     """
     return _cur_framework(x1, x2).add(x1, x2, out)
