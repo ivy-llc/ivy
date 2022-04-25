@@ -141,6 +141,26 @@ class ContainerBase(dict, abc.ABC):
     # --------------#
 
     @staticmethod
+    def handle_inplace(ret, out):
+        """Returns an inplace update of out, provided it is not None, by updating with the values in ret.
+
+        Parameters
+        ----------
+        ret:
+            The container with the return values
+        out:
+            The optional out container, which is primed for being overwritten if it exists
+
+        Returns
+        -------
+            The out container, but filled with the values from the ret container
+        """
+        if ivy.exists(out):
+            out.inplace_update(ret)
+            ret = out
+        return ret
+
+    @staticmethod
     def list_join(containers, config=None):
         """Join containers of lists together along the specified dimension.
 
@@ -205,7 +225,7 @@ class ContainerBase(dict, abc.ABC):
 
     @staticmethod
     def _concat_unify(containers, dev, axis=0):
-        return ivy.Container.concat([cont.to_dev(dev) for cont in containers.values()], axis)
+        return ivy.concat([cont.to_dev(dev) for cont in containers.values()], axis)
 
     @staticmethod
     def _sum_unify(containers, dev, _=None, _1=None):
@@ -238,44 +258,6 @@ class ContainerBase(dict, abc.ABC):
         return {'concat': ivy.Container._concat_unify,
                 'sum': ivy.Container._sum_unify,
                 'mean': ivy.Container._mean_unify}[mode](containers, dev, axis)
-
-    @staticmethod
-    def concat(xs, axis, config=None):
-        """Concatenate containers together along the specified dimension.
-
-        Parameters
-        ----------
-        xs : sequence of Container objects
-            containers to concatenate
-        axis : int
-            dimension along which to concatenate
-        config : dict, optional
-            The configuration for the containers. Default is the same as container0.
-
-        Returns
-        -------
-            Concatenated containers
-        """
-        container0 = xs[0]
-        if not ivy.exists(config):
-            config = container0.config if isinstance(container0, ivy.Container) else {}
-
-        if isinstance(container0, ivy.Container):
-            return_dict = dict()
-            for key in container0.keys():
-                return_dict[key] = ivy.Container.concat([container[key] for container in xs], axis, config)
-            return ivy.Container(return_dict, **config)
-        else:
-            # noinspection PyProtectedMember
-            ivyh = ivy.default(lambda: config['ivyh'], ivy, True)
-            # noinspection PyBroadException
-            try:
-                if len(xs[0].shape) == 0:
-                    return ivyh.concat([ivyh.reshape(item, [1] * (axis + 1)) for item in xs], axis)
-                else:
-                    return ivyh.concat(xs, axis)
-            except Exception as e:
-                raise Exception(str(e) + '\nContainer concat operation only valid for containers of arrays')
 
     @staticmethod
     def stack(containers, dim, config=None):
@@ -1255,7 +1237,7 @@ class ContainerBase(dict, abc.ABC):
             Container object with all sub-array dimensions expanded along the axis.
 
         """
-        return self.map(lambda x, kc: self._ivy.sum(x, axis, keepdims) if self._ivy.is_native_array(x) or isinstance(x, ivy.Array) else x,
+        return self.map(lambda x, kc: self._ivy.sum(x, axis=axis, keepdims=keepdims) if self._ivy.is_native_array(x) or isinstance(x, ivy.Array) else x,
                         key_chains, to_apply, prune_unapplied, map_sequences)
 
     def prod(self, axis=None, keepdims=False, key_chains=None, to_apply=True, prune_unapplied=False,

@@ -5,10 +5,13 @@ Collection of Jax random functions, wrapped to fit Ivy syntax and signature.
 # global
 import jax as _jax
 import jax.numpy as _jnp
+from typing import Optional, Union, Tuple
 
 # local
+import ivy
 from ivy.functional.backends.jax.device import to_dev
 from ivy.functional.ivy.device import default_device
+from ivy.functional.backends.jax import JaxArray
 
 
 # Extra #
@@ -17,7 +20,10 @@ from ivy.functional.ivy.device import default_device
 RNG = _jax.random.PRNGKey(0)
 
 
-def random_uniform(low=0.0, high=1.0, shape=None, dev=None):
+def random_uniform(low: float = 0.0,
+                   high: float = 1.0,
+                   shape: Optional[Union[int, Tuple[int, ...]]] = None,
+                   dev: Optional[ivy.Device] = None) -> JaxArray:
     global RNG
     RNG, rng_input = _jax.random.split(RNG)
     return to_dev(_jax.random.uniform(rng_input, shape if shape else (), minval=low, maxval=high),
