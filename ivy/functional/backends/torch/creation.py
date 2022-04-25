@@ -240,7 +240,7 @@ def arange(start, stop=None, step=1, dtype=None, dev=None):
         if dtype in [torch.int8, torch.uint8, torch.int16]:
             return torch.arange(start, stop, step=step, dtype=torch.int64, device=dev).to(dtype)
         else:
-            return torch.range(start, stop, step=step, dtype=dtype, device=dev)
+            return torch.arange(start, stop, step=step, dtype=dtype, device=dev)
 
 
 
