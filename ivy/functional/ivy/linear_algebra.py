@@ -86,13 +86,13 @@ def vector_norm(x: Union[ivy.Array, ivy.NativeArray],
 
     Parameters
     ----------
-    x:
+    x
         input array. Should have a floating-point data type.
-    axis:
+    axis
         If an integer, ``axis`` specifies the axis (dimension) along which to compute vector norms. If an n-tuple, ``axis`` specifies the axes (dimensions) along which to compute batched vector norms. If ``None``, the vector norm must be computed over all array values (i.e., equivalent to computing the vector norm of a flattened array). Negative indices must be supported. Default: ``None``.
-    keepdims:
+    keepdims
         If ``True``, the axes (dimensions) specified by ``axis`` must be included in the result as singleton dimensions, and, accordingly, the result must be compatible with the input array (see :ref:`broadcasting`). Otherwise, if ``False``, the axes (dimensions) specified by ``axis`` must not be included in the result. Default: ``False``.
-    ord:
+    ord
         order of the norm. The following mathematical norms must be supported:
         +------------------+----------------------------+
         | ord              | description                |
@@ -175,18 +175,21 @@ def outer(x1: Union[ivy.Array, ivy.NativeArray],
 
     Parameters
     ----------
-    x1 (array) – first one-dimensional input array of size N. Should have a numeric data type.
+    x1 
+    first one-dimensional input array of size N. Should have a numeric data type.
     a(M,) array_like
     First input vector. Input is flattened if not already 1-dimensional.
 
-    x2 (array) – second one-dimensional input array of size M. Should have a numeric data type.
+    x2 
+    second one-dimensional input array of size M. Should have a numeric data type.
     b(N,) array_like
     Second input vector. Input is flattened if not already 1-dimensional.
 
 
     Returns
      -------
-    ret (array) – a two-dimensional array containing the outer product and whose shape is (N, M).
+    ret
+    a two-dimensional array containing the outer product and whose shape is (N, M).
     The returned array must have a data type determined by Type Promotion Rules.
     out(M, N) ndarray, optional
     A location where the result is stored
@@ -202,18 +205,18 @@ def diagonal(x: ivy.Array,
     Returns the specified diagonals of a matrix (or a stack of matrices) ``x``.
     Parameters
     ----------
-    x:
+    x
         input array having shape ``(..., M, N)`` and whose innermost two dimensions form ``MxN`` matrices.
-    offset:
+    offset
         offset specifying the off-diagonal relative to the main diagonal.
         - ``offset = 0``: the main diagonal.
         - ``offset > 0``: off-diagonal above the main diagonal.
         - ``offset < 0``: off-diagonal below the main diagonal.
         Default: `0`.
-    axis1:
+    axis1
         axis to be used as the first axis of the 2-D sub-arrays from which the diagonals should be taken.
         Defaults to first axis (0).
-    axis2:
+    axis2
         axis to be used as the second axis of the 2-D sub-arrays from which the diagonals should be taken.
         Defaults to second axis (1).
 
@@ -294,9 +297,9 @@ def qr(x: ivy.Array,
     Returns the qr decomposition x = QR of a full column rank matrix (or a stack of matrices), where Q is an orthonormal matrix (or a stack of matrices) and R is an upper-triangular matrix (or a stack of matrices).
     Parameters
     ----------
-    x:
+    x
         input array having shape (..., M, N) and whose innermost two dimensions form MxN matrices of rank N. Should have a floating-point data type.
-    mode:
+    mode
         decomposition mode. Should be one of the following modes:
         - 'reduced': compute only the leading K columns of q, such that q and r have dimensions (..., M, K) and (..., K, N), respectively, and where K = min(M, N).
         - 'complete': compute q and r with dimensions (..., M, M) and (..., M, N), respectively.
@@ -319,15 +322,15 @@ def matmul(x1: Union[ivy.Array, ivy.NativeArray],
 
     Parameters
     ----------
-    x1:
-        x1 (array) – first input array. Should have a numeric data type. Must have at least one dimension.
+    x1
+         first input array. Should have a numeric data type. Must have at least one dimension.
 
-    x2:
-        x2 (array) – second input array. Should have a numeric data type. Must have at least one dimension.
+    x2
+         second input array. Should have a numeric data type. Must have at least one dimension.
 
     Returns
      -------
-    ret(array):
+    ret
         if both x1 and x2 are one-dimensional arrays having shape (N,), a zero-dimensional array containing the inner product as its only element.
         if x1 is a two-dimensional array having shape (M, K) and x2 is a two-dimensional array having shape (K, N), a two-dimensional array containing the conventional matrix product and having shape (M, N).
         if x1 is a one-dimensional array having shape (K,) and x2 is an array having shape (..., K, N), an array having shape (..., N) (i.e., prepended dimensions during vector-to-matrix promotion must be removed) and containing the conventional matrix product.
@@ -354,12 +357,12 @@ def slodget(x: Union[ivy.Array, ivy.NativeArray], ) \
 
     Parameters
     ----------
-    x:
+    x
         This is a 2D array, and it has to be square
 
     Return
     ----------
-    Out:
+    ret
 
         This function returns two values -
             sign:
@@ -411,7 +414,7 @@ def svdvals(x: Union[ivy.Array, ivy.NativeArray], ) \
         input array having shape ``(..., M, N)`` and whose innermost two dimensions form ``MxN`` matrices.
     Return
     ----------
-    Out:
+    ret
         array with shape ``(..., K)`` that contains the vector(s) of singular values of length ``K``, where K = min(M, N).
         The values are sorted in descending order by magnitude.
 
@@ -468,7 +471,7 @@ def vecdot(x1: Union[ivy.Array, ivy.NativeArray],
         first input array. Should have a numeric data type.
     x2
         second input array. Must be compatible with ``x1`` (see :ref:`broadcasting`). Should have a numeric data type.
-    axis:int
+    axis
         axis over which to compute the dot product. Must be an integer on the interval ``[-N, N)``, where ``N`` is the rank (number of dimensions) of the shape determined according to :ref:`broadcasting`. If specified as a negative integer, the function must determine the axis along which to compute the dot product by counting backward from the last dimension (where ``-1`` refers to the last dimension). By default, the function must compute the dot product over the last axis. Default: ``-1``.
     Returns
      -------
@@ -561,12 +564,14 @@ def inv(x: Union[ivy.Array, ivy.NativeArray]) \
     Returns the multiplicative inverse of a square matrix (or a stack of square matrices) x.
 
     Parameters
-    x (array)  input array having shape (..., M, M) and whose innermost two dimensions form square matrices.
-    Should have a floating-point data type.
+    x 
+        input array having shape (..., M, M) and whose innermost two dimensions form square matrices.
+        Should have a floating-point data type.
 
     Returns
-    out (array) : an array containing the multiplicative inverses.
-    The returned array must have a floating-point data type determined by Type Promotion Rules and must have the same shape as x.
+    ret 
+        an array containing the multiplicative inverses.
+        The returned array must have a floating-point data type determined by Type Promotion Rules and must have the same shape as x.
     """
     return _cur_framework(x).inv(x)
 
