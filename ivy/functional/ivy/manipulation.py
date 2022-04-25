@@ -169,9 +169,9 @@ def reshape(x: Union[ivy.Array, ivy.NativeArray],
     >>> x = ivy.array([[1,2,3], [4,5,6]])
     >>> y = ivy.reshape(x, (3,2))
     >>> print(y)
-    [[1, 2],
-     [3, 4],
-     [5, 6]] 
+    ivy.array([[1, 2],
+               [3, 4],
+               [5, 6]])
     """
     return _cur_framework(x).reshape(x, shape, copy, out)
 

@@ -190,7 +190,7 @@ def bitwise_invert(x: Union[ivy.Array, ivy.NativeArray],
     >>> x = ivy.array([1, 6, 9])
     >>> y = ivy.bitwise_invert(x)
     >>> print(y)
-    [-2, -7, -10]
+    ivy.array([-2, -7, -10])
     
     """
     return _cur_framework(x).bitwise_invert(x, out)
@@ -254,7 +254,7 @@ def ceil(x: Union[ivy.Array, ivy.NativeArray],
     >>> x = ivy.array([0.1, 0, -0.1])
     >>> y = ivy.ceil(x)
     >>> print(y)
-    [1.0, 0.0, -0.0]
+    ivy.array([1.0, 0.0, -0.0])
     """
     return _cur_framework(x).ceil(x, out)
 
@@ -378,9 +378,9 @@ def greater(x1: Union[ivy.Array, ivy.NativeArray],
     :return: an array containing the element-wise results. The returned array must have a data type of bool.
     
     Examples:
-    >>> x = ivy.greater(ivy.array([1,2,3]),ivy.array([2,2,2]))
+    >>> x = ivy.greater(ivy.array([1, 2, 3]), ivy.array([2, 2, 2]))
     >>> print(x)
-    [False, False,  True]    
+    ivy.array([False, False,  True])
     """
     return _cur_framework(x1, x2).greater(x1, x2, out)
 
@@ -729,7 +729,7 @@ def less(x1: Union[ivy.Array, ivy.NativeArray],
     Examples:
     >>> x = ivy.less(ivy.array([1,2,3]),ivy.array([2,2,2]))
     >>> print(x)   
-    [ True, False, False]
+    ivy.array([True, False, False])
     """
     return _cur_framework(x1).less(x1, x2, out)
 

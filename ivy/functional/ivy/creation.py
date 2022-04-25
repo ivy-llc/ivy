@@ -94,12 +94,12 @@ def zeros(shape: Union[int, Tuple[int], List[int]],
        
     Examples:
     
-    >>> shape = (3,5)
+    >>> shape = (3, 5)
     >>> x = ivy.zeros(shape)
     >>> print(x)
-    [[0., 0., 0., 0., 0.],
-     [0., 0., 0., 0., 0.],
-     [0., 0., 0., 0., 0.]]
+    ivy.array([[0., 0., 0., 0., 0.],
+               [0., 0., 0., 0., 0.],
+               [0., 0., 0., 0., 0.]])
     """
     return _cur_framework().zeros(shape, dtype, device)
 
@@ -130,8 +130,8 @@ def ones(shape: Union[int, Tuple[int], List[int]],
     >>> shape = (2,2)
     >>> y = ivy.ones(shape)
     >>> print(y)
-    [[1.,  1.],
-       [1.,  1.]]
+    ivy.array([[1.,  1.],
+               [1.,  1.]])
     """
     return _cur_framework().ones(shape, dtype, device)
 
@@ -171,7 +171,7 @@ def full_like(x: Union[ivy.Array, ivy.NativeArray],
     >>> fill_value = 1
     >>> y = ivy.full_like(x, fill_value)
     >>> print(y)
-    [1, 1, 1, 1, 1, 1]
+    ivy.array([1, 1, 1, 1, 1, 1])
     
     """
     return _cur_framework(x).full_like(x, fill_value, dtype=dtype, device=device)
@@ -205,7 +205,7 @@ def ones_like(x: Union[ivy.Array, ivy.NativeArray],
     >>> x = ivy.array([[0, 1, 2],[3, 4, 5]])
     >>> y = ivy.ones_like(x)
     >>> print(y)
-    [[1, 1, 1],[1, 1, 1]]
+    ivy.array([[1, 1, 1],[1, 1, 1]])
     """
     return _cur_framework(x).ones_like(x, dtype, device)
 
@@ -240,8 +240,8 @@ def zeros_like(x: Union[ivy.Array, ivy.NativeArray],
     >>> x = ivy.array([[0, 1, 2],[3, 4, 5]])
     >>> y = ivy.zeros_like(x)
     >>> print(y)
-    [[0, 0, 0],
-       [0, 0, 0]]
+    ivy.array([[0, 0, 0],
+               [0, 0, 0]])
        
     """
     return _cur_framework(x).zeros_like(x, dtype, device)
@@ -426,8 +426,8 @@ def full(shape: Union[int, Tuple[int, ...]],
     >>> fill_value = 10
     >>> y = ivy.full(shape, fill_value)
     >>> print(y)
-    [[10, 10],
-       [10, 10]]
+    ivy.array([[10, 10],
+               [10, 10]])
        
     """
     return _cur_framework().full(shape, fill_value, dtype, device)
