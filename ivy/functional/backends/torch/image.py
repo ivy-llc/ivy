@@ -13,7 +13,7 @@ from typing import List, Optional
 from ivy.functional.backends import torch as _ivy
 
 
-def stack_images(images: List[torch.Tensor], desired_aspect_ratio: List[int] = (1, 1)):
+def stack_images(images: List[torch.Tensor], desired_aspect_ratio: List[int] = (1, 1)) -> torch.Tensor:
     num_images = len(images)
     if num_images == 0:
         raise Exception('At least 1 image must be provided')

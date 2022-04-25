@@ -1,28 +1,48 @@
-"""
-Collection of image Ivy functions.
-"""
-
 # local
 import ivy as ivy
 import numpy as _np
 from operator import mul as _mul
 from functools import reduce as _reduce
 from ivy.framework_handler import current_framework as _cur_framework
-from typing import Union
+from typing import Union, Tuple, List
 
 
 # Extra #
 # ------#
 
-def stack_images(images, desired_aspect_ratio=(1, 1)):
+def stack_images(images: List[Union[ivy.Array, ivy.Array, ivy.NativeArray]],
+                 desired_aspect_ratio: Tuple[int, int] = (1, 1)) -> ivy.Array:
     """
     Stacks a group of images into a combined windowed image, fitting the desired aspect ratio as closely as possible.
 
-    :param images: Sequence of image arrays to be stacked *[batch_shape,height,width,dims]* .
-    :type images: sequence of arrays
-    :param desired_aspect_ratio: Desired aspect ratio of stacked image.
-    :type desired_aspect_ratio: sequence of ints
-    :return: Stacked image, suitable for viewing in a single window.
+     Parameters
+     ----------
+     images:
+         Sequence of image arrays to be stacked *[batch_shape,height,width,dims]*
+
+     desired_aspect_ratio:
+        desired aspect ratio of the stacked image
+
+     Returns
+     -------
+    out:
+       an array containing the stacked images in a specified aspect ratio/dimensions
+
+    Examples:
+    >>> import ivy
+    >>> shape, num = (1, 2, 3), 2
+    >>> data = [ivy.ones(shape)] * num
+    >>> stacked = ivy.stack_images(data, (2, 1))
+    >>> print(stacked)
+    [[[1., 1., 1.],
+            [1., 1., 1.],
+            [0., 0., 0.],
+            [0., 0., 0.]],
+
+           [[1., 1., 1.],
+            [1., 1., 1.],
+            [0., 0., 0.],
+            [0., 0., 0.]]]
     """
     return _cur_framework(images[0]).stack_images(images, desired_aspect_ratio)
 
