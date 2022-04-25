@@ -328,7 +328,6 @@ import ivy_tests.test_ivy.helpers as helpers
 #         assert not ivy.is_variable(calc_cost, exclusive=True)
 #     assert np.allclose(ivy.to_scalar(calc_cost), true_cost)
 #     outer_grads = rets[1]
-#     print(outer_grads)
 #     assert not ivy.is_variable(outer_grads)
 #     assert np.allclose(ivy.to_numpy(outer_grads.weight[0]), np.array(true_weight_grad))
 #     assert np.allclose(ivy.to_numpy(outer_grads.latent[0]), np.array(true_latent_grad))
