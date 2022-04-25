@@ -34,16 +34,13 @@ def flip(x: mx.ndarray.ndarray.NDArray,
 
 
 def expand_dims(x: mx.ndarray.ndarray.NDArray,
-                axis: int = 0,
+                axis: Optional[Union[int, Tuple[int], List[int]]] = None,
                 out: Optional[mx.ndarray.ndarray.NDArray] = None) \
         -> mx.ndarray.ndarray.NDArray:
-    try:
-        if x.shape == ():
-            ret = _flat_array_to_1_dim_array(x)
-        else:
-            ret = mx.nd.expand_dims(x, axis)
-    except mx.base.MXNetError as error:
-        IndexError(error)
+    if x.shape == ():
+        ret = _flat_array_to_1_dim_array(x)
+    else:
+        ret = mx.nd.expand_dims(x, axis)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
     return ret

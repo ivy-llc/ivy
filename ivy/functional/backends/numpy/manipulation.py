@@ -54,10 +54,7 @@ def expand_dims(x: np.ndarray,
                 axis: int = 0,
                 out: Optional[np.ndarray] = None) \
         -> np.ndarray:
-    try:
-        ret = np.expand_dims(x, axis)
-    except np.AxisError as error:
-        raise IndexError(error)
+    ret = np.expand_dims(x, axis)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
     return ret
