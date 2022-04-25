@@ -176,7 +176,7 @@ def trace(x: JaxArray,
           offset: int = 0,
           out: Optional[JaxArray] = None)\
               -> JaxArray:
-    return jax.numpy.trace(x, offset, out=out)
+    return jnp.trace(x, offset=offset, axis1=-2, axis2=-1, dtype=x.dtype, out=out)
 
 
 def det(x: JaxArray,
