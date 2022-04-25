@@ -312,20 +312,32 @@
                 <span class="n">axis</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
                 <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> \
         <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Expands the shape of an array.</span>
-<span class="sd">    Inserts a new axis that will appear at the axis position in the expanded array shape.</span>
-
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Expands the shape of an array by inserting a new axis with the size of one. This new axis will appear at the ``axis`` position in the expanded array shape.</span>
+<span class="sd">    </span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    x </span>
-<span class="sd">        Input array.</span>
-<span class="sd">    axis </span>
-<span class="sd">        Position in the expanded axes where the new axis is placed.</span>
+<span class="sd">    x</span>
+<span class="sd">        input array.</span>
+<span class="sd">    axis</span>
+<span class="sd">        position in the expanded array where a new axis (dimension) of size one will be added. If array ``x`` has the rank of ``N``, the ``axis`` need to be between ``[-N-1, N]``. Default: ``0``.</span>
+<span class="sd">    out</span>
+<span class="sd">        optional output array, for writing the result to. It must have a shape that the inputs broadcast to.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">     ret</span>
-<span class="sd">        array with the number of dimensions increased by onearray</span>
+<span class="sd">    ret</span>
+<span class="sd">        an array with its dimension added by one in a given ``axis``.</span>
+
+<span class="sd">    Examples </span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[0, 1], [1, 0]])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.expand_dims(x)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    ivy.array([[[0, 1],</span>
+<span class="sd">                [1, 0]]])</span>
+<span class="sd">    &gt;&gt;&gt; print(x.shape, y.shape)</span>
+<span class="sd">    (2, 2) (1, 2, 2)</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span></div>

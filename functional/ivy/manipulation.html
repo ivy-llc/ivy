@@ -314,20 +314,28 @@ Specified as ((before_1, after_1), … (before_N, after_N)), where N is number o
 <dl class="py function">
 <dt id="ivy.functional.ivy.manipulation.expand_dims">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">expand_dims</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">axis</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">0</span></em>, <em class="sig-param"><span class="n">out</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../_modules/ivy/functional/ivy/manipulation.html#expand_dims"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.manipulation.expand_dims" title="Permalink to this definition">¶</a></dt>
-<dd><p>Expands the shape of an array.
-Inserts a new axis that will appear at the axis position in the expanded array shape.</p>
+<dd><p>Expands the shape of an array by inserting a new axis with the size of one. This new axis will appear at the <code class="docutils literal notranslate"><span class="pre">axis</span></code> position in the expanded array shape.</p>
 <dl class="simple">
-<dt>x </dt><dd><p>Input array.</p>
+<dt>x</dt><dd><p>input array.</p>
 </dd>
-<dt>axis </dt><dd><p>Position in the expanded axes where the new axis is placed.</p>
+<dt>axis</dt><dd><p>position in the expanded array where a new axis (dimension) of size one will be added. If array <code class="docutils literal notranslate"><span class="pre">x</span></code> has the rank of <code class="docutils literal notranslate"><span class="pre">N</span></code>, the <code class="docutils literal notranslate"><span class="pre">axis</span></code> need to be between <code class="docutils literal notranslate"><span class="pre">[-N-1,</span> <span class="pre">N]</span></code>. Default: <code class="docutils literal notranslate"><span class="pre">0</span></code>.</p>
 </dd>
-</dl>
-<blockquote>
-<div><dl class="simple">
-<dt>ret</dt><dd><p>array with the number of dimensions increased by onearray</p>
+<dt>out</dt><dd><p>optional output array, for writing the result to. It must have a shape that the inputs broadcast to.</p>
 </dd>
 </dl>
-</div></blockquote>
+<dl class="simple">
+<dt>ret</dt><dd><p>an array with its dimension added by one in a given <code class="docutils literal notranslate"><span class="pre">axis</span></code>.</p>
+</dd>
+</dl>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+<span class="go">ivy.array([[[0, 1],</span>
+<span class="go">            [1, 0]]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">y</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="go">(2, 2) (1, 2, 2)</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py function">
