@@ -1,0 +1,23 @@
+name: PR Automation
+on:
+  pull_request:
+    types:
+      - opened
+
+jobs:
+  pr_creation:
+    name: Issue comment
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checks
+        uses: actions/checkout@v2
+        with:
+          path: ivy
+          persist-credentials: false
+      - name: PR Automation
+        run: |
+            cd automation_tools/pr_automation
+            python3 pr_action.py $PR_NUMBER "$PR_AUTHOR" 
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          PR_AUTHOR: ${{ github.event.pull_request.user.login }}
