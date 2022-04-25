@@ -1,6 +1,8 @@
 # local
 import ivy
 
+TO_IGNORE = ['is_variable', 'is_ivy_array', 'is_native_array', 'is_array']
+
 
 def _wrap_fn(fn_name):
     def new_fn(*args, key_chains=None, to_apply=True, prune_unapplied=False, out=None, **kwargs):
@@ -48,6 +50,7 @@ def _wrap_fn(fn_name):
 
 
 def add_ivy_container_instance_methods(cls, modules, to_ignore=()):
+    to_ignore = TO_IGNORE + list(to_ignore)
     for module in modules:
         for key, val in module.__dict__.items():
             if key.startswith('_') or key[0].isupper() or not callable(val) or \
