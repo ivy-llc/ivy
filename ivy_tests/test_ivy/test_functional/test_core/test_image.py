@@ -30,6 +30,8 @@ def test_stack_images(shp_n_num_n_ar_n_newshp, dev, call):
     assert ivy.is_ivy_array(ret)
     # cardinality test
     assert ret.shape == new_shape
+    # docstring test
+    helpers.docstring_examples_run(ivy.stack_images)
 
 
 # bilinear_resample
