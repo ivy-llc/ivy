@@ -53,7 +53,7 @@ import ivy_tests.test_ivy.helpers as helpers
 #                                    'weight': ivy.variable(ivy.array([1.], dev=dev))})
 #
 #     # batch
-#     batch = ivy.Container({'x': ivy.arange(num_tasks + 1, 1, dtype='float32')})
+#     batch = ivy.Container({'x': ivy.arange(1, num_tasks + 1, dtype='float32')})
 #
 #     # inner cost function
 #     def inner_cost_fn(batch_in, v):
@@ -152,7 +152,7 @@ import ivy_tests.test_ivy.helpers as helpers
 #         variables = ivy.Container({'latent': ivy.variable(ivy.array([1.], dev=dev))})
 #
 #     # batch
-#     batch = ivy.Container({'x': ivy.arange(num_tasks + 1, 1, dtype='float32')})
+#     batch = ivy.Container({'x': ivy.arange(1, num_tasks + 1, dtype='float32')})
 #
 #     # inner cost function
 #     def inner_cost_fn(batch_in, v):
@@ -271,7 +271,7 @@ import ivy_tests.test_ivy.helpers as helpers
 #                                    'weight': ivy.variable(ivy.array([1.], dev=dev))})
 #
 #     # batch
-#     batch = ivy.Container({'x': ivy.arange(num_tasks + 1, 1, dtype='float32')})
+#     batch = ivy.Container({'x': ivy.arange(1, num_tasks + 1, dtype='float32')})
 #
 #     # inner cost function
 #     def inner_cost_fn(batch_in, v):
@@ -369,7 +369,7 @@ import ivy_tests.test_ivy.helpers as helpers
 #         variables = ivy.Container({'latent': ivy.variable(ivy.array([1.], dev=dev))})
 #
 #     # batch
-#     batch = ivy.Container({'x': ivy.arange(num_tasks + 1, 1, dtype='float32')})
+#     batch = ivy.Container({'x': ivy.arange(1, num_tasks + 1, dtype='float32')})
 #
 #     # inner cost function
 #     def inner_cost_fn(batch_in, v):
@@ -469,7 +469,7 @@ import ivy_tests.test_ivy.helpers as helpers
 #                                    'weight': ivy.variable(ivy.array([1.], dev=dev))})
 #
 #     # batch
-#     batch = ivy.Container({'x': ivy.arange(num_tasks + 1, 1, dtype='float32')})
+#     batch = ivy.Container({'x': ivy.arange(1, num_tasks + 1, dtype='float32')})
 #
 #     # inner cost function
 #     def inner_cost_fn(batch_in, v):
@@ -567,7 +567,7 @@ import ivy_tests.test_ivy.helpers as helpers
 #         variables = ivy.Container({'latent': ivy.variable(ivy.array([1.], dev=dev))})
 #
 #     # batch
-#     batch = ivy.Container({'x': ivy.arange(num_tasks + 1, 1, dtype='float32')})
+#     batch = ivy.Container({'x': ivy.arange(1, num_tasks + 1, dtype='float32')})
 #
 #     # inner cost function
 #     def inner_cost_fn(batch_in, v):
@@ -703,7 +703,7 @@ import ivy_tests.test_ivy.helpers as helpers
 #                                    'weight': ivy.variable(ivy.array([1.], dev=dev))})
 #
 #     # batch
-#     batch = ivy.Container({'x': ivy.arange(num_tasks + 1, 1, dtype='float32')})
+#     batch = ivy.Container({'x': ivy.arange(1, num_tasks + 1, dtype='float32')})
 #
 #     # inner cost function
 #     def inner_cost_fn(batch_in, v):
