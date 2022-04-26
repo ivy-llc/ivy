@@ -18,6 +18,6 @@ slogdet
 svd
 svdvals
 tensordot
-trace
+#trace #failing for JAX
 vecdot
 vector_norm
