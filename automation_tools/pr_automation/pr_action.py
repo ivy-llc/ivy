@@ -10,10 +10,10 @@ def import_file(file_path):
 
 
 def main():
-    pr = Process_pr(int(sys.argv[1]), sys.argv[2], sys.argv[3])
+    pr = Process_pr(int(sys.argv[1]), sys.argv[2])
     interns_assigned_volunteers = import_file('volunteer_go_to_intern.json')
     interns = list(interns_assigned_volunteers.keys())
-    for ivy_intern, assigned_volunteers in interns_assigned_volunteers:
+    for ivy_intern, assigned_volunteers in interns_assigned_volunteers.items():
         if pr.author() in assigned_volunteers:
             pr.assign_intern(ivy_intern)
             print(f'[+] {ivy_intern} was assigned to PR {pr.number}')
