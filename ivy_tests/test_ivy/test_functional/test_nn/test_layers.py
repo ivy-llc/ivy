@@ -46,7 +46,7 @@ def test_linear(x_n_w_n_b_n_res, dtype, tensor_fn, dev, call):
     true_res = tensor_fn(true_res, dtype, dev)
     ret = ivy.linear(x, weight, bias)
     # type test
-    assert ivy.is_native_array(ret)
+    assert ivy.is_ivy_array(ret)
     # cardinality test
     assert ret.shape == true_res.shape
     # value test
@@ -151,20 +151,13 @@ def test_multi_head_attention(x_n_s_n_m_n_c_n_gt, dtype, tensor_fn, dev, call):
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
 def test_conv1d(x_n_filters_n_pad_n_res, dtype, tensor_fn, dev, call):
-    if call in [helpers.tf_call, helpers.tf_graph_call] and 'cpu' in dev:
-        # tf conv1d does not work when CUDA is installed, but array is on CPU
-        pytest.skip()
-    if call in [helpers.np_call, helpers.jnp_call]:
-        # numpy and jax do not yet support conv1d
-        pytest.skip()
-    # smoke test
     x, filters, padding, true_res = x_n_filters_n_pad_n_res
     x = tensor_fn(x, dtype, dev)
     filters = tensor_fn(filters, dtype, dev)
     true_res = tensor_fn(true_res, dtype, dev)
     ret = ivy.conv1d(x, filters, 1, padding)
     # type test
-    assert ivy.is_native_array(ret)
+    assert ivy.is_ivy_array(ret)
     # cardinality test
     assert ret.shape == true_res.shape
     # value test
@@ -210,7 +203,7 @@ def test_conv1d_transpose(x_n_filters_n_pad_n_outshp_n_res, dtype, tensor_fn, de
     true_res = tensor_fn(true_res, dtype, dev)
     ret = ivy.conv1d_transpose(x, filters, 1, padding, output_shape)
     # type test
-    assert ivy.is_native_array(ret)
+    assert ivy.is_ivy_array(ret)
     # cardinality test
     assert ret.shape == true_res.shape
     # value test
@@ -276,7 +269,7 @@ def test_conv2d(x_n_filters_n_pad_n_res, dtype, tensor_fn, dev, call):
     true_res = tensor_fn(true_res, dtype, dev)
     ret = ivy.conv2d(x, filters, 1, padding)
     # type test
-    assert ivy.is_native_array(ret)
+    assert ivy.is_ivy_array(ret)
     # cardinality test
     assert ret.shape == true_res.shape
     # value test
@@ -341,7 +334,7 @@ def test_conv2d_transpose(x_n_filters_n_pad_n_outshp_n_res, dtype, tensor_fn, de
     true_res = tensor_fn(true_res, dtype, dev)
     ret = ivy.conv2d_transpose(x, filters, 1, padding, output_shape)
     # type test
-    assert ivy.is_native_array(ret)
+    assert ivy.is_ivy_array(ret)
     # cardinality test
     assert ret.shape == true_res.shape
     # value test
@@ -398,7 +391,7 @@ def test_depthwise_conv2d(x_n_filters_n_pad_n_res, dtype, tensor_fn, dev, call):
     true_res = tensor_fn(true_res, dtype, dev)
     ret = ivy.depthwise_conv2d(x, filters, 1, padding)
     # type test
-    assert ivy.is_native_array(ret)
+    assert ivy.is_ivy_array(ret)
     # cardinality test
     assert ret.shape == true_res.shape
     # value test
@@ -455,7 +448,7 @@ def test_conv3d(x_n_filters_n_pad_n_res, dtype, tensor_fn, dev, call):
     true_res = tensor_fn(true_res, dtype, dev)
     ret = ivy.conv3d(x, filters, 1, padding)
     # type test
-    assert ivy.is_native_array(ret)
+    assert ivy.is_ivy_array(ret)
     # cardinality test
     assert ret.shape == true_res.shape
     # value test
@@ -528,7 +521,7 @@ def test_conv3d_transpose(x_n_filters_n_pad_n_outshp_n_res, dtype, tensor_fn, de
     true_res = tensor_fn(true_res, dtype, dev)
     ret = ivy.conv3d_transpose(x, filters, 1, padding, output_shape)
     # type test
-    assert ivy.is_native_array(ret)
+    assert ivy.is_ivy_array(ret)
     # cardinality test
     assert ret.shape == true_res.shape
     # value test

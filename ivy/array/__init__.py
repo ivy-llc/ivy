@@ -1,34 +1,32 @@
 # global
 import copy
 import functools
-from numbers import Number
 from operator import mul
+
 # local
-import ivy
-from . import array_api
-from .array_api import *
 from . import conversions
 from .conversions import *
-from . import device
-from .device import *
-from . import general
-from .general import *
-from . import gradients
-from .gradients import *
-from . import image
-from .image import *
-from . import linalg
-from .linalg import *
-from . import logic
-from .logic import *
-from . import math
-from .math import *
-from . import meta
-from .meta import *
-from . import random
-from .random import *
-from . import reductions
-from .reductions import *
+
+from .activations import ArrayWithActivations
+from .creation import ArrayWithCreation
+from .data_types import ArrayWithDataTypes
+from .device import ArrayWithDevice
+from .elementwise import ArrayWithElementwise
+from .general import ArrayWithGeneral
+from .gradients import ArrayWithGradients
+from .image import ArrayWithImage
+from .layers import ArrayWithLayers
+from .linear_algebra import ArrayWithLinearAlgebra
+from .losses import ArrayWithLosses
+from .manipulation import ArrayWithManipulation
+from .norms import ArrayWithNorms
+from .random import ArrayWithRandom
+from .searching import ArrayWithSearching
+from .set import ArrayWithSet
+from .sorting import ArrayWithSorting
+from .statistical import ArrayWithStatistical
+from .utility import ArrayWithUtility
+from .wrapping import add_ivy_array_instance_methods
 
 
 def _native_wrapper(f):
@@ -40,10 +38,31 @@ def _native_wrapper(f):
     return decor
 
 
-class Array(ArrayWithArrayAPI, ArrayWithDevice, ArrayWithGeneral, ArrayWithGradients, ArrayWithImage, ArrayWithLinalg,
-            ArrayWithLogic, ArrayWithMath, ArrayWithMeta, ArrayWithRandom, ArrayWithReductions):
+class Array(ArrayWithActivations, ArrayWithCreation, ArrayWithDataTypes, ArrayWithDevice, ArrayWithElementwise,
+            ArrayWithGeneral, ArrayWithGradients, ArrayWithImage, ArrayWithLayers, ArrayWithLinearAlgebra,
+            ArrayWithLosses, ArrayWithManipulation, ArrayWithNorms, ArrayWithRandom, ArrayWithSearching, ArrayWithSet,
+            ArrayWithSorting, ArrayWithStatistical, ArrayWithUtility):
 
     def __init__(self, data):
+        ArrayWithActivations.__init__(self)
+        ArrayWithCreation.__init__(self)
+        ArrayWithDataTypes.__init__(self)
+        ArrayWithDevice.__init__(self)
+        ArrayWithElementwise.__init__(self)
+        ArrayWithGeneral.__init__(self)
+        ArrayWithGradients.__init__(self)
+        ArrayWithImage.__init__(self)
+        ArrayWithLayers.__init__(self)
+        ArrayWithLinearAlgebra.__init__(self)
+        ArrayWithLosses.__init__(self)
+        ArrayWithManipulation.__init__(self)
+        ArrayWithNorms.__init__(self)
+        ArrayWithRandom.__init__(self)
+        ArrayWithSearching.__init__(self)
+        ArrayWithSet.__init__(self)
+        ArrayWithSorting.__init__(self)
+        ArrayWithStatistical.__init__(self)
+        ArrayWithUtility.__init__(self)
         if ivy.is_ivy_array(data):
             self._data = data.data
         else:
@@ -63,6 +82,7 @@ class Array(ArrayWithArrayAPI, ArrayWithDevice, ArrayWithGeneral, ArrayWithGradi
     # Properties #
     # -----------#
 
+    # noinspection PyPep8Naming
     @property
     def mT(self):
         assert len(self._data.shape) >= 2
@@ -119,6 +139,15 @@ class Array(ArrayWithArrayAPI, ArrayWithDevice, ArrayWithGeneral, ArrayWithGradi
            For array libraries having graph-based computational models, an array may have unknown dimensions due to data-dependent operations.
         """
         return self._size
+
+    # Setters #
+    # --------#
+
+    @data.setter
+    def data(self, data):
+        assert ivy.is_native_array(data)
+        self._data = data
+
     # Built-ins #
     # ----------#
 
@@ -172,7 +201,6 @@ class Array(ArrayWithArrayAPI, ArrayWithDevice, ArrayWithGeneral, ArrayWithGradi
             self._data = ivy.scatter_nd(query, val, tensor=self._data, reduction='replace')._data
             self._dtype = ivy.dtype(self._data)
 
-
     @_native_wrapper
     def __contains__(self, key):
         return self._data.__contains__(key)
@@ -212,10 +240,7 @@ class Array(ArrayWithArrayAPI, ArrayWithDevice, ArrayWithGeneral, ArrayWithGradi
     @_native_wrapper
     def __sub__(self, other):
         other = to_native(other)
-        res = ivy.subtract(self._data, other)
-        if res is NotImplemented:
-            return res
-        return to_ivy(res)
+        return ivy.subtract(self._data, other)
 
     @_native_wrapper
     def __rsub__(self, other):
@@ -334,24 +359,15 @@ class Array(ArrayWithArrayAPI, ArrayWithDevice, ArrayWithGeneral, ArrayWithGradi
 
     @_native_wrapper
     def __and__(self, other):
-        other = to_native(other)
-        res = self._data.__and__(other)
-        if res is NotImplemented:
-            return res
-        return to_ivy(res)
+        return ivy.bitwise_and(self._data, other)
 
     @_native_wrapper
     def __rand__(self, other):
-        other = to_native(other)
-        res = self._data.__rand__(other)
-        if res is NotImplemented:
-            return res
-        return to_ivy(res)
+        return ivy.bitwise_and(self._data, other)
 
     @_native_wrapper
     def __or__(self, other):
         return ivy.bitwise_or(self._data, other)
-
 
     @_native_wrapper
     def __ror__(self, other):
@@ -385,8 +401,28 @@ class Array(ArrayWithArrayAPI, ArrayWithDevice, ArrayWithGeneral, ArrayWithGradi
         return to_ivy(res)
 
     @_native_wrapper
+    def __lshift__(self, other):
+        return ivy.bitwise_left_shift(self._data, other)
+
+    @_native_wrapper
+    def __rlshift__(self, other):
+        other = to_native(other)
+        res = self._data.__rlshift__(other)
+        if res is NotImplemented:
+            return res
+        return to_ivy(res)
+
+    @_native_wrapper
     def __rshift__(self, other):
         return ivy.bitwise_right_shift(self._data, other)
+
+    @_native_wrapper
+    def __rrshift__(self, other):
+        other = to_native(other)
+        res = self._data.__rrshift__(other)
+        if res is NotImplemented:
+            return res
+        return to_ivy(res)
 
     @_native_wrapper
     def __rrshift__(self, other):
