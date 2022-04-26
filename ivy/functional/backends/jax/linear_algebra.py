@@ -176,12 +176,12 @@ def trace(x: JaxArray,
           offset: int = 0,
           out: Optional[JaxArray] = None)\
               -> JaxArray:
-    return jax.numpy.trace(x, offset, out=out)
+    return jnp.trace(x, offset=offset, axis1=-2, axis2=-1, dtype=x.dtype, out=out)
 
 
-def det(x:jnp.array,
+def det(x: JaxArray,
         out: Optional[JaxArray] = None) \
-    -> jnp.array:
+    -> JaxArray:
     ret = jnp.linalg.det(x)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
@@ -224,18 +224,18 @@ def inv(x: JaxArray,
     return ret
 
 
-def matrix_rank(vector: JaxArray,
+def matrix_rank(x: JaxArray,
                 rtol: Optional[Union[float, Tuple[float]]] = None,
                 out: Optional[JaxArray] = None) \
         -> JaxArray:
-        if vector.size == 0:
+        if x.size == 0:
             ret = 0
-        elif vector.size == 1:
-            ret = jnp.count_nonzero(vector)
+        elif x.size == 1:
+            ret = jnp.count_nonzero(x)
         else:
-            if vector.ndim >2:
-                vector = vector.reshape([-1])
-            ret = jnp.linalg.matrix_rank(vector, rtol)
+            if x.ndim >2:
+                x = x.reshape([-1])
+            ret = jnp.linalg.matrix_rank(x, rtol)
         if ivy.exists(out):
             return ivy.inplace_update(out, ret)
         return ret
