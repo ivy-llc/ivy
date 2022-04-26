@@ -14,15 +14,17 @@ import ivy.functional.backends.numpy as ivy_np
 
 
 # abs
-@given(dtype=helpers.sample(ivy_np.valid_float_dtype_strs),
+@given(dtype=helpers.sample(ivy_np.valid_numeric_dtype_strs),
        as_variable=st.booleans(),
        with_out=st.booleans(),
        num_positional_args=st.integers(0, 1),
        native_array=st.booleans(),
        container=st.booleans(),
        instance_method=st.booleans(),
-       x=st.lists(st.floats()))
+       x=st.lists(st.floats(0, 100)))
 def test_abs(dtype, as_variable, with_out, num_positional_args, native_array, container, instance_method, fw, x):
+    if fw == 'torch' and dtype in ['uint16', 'uint32', 'uint64']:
+        return
     helpers.test_array_function(
         dtype, as_variable, with_out, num_positional_args, native_array, container, instance_method, fw, 'abs',
         x=np.asarray(x, dtype=dtype))
@@ -36,7 +38,7 @@ def test_abs(dtype, as_variable, with_out, num_positional_args, native_array, co
        native_array=st.booleans(),
        container=st.booleans(),
        instance_method=st.booleans(),
-       x=st.lists(st.floats()))
+       x=st.lists(st.floats))
 def test_acosh(dtype, as_variable, with_out, num_positional_args, native_array, container, instance_method, fw, x):
     if fw == 'torch' and dtype == 'float16':
         return
