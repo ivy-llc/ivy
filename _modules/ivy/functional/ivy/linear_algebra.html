@@ -786,17 +786,34 @@
 <div class="viewcode-block" id="inv"><a class="viewcode-back" href="../../../../functional/ivy/linear_algebra/inv.html#ivy.functional.ivy.linear_algebra.inv">[docs]</a><span class="k">def</span> <span class="nf">inv</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">])</span> \
         <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Returns the multiplicative inverse of a square matrix (or a stack of square matrices) x.</span>
+<span class="sd">    Returns the multiplicative inverse of a square matrix (or a stack of square matrices) ``x``.</span>
 
 <span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
 <span class="sd">    x </span>
-<span class="sd">        input array having shape (..., M, M) and whose innermost two dimensions form square matrices.</span>
+<span class="sd">        input array having shape ``(..., M, M)`` and whose innermost two dimensions form square matrices.</span>
 <span class="sd">        Should have a floating-point data type.</span>
 
 <span class="sd">    Returns</span>
+<span class="sd">    -------</span>
 <span class="sd">    ret </span>
-<span class="sd">        an array containing the multiplicative inverses.</span>
-<span class="sd">        The returned array must have a floating-point data type determined by Type Promotion Rules and must have the same shape as x.</span>
+<span class="sd">        an array containing the multiplicative inverses. The returned array must have a floating-point data type determined </span>
+<span class="sd">        by :ref:`type-promotion` and must have the same shape as ``x``.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[1.0, 2.0],[3.0, 4.0]])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.inv(x)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    ivy.array([[-2.0, 1.0], [1.5, -0.5]])</span>
+
+<span class="sd">    Inverses of several matrices can be computed at once:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[[1.0, 2.0],[3.0, 4.0]], [[1.0, 3.0], [3.0, 5.0]]])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.inv(x)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    ivy.array([[[-2.0, 1.0], [1.5, -0.5]], [[-1.25, 0.75], [0.75, -0.25]]])</span>
+<span class="sd">     </span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
 
