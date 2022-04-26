@@ -233,27 +233,45 @@
 <span class="kn">from</span> <span class="nn">operator</span> <span class="kn">import</span> <span class="n">mul</span> <span class="k">as</span> <span class="n">_mul</span>
 <span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">reduce</span> <span class="k">as</span> <span class="n">_reduce</span>
 <span class="kn">from</span> <span class="nn">ivy.framework_handler</span> <span class="kn">import</span> <span class="n">current_framework</span> <span class="k">as</span> <span class="n">_cur_framework</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span>
 
 
 <span class="c1"># Extra #</span>
 <span class="c1"># ------#</span>
 
-<div class="viewcode-block" id="stack_images"><a class="viewcode-back" href="../../../../functional/ivy/image/stack_images.html#ivy.functional.ivy.image.stack_images">[docs]</a><span class="k">def</span> <span class="nf">stack_images</span><span class="p">(</span><span class="n">images</span><span class="p">,</span> <span class="n">desired_aspect_ratio</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)):</span>
-    <span class="sd">&quot;&quot;&quot;Stacks a group of images into a combined windowed image, fitting the desired aspect ratio as closely as possible.</span>
+<div class="viewcode-block" id="stack_images"><a class="viewcode-back" href="../../../../functional/ivy/image/stack_images.html#ivy.functional.ivy.image.stack_images">[docs]</a><span class="k">def</span> <span class="nf">stack_images</span><span class="p">(</span><span class="n">images</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]],</span>
+                 <span class="n">desired_aspect_ratio</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Stacks a group of images into a combined windowed image, fitting the desired aspect ratio as closely as possible.</span>
 
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    images</span>
-<span class="sd">        Sequence of image arrays to be stacked *[batch_shape,height,width,dims]* .</span>
-<span class="sd">    desired_aspect_ratio</span>
-<span class="sd">        Desired aspect ratio of stacked image. (Default value = (1)</span>
+<span class="sd">     Parameters</span>
+<span class="sd">     ----------</span>
+<span class="sd">     images:</span>
+<span class="sd">         Sequence of image arrays to be stacked *[batch_shape,height,width,dims]*</span>
 
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">     ret</span>
-<span class="sd">        Stacked image, suitable for viewing in a single window.</span>
+<span class="sd">     desired_aspect_ratio:</span>
+<span class="sd">        desired aspect ratio of the stacked image</span>
 
+<span class="sd">     Returns</span>
+<span class="sd">     -------</span>
+<span class="sd">    out:</span>
+<span class="sd">       an array containing the stacked images in a specified aspect ratio/dimensions</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">    &gt;&gt;&gt; import ivy</span>
+<span class="sd">    &gt;&gt;&gt; shape, num = (1, 2, 3), 2</span>
+<span class="sd">    &gt;&gt;&gt; data = [ivy.ones(shape)] * num</span>
+<span class="sd">    &gt;&gt;&gt; stacked = ivy.stack_images(data, (2, 1))</span>
+<span class="sd">    &gt;&gt;&gt; print(stacked)</span>
+<span class="sd">    [[[1., 1., 1.],</span>
+<span class="sd">            [1., 1., 1.],</span>
+<span class="sd">            [0., 0., 0.],</span>
+<span class="sd">            [0., 0., 0.]],</span>
+
+<span class="sd">           [[1., 1., 1.],</span>
+<span class="sd">            [1., 1., 1.],</span>
+<span class="sd">            [0., 0., 0.],</span>
+<span class="sd">            [0., 0., 0.]]]</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">images</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">stack_images</span><span class="p">(</span><span class="n">images</span><span class="p">,</span> <span class="n">desired_aspect_ratio</span><span class="p">)</span></div>
 
@@ -378,7 +396,7 @@
     <span class="n">y_offsets</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">margins</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="p">[</span><span class="n">flat_batch_size</span><span class="p">])</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
 
     <span class="c1"># list of 1 x NH x NW x F</span>
-    <span class="n">cropped_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">img</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">xo</span><span class="p">:</span><span class="n">xo</span><span class="o">+</span><span class="n">crop_size</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">yo</span><span class="p">:</span><span class="n">yo</span><span class="o">+</span><span class="n">crop_size</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="p">:]</span> <span class="k">for</span> <span class="n">img</span><span class="p">,</span> <span class="n">xo</span><span class="p">,</span> <span class="n">yo</span>
+    <span class="n">cropped_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">img</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">xo</span><span class="p">:</span><span class="n">xo</span> <span class="o">+</span> <span class="n">crop_size</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">yo</span><span class="p">:</span><span class="n">yo</span> <span class="o">+</span> <span class="n">crop_size</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="p">:]</span> <span class="k">for</span> <span class="n">img</span><span class="p">,</span> <span class="n">xo</span><span class="p">,</span> <span class="n">yo</span>
                     <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">unstack</span><span class="p">(</span><span class="n">x_flat</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="kc">True</span><span class="p">),</span> <span class="n">x_offsets</span><span class="p">,</span> <span class="n">y_offsets</span><span class="p">)]</span>
 
     <span class="c1"># FBS x NH x NW x F</span>
@@ -388,7 +406,7 @@
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">flat_cropped</span><span class="p">,</span> <span class="n">batch_shape</span> <span class="o">+</span> <span class="n">crop_size</span> <span class="o">+</span> <span class="p">[</span><span class="n">num_channels</span><span class="p">])</span></div>
 
 
-<div class="viewcode-block" id="linear_resample"><a class="viewcode-back" href="../../../../functional/ivy/image/linear_resample.html#ivy.functional.ivy.image.linear_resample">[docs]</a><span class="k">def</span> <span class="nf">linear_resample</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span> <span class="n">num_samples</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">axis</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>\
+<div class="viewcode-block" id="linear_resample"><a class="viewcode-back" href="../../../../functional/ivy/image/linear_resample.html#ivy.functional.ivy.image.linear_resample">[docs]</a><span class="k">def</span> <span class="nf">linear_resample</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span> <span class="n">num_samples</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">axis</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> \
         <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;Performs linear re-sampling on input image.</span>
 

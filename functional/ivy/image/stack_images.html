@@ -243,17 +243,37 @@
 <h1>stack_images<a class="headerlink" href="#stack-images" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
 <dt id="ivy.functional.ivy.image.stack_images">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">stack_images</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">images</span></em>, <em class="sig-param"><span class="n">desired_aspect_ratio</span><span class="o">=</span><span class="default_value">(1, 1)</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/image.html#stack_images"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.image.stack_images" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">stack_images</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">images</span><span class="p">:</span> <span class="n">List<span class="p">[</span>Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">desired_aspect_ratio</span><span class="p">:</span> <span class="n">Tuple<span class="p">[</span>int<span class="p">, </span>int<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">(1, 1)</span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../../_modules/ivy/functional/ivy/image.html#stack_images"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.image.stack_images" title="Permalink to this definition">¶</a></dt>
 <dd><p>Stacks a group of images into a combined windowed image, fitting the desired aspect ratio as closely as possible.</p>
-<dl class="simple">
-<dt>images</dt><dd><p>Sequence of image arrays to be stacked <em>[batch_shape,height,width,dims]</em> .</p>
-</dd>
-<dt>desired_aspect_ratio</dt><dd><p>Desired aspect ratio of stacked image. (Default value = (1)</p>
-</dd>
-</dl>
 <blockquote>
 <div><dl class="simple">
-<dt>ret</dt><dd><p>Stacked image, suitable for viewing in a single window.</p>
+<dt>images:</dt><dd><p>Sequence of image arrays to be stacked <em>[batch_shape,height,width,dims]</em></p>
+</dd>
+<dt>desired_aspect_ratio:</dt><dd><p>desired aspect ratio of the stacked image</p>
+</dd>
+</dl>
+</div></blockquote>
+<dl class="simple">
+<dt>out:</dt><dd><p>an array containing the stacked images in a specified aspect ratio/dimensions</p>
+</dd>
+</dl>
+<p>Examples:
+&gt;&gt;&gt; import ivy
+&gt;&gt;&gt; shape, num = (1, 2, 3), 2
+&gt;&gt;&gt; data = [ivy.ones(shape)] * num
+&gt;&gt;&gt; stacked = ivy.stack_images(data, (2, 1))
+&gt;&gt;&gt; print(stacked)
+[[[1., 1., 1.],</p>
+<blockquote>
+<div><blockquote>
+<div><p>[1., 1., 1.],
+[0., 0., 0.],
+[0., 0., 0.]],</p>
+</div></blockquote>
+<dl class="simple">
+<dt>[[1., 1., 1.],</dt><dd><p>[1., 1., 1.],
+[0., 0., 0.],
+[0., 0., 0.]]]</p>
 </dd>
 </dl>
 </div></blockquote>
