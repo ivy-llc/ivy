@@ -24,10 +24,11 @@ def min(x: JaxArray,
 def sum(x: JaxArray,
         axis: Optional[Union[int, Tuple[int, ...]]] = None,
         dtype: Optional[jnp.dtype] = None,
-        keepdims: bool = False)\
+        keepdims: bool = False,
+        out: Optional[JaxArray] = None)\
         -> JaxArray:
 
-    if dtype is None and jnp.issubdtype(x.dtype, jnp.integer):
+    if dtype == None and jnp.issubdtype(x.dtype, jnp.integer):
         if jnp.issubdtype(x.dtype, jnp.signedinteger) and x.dtype in [jnp.int8, jnp.int16, jnp.int32]:
             dtype = jnp.int32
         elif jnp.issubdtype(x.dtype, jnp.unsignedinteger) and x.dtype in [jnp.uint8, jnp.uint16, jnp.uint32]:
@@ -36,6 +37,9 @@ def sum(x: JaxArray,
             dtype = jnp.int64
         else:
             dtype = jnp.uint64
+    if ivy.exists(out):
+        return ivy.inplace_update(out, jnp.sum(x, axis=axis, dtype=dtype, keepdims=keepdims))
+    else:
         return jnp.sum(a=x, axis=axis, dtype=dtype, keepdims=keepdims)
 
 
