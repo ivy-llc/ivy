@@ -232,7 +232,8 @@ def sum(x: Union[ivy.Array, ivy.NativeArray],
         axis: Optional[Union[int, Tuple[int, ...]]] = None,
         dtype: Optional[Union[ivy.Dtype, str]] = None,
         keepdims: bool = False,
-        out: Optional[Union[ivy.Array, ivy.NativeArray]] = None) -> ivy.Array:
+        out: Optional[Union[ivy.Array, ivy.NativeArray]] = None)\
+        -> ivy.Array:
     """
     Calculates the sum of the input array ``x``.
     **Special Cases**
@@ -258,10 +259,12 @@ def sum(x: Union[ivy.Array, ivy.NativeArray],
             keyword argument is intended to help prevent data type overflows.
     keepdims
         If ``True``, the reduced axes (dimensions) must be included in the result as singleton dimensions, and, accordingly, the result must be compatible with the input array (see :ref:`broadcasting`). Otherwise, if ``False``, the reduced axes (dimensions) must not be included in the result. Default: ``False``.
-    
+    out
+        optional output array, for writing the result to.
+
     Returns
     -------
-    ivy.Array
+    ret
         If the sum was computed over the entire array, a zero-dimensional array containing the sum; otherwise, an array containing the sums. The returned array must have a data type as described by the ``dtype`` parameter above.
     
     Examples
@@ -269,7 +272,7 @@ def sum(x: Union[ivy.Array, ivy.NativeArray],
     >>> x = ivy.array([0.41, 0.89])
     >>> y = ivy.sum(x)
     >>> print(y)
-    1.3
+    ivy.array(1.3)
     """
 
     return _cur_framework(x).sum(x, axis, dtype, keepdims, out = out)
