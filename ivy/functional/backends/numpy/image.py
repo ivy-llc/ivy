@@ -7,12 +7,12 @@ import math
 import numpy as np
 from operator import mul as _mul
 from functools import reduce as _reduce
-
+from typing import List, Tuple
 # local
 from ivy.functional.backends import numpy as _ivy
 
 
-def stack_images(images, desired_aspect_ratio=(1, 1)):
+def stack_images(images: List[np.ndarray], desired_aspect_ratio: Tuple[int, int] = (1, 1)) -> np.ndarray:
     num_images = len(images)
     if num_images == 0:
         raise Exception('At least 1 image must be provided')
@@ -21,15 +21,15 @@ def stack_images(images, desired_aspect_ratio=(1, 1)):
     num_batch_dims = len(batch_shape)
     if num_images == 1:
         return images[0]
-    img_ratio = image_dims[0]/image_dims[1]
-    desired_img_ratio = desired_aspect_ratio[0]/desired_aspect_ratio[1]
-    stack_ratio = img_ratio*desired_img_ratio
-    stack_height = (num_images/stack_ratio)**0.5
+    img_ratio = image_dims[0] / image_dims[1]
+    desired_img_ratio = desired_aspect_ratio[0] / desired_aspect_ratio[1]
+    stack_ratio = img_ratio * desired_img_ratio
+    stack_height = (num_images / stack_ratio) ** 0.5
     stack_height_int = math.ceil(stack_height)
-    stack_width_int = math.ceil(num_images/stack_height)
+    stack_width_int = math.ceil(num_images / stack_height)
     image_rows = list()
     for i in range(stack_width_int):
-        images_to_concat = images[i*stack_height_int:(i+1)*stack_height_int]
+        images_to_concat = images[i * stack_height_int:(i + 1) * stack_height_int]
         images_to_concat += [_ivy.zeros_like(images[0])] * (stack_height_int - len(images_to_concat))
         image_rows.append(_ivy.concat(images_to_concat, num_batch_dims))
     return _ivy.concat(image_rows, num_batch_dims + 1)
