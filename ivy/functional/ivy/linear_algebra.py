@@ -45,14 +45,16 @@ def pinv(x: Union[ivy.Array, ivy.NativeArray],
         -> ivy.Array:
     """
     Returns the (Moore-Penrose) pseudo-inverse of a matrix (or a stack of matrices) ``x``.
+
     Parameters
     ----------
     x
         input array having shape ``(..., M, N)`` and whose innermost two dimensions form ``MxN`` matrices. Should have a floating-point data type.
-    rtol:
+    rtol
         relative tolerance for small singular values. Singular values approximately less than or equal to ``rtol * largest_singular_value`` are set to zero. If a ``float``, the value is equivalent to a zero-dimensional array having a floating-point data type determined by :ref:`type-promotion` (as applied to ``x``) and must be broadcast against each matrix. If an ``array``, must have a floating-point data type and must be compatible with ``shape(x)[:-2]`` (see :ref:`broadcasting`). If ``None``, the default value is ``max(M, N) * eps``, where ``eps`` must be the machine epsilon associated with the floating-point data type determined by :ref:`type-promotion` (as applied to ``x``). Default: ``None``.
+
     Returns
-     -------
+    -------
     ret
         an array containing the pseudo-inverses. The returned array must have a floating-point data type determined by :ref:`type-promotion` and must have shape ``(..., N, M)`` (i.e., must have the same shape as ``x``, except the innermost two dimensions must be transposed).
     """
@@ -226,23 +228,6 @@ def diagonal(x: ivy.Array,
         an array containing the diagonals and whose shape is determined by removing the last two dimensions and appending a dimension equal to the size of the resulting diagonals. The returned array must have the same data type as ``x``.
     """
     return _cur_framework(x).diagonal(x, offset, axis1=axis1, axis2=axis2)
-
-
-def pinv(x):
-    """Computes the pseudo inverse of x matrix.
-
-    Parameters
-    ----------
-    x
-        Matrix to be pseudo inverted.
-
-    Returns
-    -------
-     ret
-        pseudo inverse of the matrix x.
-
-    """
-    return _cur_framework(x).pinv(x)
 
 
 def cholesky(x):
