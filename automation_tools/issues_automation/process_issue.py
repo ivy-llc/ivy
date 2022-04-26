@@ -37,6 +37,7 @@ class Process_issue():
         issue_comment = repo.get_issue(self._issue_number).get_comment(self._comment_number)
         issue_comment.delete()
         print('Comment deleted!')
+        # added a comment to test the gh action
 
     def child_issue_id_in_comment(self):
         try:
