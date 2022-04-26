@@ -1,12 +1,12 @@
-name: PR Automation
+name: Ivy PR Automation
 on:
   pull_request:
-    types:
-      - opened
+    types: [opened]
 
 jobs:
-  pr_creation:
+  pull_request_assigners:
     name: Issue comment
+    if: ${{ github.event.pull_request }}
     runs-on: ubuntu-latest
     steps:
       - name: Checks
@@ -14,10 +14,11 @@ jobs:
         with:
           path: ivy
           persist-credentials: false
-      - name: PR Automation
+      - name: Assigning Ivy Intern
         run: |
-            cd automation_tools/pr_automation
+            cd ivy/automation_tools/pr_automation
             python3 pr_action.py $PR_NUMBER "$PR_AUTHOR" 
         env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
           PR_AUTHOR: ${{ github.event.pull_request.user.login }}
