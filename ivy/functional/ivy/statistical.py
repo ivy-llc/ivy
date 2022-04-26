@@ -240,30 +240,36 @@ def sum(x: Union[ivy.Array, ivy.NativeArray],
     -   If ``N`` is ``0``, the sum is ``0`` (i.e., the empty sum).
     For floating-point operands,
     -   If ``x_i`` is ``NaN``, the sum is ``NaN`` (i.e., ``NaN`` values propagate).
+
     Parameters
     ----------
     x
-        input array. Should have a numeric data type.
+        Input array. Should have a numeric data type.
     axis
-        axis or axes along which sums must be computed. By default, the sum must be computed over the entire array. If a tuple of integers, sums must be computed over multiple axes. Default  ``None``.
+        Axis or axes along which sums must be computed. By default, the sum must be computed over the entire array. If a tuple of integers, sums must be computed over multiple axes. Default: ``None``.
     dtype
-        data type of the returned array. If ``None``,
-        -   if the default data type corresponding to the data type "kind" (integer or floating-point) of ``x`` has a smaller range of values than the data type of ``x`` (e.g., ``x`` has data type ``int64`` and the default data type is ``int32``, or ``x`` has data type ``uint64`` and the default data type is ``int64``), the returned array must have the same data type as ``x``.
-        -   if ``x`` has a floating-point data type, the returned array must have the default floating-point data type.
-        -   if ``x`` has a signed integer data type (e.g., ``int16``), the returned array must have the default integer data type.
-        -   if ``x`` has an unsigned integer data type (e.g., ``uint16``), the returned array must have an unsigned integer data type having the same number of bits as the default integer data type (e.g., if the default integer data type is ``int32``, the returned array must have a ``uint32`` data type).
+        Data type of the returned array. If ``None``,
+        -   If the default data type corresponding to the data type "kind" (integer or floating-point) of ``x`` has a smaller range of values than the data type of ``x`` (e.g., ``x`` has data type ``int64`` and the default data type is ``int32``, or ``x`` has data type ``uint64`` and the default data type is ``int64``), the returned array must have the same data type as ``x``.
+        -   If ``x`` has a floating-point data type, the returned array must have the default floating-point data type.
+        -   If ``x`` has a signed integer data type (e.g., ``int16``), the returned array must have the default integer data type.
+        -   If ``x`` has an unsigned integer data type (e.g., ``uint16``), the returned array must have an unsigned integer data type having the same number of bits as the default integer data type (e.g., if the default integer data type is ``int32``, the returned array must have a ``uint32`` data type).
         If the data type (either specified or resolved) differs from the data type of ``x``, the input array should be cast to the specified data type before computing the sum. Default: ``None``.
         .. note::
-           keyword argument is intended to help prevent data type overflows.
+            keyword argument is intended to help prevent data type overflows.
     keepdims
-        if ``True``, the reduced axes (dimensions) must be included in the result as singleton dimensions, and, accordingly, the result must be compatible with the input array (see  ref:`broadcasting`). Otherwise, if ``False``, the reduced axes (dimensions) must not be included in the result. Default: ``False``.
-    out
-        optional output array, for writing the result to.Returns
+        If ``True``, the reduced axes (dimensions) must be included in the result as singleton dimensions, and, accordingly, the result must be compatible with the input array (see :ref:`broadcasting`). Otherwise, if ``False``, the reduced axes (dimensions) must not be included in the result. Default: ``False``.
     
     Returns
     -------
-     ret
-        if the sum was computed over the entire array, a zero-dimensional array containing the sum; otherwise, an array containing the sums. The returned array must have a data type as described by the ``dtype`` parameter above.
+    ivy.Array
+        If the sum was computed over the entire array, a zero-dimensional array containing the sum; otherwise, an array containing the sums. The returned array must have a data type as described by the ``dtype`` parameter above.
+    
+    Examples
+    --------
+    >>> x = ivy.array([0.41, 0.89])
+    >>> y = ivy.sum(x)
+    >>> print(y)
+    1.3
     """
 
     return _cur_framework(x).sum(x, axis, dtype, keepdims, out = out)
