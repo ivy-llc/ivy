@@ -22,7 +22,7 @@ NON_WRAPPED_METHODS = ['copy_nest', 'current_framework', 'current_framework_str'
                        'fn_array_spec', 'insert_into_nest_at_index', 'insert_into_nest_at_indices']
 METHODS_W_CONT_SUPPORT = ['multi_head_attention', 'execute_with_gradients', 'adam_step', 'optimizer_update',
                           'gradient_descent_update', 'lars_update', 'adam_update', 'lamb_update', 'stable_divide',
-                          'stable_pow', 'is_variable']
+                          'stable_pow']
 ARRAYLESS_RET_METHODS = ['to_numpy', 'to_list', 'to_scalar', 'is_native_array', 'is_ivy_array', 'is_variable']
 NESTED_ARRAY_RET_METHODS = ['unstack', 'split']
 
