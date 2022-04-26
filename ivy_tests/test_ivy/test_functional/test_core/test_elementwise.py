@@ -156,80 +156,37 @@ def test_atan(dtype, as_variable, with_out, num_positional_args, native_array, c
 
 
 # atan2
-@pytest.mark.parametrize(
-    "dtype", ivy.all_float_dtype_strs)
-@pytest.mark.parametrize(
-    "as_variable", [True, False])
-@pytest.mark.parametrize(
-    "with_out", [True, False])
-@pytest.mark.parametrize(
-    "native_array", [True, False])
-def test_atan2(dtype, as_variable, with_out, native_array):
-    if ivy.current_framework_str() == 'torch' and dtype in ['float16', 'bfloat16']:
-        pytest.skip("torch atan2 doesnt allow float16 or bfloat16")
-    if dtype in ivy.invalid_dtype_strs:
-        pytest.skip("invalid dtype")
-    x1 = ivy.array([2, 3, 4], dtype=dtype)
-    x2 = ivy.array([2, 3, 4], dtype=dtype)
-    out = ivy.array([2, 3, 4], dtype=dtype)
-    if as_variable:
-        if with_out:
-            pytest.skip("variables do not support out argument")
-        x1 = ivy.variable(x1)
-        x2 = ivy.variable(x2)
-        out = ivy.variable(out)
-    if native_array:
-        x1 = x1.data
-        x2 = x2.data
-        out = out.data
-    if with_out:
-        ret = ivy.atan2(x1, x2, out=out)
-    else:
-        ret = ivy.atan2(x1, x2)
-    if with_out:
-        if not native_array:
-            assert ret is out
-        if ivy.current_framework_str() in ["tensorflow", "jax"]:
-            # these frameworks do not support native inplace updates
-            return
-        assert ret.data is (out if native_array else out.data)
+@given(dtype=helpers.sample(ivy_np.valid_float_dtype_strs),
+       as_variable=st.booleans(),
+       with_out=st.booleans(),
+       num_positional_args=st.integers(0, 1),
+       native_array=st.booleans(),
+       container=st.booleans(),
+       instance_method=st.booleans(),
+       x=st.lists(st.floats()))
+def test_atan2(dtype, as_variable, with_out, num_positional_args, native_array, container, instance_method, fw, x):
+    if fw == 'torch' and dtype == 'float16':
+        return
+    helpers.test_array_function(
+        dtype, as_variable, with_out, num_positional_args, native_array, container, instance_method, fw, 'atan2',
+        x1=np.asarray(x, dtype=dtype), x2=np.asarray(x, dtype=dtype))
 
 
 # atanh
-@pytest.mark.parametrize(
-    "dtype", ivy.all_float_dtype_strs)
-@pytest.mark.parametrize(
-    "as_variable", [True, False])
-@pytest.mark.parametrize(
-    "with_out", [True, False])
-@pytest.mark.parametrize(
-    "native_array", [True, False])
-def test_atanh(dtype, as_variable, with_out, native_array):
-    if ivy.current_framework_str() == 'torch' and dtype == 'float16':
-        pytest.skip("torch atanh doesnt allow float16")
-    if dtype in ivy.invalid_dtype_strs:
-        pytest.skip("invalid dtype")
-    x = ivy.array([0.5, 0.8, 4], dtype=dtype)
-    out = ivy.array([2, 3, 4], dtype=dtype)
-    if as_variable:
-        if with_out:
-            pytest.skip("variables do not support out argument")
-        x = ivy.variable(x)
-        out = ivy.variable(out)
-    if native_array:
-        x = x.data
-        out = out.data
-    if with_out:
-        ret = ivy.atanh(x, out=out)
-    else:
-        ret = ivy.atanh(x)
-    if with_out:
-        if not native_array:
-            assert ret is out
-        if ivy.current_framework_str() in ["tensorflow", "jax"]:
-            # these frameworks do not support native inplace updates
-            return
-        assert ret.data is (out if native_array else out.data)
+@given(dtype=helpers.sample(ivy_np.valid_float_dtype_strs),
+       as_variable=st.booleans(),
+       with_out=st.booleans(),
+       num_positional_args=st.integers(0, 1),
+       native_array=st.booleans(),
+       container=st.booleans(),
+       instance_method=st.booleans(),
+       x=st.lists(st.floats()))
+def test_atanh(dtype, as_variable, with_out, num_positional_args, native_array, container, instance_method, fw, x):
+    if fw == 'torch' and dtype == 'float16':
+        return
+    helpers.test_array_function(
+        dtype, as_variable, with_out, num_positional_args, native_array, container, instance_method, fw, 'atanh',
+        x=np.asarray(x, dtype=dtype))
 
 
 # bitwise_and
@@ -451,77 +408,37 @@ def test_ceil(dtype, as_variable, with_out, native_array):
 
 
 # cos
-@pytest.mark.parametrize(
-    "dtype", ivy.all_float_dtype_strs)
-@pytest.mark.parametrize(
-    "as_variable", [True, False])
-@pytest.mark.parametrize(
-    "with_out", [True, False])
-@pytest.mark.parametrize(
-    "native_array", [True, False])
-def test_cos(dtype, as_variable, with_out, native_array):
-    if ivy.current_framework_str() == 'torch' and dtype == 'float16':
-        pytest.skip("torch cos doesnt allow float16")
-    if dtype in ivy.invalid_dtype_strs:
-        pytest.skip("invalid dtype")
-    x = ivy.array([0.5, 0.8, 4], dtype=dtype)
-    out = ivy.array([2, 3, 4], dtype=dtype)
-    if as_variable:
-        if with_out:
-            pytest.skip("variables do not support out argument")
-        x = ivy.variable(x)
-        out = ivy.variable(out)
-    if native_array:
-        x = x.data
-        out = out.data
-    if with_out:
-        ret = ivy.cos(x, out=out)
-    else:
-        ret = ivy.cos(x)
-    if with_out:
-        if not native_array:
-            assert ret is out
-        if ivy.current_framework_str() in ["tensorflow", "jax"]:
-            # these frameworks do not support native inplace updates
-            return
-        assert ret.data is (out if native_array else out.data)
+@given(dtype=helpers.sample(ivy_np.valid_float_dtype_strs),
+       as_variable=st.booleans(),
+       with_out=st.booleans(),
+       num_positional_args=st.integers(0, 1),
+       native_array=st.booleans(),
+       container=st.booleans(),
+       instance_method=st.booleans(),
+       x=st.lists(st.floats()))
+def test_cos(dtype, as_variable, with_out, num_positional_args, native_array, container, instance_method, fw, x):
+    if fw == 'torch' and dtype == 'float16':
+        return
+    helpers.test_array_function(
+        dtype, as_variable, with_out, num_positional_args, native_array, container, instance_method, fw, 'cos',
+        x=np.asarray(x, dtype=dtype))
 
 
 # cosh
-@pytest.mark.parametrize(
-    "dtype", ivy.all_float_dtype_strs)
-@pytest.mark.parametrize(
-    "as_variable", [True, False])
-@pytest.mark.parametrize(
-    "with_out", [True, False])
-@pytest.mark.parametrize(
-    "native_array", [True, False])
-def test_cosh(dtype, as_variable, with_out, native_array):
-    if ivy.current_framework_str() == 'torch' and dtype == 'float16':
-        pytest.skip("torch cosh doesnt allow float16")
-    if dtype in ivy.invalid_dtype_strs:
-        pytest.skip("invalid dtype")
-    x = ivy.array([0.5, 0.8, 4], dtype=dtype)
-    out = ivy.array([2, 3, 4], dtype=dtype)
-    if as_variable:
-        if with_out:
-            pytest.skip("variables do not support out argument")
-        x = ivy.variable(x)
-        out = ivy.variable(out)
-    if native_array:
-        x = x.data
-        out = out.data
-    if with_out:
-        ret = ivy.cosh(x, out=out)
-    else:
-        ret = ivy.cosh(x)
-    if with_out:
-        if not native_array:
-            assert ret is out
-        if ivy.current_framework_str() in ["tensorflow", "jax"]:
-            # these frameworks do not support native inplace updates
-            return
-        assert ret.data is (out if native_array else out.data)
+@given(dtype=helpers.sample(ivy_np.valid_float_dtype_strs),
+       as_variable=st.booleans(),
+       with_out=st.booleans(),
+       num_positional_args=st.integers(0, 1),
+       native_array=st.booleans(),
+       container=st.booleans(),
+       instance_method=st.booleans(),
+       x=st.lists(st.floats()))
+def test_cosh(dtype, as_variable, with_out, num_positional_args, native_array, container, instance_method, fw, x):
+    if fw == 'torch' and dtype == 'float16':
+        return
+    helpers.test_array_function(
+        dtype, as_variable, with_out, num_positional_args, native_array, container, instance_method, fw, 'cosh',
+        x=np.asarray(x, dtype=dtype))
 
 
 # divide
