@@ -12,7 +12,7 @@ import ivy_tests.test_ivy.helpers as helpers
 
 # min
 @pytest.mark.parametrize(
-    "dtype", ivy.all_dtype_strs)
+    "dtype", ivy.all_numeric_dtype_strs)
 @pytest.mark.parametrize(
     "as_variable", [True, False])
 @pytest.mark.parametrize(
@@ -49,7 +49,7 @@ def test_min(dtype, as_variable, with_out, native_array):
 
 # max
 @pytest.mark.parametrize(
-    "dtype", ivy.all_dtype_strs)
+    "dtype", ivy.all_numeric_dtype_strs)
 @pytest.mark.parametrize(
     "as_variable", [True, False])
 @pytest.mark.parametrize(
@@ -292,7 +292,7 @@ def test_einsum(eq_n_op_n_shp, dtype, with_out, tensor_fn, dev, call):
     else:
         ret = ivy.einsum(eq, *operands)
     # type test
-    assert ivy.is_native_array(ret)
+    assert ivy.is_ivy_array(ret)
     # cardinality test
     assert ret.shape == true_shape
     # value test

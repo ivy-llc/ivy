@@ -25,11 +25,12 @@ def is_native_array(x, exclusive=False):
     return False
 
 
-def copy_array(x):
+def copy_array(x: torch.Tensor) -> torch.Tensor:
     return x.clone()
 
 
-def array_equal(x0, x1):
+def array_equal(x0:torch.Tensor, x1:torch.Tensor) \
+        -> bool:
     return torch.equal(x0, x1)
 
 
@@ -39,8 +40,10 @@ def to_numpy(x: torch.Tensor)\
     if isinstance(x, np.ndarray) or isinstance(x, (float, int, bool)):
         return x
     elif torch.is_tensor(x):
+        if x.dtype is torch.bfloat16:
+            x = x.to(torch.float16)
         return x.detach().cpu().numpy()
-    raise ValueError('Expected a pytroch tensor.')
+    raise ValueError('Expected a pytorch tensor.')
 
 
 def to_scalar(x: torch.Tensor)\
@@ -56,7 +59,7 @@ def to_list(x: torch.Tensor)\
         return x.tolist()
     elif torch.is_tensor(x):
         return x.detach().cpu().tolist()
-    raise ValueError('Expected a pytroch tensor.')
+    raise ValueError('Expected a pytorch tensor.')
 
 
 def floormod(x: torch.Tensor, y: torch.Tensor, out: Optional[torch.Tensor] = None)\
@@ -100,17 +103,17 @@ def inplace_decrement(x, val):
     if ivy.is_ivy_array(x):
         x.data = x_native
     else:
-        x.data = ivy.Array(x.data)
+        x = ivy.Array(x_native)
     return x
 
 
 def inplace_increment(x, val):
     (x_native, val_native), _ = ivy.args_to_native(x, val)
-    x_native.data +=val_native
+    x_native.data += val_native
     if ivy.is_ivy_array(x):
         x.data = x_native
     else:
-        x.data = ivy.Array(x.data)
+        x = ivy.Array(x_native)
     return x
 
 
