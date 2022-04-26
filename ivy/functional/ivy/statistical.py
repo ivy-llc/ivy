@@ -332,8 +332,8 @@ def std(x: Union[ivy.Array, ivy.NativeArray],
 # ------#
 
 def einsum(equation:str, *operands:Union[ivy.Array, ivy.NativeArray],
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None)\
-     -> ivy.Array:
+           out: Optional[Union[ivy.Array, ivy.NativeArray]] = None)\
+           -> ivy.Array:
     """
     Sums the product of the elements of the input operands along dimensions specified using a notation based on the
     Einstein summation convention.
@@ -350,5 +350,12 @@ def einsum(equation:str, *operands:Union[ivy.Array, ivy.NativeArray],
     -------
     return: 
         The array with sums computed.
+
+    Example
+    -------
+    >>> a=np.arange(25).reshape(5,5)
+    >>> b= np.einsum('ii',a)
+    array([ 0,  6, 12, 18, 24])
+
     """
     return _cur_framework(operands[0]).einsum(equation, *operands,out=out)

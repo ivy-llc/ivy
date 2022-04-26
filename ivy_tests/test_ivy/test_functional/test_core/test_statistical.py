@@ -303,3 +303,5 @@ def test_einsum(eq_n_op_n_shp, dtype, with_out, tensor_fn, dev, call):
             # these frameworks do not support native inplace updates
             return
         assert ret.data is out.data
+
+    assert helpers.docstring_examples_run(ivy.einsum) == True
