@@ -96,7 +96,7 @@ def triu(x: np.ndarray,
     return np.triu(x, k)
 
 
-def empty(shape: Union[int, Tuple[int], List[int]],
+def empty(shape: Union[int, Tuple[int, ...]],
           dtype: Optional[np.dtype] = None,
           device: Optional[str] = None) \
         -> np.ndarray:

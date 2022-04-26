@@ -98,7 +98,7 @@ def triu(x: torch.Tensor,
     return torch.triu(x, diagonal=k)
     
 
-def empty(shape: Union[int, Tuple[int]],
+def empty(shape: Union[int, Tuple[int, ...]],
           dtype: Optional[torch.dtype] = None,
           device: Optional[torch.device] = None) \
         -> Tensor:

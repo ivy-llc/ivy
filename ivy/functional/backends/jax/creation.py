@@ -79,7 +79,7 @@ def triu(x: JaxArray,
     return jnp.triu(x, k)
 
 
-def empty(shape: Union[int, Tuple[int], List[int]],
+def empty(shape: Union[int, Tuple[int, ...]],
           dtype: Optional[jnp.dtype] = None,
           device: Optional[jaxlib.xla_extension.Device] = None) \
         -> JaxArray:

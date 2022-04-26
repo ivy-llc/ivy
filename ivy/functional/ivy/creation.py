@@ -273,6 +273,17 @@ def tril(x: Union[ivy.Array, ivy.NativeArray],
         an array containing the lower triangular part(s). The returned array must have the same shape and data type as
         x. All elements above the specified diagonal k must be zeroed. The returned array should be allocated on the
         same device as x.
+
+    Examples:
+    ---------
+    >>> x = ivy.array([[1,2,3],[4,5,6],[7,8,9],[10,11,12]])
+    >>> k = -1
+    >>> y = ivy.tril(x, k)
+    >>> print(y)
+    ivy.array([[ 0,  0,  0],
+       [ 4,  0,  0],
+       [ 7,  8,  0],
+       [10, 11, 12]])
     """
     return _cur_framework(x).tril(x, k)
 
@@ -297,6 +308,17 @@ def triu(x: Union[ivy.Array, ivy.NativeArray],
         an array containing the upper triangular part(s). The returned array must have the same shape and data type as
         x. All elements below the specified diagonal k must be zeroed. The returned array should be allocated on the
         same device as x.
+
+    Examples:
+    ---------
+    >>> x = ivy.array([[1,2,3],[4,5,6],[7,8,9],[10,11,12]])
+    >>> k = -1
+    >>> y = ivy.triu(x, k)
+    >>> print(y)
+    ivy.array([[ 1,  2,  3],
+       [ 4,  5,  6],
+       [ 0,  8,  9],
+       [ 0,  0, 12]])
     """
     return _cur_framework(x).triu(x, k)
 
@@ -320,8 +342,15 @@ def empty(shape: Union[int, Tuple[int], List[int]],
     Returns
      -------
     ret
-        an uninitialized array having a specified shape
+        an uninitialized array having a specified shape.
 
+    Examples:
+    ---------
+    >>> shape = [2, 2]
+    >>> y = ivy.empty(shape)
+    >>> print(y)
+    ivy.array([[ -9.74499359e+001,   6.69583040e-309],
+       [  2.13182611e-314,   3.06959433e-309]])
     """
     return _cur_framework().empty(shape, dtype, device)
 
@@ -346,6 +375,13 @@ def empty_like(x: Union[ivy.Array, ivy.NativeArray],
     ret
         an array having the same shape as x and containing uninitialized data.
 
+    Examples:
+    ---------
+    >>> x = ivy.array([1,2,3], [4,5,6])
+    >>> y = ivy.empty_like(x)
+    >>> print(y)
+    ivy.array([[-1073741821, -1073741821,           3],
+       [          0,           0, -1073741821]])
     """
     return _cur_framework(x).empty_like(x, dtype, dev)
 
