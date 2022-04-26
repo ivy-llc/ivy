@@ -20,7 +20,6 @@ Linear algebra
    linear_algebra/svd.rst
    linear_algebra/outer.rst
    linear_algebra/diagonal.rst
-   linear_algebra/pinv.rst
    linear_algebra/cholesky.rst
    linear_algebra/matrix_norm.rst
    linear_algebra/qr.rst

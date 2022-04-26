@@ -135,7 +135,6 @@
 <li class="toctree-l2"><a class="reference internal" href="svd.html">svd</a></li>
 <li class="toctree-l2"><a class="reference internal" href="outer.html">outer</a></li>
 <li class="toctree-l2"><a class="reference internal" href="diagonal.html">diagonal</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">pinv</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cholesky.html">cholesky</a></li>
 <li class="toctree-l2"><a class="reference internal" href="matrix_norm.html">matrix_norm</a></li>
 <li class="toctree-l2"><a class="reference internal" href="qr.html">qr</a></li>
@@ -260,18 +259,18 @@
 <h1>pinv<a class="headerlink" href="#pinv" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
 <dt id="ivy.functional.ivy.linear_algebra.pinv">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">pinv</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/linear_algebra.html#pinv"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.linear_algebra.pinv" title="Permalink to this definition">¶</a></dt>
-<dd><p>Computes the pseudo inverse of x matrix.</p>
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">pinv</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">rtol</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Union<span class="p">[</span>float<span class="p">, </span>Tuple<span class="p">[</span>float<span class="p">]</span><span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../../_modules/ivy/functional/ivy/linear_algebra.html#pinv"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.linear_algebra.pinv" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the (Moore-Penrose) pseudo-inverse of a matrix (or a stack of matrices) <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p>
 <dl class="simple">
-<dt>x</dt><dd><p>Matrix to be pseudo inverted.</p>
+<dt>x</dt><dd><p>input array having shape <code class="docutils literal notranslate"><span class="pre">(...,</span> <span class="pre">M,</span> <span class="pre">N)</span></code> and whose innermost two dimensions form <code class="docutils literal notranslate"><span class="pre">MxN</span></code> matrices. Should have a floating-point data type.</p>
+</dd>
+<dt>rtol</dt><dd><p>relative tolerance for small singular values. Singular values approximately less than or equal to <code class="docutils literal notranslate"><span class="pre">rtol</span> <span class="pre">*</span> <span class="pre">largest_singular_value</span></code> are set to zero. If a <code class="docutils literal notranslate"><span class="pre">float</span></code>, the value is equivalent to a zero-dimensional array having a floating-point data type determined by <span class="xref std std-ref">type-promotion</span> (as applied to <code class="docutils literal notranslate"><span class="pre">x</span></code>) and must be broadcast against each matrix. If an <code class="docutils literal notranslate"><span class="pre">array</span></code>, must have a floating-point data type and must be compatible with <code class="docutils literal notranslate"><span class="pre">shape(x)[:-2]</span></code> (see <span class="xref std std-ref">broadcasting</span>). If <code class="docutils literal notranslate"><span class="pre">None</span></code>, the default value is <code class="docutils literal notranslate"><span class="pre">max(M,</span> <span class="pre">N)</span> <span class="pre">*</span> <span class="pre">eps</span></code>, where <code class="docutils literal notranslate"><span class="pre">eps</span></code> must be the machine epsilon associated with the floating-point data type determined by <span class="xref std std-ref">type-promotion</span> (as applied to <code class="docutils literal notranslate"><span class="pre">x</span></code>). Default: <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
 </dd>
 </dl>
-<blockquote>
-<div><dl class="simple">
-<dt>ret</dt><dd><p>pseudo inverse of the matrix x.</p>
+<dl class="simple">
+<dt>ret</dt><dd><p>an array containing the pseudo-inverses. The returned array must have a floating-point data type determined by <span class="xref std std-ref">type-promotion</span> and must have shape <code class="docutils literal notranslate"><span class="pre">(...,</span> <span class="pre">N,</span> <span class="pre">M)</span></code> (i.e., must have the same shape as <code class="docutils literal notranslate"><span class="pre">x</span></code>, except the innermost two dimensions must be transposed).</p>
 </dd>
 </dl>
-</div></blockquote>
 </dd></dl>
 
 <div class="line-block">
