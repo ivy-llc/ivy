@@ -561,20 +561,22 @@ def eigvalsh(x: Union[ivy.Array, ivy.NativeArray], /) -> ivy.Array:
 def inv(x: Union[ivy.Array, ivy.NativeArray]) \
         -> ivy.Array:
     """
-    Returns the multiplicative inverse of a square matrix (or a stack of square matrices) x.
+    Returns the multiplicative inverse of a square matrix (or a stack of square matrices) ``x``.
 
     Parameters
+    ----------
     x 
-        input array having shape (..., M, M) and whose innermost two dimensions form square matrices.
+        input array having shape ``(..., M, M)`` and whose innermost two dimensions form square matrices.
         Should have a floating-point data type.
 
     Returns
+    -------
     ret 
-        an array containing the multiplicative inverses.
-        The returned array must have a floating-point data type determined by Type Promotion Rules and must have the same shape as x.
+        an array containing the multiplicative inverses. The returned array must have a floating-point data type determined 
+        by :ref:`type-promotion` and must have the same shape as ``x``.
 
     Examples
-     --------
+    --------
     >>> x = ivy.array([[1.0, 2.0],[3.0, 4.0]])
     >>> y = ivy.inv(x)
     >>> print(y)
