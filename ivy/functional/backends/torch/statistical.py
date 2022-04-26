@@ -34,10 +34,10 @@ def sum(x: torch.Tensor,
         axis: Optional[Union[int, Tuple[int]]] = None,
         dtype: Optional[torch.dtype] = None,
         keepdims: bool = False,
-        out: Optional[torch.Tensor]=None)\
+        out: Optional[torch.Tensor] = None)\
         -> torch.Tensor:
 
-    if dtype == None:
+    if dtype is None:
         if x.dtype in [torch.int8, torch.int16]:
             dtype = torch.int32
         elif x.dtype == torch.uint8:
