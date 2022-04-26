@@ -465,30 +465,36 @@
 <span class="sd">    -   If ``N`` is ``0``, the sum is ``0`` (i.e., the empty sum).</span>
 <span class="sd">    For floating-point operands,</span>
 <span class="sd">    -   If ``x_i`` is ``NaN``, the sum is ``NaN`` (i.e., ``NaN`` values propagate).</span>
+
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    x</span>
-<span class="sd">        input array. Should have a numeric data type.</span>
+<span class="sd">        Input array. Should have a numeric data type.</span>
 <span class="sd">    axis</span>
-<span class="sd">        axis or axes along which sums must be computed. By default, the sum must be computed over the entire array. If a tuple of integers, sums must be computed over multiple axes. Default  ``None``.</span>
+<span class="sd">        Axis or axes along which sums must be computed. By default, the sum must be computed over the entire array. If a tuple of integers, sums must be computed over multiple axes. Default: ``None``.</span>
 <span class="sd">    dtype</span>
-<span class="sd">        data type of the returned array. If ``None``,</span>
-<span class="sd">        -   if the default data type corresponding to the data type &quot;kind&quot; (integer or floating-point) of ``x`` has a smaller range of values than the data type of ``x`` (e.g., ``x`` has data type ``int64`` and the default data type is ``int32``, or ``x`` has data type ``uint64`` and the default data type is ``int64``), the returned array must have the same data type as ``x``.</span>
-<span class="sd">        -   if ``x`` has a floating-point data type, the returned array must have the default floating-point data type.</span>
-<span class="sd">        -   if ``x`` has a signed integer data type (e.g., ``int16``), the returned array must have the default integer data type.</span>
-<span class="sd">        -   if ``x`` has an unsigned integer data type (e.g., ``uint16``), the returned array must have an unsigned integer data type having the same number of bits as the default integer data type (e.g., if the default integer data type is ``int32``, the returned array must have a ``uint32`` data type).</span>
+<span class="sd">        Data type of the returned array. If ``None``,</span>
+<span class="sd">        -   If the default data type corresponding to the data type &quot;kind&quot; (integer or floating-point) of ``x`` has a smaller range of values than the data type of ``x`` (e.g., ``x`` has data type ``int64`` and the default data type is ``int32``, or ``x`` has data type ``uint64`` and the default data type is ``int64``), the returned array must have the same data type as ``x``.</span>
+<span class="sd">        -   If ``x`` has a floating-point data type, the returned array must have the default floating-point data type.</span>
+<span class="sd">        -   If ``x`` has a signed integer data type (e.g., ``int16``), the returned array must have the default integer data type.</span>
+<span class="sd">        -   If ``x`` has an unsigned integer data type (e.g., ``uint16``), the returned array must have an unsigned integer data type having the same number of bits as the default integer data type (e.g., if the default integer data type is ``int32``, the returned array must have a ``uint32`` data type).</span>
 <span class="sd">        If the data type (either specified or resolved) differs from the data type of ``x``, the input array should be cast to the specified data type before computing the sum. Default: ``None``.</span>
 <span class="sd">        .. note::</span>
-<span class="sd">           keyword argument is intended to help prevent data type overflows.</span>
+<span class="sd">            keyword argument is intended to help prevent data type overflows.</span>
 <span class="sd">    keepdims</span>
-<span class="sd">        if ``True``, the reduced axes (dimensions) must be included in the result as singleton dimensions, and, accordingly, the result must be compatible with the input array (see  ref:`broadcasting`). Otherwise, if ``False``, the reduced axes (dimensions) must not be included in the result. Default: ``False``.</span>
-<span class="sd">    out</span>
-<span class="sd">        optional output array, for writing the result to.Returns</span>
+<span class="sd">        If ``True``, the reduced axes (dimensions) must be included in the result as singleton dimensions, and, accordingly, the result must be compatible with the input array (see :ref:`broadcasting`). Otherwise, if ``False``, the reduced axes (dimensions) must not be included in the result. Default: ``False``.</span>
 <span class="sd">    </span>
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">     ret</span>
-<span class="sd">        if the sum was computed over the entire array, a zero-dimensional array containing the sum; otherwise, an array containing the sums. The returned array must have a data type as described by the ``dtype`` parameter above.</span>
+<span class="sd">    ivy.Array</span>
+<span class="sd">        If the sum was computed over the entire array, a zero-dimensional array containing the sum; otherwise, an array containing the sums. The returned array must have a data type as described by the ``dtype`` parameter above.</span>
+<span class="sd">    </span>
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([0.41, 0.89])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.sum(x)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    1.3</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">dtype</span><span class="p">,</span> <span class="n">keepdims</span><span class="p">,</span> <span class="n">out</span> <span class="o">=</span> <span class="n">out</span><span class="p">)</span></div>
