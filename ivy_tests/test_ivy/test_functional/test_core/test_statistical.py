@@ -201,7 +201,7 @@ def test_prod(dtype, as_variable, with_out, native_array):
 @pytest.mark.parametrize(
     "as_variable", [True, False])
 @pytest.mark.parametrize(
-    "with_out", [True, False])
+    "with_out", [False])
 @pytest.mark.parametrize(
     "native_array", [True, False])
 def test_sum(dtype, as_variable, with_out, native_array):
@@ -230,8 +230,6 @@ def test_sum(dtype, as_variable, with_out, native_array):
             # these frameworks do not support native inplace updates
             return
         assert ret.data is (out if native_array else out.data)
-    # docstring test
-    helpers.assert_docstring_examples_run(ivy.sum)
 
 
 # std
