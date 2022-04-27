@@ -1,7 +1,11 @@
 #!/bin/bash -e
 python3 ivy_tests/write_array_api_tests_k_flag.py
 # shellcheck disable=SC2155
-export ARRAY_API_TESTS_K_FLAG=$(cat ivy_tests/.array_api_tests_k_flag)
+if [ "$1" = "jax" ]; then
+    export ARRAY_API_TESTS_K_FLAG=$(cat ivy_tests/.array_api_tests_k_flag_$1)
+else
+    export ARRAY_API_TESTS_K_FLAG=$(cat ivy_tests/.array_api_tests_k_flag)
+fi
 if [ "$1" = "torch" ]; then
   ARRAY_API_TESTS_K_FLAG="${ARRAY_API_TESTS_K_FLAG} and not (uint16 or uint32 or uint64)"
 fi
