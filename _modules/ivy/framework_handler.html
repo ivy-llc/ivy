@@ -374,9 +374,9 @@
 
 
 <div class="viewcode-block" id="unset_framework"><a class="viewcode-back" href="../../framework_handler/unset_framework.html#ivy.framework_handler.unset_framework">[docs]</a><span class="k">def</span> <span class="nf">unset_framework</span><span class="p">():</span>
-    <span class="n">_unwrap_methods</span><span class="p">()</span>
     <span class="n">fw</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="k">if</span> <span class="n">framework_stack</span><span class="p">:</span>
+        <span class="n">_unwrap_methods</span><span class="p">()</span>
         <span class="n">fw</span> <span class="o">=</span> <span class="n">framework_stack</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">fw</span><span class="o">.</span><span class="n">current_framework_str</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;numpy&#39;</span><span class="p">:</span>
             <span class="n">ivy</span><span class="o">.</span><span class="n">unset_default_device</span><span class="p">()</span>
