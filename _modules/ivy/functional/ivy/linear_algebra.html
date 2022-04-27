@@ -885,6 +885,32 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">vector</span><span class="p">)</span><span class="o">.</span><span class="n">vector_to_skew_symmetric_matrix</span><span class="p">(</span><span class="n">vector</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="solve"><a class="viewcode-back" href="../../../../functional/ivy/linear_algebra/solve.html#ivy.functional.ivy.linear_algebra.solve">[docs]</a><span class="k">def</span> <span class="nf">solve</span><span class="p">(</span><span class="n">x1</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+          <span class="n">x2</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns the solution to the system of linear equations represented by the well-determined (i.e., full rank) linear matrix equation AX = B.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x1</span>
+<span class="sd">        coefficient array A having shape (..., M, M) and whose innermost two dimensions form square matrices.</span>
+<span class="sd">        Must be of full rank (i.e., all rows or, equivalently, columns must be linearly independent).</span>
+<span class="sd">        Should have a floating-point data type.</span>
+
+<span class="sd">    x2</span>
+<span class="sd">        ordinate (or “dependent variable”) array B. If x2 has shape (M,), x2 is equivalent to an array having shape (..., M, 1).</span>
+<span class="sd">        If x2 has shape (..., M, K), each column k defines a set of ordinate values for which to compute a solution,and shape(x2)[:-1] must be compatible with shape(x1)[:-1] (see Broadcasting).</span>
+<span class="sd">        Should have a floating-point data type.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        an array containing the solution to the system AX = B for each square matrix.</span>
+<span class="sd">        The returned array must have the same shape as x2 (i.e., the array corresponding to B) and must have a floating-point data type determined by Type Promotion Rules.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">)</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">)</span></div>
 </pre></div>
 
            </div>

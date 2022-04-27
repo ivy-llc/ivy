@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>slodget &mdash; Ivy 1.0 documentation</title>
+  <title>solve &mdash; Ivy 1.0 documentation</title>
   
 
   
@@ -36,8 +36,8 @@
   <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="tensordot" href="tensordot.html" />
-    <link rel="prev" title="matmul" href="matmul.html" /> 
+    <link rel="next" title="Losses" href="../losses.html" />
+    <link rel="prev" title="vector_to_skew_symmetric_matrix" href="vector_to_skew_symmetric_matrix.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -139,7 +139,7 @@
 <li class="toctree-l2"><a class="reference internal" href="matrix_norm.html">matrix_norm</a></li>
 <li class="toctree-l2"><a class="reference internal" href="qr.html">qr</a></li>
 <li class="toctree-l2"><a class="reference internal" href="matmul.html">matmul</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">slodget</a></li>
+<li class="toctree-l2"><a class="reference internal" href="slodget.html">slodget</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tensordot.html">tensordot</a></li>
 <li class="toctree-l2"><a class="reference internal" href="svdvals.html">svdvals</a></li>
 <li class="toctree-l2"><a class="reference internal" href="trace.html">trace</a></li>
@@ -151,7 +151,7 @@
 <li class="toctree-l2"><a class="reference internal" href="matrix_rank.html">matrix_rank</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cross.html">cross</a></li>
 <li class="toctree-l2"><a class="reference internal" href="vector_to_skew_symmetric_matrix.html">vector_to_skew_symmetric_matrix</a></li>
-<li class="toctree-l2"><a class="reference internal" href="solve.html">solve</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">solve</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../losses.html">Losses</a></li>
@@ -237,13 +237,13 @@
         
           <li><a href="../linear_algebra.html">Linear algebra</a> &raquo;</li>
         
-      <li>slodget</li>
+      <li>solve</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../../_sources/functional/ivy/linear_algebra/slodget.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../../_sources/functional/ivy/linear_algebra/solve.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -256,26 +256,27 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="slodget">
-<h1>slodget<a class="headerlink" href="#slodget" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="solve">
+<h1>solve<a class="headerlink" href="#solve" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
-<dt id="ivy.functional.ivy.linear_algebra.slodget">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">slodget</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../../_modules/ivy/functional/ivy/linear_algebra.html#slodget"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.linear_algebra.slodget" title="Permalink to this definition">¶</a></dt>
-<dd><p>Computes the sign and natural logarithm of the determinant of an array.</p>
+<dt id="ivy.functional.ivy.linear_algebra.solve">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">solve</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x1</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">x2</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../../_modules/ivy/functional/ivy/linear_algebra.html#solve"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.linear_algebra.solve" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the solution to the system of linear equations represented by the well-determined (i.e., full rank) linear matrix equation AX = B.</p>
 <dl class="simple">
-<dt>x</dt><dd><p>This is a 2D array, and it has to be square</p>
+<dt>x1</dt><dd><p>coefficient array A having shape (…, M, M) and whose innermost two dimensions form square matrices.
+Must be of full rank (i.e., all rows or, equivalently, columns must be linearly independent).
+Should have a floating-point data type.</p>
+</dd>
+<dt>x2</dt><dd><p>ordinate (or “dependent variable”) array B. If x2 has shape (M,), x2 is equivalent to an array having shape (…, M, 1).
+If x2 has shape (…, M, K), each column k defines a set of ordinate values for which to compute a solution,and shape(x2)[:-1] must be compatible with shape(x1)[:-1] (see Broadcasting).
+Should have a floating-point data type.</p>
 </dd>
 </dl>
-<p>ret</p>
-<blockquote>
-<div><dl>
-<dt>This function returns two values -</dt><dd><p>sign:
-A number representing the sign of the determinant.</p>
-<p>logdet:
-The natural log of the absolute value of the determinant.</p>
+<dl class="simple">
+<dt>ret</dt><dd><p>an array containing the solution to the system AX = B for each square matrix.
+The returned array must have the same shape as x2 (i.e., the array corresponding to B) and must have a floating-point data type determined by Type Promotion Rules.</p>
 </dd>
 </dl>
-</div></blockquote>
 </dd></dl>
 
 <div class="line-block">
@@ -293,10 +294,10 @@ The natural log of the absolute value of the determinant.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="tensordot.html" class="btn btn-neutral float-right" title="tensordot" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="../losses.html" class="btn btn-neutral float-right" title="Losses" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="matmul.html" class="btn btn-neutral float-left" title="matmul" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="vector_to_skew_symmetric_matrix.html" class="btn btn-neutral float-left" title="vector_to_skew_symmetric_matrix" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

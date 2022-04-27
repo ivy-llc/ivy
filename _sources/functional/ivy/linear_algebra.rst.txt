@@ -36,4 +36,5 @@ Linear algebra
    linear_algebra/matrix_rank.rst
    linear_algebra/cross.rst
    linear_algebra/vector_to_skew_symmetric_matrix.rst
+   linear_algebra/solve.rst
 

@@ -151,6 +151,7 @@
 <li class="toctree-l2"><a class="reference internal" href="linear_algebra/matrix_rank.html">matrix_rank</a></li>
 <li class="toctree-l2"><a class="reference internal" href="linear_algebra/cross.html">cross</a></li>
 <li class="toctree-l2"><a class="reference internal" href="linear_algebra/vector_to_skew_symmetric_matrix.html">vector_to_skew_symmetric_matrix</a></li>
+<li class="toctree-l2"><a class="reference internal" href="linear_algebra/solve.html">solve</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="losses.html">Losses</a></li>
@@ -602,6 +603,27 @@ The natural log of the absolute value of the determinant.</p>
 </dd>
 </dl>
 </div></blockquote>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.linear_algebra.solve">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">solve</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x1</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">x2</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../_modules/ivy/functional/ivy/linear_algebra.html#solve"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.linear_algebra.solve" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the solution to the system of linear equations represented by the well-determined (i.e., full rank) linear matrix equation AX = B.</p>
+<dl class="simple">
+<dt>x1</dt><dd><p>coefficient array A having shape (…, M, M) and whose innermost two dimensions form square matrices.
+Must be of full rank (i.e., all rows or, equivalently, columns must be linearly independent).
+Should have a floating-point data type.</p>
+</dd>
+<dt>x2</dt><dd><p>ordinate (or “dependent variable”) array B. If x2 has shape (M,), x2 is equivalent to an array having shape (…, M, 1).
+If x2 has shape (…, M, K), each column k defines a set of ordinate values for which to compute a solution,and shape(x2)[:-1] must be compatible with shape(x1)[:-1] (see Broadcasting).
+Should have a floating-point data type.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>ret</dt><dd><p>an array containing the solution to the system AX = B for each square matrix.
+The returned array must have the same shape as x2 (i.e., the array corresponding to B) and must have a floating-point data type determined by Type Promotion Rules.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
