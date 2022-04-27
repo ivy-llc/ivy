@@ -384,3 +384,37 @@ def vector_to_skew_symmetric_matrix(vector: Tensor,
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
     return ret
+
+def solve(x1: Tensor,
+          x2: Tensor) -> Tensor:
+    if x1.dtype != tf.float32 or x1.dtype != tf.float64:
+        x1 = tf.cast(x1, tf.float32)
+    if x2.dtype != tf.float32 or x2.dtype != tf.float32:
+        x2 = tf.cast(x2, tf.float32)
+
+    expanded_last = False
+    if len(x2.shape) <= 1:
+        if x2.shape[-1] == x1.shape[-1]:
+            expanded_last = True
+            x2 = tf.expand_dims(x2, axis=1)
+    output_shape = tuple(tf.broadcast_static_shape(x1.shape[:-2], x2.shape[:-2]))
+
+    # in case any of the input arrays are empty
+    is_empty_x1 = tf.equal(tf.size(x1), 0)
+    is_empty_x2 = tf.equal(tf.size(x2), 0)
+    if is_empty_x1 or is_empty_x2:
+        for i in range(len(x1.shape) - 2):
+            x2 = tf.expand_dims(x2, axis=0)
+        output_shape = list(output_shape)
+        output_shape.append(x2.shape[-2])
+        output_shape.append(x2.shape[-1])
+        ret = tf.constant([])
+        ret = tf.reshape(ret, output_shape)
+    else:
+        x1 = tf.broadcast_to(x1, output_shape + x1.shape[-2:])
+        x2 = tf.broadcast_to(x2, output_shape + x2.shape[-2:])
+        ret = tf.linalg.solve(x1, x2)
+
+    if expanded_last:
+        ret = tf.squeeze(ret, axis=-1)
+    return ret
