@@ -14,7 +14,7 @@ outer
 pinv
 qr
 slogdet
-#solve
+#solve # failing health check for jax
 svd
 svdvals
 tensordot

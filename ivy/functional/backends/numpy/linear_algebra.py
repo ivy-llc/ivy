@@ -266,3 +266,17 @@ def vector_to_skew_symmetric_matrix(vector: np.ndarray,
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
     return ret
+
+def solve(x1: np.ndarray,
+          x2: np.ndarray) -> np.ndarray:
+    expanded_last = False
+    if len(x2.shape) <= 1:
+        if x2.shape[-1] == x1.shape[-1]:
+            expanded_last = True
+            x2 = np.expand_dims(x2, axis=1)
+    for i in range(len(x1.shape) - 2):
+        x2 = np.expand_dims(x2, axis=0)
+    ret = np.linalg.solve(x1, x2)
+    if expanded_last:
+        ret = np.squeeze(ret, axis=-1)
+    return ret
