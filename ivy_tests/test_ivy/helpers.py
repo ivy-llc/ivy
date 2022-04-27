@@ -236,10 +236,6 @@ def f_n_calls():
             if ivy_fw() is not None and fw_str not in _excluded]
 
 
-def sample(iterable):
-    return st.builds(lambda i: iterable[i], st.integers(0, len(iterable) - 1))
-
-
 def assert_all_close(x, y, rtol=1e-05, atol=1e-08):
     if ivy.is_ivy_container(x) and ivy.is_ivy_container(y):
         ivy.Container.multi_map(assert_all_close, [x, y])
@@ -392,7 +388,7 @@ def test_array_function(dtype, as_variable, with_out, num_positional_args, nativ
 @st.composite
 def array_dtypes(draw, na=st.shared(st.integers(), key='num_arrays')):
     size = na if isinstance(na, int) else draw(na)
-    return draw(st.lists(sample(ivy_np.valid_float_dtype_strs), min_size=size, max_size=size))
+    return draw(st.lists(st.sampled_from(ivy_np.valid_float_dtype_strs), min_size=size, max_size=size))
 
 
 @st.composite
