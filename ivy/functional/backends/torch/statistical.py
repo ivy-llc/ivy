@@ -34,10 +34,10 @@ def sum(x: torch.Tensor,
         axis: Optional[Union[int, Tuple[int]]] = None,
         dtype: Optional[torch.dtype] = None,
         keepdims: bool = False,
-        out: Optional[torch.Tensor]=None)\
+        out: Optional[torch.Tensor] = None)\
         -> torch.Tensor:
 
-    if dtype == None:
+    if dtype is None:
         if x.dtype in [torch.int8, torch.int16]:
             dtype = torch.int32
         elif x.dtype == torch.uint8:
@@ -157,11 +157,11 @@ def var(x: torch.Tensor,
         num_dims = len(x.shape)
         axis = tuple(range(num_dims))
     if isinstance(axis, int):
-        return torch.var(x, dim=axis, keepdim=keepdims)
+        return torch.var(x, dim=axis, keepdim=keepdims, unbiased=False)
     dims = len(x.shape)
     axis = tuple([i % dims for i in axis])
     for i, a in enumerate(axis):
-        x = torch.var(x, dim=a if keepdims else a - i, keepdim=keepdims)
+        x = torch.var(x, dim=a if keepdims else a - i, keepdim=keepdims, unbiased=False)
     if ivy.exists(out):
         return ivy.inplace_update(out, x)
     else:
@@ -179,16 +179,16 @@ def std(x: torch.Tensor,
         axis = tuple(range(num_dims))
     if isinstance(axis, int):
         if ivy.exists(out):
-            return ivy.inplace_update(out,torch.std(x,dim=axis,keepdim=keepdims))
+            return ivy.inplace_update(out,torch.std(x,dim=axis,keepdim=keepdims, unbiased=False))
         else:
-            return torch.std(x, dim=axis, keepdim=keepdims)
+            return torch.std(x, dim=axis, keepdim=keepdims, unbiased=False)
     dims = len(x.shape)
     axis = tuple([i % dims for i in axis])
     for i, a in enumerate(axis):
         if ivy.exists(out):
-            x = ivy.inplace_update(out, torch.std(x, dim=a if keepdims else a - i, keepdim=keepdims))
+            x = ivy.inplace_update(out, torch.std(x, dim=a if keepdims else a - i, keepdim=keepdims, unbiased=False))
         else:
-            x = torch.std(x, dim=a if keepdims else a - i, keepdim=keepdims)
+            x = torch.std(x, dim=a if keepdims else a - i, keepdim=keepdims, unbiased=False)
     if ivy.exists(out):
         return ivy.inplace_update(out, x)
     else:

@@ -23,7 +23,7 @@ def test_cross_entropy(t_n_p_n_res, dtype, tensor_fn, dev, call):
     true = tensor_fn(true, dtype, dev)
     ret = ivy.cross_entropy(true, pred)
     # type test
-    assert ivy.is_native_array(ret)
+    assert ivy.is_ivy_array(ret)
     # cardinality test
     assert list(ret.shape) == [1]
     # value test
@@ -46,7 +46,7 @@ def test_binary_cross_entropy(t_n_p_n_res, dtype, tensor_fn, dev, call):
     true = tensor_fn(true, dtype, dev)
     ret = ivy.binary_cross_entropy(true, pred)
     # type test
-    assert ivy.is_native_array(ret)
+    assert ivy.is_ivy_array(ret)
     # cardinality test
     assert ret.shape == pred.shape
     # value test
@@ -67,7 +67,7 @@ def test_sparse_cross_entropy(t_n_p_n_res, dtype, tensor_fn, dev, call):
     true = ivy.array(true, 'int32', dev)
     ret = ivy.sparse_cross_entropy(true, pred)
     # type test
-    assert ivy.is_native_array(ret)
+    assert ivy.is_ivy_array(ret)
     # cardinality test
     assert list(ret.shape) == [1]
     # value test

@@ -30,6 +30,8 @@ def test_stack_images(shp_n_num_n_ar_n_newshp, dev, call):
     assert ivy.is_ivy_array(ret)
     # cardinality test
     assert ret.shape == new_shape
+    # docstring test
+    helpers.docstring_examples_run(ivy.stack_images)
 
 
 # bilinear_resample
@@ -48,7 +50,7 @@ def test_bilinear_resample(x_n_warp, dtype, tensor_fn, dev, call):
     warp = tensor_fn(warp, dtype, dev)
     ret = ivy.bilinear_resample(x, warp)
     # type test
-    assert ivy.is_native_array(ret)
+    assert ivy.is_ivy_array(ret)
     # cardinality test
     assert ret.shape == warp.shape[:-1] + x.shape[-1:]
     # value test
@@ -108,7 +110,7 @@ def test_float_img_to_uint8_img(fi_tui, tensor_fn, dev, call):
     true_uint8_img = np.array(true_uint8_img)
     uint8_img = ivy.float_img_to_uint8_img(float_img)
     # type test
-    assert ivy.is_native_array(float_img)
+    assert ivy.is_ivy_array(float_img)
     # cardinality test
     assert uint8_img.shape == true_uint8_img.shape
     # value test
@@ -134,7 +136,7 @@ def test_uint8_img_to_float_img(ui_tfi, dev, call):
     true_float_img = np.array(true_float_img)
     float_img = ivy.uint8_img_to_float_img(uint8_img)
     # type test
-    assert ivy.is_native_array(float_img)
+    assert ivy.is_ivy_array(float_img)
     # cardinality test
     assert float_img.shape == true_float_img.shape
     # value test
@@ -160,7 +162,7 @@ def test_random_crop(xshp_n_cs, dev, call):
     x = ivy.einops_repeat(ivy.reshape(ivy.arange(x_size), x_shape[1:]), '... -> b ...', b=batch_size)
     cropped = ivy.random_crop(x, crop_size)
     # type test
-    assert ivy.is_native_array(cropped)
+    assert ivy.is_ivy_array(cropped)
     # cardinality test
     true_shape = [item for item in x_shape]
     true_shape[-3] = crop_size[0]

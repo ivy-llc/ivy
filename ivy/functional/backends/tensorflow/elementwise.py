@@ -536,7 +536,7 @@ def remainder(x1: Tensor,
               out: Optional[Tensor] = None)\
         -> Tensor:
     x1, x2 = _cast_for_binary_op(x1, x2)
-    ret = tf.experimental.numpy.remainder(x1, x2)
+    ret = tf.math.floormod(x1, x2)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
     return ret
@@ -597,7 +597,10 @@ def subtract(x1: Tensor,
 def logaddexp(x1: Tensor,
               x2: Tensor,
               out: Optional[Tensor] = None) -> Tensor:
-    x1, x2 = _cast_for_binary_op(x1, x2)
+    if hasattr(x1, 'dtype') and hasattr(x2, 'dtype'):
+        promoted_type = tf.experimental.numpy.promote_types(x1.dtype, x2.dtype)
+        x1 = tf.cast(x1, promoted_type)
+        x2 = tf.cast(x2, promoted_type)
     ret = tf.experimental.numpy.logaddexp(x1, x2)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
