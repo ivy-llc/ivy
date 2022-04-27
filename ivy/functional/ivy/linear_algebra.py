@@ -660,3 +660,29 @@ def vector_to_skew_symmetric_matrix(vector: Union[ivy.Array, ivy.NativeArray]) \
 
     """
     return _cur_framework(vector).vector_to_skew_symmetric_matrix(vector)
+
+
+def solve(x1: Union[ivy.Array, ivy.NativeArray],
+          x2: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
+    """
+    Returns the solution to the system of linear equations represented by the well-determined (i.e., full rank) linear matrix equation AX = B.
+
+    Parameters
+    ----------
+    x1
+        coefficient array A having shape (..., M, M) and whose innermost two dimensions form square matrices.
+        Must be of full rank (i.e., all rows or, equivalently, columns must be linearly independent).
+        Should have a floating-point data type.
+
+    x2
+        ordinate (or “dependent variable”) array B. If x2 has shape (M,), x2 is equivalent to an array having shape (..., M, 1).
+        If x2 has shape (..., M, K), each column k defines a set of ordinate values for which to compute a solution,and shape(x2)[:-1] must be compatible with shape(x1)[:-1] (see Broadcasting).
+        Should have a floating-point data type.
+
+    Returns
+    -------
+    ret
+        an array containing the solution to the system AX = B for each square matrix.
+        The returned array must have the same shape as x2 (i.e., the array corresponding to B) and must have a floating-point data type determined by Type Promotion Rules.
+    """
+    return _cur_framework(x1, x2).solve(x1, x2)
