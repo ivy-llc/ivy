@@ -421,8 +421,8 @@ def integers(draw, min_value=None, max_value=None):
 
 
 @st.composite
-def numeric_dtype_and_values(draw):
-    dtype = draw(st.sampled_from(ivy_np.valid_numeric_dtype_strs))
+def dtype_and_values(draw, available_dtypes):
+    dtype = draw(st.sampled_from(available_dtypes))
     if dtype == 'int8':
         values = draw(st.lists(st.integers(-128, 127)))
     elif dtype == 'int16':
@@ -443,6 +443,8 @@ def numeric_dtype_and_values(draw):
         values = draw(st.lists(st.floats(width=16)))
     elif dtype == 'float32':
         values = draw(st.lists(st.floats(width=32)))
-    else:
+    elif dtype == 'float64':
         values = draw(st.lists(st.floats(width=64)))
+    elif dtype == 'bool':
+        values = draw(st.lists(st.booleans()))
     return dtype, values
