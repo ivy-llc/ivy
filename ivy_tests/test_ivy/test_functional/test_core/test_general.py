@@ -528,44 +528,6 @@ def test_floormod(x_n_divisor_n_x_floormod, dtype, with_out, tensor_fn, dev, cal
     assert np.allclose(call(ivy.floormod, x, divisor), np.array(x_n_divisor_n_x_floormod[2]))
 
 
-# arange
-@pytest.mark.parametrize(
-    "stop_n_start_n_step", [[10, None, None], [10, 2, None], [10, 2, 2]])
-@pytest.mark.parametrize(
-    "dtype", ['float32'])
-@pytest.mark.parametrize(
-    "tensor_fn", [ivy.array, helpers.var_fn])
-def test_arange(stop_n_start_n_step, dtype, tensor_fn, dev, call):
-    # smoke test
-    stop, start, step = stop_n_start_n_step
-    if (isinstance(stop, Number) or isinstance(start, Number) or isinstance(step, Number))\
-            and tensor_fn == helpers.var_fn and call is helpers.mx_call:
-        # mxnet does not support 0-dimensional variables
-        pytest.skip()
-    if tensor_fn == helpers.var_fn and call is helpers.torch_call:
-        # pytorch does not support arange using variables as input
-        pytest.skip()
-    args = list()
-    if stop:
-        stop = tensor_fn(stop, dtype, dev)
-        args.append(stop)
-    if start:
-        start = tensor_fn(start, dtype, dev)
-        args.append(start)
-    if step:
-        step = tensor_fn(step, dtype, dev)
-        args.append(step)
-    ret = ivy.arange(*args, dtype=dtype, dev=dev)
-    # type test
-    assert ivy.is_ivy_array(ret)
-    # cardinality test
-    assert ret.shape == (int((ivy.to_list(stop) -
-                              (ivy.to_list(start) if start else 0))/(ivy.to_list(step) if step else 1)),)
-    # value test
-    assert np.array_equal(call(ivy.arange, *args, dtype=dtype, dev=dev),
-                          np.asarray(ivy.functional.backends.numpy.arange(*[ivy.to_numpy(arg) for arg in args], dtype=dtype)))
-
-
 # linspace
 @pytest.mark.parametrize(
     "start_n_stop_n_num_n_axis", [[1, 10, 100, None], [[[0., 1., 2.]], [[1., 2., 3.]], 150, -1],
@@ -1382,7 +1344,7 @@ def test_cache_fn_with_args(dev, call):
 #         x_ = np.array([0., 1., 2.])
 #         for _ in range(2000):
 #             try:
-#                 ivy.reduce_mean(x_)
+#                 ivy.mean(x_)
 #             except TypeError:
 #                 return False
 #         ivy.unset_framework()
@@ -1399,7 +1361,7 @@ def test_cache_fn_with_args(dev, call):
 #     # start local original framework loop
 #     ivy.set_framework(fws)
 #     for _ in range(2000):
-#         ivy.reduce_mean(x)
+#         ivy.mean(x)
 #     ivy.unset_framework()
 #
 #     assert not thread.join()

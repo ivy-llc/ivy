@@ -43,14 +43,21 @@ def unique_all(x: Union[ivy.Array, ivy.NativeArray]) \
 
 def unique_inverse(x: Union[ivy.Array, ivy.NativeArray]) \
         -> Tuple[ivy.Array, ivy.Array]:
-    """
-    Returns a tuple of two arrays, one being the unique elements of an input array x and the other one the indices from
+    """Returns a tuple of two arrays, one being the unique elements of an input array x and the other one the indices from
     the set of uniques elements that reconstruct x.
 
-    :param x: input array.
-    :return: tuple of two arrays (values, inverse_indices)
+    Parameters
+    ----------
+    x
+        input array.
+
+    Returns
+     -------
+    ret
+        tuple of two arrays (values, inverse_indices)
+
     """
-    return _cur_framework.unique_inverse(x)
+    return _cur_framework(x).unique_inverse(x)
 
 
 def unique_values(x: Union[ivy.Array, ivy.NativeArray], out: Optional[Union[ivy.Array, ivy.NativeArray]] = None) \
@@ -66,11 +73,11 @@ def unique_values(x: Union[ivy.Array, ivy.NativeArray], out: Optional[Union[ivy.
        -   As ``-0`` and ``+0`` compare as ``True``, signed zeros should not be considered distinct, and the corresponding unique element will be implementation-dependent (e.g., an implementation could choose to return ``-0`` if ``-0`` occurs before ``+0``).
     Parameters
     ----------
-    x: array
+    x
         input array. If ``x`` has more than one dimension, the function must flatten ``x`` and return the unique elements of the flattened array.
     Returns
-    -------
-    out: array
+     -------
+    ret
         an array containing the set of unique elements in ``x``. The returned array must have the same data type as ``x``.
         .. note::
            The order of unique elements is not specified and may vary between implementations.
@@ -80,12 +87,19 @@ def unique_values(x: Union[ivy.Array, ivy.NativeArray], out: Optional[Union[ivy.
 
 def unique_counts(x: Union[ivy.Array, ivy.NativeArray])\
         -> Tuple[ivy.Array, ivy.Array]:
-    """
-    Returns the unique elements of an input array x and the corresponding counts for each unique element in x.
+    """Returns the unique elements of an input array x and the corresponding counts for each unique element in x.
 
-    :param x: input array. If x has more than one dimension, the function must flatten x and return the unique elements of the flattened array.
-    :return: a namedtuple (values, counts) whose
-            -first element must have the field name values and must be an array containing the unique elements of x. The array must have the same data type as x.
-            -second element must have the field name counts and must be an array containing the number of times each unique element occurs in x. The returned array must have same shape as values and must have the default array index data type.
+    Parameters
+    ----------
+    x
+        input array. If x has more than one dimension, the function must flatten x and return the unique elements of the flattened array.
+
+    Returns
+     -------
+    ret
+        a namedtuple (values, counts) whose
+        -first element must have the field name values and must be an array containing the unique elements of x. The array must have the same data type as x.
+        -second element must have the field name counts and must be an array containing the number of times each unique element occurs in x. The returned array must have same shape as values and must have the default array index data type.
+
     """
     return _cur_framework(x).unique_counts(x)
