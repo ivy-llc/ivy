@@ -31,7 +31,7 @@ def cross_entropy(true: Union[ivy.Array, ivy.NativeArray],
 
     Returns
     -------
-    out
+    ret
         The cross-entropy loss between the given distributions
 
     Examples
