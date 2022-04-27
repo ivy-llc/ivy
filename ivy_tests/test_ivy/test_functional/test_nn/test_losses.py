@@ -28,8 +28,6 @@ def test_cross_entropy(t_n_p_n_res, dtype, tensor_fn, dev, call):
     assert list(ret.shape) == [1]
     # value test
     assert np.allclose(call(ivy.cross_entropy, true, pred), np.asarray(true_target))
-    # docstring test
-    assert helpers.docstring_examples_run(ivy.cross_entropy)
 
 
 # binary_cross_entropy
