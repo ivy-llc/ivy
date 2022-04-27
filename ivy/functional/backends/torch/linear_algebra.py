@@ -250,3 +250,33 @@ def vector_to_skew_symmetric_matrix(vector: torch.Tensor,
     row3 = torch.cat((-a2s, a1s, zs), -1)
     # BS x 3 x 3
     return torch.cat((row1, row2, row3), -2, out=out)
+
+def solve(x1: torch.Tensor,
+          x2: torch.Tensor) -> torch.Tensor:
+    if x1.dtype != torch.float:
+        x1 = x1.type(torch.float)
+    if x2.dtype != torch.float:
+        x2 = x2.type(torch.float)
+
+    expanded_last = False
+    if len(x2.shape) <= 1:
+        if x2.shape[-1] == x1.shape[-1]:
+            expanded_last = True
+            x2 = torch.unsqueeze(x2, dim=1)
+
+    is_empty_x1 = x1.nelement() == 0
+    is_empty_x2 = x2.nelement() == 0
+    if is_empty_x1 or is_empty_x2:
+        for i in range(len(x1.shape) - 2):
+            x2 = torch.unsqueeze(x2, dim=0)
+        output_shape = list(torch.broadcast_shapes(x1.shape[:-2], x2.shape[:-2]))
+        output_shape.append(x2.shape[-2])
+        output_shape.append(x2.shape[-1])
+        ret = torch.Tensor([])
+        ret = torch.reshape(ret, output_shape)
+    else:
+        ret = torch.linalg.solve(x1, x2)
+
+    if expanded_last:
+        ret = torch.squeeze(ret, dim=-1)
+    return ret
