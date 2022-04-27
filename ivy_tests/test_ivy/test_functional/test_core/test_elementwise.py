@@ -968,20 +968,20 @@ def test_log10(dtype, as_variable, with_out, num_positional_args, native_array, 
 
 
 # logaddexp
-@given(dtype=helpers.list_of_length(helpers.sample(ivy_np.valid_float_dtype_strs), 2),
-       as_variable=st.booleans(),
+@given(dtype_and_x=helpers.dtype_and_values(ivy_np.valid_float_dtype_strs, 2),
+       as_variable=helpers.list_of_length(st.booleans(), 2),
        with_out=st.booleans(),
        num_positional_args=st.integers(0, 2),
-       native_array=st.booleans(),
-       container=st.booleans(),
-       instance_method=st.booleans(),
-       x=st.lists(st.floats()))
-def test_logaddexp(dtype, as_variable, with_out, num_positional_args, native_array, container, instance_method, fw, x):
+       native_array=helpers.list_of_length(st.booleans(), 2),
+       container=helpers.list_of_length(st.booleans(), 2),
+       instance_method=st.booleans())
+def test_logaddexp(dtype_and_x, as_variable, with_out, num_positional_args, native_array, container, instance_method, fw):
+    dtype, x = dtype_and_x
     if fw == 'torch' and 'float16' in dtype:
         return
     helpers.test_array_function(
         dtype, as_variable, with_out, num_positional_args, native_array, container, instance_method, fw, 'logaddexp',
-        x1=np.asarray(x, dtype=dtype[0]), x2=np.asarray(x, dtype=dtype[1]))
+        x1=np.asarray(x[0], dtype=dtype[0]), x2=np.asarray(x[1], dtype=dtype[1]))
 
 
 # logical_and
