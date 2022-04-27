@@ -18,6 +18,6 @@ slogdet
 svd
 svdvals
 tensordot
-#trace # accidentally merged trace when #T in array folder was preventing test from running.
+#trace #failing for JAX
 vecdot
 vector_norm
