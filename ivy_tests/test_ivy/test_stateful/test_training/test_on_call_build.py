@@ -86,50 +86,50 @@ class WeConFC(ivy.Module):
 
 
 # WeConFC
-# @pytest.mark.parametrize(
-#     "batch_shape", [[1, 2]])
-# @pytest.mark.parametrize(
-#     "dtype", ['float32'])
-# @pytest.mark.parametrize(
-#     "tensor_fn", [ivy.array, helpers.var_fn])
-# def test_weight_conditioned_network_training(batch_shape, dtype, tensor_fn, dev, call):
-#
-#     # smoke test
-#     if call is helpers.np_call:
-#         # NumPy does not support gradients
-#         pytest.skip()
-#     x = ivy.Container({'layer0': {'w': ivy.random_uniform(shape=batch_shape+[64, 3], dev=dev),
-#                                   'b': ivy.random_uniform(shape=batch_shape+[64], dev=dev)},
-#                        'layer1': {'w': ivy.random_uniform(shape=batch_shape+[1, 64], dev=dev),
-#                                   'b': ivy.random_uniform(shape=batch_shape+[1], dev=dev)}})
-#     we_con_net = WeConFC(dev=dev)
-#
-#     def loss_fn(v_=None):
-#         out = we_con_net(x, v=v_)
-#         return ivy.mean(out)
-#
-#     # train
-#     loss_tm1 = 1e12
-#     loss = None
-#     grads = None
-#     loss_fn()  # build on_call layers
-#     for i in range(10):
-#         loss, grads = ivy.execute_with_gradients(loss_fn, we_con_net.v)
-#         we_con_net.v = ivy.gradient_descent_update(we_con_net.v, grads, 1e-3)
-#         assert loss < loss_tm1
-#         loss_tm1 = loss
-#
-#     # type test
-#     assert ivy.is_array(loss)
-#     assert isinstance(grads, ivy.Container)
-#     # cardinality test
-#     if call is helpers.mx_call:
-#         # mxnet slicing cannot reduce dimension to zero
-#         assert loss.shape == (1,)
-#     else:
-#         assert loss.shape == ()
-#     # value test
-#     assert (abs(grads).max() > 0).all_true()
+@pytest.mark.parametrize(
+    "batch_shape", [[1, 2]])
+@pytest.mark.parametrize(
+    "dtype", ['float32'])
+@pytest.mark.parametrize(
+    "tensor_fn", [ivy.array, helpers.var_fn])
+def test_weight_conditioned_network_training(batch_shape, dtype, tensor_fn, dev, call):
+
+    # smoke test
+    if call is helpers.np_call:
+        # NumPy does not support gradients
+        pytest.skip()
+    x = ivy.Container({'layer0': {'w': ivy.random_uniform(shape=batch_shape+[64, 3], dev=dev),
+                                  'b': ivy.random_uniform(shape=batch_shape+[64], dev=dev)},
+                       'layer1': {'w': ivy.random_uniform(shape=batch_shape+[1, 64], dev=dev),
+                                  'b': ivy.random_uniform(shape=batch_shape+[1], dev=dev)}})
+    we_con_net = WeConFC(dev=dev)
+
+    def loss_fn(v_=None):
+        out = we_con_net(x, v=v_)
+        return ivy.mean(out)
+
+    # train
+    loss_tm1 = 1e12
+    loss = None
+    grads = None
+    loss_fn()  # build on_call layers
+    for i in range(10):
+        loss, grads = ivy.execute_with_gradients(loss_fn, we_con_net.v)
+        we_con_net.v = ivy.gradient_descent_update(we_con_net.v, grads, 1e-3)
+        assert loss < loss_tm1
+        loss_tm1 = loss
+
+    # type test
+    assert ivy.is_array(loss)
+    assert isinstance(grads, ivy.Container)
+    # cardinality test
+    if call is helpers.mx_call:
+        # mxnet slicing cannot reduce dimension to zero
+        assert loss.shape == (1,)
+    else:
+        assert loss.shape == ()
+    # value test
+    assert (abs(grads).max() > 0).all_true()
 
 
 # HyperNetwork #
@@ -207,44 +207,44 @@ class HyperHypoNet(ivy.Module):
 
 
 # HyperHypoNet
-# @pytest.mark.parametrize(
-#     "batch_shape", [[1, 2]])
-# @pytest.mark.parametrize(
-#     "dtype", ['float32'])
-# @pytest.mark.parametrize(
-#     "tensor_fn", [ivy.array, helpers.var_fn])
-# def test_hyper_hypo_network_training(batch_shape, dtype, tensor_fn, dev, call):
-#
-#     # smoke test
-#     if call is helpers.np_call:
-#         # NumPy does not support gradients
-#         pytest.skip()
-#     x = ivy.random_uniform(shape=batch_shape + [1], dev=dev)
-#     hyper_hypo_net = HyperHypoNet(dev=dev)
-#
-#     def loss_fn(v_=None):
-#         out = hyper_hypo_net(x, v=v_)
-#         return ivy.mean(out)
-#
-#     # train
-#     loss_tm1 = 1e12
-#     loss = None
-#     grads = None
-#     loss_fn()  # build on_call layers
-#     for i in range(10):
-#         loss, grads = ivy.execute_with_gradients(loss_fn, hyper_hypo_net.v)
-#         hyper_hypo_net.v = ivy.gradient_descent_update(hyper_hypo_net.v, grads, 1e-3)
-#         assert loss < loss_tm1
-#         loss_tm1 = loss
-#
-#     # type test
-#     assert ivy.is_array(loss)
-#     assert isinstance(grads, ivy.Container)
-#     # cardinality test
-#     if call is helpers.mx_call:
-#         # mxnet slicing cannot reduce dimension to zero
-#         assert loss.shape == (1,)
-#     else:
-#         assert loss.shape == ()
-#     # value test
-#     assert (abs(grads).max() > 0).all_true()
+@pytest.mark.parametrize(
+    "batch_shape", [[1, 2]])
+@pytest.mark.parametrize(
+    "dtype", ['float32'])
+@pytest.mark.parametrize(
+    "tensor_fn", [ivy.array, helpers.var_fn])
+def test_hyper_hypo_network_training(batch_shape, dtype, tensor_fn, dev, call):
+
+    # smoke test
+    if call is helpers.np_call:
+        # NumPy does not support gradients
+        pytest.skip()
+    x = ivy.random_uniform(shape=batch_shape + [1], dev=dev)
+    hyper_hypo_net = HyperHypoNet(dev=dev)
+
+    def loss_fn(v_=None):
+        out = hyper_hypo_net(x, v=v_)
+        return ivy.mean(out)
+
+    # train
+    loss_tm1 = 1e12
+    loss = None
+    grads = None
+    loss_fn()  # build on_call layers
+    for i in range(10):
+        loss, grads = ivy.execute_with_gradients(loss_fn, hyper_hypo_net.v)
+        hyper_hypo_net.v = ivy.gradient_descent_update(hyper_hypo_net.v, grads, 1e-3)
+        assert loss < loss_tm1
+        loss_tm1 = loss
+
+    # type test
+    assert ivy.is_array(loss)
+    assert isinstance(grads, ivy.Container)
+    # cardinality test
+    if call is helpers.mx_call:
+        # mxnet slicing cannot reduce dimension to zero
+        assert loss.shape == (1,)
+    else:
+        assert loss.shape == ()
+    # value test
+    assert (abs(grads).max() > 0).all_true()

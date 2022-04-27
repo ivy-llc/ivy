@@ -1,4 +1,4 @@
 unique_all
 unique_counts
-#unique_inverse # failing for tf
+unique_inverse
 unique_values
