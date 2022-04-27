@@ -61,19 +61,7 @@ def full_like(x: torch.Tensor,
         -> torch.Tensor:
     if device is None:
         device = _callable_dev(x)
-    if dtype is not None and dtype is str:
-        type_dict: Dict[str, torch.dtype] = {'int8': torch.int8,
-                                             'int16': torch.int16,
-                                             'int32': torch.int32,
-                                             'int64': torch.int64,
-                                             'uint8': torch.uint8,
-                                             'bfloat16': torch.bfloat16,
-                                             'float16': torch.float16,
-                                             'float32': torch.float32,
-                                             'float64': torch.float64,
-                                             'bool': torch.bool}
-        return torch.full_like(x, fill_value, dtype=type_dict[default_dtype(dtype, fill_value)],
-                               device=default_device(device))
+    dtype = dtype_from_str(dtype)
     return torch.full_like(x, fill_value, dtype=dtype, device=default_device(device))
 
 
@@ -83,21 +71,8 @@ def ones_like(x : torch.Tensor,
         -> torch.Tensor:
     if dev is None:
         dev = _callable_dev(x)
-    if dtype is not None and dtype is str:
-        type_dict: Dict[str, torch.dtype] = {'int8': torch.int8,
-            'int16': torch.int16,
-            'int32': torch.int32,
-            'int64': torch.int64,
-            'uint8': torch.uint8,
-            'bfloat16': torch.bfloat16,
-            'float16': torch.float16,
-            'float32': torch.float32,
-            'float64': torch.float64,
-            'bool': torch.bool}
-        return torch.ones_like(x, dtype=type_dict[dtype], device=dev_from_str(dev))
-    else:
-        return torch.ones_like(x, dtype= dtype, device=dev_from_str(dev))
-    return torch.ones_like(x, device=dev_from_str(dev))
+    dtype = dtype_from_str(dtype)
+    return torch.ones_like(x, dtype= dtype, device=dev_from_str(dev))
 
 
 def zeros_like(x: torch.Tensor,
@@ -136,22 +111,8 @@ def empty_like(x: torch.Tensor,
         -> torch.Tensor:
     if dev is None:
         dev = _callable_dev(x)
-    if dtype is not None and dtype is str:
-        type_dict: Dict[str, torch.dtype] = {'int8': torch.int8,
-            'int16': torch.int16,
-            'int32': torch.int32,
-            'int64': torch.int64,
-            'uint8': torch.uint8,
-            'bfloat16': torch.bfloat16,
-            'float16': torch.float16,
-            'float32': torch.float32,
-            'float64': torch.float64,
-            'bool': torch.bool}
-        return torch.empty_like(x, dtype=type_dict[dtype], device=dev_from_str(dev))
-    else:
-        return torch.empty_like(x, dtype= dtype, device=dev_from_str(dev))
-
-    return torch.empty_like(x, device=dev_from_str(dev))
+    dtype = dtype_from_str(dtype)
+    return torch.empty_like(x, dtype=dtype, device=dev_from_str(dev))
 
 
 def _differentiable_linspace(start, stop, num, device):
@@ -256,16 +217,39 @@ def meshgrid(*arrays: torch.Tensor, indexing='xy')\
 
 
 # noinspection PyShadowingNames
-def arange(stop: Number, start: Number = 0, step: Number = 1, dtype: Optional[str] = None,
-           dev: Optional[str] = None):
-    dev = default_device(dev)
-    if dtype is not None:
-        return torch.arange(start, stop, step=step, dtype=dtype_from_str(dtype), device=dev_from_str(dev))
+def arange(start, stop=None, step=1, dtype=None, dev=None):
+
+    if stop is None:
+        stop = start
+        start = 0
+    if (step > 0 and start > stop) or (step < 0 and start < stop):
+        if isinstance(stop, float):
+            stop = float(start)
+        else:
+            stop = start
+
+    dev = dev_from_str(default_device(dev))
+
+    if dtype is None:
+        if isinstance(start, int) and isinstance(stop, int) and isinstance(step, int):
+            return torch.arange(start, stop, step=step, dtype=torch.int64, device=dev).to(torch.int32)
+        else:
+            return torch.arange(start, stop, step=step, device=dev)
     else:
-        return torch.arange(start, stop, step=step, device=dev_from_str(dev))
+        dtype = dtype_from_str(default_dtype(dtype))
+        if dtype in [torch.int8, torch.uint8, torch.int16]:
+            return torch.arange(start, stop, step=step, dtype=torch.int64, device=dev).to(dtype)
+        else:
+            return torch.arange(start, stop, step=step, dtype=dtype, device=dev)
 
 
-def full(shape, fill_value, dtype=None, device=None):
+
+
+def full(shape: Union[int, Tuple[int, ...]],
+         fill_value: Union[int, float],
+         dtype: Optional[torch.dtype] = None,
+         device: Optional[torch.device] = None) \
+        -> Tensor:
     return torch.full(
         shape_to_tuple(shape), fill_value, dtype=dtype_from_str(default_dtype(dtype, fill_value)),
         device=default_device(device))

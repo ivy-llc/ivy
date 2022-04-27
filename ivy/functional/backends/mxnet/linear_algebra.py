@@ -106,8 +106,8 @@ def qr(x, mode):
     return mx.np.linalg.qr(x, mode=mode)
 
 
-def det(x:mx.ndarray) \
-    -> mx.ndarray:
+def det(x: NDArray) \
+    -> NDArray:
     return mx.linalg.det(x)
 
 
@@ -126,9 +126,9 @@ def eigvalsh(x: mx.ndarray.ndarray.NDArray) -> mx.ndarray.ndarray.NDArray:
     return mx.np.linalg.eigvalsh(x)
 
 
-def matrix_rank(vector: NDArray,
+def matrix_rank(x: NDArray,
                 rtol: Union[NDArray, float] = None) -> Union[NDArray, float]:
-    return mx.np.linalg.matrix_rank(vector, rtol)
+    return mx.np.linalg.matrix_rank(x, rtol)
 
     
 def cross (x1: mx.nd.NDArray,

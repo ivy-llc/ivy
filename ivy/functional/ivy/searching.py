@@ -10,7 +10,7 @@ from ivy.framework_handler import current_framework as _cur_framework
 # -------------------#
 
 def argmax(
-    x: Union[ivy.Array, ivy.NativeArray], 
+    x: Union[ivy.Array, ivy.NativeArray],
     axis: Optional[int] = None,
     keepdims: Optional[bool] = False,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None
@@ -20,13 +20,13 @@ def argmax(
 
     Parameters
     ----------
-    x:
+    x
         input array. Should have a numeric data type.
-    axis:
-        axis along which to search. If None, the function must return the index of the maximum value of the flattened array. Default: None.
-    keepdims:
+    axis
+        axis along which to search. If None, the function must return the index of the maximum value of the flattened array. Default  None.
+    keepdims
         If this is set to True, the axes which are reduced are left in the result as dimensions with size one. With this option, the result will broadcast correctly against the array.
-    out:
+    out
         If provided, the result will be inserted into this array. It should be of the appropriate shape and dtype.
 
     Returns
@@ -40,19 +40,29 @@ def argmin(x: Union[ivy.Array, ivy.NativeArray],
             axis: Optional[int] = None,
             keepdims: Optional[bool] = False) \
         -> ivy.Array:
-    """
-    Returns the indices of the minimum values along a specified axis. When the minimum value occurs multiple times, only the indices corresponding to the first occurrence are returned
+    """Returns the indices of the minimum values along a specified axis. When the minimum value occurs multiple times, only the indices corresponding to the first occurrence are returned
 
-    :param x: input array. Should have a numeric data type.
-    :param axis: axis along which to search. If None, the function must return the index of the minimum value of the flattened
-                array. Default = None.
-    :param keepdims: if True, the reduced axes (dimensions) must be included in the result as singleton dimensions, and,
-                accordingly, the result must be compatible with the input array (see Broadcasting). Otherwise, if False,
-                the reduced axes (dimensions) must not be included in the result. Default = False.
-    :param out: if axis is None, a zero-dimensional array containing the index of the first occurrence of the minimum value;
-                otherwise, a non-zero-dimensional array containing the indices of the minimum values.
-                The returned array must have the default array index data type.
-    :return: Array containing the indices of the minimum values across the specified axis.
+    Parameters
+    ----------
+    x 
+        input array. Should have a numeric data type.
+    axis 
+        axis along which to search. If None, the function must return the index of the minimum value of the flattened
+        array. Default = None.
+    keepdims 
+        if True, the reduced axes (dimensions) must be included in the result as singleton dimensions, and,
+        accordingly, the result must be compatible with the input array (see Broadcasting). Otherwise, if False,
+        the reduced axes (dimensions) must not be included in the result. Default = False.
+    out 
+        if axis is None, a zero-dimensional array containing the index of the first occurrence of the minimum value;
+        otherwise, a non-zero-dimensional array containing the indices of the minimum values.
+        The returned array must have the default array index data type.
+
+    Returns
+    -------
+     ret
+        Array containing the indices of the minimum values across the specified axis.
+
     """
 
     return _cur_framework(x).argmin(x, axis, keepdims)
@@ -65,12 +75,12 @@ def nonzero(x: Union[ivy.Array, ivy.NativeArray])\
 
     Parameters
     ----------
-    x:
+    x
         input array. Must have a positive rank. If `x` is zero-dimensional, the function must raise an exception.
 
     Returns
-    -------
-    out:
+     -------
+    ret
         a tuple of `k` arrays, one for each dimension of `x` and each of size `n` (where `n` is the total number of non-zero elements), containing the indices of the non-zero elements in that dimension. The indices must be returned in row-major, C-style order. The returned array must have the default array index data type.
     """
     return _cur_framework(x).nonzero(x)
@@ -80,16 +90,22 @@ def where(condition: Union[ivy.Array, ivy.NativeArray],
           x1: Union[ivy.Array, ivy.NativeArray],
           x2: Union[ivy.Array, ivy.NativeArray])\
         -> ivy.Array:
-    """
-    Returns elements chosen from x or y depending on condition.
+    """Returns elements chosen from x or y depending on condition.
 
-    :param condition: Where True, yield x1, otherwise yield x2.
-    :type condition: bool array
-    :param x1: values from which to choose when condition is True.
-    :type x1: array
-    :param x2: values from which to choose when condition is False.
-    :type x2: array
-    :return: An array with elements from x1 where condition is True, and elements from x2 elsewhere.
+    Parameters
+    ----------
+    condition 
+        Where True, yield x1, otherwise yield x2.
+    x1 
+        values from which to choose when condition is True.
+    x2 
+        values from which to choose when condition is False.
+
+    Returns
+    -------
+     ret
+        An array with elements from x1 where condition is True, and elements from x2 elsewhere.
+
     """
     return _cur_framework(x1).where(condition, x1, x2)
 

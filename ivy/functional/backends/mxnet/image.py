@@ -2,17 +2,16 @@
 Collection of MXNet image functions, wrapped to fit Ivy syntax and signature.
 """
 
-# global
 import math
 from functools import reduce as _reduce
 from operator import mul as _mul
 import mxnet as mx
-
+from typing import List, Tuple
 # local
 from ivy.functional.backends import mxnet as _ivy
 
 
-def stack_images(images, desired_aspect_ratio=(1, 1)):
+def stack_images(images: List[mx.nd.NDArray], desired_aspect_ratio: Tuple[int, int] = (1, 1)) -> mx.nd.NDArray:
     num_images = len(images)
     if num_images == 0:
         raise Exception('At least 1 image must be provided')

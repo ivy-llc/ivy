@@ -29,15 +29,17 @@ def leaky_relu(x: JaxArray, alpha: Optional[float] = 0.2)\
 
 gelu = jax.nn.gelu
 
+
+def sigmoid(x: JaxArray) -> JaxArray:
+    return 1 / (1 + jnp.exp(-x))
+
+
 def tanh(x: JaxArray)\
         -> JaxArray:
     return jnp.tanh
 
-
-sigmoid = lambda x: 1 / (1 + jnp.exp(-x))
-
-
-def softmax(x, axis=-1):
+def softmax(x: JaxArray, axis: Optional[int] = -1)\
+        -> JaxArray:
     exp_x = jnp.exp(x)
     return exp_x / jnp.sum(exp_x, axis, keepdims=True)
 
