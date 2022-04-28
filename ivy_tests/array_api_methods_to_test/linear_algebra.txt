@@ -1,12 +1,12 @@
 cholesky
-#cross # failing non-deterministically
+#cross #failing non-deterministically
 det
 diagonal
 eigh
 eigvalsh
-#inv # randomly failing health check for jax and torch
-#matmul # failing non-deterministically for torch
-#matrix_norm # fails non-deterministically for jax
+#inv #failing for jax and torch randomly due to health checks
+#matmul #failing for torch non-deterministically
+#matrix_norm #failing for jax non-deterministically 
 #matrix_power
 matrix_rank
 matrix_transpose
@@ -14,10 +14,10 @@ outer
 pinv
 qr
 slogdet
-#solve # failing health check for jax
+#solve #failing for jax and tensorflow due to healthchecks 
 svd
 svdvals
 tensordot
-#trace #failing for JAX
+#trace #failing for jax
 vecdot
 vector_norm
