@@ -115,10 +115,10 @@ def std(x: np.ndarray,
 # Extra #
 # ------#
 
-def einsum(equation : str,
- *operands: np.ndarray,
-out: Optional[np.ndarray] = None)\
-     -> np.ndarray:
+def einsum(equation: str,
+            *operands: np.ndarray,
+            out: Optional[np.ndarray] = None)\
+            -> np.ndarray:
     if ivy.exists(out):
         return ivy.inplace_update(out, np.asarray(np.einsum(equation, *operands)).copy())
     else:
