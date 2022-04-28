@@ -25,7 +25,7 @@ def is_native_array(x, exclusive=False):
     return False
 
 
-def copy_array(x):
+def copy_array(x: torch.Tensor) -> torch.Tensor:
     return x.clone()
 
 
@@ -43,7 +43,7 @@ def to_numpy(x: torch.Tensor)\
         if x.dtype is torch.bfloat16:
             x = x.to(torch.float16)
         return x.detach().cpu().numpy()
-    raise ValueError('Expected a pytroch tensor.')
+    raise ValueError('Expected a pytorch tensor.')
 
 
 def to_scalar(x: torch.Tensor)\
@@ -59,7 +59,7 @@ def to_list(x: torch.Tensor)\
         return x.tolist()
     elif torch.is_tensor(x):
         return x.detach().cpu().tolist()
-    raise ValueError('Expected a pytroch tensor.')
+    raise ValueError('Expected a pytorch tensor.')
 
 
 def floormod(x: torch.Tensor, y: torch.Tensor, out: Optional[torch.Tensor] = None)\

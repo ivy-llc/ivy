@@ -44,7 +44,10 @@ def _to_array(x):
     return x
 
 
-copy_array = jnp.array
+def copy_array(x: JaxArray) \
+        -> JaxArray:
+    return jnp.array(x)
+  
 
 def array_equal(x0: JaxArray, x1: JaxArray) \
         -> bool:

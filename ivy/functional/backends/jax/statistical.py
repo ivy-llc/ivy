@@ -28,7 +28,7 @@ def sum(x: JaxArray,
         out: Optional[JaxArray] = None)\
         -> JaxArray:
 
-    if dtype == None and jnp.issubdtype(x.dtype, jnp.integer):
+    if dtype is None and jnp.issubdtype(x.dtype, jnp.integer):
         if jnp.issubdtype(x.dtype, jnp.signedinteger) and x.dtype in [jnp.int8, jnp.int16, jnp.int32]:
             dtype = jnp.int32
         elif jnp.issubdtype(x.dtype, jnp.unsignedinteger) and x.dtype in [jnp.uint8, jnp.uint16, jnp.uint32]:

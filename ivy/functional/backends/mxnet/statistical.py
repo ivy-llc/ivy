@@ -11,10 +11,11 @@ from ivy.functional.backends.mxnet import _flat_array_to_1_dim_array, _1_dim_arr
 # -------------------#
 
 def sum(x: mx.ndarray.ndarray.NDArray,
-         axis: Optional[Union[int, Tuple[int, ...]]] = None,
-         keepdims: bool = False,
-         out: Optional[mx.ndarray.ndarray.NDArray] = None)\
-            -> mx.ndarray.ndarray.NDArray:
+        axis: Optional[Union[int, Tuple[int, ...]]] = None,
+        keepdims: bool = False,
+        out: Optional[mx.ndarray.ndarray.NDArray] = None)\
+        -> mx.ndarray.ndarray.NDArray:
+
     if axis is None:
         num_dims = len(x.shape)
         axis = tuple(range(num_dims))
