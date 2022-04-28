@@ -31,15 +31,15 @@ def test_abs(dtype_and_x, as_variable, with_out, num_positional_args, native_arr
 
 
 # acosh
-@given(dtype=st.sampled_from(ivy_np.valid_float_dtype_strs),
+@given(dtype_and_x=helpers.dtype_and_values(ivy_np.valid_float_dtype_strs),
        as_variable=st.booleans(),
        with_out=st.booleans(),
        num_positional_args=st.integers(0, 1),
        native_array=st.booleans(),
        container=st.booleans(),
-       instance_method=st.booleans(),
-       x=st.lists(st.floats()))
-def test_acosh(dtype, as_variable, with_out, num_positional_args, native_array, container, instance_method, fw, x):
+       instance_method=st.booleans())
+def test_acosh(dtype_and_x, as_variable, with_out, num_positional_args, native_array, container, instance_method, fw):
+    dtype, x = dtype_and_x
     if fw == 'torch' and dtype == 'float16':
         return
     helpers.test_array_function(
@@ -48,15 +48,15 @@ def test_acosh(dtype, as_variable, with_out, num_positional_args, native_array, 
 
 
 # acos
-@given(dtype=st.sampled_from(ivy_np.valid_float_dtype_strs),
+@given(dtype_and_x=helpers.dtype_and_values(ivy_np.valid_float_dtype_strs),
        as_variable=st.booleans(),
        with_out=st.booleans(),
        num_positional_args=st.integers(0, 1),
        native_array=st.booleans(),
        container=st.booleans(),
-       instance_method=st.booleans(),
-       x=st.lists(st.floats()))
-def test_acos(dtype, as_variable, with_out, num_positional_args, native_array, container, instance_method, fw, x):
+       instance_method=st.booleans())
+def test_acos(dtype_and_x, as_variable, with_out, num_positional_args, native_array, container, instance_method, fw):
+    dtype, x = dtype_and_x
     if fw == 'torch' and dtype == 'float16':
         return
     helpers.test_array_function(
@@ -65,57 +65,36 @@ def test_acos(dtype, as_variable, with_out, num_positional_args, native_array, c
 
 
 # add
-@pytest.mark.parametrize(
-    "dtype", ivy.all_numeric_dtype_strs)
-@pytest.mark.parametrize(
-    "as_variable", [True, False])
-@pytest.mark.parametrize(
-    "with_out", [True, False])
-@pytest.mark.parametrize(
-    "native_array", [True, False])
-def test_add(dtype, as_variable, with_out, native_array):
-    if ivy.current_framework_str() == 'numpy' and dtype == 'float16':
-        pytest.skip("numpy array api doesnt support float16")
-    if dtype in ivy.invalid_dtype_strs:
-        pytest.skip("invalid dtype")
-    x = ivy.array([2, 3, 4], dtype=dtype)
-    y = ivy.array([2, 3, 4], dtype=dtype)
-    out = ivy.array([2, 3, 4], dtype=dtype)
-    if as_variable:
-        if not ivy.is_float_dtype(dtype):
-            pytest.skip("only floating point variables are supported")
-        if with_out:
-            pytest.skip("variables do not support out argument")
-        x = ivy.variable(x)
-        y = ivy.variable(y)
-        out = ivy.variable(out)
-    if native_array:
-        x = x.data
-        y = y.data
-        out = out.data
-    if with_out:
-        ret = ivy.add(x, y, out=out)
-    else:
-        ret = ivy.add(x, y)
-    if with_out:
-        if not native_array:
-            assert ret is out
-        if ivy.current_framework_str() in ["tensorflow", "jax"]:
-            # these frameworks do not support native inplace updates
-            return
-        assert ret.data is (out if native_array else out.data)
+# @given(dtype_and_x=helpers.dtype_and_values(ivy_np.valid_numeric_dtype_strs, 2),
+#        as_variable=helpers.list_of_length(st.booleans(), 2),
+#        with_out=st.booleans(),
+#        num_positional_args=st.integers(0, 2),
+#        native_array=helpers.list_of_length(st.booleans(), 2),
+#        container=helpers.list_of_length(st.booleans(), 2),
+#        instance_method=st.booleans())
+# def test_add(dtype_and_x, as_variable, with_out, num_positional_args, native_array, container, instance_method, fw):
+#     dtype, x = dtype_and_x
+#     if fw == 'jax':
+#         pytest.skip()
+#     if fw == 'torch' and dtype in ['uint16', 'uint32', 'uint64']:
+#         return
+#     if fw == 'numpy' and 'float16' in dtype:
+#         return # numpy array api doesnt support float16
+#     helpers.test_array_function(
+#         dtype, as_variable, with_out, num_positional_args, native_array, container, instance_method, fw, 'add',
+#         x1=np.asarray(x[0], dtype=dtype[0]), x2=np.asarray(x[1], dtype=dtype[0]))
 
 
 # asin
-@given(dtype=st.sampled_from(ivy_np.valid_float_dtype_strs),
+@given(dtype_and_x=helpers.dtype_and_values(ivy_np.valid_float_dtype_strs),
        as_variable=st.booleans(),
        with_out=st.booleans(),
        num_positional_args=st.integers(0, 1),
        native_array=st.booleans(),
        container=st.booleans(),
-       instance_method=st.booleans(),
-       x=st.lists(st.floats()))
-def test_asin(dtype, as_variable, with_out, num_positional_args, native_array, container, instance_method, fw, x):
+       instance_method=st.booleans())
+def test_asin(dtype_and_x, as_variable, with_out, num_positional_args, native_array, container, instance_method, fw):
+    dtype, x = dtype_and_x
     if fw == 'torch' and dtype == 'float16':
         return
     helpers.test_array_function(
@@ -124,15 +103,15 @@ def test_asin(dtype, as_variable, with_out, num_positional_args, native_array, c
 
 
 # asinh
-@given(dtype=st.sampled_from(ivy_np.valid_float_dtype_strs),
+@given(dtype_and_x=helpers.dtype_and_values(ivy_np.valid_float_dtype_strs),
        as_variable=st.booleans(),
        with_out=st.booleans(),
        num_positional_args=st.integers(0, 1),
        native_array=st.booleans(),
        container=st.booleans(),
-       instance_method=st.booleans(),
-       x=st.lists(st.floats()))
-def test_asinh(dtype, as_variable, with_out, num_positional_args, native_array, container, instance_method, fw, x):
+       instance_method=st.booleans())
+def test_asinh(dtype_and_x, as_variable, with_out, num_positional_args, native_array, container, instance_method, fw):
+    dtype, x = dtype_and_x
     if fw == 'torch' and dtype == 'float16':
         return
     helpers.test_array_function(
@@ -141,15 +120,15 @@ def test_asinh(dtype, as_variable, with_out, num_positional_args, native_array, 
 
 
 # atan
-@given(dtype=st.sampled_from(ivy_np.valid_float_dtype_strs),
+@given(dtype_and_x=helpers.dtype_and_values(ivy_np.valid_float_dtype_strs),
        as_variable=st.booleans(),
        with_out=st.booleans(),
        num_positional_args=st.integers(0, 1),
        native_array=st.booleans(),
        container=st.booleans(),
-       instance_method=st.booleans(),
-       x=st.lists(st.floats()))
-def test_atan(dtype, as_variable, with_out, num_positional_args, native_array, container, instance_method, fw, x):
+       instance_method=st.booleans())
+def test_atan(dtype_and_x, as_variable, with_out, num_positional_args, native_array, container, instance_method, fw):
+    dtype, x = dtype_and_x
     if fw == 'torch' and dtype == 'float16':
         return
     helpers.test_array_function(
