@@ -16,14 +16,14 @@ import ivy_tests.test_ivy.helpers as helpers
     "dtype", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_cross_entropy(t_n_p_n_res, dtype, tensor_fn, dev, call):
+def test_cross_entropy(t_n_p_n_res, dtype, tensor_fn, device, call):
     # smoke test
     true, pred, true_target = t_n_p_n_res
-    pred = tensor_fn(pred, dtype, dev)
-    true = tensor_fn(true, dtype, dev)
+    pred = tensor_fn(pred, dtype, device)
+    true = tensor_fn(true, dtype, device)
     ret = ivy.cross_entropy(true, pred)
     # type test
-    assert ivy.is_native_array(ret)
+    assert ivy.is_ivy_array(ret)
     # cardinality test
     assert list(ret.shape) == [1]
     # value test
@@ -37,14 +37,14 @@ def test_cross_entropy(t_n_p_n_res, dtype, tensor_fn, dev, call):
     "dtype", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_binary_cross_entropy(t_n_p_n_res, dtype, tensor_fn, dev, call):
+def test_binary_cross_entropy(t_n_p_n_res, dtype, tensor_fn, device, call):
     # smoke test
     true, pred, true_target = t_n_p_n_res
-    pred = tensor_fn(pred, dtype, dev)
-    true = tensor_fn(true, dtype, dev)
+    pred = tensor_fn(pred, dtype, device)
+    true = tensor_fn(true, dtype, device)
     ret = ivy.binary_cross_entropy(true, pred)
     # type test
-    assert ivy.is_native_array(ret)
+    assert ivy.is_ivy_array(ret)
     # cardinality test
     assert ret.shape == pred.shape
     # value test
@@ -58,14 +58,14 @@ def test_binary_cross_entropy(t_n_p_n_res, dtype, tensor_fn, dev, call):
     "dtype", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_sparse_cross_entropy(t_n_p_n_res, dtype, tensor_fn, dev, call):
+def test_sparse_cross_entropy(t_n_p_n_res, dtype, tensor_fn, device, call):
     # smoke test
     true, pred, true_target = t_n_p_n_res
-    pred = tensor_fn(pred, dtype, dev)
-    true = ivy.array(true, 'int32', dev)
+    pred = tensor_fn(pred, dtype, device)
+    true = ivy.array(true, 'int32', device)
     ret = ivy.sparse_cross_entropy(true, pred)
     # type test
-    assert ivy.is_native_array(ret)
+    assert ivy.is_ivy_array(ret)
     # cardinality test
     assert list(ret.shape) == [1]
     # value test

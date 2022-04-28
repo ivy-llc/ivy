@@ -1,10 +1,8 @@
 # global
 import abc
 
-# ToDo: implement all general methods here as public class methods
+# ToDo: implement all methods here as public instance methods
 
 
 class ArrayWithGeneral(abc.ABC):
     pass
-
-

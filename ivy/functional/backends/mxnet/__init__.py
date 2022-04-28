@@ -27,12 +27,37 @@ bool = np.bool
 
 valid_dtypes = (int8, int32, int64,
                 uint8,
-                float16, float32, float64)
+                float16, float32, float64,
+                bool)
+valid_numeric_dtypes = (int8, int32, int64,
+                        uint8,
+                        float16, float32, float64)
+valid_int_dtypes = (int8, int32, int64,
+                    uint8)
+valid_float_dtypes = (float16, float32, float64)
 
+# valid
 valid_dtype_strs = ('int8', 'int32', 'int64',
                     'uint8',
-                    'float16', 'float32', 'float64')
-invalid_dtype_strs = ('int16', 'uint16', 'uint32', 'uint64', 'bfloat16')
+                    'float16', 'float32', 'float64',
+                    'bool')
+valid_numeric_dtype_strs = ('int8', 'int32', 'int64',
+                            'uint8',
+                            'float16', 'float32', 'float64')
+valid_int_dtype_strs = ('int8', 'int32', 'int64',
+                        'uint8')
+valid_float_dtype_strs = ('float16', 'float32', 'float64')
+
+# invalid
+invalid_dtype_strs = ('int16',
+                      'uint16', 'uint32', 'uint64',
+                      'bfloat16')
+invalid_numeric_dtype_strs = ('int16',
+                              'uint16', 'uint32', 'uint64',
+                              'bfloat16')
+invalid_int_dtype_strs = ('int16',
+                          'uint16', 'uint32', 'uint64')
+invalid_float_dtype_strs = ('bfloat16',)
 
 
 def closest_valid_dtype(type):
@@ -57,16 +82,16 @@ def _raise(ex):
     raise ex
 
 
-def _mxnet_init_context(dev):
-    dev = dev_to_str(dev)
-    if dev is None or dev.find("cpu") != -1:
+def _mxnet_init_context(device):
+    device = dev_to_str(device)
+    if device is None or device.find("cpu") != -1:
         mx_dev = "cpu"
-    elif dev.find("gpu") != -1:
+    elif device.find("gpu") != -1:
         mx_dev = "gpu"
     else:
-        raise Exception("dev input {} not supported.".format(dev))
-    if dev.find(":") != -1:
-        mx_dev_id = int(dev[dev.find(":")+1:])
+        raise Exception("dev input {} not supported.".format(device))
+    if device.find(":") != -1:
+        mx_dev_id = int(device[device.find(":")+1:])
     else:
         mx_dev_id = 0
     return mx.Context(mx_dev, mx_dev_id)

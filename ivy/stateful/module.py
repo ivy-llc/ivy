@@ -5,7 +5,6 @@ Base class for deriving trainable modules
 # global
 import os
 import abc
-import logging
 import ivy.functional.backends.numpy
 import termcolor
 import numpy as np
@@ -20,14 +19,14 @@ from ivy.container import Container
 
 class Module(abc.ABC):
 
-    def __init__(self, dev=None, v=None, build_mode='on_init', compile_on_next_step=False, store_vars=True,
+    def __init__(self, device=None, v=None, build_mode='on_init', compile_on_next_step=False, store_vars=True,
                  stateful=None, arg_stateful_idxs=None, kwarg_stateful_idxs=None, fallback_to_non_compiled=False,
-                 with_partial_v=False, devs=None):
+                 with_partial_v=False, devices=None):
         """
         Initialze Ivy layer, which is a stateful object consisting of trainable variables.
 
-        :param dev: device on which to create the module's variables 'cuda:0', 'cuda:1', 'cpu' etc.
-        :type dev: ivy.Device, optional
+        :param device: device on which to create the module's variables 'cuda:0', 'cuda:1', 'cpu' etc.
+        :type device: ivy.Device, optional
         :param v: Ivy container of trainable variables. Created internally by default.
         :type v: ivy container, optional
         :param build_mode: How the Module is built, either on initialization (now), explicitly by the user by calling
@@ -51,16 +50,16 @@ class Module(abc.ABC):
         :type fallback_to_non_compiled: bool, optional
         :param with_partial_v: Whether to allow partial specification of variables. Default is False.
         :type with_partial_v: bool, optional
-        :param devs: devices on which to distribute the module's variables 'cuda:0', 'cuda:1', 'cpu' etc.
-        :type devs: sequence of str, optional
+        :param devices: devices on which to distribute the module's variables 'cuda:0', 'cuda:1', 'cpu' etc.
+        :type devices: sequence of str, optional
         :type build_mode: str, optional
         """
         valid_build_modes = ['on_init', 'explicit', 'on_call']
         if build_mode not in valid_build_modes:
             raise Exception('build_mode must be one of {} of type str, but found {} of type{}'.format(
                 valid_build_modes, build_mode, type(build_mode)))
-        self._dev = ivy.default(dev, ivy.default(lambda: devs[0], ivy.default_device(), True))
-        self._devs = ivy.default(devs, [self._dev])
+        self._dev = ivy.default(device, ivy.default(lambda: devices[0], ivy.default_device(), True))
+        self._devs = ivy.default(devices, [self._dev])
         self._build_mode = build_mode
         self._stateful = stateful
         self._arg_stateful_idxs = arg_stateful_idxs
@@ -80,10 +79,10 @@ class Module(abc.ABC):
         self._submod_depth = None
         self._submods_to_track = None
         self._track_submod_call_order = False
-        self.submod_rets = ivy.Container(alphabetical_keys=False, ivyh=ivy.functional.backends.numpy)
+        self.submod_rets = ivy.Container(alphabetical_keys=False, ivyh=ivy.get_framework('numpy'))
         self.expected_submod_rets = None
         self.submod_dict = dict()
-        self.submod_call_order = ivy.Container(alphabetical_keys=False, ivyh=ivy.functional.backends.numpy)
+        self.submod_call_order = ivy.Container(alphabetical_keys=False, ivyh=ivy.get_framework('numpy'))
         self._sub_mods = set()
         if build_mode != 'on_init':
             return
@@ -264,12 +263,12 @@ class Module(abc.ABC):
     # Overridable #
 
     # noinspection PyMethodMayBeStatic,PyUnusedLocal
-    def _create_variables(self, dev):
+    def _create_variables(self, device):
         """
         create internal trainable variables, and return as arbitrary nested dict. Overridable.
 
-        :param dev: The device string, specifying the device on which to create the variables.
-        :type dev: ivy.Deviceing
+        :param device: The device string, specifying the device on which to create the variables.
+        :type device: ivy.Deviceing
         """
         return {}
 
@@ -502,7 +501,7 @@ class Module(abc.ABC):
                     int(kc.split('/')[-2 if isinstance(sco[kc], np.ndarray) else -1].split('_')[-1]))[-1].split('/')[0]
             else:
                 max_key = key + '_0'
-                sco[max_key] = ivy.Container(alphabetical_keys=False, ivyh=ivy.functional.backends.numpy)
+                sco[max_key] = ivy.Container(alphabetical_keys=False, ivyh=ivy.get_framework('numpy'))
             sco = sco[max_key]
         final_key = key_chain[-1]
         kcs = sco.key_chains_containing(final_key, include_empty=True)
@@ -518,14 +517,14 @@ class Module(abc.ABC):
         if self._is_submod_leaf():
             sco[new_key] = self.v_with_top_v_key_chains(flatten_key_chains=True).to_numpy()
         else:
-            sco[new_key] = ivy.Container(alphabetical_keys=False, ivyh=ivy.functional.backends.numpy)
+            sco[new_key] = ivy.Container(alphabetical_keys=False, ivyh=ivy.get_framework('numpy'))
 
     def __call__(self, *args, v=None, with_grads=None, stateful=None, arg_stateful_idxs=None, kwarg_stateful_idxs=None,
                  track_submod_rets=False, submod_depth=None, submods_to_track=None, track_submod_call_order=False,
                  expected_submod_rets=None, **kwargs):
         with_grads = ivy.with_grads(with_grads)
-        self.submod_rets = ivy.Container(alphabetical_keys=False, ivyh=ivy.functional.backends.numpy)
-        self.submod_call_order = ivy.Container(alphabetical_keys=False, ivyh=ivy.functional.backends.numpy)
+        self.submod_rets = ivy.Container(alphabetical_keys=False, ivyh=ivy.get_framework('numpy'))
+        self.submod_call_order = ivy.Container(alphabetical_keys=False, ivyh=ivy.get_framework('numpy'))
         self._set_submod_flags(
             track_submod_rets, submod_depth, submods_to_track, track_submod_call_order, expected_submod_rets)
         ret = self._call(*args, v=v, with_grads=with_grads, **kwargs)
@@ -541,11 +540,11 @@ class Module(abc.ABC):
         os.makedirs('/'.join(weights_path.split('/')[:-1]), exist_ok=True)
         self.v.to_disk_as_hdf5(weights_path)
 
-    def build(self, *args, from_call=False, dev=None, **kwargs):
+    def build(self, *args, from_call=False, device=None, **kwargs):
         """
         Build the internal layers and variables for this module.
         """
-        self._dev = ivy.default(dev, self._dev)
+        self._dev = ivy.default(device, self._dev)
 
         # return False if not from_call but build_mode is on_call
         if not from_call and self._build_mode == 'on_call':

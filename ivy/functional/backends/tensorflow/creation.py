@@ -10,9 +10,13 @@ from ivy.functional.backends.tensorflow import Dtype
 from ivy import dev_from_str, default_device, dtype_from_str, default_dtype, dtype_to_str
 
 
-def asarray(object_in, dtype=None, dev=None, copy=None):
-    dev = default_device(dev)
-    with tf.device(dev_from_str(dev)):
+# Array API Standard #
+# -------------------#
+
+
+def asarray(object_in, dtype=None, device=None, copy=None):
+    device = default_device(device)
+    with tf.device(dev_from_str(device)):
         if copy:
             if dtype is None and isinstance(object_in, tf.Tensor):
                 return tf.identity(object_in)
@@ -47,15 +51,12 @@ def asarray(object_in, dtype=None, dev=None, copy=None):
                 return tf.cast(tensor, dtype)
 
 
-array = asarray
-
-
 def zeros(shape: Union[int, Tuple[int]],
           dtype: Optional[Dtype] = None,
           device: Optional[str] = None) \
         -> Tensor:
-    dev = default_device(device)
-    with tf.device(dev_from_str(dev)):
+    device = default_device(device)
+    with tf.device(dev_from_str(device)):
         return tf.zeros(shape, dtype_from_str(default_dtype(dtype)))
 
 
@@ -64,8 +65,8 @@ def ones(shape: Union[int, Tuple[int]],
          device: Optional[str] = None) \
         -> tf.Tensor:
     dtype = dtype_from_str(default_dtype(dtype))
-    dev = dev_from_str(default_device(device))
-    with tf.device(dev):
+    device = dev_from_str(default_device(device))
+    with tf.device(device):
         return tf.ones(shape, dtype)
 
 
@@ -80,13 +81,13 @@ def full_like(x: Tensor,
         return tf.experimental.numpy.full_like(x, fill_value, dtype=dtype)
 
 
-def ones_like(x : Tensor,
+def ones_like(x: Tensor,
               dtype: Optional[Union[DType, str, None]] = None,
-              dev: Optional[str] = None) \
+              device: Optional[str] = None) \
         -> Tensor:
     dtype = tf.DType(dtype) if dtype is str else dtype
-    dev = default_device(dev)
-    with tf.device(dev_from_str(dev)):
+    device = default_device(device)
+    with tf.device(dev_from_str(device)):
         return tf.ones_like(x, dtype=dtype)
 
 
@@ -115,26 +116,26 @@ def empty(shape: Union[int, Tuple[int]],
           dtype: Optional[Dtype] = None,
           device: Optional[str] = None) \
         -> Tensor:
-    dev = default_device(device)
-    with tf.device(dev_from_str(dev)):
+    device = default_device(device)
+    with tf.device(dev_from_str(device)):
         return tf.experimental.numpy.empty(shape, dtype_from_str(default_dtype(dtype)))
 
 
 def empty_like(x: Tensor,
               dtype: Optional[Union[DType, str, None]] = None,
-              dev: Optional[str] = None) \
+              device: Optional[str] = None) \
         -> Tensor:
     dtype = tf.DType(dtype) if dtype is str else dtype
-    dev = default_device(dev)
-    with tf.device(dev_from_str(dev)):
+    device = default_device(device)
+    with tf.device(dev_from_str(device)):
         return tf.experimental.numpy.empty_like(x, dtype=dtype)
 
 
-def linspace(start, stop, num, axis=None, dev=None):
+def linspace(start, stop, num, axis=None, device=None):
     if axis is None:
         axis = -1
-    dev = default_device(dev)
-    with tf.device(ivy.dev_from_str(dev)):
+    device = default_device(device)
+    with tf.device(ivy.dev_from_str(device)):
         return tf.linspace(start, stop, num, axis=axis)
 
 
@@ -168,14 +169,38 @@ def eye(n_rows: int,
 
 
 # noinspection PyShadowingNames
-def arange(stop, start=0, step=1, dtype=None, dev=None):
-    dtype = tf.__dict__[dtype] if dtype else dtype
-    dev = default_device(dev)
-    with tf.device(dev_from_str(dev)):
-        return tf.range(start, stop, delta=step, dtype=dtype)
+def arange(start, stop=None, step=1, dtype=None, device=None):
+
+    if stop is None:
+        stop = start
+        start = 0
+    if (step > 0 and start > stop) or (step < 0 and start < stop):
+        if isinstance(stop, float):
+            stop = float(start)
+        else:
+            stop = start
+
+    device = dev_from_str(default_device(device))
+    with tf.device(device):
+
+        if dtype is None:
+            if isinstance(start, int) and isinstance(stop, int) and isinstance(step, int):
+                return tf.cast(tf.range(start, stop, delta=step, dtype=tf.int64), tf.int32)
+            else:
+                return tf.range(start, stop, delta=step)
+        else:
+            dtype = dtype_from_str(default_dtype(dtype))
+            if dtype in [tf.int8, tf.uint8, tf.int16, tf.uint16, tf.uint32, tf.uint64]:
+                return tf.cast(tf.range(start, stop, delta=step, dtype=tf.int64), dtype)
+            else:
+                return tf.range(start, stop, delta=step, dtype=dtype)
 
 
-def full(shape, fill_value, dtype=None, device=None):
+def full(shape: Union[int, Tuple[int, ...]],
+         fill_value: Union[int, float],
+         dtype: Optional[Dtype] = None,
+         device: Optional[str] = None) \
+        -> Tensor:
     with tf.device(dev_from_str(default_device(device))):
         return tf.fill(shape, tf.constant(fill_value, dtype=dtype_from_str(default_dtype(dtype, fill_value))))
 
@@ -187,6 +212,9 @@ def from_dlpack(x):
 # Extra #
 # ------#
 
-def logspace(start, stop, num, base=10., axis=None, dev=None):
-    power_seq = linspace(start, stop, num, axis, default_device(dev))
+array = asarray
+
+
+def logspace(start, stop, num, base=10., axis=None, device=None):
+    power_seq = linspace(start, stop, num, axis, default_device(device))
     return base ** power_seq

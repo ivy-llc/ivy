@@ -8,14 +8,14 @@ from ivy.stateful.module import Module
 
 class Sequential(Module):
 
-    def __init__(self, *sub_modules, dev=None, v=None):
+    def __init__(self, *sub_modules, device=None, v=None):
         """
         A sequential container. Modules will be added to it in the order they are passed in the constructor.
 
         :param submodules: Submodules to chain together into a sequence.
         :type submodules: sequence of ivy.Module instances
-        :param dev: device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu' etc.
-        :type dev: ivy.Device, optional
+        :param device: device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu' etc.
+        :type device: ivy.Device, optional
         :param v: the variables for each submodule in the sequence, constructed internally by default.
         :type v: ivy container of variables, optional
         """
@@ -28,7 +28,7 @@ class Sequential(Module):
                         raise Exception('variables v passed to Sequential class must have key chains in the form of'
                                         '"submodules/v{}", where {} is an idx')
         self._submodules = list(sub_modules)
-        Module.__init__(self, dev, v)
+        Module.__init__(self, device, v)
 
     def _forward(self, inputs):
         """

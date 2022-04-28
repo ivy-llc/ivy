@@ -4,10 +4,12 @@ Collection of Numpy general functions, wrapped to fit Ivy syntax and signature.
 
 # global
 import logging
+from typing import Optional
 import numpy as np
 from operator import mul as _mul
 from functools import reduce as _reduce
 import multiprocessing as _multiprocessing
+from numbers import Number
 
 # local
 import ivy
@@ -18,16 +20,28 @@ from ivy.functional.backends.numpy.device import _dev_callable, _to_dev
 # --------#
 
 
-copy_array = lambda x: x.copy()
-array_equal = np.array_equal
-floormod = lambda x, y: np.asarray(x % y)
+def copy_array(x: np.ndarray) \
+        -> np.ndarray:
+    return x.copy()
 
-to_numpy = lambda x: x
-to_numpy.__name__ = 'to_numpy'
-to_scalar = lambda x: x.item()
-to_scalar.__name__ = 'to_scalar'
-to_list = lambda x: x.tolist()
-to_list.__name__ = 'to_list'
+
+def array_equal(x0:np.ndarray, x1:np.ndarray) \
+        -> bool:
+    return np.array_equal(x0, x1)
+
+
+def to_numpy(x: np.ndarray) \
+        -> np.ndarray:
+    return x
+
+def to_scalar(x: np.ndarray) \
+        -> Number:
+    return x.item()
+
+def to_list(x: np.ndarray) \
+        -> list:
+    return x.tolist()
+
 container_types = lambda: []
 inplace_arrays_supported = lambda: True
 inplace_variables_supported = lambda: True
@@ -49,6 +63,14 @@ def is_native_array(x, exclusive=False):
     return False
 
 
+def floormod(x: np.ndarray, y: np.ndarray, out: Optional[np.ndarray] = None)\
+        -> np.ndarray:
+    ret = np.asarray(x%y)
+    if ivy.exists(out):
+        return ivy.inplace_update(out,ret)
+    return ret
+
+
 def unstack(x, axis, keepdims=False):
     if x.shape == ():
         return [x]
@@ -59,33 +81,58 @@ def unstack(x, axis, keepdims=False):
 
 
 def inplace_decrement(x, val):
-    x -= val
+    (x_native, val_native), _ = ivy.args_to_native(x, val)
+    x_native -= val_native
+    if ivy.is_ivy_array(x):
+        x.data = x_native
+    else:
+        x = ivy.Array(x_native)
     return x
 
 
 def inplace_increment(x, val):
-    x += val
+    (x_native, val_native), _ = ivy.args_to_native(x, val)
+    x_native+= val_native
+    if ivy.is_ivy_array(x):
+        x.data = x_native
+    else:
+        x = ivy.Array(x_native)
     return x
 
-cumsum = np.cumsum
 
-def cumprod(x, axis=0, exclusive=False):
+def cumsum(x:np.ndarray,axis:int=0,out: Optional[np.ndarray] = None)\
+        -> np.ndarray:
+        if ivy.exists(out):
+            return ivy.inplace_update(out,np.cumsum(x,axis))
+        else:
+            return np.cumsum(x,axis)
+
+
+def cumprod(x:np.ndarray, axis:int=0, exclusive:Optional[bool]=False,
+    out:Optional[np.ndarray] = None)\
+        -> np.ndarray:
     if exclusive:
         x = np.swapaxes(x, axis, -1)
         x = np.concatenate((np.ones_like(x[..., -1:]), x[..., :-1]), -1)
         res = np.cumprod(x, -1)
-        return np.swapaxes(res, axis, -1)
-    return np.cumprod(x, axis)
+        if ivy.exists(out):
+            return ivy.inplace_update(out,np.swapaxes(res, axis, -1).copy())
+        else:
+            return np.swapaxes(res, axis, -1)
+    if ivy.exists(out):
+        return ivy.inplace_update(out,np.cumprod(x, axis))  
+    else:
+        return np.cumprod(x, axis)
 
 
 
-def scatter_flat(indices, updates, size=None, tensor=None, reduction='sum', dev=None):
+def scatter_flat(indices, updates, size=None, tensor=None, reduction='sum', device=None):
     target = tensor
     target_given = ivy.exists(target)
     if ivy.exists(size) and ivy.exists(target):
         assert len(target.shape) == 1 and target.shape[0] == size
-    if dev is None:
-        dev = _dev_callable(updates)
+    if device is None:
+        device = _dev_callable(updates)
     if reduction == 'sum':
         if not target_given:
             target = np.zeros([size], dtype=updates.dtype)
@@ -110,17 +157,17 @@ def scatter_flat(indices, updates, size=None, tensor=None, reduction='sum', dev=
             target = np.where(target == -1e12, 0., target)
     else:
         raise Exception('reduction is {}, but it must be one of "sum", "min" or "max"'.format(reduction))
-    return _to_dev(target, dev)
+    return _to_dev(target, device)
 
 
 # noinspection PyShadowingNames
-def scatter_nd(indices, updates, shape=None, tensor=None, reduction='sum', dev=None):
+def scatter_nd(indices, updates, shape=None, tensor=None, reduction='sum', device=None):
     target = tensor
     target_given = ivy.exists(target)
     if ivy.exists(shape) and ivy.exists(target):
         assert ivy.shape_to_tuple(target.shape) == ivy.shape_to_tuple(shape)
-    if dev is None:
-        dev = _dev_callable(updates)
+    if device is None:
+        device = _dev_callable(updates)
     shape = list(shape) if ivy.exists(shape) else list(tensor.shape)
     indices_flat = indices.reshape(-1, indices.shape[-1]).T
     indices_tuple = tuple(indices_flat) + (Ellipsis,)
@@ -148,18 +195,22 @@ def scatter_nd(indices, updates, shape=None, tensor=None, reduction='sum', dev=N
             target = np.where(target == -1e12, 0., target)
     else:
         raise Exception('reduction is {}, but it must be one of "sum", "min" or "max"'.format(reduction))
-    return _to_dev(target, dev)
+    return _to_dev(target, device)
 
 
-def gather(params, indices, axis=-1, dev=None):
-    if dev is None:
-        dev = _dev_callable(params)
-    return _to_dev(np.take_along_axis(params, indices, axis), dev)
+def gather(params: np.ndarray, indices:np.ndarray, axis: Optional[int]=-1, device:Optional[str]=None, out:Optional[np.ndarray] = None)\
+        -> np.ndarray:
+    if device is None:
+        device = _dev_callable(params)
+    ret = _to_dev(np.take_along_axis(params, indices, axis), device)
+    if ivy.exists(out):
+        return ivy.inplace_update(out,ret)
+    else :
+        return ret
 
-
-def gather_nd(params, indices, dev=None):
-    if dev is None:
-        dev = _dev_callable(params)
+def gather_nd(params, indices, device=None):
+    if device is None:
+        device = _dev_callable(params)
     indices_shape = indices.shape
     params_shape = params.shape
     num_index_dims = indices_shape[-1]
@@ -176,7 +227,7 @@ def gather_nd(params, indices, dev=None):
     flat_gather = np.take(flat_params, flat_indices_for_flat, 0)
     new_shape = list(indices_shape[:-1]) + list(params_shape[num_index_dims:])
     res = np.reshape(flat_gather, new_shape)
-    return _to_dev(res, dev)
+    return _to_dev(res, device)
 
 multiprocessing = lambda context=None: _multiprocessing if context is None else _multiprocessing.get_context(context)
 
@@ -190,7 +241,7 @@ def indices_where(x):
 
 
 # noinspection PyUnusedLocal
-def one_hot(indices, depth, dev=None):
+def one_hot(indices, depth, device=None):
     # from https://stackoverflow.com/questions/38592324/one-hot-encoding-using-numpy
     res = np.eye(depth)[np.array(indices).reshape(-1)]
     return res.reshape(list(indices.shape) + [depth])

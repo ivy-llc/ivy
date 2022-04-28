@@ -3,6 +3,7 @@ Collection of TensorFlow general functions, wrapped to fit Ivy syntax and signat
 """
 
 # global
+from typing import Optional
 import ivy
 _round = round
 import numpy as _np
@@ -10,6 +11,7 @@ import tensorflow as tf
 from numbers import Number
 import multiprocessing as _multiprocessing
 from tensorflow.python.types.core import Tensor
+from numbers import Number
 
 # local
 from ivy.functional.ivy.device import default_device
@@ -24,15 +26,37 @@ def is_native_array(x, exclusive=False):
     return False
 
 
-copy_array = tf.identity
-array_equal = tf.experimental.numpy.array_equal
-floormod = lambda x, y: x % y
-to_numpy = lambda x: _np.asarray(tf.convert_to_tensor(x))
-to_numpy.__name__ = 'to_numpy'
-to_scalar = lambda x: to_numpy(x).item()
-to_scalar.__name__ = 'to_scalar'
-to_list = lambda x: x.numpy().tolist()
-to_list.__name__ = 'to_list'
+def copy_array(x: Tensor) \
+        -> Tensor:
+    return tf.identity(x)
+
+
+def array_equal(x0: Tensor, x1: Tensor) \
+        -> bool:
+    return tf.experimental.numpy.array_equal(x0, x1)
+
+  
+def to_numpy(x: Tensor) \
+        -> _np.ndarray:
+    return _np.asarray(tf.convert_to_tensor(x))
+
+
+def to_scalar(x: Tensor) \
+        -> Number:
+    return to_numpy(x).item()
+
+  
+def to_list(x: Tensor) \
+        ->list:
+    return x.numpy().tolist()
+
+
+def floormod(x: tf.Tensor, y: tf.Tensor, out: Optional[tf.Tensor] = None)\
+        -> tf.Tensor:
+    ret = x%y
+    if ivy.exists(out):
+        return ivy.inplace_update(out,ret)
+    return ret
 
 
 def unstack(x, axis, keepdims=False):
@@ -68,31 +92,59 @@ inplace_variables_supported = lambda: True
 
 
 def inplace_decrement(x, val):
-    if ivy.is_variable(x):
-        x.assign(x - val)
-        return x
-    raise Exception('TensorFlow does not support inplace operations on non-Variable tensors')
+    (x_native, val_native), _ = ivy.args_to_native(x, val)
+    if ivy.is_variable(x_native):
+        x_native.assign(x_native-val_native)
+        if ivy.is_ivy_array(x):
+            x.data = x_native
+        else:
+            x = ivy.Array(x_native)
+    else:
+        if ivy.is_ivy_array(x):
+            x.data = val_native
+        else:
+            x = ivy.Array(val_native)
+    return x
 
 
 def inplace_increment(x, val):
-    if ivy.is_variable(x):
-        x.assign(x + val)
-        return x
-    raise Exception('TensorFlow does not support inplace operations on non-Variable tensors')
+    (x_native, val_native), _ = ivy.args_to_native(x, val)
+    if ivy.is_variable(x_native):
+        x_native.assign(x_native + val_native)
+        if ivy.is_ivy_array(x):
+            x.data = x_native
+        else:
+            x = ivy.Array(x_native)
+    else:
+        if ivy.is_ivy_array(x):
+            x.data = val_native
+        else:
+            x = ivy.Array(val_native)
+    return x
 
 
-cumsum = tf.cumsum
-cumprod = tf.math.cumprod
+def cumsum(x:tf.Tensor,axis:int=0,out: Optional[tf.Tensor] = None)\
+        -> tf.Tensor:
+        if ivy.exists(out):
+            return ivy.inplace_update(out,tf.math.cumsum(x,axis))
+        else:
+            return tf.math.cumsum(x,axis)
 
+def cumprod(x:tf.Tensor,axis:int=0,exclusive:Optional[bool]=False,out: Optional[tf.Tensor] = None)\
+        -> tf.Tensor:
+    if ivy.exists(out):
+        return ivy.inplace_update(out,tf.math.cumprod(x,axis,exclusive))
+    else:
+        return tf.math.cumprod(x,axis,exclusive)
 
 # noinspection PyShadowingNames
-def scatter_flat(indices, updates, size=None, tensor=None, reduction='sum', dev=None):
+def scatter_flat(indices, updates, size=None, tensor=None, reduction='sum', device=None):
     target = tensor
     target_given = ivy.exists(target)
     if ivy.exists(size) and ivy.exists(target):
         assert len(target.shape) == 1 and target.shape[0] == size
-    if dev is None:
-        dev = _dev_callable(updates)
+    if device is None:
+        device = _dev_callable(updates)
     dtype = updates.dtype
     if reduction == 'sum':
         if target_given:
@@ -117,7 +169,7 @@ def scatter_flat(indices, updates, size=None, tensor=None, reduction='sum', dev=
             res = tf.tensor_scatter_nd_update(tf.zeros([size]), tf.expand_dims(indices, -1), updates)
     else:
         raise Exception('reduction is {}, but it must be one of "sum", "min" or "max"'.format(reduction))
-    with tf.device(dev_from_str(dev)):
+    with tf.device(dev_from_str(device)):
         return res
 
 
@@ -140,7 +192,7 @@ def _parse_ellipsis(so, ndims):
 
 
 # noinspection PyShadowingNames
-def scatter_nd(indices, updates, shape=None, tensor=None, reduction='sum', dev=None):
+def scatter_nd(indices, updates, shape=None, tensor=None, reduction='sum', device=None):
 
     if ivy.exists(tensor) and not isinstance(updates,Number):
         tensor= tf.cast(tensor,dtype = updates.dtype) if ivy.dtype_bits(updates.dtype) > ivy.dtype_bits(tensor.dtype) else tensor
@@ -174,8 +226,8 @@ def scatter_nd(indices, updates, shape=None, tensor=None, reduction='sum', dev=N
     target_given = ivy.exists(target)
     if ivy.exists(shape) and ivy.exists(target):
         assert ivy.shape_to_tuple(target.shape) == ivy.shape_to_tuple(shape)
-    if dev is None:
-        dev = _dev_callable(updates)
+    if device is None:
+        device = _dev_callable(updates)
     shape = list(shape) if ivy.exists(shape) else list(tensor.shape)
     dtype = updates.dtype
     if reduction == 'sum':
@@ -201,29 +253,33 @@ def scatter_nd(indices, updates, shape=None, tensor=None, reduction='sum', dev=N
             res = tf.tensor_scatter_nd_update(tf.zeros(shape), indices, updates)
     else:
         raise Exception('reduction is {}, but it must be one of "sum", "min" or "max"'.format(reduction))
-    with tf.device(dev_from_str(dev)):
+    with tf.device(dev_from_str(device)):
         return res
 
 
-def gather(params, indices, axis=-1, dev=None):
+def gather(params: tf.Tensor, indices:tf.Tensor, axis: Optional[int] =-1, device: Optional[str]=None, out: Optional[tf.Tensor] = None)\
+        -> tf.Tensor:
     axis = axis % len(indices.shape)
-    if dev is None:
-        dev = _dev_callable(params)
-    with tf.device(dev_from_str(dev)):
-        return tf.gather(params, indices, axis=axis, batch_dims=axis)
+    if device is None:
+        device = _dev_callable(params)
+    with tf.device(dev_from_str(device)):
+        ret = tf.gather(params, indices, axis=axis, batch_dims=axis)
+        if ivy.exists(out):
+            return ivy.inplace_update(out,ret)
+        else:
+            return ret
 
-
-def gather_nd(params, indices, dev=None):
-    if dev is None:
-        dev = _dev_callable(params)
-    with tf.device(dev_from_str(dev)):
+def gather_nd(params, indices, device=None):
+    if device is None:
+        device = _dev_callable(params)
+    with tf.device(dev_from_str(device)):
         return tf.gather_nd(params, indices)
 
 
-def one_hot(indices, depth, dev=None):
-    dev = default_device(dev)
-    if dev is not None:
-        with tf.device(dev_from_str(dev)):
+def one_hot(indices, depth, device=None):
+    device = default_device(device)
+    if device is not None:
+        with tf.device(dev_from_str(device)):
             return tf.one_hot(indices, depth)
     return tf.one_hot(indices, depth)
 
