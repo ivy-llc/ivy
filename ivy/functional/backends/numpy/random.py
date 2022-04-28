@@ -15,14 +15,14 @@ import ivy
 def random_uniform(low: float = 0.0,
                    high: float = 1.0,
                    shape: Optional[Union[int, Tuple[int, ...]]] = None,
-                   dev: Optional[ivy.Device] = None) -> np.ndarray:
+                   device: Optional[ivy.Device] = None) -> np.ndarray:
     return np.asarray(np.random.uniform(low, high, shape))
 
 
-random_normal = lambda mean=0., std=1., shape=None, dev=None: np.asarray(np.random.normal(mean, std, shape))
+random_normal = lambda mean=0., std=1., shape=None, device=None: np.asarray(np.random.normal(mean, std, shape))
 
 
-def multinomial(population_size, num_samples, batch_size, probs=None, replace=True, dev=None):
+def multinomial(population_size, num_samples, batch_size, probs=None, replace=True, device=None):
     if probs is None:
         probs = np.ones((batch_size, population_size,)) / population_size
     orig_probs_shape = list(probs.shape)
@@ -35,7 +35,7 @@ def multinomial(population_size, num_samples, batch_size, probs=None, replace=Tr
     return np.asarray(np.reshape(samples_flat, orig_probs_shape[:-1] + [num_samples]))
 
 
-randint = lambda low, high, shape, dev=None: np.random.randint(low, high, shape)
+randint = lambda low, high, shape, device=None: np.random.randint(low, high, shape)
 seed = lambda seed_value=0: np.random.seed(seed_value)
 
 

@@ -21,9 +21,9 @@ def dev(x, as_str=False):
     return dv
 
 
-def to_dev(x, dev=None, out=None):
-    if dev is not None:
-        ret = x.as_in_context(dev_from_str(dev))
+def to_dev(x, device=None, out=None):
+    if device is not None:
+        ret = x.as_in_context(dev_from_str(device))
         if ivy.exists(out):
             return ivy.inplace_update(out, ret)
         return ret 
@@ -32,25 +32,25 @@ def to_dev(x, dev=None, out=None):
     return x
 
 
-def dev_to_str(dev):
-    if isinstance(dev, str):
-        return dev
-    device_type = dev.device_type
+def dev_to_str(device):
+    if isinstance(device, str):
+        return device
+    device_type = device.device_type
     if device_type == 'cpu':
         return device_type
-    return device_type + (':' + (str(dev.device_id) if dev.device_id is not None else '0'))
+    return device_type + (':' + (str(device.device_id) if device.device_id is not None else '0'))
 
 
-def dev_from_str(dev):
-    if not isinstance(dev, str):
-        return dev
-    dev_split = dev.split(':')
-    dev = dev_split[0]
+def dev_from_str(device):
+    if not isinstance(device, str):
+        return device
+    dev_split = device.split(':')
+    device = dev_split[0]
     if len(dev_split) > 1:
         idx = int(dev_split[1])
     else:
         idx = 0
-    return mx.context.Context(dev, idx)
+    return mx.context.Context(device, idx)
 
 
 def gpu_is_available() -> bool:

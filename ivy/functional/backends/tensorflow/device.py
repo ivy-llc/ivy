@@ -25,14 +25,14 @@ def dev(x, as_str=False):
     return dv
 
 
-def to_dev(x:Tensor, dev=None, out:Tensor=None) -> Tensor:
-    if dev is None:
+def to_dev(x:Tensor, device=None, out:Tensor=None) -> Tensor:
+    if device is None:
         if ivy.exists(out):
             return ivy.inplace_update(out, x)
         return x
     current_dev = _dev_callable(x)
-    if not _same_device(current_dev, dev):
-        with tf.device('/' + dev.upper()):
+    if not _same_device(current_dev, device):
+        with tf.device('/' + device.upper()):
             if ivy.exists(out):
                 return ivy.inplace_update(out, tf.identity(x))
             return tf.identity(x)
@@ -42,10 +42,10 @@ def to_dev(x:Tensor, dev=None, out:Tensor=None) -> Tensor:
     return x
 
 
-def dev_to_str(dev):
-    if isinstance(dev, str) and '/' not in dev:
-        return dev
-    dev_in_split = dev[1:].split(':')[-2:]
+def dev_to_str(device):
+    if isinstance(device, str) and '/' not in device:
+        return device
+    dev_in_split = device[1:].split(':')[-2:]
     if len(dev_in_split) == 1:
         return dev_in_split[0]
     dev_type, dev_idx = dev_in_split
@@ -55,10 +55,10 @@ def dev_to_str(dev):
     return ':'.join([dev_type, dev_idx])
 
 
-def dev_from_str(dev):
-    if isinstance(dev, str) and '/' in dev:
-        return dev
-    ret = '/' + dev.upper()
+def dev_from_str(device):
+    if isinstance(device, str) and '/' in device:
+        return device
+    ret = '/' + device.upper()
     if not ret[-1].isnumeric():
         ret = ret + ':0'
     return ret
