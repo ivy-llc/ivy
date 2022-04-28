@@ -20,9 +20,9 @@ import ivy.functional.backends.numpy as ivy_np
     "dtype", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_vector_to_skew_symmetric_matrix(x, dtype, tensor_fn, dev, call):
+def test_vector_to_skew_symmetric_matrix(x, dtype, tensor_fn, device, call):
     # smoke test
-    x = tensor_fn(x, dtype, dev)
+    x = tensor_fn(x, dtype, device)
     ret = ivy.vector_to_skew_symmetric_matrix(x)
     # type test
     assert ivy.is_ivy_array(ret)
