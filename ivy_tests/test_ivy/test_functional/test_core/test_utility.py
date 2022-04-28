@@ -25,9 +25,9 @@ import ivy_tests.test_ivy.helpers as helpers
     "with_out", [True, False])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_all(x, axis, kd, dtype, with_out,  tensor_fn, dev, call):
+def test_all(x, axis, kd, dtype, with_out,  tensor_fn, device, call):
     # smoke test
-    x = tensor_fn(x, dtype, dev)
+    x = tensor_fn(x, dtype, device)
     if axis is None:
         expected_shape = [1]*len(x.shape) if kd else []
     else:
@@ -70,9 +70,9 @@ def test_all(x, axis, kd, dtype, with_out,  tensor_fn, dev, call):
     "with_out", [True, False])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_any(x, axis, kd, dtype, with_out,  tensor_fn, dev, call):
+def test_any(x, axis, kd, dtype, with_out,  tensor_fn, device, call):
     # smoke test
-    x = tensor_fn(x, dtype, dev)
+    x = tensor_fn(x, dtype, device)
     if axis is None:
         expected_shape = [1]*len(x.shape) if kd else []
     else:

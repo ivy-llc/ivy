@@ -18,30 +18,30 @@ from ivy.functional.ivy.device import default_device
 def random_uniform(low: float = 0.0,
                    high: float = 1.0,
                    shape: Optional[Union[int, Tuple[int, ...]]] = None,
-                   dev: Optional[ivy.Device] = None) -> Tensor:
-    with tf.device(default_device(dev)):
+                   device: Optional[ivy.Device] = None) -> Tensor:
+    with tf.device(default_device(device)):
         return tf.random.uniform(shape if shape else (), low, high)
 
 
-def random_normal(mean=0., std=1., shape=None, dev=None):
-    dev = default_device(dev)
-    with tf.device('/' + dev.upper()):
+def random_normal(mean=0., std=1., shape=None, device=None):
+    device = default_device(device)
+    with tf.device('/' + device.upper()):
         return tf.random.normal(shape if shape else (), mean, std)
 
 
-def multinomial(population_size, num_samples, batch_size, probs=None, replace=True, dev=None):
+def multinomial(population_size, num_samples, batch_size, probs=None, replace=True, device=None):
     if not replace:
         raise Exception('TensorFlow does not support multinomial without replacement')
-    dev = default_device(dev)
-    with tf.device('/' + dev.upper()):
+    device = default_device(device)
+    with tf.device('/' + device.upper()):
         if probs is None:
             probs = tf.ones((batch_size, population_size,)) / population_size
         return tf.random.categorical(tf.math.log(probs), num_samples)
 
 
-def randint(low, high, shape, dev=None):
-    dev = default_device(dev)
-    with tf.device('/' + dev.upper()):
+def randint(low, high, shape, device=None):
+    device = default_device(device)
+    with tf.device('/' + device.upper()):
         return tf.random.uniform(shape=shape, minval=low, maxval=high, dtype=tf.int32)
 
 

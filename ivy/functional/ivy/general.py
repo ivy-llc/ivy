@@ -490,12 +490,12 @@ def fourier_encode(x: Union[ivy.Array, ivy.NativeArray], max_freq: Union[float, 
     x = ivy.expand_dims(x, -1)
     orig_x = x
     if linear:
-        scales = ivy.linspace(1., max_freq / 2, num_bands, dev=dev(x))
+        scales = ivy.linspace(1., max_freq / 2, num_bands, device=dev(x))
     else:
         if ivy.backend == 'torch' and isinstance(max_freq, float):
-            scales = ivy.logspace(0., ivy.log(ivy.array(max_freq / 2)) / math.log(10), num_bands, base=10, dev=dev(x))
+            scales = ivy.logspace(0., ivy.log(ivy.array(max_freq / 2)) / math.log(10), num_bands, base=10, device=dev(x))
         else:
-            scales = ivy.logspace(0., ivy.log(max_freq / 2) / math.log(10), num_bands, base=10, dev=dev(x))
+            scales = ivy.logspace(0., ivy.log(max_freq / 2) / math.log(10), num_bands, base=10, device=dev(x))
     scales = ivy.astype(scales, ivy.dtype(x))
     scales = scales[(*((None,) * (len(x.shape) - len(scales.shape))), Ellipsis)]
     x = x * scales * math.pi
@@ -1183,7 +1183,7 @@ def cumprod(x: Union[ivy.Array, ivy.NativeArray], axis: int = 0, exclusive: Opti
 # noinspection PyShadowingNames
 def scatter_flat(indices: Union[ivy.Array, ivy.NativeArray], updates: Union[ivy.Array, ivy.NativeArray],
                  size: Optional[int] = None, tensor: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-                 reduction: str = 'sum', dev: ivy.Device = None) \
+                 reduction: str = 'sum', device: ivy.Device = None) \
         -> Union[ivy.Array, ivy.NativeArray]:
     """Scatter flat updates into a new flat array according to flat indices.
 
@@ -1200,7 +1200,7 @@ def scatter_flat(indices: Union[ivy.Array, ivy.NativeArray], updates: Union[ivy.
         scatter into a zeros array.
     reduction 
         The reduction method for the scatter, one of 'sum', 'min', 'max' or 'replace'
-    dev 
+    device 
         device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. Same as updates if None.
 
     Returns
@@ -1209,13 +1209,13 @@ def scatter_flat(indices: Union[ivy.Array, ivy.NativeArray], updates: Union[ivy.
         New array of given shape, with the values scattered at the indices.
 
     """
-    return _cur_framework(indices).scatter_flat(indices, updates, size, tensor, reduction, dev)
+    return _cur_framework(indices).scatter_flat(indices, updates, size, tensor, reduction, device)
 
 
 # noinspection PyShadowingNames
 def scatter_nd(indices: Union[ivy.Array, ivy.NativeArray], updates: Union[ivy.Array, ivy.NativeArray],
                shape: Optional[Iterable[int]] = None, tensor: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-               reduction: str = 'sum', dev: ivy.Device = None) \
+               reduction: str = 'sum', device: ivy.Device = None) \
         -> Union[ivy.Array, ivy.NativeArray]:
     """Scatter updates into a new array according to indices.
 
@@ -1232,7 +1232,7 @@ def scatter_nd(indices: Union[ivy.Array, ivy.NativeArray], updates: Union[ivy.Ar
         scatter into a zeros array.
     reduction 
         The reduction method for the scatter, one of 'sum', 'min', 'max' or 'replace'
-    dev 
+    device 
         device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. Same as updates if None.
 
     Returns
@@ -1241,12 +1241,12 @@ def scatter_nd(indices: Union[ivy.Array, ivy.NativeArray], updates: Union[ivy.Ar
         New array of given shape, with the values scattered at the indices.
 
     """
-    return _cur_framework(indices).scatter_nd(indices, updates, shape, tensor, reduction, dev)
+    return _cur_framework(indices).scatter_nd(indices, updates, shape, tensor, reduction, device)
 
 
 # noinspection PyShadowingNames
 def gather(params: Union[ivy.Array, ivy.NativeArray], indices: Union[ivy.Array, ivy.NativeArray], axis: int = -1,
-           dev: ivy.Device = None, out: Optional[Union[ivy.Array, ivy.NativeArray]] = None) -> Union[
+           device: ivy.Device = None, out: Optional[Union[ivy.Array, ivy.NativeArray]] = None) -> Union[
     ivy.Array, ivy.NativeArray]:
     """
     Gather slices from params at axis according to indices.
@@ -1260,7 +1260,7 @@ def gather(params: Union[ivy.Array, ivy.NativeArray], indices: Union[ivy.Array, 
         array, index array.
     axis
         optional int, the axis from which to gather from. Default is -1.
-    dev
+    device
         optional ivy.Device, device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. Same as x if None.
     out
         optional output array, for writing the result to.
@@ -1269,12 +1269,12 @@ def gather(params: Union[ivy.Array, ivy.NativeArray], indices: Union[ivy.Array, 
     ----------
         New array with the values gathered at the specified indices along the specified axis.
     """
-    return _cur_framework(params).gather(params, indices, axis, dev, out=out)
+    return _cur_framework(params).gather(params, indices, axis, device, out=out)
 
 
 # noinspection PyShadowingNames
 def gather_nd(params: Union[ivy.Array, ivy.NativeArray], indices: Union[ivy.Array, ivy.NativeArray],
-              dev: ivy.Device = None) -> Union[ivy.Array, ivy.NativeArray]:
+              device: ivy.Device = None) -> Union[ivy.Array, ivy.NativeArray]:
     """Gather slices from params into a array with shape specified by indices.
 
     Parameters
@@ -1283,7 +1283,7 @@ def gather_nd(params: Union[ivy.Array, ivy.NativeArray], indices: Union[ivy.Arra
         The array from which to gather values.
     indices 
         Index array.
-    dev 
+    device 
         device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. Same as x if None.
 
     Returns
@@ -1292,7 +1292,7 @@ def gather_nd(params: Union[ivy.Array, ivy.NativeArray], indices: Union[ivy.Arra
         New array of given shape, with the values gathered at the indices.
 
     """
-    return _cur_framework(params).gather_nd(params, indices, dev)
+    return _cur_framework(params).gather_nd(params, indices, device)
 
 
 def multiprocessing(context: str = None):
@@ -1333,7 +1333,7 @@ def indices_where(x: Union[ivy.Array, ivy.NativeArray]) \
 
 
 # noinspection PyShadowingNames
-def one_hot(indices: Union[ivy.Array, ivy.NativeArray], depth: int, dev: ivy.Device = None) \
+def one_hot(indices: Union[ivy.Array, ivy.NativeArray], depth: int, device: ivy.Device = None) \
         -> Union[ivy.Array, ivy.NativeArray]:
     """Returns a one-hot array
 
@@ -1343,7 +1343,7 @@ def one_hot(indices: Union[ivy.Array, ivy.NativeArray], depth: int, dev: ivy.Dev
         Indices for where the ones should be scattered *[batch_shape, dim]*
     depth 
         Scalar defining the depth of the one-hot dimension.
-    dev 
+    device 
         device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. Same as x if None.
 
     Returns
@@ -1352,7 +1352,7 @@ def one_hot(indices: Union[ivy.Array, ivy.NativeArray], depth: int, dev: ivy.Dev
         Tensor of zeros with the same shape and type as a, unless dtype provided which overrides.
 
     """
-    return _cur_framework(indices).one_hot(indices, depth, dev)
+    return _cur_framework(indices).one_hot(indices, depth, device)
 
 
 def shape(x: Union[ivy.Array, ivy.NativeArray], as_array: bool = False) \

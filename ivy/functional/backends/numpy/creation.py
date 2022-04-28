@@ -169,7 +169,7 @@ def from_dlpack(x):
 array = asarray
 
 
-def logspace(start, stop, num, base=10., axis=None, dev=None):
+def logspace(start, stop, num, base=10., axis=None, device=None):
     if axis is None:
         axis = -1
-    return _to_dev(np.logspace(start, stop, num, base=base, axis=axis), dev)
+    return _to_dev(np.logspace(start, stop, num, base=base, axis=axis), device)

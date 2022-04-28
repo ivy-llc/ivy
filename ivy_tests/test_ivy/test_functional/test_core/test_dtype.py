@@ -16,7 +16,7 @@ import ivy_tests.test_ivy.helpers as helpers
 
 
 # dtype objects
-def test_dtype_instances(dev, call):
+def test_dtype_instances(device, call):
     assert ivy.exists(ivy.int8)
     assert ivy.exists(ivy.int16)
     assert ivy.exists(ivy.int32)
@@ -41,7 +41,7 @@ def test_dtype_instances(dev, call):
                            ({'a': [1.1, 2.7], 'b': [3.3, 4.5]}, False, False),
                            ('int32', False, True), ('float32', False, False),  # dtype str
                            ])
-def test_is_int_dtype(dev, call, in_n_asarray_n_res):
+def test_is_int_dtype(device, call, in_n_asarray_n_res):
     x, asarray, res = in_n_asarray_n_res
     if asarray:
         x = ivy.array(x)
@@ -58,7 +58,7 @@ def test_is_int_dtype(dev, call, in_n_asarray_n_res):
                            ({'a': [1.1, 2.7], 'b': [3.3, 4.5]}, False, True),
                            ('int32', False, False), ('float32', False, True),  # dtype str
                            ])
-def test_is_float_dtype(dev, call, in_n_asarray_n_res):
+def test_is_float_dtype(device, call, in_n_asarray_n_res):
     x, asarray, res = in_n_asarray_n_res
     if asarray:
         x = ivy.array(x)

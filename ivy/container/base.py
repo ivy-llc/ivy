@@ -219,19 +219,19 @@ class ContainerBase(dict, abc.ABC):
             return containers
 
     @staticmethod
-    def _concat_unify(containers, dev, axis=0):
-        return ivy.concat([cont.to_dev(dev) for cont in containers.values()], axis)
+    def _concat_unify(containers, device, axis=0):
+        return ivy.concat([cont.to_dev(device) for cont in containers.values()], axis)
 
     @staticmethod
-    def _sum_unify(containers, dev, _=None, _1=None):
-        return sum([cont.to_dev(dev) for cont in containers.values()])
+    def _sum_unify(containers, device, _=None, _1=None):
+        return sum([cont.to_dev(device) for cont in containers.values()])
 
     @staticmethod
-    def _mean_unify(containers, dev, _=None, _1=None):
-        return ivy.Container._sum_unify(containers, dev) / len(containers)
+    def _mean_unify(containers, device, _=None, _1=None):
+        return ivy.Container._sum_unify(containers, device) / len(containers)
 
     @staticmethod
-    def unify(containers, dev, mode, axis=0):
+    def unify(containers, device, mode, axis=0):
         """Unify a list of containers, on arbitrary devices, to a single container on the specified device.
 
         Parameters
@@ -252,7 +252,7 @@ class ContainerBase(dict, abc.ABC):
         """
         return {'concat': ivy.Container._concat_unify,
                 'sum': ivy.Container._sum_unify,
-                'mean': ivy.Container._mean_unify}[mode](containers, dev, axis)
+                'mean': ivy.Container._mean_unify}[mode](containers, device, axis)
 
 
     @staticmethod
@@ -1923,7 +1923,7 @@ class ContainerBase(dict, abc.ABC):
         return self.map(lambda x, kc: self._ivy.expand_dims(x, axis) if self._ivy.is_native_array(x) or isinstance(x, ivy.Array) else x,
                         key_chains, to_apply, prune_unapplied, map_sequences)
 
-    def dev_clone(self, devs):
+    def dev_clone(self, devices):
         """Clone the current container across multiple devices.
 
         Parameters
@@ -1936,9 +1936,9 @@ class ContainerBase(dict, abc.ABC):
             a set of cloned containers across the specified devices.
 
         """
-        return self._ivy.DevClonedItem({dev: self.to_dev(dev) for dev in devs})
+        return self._ivy.DevClonedItem({device: self.to_dev(device) for device in devices})
 
-    def dev_dist(self, devs: Union[Iterable[str], Dict[str, int]], axis=0):
+    def dev_dist(self, devices: Union[Iterable[str], Dict[str, int]], axis=0):
         """Distribute the current container across multiple devices.
 
         Parameters
@@ -1951,12 +1951,12 @@ class ContainerBase(dict, abc.ABC):
         -------
             a set of distributed sub-containers across the specified devices.
         """
-        split_arg = list(devs.values()) if isinstance(devs, dict) else len(devs)
+        split_arg = list(devices.values()) if isinstance(devices, dict) else len(devices)
         return self._ivy.DevDistItem(
-            {dev: cont.to_dev(dev) for cont, dev in
-             zip(self.split(split_arg, axis, with_remainder=True), devs)})
+            {device: cont.to_dev(device) for cont, device in
+             zip(self.split(split_arg, axis, with_remainder=True), devices)})
 
-    def to_multi_dev(self, devs, axis=0):
+    def to_multi_dev(self, devices, axis=0):
         """Return a single MultiDevContainer, which shares the same structure as the current container, but replaces arrays
         at the leaves with DistributedArray instances.
 
@@ -1973,7 +1973,7 @@ class ContainerBase(dict, abc.ABC):
 
         """
         return ivy.MultiDevContainer(
-            self.map(lambda x, kc: self._ivy.dev_dist_array(x, devs, axis)), devs, **self._config)
+            self.map(lambda x, kc: self._ivy.dev_dist_array(x, devices, axis)), devices, **self._config)
 
     def unstack(self, axis, keepdims=False, dim_size=None):
         """Unstack containers along specified dimension.
@@ -2274,7 +2274,7 @@ class ContainerBase(dict, abc.ABC):
         return self.map(lambda x, kc: ivy.einops_repeat(x, pattern, **axes_lengths) if self._ivy.is_native_array(x) or isinstance(x, ivy.Array) else x,
                         key_chains, to_apply, prune_unapplied, map_sequences)
 
-    def to_dev(self, dev, key_chains=None, to_apply=True, prune_unapplied=False, map_sequences=False):
+    def to_dev(self, device, key_chains=None, to_apply=True, prune_unapplied=False, map_sequences=False):
         """Move the container arrays to the desired device, specified by device string.
 
         Parameters
@@ -2296,7 +2296,7 @@ class ContainerBase(dict, abc.ABC):
             The container, but with each sub-array now placed on the target device.
 
         """
-        return self.map(lambda x, kc: self._ivy.stop_gradient(self._ivy.to_dev(x, dev))
+        return self.map(lambda x, kc: self._ivy.stop_gradient(self._ivy.to_dev(x, device))
             if self._ivy.is_native_array(x) or isinstance(x, ivy.Array) else x, key_chains, to_apply, prune_unapplied, map_sequences)
 
     def stop_gradients(self, preserve_type=True, key_chains=None, to_apply=True, prune_unapplied=False,

@@ -15,17 +15,17 @@ from ivy.functional.backends.numpy.data_type import dtype_to_str as np_dtype_to_
 # -------------------#
 
 
-def asarray(object_in, dtype: Optional[str] = None, dev: Optional[str] = None, copy: Optional[bool] = None):
-    dev = default_device(dev)
+def asarray(object_in, dtype: Optional[str] = None, device: Optional[str] = None, copy: Optional[bool] = None):
+    device = default_device(device)
     if isinstance(object_in, torch.Tensor) and dtype is None:
         dtype = object_in.dtype
     elif isinstance(object_in, (list, tuple, dict)) and len(object_in) != 0 and dtype is None:
         # Temporary fix on type
         # Because default_type() didn't return correct type for normal python array
         if copy is True:
-            return torch.as_tensor(object_in).clone().detach().to(dev_from_str(dev))
+            return torch.as_tensor(object_in).clone().detach().to(dev_from_str(device))
         else:
-            return torch.as_tensor(object_in).to(dev_from_str(dev))
+            return torch.as_tensor(object_in).to(dev_from_str(device))
 
     elif isinstance(object_in, np.ndarray) and dtype is None:
         dtype = dtype_from_str(np_dtype_to_str(object_in.dtype))
@@ -33,9 +33,9 @@ def asarray(object_in, dtype: Optional[str] = None, dev: Optional[str] = None, c
         dtype = dtype_from_str((default_dtype(dtype, object_in)))
 
     if copy is True:
-        return torch.as_tensor(object_in, dtype=dtype).clone().detach().to(dev_from_str(dev))
+        return torch.as_tensor(object_in, dtype=dtype).clone().detach().to(dev_from_str(device))
     else:
-        return torch.as_tensor(object_in, dtype=dtype).to(dev_from_str(dev))
+        return torch.as_tensor(object_in, dtype=dtype).to(dev_from_str(device))
 
 
 def zeros(shape: Union[int, Tuple[int]],
@@ -50,8 +50,8 @@ def ones(shape: Union[int, Tuple[int]],
          device: Optional[Union[torch.device, str]] = None) \
         -> torch.Tensor:
     dtype_val: torch.dtype = dtype_from_str(dtype)
-    dev = default_device(device)
-    return torch.ones(shape, dtype=dtype_val, device=dev_from_str(dev))
+    device = default_device(device)
+    return torch.ones(shape, dtype=dtype_val, device=dev_from_str(device))
 
 
 def full_like(x: torch.Tensor,
@@ -67,12 +67,12 @@ def full_like(x: torch.Tensor,
 
 def ones_like(x : torch.Tensor,
               dtype: Optional[Union[torch.dtype, str]] = None,
-              dev: Optional[Union[torch.device, str]] = None) \
+              device: Optional[Union[torch.device, str]] = None) \
         -> torch.Tensor:
-    if dev is None:
-        dev = _callable_dev(x)
+    if device is None:
+        device = _callable_dev(x)
     dtype = dtype_from_str(dtype)
-    return torch.ones_like(x, dtype= dtype, device=dev_from_str(dev))
+    return torch.ones_like(x, dtype= dtype, device=dev_from_str(device))
 
 
 def zeros_like(x: torch.Tensor,
@@ -107,12 +107,12 @@ def empty(shape: Union[int, Tuple[int]],
 
 def empty_like(x: torch.Tensor,
               dtype: Optional[Union[torch.dtype, str]] = None,
-              dev: Optional[Union[torch.device, str]] = None) \
+              device: Optional[Union[torch.device, str]] = None) \
         -> torch.Tensor:
-    if dev is None:
-        dev = _callable_dev(x)
+    if device is None:
+        device = _callable_dev(x)
     dtype = dtype_from_str(dtype)
-    return torch.empty_like(x, dtype=dtype, device=dev_from_str(dev))
+    return torch.empty_like(x, dtype=dtype, device=dev_from_str(device))
 
 
 def _differentiable_linspace(start, stop, num, device):
@@ -127,25 +127,25 @@ def _differentiable_linspace(start, stop, num, device):
 
 
 # noinspection PyUnboundLocalVariable,PyShadowingNames
-def linspace(start, stop, num, axis=None, dev=None):
+def linspace(start, stop, num, axis=None, device=None):
     num = num.detach().numpy().item() if isinstance(num, torch.Tensor) else num
     start_is_array = isinstance(start, torch.Tensor)
     stop_is_array = isinstance(stop, torch.Tensor)
     linspace_method = torch.linspace
-    dev = default_device(dev)
+    device = default_device(device)
     sos_shape = []
     if start_is_array:
         start_shape = list(start.shape)
         sos_shape = start_shape
         if num == 1:
-            return start.unsqueeze(axis).to(dev_from_str(dev))
+            return start.unsqueeze(axis).to(dev_from_str(device))
         start = start.reshape((-1,))
         linspace_method = _differentiable_linspace if start.requires_grad else torch.linspace
     if stop_is_array:
         stop_shape = list(stop.shape)
         sos_shape = stop_shape
         if num == 1:
-            return torch.ones(stop_shape[:axis] + [1] + stop_shape[axis:], device=dev_from_str(dev)) * start
+            return torch.ones(stop_shape[:axis] + [1] + stop_shape[axis:], device=dev_from_str(device)) * start
         stop = stop.reshape((-1,))
         linspace_method = _differentiable_linspace if stop.requires_grad else torch.linspace
     if start_is_array and stop_is_array:
@@ -158,7 +158,7 @@ def linspace(start, stop, num, axis=None, dev=None):
             res += [start + inc*i for i in range(1, num-1)]
             res.append(stop)
         else:
-            res = [linspace_method(strt, stp, num, device=dev_from_str(dev)) for strt, stp in zip(start, stop)]
+            res = [linspace_method(strt, stp, num, device=dev_from_str(device)) for strt, stp in zip(start, stop)]
         torch.cat(res, -1).reshape(start_shape + [num])
     elif start_is_array and not stop_is_array:
         if num < start.shape[0]:
@@ -167,25 +167,25 @@ def linspace(start, stop, num, axis=None, dev=None):
             inc = diff / (num - 1)
             res = [start]
             res += [start + inc * i for i in range(1, num - 1)]
-            res.append(torch.ones_like(start, device=dev_from_str(dev)) * stop)
+            res.append(torch.ones_like(start, device=dev_from_str(device)) * stop)
         else:
-            res = [linspace_method(strt, stop, num, device=dev_from_str(dev)) for strt in start]
+            res = [linspace_method(strt, stop, num, device=dev_from_str(device)) for strt in start]
     elif not start_is_array and stop_is_array:
         if num < stop.shape[0]:
             stop = stop.unsqueeze(-1)
             diff = stop - start
             inc = diff / (num - 1)
-            res = [torch.ones_like(stop, device=dev_from_str(dev)) * start]
+            res = [torch.ones_like(stop, device=dev_from_str(device)) * start]
             res += [start + inc * i for i in range(1, num - 1)]
             res.append(stop)
         else:
-            res = [linspace_method(start, stp, num, device=dev_from_str(dev)) for stp in stop]
+            res = [linspace_method(start, stp, num, device=dev_from_str(device)) for stp in stop]
     else:
-        return linspace_method(start, stop, num, device=dev_from_str(dev))
+        return linspace_method(start, stop, num, device=dev_from_str(device))
     res = torch.cat(res, -1).reshape(sos_shape + [num])
     if axis is not None:
         res = torch.transpose(res, axis, -1)
-    return res.to(dev_from_str(dev))
+    return res.to(dev_from_str(device))
 
 
 def eye(n_rows: int,
@@ -217,7 +217,7 @@ def meshgrid(*arrays: torch.Tensor, indexing='xy')\
 
 
 # noinspection PyShadowingNames
-def arange(start, stop=None, step=1, dtype=None, dev=None):
+def arange(start, stop=None, step=1, dtype=None, device=None):
 
     if stop is None:
         stop = start
@@ -228,19 +228,19 @@ def arange(start, stop=None, step=1, dtype=None, dev=None):
         else:
             stop = start
 
-    dev = dev_from_str(default_device(dev))
+    device = dev_from_str(default_device(device))
 
     if dtype is None:
         if isinstance(start, int) and isinstance(stop, int) and isinstance(step, int):
-            return torch.arange(start, stop, step=step, dtype=torch.int64, device=dev).to(torch.int32)
+            return torch.arange(start, stop, step=step, dtype=torch.int64, device=device).to(torch.int32)
         else:
-            return torch.arange(start, stop, step=step, device=dev)
+            return torch.arange(start, stop, step=step, device=device)
     else:
         dtype = dtype_from_str(default_dtype(dtype))
         if dtype in [torch.int8, torch.uint8, torch.int16]:
-            return torch.arange(start, stop, step=step, dtype=torch.int64, device=dev).to(dtype)
+            return torch.arange(start, stop, step=step, dtype=torch.int64, device=device).to(dtype)
         else:
-            return torch.arange(start, stop, step=step, dtype=dtype, device=dev)
+            return torch.arange(start, stop, step=step, dtype=dtype, device=device)
 
 
 
@@ -265,6 +265,6 @@ def from_dlpack(x):
 array = asarray
 
 
-def logspace(start, stop, num, base=10., axis=None, dev=None):
-    power_seq = linspace(start, stop, num, axis, default_device(dev))
+def logspace(start, stop, num, base=10., axis=None, device=None):
+    power_seq = linspace(start, stop, num, axis, default_device(device))
     return base ** power_seq
