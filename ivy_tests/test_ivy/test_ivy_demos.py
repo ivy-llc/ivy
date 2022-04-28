@@ -46,15 +46,15 @@ def test_training_demo(dev, call):
 
 
 # functional api
-# def test_array(dev, call):
-#     ivy.unset_framework()
-#     import jax.numpy as jnp
-#     assert ivy.concat((jnp.ones((1,)), jnp.ones((1,))), -1).shape == (2,)
-#     import tensorflow as tf
-#     assert ivy.concat((tf.ones((1,)), tf.ones((1,))), -1).shape == (2,)
-#     import numpy as np
-#     assert ivy.concat((np.ones((1,)), np.ones((1,))), -1).shape == (2,)
-#     import mxnet as mx
-#     assert ivy.concat((mx.nd.ones((1,)), mx.nd.ones((1,))), -1).shape == (2,)
-#     import torch
-#     assert ivy.concat((torch.ones((1,)), torch.ones((1,))), -1).shape == (2,)
+def test_array(dev, call):
+    ivy.unset_framework()
+    import jax.numpy as jnp
+    assert ivy.concat((jnp.ones((1,)), jnp.ones((1,))), -1).shape == (2,)
+    import tensorflow as tf
+    assert ivy.concat((tf.ones((1,)), tf.ones((1,))), -1).shape == (2,)
+    import numpy as np
+    assert ivy.concat((np.ones((1,)), np.ones((1,))), -1).shape == (2,)
+    import mxnet as mx
+    assert ivy.concat((mx.nd.ones((1,)), mx.nd.ones((1,))), -1).shape == (2,)
+    import torch
+    assert ivy.concat((torch.ones((1,)), torch.ones((1,))), -1).shape == (2,)
