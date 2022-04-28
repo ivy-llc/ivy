@@ -29,7 +29,7 @@ for fpath in fpaths:
             for s in contents:
                 if s == '':
                     continue            
-                if ('#' not in s) or (len(s.split('#')) > 2 and not (framework in s.lower()) and any(f in s.lower() for f in framework_tests_to_run)):
+                if ('#' not in s) or ('#' in s and not (framework in s.lower()) and any(f in s.lower() for f in framework_tests_to_run)):
                     tests_to_run += ['test_' + s] if ('#' not in s) else ['test_' + s.split('#')[1].split(' ')[0]]
                 else:
                     tests_to_skip += ['test_' + s[1:].split(' ')[0]]
