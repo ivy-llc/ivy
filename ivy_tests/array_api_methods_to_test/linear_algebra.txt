@@ -4,7 +4,7 @@ det
 diagonal
 eigh
 eigvalsh
-#inv #failing for jax,torch randomly due to health checks
+#inv #failing for jax and torch randomly due to health checks
 #matmul #failing for torch non-deterministically
 #matrix_norm #failing for jax non-deterministically 
 #matrix_power
@@ -14,7 +14,7 @@ outer
 pinv
 qr
 slogdet
-#solve #failing for jax,tensorflow due to healthchecks 
+#solve #failing for jax and tensorflow due to healthchecks 
 svd
 svdvals
 tensordot
