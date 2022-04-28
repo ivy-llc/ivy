@@ -355,7 +355,7 @@ def einsum(equation:str, *operands:Union[ivy.Array, ivy.NativeArray],
     -------
     >>> a=np.arange(25).reshape(5,5)
     >>> b= np.einsum('ii',a)
-    array([ 0,  6, 12, 18, 24])
+    ivy.array([ 0,  6, 12, 18, 24])
 
     """
     return _cur_framework(operands[0]).einsum(equation, *operands,out=out)
