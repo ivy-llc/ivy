@@ -14,8 +14,8 @@ from ivy import dev_from_str, default_device, dtype_from_str, default_dtype, dty
 # -------------------#
 
 
-def asarray(object_in, dtype=None, dev=None, copy=None):
-    dev = default_device(dev)
+def asarray(object_in, dtype=None, device=None, copy=None):
+    dev = default_device(device)
     with tf.device(dev_from_str(dev)):
         if copy:
             if dtype is None and isinstance(object_in, tf.Tensor):
@@ -83,10 +83,10 @@ def full_like(x: Tensor,
 
 def ones_like(x: Tensor,
               dtype: Optional[Union[DType, str, None]] = None,
-              dev: Optional[str] = None) \
+              device: Optional[str] = None) \
         -> Tensor:
     dtype = tf.DType(dtype) if dtype is str else dtype
-    dev = default_device(dev)
+    dev = default_device(device)
     with tf.device(dev_from_str(dev)):
         return tf.ones_like(x, dtype=dtype)
 
@@ -123,10 +123,10 @@ def empty(shape: Union[int, Tuple[int]],
 
 def empty_like(x: Tensor,
               dtype: Optional[Union[DType, str, None]] = None,
-              dev: Optional[str] = None) \
+              device: Optional[str] = None) \
         -> Tensor:
     dtype = tf.DType(dtype) if dtype is str else dtype
-    dev = default_device(dev)
+    dev = default_device(device)
     with tf.device(dev_from_str(dev)):
         return tf.experimental.numpy.empty_like(x, dtype=dtype)
 
@@ -169,7 +169,7 @@ def eye(n_rows: int,
 
 
 # noinspection PyShadowingNames
-def arange(start, stop=None, step=1, dtype=None, dev=None):
+def arange(start, stop=None, step=1, dtype=None, device=None):
 
     if stop is None:
         stop = start
@@ -180,7 +180,7 @@ def arange(start, stop=None, step=1, dtype=None, dev=None):
         else:
             stop = start
 
-    dev = dev_from_str(default_device(dev))
+    dev = dev_from_str(default_device(device))
     with tf.device(dev):
 
         if dtype is None:
