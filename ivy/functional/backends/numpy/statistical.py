@@ -115,7 +115,7 @@ def std(x: np.ndarray,
 # Extra #
 # ------#
 
-def einsum(equation : str,
+def einsum(equation: str,
             *operands: np.ndarray,
             out: Optional[np.ndarray] = None)\
             -> np.ndarray:
