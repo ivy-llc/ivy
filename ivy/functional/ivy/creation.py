@@ -11,7 +11,7 @@ from ivy.framework_handler import current_framework as _cur_framework
 # Array API Standard #
 # -------------------#
 
-def arange(start: Number, stop: Number = None, step: Number = 1, dtype: ivy.Dtype = None, dev: ivy.Device = None,
+def arange(start: Number, stop: Number = None, step: Number = 1, dtype: ivy.Dtype = None, device: ivy.Device = None,
            ) -> Union[ivy.Array, ivy.NativeArray]:
     """Returns evenly spaced values within a given interval, with the spacing being specified.
 
@@ -36,7 +36,7 @@ def arange(start: Number, stop: Number = None, step: Number = 1, dtype: ivy.Dtyp
         The desired data-type for the array in string format, i.e. 'float32' or 'int64'.
         If not given, then the type will be determined as the minimum type required to hold the objects in the
         sequence.
-    dev
+    device
         device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
 
     Returns
@@ -48,12 +48,12 @@ def arange(start: Number, stop: Number = None, step: Number = 1, dtype: ivy.Dtyp
         Because of floating point overflow, this rule may result in the last element of out being greater than stop.
 
     """
-    return _cur_framework().arange(start, stop, step, dtype, dev)
+    return _cur_framework().arange(start, stop, step, dtype, device)
 
 
 def asarray(x: Union[ivy.Array, ivy.NativeArray, List[Number], Tuple[Number], np.ndarray],
             dtype: Optional[Union[ivy.Dtype, str]] = None,
-            dev: Optional[Union[ivy.Device, str]] = None
+            device: Optional[Union[ivy.Device, str]] = None
             ) -> ivy.Array:
     """
     Converts the input to an array.
@@ -67,14 +67,14 @@ def asarray(x: Union[ivy.Array, ivy.NativeArray, List[Number], Tuple[Number], np
     dtype
         datatype, optional. Datatype is inferred from the input data.
 
-    dev
+    device
         device on which to place the created array. Default: None.
 
     Returns
     --------
     An array interpretation of x.
     """
-    return _cur_framework(x).asarray(x, dtype, dev)
+    return _cur_framework(x).asarray(x, dtype, device)
 
 
 def zeros(shape: Union[int, Tuple[int], List[int]],
@@ -328,7 +328,7 @@ def empty(shape: Union[int, Tuple[int], List[int]],
 
 def empty_like(x: Union[ivy.Array, ivy.NativeArray],
                dtype: Optional[Union[ivy.Dtype, str]] = None,
-               dev: Optional[Union[ivy.Device, str]] = None) \
+               device: Optional[Union[ivy.Device, str]] = None) \
         -> ivy.Array:
     """Returns an uninitialized array with the same shape as an input array x.
 
@@ -338,7 +338,7 @@ def empty_like(x: Union[ivy.Array, ivy.NativeArray],
         input array from which to derive the output array shape.
     dtype
         output array data type. If dtype is None, the output array data type must be inferred from x. Default  None.
-    dev
+    device
         device on which to place the created array. If device is None, the output array device must be inferred from x. Default: None.
 
     Returns
@@ -347,7 +347,7 @@ def empty_like(x: Union[ivy.Array, ivy.NativeArray],
         an array having the same shape as x and containing uninitialized data.
 
     """
-    return _cur_framework(x).empty_like(x, dtype, dev)
+    return _cur_framework(x).empty_like(x, dtype, device)
 
 
 def eye(n_rows: int,
@@ -387,7 +387,7 @@ def eye(n_rows: int,
 
 # noinspection PyShadowingNames
 def linspace(start: Union[ivy.Array, ivy.NativeArray, int], stop: Union[ivy.Array, ivy.NativeArray, int],
-             num: int, axis: int = None, dev: ivy.Device = None) \
+             num: int, axis: int = None, device: ivy.Device = None) \
         -> Union[ivy.Array, ivy.NativeArray]:
     """Generates a certain number of evenly-spaced values in an interval along a given axis.
 
@@ -403,7 +403,7 @@ def linspace(start: Union[ivy.Array, ivy.NativeArray, int], stop: Union[ivy.Arra
         Number of values to generate.
     axis
         Axis along which the operation is performed.
-    dev
+    device
         device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
 
     Returns
@@ -412,7 +412,7 @@ def linspace(start: Union[ivy.Array, ivy.NativeArray, int], stop: Union[ivy.Arra
         Tensor of evenly-spaced values.
 
     """
-    return _cur_framework(start).linspace(start, stop, num, axis, dev)
+    return _cur_framework(start).linspace(start, stop, num, axis, device)
 
 
 def meshgrid(*arrays: Union[ivy.Array, ivy.NativeArray], indexing: Optional[str] = 'xy') \
@@ -504,7 +504,7 @@ array = asarray
 
 # noinspection PyShadowingNames
 def logspace(start: Union[ivy.Array, ivy.NativeArray, int], stop: Union[ivy.Array, ivy.NativeArray, int],
-             num: int, base: float = 10., axis: int = None, dev: ivy.Device = None) \
+             num: int, base: float = 10., axis: int = None, device: ivy.Device = None) \
         -> Union[ivy.Array, ivy.NativeArray]:
     """Generates a certain number of evenly-spaced values in log space, in an interval along a given axis.
 
@@ -522,7 +522,7 @@ def logspace(start: Union[ivy.Array, ivy.NativeArray, int], stop: Union[ivy.Arra
         The base of the log space. Default is 10.0
     axis
         Axis along which the operation is performed.
-    dev
+    device
         device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
 
     Returns
@@ -531,4 +531,4 @@ def logspace(start: Union[ivy.Array, ivy.NativeArray, int], stop: Union[ivy.Arra
         Tensor of evenly-spaced values.
 
     """
-    return _cur_framework(start).logspace(start, stop, num, base, axis, dev)
+    return _cur_framework(start).logspace(start, stop, num, base, axis, device)

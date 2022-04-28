@@ -23,7 +23,7 @@ import ivy_tests.test_ivy.helpers as helpers
     "inplace", [True, False])
 @pytest.mark.parametrize(
     "dtype", ['float32'])
-def test_sgd_optimizer(bs_ic_oc_target, with_v, inplace, dtype, dev, compile_graph, call):
+def test_sgd_optimizer(bs_ic_oc_target, with_v, inplace, dtype, device, compile_graph, call):
     # smoke test
     if call is helpers.np_call:
         # NumPy does not support gradients
@@ -34,12 +34,12 @@ def test_sgd_optimizer(bs_ic_oc_target, with_v, inplace, dtype, dev, compile_gra
         np.random.seed(0)
         wlim = (6 / (output_channels + input_channels)) ** 0.5
         w = ivy.variable(ivy.array(np.random.uniform(-wlim, wlim, (output_channels, input_channels)),
-                                   'float32', dev=dev))
+                                   'float32', device=device))
         b = ivy.variable(ivy.zeros([output_channels]))
         v = Container({'w': w, 'b': b})
     else:
         v = None
-    linear_layer = ivy.Linear(input_channels, output_channels, dev=dev, v=v)
+    linear_layer = ivy.Linear(input_channels, output_channels, device=device, v=v)
 
     def loss_fn(v_):
         out = linear_layer(x, v=v_)
@@ -87,7 +87,7 @@ def test_sgd_optimizer(bs_ic_oc_target, with_v, inplace, dtype, dev, compile_gra
     "inplace", [True, False])
 @pytest.mark.parametrize(
     "dtype", ['float32'])
-def test_lars_optimizer(bs_ic_oc_target, with_v, inplace, dtype, dev, compile_graph, call):
+def test_lars_optimizer(bs_ic_oc_target, with_v, inplace, dtype, device, compile_graph, call):
     # smoke test
     if call is helpers.np_call:
         # NumPy does not support gradients
@@ -98,12 +98,12 @@ def test_lars_optimizer(bs_ic_oc_target, with_v, inplace, dtype, dev, compile_gr
         np.random.seed(0)
         wlim = (6 / (output_channels + input_channels)) ** 0.5
         w = ivy.variable(ivy.array(np.random.uniform(-wlim, wlim, (output_channels, input_channels)),
-                                   'float32', dev=dev))
+                                   'float32', device=device))
         b = ivy.variable(ivy.zeros([output_channels]))
         v = Container({'w': w, 'b': b})
     else:
         v = None
-    linear_layer = ivy.Linear(input_channels, output_channels, dev=dev, v=v)
+    linear_layer = ivy.Linear(input_channels, output_channels, device=device, v=v)
 
     def loss_fn(v_):
         out = linear_layer(x, v=v_)
@@ -151,7 +151,7 @@ def test_lars_optimizer(bs_ic_oc_target, with_v, inplace, dtype, dev, compile_gr
     "inplace", [True, False])
 @pytest.mark.parametrize(
     "dtype", ['float32'])
-def test_adam_optimizer(bs_ic_oc_target, with_v, inplace, dtype, dev, compile_graph, call):
+def test_adam_optimizer(bs_ic_oc_target, with_v, inplace, dtype, device, compile_graph, call):
     # smoke test
     if call is helpers.np_call:
         # NumPy does not support gradients
@@ -162,19 +162,19 @@ def test_adam_optimizer(bs_ic_oc_target, with_v, inplace, dtype, dev, compile_gr
         np.random.seed(0)
         wlim = (6 / (output_channels + input_channels)) ** 0.5
         w = ivy.variable(ivy.array(np.random.uniform(-wlim, wlim, (output_channels, input_channels)),
-                                   'float32', dev=dev))
+                                   'float32', device=device))
         b = ivy.variable(ivy.zeros([output_channels]))
         v = Container({'w': w, 'b': b})
     else:
         v = None
-    linear_layer = ivy.Linear(input_channels, output_channels, dev=dev, v=v)
+    linear_layer = ivy.Linear(input_channels, output_channels, device=device, v=v)
 
     def loss_fn(v_):
         out = linear_layer(x, v=v_)
         return ivy.mean(out)
 
     # optimizer
-    optimizer = ivy.Adam(dev=dev, inplace=ivy.inplace_variables_supported() if inplace else False)
+    optimizer = ivy.Adam(device=device, inplace=ivy.inplace_variables_supported() if inplace else False)
 
     # train
     loss, grads = ivy.execute_with_gradients(loss_fn, linear_layer.v)
@@ -213,7 +213,7 @@ def test_adam_optimizer(bs_ic_oc_target, with_v, inplace, dtype, dev, compile_gr
     "inplace", [True, False])
 @pytest.mark.parametrize(
     "dtype", ['float32'])
-def test_lamb_optimizer(bs_ic_oc_target, with_v, inplace, dtype, dev, compile_graph, call):
+def test_lamb_optimizer(bs_ic_oc_target, with_v, inplace, dtype, device, compile_graph, call):
     # smoke test
     if call is helpers.np_call:
         # NumPy does not support gradients
@@ -224,19 +224,19 @@ def test_lamb_optimizer(bs_ic_oc_target, with_v, inplace, dtype, dev, compile_gr
         np.random.seed(0)
         wlim = (6 / (output_channels + input_channels)) ** 0.5
         w = ivy.variable(ivy.array(np.random.uniform(-wlim, wlim, (output_channels, input_channels)),
-                                   'float32', dev=dev))
+                                   'float32', device=device))
         b = ivy.variable(ivy.zeros([output_channels]))
         v = Container({'w': w, 'b': b})
     else:
         v = None
-    linear_layer = ivy.Linear(input_channels, output_channels, dev=dev, v=v)
+    linear_layer = ivy.Linear(input_channels, output_channels, device=device, v=v)
 
     def loss_fn(v_):
         out = linear_layer(x, v=v_)
         return ivy.mean(out)
 
     # optimizer
-    optimizer = ivy.LAMB(dev=dev, inplace=ivy.inplace_variables_supported() if inplace else False)
+    optimizer = ivy.LAMB(device=device, inplace=ivy.inplace_variables_supported() if inplace else False)
 
     # train
     loss, grads = ivy.execute_with_gradients(loss_fn, linear_layer.v)
