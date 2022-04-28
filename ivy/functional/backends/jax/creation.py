@@ -117,10 +117,10 @@ def asarray(object_in, dtype: Optional[str] = None, device: Optional[str] = None
         return to_dev(jnp.asarray(object_in, dtype=dtype), device)
 
 
-def linspace(start, stop, num, axis=None, dev=None):
+def linspace(start, stop, num, axis=None, device=None):
     if axis is None:
         axis = -1
-    return to_dev(jnp.linspace(start, stop, num, axis=axis), default_device(dev))
+    return to_dev(jnp.linspace(start, stop, num, axis=axis), default_device(device))
 
 
 def meshgrid(*arrays: JaxArray,
@@ -175,7 +175,7 @@ def from_dlpack(x):
 array = asarray
 
 
-def logspace(start, stop, num, base=10., axis=None, dev=None):
+def logspace(start, stop, num, base=10., axis=None, device=None):
     if axis is None:
         axis = -1
-    return to_dev(jnp.logspace(start, stop, num, base=base, axis=axis), default_device(dev))
+    return to_dev(jnp.logspace(start, stop, num, base=base, axis=axis), default_device(device))

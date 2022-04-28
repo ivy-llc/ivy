@@ -82,16 +82,16 @@ def _raise(ex):
     raise ex
 
 
-def _mxnet_init_context(dev):
-    dev = dev_to_str(dev)
-    if dev is None or dev.find("cpu") != -1:
+def _mxnet_init_context(device):
+    device = dev_to_str(device)
+    if device is None or device.find("cpu") != -1:
         mx_dev = "cpu"
-    elif dev.find("gpu") != -1:
+    elif device.find("gpu") != -1:
         mx_dev = "gpu"
     else:
-        raise Exception("dev input {} not supported.".format(dev))
-    if dev.find(":") != -1:
-        mx_dev_id = int(dev[dev.find(":")+1:])
+        raise Exception("dev input {} not supported.".format(device))
+    if device.find(":") != -1:
+        mx_dev_id = int(device[device.find(":")+1:])
     else:
         mx_dev_id = 0
     return mx.Context(mx_dev, mx_dev_id)
