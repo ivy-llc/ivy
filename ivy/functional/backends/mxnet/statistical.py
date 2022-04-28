@@ -157,9 +157,9 @@ def max(x: mx.ndarray.ndarray.NDArray, axis: Union[int, Tuple[int,...]] = None,
 # Extra #
 # ------#
 
-def einsum(equation : str, 
-            *operands : mx.ndarray.ndarray.NDArray,
-            out : Optional[mx.ndarray.ndarray.NDArray] = None)\
+def einsum(equation: str, 
+            *operands: mx.ndarray.ndarray.NDArray,
+            out: Optional[mx.ndarray.ndarray.NDArray] = None)\
             -> mx.ndarray.ndarray.NDArray:
     if ivy.exists(out):
         return ivy.inplace_update(out,mx.np.einsum(equation, *[op.as_np_ndarray() for op in operands]).as_nd_ndarray())
