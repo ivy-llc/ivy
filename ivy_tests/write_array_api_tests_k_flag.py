@@ -25,7 +25,7 @@ for fpath in fpaths:
     # update tests to run and skip
     contents = [line.replace('__', '') for line in contents.split('\n')]
     tests_to_run += ['test_' + s for s in contents if ('#' not in s and s != '')]
-    tests_to_skip += ['test_' + s[1:].split(' ')[0] for s in contents if '#' in s]
+    tests_to_skip += ['test_' + s[1:].split(' ')[0] for s in contents if len(s.split('#')) == 2]
 
 # temporary fix for wrongly added test, due to addition of positive method
 tests_to_skip += ['test_positive_definite_matrices']
@@ -35,4 +35,7 @@ tests_to_skip = [tts for tts in tests_to_skip if not max([tts in ttr for ttr in 
 
 # save to file
 with open(os.path.join(this_dir, '.array_api_tests_k_flag'), 'w+') as file:
+    file.write('(' + ' or '.join(tests_to_run) + ') and not (' + ' or '.join(tests_to_skip) + ')')
+tests_to_run = ['test_irrational_numbers']
+with open(os.path.join(this_dir, '.array_api_tests_k_flag_jax'), 'w+') as file:
     file.write('(' + ' or '.join(tests_to_run) + ') and not (' + ' or '.join(tests_to_skip) + ')')
