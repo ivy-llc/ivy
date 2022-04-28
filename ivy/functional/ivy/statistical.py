@@ -343,9 +343,10 @@ def std(x: Union[ivy.Array, ivy.NativeArray],
 # Extra #
 # ------#
 
-def einsum(equation:str, *operands:Union[ivy.Array, ivy.NativeArray],
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None)\
-     -> ivy.Array:
+def einsum(equation: str, 
+           *operands: Union[ivy.Array, ivy.NativeArray],
+           out: Optional[Union[ivy.Array, ivy.NativeArray]] = None)\
+           -> ivy.Array:
     """
     Sums the product of the elements of the input operands along dimensions specified using a notation based on the
     Einstein summation convention.
@@ -357,10 +358,29 @@ def einsum(equation:str, *operands:Union[ivy.Array, ivy.NativeArray],
     operands
         seq of arrays, the inputs to contract (each one an ivy.Array), whose shapes should be consistent with equation.
      out
-        optional output array, for writing the result to.Returns   
+        optional output array, for writing the result to.  
+    
     Returns
     -------
-     ret
+    ret
         The array with sums computed.
+
+    Examples
+    --------
+    The following gives us the sum of the diagonal elements:
+    
+    >>> x = ivy.array([[0, 1, 2], 
+                       [3, 4, 5], 
+                       [6, 7, 8]])
+    >>> y = ivy.einsum('ii', x)
+    >>> print(y)
+    ivy.array(12)
+    
+    Or we can use einsum to sum columns:
+    
+    >>> z = ivy.einsum('ij -> j', x)
+    >>> print(z)
+    ivy.array([9, 12, 15])
+
     """
-    return _cur_framework(operands[0]).einsum(equation, *operands,out=out)
+    return _cur_framework(operands[0]).einsum(equation, *operands, out=out)
