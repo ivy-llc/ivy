@@ -19,7 +19,6 @@ _dev_callable = dev
 dev_to_str = lambda dev: 'cpu'
 dev_from_str = lambda dev: 'cpu'
 clear_mem_on_dev = lambda dev: None
-num_gpus = lambda: 0
 
 def tpu_is_available() -> bool:
     return False
