@@ -13,7 +13,7 @@ from ivy.functional.backends.numpy.device import _to_dev
 # -------------------#
 
 
-def asarray(object_in, dtype=None, dev=None, copy=None):
+def asarray(object_in, dtype=None, device=None, copy=None):
     # If copy=none then try using existing memory buffer
     if isinstance(object_in, np.ndarray) and dtype is None:
         dtype = object_in.dtype
@@ -21,15 +21,15 @@ def asarray(object_in, dtype=None, dev=None, copy=None):
         # Temporary fix on type
         # Because default_type() didn't return correct type for normal python array
         if copy is True:
-            return _to_dev(np.copy(np.asarray(object_in)), dev)
+            return _to_dev(np.copy(np.asarray(object_in)), device)
         else:
-            return _to_dev(np.asarray(object_in), dev)
+            return _to_dev(np.asarray(object_in), device)
     else:
         dtype = default_dtype(dtype, object_in)
     if copy is True:
-        return _to_dev(np.copy(np.asarray(object_in, dtype=dtype)), dev)
+        return _to_dev(np.copy(np.asarray(object_in, dtype=dtype)), device)
     else:
-        return _to_dev(np.asarray(object_in, dtype=dtype), dev)
+        return _to_dev(np.asarray(object_in, dtype=dtype), device)
 
 
 def zeros(shape: Union[int, Tuple[int], List[int]],
@@ -61,7 +61,7 @@ def full_like(x: np.ndarray,
 
 def ones_like(x : np.ndarray,
               dtype : Optional[Union[np.dtype, str]] = None,
-              dev : Optional[str] = None) \
+              device : Optional[str] = None) \
         -> np.ndarray:
 
     if dtype:
@@ -70,18 +70,18 @@ def ones_like(x : np.ndarray,
     else:
         dtype = x.dtype
 
-    return _to_dev(np.ones_like(x, dtype=dtype), dev)
+    return _to_dev(np.ones_like(x, dtype=dtype), device)
 
 
 def zeros_like(x: np.ndarray,
                dtype: Optional[np.dtype] = None,
-               dev:  Optional[str] = None)\
+               device:  Optional[str] = None)\
             -> np.ndarray:
     if dtype:
         dtype = 'bool_' if dtype == 'bool' else dtype
     else:
         dtype = x.dtype
-    return _to_dev(np.zeros_like(x, dtype=dtype), dev)
+    return _to_dev(np.zeros_like(x, dtype=dtype), device)
 
 
 def tril(x: np.ndarray,
@@ -105,7 +105,7 @@ def empty(shape: Union[int, Tuple[int], List[int]],
 
 def empty_like(x: np.ndarray,
               dtype : Optional[Union[np.dtype, str]] = None,
-              dev : Optional[str] = None) \
+              device : Optional[str] = None) \
         -> np.ndarray:
 
     if dtype:
@@ -114,13 +114,13 @@ def empty_like(x: np.ndarray,
     else:
         dtype = x.dtype
 
-    return _to_dev(np.empty_like(x, dtype=dtype), dev)
+    return _to_dev(np.empty_like(x, dtype=dtype), device)
 
 
-def linspace(start, stop, num, axis=None, dev=None):
+def linspace(start, stop, num, axis=None, device=None):
     if axis is None:
         axis = -1
-    return _to_dev(np.linspace(start, stop, num, axis=axis), dev)
+    return _to_dev(np.linspace(start, stop, num, axis=axis), device)
 
 
 def meshgrid(*arrays: np.ndarray, indexing: str = 'xy')\
@@ -139,10 +139,10 @@ def eye(n_rows: int,
 
 
 # noinspection PyShadowingNames
-def arange(start, stop=None, step=1, dtype=None, dev=None):
+def arange(start, stop=None, step=1, dtype=None, device=None):
     if dtype:
         dtype = dtype_from_str(dtype)
-    res = _to_dev(np.arange(start, stop, step=step, dtype=dtype), dev)
+    res = _to_dev(np.arange(start, stop, step=step, dtype=dtype), device)
     if not dtype:
         if res.dtype == np.float64:
             return res.astype(np.float32)
