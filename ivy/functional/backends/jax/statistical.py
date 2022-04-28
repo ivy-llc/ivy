@@ -121,7 +121,7 @@ def std(x: JaxArray,
 
 def einsum(equation: str,
            *operands: JaxArray,
-           out:Optional[JaxArray]=None)\
+           out: Optional[JaxArray] = None)\
            -> JaxArray:
     if ivy.exists(out):
         return ivy.inplace_update(out, jnp.einsum(equation, *operands))
