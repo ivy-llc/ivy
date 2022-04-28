@@ -264,8 +264,8 @@
 <div class="viewcode-block" id="DefaultDevice"><a class="viewcode-back" href="../../../../functional/ivy/device.html#ivy.functional.ivy.device.DefaultDevice">[docs]</a><span class="k">class</span> <span class="nc">DefaultDevice</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot; &quot;&quot;&quot;</span>
     <span class="c1"># noinspection PyShadowingNames</span>
-<div class="viewcode-block" id="DefaultDevice.__init__"><a class="viewcode-back" href="../../../../functional/ivy/device.html#ivy.functional.ivy.device.DefaultDevice.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dev</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_dev</span> <span class="o">=</span> <span class="n">dev</span></div>
+<div class="viewcode-block" id="DefaultDevice.__init__"><a class="viewcode-back" href="../../../../functional/ivy/device.html#ivy.functional.ivy.device.DefaultDevice.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">device</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dev</span> <span class="o">=</span> <span class="n">device</span></div>
 
     <span class="k">def</span> <span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">set_default_device</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dev</span><span class="p">)</span>
@@ -278,13 +278,13 @@
 <span class="c1"># Helpers #</span>
 
 <span class="c1"># noinspection PyShadowingNames</span>
-<span class="k">def</span> <span class="nf">_get_nvml_gpu_handle</span><span class="p">(</span><span class="n">dev</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">_get_nvml_gpu_handle</span><span class="p">(</span><span class="n">device</span><span class="p">):</span>
     <span class="k">global</span> <span class="n">dev_handles</span>
-    <span class="k">if</span> <span class="n">dev</span> <span class="ow">in</span> <span class="n">dev_handles</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">dev_handles</span><span class="p">[</span><span class="n">dev</span><span class="p">]</span>
-    <span class="n">gpu_idx</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">dev</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">device</span> <span class="ow">in</span> <span class="n">dev_handles</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">dev_handles</span><span class="p">[</span><span class="n">device</span><span class="p">]</span>
+    <span class="n">gpu_idx</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">device</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
     <span class="n">handle</span> <span class="o">=</span> <span class="n">nvidia_smi</span><span class="o">.</span><span class="n">nvmlDeviceGetHandleByIndex</span><span class="p">(</span><span class="n">gpu_idx</span><span class="p">)</span>
-    <span class="n">dev_handles</span><span class="p">[</span><span class="n">dev</span><span class="p">]</span> <span class="o">=</span> <span class="n">handle</span>
+    <span class="n">dev_handles</span><span class="p">[</span><span class="n">device</span><span class="p">]</span> <span class="o">=</span> <span class="n">handle</span>
     <span class="k">return</span> <span class="n">handle</span>
 
 
@@ -293,12 +293,12 @@
 <span class="c1"># Array Printing</span>
 
 <span class="c1"># noinspection PyShadowingNames</span>
-<div class="viewcode-block" id="get_all_arrays_on_dev"><a class="viewcode-back" href="../../../../functional/ivy/device/get_all_arrays_on_dev.html#ivy.functional.ivy.device.get_all_arrays_on_dev">[docs]</a><span class="k">def</span> <span class="nf">get_all_arrays_on_dev</span><span class="p">(</span><span class="n">dev</span><span class="p">):</span>
+<div class="viewcode-block" id="get_all_arrays_on_dev"><a class="viewcode-back" href="../../../../functional/ivy/device/get_all_arrays_on_dev.html#ivy.functional.ivy.device.get_all_arrays_on_dev">[docs]</a><span class="k">def</span> <span class="nf">get_all_arrays_on_dev</span><span class="p">(</span><span class="n">device</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Gets all arrays which are currently alive on the specified device.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    dev</span>
+<span class="sd">    device</span>
 
 
 <span class="sd">    Returns</span>
@@ -309,7 +309,7 @@
     <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">gc</span><span class="o">.</span><span class="n">get_objects</span><span class="p">():</span>
         <span class="c1"># noinspection PyBroadException</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_array</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span> <span class="ow">and</span> <span class="n">ivy</span><span class="o">.</span><span class="n">dev</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span> <span class="o">==</span> <span class="n">dev</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_array</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span> <span class="ow">and</span> <span class="n">ivy</span><span class="o">.</span><span class="n">dev</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span> <span class="o">==</span> <span class="n">device</span><span class="p">:</span>
                 <span class="n">all_arrays</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
             <span class="k">pass</span>
@@ -317,35 +317,35 @@
 
 
 <span class="c1"># noinspection PyShadowingNames</span>
-<div class="viewcode-block" id="num_arrays_on_dev"><a class="viewcode-back" href="../../../../functional/ivy/device/num_arrays_on_dev.html#ivy.functional.ivy.device.num_arrays_on_dev">[docs]</a><span class="k">def</span> <span class="nf">num_arrays_on_dev</span><span class="p">(</span><span class="n">dev</span><span class="p">):</span>
+<div class="viewcode-block" id="num_arrays_on_dev"><a class="viewcode-back" href="../../../../functional/ivy/device/num_arrays_on_dev.html#ivy.functional.ivy.device.num_arrays_on_dev">[docs]</a><span class="k">def</span> <span class="nf">num_arrays_on_dev</span><span class="p">(</span><span class="n">device</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Returns the number of arrays which are currently alive on the specified device.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    dev</span>
+<span class="sd">    device</span>
 
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">get_all_arrays_on_dev</span><span class="p">(</span><span class="n">dev</span><span class="p">))</span></div>
+    <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">get_all_arrays_on_dev</span><span class="p">(</span><span class="n">device</span><span class="p">))</span></div>
 
 
 <span class="c1"># noinspection PyShadowingNames</span>
-<div class="viewcode-block" id="print_all_arrays_on_dev"><a class="viewcode-back" href="../../../../functional/ivy/device/print_all_arrays_on_dev.html#ivy.functional.ivy.device.print_all_arrays_on_dev">[docs]</a><span class="k">def</span> <span class="nf">print_all_arrays_on_dev</span><span class="p">(</span><span class="n">dev</span><span class="p">):</span>
+<div class="viewcode-block" id="print_all_arrays_on_dev"><a class="viewcode-back" href="../../../../functional/ivy/device/print_all_arrays_on_dev.html#ivy.functional.ivy.device.print_all_arrays_on_dev">[docs]</a><span class="k">def</span> <span class="nf">print_all_arrays_on_dev</span><span class="p">(</span><span class="n">device</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Prints all arrays which are currently alive on the specified device.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    dev</span>
+<span class="sd">    device</span>
 
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">for</span> <span class="n">arr</span> <span class="ow">in</span> <span class="n">get_all_arrays_on_dev</span><span class="p">(</span><span class="n">dev</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">arr</span> <span class="ow">in</span> <span class="n">get_all_arrays_on_dev</span><span class="p">(</span><span class="n">device</span><span class="p">):</span>
         <span class="nb">print</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">arr</span><span class="p">),</span> <span class="n">arr</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span></div>
 
 
@@ -374,13 +374,13 @@
 <span class="c1"># Conversions</span>
 
 <span class="c1"># noinspection PyShadowingNames</span>
-<div class="viewcode-block" id="dev_to_str"><a class="viewcode-back" href="../../../../functional/ivy/device/dev_to_str.html#ivy.functional.ivy.device.dev_to_str">[docs]</a><span class="k">def</span> <span class="nf">dev_to_str</span><span class="p">(</span><span class="n">dev</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Device</span><span class="p">,</span> <span class="nb">str</span><span class="p">])</span> \
+<div class="viewcode-block" id="dev_to_str"><a class="viewcode-back" href="../../../../functional/ivy/device/dev_to_str.html#ivy.functional.ivy.device.dev_to_str">[docs]</a><span class="k">def</span> <span class="nf">dev_to_str</span><span class="p">(</span><span class="n">device</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Device</span><span class="p">,</span> <span class="nb">str</span><span class="p">])</span> \
         <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Convert native data type to string representation.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    dev</span>
+<span class="sd">    device</span>
 <span class="sd">        The device handle to convert to string.</span>
 
 <span class="sd">    Returns</span>
@@ -389,17 +389,17 @@
 <span class="sd">        Device string e.g. &#39;cuda:0&#39;.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">()</span><span class="o">.</span><span class="n">dev_to_str</span><span class="p">(</span><span class="n">dev</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">()</span><span class="o">.</span><span class="n">dev_to_str</span><span class="p">(</span><span class="n">device</span><span class="p">)</span></div>
 
 
 <span class="c1"># noinspection PyShadowingNames</span>
-<div class="viewcode-block" id="dev_from_str"><a class="viewcode-back" href="../../../../functional/ivy/device/dev_from_str.html#ivy.functional.ivy.device.dev_from_str">[docs]</a><span class="k">def</span> <span class="nf">dev_from_str</span><span class="p">(</span><span class="n">dev</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Device</span><span class="p">,</span> <span class="nb">str</span><span class="p">])</span> \
+<div class="viewcode-block" id="dev_from_str"><a class="viewcode-back" href="../../../../functional/ivy/device/dev_from_str.html#ivy.functional.ivy.device.dev_from_str">[docs]</a><span class="k">def</span> <span class="nf">dev_from_str</span><span class="p">(</span><span class="n">device</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Device</span><span class="p">,</span> <span class="nb">str</span><span class="p">])</span> \
         <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Device</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Convert device string representation to native device type.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    dev</span>
+<span class="sd">    device</span>
 <span class="sd">        The device string to conver to native device handle.</span>
 
 <span class="sd">    Returns</span>
@@ -408,36 +408,36 @@
 <span class="sd">        Native device handle.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">()</span><span class="o">.</span><span class="n">dev_from_str</span><span class="p">(</span><span class="n">dev</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">()</span><span class="o">.</span><span class="n">dev_from_str</span><span class="p">(</span><span class="n">device</span><span class="p">)</span></div>
 
 
 <span class="c1"># Memory</span>
 
 <span class="c1"># noinspection PyShadowingNames</span>
-<div class="viewcode-block" id="clear_mem_on_dev"><a class="viewcode-back" href="../../../../functional/ivy/device/clear_mem_on_dev.html#ivy.functional.ivy.device.clear_mem_on_dev">[docs]</a><span class="k">def</span> <span class="nf">clear_mem_on_dev</span><span class="p">(</span><span class="n">dev</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Device</span><span class="p">)</span>\
+<div class="viewcode-block" id="clear_mem_on_dev"><a class="viewcode-back" href="../../../../functional/ivy/device/clear_mem_on_dev.html#ivy.functional.ivy.device.clear_mem_on_dev">[docs]</a><span class="k">def</span> <span class="nf">clear_mem_on_dev</span><span class="p">(</span><span class="n">device</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Device</span><span class="p">)</span>\
         <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Clear memory cache on target device.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    dev</span>
+<span class="sd">    device</span>
 <span class="sd">        The device string to conver to native device handle.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span><span class="o">.</span><span class="n">clear_mem_on_dev</span><span class="p">(</span><span class="n">dev</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span><span class="o">.</span><span class="n">clear_mem_on_dev</span><span class="p">(</span><span class="n">device</span><span class="p">)</span></div>
 
 
 <span class="c1"># noinspection PyShadowingNames</span>
-<div class="viewcode-block" id="total_mem_on_dev"><a class="viewcode-back" href="../../../../functional/ivy/device/total_mem_on_dev.html#ivy.functional.ivy.device.total_mem_on_dev">[docs]</a><span class="k">def</span> <span class="nf">total_mem_on_dev</span><span class="p">(</span><span class="n">dev</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Device</span><span class="p">)</span>\
+<div class="viewcode-block" id="total_mem_on_dev"><a class="viewcode-back" href="../../../../functional/ivy/device/total_mem_on_dev.html#ivy.functional.ivy.device.total_mem_on_dev">[docs]</a><span class="k">def</span> <span class="nf">total_mem_on_dev</span><span class="p">(</span><span class="n">device</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Device</span><span class="p">)</span>\
         <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Get the total amount of memory (in GB) for a given device string. In case of CPU, the total RAM is returned.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    dev</span>
+<span class="sd">    device</span>
 <span class="sd">        The device string to conver to native device handle.</span>
 
 <span class="sd">    Returns</span>
@@ -446,25 +446,25 @@
 <span class="sd">        The total memory on the device in GB.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="s1">&#39;gpu&#39;</span> <span class="ow">in</span> <span class="n">dev</span><span class="p">:</span>
-        <span class="n">handle</span> <span class="o">=</span> <span class="n">_get_nvml_gpu_handle</span><span class="p">(</span><span class="n">dev</span><span class="p">)</span>
+    <span class="k">if</span> <span class="s1">&#39;gpu&#39;</span> <span class="ow">in</span> <span class="n">device</span><span class="p">:</span>
+        <span class="n">handle</span> <span class="o">=</span> <span class="n">_get_nvml_gpu_handle</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
         <span class="n">info</span> <span class="o">=</span> <span class="n">nvidia_smi</span><span class="o">.</span><span class="n">nvmlDeviceGetMemoryInfo</span><span class="p">(</span><span class="n">handle</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">info</span><span class="o">.</span><span class="n">total</span><span class="o">/</span><span class="mf">1e9</span>
-    <span class="k">elif</span> <span class="n">dev</span> <span class="o">==</span> <span class="s1">&#39;cpu&#39;</span><span class="p">:</span>
+    <span class="k">elif</span> <span class="n">device</span> <span class="o">==</span> <span class="s1">&#39;cpu&#39;</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">psutil</span><span class="o">.</span><span class="n">virtual_memory</span><span class="p">()</span><span class="o">.</span><span class="n">total</span><span class="o">/</span><span class="mf">1e9</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;Invalid device string input, must be on the form &quot;gpu:idx&quot; or &quot;cpu&quot;, &#39;</span>
-                        <span class="s1">&#39;but found </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">dev</span><span class="p">))</span></div>
+                        <span class="s1">&#39;but found </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">device</span><span class="p">))</span></div>
 
 
 <span class="c1"># noinspection PyShadowingNames</span>
-<div class="viewcode-block" id="used_mem_on_dev"><a class="viewcode-back" href="../../../../functional/ivy/device/used_mem_on_dev.html#ivy.functional.ivy.device.used_mem_on_dev">[docs]</a><span class="k">def</span> <span class="nf">used_mem_on_dev</span><span class="p">(</span><span class="n">dev</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Device</span><span class="p">,</span> <span class="n">process_specific</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>\
+<div class="viewcode-block" id="used_mem_on_dev"><a class="viewcode-back" href="../../../../functional/ivy/device/used_mem_on_dev.html#ivy.functional.ivy.device.used_mem_on_dev">[docs]</a><span class="k">def</span> <span class="nf">used_mem_on_dev</span><span class="p">(</span><span class="n">device</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Device</span><span class="p">,</span> <span class="n">process_specific</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>\
         <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Get the used memory (in GB) for a given device string. In case of CPU, the used RAM is returned.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    dev</span>
+<span class="sd">    device</span>
 <span class="sd">        The device string to conver to native device handle.</span>
 <span class="sd">    process_specific</span>
 <span class="sd">        Whether the check the memory used by this python process alone. Default is False.</span>
@@ -475,31 +475,31 @@
 <span class="sd">        The used memory on the device in GB.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">ivy</span><span class="o">.</span><span class="n">clear_mem_on_dev</span><span class="p">(</span><span class="n">dev</span><span class="p">)</span>
-    <span class="k">if</span> <span class="s1">&#39;gpu&#39;</span> <span class="ow">in</span> <span class="n">dev</span><span class="p">:</span>
+    <span class="n">ivy</span><span class="o">.</span><span class="n">clear_mem_on_dev</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+    <span class="k">if</span> <span class="s1">&#39;gpu&#39;</span> <span class="ow">in</span> <span class="n">device</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">process_specific</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;process-specific GPU queries are currently not supported&#39;</span><span class="p">)</span>
-        <span class="n">handle</span> <span class="o">=</span> <span class="n">_get_nvml_gpu_handle</span><span class="p">(</span><span class="n">dev</span><span class="p">)</span>
+        <span class="n">handle</span> <span class="o">=</span> <span class="n">_get_nvml_gpu_handle</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
         <span class="n">info</span> <span class="o">=</span> <span class="n">nvidia_smi</span><span class="o">.</span><span class="n">nvmlDeviceGetMemoryInfo</span><span class="p">(</span><span class="n">handle</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">info</span><span class="o">.</span><span class="n">used</span><span class="o">/</span><span class="mf">1e9</span>
-    <span class="k">elif</span> <span class="n">dev</span> <span class="o">==</span> <span class="s1">&#39;cpu&#39;</span><span class="p">:</span>
+    <span class="k">elif</span> <span class="n">device</span> <span class="o">==</span> <span class="s1">&#39;cpu&#39;</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">process_specific</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">psutil</span><span class="o">.</span><span class="n">Process</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getpid</span><span class="p">())</span><span class="o">.</span><span class="n">memory_info</span><span class="p">()</span><span class="o">.</span><span class="n">rss</span>
         <span class="n">vm</span> <span class="o">=</span> <span class="n">psutil</span><span class="o">.</span><span class="n">virtual_memory</span><span class="p">()</span>
         <span class="k">return</span> <span class="p">(</span><span class="n">vm</span><span class="o">.</span><span class="n">total</span> <span class="o">-</span> <span class="n">vm</span><span class="o">.</span><span class="n">available</span><span class="p">)</span><span class="o">/</span><span class="mf">1e9</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;Invalid device string input, must be on the form &quot;gpu:idx&quot; or &quot;cpu&quot;, &#39;</span>
-                        <span class="s1">&#39;but found </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">dev</span><span class="p">))</span></div>
+                        <span class="s1">&#39;but found </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">device</span><span class="p">))</span></div>
 
 
 <span class="c1"># noinspection PyShadowingNames</span>
-<div class="viewcode-block" id="percent_used_mem_on_dev"><a class="viewcode-back" href="../../../../functional/ivy/device/percent_used_mem_on_dev.html#ivy.functional.ivy.device.percent_used_mem_on_dev">[docs]</a><span class="k">def</span> <span class="nf">percent_used_mem_on_dev</span><span class="p">(</span><span class="n">dev</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Device</span><span class="p">,</span> <span class="n">process_specific</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>\
+<div class="viewcode-block" id="percent_used_mem_on_dev"><a class="viewcode-back" href="../../../../functional/ivy/device/percent_used_mem_on_dev.html#ivy.functional.ivy.device.percent_used_mem_on_dev">[docs]</a><span class="k">def</span> <span class="nf">percent_used_mem_on_dev</span><span class="p">(</span><span class="n">device</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Device</span><span class="p">,</span> <span class="n">process_specific</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>\
         <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Get the percentage used memory for a given device string. In case of CPU, the used RAM is returned.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    dev</span>
+<span class="sd">    device</span>
 <span class="sd">        The device string to conver to native device handle.</span>
 <span class="sd">    process_specific</span>
 <span class="sd">        Whether the check the memory used by this python process alone. Default is False.</span>
@@ -510,33 +510,33 @@
 <span class="sd">        The percentage used memory on the device.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">ivy</span><span class="o">.</span><span class="n">clear_mem_on_dev</span><span class="p">(</span><span class="n">dev</span><span class="p">)</span>
-    <span class="k">if</span> <span class="s1">&#39;gpu&#39;</span> <span class="ow">in</span> <span class="n">dev</span><span class="p">:</span>
+    <span class="n">ivy</span><span class="o">.</span><span class="n">clear_mem_on_dev</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+    <span class="k">if</span> <span class="s1">&#39;gpu&#39;</span> <span class="ow">in</span> <span class="n">device</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">process_specific</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;process-specific GPU queries are currently not supported&#39;</span><span class="p">)</span>
-        <span class="n">handle</span> <span class="o">=</span> <span class="n">_get_nvml_gpu_handle</span><span class="p">(</span><span class="n">dev</span><span class="p">)</span>
+        <span class="n">handle</span> <span class="o">=</span> <span class="n">_get_nvml_gpu_handle</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
         <span class="n">info</span> <span class="o">=</span> <span class="n">nvidia_smi</span><span class="o">.</span><span class="n">nvmlDeviceGetMemoryInfo</span><span class="p">(</span><span class="n">handle</span><span class="p">)</span>
         <span class="k">return</span> <span class="p">(</span><span class="n">info</span><span class="o">.</span><span class="n">used</span><span class="o">/</span><span class="n">info</span><span class="o">.</span><span class="n">total</span><span class="p">)</span><span class="o">*</span><span class="mi">100</span>
-    <span class="k">elif</span> <span class="n">dev</span> <span class="o">==</span> <span class="s1">&#39;cpu&#39;</span><span class="p">:</span>
+    <span class="k">elif</span> <span class="n">device</span> <span class="o">==</span> <span class="s1">&#39;cpu&#39;</span><span class="p">:</span>
         <span class="n">vm</span> <span class="o">=</span> <span class="n">psutil</span><span class="o">.</span><span class="n">virtual_memory</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">process_specific</span><span class="p">:</span>
             <span class="k">return</span> <span class="p">(</span><span class="n">psutil</span><span class="o">.</span><span class="n">Process</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getpid</span><span class="p">())</span><span class="o">.</span><span class="n">memory_info</span><span class="p">()</span><span class="o">.</span><span class="n">rss</span><span class="o">/</span><span class="n">vm</span><span class="o">.</span><span class="n">total</span><span class="p">)</span><span class="o">*</span><span class="mi">100</span>
         <span class="k">return</span> <span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="p">(</span><span class="n">vm</span><span class="o">.</span><span class="n">available</span><span class="o">/</span><span class="n">vm</span><span class="o">.</span><span class="n">total</span><span class="p">))</span><span class="o">*</span><span class="mi">100</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;Invalid device string input, must be on the form &quot;gpu:idx&quot; or &quot;cpu&quot;, &#39;</span>
-                        <span class="s1">&#39;but found </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">dev</span><span class="p">))</span></div>
+                        <span class="s1">&#39;but found </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">device</span><span class="p">))</span></div>
 
 
 <span class="c1"># Utilization</span>
 
 <span class="c1"># noinspection PyShadowingNames</span>
-<div class="viewcode-block" id="dev_util"><a class="viewcode-back" href="../../../../functional/ivy/device/dev_util.html#ivy.functional.ivy.device.dev_util">[docs]</a><span class="k">def</span> <span class="nf">dev_util</span><span class="p">(</span><span class="n">dev</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Device</span><span class="p">)</span>\
+<div class="viewcode-block" id="dev_util"><a class="viewcode-back" href="../../../../functional/ivy/device/dev_util.html#ivy.functional.ivy.device.dev_util">[docs]</a><span class="k">def</span> <span class="nf">dev_util</span><span class="p">(</span><span class="n">device</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Device</span><span class="p">)</span>\
         <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Get the current utilization (%) for a given device.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    dev</span>
+<span class="sd">    device</span>
 <span class="sd">        The device string of the device to query utilization for.</span>
 
 <span class="sd">    Returns</span>
@@ -545,14 +545,14 @@
 <span class="sd">        The device utilization (%)</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">dev</span> <span class="o">==</span> <span class="s1">&#39;cpu&#39;</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">device</span> <span class="o">==</span> <span class="s1">&#39;cpu&#39;</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">psutil</span><span class="o">.</span><span class="n">cpu_percent</span><span class="p">()</span>
-    <span class="k">elif</span> <span class="s1">&#39;gpu&#39;</span> <span class="ow">in</span> <span class="n">dev</span><span class="p">:</span>
-        <span class="n">handle</span> <span class="o">=</span> <span class="n">_get_nvml_gpu_handle</span><span class="p">(</span><span class="n">dev</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="s1">&#39;gpu&#39;</span> <span class="ow">in</span> <span class="n">device</span><span class="p">:</span>
+        <span class="n">handle</span> <span class="o">=</span> <span class="n">_get_nvml_gpu_handle</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">nvidia_smi</span><span class="o">.</span><span class="n">nvmlDeviceGetUtilizationRates</span><span class="p">(</span><span class="n">handle</span><span class="p">)</span><span class="o">.</span><span class="n">gpu</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;Invalid device string input, must be on the form &quot;gpu:idx&quot; or &quot;cpu&quot;, &#39;</span>
-                        <span class="s1">&#39;but found </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">dev</span><span class="p">))</span></div>
+                        <span class="s1">&#39;but found </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">device</span><span class="p">))</span></div>
 
 
 <span class="c1"># Availability</span>
@@ -617,20 +617,20 @@
 <span class="c1"># Default Device #</span>
 
 <span class="c1"># noinspection PyShadowingNames</span>
-<span class="k">def</span> <span class="nf">_assert_dev_correct_formatting</span><span class="p">(</span><span class="n">dev</span><span class="p">):</span>
-    <span class="k">assert</span> <span class="n">dev</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;gpu&#39;</span><span class="p">,</span> <span class="s1">&#39;tpu&#39;</span><span class="p">,</span> <span class="s1">&#39;cpu&#39;</span><span class="p">]</span>
-    <span class="k">if</span> <span class="n">dev</span> <span class="o">!=</span> <span class="s1">&#39;cpu&#39;</span><span class="p">:</span>
-        <span class="k">assert</span> <span class="n">dev</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;:&#39;</span>
-        <span class="k">assert</span> <span class="n">dev</span><span class="p">[</span><span class="mi">4</span><span class="p">:]</span><span class="o">.</span><span class="n">isnumeric</span><span class="p">()</span>
+<span class="k">def</span> <span class="nf">_assert_dev_correct_formatting</span><span class="p">(</span><span class="n">device</span><span class="p">):</span>
+    <span class="k">assert</span> <span class="n">device</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;gpu&#39;</span><span class="p">,</span> <span class="s1">&#39;tpu&#39;</span><span class="p">,</span> <span class="s1">&#39;cpu&#39;</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">device</span> <span class="o">!=</span> <span class="s1">&#39;cpu&#39;</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="n">device</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;:&#39;</span>
+        <span class="k">assert</span> <span class="n">device</span><span class="p">[</span><span class="mi">4</span><span class="p">:]</span><span class="o">.</span><span class="n">isnumeric</span><span class="p">()</span>
 
 
 <span class="c1"># noinspection PyShadowingNames</span>
-<div class="viewcode-block" id="default_device"><a class="viewcode-back" href="../../../../functional/ivy/device/default_device.html#ivy.functional.ivy.device.default_device">[docs]</a><span class="k">def</span> <span class="nf">default_device</span><span class="p">(</span><span class="n">dev</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="default_device"><a class="viewcode-back" href="../../../../functional/ivy/device/default_device.html#ivy.functional.ivy.device.default_device">[docs]</a><span class="k">def</span> <span class="nf">default_device</span><span class="p">(</span><span class="n">device</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    dev</span>
+<span class="sd">    device</span>
 <span class="sd">         (Default value = None)</span>
 
 <span class="sd">    Returns</span>
@@ -639,9 +639,9 @@
 
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">dev</span><span class="p">):</span>
-        <span class="n">_assert_dev_correct_formatting</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">dev_to_str</span><span class="p">(</span><span class="n">dev</span><span class="p">))</span>
-        <span class="k">return</span> <span class="n">dev</span>
+    <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">device</span><span class="p">):</span>
+        <span class="n">_assert_dev_correct_formatting</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">dev_to_str</span><span class="p">(</span><span class="n">device</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">device</span>
     <span class="k">global</span> <span class="n">default_device_stack</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">default_device_stack</span><span class="p">:</span>
         <span class="n">ret</span> <span class="o">=</span> <span class="s1">&#39;gpu:0&#39;</span> <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">gpu_is_available</span><span class="p">()</span> <span class="k">else</span> <span class="s1">&#39;cpu&#39;</span>
@@ -651,21 +651,21 @@
 
 
 <span class="c1"># noinspection PyShadowingNames</span>
-<div class="viewcode-block" id="set_default_device"><a class="viewcode-back" href="../../../../functional/ivy/device/set_default_device.html#ivy.functional.ivy.device.set_default_device">[docs]</a><span class="k">def</span> <span class="nf">set_default_device</span><span class="p">(</span><span class="n">dev</span><span class="p">):</span>
+<div class="viewcode-block" id="set_default_device"><a class="viewcode-back" href="../../../../functional/ivy/device/set_default_device.html#ivy.functional.ivy.device.set_default_device">[docs]</a><span class="k">def</span> <span class="nf">set_default_device</span><span class="p">(</span><span class="n">device</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    dev</span>
+<span class="sd">    device</span>
 
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">_assert_dev_correct_formatting</span><span class="p">(</span><span class="n">dev</span><span class="p">)</span>
+    <span class="n">_assert_dev_correct_formatting</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
     <span class="k">global</span> <span class="n">default_device_stack</span>
-    <span class="n">default_device_stack</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dev</span><span class="p">)</span></div>
+    <span class="n">default_device_stack</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">device</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="unset_default_device"><a class="viewcode-back" href="../../../../functional/ivy/device/unset_default_device.html#ivy.functional.ivy.device.unset_default_device">[docs]</a><span class="k">def</span> <span class="nf">unset_default_device</span><span class="p">():</span>
@@ -678,7 +678,7 @@
 <span class="c1"># Device Allocation #</span>
 
 <span class="c1"># noinspection PyShadowingNames</span>
-<div class="viewcode-block" id="to_dev"><a class="viewcode-back" href="../../../../functional/ivy/device/to_dev.html#ivy.functional.ivy.device.to_dev">[docs]</a><span class="k">def</span> <span class="nf">to_dev</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span> <span class="n">dev</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Device</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> \
+<div class="viewcode-block" id="to_dev"><a class="viewcode-back" href="../../../../functional/ivy/device/to_dev.html#ivy.functional.ivy.device.to_dev">[docs]</a><span class="k">def</span> <span class="nf">to_dev</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span> <span class="n">device</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Device</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> \
            <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> \
         <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -688,7 +688,7 @@
 <span class="sd">    ----------</span>
 <span class="sd">    x</span>
 <span class="sd">       input array to be moved to the desired device</span>
-<span class="sd">    dev</span>
+<span class="sd">    device</span>
 <span class="sd">        device to move the input array `x` to</span>
 <span class="sd">    out</span>
 <span class="sd">        optional output array, for writing the result to. It must have a shape that the inputs broadcast to.</span>
@@ -703,19 +703,19 @@
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([1., 2., 3.])</span>
 <span class="sd">    &gt;&gt;&gt; x = ivy.to_dev(x, &#39;cpu&#39;)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">to_dev</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dev</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">to_dev</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span></div>
 
 
 <span class="c1"># Function Splitting #</span>
 
 <span class="c1"># noinspection PyShadowingNames</span>
-<div class="viewcode-block" id="split_factor"><a class="viewcode-back" href="../../../../functional/ivy/device/split_factor.html#ivy.functional.ivy.device.split_factor">[docs]</a><span class="k">def</span> <span class="nf">split_factor</span><span class="p">(</span><span class="n">dev</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="split_factor"><a class="viewcode-back" href="../../../../functional/ivy/device/split_factor.html#ivy.functional.ivy.device.split_factor">[docs]</a><span class="k">def</span> <span class="nf">split_factor</span><span class="p">(</span><span class="n">device</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Get the global split factor for a given device, which can be used to scale batch splitting chunk sizes for the</span>
 <span class="sd">    device across the codebase. Default global value for each device is 1.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    dev</span>
+<span class="sd">    device</span>
 <span class="sd">        The device to query the split factor for. Sets the default device by default.</span>
 
 <span class="sd">    Returns</span>
@@ -725,15 +725,15 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">global</span> <span class="n">split_factors</span>
-    <span class="n">dev</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">default</span><span class="p">(</span><span class="n">dev</span><span class="p">,</span> <span class="n">default_device</span><span class="p">())</span>
-    <span class="k">if</span> <span class="n">dev</span> <span class="ow">in</span> <span class="n">split_factors</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">split_factors</span><span class="p">[</span><span class="n">dev</span><span class="p">]</span>
-    <span class="n">split_factors</span><span class="p">[</span><span class="n">dev</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.</span>
-    <span class="k">return</span> <span class="n">split_factors</span><span class="p">[</span><span class="n">dev</span><span class="p">]</span></div>
+    <span class="n">device</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">default</span><span class="p">(</span><span class="n">device</span><span class="p">,</span> <span class="n">default_device</span><span class="p">())</span>
+    <span class="k">if</span> <span class="n">device</span> <span class="ow">in</span> <span class="n">split_factors</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">split_factors</span><span class="p">[</span><span class="n">device</span><span class="p">]</span>
+    <span class="n">split_factors</span><span class="p">[</span><span class="n">device</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.</span>
+    <span class="k">return</span> <span class="n">split_factors</span><span class="p">[</span><span class="n">device</span><span class="p">]</span></div>
 
 
 <span class="c1"># noinspection PyShadowingNames</span>
-<div class="viewcode-block" id="set_split_factor"><a class="viewcode-back" href="../../../../functional/ivy/device/set_split_factor.html#ivy.functional.ivy.device.set_split_factor">[docs]</a><span class="k">def</span> <span class="nf">set_split_factor</span><span class="p">(</span><span class="n">factor</span><span class="p">,</span> <span class="n">dev</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="set_split_factor"><a class="viewcode-back" href="../../../../functional/ivy/device/set_split_factor.html#ivy.functional.ivy.device.set_split_factor">[docs]</a><span class="k">def</span> <span class="nf">set_split_factor</span><span class="p">(</span><span class="n">factor</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Set the global split factor for a given device, which can be used to scale batch splitting chunk sizes for the</span>
 <span class="sd">    device across the codebase.</span>
 
@@ -741,7 +741,7 @@
 <span class="sd">    ----------</span>
 <span class="sd">    factor</span>
 <span class="sd">        The factor to set the device-specific split factor to.</span>
-<span class="sd">    dev</span>
+<span class="sd">    device</span>
 <span class="sd">        The device to set the split factor for. Sets the default device by default.</span>
 
 <span class="sd">    Returns</span>
@@ -750,15 +750,15 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">assert</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">factor</span>
     <span class="k">global</span> <span class="n">split_factors</span>
-    <span class="n">dev</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">default</span><span class="p">(</span><span class="n">dev</span><span class="p">,</span> <span class="n">default_device</span><span class="p">())</span>
-    <span class="n">split_factors</span><span class="p">[</span><span class="n">dev</span><span class="p">]</span> <span class="o">=</span> <span class="n">factor</span></div>
+    <span class="n">device</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">default</span><span class="p">(</span><span class="n">device</span><span class="p">,</span> <span class="n">default_device</span><span class="p">())</span>
+    <span class="n">split_factors</span><span class="p">[</span><span class="n">device</span><span class="p">]</span> <span class="o">=</span> <span class="n">factor</span></div>
 
 
 <span class="c1"># noinspection PyShadowingNames</span>
 <div class="viewcode-block" id="split_func_call"><a class="viewcode-back" href="../../../../functional/ivy/device/split_func_call.html#ivy.functional.ivy.device.split_func_call">[docs]</a><span class="k">def</span> <span class="nf">split_func_call</span><span class="p">(</span><span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">inputs</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">]],</span>
                     <span class="n">mode</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">max_chunk_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">chunk_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                     <span class="n">input_axes</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">output_axes</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-                    <span class="n">stop_gradients</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">dev</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>\
+                    <span class="n">stop_gradients</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>\
         <span class="o">-&gt;</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">]]:</span>
     <span class="sd">&quot;&quot;&quot;Call a function by splitting its inputs along a given axis, and calling the function in chunks, rather than feeding</span>
 <span class="sd">    the entire input array at once. This can be useful to reduce memory usage of the device the arrays are on.</span>
@@ -782,7 +782,7 @@
 <span class="sd">        The axes along which to concat each of the returned outputs. Default is same as fist input axis.</span>
 <span class="sd">    stop_gradients</span>
 <span class="sd">        Whether to stop the gradients for each computed return. Default is False.</span>
-<span class="sd">    dev</span>
+<span class="sd">    device</span>
 <span class="sd">        The device to set the split factor for. Sets the default device by default.</span>
 
 <span class="sd">    Returns</span>
@@ -804,7 +804,7 @@
             <span class="n">max_chunk_sizes</span><span class="p">[</span><span class="n">shape_key</span><span class="p">]</span> <span class="o">=</span> <span class="n">max_dim</span>
             <span class="n">max_chunk_size</span> <span class="o">=</span> <span class="n">max_dim</span>
     <span class="n">chunk_size</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">default</span><span class="p">(</span>
-        <span class="n">chunk_size</span><span class="p">,</span> <span class="k">lambda</span><span class="p">:</span> <span class="mi">1</span> <span class="o">+</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">((</span><span class="n">max_chunk_size</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">ivy</span><span class="o">.</span><span class="n">split_factor</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">default_device</span><span class="p">(</span><span class="n">dev</span><span class="p">)))),</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="n">chunk_size</span><span class="p">,</span> <span class="k">lambda</span><span class="p">:</span> <span class="mi">1</span> <span class="o">+</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">((</span><span class="n">max_chunk_size</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">ivy</span><span class="o">.</span><span class="n">split_factor</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">default_device</span><span class="p">(</span><span class="n">device</span><span class="p">)))),</span> <span class="kc">True</span><span class="p">)</span>
     <span class="n">dim_size</span> <span class="o">=</span> <span class="n">inputs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="n">input_axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
     <span class="k">if</span> <span class="n">chunk_size</span> <span class="o">&gt;=</span> <span class="n">dim_size</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">inputs</span><span class="p">)</span>
@@ -920,21 +920,21 @@
 
 <div class="viewcode-block" id="MultiDevIter"><a class="viewcode-back" href="../../../../functional/ivy/device/MultiDevIter.html#ivy.functional.ivy.device.MultiDevIter">[docs]</a><span class="k">class</span> <span class="nc">MultiDevIter</span><span class="p">(</span><span class="n">MultiDev</span><span class="p">):</span>
 
-<div class="viewcode-block" id="MultiDevIter.__init__"><a class="viewcode-back" href="../../../../functional/ivy/device/MultiDevIter.html#ivy.functional.ivy.device.MultiDevIter.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">devs</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_devs</span> <span class="o">=</span> <span class="n">devs</span>
+<div class="viewcode-block" id="MultiDevIter.__init__"><a class="viewcode-back" href="../../../../functional/ivy/device/MultiDevIter.html#ivy.functional.ivy.device.MultiDevIter.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">devices</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_devs</span> <span class="o">=</span> <span class="n">devices</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">data</span><span class="p">)</span></div>
 
     <span class="c1"># noinspection PyShadowingNames</span>
-<div class="viewcode-block" id="MultiDevIter.at_dev"><a class="viewcode-back" href="../../../../functional/ivy/device/MultiDevIter.html#ivy.functional.ivy.device.MultiDevIter.at_dev">[docs]</a>    <span class="k">def</span> <span class="nf">at_dev</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dev</span><span class="p">):</span>
+<div class="viewcode-block" id="MultiDevIter.at_dev"><a class="viewcode-back" href="../../../../functional/ivy/device/MultiDevIter.html#ivy.functional.ivy.device.MultiDevIter.at_dev">[docs]</a>    <span class="k">def</span> <span class="nf">at_dev</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">device</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        dev</span>
+<span class="sd">        device</span>
 
 
 <span class="sd">&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="p">[</span><span class="n">x</span><span class="p">[</span><span class="n">dev</span><span class="p">]</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">MultiDevItem</span><span class="p">)</span> <span class="k">else</span> <span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">]</span></div>
+        <span class="k">return</span> <span class="p">[</span><span class="n">x</span><span class="p">[</span><span class="n">device</span><span class="p">]</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">MultiDevItem</span><span class="p">)</span> <span class="k">else</span> <span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">]</span></div>
 
 <div class="viewcode-block" id="MultiDevIter.at_devs"><a class="viewcode-back" href="../../../../functional/ivy/device/MultiDevIter.html#ivy.functional.ivy.device.MultiDevIter.at_devs">[docs]</a>    <span class="k">def</span> <span class="nf">at_devs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; &quot;&quot;&quot;</span>
@@ -960,21 +960,21 @@
 
 <div class="viewcode-block" id="MultiDevNest"><a class="viewcode-back" href="../../../../functional/ivy/device/MultiDevNest.html#ivy.functional.ivy.device.MultiDevNest">[docs]</a><span class="k">class</span> <span class="nc">MultiDevNest</span><span class="p">(</span><span class="n">MultiDevIter</span><span class="p">):</span>
 
-<div class="viewcode-block" id="MultiDevNest.__init__"><a class="viewcode-back" href="../../../../functional/ivy/device/MultiDevNest.html#ivy.functional.ivy.device.MultiDevNest.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">devs</span><span class="p">,</span> <span class="n">max_depth</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+<div class="viewcode-block" id="MultiDevNest.__init__"><a class="viewcode-back" href="../../../../functional/ivy/device/MultiDevNest.html#ivy.functional.ivy.device.MultiDevNest.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">devices</span><span class="p">,</span> <span class="n">max_depth</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_max_depth</span> <span class="o">=</span> <span class="n">max_depth</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">devs</span><span class="p">)</span></div>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">devices</span><span class="p">)</span></div>
 
     <span class="c1"># noinspection PyShadowingNames</span>
-<div class="viewcode-block" id="MultiDevNest.at_dev"><a class="viewcode-back" href="../../../../functional/ivy/device/MultiDevNest.html#ivy.functional.ivy.device.MultiDevNest.at_dev">[docs]</a>    <span class="k">def</span> <span class="nf">at_dev</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dev</span><span class="p">):</span>
+<div class="viewcode-block" id="MultiDevNest.at_dev"><a class="viewcode-back" href="../../../../functional/ivy/device/MultiDevNest.html#ivy.functional.ivy.device.MultiDevNest.at_dev">[docs]</a>    <span class="k">def</span> <span class="nf">at_dev</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">device</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        dev</span>
+<span class="sd">        device</span>
 
 
 <span class="sd">&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">nested_map</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="n">dev</span><span class="p">]</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">MultiDevItem</span><span class="p">)</span> <span class="k">else</span> <span class="n">x</span><span class="p">,</span>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">nested_map</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="n">device</span><span class="p">]</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">MultiDevItem</span><span class="p">)</span> <span class="k">else</span> <span class="n">x</span><span class="p">,</span>
                               <span class="n">max_depth</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_max_depth</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -1001,18 +1001,18 @@
         <span class="k">return</span> <span class="s1">&#39;DevDistNest(&#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">()</span> <span class="o">+</span> <span class="s1">&#39;)&#39;</span></div>
 
 
-<div class="viewcode-block" id="dev_dist_array"><a class="viewcode-back" href="../../../../functional/ivy/device/dev_dist_array.html#ivy.functional.ivy.device.dev_dist_array">[docs]</a><span class="k">def</span> <span class="nf">dev_dist_array</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">devs</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<div class="viewcode-block" id="dev_dist_array"><a class="viewcode-back" href="../../../../functional/ivy/device/dev_dist_array.html#ivy.functional.ivy.device.dev_dist_array">[docs]</a><span class="k">def</span> <span class="nf">dev_dist_array</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">devices</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Distribute an array across the specified devices, returning a list of sub-arrays, each on a different device.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    x</span>
 <span class="sd">        The array to distribute across devices.</span>
-<span class="sd">    devs</span>
+<span class="sd">    devices</span>
 <span class="sd">        The devices to distribute the array across.</span>
 <span class="sd">    axis</span>
 <span class="sd">        The axis along which to split the array. Default is 0.</span>
-<span class="sd">    devs</span>
+<span class="sd">    devices</span>
 
 <span class="sd">    Dict</span>
 
@@ -1022,23 +1022,23 @@
 <span class="sd">        array distributed across the target devices</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">split_arg</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">devs</span><span class="o">.</span><span class="n">values</span><span class="p">())</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">devs</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span> <span class="k">else</span> <span class="nb">len</span><span class="p">(</span><span class="n">devs</span><span class="p">)</span>
+    <span class="n">split_arg</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">devices</span><span class="o">.</span><span class="n">values</span><span class="p">())</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">devices</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span> <span class="k">else</span> <span class="nb">len</span><span class="p">(</span><span class="n">devices</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">DevDistItem</span><span class="p">(</span>
-        <span class="p">{</span><span class="n">ds</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">to_dev</span><span class="p">(</span><span class="n">x_sub</span><span class="p">,</span> <span class="n">ds</span><span class="p">)</span> <span class="k">for</span> <span class="n">x_sub</span><span class="p">,</span> <span class="n">ds</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">split_arg</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">with_remainder</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span> <span class="n">devs</span><span class="p">)})</span></div>
+        <span class="p">{</span><span class="n">ds</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">to_dev</span><span class="p">(</span><span class="n">x_sub</span><span class="p">,</span> <span class="n">ds</span><span class="p">)</span> <span class="k">for</span> <span class="n">x_sub</span><span class="p">,</span> <span class="n">ds</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">split_arg</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">with_remainder</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span> <span class="n">devices</span><span class="p">)})</span></div>
 
 
-<div class="viewcode-block" id="dev_dist"><a class="viewcode-back" href="../../../../functional/ivy/device/dev_dist.html#ivy.functional.ivy.device.dev_dist">[docs]</a><span class="k">def</span> <span class="nf">dev_dist</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">devs</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<div class="viewcode-block" id="dev_dist"><a class="viewcode-back" href="../../../../functional/ivy/device/dev_dist.html#ivy.functional.ivy.device.dev_dist">[docs]</a><span class="k">def</span> <span class="nf">dev_dist</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">devices</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Distribute the input item across the specified devices, returning a list of sub-items, each on a different device.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    x</span>
 <span class="sd">        The input array or container to distribute across devices.</span>
-<span class="sd">    devs</span>
+<span class="sd">    devices</span>
 <span class="sd">        The devices to distribute the input across.</span>
 <span class="sd">    axis</span>
 <span class="sd">        The axis along which to split the input. Default is 0.</span>
-<span class="sd">    devs</span>
+<span class="sd">    devices</span>
 
 <span class="sd">    Dict</span>
 
@@ -1049,24 +1049,24 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_array</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">dev_dist_array</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">devs</span><span class="p">,</span> <span class="n">axis</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">dev_dist_array</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">devices</span><span class="p">,</span> <span class="n">axis</span><span class="p">)</span>
     <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">x</span><span class="o">.</span><span class="n">dev_dist</span><span class="p">(</span><span class="n">devs</span><span class="p">,</span> <span class="n">axis</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">x</span><span class="o">.</span><span class="n">dev_dist</span><span class="p">(</span><span class="n">devices</span><span class="p">,</span> <span class="n">axis</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">x</span></div>
 
 
-<div class="viewcode-block" id="dev_dist_iter"><a class="viewcode-back" href="../../../../functional/ivy/device/dev_dist_iter.html#ivy.functional.ivy.device.dev_dist_iter">[docs]</a><span class="k">def</span> <span class="nf">dev_dist_iter</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">devs</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<div class="viewcode-block" id="dev_dist_iter"><a class="viewcode-back" href="../../../../functional/ivy/device/dev_dist_iter.html#ivy.functional.ivy.device.dev_dist_iter">[docs]</a><span class="k">def</span> <span class="nf">dev_dist_iter</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">devices</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Distribute elements of the iterbale xs across the specified devices.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    xs</span>
 <span class="sd">        The iterable of items to distribute.</span>
-<span class="sd">    devs</span>
+<span class="sd">    devices</span>
 <span class="sd">        The devices to distribute the iterable elements across.</span>
 <span class="sd">    axis</span>
 <span class="sd">        The axis along which to split the arrays in the iterable xs. Default is 0.</span>
-<span class="sd">    devs</span>
+<span class="sd">    devices</span>
 
 <span class="sd">    Dict</span>
 
@@ -1076,12 +1076,12 @@
 <span class="sd">        iterable with each element distributed to the target devices</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">devs</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-        <span class="n">devs</span> <span class="o">=</span> <span class="p">[</span><span class="n">devs</span><span class="p">]</span>
-    <span class="k">return</span> <span class="n">DevDistIter</span><span class="p">([</span><span class="n">dev_dist</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">devs</span><span class="p">,</span> <span class="n">axis</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">xs</span><span class="p">],</span> <span class="n">devs</span><span class="p">)</span></div>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">devices</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="n">devices</span> <span class="o">=</span> <span class="p">[</span><span class="n">devices</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">DevDistIter</span><span class="p">([</span><span class="n">dev_dist</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">devices</span><span class="p">,</span> <span class="n">axis</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">xs</span><span class="p">],</span> <span class="n">devices</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="dev_dist_nest"><a class="viewcode-back" href="../../../../functional/ivy/device/dev_dist_nest.html#ivy.functional.ivy.device.dev_dist_nest">[docs]</a><span class="k">def</span> <span class="nf">dev_dist_nest</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">,</span> <span class="n">devs</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">max_depth</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+<div class="viewcode-block" id="dev_dist_nest"><a class="viewcode-back" href="../../../../functional/ivy/device/dev_dist_nest.html#ivy.functional.ivy.device.dev_dist_nest">[docs]</a><span class="k">def</span> <span class="nf">dev_dist_nest</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">,</span> <span class="n">devices</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">max_depth</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Distribute the nested input arguments across the specified devices.</span>
 
 <span class="sd">    Parameters</span>
@@ -1090,13 +1090,13 @@
 <span class="sd">        The positional nested arguments to distribute.</span>
 <span class="sd">    kwargs</span>
 <span class="sd">        The keyword nested arguments to distribute.</span>
-<span class="sd">    devs</span>
+<span class="sd">    devices</span>
 <span class="sd">        The devices to distribute the nested arguments across.</span>
 <span class="sd">    axis</span>
 <span class="sd">        The axis along which to split the arrays in the arguments. Default is 0.</span>
 <span class="sd">    max_depth</span>
 <span class="sd">        The maximum nested depth to reach. Default is 1. Increase this if the nest is deeper.</span>
-<span class="sd">    devs</span>
+<span class="sd">    devices</span>
 
 <span class="sd">    Dict</span>
 
@@ -1107,11 +1107,11 @@
 <span class="sd">        nested arguments distributed to the target devices</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">devs</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-        <span class="n">devs</span> <span class="o">=</span> <span class="p">[</span><span class="n">devs</span><span class="p">]</span>
-    <span class="n">args_dist</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">nested_map</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">dev_dist</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">devs</span><span class="p">,</span> <span class="n">axis</span><span class="p">),</span> <span class="n">max_depth</span><span class="o">=</span><span class="n">max_depth</span><span class="p">)</span>
-    <span class="n">kwargs_dist</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">nested_map</span><span class="p">(</span><span class="n">kwargs</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">dev_dist</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">devs</span><span class="p">,</span> <span class="n">axis</span><span class="p">),</span> <span class="n">max_depth</span><span class="o">=</span><span class="n">max_depth</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">DevDistNest</span><span class="p">(</span><span class="n">args_dist</span><span class="p">,</span> <span class="n">devs</span><span class="p">),</span> <span class="n">DevDistNest</span><span class="p">(</span><span class="n">kwargs_dist</span><span class="p">,</span> <span class="n">devs</span><span class="p">)</span></div>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">devices</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="n">devices</span> <span class="o">=</span> <span class="p">[</span><span class="n">devices</span><span class="p">]</span>
+    <span class="n">args_dist</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">nested_map</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">dev_dist</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">devices</span><span class="p">,</span> <span class="n">axis</span><span class="p">),</span> <span class="n">max_depth</span><span class="o">=</span><span class="n">max_depth</span><span class="p">)</span>
+    <span class="n">kwargs_dist</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">nested_map</span><span class="p">(</span><span class="n">kwargs</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">dev_dist</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">devices</span><span class="p">,</span> <span class="n">axis</span><span class="p">),</span> <span class="n">max_depth</span><span class="o">=</span><span class="n">max_depth</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">DevDistNest</span><span class="p">(</span><span class="n">args_dist</span><span class="p">,</span> <span class="n">devices</span><span class="p">),</span> <span class="n">DevDistNest</span><span class="p">(</span><span class="n">kwargs_dist</span><span class="p">,</span> <span class="n">devices</span><span class="p">)</span></div>
 
 
 <span class="c1"># Device Cloning #</span>
@@ -1134,14 +1134,14 @@
         <span class="k">return</span> <span class="s1">&#39;DevClonedNest(&#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">()</span> <span class="o">+</span> <span class="s1">&#39;)&#39;</span></div>
 
 
-<div class="viewcode-block" id="dev_clone_array"><a class="viewcode-back" href="../../../../functional/ivy/device/dev_clone_array.html#ivy.functional.ivy.device.dev_clone_array">[docs]</a><span class="k">def</span> <span class="nf">dev_clone_array</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">devs</span><span class="p">):</span>
+<div class="viewcode-block" id="dev_clone_array"><a class="viewcode-back" href="../../../../functional/ivy/device/dev_clone_array.html#ivy.functional.ivy.device.dev_clone_array">[docs]</a><span class="k">def</span> <span class="nf">dev_clone_array</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">devices</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Clone an array across the specified devices, returning a list of cloned arrays, each on a different device.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    x</span>
 <span class="sd">        The array to clone across devices.</span>
-<span class="sd">    devs</span>
+<span class="sd">    devices</span>
 <span class="sd">        The devices to clone the array to.</span>
 
 <span class="sd">    Returns</span>
@@ -1150,18 +1150,18 @@
 <span class="sd">        array cloned to each of the target devices</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">DevClonedItem</span><span class="p">({</span><span class="n">ds</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">stop_gradient</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">to_dev</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">ds</span><span class="p">))</span> <span class="k">for</span> <span class="n">ds</span> <span class="ow">in</span> <span class="n">devs</span><span class="p">})</span></div>
+    <span class="k">return</span> <span class="n">DevClonedItem</span><span class="p">({</span><span class="n">ds</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">stop_gradient</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">to_dev</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">ds</span><span class="p">))</span> <span class="k">for</span> <span class="n">ds</span> <span class="ow">in</span> <span class="n">devices</span><span class="p">})</span></div>
 
 
-<div class="viewcode-block" id="dev_clone"><a class="viewcode-back" href="../../../../functional/ivy/device/dev_clone.html#ivy.functional.ivy.device.dev_clone">[docs]</a><span class="k">def</span> <span class="nf">dev_clone</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">devs</span><span class="p">):</span>
+<div class="viewcode-block" id="dev_clone"><a class="viewcode-back" href="../../../../functional/ivy/device/dev_clone.html#ivy.functional.ivy.device.dev_clone">[docs]</a><span class="k">def</span> <span class="nf">dev_clone</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">devices</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Clone the input item to each of the specified devices, returning a list of cloned items, each on a different device.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    x</span>
 <span class="sd">        The input array or container to clone to each device.</span>
-<span class="sd">    devs</span>
-<span class="sd">        The devices to clone the input to.</span>
+<span class="sd">    devices</span>
+<span class="sd">        The deviceices to clone the input to.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">     -------</span>
@@ -1170,20 +1170,20 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_array</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">dev_clone_array</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">devs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">dev_clone_array</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">devices</span><span class="p">)</span>
     <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">x</span><span class="o">.</span><span class="n">dev_clone</span><span class="p">(</span><span class="n">devs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">x</span><span class="o">.</span><span class="n">dev_clone</span><span class="p">(</span><span class="n">devices</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">x</span></div>
 
 
-<div class="viewcode-block" id="dev_clone_iter"><a class="viewcode-back" href="../../../../functional/ivy/device/dev_clone_iter.html#ivy.functional.ivy.device.dev_clone_iter">[docs]</a><span class="k">def</span> <span class="nf">dev_clone_iter</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">devs</span><span class="p">):</span>
+<div class="viewcode-block" id="dev_clone_iter"><a class="viewcode-back" href="../../../../functional/ivy/device/dev_clone_iter.html#ivy.functional.ivy.device.dev_clone_iter">[docs]</a><span class="k">def</span> <span class="nf">dev_clone_iter</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">devices</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Clone elements of the iterbale xs to each of the specified devices.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    xs</span>
 <span class="sd">        The iterable of items to clone.</span>
-<span class="sd">    devs</span>
+<span class="sd">    devices</span>
 <span class="sd">        The devices to clone each of the iterable elements to.</span>
 
 <span class="sd">    Returns</span>
@@ -1192,12 +1192,12 @@
 <span class="sd">        iterable with each element cloned to each of the target devices</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">devs</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-        <span class="n">devs</span> <span class="o">=</span> <span class="p">[</span><span class="n">devs</span><span class="p">]</span>
-    <span class="k">return</span> <span class="n">DevClonedIter</span><span class="p">([</span><span class="n">dev_clone</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">devs</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">xs</span><span class="p">],</span> <span class="n">devs</span><span class="p">)</span></div>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">devices</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="n">devs</span> <span class="o">=</span> <span class="p">[</span><span class="n">devices</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">DevClonedIter</span><span class="p">([</span><span class="n">dev_clone</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">devices</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">xs</span><span class="p">],</span> <span class="n">devices</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="dev_clone_nest"><a class="viewcode-back" href="../../../../functional/ivy/device/dev_clone_nest.html#ivy.functional.ivy.device.dev_clone_nest">[docs]</a><span class="k">def</span> <span class="nf">dev_clone_nest</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">,</span> <span class="n">devs</span><span class="p">,</span> <span class="n">max_depth</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+<div class="viewcode-block" id="dev_clone_nest"><a class="viewcode-back" href="../../../../functional/ivy/device/dev_clone_nest.html#ivy.functional.ivy.device.dev_clone_nest">[docs]</a><span class="k">def</span> <span class="nf">dev_clone_nest</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">,</span> <span class="n">devices</span><span class="p">,</span> <span class="n">max_depth</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Clone the input arguments across the specified devices.</span>
 
 <span class="sd">    Parameters</span>
@@ -1206,7 +1206,7 @@
 <span class="sd">        The positional arguments to clone.</span>
 <span class="sd">    kwargs</span>
 <span class="sd">        The keyword arguments to clone.</span>
-<span class="sd">    devs</span>
+<span class="sd">    devices</span>
 <span class="sd">        The devices to clone the arguments to.</span>
 <span class="sd">    max_depth</span>
 <span class="sd">        The maximum nested depth to reach. Default is 1. Increase this if the nest is deeper.</span>
@@ -1217,39 +1217,39 @@
 <span class="sd">        arguments cloned to each of the target devices</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">devs</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-        <span class="n">devs</span> <span class="o">=</span> <span class="p">[</span><span class="n">devs</span><span class="p">]</span>
-    <span class="n">args_cloned</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">nested_map</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">dev_clone</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">devs</span><span class="p">),</span> <span class="n">max_depth</span><span class="o">=</span><span class="n">max_depth</span><span class="p">)</span>
-    <span class="n">kwargs_cloned</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">nested_map</span><span class="p">(</span><span class="n">kwargs</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">dev_clone</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">devs</span><span class="p">),</span> <span class="n">max_depth</span><span class="o">=</span><span class="n">max_depth</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">DevClonedNest</span><span class="p">(</span><span class="n">args_cloned</span><span class="p">,</span> <span class="n">devs</span><span class="p">),</span> <span class="n">DevClonedNest</span><span class="p">(</span><span class="n">kwargs_cloned</span><span class="p">,</span> <span class="n">devs</span><span class="p">)</span></div>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">devices</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="n">devices</span> <span class="o">=</span> <span class="p">[</span><span class="n">devices</span><span class="p">]</span>
+    <span class="n">args_cloned</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">nested_map</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">dev_clone</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">devices</span><span class="p">),</span> <span class="n">max_depth</span><span class="o">=</span><span class="n">max_depth</span><span class="p">)</span>
+    <span class="n">kwargs_cloned</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">nested_map</span><span class="p">(</span><span class="n">kwargs</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">dev_clone</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">devices</span><span class="p">),</span> <span class="n">max_depth</span><span class="o">=</span><span class="n">max_depth</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">DevClonedNest</span><span class="p">(</span><span class="n">args_cloned</span><span class="p">,</span> <span class="n">devices</span><span class="p">),</span> <span class="n">DevClonedNest</span><span class="p">(</span><span class="n">kwargs_cloned</span><span class="p">,</span> <span class="n">devices</span><span class="p">)</span></div>
 
 
 <span class="c1"># Device Unification #</span>
 
 <span class="c1"># noinspection PyShadowingNames</span>
-<span class="k">def</span> <span class="nf">_concat_unify_array</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">dev</span><span class="p">,</span> <span class="n">axis</span><span class="p">):</span>
-    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">ivy</span><span class="o">.</span><span class="n">to_dev</span><span class="p">(</span><span class="n">x_sub</span><span class="p">,</span> <span class="n">dev</span><span class="p">)</span> <span class="k">for</span> <span class="n">x_sub</span> <span class="ow">in</span> <span class="n">xs</span><span class="o">.</span><span class="n">values</span><span class="p">()],</span> <span class="n">axis</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">_concat_unify_array</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">axis</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">ivy</span><span class="o">.</span><span class="n">to_dev</span><span class="p">(</span><span class="n">x_sub</span><span class="p">,</span> <span class="n">device</span><span class="p">)</span> <span class="k">for</span> <span class="n">x_sub</span> <span class="ow">in</span> <span class="n">xs</span><span class="o">.</span><span class="n">values</span><span class="p">()],</span> <span class="n">axis</span><span class="p">)</span>
 
 
 <span class="c1"># noinspection PyShadowingNames</span>
-<span class="k">def</span> <span class="nf">_sum_unify_array</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">dev</span><span class="p">,</span> <span class="n">_</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="k">return</span> <span class="nb">sum</span><span class="p">([</span><span class="n">ivy</span><span class="o">.</span><span class="n">to_dev</span><span class="p">(</span><span class="n">x_sub</span><span class="p">,</span> <span class="n">dev</span><span class="p">)</span> <span class="k">for</span> <span class="n">x_sub</span> <span class="ow">in</span> <span class="n">xs</span><span class="o">.</span><span class="n">values</span><span class="p">()])</span>
+<span class="k">def</span> <span class="nf">_sum_unify_array</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">_</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">return</span> <span class="nb">sum</span><span class="p">([</span><span class="n">ivy</span><span class="o">.</span><span class="n">to_dev</span><span class="p">(</span><span class="n">x_sub</span><span class="p">,</span> <span class="n">device</span><span class="p">)</span> <span class="k">for</span> <span class="n">x_sub</span> <span class="ow">in</span> <span class="n">xs</span><span class="o">.</span><span class="n">values</span><span class="p">()])</span>
 
 
 <span class="c1"># noinspection PyShadowingNames</span>
-<span class="k">def</span> <span class="nf">_mean_unify_array</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">dev</span><span class="p">,</span> <span class="n">_</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="k">return</span> <span class="n">_sum_unify_array</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">dev</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">xs</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">_mean_unify_array</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">_</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">_sum_unify_array</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">device</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">xs</span><span class="p">)</span>
 
 
 <span class="c1"># noinspection PyShadowingNames</span>
-<div class="viewcode-block" id="dev_unify_array"><a class="viewcode-back" href="../../../../functional/ivy/device/dev_unify_array.html#ivy.functional.ivy.device.dev_unify_array">[docs]</a><span class="k">def</span> <span class="nf">dev_unify_array</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">dev</span><span class="p">,</span> <span class="n">mode</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<div class="viewcode-block" id="dev_unify_array"><a class="viewcode-back" href="../../../../functional/ivy/device/dev_unify_array.html#ivy.functional.ivy.device.dev_unify_array">[docs]</a><span class="k">def</span> <span class="nf">dev_unify_array</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">mode</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Unify a list of sub-arrays, on arbitrary devices, to a single array on the specified device.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    xs</span>
 <span class="sd">        The list of arrays to unify onto the specified device.</span>
-<span class="sd">    dev</span>
+<span class="sd">    device</span>
 <span class="sd">        The device to unify the arrays to.</span>
 <span class="sd">    mode</span>
 <span class="sd">        The mode by which to unify, must be one of [ concat | mean | sum ]</span>
@@ -1264,18 +1264,18 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;concat&#39;</span><span class="p">:</span> <span class="n">_concat_unify_array</span><span class="p">,</span>
             <span class="s1">&#39;sum&#39;</span><span class="p">:</span> <span class="n">_sum_unify_array</span><span class="p">,</span>
-            <span class="s1">&#39;mean&#39;</span><span class="p">:</span> <span class="n">_mean_unify_array</span><span class="p">}[</span><span class="n">mode</span><span class="p">](</span><span class="n">xs</span><span class="p">,</span> <span class="n">dev</span><span class="p">,</span> <span class="n">axis</span><span class="p">)</span></div>
+            <span class="s1">&#39;mean&#39;</span><span class="p">:</span> <span class="n">_mean_unify_array</span><span class="p">}[</span><span class="n">mode</span><span class="p">](</span><span class="n">xs</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">axis</span><span class="p">)</span></div>
 
 
 <span class="c1"># noinspection PyShadowingNames</span>
-<div class="viewcode-block" id="dev_unify"><a class="viewcode-back" href="../../../../functional/ivy/device/dev_unify.html#ivy.functional.ivy.device.dev_unify">[docs]</a><span class="k">def</span> <span class="nf">dev_unify</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">dev</span><span class="p">,</span> <span class="n">mode</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<div class="viewcode-block" id="dev_unify"><a class="viewcode-back" href="../../../../functional/ivy/device/dev_unify.html#ivy.functional.ivy.device.dev_unify">[docs]</a><span class="k">def</span> <span class="nf">dev_unify</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">mode</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Unify a list of sub-arrays, on arbitrary devices, to a single concattenated array on the specified device.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    xs</span>
 <span class="sd">        The list of sub-arrays to unify onto the specified device.</span>
-<span class="sd">    dev</span>
+<span class="sd">    device</span>
 <span class="sd">        The device to unify the sub-arrays to.</span>
 <span class="sd">    mode</span>
 <span class="sd">        The mode by which to unify, must be one of [ concat | mean | sum ]</span>
@@ -1295,21 +1295,21 @@
     <span class="c1"># noinspection PyProtectedMember</span>
     <span class="n">xs0</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="nb">iter</span><span class="p">(</span><span class="n">xs</span><span class="o">.</span><span class="n">items</span><span class="p">()))[</span><span class="mi">1</span><span class="p">]</span>
     <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_array</span><span class="p">(</span><span class="n">xs0</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">dev_unify_array</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">dev</span><span class="p">,</span> <span class="n">mode</span><span class="p">,</span> <span class="n">axis</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">dev_unify_array</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">mode</span><span class="p">,</span> <span class="n">axis</span><span class="p">)</span>
     <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">xs0</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="o">.</span><span class="n">unify</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">dev</span><span class="p">,</span> <span class="n">mode</span><span class="p">,</span> <span class="n">axis</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="o">.</span><span class="n">unify</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">mode</span><span class="p">,</span> <span class="n">axis</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">xs</span></div>
 
 
 <span class="c1"># noinspection PyShadowingNames</span>
-<div class="viewcode-block" id="dev_unify_iter"><a class="viewcode-back" href="../../../../functional/ivy/device/dev_unify_iter.html#ivy.functional.ivy.device.dev_unify_iter">[docs]</a><span class="k">def</span> <span class="nf">dev_unify_iter</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">dev</span><span class="p">,</span> <span class="n">mode</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">transpose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="dev_unify_iter"><a class="viewcode-back" href="../../../../functional/ivy/device/dev_unify_iter.html#ivy.functional.ivy.device.dev_unify_iter">[docs]</a><span class="k">def</span> <span class="nf">dev_unify_iter</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">mode</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">transpose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Unify elements of the iterbale xs to a single target device.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    xs</span>
 <span class="sd">        The iterable of items to unify.</span>
-<span class="sd">    dev</span>
+<span class="sd">    device</span>
 <span class="sd">        The device to unify the elements of the iterable to.</span>
 <span class="sd">    mode</span>
 <span class="sd">        The mode by which to unify, must be one of [ concat | mean | sum ]</span>
@@ -1330,12 +1330,12 @@
         <span class="c1"># ToDo: make this more elegant, this method should not be responsible for transposing iterators</span>
         <span class="n">xs_t</span> <span class="o">=</span> <span class="p">[</span><span class="n">MultiDevItem</span><span class="p">({</span><span class="n">ivy</span><span class="o">.</span><span class="n">dev</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_array</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">else</span> <span class="n">i</span><span class="o">.</span><span class="n">dev</span><span class="p">:</span> <span class="n">i</span>
                               <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">mdi</span><span class="p">})</span> <span class="k">for</span> <span class="n">mdi</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">xs</span><span class="p">)))]</span>
-        <span class="k">return</span> <span class="p">[</span><span class="n">dev_unify</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dev</span><span class="p">,</span> <span class="n">mode</span><span class="p">,</span> <span class="n">axis</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">xs_t</span><span class="p">]</span>
-    <span class="k">return</span> <span class="n">dev_unify</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">dev</span><span class="p">,</span> <span class="n">mode</span><span class="p">,</span> <span class="n">axis</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="p">[</span><span class="n">dev_unify</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">mode</span><span class="p">,</span> <span class="n">axis</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">xs_t</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">dev_unify</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">mode</span><span class="p">,</span> <span class="n">axis</span><span class="p">)</span></div>
 
 
 <span class="c1"># noinspection PyShadowingNames,PyProtectedMember</span>
-<div class="viewcode-block" id="dev_unify_nest"><a class="viewcode-back" href="../../../../functional/ivy/device/dev_unify_nest.html#ivy.functional.ivy.device.dev_unify_nest">[docs]</a><span class="k">def</span> <span class="nf">dev_unify_nest</span><span class="p">(</span><span class="n">args</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">MultiDev</span><span class="p">],</span> <span class="n">kwargs</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">MultiDev</span><span class="p">],</span> <span class="n">dev</span><span class="p">,</span> <span class="n">mode</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">max_depth</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+<div class="viewcode-block" id="dev_unify_nest"><a class="viewcode-back" href="../../../../functional/ivy/device/dev_unify_nest.html#ivy.functional.ivy.device.dev_unify_nest">[docs]</a><span class="k">def</span> <span class="nf">dev_unify_nest</span><span class="p">(</span><span class="n">args</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">MultiDev</span><span class="p">],</span> <span class="n">kwargs</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">MultiDev</span><span class="p">],</span> <span class="n">device</span><span class="p">,</span> <span class="n">mode</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">max_depth</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Unify the input nested arguments, which consist of sub-arrays spread across arbitrary devices, to unified arrays</span>
 <span class="sd">    on the single target device.</span>
 
@@ -1345,7 +1345,7 @@
 <span class="sd">        The nested positional arguments to unify.</span>
 <span class="sd">    kwargs</span>
 <span class="sd">        The nested keyword arguments to unify.</span>
-<span class="sd">    dev</span>
+<span class="sd">    device</span>
 <span class="sd">        The device to unify the nested arguments to.</span>
 <span class="sd">    mode</span>
 <span class="sd">        The mode by which to unify, must be one of [ concat | mean | sum ]</span>
@@ -1366,8 +1366,8 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">args</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">_data</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">MultiDevIter</span><span class="p">)</span> <span class="k">else</span> <span class="n">args</span>
     <span class="n">kwargs</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">_data</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">kwargs</span><span class="p">,</span> <span class="n">MultiDevIter</span><span class="p">)</span> <span class="k">else</span> <span class="n">kwargs</span>
-    <span class="n">args_uni</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">nested_map</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">dev_unify</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dev</span><span class="p">,</span> <span class="n">mode</span><span class="p">,</span> <span class="n">axis</span><span class="p">),</span> <span class="n">max_depth</span><span class="o">=</span><span class="n">max_depth</span><span class="p">)</span>
-    <span class="n">kwargs_uni</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">nested_map</span><span class="p">(</span><span class="n">kwargs</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">dev_unify</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dev</span><span class="p">,</span> <span class="n">mode</span><span class="p">,</span> <span class="n">axis</span><span class="p">),</span> <span class="n">max_depth</span><span class="o">=</span><span class="n">max_depth</span><span class="p">)</span>
+    <span class="n">args_uni</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">nested_map</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">dev_unify</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">mode</span><span class="p">,</span> <span class="n">axis</span><span class="p">),</span> <span class="n">max_depth</span><span class="o">=</span><span class="n">max_depth</span><span class="p">)</span>
+    <span class="n">kwargs_uni</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">nested_map</span><span class="p">(</span><span class="n">kwargs</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">dev_unify</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">mode</span><span class="p">,</span> <span class="n">axis</span><span class="p">),</span> <span class="n">max_depth</span><span class="o">=</span><span class="n">max_depth</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">args_uni</span><span class="p">,</span> <span class="n">kwargs_uni</span></div>
 
 
@@ -1375,7 +1375,7 @@
 
 <div class="viewcode-block" id="DevMapper"><a class="viewcode-back" href="../../../../functional/ivy/device/DevMapper.html#ivy.functional.ivy.device.DevMapper">[docs]</a><span class="k">class</span> <span class="nc">DevMapper</span><span class="p">(</span><span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">):</span>
 
-<div class="viewcode-block" id="DevMapper.__init__"><a class="viewcode-back" href="../../../../functional/ivy/device/DevMapper.html#ivy.functional.ivy.device.DevMapper.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fn</span><span class="p">,</span> <span class="n">ret_fn</span><span class="p">,</span> <span class="n">queue_class</span><span class="p">,</span> <span class="n">worker_class</span><span class="p">,</span> <span class="n">devs</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">constant</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">unique</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="DevMapper.__init__"><a class="viewcode-back" href="../../../../functional/ivy/device/DevMapper.html#ivy.functional.ivy.device.DevMapper.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fn</span><span class="p">,</span> <span class="n">ret_fn</span><span class="p">,</span> <span class="n">queue_class</span><span class="p">,</span> <span class="n">worker_class</span><span class="p">,</span> <span class="n">devices</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">constant</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">unique</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Device Mapper base class.</span>
 
 <span class="sd">        Parameters</span>
@@ -1388,7 +1388,7 @@
 <span class="sd">            The class to use for creating queues.</span>
 <span class="sd">        worker_class</span>
 <span class="sd">            The class to use for creating parallel workers.</span>
-<span class="sd">        devs</span>
+<span class="sd">        devices</span>
 <span class="sd">            A list of devices on which to parallelise the function.</span>
 <span class="sd">        timeout</span>
 <span class="sd">            The timeout for getting items from the queues. Default is global.</span>
@@ -1402,8 +1402,8 @@
         <span class="n">unique_kwargs</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">default</span><span class="p">(</span><span class="n">unique</span><span class="p">,</span> <span class="p">{})</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_fn</span> <span class="o">=</span> <span class="n">fn</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_ret_fn</span> <span class="o">=</span> <span class="n">ret_fn</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_devs</span> <span class="o">=</span> <span class="n">devs</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_num_workers</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">devs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_devs</span> <span class="o">=</span> <span class="n">devices</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_num_workers</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">devices</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_timeout</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">default</span><span class="p">(</span><span class="n">timeout</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">queue_timeout</span><span class="p">())</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_workers</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_input_queues</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
@@ -1413,7 +1413,7 @@
             <span class="n">input_queue</span> <span class="o">=</span> <span class="n">queue_class</span><span class="p">()</span>
             <span class="n">output_queue</span> <span class="o">=</span> <span class="n">queue_class</span><span class="p">()</span>
             <span class="n">worker_kwargs</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="o">**</span><span class="n">constant_kwargs</span><span class="p">,</span> <span class="o">**</span><span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">unique_kwargs</span><span class="o">.</span><span class="n">items</span><span class="p">()})</span>
-            <span class="n">worker</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_worker_class</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_worker_fn</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">input_queue</span><span class="p">,</span> <span class="n">output_queue</span><span class="p">,</span> <span class="n">devs</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
+            <span class="n">worker</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_worker_class</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_worker_fn</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">input_queue</span><span class="p">,</span> <span class="n">output_queue</span><span class="p">,</span> <span class="n">devices</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
                                                                       <span class="n">worker_kwargs</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_framework_str</span><span class="p">()))</span>
             <span class="n">worker</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_input_queues</span><span class="p">[</span><span class="n">ds</span><span class="p">]</span> <span class="o">=</span> <span class="n">input_queue</span>
@@ -1428,14 +1428,14 @@
         <span class="k">return</span> <span class="n">state</span>
 
     <span class="c1"># noinspection PyShadowingNames</span>
-    <span class="k">def</span> <span class="nf">_worker_fn</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_queue</span><span class="p">,</span> <span class="n">output_queue</span><span class="p">,</span> <span class="n">dev</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">,</span> <span class="n">framework_str</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_worker_fn</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_queue</span><span class="p">,</span> <span class="n">output_queue</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">,</span> <span class="n">framework_str</span><span class="p">):</span>
         <span class="n">ivy</span><span class="o">.</span><span class="n">set_framework</span><span class="p">(</span><span class="n">framework_str</span><span class="p">)</span>
-        <span class="n">ivy</span><span class="o">.</span><span class="n">set_default_device</span><span class="p">(</span><span class="n">dev</span><span class="p">)</span>
+        <span class="n">ivy</span><span class="o">.</span><span class="n">set_default_device</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Module</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">v</span><span class="o">.</span><span class="n">built</span><span class="p">:</span>
-                <span class="n">v</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="n">dev</span><span class="o">=</span><span class="n">dev</span><span class="p">)</span>
-        <span class="k">if</span> <span class="s1">&#39;dev&#39;</span> <span class="ow">in</span> <span class="n">inspect</span><span class="o">.</span><span class="n">getfullargspec</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_fn</span><span class="p">)</span><span class="o">.</span><span class="n">args</span><span class="p">:</span>
-            <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;dev&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">dev</span>
+                <span class="n">v</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s1">&#39;device&#39;</span> <span class="ow">in</span> <span class="n">inspect</span><span class="o">.</span><span class="n">getfullargspec</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_fn</span><span class="p">)</span><span class="o">.</span><span class="n">args</span><span class="p">:</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;device&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">device</span>
         <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">loaded_kwargs</span> <span class="o">=</span> <span class="n">input_queue</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_timeout</span><span class="p">)</span>
@@ -1444,7 +1444,7 @@
             <span class="k">if</span> <span class="n">loaded_kwargs</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="k">return</span>
             <span class="k">if</span> <span class="s1">&#39;split_factor&#39;</span> <span class="ow">in</span> <span class="n">loaded_kwargs</span><span class="p">:</span>
-                <span class="n">ivy</span><span class="o">.</span><span class="n">set_split_factor</span><span class="p">(</span><span class="n">loaded_kwargs</span><span class="p">[</span><span class="s1">&#39;split_factor&#39;</span><span class="p">],</span> <span class="n">dev</span><span class="p">)</span>
+                <span class="n">ivy</span><span class="o">.</span><span class="n">set_split_factor</span><span class="p">(</span><span class="n">loaded_kwargs</span><span class="p">[</span><span class="s1">&#39;split_factor&#39;</span><span class="p">],</span> <span class="n">device</span><span class="p">)</span>
                 <span class="k">del</span> <span class="n">loaded_kwargs</span><span class="p">[</span><span class="s1">&#39;split_factor&#39;</span><span class="p">]</span>
             <span class="n">ret</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fn</span><span class="p">(</span><span class="o">**</span><span class="n">loaded_kwargs</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
             <span class="n">output_queue</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">ret</span><span class="p">)</span>
@@ -1484,9 +1484,9 @@
 <div class="viewcode-block" id="DevMapperMultiProc"><a class="viewcode-back" href="../../../../functional/ivy/device/DevMapperMultiProc.html#ivy.functional.ivy.device.DevMapperMultiProc">[docs]</a><span class="k">class</span> <span class="nc">DevMapperMultiProc</span><span class="p">(</span><span class="n">DevMapper</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; &quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="DevMapperMultiProc.__init__"><a class="viewcode-back" href="../../../../functional/ivy/device/DevMapperMultiProc.html#ivy.functional.ivy.device.DevMapperMultiProc.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fn</span><span class="p">,</span> <span class="n">ret_fn</span><span class="p">,</span> <span class="n">devs</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">constant</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">unique</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="DevMapperMultiProc.__init__"><a class="viewcode-back" href="../../../../functional/ivy/device/DevMapperMultiProc.html#ivy.functional.ivy.device.DevMapperMultiProc.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fn</span><span class="p">,</span> <span class="n">ret_fn</span><span class="p">,</span> <span class="n">devices</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">constant</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">unique</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="n">multiprocessing</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">multiprocessing</span><span class="p">(</span><span class="s1">&#39;forkserver&#39;</span><span class="p">)</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="n">ret_fn</span><span class="p">,</span> <span class="n">multiprocessing</span><span class="o">.</span><span class="n">Queue</span><span class="p">,</span> <span class="n">multiprocessing</span><span class="o">.</span><span class="n">Process</span><span class="p">,</span> <span class="n">devs</span><span class="p">,</span> <span class="n">timeout</span><span class="p">,</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="n">ret_fn</span><span class="p">,</span> <span class="n">multiprocessing</span><span class="o">.</span><span class="n">Queue</span><span class="p">,</span> <span class="n">multiprocessing</span><span class="o">.</span><span class="n">Process</span><span class="p">,</span> <span class="n">devices</span><span class="p">,</span> <span class="n">timeout</span><span class="p">,</span>
                          <span class="n">constant</span><span class="p">,</span> <span class="n">unique</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="fm">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -1514,7 +1514,7 @@
 <div class="viewcode-block" id="DevManager"><a class="viewcode-back" href="../../../../functional/ivy/device.html#ivy.functional.ivy.device.DevManager">[docs]</a><span class="k">class</span> <span class="nc">DevManager</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot; &quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="DevManager.__init__"><a class="viewcode-back" href="../../../../functional/ivy/device.html#ivy.functional.ivy.device.DevManager.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dev_mapper</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">devs</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">da_dim_size</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<div class="viewcode-block" id="DevManager.__init__"><a class="viewcode-back" href="../../../../functional/ivy/device.html#ivy.functional.ivy.device.DevManager.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dev_mapper</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">devices</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">da_dim_size</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">safety_factor</span><span class="o">=</span><span class="mf">1.1</span><span class="p">,</span> <span class="n">min_dev_dim_size</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">max_dev_dim_step_ratio</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">min_unit_dev_tune_steps</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
                  <span class="n">min_sf_tune_steps</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">starting_split_factor</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">max_split_factor_step_size</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">tune_dev_alloc</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                  <span class="n">tune_dev_splits</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
@@ -1525,7 +1525,7 @@
 <span class="sd">        ----------</span>
 <span class="sd">        dev_mapper</span>
 <span class="sd">            The pre-built device mapper used by the manager internally. (Default value = None)</span>
-<span class="sd">        devs</span>
+<span class="sd">        devices</span>
 <span class="sd">            The devices to distribute and clone the arguments across.</span>
 <span class="sd">        da_dim_size</span>
 <span class="sd">            The size of the dimension along which the device allocation splitting is performed. (Default value = None)</span>
@@ -1554,8 +1554,8 @@
         <span class="n">with_dev_mapping</span> <span class="o">=</span> <span class="kc">True</span> <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">dev_mapper</span><span class="p">)</span> <span class="k">else</span> <span class="kc">False</span>
         <span class="n">tune_dev_alloc</span> <span class="o">=</span> <span class="kc">False</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">with_dev_mapping</span> <span class="k">else</span> <span class="n">tune_dev_alloc</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_dev_mapper</span> <span class="o">=</span> <span class="n">dev_mapper</span>
-        <span class="n">devs</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">default</span><span class="p">(</span><span class="n">devs</span><span class="p">,</span> <span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">default_device</span><span class="p">()])</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_num_devs</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">devs</span><span class="p">)</span>
+        <span class="n">devices</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">default</span><span class="p">(</span><span class="n">devices</span><span class="p">,</span> <span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">default_device</span><span class="p">()])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_num_devs</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">devices</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_dim_size</span> <span class="o">=</span> <span class="n">da_dim_size</span>
         <span class="k">assert</span> <span class="mi">1</span> <span class="o">&lt;=</span> <span class="n">safety_factor</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_safety_factor</span> <span class="o">=</span> <span class="n">safety_factor</span>
@@ -1584,10 +1584,10 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_observed_configs</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_da_directions</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_da_directions_flipped</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">devs</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_dev_da_ratios</span> <span class="o">=</span> <span class="n">devs</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">devices</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_dev_da_ratios</span> <span class="o">=</span> <span class="n">devices</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_dev_da_ratios</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">devs</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">_num_devs</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_num_devs</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_dev_da_ratios</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">devices</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">_num_devs</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_num_devs</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_devs_keys</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dev_da_ratios</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_percent_mem_inc_per_unit_da_dim</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_devs_keys</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_num_devs</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_percent_mem_inc_per_sf</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_devs_keys</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_num_devs</span><span class="p">))</span>

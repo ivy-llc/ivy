@@ -282,17 +282,17 @@
 <h1>dev_dist_array<a class="headerlink" href="#dev-dist-array" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
 <dt id="ivy.functional.ivy.device.dev_dist_array">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">dev_dist_array</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">devs</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>Iterable<span class="p">[</span>str<span class="p">]</span><span class="p">, </span>Dict<span class="p">[</span>str<span class="p">, </span>int<span class="p">]</span><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">0</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/device.html#dev_dist_array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.device.dev_dist_array" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">dev_dist_array</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">devices</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>Iterable<span class="p">[</span>str<span class="p">]</span><span class="p">, </span>Dict<span class="p">[</span>str<span class="p">, </span>int<span class="p">]</span><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">0</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/device.html#dev_dist_array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.device.dev_dist_array" title="Permalink to this definition">¶</a></dt>
 <dd><p>Distribute an array across the specified devices, returning a list of sub-arrays, each on a different device.</p>
 <dl class="simple">
 <dt>x</dt><dd><p>The array to distribute across devices.</p>
 </dd>
-<dt>devs</dt><dd><p>The devices to distribute the array across.</p>
+<dt>devices</dt><dd><p>The devices to distribute the array across.</p>
 </dd>
 <dt>axis</dt><dd><p>The axis along which to split the array. Default is 0.</p>
 </dd>
 </dl>
-<p>devs</p>
+<p>devices</p>
 <p>Dict</p>
 <dl class="simple">
 <dt>Returns</dt><dd></dd>

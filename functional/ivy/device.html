@@ -281,11 +281,11 @@
 <p>Collection of device Ivy functions.</p>
 <dl class="py class">
 <dt id="ivy.functional.ivy.device.DefaultDevice">
-<em class="property">class </em><code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">DefaultDevice</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dev</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/device.html#DefaultDevice"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.device.DefaultDevice" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">DefaultDevice</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">device</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/device.html#DefaultDevice"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.device.DefaultDevice" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <dl class="py method">
 <dt id="ivy.functional.ivy.device.DefaultDevice.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dev</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/device.html#DefaultDevice.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.device.DefaultDevice.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">device</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/device.html#DefaultDevice.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.device.DefaultDevice.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
 </dd></dl>
 
@@ -299,13 +299,13 @@
 
 <dl class="py class">
 <dt id="ivy.functional.ivy.device.DevClonedIter">
-<em class="property">class </em><code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">DevClonedIter</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span><span class="p">:</span> <span class="n">Iterable</span></em>, <em class="sig-param"><span class="n">devs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/device.html#DevClonedIter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.device.DevClonedIter" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">DevClonedIter</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span><span class="p">:</span> <span class="n">Iterable</span></em>, <em class="sig-param"><span class="n">devices</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/device.html#DevClonedIter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.device.DevClonedIter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="device/MultiDevIter.html#ivy.functional.ivy.device.MultiDevIter" title="ivy.functional.ivy.device.MultiDevIter"><code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.functional.ivy.device.MultiDevIter</span></code></a></p>
 </dd></dl>
 
 <dl class="py class">
 <dt id="ivy.functional.ivy.device.DevClonedNest">
-<em class="property">class </em><code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">DevClonedNest</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span><span class="p">:</span> <span class="n">Iterable</span></em>, <em class="sig-param"><span class="n">devs</span></em>, <em class="sig-param"><span class="n">max_depth</span><span class="o">=</span><span class="default_value">1</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/device.html#DevClonedNest"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.device.DevClonedNest" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">DevClonedNest</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span><span class="p">:</span> <span class="n">Iterable</span></em>, <em class="sig-param"><span class="n">devices</span></em>, <em class="sig-param"><span class="n">max_depth</span><span class="o">=</span><span class="default_value">1</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/device.html#DevClonedNest"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.device.DevClonedNest" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="device/MultiDevNest.html#ivy.functional.ivy.device.MultiDevNest" title="ivy.functional.ivy.device.MultiDevNest"><code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.functional.ivy.device.MultiDevNest</span></code></a></p>
 </dd></dl>
 
@@ -317,29 +317,29 @@
 
 <dl class="py class">
 <dt id="ivy.functional.ivy.device.DevDistIter">
-<em class="property">class </em><code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">DevDistIter</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span><span class="p">:</span> <span class="n">Iterable</span></em>, <em class="sig-param"><span class="n">devs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/device.html#DevDistIter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.device.DevDistIter" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">DevDistIter</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span><span class="p">:</span> <span class="n">Iterable</span></em>, <em class="sig-param"><span class="n">devices</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/device.html#DevDistIter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.device.DevDistIter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="device/MultiDevIter.html#ivy.functional.ivy.device.MultiDevIter" title="ivy.functional.ivy.device.MultiDevIter"><code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.functional.ivy.device.MultiDevIter</span></code></a></p>
 </dd></dl>
 
 <dl class="py class">
 <dt id="ivy.functional.ivy.device.DevDistNest">
-<em class="property">class </em><code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">DevDistNest</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span><span class="p">:</span> <span class="n">Iterable</span></em>, <em class="sig-param"><span class="n">devs</span></em>, <em class="sig-param"><span class="n">max_depth</span><span class="o">=</span><span class="default_value">1</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/device.html#DevDistNest"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.device.DevDistNest" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">DevDistNest</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span><span class="p">:</span> <span class="n">Iterable</span></em>, <em class="sig-param"><span class="n">devices</span></em>, <em class="sig-param"><span class="n">max_depth</span><span class="o">=</span><span class="default_value">1</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/device.html#DevDistNest"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.device.DevDistNest" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="device/MultiDevNest.html#ivy.functional.ivy.device.MultiDevNest" title="ivy.functional.ivy.device.MultiDevNest"><code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.functional.ivy.device.MultiDevNest</span></code></a></p>
 </dd></dl>
 
 <dl class="py class">
 <dt id="ivy.functional.ivy.device.DevManager">
-<em class="property">class </em><code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">DevManager</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dev_mapper</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">devs</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Union<span class="p">[</span>Iterable<span class="p">[</span>str<span class="p">]</span><span class="p">, </span>Dict<span class="p">[</span>str<span class="p">, </span>int<span class="p">]</span><span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">da_dim_size</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">safety_factor</span><span class="o">=</span><span class="default_value">1.1</span></em>, <em class="sig-param"><span class="n">min_dev_dim_size</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">max_dev_dim_step_ratio</span><span class="o">=</span><span class="default_value">0.1</span></em>, <em class="sig-param"><span class="n">min_unit_dev_tune_steps</span><span class="o">=</span><span class="default_value">10</span></em>, <em class="sig-param"><span class="n">min_sf_tune_steps</span><span class="o">=</span><span class="default_value">10</span></em>, <em class="sig-param"><span class="n">starting_split_factor</span><span class="o">=</span><span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">max_split_factor_step_size</span><span class="o">=</span><span class="default_value">0.05</span></em>, <em class="sig-param"><span class="n">tune_dev_alloc</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">tune_dev_splits</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/device.html#DevManager"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.device.DevManager" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">DevManager</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dev_mapper</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">devices</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Union<span class="p">[</span>Iterable<span class="p">[</span>str<span class="p">]</span><span class="p">, </span>Dict<span class="p">[</span>str<span class="p">, </span>int<span class="p">]</span><span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">da_dim_size</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">safety_factor</span><span class="o">=</span><span class="default_value">1.1</span></em>, <em class="sig-param"><span class="n">min_dev_dim_size</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">max_dev_dim_step_ratio</span><span class="o">=</span><span class="default_value">0.1</span></em>, <em class="sig-param"><span class="n">min_unit_dev_tune_steps</span><span class="o">=</span><span class="default_value">10</span></em>, <em class="sig-param"><span class="n">min_sf_tune_steps</span><span class="o">=</span><span class="default_value">10</span></em>, <em class="sig-param"><span class="n">starting_split_factor</span><span class="o">=</span><span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">max_split_factor_step_size</span><span class="o">=</span><span class="default_value">0.05</span></em>, <em class="sig-param"><span class="n">tune_dev_alloc</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">tune_dev_splits</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/device.html#DevManager"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.device.DevManager" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <dl class="py method">
 <dt id="ivy.functional.ivy.device.DevManager.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dev_mapper</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">devs</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Union<span class="p">[</span>Iterable<span class="p">[</span>str<span class="p">]</span><span class="p">, </span>Dict<span class="p">[</span>str<span class="p">, </span>int<span class="p">]</span><span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">da_dim_size</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">safety_factor</span><span class="o">=</span><span class="default_value">1.1</span></em>, <em class="sig-param"><span class="n">min_dev_dim_size</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">max_dev_dim_step_ratio</span><span class="o">=</span><span class="default_value">0.1</span></em>, <em class="sig-param"><span class="n">min_unit_dev_tune_steps</span><span class="o">=</span><span class="default_value">10</span></em>, <em class="sig-param"><span class="n">min_sf_tune_steps</span><span class="o">=</span><span class="default_value">10</span></em>, <em class="sig-param"><span class="n">starting_split_factor</span><span class="o">=</span><span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">max_split_factor_step_size</span><span class="o">=</span><span class="default_value">0.05</span></em>, <em class="sig-param"><span class="n">tune_dev_alloc</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">tune_dev_splits</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/device.html#DevManager.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.device.DevManager.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dev_mapper</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">devices</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Union<span class="p">[</span>Iterable<span class="p">[</span>str<span class="p">]</span><span class="p">, </span>Dict<span class="p">[</span>str<span class="p">, </span>int<span class="p">]</span><span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">da_dim_size</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">safety_factor</span><span class="o">=</span><span class="default_value">1.1</span></em>, <em class="sig-param"><span class="n">min_dev_dim_size</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">max_dev_dim_step_ratio</span><span class="o">=</span><span class="default_value">0.1</span></em>, <em class="sig-param"><span class="n">min_unit_dev_tune_steps</span><span class="o">=</span><span class="default_value">10</span></em>, <em class="sig-param"><span class="n">min_sf_tune_steps</span><span class="o">=</span><span class="default_value">10</span></em>, <em class="sig-param"><span class="n">starting_split_factor</span><span class="o">=</span><span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">max_split_factor_step_size</span><span class="o">=</span><span class="default_value">0.05</span></em>, <em class="sig-param"><span class="n">tune_dev_alloc</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">tune_dev_splits</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/device.html#DevManager.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.device.DevManager.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create device manager, which unlike the device mapper, handles all argument cloning and distributing internally.
 The device manager only receivess a specification regarding the ratio of the batch each device should consume.</p>
 <dl class="simple">
 <dt>dev_mapper</dt><dd><p>The pre-built device mapper used by the manager internally. (Default value = None)</p>
 </dd>
-<dt>devs</dt><dd><p>The devices to distribute and clone the arguments across.</p>
+<dt>devices</dt><dd><p>The devices to distribute and clone the arguments across.</p>
 </dd>
 <dt>da_dim_size</dt><dd><p>The size of the dimension along which the device allocation splitting is performed. (Default value = None)</p>
 </dd>
@@ -430,11 +430,11 @@ multiprocessing.</p>
 
 <dl class="py class">
 <dt id="ivy.functional.ivy.device.DevMapper">
-<em class="property">class </em><code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">DevMapper</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">fn</span></em>, <em class="sig-param"><span class="n">ret_fn</span></em>, <em class="sig-param"><span class="n">queue_class</span></em>, <em class="sig-param"><span class="n">worker_class</span></em>, <em class="sig-param"><span class="n">devs</span></em>, <em class="sig-param"><span class="n">timeout</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">constant</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">unique</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/device.html#DevMapper"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.device.DevMapper" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">DevMapper</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">fn</span></em>, <em class="sig-param"><span class="n">ret_fn</span></em>, <em class="sig-param"><span class="n">queue_class</span></em>, <em class="sig-param"><span class="n">worker_class</span></em>, <em class="sig-param"><span class="n">devices</span></em>, <em class="sig-param"><span class="n">timeout</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">constant</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">unique</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/device.html#DevMapper"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.device.DevMapper" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABC</span></code></p>
 <dl class="py method">
 <dt id="ivy.functional.ivy.device.DevMapper.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">fn</span></em>, <em class="sig-param"><span class="n">ret_fn</span></em>, <em class="sig-param"><span class="n">queue_class</span></em>, <em class="sig-param"><span class="n">worker_class</span></em>, <em class="sig-param"><span class="n">devs</span></em>, <em class="sig-param"><span class="n">timeout</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">constant</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">unique</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/device.html#DevMapper.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.device.DevMapper.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">fn</span></em>, <em class="sig-param"><span class="n">ret_fn</span></em>, <em class="sig-param"><span class="n">queue_class</span></em>, <em class="sig-param"><span class="n">worker_class</span></em>, <em class="sig-param"><span class="n">devices</span></em>, <em class="sig-param"><span class="n">timeout</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">constant</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">unique</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/device.html#DevMapper.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.device.DevMapper.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Device Mapper base class.</p>
 <dl class="simple">
 <dt>fn</dt><dd><p>The function which the device mapper parallelises across devices.</p>
@@ -445,7 +445,7 @@ multiprocessing.</p>
 </dd>
 <dt>worker_class</dt><dd><p>The class to use for creating parallel workers.</p>
 </dd>
-<dt>devs</dt><dd><p>A list of devices on which to parallelise the function.</p>
+<dt>devices</dt><dd><p>A list of devices on which to parallelise the function.</p>
 </dd>
 <dt>timeout</dt><dd><p>The timeout for getting items from the queues. Default is global.</p>
 </dd>
@@ -479,11 +479,11 @@ multiprocessing.</p>
 
 <dl class="py class">
 <dt id="ivy.functional.ivy.device.DevMapperMultiProc">
-<em class="property">class </em><code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">DevMapperMultiProc</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">fn</span></em>, <em class="sig-param"><span class="n">ret_fn</span></em>, <em class="sig-param"><span class="n">devs</span></em>, <em class="sig-param"><span class="n">timeout</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">constant</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">unique</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/device.html#DevMapperMultiProc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.device.DevMapperMultiProc" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">DevMapperMultiProc</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">fn</span></em>, <em class="sig-param"><span class="n">ret_fn</span></em>, <em class="sig-param"><span class="n">devices</span></em>, <em class="sig-param"><span class="n">timeout</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">constant</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">unique</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/device.html#DevMapperMultiProc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.device.DevMapperMultiProc" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="device/DevMapper.html#ivy.functional.ivy.device.DevMapper" title="ivy.functional.ivy.device.DevMapper"><code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.functional.ivy.device.DevMapper</span></code></a></p>
 <dl class="py method">
 <dt id="ivy.functional.ivy.device.DevMapperMultiProc.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">fn</span></em>, <em class="sig-param"><span class="n">ret_fn</span></em>, <em class="sig-param"><span class="n">devs</span></em>, <em class="sig-param"><span class="n">timeout</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">constant</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">unique</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/device.html#DevMapperMultiProc.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.device.DevMapperMultiProc.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">fn</span></em>, <em class="sig-param"><span class="n">ret_fn</span></em>, <em class="sig-param"><span class="n">devices</span></em>, <em class="sig-param"><span class="n">timeout</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">constant</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">unique</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/device.html#DevMapperMultiProc.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.device.DevMapperMultiProc.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Device Mapper base class.</p>
 <dl class="simple">
 <dt>fn</dt><dd><p>The function which the device mapper parallelises across devices.</p>
@@ -494,7 +494,7 @@ multiprocessing.</p>
 </dd>
 <dt>worker_class</dt><dd><p>The class to use for creating parallel workers.</p>
 </dd>
-<dt>devs</dt><dd><p>A list of devices on which to parallelise the function.</p>
+<dt>devices</dt><dd><p>A list of devices on which to parallelise the function.</p>
 </dd>
 <dt>timeout</dt><dd><p>The timeout for getting items from the queues. Default is global.</p>
 </dd>
@@ -553,18 +553,18 @@ multiprocessing.</p>
 
 <dl class="py class">
 <dt id="ivy.functional.ivy.device.MultiDevIter">
-<em class="property">class </em><code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">MultiDevIter</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span><span class="p">:</span> <span class="n">Iterable</span></em>, <em class="sig-param"><span class="n">devs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/device.html#MultiDevIter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.device.MultiDevIter" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">MultiDevIter</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span><span class="p">:</span> <span class="n">Iterable</span></em>, <em class="sig-param"><span class="n">devices</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/device.html#MultiDevIter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.device.MultiDevIter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#ivy.functional.ivy.device.MultiDev" title="ivy.functional.ivy.device.MultiDev"><code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.functional.ivy.device.MultiDev</span></code></a></p>
 <dl class="py method">
 <dt id="ivy.functional.ivy.device.MultiDevIter.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span><span class="p">:</span> <span class="n">Iterable</span></em>, <em class="sig-param"><span class="n">devs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/device.html#MultiDevIter.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.device.MultiDevIter.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span><span class="p">:</span> <span class="n">Iterable</span></em>, <em class="sig-param"><span class="n">devices</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/device.html#MultiDevIter.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.device.MultiDevIter.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt id="ivy.functional.ivy.device.MultiDevIter.at_dev">
-<code class="sig-name descname">at_dev</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dev</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/device.html#MultiDevIter.at_dev"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.device.MultiDevIter.at_dev" title="Permalink to this definition">¶</a></dt>
-<dd><p>dev</p>
+<code class="sig-name descname">at_dev</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">device</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/device.html#MultiDevIter.at_dev"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.device.MultiDevIter.at_dev" title="Permalink to this definition">¶</a></dt>
+<dd><p>device</p>
 </dd></dl>
 
 <dl class="py method">
@@ -576,18 +576,18 @@ multiprocessing.</p>
 
 <dl class="py class">
 <dt id="ivy.functional.ivy.device.MultiDevNest">
-<em class="property">class </em><code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">MultiDevNest</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span><span class="p">:</span> <span class="n">Iterable</span></em>, <em class="sig-param"><span class="n">devs</span></em>, <em class="sig-param"><span class="n">max_depth</span><span class="o">=</span><span class="default_value">1</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/device.html#MultiDevNest"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.device.MultiDevNest" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">MultiDevNest</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span><span class="p">:</span> <span class="n">Iterable</span></em>, <em class="sig-param"><span class="n">devices</span></em>, <em class="sig-param"><span class="n">max_depth</span><span class="o">=</span><span class="default_value">1</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/device.html#MultiDevNest"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.device.MultiDevNest" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="device/MultiDevIter.html#ivy.functional.ivy.device.MultiDevIter" title="ivy.functional.ivy.device.MultiDevIter"><code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.functional.ivy.device.MultiDevIter</span></code></a></p>
 <dl class="py method">
 <dt id="ivy.functional.ivy.device.MultiDevNest.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span><span class="p">:</span> <span class="n">Iterable</span></em>, <em class="sig-param"><span class="n">devs</span></em>, <em class="sig-param"><span class="n">max_depth</span><span class="o">=</span><span class="default_value">1</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/device.html#MultiDevNest.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.device.MultiDevNest.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span><span class="p">:</span> <span class="n">Iterable</span></em>, <em class="sig-param"><span class="n">devices</span></em>, <em class="sig-param"><span class="n">max_depth</span><span class="o">=</span><span class="default_value">1</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/device.html#MultiDevNest.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.device.MultiDevNest.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt id="ivy.functional.ivy.device.MultiDevNest.at_dev">
-<code class="sig-name descname">at_dev</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dev</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/device.html#MultiDevNest.at_dev"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.device.MultiDevNest.at_dev" title="Permalink to this definition">¶</a></dt>
-<dd><p>dev</p>
+<code class="sig-name descname">at_dev</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">device</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/device.html#MultiDevNest.at_dev"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.device.MultiDevNest.at_dev" title="Permalink to this definition">¶</a></dt>
+<dd><p>device</p>
 </dd></dl>
 
 </dd></dl>
@@ -616,19 +616,19 @@ multiprocessing.</p>
 
 <dl class="py function">
 <dt id="ivy.functional.ivy.device.clear_mem_on_dev">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">clear_mem_on_dev</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dev</span><span class="p">:</span> <span class="n">ivy.Device</span></em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="../../_modules/ivy/functional/ivy/device.html#clear_mem_on_dev"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.device.clear_mem_on_dev" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">clear_mem_on_dev</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">device</span><span class="p">:</span> <span class="n">ivy.Device</span></em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="../../_modules/ivy/functional/ivy/device.html#clear_mem_on_dev"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.device.clear_mem_on_dev" title="Permalink to this definition">¶</a></dt>
 <dd><p>Clear memory cache on target device.</p>
 <dl class="simple">
-<dt>dev</dt><dd><p>The device string to conver to native device handle.</p>
+<dt>device</dt><dd><p>The device string to conver to native device handle.</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py function">
 <dt id="ivy.functional.ivy.device.default_device">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">default_device</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dev</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/device.html#default_device"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.device.default_device" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">default_device</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">device</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/device.html#default_device"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.device.default_device" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="simple">
-<dt>dev</dt><dd><p>(Default value = None)</p>
+<dt>device</dt><dd><p>(Default value = None)</p>
 </dd>
 </dl>
 <blockquote>
@@ -656,12 +656,12 @@ multiprocessing.</p>
 
 <dl class="py function">
 <dt id="ivy.functional.ivy.device.dev_clone">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">dev_clone</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">devs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/device.html#dev_clone"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.device.dev_clone" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">dev_clone</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">devices</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/device.html#dev_clone"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.device.dev_clone" title="Permalink to this definition">¶</a></dt>
 <dd><p>Clone the input item to each of the specified devices, returning a list of cloned items, each on a different device.</p>
 <dl class="simple">
 <dt>x</dt><dd><p>The input array or container to clone to each device.</p>
 </dd>
-<dt>devs</dt><dd><p>The devices to clone the input to.</p>
+<dt>devices</dt><dd><p>The deviceices to clone the input to.</p>
 </dd>
 <dt>Returns</dt><dd></dd>
 <dt>ret</dt><dd><p>array or container distributed across the target devices</p>
@@ -671,12 +671,12 @@ multiprocessing.</p>
 
 <dl class="py function">
 <dt id="ivy.functional.ivy.device.dev_clone_array">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">dev_clone_array</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">devs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/device.html#dev_clone_array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.device.dev_clone_array" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">dev_clone_array</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">devices</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/device.html#dev_clone_array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.device.dev_clone_array" title="Permalink to this definition">¶</a></dt>
 <dd><p>Clone an array across the specified devices, returning a list of cloned arrays, each on a different device.</p>
 <dl class="simple">
 <dt>x</dt><dd><p>The array to clone across devices.</p>
 </dd>
-<dt>devs</dt><dd><p>The devices to clone the array to.</p>
+<dt>devices</dt><dd><p>The devices to clone the array to.</p>
 </dd>
 <dt>Returns</dt><dd></dd>
 <dt>ret</dt><dd><p>array cloned to each of the target devices</p>
@@ -686,12 +686,12 @@ multiprocessing.</p>
 
 <dl class="py function">
 <dt id="ivy.functional.ivy.device.dev_clone_iter">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">dev_clone_iter</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">xs</span></em>, <em class="sig-param"><span class="n">devs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/device.html#dev_clone_iter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.device.dev_clone_iter" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">dev_clone_iter</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">xs</span></em>, <em class="sig-param"><span class="n">devices</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/device.html#dev_clone_iter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.device.dev_clone_iter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Clone elements of the iterbale xs to each of the specified devices.</p>
 <dl class="simple">
 <dt>xs</dt><dd><p>The iterable of items to clone.</p>
 </dd>
-<dt>devs</dt><dd><p>The devices to clone each of the iterable elements to.</p>
+<dt>devices</dt><dd><p>The devices to clone each of the iterable elements to.</p>
 </dd>
 <dt>Returns</dt><dd></dd>
 <dt>ret</dt><dd><p>iterable with each element cloned to each of the target devices</p>
@@ -701,14 +701,14 @@ multiprocessing.</p>
 
 <dl class="py function">
 <dt id="ivy.functional.ivy.device.dev_clone_nest">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">dev_clone_nest</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">args</span></em>, <em class="sig-param"><span class="n">kwargs</span></em>, <em class="sig-param"><span class="n">devs</span></em>, <em class="sig-param"><span class="n">max_depth</span><span class="o">=</span><span class="default_value">1</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/device.html#dev_clone_nest"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.device.dev_clone_nest" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">dev_clone_nest</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">args</span></em>, <em class="sig-param"><span class="n">kwargs</span></em>, <em class="sig-param"><span class="n">devices</span></em>, <em class="sig-param"><span class="n">max_depth</span><span class="o">=</span><span class="default_value">1</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/device.html#dev_clone_nest"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.device.dev_clone_nest" title="Permalink to this definition">¶</a></dt>
 <dd><p>Clone the input arguments across the specified devices.</p>
 <dl class="simple">
 <dt>args</dt><dd><p>The positional arguments to clone.</p>
 </dd>
 <dt>kwargs</dt><dd><p>The keyword arguments to clone.</p>
 </dd>
-<dt>devs</dt><dd><p>The devices to clone the arguments to.</p>
+<dt>devices</dt><dd><p>The devices to clone the arguments to.</p>
 </dd>
 <dt>max_depth</dt><dd><p>The maximum nested depth to reach. Default is 1. Increase this if the nest is deeper.</p>
 </dd>
@@ -720,17 +720,17 @@ multiprocessing.</p>
 
 <dl class="py function">
 <dt id="ivy.functional.ivy.device.dev_dist">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">dev_dist</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">devs</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>Iterable<span class="p">[</span>str<span class="p">]</span><span class="p">, </span>Dict<span class="p">[</span>str<span class="p">, </span>int<span class="p">]</span><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">0</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/device.html#dev_dist"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.device.dev_dist" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">dev_dist</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">devices</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>Iterable<span class="p">[</span>str<span class="p">]</span><span class="p">, </span>Dict<span class="p">[</span>str<span class="p">, </span>int<span class="p">]</span><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">0</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/device.html#dev_dist"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.device.dev_dist" title="Permalink to this definition">¶</a></dt>
 <dd><p>Distribute the input item across the specified devices, returning a list of sub-items, each on a different device.</p>
 <dl class="simple">
 <dt>x</dt><dd><p>The input array or container to distribute across devices.</p>
 </dd>
-<dt>devs</dt><dd><p>The devices to distribute the input across.</p>
+<dt>devices</dt><dd><p>The devices to distribute the input across.</p>
 </dd>
 <dt>axis</dt><dd><p>The axis along which to split the input. Default is 0.</p>
 </dd>
 </dl>
-<p>devs</p>
+<p>devices</p>
 <p>Dict</p>
 <dl class="simple">
 <dt>Returns</dt><dd></dd>
@@ -741,17 +741,17 @@ multiprocessing.</p>
 
 <dl class="py function">
 <dt id="ivy.functional.ivy.device.dev_dist_array">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">dev_dist_array</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">devs</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>Iterable<span class="p">[</span>str<span class="p">]</span><span class="p">, </span>Dict<span class="p">[</span>str<span class="p">, </span>int<span class="p">]</span><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">0</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/device.html#dev_dist_array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.device.dev_dist_array" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">dev_dist_array</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">devices</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>Iterable<span class="p">[</span>str<span class="p">]</span><span class="p">, </span>Dict<span class="p">[</span>str<span class="p">, </span>int<span class="p">]</span><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">0</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/device.html#dev_dist_array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.device.dev_dist_array" title="Permalink to this definition">¶</a></dt>
 <dd><p>Distribute an array across the specified devices, returning a list of sub-arrays, each on a different device.</p>
 <dl class="simple">
 <dt>x</dt><dd><p>The array to distribute across devices.</p>
 </dd>
-<dt>devs</dt><dd><p>The devices to distribute the array across.</p>
+<dt>devices</dt><dd><p>The devices to distribute the array across.</p>
 </dd>
 <dt>axis</dt><dd><p>The axis along which to split the array. Default is 0.</p>
 </dd>
 </dl>
-<p>devs</p>
+<p>devices</p>
 <p>Dict</p>
 <dl class="simple">
 <dt>Returns</dt><dd></dd>
@@ -762,17 +762,17 @@ multiprocessing.</p>
 
 <dl class="py function">
 <dt id="ivy.functional.ivy.device.dev_dist_iter">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">dev_dist_iter</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">xs</span></em>, <em class="sig-param"><span class="n">devs</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>Iterable<span class="p">[</span>str<span class="p">]</span><span class="p">, </span>Dict<span class="p">[</span>str<span class="p">, </span>int<span class="p">]</span><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">0</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/device.html#dev_dist_iter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.device.dev_dist_iter" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">dev_dist_iter</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">xs</span></em>, <em class="sig-param"><span class="n">devices</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>Iterable<span class="p">[</span>str<span class="p">]</span><span class="p">, </span>Dict<span class="p">[</span>str<span class="p">, </span>int<span class="p">]</span><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">0</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/device.html#dev_dist_iter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.device.dev_dist_iter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Distribute elements of the iterbale xs across the specified devices.</p>
 <dl class="simple">
 <dt>xs</dt><dd><p>The iterable of items to distribute.</p>
 </dd>
-<dt>devs</dt><dd><p>The devices to distribute the iterable elements across.</p>
+<dt>devices</dt><dd><p>The devices to distribute the iterable elements across.</p>
 </dd>
 <dt>axis</dt><dd><p>The axis along which to split the arrays in the iterable xs. Default is 0.</p>
 </dd>
 </dl>
-<p>devs</p>
+<p>devices</p>
 <p>Dict</p>
 <dl class="simple">
 <dt>Returns</dt><dd></dd>
@@ -783,21 +783,21 @@ multiprocessing.</p>
 
 <dl class="py function">
 <dt id="ivy.functional.ivy.device.dev_dist_nest">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">dev_dist_nest</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">args</span></em>, <em class="sig-param"><span class="n">kwargs</span></em>, <em class="sig-param"><span class="n">devs</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>Iterable<span class="p">[</span>str<span class="p">]</span><span class="p">, </span>Dict<span class="p">[</span>str<span class="p">, </span>int<span class="p">]</span><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">max_depth</span><span class="o">=</span><span class="default_value">1</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/device.html#dev_dist_nest"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.device.dev_dist_nest" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">dev_dist_nest</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">args</span></em>, <em class="sig-param"><span class="n">kwargs</span></em>, <em class="sig-param"><span class="n">devices</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>Iterable<span class="p">[</span>str<span class="p">]</span><span class="p">, </span>Dict<span class="p">[</span>str<span class="p">, </span>int<span class="p">]</span><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">max_depth</span><span class="o">=</span><span class="default_value">1</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/device.html#dev_dist_nest"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.device.dev_dist_nest" title="Permalink to this definition">¶</a></dt>
 <dd><p>Distribute the nested input arguments across the specified devices.</p>
 <dl class="simple">
 <dt>args</dt><dd><p>The positional nested arguments to distribute.</p>
 </dd>
 <dt>kwargs</dt><dd><p>The keyword nested arguments to distribute.</p>
 </dd>
-<dt>devs</dt><dd><p>The devices to distribute the nested arguments across.</p>
+<dt>devices</dt><dd><p>The devices to distribute the nested arguments across.</p>
 </dd>
 <dt>axis</dt><dd><p>The axis along which to split the arrays in the arguments. Default is 0.</p>
 </dd>
 <dt>max_depth</dt><dd><p>The maximum nested depth to reach. Default is 1. Increase this if the nest is deeper.</p>
 </dd>
 </dl>
-<p>devs</p>
+<p>devices</p>
 <p>Dict</p>
 <dl class="simple">
 <dt>Returns</dt><dd></dd>
@@ -808,10 +808,10 @@ multiprocessing.</p>
 
 <dl class="py function">
 <dt id="ivy.functional.ivy.device.dev_from_str">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">dev_from_str</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dev</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.Device<span class="p">, </span>str<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; ivy.Device<a class="reference internal" href="../../_modules/ivy/functional/ivy/device.html#dev_from_str"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.device.dev_from_str" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">dev_from_str</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">device</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.Device<span class="p">, </span>str<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; ivy.Device<a class="reference internal" href="../../_modules/ivy/functional/ivy/device.html#dev_from_str"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.device.dev_from_str" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert device string representation to native device type.</p>
 <dl class="simple">
-<dt>dev</dt><dd><p>The device string to conver to native device handle.</p>
+<dt>device</dt><dd><p>The device string to conver to native device handle.</p>
 </dd>
 </dl>
 <blockquote>
@@ -824,10 +824,10 @@ multiprocessing.</p>
 
 <dl class="py function">
 <dt id="ivy.functional.ivy.device.dev_to_str">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">dev_to_str</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dev</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.Device<span class="p">, </span>str<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="../../_modules/ivy/functional/ivy/device.html#dev_to_str"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.device.dev_to_str" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">dev_to_str</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">device</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.Device<span class="p">, </span>str<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="../../_modules/ivy/functional/ivy/device.html#dev_to_str"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.device.dev_to_str" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert native data type to string representation.</p>
 <dl class="simple">
-<dt>dev</dt><dd><p>The device handle to convert to string.</p>
+<dt>device</dt><dd><p>The device handle to convert to string.</p>
 </dd>
 </dl>
 <blockquote>
@@ -840,12 +840,12 @@ multiprocessing.</p>
 
 <dl class="py function">
 <dt id="ivy.functional.ivy.device.dev_unify">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">dev_unify</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">xs</span></em>, <em class="sig-param"><span class="n">dev</span></em>, <em class="sig-param"><span class="n">mode</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">0</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/device.html#dev_unify"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.device.dev_unify" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">dev_unify</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">xs</span></em>, <em class="sig-param"><span class="n">device</span></em>, <em class="sig-param"><span class="n">mode</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">0</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/device.html#dev_unify"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.device.dev_unify" title="Permalink to this definition">¶</a></dt>
 <dd><p>Unify a list of sub-arrays, on arbitrary devices, to a single concattenated array on the specified device.</p>
 <dl class="simple">
 <dt>xs</dt><dd><p>The list of sub-arrays to unify onto the specified device.</p>
 </dd>
-<dt>dev</dt><dd><p>The device to unify the sub-arrays to.</p>
+<dt>device</dt><dd><p>The device to unify the sub-arrays to.</p>
 </dd>
 <dt>mode</dt><dd><p>The mode by which to unify, must be one of [ concat | mean | sum ]</p>
 </dd>
@@ -859,12 +859,12 @@ multiprocessing.</p>
 
 <dl class="py function">
 <dt id="ivy.functional.ivy.device.dev_unify_array">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">dev_unify_array</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">xs</span></em>, <em class="sig-param"><span class="n">dev</span></em>, <em class="sig-param"><span class="n">mode</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">0</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/device.html#dev_unify_array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.device.dev_unify_array" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">dev_unify_array</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">xs</span></em>, <em class="sig-param"><span class="n">device</span></em>, <em class="sig-param"><span class="n">mode</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">0</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/device.html#dev_unify_array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.device.dev_unify_array" title="Permalink to this definition">¶</a></dt>
 <dd><p>Unify a list of sub-arrays, on arbitrary devices, to a single array on the specified device.</p>
 <dl class="simple">
 <dt>xs</dt><dd><p>The list of arrays to unify onto the specified device.</p>
 </dd>
-<dt>dev</dt><dd><p>The device to unify the arrays to.</p>
+<dt>device</dt><dd><p>The device to unify the arrays to.</p>
 </dd>
 <dt>mode</dt><dd><p>The mode by which to unify, must be one of [ concat | mean | sum ]</p>
 </dd>
@@ -878,12 +878,12 @@ multiprocessing.</p>
 
 <dl class="py function">
 <dt id="ivy.functional.ivy.device.dev_unify_iter">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">dev_unify_iter</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">xs</span></em>, <em class="sig-param"><span class="n">dev</span></em>, <em class="sig-param"><span class="n">mode</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">transpose</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/device.html#dev_unify_iter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.device.dev_unify_iter" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">dev_unify_iter</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">xs</span></em>, <em class="sig-param"><span class="n">device</span></em>, <em class="sig-param"><span class="n">mode</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">transpose</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/device.html#dev_unify_iter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.device.dev_unify_iter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Unify elements of the iterbale xs to a single target device.</p>
 <dl class="simple">
 <dt>xs</dt><dd><p>The iterable of items to unify.</p>
 </dd>
-<dt>dev</dt><dd><p>The device to unify the elements of the iterable to.</p>
+<dt>device</dt><dd><p>The device to unify the elements of the iterable to.</p>
 </dd>
 <dt>mode</dt><dd><p>The mode by which to unify, must be one of [ concat | mean | sum ]</p>
 </dd>
@@ -899,7 +899,7 @@ multiprocessing.</p>
 
 <dl class="py function">
 <dt id="ivy.functional.ivy.device.dev_unify_nest">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">dev_unify_nest</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">args</span><span class="p">:</span> <span class="n">Type<span class="p">[</span><a class="reference internal" href="#ivy.functional.ivy.device.MultiDev" title="ivy.functional.ivy.device.MultiDev">ivy.functional.ivy.device.MultiDev</a><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">kwargs</span><span class="p">:</span> <span class="n">Type<span class="p">[</span><a class="reference internal" href="#ivy.functional.ivy.device.MultiDev" title="ivy.functional.ivy.device.MultiDev">ivy.functional.ivy.device.MultiDev</a><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">dev</span></em>, <em class="sig-param"><span class="n">mode</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">max_depth</span><span class="o">=</span><span class="default_value">1</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/device.html#dev_unify_nest"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.device.dev_unify_nest" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">dev_unify_nest</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">args</span><span class="p">:</span> <span class="n">Type<span class="p">[</span><a class="reference internal" href="#ivy.functional.ivy.device.MultiDev" title="ivy.functional.ivy.device.MultiDev">ivy.functional.ivy.device.MultiDev</a><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">kwargs</span><span class="p">:</span> <span class="n">Type<span class="p">[</span><a class="reference internal" href="#ivy.functional.ivy.device.MultiDev" title="ivy.functional.ivy.device.MultiDev">ivy.functional.ivy.device.MultiDev</a><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">device</span></em>, <em class="sig-param"><span class="n">mode</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">max_depth</span><span class="o">=</span><span class="default_value">1</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/device.html#dev_unify_nest"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.device.dev_unify_nest" title="Permalink to this definition">¶</a></dt>
 <dd><p>Unify the input nested arguments, which consist of sub-arrays spread across arbitrary devices, to unified arrays
 on the single target device.</p>
 <dl class="simple">
@@ -907,7 +907,7 @@ on the single target device.</p>
 </dd>
 <dt>kwargs</dt><dd><p>The nested keyword arguments to unify.</p>
 </dd>
-<dt>dev</dt><dd><p>The device to unify the nested arguments to.</p>
+<dt>device</dt><dd><p>The device to unify the nested arguments to.</p>
 </dd>
 <dt>mode</dt><dd><p>The mode by which to unify, must be one of [ concat | mean | sum ]</p>
 </dd>
@@ -927,10 +927,10 @@ on the single target device.</p>
 
 <dl class="py function">
 <dt id="ivy.functional.ivy.device.dev_util">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">dev_util</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dev</span><span class="p">:</span> <span class="n">ivy.Device</span></em><span class="sig-paren">)</span> &#x2192; float<a class="reference internal" href="../../_modules/ivy/functional/ivy/device.html#dev_util"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.device.dev_util" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">dev_util</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">device</span><span class="p">:</span> <span class="n">ivy.Device</span></em><span class="sig-paren">)</span> &#x2192; float<a class="reference internal" href="../../_modules/ivy/functional/ivy/device.html#dev_util"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.device.dev_util" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the current utilization (%) for a given device.</p>
 <dl class="simple">
-<dt>dev</dt><dd><p>The device string of the device to query utilization for.</p>
+<dt>device</dt><dd><p>The device string of the device to query utilization for.</p>
 </dd>
 </dl>
 <blockquote>
@@ -943,9 +943,9 @@ on the single target device.</p>
 
 <dl class="py function">
 <dt id="ivy.functional.ivy.device.get_all_arrays_on_dev">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">get_all_arrays_on_dev</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dev</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/device.html#get_all_arrays_on_dev"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.device.get_all_arrays_on_dev" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">get_all_arrays_on_dev</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">device</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/device.html#get_all_arrays_on_dev"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.device.get_all_arrays_on_dev" title="Permalink to this definition">¶</a></dt>
 <dd><p>Gets all arrays which are currently alive on the specified device.</p>
-<p>dev</p>
+<p>device</p>
 </dd></dl>
 
 <dl class="py function">
@@ -965,9 +965,9 @@ on the single target device.</p>
 
 <dl class="py function">
 <dt id="ivy.functional.ivy.device.num_arrays_on_dev">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">num_arrays_on_dev</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dev</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/device.html#num_arrays_on_dev"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.device.num_arrays_on_dev" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">num_arrays_on_dev</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">device</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/device.html#num_arrays_on_dev"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.device.num_arrays_on_dev" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the number of arrays which are currently alive on the specified device.</p>
-<p>dev</p>
+<p>device</p>
 </dd></dl>
 
 <dl class="py function">
@@ -987,10 +987,10 @@ on the single target device.</p>
 
 <dl class="py function">
 <dt id="ivy.functional.ivy.device.percent_used_mem_on_dev">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">percent_used_mem_on_dev</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dev</span><span class="p">:</span> <span class="n">ivy.Device</span></em>, <em class="sig-param"><span class="n">process_specific</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span> &#x2192; float<a class="reference internal" href="../../_modules/ivy/functional/ivy/device.html#percent_used_mem_on_dev"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.device.percent_used_mem_on_dev" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">percent_used_mem_on_dev</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">device</span><span class="p">:</span> <span class="n">ivy.Device</span></em>, <em class="sig-param"><span class="n">process_specific</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span> &#x2192; float<a class="reference internal" href="../../_modules/ivy/functional/ivy/device.html#percent_used_mem_on_dev"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.device.percent_used_mem_on_dev" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the percentage used memory for a given device string. In case of CPU, the used RAM is returned.</p>
 <dl class="simple">
-<dt>dev</dt><dd><p>The device string to conver to native device handle.</p>
+<dt>device</dt><dd><p>The device string to conver to native device handle.</p>
 </dd>
 <dt>process_specific</dt><dd><p>Whether the check the memory used by this python process alone. Default is False.</p>
 </dd>
@@ -1005,37 +1005,37 @@ on the single target device.</p>
 
 <dl class="py function">
 <dt id="ivy.functional.ivy.device.print_all_arrays_on_dev">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">print_all_arrays_on_dev</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dev</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/device.html#print_all_arrays_on_dev"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.device.print_all_arrays_on_dev" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">print_all_arrays_on_dev</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">device</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/device.html#print_all_arrays_on_dev"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.device.print_all_arrays_on_dev" title="Permalink to this definition">¶</a></dt>
 <dd><p>Prints all arrays which are currently alive on the specified device.</p>
-<p>dev</p>
+<p>device</p>
 </dd></dl>
 
 <dl class="py function">
 <dt id="ivy.functional.ivy.device.set_default_device">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">set_default_device</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dev</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/device.html#set_default_device"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.device.set_default_device" title="Permalink to this definition">¶</a></dt>
-<dd><p>dev</p>
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">set_default_device</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">device</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/device.html#set_default_device"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.device.set_default_device" title="Permalink to this definition">¶</a></dt>
+<dd><p>device</p>
 </dd></dl>
 
 <dl class="py function">
 <dt id="ivy.functional.ivy.device.set_split_factor">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">set_split_factor</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">factor</span></em>, <em class="sig-param"><span class="n">dev</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/device.html#set_split_factor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.device.set_split_factor" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">set_split_factor</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">factor</span></em>, <em class="sig-param"><span class="n">device</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/device.html#set_split_factor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.device.set_split_factor" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set the global split factor for a given device, which can be used to scale batch splitting chunk sizes for the
 device across the codebase.</p>
 <dl class="simple">
 <dt>factor</dt><dd><p>The factor to set the device-specific split factor to.</p>
 </dd>
-<dt>dev</dt><dd><p>The device to set the split factor for. Sets the default device by default.</p>
+<dt>device</dt><dd><p>The device to set the split factor for. Sets the default device by default.</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py function">
 <dt id="ivy.functional.ivy.device.split_factor">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">split_factor</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dev</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/device.html#split_factor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.device.split_factor" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">split_factor</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">device</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/device.html#split_factor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.device.split_factor" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the global split factor for a given device, which can be used to scale batch splitting chunk sizes for the
 device across the codebase. Default global value for each device is 1.</p>
 <dl class="simple">
-<dt>dev</dt><dd><p>The device to query the split factor for. Sets the default device by default.</p>
+<dt>device</dt><dd><p>The device to query the split factor for. Sets the default device by default.</p>
 </dd>
 </dl>
 <blockquote>
@@ -1048,7 +1048,7 @@ device across the codebase. Default global value for each device is 1.</p>
 
 <dl class="py function">
 <dt id="ivy.functional.ivy.device.split_func_call">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">split_func_call</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">func</span><span class="p">:</span> <span class="n">Callable</span></em>, <em class="sig-param"><span class="n">inputs</span><span class="p">:</span> <span class="n">Iterable<span class="p">[</span>Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">, </span><a class="reference internal" href="../../container/container/Container.html#ivy.container.container.Container" title="ivy.container.container.Container">ivy.container.container.Container</a><span class="p">]</span><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">mode</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">max_chunk_size</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>int<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">chunk_size</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>int<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">input_axes</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>int<span class="p">, </span>Iterable<span class="p">[</span>int<span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">0</span></em>, <em class="sig-param"><span class="n">output_axes</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Union<span class="p">[</span>int<span class="p">, </span>Iterable<span class="p">[</span>int<span class="p">]</span><span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">stop_gradients</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">dev</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; Iterable<span class="p">[</span>Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">, </span><a class="reference internal" href="../../container/container/Container.html#ivy.container.container.Container" title="ivy.container.container.Container">ivy.container.container.Container</a><span class="p">]</span><span class="p">]</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/device.html#split_func_call"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.device.split_func_call" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">split_func_call</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">func</span><span class="p">:</span> <span class="n">Callable</span></em>, <em class="sig-param"><span class="n">inputs</span><span class="p">:</span> <span class="n">Iterable<span class="p">[</span>Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">, </span><a class="reference internal" href="../../container/container/Container.html#ivy.container.container.Container" title="ivy.container.container.Container">ivy.container.container.Container</a><span class="p">]</span><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">mode</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">max_chunk_size</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>int<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">chunk_size</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>int<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">input_axes</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>int<span class="p">, </span>Iterable<span class="p">[</span>int<span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">0</span></em>, <em class="sig-param"><span class="n">output_axes</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Union<span class="p">[</span>int<span class="p">, </span>Iterable<span class="p">[</span>int<span class="p">]</span><span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">stop_gradients</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">device</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; Iterable<span class="p">[</span>Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">, </span><a class="reference internal" href="../../container/container/Container.html#ivy.container.container.Container" title="ivy.container.container.Container">ivy.container.container.Container</a><span class="p">]</span><span class="p">]</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/device.html#split_func_call"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.device.split_func_call" title="Permalink to this definition">¶</a></dt>
 <dd><p>Call a function by splitting its inputs along a given axis, and calling the function in chunks, rather than feeding
 the entire input array at once. This can be useful to reduce memory usage of the device the arrays are on.</p>
 <dl class="simple">
@@ -1069,7 +1069,7 @@ global split factor. Default is None.</p>
 </dd>
 <dt>stop_gradients</dt><dd><p>Whether to stop the gradients for each computed return. Default is False.</p>
 </dd>
-<dt>dev</dt><dd><p>The device to set the split factor for. Sets the default device by default.</p>
+<dt>device</dt><dd><p>The device to set the split factor for. Sets the default device by default.</p>
 </dd>
 <dt>Returns</dt><dd></dd>
 <dt>ret</dt><dd><p>The return from the function, following input splitting and re-concattenation.</p>
@@ -1079,12 +1079,12 @@ global split factor. Default is None.</p>
 
 <dl class="py function">
 <dt id="ivy.functional.ivy.device.to_dev">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">to_dev</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">dev</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>ivy.Device<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">out</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/device.html#to_dev"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.device.to_dev" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">to_dev</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">device</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>ivy.Device<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">out</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/device.html#to_dev"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.device.to_dev" title="Permalink to this definition">¶</a></dt>
 <dd><p>Move the input array x to the desired device, specified by device string.</p>
 <dl class="simple">
 <dt>x</dt><dd><p>input array to be moved to the desired device</p>
 </dd>
-<dt>dev</dt><dd><p>device to move the input array <cite>x</cite> to</p>
+<dt>device</dt><dd><p>device to move the input array <cite>x</cite> to</p>
 </dd>
 <dt>out</dt><dd><p>optional output array, for writing the result to. It must have a shape that the inputs broadcast to.</p>
 </dd>
@@ -1100,10 +1100,10 @@ global split factor. Default is None.</p>
 
 <dl class="py function">
 <dt id="ivy.functional.ivy.device.total_mem_on_dev">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">total_mem_on_dev</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dev</span><span class="p">:</span> <span class="n">ivy.Device</span></em><span class="sig-paren">)</span> &#x2192; float<a class="reference internal" href="../../_modules/ivy/functional/ivy/device.html#total_mem_on_dev"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.device.total_mem_on_dev" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">total_mem_on_dev</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">device</span><span class="p">:</span> <span class="n">ivy.Device</span></em><span class="sig-paren">)</span> &#x2192; float<a class="reference internal" href="../../_modules/ivy/functional/ivy/device.html#total_mem_on_dev"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.device.total_mem_on_dev" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the total amount of memory (in GB) for a given device string. In case of CPU, the total RAM is returned.</p>
 <dl class="simple">
-<dt>dev</dt><dd><p>The device string to conver to native device handle.</p>
+<dt>device</dt><dd><p>The device string to conver to native device handle.</p>
 </dd>
 </dl>
 <blockquote>
@@ -1135,10 +1135,10 @@ Boolean, as to whether a tpu is available.</p>
 
 <dl class="py function">
 <dt id="ivy.functional.ivy.device.used_mem_on_dev">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">used_mem_on_dev</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dev</span><span class="p">:</span> <span class="n">ivy.Device</span></em>, <em class="sig-param"><span class="n">process_specific</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span> &#x2192; float<a class="reference internal" href="../../_modules/ivy/functional/ivy/device.html#used_mem_on_dev"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.device.used_mem_on_dev" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">used_mem_on_dev</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">device</span><span class="p">:</span> <span class="n">ivy.Device</span></em>, <em class="sig-param"><span class="n">process_specific</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span> &#x2192; float<a class="reference internal" href="../../_modules/ivy/functional/ivy/device.html#used_mem_on_dev"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.device.used_mem_on_dev" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the used memory (in GB) for a given device string. In case of CPU, the used RAM is returned.</p>
 <dl class="simple">
-<dt>dev</dt><dd><p>The device string to conver to native device handle.</p>
+<dt>device</dt><dd><p>The device string to conver to native device handle.</p>
 </dd>
 <dt>process_specific</dt><dd><p>Whether the check the memory used by this python process alone. Default is False.</p>
 </dd>

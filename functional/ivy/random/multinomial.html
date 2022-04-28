@@ -242,7 +242,7 @@
 <h1>multinomial<a class="headerlink" href="#multinomial" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
 <dt id="ivy.functional.ivy.random.multinomial">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">multinomial</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">population_size</span></em>, <em class="sig-param"><span class="n">num_samples</span></em>, <em class="sig-param"><span class="n">batch_size</span></em>, <em class="sig-param"><span class="n">probs</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">replace</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">dev</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/random.html#multinomial"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.random.multinomial" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">multinomial</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">population_size</span></em>, <em class="sig-param"><span class="n">num_samples</span></em>, <em class="sig-param"><span class="n">batch_size</span></em>, <em class="sig-param"><span class="n">probs</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">replace</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">device</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/random.html#multinomial"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.random.multinomial" title="Permalink to this definition">¶</a></dt>
 <dd><p>Draws samples from a multinomial distribution. Specifcally, returns a tensor where each row contains num_samples
 indices sampled from the multinomial probability distribution located in the corresponding row of tensor input.</p>
 <dl class="simple">
@@ -257,7 +257,7 @@ default is uniform <em>[batch_shape, num_classes]</em></p>
 </dd>
 <dt>replace</dt><dd><p>Whether to replace samples once they’ve been drawn. Default is True.</p>
 </dd>
-<dt>dev</dt><dd><p>device on which to create the array ‘cuda:0’, ‘cuda:1’, ‘cpu’ etc. (Default value = None)</p>
+<dt>device</dt><dd><p>device on which to create the array ‘cuda:0’, ‘cuda:1’, ‘cpu’ etc. (Default value = None)</p>
 </dd>
 </dl>
 <blockquote>

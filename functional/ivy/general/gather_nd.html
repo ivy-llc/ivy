@@ -298,14 +298,14 @@
 <h1>gather_nd<a class="headerlink" href="#gather-nd" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
 <dt id="ivy.functional.ivy.general.gather_nd">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">gather_nd</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">params</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">indices</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">dev</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>ivy.Device<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/general.html#gather_nd"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.general.gather_nd" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">gather_nd</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">params</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">indices</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">device</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>ivy.Device<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/general.html#gather_nd"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.general.gather_nd" title="Permalink to this definition">¶</a></dt>
 <dd><p>Gather slices from params into a array with shape specified by indices.</p>
 <dl class="simple">
 <dt>params </dt><dd><p>The array from which to gather values.</p>
 </dd>
 <dt>indices </dt><dd><p>Index array.</p>
 </dd>
-<dt>dev </dt><dd><p>device on which to create the array ‘cuda:0’, ‘cuda:1’, ‘cpu’ etc. Same as x if None.</p>
+<dt>device </dt><dd><p>device on which to create the array ‘cuda:0’, ‘cuda:1’, ‘cpu’ etc. Same as x if None.</p>
 </dd>
 <dt>Returns</dt><dd></dd>
 <dt>ret</dt><dd><p>New array of given shape, with the values gathered at the indices.</p>

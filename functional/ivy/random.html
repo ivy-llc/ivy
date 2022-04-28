@@ -241,7 +241,7 @@
 <p>Collection of random Ivy functions</p>
 <dl class="py function">
 <dt id="ivy.functional.ivy.random.multinomial">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">multinomial</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">population_size</span></em>, <em class="sig-param"><span class="n">num_samples</span></em>, <em class="sig-param"><span class="n">batch_size</span></em>, <em class="sig-param"><span class="n">probs</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">replace</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">dev</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/random.html#multinomial"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.random.multinomial" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">multinomial</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">population_size</span></em>, <em class="sig-param"><span class="n">num_samples</span></em>, <em class="sig-param"><span class="n">batch_size</span></em>, <em class="sig-param"><span class="n">probs</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">replace</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">device</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/random.html#multinomial"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.random.multinomial" title="Permalink to this definition">¶</a></dt>
 <dd><p>Draws samples from a multinomial distribution. Specifcally, returns a tensor where each row contains num_samples
 indices sampled from the multinomial probability distribution located in the corresponding row of tensor input.</p>
 <dl class="simple">
@@ -256,7 +256,7 @@ default is uniform <em>[batch_shape, num_classes]</em></p>
 </dd>
 <dt>replace</dt><dd><p>Whether to replace samples once they’ve been drawn. Default is True.</p>
 </dd>
-<dt>dev</dt><dd><p>device on which to create the array ‘cuda:0’, ‘cuda:1’, ‘cpu’ etc. (Default value = None)</p>
+<dt>device</dt><dd><p>device on which to create the array ‘cuda:0’, ‘cuda:1’, ‘cpu’ etc. (Default value = None)</p>
 </dd>
 </dl>
 <blockquote>
@@ -269,7 +269,7 @@ default is uniform <em>[batch_shape, num_classes]</em></p>
 
 <dl class="py function">
 <dt id="ivy.functional.ivy.random.randint">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">randint</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">low</span></em>, <em class="sig-param"><span class="n">high</span></em>, <em class="sig-param"><span class="n">shape</span></em>, <em class="sig-param"><span class="n">dev</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/random.html#randint"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.random.randint" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">randint</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">low</span></em>, <em class="sig-param"><span class="n">high</span></em>, <em class="sig-param"><span class="n">shape</span></em>, <em class="sig-param"><span class="n">device</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/random.html#randint"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.random.randint" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a tensor filled with random integers generated uniformly between low (inclusive) and high (exclusive).</p>
 <dl class="simple">
 <dt>low</dt><dd><p>Lowest integer to be drawn from the distribution.</p>
@@ -278,14 +278,14 @@ default is uniform <em>[batch_shape, num_classes]</em></p>
 </dd>
 <dt>shape</dt><dd><p>a tuple defining the shape of the output tensor.</p>
 </dd>
-<dt>dev</dt><dd><p>device on which to create the array ‘cuda:0’, ‘cuda:1’, ‘cpu’ etc. (Default value = None)</p>
+<dt>device</dt><dd><p>device on which to create the array ‘cuda:0’, ‘cuda:1’, ‘cpu’ etc. (Default value = None)</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py function">
 <dt id="ivy.functional.ivy.random.random_normal">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">random_normal</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">mean</span><span class="o">=</span><span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">std</span><span class="o">=</span><span class="default_value">1.0</span></em>, <em class="sig-param"><span class="n">shape</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">dev</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/random.html#random_normal"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.random.random_normal" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">random_normal</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">mean</span><span class="o">=</span><span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">std</span><span class="o">=</span><span class="default_value">1.0</span></em>, <em class="sig-param"><span class="n">shape</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">device</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/random.html#random_normal"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.random.random_normal" title="Permalink to this definition">¶</a></dt>
 <dd><p>Draws samples from a normal distribution.</p>
 <dl class="simple">
 <dt>mean</dt><dd><p>The mean of the normal distribution to sample from. Default is 0.</p>
@@ -295,7 +295,7 @@ default is uniform <em>[batch_shape, num_classes]</em></p>
 <dt>shape</dt><dd><p>Output shape. If the given shape is, e.g., (m, n, k), then m * n * k samples are drawn.
 If size is None (default), a single value is returned.</p>
 </dd>
-<dt>dev</dt><dd><p>device on which to create the array ‘cuda:0’, ‘cuda:1’, ‘cpu’ etc. (Default value = None)</p>
+<dt>device</dt><dd><p>device on which to create the array ‘cuda:0’, ‘cuda:1’, ‘cpu’ etc. (Default value = None)</p>
 </dd>
 </dl>
 <blockquote>
@@ -308,7 +308,7 @@ If size is None (default), a single value is returned.</p>
 
 <dl class="py function">
 <dt id="ivy.functional.ivy.random.random_uniform">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">random_uniform</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">low</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">high</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">1.0</span></em>, <em class="sig-param"><span class="n">shape</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Union<span class="p">[</span>int<span class="p">, </span>Tuple<span class="p">[</span>int<span class="p">, </span><span class="p">…</span><span class="p">]</span><span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">dev</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>ivy.Device<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; &lt;module ‘ivy.array’ from ‘/home/runner/work/ivy/ivy/ivy/ivy/array/__init__.py’&gt;<a class="reference internal" href="../../_modules/ivy/functional/ivy/random.html#random_uniform"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.random.random_uniform" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">random_uniform</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">low</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">high</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">1.0</span></em>, <em class="sig-param"><span class="n">shape</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Union<span class="p">[</span>int<span class="p">, </span>Tuple<span class="p">[</span>int<span class="p">, </span><span class="p">…</span><span class="p">]</span><span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">device</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>ivy.Device<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; &lt;module ‘ivy.array’ from ‘/home/runner/work/ivy/ivy/ivy/ivy/array/__init__.py’&gt;<a class="reference internal" href="../../_modules/ivy/functional/ivy/random.html#random_uniform"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.random.random_uniform" title="Permalink to this definition">¶</a></dt>
 <dd><p>Draws samples from a uniform distribution. Samples are uniformly distributed over the half-open 
 interval <code class="docutils literal notranslate"><span class="pre">[low,</span> <span class="pre">high)</span></code> (includes <code class="docutils literal notranslate"><span class="pre">low</span></code>, but excludes <code class="docutils literal notranslate"><span class="pre">high</span></code>). In other words, any value within the given 
 interval is equally likely to be drawn by uniform.</p>
@@ -320,7 +320,7 @@ interval is equally likely to be drawn by uniform.</p>
 <dt>shape</dt><dd><p>If the given shape is, e.g <code class="docutils literal notranslate"><span class="pre">(m,</span> <span class="pre">n,</span> <span class="pre">k)</span></code>, then <code class="docutils literal notranslate"><span class="pre">m</span> <span class="pre">*</span> <span class="pre">n</span> <span class="pre">*</span> <span class="pre">k</span></code> samples are drawn. If size is <code class="docutils literal notranslate"><span class="pre">None</span></code> 
 (Default), a single value is returned.</p>
 </dd>
-<dt>dev</dt><dd><p>device on which to create the array ‘cuda:0’, ‘cuda:1’, ‘cpu’ etc.</p>
+<dt>device</dt><dd><p>device on which to create the array ‘cuda:0’, ‘cuda:1’, ‘cpu’ etc.</p>
 </dd>
 </dl>
 <dl class="simple">

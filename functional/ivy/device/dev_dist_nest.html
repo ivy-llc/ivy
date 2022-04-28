@@ -282,21 +282,21 @@
 <h1>dev_dist_nest<a class="headerlink" href="#dev-dist-nest" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
 <dt id="ivy.functional.ivy.device.dev_dist_nest">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">dev_dist_nest</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">args</span></em>, <em class="sig-param"><span class="n">kwargs</span></em>, <em class="sig-param"><span class="n">devs</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>Iterable<span class="p">[</span>str<span class="p">]</span><span class="p">, </span>Dict<span class="p">[</span>str<span class="p">, </span>int<span class="p">]</span><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">max_depth</span><span class="o">=</span><span class="default_value">1</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/device.html#dev_dist_nest"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.device.dev_dist_nest" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">dev_dist_nest</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">args</span></em>, <em class="sig-param"><span class="n">kwargs</span></em>, <em class="sig-param"><span class="n">devices</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>Iterable<span class="p">[</span>str<span class="p">]</span><span class="p">, </span>Dict<span class="p">[</span>str<span class="p">, </span>int<span class="p">]</span><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">max_depth</span><span class="o">=</span><span class="default_value">1</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/device.html#dev_dist_nest"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.device.dev_dist_nest" title="Permalink to this definition">¶</a></dt>
 <dd><p>Distribute the nested input arguments across the specified devices.</p>
 <dl class="simple">
 <dt>args</dt><dd><p>The positional nested arguments to distribute.</p>
 </dd>
 <dt>kwargs</dt><dd><p>The keyword nested arguments to distribute.</p>
 </dd>
-<dt>devs</dt><dd><p>The devices to distribute the nested arguments across.</p>
+<dt>devices</dt><dd><p>The devices to distribute the nested arguments across.</p>
 </dd>
 <dt>axis</dt><dd><p>The axis along which to split the arrays in the arguments. Default is 0.</p>
 </dd>
 <dt>max_depth</dt><dd><p>The maximum nested depth to reach. Default is 1. Increase this if the nest is deeper.</p>
 </dd>
 </dl>
-<p>devs</p>
+<p>devices</p>
 <p>Dict</p>
 <dl class="simple">
 <dt>Returns</dt><dd></dd>
