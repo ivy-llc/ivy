@@ -31,7 +31,7 @@ def test_abs(dtype_and_x, as_variable, with_out, num_positional_args, native_arr
 
 
 # acosh
-@given(dtype=helpers.sample(ivy_np.valid_float_dtype_strs),
+@given(dtype=st.sampled_from(ivy_np.valid_float_dtype_strs),
        as_variable=st.booleans(),
        with_out=st.booleans(),
        num_positional_args=st.integers(0, 1),
@@ -48,7 +48,7 @@ def test_acosh(dtype, as_variable, with_out, num_positional_args, native_array, 
 
 
 # acos
-@given(dtype=helpers.sample(ivy_np.valid_float_dtype_strs),
+@given(dtype=st.sampled_from(ivy_np.valid_float_dtype_strs),
        as_variable=st.booleans(),
        with_out=st.booleans(),
        num_positional_args=st.integers(0, 1),
@@ -107,7 +107,7 @@ def test_add(dtype, as_variable, with_out, native_array):
 
 
 # asin
-@given(dtype=helpers.sample(ivy_np.valid_float_dtype_strs),
+@given(dtype=st.sampled_from(ivy_np.valid_float_dtype_strs),
        as_variable=st.booleans(),
        with_out=st.booleans(),
        num_positional_args=st.integers(0, 1),
@@ -124,7 +124,7 @@ def test_asin(dtype, as_variable, with_out, num_positional_args, native_array, c
 
 
 # asinh
-@given(dtype=helpers.sample(ivy_np.valid_float_dtype_strs),
+@given(dtype=st.sampled_from(ivy_np.valid_float_dtype_strs),
        as_variable=st.booleans(),
        with_out=st.booleans(),
        num_positional_args=st.integers(0, 1),
@@ -141,7 +141,7 @@ def test_asinh(dtype, as_variable, with_out, num_positional_args, native_array, 
 
 
 # atan
-@given(dtype=helpers.sample(ivy_np.valid_float_dtype_strs),
+@given(dtype=st.sampled_from(ivy_np.valid_float_dtype_strs),
        as_variable=st.booleans(),
        with_out=st.booleans(),
        num_positional_args=st.integers(0, 1),
@@ -158,7 +158,7 @@ def test_atan(dtype, as_variable, with_out, num_positional_args, native_array, c
 
 
 # atan2
-@given(dtype=helpers.sample(ivy_np.valid_float_dtype_strs),
+@given(dtype=st.sampled_from(ivy_np.valid_float_dtype_strs),
        as_variable=st.booleans(),
        with_out=st.booleans(),
        num_positional_args=st.integers(0, 1),
@@ -175,7 +175,7 @@ def test_atan2(dtype, as_variable, with_out, num_positional_args, native_array, 
 
 
 # atanh
-@given(dtype=helpers.sample(ivy_np.valid_float_dtype_strs),
+@given(dtype=st.sampled_from(ivy_np.valid_float_dtype_strs),
        as_variable=st.booleans(),
        with_out=st.booleans(),
        num_positional_args=st.integers(0, 1),
@@ -410,7 +410,7 @@ def test_ceil(dtype, as_variable, with_out, native_array):
 
 
 # cos
-@given(dtype=helpers.sample(ivy_np.valid_float_dtype_strs),
+@given(dtype=st.sampled_from(ivy_np.valid_float_dtype_strs),
        as_variable=st.booleans(),
        with_out=st.booleans(),
        num_positional_args=st.integers(0, 1),
@@ -427,7 +427,7 @@ def test_cos(dtype, as_variable, with_out, num_positional_args, native_array, co
 
 
 # cosh
-@given(dtype=helpers.sample(ivy_np.valid_float_dtype_strs),
+@given(dtype=st.sampled_from(ivy_np.valid_float_dtype_strs),
        as_variable=st.booleans(),
        with_out=st.booleans(),
        num_positional_args=st.integers(0, 1),
@@ -523,7 +523,7 @@ def test_equal(dtype, as_variable, with_out, native_array):
 
 
 # exp
-@given(dtype=helpers.sample(ivy_np.valid_float_dtype_strs),
+@given(dtype=st.sampled_from(ivy_np.valid_float_dtype_strs),
        as_variable=st.booleans(),
        with_out=st.booleans(),
        num_positional_args=st.integers(0, 1),
@@ -540,7 +540,7 @@ def test_exp(dtype, as_variable, with_out, num_positional_args, native_array, co
 
 
 # expm1
-@given(dtype=helpers.sample(ivy_np.valid_float_dtype_strs),
+@given(dtype=st.sampled_from(ivy_np.valid_float_dtype_strs),
        as_variable=st.booleans(),
        with_out=st.booleans(),
        num_positional_args=st.integers(0, 1),
@@ -900,7 +900,7 @@ def test_less_equal(dtype, as_variable, with_out, native_array):
 
 
 # log
-@given(dtype=helpers.sample(ivy_np.valid_float_dtype_strs),
+@given(dtype=st.sampled_from(ivy_np.valid_float_dtype_strs),
        as_variable=st.booleans(),
        with_out=st.booleans(),
        num_positional_args=st.integers(0, 1),
@@ -917,7 +917,7 @@ def test_log(dtype, as_variable, with_out, num_positional_args, native_array, co
 
 
 # log1p
-@given(dtype=helpers.sample(ivy_np.valid_float_dtype_strs),
+@given(dtype=st.sampled_from(ivy_np.valid_float_dtype_strs),
        as_variable=st.booleans(),
        with_out=st.booleans(),
        num_positional_args=st.integers(0, 1),
@@ -934,7 +934,7 @@ def test_log1p(dtype, as_variable, with_out, num_positional_args, native_array, 
 
 
 # log2
-@given(dtype=helpers.sample(ivy_np.valid_float_dtype_strs),
+@given(dtype=st.sampled_from(ivy_np.valid_float_dtype_strs),
        as_variable=st.booleans(),
        with_out=st.booleans(),
        num_positional_args=st.integers(0, 1),
@@ -951,7 +951,7 @@ def test_log2(dtype, as_variable, with_out, num_positional_args, native_array, c
 
 
 # log10
-@given(dtype=helpers.sample(ivy_np.valid_float_dtype_strs),
+@given(dtype=st.sampled_from(ivy_np.valid_float_dtype_strs),
        as_variable=st.booleans(),
        with_out=st.booleans(),
        num_positional_args=st.integers(0, 1),
@@ -968,20 +968,20 @@ def test_log10(dtype, as_variable, with_out, num_positional_args, native_array, 
 
 
 # logaddexp
-@given(dtype=helpers.list_of_length(helpers.sample(ivy_np.valid_float_dtype_strs), 2),
-       as_variable=st.booleans(),
+@given(dtype_and_x=helpers.dtype_and_values(ivy_np.valid_float_dtype_strs, 2),
+       as_variable=helpers.list_of_length(st.booleans(), 2),
        with_out=st.booleans(),
        num_positional_args=st.integers(0, 2),
-       native_array=st.booleans(),
-       container=st.booleans(),
-       instance_method=st.booleans(),
-       x=st.lists(st.floats()))
-def test_logaddexp(dtype, as_variable, with_out, num_positional_args, native_array, container, instance_method, fw, x):
+       native_array=helpers.list_of_length(st.booleans(), 2),
+       container=helpers.list_of_length(st.booleans(), 2),
+       instance_method=st.booleans())
+def test_logaddexp(dtype_and_x, as_variable, with_out, num_positional_args, native_array, container, instance_method, fw):
+    dtype, x = dtype_and_x
     if fw == 'torch' and 'float16' in dtype:
         return
     helpers.test_array_function(
         dtype, as_variable, with_out, num_positional_args, native_array, container, instance_method, fw, 'logaddexp',
-        x1=np.asarray(x, dtype=dtype[0]), x2=np.asarray(x, dtype=dtype[1]))
+        x1=np.asarray(x[0], dtype=dtype[0]), x2=np.asarray(x[1], dtype=dtype[1]))
 
 
 # logical_and
@@ -1399,7 +1399,7 @@ def test_sign(dtype, as_variable, with_out, native_array):
 
 
 # sin
-@given(dtype=helpers.sample(ivy_np.valid_float_dtype_strs),
+@given(dtype=st.sampled_from(ivy_np.valid_float_dtype_strs),
        as_variable=st.booleans(),
        with_out=st.booleans(),
        num_positional_args=st.integers(0, 1),
@@ -1416,7 +1416,7 @@ def test_sin(dtype, as_variable, with_out, num_positional_args, native_array, co
 
 
 # sinh
-@given(dtype=helpers.sample(ivy_np.valid_float_dtype_strs),
+@given(dtype=st.sampled_from(ivy_np.valid_float_dtype_strs),
        as_variable=st.booleans(),
        with_out=st.booleans(),
        num_positional_args=st.integers(0, 1),
@@ -1470,7 +1470,7 @@ def test_square(dtype, as_variable, with_out, native_array):
 
 
 # sqrt
-@given(dtype=helpers.sample(ivy_np.valid_float_dtype_strs),
+@given(dtype=st.sampled_from(ivy_np.valid_float_dtype_strs),
        as_variable=st.booleans(),
        with_out=st.booleans(),
        num_positional_args=st.integers(0, 1),
@@ -1527,7 +1527,7 @@ def test_subtract(dtype, as_variable, with_out, native_array):
 
 
 # tan
-@given(dtype=helpers.sample(ivy_np.valid_float_dtype_strs),
+@given(dtype=st.sampled_from(ivy_np.valid_float_dtype_strs),
        as_variable=st.booleans(),
        with_out=st.booleans(),
        num_positional_args=st.integers(0, 1),
@@ -1544,7 +1544,7 @@ def test_tan(dtype, as_variable, with_out, num_positional_args, native_array, co
 
 
 # tanh
-@given(dtype=helpers.sample(ivy_np.valid_float_dtype_strs),
+@given(dtype=st.sampled_from(ivy_np.valid_float_dtype_strs),
        as_variable=st.booleans(),
        with_out=st.booleans(),
        num_positional_args=st.integers(0, 1),
@@ -1604,7 +1604,7 @@ def test_trunc(dtype, as_variable, with_out, native_array):
 
 
 # erf
-@given(dtype=helpers.sample(ivy_np.valid_float_dtype_strs),
+@given(dtype=st.sampled_from(ivy_np.valid_float_dtype_strs),
        as_variable=st.booleans(),
        with_out=st.booleans(),
        num_positional_args=st.integers(0, 1),
