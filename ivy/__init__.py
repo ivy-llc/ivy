@@ -113,18 +113,18 @@ all_dtype_strs = ('int8', 'int16', 'int32', 'int64',
                   'uint8', 'uint16', 'uint32', 'uint64',
                   'bfloat16', 'float16', 'float32', 'float64',
                   'bool')
-all_numeric_dtype_strs = ('int8', 'int16', 'int32', 'int64',
+numeric_dtype_strs = ('int8', 'int16', 'int32', 'int64',
                           'uint8', 'uint16', 'uint32', 'uint64',
                           'bfloat16', 'float16', 'float32', 'float64')
-all_int_dtype_strs = ('int8', 'int16', 'int32', 'int64',
+int_dtype_strs = ('int8', 'int16', 'int32', 'int64',
                       'uint8', 'uint16', 'uint32', 'uint64')
-all_float_dtype_strs = ('bfloat16', 'float16', 'float32', 'float64')
+float_dtype_strs = ('bfloat16', 'float16', 'float32', 'float64')
 
 # valid
 valid_dtype_strs = all_dtype_strs
-valid_numeric_dtype_strs = all_numeric_dtype_strs
-valid_int_dtype_strs = all_int_dtype_strs
-valid_float_dtype_strs = all_float_dtype_strs
+valid_numeric_dtype_strs = numeric_dtype_strs
+valid_int_dtype_strs = int_dtype_strs
+valid_float_dtype_strs = float_dtype_strs
 
 # invalid
 invalid_dtype_strs = ()

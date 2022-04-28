@@ -15,7 +15,7 @@ import ivy.functional.backends.numpy as ivy_np
 
 # relu
 @given(x=st.lists(st.floats()),
-       dtype=st.sampled_from(ivy.all_float_dtype_strs),
+       dtype=st.sampled_from(ivy.float_dtype_strs),
        as_variable=st.booleans(),
        with_out=st.booleans(),
        native_array=st.booleans())
