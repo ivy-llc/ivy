@@ -81,7 +81,7 @@ def dropout(x, prob, scale=True):
 
     """
     # noinspection PyUnresolvedReferences
-    x = ivy.where(ivy.random_uniform(shape=x.shape, dev=ivy.dev(x)) < prob, ivy.zeros_like(x), x)
+    x = ivy.where(ivy.random_uniform(shape=x.shape, device=ivy.dev(x)) < prob, ivy.zeros_like(x), x)
     if scale:
         x *= (1 / (1 - prob))
     return x

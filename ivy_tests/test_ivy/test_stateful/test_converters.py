@@ -25,7 +25,7 @@ class TorchLinearModule(torch.nn.Module):
 
 class TorchModule(torch.nn.Module):
 
-    def __init__(self, in_size, out_size, dev=None, hidden_size=64):
+    def __init__(self, in_size, out_size, device=None, hidden_size=64):
         super(TorchModule, self).__init__()
         self._linear0 = TorchLinearModule(in_size, hidden_size)
         self._linear1 = TorchLinearModule(hidden_size, hidden_size)
@@ -50,7 +50,7 @@ class HaikuLinear(hk.Module):
 
 class HaikuModule(hk.Module):
 
-    def __init__(self, in_size, out_size, dev=None, hidden_size=64):
+    def __init__(self, in_size, out_size, device=None, hidden_size=64):
         super(HaikuModule, self).__init__()
         self._linear0 = HaikuLinear(hidden_size)
         self._linear1 = HaikuLinear(hidden_size)
@@ -74,7 +74,7 @@ NATIVE_MODULES = {'torch': TorchModule,
     "from_class_and_args", [True, False])
 @pytest.mark.parametrize(
     "inplace_update", [True, False])
-def test_to_ivy_module(bs_ic_oc, from_class_and_args, inplace_update, dev, call):
+def test_to_ivy_module(bs_ic_oc, from_class_and_args, inplace_update, device, call):
     # smoke test
     if call not in [helpers.torch_call, helpers.jnp_call]:
         # Currently only implemented for PyTorch
@@ -85,7 +85,7 @@ def test_to_ivy_module(bs_ic_oc, from_class_and_args, inplace_update, dev, call)
     if from_class_and_args:
         ivy_module = ivy.to_ivy_module(native_module_class=natvie_module_class,
                                        args=[input_channels, output_channels],
-                                       dev=dev, inplace_update=inplace_update)
+                                       device=device, inplace_update=inplace_update)
     else:
         if call is helpers.jnp_call:
             def forward_fn(*a, **kw):
@@ -94,7 +94,7 @@ def test_to_ivy_module(bs_ic_oc, from_class_and_args, inplace_update, dev, call)
             native_module = hk.transform(forward_fn)
         else:
             native_module = natvie_module_class(input_channels, output_channels)
-        ivy_module = ivy.to_ivy_module(native_module, dev=dev, inplace_update=inplace_update)
+        ivy_module = ivy.to_ivy_module(native_module, device=device, inplace_update=inplace_update)
 
     def loss_fn(v_=None):
         out = ivy_module(x, v=v_)

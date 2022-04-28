@@ -138,13 +138,13 @@ def cumprod(x:tf.Tensor,axis:int=0,exclusive:Optional[bool]=False,out: Optional[
         return tf.math.cumprod(x,axis,exclusive)
 
 # noinspection PyShadowingNames
-def scatter_flat(indices, updates, size=None, tensor=None, reduction='sum', dev=None):
+def scatter_flat(indices, updates, size=None, tensor=None, reduction='sum', device=None):
     target = tensor
     target_given = ivy.exists(target)
     if ivy.exists(size) and ivy.exists(target):
         assert len(target.shape) == 1 and target.shape[0] == size
-    if dev is None:
-        dev = _dev_callable(updates)
+    if device is None:
+        device = _dev_callable(updates)
     dtype = updates.dtype
     if reduction == 'sum':
         if target_given:
@@ -169,7 +169,7 @@ def scatter_flat(indices, updates, size=None, tensor=None, reduction='sum', dev=
             res = tf.tensor_scatter_nd_update(tf.zeros([size]), tf.expand_dims(indices, -1), updates)
     else:
         raise Exception('reduction is {}, but it must be one of "sum", "min" or "max"'.format(reduction))
-    with tf.device(dev_from_str(dev)):
+    with tf.device(dev_from_str(device)):
         return res
 
 
@@ -192,7 +192,7 @@ def _parse_ellipsis(so, ndims):
 
 
 # noinspection PyShadowingNames
-def scatter_nd(indices, updates, shape=None, tensor=None, reduction='sum', dev=None):
+def scatter_nd(indices, updates, shape=None, tensor=None, reduction='sum', device=None):
 
     if ivy.exists(tensor) and not isinstance(updates,Number):
         tensor= tf.cast(tensor,dtype = updates.dtype) if ivy.dtype_bits(updates.dtype) > ivy.dtype_bits(tensor.dtype) else tensor
@@ -226,8 +226,8 @@ def scatter_nd(indices, updates, shape=None, tensor=None, reduction='sum', dev=N
     target_given = ivy.exists(target)
     if ivy.exists(shape) and ivy.exists(target):
         assert ivy.shape_to_tuple(target.shape) == ivy.shape_to_tuple(shape)
-    if dev is None:
-        dev = _dev_callable(updates)
+    if device is None:
+        device = _dev_callable(updates)
     shape = list(shape) if ivy.exists(shape) else list(tensor.shape)
     dtype = updates.dtype
     if reduction == 'sum':
@@ -253,33 +253,33 @@ def scatter_nd(indices, updates, shape=None, tensor=None, reduction='sum', dev=N
             res = tf.tensor_scatter_nd_update(tf.zeros(shape), indices, updates)
     else:
         raise Exception('reduction is {}, but it must be one of "sum", "min" or "max"'.format(reduction))
-    with tf.device(dev_from_str(dev)):
+    with tf.device(dev_from_str(device)):
         return res
 
 
-def gather(params: tf.Tensor, indices:tf.Tensor, axis: Optional[int] =-1, dev: Optional[str]=None, out: Optional[tf.Tensor] = None)\
+def gather(params: tf.Tensor, indices:tf.Tensor, axis: Optional[int] =-1, device: Optional[str]=None, out: Optional[tf.Tensor] = None)\
         -> tf.Tensor:
     axis = axis % len(indices.shape)
-    if dev is None:
-        dev = _dev_callable(params)
-    with tf.device(dev_from_str(dev)):
+    if device is None:
+        device = _dev_callable(params)
+    with tf.device(dev_from_str(device)):
         ret = tf.gather(params, indices, axis=axis, batch_dims=axis)
         if ivy.exists(out):
             return ivy.inplace_update(out,ret)
         else:
             return ret
 
-def gather_nd(params, indices, dev=None):
-    if dev is None:
-        dev = _dev_callable(params)
-    with tf.device(dev_from_str(dev)):
+def gather_nd(params, indices, device=None):
+    if device is None:
+        device = _dev_callable(params)
+    with tf.device(dev_from_str(device)):
         return tf.gather_nd(params, indices)
 
 
-def one_hot(indices, depth, dev=None):
-    dev = default_device(dev)
-    if dev is not None:
-        with tf.device(dev_from_str(dev)):
+def one_hot(indices, depth, device=None):
+    device = default_device(device)
+    if device is not None:
+        with tf.device(dev_from_str(device)):
             return tf.one_hot(indices, depth)
     return tf.one_hot(indices, depth)
 
