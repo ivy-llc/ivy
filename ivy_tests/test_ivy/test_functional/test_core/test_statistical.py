@@ -12,7 +12,7 @@ import ivy_tests.test_ivy.helpers as helpers
 
 # min
 @pytest.mark.parametrize(
-    "dtype", ivy.all_numeric_dtype_strs)
+    "dtype", ivy.numeric_dtype_strs)
 @pytest.mark.parametrize(
     "as_variable", [True, False])
 @pytest.mark.parametrize(
@@ -49,7 +49,7 @@ def test_min(dtype, as_variable, with_out, native_array):
 
 # max
 @pytest.mark.parametrize(
-    "dtype", ivy.all_numeric_dtype_strs)
+    "dtype", ivy.numeric_dtype_strs)
 @pytest.mark.parametrize(
     "as_variable", [True, False])
 @pytest.mark.parametrize(
@@ -86,7 +86,7 @@ def test_max(dtype, as_variable, with_out, native_array):
 
 # mean
 @pytest.mark.parametrize(
-    "dtype", ivy.all_float_dtype_strs)
+    "dtype", ivy.float_dtype_strs)
 @pytest.mark.parametrize(
     "as_variable", [True, False])
 @pytest.mark.parametrize(
@@ -123,7 +123,7 @@ def test_mean(dtype, as_variable, with_out, native_array):
 
 # var
 @pytest.mark.parametrize(
-    "dtype", ivy.all_float_dtype_strs)
+    "dtype", ivy.float_dtype_strs)
 @pytest.mark.parametrize(
     "as_variable", [True, False])
 @pytest.mark.parametrize(
@@ -234,7 +234,7 @@ def test_sum(dtype, as_variable, with_out, native_array):
 
 # std
 @pytest.mark.parametrize(
-    "dtype", ivy.all_float_dtype_strs)
+    "dtype", ivy.float_dtype_strs)
 @pytest.mark.parametrize(
     "as_variable", [True, False])
 @pytest.mark.parametrize(
