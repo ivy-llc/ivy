@@ -82,6 +82,10 @@ def matrix_norm(x: JaxArray,
     return ret
 
 
+def matrix_power(x: JaxArray, n: int) \
+        -> JaxArray:
+    return jnp.linalg.matrix_power(x, n)
+
 
 def svd(x: JaxArray,
         full_matrices: bool = True,
