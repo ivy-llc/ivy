@@ -236,10 +236,6 @@ def f_n_calls():
             if ivy_fw() is not None and fw_str not in _excluded]
 
 
-def sample(iterable):
-    return st.builds(lambda i: iterable[i], st.integers(0, len(iterable) - 1))
-
-
 def assert_all_close(x, y, rtol=1e-05, atol=1e-08):
     if ivy.is_ivy_container(x) and ivy.is_ivy_container(y):
         ivy.Container.multi_map(assert_all_close, [x, y])
@@ -259,8 +255,8 @@ def list_of_length(x, length):
 
 def as_cont(x):
     return ivy.Container({'a': x,
-                          'b': {'c': ivy.random_uniform(shape=x.shape),
-                                'd': ivy.random_uniform(shape=x.shape)}})
+                          'b': {'c': x,
+                                'd': x}})
 
 
 def as_lists(dtype, as_variable, with_out, native_array, container):
@@ -392,7 +388,7 @@ def test_array_function(dtype, as_variable, with_out, num_positional_args, nativ
 @st.composite
 def array_dtypes(draw, na=st.shared(st.integers(), key='num_arrays')):
     size = na if isinstance(na, int) else draw(na)
-    return draw(st.lists(sample(ivy_np.valid_float_dtype_strs), min_size=size, max_size=size))
+    return draw(st.lists(st.sampled_from(ivy_np.valid_float_dtype_strs), min_size=size, max_size=size))
 
 
 @st.composite
@@ -418,3 +414,45 @@ def integers(draw, min_value=None, max_value=None):
     if isinstance(max_value, str):
         max_value = draw(st.shared(st.integers(), key=max_value))
     return draw(st.integers(min_value=min_value, max_value=max_value))
+
+
+@st.composite
+def dtype_and_values(draw, available_dtypes, n_arrays=1):
+    dtype = draw(list_of_length(st.sampled_from(available_dtypes), n_arrays))
+    size = draw(st.integers(0, 10))
+    values = []
+    for i in range(n_arrays):
+        values.append(draw(array_values(dtype[i], size)))
+    if n_arrays == 1:
+        dtype = dtype[0]
+        values = values[0]
+    return dtype, values
+
+
+@st.composite
+def array_values(draw, dtype, size):
+    if dtype == 'int8':
+        values = draw(list_of_length(st.integers(-128, 127), size))
+    elif dtype == 'int16':
+        values = draw(list_of_length(st.integers(-32768, 32767), size))
+    elif dtype == 'int32':
+        values = draw(list_of_length(st.integers(-2147483648, 2147483647), size))
+    elif dtype == 'int64':
+        values = draw(list_of_length(st.integers(-9223372036854775808, 9223372036854775807), size))
+    elif dtype == 'uint8':
+        values = draw(list_of_length(st.integers(0, 255), size))
+    elif dtype == 'uint16':
+        values = draw(list_of_length(st.integers(0, 65535), size))
+    elif dtype == 'uint32':
+        values = draw(list_of_length(st.integers(0, 4294967295), size))
+    elif dtype == 'uint64':
+        values = draw(list_of_length(st.integers(0, 18446744073709551615), size))
+    elif dtype == 'float16':
+        values = draw(list_of_length(st.floats(width=16), size))
+    elif dtype == 'float32':
+        values = draw(list_of_length(st.floats(width=32), size))
+    elif dtype == 'float64':
+        values = draw(list_of_length(st.floats(width=64), size))
+    elif dtype == 'bool':
+        values = draw(list_of_length(st.booleans(), size))
+    return values

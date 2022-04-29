@@ -286,17 +286,16 @@ def trace(x: tf.Tensor,
           offset: int = 0,
           out: Optional[Tensor] = None)\
               -> tf.Tensor:
-    ret = tf.linalg.trace(x, offset)
+    ret = tf.experimental.numpy.trace(x, offset=offset, axis1=-2, axis2=-1, dtype=x.dtype)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
     return ret
 
 
-def det(x:tf.Tensor,
-        name:Optional[str]=None,
+def det(x: Tensor,
         out: Optional[Tensor] = None) \
-    -> tf.Tensor:
-    ret = tf.linalg.det(x,name)
+    -> Tensor:
+    ret = tf.linalg.det(x)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
     return ret
@@ -353,10 +352,10 @@ def matrix_rank(x: Tensor,
 
 def cross (x1: tf.Tensor,
            x2: tf.Tensor,
-           axis:int = -1,
+           axis: int = -1,
            out: Optional[Tensor] = None)\
         -> tf.Tensor:
-    ret = tf.experimental.numpy.cross(x1, x2,axis=axis)
+    ret = tf.experimental.numpy.cross(x1, x2, axis=axis)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
     return ret
@@ -384,4 +383,38 @@ def vector_to_skew_symmetric_matrix(vector: Tensor,
     ret = tf.concat((row1, row2, row3), -2)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
+    return ret
+
+def solve(x1: Tensor,
+          x2: Tensor) -> Tensor:
+    if x1.dtype != tf.float32 or x1.dtype != tf.float64:
+        x1 = tf.cast(x1, tf.float32)
+    if x2.dtype != tf.float32 or x2.dtype != tf.float32:
+        x2 = tf.cast(x2, tf.float32)
+
+    expanded_last = False
+    if len(x2.shape) <= 1:
+        if x2.shape[-1] == x1.shape[-1]:
+            expanded_last = True
+            x2 = tf.expand_dims(x2, axis=1)
+    output_shape = tuple(tf.broadcast_static_shape(x1.shape[:-2], x2.shape[:-2]))
+
+    # in case any of the input arrays are empty
+    is_empty_x1 = tf.equal(tf.size(x1), 0)
+    is_empty_x2 = tf.equal(tf.size(x2), 0)
+    if is_empty_x1 or is_empty_x2:
+        for i in range(len(x1.shape) - 2):
+            x2 = tf.expand_dims(x2, axis=0)
+        output_shape = list(output_shape)
+        output_shape.append(x2.shape[-2])
+        output_shape.append(x2.shape[-1])
+        ret = tf.constant([])
+        ret = tf.reshape(ret, output_shape)
+    else:
+        x1 = tf.broadcast_to(x1, output_shape + x1.shape[-2:])
+        x2 = tf.broadcast_to(x2, output_shape + x2.shape[-2:])
+        ret = tf.linalg.solve(x1, x2)
+
+    if expanded_last:
+        ret = tf.squeeze(ret, axis=-1)
     return ret

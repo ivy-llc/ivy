@@ -13,11 +13,11 @@ import ivy_tests.test_ivy.helpers as helpers
 
 class TrainableModule(ivy.Module):
 
-    def __init__(self, in_size, out_size, dev=None, hidden_size=64, v=None, with_partial_v=False):
-        self._linear0 = ivy.Linear(in_size, hidden_size, dev=dev)
-        self._linear1 = ivy.Linear(hidden_size, hidden_size, dev=dev)
-        self._linear2 = ivy.Linear(hidden_size, out_size, dev=dev)
-        ivy.Module.__init__(self, dev, v=v, with_partial_v=with_partial_v)
+    def __init__(self, in_size, out_size, device=None, hidden_size=64, v=None, with_partial_v=False):
+        self._linear0 = ivy.Linear(in_size, hidden_size, device=device)
+        self._linear1 = ivy.Linear(hidden_size, hidden_size, device=device)
+        self._linear2 = ivy.Linear(hidden_size, out_size, device=device)
+        ivy.Module.__init__(self, device, v=v, with_partial_v=with_partial_v)
 
     def _forward(self, x):
         x = ivy.expand_dims(x, 0)
@@ -29,14 +29,14 @@ class TrainableModule(ivy.Module):
 # module training
 @pytest.mark.parametrize(
     "bs_ic_oc", [([1, 2], 4, 5)])
-def test_module_training(bs_ic_oc, dev, compile_graph, call):
+def test_module_training(bs_ic_oc, device, compile_graph, call):
     # smoke test
     if call is helpers.np_call:
         # NumPy does not support gradients
         pytest.skip()
     batch_shape, input_channels, output_channels = bs_ic_oc
     x = ivy.astype(ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), input_channels), 'float32')
-    module = TrainableModule(input_channels, output_channels, dev=dev)
+    module = TrainableModule(input_channels, output_channels, device=device)
 
     def loss_fn(v_):
         out = module(x, v=v_)
@@ -76,12 +76,12 @@ def test_module_training(bs_ic_oc, dev, compile_graph, call):
 
 class TrainableModuleWithList(ivy.Module):
 
-    def __init__(self, in_size, out_size, dev=None, hidden_size=64):
-        linear0 = ivy.Linear(in_size, hidden_size, dev=dev)
-        linear1 = ivy.Linear(hidden_size, hidden_size, dev=dev)
-        linear2 = ivy.Linear(hidden_size, out_size, dev=dev)
+    def __init__(self, in_size, out_size, device=None, hidden_size=64):
+        linear0 = ivy.Linear(in_size, hidden_size, device=device)
+        linear1 = ivy.Linear(hidden_size, hidden_size, device=device)
+        linear2 = ivy.Linear(hidden_size, out_size, device=device)
         self._layers = [linear0, linear1, linear2]
-        ivy.Module.__init__(self, dev)
+        ivy.Module.__init__(self, device)
 
     def _forward(self, x):
         x = ivy.expand_dims(x, 0)
@@ -93,14 +93,14 @@ class TrainableModuleWithList(ivy.Module):
 # module with list training
 @pytest.mark.parametrize(
     "bs_ic_oc", [([1, 2], 4, 5)])
-def test_module_w_list_training(bs_ic_oc, dev, compile_graph, call):
+def test_module_w_list_training(bs_ic_oc, device, compile_graph, call):
     # smoke test
     if call is helpers.np_call:
         # NumPy does not support gradients
         pytest.skip()
     batch_shape, input_channels, output_channels = bs_ic_oc
     x = ivy.astype(ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), input_channels), 'float32')
-    module = TrainableModuleWithList(input_channels, output_channels, dev=dev)
+    module = TrainableModuleWithList(input_channels, output_channels, device=device)
 
     def loss_fn(v_):
         out = module(x, v=v_)
@@ -141,7 +141,7 @@ def test_module_w_list_training(bs_ic_oc, dev, compile_graph, call):
 # module with partial v
 @pytest.mark.parametrize(
     "bs_ic_oc", [([1, 2], 4, 5)])
-def test_module_w_partial_v(bs_ic_oc, dev, compile_graph, call):
+def test_module_w_partial_v(bs_ic_oc, device, compile_graph, call):
     # smoke test
     if call is helpers.np_call:
         # NumPy does not support gradients
@@ -167,7 +167,7 @@ def test_module_w_partial_v(bs_ic_oc, dev, compile_graph, call):
         }
     })
     try:
-        TrainableModule(input_channels, output_channels, dev=dev, v=v, with_partial_v=True)
+        TrainableModule(input_channels, output_channels, device=device, v=v, with_partial_v=True)
         raise Exception('TrainableModule did not raise exception desipite being passed with wrongly shaped variables.')
     except AssertionError:
         pass
@@ -183,19 +183,19 @@ def test_module_w_partial_v(bs_ic_oc, dev, compile_graph, call):
         }
     })
     try:
-        TrainableModule(input_channels, output_channels, dev=dev, v=v)
+        TrainableModule(input_channels, output_channels, device=device, v=v)
         raise Exception('TrainableModule did not raise exception desipite being passed with wrongly shaped variables.')
     except AssertionError:
         pass
-    module = TrainableModule(input_channels, output_channels, dev=dev, v=v, with_partial_v=True)
+    module = TrainableModule(input_channels, output_channels, device=device, v=v, with_partial_v=True)
     module(x)
 
 
 class ModuleWithNoneAttribute(ivy.Module):
 
-    def __init__(self, dev=None, hidden_size=64):
+    def __init__(self, device=None, hidden_size=64):
         self.some_attribute = None
-        ivy.Module.__init__(self, dev)
+        ivy.Module.__init__(self, device)
 
     def _forward(self, x):
         return x
@@ -204,22 +204,22 @@ class ModuleWithNoneAttribute(ivy.Module):
 # module with none attribute
 @pytest.mark.parametrize(
     "bs_ic_oc", [([1, 2], 4, 5)])
-def test_module_w_none_attribute(bs_ic_oc, dev, compile_graph, call):
+def test_module_w_none_attribute(bs_ic_oc, device, compile_graph, call):
     # smoke test
     if call is helpers.np_call:
         # NumPy does not support gradients
         pytest.skip()
     batch_shape, input_channels, output_channels = bs_ic_oc
     x = ivy.astype(ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), input_channels), 'float32')
-    module = ModuleWithNoneAttribute(dev=dev)
+    module = ModuleWithNoneAttribute(device=device)
     module(x)
 
 
 class TrainableModuleWithDuplicate(ivy.Module):
 
-    def __init__(self, channels, same_layer, dev=None):
+    def __init__(self, channels, same_layer, device=None):
         if same_layer:
-            linear = ivy.Linear(channels, channels, dev=dev)
+            linear = ivy.Linear(channels, channels, device=device)
             self._linear0 = linear
             self._linear1 = linear
         else:
@@ -228,8 +228,8 @@ class TrainableModuleWithDuplicate(ivy.Module):
             b1 = ivy.variable(ivy.ones((channels,)))
             v0 = ivy.Container({'w': w, 'b': b0})
             v1 = ivy.Container({'w': w, 'b': b1})
-            self._linear0 = ivy.Linear(channels, channels, dev=dev, v=v0)
-            self._linear1 = ivy.Linear(channels, channels,dev=dev, v=v1)
+            self._linear0 = ivy.Linear(channels, channels, device=device, v=v0)
+            self._linear1 = ivy.Linear(channels, channels,device=device, v=v1)
         ivy.Module.__init__(self)
 
     def _forward(self, x):
@@ -242,14 +242,14 @@ class TrainableModuleWithDuplicate(ivy.Module):
     "bs_c", [([1, 2], 64)])
 @pytest.mark.parametrize(
     "same_layer", [True, False])
-def test_module_training_with_duplicate(bs_c, same_layer, dev, compile_graph, call):
+def test_module_training_with_duplicate(bs_c, same_layer, device, compile_graph, call):
     # smoke test
     if call is helpers.np_call:
         # NumPy does not support gradients
         pytest.skip()
     batch_shape, channels = bs_c
     x = ivy.astype(ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), channels), 'float32')
-    module = TrainableModuleWithDuplicate(channels, same_layer, dev=dev)
+    module = TrainableModuleWithDuplicate(channels, same_layer, device=device)
 
     def loss_fn(v_):
         out = module(x, v=v_)
@@ -287,12 +287,12 @@ def test_module_training_with_duplicate(bs_c, same_layer, dev, compile_graph, ca
 
 class TrainableModuleWithDict(ivy.Module):
 
-    def __init__(self, in_size, out_size, dev=None, hidden_size=64):
-        linear0 = ivy.Linear(in_size, hidden_size, dev=dev)
-        linear1 = ivy.Linear(hidden_size, hidden_size, dev=dev)
-        linear2 = ivy.Linear(hidden_size, out_size, dev=dev)
+    def __init__(self, in_size, out_size, device=None, hidden_size=64):
+        linear0 = ivy.Linear(in_size, hidden_size, device=device)
+        linear1 = ivy.Linear(hidden_size, hidden_size, device=device)
+        linear2 = ivy.Linear(hidden_size, out_size, device=device)
         self._layers = {'linear0': linear0, 'linear1': linear1, 'linear2': linear2}
-        ivy.Module.__init__(self, dev)
+        ivy.Module.__init__(self, device)
 
     def _forward(self, x):
         x = ivy.expand_dims(x, 0)
@@ -304,14 +304,14 @@ class TrainableModuleWithDict(ivy.Module):
 # module with dict training
 @pytest.mark.parametrize(
     "bs_ic_oc", [([1, 2], 4, 5)])
-def test_module_w_dict_training(bs_ic_oc, dev, compile_graph, call):
+def test_module_w_dict_training(bs_ic_oc, device, compile_graph, call):
     # smoke test
     if call is helpers.np_call:
         # NumPy does not support gradients
         pytest.skip()
     batch_shape, input_channels, output_channels = bs_ic_oc
     x = ivy.astype(ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), input_channels), 'float32')
-    module = TrainableModuleWithDict(input_channels, output_channels, dev=dev)
+    module = TrainableModuleWithDict(input_channels, output_channels, device=device)
 
     def loss_fn(v_):
         out = module(x, v=v_)
@@ -351,13 +351,13 @@ def test_module_w_dict_training(bs_ic_oc, dev, compile_graph, call):
 
 class WithCustomVarStructure(ivy.Module):
 
-    def __init__(self, in_size, out_size, dev=None, hidden_size=64):
-        self._linear0 = ivy.Linear(in_size, hidden_size, dev=dev)
-        self._linear1 = ivy.Linear(hidden_size, hidden_size, dev=dev)
-        self._linear2 = ivy.Linear(hidden_size, out_size, dev=dev)
-        ivy.Module.__init__(self, dev)
+    def __init__(self, in_size, out_size, device=None, hidden_size=64):
+        self._linear0 = ivy.Linear(in_size, hidden_size, device=device)
+        self._linear1 = ivy.Linear(hidden_size, hidden_size, device=device)
+        self._linear2 = ivy.Linear(hidden_size, out_size, device=device)
+        ivy.Module.__init__(self, device)
 
-    def _create_variables(self, dev):
+    def _create_variables(self, device):
         return ivy.Container(x=self._linear0.v, y=self._linear1.v, z=self._linear2.v)
 
     def _forward(self, x):
@@ -367,13 +367,13 @@ class WithCustomVarStructure(ivy.Module):
 # with custom var structure
 @pytest.mark.parametrize(
     "bs_ic_oc", [([1, 2], 4, 5)])
-def test_with_custom_var_structure(bs_ic_oc, dev, call):
+def test_with_custom_var_structure(bs_ic_oc, device, call):
     # smoke test
     if call is helpers.np_call:
         # NumPy does not support gradients
         pytest.skip()
     batch_shape, input_channels, output_channels = bs_ic_oc
-    module = WithCustomVarStructure(input_channels, output_channels, dev=dev)
+    module = WithCustomVarStructure(input_channels, output_channels, device=device)
     assert 'x' in module.v
     assert 'y' in module.v
     assert 'z' in module.v
@@ -381,10 +381,10 @@ def test_with_custom_var_structure(bs_ic_oc, dev, call):
 
 class DoubleLinear(ivy.Module):
 
-    def __init__(self, in_size, out_size, dev=None, hidden_size=64):
-        self._l0 = ivy.Linear(in_size, hidden_size, dev=dev)
-        self._l1 = ivy.Linear(hidden_size, out_size, dev=dev)
-        ivy.Module.__init__(self, dev)
+    def __init__(self, in_size, out_size, device=None, hidden_size=64):
+        self._l0 = ivy.Linear(in_size, hidden_size, device=device)
+        self._l1 = ivy.Linear(hidden_size, out_size, device=device)
+        ivy.Module.__init__(self, device)
 
     def _forward(self, x):
         x = self._l0(x)
@@ -394,10 +394,10 @@ class DoubleLinear(ivy.Module):
 
 class WithNestedModules(ivy.Module):
 
-    def __init__(self, in_size, out_size, dev=None, hidden_size=64):
-        self._dl0 = DoubleLinear(in_size, hidden_size, dev=dev)
-        self._dl1 = DoubleLinear(hidden_size, hidden_size, dev=dev)
-        ivy.Module.__init__(self, dev=dev)
+    def __init__(self, in_size, out_size, device=None, hidden_size=64):
+        self._dl0 = DoubleLinear(in_size, hidden_size, device=device)
+        self._dl1 = DoubleLinear(hidden_size, hidden_size, device=device)
+        ivy.Module.__init__(self, device=device)
 
     def _forward(self, x):
         x = self._dl0(x)
@@ -409,13 +409,13 @@ class WithNestedModules(ivy.Module):
 # top variables
 @pytest.mark.parametrize(
     "bs_ic_oc", [([1, 2], 4, 5)])
-def test_top_variables(bs_ic_oc, dev, call):
+def test_top_variables(bs_ic_oc, device, call):
     # smoke test
     if call is helpers.np_call:
         # NumPy does not support gradients
         pytest.skip()
     batch_shape, input_channels, output_channels = bs_ic_oc
-    module = WithNestedModules(input_channels, output_channels, dev=dev)
+    module = WithNestedModules(input_channels, output_channels, device=device)
     for key_chain in ['dl0', 'dl0/l0', 'dl0/l1', 'dl0/l0/b', 'dl0/l0/w', 'dl0/l1/b', 'dl0/l1/w',
                       'dl1', 'dl1/l0', 'dl1/l1', 'dl1/l0/b', 'dl1/l0/w', 'dl1/l1/b', 'dl1/l1/w']:
 
@@ -433,13 +433,13 @@ def test_top_variables(bs_ic_oc, dev, call):
 # top module
 @pytest.mark.parametrize(
     "bs_ic_oc", [([1, 2], 4, 5)])
-def test_top_module(bs_ic_oc, dev, call):
+def test_top_module(bs_ic_oc, device, call):
     # smoke test
     if call is helpers.np_call:
         # NumPy does not support gradients
         pytest.skip()
     batch_shape, input_channels, output_channels = bs_ic_oc
-    module = WithNestedModules(input_channels, output_channels, dev=dev)
+    module = WithNestedModules(input_channels, output_channels, device=device)
 
     # full depth
     assert module._dl0.top_mod() is module
@@ -460,13 +460,13 @@ def test_top_module(bs_ic_oc, dev, call):
 # v with top v key chains
 @pytest.mark.parametrize(
     "bs_ic_oc", [([1, 2], 4, 5)])
-def test_v_with_top_v_key_chains(bs_ic_oc, dev, call):
+def test_v_with_top_v_key_chains(bs_ic_oc, device, call):
     # smoke test
     if call is helpers.np_call:
         # NumPy does not support gradients
         pytest.skip()
     batch_shape, input_channels, output_channels = bs_ic_oc
-    module = WithNestedModules(input_channels, output_channels, dev=dev)
+    module = WithNestedModules(input_channels, output_channels, device=device)
 
     # full depth
     v = module._dl0.v_with_top_v_key_chains()
@@ -519,13 +519,13 @@ def test_v_with_top_v_key_chains(bs_ic_oc, dev, call):
 # module depth
 @pytest.mark.parametrize(
     "bs_ic_oc", [([1, 2], 4, 5)])
-def test_module_depth(bs_ic_oc, dev, call):
+def test_module_depth(bs_ic_oc, device, call):
     # smoke test
     if call is helpers.np_call:
         # NumPy does not support gradients
         pytest.skip()
     batch_shape, input_channels, output_channels = bs_ic_oc
-    module = WithNestedModules(input_channels, output_channels, dev=dev)
+    module = WithNestedModules(input_channels, output_channels, device=device)
 
     # depth 0
     assert module.mod_depth() == 0
@@ -544,13 +544,13 @@ def test_module_depth(bs_ic_oc, dev, call):
 # module height
 @pytest.mark.parametrize(
     "bs_ic_oc", [([1, 2], 4, 5)])
-def test_module_height(bs_ic_oc, dev, call):
+def test_module_height(bs_ic_oc, device, call):
     # smoke test
     if call is helpers.np_call:
         # NumPy does not support gradients
         pytest.skip()
     batch_shape, input_channels, output_channels = bs_ic_oc
-    module = WithNestedModules(input_channels, output_channels, dev=dev)
+    module = WithNestedModules(input_channels, output_channels, device=device)
 
     # height 2
     assert module.mod_height() == 2
@@ -569,13 +569,13 @@ def test_module_height(bs_ic_oc, dev, call):
 # sub modules
 @pytest.mark.parametrize(
     "bs_ic_oc", [([1, 2], 4, 5)])
-def test_sub_modules(bs_ic_oc, dev, call):
+def test_sub_modules(bs_ic_oc, device, call):
     # smoke test
     if call is helpers.np_call:
         # NumPy does not support gradients
         pytest.skip()
     batch_shape, input_channels, output_channels = bs_ic_oc
-    module = WithNestedModules(input_channels, output_channels, dev=dev)
+    module = WithNestedModules(input_channels, output_channels, device=device)
 
     # depth 0
     sub_mods = module.sub_mods(depth=0)
@@ -595,14 +595,14 @@ def test_sub_modules(bs_ic_oc, dev, call):
 # track submod returns
 @pytest.mark.parametrize(
     "bs_ic_oc", [([1, 2], 4, 5)])
-def test_module_track_submod_rets(bs_ic_oc, dev, call):
+def test_module_track_submod_rets(bs_ic_oc, device, call):
     # smoke test
     if call is helpers.np_call:
         # NumPy does not support gradients
         pytest.skip()
     batch_shape, input_channels, output_channels = bs_ic_oc
     x = ivy.astype(ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), input_channels), 'float32')
-    module = WithNestedModules(input_channels, output_channels, dev=dev)
+    module = WithNestedModules(input_channels, output_channels, device=device)
 
     # depth 1
     ret = module(x, track_submod_rets=True, submod_depth=1)
@@ -639,14 +639,14 @@ def test_module_track_submod_rets(bs_ic_oc, dev, call):
 # check submod returns
 @pytest.mark.parametrize(
     "bs_ic_oc", [([1, 2], 4, 5)])
-def test_module_check_submod_rets(bs_ic_oc, dev, call):
+def test_module_check_submod_rets(bs_ic_oc, device, call):
     # smoke test
     if call is helpers.np_call:
         # NumPy does not support gradients
         pytest.skip()
     batch_shape, input_channels, output_channels = bs_ic_oc
     x = ivy.astype(ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), input_channels), 'float32')
-    module = WithNestedModules(input_channels, output_channels, dev=dev)
+    module = WithNestedModules(input_channels, output_channels, device=device)
 
     # depth 1
     ret = module(x, track_submod_rets=True, submod_depth=1)
@@ -701,14 +701,14 @@ def test_module_check_submod_rets(bs_ic_oc, dev, call):
 # track submod call order
 @pytest.mark.parametrize(
     "bs_ic_oc", [([1, 2], 4, 5)])
-def test_module_track_submod_call_order(bs_ic_oc, dev, call):
+def test_module_track_submod_call_order(bs_ic_oc, device, call):
     # smoke test
     if call is helpers.np_call:
         # NumPy does not support gradients
         pytest.skip()
     batch_shape, input_channels, output_channels = bs_ic_oc
     x = ivy.astype(ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), input_channels), 'float32')
-    module = WithNestedModules(input_channels, output_channels, dev=dev)
+    module = WithNestedModules(input_channels, output_channels, device=device)
 
     root_key_0 = ivy.Container.flatten_key_chain(module.__repr__(), '_') + '_0'
 

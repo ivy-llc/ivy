@@ -172,7 +172,7 @@ def trace(x: np.ndarray,
           offset: int = 0,
           out: Optional[np.ndarray] = None) \
         -> np.ndarray:
-    return np.trace(x, offset, out=out)
+    return np.trace(x, offset=offset, axis1=-2, axis2=-1, dtype=x.dtype, out=out)
 
 
 def vecdot(x1: np.ndarray, 
@@ -186,9 +186,9 @@ def vecdot(x1: np.ndarray,
     return ret
 
 
-def det(x: np.array,
+def det(x: np.ndarray,
         out: Optional[np.ndarray] = None) \
-        -> np.array:
+        -> np.ndarray:
     ret =  np.linalg.det(x)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
@@ -218,12 +218,12 @@ def eigvalsh(x: np.ndarray,
     return ret
 
 
-def cross (x1: np.ndarray,
-           x2: np.ndarray,
-           axis:int = -1,
-           out: Optional[np.ndarray] = None
-           ) -> np.ndarray:
-    ret =  np.cross(a= x1, b = x2, axis= axis)
+def cross(x1: np.ndarray,
+          x2: np.ndarray,
+          axis: int = -1,
+          out: Optional[np.ndarray] = None)\
+        -> np.ndarray:
+    ret = np.cross(a=x1, b=x2, axis=axis)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
     return ret
@@ -265,4 +265,18 @@ def vector_to_skew_symmetric_matrix(vector: np.ndarray,
     ret =  np.concatenate((row1, row2, row3), -2)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
+    return ret
+
+def solve(x1: np.ndarray,
+          x2: np.ndarray) -> np.ndarray:
+    expanded_last = False
+    if len(x2.shape) <= 1:
+        if x2.shape[-1] == x1.shape[-1]:
+            expanded_last = True
+            x2 = np.expand_dims(x2, axis=1)
+    for i in range(len(x1.shape) - 2):
+        x2 = np.expand_dims(x2, axis=0)
+    ret = np.linalg.solve(x1, x2)
+    if expanded_last:
+        ret = np.squeeze(ret, axis=-1)
     return ret
