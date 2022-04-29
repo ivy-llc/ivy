@@ -229,30 +229,47 @@
 
 <span class="c1"># local</span>
 <span class="kn">import</span> <span class="nn">ivy</span>
-
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
 
 <span class="c1"># Extra #</span>
 <span class="c1"># ------#</span>
 
-<div class="viewcode-block" id="cross_entropy"><a class="viewcode-back" href="../../../../functional/ivy/losses/cross_entropy.html#ivy.functional.ivy.losses.cross_entropy">[docs]</a><span class="k">def</span> <span class="nf">cross_entropy</span><span class="p">(</span><span class="n">true</span><span class="p">,</span> <span class="n">pred</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">epsilon</span><span class="o">=</span><span class="mf">1e-7</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Computes cross entropy between predicted and true discrete distrubtions.</span>
+<div class="viewcode-block" id="cross_entropy"><a class="viewcode-back" href="../../../../functional/ivy/losses/cross_entropy.html#ivy.functional.ivy.losses.cross_entropy">[docs]</a><span class="k">def</span> <span class="nf">cross_entropy</span><span class="p">(</span><span class="n">true</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+                  <span class="n">pred</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+                  <span class="n">axis</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+                  <span class="n">epsilon</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1e-7</span><span class="p">)</span>\
+        <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Computes cross-entropy between predicted and true discrete distributions.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    true</span>
-<span class="sd">        True labels</span>
+<span class="sd">        input array containing true labels.</span>
 <span class="sd">    pred</span>
-<span class="sd">        predicted labels.</span>
+<span class="sd">        input array containing the predicted labels.</span>
 <span class="sd">    axis</span>
-<span class="sd">        The class dimension, default is -1.</span>
+<span class="sd">        the axis along which to compute the cross-entropy. If axis is ``-1``, the cross-entropy will be computed along the last dimension. Default: ``-1``.</span>
 <span class="sd">    epsilon</span>
-<span class="sd">        small constant to add to log functions, default is 1e-7</span>
+<span class="sd">        a float in [0.0, 1.0] specifying the amount of smoothing when calculating the loss. If epsilon is ``0``, no smoothing will be applied.</span>
+<span class="sd">        Default: ``1e-7``.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">     ret</span>
-<span class="sd">        The cross entropy loss</span>
+<span class="sd">    ret</span>
+<span class="sd">        The cross-entropy loss between the given distributions</span>
 
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([0, 0, 1, 0])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.array([0.25, 0.25, 0.25, 0.25])</span>
+<span class="sd">    &gt;&gt;&gt; print(ivy.cross_entropy(x, y))</span>
+<span class="sd">    ivy.array(1.38629436)</span>
+<span class="sd">    </span>
+<span class="sd">    &gt;&gt;&gt; z = ivy.array([0.1, 0.1, 0.7, 0.1])</span>
+<span class="sd">    &gt;&gt;&gt; print(ivy.cross_entropy(x, z))</span>
+<span class="sd">    ivy.array(0.35667497)</span>
+<span class="sd">    </span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">pred</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">pred</span><span class="p">,</span> <span class="n">epsilon</span><span class="p">,</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">epsilon</span><span class="p">)</span>
     <span class="n">log_pred</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">pred</span><span class="p">)</span>
