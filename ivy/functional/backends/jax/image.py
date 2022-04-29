@@ -124,7 +124,7 @@ def gradient_image(x):
     x_shape = _ivy.shape(x)
     batch_shape = x_shape[:-3]
     image_dims = x_shape[-3:-1]
-    dev = x.device_buffer.device()
+    device = x.device_buffer.device()
     # to list
     batch_shape = list(batch_shape)
     image_dims = list(image_dims)
@@ -135,7 +135,7 @@ def gradient_image(x):
     dx = x[..., :, 1:, :] - x[..., :, :-1, :]
     # BS x H x W x D
     # jax.device_put(x, dev_from_str(dev))
-    dy = _ivy.concat((dy, jax.device_put(jnp.zeros(batch_shape + [1, image_dims[1], num_dims]), dev)), -3)
-    dx = _ivy.concat((dx, jax.device_put(jnp.zeros(batch_shape + [image_dims[0], 1, num_dims]), dev)), -2)
+    dy = _ivy.concat((dy, jax.device_put(jnp.zeros(batch_shape + [1, image_dims[1], num_dims]), device)), -3)
+    dx = _ivy.concat((dx, jax.device_put(jnp.zeros(batch_shape + [image_dims[0], 1, num_dims]), device)), -2)
     # BS x H x W x D,    BS x H x W x D
     return dy, dx

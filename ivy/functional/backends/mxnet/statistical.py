@@ -11,10 +11,11 @@ from ivy.functional.backends.mxnet import _flat_array_to_1_dim_array, _1_dim_arr
 # -------------------#
 
 def sum(x: mx.ndarray.ndarray.NDArray,
-         axis: Optional[Union[int, Tuple[int, ...]]] = None,
-         keepdims: bool = False,
-         out: Optional[mx.ndarray.ndarray.NDArray] = None)\
-            -> mx.ndarray.ndarray.NDArray:
+        axis: Optional[Union[int, Tuple[int, ...]]] = None,
+        keepdims: bool = False,
+        out: Optional[mx.ndarray.ndarray.NDArray] = None)\
+        -> mx.ndarray.ndarray.NDArray:
+
     if axis is None:
         num_dims = len(x.shape)
         axis = tuple(range(num_dims))
@@ -156,10 +157,10 @@ def max(x: mx.ndarray.ndarray.NDArray, axis: Union[int, Tuple[int,...]] = None,
 # Extra #
 # ------#
 
-def einsum(equation : str, 
-    *operands : mx.ndarray.ndarray.NDArray,
-    out : Optional[mx.ndarray.ndarray.NDArray] = None)\
-     -> mx.ndarray.ndarray.NDArray:
+def einsum(equation: str, 
+            *operands: mx.ndarray.ndarray.NDArray,
+            out: Optional[mx.ndarray.ndarray.NDArray] = None)\
+            -> mx.ndarray.ndarray.NDArray:
     if ivy.exists(out):
         return ivy.inplace_update(out,mx.np.einsum(equation, *[op.as_np_ndarray() for op in operands]).as_nd_ndarray())
     else:

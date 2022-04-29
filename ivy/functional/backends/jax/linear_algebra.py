@@ -82,6 +82,10 @@ def matrix_norm(x: JaxArray,
     return ret
 
 
+def matrix_power(x: JaxArray, n: int) \
+        -> JaxArray:
+    return jnp.linalg.matrix_power(x, n)
+
 
 def svd(x: JaxArray,
         full_matrices: bool = True,
@@ -108,7 +112,12 @@ def diagonal(x: JaxArray,
              axis2: int = -1,
              out: Optional[JaxArray] = None)\
         -> JaxArray:
-    ret = jnp.diagonal(x, offset, axis1, axis2)
+    if not x.dtype == bool and not jnp.issubdtype(x.dtype, jnp.integer):
+        ret = jnp.diagonal(x, offset, axis1, axis2)
+        ret_edited = jnp.diagonal(x.at[1/x==-jnp.inf].set(-jnp.inf), offset, axis1, axis2)
+        ret_edited = ret_edited.at[ret_edited==-jnp.inf].set(-0.)
+        ret = ret.at[ret==ret_edited].set(ret_edited[ret==ret_edited])
+    else: ret = jnp.diagonal(x, offset, axis1, axis2)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
     return ret
@@ -171,12 +180,12 @@ def trace(x: JaxArray,
           offset: int = 0,
           out: Optional[JaxArray] = None)\
               -> JaxArray:
-    return jax.numpy.trace(x, offset, out=out)
+    return jnp.trace(x, offset=offset, axis1=-2, axis2=-1, dtype=x.dtype, out=out)
 
 
-def det(x:jnp.array,
+def det(x: JaxArray,
         out: Optional[JaxArray] = None) \
-    -> jnp.array:
+    -> JaxArray:
     ret = jnp.linalg.det(x)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
@@ -219,18 +228,18 @@ def inv(x: JaxArray,
     return ret
 
 
-def matrix_rank(vector: JaxArray,
+def matrix_rank(x: JaxArray,
                 rtol: Optional[Union[float, Tuple[float]]] = None,
                 out: Optional[JaxArray] = None) \
         -> JaxArray:
-        if vector.size == 0:
+        if x.size == 0:
             ret = 0
-        elif vector.size == 1:
-            ret = jnp.count_nonzero(vector)
+        elif x.size == 1:
+            ret = jnp.count_nonzero(x)
         else:
-            if vector.ndim >2:
-                vector = vector.reshape([-1])
-            ret = jnp.linalg.matrix_rank(vector, rtol)
+            if x.ndim >2:
+                x = x.reshape([-1])
+            ret = jnp.linalg.matrix_rank(x, rtol)
         if ivy.exists(out):
             return ivy.inplace_update(out, ret)
         return ret
@@ -238,10 +247,10 @@ def matrix_rank(vector: JaxArray,
 
 def cross (x1: JaxArray,
            x2: JaxArray,
-           axis:int = -1,
+           axis: int = -1,
            out: Optional[JaxArray] = None)\
         -> JaxArray:
-    ret = jnp.cross(a= x1, b = x2, axis= axis)
+    ret = jnp.cross(a=x1, b=x2, axis=axis)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
     return ret
@@ -280,4 +289,32 @@ def vector_to_skew_symmetric_matrix(vector: JaxArray,
     ret = jnp.concatenate((row1, row2, row3), -2)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
+    return ret
+
+def solve(x1: JaxArray,
+          x2: JaxArray) -> JaxArray:
+    expanded_last = False
+    if len(x2.shape) <= 1:
+        if x2.shape[-1] == x1.shape[-1]:
+            expanded_last = True
+            x2 = jnp.expand_dims(x2, axis=1)
+
+    # if any of the arrays are empty
+    is_empty_x1 = x1.size == 0
+    is_empty_x2 = x2.size == 0
+    if is_empty_x1 or is_empty_x2:
+        for i in range(len(x1.shape) - 2):
+            x2 = jnp.expand_dims(x2, axis=0)
+        output_shape = list(jnp.broadcast_shapes(x1.shape[:-2], x2.shape[:-2]))
+        output_shape.append(x2.shape[-2])
+        output_shape.append(x2.shape[-1])
+        ret = jnp.array([]).reshape(output_shape)
+    else:
+        output_shape = tuple(jnp.broadcast_shapes(x1.shape[:-2], x2.shape[:-2]))
+        x1 = jnp.broadcast_to(x1, output_shape + x1.shape[-2:])
+        x2 = jnp.broadcast_to(x2, output_shape + x2.shape[-2:])
+        ret = jnp.linalg.solve(x1, x2)
+
+    if expanded_last:
+        ret = jnp.squeeze(ret, axis=-1)
     return ret

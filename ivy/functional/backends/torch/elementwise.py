@@ -182,8 +182,9 @@ def multiply(x1: torch.Tensor,
              x2: torch.Tensor,
              out: Optional[torch.Tensor] = None)\
         -> torch.Tensor:
-    if hasattr(x1, 'dtype') and hasattr(x2, 'dtype'):
-        x1, x2 = torch.tensor(x1), torch.tensor(x2)
+    if not isinstance(x2, torch.Tensor):
+        x2 = torch.tensor(x2, dtype=x1.dtype)
+    elif hasattr(x1, 'dtype') and hasattr(x2, 'dtype'):
         promoted_type = torch.promote_types(x1.dtype, x2.dtype)
         x1 = x1.to(promoted_type)
         x2 = x2.to(promoted_type)
@@ -358,11 +359,13 @@ def round(x: torch.Tensor,
 def trunc(x: torch.Tensor,
           out: Optional[torch.Tensor] = None)\
         -> torch.Tensor:
-    if 'int' in str(x.dtype):
-        if ivy.exists(out):
-            return ivy.inplace_update(out, x)
-        return x
-    return torch.trunc(x, out=out)
+    if 'int' not in str(x.dtype):
+        return torch.trunc(x, out=out)
+    ret = x
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
+
 
 
 def abs(x: torch.Tensor,
@@ -375,7 +378,10 @@ def logaddexp(x1: torch.Tensor,
               x2: torch.Tensor,
               out: Optional[torch.Tensor] = None)\
         -> torch.Tensor:
-    x1, x2 = _cast_for_binary_op(x1, x2)
+    if hasattr(x1, 'dtype') and hasattr(x2, 'dtype'):
+        promoted_type = torch.promote_types(x1.dtype, x2.dtype)
+        x1 = x1.to(promoted_type)
+        x2 = x2.to(promoted_type)
     return torch.logaddexp(x1, x2, out=out)
 
 
@@ -401,7 +407,9 @@ def atan2(x1: torch.Tensor,
           x2: torch.Tensor,
           out: Optional[torch.Tensor] = None)\
         -> torch.Tensor:
-    if hasattr(x1, 'dtype') and hasattr(x2, 'dtype'):
+    if not isinstance(x2, torch.Tensor):
+        x2 = torch.tensor(x2, dtype=x1.dtype)
+    elif hasattr(x1, 'dtype') and hasattr(x2, 'dtype'):
         promoted_type = torch.promote_types(x1.dtype, x2.dtype)
         x1 = x1.to(promoted_type)
         x2 = x2.to(promoted_type)
@@ -443,7 +451,12 @@ def remainder(x1: torch.Tensor,
               out: Optional[torch.Tensor] = None)\
         -> torch.Tensor:
     x1, x2 = _cast_for_binary_op(x1, x2)
-    return torch.remainder(x1, x2, out=out)
+    ret = torch.remainder(x1, x2)
+    ret[torch.isnan(ret)] = 0
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    else:
+        return ret
 
 
 def atanh(x: torch.Tensor,

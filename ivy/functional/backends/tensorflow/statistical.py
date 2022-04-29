@@ -21,12 +21,13 @@ def min(x: Tensor,
 
 
 def sum(x: Tensor,
-        axis: Optional[Union[int,Tuple[int]]] = None,
+        axis: Optional[Union[int, Tuple[int]]] = None,
         dtype: Optional[tf.DType] = None,
         keepdims: bool = False,
-        out: Optional[Tensor]=None) -> Tensor:
+        out: Optional[Tensor] = None)\
+        -> Tensor:
 
-    if dtype == None:
+    if dtype is None:
         if x.dtype in [tf.int8, tf.int16, tf.int32]:
             dtype = tf.int32
         elif x.dtype in [tf.uint8, tf.uint16, tf.experimental.numpy.uint32]:
@@ -115,8 +116,10 @@ def std(x: Tensor,
 # Extra #
 # ------#
 
-def einsum(equation : str, *operands : Tensor, out : Optional[Tensor]=None)\
-     -> Tensor:
+def einsum(equation: str,
+           *operands: Tensor,
+           out: Optional[Tensor] = None)\
+            -> Tensor:
     if ivy.exists(out):
         return ivy.inplace_update(out, tf.einsum(equation, *operands))
     else:
