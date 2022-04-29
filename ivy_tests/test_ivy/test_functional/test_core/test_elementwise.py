@@ -663,7 +663,7 @@ def test_logaddexp(dtype_and_x, as_variable, with_out, num_positional_args, nati
 @given(dtype_and_x=helpers.dtype_and_values(('bool',)),
        as_variable=st.booleans(),
        with_out=st.booleans(),
-       num_positional_args=st.integers(0, 2),
+       num_positional_args=st.integers(0, 1),
        native_array=st.booleans(),
        container=st.booleans(),
        instance_method=st.booleans())
@@ -675,208 +675,104 @@ def test_logical_not(dtype_and_x, as_variable, with_out, num_positional_args, na
 
 
 # logical_or
-@pytest.mark.parametrize(
-    "with_out", [True, False])
-@pytest.mark.parametrize(
-    "native_array", [True, False])
-def test_logical_or(with_out, native_array):
-    x1 = ivy.array([0, 1, 1], dtype='bool')
-    x2 = ivy.array([0, 1, 1], dtype='bool')
-    out = ivy.array([0, 0, 0], dtype='bool')
-    if native_array:
-        x1 = x1.data
-        x2 = x2.data
-        out = out.data
-    if with_out:
-        ret = ivy.logical_or(x1, x2, out=out)
-    else:
-        ret = ivy.logical_or(x1, x2)
-    if with_out:
-        if not native_array:
-            assert ret is out
-        if ivy.current_framework_str() in ["tensorflow", "jax"]:
-            # these frameworks do not support native inplace updates
-            return
-        assert ret.data is (out if native_array else out.data)
+@given(dtype_and_x=helpers.dtype_and_values(('bool',), 2),
+       as_variable=helpers.list_of_length(st.booleans(), 2),
+       with_out=st.booleans(),
+       num_positional_args=st.integers(0, 2),
+       native_array=helpers.list_of_length(st.booleans(), 2),
+       container=helpers.list_of_length(st.booleans(), 2),
+       instance_method=st.booleans())
+def test_logical_or(dtype_and_x, as_variable, with_out, num_positional_args, native_array, container, instance_method, fw):
+    dtype, x = dtype_and_x
+    helpers.test_array_function(
+        dtype, as_variable, with_out, num_positional_args, native_array, container, instance_method, fw, 'logical_or',
+        x1=np.asarray(x[0], dtype=dtype[0]), x2=np.asarray(x[1], dtype=dtype[1]))
+
 
 
 # logical_xor
-@pytest.mark.parametrize(
-    "with_out", [True, False])
-@pytest.mark.parametrize(
-    "native_array", [True, False])
-def test_logical_xor(with_out, native_array):
-    x1 = ivy.array([0, 1, 1], dtype='bool')
-    x2 = ivy.array([0, 1, 1], dtype='bool')
-    out = ivy.array([0, 0, 0], dtype='bool')
-    if native_array:
-        x1 = x1.data
-        x2 = x2.data
-        out = out.data
-    if with_out:
-        ret = ivy.logical_xor(x1, x2, out=out)
-    else:
-        ret = ivy.logical_xor(x1, x2)
-    if with_out:
-        if not native_array:
-            assert ret is out
-        if ivy.current_framework_str() in ["tensorflow", "jax"]:
-            # these frameworks do not support native inplace updates
-            return
-        assert ret.data is (out if native_array else out.data)
+@given(dtype_and_x=helpers.dtype_and_values(('bool',), 2),
+       as_variable=helpers.list_of_length(st.booleans(), 2),
+       with_out=st.booleans(),
+       num_positional_args=st.integers(0, 2),
+       native_array=helpers.list_of_length(st.booleans(), 2),
+       container=helpers.list_of_length(st.booleans(), 2),
+       instance_method=st.booleans())
+def test_logical_xor(dtype_and_x, as_variable, with_out, num_positional_args, native_array, container, instance_method, fw):
+    dtype, x = dtype_and_x
+    helpers.test_array_function(
+        dtype, as_variable, with_out, num_positional_args, native_array, container, instance_method, fw, 'logical_xor',
+        x1=np.asarray(x[0], dtype=dtype[0]), x2=np.asarray(x[1], dtype=dtype[1]))
 
 
 # multiply
-@pytest.mark.parametrize(
-    "dtype", ivy.numeric_dtype_strs)
-@pytest.mark.parametrize(
-    "as_variable", [True, False])
-@pytest.mark.parametrize(
-    "with_out", [True, False])
-@pytest.mark.parametrize(
-    "native_array", [True, False])
-def test_multiply(dtype, as_variable, with_out, native_array):
-    if dtype in ivy.invalid_dtype_strs:
-        pytest.skip("invalid dtype")
-    x1 = ivy.array([2, 3, 4], dtype=dtype)
-    x2 = ivy.array([2, 3, 4], dtype=dtype)
-    out = ivy.array([2, 3, 4], dtype=dtype)
-    if as_variable:
-        if not ivy.is_float_dtype(dtype):
-            pytest.skip("only floating point variables are supported")
-        if with_out:
-            pytest.skip("variables do not support out argument")
-        x1 = ivy.variable(x1)
-        x2 = ivy.variable(x2)
-        out = ivy.variable(out)
-    if native_array:
-        x1 = x1.data
-        x2 = x2.data
-        out = out.data
-    if with_out:
-        ret = ivy.multiply(x1, x2, out=out)
-    else:
-        ret = ivy.multiply(x1, x2)
-    if with_out:
-        if not native_array:
-            assert ret is out
-        if ivy.current_framework_str() in ["tensorflow", "jax"]:
-            # these frameworks do not support native inplace updates
-            return
-        assert ret.data is (out if native_array else out.data)
+# @given(dtype_and_x=helpers.dtype_and_values(ivy_np.valid_numeric_dtype_strs),
+#        as_variable=helpers.list_of_length(st.booleans(), 2),
+#        with_out=st.booleans(),
+#        num_positional_args=st.integers(0, 2),
+#        native_array=helpers.list_of_length(st.booleans(), 2),
+#        container=helpers.list_of_length(st.booleans(), 2),
+#        instance_method=st.booleans())
+# def test_multiply(dtype_and_x, as_variable, with_out, num_positional_args, native_array, container, instance_method, fw):
+#     dtype, x = dtype_and_x
+#     if dtype in ivy.invalid_dtype_strs:
+#         return
+#     dtype = [dtype, dtype]
+#     helpers.test_array_function(
+#         dtype, as_variable, with_out, num_positional_args, native_array, container, instance_method, fw, 'multiply',
+#         x1=np.asarray(x, dtype=dtype[0]), x2=np.asarray(x, dtype=dtype[1]))
 
 
 # negative
-@pytest.mark.parametrize(
-    "dtype", ivy.numeric_dtype_strs)
-@pytest.mark.parametrize(
-    "as_variable", [True, False])
-@pytest.mark.parametrize(
-    "with_out", [True, False])
-@pytest.mark.parametrize(
-    "native_array", [True, False])
-def test_negative(dtype, as_variable, with_out, native_array):
+@given(dtype_and_x=helpers.dtype_and_values(ivy_np.valid_numeric_dtype_strs),
+       as_variable=st.booleans(),
+       with_out=st.booleans(),
+       num_positional_args=st.integers(0, 1),
+       native_array=st.booleans(),
+       container=st.booleans(),
+       instance_method=st.booleans())
+def test_negative(dtype_and_x, as_variable, with_out, num_positional_args, native_array, container, instance_method, fw):
+    dtype, x = dtype_and_x
     if dtype in ivy.invalid_dtype_strs:
-        pytest.skip("invalid dtype")
-    x = ivy.array([2, 3, 4], dtype=dtype)
-    out = ivy.array([2, 3, 4], dtype=dtype)
-    if as_variable:
-        if not ivy.is_float_dtype(dtype):
-            pytest.skip("only floating point variables are supported")
-        if with_out:
-            pytest.skip("variables do not support out argument")
-        x = ivy.variable(x)
-        out = ivy.variable(out)
-    if native_array:
-        x = x.data
-        out = out.data
-    if with_out:
-        ret = ivy.negative(x, out=out)
-    else:
-        ret = ivy.negative(x)
-    if with_out:
-        if not native_array:
-            assert ret is out
-        if ivy.current_framework_str() in ["tensorflow", "jax"]:
-            # these frameworks do not support native inplace updates
-            return
-        assert ret.data is (out if native_array else out.data)
+        return
+    helpers.test_array_function(
+        dtype, as_variable, with_out, num_positional_args, native_array, container, instance_method, fw, 'negative',
+        x=np.asarray(x, dtype=dtype))
 
 
 # not_equal
-@pytest.mark.parametrize(
-    "dtype", ivy.all_dtype_strs)
-@pytest.mark.parametrize(
-    "as_variable", [True, False])
-@pytest.mark.parametrize(
-    "with_out", [True, False])
-@pytest.mark.parametrize(
-    "native_array", [True, False])
-def test_not_equal(dtype, as_variable, with_out, native_array):
+@given(dtype_and_x=helpers.dtype_and_values(ivy_np.valid_dtype_strs),
+       as_variable=helpers.list_of_length(st.booleans(), 2),
+       with_out=st.booleans(),
+       num_positional_args=st.integers(0, 2),
+       native_array=helpers.list_of_length(st.booleans(), 2),
+       container=helpers.list_of_length(st.booleans(), 2),
+       instance_method=st.booleans())
+def test_not_equal(dtype_and_x, as_variable, with_out, num_positional_args, native_array, container, instance_method, fw):
+    dtype, x = dtype_and_x
     if dtype in ivy.invalid_dtype_strs:
-        pytest.skip("invalid dtype")
-    x1 = ivy.array([2, 3, 4], dtype=dtype)
-    x2 = ivy.array([2, 3, 4], dtype=dtype)
-    out = ivy.array([0, 0, 0], dtype='bool')
-    if as_variable:
-        if not ivy.is_float_dtype(dtype):
-            pytest.skip("only floating point variables are supported")
-        if with_out:
-            pytest.skip("variables do not support out argument")
-        x1 = ivy.variable(x1)
-        x2 = ivy.variable(x2)
-    if native_array:
-        x1 = x1.data
-        x2 = x2.data
-        out = out.data
-    if with_out:
-        ret = ivy.not_equal(x1, x2, out=out)
-    else:
-        ret = ivy.not_equal(x1, x2)
-    if with_out:
-        if not native_array:
-            assert ret is out
-        if ivy.current_framework_str() in ["tensorflow", "jax"]:
-            # these frameworks do not support native inplace updates
-            return
-        assert ret.data is (out if native_array else out.data)
+        return
+    dtype = [dtype, dtype]
+    helpers.test_array_function(
+        dtype, as_variable, with_out, num_positional_args, native_array, container, instance_method, fw, 'not_equal',
+        x1=np.asarray(x, dtype=dtype[0]), x2=np.asarray(x, dtype=dtype[1]))
 
 
 # positive
-@pytest.mark.parametrize(
-    "dtype", ivy.numeric_dtype_strs)
-@pytest.mark.parametrize(
-    "as_variable", [True, False])
-@pytest.mark.parametrize(
-    "with_out", [True, False])
-@pytest.mark.parametrize(
-    "native_array", [True, False])
-def test_positive(dtype, as_variable, with_out, native_array):
+@given(dtype_and_x=helpers.dtype_and_values(ivy_np.valid_numeric_dtype_strs),
+       as_variable=st.booleans(),
+       with_out=st.booleans(),
+       num_positional_args=st.integers(0, 1),
+       native_array=st.booleans(),
+       container=st.booleans(),
+       instance_method=st.booleans())
+def test_positive(dtype_and_x, as_variable, with_out, num_positional_args, native_array, container, instance_method, fw):
+    dtype, x = dtype_and_x
     if dtype in ivy.invalid_dtype_strs:
-        pytest.skip("invalid dtype")
-    x = ivy.array([2, 3, 4], dtype=dtype)
-    out = ivy.array([2, 3, 4], dtype=dtype)
-    if as_variable:
-        if not ivy.is_float_dtype(dtype):
-            pytest.skip("only floating point variables are supported")
-        if with_out:
-            pytest.skip("variables do not support out argument")
-        x = ivy.variable(x)
-        out = ivy.variable(out)
-    if native_array:
-        x = x.data
-        out = out.data
-    if with_out:
-        ret = ivy.positive(x, out=out)
-    else:
-        ret = ivy.positive(x)
-    if with_out:
-        if not native_array:
-            assert ret is out
-        if ivy.current_framework_str() in ["tensorflow", "jax"]:
-            # these frameworks do not support native inplace updates
-            return
-        assert ret.data is (out if native_array else out.data)
+        return
+    helpers.test_array_function(
+        dtype, as_variable, with_out, num_positional_args, native_array, container, instance_method, fw, 'positive',
+        x=np.asarray(x, dtype=dtype))
 
 
 # pow
