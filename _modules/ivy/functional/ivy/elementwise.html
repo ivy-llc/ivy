@@ -1609,7 +1609,11 @@
 <span class="sd">     -------</span>
 <span class="sd">    ret</span>
 <span class="sd">        an array containing the inverse hyperbolic tangent of each element in x. The returned array must have a floating-point data type determined by Type Promotion Rules.</span>
-
+<span class="sd">    </span>
+<span class="sd">    Examples:</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.atanh(ivy.array([0, -0.5]))</span>
+<span class="sd">    &gt;&gt;&gt; print(x)</span>
+<span class="sd">    ivy.array([ 0., -0.54930614])</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">atanh</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span></div>
 
