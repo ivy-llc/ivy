@@ -55,7 +55,7 @@ def vector_norm(x: torch.Tensor,
                 out: Optional[torch.Tensor] = None)\
         -> torch.Tensor:
 
-    py_normalized_vector = torch.linalg.norm(x, ord, axis, keepdims)
+    py_normalized_vector = torch.linalg.vector_norm(x, ord, axis, keepdims)
 
     if py_normalized_vector.shape == ():
         ret = torch.unsqueeze(py_normalized_vector, 0)
