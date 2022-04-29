@@ -65,23 +65,22 @@ def test_acos(dtype_and_x, as_variable, with_out, num_positional_args, native_ar
 
 
 # add
-# @given(dtype_and_x=helpers.dtype_and_values(ivy_np.valid_numeric_dtype_strs),
-#        as_variable=helpers.list_of_length(st.booleans(), 2),
-#        with_out=st.booleans(),
-#        num_positional_args=st.integers(0, 2),
-#        native_array=helpers.list_of_length(st.booleans(), 2),
-#        container=helpers.list_of_length(st.booleans(), 2),
-#        instance_method=st.booleans())
-# def test_add(dtype_and_x, as_variable, with_out, num_positional_args, native_array, container, instance_method, fw):
-#     dtype, x = dtype_and_x
-#     if dtype in ivy.invalid_dtype_strs:
-#         return
-#     if dtype == 'float16':
-#         return # numpy array api doesnt support float16
-#     dtype = [dtype, dtype]
-#     helpers.test_array_function(
-#         dtype, as_variable, with_out, num_positional_args, native_array, container, instance_method, fw, 'add',
-#         x1=np.asarray(x, dtype=dtype[0]), x2=np.asarray(x, dtype=dtype[1]))
+@given(dtype_and_x=helpers.dtype_and_values(ivy_np.valid_numeric_dtype_strs, 2),
+       as_variable=helpers.list_of_length(st.booleans(), 2),
+       with_out=st.booleans(),
+       num_positional_args=st.integers(0, 2),
+       native_array=helpers.list_of_length(st.booleans(), 2),
+       container=helpers.list_of_length(st.booleans(), 2),
+       instance_method=st.booleans())
+def test_add(dtype_and_x, as_variable, with_out, num_positional_args, native_array, container, instance_method, fw):
+    dtype, x = dtype_and_x
+    if dtype[0] in ivy.invalid_dtype_strs or dtype[1] in ivy.invalid_dtype_strs:
+        return
+    if fw == 'numpy' and dtype == 'float16':
+        return # numpy array api doesnt support float16
+    helpers.test_array_function(
+        dtype, as_variable, with_out, num_positional_args, native_array, container, instance_method, fw, 'add',
+        x1=np.asarray(x[0], dtype=dtype[0]), x2=np.asarray(x[1], dtype=dtype[1]))
 
 
 # asin
@@ -170,25 +169,24 @@ def test_atanh(dtype_and_x, as_variable, with_out, num_positional_args, native_a
 
 
 # bitwise_and
-# @given(dtype_and_x=helpers.dtype_and_values(ivy.int_dtype_strs + ('bool',)),
-#        as_variable=helpers.list_of_length(st.booleans(), 2),
-#        with_out=st.booleans(),
-#        num_positional_args=st.integers(0, 2),
-#        native_array=helpers.list_of_length(st.booleans(), 2),
-#        container=helpers.list_of_length(st.booleans(), 2),
-#        instance_method=st.booleans())
-# def test_bitwise_and(dtype_and_x, as_variable, with_out, num_positional_args, native_array, container, instance_method, fw):
-#     dtype, x = dtype_and_x
-#     if dtype in ivy.invalid_dtype_strs:
-#         return
-#     dtype = [dtype, dtype]
-#     helpers.test_array_function(
-#         dtype, as_variable, with_out, num_positional_args, native_array, container, instance_method, fw, 'bitwise_and',
-#         x1=np.asarray(x, dtype=dtype[0]), x2=np.asarray(x, dtype=dtype[1]))
+@given(dtype_and_x=helpers.dtype_and_values(ivy.int_dtype_strs + ('bool',), 2),
+       as_variable=helpers.list_of_length(st.booleans(), 2),
+       with_out=st.booleans(),
+       num_positional_args=st.integers(0, 2),
+       native_array=helpers.list_of_length(st.booleans(), 2),
+       container=helpers.list_of_length(st.booleans(), 2),
+       instance_method=st.booleans())
+def test_bitwise_and(dtype_and_x, as_variable, with_out, num_positional_args, native_array, container, instance_method, fw):
+    dtype, x = dtype_and_x
+    if any(d in ivy.invalid_dtype_strs for d in dtype):
+        return
+    helpers.test_array_function(
+        dtype, as_variable, with_out, num_positional_args, native_array, container, instance_method, fw, 'bitwise_and',
+        x1=np.asarray(x[0], dtype=dtype[0]), x2=np.asarray(x[1], dtype=dtype[1]))
 
 
 # bitwise_left_shift
-# @given(dtype_and_x=helpers.dtype_and_values(ivy.int_dtype_strs),
+# @given(dtype_and_x=helpers.dtype_and_values(ivy.int_dtype_strs, 2),
 #        as_variable=helpers.list_of_length(st.booleans(), 2),
 #        with_out=st.booleans(),
 #        num_positional_args=st.integers(0, 2),
@@ -197,12 +195,11 @@ def test_atanh(dtype_and_x, as_variable, with_out, num_positional_args, native_a
 #        instance_method=st.booleans())
 # def test_bitwise_left_shift(dtype_and_x, as_variable, with_out, num_positional_args, native_array, container, instance_method, fw):
 #     dtype, x = dtype_and_x
-#     if dtype in ivy.invalid_dtype_strs:
+#     if any(d in ivy.invalid_dtype_strs for d in dtype):
 #         return
-#     dtype = [dtype, dtype]
 #     helpers.test_array_function(
 #         dtype, as_variable, with_out, num_positional_args, native_array, container, instance_method, fw, 'bitwise_left_shift',
-#         x1=np.asarray(x, dtype=dtype[0]), x2=np.asarray(x, dtype=dtype[1]))
+#         x1=np.asarray(x[0], dtype=dtype[0]), x2=np.asarray(x[1], dtype=dtype[1]))
 
 
 # bitwise_invert
@@ -223,21 +220,20 @@ def test_bitwise_invert(dtype_and_x, as_variable, with_out, num_positional_args,
 
 
 # bitwise_or
-# @given(dtype_and_x=helpers.dtype_and_values(ivy.int_dtype_strs + ('bool',)),
-#        as_variable=helpers.list_of_length(st.booleans(), 2),
-#        with_out=st.booleans(),
-#        num_positional_args=st.integers(0, 2),
-#        native_array=helpers.list_of_length(st.booleans(), 2),
-#        container=helpers.list_of_length(st.booleans(), 2),
-#        instance_method=st.booleans())
-# def test_bitwise_or(dtype_and_x, as_variable, with_out, num_positional_args, native_array, container, instance_method, fw):
-#     dtype, x = dtype_and_x
-#     if dtype in ivy.invalid_dtype_strs:
-#         return
-#     dtype = [dtype, dtype]
-#     helpers.test_array_function(
-#         dtype, as_variable, with_out, num_positional_args, native_array, container, instance_method, fw, 'bitwise_or',
-#         x1=np.asarray(x, dtype=dtype[0]), x2=np.asarray(x, dtype=dtype[1]))
+@given(dtype_and_x=helpers.dtype_and_values(ivy.int_dtype_strs + ('bool',), 2),
+       as_variable=helpers.list_of_length(st.booleans(), 2),
+       with_out=st.booleans(),
+       num_positional_args=st.integers(0, 2),
+       native_array=helpers.list_of_length(st.booleans(), 2),
+       container=helpers.list_of_length(st.booleans(), 2),
+       instance_method=st.booleans())
+def test_bitwise_or(dtype_and_x, as_variable, with_out, num_positional_args, native_array, container, instance_method, fw):
+    dtype, x = dtype_and_x
+    if any(d in ivy.invalid_dtype_strs for d in dtype):
+        return
+    helpers.test_array_function(
+        dtype, as_variable, with_out, num_positional_args, native_array, container, instance_method, fw, 'bitwise_or',
+        x1=np.asarray(x[0], dtype=dtype[0]), x2=np.asarray(x[1], dtype=dtype[1]))
 
 
 # bitwise_right_shift

@@ -359,11 +359,13 @@ def round(x: torch.Tensor,
 def trunc(x: torch.Tensor,
           out: Optional[torch.Tensor] = None)\
         -> torch.Tensor:
-    if 'int' in str(x.dtype):
-        if ivy.exists(out):
-            return ivy.inplace_update(out, x)
-        return x
-    return torch.trunc(x, out=out)
+    if 'int' not in str(x.dtype):
+        return torch.trunc(x, out=out)
+    ret = x
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
+
 
 
 def abs(x: torch.Tensor,

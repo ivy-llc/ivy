@@ -11,7 +11,10 @@ def bitwise_left_shift(x1: Tensor,
                        x2: Tensor,
                        out: Optional[Tensor] = None)\
                        -> Tensor:
-    x1, x2 = _cast_for_binary_op(x1, x2)
+    if hasattr(x1, 'dtype') and hasattr(x2, 'dtype'):
+        promoted_type = tf.experimental.numpy.promote_types(x1.dtype, x2.dtype)
+        x1 = tf.cast(x1, promoted_type)
+        x2 = tf.cast(x2, promoted_type)
     ret = tf.bitwise.left_shift(x1, x2)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
@@ -22,7 +25,10 @@ def add(x1: Tensor,
         x2: Tensor,
         out: Optional[Tensor] = None)\
         -> Tensor:
-    x1, x2 = _cast_for_binary_op(x1, x2)
+    if hasattr(x1, 'dtype') and hasattr(x2, 'dtype'):
+        promoted_type = tf.experimental.numpy.promote_types(x1.dtype, x2.dtype)
+        x1 = tf.cast(x1, promoted_type)
+        x2 = tf.cast(x2, promoted_type)
     ret = tf.add(x1, x2)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
@@ -81,10 +87,14 @@ def bitwise_and(x1: Tensor,
         -> Tensor:
     if not isinstance(x2, Tensor):
         x2 = tf.constant(x2, dtype=x1.dtype)
+    elif hasattr(x1, 'dtype') and hasattr(x2, 'dtype'):
+        promoted_type = tf.experimental.numpy.promote_types(x1.dtype, x2.dtype)
+        x1 = tf.cast(x1, promoted_type)
+        x2 = tf.cast(x2, promoted_type)
+
     if ('int' not in str(x1.dtype)) & ('int' not in str(x2.dtype)):
         ret = tf.math.logical_and(x1, x2)
     else:
-        x1, x2 = _cast_for_binary_op(x1, x2)
         ret = tf.bitwise.bitwise_and(x1, x2)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
@@ -484,10 +494,14 @@ def bitwise_or(x1: Tensor,
         -> Tensor:
     if not isinstance(x2, Tensor):
         x2 = tf.constant(x2, dtype=x1.dtype)
+    elif hasattr(x1, 'dtype') and hasattr(x2, 'dtype'):
+        promoted_type = tf.experimental.numpy.promote_types(x1.dtype, x2.dtype)
+        x1 = tf.cast(x1, promoted_type)
+        x2 = tf.cast(x2, promoted_type)
+
     if ('int' not in str(x1.dtype)) & ('int' not in str(x2.dtype)):
         ret = tf.math.logical_or(x1, x2)
     else:
-        x1, x2 = _cast_for_binary_op(x1, x2)
         ret = tf.bitwise.bitwise_or(x1, x2)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
