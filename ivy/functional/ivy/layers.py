@@ -306,7 +306,7 @@ def conv2d(x: Union[ivy.Array, ivy.NativeArray],
     >>> filters = ivy.array([[[[0.]],[[1.]], [[0.]]],[[[0.]],[[1.]], [[0.]]],[[[0.]],[[1.]], [[0.]]]]) #HWIO
     >>> result = ivy.conv2d(x, filters, (1,), 'SAME', 'NHWC', (1,))
     >>> print(result)
-    [[[[2.],[4.],[6.]],[[3.],[6.],[9.]],[[2.],[4.],[6.]]]]
+    ivy.array([[[[2.],[4.],[6.]],[[3.],[6.],[9.]],[[2.],[4.],[6.]]]])
     """
     return _cur_framework(x).conv2d(x, filters, strides, padding, data_format, dilations)
 
