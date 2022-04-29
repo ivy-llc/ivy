@@ -230,22 +230,6 @@ def diagonal(x: ivy.Array,
     return _cur_framework(x).diagonal(x, offset, axis1=axis1, axis2=axis2)
 
 
-def cholesky(x):
-    """Computes the cholesky decomposition of the x matrix.
-
-    Parameters
-    ----------
-    x
-        Matrix to be decomposed.
-
-    Returns
-    -------
-     ret
-        cholesky decomposition of the matrix x.
-
-    """
-    return _cur_framework(x).cholesky(x)
-
 
 def matrix_norm(x: Union[ivy.Array, ivy.NativeArray],
                 ord: Optional[Union[int, float, Literal[inf, - inf, 'fro', 'nuc']]] = 'fro',
@@ -438,7 +422,7 @@ def trace(x: Union[ivy.Array, ivy.NativeArray], offset: int = 0)\
      >>> offset = 0
      >>> y = ivy.trace(x, offset)
      >>> print(y)
-     ivy.array(5.)
+     ivy.array([5.])
      
     """
     return _cur_framework(x).trace(x, offset)
@@ -519,7 +503,13 @@ def cholesky(x: Union[ivy.Array, ivy.NativeArray],
         the returned array must contain upper-triangular matrices.
         The returned array must have a floating-point data type determined by Type Promotion Rules
         and must have the same shape as x.
-
+    
+    Examples
+    --------
+    >>> x = ivy.array([[1., -2.], [2., 5.]])  
+    >>> l = ivy.cholesky(x)
+    >>> print(l)
+    ivy.array([[1., 0.],[2., 1.]])
     """
     return _cur_framework(x).cholesky(x, upper)
 
