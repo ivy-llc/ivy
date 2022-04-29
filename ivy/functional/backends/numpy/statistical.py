@@ -34,6 +34,11 @@ def var(x: np.ndarray,
         keepdims: bool = False, 
         out: Optional[np.ndarray] = None) \
         -> np.ndarray:
+    if axis is None:
+        num_dims = len(x.shape)
+        axis = tuple(range(num_dims))
+    elif isinstance(axis, list):
+        axis = tuple(axis)
     if ivy.exists(out):
         return ivy.inplace_update(out, np.var(x, axis=axis, keepdims=keepdims))
     else:
