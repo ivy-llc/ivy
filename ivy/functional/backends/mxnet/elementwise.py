@@ -328,6 +328,16 @@ def abs(x: mx.ndarray.ndarray.NDArray,
         return ivy.inplace_update(out, ret)
     return ret
 
+def exp(x: mx.ndarray.ndarray.NDArray,
+        out: Optional[mx.ndarray.ndarray.NDArray] = None) \
+        -> mx.nd.ndarray.NDArray:
+    if isinstance(x,float):
+        ret = math.exp(x)
+    else:
+        ret = mx.nd.exp(x)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 cos = lambda x: math.cos(x) if isinstance(x, float) else mx.nd.cos(x)
 tan = lambda x: math.tan(x) if isinstance(x, float) else mx.nd.tan(x)
@@ -338,7 +348,6 @@ cosh = lambda x: math.cosh(x) if isinstance(x, float) else mx.nd.cosh(x)
 asinh = lambda x: math.asinh(x) if isinstance(x, float) else mx.nd.arcsinh(x)
 atanh = lambda x: math.atanh(x) if isinstance(x, float) else mx.nd.arctanh(x)
 log = lambda x: math.log(x) if isinstance(x, float) else mx.nd.log(x)
-exp = lambda x: math.exp(x) if isinstance(x, float) else mx.nd.exp(x)
 equal = lambda x1, x2: x1 == x2
 equal.__name__ = 'equal'
 
