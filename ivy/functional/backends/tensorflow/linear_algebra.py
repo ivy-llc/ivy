@@ -352,10 +352,10 @@ def matrix_rank(x: Tensor,
 
 def cross (x1: tf.Tensor,
            x2: tf.Tensor,
-           axis:int = -1,
+           axis: int = -1,
            out: Optional[Tensor] = None)\
         -> tf.Tensor:
-    ret = tf.experimental.numpy.cross(x1, x2,axis=axis)
+    ret = tf.experimental.numpy.cross(x1, x2, axis=axis)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
     return ret
