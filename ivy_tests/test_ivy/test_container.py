@@ -819,18 +819,19 @@ def test_container_einsum(device, call):
     assert np.allclose(ivy.to_numpy(container_einsummed.b.d), np.array([-6., -14., -22.]))
 
 
-# def test_container_vector_norm(device, call):
-#     dict_in = {'a': ivy.array([[1., 2.], [3., 4.], [5., 6.]], device=device),
-#                'b': {'c': ivy.array([[2., 4.], [6., 8.], [10., 12.]], device=device),
-#                      'd': ivy.array([[3., 6.], [9., 12.], [15., 18.]], device=device)}}
-#     container = Container(dict_in)
-#     container_normed = container.vector_norm(axis=(-1, -2))
-#     assert np.allclose(ivy.to_numpy(container_normed['a']), 9.5394)
-#     assert np.allclose(ivy.to_numpy(container_normed.a), 9.5394)
-#     assert np.allclose(ivy.to_numpy(container_normed['b']['c']), 19.0788)
-#     assert np.allclose(ivy.to_numpy(container_normed.b.c), 19.0788)
-#     assert np.allclose(ivy.to_numpy(container_normed['b']['d']), 28.6182)
-#     assert np.allclose(ivy.to_numpy(container_normed.b.d), 28.6182)
+def test_container_vector_norm(device, call):
+    dict_in = {'a': ivy.array([[1., 2.], [3., 4.], [5., 6.]], device=device),
+               'b': {'c': ivy.array([[2., 4.], [6., 8.], [10., 12.]], device=device),
+                     'd': ivy.array([[3., 6.], [9., 12.], [15., 18.]], device=device)}}
+    container = Container(dict_in)
+    container_normed = container.vector_norm(axis=(-1, -2))
+    auxx = ivy.to_numpy(container_normed['a'])
+    assert np.allclose(ivy.to_numpy(container_normed['a']),9.525518091565107)
+    assert np.allclose(ivy.to_numpy(container_normed.a), 9.525518091565107)
+    assert np.allclose(ivy.to_numpy(container_normed['b']['c']), 19.051036183130215)
+    assert np.allclose(ivy.to_numpy(container_normed.b.c), 19.051036183130215)
+    assert np.allclose(ivy.to_numpy(container_normed['b']['d']), 28.576554274695326)
+    assert np.allclose(ivy.to_numpy(container_normed.b.d), 28.576554274695326)
 
 
 def test_container_matrix_norm(device, call):
@@ -842,6 +843,7 @@ def test_container_matrix_norm(device, call):
                      'd': ivy.array([[3., 6.], [9., 12.], [15., 18.]], device=device)}}
     container = Container(dict_in)
     container_normed = container.matrix_norm()
+
     assert np.allclose(ivy.to_numpy(container_normed['a']), 9.52551809)
     assert np.allclose(ivy.to_numpy(container_normed.a), 9.52551809)
     assert np.allclose(ivy.to_numpy(container_normed['b']['c']), 19.05103618)
