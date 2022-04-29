@@ -85,6 +85,11 @@ def matrix_norm(x: np.ndarray,
     return ret
 
 
+def matrix_power(x: np.ndarray, n: int) \
+        -> np.ndarray:
+    return np.linalg.matrix_power(x, n)
+
+
 def svd(x: np.ndarray,
         full_matrices: bool = True,
         out: Optional[Union[np.ndarray, Tuple[np.ndarray, ...]]] = None) \

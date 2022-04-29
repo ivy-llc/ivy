@@ -335,6 +335,14 @@ def matmul(x1: Union[ivy.Array, ivy.NativeArray],
     return _cur_framework(x1).matmul(x1, x2)
 
 
+def matrix_power(x: Union[ivy.Array, ivy.NativeArray],
+                 n: int) -> ivy.Array:
+    """
+    Raises a square matrix (or a stack of square matrices) x to an integer power n.
+    """
+    return _cur_framework(x).matrix_power(x, n)
+
+
 def slodget(x: Union[ivy.Array, ivy.NativeArray], ) \
         -> ivy.Array:
     """
