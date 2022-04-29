@@ -31,15 +31,15 @@ def test_abs(dtype_and_x, as_variable, with_out, num_positional_args, native_arr
 
 
 # acosh
-@given(dtype=st.sampled_from(ivy_np.valid_float_dtype_strs),
+@given(dtype_and_x=helpers.dtype_and_values(ivy_np.valid_float_dtype_strs),
        as_variable=st.booleans(),
        with_out=st.booleans(),
        num_positional_args=st.integers(0, 1),
        native_array=st.booleans(),
        container=st.booleans(),
-       instance_method=st.booleans(),
-       x=st.lists(st.floats()))
-def test_acosh(dtype, as_variable, with_out, num_positional_args, native_array, container, instance_method, fw, x):
+       instance_method=st.booleans())
+def test_acosh(dtype_and_x, as_variable, with_out, num_positional_args, native_array, container, instance_method, fw):
+    dtype, x = dtype_and_x
     if fw == 'torch' and dtype == 'float16':
         return
     helpers.test_array_function(
@@ -48,15 +48,15 @@ def test_acosh(dtype, as_variable, with_out, num_positional_args, native_array, 
 
 
 # acos
-@given(dtype=st.sampled_from(ivy_np.valid_float_dtype_strs),
+@given(dtype_and_x=helpers.dtype_and_values(ivy_np.valid_float_dtype_strs),
        as_variable=st.booleans(),
        with_out=st.booleans(),
        num_positional_args=st.integers(0, 1),
        native_array=st.booleans(),
        container=st.booleans(),
-       instance_method=st.booleans(),
-       x=st.lists(st.floats()))
-def test_acos(dtype, as_variable, with_out, num_positional_args, native_array, container, instance_method, fw, x):
+       instance_method=st.booleans())
+def test_acos(dtype_and_x, as_variable, with_out, num_positional_args, native_array, container, instance_method, fw):
+    dtype, x = dtype_and_x
     if fw == 'torch' and dtype == 'float16':
         return
     helpers.test_array_function(
@@ -65,57 +65,36 @@ def test_acos(dtype, as_variable, with_out, num_positional_args, native_array, c
 
 
 # add
-@pytest.mark.parametrize(
-    "dtype", ivy.all_numeric_dtype_strs)
-@pytest.mark.parametrize(
-    "as_variable", [True, False])
-@pytest.mark.parametrize(
-    "with_out", [True, False])
-@pytest.mark.parametrize(
-    "native_array", [True, False])
-def test_add(dtype, as_variable, with_out, native_array):
-    if ivy.current_framework_str() == 'numpy' and dtype == 'float16':
-        pytest.skip("numpy array api doesnt support float16")
-    if dtype in ivy.invalid_dtype_strs:
-        pytest.skip("invalid dtype")
-    x = ivy.array([2, 3, 4], dtype=dtype)
-    y = ivy.array([2, 3, 4], dtype=dtype)
-    out = ivy.array([2, 3, 4], dtype=dtype)
-    if as_variable:
-        if not ivy.is_float_dtype(dtype):
-            pytest.skip("only floating point variables are supported")
-        if with_out:
-            pytest.skip("variables do not support out argument")
-        x = ivy.variable(x)
-        y = ivy.variable(y)
-        out = ivy.variable(out)
-    if native_array:
-        x = x.data
-        y = y.data
-        out = out.data
-    if with_out:
-        ret = ivy.add(x, y, out=out)
-    else:
-        ret = ivy.add(x, y)
-    if with_out:
-        if not native_array:
-            assert ret is out
-        if ivy.current_framework_str() in ["tensorflow", "jax"]:
-            # these frameworks do not support native inplace updates
-            return
-        assert ret.data is (out if native_array else out.data)
+# @given(dtype_and_x=helpers.dtype_and_values(ivy_np.valid_numeric_dtype_strs, 2),
+#        as_variable=helpers.list_of_length(st.booleans(), 2),
+#        with_out=st.booleans(),
+#        num_positional_args=st.integers(0, 2),
+#        native_array=helpers.list_of_length(st.booleans(), 2),
+#        container=helpers.list_of_length(st.booleans(), 2),
+#        instance_method=st.booleans())
+# def test_add(dtype_and_x, as_variable, with_out, num_positional_args, native_array, container, instance_method, fw):
+#     dtype, x = dtype_and_x
+#     if fw == 'jax':
+#         pytest.skip()
+#     if fw == 'torch' and dtype in ['uint16', 'uint32', 'uint64']:
+#         return
+#     if fw == 'numpy' and 'float16' in dtype:
+#         return # numpy array api doesnt support float16
+#     helpers.test_array_function(
+#         dtype, as_variable, with_out, num_positional_args, native_array, container, instance_method, fw, 'add',
+#         x1=np.asarray(x[0], dtype=dtype[0]), x2=np.asarray(x[1], dtype=dtype[0]))
 
 
 # asin
-@given(dtype=st.sampled_from(ivy_np.valid_float_dtype_strs),
+@given(dtype_and_x=helpers.dtype_and_values(ivy_np.valid_float_dtype_strs),
        as_variable=st.booleans(),
        with_out=st.booleans(),
        num_positional_args=st.integers(0, 1),
        native_array=st.booleans(),
        container=st.booleans(),
-       instance_method=st.booleans(),
-       x=st.lists(st.floats()))
-def test_asin(dtype, as_variable, with_out, num_positional_args, native_array, container, instance_method, fw, x):
+       instance_method=st.booleans())
+def test_asin(dtype_and_x, as_variable, with_out, num_positional_args, native_array, container, instance_method, fw):
+    dtype, x = dtype_and_x
     if fw == 'torch' and dtype == 'float16':
         return
     helpers.test_array_function(
@@ -124,15 +103,15 @@ def test_asin(dtype, as_variable, with_out, num_positional_args, native_array, c
 
 
 # asinh
-@given(dtype=st.sampled_from(ivy_np.valid_float_dtype_strs),
+@given(dtype_and_x=helpers.dtype_and_values(ivy_np.valid_float_dtype_strs),
        as_variable=st.booleans(),
        with_out=st.booleans(),
        num_positional_args=st.integers(0, 1),
        native_array=st.booleans(),
        container=st.booleans(),
-       instance_method=st.booleans(),
-       x=st.lists(st.floats()))
-def test_asinh(dtype, as_variable, with_out, num_positional_args, native_array, container, instance_method, fw, x):
+       instance_method=st.booleans())
+def test_asinh(dtype_and_x, as_variable, with_out, num_positional_args, native_array, container, instance_method, fw):
+    dtype, x = dtype_and_x
     if fw == 'torch' and dtype == 'float16':
         return
     helpers.test_array_function(
@@ -141,15 +120,15 @@ def test_asinh(dtype, as_variable, with_out, num_positional_args, native_array, 
 
 
 # atan
-@given(dtype=st.sampled_from(ivy_np.valid_float_dtype_strs),
+@given(dtype_and_x=helpers.dtype_and_values(ivy_np.valid_float_dtype_strs),
        as_variable=st.booleans(),
        with_out=st.booleans(),
        num_positional_args=st.integers(0, 1),
        native_array=st.booleans(),
        container=st.booleans(),
-       instance_method=st.booleans(),
-       x=st.lists(st.floats()))
-def test_atan(dtype, as_variable, with_out, num_positional_args, native_array, container, instance_method, fw, x):
+       instance_method=st.booleans())
+def test_atan(dtype_and_x, as_variable, with_out, num_positional_args, native_array, container, instance_method, fw):
+    dtype, x = dtype_and_x
     if fw == 'torch' and dtype == 'float16':
         return
     helpers.test_array_function(
@@ -158,32 +137,32 @@ def test_atan(dtype, as_variable, with_out, num_positional_args, native_array, c
 
 
 # atan2
-@given(dtype=st.sampled_from(ivy_np.valid_float_dtype_strs),
-       as_variable=st.booleans(),
+@given(dtype_and_x=helpers.dtype_and_values(ivy_np.valid_float_dtype_strs, 2),
+       as_variable=helpers.list_of_length(st.booleans(), 2),
        with_out=st.booleans(),
        num_positional_args=st.integers(0, 1),
-       native_array=st.booleans(),
-       container=st.booleans(),
-       instance_method=st.booleans(),
-       x=st.lists(st.floats()))
-def test_atan2(dtype, as_variable, with_out, num_positional_args, native_array, container, instance_method, fw, x):
-    if fw == 'torch' and dtype == 'float16':
+       native_array=helpers.list_of_length(st.booleans(), 2),
+       container=helpers.list_of_length(st.booleans(), 2),
+       instance_method=st.booleans())
+def test_atan2(dtype_and_x, as_variable, with_out, num_positional_args, native_array, container, instance_method, fw):
+    dtype, x = dtype_and_x
+    if fw == 'torch' and 'float16' in dtype:
         return
     helpers.test_array_function(
         dtype, as_variable, with_out, num_positional_args, native_array, container, instance_method, fw, 'atan2',
-        x1=np.asarray(x, dtype=dtype), x2=np.asarray(x, dtype=dtype))
+        x1=np.asarray(x[0], dtype=dtype[0]), x2=np.asarray(x[1], dtype=dtype[1]))
 
 
 # atanh
-@given(dtype=st.sampled_from(ivy_np.valid_float_dtype_strs),
+@given(dtype_and_x=helpers.dtype_and_values(ivy_np.valid_float_dtype_strs),
        as_variable=st.booleans(),
        with_out=st.booleans(),
        num_positional_args=st.integers(0, 1),
        native_array=st.booleans(),
        container=st.booleans(),
-       instance_method=st.booleans(),
-       x=st.lists(st.floats()))
-def test_atanh(dtype, as_variable, with_out, num_positional_args, native_array, container, instance_method, fw, x):
+       instance_method=st.booleans())
+def test_atanh(dtype_and_x, as_variable, with_out, num_positional_args, native_array, container, instance_method, fw):
+    dtype, x = dtype_and_x
     if fw == 'torch' and dtype == 'float16':
         return
     helpers.test_array_function(
@@ -193,7 +172,7 @@ def test_atanh(dtype, as_variable, with_out, num_positional_args, native_array, 
 
 # bitwise_and
 @pytest.mark.parametrize(
-    "dtype", ivy.all_int_dtype_strs + ('bool',))
+    "dtype", ivy.int_dtype_strs + ('bool',))
 @pytest.mark.parametrize(
     "with_out", [True, False])
 @pytest.mark.parametrize(
@@ -223,7 +202,7 @@ def test_bitwise_and(dtype, with_out, native_array):
 
 # bitwise_left_shift
 @pytest.mark.parametrize(
-    "dtype", ivy.all_int_dtype_strs)
+    "dtype", ivy.int_dtype_strs)
 @pytest.mark.parametrize(
     "with_out", [True, False])
 @pytest.mark.parametrize(
@@ -253,7 +232,7 @@ def test_bitwise_left_shift(dtype, with_out, native_array):
 
 # bitwise_invert
 @pytest.mark.parametrize(
-    "dtype", ivy.all_int_dtype_strs + ('bool',))
+    "dtype", ivy.int_dtype_strs + ('bool',))
 @pytest.mark.parametrize(
     "with_out", [True, False])
 @pytest.mark.parametrize(
@@ -281,7 +260,7 @@ def test_bitwise_invert(dtype, with_out, native_array):
 
 # bitwise_or
 @pytest.mark.parametrize(
-    "dtype", ivy.all_int_dtype_strs + ('bool',))
+    "dtype", ivy.int_dtype_strs + ('bool',))
 @pytest.mark.parametrize(
     "with_out", [True, False])
 @pytest.mark.parametrize(
@@ -311,7 +290,7 @@ def test_bitwise_or(dtype, with_out, native_array):
 
 # bitwise_right_shift
 @pytest.mark.parametrize(
-    "dtype", ivy.all_int_dtype_strs)
+    "dtype", ivy.int_dtype_strs)
 @pytest.mark.parametrize(
     "with_out", [True, False])
 @pytest.mark.parametrize(
@@ -341,7 +320,7 @@ def test_bitwise_right_shift(dtype, with_out, native_array):
 
 # bitwise_xor
 @pytest.mark.parametrize(
-    "dtype", ivy.all_int_dtype_strs + ('bool',))
+    "dtype", ivy.int_dtype_strs + ('bool',))
 @pytest.mark.parametrize(
     "with_out", [True, False])
 @pytest.mark.parametrize(
@@ -371,7 +350,7 @@ def test_bitwise_xor(dtype, with_out, native_array):
 
 # ceil
 @pytest.mark.parametrize(
-    "dtype", ivy.all_numeric_dtype_strs)
+    "dtype", ivy.numeric_dtype_strs)
 @pytest.mark.parametrize(
     "as_variable", [True, False])
 @pytest.mark.parametrize(
@@ -445,7 +424,7 @@ def test_cosh(dtype, as_variable, with_out, num_positional_args, native_array, c
 
 # divide
 @pytest.mark.parametrize(
-    "dtype", ivy.all_numeric_dtype_strs)
+    "dtype", ivy.numeric_dtype_strs)
 @pytest.mark.parametrize(
     "as_variable", [True, False])
 @pytest.mark.parametrize(
@@ -558,7 +537,7 @@ def test_expm1(dtype, as_variable, with_out, num_positional_args, native_array, 
 
 # floor
 @pytest.mark.parametrize(
-    "dtype", ivy.all_numeric_dtype_strs)
+    "dtype", ivy.numeric_dtype_strs)
 @pytest.mark.parametrize(
     "as_variable", [True, False])
 @pytest.mark.parametrize(
@@ -597,7 +576,7 @@ def test_floor(dtype, as_variable, with_out, native_array):
 
 # floor_divide
 @pytest.mark.parametrize(
-    "dtype", ivy.all_numeric_dtype_strs)
+    "dtype", ivy.numeric_dtype_strs)
 @pytest.mark.parametrize(
     "as_variable", [True, False])
 @pytest.mark.parametrize(
@@ -637,7 +616,7 @@ def test_floor_divide(dtype, as_variable, with_out, native_array):
 
 # greater
 @pytest.mark.parametrize(
-    "dtype", ivy.all_numeric_dtype_strs)
+    "dtype", ivy.numeric_dtype_strs)
 @pytest.mark.parametrize(
     "as_variable", [True, False])
 @pytest.mark.parametrize(
@@ -676,7 +655,7 @@ def test_greater(dtype, as_variable, with_out, native_array):
 
 # greater_equal
 @pytest.mark.parametrize(
-    "dtype", ivy.all_numeric_dtype_strs)
+    "dtype", ivy.numeric_dtype_strs)
 @pytest.mark.parametrize(
     "as_variable", [True, False])
 @pytest.mark.parametrize(
@@ -715,7 +694,7 @@ def test_greater_equal(dtype, as_variable, with_out, native_array):
 
 # isfinite
 @pytest.mark.parametrize(
-    "dtype", ivy.all_numeric_dtype_strs)
+    "dtype", ivy.numeric_dtype_strs)
 @pytest.mark.parametrize(
     "as_variable", [True, False])
 @pytest.mark.parametrize(
@@ -751,7 +730,7 @@ def test_isfinite(dtype, as_variable, with_out, native_array):
 
 # isinf
 @pytest.mark.parametrize(
-    "dtype", ivy.all_numeric_dtype_strs)
+    "dtype", ivy.numeric_dtype_strs)
 @pytest.mark.parametrize(
     "as_variable", [True, False])
 @pytest.mark.parametrize(
@@ -787,7 +766,7 @@ def test_isinf(dtype, as_variable, with_out, native_array):
 
 # isnan
 @pytest.mark.parametrize(
-    "dtype", ivy.all_numeric_dtype_strs)
+    "dtype", ivy.numeric_dtype_strs)
 @pytest.mark.parametrize(
     "as_variable", [True, False])
 @pytest.mark.parametrize(
@@ -823,7 +802,7 @@ def test_isnan(dtype, as_variable, with_out, native_array):
 
 # less
 @pytest.mark.parametrize(
-    "dtype", ivy.all_numeric_dtype_strs)
+    "dtype", ivy.numeric_dtype_strs)
 @pytest.mark.parametrize(
     "as_variable", [True, False])
 @pytest.mark.parametrize(
@@ -862,7 +841,7 @@ def test_less(dtype, as_variable, with_out, native_array):
 
 # less_equal
 @pytest.mark.parametrize(
-    "dtype", ivy.all_numeric_dtype_strs)
+    "dtype", ivy.numeric_dtype_strs)
 @pytest.mark.parametrize(
     "as_variable", [True, False])
 @pytest.mark.parametrize(
@@ -1088,7 +1067,7 @@ def test_logical_xor(with_out, native_array):
 
 # multiply
 @pytest.mark.parametrize(
-    "dtype", ivy.all_numeric_dtype_strs)
+    "dtype", ivy.numeric_dtype_strs)
 @pytest.mark.parametrize(
     "as_variable", [True, False])
 @pytest.mark.parametrize(
@@ -1128,7 +1107,7 @@ def test_multiply(dtype, as_variable, with_out, native_array):
 
 # negative
 @pytest.mark.parametrize(
-    "dtype", ivy.all_numeric_dtype_strs)
+    "dtype", ivy.numeric_dtype_strs)
 @pytest.mark.parametrize(
     "as_variable", [True, False])
 @pytest.mark.parametrize(
@@ -1204,7 +1183,7 @@ def test_not_equal(dtype, as_variable, with_out, native_array):
 
 # positive
 @pytest.mark.parametrize(
-    "dtype", ivy.all_numeric_dtype_strs)
+    "dtype", ivy.numeric_dtype_strs)
 @pytest.mark.parametrize(
     "as_variable", [True, False])
 @pytest.mark.parametrize(
@@ -1241,7 +1220,7 @@ def test_positive(dtype, as_variable, with_out, native_array):
 
 # pow
 @pytest.mark.parametrize(
-    "dtype", ivy.all_numeric_dtype_strs)
+    "dtype", ivy.numeric_dtype_strs)
 @pytest.mark.parametrize(
     "as_variable", [True, False])
 @pytest.mark.parametrize(
@@ -1281,7 +1260,7 @@ def test_pow(dtype, as_variable, with_out, native_array):
 
 # remainder
 @pytest.mark.parametrize(
-    "dtype", ivy.all_numeric_dtype_strs)
+    "dtype", ivy.numeric_dtype_strs)
 @pytest.mark.parametrize(
     "as_variable", [True, False])
 @pytest.mark.parametrize(
@@ -1322,7 +1301,7 @@ def test_remainder(dtype, as_variable, with_out, native_array):
 
 # round
 @pytest.mark.parametrize(
-    "dtype", ivy.all_numeric_dtype_strs)
+    "dtype", ivy.numeric_dtype_strs)
 @pytest.mark.parametrize(
     "as_variable", [True, False])
 @pytest.mark.parametrize(
@@ -1363,7 +1342,7 @@ def test_round(dtype, as_variable, with_out, native_array):
 
 # sign
 @pytest.mark.parametrize(
-    "dtype", ivy.all_numeric_dtype_strs)
+    "dtype", ivy.numeric_dtype_strs)
 @pytest.mark.parametrize(
     "as_variable", [True, False])
 @pytest.mark.parametrize(
@@ -1434,7 +1413,7 @@ def test_sinh(dtype, as_variable, with_out, num_positional_args, native_array, c
 
 # square
 @pytest.mark.parametrize(
-    "dtype", ivy.all_numeric_dtype_strs)
+    "dtype", ivy.numeric_dtype_strs)
 @pytest.mark.parametrize(
     "as_variable", [True, False])
 @pytest.mark.parametrize(
@@ -1488,7 +1467,7 @@ def test_sqrt(dtype, as_variable, with_out, num_positional_args, native_array, c
 
 # subtract
 @pytest.mark.parametrize(
-    "dtype", ivy.all_numeric_dtype_strs)
+    "dtype", ivy.numeric_dtype_strs)
 @pytest.mark.parametrize(
     "as_variable", [True, False])
 @pytest.mark.parametrize(
@@ -1562,7 +1541,7 @@ def test_tanh(dtype, as_variable, with_out, num_positional_args, native_array, c
 
 # trunc
 @pytest.mark.parametrize(
-    "dtype", ivy.all_numeric_dtype_strs)
+    "dtype", ivy.numeric_dtype_strs)
 @pytest.mark.parametrize(
     "as_variable", [True, False])
 @pytest.mark.parametrize(

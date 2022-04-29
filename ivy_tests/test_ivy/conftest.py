@@ -29,24 +29,24 @@ if 'ARRAY_API_TESTS_MODULE' not in os.environ:
     os.environ['ARRAY_API_TESTS_MODULE'] = 'ivy.functional.backends.numpy'
 
 @pytest.fixture(autouse=True)
-def run_around_tests(dev, f, compile_graph, implicit, call, fw):
-    if 'gpu' in dev and call is helpers.np_call:
+def run_around_tests(device, f, compile_graph, implicit, call, fw):
+    if 'gpu' in device and call is helpers.np_call:
         # Numpy does not support GPU
         pytest.skip()
     clear_framework_stack()
     with f.use:
-        with DefaultDevice(dev):
+        with DefaultDevice(device):
             yield
 
 
 def pytest_generate_tests(metafunc):
 
-    # dev
-    raw_value = metafunc.config.getoption('--dev')
+    # device
+    raw_value = metafunc.config.getoption('--device')
     if raw_value == 'all':
-        devs = ['cpu', 'gpu:0', 'tpu:0']
+        devices = ['cpu', 'gpu:0', 'tpu:0']
     else:
-        devs = raw_value.split(',')
+        devices = raw_value.split(',')
 
     # framework
     raw_value = metafunc.config.getoption('--framework')
@@ -74,16 +74,16 @@ def pytest_generate_tests(metafunc):
     # create test configs
     configs = list()
     for f_str in f_strs:
-        for dev in devs:
+        for device in devices:
             for compile_graph in compile_modes:
                 for implicit in implicit_modes:
                     configs.append(
-                        (dev, TEST_FRAMEWORKS[f_str](), compile_graph, implicit, TEST_CALL_METHODS[f_str], f_str))
-    metafunc.parametrize('dev,f,compile_graph,implicit,call,fw', configs)
+                        (device, TEST_FRAMEWORKS[f_str](), compile_graph, implicit, TEST_CALL_METHODS[f_str], f_str))
+    metafunc.parametrize('device,f,compile_graph,implicit,call,fw', configs)
 
 
 def pytest_addoption(parser):
-    parser.addoption('--dev', action="store", default="cpu")
+    parser.addoption('--device', action="store", default="cpu")
     parser.addoption('--framework', action="store", default="jax,numpy,tensorflow,torch")
     parser.addoption('--compile_graph', action="store", default="true")
     parser.addoption('--with_implicit', action="store", default="false")

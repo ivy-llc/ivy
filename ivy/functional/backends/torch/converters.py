@@ -13,15 +13,15 @@ import ivy
 
 class IvyModule(ivy.Module):
 
-    def __init__(self, native_module_class, native_module, dev, devs, inplace_update, *args, **kwargs):
+    def __init__(self, native_module_class, native_module, device, devices, inplace_update, *args, **kwargs):
         self._native_module_class = native_module_class
         self._native_module = native_module
         self._args = args
         self._kwargs = kwargs
         self._update_v = self._inplace_update_v if inplace_update else self._replace_update_v
-        ivy.Module.__init__(self, dev=dev, devs=devs)
+        ivy.Module.__init__(self, device=device, devices=devices)
 
-    def _create_variables(self, dev):
+    def _create_variables(self, device):
         return self._native_params
 
     def _build(self):
@@ -62,7 +62,7 @@ class IvyModule(ivy.Module):
         return ivy.to_native(ret)
 
 
-def to_ivy_module(native_module=None, native_module_class=None, args=None, kwargs=None, dev=None, devs=None,
+def to_ivy_module(native_module=None, native_module_class=None, args=None, kwargs=None, device=None, devices=None,
                   inplace_update=False):
 
     args = ivy.default(args, [])
@@ -72,4 +72,4 @@ def to_ivy_module(native_module=None, native_module_class=None, args=None, kwarg
         if not ivy.exists(native_module_class):
             raise Exception('native_module_class must be specified if native_module is not given')
 
-    return IvyModule(native_module_class, native_module, dev, devs, inplace_update, *args, **kwargs)
+    return IvyModule(native_module_class, native_module, device, devices, inplace_update, *args, **kwargs)

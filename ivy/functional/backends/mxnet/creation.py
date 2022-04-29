@@ -14,9 +14,9 @@ from ivy.functional.backends.mxnet import _1_dim_array_to_flat_array
 # -------------------#
 
 
-def asarray(object_in, dtype: Optional[str] = None, dev: Optional[str] = None, copy: Optional[bool] = None):
+def asarray(object_in, dtype: Optional[str] = None, device: Optional[str] = None, copy: Optional[bool] = None):
     # mxnet don't have asarray implementation, haven't properly tested
-    cont = _mxnet_init_context(default_device(dev))
+    cont = _mxnet_init_context(default_device(device))
     if copy is None:
         copy = False
     if copy:
@@ -60,11 +60,11 @@ def ones(shape: Union[int, Tuple[int]],
 
 def ones_like(x : mx.ndarray.ndarray.NDArray,
               dtype : Optional[Union[type, str]] = None,
-              dev : Optional[Union[mx.context.Context, str]] = None) \
+              device : Optional[Union[mx.context.Context, str]] = None) \
         -> mx.ndarray.ndarray.NDArray:
     if x.shape == ():
-        return mx.nd.array(1., ctx=_mxnet_init_context(default_device(dev)))
-    mx_ones = mx.nd.ones_like(x, ctx=_mxnet_init_context(default_device(dev)))
+        return mx.nd.array(1., ctx=_mxnet_init_context(default_device(device)))
+    mx_ones = mx.nd.ones_like(x, ctx=_mxnet_init_context(default_device(device)))
     return mx_ones if dtype is None else mx_ones.astype(dtype)
 
   
@@ -95,8 +95,8 @@ def _linspace(start, stop, num, cont):
     return ret
 
 
-def linspace(start, stop, num, axis=None, dev=None):
-    cont = _mxnet_init_context(default_device(dev))
+def linspace(start, stop, num, axis=None, device=None):
+    cont = _mxnet_init_context(default_device(device))
     num = num.asnumpy()[0] if isinstance(num, mx.nd.NDArray) else num
     start_is_array = isinstance(start, mx.nd.NDArray)
     stop_is_array = isinstance(stop, mx.nd.NDArray)
@@ -133,18 +133,18 @@ def eye(n_rows: int,
 
 
 # noinspection PyUnresolvedReferences
-def arange(stop, start=0, step=1, dtype=None, dev=None):
-    cont = _mxnet_init_context(default_device(dev))
+def arange(stop, start=0, step=1, dtype=None, device=None):
+    cont = _mxnet_init_context(default_device(device))
     stop = stop if isinstance(stop, Number) else stop.asscalar()
     start = start if isinstance(start, Number) else start.asscalar()
     step = step if isinstance(step, Number) else step.asscalar()
     return mx.nd.arange(start, stop, ctx=cont, step=step, dtype=dtype)
 
 
-def zeros_like(x, dtype=None, dev=None):
+def zeros_like(x, dtype=None, device=None):
     if x.shape == ():
-        return mx.nd.array(0., ctx=_mxnet_init_context(default_device(dev)))
-    mx_zeros = mx.nd.zeros_like(x, ctx=_mxnet_init_context(default_device(dev)))
+        return mx.nd.array(0., ctx=_mxnet_init_context(default_device(device)))
+    mx_zeros = mx.nd.zeros_like(x, ctx=_mxnet_init_context(default_device(device)))
     return mx_zeros if not dtype else mx_zeros.astype(dtype)
 
 
@@ -173,6 +173,6 @@ def from_dlpack(x):
 array = asarray
 
 
-def logspace(start, stop, num, base=10., axis=None, dev=None):
-    power_seq = linspace(start, stop, num, axis, default_device(dev))
+def logspace(start, stop, num, base=10., axis=None, device=None):
+    power_seq = linspace(start, stop, num, axis, default_device(device))
     return base ** power_seq
