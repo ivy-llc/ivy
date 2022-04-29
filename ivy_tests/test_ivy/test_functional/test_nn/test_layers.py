@@ -258,14 +258,10 @@ def test_conv1d_transpose(x_n_filters_n_pad_n_outshp_n_res, dtype, tensor_fn, de
     "dtype", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-<<<<<<< HEAD
-def test_conv2d(x_n_filters_n_pad_n_res, dtype, tensor_fn, dev, call):
-=======
 def test_conv2d(x_n_filters_n_pad_n_res, dtype, tensor_fn, device, call):
     if call in [helpers.tf_call, helpers.tf_graph_call] and 'cpu' in device:
         # tf conv2d does not work when CUDA is installed, but array is on CPU
         pytest.skip()
->>>>>>> upstream/master
     # smoke test
     x, filters, padding, true_res = x_n_filters_n_pad_n_res
     x = tensor_fn(x, dtype, device)
