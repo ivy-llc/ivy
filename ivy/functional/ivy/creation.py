@@ -506,7 +506,7 @@ def logspace(start: Union[ivy.Array, ivy.NativeArray, int, float],
              base: Optional[float] = 10.0,
              axis: Optional[int] = None,
              dtype: ivy.Dtype = None,
-             dev: ivy.Device = None)
+             dev: ivy.Device = None),
         -> Union[ivy.Array, ivy.NativeArray]:
     """Generates a certain number of evenly-spaced values in log space, in an interval along a given axis.
 
