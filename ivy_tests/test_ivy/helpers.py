@@ -283,7 +283,6 @@ def test_array_function(dtype, as_variable, with_out, num_positional_args, nativ
     # update variable flags to be compatible with float dtype and with_out args
     as_variable = [v if ivy.is_float_dtype(d) and not with_out else False for v, d in zip(as_variable, dtype)]
 
-
     # update instance_method flag to only be considered if the first term is either an ivy.Array or ivy.Container
     instance_method = instance_method and (not native_array[0] or container[0])
 
