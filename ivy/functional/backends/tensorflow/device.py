@@ -66,7 +66,10 @@ def dev_from_str(device):
 
 clear_mem_on_dev = lambda dev: None
 _dev_callable = dev
-num_gpus = lambda: len(tf.config.list_physical_devices('GPU'))
+
+
+def num_gpus() -> int:
+    return len(tf.config.list_physical_devices('GPU'))
 
 
 def gpu_is_available() -> bool:

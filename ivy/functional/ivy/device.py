@@ -364,8 +364,12 @@ def num_gpus() -> int:
 
     Returns
     -------
+    out:
         Number of available GPUs.
 
+    Examples:
+    >>> print(ivy.num_gpus())
+    1
     """
     return _cur_framework().num_gpus()
 

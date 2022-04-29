@@ -89,7 +89,7 @@ def gpu_is_available() -> bool:
     return _dev_is_available('gpu')
 
 
-def num_gpus():
+def num_gpus() -> int:
     try:
         return len(jax.devices('gpu'))
     except RuntimeError:
