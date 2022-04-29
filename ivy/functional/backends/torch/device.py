@@ -60,7 +60,10 @@ def clear_mem_on_dev(device):
 
 
 _callable_dev = dev
-num_gpus = torch.cuda.device_count
+
+
+def num_gpus() -> int:
+    return torch.cuda.device_count()
 
 
 def gpu_is_available() -> bool:
