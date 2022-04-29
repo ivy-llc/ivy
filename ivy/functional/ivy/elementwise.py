@@ -1384,7 +1384,11 @@ def atanh(x: Union[ivy.Array, ivy.NativeArray],
      -------
     ret
         an array containing the inverse hyperbolic tangent of each element in x. The returned array must have a floating-point data type determined by Type Promotion Rules.
-
+    
+    Examples:
+    >>> x = ivy.atanh(ivy.array([0, -0.5]))
+    >>> print(x)
+    ivy.array([ 0., -0.54930614])
     """
     return _cur_framework(x).atanh(x, out)
 
