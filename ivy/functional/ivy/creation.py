@@ -376,6 +376,7 @@ def eye(n_rows: int,
     >>> print(y)
     [[1, 0],[0, 1]]
     
+    """
     
     return _cur_framework().eye(n_rows, n_cols, k, dtype, device)
 
@@ -384,6 +385,7 @@ def eye(n_rows: int,
 def linspace(start: Union[ivy.Array, ivy.NativeArray, int], stop: Union[ivy.Array, ivy.NativeArray, int],
              num: int, axis: int = None, device: ivy.Device = None) \
         -> Union[ivy.Array, ivy.NativeArray]:
+        
     """Generates a certain number of evenly-spaced values in an interval along a given axis.
 
     See :math:`arange` that allows to specify the step size of evenly spaced values in an interval.
