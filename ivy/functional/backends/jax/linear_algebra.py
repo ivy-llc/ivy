@@ -243,10 +243,10 @@ def matrix_rank(x: JaxArray,
 
 def cross (x1: JaxArray,
            x2: JaxArray,
-           axis:int = -1,
+           axis: int = -1,
            out: Optional[JaxArray] = None)\
         -> JaxArray:
-    ret = jnp.cross(a= x1, b = x2, axis= axis)
+    ret = jnp.cross(a=x1, b=x2, axis=axis)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
     return ret

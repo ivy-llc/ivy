@@ -208,15 +208,15 @@ def eigvalsh(x: torch.Tensor,
 
 def cross (x1: torch.Tensor,
            x2: torch.Tensor,
-           axis:int = -1,
+           axis: int = -1,
            out: Optional[torch.Tensor] = None)\
         -> torch.Tensor:
-    if axis == None:
+    if axis is None:
         axis = -1
-    dtype_from = torch.promote_types(x1.dtype, x2.dtype)
-    x1 = x1.type(dtype_from)
-    x2 = x2.type(dtype_from)
-    return torch.cross(input = x1, other  = x2, dim=axis, out=out)
+    promote_type = torch.promote_types(x1.dtype, x2.dtype)
+    x1 = x1.type(promote_type)
+    x2 = x2.type(promote_type)
+    return torch.cross(input=x1, other=x2, dim=axis, out=out)
 
 
 def vecdot(x1: torch.Tensor,
