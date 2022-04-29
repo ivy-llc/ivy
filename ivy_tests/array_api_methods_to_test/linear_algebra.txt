@@ -1,5 +1,5 @@
 cholesky
-#cross #failing non-deterministically
+#cross #fails for jax health check, as well as torch's issue: https://github.com/pytorch/pytorch/issues/76588
 det
 diagonal
 eigh
