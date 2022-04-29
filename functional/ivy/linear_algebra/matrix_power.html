@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>vector_to_skew_symmetric_matrix &mdash; Ivy 1.0 documentation</title>
+  <title>matrix_power &mdash; Ivy 1.0 documentation</title>
   
 
   
@@ -36,8 +36,8 @@
   <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="solve" href="solve.html" />
-    <link rel="prev" title="cross" href="cross.html" /> 
+    <link rel="next" title="slodget" href="slodget.html" />
+    <link rel="prev" title="matmul" href="matmul.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -139,7 +139,7 @@
 <li class="toctree-l2"><a class="reference internal" href="matrix_norm.html">matrix_norm</a></li>
 <li class="toctree-l2"><a class="reference internal" href="qr.html">qr</a></li>
 <li class="toctree-l2"><a class="reference internal" href="matmul.html">matmul</a></li>
-<li class="toctree-l2"><a class="reference internal" href="matrix_power.html">matrix_power</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">matrix_power</a></li>
 <li class="toctree-l2"><a class="reference internal" href="slodget.html">slodget</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tensordot.html">tensordot</a></li>
 <li class="toctree-l2"><a class="reference internal" href="svdvals.html">svdvals</a></li>
@@ -151,7 +151,7 @@
 <li class="toctree-l2"><a class="reference internal" href="inv.html">inv</a></li>
 <li class="toctree-l2"><a class="reference internal" href="matrix_rank.html">matrix_rank</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cross.html">cross</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">vector_to_skew_symmetric_matrix</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vector_to_skew_symmetric_matrix.html">vector_to_skew_symmetric_matrix</a></li>
 <li class="toctree-l2"><a class="reference internal" href="solve.html">solve</a></li>
 </ul>
 </li>
@@ -238,13 +238,13 @@
         
           <li><a href="../linear_algebra.html">Linear algebra</a> &raquo;</li>
         
-      <li>vector_to_skew_symmetric_matrix</li>
+      <li>matrix_power</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../../_sources/functional/ivy/linear_algebra/vector_to_skew_symmetric_matrix.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../../_sources/functional/ivy/linear_algebra/matrix_power.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -257,24 +257,12 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="vector-to-skew-symmetric-matrix">
-<h1>vector_to_skew_symmetric_matrix<a class="headerlink" href="#vector-to-skew-symmetric-matrix" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="matrix-power">
+<h1>matrix_power<a class="headerlink" href="#matrix-power" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
-<dt id="ivy.functional.ivy.linear_algebra.vector_to_skew_symmetric_matrix">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">vector_to_skew_symmetric_matrix</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">vector</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../../_modules/ivy/functional/ivy/linear_algebra.html#vector_to_skew_symmetric_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.linear_algebra.vector_to_skew_symmetric_matrix" title="Permalink to this definition">¶</a></dt>
-<dd><p>Given vector <span class="math notranslate nohighlight">\(\mathbf{a}\in\mathbb{R}^3\)</span>, return associated skew-symmetric matrix
-<span class="math notranslate nohighlight">\([\mathbf{a}]_×\in\mathbb{R}^{3×3}\)</span> satisfying <span class="math notranslate nohighlight">\(\mathbf{a}×\mathbf{b}=[\mathbf{a}]_×\mathbf{b}\)</span>.</p>
-<p><a class="reference external" href="https://en.wikipedia.org/wiki/Skew-symmetric_matrix#Cross_product">[reference]</a></p>
-<dl class="simple">
-<dt>vector</dt><dd><p>Vector to convert <em>[batch_shape,3]</em>.</p>
-</dd>
-</dl>
-<blockquote>
-<div><dl class="simple">
-<dt>ret</dt><dd><p>Skew-symmetric matrix <em>[batch_shape,3,3]</em>.</p>
-</dd>
-</dl>
-</div></blockquote>
+<dt id="ivy.functional.ivy.linear_algebra.matrix_power">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">matrix_power</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">n</span><span class="p">:</span> <span class="n">int</span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../../_modules/ivy/functional/ivy/linear_algebra.html#matrix_power"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.linear_algebra.matrix_power" title="Permalink to this definition">¶</a></dt>
+<dd><p>Raises a square matrix (or a stack of square matrices) x to an integer power n.</p>
 </dd></dl>
 
 <div class="line-block">
@@ -292,10 +280,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="solve.html" class="btn btn-neutral float-right" title="solve" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="slodget.html" class="btn btn-neutral float-right" title="slodget" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="cross.html" class="btn btn-neutral float-left" title="cross" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="matmul.html" class="btn btn-neutral float-left" title="matmul" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

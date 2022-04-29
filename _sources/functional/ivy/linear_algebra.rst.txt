@@ -24,6 +24,7 @@ Linear algebra
    linear_algebra/matrix_norm.rst
    linear_algebra/qr.rst
    linear_algebra/matmul.rst
+   linear_algebra/matrix_power.rst
    linear_algebra/slodget.rst
    linear_algebra/tensordot.rst
    linear_algebra/svdvals.rst
