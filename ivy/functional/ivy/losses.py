@@ -37,12 +37,14 @@ def cross_entropy(true: Union[ivy.Array, ivy.NativeArray],
     Examples
     --------
     >>> x = ivy.array([0, 0, 1, 0])
-    >>> y1 = ivy.array([0.25, 0.25, 0.25, 0.25])
-    >>> print(ivy.cross_entropy(x, y1))
-    1.3862943611198906
-    >>> y2 = ivy.array([0.1, 0.1, 0.7, 0.1])
-    >>> print(ivy.cross_entropy(x, y2))
-    0.35667494393873245
+    >>> y = ivy.array([0.25, 0.25, 0.25, 0.25])
+    >>> print(ivy.cross_entropy(x, y))
+    ivy.array(1.38629436)
+    
+    >>> z = ivy.array([0.1, 0.1, 0.7, 0.1])
+    >>> print(ivy.cross_entropy(x, z))
+    ivy.array(0.35667497)
+    
     """
     pred = ivy.clip(pred, epsilon, 1 - epsilon)
     log_pred = ivy.log(pred)
