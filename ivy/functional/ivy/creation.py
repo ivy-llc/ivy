@@ -272,17 +272,29 @@ def eye(n_rows: int,
     """
     Returns a two-dimensional array with ones on the k h diagonal and zeros elsewhere.
 
-    :param n_rows: number of rows in the output array.
-    :param n_cols: number of columns in the output array. If None, the default number of columns in the output array is
-               equal to n_rows. Default: None.
-    :param k: index of the diagonal. A positive value refers to an upper diagonal, a negative value to a lower diagonal,
-          and 0 to the main diagonal. Default: 0.
-    :param dtype: output array data type. If dtype is None, the output array data type must be the default floating-
-              point data type. Default: None.
-    :return: an array where all elements are equal to zero, except for the k h diagonal, whose values are equal to one.
+    Parameters
+    ----------
+    n_rows
+        number of rows in the output array.
+    n_cols
+        number of columns in the output array. If None, the default number of columns in the output array is
+        equal to n_rows. Default: None.
+    k
+        index of the diagonal. A positive value refers to an upper diagonal, a negative value to a lower diagonal,
+        and 0 to the main diagonal. Default: 0.
+    dtype
+        output array data type. If dtype is None, the output array data type must be the default floating-
+        point data type. Default: None.
+    device
+         device on which to place the created array.
+    Returns
+     -------
+    ret
+        a two-dimensional array with ones on the k h diagonal and zeros elsewhere.
 
+    Examples
+    --------
 
-     Examples:
     >>> y = ivy.eye(2)
     >>> print(y)
     [[1, 0],[0, 1]]
@@ -402,29 +414,37 @@ def logspace(start: Union[ivy.Array, ivy.NativeArray, int, float],
         -> Union[ivy.Array, ivy.NativeArray]:
     """
     Generates a certain number of evenly-spaced values in log space, in an interval along a given axis.
-
     See :math:`arange` that allows to specify the step size of evenly spaced values in an interval.
 
-    :param start: First entry in the range.
-    :type start: array
-    :param stop: Final entry in the range.
-    :type stop: array
-    :param num: Number of values to generate. Default is 50
-    :type num: int, Optional
-    :param base: The base of the log space. Default is 10.0
-    :type base: float, optional
-    :param axis: Axis along which the operation is performed.
-    :type axis: int,Optional
-    :param dtype : The type of the output array. If dtype is not given, the data type is inferred from start and stop.
-    :type dtype: ivy.Dtype
-    :param dev: device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
-    :type dev: ivy.Device
-    :return: Tensor of evenly-spaced values.
+    Parameters
+    ----------
+    start
+        First entry in the range.
+    stop
+        Final entry in the range.
+    num
+        Number of values to generate.
+    base
+        The base of the log space. Default is 10.0
+    axis
+        Axis along which the operation is performed.
+    dev
+        device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
 
-    Examples:
+
+    Returns
+    -------
+    ret
+        Tensor of evenly-spaced values.
+
+    Examples
+    --------
+
     >>> y = ivy.logspace(2,3,num=4)
     >>> print(y)
    [ 100.        ,  215.443469  ,  464.15888336, 1000.        ]
+
+
     """
     return _cur_framework(start).logspace(start, stop, num, base, axis,dtype, dev)
 
