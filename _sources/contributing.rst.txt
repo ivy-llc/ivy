@@ -46,15 +46,17 @@ tests passing if working on an array property. You will need to modify the ivy.A
 file. Please see the :code:`dtype`, :code:`device`, :code:`shape` and :code:`T` properties for examples.
 
 
-Keeping Your Fork Updated
--------------------------
+Managing Your Fork
+------------------
 
-There is a script in the root repo :code:`merge_with_upstream.sh`. To update your local fork to the upstream master
-branch, simply run :code:`./merge_with_upstream.sh name_of_your_branch`. If you are simply developing in master branch
-(the default if you haven't explicitly created any new branches), then simply run :code:`./merge_with_upstream.sh master`.
+When contributing to Ivy, the first step is create a fork of the repository.
+Then, it's best practice to create a separate branch for each new pull request you create.
+The master branch then simply has the role of being kept up to date with upstream.
+You can create PRs based on the master branch of your fork, but this will make things more complicated if you would then like to create additional PRs in future.
 
-If you are developing for pull requests (PRs), then it is common to create PR-specific branches. In this case, you would
-run :code:`./merge_with_upstream.sh name_of_your_pr_branch`.
+For keeping any branch on your fork up to date, there is a script in the root folder of the repo :code:`merge_with_upstream.sh`.
+To update your fork's branch to the upstream master branch, simply run :code:`./merge_with_upstream.sh name_of_your_branch`.
+To update the master branch, this would then be: :code:`./merge_with_upstream.sh master`.
 
 
 ToDo List Issues

@@ -89,7 +89,7 @@
 <li class="toctree-l1"><a class="reference internal" href="roadmap.html">Roadmap</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Contributing</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#array-api-standardization">Array API Standardization</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#keeping-your-fork-updated">Keeping Your Fork Updated</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#managing-your-fork">Managing Your Fork</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#todo-list-issues">ToDo List Issues</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#creating-pull-requests">Creating Pull Requests</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#submodule-design">Submodule Design</a></li>
@@ -268,13 +268,15 @@ class. There are no unit tests which check for the existence of these properties
 tests passing if working on an array property. You will need to modify the ivy.Array class defined in this <a class="reference external" href="https://github.com/unifyai/ivy/blob/459f0aad972b71511014228dcd19928bb75d93ee/ivy/array/__init__.py#L43">__init__.py</a>
 file. Please see the <code class="code docutils literal notranslate"><span class="pre">dtype</span></code>, <code class="code docutils literal notranslate"><span class="pre">device</span></code>, <code class="code docutils literal notranslate"><span class="pre">shape</span></code> and <code class="code docutils literal notranslate"><span class="pre">T</span></code> properties for examples.</p>
 </div>
-<div class="section" id="keeping-your-fork-updated">
-<h2>Keeping Your Fork Updated<a class="headerlink" href="#keeping-your-fork-updated" title="Permalink to this headline">¶</a></h2>
-<p>There is a script in the root repo <code class="code docutils literal notranslate"><span class="pre">merge_with_upstream.sh</span></code>. To update your local fork to the upstream master
-branch, simply run <code class="code docutils literal notranslate"><span class="pre">./merge_with_upstream.sh</span> <span class="pre">name_of_your_branch</span></code>. If you are simply developing in master branch
-(the default if you haven’t explicitly created any new branches), then simply run <code class="code docutils literal notranslate"><span class="pre">./merge_with_upstream.sh</span> <span class="pre">master</span></code>.</p>
-<p>If you are developing for pull requests (PRs), then it is common to create PR-specific branches. In this case, you would
-run <code class="code docutils literal notranslate"><span class="pre">./merge_with_upstream.sh</span> <span class="pre">name_of_your_pr_branch</span></code>.</p>
+<div class="section" id="managing-your-fork">
+<h2>Managing Your Fork<a class="headerlink" href="#managing-your-fork" title="Permalink to this headline">¶</a></h2>
+<p>When contributing to Ivy, the first step is create a fork of the repository.
+Then, it’s best practice to create a separate branch for each new pull request you create.
+The master branch then simply has the role of being kept up to date with upstream.
+You can create PRs based on the master branch of your fork, but this will make things more complicated if you would then like to create additional PRs in future.</p>
+<p>For keeping any branch on your fork up to date, there is a script in the root folder of the repo <code class="code docutils literal notranslate"><span class="pre">merge_with_upstream.sh</span></code>.
+To update your fork’s branch to the upstream master branch, simply run <code class="code docutils literal notranslate"><span class="pre">./merge_with_upstream.sh</span> <span class="pre">name_of_your_branch</span></code>.
+To update the master branch, this would then be: <code class="code docutils literal notranslate"><span class="pre">./merge_with_upstream.sh</span> <span class="pre">master</span></code>.</p>
 </div>
 <div class="section" id="todo-list-issues">
 <h2>ToDo List Issues<a class="headerlink" href="#todo-list-issues" title="Permalink to this headline">¶</a></h2>
