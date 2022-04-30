@@ -6,45 +6,6 @@ Contributing
 .. _`source files`: https://github.com/data-apis/array-api/tree/main/spec/API_specification/signatures
 .. _`__init__.py`: https://github.com/unifyai/ivy/blob/459f0aad972b71511014228dcd19928bb75d93ee/ivy/array/__init__.py#L43
 
-Array API Standardization
--------------------------
-
-One of the key tasks currently underway is to update Ivy to conform to the `Array API`_ standard. The YouTube `tutorial series`_
-is the best starting reference for this task.
-
-A few points are made here. You should first check what methods are still available to work on. Methods are reserved by
-contributors in the community by creating an issue, and then commenting with a link to this issue on one of the ToDo list issues,
-which has labels "ToDo" and "Array API".
-
-As explained in the YouTube `tutorial series`_, you can test for each backend seperately by replacing
-:code:`array_module = None` with lines :code:`import ivy as array_module` and :code:`array_module.set_framework('torch')`
-for example.
-
-Once you have got the unit tests passing for each backend for your particular method, you should then make sure your changes have not
-inadvertently caused other unit tests to fail. First, uncomment your method in the folder
-:code:`ivy_tests/array_api_methods_to_test`, add back the line :code:`array_module = None`, and then verify all other flagged methods are passing without error as explained below.
-
-This is required for each backend framework :code:`numpy`, :code:`jax`,
-:code:`torch` and :code:`tensorflow`. You can test all of these tests locally by running
-:code:`./test_array_api.sh backend_name`, for example :code:`./test_array_api.sh torch` or
-:code:`./test_array_api.sh jax`.
-
-The docstrings for all methods in the Ivy API should be taken directly from the associated docstring in the Array API
-standard. Use the `source files`_ in the Array API repository rather than the website for copying, so that the
-formatting can be copied correctly. Many Ivy methods still use the Sphinx documentation format, but these should be
-updated to now use the NumPy style, which is the same format used by all methods in the Array API Standard.
-However, when defining our method in Ivy, we should remove the following arguments which appear in the standard to
-denote positional-only and keyword-only arguments :code:`*, \,`.
-
-Additionally, we should remove all argument types from the docstrings. These are all defined using type-hints in the
-arguments already, and adding these also to the docstrings would create unecessary duplication. Our documentation
-builder adds the correct types to the online documentation dynamically using the type hints directly.
-
-Finally, aside from methods, the Array API Standard also defines properties which must be implemented for the array
-class. There are no unit tests which check for the existence of these properties, so you will not need to get any unit
-tests passing if working on an array property. You will need to modify the ivy.Array class defined in this `__init__.py`_
-file. Please see the :code:`dtype`, :code:`device`, :code:`shape` and :code:`T` properties for examples.
-
 
 Managing Your Fork
 ------------------
@@ -109,6 +70,7 @@ if your issue or PR gets closed because of these time limits.
 Reach out to me on discord if at any point you believe this happened to you unfairly, and we will definitely
 investigate!
 
+
 Creating Pull Requests
 ----------------------
 
@@ -152,6 +114,7 @@ all methods.
     from . import general
     from .general import *
     # etc.
+
 
 Ivy API
 -------

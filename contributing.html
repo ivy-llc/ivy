@@ -88,7 +88,6 @@
 <li class="toctree-l1"><a class="reference internal" href="extensions.html">Extensions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="roadmap.html">Roadmap</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Contributing</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#array-api-standardization">Array API Standardization</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#managing-your-fork">Managing Your Fork</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#todo-list-issues">ToDo List Issues</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#creating-pull-requests">Creating Pull Requests</a></li>
@@ -237,37 +236,6 @@
             
   <div class="section" id="contributing">
 <h1>Contributing<a class="headerlink" href="#contributing" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="array-api-standardization">
-<h2>Array API Standardization<a class="headerlink" href="#array-api-standardization" title="Permalink to this headline">¶</a></h2>
-<p>One of the key tasks currently underway is to update Ivy to conform to the <a class="reference external" href="https://data-apis.org/array-api/latest/">Array API</a> standard. The YouTube <a class="reference external" href="https://www.youtube.com/channel/UCGlkr-YCs3TjMVeOhbbULsw">tutorial series</a>
-is the best starting reference for this task.</p>
-<p>A few points are made here. You should first check what methods are still available to work on. Methods are reserved by
-contributors in the community by creating an issue, and then commenting with a link to this issue on one of the ToDo list issues,
-which has labels “ToDo” and “Array API”.</p>
-<p>As explained in the YouTube <a class="reference external" href="https://www.youtube.com/channel/UCGlkr-YCs3TjMVeOhbbULsw">tutorial series</a>, you can test for each backend seperately by replacing
-<code class="code docutils literal notranslate"><span class="pre">array_module</span> <span class="pre">=</span> <span class="pre">None</span></code> with lines <code class="code docutils literal notranslate"><span class="pre">import</span> <span class="pre">ivy</span> <span class="pre">as</span> <span class="pre">array_module</span></code> and <code class="code docutils literal notranslate"><span class="pre">array_module.set_framework('torch')</span></code>
-for example.</p>
-<p>Once you have got the unit tests passing for each backend for your particular method, you should then make sure your changes have not
-inadvertently caused other unit tests to fail. First, uncomment your method in the folder
-<code class="code docutils literal notranslate"><span class="pre">ivy_tests/array_api_methods_to_test</span></code>, add back the line <code class="code docutils literal notranslate"><span class="pre">array_module</span> <span class="pre">=</span> <span class="pre">None</span></code>, and then verify all other flagged methods are passing without error as explained below.</p>
-<p>This is required for each backend framework <code class="code docutils literal notranslate"><span class="pre">numpy</span></code>, <code class="code docutils literal notranslate"><span class="pre">jax</span></code>,
-<code class="code docutils literal notranslate"><span class="pre">torch</span></code> and <code class="code docutils literal notranslate"><span class="pre">tensorflow</span></code>. You can test all of these tests locally by running
-<code class="code docutils literal notranslate"><span class="pre">./test_array_api.sh</span> <span class="pre">backend_name</span></code>, for example <code class="code docutils literal notranslate"><span class="pre">./test_array_api.sh</span> <span class="pre">torch</span></code> or
-<code class="code docutils literal notranslate"><span class="pre">./test_array_api.sh</span> <span class="pre">jax</span></code>.</p>
-<p>The docstrings for all methods in the Ivy API should be taken directly from the associated docstring in the Array API
-standard. Use the <a class="reference external" href="https://github.com/data-apis/array-api/tree/main/spec/API_specification/signatures">source files</a> in the Array API repository rather than the website for copying, so that the
-formatting can be copied correctly. Many Ivy methods still use the Sphinx documentation format, but these should be
-updated to now use the NumPy style, which is the same format used by all methods in the Array API Standard.
-However, when defining our method in Ivy, we should remove the following arguments which appear in the standard to
-denote positional-only and keyword-only arguments <code class="code docutils literal notranslate"><span class="pre">*,</span> <span class="pre">\,</span></code>.</p>
-<p>Additionally, we should remove all argument types from the docstrings. These are all defined using type-hints in the
-arguments already, and adding these also to the docstrings would create unecessary duplication. Our documentation
-builder adds the correct types to the online documentation dynamically using the type hints directly.</p>
-<p>Finally, aside from methods, the Array API Standard also defines properties which must be implemented for the array
-class. There are no unit tests which check for the existence of these properties, so you will not need to get any unit
-tests passing if working on an array property. You will need to modify the ivy.Array class defined in this <a class="reference external" href="https://github.com/unifyai/ivy/blob/459f0aad972b71511014228dcd19928bb75d93ee/ivy/array/__init__.py#L43">__init__.py</a>
-file. Please see the <code class="code docutils literal notranslate"><span class="pre">dtype</span></code>, <code class="code docutils literal notranslate"><span class="pre">device</span></code>, <code class="code docutils literal notranslate"><span class="pre">shape</span></code> and <code class="code docutils literal notranslate"><span class="pre">T</span></code> properties for examples.</p>
-</div>
 <div class="section" id="managing-your-fork">
 <h2>Managing Your Fork<a class="headerlink" href="#managing-your-fork" title="Permalink to this headline">¶</a></h2>
 <p>When contributing to Ivy, the first step is create a fork of the repository.
