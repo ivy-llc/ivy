@@ -4,9 +4,11 @@ Collection of Jax gradient functions, wrapped to fit Ivy syntax and signature.
 
 # global
 import jax
+import jax.numpy as jnp
 import jax.lax as jlax
 import jaxlib as jaxlib
 from jaxlib.xla_extension import Buffer
+
 
 # local
 import ivy
@@ -32,11 +34,11 @@ def execute_with_gradients(func, xs, retain_grads=False):
     if isinstance(func_ret, tuple):
         y = func_ret[0]
         rest = func_ret[1:]
-        grad_fn = lambda x_in: ivy.reshape(func(x_in)[0], [])
+        grad_fn = lambda x_in: ivy.to_native(ivy.reshape(func(x_in)[0], []))
     else:
         y = func_ret
         rest = tuple()
-        grad_fn = lambda x_in: ivy.reshape(func(x_in), [])
+        grad_fn = lambda x_in: ivy.to_native(ivy.reshape(func(x_in), []))
     grad_func = jax.grad(grad_fn)
     grads = grad_func(xs)
     grads = Container(grads)

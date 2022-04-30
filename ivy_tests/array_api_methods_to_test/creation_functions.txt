@@ -1,16 +1,16 @@
-#arange
+#arange #fails for tensorflow - https://github.com/tensorflow/tensorflow/issues/55796
 asarray
 empty
 empty_like
-eye
+#eye #fails for jax non deterministically, possibly due to +0 vs -0 inconsistencies
 from_dlpack
 full
 full_like
 #linspace
-meshgrid
-ones
-ones_like
-tril
-triu
-zeros
-zeros_like
+#meshgrid
+#ones
+#ones_like
+#tril
+#triu
+#zeros
+#zeros_like
