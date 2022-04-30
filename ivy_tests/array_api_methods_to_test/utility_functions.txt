@@ -1,2 +1,2 @@
-#all
-#any
+all
+any

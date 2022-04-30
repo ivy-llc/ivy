@@ -1,5 +1,5 @@
-#unique_all
-#unique_counts
-#unique_inverse # failing for tf
-#unique_values
+unique_all
+unique_counts
+unique_inverse # failing for tf
+unique_values
 
