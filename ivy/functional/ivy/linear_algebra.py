@@ -508,8 +508,11 @@ def cholesky(x: Union[ivy.Array, ivy.NativeArray],
     --------
     >>> x = ivy.array([[1., -2.], [2., 5.]])  
     >>> l = ivy.cholesky(x)
+    >>> u = ivy.cholesky(x, upper = True) #will return the result which will be upper triangular
     >>> print(l)
-    ivy.array([[1., 0.],[2., 1.]])
+    ivy.array([[ 1., 0.], [ 2., 1.]])
+    >>> print(u)
+    ivy.array([[ 1., -2.],[ 0.,  1.]])
     """
     return _cur_framework(x).cholesky(x, upper)
 
