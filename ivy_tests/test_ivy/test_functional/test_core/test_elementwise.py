@@ -306,6 +306,8 @@ def test_cos(dtype_and_x, as_variable, with_out, num_positional_args, native_arr
     helpers.test_array_function(
         dtype, as_variable, with_out, num_positional_args, native_array, container, instance_method, fw, 'cos',
         x=np.asarray(x, dtype=dtype))
+    
+    helpers.docstring_examples_run(ivy.cos)
 
 
 # cosh
