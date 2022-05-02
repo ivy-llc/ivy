@@ -70,6 +70,13 @@ def bilinear_resample(x, warp):
 
     Examples:
     >>> import ivy
+    >>> import numpy as np
+    >>> x = ivy.ones((1,2,2,3))
+    >>> warp = np.array([[[0,0],[1,1]]])
+    >>> out = ivy.bilinear_resample(x, warp)
+    >>> print(out)
+    [[[[1., 1., 1.],
+        [1., 1., 1.]]]]
     """
     return _cur_framework(x).bilinear_resample(x, warp)
 
