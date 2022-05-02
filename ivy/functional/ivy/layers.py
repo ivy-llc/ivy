@@ -299,6 +299,7 @@ def conv2d(x: Union[ivy.Array, ivy.NativeArray],
     
     Returns
     --------
+     ret
          The result of the convolution operation.
     
     Examples:
