@@ -2,11 +2,9 @@
 import os
 import pytest
 from typing import Dict
-from hypothesis import settings, HealthCheck
-
-settings.register_profile("ci", suppress_health_check=(HealthCheck(3),))
+from hypothesis import settings
 settings.register_profile("default", max_examples=100, deadline=None)
-settings.load_profile(os.getenv(u"HYPOTHESIS_PROFILE", "default"))
+settings.load_profile("default")
 
 # local
 from ivy_tests.test_ivy import helpers
