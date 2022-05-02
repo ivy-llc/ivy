@@ -47,7 +47,6 @@ def test_bilinear_resample(x_n_warp, dtype, tensor_fn, device, call):
     # smoke test
     x, warp = x_n_warp
     x = tensor_fn(x, dtype, device)
-    print('x:..............', x[0])
     warp = tensor_fn(warp, dtype, device)
     ret = ivy.bilinear_resample(x, warp)
     # type test
@@ -61,7 +60,7 @@ def test_bilinear_resample(x_n_warp, dtype, tensor_fn, device, call):
     if call in [helpers.torch_call]:
         # torch scripting does not support builtins
         return
-    
+    # docstring test
     helpers.docstring_examples_run(ivy.bilinear_resample)
 
 
