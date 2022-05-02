@@ -1,4 +1,8 @@
 import os
+from hypothesis import settings, HealthCheck
+
+settings.register_profile("ci", suppress_health_check=(HealthCheck(3),))
+settings.load_profile(os.getenv(u"HYPOTHESIS_PROFILE", "default"))
 
 this_dir = os.path.dirname(os.path.realpath(__file__))
 func_folder = os.path.join(this_dir, 'array_api_methods_to_test')
