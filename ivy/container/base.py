@@ -814,6 +814,25 @@ class ContainerBase(dict, abc.ABC):
                              rebuild_child_containers=True, ivyh=ivyh).to_ivy()
 
     @staticmethod
+    def from_string_as_pickled(pickle_string, ivyh=None):
+        """Load container object from the pickled string.
+
+        Parameters
+        ----------
+        pickle_string
+            string where the container object is stored in pickle format.
+        ivyh
+            Handle to ivy module to use for the calculations. Default is None, which results in the global ivy.
+
+        Returns
+        -------
+            Container loaded from pickle string
+
+        """
+        return ivy.Container(_pickle.loads(pickle_string),
+                             rebuild_child_containers=True, ivyh=ivyh).to_ivy()
+
+    @staticmethod
     def from_disk_as_json(json_filepath, ivyh=None):
         """Load container object from disk at the specified json filepath.
         If some objects were not json-able during saving, then they will be loaded as strings.
@@ -2536,6 +2555,17 @@ class ContainerBase(dict, abc.ABC):
 
         """
         _pickle.dump(self.to_native().to_dict(), open(pickle_filepath, 'wb'))
+
+    def to_string_as_pickled(self):
+        """Returns the container object as a string in pickled format.
+
+        Return
+        -------
+        pickled_container_string
+            Container as a string in pickled format.
+
+        """
+        return _pickle.dumps(self.to_native().to_dict())
 
     def to_jsonable(self, return_dict=None):
         """
