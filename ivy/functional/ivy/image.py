@@ -59,14 +59,14 @@ def bilinear_resample(x, warp):
     ----------
     x:
         Input image of *[batch_shape,height,width,dimension]* .
-        
-    warp
+
+    warp:
         Warp array *[batch_shape,num_samples,2]*
 
     Returns
     -------
-     ret
-        Image after bilinear re-sampling.
+    out:
+        Image(ivy array) after bilinear re-sampling.
 
     """
     return _cur_framework(x).bilinear_resample(x, warp)
