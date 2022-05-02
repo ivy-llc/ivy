@@ -55,7 +55,7 @@ def linear_resample(x, num_samples: int, axis: int = -1):
 
 
 # noinspection PyUnresolvedReferences
-def bilinear_resample(x, warp):
+def bilinear_resample(x: torch.Tensor, warp: torch.Tensor) -> torch.Tensor:
     batch_shape = x.shape[:-3]
     input_image_dims = x.shape[-3:-1]
     num_feats = x.shape[-1]
