@@ -1,6 +1,10 @@
 import os
-import numpy as np
-import hypothesis
+try:
+    import hypothesis
+except ImportError:
+    import pip
+    pip.main(['install', '--user', 'hypothesis'])
+    import hypothesis
 from hypothesis import settings, HealthCheck
 
 settings.register_profile("ci", suppress_health_check=(HealthCheck(3),))
