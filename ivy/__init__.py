@@ -113,24 +113,88 @@ all_dtype_strs = ('int8', 'int16', 'int32', 'int64',
                   'uint8', 'uint16', 'uint32', 'uint64',
                   'bfloat16', 'float16', 'float32', 'float64',
                   'bool')
-all_numeric_dtype_strs = ('int8', 'int16', 'int32', 'int64',
+numeric_dtype_strs = ('int8', 'int16', 'int32', 'int64',
                           'uint8', 'uint16', 'uint32', 'uint64',
                           'bfloat16', 'float16', 'float32', 'float64')
-all_int_dtype_strs = ('int8', 'int16', 'int32', 'int64',
+int_dtype_strs = ('int8', 'int16', 'int32', 'int64',
                       'uint8', 'uint16', 'uint32', 'uint64')
-all_float_dtype_strs = ('bfloat16', 'float16', 'float32', 'float64')
+float_dtype_strs = ('bfloat16', 'float16', 'float32', 'float64')
 
 # valid
 valid_dtype_strs = all_dtype_strs
-valid_numeric_dtype_strs = all_numeric_dtype_strs
-valid_int_dtype_strs = all_int_dtype_strs
-valid_float_dtype_strs = all_float_dtype_strs
+valid_numeric_dtype_strs = numeric_dtype_strs
+valid_int_dtype_strs = int_dtype_strs
+valid_float_dtype_strs = float_dtype_strs
 
 # invalid
 invalid_dtype_strs = ()
 invalid_numeric_dtype_strs = ()
 invalid_int_dtype_strs = ()
 invalid_float_dtype_strs = ()
+
+promotion_table = {
+    (int8, int8): int8,
+    (int8, int16): int16,
+    (int8, int32): int32,
+    (int8, int64): int64,
+    (int16, int8): int16,
+    (int16, int16): int16,
+    (int16, int32): int32,
+    (int16, int64): int64,
+    (int32, int8): int32,
+    (int32, int16): int32,
+    (int32, int32): int32,
+    (int32, int64): int64,
+    (int64, int8): int64,
+    (int64, int16): int64,
+    (int64, int32): int64,
+    (int64, int64): int64,
+    (uint8, uint8): uint8,
+    (uint8, uint16): uint16,
+    (uint8, uint32): uint32,
+    (uint8, uint64): uint64,
+    (uint16, uint8): uint16,
+    (uint16, uint16): uint16,
+    (uint16, uint32): uint32,
+    (uint16, uint64): uint64,
+    (uint32, uint8): uint32,
+    (uint32, uint16): uint32,
+    (uint32, uint32): uint32,
+    (uint32, uint64): uint64,
+    (uint64, uint8): uint64,
+    (uint64, uint16): uint64,
+    (uint64, uint32): uint64,
+    (uint64, uint64): uint64,
+    (int8, uint8): int16,
+    (int8, uint16): int32,
+    (int8, uint32): int64,
+    (int16, uint8): int16,
+    (int16, uint16): int32,
+    (int16, uint32): int64,
+    (int32, uint8): int32,
+    (int32, uint16): int32,
+    (int32, uint32): int64,
+    (int64, uint8): int64,
+    (int64, uint16): int64,
+    (int64, uint32): int64,
+    (uint8, int8): int16,
+    (uint16, int8): int32,
+    (uint32, int8): int64,
+    (uint8, int16): int16,
+    (uint16, int16): int32,
+    (uint32, int16): int64,
+    (uint8, int32): int32,
+    (uint16, int32): int32,
+    (uint32, int32): int64,
+    (uint8, int64): int64,
+    (uint16, int64): int64,
+    (uint32, int64): int64,
+    (float32, float32): float32,
+    (float32, float64): float64,
+    (float64, float32): float64,
+    (float64, float64): float64,
+    (bool, bool): bool,
+}
 
 backend = 'none'
 

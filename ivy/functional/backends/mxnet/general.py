@@ -141,61 +141,61 @@ out: Optional[mx.ndarray.ndarray.NDArray] = None)\
 
 
 # noinspection PyShadowingNames
-def scatter_flat(indices, updates, size=None, tensor=None, reduction='sum', dev=None):
+def scatter_flat(indices, updates, size=None, tensor=None, reduction='sum', device=None):
     if ivy.exists(tensor):
         raise Exception('MXNet scatter_flat does not support scattering into an pre-existing tensor.')
     if reduction == 'replace':
-        return mx.nd.scatter_nd(updates, mx.nd.expand_dims(indices, 0), [size]).copyto(_mxnet_init_context(default_device(dev)))
+        return mx.nd.scatter_nd(updates, mx.nd.expand_dims(indices, 0), [size]).copyto(_mxnet_init_context(default_device(device)))
     else:
         raise Exception('MXNet scatter_flat currently only supports reduction mode "replace", but {} selected.'.
                         format(reduction))
 
 
 # noinspection PyShadowingNames
-def scatter_nd(indices, updates, shape=None, tensor=None, reduction='sum', dev=None):
+def scatter_nd(indices, updates, shape=None, tensor=None, reduction='sum', device=None):
     if ivy.exists(tensor):
         raise Exception('MXNet scatter_flat does not support scattering into an pre-existing tensor.')
-    if dev is None:
-        dev = _callable_dev(indices)
+    if device is None:
+        device = _callable_dev(indices)
     shape = list(shape)
     num_idx_dims = len(indices.shape)
     transpose_order = [num_idx_dims-1] + list(range(num_idx_dims-1))
     indices = mx.nd.transpose(indices, transpose_order)
     shape = shape if type(shape) is list else shape.asnumpy().astype(_np.int32).tolist()
     if reduction == 'replace':
-        return mx.nd.scatter_nd(updates, indices, shape).copyto(_mxnet_init_context(dev))
+        return mx.nd.scatter_nd(updates, indices, shape).copyto(_mxnet_init_context(device))
     else:
         raise Exception('MXNet scatter_nd currently only supports reduction mode "replace", but {} selected.'.
                         format(reduction))
 
-def gather(params: mx.ndarray.ndarray.NDArray, indices: mx.ndarray.ndarray.NDArray, axis: Optional[int] =-1, dev: Optional[str]=None, out: mx.ndarray.ndarray.NDArray = None)\
+def gather(params: mx.ndarray.ndarray.NDArray, indices: mx.ndarray.ndarray.NDArray, axis: Optional[int] =-1, device: Optional[str]=None, out: mx.ndarray.ndarray.NDArray = None)\
         ->mx.ndarray.ndarray.NDArray:
-    if dev is None:
-        dev = _callable_dev(params)
+    if device is None:
+        device = _callable_dev(params)
     index_slices = unstack(indices, -1)
     res = mx.nd.concat(
         *[mx.nd.expand_dims(mx.nd.pick(params, idx_slice, axis), -1) for idx_slice in index_slices], dim=-1)
     res = mx.nd.reshape(res, indices.shape)
     if ivy.exists(out):
-        out = _mxnet_init_context(dev)
+        out = _mxnet_init_context(device)
         return res.copyto(out)
     else:
-        return res.copyto(_mxnet_init_context(dev))
+        return res.copyto(_mxnet_init_context(device))
 
 
-def gather_nd(params, indices, dev=None):
-    if dev is None:
-        dev = _callable_dev(params)
+def gather_nd(params, indices, device=None):
+    if device is None:
+        device = _callable_dev(params)
     indices_shape = indices.shape
     num_idx_dims = len(indices_shape)
     transpose_order = [num_idx_dims-1] + list(range(num_idx_dims-1))
     indices = mx.nd.transpose(indices, transpose_order)
-    return mx.nd.gather_nd(params, indices).copyto(_mxnet_init_context(dev))
+    return mx.nd.gather_nd(params, indices).copyto(_mxnet_init_context(device))
 
 
 multiprocessing = lambda context=None: _multiprocessing if context is None else _multiprocessing.get_context(context)
 # noinspection PyUnusedLocal
-one_hot = lambda indices, depth, dev=None: mx.nd.one_hot(indices, depth)
+one_hot = lambda indices, depth, device=None: mx.nd.one_hot(indices, depth)
 shape = lambda x, as_tensor=False: mx.nd.shape_array(x) if as_tensor else x.shape
 shape.__name__ = 'shape'
 get_num_dims = lambda x, as_tensor=False:\

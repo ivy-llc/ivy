@@ -145,6 +145,32 @@ def matrix_norm(x: Tensor,
     return ret
 
 
+def matrix_power(x: Tensor, n: int) \
+        -> Tensor:
+    if n == 0:
+        return tf.broadcast_to(tf.eye(x.shape[-2], dtype=x.dtype), x.shape)
+    elif n < 0:
+        x = tf.linalg.inv(x)
+        n = abs(n)
+
+    if n == 1:
+        return x
+    elif n == 2:
+        return x @ x
+    elif n == 3:
+        return (x @ x) @ x
+
+    z = result = None
+    while n > 0:
+        z = x if z is None else (z @ z)
+        n, bit = divmod(n, 2)
+        if bit:
+            result = z if result is None else (result @ z)
+    # replace any -0 with 0
+    result = tf.where(tf.equal(result, -0), tf.zeros_like(result), result)
+    return result
+
+
 # noinspection PyPep8Naming
 def svd(x:Tensor,
         full_matrices: bool = True,
@@ -352,10 +378,10 @@ def matrix_rank(x: Tensor,
 
 def cross (x1: tf.Tensor,
            x2: tf.Tensor,
-           axis:int = -1,
+           axis: int = -1,
            out: Optional[Tensor] = None)\
         -> tf.Tensor:
-    ret = tf.experimental.numpy.cross(x1, x2,axis=axis)
+    ret = tf.experimental.numpy.cross(x1, x2, axis=axis)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
     return ret
@@ -383,4 +409,38 @@ def vector_to_skew_symmetric_matrix(vector: Tensor,
     ret = tf.concat((row1, row2, row3), -2)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
+    return ret
+
+def solve(x1: Tensor,
+          x2: Tensor) -> Tensor:
+    if x1.dtype != tf.float32 or x1.dtype != tf.float64:
+        x1 = tf.cast(x1, tf.float32)
+    if x2.dtype != tf.float32 or x2.dtype != tf.float32:
+        x2 = tf.cast(x2, tf.float32)
+
+    expanded_last = False
+    if len(x2.shape) <= 1:
+        if x2.shape[-1] == x1.shape[-1]:
+            expanded_last = True
+            x2 = tf.expand_dims(x2, axis=1)
+    output_shape = tuple(tf.broadcast_static_shape(x1.shape[:-2], x2.shape[:-2]))
+
+    # in case any of the input arrays are empty
+    is_empty_x1 = tf.equal(tf.size(x1), 0)
+    is_empty_x2 = tf.equal(tf.size(x2), 0)
+    if is_empty_x1 or is_empty_x2:
+        for i in range(len(x1.shape) - 2):
+            x2 = tf.expand_dims(x2, axis=0)
+        output_shape = list(output_shape)
+        output_shape.append(x2.shape[-2])
+        output_shape.append(x2.shape[-1])
+        ret = tf.constant([])
+        ret = tf.reshape(ret, output_shape)
+    else:
+        x1 = tf.broadcast_to(x1, output_shape + x1.shape[-2:])
+        x2 = tf.broadcast_to(x2, output_shape + x2.shape[-2:])
+        ret = tf.linalg.solve(x1, x2)
+
+    if expanded_last:
+        ret = tf.squeeze(ret, axis=-1)
     return ret

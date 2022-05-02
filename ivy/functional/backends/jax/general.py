@@ -134,13 +134,13 @@ def cumprod(x: JaxArray, axis: int =0, exclusive: Optional[bool]=False, out: Opt
         return jnp.cumprod(x, axis)
 
 
-def scatter_flat(indices, updates, size=None, tensor=None, reduction='sum', dev=None):
+def scatter_flat(indices, updates, size=None, tensor=None, reduction='sum', device=None):
     target = tensor
     target_given = ivy.exists(target)
     if ivy.exists(size) and ivy.exists(target):
         assert len(target.shape) == 1 and target.shape[0] == size
-    if dev is None:
-        dev = callable_dev(updates)
+    if device is None:
+        device = callable_dev(updates)
     if reduction == 'sum':
         if not target_given:
             target = jnp.zeros([size], dtype=updates.dtype)
@@ -163,11 +163,11 @@ def scatter_flat(indices, updates, size=None, tensor=None, reduction='sum', dev=
             target = jnp.where(target == -1e12, 0., target)
     else:
         raise Exception('reduction is {}, but it must be one of "sum", "min" or "max"'.format(reduction))
-    return to_dev(target, dev)
+    return to_dev(target, device)
 
 
 # noinspection PyShadowingNames
-def scatter_nd(indices, updates, shape=None, tensor=None, reduction='sum', dev=None):
+def scatter_nd(indices, updates, shape=None, tensor=None, reduction='sum', device=None):
 
     # parse numeric inputs
     if indices not in [Ellipsis, ()] and not (isinstance(indices, Iterable) and Ellipsis in indices):
@@ -191,8 +191,8 @@ def scatter_nd(indices, updates, shape=None, tensor=None, reduction='sum', dev=N
     target_given = ivy.exists(target)
     if ivy.exists(shape) and ivy.exists(target):
         assert ivy.shape_to_tuple(target.shape) == ivy.shape_to_tuple(shape)
-    if dev is None:
-        dev = callable_dev(updates)
+    if device is None:
+        device = callable_dev(updates)
     shape = list(shape) if ivy.exists(shape) else list(tensor.shape)
     if reduction == 'sum':
         if not target_given:
@@ -216,23 +216,23 @@ def scatter_nd(indices, updates, shape=None, tensor=None, reduction='sum', dev=N
             target = jnp.where(target == -1e12, 0., target)
     else:
         raise Exception('reduction is {}, but it must be one of "sum", "min" or "max"'.format(reduction))
-    return to_dev(target, dev)
+    return to_dev(target, device)
 
 
 
-def gather(params : JaxArray, indices: JaxArray, axis : Optional[int] =-1, dev: Optional[str] = None , out: Optional[JaxArray] = None)\
+def gather(params : JaxArray, indices: JaxArray, axis : Optional[int] =-1, device: Optional[str] = None , out: Optional[JaxArray] = None)\
         ->JaxArray: 
-    if dev is None:
-        dev = callable_dev(params)
+    if device is None:
+        device = callable_dev(params)
     if ivy.exists(out):
-        return ivy.inplace_update(out,to_dev(jnp.take_along_axis(params, indices, axis), dev))
+        return ivy.inplace_update(out,to_dev(jnp.take_along_axis(params, indices, axis), device))
     else:
-        return to_dev(jnp.take_along_axis(params, indices, axis), dev)
+        return to_dev(jnp.take_along_axis(params, indices, axis), device)
 
 
-def gather_nd(params, indices, dev=None):
-    if dev is None:
-        dev = callable_dev(params)
+def gather_nd(params, indices, device=None):
+    if device is None:
+        device = callable_dev(params)
     indices_shape = indices.shape
     params_shape = params.shape
     num_index_dims = indices_shape[-1]
@@ -251,16 +251,16 @@ def gather_nd(params, indices, dev=None):
     flat_gather = jnp.take(flat_params, flat_indices_for_flat, 0)
     new_shape = list(indices_shape[:-1]) + list(params_shape[num_index_dims:])
     ret = jnp.reshape(flat_gather, new_shape)
-    return to_dev(ret, dev)
+    return to_dev(ret, device)
 
 multiprocessing = lambda context=None: _multiprocessing if context is None else _multiprocessing.get_context(context)
 
 
 # noinspection PyUnusedLocal
-def one_hot(indices, depth, dev=None):
+def one_hot(indices, depth, device=None):
     # from https://stackoverflow.com/questions/38592324/one-hot-encoding-using-numpy
     res = jnp.eye(depth)[jnp.array(indices).reshape(-1)]
-    return to_dev(res.reshape(list(indices.shape) + [depth]), default_device(dev))
+    return to_dev(res.reshape(list(indices.shape) + [depth]), default_device(device))
 
 def indices_where(x):
     where_x = jnp.where(x)

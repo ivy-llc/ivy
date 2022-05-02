@@ -82,6 +82,10 @@ def matrix_norm(x: JaxArray,
     return ret
 
 
+def matrix_power(x: JaxArray, n: int) \
+        -> JaxArray:
+    return jnp.linalg.matrix_power(x, n)
+
 
 def svd(x: JaxArray,
         full_matrices: bool = True,
@@ -243,10 +247,10 @@ def matrix_rank(x: JaxArray,
 
 def cross (x1: JaxArray,
            x2: JaxArray,
-           axis:int = -1,
+           axis: int = -1,
            out: Optional[JaxArray] = None)\
         -> JaxArray:
-    ret = jnp.cross(a= x1, b = x2, axis= axis)
+    ret = jnp.cross(a=x1, b=x2, axis=axis)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
     return ret
@@ -285,4 +289,32 @@ def vector_to_skew_symmetric_matrix(vector: JaxArray,
     ret = jnp.concatenate((row1, row2, row3), -2)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
+    return ret
+
+def solve(x1: JaxArray,
+          x2: JaxArray) -> JaxArray:
+    expanded_last = False
+    if len(x2.shape) <= 1:
+        if x2.shape[-1] == x1.shape[-1]:
+            expanded_last = True
+            x2 = jnp.expand_dims(x2, axis=1)
+
+    # if any of the arrays are empty
+    is_empty_x1 = x1.size == 0
+    is_empty_x2 = x2.size == 0
+    if is_empty_x1 or is_empty_x2:
+        for i in range(len(x1.shape) - 2):
+            x2 = jnp.expand_dims(x2, axis=0)
+        output_shape = list(jnp.broadcast_shapes(x1.shape[:-2], x2.shape[:-2]))
+        output_shape.append(x2.shape[-2])
+        output_shape.append(x2.shape[-1])
+        ret = jnp.array([]).reshape(output_shape)
+    else:
+        output_shape = tuple(jnp.broadcast_shapes(x1.shape[:-2], x2.shape[:-2]))
+        x1 = jnp.broadcast_to(x1, output_shape + x1.shape[-2:])
+        x2 = jnp.broadcast_to(x2, output_shape + x2.shape[-2:])
+        ret = jnp.linalg.solve(x1, x2)
+
+    if expanded_last:
+        ret = jnp.squeeze(ret, axis=-1)
     return ret

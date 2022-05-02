@@ -45,14 +45,16 @@ def pinv(x: Union[ivy.Array, ivy.NativeArray],
         -> ivy.Array:
     """
     Returns the (Moore-Penrose) pseudo-inverse of a matrix (or a stack of matrices) ``x``.
+
     Parameters
     ----------
     x
         input array having shape ``(..., M, N)`` and whose innermost two dimensions form ``MxN`` matrices. Should have a floating-point data type.
-    rtol:
+    rtol
         relative tolerance for small singular values. Singular values approximately less than or equal to ``rtol * largest_singular_value`` are set to zero. If a ``float``, the value is equivalent to a zero-dimensional array having a floating-point data type determined by :ref:`type-promotion` (as applied to ``x``) and must be broadcast against each matrix. If an ``array``, must have a floating-point data type and must be compatible with ``shape(x)[:-2]`` (see :ref:`broadcasting`). If ``None``, the default value is ``max(M, N) * eps``, where ``eps`` must be the machine epsilon associated with the floating-point data type determined by :ref:`type-promotion` (as applied to ``x``). Default: ``None``.
+
     Returns
-     -------
+    -------
     ret
         an array containing the pseudo-inverses. The returned array must have a floating-point data type determined by :ref:`type-promotion` and must have shape ``(..., N, M)`` (i.e., must have the same shape as ``x``, except the innermost two dimensions must be transposed).
     """
@@ -228,23 +230,6 @@ def diagonal(x: ivy.Array,
     return _cur_framework(x).diagonal(x, offset, axis1=axis1, axis2=axis2)
 
 
-def pinv(x):
-    """Computes the pseudo inverse of x matrix.
-
-    Parameters
-    ----------
-    x
-        Matrix to be pseudo inverted.
-
-    Returns
-    -------
-     ret
-        pseudo inverse of the matrix x.
-
-    """
-    return _cur_framework(x).pinv(x)
-
-
 def cholesky(x):
     """Computes the cholesky decomposition of the x matrix.
 
@@ -348,6 +333,14 @@ def matmul(x1: Union[ivy.Array, ivy.NativeArray],
         if x1 is an array having shape (..., M, K), x2 is an array having shape (..., L, N), and K != L.
     """
     return _cur_framework(x1).matmul(x1, x2)
+
+
+def matrix_power(x: Union[ivy.Array, ivy.NativeArray],
+                 n: int) -> ivy.Array:
+    """
+    Raises a square matrix (or a stack of square matrices) x to an integer power n.
+    """
+    return _cur_framework(x).matrix_power(x, n)
 
 
 def slodget(x: Union[ivy.Array, ivy.NativeArray], ) \
@@ -561,17 +554,34 @@ def eigvalsh(x: Union[ivy.Array, ivy.NativeArray], /) -> ivy.Array:
 def inv(x: Union[ivy.Array, ivy.NativeArray]) \
         -> ivy.Array:
     """
-    Returns the multiplicative inverse of a square matrix (or a stack of square matrices) x.
+    Returns the multiplicative inverse of a square matrix (or a stack of square matrices) ``x``.
 
     Parameters
+    ----------
     x 
-        input array having shape (..., M, M) and whose innermost two dimensions form square matrices.
+        input array having shape ``(..., M, M)`` and whose innermost two dimensions form square matrices.
         Should have a floating-point data type.
 
     Returns
+    -------
     ret 
-        an array containing the multiplicative inverses.
-        The returned array must have a floating-point data type determined by Type Promotion Rules and must have the same shape as x.
+        an array containing the multiplicative inverses. The returned array must have a floating-point data type determined 
+        by :ref:`type-promotion` and must have the same shape as ``x``.
+
+    Examples
+    --------
+    >>> x = ivy.array([[1.0, 2.0],[3.0, 4.0]])
+    >>> y = ivy.inv(x)
+    >>> print(y)
+    ivy.array([[-2.0, 1.0], [1.5, -0.5]])
+
+    Inverses of several matrices can be computed at once:
+
+    >>> x = ivy.array([[[1.0, 2.0],[3.0, 4.0]], [[1.0, 3.0], [3.0, 5.0]]])
+    >>> y = ivy.inv(x)
+    >>> print(y)
+    ivy.array([[[-2.0, 1.0], [1.5, -0.5]], [[-1.25, 0.75], [0.75, -0.25]]])
+     
     """
     return _cur_framework(x).inv(x)
 
@@ -658,3 +668,29 @@ def vector_to_skew_symmetric_matrix(vector: Union[ivy.Array, ivy.NativeArray]) \
 
     """
     return _cur_framework(vector).vector_to_skew_symmetric_matrix(vector)
+
+
+def solve(x1: Union[ivy.Array, ivy.NativeArray],
+          x2: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
+    """
+    Returns the solution to the system of linear equations represented by the well-determined (i.e., full rank) linear matrix equation AX = B.
+
+    Parameters
+    ----------
+    x1
+        coefficient array A having shape (..., M, M) and whose innermost two dimensions form square matrices.
+        Must be of full rank (i.e., all rows or, equivalently, columns must be linearly independent).
+        Should have a floating-point data type.
+
+    x2
+        ordinate (or “dependent variable”) array B. If x2 has shape (M,), x2 is equivalent to an array having shape (..., M, 1).
+        If x2 has shape (..., M, K), each column k defines a set of ordinate values for which to compute a solution,and shape(x2)[:-1] must be compatible with shape(x1)[:-1] (see Broadcasting).
+        Should have a floating-point data type.
+
+    Returns
+    -------
+    ret
+        an array containing the solution to the system AX = B for each square matrix.
+        The returned array must have the same shape as x2 (i.e., the array corresponding to B) and must have a floating-point data type determined by Type Promotion Rules.
+    """
+    return _cur_framework(x1, x2).solve(x1, x2)
