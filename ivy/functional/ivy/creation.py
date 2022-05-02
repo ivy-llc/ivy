@@ -508,61 +508,12 @@ array = asarray
 
 
 # noinspection PyShadowingNames
-def logspace(start: Union[ivy.Array, ivy.NativeArray, int, float],
-             stop: Union[ivy.Array, ivy.NativeArray, int, float],
-             num: Optional[int] = 50,
-             base: Optional[float] = 10.0,
-             axis: Optional[int] = None,
-             dtype: ivy.Dtype = None,
-             dev: ivy.Device = None)\
+def logspace(start: Union[ivy.Array, ivy.NativeArray, int], stop: Union[ivy.Array, ivy.NativeArray, int],
+             num: int, base: float = 10., axis: int = None, device: ivy.Device = None) \
         -> Union[ivy.Array, ivy.NativeArray]:
-    """
-    Generates a certain number of evenly-spaced values in log space, in an interval along a given axis.
+    """Generates a certain number of evenly-spaced values in log space, in an interval along a given axis.
     See :math:`arange` that allows to specify the step size of evenly spaced values in an interval.
 
-    Parameters
-    ----------
-    start
-        First entry in the range.
-    stop
-        Final entry in the range.
-    num
-        Number of values to generate.
-    base
-        The base of the log space. Default is 10.0
-    axis
-        Axis along which the operation is performed.
-    dev
-        device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
-
-
-    Returns
-    -------
-    ret
-        Tensor of evenly-spaced values.
-
-    Examples
-    --------
-
-    >>> y = ivy.logspace(2,3,num=4)
-    >>> print(y)
-   [ 100.        ,  215.443469  ,  464.15888336, 1000.        ]
-
-
-    """
-    return _cur_framework(start).logspace(start, stop, num, base, axis,dtype, dev)
-
-# noinspection PyShadowingNames
-def arange(stop: Number, start: Number = 0, step: Number = 1, dtype: ivy.Dtype = None, dev: ivy.Device = None,
-           ) -> Union[ivy.Array, ivy.NativeArray]:
-    """
-    Returns evenly spaced values within a given interval, with the spacing being specified.
-
-    Values are generated within the half-open interval [start, stop) (in other words, the interval including start but
-    excluding stop). For integer arguments the function is equivalent to the Python built-in range function,
-    but returns an array in the chosen ml_framework rather than a list.
-
-    See :math:`linspace` for a certain number of evenly spaced values in an interval.
     Parameters
     ----------
     start
@@ -582,6 +533,12 @@ def arange(stop: Number, start: Number = 0, step: Number = 1, dtype: ivy.Dtype =
      -------
     ret
         Tensor of evenly-spaced values.
+
+    Examples
+    --------
+    >>> y = ivy.logspace(2,3,num=4)
+    >>> print(y)
+    [ 100.        ,  215.443469  ,  464.15888336, 1000.        ]
 
     """
     return _cur_framework(start).logspace(start, stop, num, base, axis, device)
