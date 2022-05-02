@@ -52,7 +52,8 @@ def stack_images(images: List[Union[ivy.Array, ivy.Array, ivy.NativeArray]],
 
 
 def bilinear_resample(x, warp):
-    """Performs bilinearly re-sampling on input image.
+    """
+    Performs bilinearly re-sampling on input image.
 
     Parameters
     ----------
