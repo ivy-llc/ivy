@@ -43,12 +43,12 @@ def linear_resample(x, num_samples, axis=-1):
     x_pre_size = _reduce(_mul, x_pre_shape) if x_pre_shape else 1
     num_pre_dims = len(x_pre_shape)
     num_vals = x.shape[axis]
-    x_post_shape = x_shape[axis+1:]
+    x_post_shape = x_shape[axis + 1:]
     x_post_size = _reduce(_mul, x_post_shape) if x_post_shape else 1
     num_post_dims = len(x_post_shape)
-    xp = np.reshape(np.arange(num_vals*x_pre_size*x_post_size), x_shape)
-    x_coords = np.arange(num_samples) * ((num_vals-1)/(num_samples-1)) * x_post_size
-    x_coords = np.reshape(x_coords, [1]*num_pre_dims + [num_samples] + [1]*num_post_dims)
+    xp = np.reshape(np.arange(num_vals * x_pre_size * x_post_size), x_shape)
+    x_coords = np.arange(num_samples) * ((num_vals - 1) / (num_samples - 1)) * x_post_size
+    x_coords = np.reshape(x_coords, [1] * num_pre_dims + [num_samples] + [1] * num_post_dims)
     x_coords = np.broadcast_to(x_coords, x_pre_shape + [num_samples] + x_post_shape)
     slc = [slice(None)] * num_x_dims
     slc[axis] = slice(0, 1, 1)
@@ -59,8 +59,9 @@ def linear_resample(x, num_samples, axis=-1):
     ret = np.interp(x_coords, xp, x)
     return np.reshape(ret, x_pre_shape + [num_samples] + x_post_shape)
 
+
 # noinspection PyPep8Naming
-def bilinear_resample(x, warp):
+def bilinear_resample(x: np.ndarray, warp: np.ndarray) -> np.ndarray:
     batch_shape = x.shape[:-3]
     input_image_dims = x.shape[-3:-1]
     num_feats = x.shape[-1]
