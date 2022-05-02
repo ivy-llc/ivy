@@ -149,8 +149,7 @@ def test_array(dtype_and_x, from_numpy, device, call,fw):
 
 # copy array
 @given(
-    dtype_and_x = helpers.dtype_and_values(ivy_np.valid_dtype_strs),
-    from_numpy = st.booleans()
+    dtype_and_x = helpers.dtype_and_values(ivy_np.valid_dtype_strs)
 )
 def test_copy_array(dtype_and_x, device, call,fw):
     dtype,x=dtype_and_x
@@ -170,11 +169,13 @@ def test_copy_array(dtype_and_x, device, call,fw):
     helpers.assert_all_close(ivy.to_numpy(ret), ivy.to_numpy(x))
     assert id(x) != id(ret)
     # compilation test
-
+    if call in [helpers.torch_call]:
+        # pytorch scripting does not support numpy conversion
+        return
 
 # array_equal
 @given(
-    x0_n_x1_n_res= helpers.dtype_and_values(ivy_np.valid_dtype_strs,n_arrays=2),
+    x0_n_x1_n_res= helpers.dtype_and_values(ivy_np.valid_dtype_strs,n_arrays=2)
     )
 def test_array_equal(x0_n_x1_n_res, device, call,fw):
     dtype0, x0 = x0_n_x1_n_res[0][0], x0_n_x1_n_res[1][0]
