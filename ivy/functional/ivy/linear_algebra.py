@@ -6,15 +6,14 @@ from collections import namedtuple
 import ivy
 from ivy.framework_handler import current_framework as _cur_framework
 
-inf = float('inf')
+inf = float("inf")
 
 
 # Array API Standard #
 # -------------------#
 
 
-def eigh(x: Union[ivy.Array, ivy.NativeArray]) \
-        -> ivy.Array:
+def eigh(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
     """
     Returns an eigendecomposition x = QLQᵀ of a symmetric matrix (or a stack of symmetric matrices) ``x``, where ``Q`` is an orthogonal matrix (or a stack of matrices) and ``L`` is a vector (or a stack of vectors).
     .. note::
@@ -40,9 +39,10 @@ def eigh(x: Union[ivy.Array, ivy.NativeArray]) \
     return _cur_framework(x).eigh(x)
 
 
-def pinv(x: Union[ivy.Array, ivy.NativeArray],
-         rtol: Optional[Union[float, Tuple[float]]] = None) \
-        -> ivy.Array:
+def pinv(
+    x: Union[ivy.Array, ivy.NativeArray],
+    rtol: Optional[Union[float, Tuple[float]]] = None,
+) -> ivy.Array:
     """
     Returns the (Moore-Penrose) pseudo-inverse of a matrix (or a stack of matrices) ``x``.
 
@@ -61,8 +61,7 @@ def pinv(x: Union[ivy.Array, ivy.NativeArray],
     return _cur_framework(x).pinv(x, rtol)
 
 
-def matrix_transpose(x: Union[ivy.Array, ivy.NativeArray]) \
-        -> ivy.Array:
+def matrix_transpose(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
     """
     Transposes a matrix (or a stack of matrices) ``x``.
     Parameters
@@ -78,11 +77,12 @@ def matrix_transpose(x: Union[ivy.Array, ivy.NativeArray]) \
 
 
 # noinspection PyShadowingBuiltins
-def vector_norm(x: Union[ivy.Array, ivy.NativeArray],
-                axis: Optional[Union[int, Tuple[int]]] = None,
-                keepdims: bool = False,
-                ord: Union[int, float, Literal[inf, -inf]] = 2) \
-        -> ivy.Array:
+def vector_norm(
+    x: Union[ivy.Array, ivy.NativeArray],
+    axis: Optional[Union[int, Tuple[int]]] = None,
+    keepdims: bool = False,
+    ord: Union[int, float, Literal[inf, -inf]] = 2,
+) -> ivy.Array:
     """
     Computes the vector norm of a vector (or batch of vectors) ``x``.
 
@@ -129,17 +129,19 @@ def vector_norm(x: Union[ivy.Array, ivy.NativeArray],
         an array containing the vector norms. If ``axis`` is ``None``, the returned array must be a zero-dimensional array containing a vector norm. If ``axis`` is a scalar value (``int`` or ``float``), the returned array must have a rank which is one less than the rank of ``x``. If ``axis`` is a ``n``-tuple, the returned array must have a rank which is ``n`` less than the rank of ``x``. The returned array must have a floating-point data type determined by :ref:`type-promotion`.
     """
 
-    if ord == -float('inf'):
+    if ord == -float("inf"):
         return ivy.reduce_min(ivy.abs(x), axis, keepdims)
-    elif ord == float('inf'):
+    elif ord == float("inf"):
         return ivy.reduce_max(ivy.abs(x), axis, keepdims)
     elif ord == 0:
-        return ivy.sum(ivy.cast(x != 0, 'float32'), axis, keepdims)
-    x_raised = x ** ord
+        return ivy.sum(ivy.cast(x != 0, "float32"), axis, keepdims)
+    x_raised = x**ord
     return ivy.sum(x_raised, axis, keepdims) ** (1 / ord)
 
 
-def svd(x: Union[ivy.Array, ivy.NativeArray], full_matrices: bool = True) -> Union[ivy.Array, Tuple[ivy.Array, ...]]:
+def svd(
+    x: Union[ivy.Array, ivy.NativeArray], full_matrices: bool = True
+) -> Union[ivy.Array, Tuple[ivy.Array, ...]]:
     """Singular Value Decomposition.
     When x is a 2D array, it is factorized as u @ numpy.diag(s) @ vh = (u * s) @ vh, where u and vh are 2D unitary
     arrays and s is a 1D array of a’s singular values. When x is higher-dimensional, SVD is applied in batched mode.
@@ -169,20 +171,20 @@ def svd(x: Union[ivy.Array, ivy.NativeArray], full_matrices: bool = True) -> Uni
     return _cur_framework(x).svd(x, full_matrices)
 
 
-def outer(x1: Union[ivy.Array, ivy.NativeArray],
-          x2: Union[ivy.Array, ivy.NativeArray]) \
-        -> ivy.Array:
+def outer(
+    x1: Union[ivy.Array, ivy.NativeArray], x2: Union[ivy.Array, ivy.NativeArray]
+) -> ivy.Array:
     """
     returns the outer product of two vectors x1 and x2.
 
     Parameters
     ----------
-    x1 
+    x1
     first one-dimensional input array of size N. Should have a numeric data type.
     a(M,) array_like
     First input vector. Input is flattened if not already 1-dimensional.
 
-    x2 
+    x2
     second one-dimensional input array of size M. Should have a numeric data type.
     b(N,) array_like
     Second input vector. Input is flattened if not already 1-dimensional.
@@ -199,10 +201,9 @@ def outer(x1: Union[ivy.Array, ivy.NativeArray],
     return _cur_framework(x1, x2).outer(x1, x2)
 
 
-def diagonal(x: ivy.Array,
-             offset: int = 0,
-             axis1: int = -2,
-             axis2: int = -1) -> ivy.Array:
+def diagonal(
+    x: ivy.Array, offset: int = 0, axis1: int = -2, axis2: int = -1
+) -> ivy.Array:
     """
     Returns the specified diagonals of a matrix (or a stack of matrices) ``x``.
     Parameters
@@ -247,10 +248,11 @@ def cholesky(x):
     return _cur_framework(x).cholesky(x)
 
 
-def matrix_norm(x: Union[ivy.Array, ivy.NativeArray],
-                ord: Optional[Union[int, float, Literal[inf, - inf, 'fro', 'nuc']]] = 'fro',
-                keepdims: bool = False) \
-        -> ivy.Array:
+def matrix_norm(
+    x: Union[ivy.Array, ivy.NativeArray],
+    ord: Optional[Union[int, float, Literal[inf, -inf, "fro", "nuc"]]] = "fro",
+    keepdims: bool = False,
+) -> ivy.Array:
     """Compute the matrix p-norm.
 
     Parameters
@@ -276,8 +278,7 @@ def matrix_norm(x: Union[ivy.Array, ivy.NativeArray],
     return _cur_framework(x).matrix_norm(x, ord, keepdims)
 
 
-def qr(x: ivy.Array,
-       mode: str = 'reduced') -> namedtuple('qr', ['Q', 'R']):
+def qr(x: ivy.Array, mode: str = "reduced") -> namedtuple("qr", ["Q", "R"]):
     """
     Returns the qr decomposition x = QR of a full column rank matrix (or a stack of matrices), where Q is an orthonormal matrix (or a stack of matrices) and R is an upper-triangular matrix (or a stack of matrices).
     Parameters
@@ -300,8 +301,9 @@ def qr(x: ivy.Array,
     return _cur_framework(x).qr(x, mode)
 
 
-def matmul(x1: Union[ivy.Array, ivy.NativeArray],
-           x2: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
+def matmul(
+    x1: Union[ivy.Array, ivy.NativeArray], x2: Union[ivy.Array, ivy.NativeArray]
+) -> ivy.Array:
     """
     Computes the matrix product.
 
@@ -335,16 +337,16 @@ def matmul(x1: Union[ivy.Array, ivy.NativeArray],
     return _cur_framework(x1).matmul(x1, x2)
 
 
-def matrix_power(x: Union[ivy.Array, ivy.NativeArray],
-                 n: int) -> ivy.Array:
+def matrix_power(x: Union[ivy.Array, ivy.NativeArray], n: int) -> ivy.Array:
     """
     Raises a square matrix (or a stack of square matrices) x to an integer power n.
     """
     return _cur_framework(x).matrix_power(x, n)
 
 
-def slodget(x: Union[ivy.Array, ivy.NativeArray], ) \
-        -> ivy.Array:
+def slodget(
+    x: Union[ivy.Array, ivy.NativeArray],
+) -> ivy.Array:
     """
     Computes the sign and natural logarithm of the determinant of an array.
 
@@ -368,10 +370,11 @@ def slodget(x: Union[ivy.Array, ivy.NativeArray], ) \
     return _cur_framework(x).slodget(x)
 
 
-def tensordot(x1: Union[ivy.Array, ivy.NativeArray],
-              x2: Union[ivy.Array, ivy.NativeArray],
-              axes: Union[int, Tuple[List[int], List[int]]] = 2) \
-        -> ivy.Array:
+def tensordot(
+    x1: Union[ivy.Array, ivy.NativeArray],
+    x2: Union[ivy.Array, ivy.NativeArray],
+    axes: Union[int, Tuple[List[int], List[int]]] = 2,
+) -> ivy.Array:
     """Returns a tensor contraction of x1 and x2 over specific axes.
 
     Parameters
@@ -396,8 +399,9 @@ def tensordot(x1: Union[ivy.Array, ivy.NativeArray],
     return _cur_framework(x1, x2).tensordot(x1, x2, axes)
 
 
-def svdvals(x: Union[ivy.Array, ivy.NativeArray], ) \
-        -> ivy.Array:
+def svdvals(
+    x: Union[ivy.Array, ivy.NativeArray],
+) -> ivy.Array:
     """
     Returns the singular values of a matrix (or a stack of matrices) ``x``.
 
@@ -415,8 +419,7 @@ def svdvals(x: Union[ivy.Array, ivy.NativeArray], ) \
     return _cur_framework(x).svdvals(x)
 
 
-def trace(x: Union[ivy.Array, ivy.NativeArray], offset: int = 0)\
-        -> ivy.Array:
+def trace(x: Union[ivy.Array, ivy.NativeArray], offset: int = 0) -> ivy.Array:
     """
     Returns the sum along the specified diagonals of a matrix (or a stack of matrices) ``x``.
 
@@ -429,7 +432,7 @@ def trace(x: Union[ivy.Array, ivy.NativeArray], offset: int = 0)\
         -   ``offset = 0``: the main diagonal.
         -   ``offset > 0``: off-diagonal above the main diagonal.
         -   ``offset < 0``: off-diagonal below the main diagonal.
-        
+
         Default: ``0``.
 
      Returns
@@ -439,7 +442,7 @@ def trace(x: Union[ivy.Array, ivy.NativeArray], offset: int = 0)\
          ::
            out[i, j, k, ..., l] = trace(a[i, j, k, ..., l, :, :])
          The returned array must have the same data type as ``x``.
-     
+
      Examples
      --------
      >>> x = ivy.array([[1.0, 2.0],[3.0, 4.0]])
@@ -447,15 +450,16 @@ def trace(x: Union[ivy.Array, ivy.NativeArray], offset: int = 0)\
      >>> y = ivy.trace(x, offset)
      >>> print(y)
      ivy.array(5.)
-     
+
     """
     return _cur_framework(x).trace(x, offset)
 
 
-def vecdot(x1: Union[ivy.Array, ivy.NativeArray],
-           x2: Union[ivy.Array, ivy.NativeArray],
-           axis: int = -1) \
-        -> ivy.Array:
+def vecdot(
+    x1: Union[ivy.Array, ivy.NativeArray],
+    x2: Union[ivy.Array, ivy.NativeArray],
+    axis: int = -1,
+) -> ivy.Array:
     """
     Computes the (vector) dot product of two arrays.
     Parameters
@@ -476,7 +480,6 @@ def vecdot(x1: Union[ivy.Array, ivy.NativeArray],
     """
 
     return _cur_framework(x1).vecdot(x1, x2, axis)
-
 
 
 def det(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
@@ -507,8 +510,7 @@ def det(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
     return _cur_framework(x).det(x)
 
 
-def cholesky(x: Union[ivy.Array, ivy.NativeArray],
-             upper: bool = False) -> ivy.Array:
+def cholesky(x: Union[ivy.Array, ivy.NativeArray], upper: bool = False) -> ivy.Array:
     """Computes the cholesky decomposition of the x matrix.
 
     Parameters
@@ -551,21 +553,20 @@ def eigvalsh(x: Union[ivy.Array, ivy.NativeArray], /) -> ivy.Array:
     return _cur_framework(x).eigvalsh(x)
 
 
-def inv(x: Union[ivy.Array, ivy.NativeArray]) \
-        -> ivy.Array:
+def inv(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
     """
     Returns the multiplicative inverse of a square matrix (or a stack of square matrices) ``x``.
 
     Parameters
     ----------
-    x 
+    x
         input array having shape ``(..., M, M)`` and whose innermost two dimensions form square matrices.
         Should have a floating-point data type.
 
     Returns
     -------
-    ret 
-        an array containing the multiplicative inverses. The returned array must have a floating-point data type determined 
+    ret
+        an array containing the multiplicative inverses. The returned array must have a floating-point data type determined
         by :ref:`type-promotion` and must have the same shape as ``x``.
 
     Examples
@@ -581,14 +582,15 @@ def inv(x: Union[ivy.Array, ivy.NativeArray]) \
     >>> y = ivy.inv(x)
     >>> print(y)
     ivy.array([[[-2.0, 1.0], [1.5, -0.5]], [[-1.25, 0.75], [0.75, -0.25]]])
-     
+
     """
     return _cur_framework(x).inv(x)
 
 
-def matrix_rank(x: Union[ivy.Array, ivy.NativeArray],
-                rtol: Optional[Union[float, Tuple[float]]] = None) \
-        -> Union[ivy.Array, ivy.NativeArray]:
+def matrix_rank(
+    x: Union[ivy.Array, ivy.NativeArray],
+    rtol: Optional[Union[float, Tuple[float]]] = None,
+) -> Union[ivy.Array, ivy.NativeArray]:
     """
     Returns the rank (i.e., number of non-zero singular values) of a matrix (or a stack of matrices).
 
@@ -608,7 +610,7 @@ def matrix_rank(x: Union[ivy.Array, ivy.NativeArray],
     -------
     ret
         an array containing the ranks. The returned array must have a floating-point data type determined by :ref:`type-promotion` and must have shape ``(...)`` (i.e., must have a shape equal to ``shape(x)[:-2]``).
-    
+
     Examples
     --------
     >>> x = ivy.array([[1., 2.], [3., 4.]])
@@ -618,9 +620,11 @@ def matrix_rank(x: Union[ivy.Array, ivy.NativeArray],
     return _cur_framework(x).matrix_rank(x, rtol)
 
 
-def cross(x1: Union[ivy.Array, ivy.NativeArray],
-          x2: Union[ivy.Array, ivy.NativeArray],
-          axis: int = - 1) -> ivy.Array:
+def cross(
+    x1: Union[ivy.Array, ivy.NativeArray],
+    x2: Union[ivy.Array, ivy.NativeArray],
+    axis: int = -1,
+) -> ivy.Array:
     """The cross product of 3-element vectors. If x1 and x2 are multi-dimensional arrays
     (i.e., both have a rank greater than 1), then the cross-product of each pair of corresponding
     3-element vectors is independently computed.
@@ -650,8 +654,10 @@ def cross(x1: Union[ivy.Array, ivy.NativeArray],
 # Extra #
 # ------#
 
-def vector_to_skew_symmetric_matrix(vector: Union[ivy.Array, ivy.NativeArray]) \
-        -> ivy.Array:
+
+def vector_to_skew_symmetric_matrix(
+    vector: Union[ivy.Array, ivy.NativeArray]
+) -> ivy.Array:
     """Given vector :math:`\mathbf{a}\in\mathbb{R}^3`, return associated skew-symmetric matrix
     :math:`[\mathbf{a}]_×\in\mathbb{R}^{3×3}` satisfying :math:`\mathbf{a}×\mathbf{b}=[\mathbf{a}]_×\mathbf{b}`.\n
     `[reference] <https://en.wikipedia.org/wiki/Skew-symmetric_matrix#Cross_product>`_
@@ -670,8 +676,9 @@ def vector_to_skew_symmetric_matrix(vector: Union[ivy.Array, ivy.NativeArray]) \
     return _cur_framework(vector).vector_to_skew_symmetric_matrix(vector)
 
 
-def solve(x1: Union[ivy.Array, ivy.NativeArray],
-          x2: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
+def solve(
+    x1: Union[ivy.Array, ivy.NativeArray], x2: Union[ivy.Array, ivy.NativeArray]
+) -> ivy.Array:
     """
     Returns the solution to the system of linear equations represented by the well-determined (i.e., full rank) linear matrix equation AX = B.
 
