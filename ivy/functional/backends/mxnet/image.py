@@ -59,7 +59,7 @@ def linear_resample(x, num_samples, axis=-1):
     return mx.nd.reshape(ret, x_pre_shape + [num_samples] + x_post_shape)
 
 
-def bilinear_resample(x, warp):
+def bilinear_resample(x: mx.nd.NDArray, warp: mx.nd.NDArray) -> mx.nd.NDArray:
     batch_shape = _ivy.shape(x)[:-3]
     input_image_dims = _ivy.shape(x)[-3:-1]
     num_feats = x.shape[-1]
