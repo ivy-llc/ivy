@@ -46,6 +46,8 @@ def test_stack_images(shp_n_num_n_ar_n_newshp, device, call):
 def test_bilinear_resample(x_n_warp, dtype, tensor_fn, device, call):
     # smoke test
     x, warp = x_n_warp
+    print('x:..............', x)
+    print('warp:...........', warp)
     x = tensor_fn(x, dtype, device)
     warp = tensor_fn(warp, dtype, device)
     ret = ivy.bilinear_resample(x, warp)
