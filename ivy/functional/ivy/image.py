@@ -57,8 +57,9 @@ def bilinear_resample(x, warp):
 
     Parameters
     ----------
-    x
-        Input image *[batch_shape,h,w,dims]*.
+    x:
+        Input image of *[batch_shape,height,width,dimension]* .
+        
     warp
         Warp array *[batch_shape,num_samples,2]*
 
