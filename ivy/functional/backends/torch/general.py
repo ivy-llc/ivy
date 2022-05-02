@@ -31,7 +31,10 @@ def copy_array(x: torch.Tensor) -> torch.Tensor:
 
 def array_equal(x0:torch.Tensor, x1:torch.Tensor) \
         -> bool:
-    return torch.equal(x0, x1)
+     dtype= torch.promote_types(x0.dtype,x1.dtype)
+     x0 = x0.type(dtype=dtype)
+     x1 = x1.type(dtype=dtype)
+     return torch.equal(x0, x1)
 
 
 
