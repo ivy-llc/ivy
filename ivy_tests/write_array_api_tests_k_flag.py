@@ -1,4 +1,5 @@
 import os
+import numpy as np
 import hypothesis
 from hypothesis import settings, HealthCheck
 
