@@ -68,6 +68,8 @@ def bilinear_resample(x, warp):
     out:
         Image(ivy array) after bilinear re-sampling.
 
+    Examples:
+    >>> import ivy
     """
     return _cur_framework(x).bilinear_resample(x, warp)
 
