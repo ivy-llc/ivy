@@ -8,6 +8,7 @@ import math
 import time
 import einops
 import pytest
+from hypothesis import given, strategies as st
 import threading
 import numpy as np
 from numbers import Number
@@ -22,7 +23,7 @@ import ivy.functional.backends.tensorflow
 import ivy.functional.backends.torch
 import ivy.functional.backends.mxnet
 import ivy_tests.test_ivy.helpers as helpers
-
+import ivy.functional.backends.numpy as ivy_np
 
 # Helpers #
 # --------#
@@ -46,8 +47,7 @@ def _get_shape_of_list(lst, shape=()):
 # ------#
 
 # set_framework
-@pytest.mark.parametrize(
-    "fw_str", ['numpy', 'jax', 'torch', 'mxnet'])
+@given(fw_str = st.sampled_from(['numpy', 'jax', 'torch', 'mxnet']))
 def test_set_framework(fw_str, device, call):
     ivy.set_framework(fw_str)
     ivy.unset_framework()
@@ -67,8 +67,8 @@ def test_use_within_use_framework(device, call):
         pass
 
 
-@pytest.mark.parametrize(
-    "allow_duplicates", [True, False])
+
+@given(allow_duplicates = st.booleans())
 def test_match_kwargs(allow_duplicates):
 
     def func_a(a, b, c=2):
@@ -119,16 +119,17 @@ def test_match_kwargs(allow_duplicates):
 
 
 # array
-@pytest.mark.parametrize(
-    "object_in", [[], [0.], [1], [True], [[1., 2.]]])
-@pytest.mark.parametrize(
-    "dtype", [None, 'float16', 'float32', 'float64', 'int8', 'int16', 'int32', 'int64', 'bool'])
-@pytest.mark.parametrize(
-    "from_numpy", [True, False])
-def test_array(object_in, dtype, from_numpy, device, call):
+@given(
+    dtype_and_x = helpers.dtype_and_values(ivy_np.valid_dtype_strs),
+    from_numpy = st.booleans()
+)
+def test_array(dtype_and_x, from_numpy, device, call,fw):
+    dtype,object_in = dtype_and_x
+    if fw == 'torch' and dtype in ['uint16', 'uint32', 'uint64']:
+        return
     if call in [helpers.mx_call] and dtype == 'int16':
         # mxnet does not support int16
-        pytest.skip()
+        return
     # to numpy
     if from_numpy:
         object_in = np.array(object_in)
@@ -139,7 +140,7 @@ def test_array(object_in, dtype, from_numpy, device, call):
     # cardinality test
     assert ret.shape == np.array(object_in).shape
     # value test
-    assert np.allclose(call(ivy.array, object_in, dtype, device), np.array(object_in).astype(dtype))
+    helpers.assert_all_close(ivy.to_numpy(ret), np.array(object_in).astype(dtype))
     # compilation test
     if call in [helpers.torch_call]:
         # pytorch scripting does not support string devices
@@ -147,14 +148,17 @@ def test_array(object_in, dtype, from_numpy, device, call):
 
 
 # copy array
-@pytest.mark.parametrize(
-    "x", [[0.], [1], [True], [[1., 2.]]])
-@pytest.mark.parametrize(
-    "dtype", [None, 'float16', 'float32', 'float64', 'int8', 'int16', 'int32', 'int64', 'bool'])
-def test_copy_array(x, dtype, device, call):
+@given(
+    dtype_and_x = helpers.dtype_and_values(ivy_np.valid_dtype_strs),
+    from_numpy = st.booleans()
+)
+def test_copy_array(dtype_and_x, device, call,fw):
+    dtype,x=dtype_and_x
+    if fw == 'torch' and dtype in ['uint16', 'uint32', 'uint64']:
+        return
     if call in [helpers.mx_call] and dtype == 'int16':
         # mxnet does not support int16
-        pytest.skip()
+        return
     # smoke test
     x = ivy.array(x, dtype, device)
     ret = ivy.copy_array(x)
@@ -163,49 +167,54 @@ def test_copy_array(x, dtype, device, call):
     # cardinality test
     assert ret.shape == x.shape
     # value test
-    assert np.allclose(ivy.to_numpy(ret), ivy.to_numpy(x))
+    helpers.assert_all_close(ivy.to_numpy(ret), ivy.to_numpy(x))
     assert id(x) != id(ret)
     # compilation test
-    if call in [helpers.torch_call]:
-        # pytorch scripting does not support string devices
-        return
 
 
 # array_equal
-@pytest.mark.parametrize(
-    "x0_n_x1_n_res", [([0.], [0.], True), ([0.], [1.], False),
-                      ([[0.], [1.]], [[0.], [1.]], True),
-                      ([[0.], [1.]], [[1.], [2.]], False)])
-@pytest.mark.parametrize(
-    "dtype", [None, 'float16', 'float32', 'float64', 'int8', 'int16', 'int32', 'int64', 'bool'])
-def test_array_equal(x0_n_x1_n_res, dtype, device, call):
-    if call in [helpers.mx_call] and dtype in ['int16', 'bool']:
+@given(
+    x0_n_x1_n_res= helpers.dtype_and_values(ivy_np.valid_dtype_strs,n_arrays=2),
+    )
+def test_array_equal(x0_n_x1_n_res, device, call,fw):
+    dtype0, x0 = x0_n_x1_n_res[0][0], x0_n_x1_n_res[1][0]
+    dtype1,x1 = x0_n_x1_n_res[0][1], x0_n_x1_n_res[1][1]
+    if fw == 'torch' and (dtype0 in ['uint16', 'uint32', 'uint64'] or dtype1 in ['uint16', 'uint32', 'uint64']):
+        #torch does not support those dtypes
+        return
+    if call in [helpers.mx_call] and (dtype0 in ['int16', 'bool'] or dtype1 in ['int16', 'bool']):
         # mxnet does not support int16, and does not support bool for broadcast_equal method used
-        pytest.skip()
-    x0, x1, true_res = x0_n_x1_n_res
+        return
     # smoke test
-    x0 = ivy.array(x0, dtype, device)
-    x1 = ivy.array(x1, dtype, device)
+    x0 = ivy.array(x0, dtype=dtype0, device=device)
+    x1 = ivy.array(x1, dtype=dtype1, device=device)
     res = ivy.array_equal(x0, x1)
     # type test
     assert ivy.is_ivy_array(x0)
     assert ivy.is_ivy_array(x1)
     assert isinstance(res, bool) or ivy.is_ivy_array(res)
     # value test
-    assert res == true_res
+    assert res == np.array_equal(np.array(x0,dtype=dtype0) , np.array(x1,dtype=dtype1))
 
 
 # arrays_equal
-@pytest.mark.parametrize(
-    "xs_n_res", [([[[0.], [1.]], [[0.], [1.]], [[1.], [2.]]], False)])
-@pytest.mark.parametrize(
-    "dtype", ['float32'])
-def test_arrays_equal(xs_n_res, dtype, device, call):
-    xs, true_res = xs_n_res
+@given(
+    x0_n_x1_n_res= helpers.dtype_and_values(ivy_np.valid_dtype_strs,n_arrays=3)
+    )
+def test_arrays_equal(x0_n_x1_n_res, device, call,fw):
+    dtype0, x0 = x0_n_x1_n_res[0][0], x0_n_x1_n_res[1][0]
+    dtype1,x1 = x0_n_x1_n_res[0][1], x0_n_x1_n_res[1][1]
+    dtype2,x2 = x0_n_x1_n_res[0][2], x0_n_x1_n_res[1][2]
+    if fw == 'torch' and (dtype0 in ['uint16', 'uint32', 'uint64'] or dtype1 in ['uint16', 'uint32', 'uint64'] or dtype2 in ['uint16', 'uint32', 'uint64']):
+        #torch does not support those dtypes
+        return
+    if call in [helpers.mx_call] and (dtype0 in ['int16', 'bool'] or dtype1 in ['int16', 'bool']):
+        # mxnet does not support int16, and does not support bool for broadcast_equal method used
+        return    
     # smoke test
-    x0 = ivy.array(xs[0], dtype, device)
-    x1 = ivy.array(xs[1], dtype, device)
-    x2 = ivy.array(xs[2], dtype, device)
+    x0 = ivy.array(x0, dtype0, device)
+    x1 = ivy.array(x1, dtype1, device)
+    x2 = ivy.array(x2, dtype2, device)
     res = ivy.arrays_equal([x0, x1, x2])
     # type test
     assert ivy.is_ivy_array(x0)
@@ -213,31 +222,33 @@ def test_arrays_equal(xs_n_res, dtype, device, call):
     assert ivy.is_ivy_array(x2)
     assert isinstance(res, bool) or ivy.is_ivy_array(res)
     # value test
+    true_res = np.array_equal(ivy.to_numpy(x0), ivy.to_numpy(x1)) and np.array_equal(ivy.to_numpy(x0),ivy.to_numpy(x2)) and np.array_equal(ivy.to_numpy(x1),ivy.to_numpy(x2))
     assert res == true_res
 
 
 # to_numpy
-@pytest.mark.parametrize(
-    "object_in", [[], [0.], [1], [True], [[1., 2.]]])
-@pytest.mark.parametrize(
-    "dtype", [None, 'float16', 'float32', 'float64', 'int8', 'int16', 'int32', 'int64', 'bool'])
-@pytest.mark.parametrize(
-    "tensor_fn", [ivy.array])
-def test_to_numpy(object_in, dtype, tensor_fn, device, call):
+@given(
+    x0_n_x1_n_res= helpers.dtype_and_values(ivy_np.valid_dtype_strs)
+        )
+def test_to_numpy(x0_n_x1_n_res, device, call,fw):
+    dtype, object_in = x0_n_x1_n_res
+    if fw == 'torch' and (dtype in ['uint16', 'uint32', 'uint64']):
+        #torch does not support those dtypes
+        return    
     if call in [helpers.mx_call] and dtype == 'int16':
         # mxnet does not support int16
-        pytest.skip()
+        return
     if call in [helpers.tf_graph_call]:
         # to_numpy() requires eager execution
-        pytest.skip()
+        return
     # smoke test
-    ret = ivy.to_numpy(tensor_fn(object_in, dtype, device))
+    ret = ivy.to_numpy(ivy.array(object_in, dtype, device))
     # type test
     assert isinstance(ret, np.ndarray)
     # cardinality test
     assert ret.shape == np.array(object_in).shape
     # value test
-    assert np.allclose(ivy.to_numpy(tensor_fn(object_in, dtype, device)), np.array(object_in).astype(dtype))
+    helpers.assert_all_close(ret, np.array(object_in).astype(dtype))
     # compilation test
     if call in [helpers.torch_call]:
         # pytorch scripting does not support numpy conversion
@@ -363,18 +374,17 @@ def test_get_num_dims(object_in, dtype, as_tensor, tensor_fn, device, call):
 
 
 # minimum
-@pytest.mark.parametrize(
-    "xy", [([0.7], [0.5]), ([0.7], 0.5), (0.5, [0.7]), ([[0.8, 1.2], [1.5, 0.2]], [0., 1.])])
-@pytest.mark.parametrize(
-    "dtype", ['float32'])
-@pytest.mark.parametrize(
-    "tensor_fn", [ivy.array, helpers.var_fn])
+@given(
+    xy = st.sampled_from([([0.7], [0.5]), ([0.7], 0.5), (0.5, [0.7]), ([[0.8, 1.2], [1.5, 0.2]], [0., 1.])]),
+    dtype = st.sampled_from(['float32']),
+    tensor_fn = st.sampled_from([ivy.array, helpers.var_fn])
+)
 def test_minimum(xy, dtype, tensor_fn, device, call):
     # smoke test
     if (isinstance(xy[0], Number) or isinstance(xy[1], Number))\
             and tensor_fn == helpers.var_fn and call is helpers.mx_call:
         # mxnet does not support 0-dimensional variables
-        pytest.skip()
+        return
     x = tensor_fn(xy[0], dtype, device)
     y = tensor_fn(xy[1], dtype, device)
     ret = ivy.minimum(x, y)
@@ -390,18 +400,17 @@ def test_minimum(xy, dtype, tensor_fn, device, call):
 
 
 # maximum
-@pytest.mark.parametrize(
-    "xy", [([0.7], [0.5]), ([0.7], 0.5), (0.5, [0.7]), ([[0.8, 1.2], [1.5, 0.2]], [0., 1.])])
-@pytest.mark.parametrize(
-    "dtype", ['float32'])
-@pytest.mark.parametrize(
-    "tensor_fn", [ivy.array, helpers.var_fn])
+@given(
+    xy = st.sampled_from([([0.7], [0.5]), ([0.7], 0.5), (0.5, [0.7]), ([[0.8, 1.2], [1.5, 0.2]], [0., 1.])]),
+    dtype=st.sampled_from(['float32']),
+    tensor_fn = st.sampled_from([ivy.array, helpers.var_fn])
+)
 def test_maximum(xy, dtype, tensor_fn, device, call):
     # smoke test
     if (isinstance(xy[0], Number) or isinstance(xy[1], Number))\
             and tensor_fn == helpers.var_fn and call is helpers.mx_call:
         # mxnet does not support 0-dimensional variables
-        pytest.skip()
+        return
     x = tensor_fn(xy[0], dtype, device)
     y = tensor_fn(xy[1], dtype, device)
     ret = ivy.maximum(x, y)
@@ -417,26 +426,25 @@ def test_maximum(xy, dtype, tensor_fn, device, call):
 
 
 # clip
-@pytest.mark.parametrize(
-    "x_min_n_max", [(-0.5, 0., 1.5), ([1.7], [0.5], [1.1]), ([[0.8, 2.2], [1.5, 0.2]], 0.2, 1.4),
-                    ([[0.8, 2.2], [1.5, 0.2]], [[1., 1.], [1., 1.]], [[1.1, 2.], [1.1, 2.]])])
-@pytest.mark.parametrize(
-    "dtype", ['float32'])
-@pytest.mark.parametrize(
-    "tensor_fn", [ivy.array, helpers.var_fn])
+@given(
+    x_min_n_max = st.sampled_from([(-0.5, 0., 1.5), ([1.7], [0.5], [1.1]), ([[0.8, 2.2], [1.5, 0.2]], 0.2, 1.4),
+                    ([[0.8, 2.2], [1.5, 0.2]], [[1., 1.], [1., 1.]], [[1.1, 2.], [1.1, 2.]])]),
+    dtype = st.sampled_from(['float32']),
+    tensor_fn = st.sampled_from([ivy.array, helpers.var_fn])
+    )
 def test_clip(x_min_n_max, dtype, tensor_fn, device, call):
     # smoke test
     if (isinstance(x_min_n_max[0], Number) or isinstance(x_min_n_max[1], Number) or isinstance(x_min_n_max[2], Number))\
             and tensor_fn == helpers.var_fn and call is helpers.mx_call:
         # mxnet does not support 0-dimensional variables
-        pytest.skip()
+        return
     x = tensor_fn(x_min_n_max[0], dtype, device)
     min_val = tensor_fn(x_min_n_max[1], dtype, device)
     max_val = tensor_fn(x_min_n_max[2], dtype, device)
     if ((min_val.shape != [] and min_val.shape != [1]) or (max_val.shape != [] and max_val.shape != [1]))\
             and call in [helpers.mx_call]:
         # mxnet only supports numbers or 0 or 1 dimensional arrays for min and max while performing clip
-        pytest.skip()
+        return
     ret = ivy.clip(x, min_val, max_val)
     # type test
     assert ivy.is_ivy_array(ret)
