@@ -2924,8 +2924,8 @@ def test_container_pickle(device, call):
     # without module attribute
     cont = Container(dict_in)
     assert cont._local_ivy is None
-    pickled = cont.to_string_as_pickled()
-    cont_again = Container.from_string_as_pickled(pickled)
+    pickled = pickle.dumps(cont)
+    cont_again = pickle.loads(pickled)
     assert cont_again._local_ivy is None
     ivy.Container.identical_structure([cont, cont_again])
     ivy.Container.identical_configs([cont, cont_again])

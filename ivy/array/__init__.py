@@ -2,6 +2,7 @@
 import copy
 import functools
 from operator import mul
+import pickle
 
 # local
 from . import conversions
@@ -179,6 +180,25 @@ class Array(ArrayWithActivations, ArrayWithCreation, ArrayWithDataTypes, ArrayWi
     @_native_wrapper
     def __dir__(self):
         return self._data.__dir__()
+
+    @_native_wrapper
+    def __getstate__(self):
+        # remove _data for now and reconstruct it later
+        # jax is not picklable for some reason
+        state_dict = self.__dict__.copy()
+        state_dict["_data"] = pickle.dumps( state_dict["_data"] )
+        return state_dict
+
+    @_native_wrapper
+    def __setstate__(self, state):
+        self.__dict__ = state
+
+        # this is done because jax arrays when pickled and 
+        # then un-pickled return a numpy array instead of jax array
+        native_arr = ivy.to_native( ivy.array(pickle.loads(state["_data"])) )
+
+        # replace back the correct `_data` attribute
+        self.data = native_arr
 
     @_native_wrapper
     def __getattr__(self, item):
