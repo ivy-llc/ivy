@@ -9,56 +9,57 @@ import ivy
 from ivy.functional.backends.mxnet import _handle_flat_arrays_in_out
 
 
-DTYPE_TO_STR = {_np.dtype('int8'): 'int8',
-                _np.dtype('int16'): 'int16',
-                _np.dtype('int32'): 'int32',
-                _np.dtype('int64'): 'int64',
-                _np.dtype('uint8'): 'uint8',
-                _np.dtype('uint16'): 'uint16',
-                _np.dtype('uint32'): 'uint32',
-                _np.dtype('uint64'): 'uint64',
-                'bfloat16': 'bfloat16',
-                _np.dtype('float16'): 'float16',
-                _np.dtype('float32'): 'float32',
-                _np.dtype('float64'): 'float64',
-                _np.dtype('bool'): 'bool',
+DTYPE_TO_STR = {
+    _np.dtype("int8"): "int8",
+    _np.dtype("int16"): "int16",
+    _np.dtype("int32"): "int32",
+    _np.dtype("int64"): "int64",
+    _np.dtype("uint8"): "uint8",
+    _np.dtype("uint16"): "uint16",
+    _np.dtype("uint32"): "uint32",
+    _np.dtype("uint64"): "uint64",
+    "bfloat16": "bfloat16",
+    _np.dtype("float16"): "float16",
+    _np.dtype("float32"): "float32",
+    _np.dtype("float64"): "float64",
+    _np.dtype("bool"): "bool",
+    _np.int8: "int8",
+    _np.int16: "int16",
+    _np.int32: "int32",
+    _np.int64: "int64",
+    _np.uint8: "uint8",
+    _np.uint16: "uint16",
+    _np.uint32: "uint32",
+    _np.uint64: "uint64",
+    _np.float16: "float16",
+    _np.float32: "float32",
+    _np.float64: "float64",
+    _np.bool_: "bool",
+}
 
-                _np.int8: 'int8',
-                _np.int16: 'int16',
-                _np.int32: 'int32',
-                _np.int64: 'int64',
-                _np.uint8: 'uint8',
-                _np.uint16: 'uint16',
-                _np.uint32: 'uint32',
-                _np.uint64: 'uint64',
-                _np.float16: 'float16',
-                _np.float32: 'float32',
-                _np.float64: 'float64',
-                _np.bool_: 'bool'}
-
-DTYPE_FROM_STR = {'int8': _np.int8,
-                'int16': _np.int16,
-                'int32': _np.int32,
-                'int64': _np.int64,
-                'uint8': _np.uint8,
-                'uint16': _np.uint16,
-                'uint32': _np.uint32,
-                'uint64': _np.uint64,
-                'bfloat16': 'bfloat16',
-                'float16': _np.float16,
-                'float32': _np.float32,
-                'float64': _np.float64,
-                'bool': _np.bool_}
+DTYPE_FROM_STR = {
+    "int8": _np.int8,
+    "int16": _np.int16,
+    "int32": _np.int32,
+    "int64": _np.int64,
+    "uint8": _np.uint8,
+    "uint16": _np.uint16,
+    "uint32": _np.uint32,
+    "uint64": _np.uint64,
+    "bfloat16": "bfloat16",
+    "float16": _np.float16,
+    "float32": _np.float32,
+    "float64": _np.float64,
+    "bool": _np.bool_,
+}
 
 
 # noinspection PyShadowingBuiltins
-def iinfo(type: Union[type, str, mx.ndarray.ndarray.NDArray])\
-        -> np.iinfo:
+def iinfo(type: Union[type, str, mx.ndarray.ndarray.NDArray]) -> np.iinfo:
     return np.iinfo(ivy.dtype_from_str(type))
 
 
 class Finfo:
-
     def __init__(self, mx_finfo):
         self._mx_finfo = mx_finfo
 
@@ -84,9 +85,9 @@ class Finfo:
 
 
 # noinspection PyShadowingBuiltins
-def finfo(type: Union[type, str, mx.ndarray.ndarray.NDArray])\
-        -> Finfo:
+def finfo(type: Union[type, str, mx.ndarray.ndarray.NDArray]) -> Finfo:
     return Finfo(np.finfo(ivy.dtype_from_str(type)))
+
 
 def broadcast_to(x, new_shape):
     x_shape = list(x.shape)
@@ -95,7 +96,7 @@ def broadcast_to(x, new_shape):
     diff = num_shape_dims - num_x_dims
     if diff == 0:
         return mx.nd.broadcast_to(x, new_shape)
-    x = mx.nd.reshape(x, [1]*diff + x_shape)
+    x = mx.nd.reshape(x, [1] * diff + x_shape)
     return mx.nd.broadcast_to(x, new_shape)
 
 
@@ -106,10 +107,16 @@ def astype(x, dtype):
 
 def dtype_bits(dtype_in):
     dtype_str = dtype_to_str(dtype_in)
-    if 'bool' in dtype_str:
+    if "bool" in dtype_str:
         return 1
-    return int(dtype_str.replace("<class 'numpy.", '').replace("'>", '').replace('uint', '').replace(
-        'int', '').replace('bfloat', '').replace('float', ''))
+    return int(
+        dtype_str.replace("<class 'numpy.", "")
+        .replace("'>", "")
+        .replace("uint", "")
+        .replace("int", "")
+        .replace("bfloat", "")
+        .replace("float", "")
+    )
 
 
 def dtype(x, as_str=False):
