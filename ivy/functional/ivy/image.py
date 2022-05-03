@@ -51,7 +51,7 @@ def stack_images(images: List[Union[ivy.Array, ivy.Array, ivy.NativeArray]],
     return _cur_framework(images[0]).stack_images(images, desired_aspect_ratio)
 
 
-def bilinear_resample(x: List[Union[ivy.Array, ivy.NativeArray]], warp: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
+def bilinear_resample(x: Union[ivy.Array, ivy.NativeArray], warp: [Union[ivy.Array, ivy.NativeArray]]) -> ivy.Array:
     """
     Performs bilinearly re-sampling on input image.
 
@@ -70,11 +70,8 @@ def bilinear_resample(x: List[Union[ivy.Array, ivy.NativeArray]], warp: Union[iv
 
     Examples:
     >>> import ivy
-    >>> import numpy as np
-    >>> x = ivy.ones([1,2,2,3])
-    >>> warp = np.array([[[0,0],[1,1]]])
-    >>> res = ivy.bilinear_resample(x, warp)
-    >>> print(res)
+    >>> x = ivy.ones([1,2,3,4])
+    >>> warp = ivy.array([[0,0],[1,1]])
     [[[[1., 1., 1.],
         [1., 1., 1.]]]]
     """
