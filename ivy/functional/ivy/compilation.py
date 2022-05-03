@@ -13,9 +13,13 @@ from ivy.framework_handler import current_framework as _cur_framework
 # ------#
 
 # noinspection PyShadowingBuiltins
-def compile(func: Callable, dynamic: bool = True, example_inputs: Union[Any, Tuple[Any]] = None,
-            static_argnums: Union[int, Iterable[int]] = None, static_argnames: Union[int, Iterable[int]] = None)\
-        -> Callable:
+def compile(
+    func: Callable,
+    dynamic: bool = True,
+    example_inputs: Union[Any, Tuple[Any]] = None,
+    static_argnums: Union[int, Iterable[int]] = None,
+    static_argnames: Union[int, Iterable[int]] = None,
+) -> Callable:
     """Provide a function which should be compiled, for faster inference.
     The handle to the newly compiled function is returned.
 
@@ -39,4 +43,5 @@ def compile(func: Callable, dynamic: bool = True, example_inputs: Union[Any, Tup
 
     """
     return _cur_framework(example_inputs).compile(
-        func, dynamic, example_inputs, static_argnums, static_argnames)
+        func, dynamic, example_inputs, static_argnums, static_argnames
+    )
