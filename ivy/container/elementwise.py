@@ -10,12 +10,19 @@ from ivy.container.base import ContainerBase
 
 # noinspection PyMissingConstructor
 class ContainerWithElementwise(ContainerBase):
-
-    def abs(self: ivy.Container,
-            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-            to_apply: bool = True,
-            prune_unapplied: bool = False,
-            out: Optional[ivy.Container] = None) \
-            -> ivy.Container:
+    def abs(
+        self: ivy.Container,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
         return self.handle_inplace(
-            self.map(lambda x_, _: ivy.abs(x_) if ivy.is_array(x_) else x_, key_chains, to_apply, prune_unapplied), out)
+            self.map(
+                lambda x_, _: ivy.abs(x_) if ivy.is_array(x_) else x_,
+                key_chains,
+                to_apply,
+                prune_unapplied,
+            ),
+            out,
+        )
