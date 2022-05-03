@@ -127,7 +127,6 @@
 
 
 <div class="viewcode-block" id="Sequential"><a class="viewcode-back" href="../../../stateful/sequential/Sequential.html#ivy.stateful.sequential.Sequential">[docs]</a><span class="k">class</span> <span class="nc">Sequential</span><span class="p">(</span><span class="n">Module</span><span class="p">):</span>
-
 <div class="viewcode-block" id="Sequential.__init__"><a class="viewcode-back" href="../../../stateful/sequential/Sequential.html#ivy.stateful.sequential.Sequential.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">sub_modules</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        A sequential container. Modules will be added to it in the order they are passed in the constructor.</span>
@@ -142,11 +141,13 @@
         <span class="k">if</span> <span class="n">v</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">submod</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">sub_modules</span><span class="p">):</span>
                 <span class="k">try</span><span class="p">:</span>
-                    <span class="n">submod</span><span class="o">.</span><span class="n">v</span> <span class="o">=</span> <span class="n">v</span><span class="p">[</span><span class="s1">&#39;submodules&#39;</span><span class="p">][</span><span class="s1">&#39;v&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)]</span>
+                    <span class="n">submod</span><span class="o">.</span><span class="n">v</span> <span class="o">=</span> <span class="n">v</span><span class="p">[</span><span class="s2">&quot;submodules&quot;</span><span class="p">][</span><span class="s2">&quot;v&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)]</span>
                 <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
                     <span class="k">if</span> <span class="n">submod</span><span class="o">.</span><span class="n">v</span><span class="p">:</span>
-                        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;variables v passed to Sequential class must have key chains in the form of&#39;</span>
-                                        <span class="s1">&#39;&quot;submodules/v</span><span class="si">{}</span><span class="s1">&quot;, where </span><span class="si">{}</span><span class="s1"> is an idx&#39;</span><span class="p">)</span>
+                        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span>
+                            <span class="s2">&quot;variables v passed to Sequential class must have key chains in the form of&quot;</span>
+                            <span class="s1">&#39;&quot;submodules/v</span><span class="si">{}</span><span class="s1">&quot;, where </span><span class="si">{}</span><span class="s1"> is an idx&#39;</span>
+                        <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_submodules</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">sub_modules</span><span class="p">)</span>
         <span class="n">Module</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span></div>
 
@@ -161,11 +162,13 @@
         <span class="n">x</span> <span class="o">=</span> <span class="n">inputs</span>
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">submod</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_submodules</span><span class="p">):</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="n">x</span> <span class="o">=</span> <span class="n">submod</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">submodules</span><span class="p">[</span><span class="s1">&#39;v&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)])</span>
+                <span class="n">x</span> <span class="o">=</span> <span class="n">submod</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">submodules</span><span class="p">[</span><span class="s2">&quot;v&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)])</span>
             <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">submod</span><span class="o">.</span><span class="n">v</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;variables v passed to Sequential class must have key chains in the form of&#39;</span>
-                                    <span class="s1">&#39;&quot;submodules/v</span><span class="si">{}</span><span class="s1">&quot;, where </span><span class="si">{}</span><span class="s1"> is an idx&#39;</span><span class="p">)</span>
+                    <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span>
+                        <span class="s2">&quot;variables v passed to Sequential class must have key chains in the form of&quot;</span>
+                        <span class="s1">&#39;&quot;submodules/v</span><span class="si">{}</span><span class="s1">&quot;, where </span><span class="si">{}</span><span class="s1"> is an idx&#39;</span>
+                    <span class="p">)</span>
                 <span class="n">x</span> <span class="o">=</span> <span class="n">submod</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">x</span></div>
 </pre></div>

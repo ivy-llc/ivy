@@ -126,8 +126,15 @@
 <span class="kn">from</span> <span class="nn">ivy.framework_handler</span> <span class="kn">import</span> <span class="n">current_framework</span> <span class="k">as</span> <span class="n">_cur_framework</span>
 
 
-<div class="viewcode-block" id="to_ivy_module"><a class="viewcode-back" href="../../../stateful/converters/to_ivy_module.html#ivy.stateful.converters.to_ivy_module">[docs]</a><span class="k">def</span> <span class="nf">to_ivy_module</span><span class="p">(</span><span class="n">native_module</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">native_module_class</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">devices</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                  <span class="n">inplace_update</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="to_ivy_module"><a class="viewcode-back" href="../../../stateful/converters/to_ivy_module.html#ivy.stateful.converters.to_ivy_module">[docs]</a><span class="k">def</span> <span class="nf">to_ivy_module</span><span class="p">(</span>
+    <span class="n">native_module</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">native_module_class</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">args</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">kwargs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">device</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">devices</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">inplace_update</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+<span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Convert an instance of a trainable module from a native framework into a trainable ivy.Module instance.</span>
 
@@ -149,7 +156,15 @@
 <span class="sd">    :type inplace_update: bool, optional</span>
 <span class="sd">    :return: The new trainable ivy.Module instance.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">()</span><span class="o">.</span><span class="n">to_ivy_module</span><span class="p">(</span><span class="n">native_module</span><span class="p">,</span> <span class="n">native_module_class</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">devices</span><span class="p">,</span> <span class="n">inplace_update</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">()</span><span class="o">.</span><span class="n">to_ivy_module</span><span class="p">(</span>
+        <span class="n">native_module</span><span class="p">,</span>
+        <span class="n">native_module_class</span><span class="p">,</span>
+        <span class="n">args</span><span class="p">,</span>
+        <span class="n">kwargs</span><span class="p">,</span>
+        <span class="n">device</span><span class="p">,</span>
+        <span class="n">devices</span><span class="p">,</span>
+        <span class="n">inplace_update</span><span class="p">,</span>
+    <span class="p">)</span></div>
 </pre></div>
 
            </div>

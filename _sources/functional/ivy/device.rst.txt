@@ -49,10 +49,10 @@ Device
    device/dev_unify_nest.rst
    device/DefaultDevice:
     """ """
+
     # noinspection PyShadowingNames
     def __init__.rst
    device/MultiDev:
-
     def __init__.rst
    device/MultiDevItem.rst
    device/MultiDevIter.rst

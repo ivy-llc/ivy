@@ -14,17 +14,14 @@ Initializers
    :caption: Initializers
 
    initializers/Constant:
-
     def __init__.rst
    initializers/Zeros.rst
    initializers/Ones.rst
    initializers/Uniform:
-
     def __init__.rst
    initializers/GlorotUniform.rst
    initializers/FirstLayerSiren.rst
    initializers/Siren.rst
    initializers/KaimingNormal:
-
     def __init__.rst
 

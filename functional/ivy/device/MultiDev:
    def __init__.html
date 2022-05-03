@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>arange &mdash; Ivy 1.0 documentation</title>
+  <title>&lt;no title&gt; &mdash; Ivy 1.0 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
@@ -16,12 +16,9 @@
         <script src="../../../_static/jquery.js"></script>
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/doctools.js"></script>
-        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
-    <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="asarray" href="asarray.html" />
-    <link rel="prev" title="Creation" href="../creation.html" /> 
+    <link rel="search" title="Search" href="../../../search.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -48,30 +45,11 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">Contributing</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Functional</span></p>
-<ul class="current">
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../activations.html">Activations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../compilation.html">Compilation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../constants.html">Constants</a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="../creation.html">Creation</a><ul class="current">
-<li class="toctree-l2 current"><a class="current reference internal" href="#">arange</a></li>
-<li class="toctree-l2"><a class="reference internal" href="asarray.html">asarray</a></li>
-<li class="toctree-l2"><a class="reference internal" href="zeros.html">zeros</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ones.html">ones</a></li>
-<li class="toctree-l2"><a class="reference internal" href="full_like.html">full_like</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ones_like.html">ones_like</a></li>
-<li class="toctree-l2"><a class="reference internal" href="zeros_like.html">zeros_like</a></li>
-<li class="toctree-l2"><a class="reference internal" href="tril.html">tril</a></li>
-<li class="toctree-l2"><a class="reference internal" href="triu.html">triu</a></li>
-<li class="toctree-l2"><a class="reference internal" href="empty.html">empty</a></li>
-<li class="toctree-l2"><a class="reference internal" href="empty_like.html">empty_like</a></li>
-<li class="toctree-l2"><a class="reference internal" href="eye.html">eye</a></li>
-<li class="toctree-l2"><a class="reference internal" href="linspace.html">linspace</a></li>
-<li class="toctree-l2"><a class="reference internal" href="meshgrid.html">meshgrid</a></li>
-<li class="toctree-l2"><a class="reference internal" href="full.html">full</a></li>
-<li class="toctree-l2"><a class="reference internal" href="from_dlpack.html">from_dlpack</a></li>
-<li class="toctree-l2"><a class="reference internal" href="logspace.html">logspace</a></li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="../creation.html">Creation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../data_type.html">Data type</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../device.html">Device</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../elementwise.html">Elementwise</a></li>
@@ -130,11 +108,10 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="../../ivy.html">&lt;no title&gt;</a> &raquo;</li>
-          <li><a href="../creation.html">Creation</a> &raquo;</li>
-      <li>arange</li>
+      <li>&lt;no title&gt;</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../../../_sources/functional/ivy/creation/arange.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../../_sources/functional/ivy/device/MultiDev:
+    def __init__.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -142,49 +119,21 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="arange">
-<h1>arange<a class="headerlink" href="#arange" title="Permalink to this headline"></a></h1>
-<dl class="py function">
-<dt class="sig sig-object py" id="ivy.functional.ivy.creation.arange">
-<span class="sig-prename descclassname"><span class="pre">ivy.functional.ivy.creation.</span></span><span class="sig-name descname"><span class="pre">arange</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/creation.html#arange"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.creation.arange" title="Permalink to this definition"></a></dt>
-<dd><p>Returns evenly spaced values within a given interval, with the spacing being specified.</p>
-<p>Values are generated within the half-open interval [start, stop) (in other words, the interval including start but
-excluding stop). For integer arguments the function is equivalent to the Python built-in range function,
-but returns an array in the chosen ml_framework rather than a list.</p>
-<p>See <span class="math notranslate nohighlight">\(linspace\)</span> for a certain number of evenly spaced values in an interval.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>start</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Number</span></code>) – if stop is specified, the start of interval (inclusive); otherwise, the end of the interval (exclusive). If stop is not specified, the default starting value is 0.</p></li>
-<li><p><strong>stop</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Number</span></code>]) – the end of the interval. Default: None. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
-<li><p><strong>step</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Number</span></code>) – the distance between two adjacent elements (out[i+1] - out[i]). Must not be 0; may be negative, this results in an empty array if stop &gt;= start. Default: 1. (default: <code class="docutils literal notranslate"><span class="pre">1</span></code>)</p></li>
-<li><p><strong>dtype</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Dtype</span></code>]) – output array data type. If dtype is None, the output array data type must be inferred from start, stop and step. If those are all integers, the output array dtype must be the default integer dtype; if one or more have type float, then the output array dtype must be the default floating-point data type. Default: None. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
-<li><p><strong>device</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Device</span></code>]) – device on which to place the created array. Default: None. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
-</ul>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]</p>
-</dd>
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><em>ret</em> – a one-dimensional array containing evenly spaced values. The length of the output array must be ceil((stop-start)/step) if stop - start and step have the same sign, and length 0 otherwise.</p>
+  <dl class="simple">
+<dt>MultiDev:</dt><dd><p>def __init__</p>
 </dd>
 </dl>
-</dd></dl>
-
+<hr class="docutils" />
 <div class="line-block">
 <div class="line"><br /></div>
 <div class="line"><strong>Supported Frameworks:</strong></div>
 </div>
 <p><a class="reference internal" href="../../../_images/empty.png"><img alt="empty" src="../../../_images/empty.png" style="width: 4%;" /></a> <a class="reference external" href="https://jax.readthedocs.io"><img alt="jax_logo" src="../../../_images/jax_logo.png" style="width: 14%;" /></a> <a class="reference internal" href="../../../_images/empty.png"><img alt="empty" src="../../../_images/empty.png" style="width: 4%;" /></a> <a class="reference external" href="https://www.tensorflow.org"><img alt="tf_logo" src="../../../_images/tensorflow_logo.png" style="width: 14%;" /></a> <a class="reference internal" href="../../../_images/empty.png"><img alt="empty" src="../../../_images/empty.png" style="width: 4%;" /></a> <a class="reference external" href="https://pytorch.org"><img alt="pytorch_logo" src="../../../_images/pytorch_logo.png" style="width: 14%;" /></a> <a class="reference internal" href="../../../_images/empty.png"><img alt="empty" src="../../../_images/empty.png" style="width: 4%;" /></a> <a class="reference external" href="https://mxnet.apache.org"><img alt="mxnet_logo" src="../../../_images/mxnet_logo.png" style="width: 14%;" /></a> <a class="reference internal" href="../../../_images/empty.png"><img alt="empty" src="../../../_images/empty.png" style="width: 4%;" /></a> <a class="reference external" href="https://numpy.org"><img alt="numpy_logo" src="../../../_images/numpy_logo.png" style="width: 14%;" /></a> <a class="reference internal" href="../../../_images/empty.png"><img alt="empty" src="../../../_images/empty.png" style="width: 4%;" /></a></p>
-</section>
 
 
            </div>
           </div>
-          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="../creation.html" class="btn btn-neutral float-left" title="Creation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="asarray.html" class="btn btn-neutral float-right" title="asarray" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-    </div>
+          <footer>
 
   <hr/>
 

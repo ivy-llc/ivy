@@ -125,8 +125,8 @@
 <span class="c1"># Constant #</span>
 <span class="c1"># ---------#</span>
 
-<div class="viewcode-block" id="Constant"><a class="viewcode-back" href="../../../stateful/initializers.html#ivy.stateful.initializers.Constant">[docs]</a><span class="k">class</span> <span class="nc">Constant</span><span class="p">:</span>
 
+<div class="viewcode-block" id="Constant"><a class="viewcode-back" href="../../../stateful/initializers.html#ivy.stateful.initializers.Constant">[docs]</a><span class="k">class</span> <span class="nc">Constant</span><span class="p">:</span>
 <div class="viewcode-block" id="Constant.__init__"><a class="viewcode-back" href="../../../stateful/initializers.html#ivy.stateful.initializers.Constant.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">constant</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_constant</span> <span class="o">=</span> <span class="n">constant</span></div>
 
@@ -138,25 +138,25 @@
 
 
 <div class="viewcode-block" id="Zeros"><a class="viewcode-back" href="../../../stateful/initializers/Zeros.html#ivy.stateful.initializers.Zeros">[docs]</a><span class="k">class</span> <span class="nc">Zeros</span><span class="p">(</span><span class="n">Constant</span><span class="p">):</span>
-
 <div class="viewcode-block" id="Zeros.__init__"><a class="viewcode-back" href="../../../stateful/initializers/Zeros.html#ivy.stateful.initializers.Zeros.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="mf">0.</span><span class="p">)</span></div></div>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="mf">0.0</span><span class="p">)</span></div></div>
 
 
 <div class="viewcode-block" id="Ones"><a class="viewcode-back" href="../../../stateful/initializers/Ones.html#ivy.stateful.initializers.Ones">[docs]</a><span class="k">class</span> <span class="nc">Ones</span><span class="p">(</span><span class="n">Constant</span><span class="p">):</span>
-
 <div class="viewcode-block" id="Ones.__init__"><a class="viewcode-back" href="../../../stateful/initializers/Ones.html#ivy.stateful.initializers.Ones.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="mf">1.</span><span class="p">)</span></div></div>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span></div></div>
 
 
 <span class="c1"># Uniform #</span>
 <span class="c1"># --------#</span>
 
-<div class="viewcode-block" id="Uniform"><a class="viewcode-back" href="../../../stateful/initializers.html#ivy.stateful.initializers.Uniform">[docs]</a><span class="k">class</span> <span class="nc">Uniform</span><span class="p">:</span>
 
+<div class="viewcode-block" id="Uniform"><a class="viewcode-back" href="../../../stateful/initializers.html#ivy.stateful.initializers.Uniform">[docs]</a><span class="k">class</span> <span class="nc">Uniform</span><span class="p">:</span>
 <div class="viewcode-block" id="Uniform.__init__"><a class="viewcode-back" href="../../../stateful/initializers.html#ivy.stateful.initializers.Uniform.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">numerator</span><span class="p">,</span> <span class="n">fan_mode</span><span class="p">,</span> <span class="n">power</span><span class="p">,</span> <span class="n">gain</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">fan_mode</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;fan_in&#39;</span><span class="p">,</span> <span class="s1">&#39;fan_out&#39;</span><span class="p">,</span> <span class="s1">&#39;fan_sum&#39;</span><span class="p">,</span> <span class="s1">&#39;fan_avg&#39;</span><span class="p">]:</span>
-            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;Invalid fan mode, must be one of [ fan_in | fan_out | fan_sum | fan_avg ]&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">fan_mode</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;fan_in&quot;</span><span class="p">,</span> <span class="s2">&quot;fan_out&quot;</span><span class="p">,</span> <span class="s2">&quot;fan_sum&quot;</span><span class="p">,</span> <span class="s2">&quot;fan_avg&quot;</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span>
+                <span class="s2">&quot;Invalid fan mode, must be one of [ fan_in | fan_out | fan_sum | fan_avg ]&quot;</span>
+            <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_numerator</span> <span class="o">=</span> <span class="n">numerator</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_fan_mode</span> <span class="o">=</span> <span class="n">fan_mode</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_power</span> <span class="o">=</span> <span class="n">power</span>
@@ -166,85 +166,108 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create internal variables for the layer</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fan_mode</span> <span class="o">==</span> <span class="s1">&#39;fan_in&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fan_mode</span> <span class="o">==</span> <span class="s2">&quot;fan_in&quot;</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">fan_in</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;input_channels must be specified for fan_in denominator mode.&#39;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span>
+                    <span class="s2">&quot;input_channels must be specified for fan_in denominator mode.&quot;</span>
+                <span class="p">)</span>
             <span class="n">fan</span> <span class="o">=</span> <span class="n">fan_in</span>
-        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fan_mode</span> <span class="o">==</span> <span class="s1">&#39;fan_out&#39;</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fan_mode</span> <span class="o">==</span> <span class="s2">&quot;fan_out&quot;</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">fan_in</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;output_channels must be specified for fan_out denominator mode.&#39;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span>
+                    <span class="s2">&quot;output_channels must be specified for fan_out denominator mode.&quot;</span>
+                <span class="p">)</span>
             <span class="n">fan</span> <span class="o">=</span> <span class="n">fan_out</span>
-        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fan_mode</span> <span class="o">==</span> <span class="s1">&#39;fan_sum&#39;</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fan_mode</span> <span class="o">==</span> <span class="s2">&quot;fan_sum&quot;</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">fan_in</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">fan_out</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;input_channels and output_channels must both be specified for&#39;</span>
-                                <span class="s1">&#39;fan_sum denominator mode.&#39;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span>
+                    <span class="s2">&quot;input_channels and output_channels must both be specified for&quot;</span>
+                    <span class="s2">&quot;fan_sum denominator mode.&quot;</span>
+                <span class="p">)</span>
             <span class="n">fan</span> <span class="o">=</span> <span class="n">fan_in</span> <span class="o">+</span> <span class="n">fan_out</span>
-        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fan_mode</span> <span class="o">==</span> <span class="s1">&#39;fan_avg&#39;</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fan_mode</span> <span class="o">==</span> <span class="s2">&quot;fan_avg&quot;</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">fan_in</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">fan_out</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;input_channels and output_channels must both be specified for&#39;</span>
-                                <span class="s1">&#39;fan_avg denominator mode.&#39;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span>
+                    <span class="s2">&quot;input_channels and output_channels must both be specified for&quot;</span>
+                    <span class="s2">&quot;fan_avg denominator mode.&quot;</span>
+                <span class="p">)</span>
             <span class="n">fan</span> <span class="o">=</span> <span class="p">(</span><span class="n">fan_in</span> <span class="o">+</span> <span class="n">fan_out</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;Invalid denominator mode, must be one of [ fan_in | fan_out | fan_sum | fan_avg ]&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span>
+                <span class="s2">&quot;Invalid denominator mode, must be one of [ fan_in | fan_out | fan_sum | fan_avg ]&quot;</span>
+            <span class="p">)</span>
         <span class="n">wlim</span> <span class="o">=</span> <span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">_numerator</span> <span class="o">/</span> <span class="n">fan</span><span class="p">)</span> <span class="o">**</span> <span class="bp">self</span><span class="o">.</span><span class="n">_power</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_gain</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">variable</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">random_uniform</span><span class="p">(</span><span class="o">-</span><span class="n">wlim</span><span class="p">,</span> <span class="n">wlim</span><span class="p">,</span> <span class="n">var_shape</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">))</span></div></div>
 
 
 <div class="viewcode-block" id="GlorotUniform"><a class="viewcode-back" href="../../../stateful/initializers/GlorotUniform.html#ivy.stateful.initializers.GlorotUniform">[docs]</a><span class="k">class</span> <span class="nc">GlorotUniform</span><span class="p">(</span><span class="n">Uniform</span><span class="p">):</span>
-
 <div class="viewcode-block" id="GlorotUniform.__init__"><a class="viewcode-back" href="../../../stateful/initializers/GlorotUniform.html#ivy.stateful.initializers.GlorotUniform.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="s1">&#39;fan_sum&#39;</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span></div></div>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="s2">&quot;fan_sum&quot;</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span></div></div>
 
 
 <div class="viewcode-block" id="FirstLayerSiren"><a class="viewcode-back" href="../../../stateful/initializers/FirstLayerSiren.html#ivy.stateful.initializers.FirstLayerSiren">[docs]</a><span class="k">class</span> <span class="nc">FirstLayerSiren</span><span class="p">(</span><span class="n">Uniform</span><span class="p">):</span>
-
 <div class="viewcode-block" id="FirstLayerSiren.__init__"><a class="viewcode-back" href="../../../stateful/initializers/FirstLayerSiren.html#ivy.stateful.initializers.FirstLayerSiren.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;fan_in&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span></div></div>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;fan_in&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span></div></div>
 
 
 <div class="viewcode-block" id="Siren"><a class="viewcode-back" href="../../../stateful/initializers/Siren.html#ivy.stateful.initializers.Siren">[docs]</a><span class="k">class</span> <span class="nc">Siren</span><span class="p">(</span><span class="n">Uniform</span><span class="p">):</span>
-
 <div class="viewcode-block" id="Siren.__init__"><a class="viewcode-back" href="../../../stateful/initializers/Siren.html#ivy.stateful.initializers.Siren.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">w0</span><span class="o">=</span><span class="mi">30</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="s1">&#39;fan_in&#39;</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="n">w0</span><span class="p">)</span></div></div>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="s2">&quot;fan_in&quot;</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">w0</span><span class="p">)</span></div></div>
 
 
 <span class="c1"># Gaussian #</span>
 <span class="c1"># ---------#</span>
 
-<div class="viewcode-block" id="KaimingNormal"><a class="viewcode-back" href="../../../stateful/initializers.html#ivy.stateful.initializers.KaimingNormal">[docs]</a><span class="k">class</span> <span class="nc">KaimingNormal</span><span class="p">:</span>
 
-<div class="viewcode-block" id="KaimingNormal.__init__"><a class="viewcode-back" href="../../../stateful/initializers.html#ivy.stateful.initializers.KaimingNormal.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mean</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">fan_mode</span><span class="o">=</span><span class="s1">&#39;fan_in&#39;</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">fan_mode</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;fan_in&#39;</span><span class="p">,</span> <span class="s1">&#39;fan_out&#39;</span><span class="p">,</span> <span class="s1">&#39;fan_sum&#39;</span><span class="p">,</span> <span class="s1">&#39;fan_avg&#39;</span><span class="p">]:</span>
-            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;Invalid fan mode, must be one of [ fan_in | fan_out | fan_sum | fan_avg ]&#39;</span><span class="p">)</span>
+<div class="viewcode-block" id="KaimingNormal"><a class="viewcode-back" href="../../../stateful/initializers.html#ivy.stateful.initializers.KaimingNormal">[docs]</a><span class="k">class</span> <span class="nc">KaimingNormal</span><span class="p">:</span>
+<div class="viewcode-block" id="KaimingNormal.__init__"><a class="viewcode-back" href="../../../stateful/initializers.html#ivy.stateful.initializers.KaimingNormal.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mean</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">fan_mode</span><span class="o">=</span><span class="s2">&quot;fan_in&quot;</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">fan_mode</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;fan_in&quot;</span><span class="p">,</span> <span class="s2">&quot;fan_out&quot;</span><span class="p">,</span> <span class="s2">&quot;fan_sum&quot;</span><span class="p">,</span> <span class="s2">&quot;fan_avg&quot;</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span>
+                <span class="s2">&quot;Invalid fan mode, must be one of [ fan_in | fan_out | fan_sum | fan_avg ]&quot;</span>
+            <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_mean</span> <span class="o">=</span> <span class="n">mean</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_fan_mode</span> <span class="o">=</span> <span class="n">fan_mode</span></div>
 
-<div class="viewcode-block" id="KaimingNormal.create_variables"><a class="viewcode-back" href="../../../stateful/initializers.html#ivy.stateful.initializers.KaimingNormal.create_variables">[docs]</a>    <span class="k">def</span> <span class="nf">create_variables</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">var_shape</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">fan_out</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fan_in</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">negative_slope</span><span class="o">=</span><span class="mf">0.</span><span class="p">):</span>
+<div class="viewcode-block" id="KaimingNormal.create_variables"><a class="viewcode-back" href="../../../stateful/initializers.html#ivy.stateful.initializers.KaimingNormal.create_variables">[docs]</a>    <span class="k">def</span> <span class="nf">create_variables</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">var_shape</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">fan_out</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fan_in</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">negative_slope</span><span class="o">=</span><span class="mf">0.0</span>
+    <span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create internal variables for the layer</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fan_mode</span> <span class="o">==</span> <span class="s1">&#39;fan_in&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fan_mode</span> <span class="o">==</span> <span class="s2">&quot;fan_in&quot;</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">fan_in</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;input_channels must be specified for fan_in denominator mode.&#39;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span>
+                    <span class="s2">&quot;input_channels must be specified for fan_in denominator mode.&quot;</span>
+                <span class="p">)</span>
             <span class="n">fan</span> <span class="o">=</span> <span class="n">fan_in</span>
-        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fan_mode</span> <span class="o">==</span> <span class="s1">&#39;fan_out&#39;</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fan_mode</span> <span class="o">==</span> <span class="s2">&quot;fan_out&quot;</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">fan_in</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;output_channels must be specified for fan_out denominator mode.&#39;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span>
+                    <span class="s2">&quot;output_channels must be specified for fan_out denominator mode.&quot;</span>
+                <span class="p">)</span>
             <span class="n">fan</span> <span class="o">=</span> <span class="n">fan_out</span>
-        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fan_mode</span> <span class="o">==</span> <span class="s1">&#39;fan_sum&#39;</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fan_mode</span> <span class="o">==</span> <span class="s2">&quot;fan_sum&quot;</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">fan_in</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">fan_out</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;input_channels and output_channels must both be specified for&#39;</span>
-                                <span class="s1">&#39;fan_sum denominator mode.&#39;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span>
+                    <span class="s2">&quot;input_channels and output_channels must both be specified for&quot;</span>
+                    <span class="s2">&quot;fan_sum denominator mode.&quot;</span>
+                <span class="p">)</span>
             <span class="n">fan</span> <span class="o">=</span> <span class="n">fan_in</span> <span class="o">+</span> <span class="n">fan_out</span>
-        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fan_mode</span> <span class="o">==</span> <span class="s1">&#39;fan_avg&#39;</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fan_mode</span> <span class="o">==</span> <span class="s2">&quot;fan_avg&quot;</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">fan_in</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">fan_out</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;input_channels and output_channels must both be specified for&#39;</span>
-                                <span class="s1">&#39;fan_avg denominator mode.&#39;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span>
+                    <span class="s2">&quot;input_channels and output_channels must both be specified for&quot;</span>
+                    <span class="s2">&quot;fan_avg denominator mode.&quot;</span>
+                <span class="p">)</span>
             <span class="n">fan</span> <span class="o">=</span> <span class="p">(</span><span class="n">fan_in</span> <span class="o">+</span> <span class="n">fan_out</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;Invalid denominator mode, must be one of [ fan_in | fan_out | fan_sum | fan_avg ]&#39;</span><span class="p">)</span>
-        <span class="n">std</span> <span class="o">=</span> <span class="p">(</span><span class="mi">2</span><span class="o">/</span><span class="p">((</span><span class="mi">1</span><span class="o">+</span><span class="n">negative_slope</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">*</span><span class="n">fan</span><span class="p">))</span> <span class="o">**</span> <span class="mf">0.5</span>
-        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">variable</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">random_normal</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_mean</span><span class="p">,</span> <span class="n">std</span><span class="p">,</span> <span class="n">var_shape</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">))</span></div></div>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span>
+                <span class="s2">&quot;Invalid denominator mode, must be one of [ fan_in | fan_out | fan_sum | fan_avg ]&quot;</span>
+            <span class="p">)</span>
+        <span class="n">std</span> <span class="o">=</span> <span class="p">(</span><span class="mi">2</span> <span class="o">/</span> <span class="p">((</span><span class="mi">1</span> <span class="o">+</span> <span class="n">negative_slope</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="n">fan</span><span class="p">))</span> <span class="o">**</span> <span class="mf">0.5</span>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">variable</span><span class="p">(</span>
+            <span class="n">ivy</span><span class="o">.</span><span class="n">random_normal</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_mean</span><span class="p">,</span> <span class="n">std</span><span class="p">,</span> <span class="n">var_shape</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">)</span>
+        <span class="p">)</span></div></div>
 </pre></div>
 
            </div>

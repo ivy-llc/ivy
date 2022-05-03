@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ivy.verbosity &mdash; Ivy 1.0 documentation</title>
+  <title>&lt;no title&gt; &mdash; Ivy 1.0 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
@@ -71,14 +72,14 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Stateful</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../stateful/activations.html">Activations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../stateful/converters.html">Converters</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../stateful/initializers.html">Initializers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../stateful/layers.html">Layers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../stateful/module.html">Module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../stateful/norms.html">Norms</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../stateful/optimizers.html">Optimizers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../stateful/sequential.html">Sequential</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../converters.html">Converters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../initializers.html">Initializers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../module.html">Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../optimizers.html">Optimizers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../sequential.html">Sequential</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Docs</span></p>
 <ul>
@@ -107,9 +108,10 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="../index.html">Module code</a> &raquo;</li>
-      <li>ivy.verbosity</li>
+      <li>&lt;no title&gt;</li>
       <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/stateful/initializers/KaimingNormal:
+    def __init__.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -117,15 +119,17 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <h1>Source code for ivy.verbosity</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">termcolor</span>
+  <dl class="simple">
+<dt>KaimingNormal:</dt><dd><p>def __init__</p>
+</dd>
+</dl>
+<hr class="docutils" />
+<div class="line-block">
+<div class="line"><br /></div>
+<div class="line"><strong>Supported Frameworks:</strong></div>
+</div>
+<p><a class="reference internal" href="../../_images/empty.png"><img alt="empty" src="../../_images/empty.png" style="width: 4%;" /></a> <a class="reference external" href="https://jax.readthedocs.io"><img alt="jax_logo" src="../../_images/jax_logo.png" style="width: 14%;" /></a> <a class="reference internal" href="../../_images/empty.png"><img alt="empty" src="../../_images/empty.png" style="width: 4%;" /></a> <a class="reference external" href="https://www.tensorflow.org"><img alt="tf_logo" src="../../_images/tensorflow_logo.png" style="width: 14%;" /></a> <a class="reference internal" href="../../_images/empty.png"><img alt="empty" src="../../_images/empty.png" style="width: 4%;" /></a> <a class="reference external" href="https://pytorch.org"><img alt="pytorch_logo" src="../../_images/pytorch_logo.png" style="width: 14%;" /></a> <a class="reference internal" href="../../_images/empty.png"><img alt="empty" src="../../_images/empty.png" style="width: 4%;" /></a> <a class="reference external" href="https://mxnet.apache.org"><img alt="mxnet_logo" src="../../_images/mxnet_logo.png" style="width: 14%;" /></a> <a class="reference internal" href="../../_images/empty.png"><img alt="empty" src="../../_images/empty.png" style="width: 4%;" /></a> <a class="reference external" href="https://numpy.org"><img alt="numpy_logo" src="../../_images/numpy_logo.png" style="width: 14%;" /></a> <a class="reference internal" href="../../_images/empty.png"><img alt="empty" src="../../_images/empty.png" style="width: 4%;" /></a></p>
 
-<span class="n">level</span> <span class="o">=</span> <span class="mi">0</span>
-
-
-<div class="viewcode-block" id="cprint"><a class="viewcode-back" href="../../verbosity/cprint.html#ivy.verbosity.cprint">[docs]</a><span class="k">def</span> <span class="nf">cprint</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;green&quot;</span><span class="p">):</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">termcolor</span><span class="o">.</span><span class="n">colored</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="n">color</span><span class="p">))</span></div>
-</pre></div>
 
            </div>
           </div>

@@ -134,8 +134,10 @@
 
 <span class="n">with_grads_stack</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
 
+
 <div class="viewcode-block" id="GradientTracking"><a class="viewcode-back" href="../../../../functional/ivy/gradients.html#ivy.functional.ivy.gradients.GradientTracking">[docs]</a><span class="k">class</span> <span class="nc">GradientTracking</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot; &quot;&quot;&quot;</span>
+
     <span class="c1"># noinspection PyShadowingNames</span>
 <div class="viewcode-block" id="GradientTracking.__init__"><a class="viewcode-back" href="../../../../functional/ivy/gradients.html#ivy.functional.ivy.gradients.GradientTracking.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">with_grads</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_with_grads</span> <span class="o">=</span> <span class="n">with_grads</span></div>
@@ -148,6 +150,7 @@
         <span class="n">unset_with_grads</span><span class="p">()</span>
         <span class="k">return</span> <span class="bp">self</span></div>
 
+
 <span class="c1"># Gradient Mode #</span>
 
 <span class="c1"># noinspection PyShadowingNames</span>
@@ -156,7 +159,7 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    with_grads </span>
+<span class="sd">    with_grads</span>
 <span class="sd">         (Default value = None)</span>
 
 <span class="sd">    Returns</span>
@@ -179,7 +182,7 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    with_grads </span>
+<span class="sd">    with_grads</span>
 
 
 <span class="sd">    Returns</span>
@@ -200,13 +203,13 @@
 
 <span class="c1"># Variables #</span>
 
-<div class="viewcode-block" id="variable"><a class="viewcode-back" href="../../../../functional/ivy/gradients/variable.html#ivy.functional.ivy.gradients.variable">[docs]</a><span class="k">def</span> <span class="nf">variable</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">])</span>\
-        <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Variable</span><span class="p">:</span>
+
+<div class="viewcode-block" id="variable"><a class="viewcode-back" href="../../../../functional/ivy/gradients/variable.html#ivy.functional.ivy.gradients.variable">[docs]</a><span class="k">def</span> <span class="nf">variable</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Variable</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Creates a variable, which supports gradient computation.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    x </span>
+<span class="sd">    x</span>
 <span class="sd">        An ivy array.</span>
 
 <span class="sd">    Returns</span>
@@ -223,9 +226,9 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    x </span>
+<span class="sd">    x</span>
 <span class="sd">        An ivy array.</span>
-<span class="sd">    exclusive </span>
+<span class="sd">    exclusive</span>
 <span class="sd">        Whether to check if the data type is exclusively a variable, rather than an array.</span>
 <span class="sd">        For frameworks like JAX that do not have exclusive variable types, the function will always return</span>
 <span class="sd">        False if this flag is set, otherwise the check is the same for general arrays. Default is False.</span>
@@ -245,7 +248,7 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    x </span>
+<span class="sd">    x</span>
 <span class="sd">        An ivy variable.</span>
 
 <span class="sd">    Returns</span>
@@ -262,12 +265,12 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    x </span>
+<span class="sd">    x</span>
 <span class="sd">        Array for which to stop the gradient.</span>
-<span class="sd">    preserve_type </span>
+<span class="sd">    preserve_type</span>
 <span class="sd">        Whether to preserve the input type (ivy.Variable or ivy.Array),</span>
 <span class="sd">        otherwise an array is always returned. Default is True.</span>
-<span class="sd">    preserve_type </span>
+<span class="sd">    preserve_type</span>
 <span class="sd">        bool, optional (Default value = True)</span>
 
 <span class="sd">    Returns</span>
@@ -281,17 +284,18 @@
 
 <span class="c1"># AutoGrad #</span>
 
+
 <div class="viewcode-block" id="execute_with_gradients"><a class="viewcode-back" href="../../../../functional/ivy/gradients/execute_with_gradients.html#ivy.functional.ivy.gradients.execute_with_gradients">[docs]</a><span class="k">def</span> <span class="nf">execute_with_gradients</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">xs</span><span class="p">,</span> <span class="n">retain_grads</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Call function func with input of xs variables, and return func first output y, the gradients [dy/dx for x in xs],</span>
 <span class="sd">    and any other function outputs after the returned y value</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    func </span>
+<span class="sd">    func</span>
 <span class="sd">        Function for which we compute the gradients of the output with respect to xs input.</span>
-<span class="sd">    xs </span>
+<span class="sd">    xs</span>
 <span class="sd">        Variables for which to compute the function gradients with respective to.</span>
-<span class="sd">    retain_grads </span>
+<span class="sd">    retain_grads</span>
 <span class="sd">        Whether to retain the gradients of the returned values. (Default value = False)</span>
 
 <span class="sd">    Returns</span>
@@ -305,25 +309,26 @@
 
 <span class="c1"># Optimizer Steps #</span>
 
+
 <div class="viewcode-block" id="adam_step"><a class="viewcode-back" href="../../../../functional/ivy/gradients/adam_step.html#ivy.functional.ivy.gradients.adam_step">[docs]</a><span class="k">def</span> <span class="nf">adam_step</span><span class="p">(</span><span class="n">dcdws</span><span class="p">,</span> <span class="n">mw</span><span class="p">,</span> <span class="n">vw</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">beta1</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span> <span class="n">beta2</span><span class="o">=</span><span class="mf">0.999</span><span class="p">,</span> <span class="n">epsilon</span><span class="o">=</span><span class="mf">1e-7</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Compute adam step delta, given the derivatives of some cost c with respect to ws, using ADAM update.</span>
 <span class="sd">    `[reference] &lt;https://en.wikipedia.org/wiki/Stochastic_gradient_descent#Adam&gt;`_</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    dcdws </span>
+<span class="sd">    dcdws</span>
 <span class="sd">        Derivates of the cost c with respect to the weights ws, [dc/dw for w in ws].</span>
-<span class="sd">    mw </span>
+<span class="sd">    mw</span>
 <span class="sd">        running average of the gradients</span>
-<span class="sd">    vw </span>
+<span class="sd">    vw</span>
 <span class="sd">        running average of second moments of the gradients</span>
-<span class="sd">    step </span>
+<span class="sd">    step</span>
 <span class="sd">        training step</span>
-<span class="sd">    beta1 </span>
+<span class="sd">    beta1</span>
 <span class="sd">        gradient forgetting factor (Default value = 0.9)</span>
-<span class="sd">    beta2 </span>
+<span class="sd">    beta2</span>
 <span class="sd">        second moment of gradient forgetting factor (Default value = 0.999)</span>
-<span class="sd">    epsilon </span>
+<span class="sd">    epsilon</span>
 <span class="sd">        divisor during adam update, preventing division by zero (Default value = 1e-7)</span>
 
 <span class="sd">    Returns</span>
@@ -334,15 +339,16 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">step</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">_ivy</span><span class="o">.</span><span class="n">to_scalar</span><span class="p">(</span><span class="n">step</span><span class="p">))</span>
     <span class="n">mw</span> <span class="o">=</span> <span class="n">dcdws</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">dcdw</span><span class="p">,</span> <span class="n">kc</span><span class="p">:</span> <span class="n">beta1</span> <span class="o">*</span> <span class="n">mw</span><span class="p">[</span><span class="n">kc</span><span class="p">]</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">beta1</span><span class="p">)</span> <span class="o">*</span> <span class="n">dcdw</span><span class="p">)</span>
-    <span class="n">dcdws_sqrd</span> <span class="o">=</span> <span class="n">dcdws</span> <span class="o">**</span> <span class="mi">2</span>
+    <span class="n">dcdws_sqrd</span> <span class="o">=</span> <span class="n">dcdws</span><span class="o">**</span><span class="mi">2</span>
     <span class="n">vw</span> <span class="o">=</span> <span class="n">dcdws_sqrd</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">dcdw_sqrd</span><span class="p">,</span> <span class="n">kc</span><span class="p">:</span> <span class="n">beta2</span> <span class="o">*</span> <span class="n">vw</span><span class="p">[</span><span class="n">kc</span><span class="p">]</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">beta2</span><span class="p">)</span> <span class="o">*</span> <span class="n">dcdw_sqrd</span><span class="p">)</span>
-    <span class="n">beta1_pow</span> <span class="o">=</span> <span class="n">beta1</span> <span class="o">**</span> <span class="n">step</span>
-    <span class="n">beta2_pow</span> <span class="o">=</span> <span class="n">beta2</span> <span class="o">**</span> <span class="n">step</span>
-    <span class="n">alpha</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">beta2_pow</span><span class="p">)</span><span class="o">**</span><span class="mf">0.5</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">beta1_pow</span> <span class="o">+</span> <span class="n">epsilon</span><span class="p">)</span>
+    <span class="n">beta1_pow</span> <span class="o">=</span> <span class="n">beta1</span><span class="o">**</span><span class="n">step</span>
+    <span class="n">beta2_pow</span> <span class="o">=</span> <span class="n">beta2</span><span class="o">**</span><span class="n">step</span>
+    <span class="n">alpha</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">beta2_pow</span><span class="p">)</span> <span class="o">**</span> <span class="mf">0.5</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">beta1_pow</span> <span class="o">+</span> <span class="n">epsilon</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">mw</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">m</span><span class="p">,</span> <span class="n">kc</span><span class="p">:</span> <span class="p">(</span><span class="n">alpha</span> <span class="o">*</span> <span class="n">m</span> <span class="o">/</span> <span class="p">(</span><span class="n">vw</span><span class="p">[</span><span class="n">kc</span><span class="p">]</span> <span class="o">**</span> <span class="mf">0.5</span> <span class="o">+</span> <span class="n">epsilon</span><span class="p">))),</span> <span class="n">mw</span><span class="p">,</span> <span class="n">vw</span></div>
 
 
 <span class="c1"># Optimizer Updates #</span>
+
 
 <div class="viewcode-block" id="optimizer_update"><a class="viewcode-back" href="../../../../functional/ivy/gradients/optimizer_update.html#ivy.functional.ivy.gradients.optimizer_update">[docs]</a><span class="k">def</span> <span class="nf">optimizer_update</span><span class="p">(</span><span class="n">ws</span><span class="p">,</span> <span class="n">effective_grads</span><span class="p">,</span> <span class="n">lr</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">stop_gradients</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Update weights ws of some function, given the true or effective derivatives of some cost c with respect to ws,</span>
@@ -350,18 +356,18 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    ws </span>
+<span class="sd">    ws</span>
 <span class="sd">        Weights of the function to be updated.</span>
-<span class="sd">    effective_grads </span>
+<span class="sd">    effective_grads</span>
 <span class="sd">        Effective gradients of the cost c with respect to the weights ws, [dc/dw for w in ws].</span>
-<span class="sd">    lr </span>
+<span class="sd">    lr</span>
 <span class="sd">        Learning rate(s), the rate(s) at which the weights should be updated relative to the gradient.</span>
-<span class="sd">    inplace </span>
+<span class="sd">    inplace</span>
 <span class="sd">        Whether to perform the operation inplace, for backends which support inplace variable updates,</span>
 <span class="sd">        and handle gradients behind the scenes such as PyTorch. If the update step should form part of a</span>
 <span class="sd">        computation graph (i.e. higher order optimization), then this should be set to False.</span>
 <span class="sd">        Default is True, provided the backend framework supports it.</span>
-<span class="sd">    stop_gradients </span>
+<span class="sd">    stop_gradients</span>
 <span class="sd">        Whether to stop the gradients of the variables after each gradient step. Default is True.</span>
 
 <span class="sd">    Returns</span>
@@ -372,7 +378,9 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">inplace</span> <span class="o">=</span> <span class="n">_ivy</span><span class="o">.</span><span class="n">default</span><span class="p">(</span><span class="n">inplace</span><span class="p">,</span> <span class="n">_ivy</span><span class="o">.</span><span class="n">inplace_variables_supported</span><span class="p">())</span>
     <span class="n">layerwise_lr</span> <span class="o">=</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">lr</span><span class="p">,</span> <span class="n">_ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">)</span>
-    <span class="n">deltas</span> <span class="o">=</span> <span class="n">effective_grads</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">eff_grad</span><span class="p">,</span> <span class="n">kc</span><span class="p">:</span> <span class="p">((</span><span class="n">lr</span><span class="p">[</span><span class="n">kc</span><span class="p">]</span> <span class="k">if</span> <span class="n">layerwise_lr</span> <span class="k">else</span> <span class="n">lr</span><span class="p">)</span> <span class="o">*</span> <span class="n">eff_grad</span><span class="p">))</span>
+    <span class="n">deltas</span> <span class="o">=</span> <span class="n">effective_grads</span><span class="o">.</span><span class="n">map</span><span class="p">(</span>
+        <span class="k">lambda</span> <span class="n">eff_grad</span><span class="p">,</span> <span class="n">kc</span><span class="p">:</span> <span class="p">((</span><span class="n">lr</span><span class="p">[</span><span class="n">kc</span><span class="p">]</span> <span class="k">if</span> <span class="n">layerwise_lr</span> <span class="k">else</span> <span class="n">lr</span><span class="p">)</span> <span class="o">*</span> <span class="n">eff_grad</span><span class="p">)</span>
+    <span class="p">)</span>
     <span class="k">if</span> <span class="n">inplace</span><span class="p">:</span>
         <span class="n">ws</span> <span class="o">=</span> <span class="n">ws</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">w</span><span class="p">,</span> <span class="n">kc</span><span class="p">:</span> <span class="n">_ivy</span><span class="o">.</span><span class="n">inplace_decrement</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">deltas</span><span class="p">[</span><span class="n">kc</span><span class="p">]))</span>
     <span class="k">else</span><span class="p">:</span>
@@ -387,18 +395,18 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    ws </span>
+<span class="sd">    ws</span>
 <span class="sd">        Weights of the function to be updated.</span>
-<span class="sd">    dcdws </span>
+<span class="sd">    dcdws</span>
 <span class="sd">        Derivates of the cost c with respect to the weights ws, [dc/dw for w in ws].</span>
-<span class="sd">    lr </span>
+<span class="sd">    lr</span>
 <span class="sd">        Learning rate(s), the rate(s) at which the weights should be updated relative to the gradient.</span>
-<span class="sd">    inplace </span>
+<span class="sd">    inplace</span>
 <span class="sd">        Whether to perform the operation inplace, for backends which support inplace variable updates,</span>
 <span class="sd">        and handle gradients behind the scenes such as PyTorch. If the update step should form part of a</span>
 <span class="sd">        computation graph (i.e. higher order optimization), then this should be set to False.</span>
 <span class="sd">        Default is True, provided the backend framework supports it.</span>
-<span class="sd">    stop_gradients </span>
+<span class="sd">    stop_gradients</span>
 <span class="sd">        Whether to stop the gradients of the variables after each gradient step. Default is True.</span>
 
 <span class="sd">    Returns</span>
@@ -416,20 +424,20 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    ws </span>
+<span class="sd">    ws</span>
 <span class="sd">        Weights of the function to be updated.</span>
-<span class="sd">    dcdws </span>
+<span class="sd">    dcdws</span>
 <span class="sd">        Derivates of the cost c with respect to the weights ws, [dc/dw for w in ws].</span>
-<span class="sd">    lr </span>
+<span class="sd">    lr</span>
 <span class="sd">        Learning rate, the rate at which the weights should be updated relative to the gradient.</span>
-<span class="sd">    decay_lambda </span>
+<span class="sd">    decay_lambda</span>
 <span class="sd">        The factor used for weight decay. Default is zero.</span>
-<span class="sd">    inplace </span>
+<span class="sd">    inplace</span>
 <span class="sd">        Whether to perform the operation inplace, for backends which support inplace variable updates,</span>
 <span class="sd">        and handle gradients behind the scenes such as PyTorch. If the update step should form part of a</span>
 <span class="sd">        computation graph (i.e. higher order optimization), then this should be set to False.</span>
 <span class="sd">        Default is True, provided the backend framework supports it.</span>
-<span class="sd">    stop_gradients </span>
+<span class="sd">    stop_gradients</span>
 <span class="sd">        Whether to stop the gradients of the variables after each gradient step. Default is True.</span>
 
 <span class="sd">    Returns</span>
@@ -441,41 +449,52 @@
     <span class="n">ws_norm</span> <span class="o">=</span> <span class="n">ws</span><span class="o">.</span><span class="n">vector_norm</span><span class="p">()</span>
     <span class="n">lr</span> <span class="o">=</span> <span class="n">_ivy</span><span class="o">.</span><span class="n">stable_divide</span><span class="p">(</span><span class="n">ws_norm</span> <span class="o">*</span> <span class="n">lr</span><span class="p">,</span> <span class="n">dcdws</span><span class="o">.</span><span class="n">vector_norm</span><span class="p">())</span>
     <span class="k">if</span> <span class="n">decay_lambda</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="n">lr</span> <span class="o">/=</span> <span class="p">(</span><span class="n">ws_norm</span> <span class="o">*</span> <span class="n">decay_lambda</span><span class="p">)</span>
+        <span class="n">lr</span> <span class="o">/=</span> <span class="n">ws_norm</span> <span class="o">*</span> <span class="n">decay_lambda</span>
     <span class="k">return</span> <span class="n">gradient_descent_update</span><span class="p">(</span><span class="n">ws</span><span class="p">,</span> <span class="n">dcdws</span><span class="p">,</span> <span class="n">lr</span><span class="p">,</span> <span class="n">inplace</span><span class="p">,</span> <span class="n">stop_gradients</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="adam_update"><a class="viewcode-back" href="../../../../functional/ivy/gradients/adam_update.html#ivy.functional.ivy.gradients.adam_update">[docs]</a><span class="k">def</span> <span class="nf">adam_update</span><span class="p">(</span><span class="n">ws</span><span class="p">,</span> <span class="n">dcdws</span><span class="p">,</span> <span class="n">lr</span><span class="p">,</span> <span class="n">mw_tm1</span><span class="p">,</span> <span class="n">vw_tm1</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">beta1</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span> <span class="n">beta2</span><span class="o">=</span><span class="mf">0.999</span><span class="p">,</span> <span class="n">epsilon</span><span class="o">=</span><span class="mf">1e-7</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                <span class="n">stop_gradients</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="adam_update"><a class="viewcode-back" href="../../../../functional/ivy/gradients/adam_update.html#ivy.functional.ivy.gradients.adam_update">[docs]</a><span class="k">def</span> <span class="nf">adam_update</span><span class="p">(</span>
+    <span class="n">ws</span><span class="p">,</span>
+    <span class="n">dcdws</span><span class="p">,</span>
+    <span class="n">lr</span><span class="p">,</span>
+    <span class="n">mw_tm1</span><span class="p">,</span>
+    <span class="n">vw_tm1</span><span class="p">,</span>
+    <span class="n">step</span><span class="p">,</span>
+    <span class="n">beta1</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span>
+    <span class="n">beta2</span><span class="o">=</span><span class="mf">0.999</span><span class="p">,</span>
+    <span class="n">epsilon</span><span class="o">=</span><span class="mf">1e-7</span><span class="p">,</span>
+    <span class="n">inplace</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">stop_gradients</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Update weights ws of some function, given the derivatives of some cost c with respect to ws, using ADAM update.</span>
 <span class="sd">    `[reference] &lt;https://en.wikipedia.org/wiki/Stochastic_gradient_descent#Adam&gt;`_</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    ws </span>
+<span class="sd">    ws</span>
 <span class="sd">        Weights of the function to be updated.</span>
-<span class="sd">    dcdws </span>
+<span class="sd">    dcdws</span>
 <span class="sd">        Derivates of the cost c with respect to the weights ws, [dc/dw for w in ws].</span>
-<span class="sd">    lr </span>
+<span class="sd">    lr</span>
 <span class="sd">        Learning rate(s), the rate(s) at which the weights should be updated relative to the gradient.</span>
-<span class="sd">    mw_tm1 </span>
+<span class="sd">    mw_tm1</span>
 <span class="sd">        running average of the gradients, from the previous time-step.</span>
-<span class="sd">    vw_tm1 </span>
+<span class="sd">    vw_tm1</span>
 <span class="sd">        running average of second moments of the gradients, from the previous time-step.</span>
-<span class="sd">    step </span>
+<span class="sd">    step</span>
 <span class="sd">        training step</span>
-<span class="sd">    beta1 </span>
+<span class="sd">    beta1</span>
 <span class="sd">        gradient forgetting factor (Default value = 0.9)</span>
-<span class="sd">    beta2 </span>
+<span class="sd">    beta2</span>
 <span class="sd">        second moment of gradient forgetting factor (Default value = 0.999)</span>
-<span class="sd">    epsilon </span>
+<span class="sd">    epsilon</span>
 <span class="sd">        divisor during adam update, preventing division by zero (Default value = 1e-7)</span>
-<span class="sd">    inplace </span>
+<span class="sd">    inplace</span>
 <span class="sd">        Whether to perform the operation inplace, for backends which support inplace variable updates,</span>
 <span class="sd">        and handle gradients behind the scenes such as PyTorch. If the update step should form part of a</span>
 <span class="sd">        computation graph (i.e. higher order optimization), then this should be set to False.</span>
 <span class="sd">        Default is True, provided the backend framework supports it.</span>
-<span class="sd">    stop_gradients </span>
+<span class="sd">    stop_gradients</span>
 <span class="sd">        Whether to stop the gradients of the variables after each gradient step. Default is True.</span>
 
 <span class="sd">    Returns</span>
@@ -484,45 +503,60 @@
 <span class="sd">        The new function weights ws_new, and also new mw and vw, following the adam updates.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">effective_grads</span><span class="p">,</span> <span class="n">mw</span><span class="p">,</span> <span class="n">vw</span> <span class="o">=</span> <span class="n">adam_step</span><span class="p">(</span><span class="n">dcdws</span><span class="p">,</span> <span class="n">mw_tm1</span><span class="p">,</span> <span class="n">vw_tm1</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">beta1</span><span class="p">,</span> <span class="n">beta2</span><span class="p">,</span> <span class="n">epsilon</span><span class="p">)</span>
+    <span class="n">effective_grads</span><span class="p">,</span> <span class="n">mw</span><span class="p">,</span> <span class="n">vw</span> <span class="o">=</span> <span class="n">adam_step</span><span class="p">(</span>
+        <span class="n">dcdws</span><span class="p">,</span> <span class="n">mw_tm1</span><span class="p">,</span> <span class="n">vw_tm1</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">beta1</span><span class="p">,</span> <span class="n">beta2</span><span class="p">,</span> <span class="n">epsilon</span>
+    <span class="p">)</span>
     <span class="k">return</span> <span class="n">optimizer_update</span><span class="p">(</span><span class="n">ws</span><span class="p">,</span> <span class="n">effective_grads</span><span class="p">,</span> <span class="n">lr</span><span class="p">,</span> <span class="n">inplace</span><span class="p">,</span> <span class="n">stop_gradients</span><span class="p">),</span> <span class="n">mw</span><span class="p">,</span> <span class="n">vw</span></div>
 
 
-<div class="viewcode-block" id="lamb_update"><a class="viewcode-back" href="../../../../functional/ivy/gradients/lamb_update.html#ivy.functional.ivy.gradients.lamb_update">[docs]</a><span class="k">def</span> <span class="nf">lamb_update</span><span class="p">(</span><span class="n">ws</span><span class="p">,</span> <span class="n">dcdws</span><span class="p">,</span> <span class="n">lr</span><span class="p">,</span> <span class="n">mw_tm1</span><span class="p">,</span> <span class="n">vw_tm1</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">beta1</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span> <span class="n">beta2</span><span class="o">=</span><span class="mf">0.999</span><span class="p">,</span> <span class="n">epsilon</span><span class="o">=</span><span class="mf">1e-7</span><span class="p">,</span> <span class="n">max_trust_ratio</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
-                <span class="n">decay_lambda</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">stop_gradients</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="lamb_update"><a class="viewcode-back" href="../../../../functional/ivy/gradients/lamb_update.html#ivy.functional.ivy.gradients.lamb_update">[docs]</a><span class="k">def</span> <span class="nf">lamb_update</span><span class="p">(</span>
+    <span class="n">ws</span><span class="p">,</span>
+    <span class="n">dcdws</span><span class="p">,</span>
+    <span class="n">lr</span><span class="p">,</span>
+    <span class="n">mw_tm1</span><span class="p">,</span>
+    <span class="n">vw_tm1</span><span class="p">,</span>
+    <span class="n">step</span><span class="p">,</span>
+    <span class="n">beta1</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span>
+    <span class="n">beta2</span><span class="o">=</span><span class="mf">0.999</span><span class="p">,</span>
+    <span class="n">epsilon</span><span class="o">=</span><span class="mf">1e-7</span><span class="p">,</span>
+    <span class="n">max_trust_ratio</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+    <span class="n">decay_lambda</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+    <span class="n">inplace</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">stop_gradients</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Update weights ws of some function, given the derivatives of some cost c with respect to ws, [dc/dw for w in ws],</span>
 <span class="sd">    by applying LAMB method.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    ws </span>
+<span class="sd">    ws</span>
 <span class="sd">        Weights of the function to be updated.</span>
-<span class="sd">    dcdws </span>
+<span class="sd">    dcdws</span>
 <span class="sd">        Derivates of the cost c with respect to the weights ws, [dc/dw for w in ws].</span>
-<span class="sd">    lr </span>
+<span class="sd">    lr</span>
 <span class="sd">        Learning rate(s), the rate(s) at which the weights should be updated relative to the gradient.</span>
-<span class="sd">    mw_tm1 </span>
+<span class="sd">    mw_tm1</span>
 <span class="sd">        running average of the gradients, from the previous time-step.</span>
-<span class="sd">    vw_tm1 </span>
+<span class="sd">    vw_tm1</span>
 <span class="sd">        running average of second moments of the gradients, from the previous time-step.</span>
-<span class="sd">    step </span>
+<span class="sd">    step</span>
 <span class="sd">        training step</span>
-<span class="sd">    beta1 </span>
+<span class="sd">    beta1</span>
 <span class="sd">        gradient forgetting factor (Default value = 0.9)</span>
-<span class="sd">    beta2 </span>
+<span class="sd">    beta2</span>
 <span class="sd">        second moment of gradient forgetting factor (Default value = 0.999)</span>
-<span class="sd">    epsilon </span>
+<span class="sd">    epsilon</span>
 <span class="sd">        divisor during adam update, preventing division by zero (Default value = 1e-7)</span>
-<span class="sd">    max_trust_ratio </span>
+<span class="sd">    max_trust_ratio</span>
 <span class="sd">        The maximum value for the trust ratio. Default is 10.</span>
-<span class="sd">    decay_lambda </span>
+<span class="sd">    decay_lambda</span>
 <span class="sd">        The factor used for weight decay. Default is zero.</span>
-<span class="sd">    inplace </span>
+<span class="sd">    inplace</span>
 <span class="sd">        Whether to perform the operation inplace, for backends which support inplace variable updates,</span>
 <span class="sd">        and handle gradients behind the scenes such as PyTorch. If the update step should form part of a</span>
 <span class="sd">        computation graph (i.e. higher order optimization), then this should be set to False.</span>
 <span class="sd">        Default is True, provided the backend framework supports it.</span>
-<span class="sd">    stop_gradients </span>
+<span class="sd">    stop_gradients</span>
 <span class="sd">        Whether to stop the gradients of the variables after each gradient step. Default is True.</span>
 
 <span class="sd">    Returns</span>
@@ -534,7 +568,7 @@
     <span class="n">r1</span> <span class="o">=</span> <span class="n">ws</span><span class="o">.</span><span class="n">vector_norm</span><span class="p">()</span>
     <span class="n">eff_grads</span><span class="p">,</span> <span class="n">mw</span><span class="p">,</span> <span class="n">vw</span> <span class="o">=</span> <span class="n">adam_step</span><span class="p">(</span><span class="n">dcdws</span><span class="p">,</span> <span class="n">mw_tm1</span><span class="p">,</span> <span class="n">vw_tm1</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">beta1</span><span class="p">,</span> <span class="n">beta2</span><span class="p">,</span> <span class="n">epsilon</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">decay_lambda</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="n">r2</span> <span class="o">=</span> <span class="p">(</span><span class="n">eff_grads</span> <span class="o">+</span> <span class="n">decay_lambda</span><span class="o">*</span><span class="n">ws</span><span class="p">)</span><span class="o">.</span><span class="n">norm</span><span class="p">()</span>
+        <span class="n">r2</span> <span class="o">=</span> <span class="p">(</span><span class="n">eff_grads</span> <span class="o">+</span> <span class="n">decay_lambda</span> <span class="o">*</span> <span class="n">ws</span><span class="p">)</span><span class="o">.</span><span class="n">norm</span><span class="p">()</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">r2</span> <span class="o">=</span> <span class="n">eff_grads</span><span class="o">.</span><span class="n">vector_norm</span><span class="p">()</span>
     <span class="n">r</span> <span class="o">=</span> <span class="n">_ivy</span><span class="o">.</span><span class="n">stable_divide</span><span class="p">(</span><span class="n">r1</span><span class="p">,</span> <span class="n">r2</span><span class="p">)</span><span class="o">.</span><span class="n">minimum</span><span class="p">(</span><span class="n">max_trust_ratio</span><span class="p">)</span>

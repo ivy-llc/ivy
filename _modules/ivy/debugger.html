@@ -133,24 +133,29 @@
 
 <span class="c1"># Methods #</span>
 
+
 <span class="k">def</span> <span class="nf">_wrap_method_for_debugging</span><span class="p">(</span><span class="n">fn</span><span class="p">):</span>
 
-    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="s1">&#39;__name__&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">fn</span><span class="o">.</span><span class="vm">__name__</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;_&#39;</span> <span class="ow">or</span> <span class="n">fn</span><span class="o">.</span><span class="vm">__name__</span> <span class="ow">in</span>
-                                    <span class="nb">set</span><span class="p">(</span><span class="n">NON_WRAPPED_METHODS</span> <span class="o">+</span> <span class="p">[</span><span class="s1">&#39;has_nans&#39;</span><span class="p">,</span> <span class="s1">&#39;is_array&#39;</span><span class="p">,</span> <span class="s1">&#39;value_is_nan&#39;</span><span class="p">,</span> <span class="s1">&#39;reduce_sum&#39;</span><span class="p">,</span>
-                                                               <span class="s1">&#39;to_scalar&#39;</span><span class="p">])):</span>
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="s2">&quot;__name__&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span>
+        <span class="n">fn</span><span class="o">.</span><span class="vm">__name__</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;_&quot;</span>
+        <span class="ow">or</span> <span class="n">fn</span><span class="o">.</span><span class="vm">__name__</span>
+        <span class="ow">in</span> <span class="nb">set</span><span class="p">(</span>
+            <span class="n">NON_WRAPPED_METHODS</span>
+            <span class="o">+</span> <span class="p">[</span><span class="s2">&quot;has_nans&quot;</span><span class="p">,</span> <span class="s2">&quot;is_array&quot;</span><span class="p">,</span> <span class="s2">&quot;value_is_nan&quot;</span><span class="p">,</span> <span class="s2">&quot;reduce_sum&quot;</span><span class="p">,</span> <span class="s2">&quot;to_scalar&quot;</span><span class="p">]</span>
+        <span class="p">)</span>
+    <span class="p">):</span>
         <span class="k">return</span> <span class="n">fn</span>
 
-    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="s1">&#39;wrapped_for_debugging&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">fn</span><span class="o">.</span><span class="n">wrapped_for_debugging</span><span class="p">:</span>
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="s2">&quot;wrapped_for_debugging&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">fn</span><span class="o">.</span><span class="n">wrapped_for_debugging</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">fn</span>
 
     <span class="k">def</span> <span class="nf">_method_wrapped</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-
         <span class="k">def</span> <span class="nf">_check_nans</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_native_array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="ow">and</span> <span class="n">ivy</span><span class="o">.</span><span class="n">has_nans</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
-                <span class="k">if</span> <span class="n">debug_mode_val</span> <span class="o">==</span> <span class="s1">&#39;exception&#39;</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;found nans in </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+                <span class="k">if</span> <span class="n">debug_mode_val</span> <span class="o">==</span> <span class="s2">&quot;exception&quot;</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;found nans in </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;found nans in </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+                    <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;found nans in </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
                     <span class="n">pdb</span><span class="o">.</span><span class="n">set_trace</span><span class="p">()</span>
             <span class="k">return</span> <span class="n">x</span>
 
@@ -160,7 +165,7 @@
         <span class="n">ivy</span><span class="o">.</span><span class="n">nested_map</span><span class="p">(</span><span class="n">ret</span><span class="p">,</span> <span class="n">_check_nans</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">ret</span>
 
-    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="s1">&#39;__name__&#39;</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="s2">&quot;__name__&quot;</span><span class="p">):</span>
         <span class="n">_method_wrapped</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">=</span> <span class="n">fn</span><span class="o">.</span><span class="vm">__name__</span>
     <span class="n">_method_wrapped</span><span class="o">.</span><span class="n">wrapped_for_debugging</span> <span class="o">=</span> <span class="kc">True</span>
     <span class="n">_method_wrapped</span><span class="o">.</span><span class="n">inner_fn</span> <span class="o">=</span> <span class="n">fn</span>
@@ -169,7 +174,10 @@
 
 <span class="k">def</span> <span class="nf">_unwrap_method_from_debugging</span><span class="p">(</span><span class="n">method_wrapped</span><span class="p">):</span>
 
-    <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">method_wrapped</span><span class="p">,</span> <span class="s1">&#39;wrapped_for_debugging&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">method_wrapped</span><span class="o">.</span><span class="n">wrapped_for_debugging</span><span class="p">:</span>
+    <span class="k">if</span> <span class="p">(</span>
+        <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">method_wrapped</span><span class="p">,</span> <span class="s2">&quot;wrapped_for_debugging&quot;</span><span class="p">)</span>
+        <span class="ow">or</span> <span class="ow">not</span> <span class="n">method_wrapped</span><span class="o">.</span><span class="n">wrapped_for_debugging</span>
+    <span class="p">):</span>
         <span class="k">return</span> <span class="n">method_wrapped</span>
     <span class="k">return</span> <span class="n">method_wrapped</span><span class="o">.</span><span class="n">inner_fn</span>
 
@@ -184,8 +192,9 @@
 
 <span class="c1"># Mode #</span>
 
-<div class="viewcode-block" id="set_debug_mode"><a class="viewcode-back" href="../../debugger/set_debug_mode.html#ivy.debugger.set_debug_mode">[docs]</a><span class="k">def</span> <span class="nf">set_debug_mode</span><span class="p">(</span><span class="n">debug_mode_in</span><span class="o">=</span><span class="s1">&#39;exception&#39;</span><span class="p">):</span>
-    <span class="k">assert</span> <span class="n">debug_mode_in</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;breakpoint&#39;</span><span class="p">,</span> <span class="s1">&#39;exception&#39;</span><span class="p">]</span>
+
+<div class="viewcode-block" id="set_debug_mode"><a class="viewcode-back" href="../../debugger/set_debug_mode.html#ivy.debugger.set_debug_mode">[docs]</a><span class="k">def</span> <span class="nf">set_debug_mode</span><span class="p">(</span><span class="n">debug_mode_in</span><span class="o">=</span><span class="s2">&quot;exception&quot;</span><span class="p">):</span>
+    <span class="k">assert</span> <span class="n">debug_mode_in</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;breakpoint&quot;</span><span class="p">,</span> <span class="s2">&quot;exception&quot;</span><span class="p">]</span>
     <span class="k">global</span> <span class="n">debug_mode_val</span>
     <span class="n">debug_mode_val</span> <span class="o">=</span> <span class="n">debug_mode_in</span>
     <span class="k">global</span> <span class="n">queue_timeout</span>
@@ -195,11 +204,11 @@
 
 
 <div class="viewcode-block" id="set_breakpoint_debug_mode"><a class="viewcode-back" href="../../debugger/set_breakpoint_debug_mode.html#ivy.debugger.set_breakpoint_debug_mode">[docs]</a><span class="k">def</span> <span class="nf">set_breakpoint_debug_mode</span><span class="p">():</span>
-    <span class="n">set_debug_mode</span><span class="p">(</span><span class="s1">&#39;breakpoint&#39;</span><span class="p">)</span></div>
+    <span class="n">set_debug_mode</span><span class="p">(</span><span class="s2">&quot;breakpoint&quot;</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="set_exception_debug_mode"><a class="viewcode-back" href="../../debugger/set_exception_debug_mode.html#ivy.debugger.set_exception_debug_mode">[docs]</a><span class="k">def</span> <span class="nf">set_exception_debug_mode</span><span class="p">():</span>
-    <span class="n">set_debug_mode</span><span class="p">(</span><span class="s1">&#39;exception&#39;</span><span class="p">)</span></div>
+    <span class="n">set_debug_mode</span><span class="p">(</span><span class="s2">&quot;exception&quot;</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="unset_debug_mode"><a class="viewcode-back" href="../../debugger/unset_debug_mode.html#ivy.debugger.unset_debug_mode">[docs]</a><span class="k">def</span> <span class="nf">unset_debug_mode</span><span class="p">():</span>

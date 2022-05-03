@@ -129,8 +129,15 @@
 
 
 <div class="viewcode-block" id="LayerNorm"><a class="viewcode-back" href="../../../stateful/norms/LayerNorm.html#ivy.stateful.norms.LayerNorm">[docs]</a><span class="k">class</span> <span class="nc">LayerNorm</span><span class="p">(</span><span class="n">Module</span><span class="p">):</span>
-
-<div class="viewcode-block" id="LayerNorm.__init__"><a class="viewcode-back" href="../../../stateful/norms/LayerNorm.html#ivy.stateful.norms.LayerNorm.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">normalized_shape</span><span class="p">,</span> <span class="n">epsilon</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">elementwise_affine</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">new_std</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="LayerNorm.__init__"><a class="viewcode-back" href="../../../stateful/norms/LayerNorm.html#ivy.stateful.norms.LayerNorm.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">normalized_shape</span><span class="p">,</span>
+        <span class="n">epsilon</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">elementwise_affine</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">new_std</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">device</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">v</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Class for applying Layer Normalization over a mini-batch of inputs</span>
 
@@ -147,7 +154,7 @@
 <span class="sd">        :param v: the variables for each submodule in the sequence, constructed internally by default.</span>
 <span class="sd">        :type v: ivy container of variables, optional</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_normalized_idxs</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">normalized_shape</span><span class="p">))]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_normalized_idxs</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">normalized_shape</span><span class="p">))]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_epsilon</span> <span class="o">=</span> <span class="n">epsilon</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_elementwise_affine</span> <span class="o">=</span> <span class="n">elementwise_affine</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_new_std</span> <span class="o">=</span> <span class="n">new_std</span>
@@ -162,8 +169,12 @@
 <span class="sd">        Create internal variables for the layer</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_elementwise_affine</span><span class="p">:</span>
-            <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;scale&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_scale_init</span><span class="o">.</span><span class="n">create_variables</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_scale_shape</span><span class="p">,</span> <span class="n">device</span><span class="p">),</span>
-                    <span class="s1">&#39;offset&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_offset_init</span><span class="o">.</span><span class="n">create_variables</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_offset_shape</span><span class="p">,</span> <span class="n">device</span><span class="p">)}</span>
+            <span class="k">return</span> <span class="p">{</span>
+                <span class="s2">&quot;scale&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_scale_init</span><span class="o">.</span><span class="n">create_variables</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_scale_shape</span><span class="p">,</span> <span class="n">device</span><span class="p">),</span>
+                <span class="s2">&quot;offset&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_offset_init</span><span class="o">.</span><span class="n">create_variables</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_offset_shape</span><span class="p">,</span> <span class="n">device</span>
+                <span class="p">),</span>
+            <span class="p">}</span>
         <span class="k">return</span> <span class="p">{}</span>
 
     <span class="k">def</span> <span class="nf">_forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">):</span>
@@ -174,10 +185,14 @@
 <span class="sd">        :type inputs: array</span>
 <span class="sd">        :return: The outputs following the layer normalization operation.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">layer_norm</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_normalized_idxs</span><span class="p">,</span> <span class="n">epsilon</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_epsilon</span><span class="p">,</span>
-                              <span class="n">scale</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">scale</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_elementwise_affine</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
-                              <span class="n">offset</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">offset</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_elementwise_affine</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
-                              <span class="n">new_std</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_new_std</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">layer_norm</span><span class="p">(</span>
+            <span class="n">inputs</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_normalized_idxs</span><span class="p">,</span>
+            <span class="n">epsilon</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_epsilon</span><span class="p">,</span>
+            <span class="n">scale</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">scale</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_elementwise_affine</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">offset</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">offset</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_elementwise_affine</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">new_std</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_new_std</span><span class="p">,</span>
+        <span class="p">)</span></div>
 </pre></div>
 
            </div>

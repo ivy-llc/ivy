@@ -146,7 +146,11 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="ivy.functional.ivy.creation.arange">
 <span class="sig-prename descclassname"><span class="pre">ivy.functional.ivy.creation.</span></span><span class="sig-name descname"><span class="pre">arange</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/creation.html#arange"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.creation.arange" title="Permalink to this definition"></a></dt>
-<dd><p>Returns evenly spaced values within the half-open interval [start, stop) as a one-dimensional array.</p>
+<dd><p>Returns evenly spaced values within a given interval, with the spacing being specified.</p>
+<p>Values are generated within the half-open interval [start, stop) (in other words, the interval including start but
+excluding stop). For integer arguments the function is equivalent to the Python built-in range function,
+but returns an array in the chosen ml_framework rather than a list.</p>
+<p>See <span class="math notranslate nohighlight">\(linspace\)</span> for a certain number of evenly spaced values in an interval.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">

@@ -128,8 +128,10 @@
 <span class="k">def</span> <span class="nf">_is_optional</span><span class="p">(</span><span class="n">typ</span><span class="p">):</span>
     <span class="c1"># noinspection PyBroadException</span>
     <span class="k">try</span><span class="p">:</span>
-        <span class="n">rep</span> <span class="o">=</span> <span class="n">typ</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
-        <span class="k">if</span> <span class="n">rep</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;Optional&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">rep</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;Union&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">type</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span> <span class="ow">in</span> <span class="n">typ</span><span class="o">.</span><span class="n">__args__</span><span class="p">):</span>
+        <span class="n">rep</span> <span class="o">=</span> <span class="n">typ</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">rep</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;Optional&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span>
+            <span class="n">rep</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;Union&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">type</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span> <span class="ow">in</span> <span class="n">typ</span><span class="o">.</span><span class="n">__args__</span>
+        <span class="p">):</span>
             <span class="k">return</span> <span class="kc">True</span>
     <span class="k">except</span><span class="p">:</span>
         <span class="k">pass</span>
@@ -139,8 +141,8 @@
 <span class="k">def</span> <span class="nf">_is_union</span><span class="p">(</span><span class="n">typ</span><span class="p">):</span>
     <span class="c1"># noinspection PyBroadException</span>
     <span class="k">try</span><span class="p">:</span>
-        <span class="n">rep</span> <span class="o">=</span> <span class="n">typ</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
-        <span class="k">if</span> <span class="n">rep</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;Union&#39;</span><span class="p">):</span>
+        <span class="n">rep</span> <span class="o">=</span> <span class="n">typ</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">rep</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;Union&quot;</span><span class="p">):</span>
             <span class="k">return</span> <span class="kc">True</span>
     <span class="k">except</span><span class="p">:</span>
         <span class="k">pass</span>
@@ -150,8 +152,8 @@
 <span class="k">def</span> <span class="nf">_is_dict</span><span class="p">(</span><span class="n">typ</span><span class="p">):</span>
     <span class="c1"># noinspection PyBroadException</span>
     <span class="k">try</span><span class="p">:</span>
-        <span class="n">rep</span> <span class="o">=</span> <span class="n">typ</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
-        <span class="k">if</span> <span class="n">rep</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;Dict&#39;</span><span class="p">):</span>
+        <span class="n">rep</span> <span class="o">=</span> <span class="n">typ</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">rep</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;Dict&quot;</span><span class="p">):</span>
             <span class="k">return</span> <span class="kc">True</span>
     <span class="k">except</span><span class="p">:</span>
         <span class="k">pass</span>
@@ -161,8 +163,8 @@
 <span class="k">def</span> <span class="nf">_is_iterable</span><span class="p">(</span><span class="n">typ</span><span class="p">):</span>
     <span class="c1"># noinspection PyBroadException</span>
     <span class="k">try</span><span class="p">:</span>
-        <span class="n">rep</span> <span class="o">=</span> <span class="n">typ</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
-        <span class="k">if</span> <span class="n">rep</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;List&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">rep</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;Tuple&#39;</span><span class="p">):</span>
+        <span class="n">rep</span> <span class="o">=</span> <span class="n">typ</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">rep</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;List&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">rep</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;Tuple&quot;</span><span class="p">):</span>
             <span class="k">return</span> <span class="kc">True</span>
     <span class="k">except</span><span class="p">:</span>
         <span class="k">pass</span>
@@ -171,7 +173,7 @@
 
 <span class="k">def</span> <span class="nf">_correct_index</span><span class="p">(</span><span class="n">is_opt</span><span class="p">,</span> <span class="n">is_dict</span><span class="p">,</span> <span class="n">is_iter</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">is_opt</span><span class="p">:</span>
-        <span class="k">return</span> <span class="p">[</span><span class="s1">&#39;optional&#39;</span><span class="p">]</span>
+        <span class="k">return</span> <span class="p">[</span><span class="s2">&quot;optional&quot;</span><span class="p">]</span>
     <span class="k">elif</span> <span class="n">is_dict</span><span class="p">:</span>
         <span class="k">return</span> <span class="p">[</span><span class="nb">str</span><span class="p">]</span>
     <span class="k">elif</span> <span class="n">is_iter</span><span class="p">:</span>
@@ -182,7 +184,7 @@
 <span class="k">def</span> <span class="nf">_get_array_idxs</span><span class="p">(</span><span class="n">typ</span><span class="p">,</span> <span class="n">idx_so_far</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="n">idx_so_far</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">default</span><span class="p">(</span><span class="n">idx_so_far</span><span class="p">,</span> <span class="nb">list</span><span class="p">())</span>
     <span class="n">these_idxs</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">typ</span><span class="p">,</span> <span class="s1">&#39;__args__&#39;</span><span class="p">):</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">typ</span><span class="p">,</span> <span class="s2">&quot;__args__&quot;</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">these_idxs</span>
     <span class="n">is_opt</span> <span class="o">=</span> <span class="n">_is_optional</span><span class="p">(</span><span class="n">typ</span><span class="p">)</span>
     <span class="n">is_union</span> <span class="o">=</span> <span class="n">_is_union</span><span class="p">(</span><span class="n">typ</span><span class="p">)</span>
@@ -190,13 +192,19 @@
     <span class="n">is_iter</span> <span class="o">=</span> <span class="n">_is_iterable</span><span class="p">(</span><span class="n">typ</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">typ</span><span class="o">.</span><span class="n">__args__</span><span class="p">:</span>
         <span class="n">a_repr</span> <span class="o">=</span> <span class="nb">repr</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
-        <span class="k">if</span> <span class="s1">&#39;[&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">a_repr</span> <span class="ow">and</span> <span class="s1">&#39;]&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">a_repr</span> <span class="ow">and</span> \
-                <span class="s1">&#39;ivy.&#39;</span> <span class="ow">in</span> <span class="n">a_repr</span> <span class="ow">and</span> <span class="p">(</span><span class="s1">&#39;.Array&#39;</span> <span class="ow">in</span> <span class="n">a_repr</span> <span class="ow">or</span> <span class="s1">&#39;.NativeArray&#39;</span> <span class="ow">in</span> <span class="n">a_repr</span><span class="p">):</span>
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="s2">&quot;[&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">a_repr</span>
+            <span class="ow">and</span> <span class="s2">&quot;]&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">a_repr</span>
+            <span class="ow">and</span> <span class="s2">&quot;ivy.&quot;</span> <span class="ow">in</span> <span class="n">a_repr</span>
+            <span class="ow">and</span> <span class="p">(</span><span class="s2">&quot;.Array&quot;</span> <span class="ow">in</span> <span class="n">a_repr</span> <span class="ow">or</span> <span class="s2">&quot;.NativeArray&quot;</span> <span class="ow">in</span> <span class="n">a_repr</span><span class="p">)</span>
+        <span class="p">):</span>
             <span class="n">these_idxs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">idx_so_far</span> <span class="o">+</span> <span class="n">_correct_index</span><span class="p">(</span><span class="n">is_opt</span><span class="p">,</span> <span class="n">is_dict</span><span class="p">,</span> <span class="n">is_iter</span><span class="p">))</span>
             <span class="k">if</span> <span class="n">is_union</span><span class="p">:</span>
                 <span class="k">break</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">these_idxs</span> <span class="o">+=</span> <span class="n">_get_array_idxs</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">idx_so_far</span> <span class="o">+</span> <span class="n">_correct_index</span><span class="p">(</span><span class="n">is_opt</span><span class="p">,</span> <span class="n">is_dict</span><span class="p">,</span> <span class="n">is_iter</span><span class="p">))</span>
+            <span class="n">these_idxs</span> <span class="o">+=</span> <span class="n">_get_array_idxs</span><span class="p">(</span>
+                <span class="n">a</span><span class="p">,</span> <span class="n">idx_so_far</span> <span class="o">+</span> <span class="n">_correct_index</span><span class="p">(</span><span class="n">is_opt</span><span class="p">,</span> <span class="n">is_dict</span><span class="p">,</span> <span class="n">is_iter</span><span class="p">)</span>
+            <span class="p">)</span>
     <span class="k">return</span> <span class="n">these_idxs</span>
 
 
