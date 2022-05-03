@@ -13,24 +13,29 @@ debug_mode_val = False
 
 # Methods #
 
+
 def _wrap_method_for_debugging(fn):
 
-    if hasattr(fn, '__name__') and (fn.__name__[0] == '_' or fn.__name__ in
-                                    set(NON_WRAPPED_METHODS + ['has_nans', 'is_array', 'value_is_nan', 'reduce_sum',
-                                                               'to_scalar'])):
+    if hasattr(fn, "__name__") and (
+        fn.__name__[0] == "_"
+        or fn.__name__
+        in set(
+            NON_WRAPPED_METHODS
+            + ["has_nans", "is_array", "value_is_nan", "reduce_sum", "to_scalar"]
+        )
+    ):
         return fn
 
-    if hasattr(fn, 'wrapped_for_debugging') and fn.wrapped_for_debugging:
+    if hasattr(fn, "wrapped_for_debugging") and fn.wrapped_for_debugging:
         return fn
 
     def _method_wrapped(*args, **kwargs):
-
         def _check_nans(x):
             if ivy.is_native_array(x) and ivy.has_nans(x):
-                if debug_mode_val == 'exception':
-                    raise Exception('found nans in {}'.format(x))
+                if debug_mode_val == "exception":
+                    raise Exception("found nans in {}".format(x))
                 else:
-                    logging.error('found nans in {}'.format(x))
+                    logging.error("found nans in {}".format(x))
                     pdb.set_trace()
             return x
 
@@ -40,7 +45,7 @@ def _wrap_method_for_debugging(fn):
         ivy.nested_map(ret, _check_nans)
         return ret
 
-    if hasattr(fn, '__name__'):
+    if hasattr(fn, "__name__"):
         _method_wrapped.__name__ = fn.__name__
     _method_wrapped.wrapped_for_debugging = True
     _method_wrapped.inner_fn = fn
@@ -49,7 +54,10 @@ def _wrap_method_for_debugging(fn):
 
 def _unwrap_method_from_debugging(method_wrapped):
 
-    if not hasattr(method_wrapped, 'wrapped_for_debugging') or not method_wrapped.wrapped_for_debugging:
+    if (
+        not hasattr(method_wrapped, "wrapped_for_debugging")
+        or not method_wrapped.wrapped_for_debugging
+    ):
         return method_wrapped
     return method_wrapped.inner_fn
 
@@ -64,8 +72,9 @@ def _unwrap_methods_from_debugging():
 
 # Mode #
 
-def set_debug_mode(debug_mode_in='exception'):
-    assert debug_mode_in in ['breakpoint', 'exception']
+
+def set_debug_mode(debug_mode_in="exception"):
+    assert debug_mode_in in ["breakpoint", "exception"]
     global debug_mode_val
     debug_mode_val = debug_mode_in
     global queue_timeout
@@ -75,11 +84,11 @@ def set_debug_mode(debug_mode_in='exception'):
 
 
 def set_breakpoint_debug_mode():
-    set_debug_mode('breakpoint')
+    set_debug_mode("breakpoint")
 
 
 def set_exception_debug_mode():
-    set_debug_mode('exception')
+    set_debug_mode("exception")
 
 
 def unset_debug_mode():
