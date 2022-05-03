@@ -1,0 +1,18 @@
+name: docstrings
+
+on: [push, pull_request]
+
+jobs:
+  test-numpy-docstrings:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-python@v3
+      with:
+        python-version: '3.8'
+    - name: Install dependencies
+      run: |
+        pip install pydocstyle
+    - name: Analyse docstrings with pydocstyle
+      run: |
+        pydocstyle --convention=numpy $(git ls-files '*.py')
