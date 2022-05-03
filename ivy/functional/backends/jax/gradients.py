@@ -22,7 +22,9 @@ variable = lambda x: x
 def is_variable(x, exclusive=False):
     if exclusive:
         return False
-    return isinstance(x, (jax.interpreters.xla._DeviceArray, jaxlib.xla_extension.DeviceArray, Buffer))
+    return isinstance(
+        x, (jax.interpreters.xla._DeviceArray, jaxlib.xla_extension.DeviceArray, Buffer)
+    )
 
 
 variable_data = lambda x: x
