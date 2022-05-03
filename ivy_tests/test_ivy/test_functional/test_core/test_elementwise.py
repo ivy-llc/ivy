@@ -255,21 +255,20 @@ def test_bitwise_or(dtype_and_x, as_variable, with_out, num_positional_args, nat
 
 
 # bitwise_xor
-# @given(dtype_and_x=helpers.dtype_and_values(ivy.int_dtype_strs + ('bool',)),
-#        as_variable=helpers.list_of_length(st.booleans(), 2),
-#        with_out=st.booleans(),
-#        num_positional_args=st.integers(0, 2),
-#        native_array=helpers.list_of_length(st.booleans(), 2),
-#        container=helpers.list_of_length(st.booleans(), 2),
-#        instance_method=st.booleans())
-# def test_bitwise_xor(dtype_and_x, as_variable, with_out, num_positional_args, native_array, container, instance_method, fw):
-#     dtype, x = dtype_and_x
-#     if dtype in ivy.invalid_dtype_strs:
-#         return
-#     dtype = [dtype, dtype]
-#     helpers.test_array_function(
-#         dtype, as_variable, with_out, num_positional_args, native_array, container, instance_method, fw, 'bitwise_xor',
-#         x1=np.asarray(x, dtype=dtype[0]), x2=np.asarray(x, dtype=dtype[1]))
+@given(dtype_and_x=helpers.dtype_and_values(ivy.int_dtype_strs + ('bool',), 2),
+       as_variable=helpers.list_of_length(st.booleans(), 2),
+       with_out=st.booleans(),
+       num_positional_args=st.integers(0, 2),
+       native_array=helpers.list_of_length(st.booleans(), 2),
+       container=helpers.list_of_length(st.booleans(), 2),
+       instance_method=st.booleans())
+def test_bitwise_xor(dtype_and_x, as_variable, with_out, num_positional_args, native_array, container, instance_method, fw):
+    dtype, x = dtype_and_x
+    if any(d in ivy.invalid_dtype_strs for d in dtype):
+        return
+    helpers.test_array_function(
+        dtype, as_variable, with_out, num_positional_args, native_array, container, instance_method, fw, 'bitwise_xor',
+        x1=np.asarray(x[0], dtype=dtype[0]), x2=np.asarray(x[1], dtype=dtype[1]))
 
 
 # ceil
@@ -326,39 +325,41 @@ def test_cosh(dtype_and_x, as_variable, with_out, num_positional_args, native_ar
 
 
 # divide
-# @given(dtype_and_x=helpers.dtype_and_values(ivy_np.valid_numeric_dtype_strs),
-#        as_variable=helpers.list_of_length(st.booleans(), 2),
-#        with_out=st.booleans(),
-#        num_positional_args=st.integers(0, 2),
-#        native_array=helpers.list_of_length(st.booleans(), 2),
-#        container=helpers.list_of_length(st.booleans(), 2),
-#        instance_method=st.booleans())
-# def test_divide(dtype_and_x, as_variable, with_out, num_positional_args, native_array, container, instance_method, fw):
-#     dtype, x = dtype_and_x
-#     if dtype in ivy.invalid_dtype_strs:
-#         return
-#     dtype = [dtype, dtype]
-#     helpers.test_array_function(
-#         dtype, as_variable, with_out, num_positional_args, native_array, container, instance_method, fw, 'divide',
-#         x1=np.asarray(x, dtype=dtype[0]), x2=np.asarray(x, dtype=dtype[1]))
+@given(dtype_and_x=helpers.dtype_and_values(ivy_np.valid_numeric_dtype_strs, 2),
+       as_variable=helpers.list_of_length(st.booleans(), 2),
+       with_out=st.booleans(),
+       num_positional_args=st.integers(0, 2),
+       native_array=helpers.list_of_length(st.booleans(), 2),
+       container=helpers.list_of_length(st.booleans(), 2),
+       instance_method=st.booleans())
+def test_divide(dtype_and_x, as_variable, with_out, num_positional_args, native_array, container, instance_method, fw):
+    dtype, x = dtype_and_x
+    if any(xi == 0 for xi in x[1]):
+        return # don't divide by 0
+    if any(xi > 9223372036854775807 or yi > 9223372036854775807 for xi, yi in zip(x[0], x[1])):
+        return # np.divide converts to signed int so values can't be too large
+    if any(d in ivy.invalid_dtype_strs for d in dtype):
+        return
+    helpers.test_array_function(
+        dtype, as_variable, with_out, num_positional_args, native_array, container, instance_method, fw, 'divide',
+        x1=np.asarray(x[0], dtype=dtype[0]), x2=np.asarray(x[0], dtype=dtype[1]))
 
 
 # equal
-# @given(dtype_and_x=helpers.dtype_and_values(ivy_np.valid_dtype_strs),
-#        as_variable=helpers.list_of_length(st.booleans(), 2),
-#        with_out=st.booleans(),
-#        num_positional_args=st.integers(0, 2),
-#        native_array=helpers.list_of_length(st.booleans(), 2),
-#        container=helpers.list_of_length(st.booleans(), 2),
-#        instance_method=st.booleans())
-# def test_equal(dtype_and_x, as_variable, with_out, num_positional_args, native_array, container, instance_method, fw):
-#     dtype, x = dtype_and_x
-#     if dtype in ivy.invalid_dtype_strs:
-#         return
-#     dtype = [dtype, dtype]
-#     helpers.test_array_function(
-#         dtype, as_variable, with_out, num_positional_args, native_array, container, instance_method, fw, 'equal',
-#         x1=np.asarray(x, dtype=dtype[0]), x2=np.asarray(x, dtype=dtype[1]))
+@given(dtype_and_x=helpers.dtype_and_values(ivy_np.valid_dtype_strs, 2),
+       as_variable=helpers.list_of_length(st.booleans(), 2),
+       with_out=st.booleans(),
+       num_positional_args=st.integers(0, 2),
+       native_array=helpers.list_of_length(st.booleans(), 2),
+       container=helpers.list_of_length(st.booleans(), 2),
+       instance_method=st.booleans())
+def test_equal(dtype_and_x, as_variable, with_out, num_positional_args, native_array, container, instance_method, fw):
+    dtype, x = dtype_and_x
+    if any(d in ivy.invalid_dtype_strs for d in dtype):
+        return
+    helpers.test_array_function(
+        dtype, as_variable, with_out, num_positional_args, native_array, container, instance_method, fw, 'equal',
+        x1=np.asarray(x[0], dtype=dtype[0]), x2=np.asarray(x[1], dtype=dtype[1]))
 
 
 # exp
