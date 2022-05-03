@@ -35,13 +35,13 @@ def _dict_to_hk_flat_map(dict_in):
 
 class IvyModule(ivy.Module):
 
-    def __init__(self, native_module, dev, devs, *args, **kwargs):
+    def __init__(self, native_module, device, devices, *args, **kwargs):
         self._native_module = native_module
         self._args = args
         self._kwargs = kwargs
-        ivy.Module.__init__(self, build_mode='on_call', dev=dev, devs=devs)
+        ivy.Module.__init__(self, build_mode='on_call', device=device, devices=devices)
 
-    def _create_variables(self, dev):
+    def _create_variables(self, device):
         return self._hk_params
 
     def _build(self, *a, **kw):
@@ -63,7 +63,7 @@ class IvyModule(ivy.Module):
         return ivy.to_native(ret)
 
 
-def to_ivy_module(native_module=None, native_module_class=None, args=None, kwargs=None, dev=None, devs=None,
+def to_ivy_module(native_module=None, native_module_class=None, args=None, kwargs=None, device=None, devices=None,
                   inplace_update=False):
 
     args = ivy.default(args, [])
@@ -79,4 +79,4 @@ def to_ivy_module(native_module=None, native_module_class=None, args=None, kwarg
 
         native_module = hk.transform(forward_fn)
 
-    return IvyModule(native_module, dev, devs, *args, **kwargs)
+    return IvyModule(native_module, device, devices, *args, **kwargs)

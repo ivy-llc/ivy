@@ -33,7 +33,7 @@ try:
 except ImportError:
     _mx = None
     _mx_nd = None
-from hypothesis import strategies as st
+from hypothesis import assume, strategies as st
 
 # local
 import ivy
@@ -236,10 +236,6 @@ def f_n_calls():
             if ivy_fw() is not None and fw_str not in _excluded]
 
 
-def sample(iterable):
-    return st.builds(lambda i: iterable[i], st.integers(0, len(iterable) - 1))
-
-
 def assert_all_close(x, y, rtol=1e-05, atol=1e-08):
     if ivy.is_ivy_container(x) and ivy.is_ivy_container(y):
         ivy.Container.multi_map(assert_all_close, [x, y])
@@ -259,8 +255,8 @@ def list_of_length(x, length):
 
 def as_cont(x):
     return ivy.Container({'a': x,
-                          'b': {'c': ivy.random_uniform(shape=x.shape),
-                                'd': ivy.random_uniform(shape=x.shape)}})
+                          'b': {'c': x,
+                                'd': x}})
 
 
 def as_lists(dtype, as_variable, with_out, native_array, container):
@@ -289,9 +285,6 @@ def test_array_function(dtype, as_variable, with_out, num_positional_args, nativ
 
     # update instance_method flag to only be considered if the first term is either an ivy.Array or ivy.Container
     instance_method = instance_method and (not native_array[0] or container[0])
-
-    # only consider with_out if there are no containers
-    with_out = with_out and not max(container)
 
     # split the arguments into their positional and keyword components
     args_np, kwargs_np = kwargs_to_args_n_kwargs(num_positional_args, all_as_kwargs_np)
@@ -356,16 +349,19 @@ def test_array_function(dtype, as_variable, with_out, num_positional_args, nativ
     out = ret
     if with_out:
         assert not isinstance(ret, tuple)
-        assert ivy.is_array(ret)
-        if max(native_array):
-            out = out.data
+        if max(container):
+            assert ivy.is_ivy_container(ret)
+        else:
+            assert ivy.is_array(ret)
+            if max(native_array):
+                out = out.data
         if instance_method:
             ret = instance.__getattribute__(fn_name)(*args, **kwargs, out=out)
         else:
             ret = ivy.__dict__[fn_name](*args, **kwargs, out=out)
-        if not max(native_array):
+        if max(container) or not max(native_array):
             assert ret is out
-        if fw in ["tensorflow", "jax"]:
+        if max(container) or fw in ["tensorflow", "jax"]:
             # these frameworks do not support native inplace updates
             return
         assert ret.data is (out if max(native_array) else out.data)
@@ -384,3 +380,81 @@ def test_array_function(dtype, as_variable, with_out, num_positional_args, nativ
     ret_from_np_flat = ivy.multi_index_nest(ret_from_np, ret_idxs)
     for ret_np, ret_from_np in zip(ret_np_flat, ret_from_np_flat):
         assert_all_close(ret_np, ret_from_np, rtol=rtol, atol=atol)
+
+
+# Hypothesis #
+# -----------#
+
+@st.composite
+def array_dtypes(draw, na=st.shared(st.integers(), key='num_arrays')):
+    size = na if isinstance(na, int) else draw(na)
+    return draw(st.lists(st.sampled_from(ivy_np.valid_float_dtype_strs), min_size=size, max_size=size))
+
+
+@st.composite
+def array_bools(draw, na=st.shared(st.integers(), key='num_arrays')):
+    size = na if isinstance(na, int) else draw(na)
+    return draw(st.lists(st.booleans(), min_size=size, max_size=size))
+
+
+@st.composite
+def lists(draw, arg, min_size=None, max_size=None, size_bounds=None):
+    ints = st.integers(size_bounds[0], size_bounds[1]) if size_bounds else st.integers()
+    if isinstance(min_size, str):
+        min_size = draw(st.shared(ints, key=min_size))
+    if isinstance(max_size, str):
+        max_size = draw(st.shared(ints, key=max_size))
+    return draw(st.lists(arg, min_size=min_size, max_size=max_size))
+
+
+@st.composite
+def integers(draw, min_value=None, max_value=None):
+    if isinstance(min_value, str):
+        min_value = draw(st.shared(st.integers(), key=min_value))
+    if isinstance(max_value, str):
+        max_value = draw(st.shared(st.integers(), key=max_value))
+    return draw(st.integers(min_value=min_value, max_value=max_value))
+
+
+@st.composite
+def dtype_and_values(draw, available_dtypes, n_arrays=1):
+    dtype = draw(list_of_length(st.sampled_from(available_dtypes), n_arrays))
+    if n_arrays == 2:
+        assume((dtype[0], dtype[1]) in ivy.promotion_table)
+    size = draw(st.integers(0, 10))
+    values = []
+    for i in range(n_arrays):
+        values.append(draw(array_values(dtype[i], size)))
+    if n_arrays == 1:
+        dtype = dtype[0]
+        values = values[0]
+    return dtype, values
+
+
+@st.composite
+def array_values(draw, dtype, size):
+    if dtype == 'int8':
+        values = draw(list_of_length(st.integers(-128, 127), size))
+    elif dtype == 'int16':
+        values = draw(list_of_length(st.integers(-32768, 32767), size))
+    elif dtype == 'int32':
+        values = draw(list_of_length(st.integers(-2147483648, 2147483647), size))
+    elif dtype == 'int64':
+        values = draw(list_of_length(st.integers(-9223372036854775808, 9223372036854775807), size))
+    elif dtype == 'uint8':
+        values = draw(list_of_length(st.integers(0, 255), size))
+    elif dtype == 'uint16':
+        values = draw(list_of_length(st.integers(0, 65535), size))
+    elif dtype == 'uint32':
+        values = draw(list_of_length(st.integers(0, 4294967295), size))
+    elif dtype == 'uint64':
+        values = draw(list_of_length(st.integers(0, 18446744073709551615), size))
+    elif dtype == 'float16':
+        values = draw(list_of_length(st.floats(width=16), size))
+    elif dtype == 'float32':
+        values = draw(list_of_length(st.floats(width=32), size))
+    elif dtype == 'float64':
+        values = draw(list_of_length(st.floats(width=64), size))
+    elif dtype == 'bool':
+        values = draw(list_of_length(st.booleans(), size))
+    return values

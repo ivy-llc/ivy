@@ -28,11 +28,11 @@ def _to_array(x):
 def dev(x, as_str=False):
     if isinstance(x, jax.interpreters.partial_eval.DynamicJaxprTracer):
         return None
-    dv = _to_array(x).device_buffer.device
     try:
+        dv = _to_array(x).device_buffer.device
         dv = dv()
     except:
-        pass
+        dv = jax.devices()[0]
     if as_str:
         return dev_to_str(dv)
     return dv
@@ -41,37 +41,37 @@ def dev(x, as_str=False):
 _callable_dev = dev
 
 
-def to_dev(x, dev=None, out=None):
-    if dev is not None:
+def to_dev(x, device=None, out=None):
+    if device is not None:
         cur_dev = dev_to_str(_callable_dev(x))
-        if cur_dev != dev:
-            x = jax.device_put(x, dev_from_str(dev))
+        if cur_dev != device:
+            x = jax.device_put(x, dev_from_str(device))
     if ivy.exists(out):
         return ivy.inplace_update(out, x)
     return x
 
 
-def dev_to_str(dev):
-    if isinstance(dev, str):
-        return dev
-    if dev is None:
+def dev_to_str(device):
+    if isinstance(device, str):
+        return device
+    if device is None:
         return None
-    p, dev_id = (dev.platform, dev.id)
+    p, dev_id = (device.platform, device.id)
     if p == 'cpu':
         return p
     return p + ':' + str(dev_id)
 
 
-def dev_from_str(dev):
-    if not isinstance(dev, str):
-        return dev
-    dev_split = dev.split(':')
-    dev = dev_split[0]
+def dev_from_str(device):
+    if not isinstance(device, str):
+        return device
+    dev_split = device.split(':')
+    device = dev_split[0]
     if len(dev_split) > 1:
         idx = int(dev_split[1])
     else:
         idx = 0
-    return jax.devices(dev)[idx]
+    return jax.devices(device)[idx]
 
 
 clear_mem_on_dev = lambda dev: None
@@ -89,14 +89,15 @@ def gpu_is_available() -> bool:
     return _dev_is_available('gpu')
 
 
-def num_gpus():
+def num_gpus() -> int:
     try:
         return len(jax.devices('gpu'))
     except RuntimeError:
         return 0
 
 
-tpu_is_available = lambda: _dev_is_available('tpu')
+def tpu_is_available() -> bool: 
+    return _dev_is_available('tpu')
 
 
 # noinspection PyMethodMayBeStatic

@@ -6,12 +6,19 @@ Collection of PyTorch network layers, wrapped to fit Ivy syntax and signature.
 import math as _math
 import torch
 from typing import List, Optional
+import numpy as np
 
 
 # noinspection PyUnresolvedReferences
-def conv1d(x, filters, strides: int, padding: str, data_format: str = 'NWC', dilations: int = 1):
+def conv1d(x: torch.Tensor,
+           filters: torch.Tensor,
+           strides: int,
+           padding: str,
+           data_format: str = 'NWC',
+           dilations: int = 1)\
+           -> torch.Tensor:
     filter_shape = list(filters.shape[0:1])
-    filters = filters.permute(1, 2, 0)
+    filters = filters.permute(2, 1, 0)
     if data_format == 'NWC':
         x = x.permute(0, 2, 1)
     if padding == 'VALID':

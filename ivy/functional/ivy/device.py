@@ -37,9 +37,10 @@ max_chunk_sizes = dict()
 # ------#
 
 class DefaultDevice:
+    """ """
     # noinspection PyShadowingNames
-    def __init__(self, dev):
-        self._dev = dev
+    def __init__(self, device):
+        self._dev = device
 
     def __enter__(self):
         set_default_device(self._dev)
@@ -52,13 +53,13 @@ class DefaultDevice:
 # Helpers #
 
 # noinspection PyShadowingNames
-def _get_nvml_gpu_handle(dev):
+def _get_nvml_gpu_handle(device):
     global dev_handles
-    if dev in dev_handles:
-        return dev_handles[dev]
-    gpu_idx = int(dev.split(':')[-1])
+    if device in dev_handles:
+        return dev_handles[device]
+    gpu_idx = int(device.split(':')[-1])
     handle = nvidia_smi.nvmlDeviceGetHandleByIndex(gpu_idx)
-    dev_handles[dev] = handle
+    dev_handles[device] = handle
     return handle
 
 
@@ -67,15 +68,23 @@ def _get_nvml_gpu_handle(dev):
 # Array Printing
 
 # noinspection PyShadowingNames
-def get_all_arrays_on_dev(dev):
-    """
-    Gets all arrays which are currently alive on the specified device.
+def get_all_arrays_on_dev(device):
+    """Gets all arrays which are currently alive on the specified device.
+
+    Parameters
+    ----------
+    device
+
+
+    Returns
+    -------
+
     """
     all_arrays = list()
     for obj in gc.get_objects():
         # noinspection PyBroadException
         try:
-            if ivy.is_array(obj) and ivy.dev(obj) == dev:
+            if ivy.is_array(obj) and ivy.dev(obj) == device:
                 all_arrays.append(obj)
         except Exception:
             pass
@@ -83,19 +92,35 @@ def get_all_arrays_on_dev(dev):
 
 
 # noinspection PyShadowingNames
-def num_arrays_on_dev(dev):
+def num_arrays_on_dev(device):
+    """Returns the number of arrays which are currently alive on the specified device.
+
+    Parameters
+    ----------
+    device
+
+
+    Returns
+    -------
+
     """
-    Returns the number of arrays which are currently alive on the specified device.
-    """
-    return len(get_all_arrays_on_dev(dev))
+    return len(get_all_arrays_on_dev(device))
 
 
 # noinspection PyShadowingNames
-def print_all_arrays_on_dev(dev):
+def print_all_arrays_on_dev(device):
+    """Prints all arrays which are currently alive on the specified device.
+
+    Parameters
+    ----------
+    device
+
+
+    Returns
+    -------
+
     """
-    Prints all arrays which are currently alive on the specified device.
-    """
-    for arr in get_all_arrays_on_dev(dev):
+    for arr in get_all_arrays_on_dev(device):
         print(type(arr), arr.shape)
 
 
@@ -103,14 +128,20 @@ def print_all_arrays_on_dev(dev):
 
 def dev(x: Union[ivy.Array, ivy.NativeArray], as_str: bool = False)\
         -> Union[ivy.Device, str]:
-    """
-    Get the native device handle for input array x.
+    """Get the native device handle for input array x.
 
-    :param x: Tensor for which to get the device handle.
-    :type x: array
-    :param as_str: Whether or not to return the dev in string format. Default is False.
-    :type as_str: bool, optional
-    :return: Device handle for the array, in native framework format.
+    Parameters
+    ----------
+    x
+        Tensor for which to get the device handle.
+    as_str
+        Whether or not to return the dev in string format. Default is False.
+
+    Returns
+    -------
+     ret
+        Device handle for the array, in native framework format.
+
     """
     return _cur_framework(x).dev(x, as_str)
 
@@ -118,155 +149,198 @@ def dev(x: Union[ivy.Array, ivy.NativeArray], as_str: bool = False)\
 # Conversions
 
 # noinspection PyShadowingNames
-def dev_to_str(dev: Union[ivy.Device, str]) \
+def dev_to_str(device: Union[ivy.Device, str]) \
         -> str:
-    """
-    Convert native data type to string representation.
+    """Convert native data type to string representation.
 
-    :param dev: The device handle to convert to string.
-    :type dev: device handle
-    :return: Device string e.g. 'cuda:0'.
+    Parameters
+    ----------
+    device
+        The device handle to convert to string.
+
+    Returns
+    -------
+     ret
+        Device string e.g. 'cuda:0'.
+
     """
-    return _cur_framework().dev_to_str(dev)
+    return _cur_framework().dev_to_str(device)
 
 
 # noinspection PyShadowingNames
-def dev_from_str(dev: Union[ivy.Device, str]) \
+def dev_from_str(device: Union[ivy.Device, str]) \
         -> ivy.Device:
-    """
-    Convert device string representation to native device type.
+    """Convert device string representation to native device type.
 
-    :param dev: The device string to conver to native device handle.
-    :type dev: Device
-    :return: Native device handle.
+    Parameters
+    ----------
+    device
+        The device string to conver to native device handle.
+
+    Returns
+    -------
+     ret
+        Native device handle.
+
     """
-    return _cur_framework().dev_from_str(dev)
+    return _cur_framework().dev_from_str(device)
 
 
 # Memory
 
 # noinspection PyShadowingNames
-def clear_mem_on_dev(dev: ivy.Device)\
+def clear_mem_on_dev(device: ivy.Device)\
         -> None:
-    """
-    Clear memory cache on target device.
+    """Clear memory cache on target device.
 
-    :param dev: The device string to conver to native device handle.
-    :type dev: Device
+    Parameters
+    ----------
+    device
+        The device string to conver to native device handle.
+
+    Returns
+    -------
+
     """
-    return _cur_framework(None).clear_mem_on_dev(dev)
+    return _cur_framework(None).clear_mem_on_dev(device)
 
 
 # noinspection PyShadowingNames
-def total_mem_on_dev(dev: ivy.Device)\
+def total_mem_on_dev(device: ivy.Device)\
         -> float:
-    """
-    Get the total amount of memory (in GB) for a given device string. In case of CPU, the total RAM is returned.
+    """Get the total amount of memory (in GB) for a given device string. In case of CPU, the total RAM is returned.
 
-    :param dev: The device string to conver to native device handle.
-    :type dev: Device
-    :return: The total memory on the device in GB.
+    Parameters
+    ----------
+    device
+        The device string to conver to native device handle.
+
+    Returns
+    -------
+     ret
+        The total memory on the device in GB.
+
     """
-    if 'gpu' in dev:
-        handle = _get_nvml_gpu_handle(dev)
+    if 'gpu' in device:
+        handle = _get_nvml_gpu_handle(device)
         info = nvidia_smi.nvmlDeviceGetMemoryInfo(handle)
         return info.total/1e9
-    elif dev == 'cpu':
+    elif device == 'cpu':
         return psutil.virtual_memory().total/1e9
     else:
         raise Exception('Invalid device string input, must be on the form "gpu:idx" or "cpu", '
-                        'but found {}'.format(dev))
+                        'but found {}'.format(device))
 
 
 # noinspection PyShadowingNames
-def used_mem_on_dev(dev: ivy.Device, process_specific=False)\
+def used_mem_on_dev(device: ivy.Device, process_specific=False)\
         -> float:
-    """
-    Get the used memory (in GB) for a given device string. In case of CPU, the used RAM is returned.
+    """Get the used memory (in GB) for a given device string. In case of CPU, the used RAM is returned.
 
-    :param dev: The device string to conver to native device handle.
-    :type dev: Device
-    :param process_specific: Whether the check the memory used by this python process alone. Default is False.
-    :type process_specific: bool, optional
-    :return: The used memory on the device in GB.
+    Parameters
+    ----------
+    device
+        The device string to conver to native device handle.
+    process_specific
+        Whether the check the memory used by this python process alone. Default is False.
+
+    Returns
+    -------
+     ret
+        The used memory on the device in GB.
+
     """
-    ivy.clear_mem_on_dev(dev)
-    if 'gpu' in dev:
+    ivy.clear_mem_on_dev(device)
+    if 'gpu' in device:
         if process_specific:
             raise Exception('process-specific GPU queries are currently not supported')
-        handle = _get_nvml_gpu_handle(dev)
+        handle = _get_nvml_gpu_handle(device)
         info = nvidia_smi.nvmlDeviceGetMemoryInfo(handle)
         return info.used/1e9
-    elif dev == 'cpu':
+    elif device == 'cpu':
         if process_specific:
             return psutil.Process(os.getpid()).memory_info().rss
         vm = psutil.virtual_memory()
         return (vm.total - vm.available)/1e9
     else:
         raise Exception('Invalid device string input, must be on the form "gpu:idx" or "cpu", '
-                        'but found {}'.format(dev))
+                        'but found {}'.format(device))
 
 
 # noinspection PyShadowingNames
-def percent_used_mem_on_dev(dev: ivy.Device, process_specific=False)\
+def percent_used_mem_on_dev(device: ivy.Device, process_specific=False)\
         -> float:
-    """
-    Get the percentage used memory for a given device string. In case of CPU, the used RAM is returned.
+    """Get the percentage used memory for a given device string. In case of CPU, the used RAM is returned.
 
-    :param dev: The device string to conver to native device handle.
-    :type dev: Device
-    :param process_specific: Whether the check the memory used by this python process alone. Default is False.
-    :type process_specific: bool, optional
-    :return: The percentage used memory on the device.
+    Parameters
+    ----------
+    device
+        The device string to conver to native device handle.
+    process_specific
+        Whether the check the memory used by this python process alone. Default is False.
+
+    Returns
+    -------
+     ret
+        The percentage used memory on the device.
+
     """
-    ivy.clear_mem_on_dev(dev)
-    if 'gpu' in dev:
+    ivy.clear_mem_on_dev(device)
+    if 'gpu' in device:
         if process_specific:
             raise Exception('process-specific GPU queries are currently not supported')
-        handle = _get_nvml_gpu_handle(dev)
+        handle = _get_nvml_gpu_handle(device)
         info = nvidia_smi.nvmlDeviceGetMemoryInfo(handle)
         return (info.used/info.total)*100
-    elif dev == 'cpu':
+    elif device == 'cpu':
         vm = psutil.virtual_memory()
         if process_specific:
             return (psutil.Process(os.getpid()).memory_info().rss/vm.total)*100
         return (1-(vm.available/vm.total))*100
     else:
         raise Exception('Invalid device string input, must be on the form "gpu:idx" or "cpu", '
-                        'but found {}'.format(dev))
+                        'but found {}'.format(device))
 
 
 # Utilization
 
 # noinspection PyShadowingNames
-def dev_util(dev: ivy.Device)\
+def dev_util(device: ivy.Device)\
         -> float:
-    """
-    Get the current utilization (%) for a given device.
+    """Get the current utilization (%) for a given device.
 
-    :param dev: The device string of the device to query utilization for.
-    :type dev: Device
-    :return: The device utilization (%)
+    Parameters
+    ----------
+    device
+        The device string of the device to query utilization for.
+
+    Returns
+    -------
+     ret
+        The device utilization (%)
+
     """
-    if dev == 'cpu':
+    if device == 'cpu':
         return psutil.cpu_percent()
-    elif 'gpu' in dev:
-        handle = _get_nvml_gpu_handle(dev)
+    elif 'gpu' in device:
+        handle = _get_nvml_gpu_handle(device)
         return nvidia_smi.nvmlDeviceGetUtilizationRates(handle).gpu
     else:
         raise Exception('Invalid device string input, must be on the form "gpu:idx" or "cpu", '
-                        'but found {}'.format(dev))
+                        'but found {}'.format(device))
 
 
 # Availability
 
 def gpu_is_available() -> bool:
-    """
-    Determine whether a GPU is available to use, with the backend framework.
+    """Determine whether a GPU is available to use, with the backend framework.
+
+    Parameters
+    ----------
 
     Returns
-    -------
-    out:
+     -------
+    ret
         Boolean, as to whether a gpu is available.
 
     Examples
@@ -278,26 +352,43 @@ def gpu_is_available() -> bool:
 
 
 def num_cpu_cores() -> int:
-    """
-    Determine the number of cores available in the cpu.
-    """
+    """Determine the number of cores available in the cpu."""
     return psutil.cpu_count()
 
 
 def num_gpus() -> int:
-    """
-    Determine the number of available GPUs, with the backend framework.
+    """Determine the number of available GPUs, with the backend framework.
 
-    :return: Number of available GPUs.
+    Parameters
+    ----------
+
+    Returns
+    -------
+    out:
+        Number of available GPUs.
+
+    Examples:
+    >>> print(ivy.num_gpus())
+    1
     """
     return _cur_framework().num_gpus()
 
 
 def tpu_is_available() -> bool:
-    """
-    Determine whether a TPU is available to use, with the backend framework.
+    """Determine whether a TPU is available to use, with the backend framework.
 
-    :return: Boolean, as to whether a tpu is available.
+    Parameters
+    ----------
+
+    Returns
+    -------
+        ret
+        Boolean, as to whether a tpu is available.
+    
+    Examples
+    --------
+    >>> print(ivy.tpu_is_available())
+    True
     """
     return _cur_framework().tpu_is_available()
 
@@ -305,21 +396,31 @@ def tpu_is_available() -> bool:
 # Default Device #
 
 # noinspection PyShadowingNames
-def _assert_dev_correct_formatting(dev):
-    assert dev[0:3] in ['gpu', 'tpu', 'cpu']
-    if dev != 'cpu':
-        assert dev[3] == ':'
-        assert dev[4:].isnumeric()
+def _assert_dev_correct_formatting(device):
+    assert device[0:3] in ['gpu', 'tpu', 'cpu']
+    if device != 'cpu':
+        assert device[3] == ':'
+        assert device[4:].isnumeric()
 
 
 # noinspection PyShadowingNames
-def default_device(dev=None):
+def default_device(device=None):
     """
-    Return the input dev if provided, otherwise return the global default device.
+
+    Parameters
+    ----------
+    device
+         (Default value = None)
+
+    Returns
+    -------
+     ret
+
+
     """
-    if ivy.exists(dev):
-        _assert_dev_correct_formatting(ivy.dev_to_str(dev))
-        return dev
+    if ivy.exists(device):
+        _assert_dev_correct_formatting(ivy.dev_to_str(device))
+        return device
     global default_device_stack
     if not default_device_stack:
         ret = 'gpu:0' if ivy.gpu_is_available() else 'cpu'
@@ -329,13 +430,25 @@ def default_device(dev=None):
 
 
 # noinspection PyShadowingNames
-def set_default_device(dev):
-    _assert_dev_correct_formatting(dev)
+def set_default_device(device):
+    """
+
+    Parameters
+    ----------
+    device
+
+
+    Returns
+    -------
+
+    """
+    _assert_dev_correct_formatting(device)
     global default_device_stack
-    default_device_stack.append(dev)
+    default_device_stack.append(device)
 
 
 def unset_default_device():
+    """ """
     global default_device_stack
     if default_device_stack:
         default_device_stack.pop(-1)
@@ -344,7 +457,7 @@ def unset_default_device():
 # Device Allocation #
 
 # noinspection PyShadowingNames
-def to_dev(x: Union[ivy.Array, ivy.NativeArray], dev: ivy.Device = None, \
+def to_dev(x: Union[ivy.Array, ivy.NativeArray], device: ivy.Device = None, \
            out: Optional[Union[ivy.Array, ivy.NativeArray]] = None) \
         -> Union[ivy.Array, ivy.NativeArray]:
     """
@@ -352,16 +465,16 @@ def to_dev(x: Union[ivy.Array, ivy.NativeArray], dev: ivy.Device = None, \
 
     Parameters
     ----------
-    x:
+    x
        input array to be moved to the desired device
-    dev:
+    device
         device to move the input array `x` to
-    out:
+    out
         optional output array, for writing the result to. It must have a shape that the inputs broadcast to.
 
     Returns
-    -------
-    x:
+     -------
+    ret
         input array x placed on the desired device
 
     Examples
@@ -369,75 +482,93 @@ def to_dev(x: Union[ivy.Array, ivy.NativeArray], dev: ivy.Device = None, \
     >>> x = ivy.array([1., 2., 3.])
     >>> x = ivy.to_dev(x, 'cpu')
     """
-    return _cur_framework(x).to_dev(x, dev, out)
+    return _cur_framework(x).to_dev(x, device, out)
 
 
 # Function Splitting #
 
 # noinspection PyShadowingNames
-def split_factor(dev=None):
-    """
-    Get the global split factor for a given device, which can be used to scale batch splitting chunk sizes for the
+def split_factor(device=None):
+    """Get the global split factor for a given device, which can be used to scale batch splitting chunk sizes for the
     device across the codebase. Default global value for each device is 1.
 
-    :param dev: The device to query the split factor for. Sets the default device by default.
-    :type dev: Device, optional
-    :return: The split factor for the specified device.
+    Parameters
+    ----------
+    device
+        The device to query the split factor for. Sets the default device by default.
+
+    Returns
+    -------
+     ret
+        The split factor for the specified device.
+
     """
     global split_factors
-    dev = ivy.default(dev, default_device())
-    if dev in split_factors:
-        return split_factors[dev]
-    split_factors[dev] = 0.
-    return split_factors[dev]
+    device = ivy.default(device, default_device())
+    if device in split_factors:
+        return split_factors[device]
+    split_factors[device] = 0.
+    return split_factors[device]
 
 
 # noinspection PyShadowingNames
-def set_split_factor(factor, dev=None):
-    """
-    Set the global split factor for a given device, which can be used to scale batch splitting chunk sizes for the
+def set_split_factor(factor, device=None):
+    """Set the global split factor for a given device, which can be used to scale batch splitting chunk sizes for the
     device across the codebase.
 
-    :param factor: The factor to set the device-specific split factor to.
-    :type factor: float
-    :param dev: The device to set the split factor for. Sets the default device by default.
-    :type dev: Device, optional
+    Parameters
+    ----------
+    factor
+        The factor to set the device-specific split factor to.
+    device
+        The device to set the split factor for. Sets the default device by default.
+
+    Returns
+    -------
+
     """
     assert 0 <= factor
     global split_factors
-    dev = ivy.default(dev, default_device())
-    split_factors[dev] = factor
+    device = ivy.default(device, default_device())
+    split_factors[device] = factor
 
 
 # noinspection PyShadowingNames
 def split_func_call(func: Callable, inputs: Iterable[Union[Union[ivy.Array, ivy.NativeArray], ivy.Container]],
                     mode: str, max_chunk_size: int = None, chunk_size: int = None,
                     input_axes: Union[int, Iterable[int]] = 0, output_axes: Union[int, Iterable[int]] = None,
-                    stop_gradients: bool = False, dev=None)\
+                    stop_gradients: bool = False, device=None)\
         -> Iterable[Union[Union[ivy.Array, ivy.NativeArray], ivy.Container]]:
-    """
-    Call a function by splitting its inputs along a given axis, and calling the function in chunks, rather than feeding
+    """Call a function by splitting its inputs along a given axis, and calling the function in chunks, rather than feeding
     the entire input array at once. This can be useful to reduce memory usage of the device the arrays are on.
-    :param func: The function to be called.
-    :type func: callable
-    :param inputs: A list of inputs to pass into the function.
-    :type inputs: sequence of arrays
-    :param mode: The mode by which to unify the return values, must be one of [ concat | mean | sum ]
-    :type mode: str
-    :param max_chunk_size: The maximum size of each of the chunks to be fed into the function.
-    :type max_chunk_size: int
-    :param chunk_size: The size of each of the chunks to be fed into the function. Specifying this arg overwrites the
-                       global split factor. Default is None.
-    :type chunk_size: int, optional
-    :param input_axes: The axes along which to split each of the inputs, before passing to the function. Default is 0.
-    :type input_axes: int or sequence of ints, optional
-    :param output_axes: The axes along which to concat each of the returned outputs. Default is same as fist input axis.
-    :type output_axes: int or sequence of ints, optional
-    :param stop_gradients: Whether to stop the gradients for each computed return. Default is False.
-    :type stop_gradients: bool, optional
-    :param dev: The device to set the split factor for. Sets the default device by default.
-    :type dev: Device, optional
-    :return: The return from the function, following input splitting and re-concattenation.
+
+    Parameters
+    ----------
+    func
+        The function to be called.
+    inputs
+        A list of inputs to pass into the function.
+    mode
+        The mode by which to unify the return values, must be one of [ concat | mean | sum ]
+    max_chunk_size
+        The maximum size of each of the chunks to be fed into the function.
+    chunk_size
+        The size of each of the chunks to be fed into the function. Specifying this arg overwrites the
+        global split factor. Default is None.
+    input_axes
+        The axes along which to split each of the inputs, before passing to the function. Default is 0.
+    output_axes
+        The axes along which to concat each of the returned outputs. Default is same as fist input axis.
+    stop_gradients
+        Whether to stop the gradients for each computed return. Default is False.
+    device
+        The device to set the split factor for. Sets the default device by default.
+
+    Returns
+     -------
+    ret
+        The return from the function, following input splitting and re-concattenation.
+
     """
     if isinstance(input_axes, int):
         input_axes = [input_axes]*len(inputs)
@@ -452,7 +583,7 @@ def split_func_call(func: Callable, inputs: Iterable[Union[Union[ivy.Array, ivy.
             max_chunk_sizes[shape_key] = max_dim
             max_chunk_size = max_dim
     chunk_size = ivy.default(
-        chunk_size, lambda: 1 + int(round((max_chunk_size-1) * ivy.split_factor(ivy.default_device(dev)))), True)
+        chunk_size, lambda: 1 + int(round((max_chunk_size-1) * ivy.split_factor(ivy.default_device(device)))), True)
     dim_size = inputs[0].shape[input_axes[0]]
     if chunk_size >= dim_size:
         return func(*inputs)
@@ -489,8 +620,7 @@ def split_func_call(func: Callable, inputs: Iterable[Union[Union[ivy.Array, ivy.
         output_axes = [input_axes[0]] * num_outputs
     elif isinstance(output_axes, int):
         output_axes = [output_axes] * num_outputs
-    ret = [ivy.concat([r[i] for r in rets], output_axes[i]) if ivy.is_array(rets[0][i])
-           else ivy.Container.concat([r[i] for r in rets], output_axes[i]) for i in range(num_outputs)]
+    ret = [ivy.concat([r[i] for r in rets], output_axes[i]) for i in range(num_outputs)]
     return ret[0] if len(ret) == 1 else ret
 
 
@@ -515,7 +645,6 @@ class MultiDev:
 
 
 class MultiDevItem(MultiDev):
-
     def __init__(self, data: Dict[ivy.Device, Any], axis=0):
         super().__init__(data, axis)
 
@@ -570,15 +699,24 @@ class MultiDevItem(MultiDev):
 
 class MultiDevIter(MultiDev):
 
-    def __init__(self, data: Iterable, devs):
-        self._devs = devs
+    def __init__(self, data: Iterable, devices):
+        self._devs = devices
         super().__init__(data)
 
     # noinspection PyShadowingNames
-    def at_dev(self, dev):
-        return [x[dev] if isinstance(x, MultiDevItem) else x for x in self._data]
+    def at_dev(self, device):
+        """
+
+        Parameters
+        ----------
+        device
+
+
+"""
+        return [x[device] if isinstance(x, MultiDevItem) else x for x in self._data]
 
     def at_devs(self):
+        """ """
         return {ds: self.at_dev(ds) for ds in self._devs}
 
     def __getitem__(self, item):
@@ -601,13 +739,21 @@ class MultiDevIter(MultiDev):
 
 class MultiDevNest(MultiDevIter):
 
-    def __init__(self, data: Iterable, devs, max_depth=1):
+    def __init__(self, data: Iterable, devices, max_depth=1):
         self._max_depth = max_depth
-        super().__init__(data, devs)
+        super().__init__(data, devices)
 
     # noinspection PyShadowingNames
-    def at_dev(self, dev):
-        return ivy.nested_map(self._data, lambda x: x[dev] if isinstance(x, MultiDevItem) else x,
+    def at_dev(self, device):
+        """
+
+        Parameters
+        ----------
+        device
+
+
+"""
+        return ivy.nested_map(self._data, lambda x: x[device] if isinstance(x, MultiDevItem) else x,
                               max_depth=self._max_depth)
 
     def __repr__(self):
@@ -634,80 +780,117 @@ class DevDistNest(MultiDevNest):
         return 'DevDistNest(' + self._data.__repr__() + ')'
 
 
-def dev_dist_array(x, devs: Union[Iterable[str], Dict[str, int]], axis=0):
-    """
-    Distribute an array across the specified devices, returning a list of sub-arrays, each on a different device.
+def dev_dist_array(x, devices: Union[Iterable[str], Dict[str, int]], axis=0):
+    """Distribute an array across the specified devices, returning a list of sub-arrays, each on a different device.
 
-    :param x: The array to distribute across devices.
-    :type x: array
-    :param devs: The devices to distribute the array across.
-    :type devs: sequence of strs or dict of split sizes
-    :param axis: The axis along which to split the array. Default is 0.
-    :type axis: int, optional
-    :return: array distributed across the target devices
+    Parameters
+    ----------
+    x
+        The array to distribute across devices.
+    devices
+        The devices to distribute the array across.
+    axis
+        The axis along which to split the array. Default is 0.
+    devices
+
+    Dict
+
+    Returns
+     -------
+    ret
+        array distributed across the target devices
+
     """
-    split_arg = list(devs.values()) if isinstance(devs, dict) else len(devs)
+    split_arg = list(devices.values()) if isinstance(devices, dict) else len(devices)
     return DevDistItem(
-        {ds: ivy.to_dev(x_sub, ds) for x_sub, ds in zip(ivy.split(x, split_arg, axis, with_remainder=True), devs)})
+        {ds: ivy.to_dev(x_sub, ds) for x_sub, ds in zip(ivy.split(x, split_arg, axis, with_remainder=True), devices)})
 
 
-def dev_dist(x, devs: Union[Iterable[str], Dict[str, int]], axis=0):
-    """
-    Distribute the input item across the specified devices, returning a list of sub-items, each on a different device.
+def dev_dist(x, devices: Union[Iterable[str], Dict[str, int]], axis=0):
+    """Distribute the input item across the specified devices, returning a list of sub-items, each on a different device.
 
-    :param x: The input array or container to distribute across devices.
-    :type x: array or container
-    :param devs: The devices to distribute the input across.
-    :type devs: sequence of strs or dict of split sizes
-    :param axis: The axis along which to split the input. Default is 0.
-    :type axis: int, optional
-    :return: array or container distributed across the target devices
+    Parameters
+    ----------
+    x
+        The input array or container to distribute across devices.
+    devices
+        The devices to distribute the input across.
+    axis
+        The axis along which to split the input. Default is 0.
+    devices
+
+    Dict
+
+    Returns
+     -------
+    ret
+        array or container distributed across the target devices
+
     """
     if ivy.is_array(x):
-        return dev_dist_array(x, devs, axis)
+        return dev_dist_array(x, devices, axis)
     elif isinstance(x, ivy.Container):
-        return x.dev_dist(devs, axis)
+        return x.dev_dist(devices, axis)
     return x
 
 
-def dev_dist_iter(xs, devs: Union[Iterable[str], Dict[str, int]], axis=0):
-    """
-    Distribute elements of the iterbale xs across the specified devices.
+def dev_dist_iter(xs, devices: Union[Iterable[str], Dict[str, int]], axis=0):
+    """Distribute elements of the iterbale xs across the specified devices.
 
-    :param xs: The iterable of items to distribute.
-    :type xs: iterable of any
-    :param devs: The devices to distribute the iterable elements across.
-    :type devs: sequence of strs or dict of split sizes
-    :param axis: The axis along which to split the arrays in the iterable xs. Default is 0.
-    :type axis: int, optional
-    :return: iterable with each element distributed to the target devices
+    Parameters
+    ----------
+    xs
+        The iterable of items to distribute.
+    devices
+        The devices to distribute the iterable elements across.
+    axis
+        The axis along which to split the arrays in the iterable xs. Default is 0.
+    devices
+
+    Dict
+
+    Returns
+     -------
+    ret
+        iterable with each element distributed to the target devices
+
     """
-    if isinstance(devs, str):
-        devs = [devs]
-    return DevDistIter([dev_dist(x, devs, axis) for x in xs], devs)
+    if isinstance(devices, str):
+        devices = [devices]
+    return DevDistIter([dev_dist(x, devices, axis) for x in xs], devices)
 
 
-def dev_dist_nest(args, kwargs, devs: Union[Iterable[str], Dict[str, int]], axis=0, max_depth=1):
-    """
-    Distribute the nested input arguments across the specified devices.
+def dev_dist_nest(args, kwargs, devices: Union[Iterable[str], Dict[str, int]], axis=0, max_depth=1):
+    """Distribute the nested input arguments across the specified devices.
 
-    :param args: The positional nested arguments to distribute.
-    :type args: list of any
-    :param kwargs: The keyword nested arguments to distribute.
-    :type kwargs: dict of any
-    :param devs: The devices to distribute the nested arguments across.
-    :type devs: sequence of strs or dict of split sizes
-    :param axis: The axis along which to split the arrays in the arguments. Default is 0.
-    :type axis: int, optional
-    :param max_depth: The maximum nested depth to reach. Default is 1. Increase this if the nest is deeper.
-    :type max_depth: int, optional
-    :return: nested arguments distributed to the target devices
+    Parameters
+    ----------
+    args
+        The positional nested arguments to distribute.
+    kwargs
+        The keyword nested arguments to distribute.
+    devices
+        The devices to distribute the nested arguments across.
+    axis
+        The axis along which to split the arrays in the arguments. Default is 0.
+    max_depth
+        The maximum nested depth to reach. Default is 1. Increase this if the nest is deeper.
+    devices
+
+    Dict
+
+
+    Returns
+     -------
+    ret
+        nested arguments distributed to the target devices
+
     """
-    if isinstance(devs, str):
-        devs = [devs]
-    args_dist = ivy.nested_map(args, lambda x: dev_dist(x, devs, axis), max_depth=max_depth)
-    kwargs_dist = ivy.nested_map(kwargs, lambda x: dev_dist(x, devs, axis), max_depth=max_depth)
-    return DevDistNest(args_dist, devs), DevDistNest(kwargs_dist, devs)
+    if isinstance(devices, str):
+        devices = [devices]
+    args_dist = ivy.nested_map(args, lambda x: dev_dist(x, devices, axis), max_depth=max_depth)
+    kwargs_dist = ivy.nested_map(kwargs, lambda x: dev_dist(x, devices, axis), max_depth=max_depth)
+    return DevDistNest(args_dist, devices), DevDistNest(kwargs_dist, devices)
 
 
 # Device Cloning #
@@ -730,123 +913,159 @@ class DevClonedNest(MultiDevNest):
         return 'DevClonedNest(' + self._data.__repr__() + ')'
 
 
-def dev_clone_array(x, devs):
+def dev_clone_array(x, devices):
+    """Clone an array across the specified devices, returning a list of cloned arrays, each on a different device.
+
+    Parameters
+    ----------
+    x
+        The array to clone across devices.
+    devices
+        The devices to clone the array to.
+
+    Returns
+     -------
+    ret
+        array cloned to each of the target devices
+
     """
-    Clone an array across the specified devices, returning a list of cloned arrays, each on a different device.
-
-    :param x: The array to clone across devices.
-    :type x: array
-    :param devs: The devices to clone the array to.
-    :type devs: sequence of strs
-    :return: array cloned to each of the target devices
-    """
-    return DevClonedItem({ds: ivy.stop_gradient(ivy.to_dev(x, ds)) for ds in devs})
+    return DevClonedItem({ds: ivy.stop_gradient(ivy.to_dev(x, ds)) for ds in devices})
 
 
-def dev_clone(x, devs):
-    """
-    Clone the input item to each of the specified devices, returning a list of cloned items, each on a different device.
+def dev_clone(x, devices):
+    """Clone the input item to each of the specified devices, returning a list of cloned items, each on a different device.
 
-    :param x: The input array or container to clone to each device.
-    :type x: array or container
-    :param devs: The devices to clone the input to.
-    :type devs: sequence of strs
-    :return: array or container distributed across the target devices
+    Parameters
+    ----------
+    x
+        The input array or container to clone to each device.
+    devices
+        The deviceices to clone the input to.
+
+    Returns
+     -------
+    ret
+        array or container distributed across the target devices
+
     """
     if ivy.is_array(x):
-        return dev_clone_array(x, devs)
+        return dev_clone_array(x, devices)
     elif isinstance(x, ivy.Container):
-        return x.dev_clone(devs)
+        return x.dev_clone(devices)
     return x
 
 
-def dev_clone_iter(xs, devs):
-    """
-    Clone elements of the iterbale xs to each of the specified devices.
+def dev_clone_iter(xs, devices):
+    """Clone elements of the iterbale xs to each of the specified devices.
 
-    :param xs: The iterable of items to clone.
-    :type xs: iterable of any
-    :param devs: The devices to clone each of the iterable elements to.
-    :type devs: sequence of strs
-    :return: iterable with each element cloned to each of the target devices
+    Parameters
+    ----------
+    xs
+        The iterable of items to clone.
+    devices
+        The devices to clone each of the iterable elements to.
+
+    Returns
+     -------
+    ret
+        iterable with each element cloned to each of the target devices
+
     """
-    if isinstance(devs, str):
-        devs = [devs]
-    return DevClonedIter([dev_clone(x, devs) for x in xs], devs)
+    if isinstance(devices, str):
+        devs = [devices]
+    return DevClonedIter([dev_clone(x, devices) for x in xs], devices)
 
 
-def dev_clone_nest(args, kwargs, devs, max_depth=1):
-    """
-    Clone the input arguments across the specified devices.
+def dev_clone_nest(args, kwargs, devices, max_depth=1):
+    """Clone the input arguments across the specified devices.
 
-    :param args: The positional arguments to clone.
-    :type args: list of any
-    :param kwargs: The keyword arguments to clone.
-    :type kwargs: dict of any
-    :param devs: The devices to clone the arguments to.
-    :type devs: sequence of strs
-    :param max_depth: The maximum nested depth to reach. Default is 1. Increase this if the nest is deeper.
-    :type max_depth: int, optional
-    :return: arguments cloned to each of the target devices
+    Parameters
+    ----------
+    args
+        The positional arguments to clone.
+    kwargs
+        The keyword arguments to clone.
+    devices
+        The devices to clone the arguments to.
+    max_depth
+        The maximum nested depth to reach. Default is 1. Increase this if the nest is deeper.
+
+    Returns
+     -------
+    ret
+        arguments cloned to each of the target devices
+
     """
-    if isinstance(devs, str):
-        devs = [devs]
-    args_cloned = ivy.nested_map(args, lambda x: dev_clone(x, devs), max_depth=max_depth)
-    kwargs_cloned = ivy.nested_map(kwargs, lambda x: dev_clone(x, devs), max_depth=max_depth)
-    return DevClonedNest(args_cloned, devs), DevClonedNest(kwargs_cloned, devs)
+    if isinstance(devices, str):
+        devices = [devices]
+    args_cloned = ivy.nested_map(args, lambda x: dev_clone(x, devices), max_depth=max_depth)
+    kwargs_cloned = ivy.nested_map(kwargs, lambda x: dev_clone(x, devices), max_depth=max_depth)
+    return DevClonedNest(args_cloned, devices), DevClonedNest(kwargs_cloned, devices)
 
 
 # Device Unification #
 
 # noinspection PyShadowingNames
-def _concat_unify_array(xs, dev, axis):
-    return ivy.concat([ivy.to_dev(x_sub, dev) for x_sub in xs.values()], axis)
+def _concat_unify_array(xs, device, axis):
+    return ivy.concat([ivy.to_dev(x_sub, device) for x_sub in xs.values()], axis)
 
 
 # noinspection PyShadowingNames
-def _sum_unify_array(xs, dev, _=None):
-    return sum([ivy.to_dev(x_sub, dev) for x_sub in xs.values()])
+def _sum_unify_array(xs, device, _=None):
+    return sum([ivy.to_dev(x_sub, device) for x_sub in xs.values()])
 
 
 # noinspection PyShadowingNames
-def _mean_unify_array(xs, dev, _=None):
-    return _sum_unify_array(xs, dev) / len(xs)
+def _mean_unify_array(xs, device, _=None):
+    return _sum_unify_array(xs, device) / len(xs)
 
 
 # noinspection PyShadowingNames
-def dev_unify_array(xs, dev, mode, axis=0):
-    """
-    Unify a list of sub-arrays, on arbitrary devices, to a single array on the specified device.
+def dev_unify_array(xs, device, mode, axis=0):
+    """Unify a list of sub-arrays, on arbitrary devices, to a single array on the specified device.
 
-    :param xs: The list of arrays to unify onto the specified device.
-    :type xs: sequence of arrays
-    :param dev: The device to unify the arrays to.
-    :type dev: Device
-    :param mode: The mode by which to unify, must be one of [ concat | mean | sum ]
-    :type mode: str
-    :param axis: The axis along which to concattenate the array, if concat mode is set. Default is 0.
-    :type axis: int, optional
-    :return: array unified to the target device
+    Parameters
+    ----------
+    xs
+        The list of arrays to unify onto the specified device.
+    device
+        The device to unify the arrays to.
+    mode
+        The mode by which to unify, must be one of [ concat | mean | sum ]
+    axis
+        The axis along which to concattenate the array, if concat mode is set. Default is 0.
+
+    Returns
+     -------
+    ret
+        array unified to the target device
+
     """
     return {'concat': _concat_unify_array,
             'sum': _sum_unify_array,
-            'mean': _mean_unify_array}[mode](xs, dev, axis)
+            'mean': _mean_unify_array}[mode](xs, device, axis)
 
 
 # noinspection PyShadowingNames
-def dev_unify(xs, dev, mode, axis=0):
-    """
-    Unify a list of sub-arrays, on arbitrary devices, to a single concattenated array on the specified device.
+def dev_unify(xs, device, mode, axis=0):
+    """Unify a list of sub-arrays, on arbitrary devices, to a single concattenated array on the specified device.
 
-    :param xs: The list of sub-arrays to unify onto the specified device.
-    :type xs: sequence of arrays
-    :param dev: The device to unify the sub-arrays to.
-    :type dev: Device
-    :param mode: The mode by which to unify, must be one of [ concat | mean | sum ]
-    :type mode: str
-    :param axis: The axis along which to concattenate the array, if concat mode is set. Default is 0.
-    :type axis: int, optional
-    :return: array unified to the target device
+    Parameters
+    ----------
+    xs
+        The list of sub-arrays to unify onto the specified device.
+    device
+        The device to unify the sub-arrays to.
+    mode
+        The mode by which to unify, must be one of [ concat | mean | sum ]
+    axis
+        The axis along which to concattenate the array, if concat mode is set. Default is 0.
+
+    Returns
+     -------
+    ret
+        array unified to the target device
+
     """
     if isinstance(xs, ivy.MultiDevContainer):
         xs = MultiDevItem(xs.at_devs())
@@ -855,28 +1074,34 @@ def dev_unify(xs, dev, mode, axis=0):
     # noinspection PyProtectedMember
     xs0 = next(iter(xs.items()))[1]
     if ivy.is_array(xs0):
-        return dev_unify_array(xs, dev, mode, axis)
+        return dev_unify_array(xs, device, mode, axis)
     elif isinstance(xs0, ivy.Container):
-        return ivy.Container.unify(xs, dev, mode, axis)
+        return ivy.Container.unify(xs, device, mode, axis)
     return xs
 
 
 # noinspection PyShadowingNames
-def dev_unify_iter(xs, dev, mode, axis=0, transpose=False):
-    """
-    Unify elements of the iterbale xs to a single target device.
+def dev_unify_iter(xs, device, mode, axis=0, transpose=False):
+    """Unify elements of the iterbale xs to a single target device.
 
-    :param xs: The iterable of items to unify.
-    :type xs: iterable of any
-    :param dev: The device to unify the elements of the iterable to.
-    :type dev: Device
-    :param mode: The mode by which to unify, must be one of [ concat | mean | sum ]
-    :type mode: str
-    :param axis: The axis along which to concattenate the sub-arrays. Default is 0.
-    :type axis: int, optional
-    :param transpose: Whether to transpose the first and second dimensions of the iterator. Default is False.
-    :type transpose: bool, optional
-    :return: iterable with each element unified to a single target devices
+    Parameters
+    ----------
+    xs
+        The iterable of items to unify.
+    device
+        The device to unify the elements of the iterable to.
+    mode
+        The mode by which to unify, must be one of [ concat | mean | sum ]
+    axis
+        The axis along which to concattenate the sub-arrays. Default is 0.
+    transpose
+        Whether to transpose the first and second dimensions of the iterator. Default is False.
+
+    Returns
+     -------
+    ret
+        iterable with each element unified to a single target devices
+
     """
     # noinspection PyProtectedMember
     xs = xs._data if isinstance(xs, MultiDevIter) else xs
@@ -884,34 +1109,44 @@ def dev_unify_iter(xs, dev, mode, axis=0, transpose=False):
         # ToDo: make this more elegant, this method should not be responsible for transposing iterators
         xs_t = [MultiDevItem({ivy.dev(i) if ivy.is_array(i) else i.dev: i
                               for i in mdi}) for mdi in list(map(list, zip(*xs)))]
-        return [dev_unify(x, dev, mode, axis) for x in xs_t]
-    return dev_unify(xs, dev, mode, axis)
+        return [dev_unify(x, device, mode, axis) for x in xs_t]
+    return dev_unify(xs, device, mode, axis)
 
 
 # noinspection PyShadowingNames,PyProtectedMember
-def dev_unify_nest(args: Type[MultiDev], kwargs: Type[MultiDev], dev, mode, axis=0, max_depth=1):
-    """
-    Unify the input nested arguments, which consist of sub-arrays spread across arbitrary devices, to unified arrays
+def dev_unify_nest(args: Type[MultiDev], kwargs: Type[MultiDev], device, mode, axis=0, max_depth=1):
+    """Unify the input nested arguments, which consist of sub-arrays spread across arbitrary devices, to unified arrays
     on the single target device.
 
-    :param args: The nested positional arguments to unify.
-    :type args: MultiDev
-    :param kwargs: The nested keyword arguments to unify.
-    :type kwargs: MultiDev
-    :param dev: The device to unify the nested arguments to.
-    :type dev: Device
-    :param mode: The mode by which to unify, must be one of [ concat | mean | sum ]
-    :type mode: str
-    :param axis: The axis along which to concattenate the sub-arrays. Default is 0.
-    :type axis: int, optional
-    :param max_depth: The maximum nested depth to reach. Default is 1. Increase this if the nest is deeper.
-    :type max_depth: int, optional
-    :return: nested arguments unified to the target device
+    Parameters
+    ----------
+    args
+        The nested positional arguments to unify.
+    kwargs
+        The nested keyword arguments to unify.
+    device
+        The device to unify the nested arguments to.
+    mode
+        The mode by which to unify, must be one of [ concat | mean | sum ]
+    axis
+        The axis along which to concattenate the sub-arrays. Default is 0.
+    max_depth
+        The maximum nested depth to reach. Default is 1. Increase this if the nest is deeper.
+    args
+
+    kwargs
+
+
+    Returns
+     -------
+    ret
+        nested arguments unified to the target device
+
     """
     args = args._data if isinstance(args, MultiDevIter) else args
     kwargs = kwargs._data if isinstance(kwargs, MultiDevIter) else kwargs
-    args_uni = ivy.nested_map(args, lambda x: dev_unify(x, dev, mode, axis), max_depth=max_depth)
-    kwargs_uni = ivy.nested_map(kwargs, lambda x: dev_unify(x, dev, mode, axis), max_depth=max_depth)
+    args_uni = ivy.nested_map(args, lambda x: dev_unify(x, device, mode, axis), max_depth=max_depth)
+    kwargs_uni = ivy.nested_map(kwargs, lambda x: dev_unify(x, device, mode, axis), max_depth=max_depth)
     return args_uni, kwargs_uni
 
 
@@ -919,33 +1154,35 @@ def dev_unify_nest(args: Type[MultiDev], kwargs: Type[MultiDev], dev, mode, axis
 
 class DevMapper(abc.ABC):
 
-    def __init__(self, fn, ret_fn, queue_class, worker_class, devs, timeout=None, constant=None, unique=None):
-        """
-        Device Mapper base class.
+    def __init__(self, fn, ret_fn, queue_class, worker_class, devices, timeout=None, constant=None, unique=None):
+        """Device Mapper base class.
 
-        :param fn: The function which the device mapper parallelises across devices.
-        :type fn: callable
-        :param ret_fn: The function which receives the ivy.MultiDevIter as input, and produces a single device output.
-        :type ret_fn: callable
-        :param queue_class: The class to use for creating queues.
-        :type queue_class: class
-        :param worker_class: The class to use for creating parallel workers.
-        :type worker_class: class
-        :param devs: A list of devices on which to parallelise the function.
-        :type devs: sequence of str
-        :param timeout: The timeout for getting items from the queues. Default is global.
-        :type timeout: float, optional
-        :param constant: A dict of keyword arguments which are the same for each process. Default is None.
-        :type constant: dict of any, optional
-        :param unique: A dict of keyword argument sequences which are unique for each process. Default is None.
-        :type unique: dict of iterables of any, optional
-        """
+        Parameters
+        ----------
+        fn
+            The function which the device mapper parallelises across devices.
+        ret_fn
+            The function which receives the ivy.MultiDevIter as input, and produces a single device output.
+        queue_class
+            The class to use for creating queues.
+        worker_class
+            The class to use for creating parallel workers.
+        devices
+            A list of devices on which to parallelise the function.
+        timeout
+            The timeout for getting items from the queues. Default is global.
+        constant
+            A dict of keyword arguments which are the same for each process. Default is None.
+        unique
+            A dict of keyword argument sequences which are unique for each process. Default is None.
+
+"""
         constant_kwargs = ivy.default(constant, {})
         unique_kwargs = ivy.default(unique, {})
         self._fn = fn
         self._ret_fn = ret_fn
-        self._devs = devs
-        self._num_workers = len(devs)
+        self._devs = devices
+        self._num_workers = len(devices)
         self._timeout = ivy.default(timeout, ivy.queue_timeout())
         self._workers = dict()
         self._input_queues = dict()
@@ -955,7 +1192,7 @@ class DevMapper(abc.ABC):
             input_queue = queue_class()
             output_queue = queue_class()
             worker_kwargs = dict(**constant_kwargs, **{k: v[i] for k, v in unique_kwargs.items()})
-            worker = self._worker_class(target=self._worker_fn, args=(input_queue, output_queue, devs[i],
+            worker = self._worker_class(target=self._worker_fn, args=(input_queue, output_queue, devices[i],
                                                                       worker_kwargs, ivy.current_framework_str()))
             worker.start()
             self._input_queues[ds] = input_queue
@@ -970,14 +1207,14 @@ class DevMapper(abc.ABC):
         return state
 
     # noinspection PyShadowingNames
-    def _worker_fn(self, input_queue, output_queue, dev, kwargs, framework_str):
+    def _worker_fn(self, input_queue, output_queue, device, kwargs, framework_str):
         ivy.set_framework(framework_str)
-        ivy.set_default_device(dev)
+        ivy.set_default_device(device)
         for k, v in kwargs.items():
             if isinstance(v, ivy.Module) and not v.built:
-                v.build(dev=dev)
-        if 'dev' in inspect.getfullargspec(self._fn).args:
-            kwargs['dev'] = dev
+                v.build(device=device)
+        if 'device' in inspect.getfullargspec(self._fn).args:
+            kwargs['device'] = device
         while True:
             try:
                 loaded_kwargs = input_queue.get(timeout=self._timeout)
@@ -986,23 +1223,29 @@ class DevMapper(abc.ABC):
             if loaded_kwargs is None:
                 return
             if 'split_factor' in loaded_kwargs:
-                ivy.set_split_factor(loaded_kwargs['split_factor'], dev)
+                ivy.set_split_factor(loaded_kwargs['split_factor'], device)
                 del loaded_kwargs['split_factor']
             ret = self._fn(**loaded_kwargs, **kwargs)
             output_queue.put(ret)
 
     def map(self, used_devs=None, split_factors=None, **kwargs):
-        """
-        Map the function fn to each of the MultiDevice args and kwargs, running each function in parallel with CUDA-safe
+        """Map the function fn to each of the MultiDevice args and kwargs, running each function in parallel with CUDA-safe
         multiprocessing.
 
-        :param used_devs: The devices used in the current mapping pass. Default is all devs.
-        :type used_devs: sequence of str, optional
-        :param split_factors: The updated split factors 0 < sf < 1 for each device. Default is None.
-        :type split_factors: dict of floats, optional
-        :param kwargs: The MutliDevice keyword arguments to map the function to.
-        :type kwargs: dict of any
-        :return: The results of the function, returned as a MultiDevice instance.
+        Parameters
+        ----------
+        used_devs
+            The devices used in the current mapping pass. Default is all devs.
+        split_factors
+            The updated split factors 0 < sf < 1 for each device. Default is None.
+        kwargs
+            The MutliDevice keyword arguments to map the function to.
+
+        Returns
+        -------
+        type
+            The results of the function, returned as a MultiDevice instance.
+
         """
         if ivy.exists(split_factors):
             kwargs['split_factor'] = split_factors
@@ -1018,10 +1261,11 @@ class DevMapper(abc.ABC):
 
 
 class DevMapperMultiProc(DevMapper):
+    """ """
 
-    def __init__(self, fn, ret_fn, devs, timeout=None, constant=None, unique=None):
+    def __init__(self, fn, ret_fn, devices, timeout=None, constant=None, unique=None):
         multiprocessing = ivy.multiprocessing('forkserver')
-        super().__init__(fn, ret_fn, multiprocessing.Queue, multiprocessing.Process, devs, timeout,
+        super().__init__(fn, ret_fn, multiprocessing.Queue, multiprocessing.Process, devices, timeout,
                          constant, unique)
 
     def __del__(self):
@@ -1047,48 +1291,50 @@ class DevMapperMultiProc(DevMapper):
 # Device Manager #
 
 class DevManager:
+    """ """
 
-    def __init__(self, dev_mapper=None, devs: Union[Iterable[str], Dict[str, int]] = None, da_dim_size=None,
+    def __init__(self, dev_mapper=None, devices: Union[Iterable[str], Dict[str, int]] = None, da_dim_size=None,
                  safety_factor=1.1, min_dev_dim_size=0, max_dev_dim_step_ratio=0.1, min_unit_dev_tune_steps=10,
                  min_sf_tune_steps=10, starting_split_factor=0., max_split_factor_step_size=0.05, tune_dev_alloc=True,
                  tune_dev_splits=True):
-        """
-        Create device manager, which unlike the device mapper, handles all argument cloning and distributing internally.
+        """Create device manager, which unlike the device mapper, handles all argument cloning and distributing internally.
         The device manager only receivess a specification regarding the ratio of the batch each device should consume.
 
-        :param dev_mapper: The pre-built device mapper used by the manager internally.
-        :type dev_mapper: DevMapper
-        :param devs: The devices to distribute and clone the arguments across.
-        :type devs: sequence of strs or dict of split sizes
-        :param da_dim_size: The size of the dimension along which the device allocation splitting is performed.
-        :type da_dim_size: int
-        :param safety_factor: The factor by which to be safe in the avoidance of OOM GPU errors. Default is 1.1.
-        :type safety_factor: float, optional
-        :param min_dev_dim_size: The minimum dimension size to pass to a device. Default is 0.
-        :type min_dev_dim_size: int, optional
-        :param max_dev_dim_step_ratio: The maximum step ratio for changing the dimension for a device. Default is 0.1.
-        :type max_dev_dim_step_ratio: int, optional
-        :param min_unit_dev_tune_steps: The minimum number of tune steps to make when optimizing with unit step size.
-                                   Default is 10.
-        :type min_unit_dev_tune_steps: int, optional
-        :param min_sf_tune_steps: Minimum number of split factor tune steps. Default is 10.
-        :type min_sf_tune_steps: int, optional
-        :param starting_split_factor: The initial device-specific split factor. Default is 0.
-        :type starting_split_factor: float, optional
-        :param max_split_factor_step_size: The maximum step size for changing the split factor for a device.
-                                           Default is 0.05.
-        :type max_split_factor_step_size: float, optional
-        :param tune_dev_alloc: Whether to tune the device split sizes internally based on device utilization tracking,
-                               and use the provided values for initialization. Default is True.
-        :type tune_dev_alloc: bool, optional
-        :param tune_dev_splits: Whether to tune the per-device split sizes internally. Default is True.
-        :type tune_dev_splits: bool, optional
-        """
+        Parameters
+        ----------
+        dev_mapper
+            The pre-built device mapper used by the manager internally. (Default value = None)
+        devices
+            The devices to distribute and clone the arguments across.
+        da_dim_size
+            The size of the dimension along which the device allocation splitting is performed. (Default value = None)
+        safety_factor
+            The factor by which to be safe in the avoidance of OOM GPU errors. Default is 1.1.
+        min_dev_dim_size
+            The minimum dimension size to pass to a device. Default is 0.
+        max_dev_dim_step_ratio
+            The maximum step ratio for changing the dimension for a device. Default is 0.1.
+        min_unit_dev_tune_steps
+            The minimum number of tune steps to make when optimizing with unit step size.
+            Default is 10.
+        min_sf_tune_steps
+            Minimum number of split factor tune steps. Default is 10.
+        starting_split_factor
+            The initial device-specific split factor. Default is 0.
+        max_split_factor_step_size
+            The maximum step size for changing the split factor for a device.
+            Default is 0.05.
+        tune_dev_alloc
+            Whether to tune the device split sizes internally based on device utilization tracking,
+            and use the provided values for initialization. Default is True.
+        tune_dev_splits
+            Whether to tune the per-device split sizes internally. Default is True.
+"""
         with_dev_mapping = True if ivy.exists(dev_mapper) else False
         tune_dev_alloc = False if not with_dev_mapping else tune_dev_alloc
         self._dev_mapper = dev_mapper
-        devs = ivy.default(devs, [ivy.default_device()])
-        self._num_devs = len(devs)
+        devices = ivy.default(devices, [ivy.default_device()])
+        self._num_devs = len(devices)
         self._dim_size = da_dim_size
         assert 1 <= safety_factor
         self._safety_factor = safety_factor
@@ -1117,10 +1363,10 @@ class DevManager:
         self._observed_configs = set()
         self._da_directions = dict()
         self._da_directions_flipped = dict()
-        if isinstance(devs, dict):
-            self._dev_da_ratios = devs
+        if isinstance(devices, dict):
+            self._dev_da_ratios = devices
         else:
-            self._dev_da_ratios = dict(zip(devs, [1 / self._num_devs] * self._num_devs))
+            self._dev_da_ratios = dict(zip(devices, [1 / self._num_devs] * self._num_devs))
         self._devs_keys = self._dev_da_ratios.keys()
         self._percent_mem_inc_per_unit_da_dim = dict(zip(self._devs_keys, [0] * self._num_devs))
         self._percent_mem_inc_per_sf = dict(zip(self._devs_keys, [0] * self._num_devs))
@@ -1176,6 +1422,14 @@ class DevManager:
         self._dev_da_ratios = {k: v / self._dim_size for k, v in self._devs_da.items()}
 
     def da_tune_step(self, oom=False):
+        """
+
+        Parameters
+        ----------
+        oom
+             (Default value = False)
+
+"""
         if self._tuned:
             return
         new_dev_utils = dict(sorted({k: dev_util(k) for k in self._devs_keys}.items(), key=lambda item: item[1]))
@@ -1296,6 +1550,14 @@ class DevManager:
                 ivy.set_split_factor(min(self._devs_ds[ds] + clipped_delta, 1), ds)
 
     def ds_tune_step(self, oom=False):
+        """
+
+        Parameters
+        ----------
+        oom
+             (Default value = False)
+
+"""
         if self._tuned:
             return
         if oom:
@@ -1372,6 +1634,7 @@ class DevManager:
     # Repeated Config Checking #
 
     def repeated_config_check(self):
+        """ """
 
         # check if ds tuning is complete, and return if so
         config_list = list()
@@ -1391,19 +1654,25 @@ class DevManager:
     # Mapping #
 
     def map(self, cloned=None, to_clone=None, distributed=None, to_distribute=None):
-        """
-        Map the function fn to each of the MultiDevice args and kwargs, running each function in parallel with CUDA-safe
+        """Map the function fn to each of the MultiDevice args and kwargs, running each function in parallel with CUDA-safe
         multiprocessing.
 
-        :param cloned: The MutliDevice keyword arguments which are already cloned. Default is None.
-        :type cloned: dict of any, optional
-        :param to_clone: The MutliDevice keyword arguments to clone and map to the function. Default is None.
-        :type to_clone: dict of any, optional
-        :param distributed: The MutliDevice keyword arguments which already distributed. Default is None.
-        :type distributed: dict of any, optional
-        :param to_distribute: The MutliDevice keyword arguments to distribute and map to the function. Default is None.
-        :type to_distribute: dict of any, optional
-        :return: The results of the function, returned as a MultiDevice instance.
+        Parameters
+        ----------
+        cloned
+            The MutliDevice keyword arguments which are already cloned. Default is None.
+        to_clone
+            The MutliDevice keyword arguments to clone and map to the function. Default is None.
+        distributed
+            The MutliDevice keyword arguments which already distributed. Default is None.
+        to_distribute
+            The MutliDevice keyword arguments to distribute and map to the function. Default is None.
+
+        Returns
+        -------
+        type
+            The results of the function, returned as a MultiDevice instance.
+
         """
         used_devs_dict = {k: v for k, v in self._devs_da.items() if v > 0}
         used_devs = list(used_devs_dict.keys())
@@ -1435,10 +1704,19 @@ class DevManager:
 
     @property
     def dim_size(self):
+        """ """
         return self._dim_size
 
     @dim_size.setter
     def dim_size(self, batch_size):
+        """
+
+        Parameters
+        ----------
+        batch_size
+
+
+"""
         self._dim_size = batch_size
         if self._tune_da:
             self._max_dev_dim_step_size = max(int(round(self._max_dev_dim_step_ratio * self._dim_size)), 1)
@@ -1446,26 +1724,31 @@ class DevManager:
 
     @property
     def tune_step(self):
+        """ """
         return self._tune_step
 
     @property
     def tuned(self):
+        """ """
         return self._tuned
 
 
 # Profiler #
 
 class Profiler(abc.ABC):
+    """ """
 
     def __init__(self, save_dir):
         self._save_dir = save_dir
 
     @abc.abstractmethod
     def start(self):
+        """ """
         raise NotImplementedError
 
     @abc.abstractmethod
     def stop(self):
+        """ """
         raise NotImplementedError
 
     @abc.abstractmethod

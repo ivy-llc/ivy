@@ -6,7 +6,7 @@ Converters from Native Modules to Ivy Modules
 from ivy.framework_handler import current_framework as _cur_framework
 
 
-def to_ivy_module(native_module=None, native_module_class=None, args=None, kwargs=None, dev=None, devs=None,
+def to_ivy_module(native_module=None, native_module_class=None, args=None, kwargs=None, device=None, devices=None,
                   inplace_update=False):
     """
     Convert an instance of a trainable module from a native framework into a trainable ivy.Module instance.
@@ -20,13 +20,13 @@ def to_ivy_module(native_module=None, native_module_class=None, args=None, kwarg
     :type args: list of any
     :param kwargs: Key-word arguments to pass to the native module class. Default is None.
     :type kwargs: dict of any
-    :param dev: The device on which to create module variables. Default is None.
-    :type dev: ivy.Device, optional
-    :param devs: The devices on which to create module variables. Default is None.
-    :type devs: sequence of str, optional
+    :param device: The device on which to create module variables. Default is None.
+    :type device: ivy.Device, optional
+    :param devices: The devices on which to create module variables. Default is None.
+    :type devices: sequence of str, optional
     :param inplace_update: For backends with dedicated variable classes, whether to update these inplace.
                            Default is False.
     :type inplace_update: bool, optional
     :return: The new trainable ivy.Module instance.
     """
-    return _cur_framework().to_ivy_module(native_module, native_module_class, args, kwargs, dev, devs, inplace_update)
+    return _cur_framework().to_ivy_module(native_module, native_module_class, args, kwargs, device, devices, inplace_update)
