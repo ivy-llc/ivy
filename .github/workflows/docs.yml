@@ -23,8 +23,8 @@ jobs:
           rm -rf .gitignore
           cd docs
           bash make_docs.sh root
-          touch .nojekyll
-          cp .nojekyll build/
+          sudo touch .nojekyll
+          sudo cp .nojekyll build/
           cd ../..
 
       - name: Deploy 🚀
