@@ -35,14 +35,31 @@ def _native_wrapper(f):
         if isinstance(self, Array):
             return f(self, *args, **kwargs)
         return getattr(self, f.__name__)(*args, **kwargs)
+
     return decor
 
 
-class Array(ArrayWithActivations, ArrayWithCreation, ArrayWithDataTypes, ArrayWithDevice, ArrayWithElementwise,
-            ArrayWithGeneral, ArrayWithGradients, ArrayWithImage, ArrayWithLayers, ArrayWithLinearAlgebra,
-            ArrayWithLosses, ArrayWithManipulation, ArrayWithNorms, ArrayWithRandom, ArrayWithSearching, ArrayWithSet,
-            ArrayWithSorting, ArrayWithStatistical, ArrayWithUtility):
-
+class Array(
+    ArrayWithActivations,
+    ArrayWithCreation,
+    ArrayWithDataTypes,
+    ArrayWithDevice,
+    ArrayWithElementwise,
+    ArrayWithGeneral,
+    ArrayWithGradients,
+    ArrayWithImage,
+    ArrayWithLayers,
+    ArrayWithLinearAlgebra,
+    ArrayWithLosses,
+    ArrayWithManipulation,
+    ArrayWithNorms,
+    ArrayWithRandom,
+    ArrayWithSearching,
+    ArrayWithSet,
+    ArrayWithSorting,
+    ArrayWithStatistical,
+    ArrayWithUtility,
+):
     def __init__(self, data):
         ArrayWithActivations.__init__(self)
         ArrayWithCreation.__init__(self)
@@ -69,15 +86,17 @@ class Array(ArrayWithActivations, ArrayWithCreation, ArrayWithDataTypes, ArrayWi
             assert ivy.is_native_array(data)
             self._data = data
         self._shape = self._data.shape
-        self._size = functools.reduce(mul, self._data.shape) if len(self._data.shape) > 0 else 0
+        self._size = (
+            functools.reduce(mul, self._data.shape) if len(self._data.shape) > 0 else 0
+        )
         self._dtype = ivy.dtype(self._data)
         self._device = ivy.dev(self._data)
         self._dev_str = ivy.dev_to_str(self._device)
-        self._pre_repr = 'ivy.'
-        if 'gpu' in self._dev_str:
-            self._post_repr = ', dev={})'.format(self._dev_str)
+        self._pre_repr = "ivy."
+        if "gpu" in self._dev_str:
+            self._post_repr = ", dev={})".format(self._dev_str)
         else:
-            self._post_repr = ')'
+            self._post_repr = ")"
 
     # Properties #
     # -----------#
@@ -125,16 +144,16 @@ class Array(ArrayWithActivations, ArrayWithCreation, ArrayWithDataTypes, ArrayWi
     def size(self):
         """
         Number of elements in an array.
-        
+
         .. note::
            This must equal the product of the array's dimensions.
-        
+
         Returns
         -------
         out: Optional[int]
             number of elements in an array. The returned value must be ``None`` if and only if one or more array dimensions are unknown.
-        
-        
+
+
         .. note::
            For array libraries having graph-based computational models, an array may have unknown dimensions due to data-dependent operations.
         """
@@ -173,8 +192,11 @@ class Array(ArrayWithActivations, ArrayWithCreation, ArrayWithDataTypes, ArrayWi
 
     @_native_wrapper
     def __repr__(self):
-        return self._pre_repr + ivy.to_numpy(self._data).__repr__()[:-1].replace('\n', '\n    ') + \
-               self._post_repr.format(ivy.current_framework_str())
+        return (
+            self._pre_repr
+            + ivy.to_numpy(self._data).__repr__()[:-1].replace("\n", "\n    ")
+            + self._post_repr.format(ivy.current_framework_str())
+        )
 
     @_native_wrapper
     def __dir__(self):
@@ -198,7 +220,9 @@ class Array(ArrayWithActivations, ArrayWithCreation, ArrayWithDataTypes, ArrayWi
         try:
             self._data.__setitem__(query, val)
         except (AttributeError, TypeError):
-            self._data = ivy.scatter_nd(query, val, tensor=self._data, reduction='replace')._data
+            self._data = ivy.scatter_nd(
+                query, val, tensor=self._data, reduction="replace"
+            )._data
             self._dtype = ivy.dtype(self._data)
 
     @_native_wrapper
@@ -296,7 +320,7 @@ class Array(ArrayWithActivations, ArrayWithCreation, ArrayWithDataTypes, ArrayWi
 
     @_native_wrapper
     def __abs__(self):
-        if 'uint' in ivy.dtype(self._data, as_str=True):
+        if "uint" in ivy.dtype(self._data, as_str=True):
             return self
         res = self._data.__abs__()
         if res is NotImplemented:
@@ -312,7 +336,7 @@ class Array(ArrayWithActivations, ArrayWithCreation, ArrayWithDataTypes, ArrayWi
 
     @_native_wrapper
     def __int__(self):
-        if hasattr(self._data, '__int__'):
+        if hasattr(self._data, "__int__"):
             res = self._data.__int__()
         else:
             # noinspection PyTypeChecker
@@ -439,7 +463,7 @@ class Array(ArrayWithActivations, ArrayWithCreation, ArrayWithDataTypes, ArrayWi
             return to_ivy(self._data.__deepcopy__(memodict))
         except AttributeError:
             # ToDo: try and find more elegant solution to jax inability to deepcopy device arrays
-            if ivy.current_framework_str() == 'jax':
+            if ivy.current_framework_str() == "jax":
                 np_array = copy.deepcopy(self._data)
                 jax_array = ivy.array(np_array)
                 return to_ivy(jax_array)
@@ -452,7 +476,6 @@ class Array(ArrayWithActivations, ArrayWithCreation, ArrayWithDataTypes, ArrayWi
 
 # noinspection PyRedeclaration
 class Variable(Array):
-
     def __init__(self, data):
         assert ivy.is_variable(data)
         super().__init__(data)
