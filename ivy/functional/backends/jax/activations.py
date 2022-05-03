@@ -13,17 +13,14 @@ import ivy
 from ivy.functional.backends.jax import JaxArray
 
 
-def relu(x: JaxArray,
-         out: Optional[JaxArray] = None)\
-        -> JaxArray:
+def relu(x: JaxArray, out: Optional[JaxArray] = None) -> JaxArray:
     ret = jnp.maximum(x, 0)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
     return ret
 
 
-def leaky_relu(x: JaxArray, alpha: Optional[float] = 0.2)\
-        -> JaxArray:
+def leaky_relu(x: JaxArray, alpha: Optional[float] = 0.2) -> JaxArray:
     return jnp.where(x > 0, x, x * alpha)
 
 
@@ -34,16 +31,14 @@ def sigmoid(x: JaxArray) -> JaxArray:
     return 1 / (1 + jnp.exp(-x))
 
 
-def tanh(x: JaxArray)\
-        -> JaxArray:
+def tanh(x: JaxArray) -> JaxArray:
     return jnp.tanh
 
-def softmax(x: JaxArray, axis: Optional[int] = -1)\
-        -> JaxArray:
+
+def softmax(x: JaxArray, axis: Optional[int] = -1) -> JaxArray:
     exp_x = jnp.exp(x)
     return exp_x / jnp.sum(exp_x, axis, keepdims=True)
 
 
-def softplus(x: JaxArray)\
-        -> JaxArray:
+def softplus(x: JaxArray) -> JaxArray:
     return jnp.log(jnp.exp(x) + 1)
