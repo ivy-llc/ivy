@@ -13,40 +13,26 @@ from ivy.framework_handler import current_framework as _cur_framework
 
 def arange(start: Number, stop: Number = None, step: Number = 1, dtype: ivy.Dtype = None, device: ivy.Device = None,
            ) -> Union[ivy.Array, ivy.NativeArray]:
-    """Returns evenly spaced values within a given interval, with the spacing being specified.
-
-    Values are generated within the half-open interval [start, stop) (in other words, the interval including start but
-    excluding stop). For integer arguments the function is equivalent to the Python built-in range function,
-    but returns an array in the chosen ml_framework rather than a list.
-
-    See :math:`linspace` for a certain number of evenly spaced values in an interval.
+    """
+    Returns evenly spaced values within the half-open interval [start, stop) as a one-dimensional array.
 
     Parameters
     ----------
-    stop
-        End of interval. The interval does not include this value, except in some cases where step is not an
-        integer and floating point round-off affects the length of out.
     start
-        Start of interval. The interval includes this value. The default start value is 0.
+        if stop is specified, the start of interval (inclusive); otherwise, the end of the interval (exclusive). If stop is not specified, the default starting value is 0.
+    stop
+        the end of the interval. Default: None.
     step
-        Spacing between values. For any output out, this is the distance between two adjacent values,
-        out[i+1] - out[i]. The default step size is 1. If step is specified as a position argument,
-        start must also be given.
+        the distance between two adjacent elements (out[i+1] - out[i]). Must not be 0; may be negative, this results in an empty array if stop >= start. Default: 1.
     dtype
-        The desired data-type for the array in string format, i.e. 'float32' or 'int64'.
-        If not given, then the type will be determined as the minimum type required to hold the objects in the
-        sequence.
+        output array data type. If dtype is None, the output array data type must be inferred from start, stop and step. If those are all integers, the output array dtype must be the default integer dtype; if one or more have type float, then the output array dtype must be the default floating-point data type. Default: None.
     device
-        device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
+        device on which to place the created array. Default: None.
 
     Returns
-    -------
-     ret
-        Tensor of evenly spaced values.
-
-        For floating point arguments, the length of the result is ceil((stop - start)/step).
-        Because of floating point overflow, this rule may result in the last element of out being greater than stop.
-
+    ----------
+    ret
+        a one-dimensional array containing evenly spaced values. The length of the output array must be ceil((stop-start)/step) if stop - start and step have the same sign, and length 0 otherwise.
     """
     return _cur_framework().arange(start, stop, step, dtype, device)
 
