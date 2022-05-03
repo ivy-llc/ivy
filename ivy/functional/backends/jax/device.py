@@ -6,6 +6,8 @@ Collection of Jax device functions, wrapped to fit Ivy syntax and signature.
 import os
 import jax
 import ivy
+from ivy.functional.backends.jax import JaxArray
+
 
 # local
 from ivy.functional.ivy.device import Profiler as BaseProfiler
@@ -27,7 +29,8 @@ def _to_array(x):
 # ----#
 
 
-def dev(x, as_str=False):
+def dev(x: JaxArray, as_str=False)\
+        ->str:
     if isinstance(x, jax.interpreters.partial_eval.DynamicJaxprTracer):
         return None
     try:

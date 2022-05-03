@@ -37,6 +37,8 @@ def test_dev(x, dtype, tensor_fn, device, call):
     assert isinstance(ret, str)
     # value test
     assert ret == device
+    helpers.docstring_examples_run(ivy.dev)
+
 
 # dev_to_str
 @pytest.mark.parametrize(

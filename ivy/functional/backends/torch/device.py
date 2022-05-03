@@ -21,7 +21,8 @@ from ivy.functional.ivy.device import Profiler as BaseProfiler
 # ----#
 
 
-def dev(x, as_str=False):
+def dev(x: torch.Tensor, as_str=False)\
+        ->str:
     dv = x.device
     if as_str:
         return dev_to_str(dv)
