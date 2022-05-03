@@ -267,29 +267,47 @@ def conv1d_transpose(x, filters, strides, padding, output_shape=None, data_forma
     return _cur_framework(x).conv1d_transpose(x, filters, strides, padding, output_shape, data_format, dilations)
 
 
-def conv2d(x, filters, strides, padding, data_format='NHWC', dilations=1):
-    """Computes a 2-D convolution given 4-D input x and filters arrays.
+def conv2d(x: Union[ivy.Array, ivy.NativeArray],
+           filters: Union[ivy.Array, ivy.NativeArray],
+           strides: int,
+           padding: str,
+           data_format: str = 'NHWC',
+           dilations: int = 1)\
+           -> ivy.Array:
+    """
+    Computes a 2-D convolution given 4-D input x and filters arrays.
 
     Parameters
     ----------
-    x 
+    x:
         Input image *[batch_size,h,w,d_in]*.
-    filters 
+    
+    filters:
         Convolution filters *[fh,fw,d_in,d_out]*.
-    strides 
+    
+    strides:
         The stride of the sliding window for each dimension of input.
-    padding 
-        SAME" or "VALID" indicating the algorithm, or list indicating the per-dimension paddings.
-    data_format 
-        NHWC" or "NCHW". Defaults to "NHWC".
-    dilations 
-        The dilation factor for each dimension of input. (Default value = 1)
+    
+    padding:
+        "SAME" or "VALID" indicating the algorithm, or list indicating the per-dimension paddings.
 
+    data_format:
+        "NHWC" or "NCHW". Defaults to "NHWC".
+    
+    dilations:
+        The dilation factor for each dimension of input.
+    
     Returns
-    -------
+    --------
      ret
-        The result of the convolution operation.
-
+         The result of the convolution operation.
+    
+    Examples:
+    >>> x = ivy.array([[[[1.], [2.0],[3.]], [[1.], [2.0],[3.]],[[1.], [2.0],[3.]]]]) #NHWC
+    >>> filters = ivy.array([[[[0.]],[[1.]], [[0.]]],[[[0.]],[[1.]], [[0.]]],[[[0.]],[[1.]], [[0.]]]]) #HWIO
+    >>> result = ivy.conv2d(x, filters, (1,), 'SAME', 'NHWC', (1,))
+    >>> print(result)
+    ivy.array([[[[2.],[4.],[6.]],[[3.],[6.],[9.]],[[2.],[4.],[6.]]]])
     """
     return _cur_framework(x).conv2d(x, filters, strides, padding, data_format, dilations)
 
