@@ -4,7 +4,7 @@
  *
  * Sphinx JavaScript utilities for all documentation.
  *
- * :copyright: Copyright 2007-2021 by the Sphinx team, see AUTHORS.
+ * :copyright: Copyright 2007-2022 by the Sphinx team, see AUTHORS.
  * :license: BSD, see LICENSE for details.
  *
  */
@@ -29,9 +29,14 @@ if (!window.console || !console.firebug) {
 
 /**
  * small helper function to urldecode strings
+ *
+ * See https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/decodeURIComponent#Decoding_query_parameters_from_a_URL
  */
 jQuery.urldecode = function(x) {
-  return decodeURIComponent(x).replace(/\+/g, ' ');
+  if (!x) {
+    return x
+  }
+  return decodeURIComponent(x.replace(/\+/g, ' '));
 };
 
 /**
@@ -149,9 +154,7 @@ var Documentation = {
     this.fixFirefoxAnchorBug();
     this.highlightSearchWords();
     this.initIndexTable();
-    if (DOCUMENTATION_OPTIONS.NAVIGATION_WITH_KEYS) {
-      this.initOnKeyListeners();
-    }
+    this.initOnKeyListeners();
   },
 
   /**
@@ -259,6 +262,16 @@ var Documentation = {
   hideSearchWords : function() {
     $('#searchbox .highlight-link').fadeOut(300);
     $('span.highlighted').removeClass('highlighted');
+    var url = new URL(window.location);
+    url.searchParams.delete('highlight');
+    window.history.replaceState({}, '', url);
+  },
+
+   /**
+   * helper function to focus on search bar
+   */
+  focusSearchBar : function() {
+    $('input[name=q]').first().focus();
   },
 
   /**
@@ -283,25 +296,54 @@ var Documentation = {
   },
 
   initOnKeyListeners: function() {
+    // only install a listener if it is really needed
+    if (!DOCUMENTATION_OPTIONS.NAVIGATION_WITH_KEYS &&
+        !DOCUMENTATION_OPTIONS.ENABLE_SEARCH_SHORTCUTS)
+        return;
+
     $(document).keydown(function(event) {
       var activeElementType = document.activeElement.tagName;
       // don't navigate when in search box, textarea, dropdown or button
       if (activeElementType !== 'TEXTAREA' && activeElementType !== 'INPUT' && activeElementType !== 'SELECT'
-          && activeElementType !== 'BUTTON' && !event.altKey && !event.ctrlKey && !event.metaKey
-          && !event.shiftKey) {
-        switch (event.keyCode) {
-          case 37: // left
-            var prevHref = $('link[rel="prev"]').prop('href');
-            if (prevHref) {
-              window.location.href = prevHref;
-              return false;
-            }
-          case 39: // right
-            var nextHref = $('link[rel="next"]').prop('href');
-            if (nextHref) {
-              window.location.href = nextHref;
-              return false;
-            }
+          && activeElementType !== 'BUTTON') {
+        if (event.altKey || event.ctrlKey || event.metaKey)
+          return;
+
+          if (!event.shiftKey) {
+            switch (event.key) {
+              case 'ArrowLeft':
+                if (!DOCUMENTATION_OPTIONS.NAVIGATION_WITH_KEYS)
+                  break;
+                var prevHref = $('link[rel="prev"]').prop('href');
+                if (prevHref) {
+                  window.location.href = prevHref;
+                  return false;
+                }
+                break;
+              case 'ArrowRight':
+                if (!DOCUMENTATION_OPTIONS.NAVIGATION_WITH_KEYS)
+                  break;
+                var nextHref = $('link[rel="next"]').prop('href');
+                if (nextHref) {
+                  window.location.href = nextHref;
+                  return false;
+                }
+                break;
+              case 'Escape':
+                if (!DOCUMENTATION_OPTIONS.ENABLE_SEARCH_SHORTCUTS)
+                  break;
+                Documentation.hideSearchWords();
+                return false;
+          }
+        }
+
+        // some keyboard layouts may need Shift to get /
+        switch (event.key) {
+          case '/':
+            if (!DOCUMENTATION_OPTIONS.ENABLE_SEARCH_SHORTCUTS)
+              break;
+            Documentation.focusSearchBar();
+            return false;
         }
       }
     });

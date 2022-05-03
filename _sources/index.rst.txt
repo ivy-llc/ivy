@@ -297,35 +297,6 @@ Citation
 .. toctree::
    :hidden:
    :maxdepth: -1
-   :caption: Container
-
-   container/activations.rst
-   container/base.rst
-   container/container.rst
-   container/creation.rst
-   container/data_types.rst
-   container/device.rst
-   container/elementwise.rst
-   container/general.rst
-   container/gradients.rst
-   container/image.rst
-   container/layers.rst
-   container/linear_algebra.rst
-   container/losses.rst
-   container/manipulation.rst
-   container/norms.rst
-   container/random.rst
-   container/searching.rst
-   container/set.rst
-   container/sorting.rst
-   container/statistical.rst
-   container/utility.rst
-   container/wrapping.rst
-
-
-.. toctree::
-   :hidden:
-   :maxdepth: -1
    :caption: Functional
 
    functional/backends.rst

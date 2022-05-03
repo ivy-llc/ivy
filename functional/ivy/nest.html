@@ -1,68 +1,35 @@
-
-
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
-  
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Nest &mdash; Ivy 1.0 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
-
-  
-  
-  
-  
-
-  
-  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
-  
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    
-    <script type="text/javascript" src="../../_static/js/theme.js"></script>
-
-    
-
-  
-  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
+    <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="index_nest" href="nest/index_nest.html" />
     <link rel="prev" title="maml_step" href="meta/maml_step.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-          
-
-          
             <a href="../../index.html" class="icon icon-home"> Ivy
-          
-
-          
           </a>
-
-          
-            
-            
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -70,18 +37,8 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
-              <p class="caption"><span class="caption-text">Overview</span></p>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Overview</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../background.html">Background</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../design.html">Design</a></li>
@@ -89,32 +46,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../roadmap.html">Roadmap</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../contributing.html">Contributing</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Container</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../container/activations.html">Activations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../container/base.html">Base</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../container/container.html">Container</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../container/creation.html">Creation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../container/data_types.html">Data types</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../container/device.html">Device</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../container/elementwise.html">Elementwise</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../container/general.html">General</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../container/gradients.html">Gradients</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../container/image.html">Image</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../container/layers.html">Layers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../container/linear_algebra.html">Linear algebra</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../container/losses.html">Losses</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../container/manipulation.html">Manipulation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../container/norms.html">Norms</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../container/random.html">Random</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../container/searching.html">Searching</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../container/set.html">Set</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../container/sorting.html">Sorting</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../container/statistical.html">Statistical</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../container/utility.html">Utility</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../container/wrapping.html">Wrapping</a></li>
-</ul>
-<p class="caption"><span class="caption-text">Functional</span></p>
+<p class="caption" role="heading"><span class="caption-text">Functional</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="activations.html">Activations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="compilation.html">Compilation</a></li>
@@ -158,7 +90,7 @@
 <li class="toctree-l1"><a class="reference internal" href="statistical.html">Statistical</a></li>
 <li class="toctree-l1"><a class="reference internal" href="utility.html">Utility</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Stateful</span></p>
+<p class="caption" role="heading"><span class="caption-text">Stateful</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../stateful/activations.html">Activations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../stateful/converters.html">Converters</a></li>
@@ -169,7 +101,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../stateful/optimizers.html">Optimizers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../stateful/sequential.html">Sequential</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Docs</span></p>
+<p class="caption" role="heading"><span class="caption-text">Docs</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../ivy"">Ivy</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../mech"">Ivy mech</a></li>
@@ -182,133 +114,99 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../ecosystem"">Ivy ecosystem</a></li>
 </ul>
 
-            
-          
         </div>
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../index.html">Ivy</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
-      <li><a href="../../index.html">Docs</a> &raquo;</li>
-        
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
           <li><a href="../ivy.html">&lt;no title&gt;</a> &raquo;</li>
-        
       <li>Nest</li>
-    
-    
       <li class="wy-breadcrumbs-aside">
-        
-            
             <a href="../../_sources/functional/ivy/nest.rst.txt" rel="nofollow"> View page source</a>
-          
-        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
-  <div class="section" id="module-ivy.functional.ivy.nest">
-<span id="nest"></span><h1>Nest<a class="headerlink" href="#module-ivy.functional.ivy.nest" title="Permalink to this headline">¶</a></h1>
+             
+  <section id="module-ivy.functional.ivy.nest">
+<span id="nest"></span><h1>Nest<a class="headerlink" href="#module-ivy.functional.ivy.nest" title="Permalink to this headline"></a></h1>
 <p>Collection of Ivy functions for nested objects.</p>
 <dl class="py function">
-<dt id="ivy.functional.ivy.nest.all_nested_indices">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">all_nested_indices</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">nest</span><span class="p">:</span> <span class="n">Iterable</span></em>, <em class="sig-param"><span class="n">include_nests</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">_index</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>List<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">_base</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">True</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>Iterable<span class="p">, </span>bool<span class="p">]</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/nest.html#all_nested_indices"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.nest.all_nested_indices" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="ivy.functional.ivy.nest.all_nested_indices">
+<span class="sig-prename descclassname"><span class="pre">ivy.functional.ivy.nest.</span></span><span class="sig-name descname"><span class="pre">all_nested_indices</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_nests</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_base</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/nest.html#all_nested_indices"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.nest.all_nested_indices" title="Permalink to this definition"></a></dt>
 <dd><p>Checks the leaf nodes of nested x via function fn, and returns all nest indices where the method evaluates as True.</p>
-<dl class="simple">
-<dt>nest</dt><dd><p>The nest to check the leaves of.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>nest</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Iterable</span></code>) – The nest to check the leaves of.</p></li>
+<li><p><strong>include_nests</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – Whether to also include indices of the nests themselves, not only leaves. Default is False. (default: <code class="docutils literal notranslate"><span class="pre">False</span></code>)</p></li>
+<li><p><strong>_index</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>]) – The indices detected so far. None at the beginning. Used internally, do not set manually. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
+<li><p><strong>_base</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – Whether the current function call is the first function call in the recursive stack. (default: <code class="docutils literal notranslate"><span class="pre">True</span></code>)
+Used internally, do not set manually.</p></li>
+</ul>
 </dd>
-<dt>include_nests</dt><dd><p>Whether to also include indices of the nests themselves, not only leaves. Default is False.</p>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Iterable</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>]</p>
 </dd>
-<dt>_index</dt><dd><p>The indices detected so far. None at the beginning. Used internally, do not set manually.</p>
-</dd>
-<dt>_base</dt><dd><p>Whether the current function call is the first function call in the recursive stack.
-Used internally, do not set manually.</p>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><em>ret</em> – A set of indices for the nest where the function evaluated as True.</p>
 </dd>
 </dl>
-<blockquote>
-<div><dl class="simple">
-<dt>ret</dt><dd><p>A set of indices for the nest where the function evaluated as True.</p>
-</dd>
-</dl>
-</div></blockquote>
 </dd></dl>
 
 <dl class="py function">
-<dt id="ivy.functional.ivy.nest.copy_nest">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">copy_nest</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">nest</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">, </span>Iterable<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">include_derived</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">to_mutable</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">, </span>Iterable<span class="p">, </span>Dict<span class="p">]</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/nest.html#copy_nest"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.nest.copy_nest" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="ivy.functional.ivy.nest.copy_nest">
+<span class="sig-prename descclassname"><span class="pre">ivy.functional.ivy.nest.</span></span><span class="sig-name descname"><span class="pre">copy_nest</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_derived</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_mutable</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/nest.html#copy_nest"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.nest.copy_nest" title="Permalink to this definition"></a></dt>
 <dd><p>Copies a nest deeply, but without copying leaves of the nest, only the nest lists, tuples and dicts are copied.</p>
-<dl class="simple">
-<dt>nest </dt><dd><p>The nest to copy.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>nest</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Iterable</span></code>]) – The nest to copy.</p></li>
+<li><p><strong>include_derived</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – Whether to also recursive for classes derived from tuple, list and dict. Default is False. (default: <code class="docutils literal notranslate"><span class="pre">False</span></code>)</p></li>
+<li><p><strong>to_mutable</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – Whether to convert the nest to a mutable form, changing all tuples to lists. Default is False. (default: <code class="docutils literal notranslate"><span class="pre">False</span></code>)</p></li>
+<li><p><strong>Returns</strong> – </p></li>
+<li><p><strong>ret</strong> – The copied nest.</p></li>
+</ul>
 </dd>
-<dt>include_derived </dt><dd><p>Whether to also recursive for classes derived from tuple, list and dict. Default is False.</p>
-</dd>
-<dt>to_mutable </dt><dd><p>Whether to convert the nest to a mutable form, changing all tuples to lists. Default is False.</p>
-</dd>
-<dt>Returns</dt><dd></dd>
-<dt>ret</dt><dd><p>The copied nest.</p>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Iterable</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>]</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py function">
-<dt id="ivy.functional.ivy.nest.index_nest">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">index_nest</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">nest</span></em>, <em class="sig-param"><span class="n">index</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/nest.html#index_nest"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.nest.index_nest" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="ivy.functional.ivy.nest.index_nest">
+<span class="sig-prename descclassname"><span class="pre">ivy.functional.ivy.nest.</span></span><span class="sig-name descname"><span class="pre">index_nest</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/nest.html#index_nest"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.nest.index_nest" title="Permalink to this definition"></a></dt>
 <dd><p>Index a nested object, using a tuple of indices or keys in the case of dicts.</p>
-<dl class="simple">
-<dt>nest</dt><dd><p>The nested object to index.</p>
-</dd>
-<dt>index</dt><dd><p>A tuple of indices for indexing.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>nest</strong> – The nested object to index.</p></li>
+<li><p><strong>index</strong> – A tuple of indices for indexing.</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py function">
-<dt id="ivy.functional.ivy.nest.insert_into_nest_at_index">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">insert_into_nest_at_index</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">nest</span></em>, <em class="sig-param"><span class="n">index</span></em>, <em class="sig-param"><span class="n">value</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/nest.html#insert_into_nest_at_index"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.nest.insert_into_nest_at_index" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="ivy.functional.ivy.nest.insert_into_nest_at_index">
+<span class="sig-prename descclassname"><span class="pre">ivy.functional.ivy.nest.</span></span><span class="sig-name descname"><span class="pre">insert_into_nest_at_index</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/nest.html#insert_into_nest_at_index"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.nest.insert_into_nest_at_index" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py function">
-<dt id="ivy.functional.ivy.nest.insert_into_nest_at_indices">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">insert_into_nest_at_indices</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">nest</span></em>, <em class="sig-param"><span class="n">indices</span></em>, <em class="sig-param"><span class="n">values</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/nest.html#insert_into_nest_at_indices"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.nest.insert_into_nest_at_indices" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="ivy.functional.ivy.nest.insert_into_nest_at_indices">
+<span class="sig-prename descclassname"><span class="pre">ivy.functional.ivy.nest.</span></span><span class="sig-name descname"><span class="pre">insert_into_nest_at_indices</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indices</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/nest.html#insert_into_nest_at_indices"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.nest.insert_into_nest_at_indices" title="Permalink to this definition"></a></dt>
 <dd><p>Insert a value into the nested item at specified indices with specified values.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -322,245 +220,235 @@ Used internally, do not set manually.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="ivy.functional.ivy.nest.map">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">map</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">fn</span><span class="p">:</span> <span class="n">Callable</span></em>, <em class="sig-param"><span class="n">constant</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Dict<span class="p">[</span>str<span class="p">, </span>Any<span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">unique</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Dict<span class="p">[</span>str<span class="p">, </span>Iterable<span class="p">[</span>Any<span class="p">]</span><span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">mean</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span> &#x2192; List<a class="reference internal" href="../../_modules/ivy/functional/ivy/nest.html#map"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.nest.map" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="ivy.functional.ivy.nest.map">
+<span class="sig-prename descclassname"><span class="pre">ivy.functional.ivy.nest.</span></span><span class="sig-name descname"><span class="pre">map</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fn</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">constant</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unique</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mean</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/nest.html#map"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.nest.map" title="Permalink to this definition"></a></dt>
 <dd><p>Applies a function on each item of an iterable x.</p>
-<dl class="simple">
-<dt>fn</dt><dd><p>The function to map onto x.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fn</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>) – The function to map onto x.</p></li>
+<li><p><strong>constant</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>]]) – keyword arguments which remain constant between each function call. Default is None. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
+<li><p><strong>unique</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Iterable</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>]]]) – keyword arguments which are unique for each function call. Default is None. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
+<li><p><strong>mean</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – Whether to compute the mean across the return values, and return this mean. Default is False. (default: <code class="docutils literal notranslate"><span class="pre">False</span></code>)</p></li>
+</ul>
 </dd>
-<dt>constant</dt><dd><p>keyword arguments which remain constant between each function call. Default is None.</p>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code></p>
 </dd>
-<dt>unique</dt><dd><p>keyword arguments which are unique for each function call. Default is None.</p>
-</dd>
-<dt>mean</dt><dd><p>Whether to compute the mean across the return values, and return this mean. Default is False.</p>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><em>ret</em> – x following the applicable of fn to each of it’s iterated items.</p>
 </dd>
 </dl>
-<blockquote>
-<div><dl class="simple">
-<dt>ret</dt><dd><p>x following the applicable of fn to each of it’s iterated items.</p>
-</dd>
-</dl>
-</div></blockquote>
 </dd></dl>
 
 <dl class="py function">
-<dt id="ivy.functional.ivy.nest.map_nest_at_index">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">map_nest_at_index</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">nest</span></em>, <em class="sig-param"><span class="n">index</span></em>, <em class="sig-param"><span class="n">fn</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/nest.html#map_nest_at_index"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.nest.map_nest_at_index" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="ivy.functional.ivy.nest.map_nest_at_index">
+<span class="sig-prename descclassname"><span class="pre">ivy.functional.ivy.nest.</span></span><span class="sig-name descname"><span class="pre">map_nest_at_index</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fn</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/nest.html#map_nest_at_index"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.nest.map_nest_at_index" title="Permalink to this definition"></a></dt>
 <dd><p>Map a function to the value of a nested item at a specified index</p>
-<dl class="simple">
-<dt>nest</dt><dd><p>The nested object to update.</p>
-</dd>
-<dt>index</dt><dd><p>A tuple of indices for the index at which to update.</p>
-</dd>
-<dt>fn</dt><dd><p>The function to perform on the nest at the given index.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>nest</strong> – The nested object to update.</p></li>
+<li><p><strong>index</strong> – A tuple of indices for the index at which to update.</p></li>
+<li><p><strong>fn</strong> – The function to perform on the nest at the given index.</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py function">
-<dt id="ivy.functional.ivy.nest.map_nest_at_indices">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">map_nest_at_indices</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">nest</span></em>, <em class="sig-param"><span class="n">indices</span></em>, <em class="sig-param"><span class="n">fn</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/nest.html#map_nest_at_indices"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.nest.map_nest_at_indices" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="ivy.functional.ivy.nest.map_nest_at_indices">
+<span class="sig-prename descclassname"><span class="pre">ivy.functional.ivy.nest.</span></span><span class="sig-name descname"><span class="pre">map_nest_at_indices</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indices</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fn</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/nest.html#map_nest_at_indices"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.nest.map_nest_at_indices" title="Permalink to this definition"></a></dt>
 <dd><p>Map a function to the values of a nested item at the specified indices</p>
-<dl class="simple">
-<dt>nest</dt><dd><p>The nested object to update.</p>
-</dd>
-<dt>indices</dt><dd><p>A tuple of tuples of indices for the indices at which to update.</p>
-</dd>
-<dt>fn</dt><dd><p>The function to perform on the nest at the given index.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>nest</strong> – The nested object to update.</p></li>
+<li><p><strong>indices</strong> – A tuple of tuples of indices for the indices at which to update.</p></li>
+<li><p><strong>fn</strong> – The function to perform on the nest at the given index.</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py function">
-<dt id="ivy.functional.ivy.nest.multi_index_nest">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">multi_index_nest</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">nest</span></em>, <em class="sig-param"><span class="n">indices</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/nest.html#multi_index_nest"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.nest.multi_index_nest" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="ivy.functional.ivy.nest.multi_index_nest">
+<span class="sig-prename descclassname"><span class="pre">ivy.functional.ivy.nest.</span></span><span class="sig-name descname"><span class="pre">multi_index_nest</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indices</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/nest.html#multi_index_nest"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.nest.multi_index_nest" title="Permalink to this definition"></a></dt>
 <dd><p>Repeatedly index a nested object, using a tuple of tuples of indices or keys in the case of dicts.</p>
-<dl class="simple">
-<dt>nest</dt><dd><p>The nested object to slice.</p>
-</dd>
-<dt>indices</dt><dd><p>A tuple of tuples of indices to apply.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>nest</strong> – The nested object to slice.</p></li>
+<li><p><strong>indices</strong> – A tuple of tuples of indices to apply.</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py function">
-<dt id="ivy.functional.ivy.nest.nested_any">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">nested_any</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">nest</span><span class="p">:</span> <span class="n">Iterable</span></em>, <em class="sig-param"><span class="n">fn</span><span class="p">:</span> <span class="n">Callable</span></em>, <em class="sig-param"><span class="n">check_nests</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">_base</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">True</span></em><span class="sig-paren">)</span> &#x2192; bool<a class="reference internal" href="../../_modules/ivy/functional/ivy/nest.html#nested_any"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.nest.nested_any" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="ivy.functional.ivy.nest.nested_any">
+<span class="sig-prename descclassname"><span class="pre">ivy.functional.ivy.nest.</span></span><span class="sig-name descname"><span class="pre">nested_any</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fn</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_nests</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_base</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/nest.html#nested_any"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.nest.nested_any" title="Permalink to this definition"></a></dt>
 <dd><p>Checks the leaf nodes of nest x via function fn, and returns True if any evaluate to True, else False.</p>
-<dl class="simple">
-<dt>nest </dt><dd><p>The nest to check the leaves of.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>nest</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Iterable</span></code>) – The nest to check the leaves of.</p></li>
+<li><p><strong>fn</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>) – The conditon function, returning True or False.</p></li>
+<li><p><strong>check_nests</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – Whether to also check the nests for the condition, not only nest leaves. Default is False. (default: <code class="docutils literal notranslate"><span class="pre">False</span></code>)</p></li>
+<li><p><strong>_base</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – Whether the current function call is the first function call in the recursive stack. (default: <code class="docutils literal notranslate"><span class="pre">True</span></code>)
+Used internally, do not set manually.</p></li>
+<li><p><strong>Returns</strong> – </p></li>
+<li><p><strong>ret</strong> – A boolean, whether the function evaluates to true for any leaf node.</p></li>
+</ul>
 </dd>
-<dt>fn </dt><dd><p>The conditon function, returning True or False.</p>
-</dd>
-<dt>check_nests </dt><dd><p>Whether to also check the nests for the condition, not only nest leaves. Default is False.</p>
-</dd>
-<dt>_base </dt><dd><p>Whether the current function call is the first function call in the recursive stack.
-Used internally, do not set manually.</p>
-</dd>
-<dt>Returns</dt><dd></dd>
-<dt>ret</dt><dd><p>A boolean, whether the function evaluates to true for any leaf node.</p>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py function">
-<dt id="ivy.functional.ivy.nest.nested_indices_where">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">nested_indices_where</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">nest</span><span class="p">:</span> <span class="n">Iterable</span></em>, <em class="sig-param"><span class="n">fn</span><span class="p">:</span> <span class="n">Callable</span></em>, <em class="sig-param"><span class="n">check_nests</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">to_ignore</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Union<span class="p">[</span>type<span class="p">, </span>Tuple<span class="p">[</span>type<span class="p">]</span><span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">_index</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>List<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">_base</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">True</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>Iterable<span class="p">, </span>bool<span class="p">]</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/nest.html#nested_indices_where"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.nest.nested_indices_where" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="ivy.functional.ivy.nest.nested_indices_where">
+<span class="sig-prename descclassname"><span class="pre">ivy.functional.ivy.nest.</span></span><span class="sig-name descname"><span class="pre">nested_indices_where</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fn</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_nests</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_ignore</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_base</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/nest.html#nested_indices_where"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.nest.nested_indices_where" title="Permalink to this definition"></a></dt>
 <dd><p>Checks the leaf nodes of nested x via function fn, and returns all nest indices where the method evaluates as True.</p>
-<dl class="simple">
-<dt>nest</dt><dd><p>The nest to check the leaves of.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>nest</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Iterable</span></code>) – The nest to check the leaves of.</p></li>
+<li><p><strong>fn</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>) – The conditon function, returning True or False.</p></li>
+<li><p><strong>check_nests</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – Whether to also check the nests for the condition, not only nest leaves. Default is False. (default: <code class="docutils literal notranslate"><span class="pre">False</span></code>)</p></li>
+<li><p><strong>_index</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>]) – The indices detected so far. None at the beginning. Used internally, do not set manually. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
+<li><p><strong>_base</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – Whether the current function call is the first function call in the recursive stack. (default: <code class="docutils literal notranslate"><span class="pre">True</span></code>)
+Used internally, do not set manually.</p></li>
+</ul>
 </dd>
-<dt>fn</dt><dd><p>The conditon function, returning True or False.</p>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Iterable</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>]</p>
 </dd>
-<dt>check_nests</dt><dd><p>Whether to also check the nests for the condition, not only nest leaves. Default is False.</p>
-</dd>
-<dt>_index</dt><dd><p>The indices detected so far. None at the beginning. Used internally, do not set manually.</p>
-</dd>
-<dt>_base</dt><dd><p>Whether the current function call is the first function call in the recursive stack.
-Used internally, do not set manually.</p>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><em>ret</em> – A set of indices for the nest where the function evaluated as True.</p>
 </dd>
 </dl>
-<blockquote>
-<div><dl class="simple">
-<dt>ret</dt><dd><p>A set of indices for the nest where the function evaluated as True.</p>
-</dd>
-</dl>
-</div></blockquote>
 </dd></dl>
 
 <dl class="py function">
-<dt id="ivy.functional.ivy.nest.nested_map">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">nested_map</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">, </span>Iterable<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">fn</span><span class="p">:</span> <span class="n">Callable</span></em>, <em class="sig-param"><span class="n">include_derived</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Union<span class="p">[</span>Dict<span class="p">[</span>type<span class="p">, </span>bool<span class="p">]</span><span class="p">, </span>bool<span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_mutable</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">max_depth</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>int<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">_depth</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">0</span></em>, <em class="sig-param"><span class="n">_tuple_check_fn</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>callable<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">_list_check_fn</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>callable<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">_dict_check_fn</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>callable<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">, </span>Iterable<span class="p">, </span>Dict<span class="p">]</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/nest.html#nested_map"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.nest.nested_map" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="ivy.functional.ivy.nest.nested_map">
+<span class="sig-prename descclassname"><span class="pre">ivy.functional.ivy.nest.</span></span><span class="sig-name descname"><span class="pre">nested_map</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fn</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_derived</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_mutable</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_depth</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_depth</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_tuple_check_fn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_list_check_fn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_dict_check_fn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/nest.html#nested_map"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.nest.nested_map" title="Permalink to this definition"></a></dt>
 <dd><p>Applies a function on x in a nested manner, whereby all dicts, lists and tuples are traversed to their lowest
 leaves before applying the method and returning x. If x is not nested, the method is applied to x directly.</p>
-<dl class="simple">
-<dt>x</dt><dd><p>The item to apply the mapped function to.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Iterable</span></code>]) – The item to apply the mapped function to.</p></li>
+<li><p><strong>fn</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>) – The function to map onto x.</p></li>
+<li><p><strong>include_derived</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">type</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>], <code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>]]) – Whether to also recursive for classes derived from tuple, list and dict. Default is False. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
+<li><p><strong>to_mutable</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – Whether to convert the nest to a mutable form, changing all tuples to lists. Default is False. (default: <code class="docutils literal notranslate"><span class="pre">False</span></code>)</p></li>
+<li><p><strong>max_depth</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]) – The maximum nested depth to reach. Default is 1. Increase this if the nest is deeper. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
+<li><p><strong>_depth</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – Placeholder for tracking the recursive depth, do not set this parameter. (default: <code class="docutils literal notranslate"><span class="pre">0</span></code>)</p></li>
+<li><p><strong>_tuple_check_fn</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">callable</span></code>]) – Placeholder for the tuple check function, do not set this parameter. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
+<li><p><strong>_list_check_fn</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">callable</span></code>]) – Placeholder for the list check function, do not set this parameter. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
+<li><p><strong>_dict_check_fn</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">callable</span></code>]) – Placeholder for the dict check function, do not set this parameter. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
+<li><p><strong>Returns</strong> – </p></li>
+<li><p><strong>ret</strong> – x following the applicable of fn to it’s nested leaves, or x itself if x is not nested.</p></li>
+</ul>
 </dd>
-<dt>fn</dt><dd><p>The function to map onto x.</p>
-</dd>
-<dt>include_derived</dt><dd><p>Whether to also recursive for classes derived from tuple, list and dict. Default is False.</p>
-</dd>
-<dt>to_mutable </dt><dd><p>Whether to convert the nest to a mutable form, changing all tuples to lists. Default is False.</p>
-</dd>
-<dt>max_depth </dt><dd><p>The maximum nested depth to reach. Default is 1. Increase this if the nest is deeper.</p>
-</dd>
-<dt>_depth </dt><dd><p>Placeholder for tracking the recursive depth, do not set this parameter.</p>
-</dd>
-<dt>_tuple_check_fn </dt><dd><p>Placeholder for the tuple check function, do not set this parameter.</p>
-</dd>
-<dt>_list_check_fn </dt><dd><p>Placeholder for the list check function, do not set this parameter.</p>
-</dd>
-<dt>_dict_check_fn </dt><dd><p>Placeholder for the dict check function, do not set this parameter.</p>
-</dd>
-<dt>Returns</dt><dd></dd>
-<dt>ret</dt><dd><p>x following the applicable of fn to it’s nested leaves, or x itself if x is not nested.</p>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Iterable</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>]</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py function">
-<dt id="ivy.functional.ivy.nest.prune_nest_at_index">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">prune_nest_at_index</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">nest</span></em>, <em class="sig-param"><span class="n">index</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/nest.html#prune_nest_at_index"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.nest.prune_nest_at_index" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="ivy.functional.ivy.nest.prune_nest_at_index">
+<span class="sig-prename descclassname"><span class="pre">ivy.functional.ivy.nest.</span></span><span class="sig-name descname"><span class="pre">prune_nest_at_index</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/nest.html#prune_nest_at_index"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.nest.prune_nest_at_index" title="Permalink to this definition"></a></dt>
 <dd><p>Prune a nested object at a specified index</p>
-<dl class="simple">
-<dt>nest</dt><dd><p>The nested object to prune.</p>
-</dd>
-<dt>index</dt><dd><p>A tuple of indices for the index at which to prune.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>nest</strong> – The nested object to prune.</p></li>
+<li><p><strong>index</strong> – A tuple of indices for the index at which to prune.</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py function">
-<dt id="ivy.functional.ivy.nest.prune_nest_at_indices">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">prune_nest_at_indices</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">nest</span></em>, <em class="sig-param"><span class="n">indices</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/nest.html#prune_nest_at_indices"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.nest.prune_nest_at_indices" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="ivy.functional.ivy.nest.prune_nest_at_indices">
+<span class="sig-prename descclassname"><span class="pre">ivy.functional.ivy.nest.</span></span><span class="sig-name descname"><span class="pre">prune_nest_at_indices</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indices</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/nest.html#prune_nest_at_indices"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.nest.prune_nest_at_indices" title="Permalink to this definition"></a></dt>
 <dd><p>Prune a nested object at specified indices.</p>
-<dl class="simple">
-<dt>nest</dt><dd><p>The nested object to prune.</p>
-</dd>
-<dt>indices</dt><dd><p>A tuple of tuples of indices for the indices at which to prune.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>nest</strong> – The nested object to prune.</p></li>
+<li><p><strong>indices</strong> – A tuple of tuples of indices for the indices at which to prune.</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py function">
-<dt id="ivy.functional.ivy.nest.set_nest_at_index">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">set_nest_at_index</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">nest</span></em>, <em class="sig-param"><span class="n">index</span></em>, <em class="sig-param"><span class="n">value</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/nest.html#set_nest_at_index"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.nest.set_nest_at_index" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="ivy.functional.ivy.nest.set_nest_at_index">
+<span class="sig-prename descclassname"><span class="pre">ivy.functional.ivy.nest.</span></span><span class="sig-name descname"><span class="pre">set_nest_at_index</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/nest.html#set_nest_at_index"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.nest.set_nest_at_index" title="Permalink to this definition"></a></dt>
 <dd><p>Set the value of a nested item at a specified index</p>
-<dl class="simple">
-<dt>nest</dt><dd><p>The nested object to update.</p>
-</dd>
-<dt>index</dt><dd><p>A tuple of indices for the index at which to update.</p>
-</dd>
-<dt>value</dt><dd><p>The new value for updating.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>nest</strong> – The nested object to update.</p></li>
+<li><p><strong>index</strong> – A tuple of indices for the index at which to update.</p></li>
+<li><p><strong>value</strong> – The new value for updating.</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py function">
-<dt id="ivy.functional.ivy.nest.set_nest_at_indices">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">set_nest_at_indices</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">nest</span></em>, <em class="sig-param"><span class="n">indices</span></em>, <em class="sig-param"><span class="n">values</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/nest.html#set_nest_at_indices"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.nest.set_nest_at_indices" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="ivy.functional.ivy.nest.set_nest_at_indices">
+<span class="sig-prename descclassname"><span class="pre">ivy.functional.ivy.nest.</span></span><span class="sig-name descname"><span class="pre">set_nest_at_indices</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indices</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/nest.html#set_nest_at_indices"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.nest.set_nest_at_indices" title="Permalink to this definition"></a></dt>
 <dd><p>Set the value of a nested item at specified indices with specified values.</p>
-<dl class="simple">
-<dt>nest</dt><dd><p>The nested object to update.</p>
-</dd>
-<dt>indices</dt><dd><p>A tuple of tuples of indices for the indices at which to update.</p>
-</dd>
-<dt>values</dt><dd><p>The new values for updating.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>nest</strong> – The nested object to update.</p></li>
+<li><p><strong>indices</strong> – A tuple of tuples of indices for the indices at which to update.</p></li>
+<li><p><strong>values</strong> – The new values for updating.</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
 
 <div class="toctree-wrapper compound">
 </div>
-</div>
+</section>
 
 
            </div>
-           
           </div>
-          <footer>
-  
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="nest/index_nest.html" class="btn btn-neutral float-right" title="index_nest" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="meta/maml_step.html" class="btn btn-neutral float-left" title="maml_step" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="meta/maml_step.html" class="btn btn-neutral float-left" title="maml_step" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="nest/index_nest.html" class="btn btn-neutral float-right" title="index_nest" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        &copy; Copyright 2020, Ivy Team
-
-    </p>
+    <p>&#169; Copyright 2020, Ivy Team.</p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
 
 </footer>
-
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>

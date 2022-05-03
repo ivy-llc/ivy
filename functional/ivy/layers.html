@@ -1,68 +1,35 @@
-
-
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
-  
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Layers &mdash; Ivy 1.0 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
-
-  
-  
-  
-  
-
-  
-  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
-  
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    
-    <script type="text/javascript" src="../../_static/js/theme.js"></script>
-
-    
-
-  
-  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
+    <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="linear" href="layers/linear.html" />
     <link rel="prev" title="linear_resample" href="image/linear_resample.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-          
-
-          
             <a href="../../index.html" class="icon icon-home"> Ivy
-          
-
-          
           </a>
-
-          
-            
-            
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -70,18 +37,8 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
-              <p class="caption"><span class="caption-text">Overview</span></p>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Overview</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../background.html">Background</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../design.html">Design</a></li>
@@ -89,32 +46,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../roadmap.html">Roadmap</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../contributing.html">Contributing</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Container</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../container/activations.html">Activations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../container/base.html">Base</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../container/container.html">Container</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../container/creation.html">Creation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../container/data_types.html">Data types</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../container/device.html">Device</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../container/elementwise.html">Elementwise</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../container/general.html">General</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../container/gradients.html">Gradients</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../container/image.html">Image</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../container/layers.html">Layers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../container/linear_algebra.html">Linear algebra</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../container/losses.html">Losses</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../container/manipulation.html">Manipulation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../container/norms.html">Norms</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../container/random.html">Random</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../container/searching.html">Searching</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../container/set.html">Set</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../container/sorting.html">Sorting</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../container/statistical.html">Statistical</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../container/utility.html">Utility</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../container/wrapping.html">Wrapping</a></li>
-</ul>
-<p class="caption"><span class="caption-text">Functional</span></p>
+<p class="caption" role="heading"><span class="caption-text">Functional</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="activations.html">Activations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="compilation.html">Compilation</a></li>
@@ -154,7 +86,7 @@
 <li class="toctree-l1"><a class="reference internal" href="statistical.html">Statistical</a></li>
 <li class="toctree-l1"><a class="reference internal" href="utility.html">Utility</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Stateful</span></p>
+<p class="caption" role="heading"><span class="caption-text">Stateful</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../stateful/activations.html">Activations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../stateful/converters.html">Converters</a></li>
@@ -165,7 +97,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../stateful/optimizers.html">Optimizers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../stateful/sequential.html">Sequential</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Docs</span></p>
+<p class="caption" role="heading"><span class="caption-text">Docs</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../ivy"">Ivy</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../mech"">Ivy mech</a></li>
@@ -178,97 +110,56 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../ecosystem"">Ivy ecosystem</a></li>
 </ul>
 
-            
-          
         </div>
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../index.html">Ivy</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
-      <li><a href="../../index.html">Docs</a> &raquo;</li>
-        
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
           <li><a href="../ivy.html">&lt;no title&gt;</a> &raquo;</li>
-        
       <li>Layers</li>
-    
-    
       <li class="wy-breadcrumbs-aside">
-        
-            
             <a href="../../_sources/functional/ivy/layers.rst.txt" rel="nofollow"> View page source</a>
-          
-        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
-  <div class="section" id="module-ivy.functional.ivy.layers">
-<span id="layers"></span><h1>Layers<a class="headerlink" href="#module-ivy.functional.ivy.layers" title="Permalink to this headline">¶</a></h1>
+             
+  <section id="module-ivy.functional.ivy.layers">
+<span id="layers"></span><h1>Layers<a class="headerlink" href="#module-ivy.functional.ivy.layers" title="Permalink to this headline"></a></h1>
 <p>Collection of Ivy neural network layers in functional form.</p>
 <dl class="py function">
-<dt id="ivy.functional.ivy.layers.conv1d">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">conv1d</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">filters</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">strides</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">padding</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">data_format</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'NWC'</span></em>, <em class="sig-param"><span class="n">dilations</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">1</span></em><span class="sig-paren">)</span> &#x2192; ivy.array.Array<a class="reference internal" href="../../_modules/ivy/functional/ivy/layers.html#conv1d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.layers.conv1d" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="ivy.functional.ivy.layers.conv1d">
+<span class="sig-prename descclassname"><span class="pre">ivy.functional.ivy.layers.</span></span><span class="sig-name descname"><span class="pre">conv1d</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filters</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">strides</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">padding</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'NWC'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dilations</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/layers.html#conv1d"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.layers.conv1d" title="Permalink to this definition"></a></dt>
 <dd><p>Computes a 1-D convolution given 3-D input x and filters arrays.</p>
-<dl class="simple">
-<dt>x</dt><dd><p>Input image <em>[batch_size,w,d_in]</em>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – Input image <em>[batch_size,w,d_in]</em>.</p></li>
+<li><p><strong>filters</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – Convolution filters <em>[fw,d_in,d_out]</em>.</p></li>
+<li><p><strong>strides</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – The stride of the sliding window for each dimension of input.</p></li>
+<li><p><strong>padding</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – SAME” or “VALID” indicating the algorithm, or list indicating the per-dimension paddings.</p></li>
+<li><p><strong>data_format</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – NWC” or “NCW”. Defaults to “NWC”. (default: <code class="docutils literal notranslate"><span class="pre">'NWC'</span></code>)</p></li>
+<li><p><strong>dilations</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – The dilation factor for each dimension of input. (Default value = 1) (default: <code class="docutils literal notranslate"><span class="pre">1</span></code>)</p></li>
+</ul>
 </dd>
-<dt>filters</dt><dd><p>Convolution filters <em>[fw,d_in,d_out]</em>.</p>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></p>
 </dd>
-<dt>strides</dt><dd><p>The stride of the sliding window for each dimension of input.</p>
-</dd>
-<dt>padding</dt><dd><p>SAME” or “VALID” indicating the algorithm, or list indicating the per-dimension paddings.</p>
-</dd>
-<dt>data_format</dt><dd><p>NWC” or “NCW”. Defaults to “NWC”.</p>
-</dd>
-<dt>dilations</dt><dd><p>The dilation factor for each dimension of input. (Default value = 1)</p>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><em>ret</em> – The result of the convolution operation.</p>
 </dd>
 </dl>
-<blockquote>
-<div><dl class="simple">
-<dt>ret</dt><dd><p>The result of the convolution operation.</p>
-</dd>
-</dl>
-</div></blockquote>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">asarray</span><span class="p">([[[</span><span class="mf">0.</span><span class="p">],</span> <span class="p">[</span><span class="mf">3.</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.</span><span class="p">]]])</span> <span class="c1">#NWC</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">filters</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[[</span><span class="mf">0.</span><span class="p">]],</span> <span class="p">[[</span><span class="mf">1.</span><span class="p">]],</span> <span class="p">[[</span><span class="mf">0.</span><span class="p">]]])</span> <span class="c1">#WIO</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">conv1d</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">filters</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span><span class="p">,),</span> <span class="s1">&#39;SAME&#39;</span><span class="p">,</span> <span class="s1">&#39;NWC&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span><span class="p">,))</span>
@@ -279,344 +170,275 @@
 </dd></dl>
 
 <dl class="py function">
-<dt id="ivy.functional.ivy.layers.conv1d_transpose">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">conv1d_transpose</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">filters</span></em>, <em class="sig-param"><span class="n">strides</span></em>, <em class="sig-param"><span class="n">padding</span></em>, <em class="sig-param"><span class="n">output_shape</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">data_format</span><span class="o">=</span><span class="default_value">'NWC'</span></em>, <em class="sig-param"><span class="n">dilations</span><span class="o">=</span><span class="default_value">1</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/layers.html#conv1d_transpose"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.layers.conv1d_transpose" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="ivy.functional.ivy.layers.conv1d_transpose">
+<span class="sig-prename descclassname"><span class="pre">ivy.functional.ivy.layers.</span></span><span class="sig-name descname"><span class="pre">conv1d_transpose</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filters</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">strides</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">padding</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_shape</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'NWC'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dilations</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/layers.html#conv1d_transpose"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.layers.conv1d_transpose" title="Permalink to this definition"></a></dt>
 <dd><p>Computes a 1-D transpose convolution given 3-D input x and filters arrays.</p>
-<dl class="simple">
-<dt>x</dt><dd><p>Input image <em>[batch_size,w,d_in]</em>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> – Input image <em>[batch_size,w,d_in]</em>.</p></li>
+<li><p><strong>filters</strong> – Convolution filters <em>[fw,d_in,d_out]</em>.</p></li>
+<li><p><strong>strides</strong> – The stride of the sliding window for each dimension of input.</p></li>
+<li><p><strong>padding</strong> – SAME” or “VALID” indicating the algorithm, or list indicating the per-dimension paddings.</p></li>
+<li><p><strong>output_shape</strong> – Shape of the output (Default value = None)</p></li>
+<li><p><strong>data_format</strong> – NWC” or “NCW”. Defaults to “NWC”.</p></li>
+<li><p><strong>dilations</strong> – The dilation factor for each dimension of input. (Default value = 1)</p></li>
+</ul>
 </dd>
-<dt>filters </dt><dd><p>Convolution filters <em>[fw,d_in,d_out]</em>.</p>
-</dd>
-<dt>strides </dt><dd><p>The stride of the sliding window for each dimension of input.</p>
-</dd>
-<dt>padding </dt><dd><p>SAME” or “VALID” indicating the algorithm, or list indicating the per-dimension paddings.</p>
-</dd>
-<dt>output_shape </dt><dd><p>Shape of the output (Default value = None)</p>
-</dd>
-<dt>data_format </dt><dd><p>NWC” or “NCW”. Defaults to “NWC”.</p>
-</dd>
-<dt>dilations </dt><dd><p>The dilation factor for each dimension of input. (Default value = 1)</p>
-</dd>
-</dl>
-<blockquote>
-<div><dl class="simple">
-<dt>ret</dt><dd><p>The result of the transpose convolution operation.</p>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>ret</em> – The result of the transpose convolution operation.</p>
 </dd>
 </dl>
-</div></blockquote>
 </dd></dl>
 
 <dl class="py function">
-<dt id="ivy.functional.ivy.layers.conv2d">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">conv2d</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">filters</span></em>, <em class="sig-param"><span class="n">strides</span></em>, <em class="sig-param"><span class="n">padding</span></em>, <em class="sig-param"><span class="n">data_format</span><span class="o">=</span><span class="default_value">'NHWC'</span></em>, <em class="sig-param"><span class="n">dilations</span><span class="o">=</span><span class="default_value">1</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/layers.html#conv2d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.layers.conv2d" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="ivy.functional.ivy.layers.conv2d">
+<span class="sig-prename descclassname"><span class="pre">ivy.functional.ivy.layers.</span></span><span class="sig-name descname"><span class="pre">conv2d</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filters</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">strides</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">padding</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'NHWC'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dilations</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/layers.html#conv2d"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.layers.conv2d" title="Permalink to this definition"></a></dt>
 <dd><p>Computes a 2-D convolution given 4-D input x and filters arrays.</p>
-<dl class="simple">
-<dt>x </dt><dd><p>Input image <em>[batch_size,h,w,d_in]</em>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> – Input image <em>[batch_size,h,w,d_in]</em>.</p></li>
+<li><p><strong>filters</strong> – Convolution filters <em>[fh,fw,d_in,d_out]</em>.</p></li>
+<li><p><strong>strides</strong> – The stride of the sliding window for each dimension of input.</p></li>
+<li><p><strong>padding</strong> – SAME” or “VALID” indicating the algorithm, or list indicating the per-dimension paddings.</p></li>
+<li><p><strong>data_format</strong> – NHWC” or “NCHW”. Defaults to “NHWC”.</p></li>
+<li><p><strong>dilations</strong> – The dilation factor for each dimension of input. (Default value = 1)</p></li>
+</ul>
 </dd>
-<dt>filters </dt><dd><p>Convolution filters <em>[fh,fw,d_in,d_out]</em>.</p>
-</dd>
-<dt>strides </dt><dd><p>The stride of the sliding window for each dimension of input.</p>
-</dd>
-<dt>padding </dt><dd><p>SAME” or “VALID” indicating the algorithm, or list indicating the per-dimension paddings.</p>
-</dd>
-<dt>data_format </dt><dd><p>NHWC” or “NCHW”. Defaults to “NHWC”.</p>
-</dd>
-<dt>dilations </dt><dd><p>The dilation factor for each dimension of input. (Default value = 1)</p>
-</dd>
-</dl>
-<blockquote>
-<div><dl class="simple">
-<dt>ret</dt><dd><p>The result of the convolution operation.</p>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>ret</em> – The result of the convolution operation.</p>
 </dd>
 </dl>
-</div></blockquote>
 </dd></dl>
 
 <dl class="py function">
-<dt id="ivy.functional.ivy.layers.conv2d_transpose">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">conv2d_transpose</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">filters</span></em>, <em class="sig-param"><span class="n">strides</span></em>, <em class="sig-param"><span class="n">padding</span></em>, <em class="sig-param"><span class="n">output_shape</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">data_format</span><span class="o">=</span><span class="default_value">'NHWC'</span></em>, <em class="sig-param"><span class="n">dilations</span><span class="o">=</span><span class="default_value">1</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/layers.html#conv2d_transpose"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.layers.conv2d_transpose" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="ivy.functional.ivy.layers.conv2d_transpose">
+<span class="sig-prename descclassname"><span class="pre">ivy.functional.ivy.layers.</span></span><span class="sig-name descname"><span class="pre">conv2d_transpose</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filters</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">strides</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">padding</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_shape</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'NHWC'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dilations</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/layers.html#conv2d_transpose"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.layers.conv2d_transpose" title="Permalink to this definition"></a></dt>
 <dd><p>Computes a 2-D transpose convolution given 4-D input x and filters arrays.</p>
-<dl class="simple">
-<dt>x </dt><dd><p>Input image <em>[batch_size,h,w,d_in]</em>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> – Input image <em>[batch_size,h,w,d_in]</em>.</p></li>
+<li><p><strong>filters</strong> – Convolution filters <em>[fh,fw,d_in,d_out]</em>.</p></li>
+<li><p><strong>strides</strong> – The stride of the sliding window for each dimension of input.</p></li>
+<li><p><strong>padding</strong> – SAME” or “VALID” indicating the algorithm, or list indicating the per-dimension paddings.</p></li>
+<li><p><strong>output_shape</strong> – Shape of the output (Default value = None)</p></li>
+<li><p><strong>data_format</strong> – NHWC” or “NCHW”. Defaults to “NHWC”.</p></li>
+<li><p><strong>dilations</strong> – The dilation factor for each dimension of input. (Default value = 1)</p></li>
+</ul>
 </dd>
-<dt>filters </dt><dd><p>Convolution filters <em>[fh,fw,d_in,d_out]</em>.</p>
-</dd>
-<dt>strides </dt><dd><p>The stride of the sliding window for each dimension of input.</p>
-</dd>
-<dt>padding </dt><dd><p>SAME” or “VALID” indicating the algorithm, or list indicating the per-dimension paddings.</p>
-</dd>
-<dt>output_shape </dt><dd><p>Shape of the output (Default value = None)</p>
-</dd>
-<dt>data_format </dt><dd><p>NHWC” or “NCHW”. Defaults to “NHWC”.</p>
-</dd>
-<dt>dilations </dt><dd><p>The dilation factor for each dimension of input. (Default value = 1)</p>
-</dd>
-</dl>
-<blockquote>
-<div><dl class="simple">
-<dt>ret</dt><dd><p>The result of the transpose convolution operation.</p>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>ret</em> – The result of the transpose convolution operation.</p>
 </dd>
 </dl>
-</div></blockquote>
 </dd></dl>
 
 <dl class="py function">
-<dt id="ivy.functional.ivy.layers.conv3d">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">conv3d</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">filters</span></em>, <em class="sig-param"><span class="n">strides</span></em>, <em class="sig-param"><span class="n">padding</span></em>, <em class="sig-param"><span class="n">data_format</span><span class="o">=</span><span class="default_value">'NDHWC'</span></em>, <em class="sig-param"><span class="n">dilations</span><span class="o">=</span><span class="default_value">1</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/layers.html#conv3d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.layers.conv3d" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="ivy.functional.ivy.layers.conv3d">
+<span class="sig-prename descclassname"><span class="pre">ivy.functional.ivy.layers.</span></span><span class="sig-name descname"><span class="pre">conv3d</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filters</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">strides</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">padding</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'NDHWC'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dilations</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/layers.html#conv3d"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.layers.conv3d" title="Permalink to this definition"></a></dt>
 <dd><p>Computes a 3-D convolution given 5-D input x and filters arrays.</p>
-<dl class="simple">
-<dt>x </dt><dd><p>Input volume <em>[batch_size,d,h,w,d_in]</em>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> – Input volume <em>[batch_size,d,h,w,d_in]</em>.</p></li>
+<li><p><strong>filters</strong> – Convolution filters <em>[fd,fh,fw,d_in,d_out]</em>.</p></li>
+<li><p><strong>strides</strong> – The stride of the sliding window for each dimension of input.</p></li>
+<li><p><strong>padding</strong> – SAME” or “VALID” indicating the algorithm, or list indicating the per-dimension paddings.</p></li>
+<li><p><strong>data_format</strong> – NDHWC” or “NCDHW”. Defaults to “NDHWC”.</p></li>
+<li><p><strong>dilations</strong> – The dilation factor for each dimension of input. (Default value = 1)</p></li>
+</ul>
 </dd>
-<dt>filters </dt><dd><p>Convolution filters <em>[fd,fh,fw,d_in,d_out]</em>.</p>
-</dd>
-<dt>strides </dt><dd><p>The stride of the sliding window for each dimension of input.</p>
-</dd>
-<dt>padding </dt><dd><p>SAME” or “VALID” indicating the algorithm, or list indicating the per-dimension paddings.</p>
-</dd>
-<dt>data_format </dt><dd><p>NDHWC” or “NCDHW”. Defaults to “NDHWC”.</p>
-</dd>
-<dt>dilations </dt><dd><p>The dilation factor for each dimension of input. (Default value = 1)</p>
-</dd>
-</dl>
-<blockquote>
-<div><dl class="simple">
-<dt>ret</dt><dd><p>The result of the convolution operation.</p>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>ret</em> – The result of the convolution operation.</p>
 </dd>
 </dl>
-</div></blockquote>
 </dd></dl>
 
 <dl class="py function">
-<dt id="ivy.functional.ivy.layers.conv3d_transpose">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">conv3d_transpose</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">filters</span></em>, <em class="sig-param"><span class="n">strides</span></em>, <em class="sig-param"><span class="n">padding</span></em>, <em class="sig-param"><span class="n">output_shape</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">data_format</span><span class="o">=</span><span class="default_value">'NDHWC'</span></em>, <em class="sig-param"><span class="n">dilations</span><span class="o">=</span><span class="default_value">1</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/layers.html#conv3d_transpose"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.layers.conv3d_transpose" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="ivy.functional.ivy.layers.conv3d_transpose">
+<span class="sig-prename descclassname"><span class="pre">ivy.functional.ivy.layers.</span></span><span class="sig-name descname"><span class="pre">conv3d_transpose</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filters</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">strides</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">padding</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_shape</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'NDHWC'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dilations</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/layers.html#conv3d_transpose"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.layers.conv3d_transpose" title="Permalink to this definition"></a></dt>
 <dd><p>Computes a 3-D transpose convolution given 5-D input x and filters arrays.</p>
-<dl class="simple">
-<dt>x </dt><dd><p>Input image <em>[batch_size,d,h,w,d_in]</em>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> – Input image <em>[batch_size,d,h,w,d_in]</em>.</p></li>
+<li><p><strong>filters</strong> – Convolution filters <em>[fd,fh,fw,d_in,d_out]</em>.</p></li>
+<li><p><strong>strides</strong> – The stride of the sliding window for each dimension of input.</p></li>
+<li><p><strong>padding</strong> – SAME” or “VALID” indicating the algorithm, or list indicating the per-dimension paddings.</p></li>
+<li><p><strong>output_shape</strong> – Shape of the output (Default value = None)</p></li>
+<li><p><strong>data_format</strong> – NDHWC” or “NCDHW”. Defaults to “NDHWC”.</p></li>
+<li><p><strong>dilations</strong> – The dilation factor for each dimension of input. (Default value = 1)</p></li>
+</ul>
 </dd>
-<dt>filters </dt><dd><p>Convolution filters <em>[fd,fh,fw,d_in,d_out]</em>.</p>
-</dd>
-<dt>strides </dt><dd><p>The stride of the sliding window for each dimension of input.</p>
-</dd>
-<dt>padding </dt><dd><p>SAME” or “VALID” indicating the algorithm, or list indicating the per-dimension paddings.</p>
-</dd>
-<dt>output_shape </dt><dd><p>Shape of the output (Default value = None)</p>
-</dd>
-<dt>data_format </dt><dd><p>NDHWC” or “NCDHW”. Defaults to “NDHWC”.</p>
-</dd>
-<dt>dilations </dt><dd><p>The dilation factor for each dimension of input. (Default value = 1)</p>
-</dd>
-</dl>
-<blockquote>
-<div><dl class="simple">
-<dt>ret</dt><dd><p>The result of the transpose convolution operation.</p>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>ret</em> – The result of the transpose convolution operation.</p>
 </dd>
 </dl>
-</div></blockquote>
 </dd></dl>
 
 <dl class="py function">
-<dt id="ivy.functional.ivy.layers.depthwise_conv2d">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">depthwise_conv2d</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">filters</span></em>, <em class="sig-param"><span class="n">strides</span></em>, <em class="sig-param"><span class="n">padding</span></em>, <em class="sig-param"><span class="n">data_format</span><span class="o">=</span><span class="default_value">'NHWC'</span></em>, <em class="sig-param"><span class="n">dilations</span><span class="o">=</span><span class="default_value">1</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/layers.html#depthwise_conv2d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.layers.depthwise_conv2d" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="ivy.functional.ivy.layers.depthwise_conv2d">
+<span class="sig-prename descclassname"><span class="pre">ivy.functional.ivy.layers.</span></span><span class="sig-name descname"><span class="pre">depthwise_conv2d</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filters</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">strides</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">padding</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'NHWC'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dilations</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/layers.html#depthwise_conv2d"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.layers.depthwise_conv2d" title="Permalink to this definition"></a></dt>
 <dd><p>Computes a 2-D depthwise convolution given 4-D input x and filters arrays.</p>
-<dl class="simple">
-<dt>x </dt><dd><p>Input image <em>[batch_size,h,w,d]</em>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> – Input image <em>[batch_size,h,w,d]</em>.</p></li>
+<li><p><strong>filters</strong> – Convolution filters <em>[fh,fw,d]</em>.</p></li>
+<li><p><strong>strides</strong> – The stride of the sliding window for each dimension of input.</p></li>
+<li><p><strong>padding</strong> – SAME” or “VALID” indicating the algorithm, or list indicating the per-dimension paddings.</p></li>
+<li><p><strong>data_format</strong> – NHWC” or “NCHW”. Defaults to “NHWC”.</p></li>
+<li><p><strong>dilations</strong> – The dilation factor for each dimension of input. (Default value = 1)</p></li>
+</ul>
 </dd>
-<dt>filters </dt><dd><p>Convolution filters <em>[fh,fw,d]</em>.</p>
-</dd>
-<dt>strides </dt><dd><p>The stride of the sliding window for each dimension of input.</p>
-</dd>
-<dt>padding </dt><dd><p>SAME” or “VALID” indicating the algorithm, or list indicating the per-dimension paddings.</p>
-</dd>
-<dt>data_format </dt><dd><p>NHWC” or “NCHW”. Defaults to “NHWC”.</p>
-</dd>
-<dt>dilations </dt><dd><p>The dilation factor for each dimension of input. (Default value = 1)</p>
-</dd>
-</dl>
-<blockquote>
-<div><dl class="simple">
-<dt>ret</dt><dd><p>The result of the convolution operation.</p>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>ret</em> – The result of the convolution operation.</p>
 </dd>
 </dl>
-</div></blockquote>
 </dd></dl>
 
 <dl class="py function">
-<dt id="ivy.functional.ivy.layers.dropout">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">dropout</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">prob</span></em>, <em class="sig-param"><span class="n">scale</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/layers.html#dropout"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.layers.dropout" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="ivy.functional.ivy.layers.dropout">
+<span class="sig-prename descclassname"><span class="pre">ivy.functional.ivy.layers.</span></span><span class="sig-name descname"><span class="pre">dropout</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prob</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/layers.html#dropout"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.layers.dropout" title="Permalink to this definition"></a></dt>
 <dd><p>Randomly zeroes some of the elements of the input tensor with probability p using samples from a Bernoull
 distribution.</p>
-<dl class="simple">
-<dt>x</dt><dd><p>The input array x to perform dropout on.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> – The input array x to perform dropout on.</p></li>
+<li><p><strong>prob</strong> – The probability of zeroing out each array element.</p></li>
+<li><p><strong>scale</strong> – Whether to scale the output by 1/(1-prob), default is True.</p></li>
+</ul>
 </dd>
-<dt>prob</dt><dd><p>The probability of zeroing out each array element.</p>
-</dd>
-<dt>scale</dt><dd><p>Whether to scale the output by 1/(1-prob), default is True.</p>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>ret</em> – Result array of the linear transformation. <em>[N,∗,out_features]</em></p>
 </dd>
 </dl>
-<blockquote>
-<div><dl class="simple">
-<dt>ret</dt><dd><p>Result array of the linear transformation. <em>[N,∗,out_features]</em></p>
-</dd>
-</dl>
-</div></blockquote>
 </dd></dl>
 
 <dl class="py function">
-<dt id="ivy.functional.ivy.layers.linear">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">linear</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">weight</span></em>, <em class="sig-param"><span class="n">bias</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/layers.html#linear"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.layers.linear" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="ivy.functional.ivy.layers.linear">
+<span class="sig-prename descclassname"><span class="pre">ivy.functional.ivy.layers.</span></span><span class="sig-name descname"><span class="pre">linear</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bias</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/layers.html#linear"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.layers.linear" title="Permalink to this definition"></a></dt>
 <dd><p>Applies a linear transformation to the incoming data: y = x * t(weight) + bias. The operation also supports batching
 of the weight matrices. This is useful if a batch of different network parameters are to be represented.</p>
-<dl class="simple">
-<dt>x</dt><dd><p>The input x compute linear transformation on. <em>[outer_batch_shape,inner_batch_shape,in_features]</em></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> – The input x compute linear transformation on. <em>[outer_batch_shape,inner_batch_shape,in_features]</em></p></li>
+<li><p><strong>weight</strong> – The weight matrix. <em>[outer_batch_shape,out_features,in_features]</em></p></li>
+<li><p><strong>bias</strong> – The bias vector, default is None. <em>[outer_batch_shape,out_features]</em></p></li>
+</ul>
 </dd>
-<dt>weight</dt><dd><p>The weight matrix. <em>[outer_batch_shape,out_features,in_features]</em></p>
-</dd>
-<dt>bias</dt><dd><p>The bias vector, default is None. <em>[outer_batch_shape,out_features]</em></p>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>ret</em> – Result array of the linear transformation. <em>[outer_batch_shape,inner_batch_shape,out_features]</em></p>
 </dd>
 </dl>
-<blockquote>
-<div><dl class="simple">
-<dt>ret</dt><dd><p>Result array of the linear transformation. <em>[outer_batch_shape,inner_batch_shape,out_features]</em></p>
-</dd>
-</dl>
-</div></blockquote>
 </dd></dl>
 
 <dl class="py function">
-<dt id="ivy.functional.ivy.layers.lstm_update">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">lstm_update</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">init_h</span></em>, <em class="sig-param"><span class="n">init_c</span></em>, <em class="sig-param"><span class="n">kernel</span></em>, <em class="sig-param"><span class="n">recurrent_kernel</span></em>, <em class="sig-param"><span class="n">bias</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">recurrent_bias</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/layers.html#lstm_update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.layers.lstm_update" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="ivy.functional.ivy.layers.lstm_update">
+<span class="sig-prename descclassname"><span class="pre">ivy.functional.ivy.layers.</span></span><span class="sig-name descname"><span class="pre">lstm_update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_h</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_c</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kernel</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">recurrent_kernel</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bias</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">recurrent_bias</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/layers.html#lstm_update"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.layers.lstm_update" title="Permalink to this definition"></a></dt>
 <dd><p>Perform long-short term memory update by unrolling time dimension of input array.</p>
-<dl class="simple">
-<dt>x </dt><dd><p>input tensor of LSTM layer <em>[batch_shape, t, in]</em>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> – input tensor of LSTM layer <em>[batch_shape, t, in]</em>.</p></li>
+<li><p><strong>init_h</strong> – initial state tensor for the cell output <em>[batch_shape, out]</em>.</p></li>
+<li><p><strong>init_c</strong> – initial state tensor for the cell hidden state <em>[batch_shape, out]</em>.</p></li>
+<li><p><strong>kernel</strong> – weights for cell kernel <em>[in, 4 x out]</em>.</p></li>
+<li><p><strong>recurrent_kernel</strong> – weights for cell recurrent kernel <em>[out, 4 x out]</em>.</p></li>
+<li><p><strong>bias</strong> – bias for cell kernel <em>[4 x out]</em>. (Default value = None)</p></li>
+<li><p><strong>recurrent_bias</strong> – bias for cell recurrent kernel <em>[4 x out]</em>. (Default value = None)</p></li>
+</ul>
 </dd>
-<dt>init_h </dt><dd><p>initial state tensor for the cell output <em>[batch_shape, out]</em>.</p>
-</dd>
-<dt>init_c </dt><dd><p>initial state tensor for the cell hidden state <em>[batch_shape, out]</em>.</p>
-</dd>
-<dt>kernel </dt><dd><p>weights for cell kernel <em>[in, 4 x out]</em>.</p>
-</dd>
-<dt>recurrent_kernel </dt><dd><p>weights for cell recurrent kernel <em>[out, 4 x out]</em>.</p>
-</dd>
-<dt>bias </dt><dd><p>bias for cell kernel <em>[4 x out]</em>. (Default value = None)</p>
-</dd>
-<dt>recurrent_bias </dt><dd><p>bias for cell recurrent kernel <em>[4 x out]</em>. (Default value = None)</p>
-</dd>
-</dl>
-<blockquote>
-<div><dl class="simple">
-<dt>ret</dt><dd><p>hidden state for all timesteps <em>[batch_shape,t,out]</em> and cell state for last timestep <em>[batch_shape,out]</em></p>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>ret</em> – hidden state for all timesteps <em>[batch_shape,t,out]</em> and cell state for last timestep <em>[batch_shape,out]</em></p>
 </dd>
 </dl>
-</div></blockquote>
 </dd></dl>
 
 <dl class="py function">
-<dt id="ivy.functional.ivy.layers.multi_head_attention">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">multi_head_attention</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">scale</span></em>, <em class="sig-param"><span class="n">num_heads</span></em>, <em class="sig-param"><span class="n">context</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">mask</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_q_fn</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_kv_fn</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_out_fn</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_q_v</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_kv_v</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_out_v</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/layers.html#multi_head_attention"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.layers.multi_head_attention" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="ivy.functional.ivy.layers.multi_head_attention">
+<span class="sig-prename descclassname"><span class="pre">ivy.functional.ivy.layers.</span></span><span class="sig-name descname"><span class="pre">multi_head_attention</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_heads</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mask</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_q_fn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_kv_fn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_out_fn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_q_v</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_kv_v</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_out_v</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/layers.html#multi_head_attention"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.layers.multi_head_attention" title="Permalink to this definition"></a></dt>
 <dd><p>Applies multi-head attention to inputs x.</p>
-<dl class="simple">
-<dt>x</dt><dd><p>The array to determine the queries from <em>[batch_shape,num_queries,x_feat_dim]</em>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> – The array to determine the queries from <em>[batch_shape,num_queries,x_feat_dim]</em>.</p></li>
+<li><p><strong>scale</strong> – The value by which to scale the query-key similarity measure before softmax.</p></li>
+<li><p><strong>num_heads</strong> – The number of attention heads to use.</p></li>
+<li><p><strong>context</strong> – The array to determine the keys and values from. Default is None.
+<em>[batch_shape,num_keys,cont_feat_dim]</em>.</p></li>
+<li><p><strong>mask</strong> – The mask to apply to the query-key values. Default is None. <em>[batch_shape,num_queries,num_keys]</em></p></li>
+<li><p><strong>to_q_fn</strong> – The function to compute queries from input x, returning queries
+<em>[batch_shape,num_queries,numheads×feat_dim]</em>. (Default value = None)</p></li>
+<li><p><strong>to_kv_fn</strong> – The function to compute keys and values from the context. (Default value = None)</p></li>
+<li><p><strong>to_out_fn</strong> – The function to compute the output from the scaled dot-product attention. (Default value = None)</p></li>
+<li><p><strong>to_q_v</strong> – The variables for function to_q_fn. Default is None.</p></li>
+<li><p><strong>to_kv_v</strong> – The variables for function to_kv_fn. Default is None.</p></li>
+<li><p><strong>to_out_v</strong> – The variables for function to_out_fn. Default is None.</p></li>
+</ul>
 </dd>
-<dt>scale</dt><dd><p>The value by which to scale the query-key similarity measure before softmax.</p>
-</dd>
-<dt>num_heads</dt><dd><p>The number of attention heads to use.</p>
-</dd>
-<dt>context</dt><dd><p>The array to determine the keys and values from. Default is None.
-<em>[batch_shape,num_keys,cont_feat_dim]</em>.</p>
-</dd>
-<dt>mask</dt><dd><p>The mask to apply to the query-key values. Default is None. <em>[batch_shape,num_queries,num_keys]</em></p>
-</dd>
-<dt>to_q_fn</dt><dd><p>The function to compute queries from input x, returning queries
-<em>[batch_shape,num_queries,numheads×feat_dim]</em>. (Default value = None)</p>
-</dd>
-<dt>to_kv_fn</dt><dd><p>The function to compute keys and values from the context. (Default value = None)</p>
-</dd>
-<dt>to_out_fn</dt><dd><p>The function to compute the output from the scaled dot-product attention. (Default value = None)</p>
-</dd>
-<dt>to_q_v</dt><dd><p>The variables for function to_q_fn. Default is None.</p>
-</dd>
-<dt>to_kv_v</dt><dd><p>The variables for function to_kv_fn. Default is None.</p>
-</dd>
-<dt>to_out_v</dt><dd><p>The variables for function to_out_fn. Default is None.</p>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>The output following application of multi-head attention. *[batch_shape,num_queries,out_feat_dim]*</em></p>
 </dd>
 </dl>
-<blockquote>
-<div><p>The output following application of multi-head attention. <em>[batch_shape,num_queries,out_feat_dim]</em></p>
-</div></blockquote>
 </dd></dl>
 
 <dl class="py function">
-<dt id="ivy.functional.ivy.layers.scaled_dot_product_attention">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">scaled_dot_product_attention</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">q</span></em>, <em class="sig-param"><span class="n">k</span></em>, <em class="sig-param"><span class="n">v</span></em>, <em class="sig-param"><span class="n">scale</span></em>, <em class="sig-param"><span class="n">mask</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/layers.html#scaled_dot_product_attention"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.layers.scaled_dot_product_attention" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="ivy.functional.ivy.layers.scaled_dot_product_attention">
+<span class="sig-prename descclassname"><span class="pre">ivy.functional.ivy.layers.</span></span><span class="sig-name descname"><span class="pre">scaled_dot_product_attention</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">q</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mask</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/layers.html#scaled_dot_product_attention"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.layers.scaled_dot_product_attention" title="Permalink to this definition"></a></dt>
 <dd><p>Applies scaled dot product attention to inputs x using optional mask.</p>
-<dl class="simple">
-<dt>q</dt><dd><p>The queries <em>[batch_shape,num_queries,feat_dim]</em>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>q</strong> – The queries <em>[batch_shape,num_queries,feat_dim]</em>.</p></li>
+<li><p><strong>k</strong> – The keys <em>[batch_shape,num_keys,feat_dim]</em>.</p></li>
+<li><p><strong>v</strong> – The values <em>[batch_shape,num_keys,feat_dim]</em>.</p></li>
+<li><p><strong>scale</strong> – The value by which to scale the query-key pairs before softmax.</p></li>
+<li><p><strong>mask</strong> – The mask to apply to the query-key values. Default is None. <em>[batch_shape,num_queries,num_keys]</em></p></li>
+</ul>
 </dd>
-<dt>k</dt><dd><p>The keys <em>[batch_shape,num_keys,feat_dim]</em>.</p>
-</dd>
-<dt>v</dt><dd><p>The values <em>[batch_shape,num_keys,feat_dim]</em>.</p>
-</dd>
-<dt>scale</dt><dd><p>The value by which to scale the query-key pairs before softmax.</p>
-</dd>
-<dt>mask</dt><dd><p>The mask to apply to the query-key values. Default is None. <em>[batch_shape,num_queries,num_keys]</em></p>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>The output following application of scaled dot-product attention. *[batch_shape,num_queries,feat_dim]*</em></p>
 </dd>
 </dl>
-<blockquote>
-<div><p>The output following application of scaled dot-product attention. <em>[batch_shape,num_queries,feat_dim]</em></p>
-</div></blockquote>
 </dd></dl>
 
 <div class="toctree-wrapper compound">
 </div>
-</div>
+</section>
 
 
            </div>
-           
           </div>
-          <footer>
-  
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="layers/linear.html" class="btn btn-neutral float-right" title="linear" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="image/linear_resample.html" class="btn btn-neutral float-left" title="linear_resample" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="image/linear_resample.html" class="btn btn-neutral float-left" title="linear_resample" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="layers/linear.html" class="btn btn-neutral float-right" title="linear" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        &copy; Copyright 2020, Ivy Team
-
-    </p>
+    <p>&#169; Copyright 2020, Ivy Team.</p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
 
 </footer>
-
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>

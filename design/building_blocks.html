@@ -1,68 +1,35 @@
-
-
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
-  
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Building Blocks &mdash; Ivy 1.0 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
-
-  
-  
-  
-  
-
-  
-  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
-  
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    
-    <script type="text/javascript" src="../_static/js/theme.js"></script>
-
-    
-
-  
-  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
+    <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Ivy as a Transpiler" href="ivy_as_a_transpiler.html" />
     <link rel="prev" title="Design" href="../design.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-          
-
-          
             <a href="../index.html" class="icon icon-home"> Ivy
-          
-
-          
           </a>
-
-          
-            
-            
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -70,18 +37,8 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
-              <p class="caption"><span class="caption-text">Overview</span></p>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Overview</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../background.html">Background</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../design.html">Design</a><ul class="current">
@@ -100,32 +57,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../roadmap.html">Roadmap</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Container</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../container/activations.html">Activations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../container/base.html">Base</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../container/container.html">Container</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../container/creation.html">Creation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../container/data_types.html">Data types</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../container/device.html">Device</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../container/elementwise.html">Elementwise</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../container/general.html">General</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../container/gradients.html">Gradients</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../container/image.html">Image</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../container/layers.html">Layers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../container/linear_algebra.html">Linear algebra</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../container/losses.html">Losses</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../container/manipulation.html">Manipulation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../container/norms.html">Norms</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../container/random.html">Random</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../container/searching.html">Searching</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../container/set.html">Set</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../container/sorting.html">Sorting</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../container/statistical.html">Statistical</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../container/utility.html">Utility</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../container/wrapping.html">Wrapping</a></li>
-</ul>
-<p class="caption"><span class="caption-text">Functional</span></p>
+<p class="caption" role="heading"><span class="caption-text">Functional</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../functional/ivy/activations.html">Activations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../functional/ivy/compilation.html">Compilation</a></li>
@@ -151,7 +83,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../functional/ivy/statistical.html">Statistical</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../functional/ivy/utility.html">Utility</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Stateful</span></p>
+<p class="caption" role="heading"><span class="caption-text">Stateful</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../stateful/activations.html">Activations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../stateful/converters.html">Converters</a></li>
@@ -162,7 +94,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../stateful/optimizers.html">Optimizers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../stateful/sequential.html">Sequential</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Docs</span></p>
+<p class="caption" role="heading"><span class="caption-text">Docs</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../ivy"">Ivy</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../mech"">Ivy mech</a></li>
@@ -175,76 +107,37 @@
 <li class="toctree-l1"><a class="reference internal" href="../../ecosystem"">Ivy ecosystem</a></li>
 </ul>
 
-            
-          
         </div>
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">Ivy</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
-      <li><a href="../index.html">Docs</a> &raquo;</li>
-        
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
           <li><a href="../design.html">Design</a> &raquo;</li>
-        
       <li>Building Blocks</li>
-    
-    
       <li class="wy-breadcrumbs-aside">
-        
-            
             <a href="../_sources/design/building_blocks.rst.txt" rel="nofollow"> View page source</a>
-          
-        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
-  <div class="section" id="building-blocks">
-<h1>Building Blocks<a class="headerlink" href="#building-blocks" title="Permalink to this headline">¶</a></h1>
+             
+  <section id="building-blocks">
+<h1>Building Blocks<a class="headerlink" href="#building-blocks" title="Permalink to this headline"></a></h1>
 <p>Here we explain the components of Ivy which are fundamental to it’s usage either as a code converter or as a fully-fledged framework-agnostic ML framework. These are the 4 parts labelled as (a) in the image below:</p>
 <a class="reference internal image-reference" href="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/submodule_dependency_graph.png?raw=true"><img alt="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/submodule_dependency_graph.png?raw=true" class="align-center" src="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/submodule_dependency_graph.png?raw=true" style="width: 100%;" /></a>
-<div class="section" id="backend-functional-apis">
-<h2>Backend Functional APIs ✅<a class="headerlink" href="#backend-functional-apis" title="Permalink to this headline">¶</a></h2>
+<section id="backend-functional-apis">
+<h2>Backend Functional APIs ✅<a class="headerlink" href="#backend-functional-apis" title="Permalink to this headline"></a></h2>
 <p>The first important point to make is that, Ivy does not implement it’s own C++ or CUDA backend. Instead, Ivy <strong>wraps</strong> the functional APIs of existing frameworks, bringing them into syntactic and semantic alignment. Let’s take the function <code class="code docutils literal notranslate"><span class="pre">ivy.clip</span></code> as an example.</p>
 <p>There are separate backend modules for JAX, TensorFlow, PyTorch, MXNet and NumPy, and so we implement the <code class="code docutils literal notranslate"><span class="pre">clip</span></code> method once for each backend, each in separate backend files like so:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ivy/functional/backends/jax/elementwise.py:</span>
@@ -280,9 +173,9 @@
     <span class="k">return</span> <span class="n">base</span> <span class="o">**</span> <span class="n">power_seq</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="ivy-functional-api">
-<h2>Ivy Functional API ✅<a class="headerlink" href="#ivy-functional-api" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="ivy-functional-api">
+<h2>Ivy Functional API ✅<a class="headerlink" href="#ivy-functional-api" title="Permalink to this headline"></a></h2>
 <p>Calling the different backend files explicitly would work okay, but it would mean we need to <code class="code docutils literal notranslate"><span class="pre">import</span> <span class="pre">ivy.functional.backends.torch</span> <span class="pre">as</span> <span class="pre">ivy</span></code> to use a PyTorch backend or <code class="code docutils literal notranslate"><span class="pre">import</span> <span class="pre">ivy.functional.backends.tensorflow</span> <span class="pre">as</span> <span class="pre">ivy</span></code> to use a TensorFlow backend. Instead, we allow these backends to be bound to the single shared namespace ivy. The backend can then be changed by calling <code class="code docutils literal notranslate"><span class="pre">ivy.set_framework(‘torch’)</span></code> for example.</p>
 <p><code class="code docutils literal notranslate"><span class="pre">ivy.functional.ivy</span></code> is the submodule where all the doc strings and argument typing reside for the functional Ivy API. The <code class="code docutils literal notranslate"><span class="pre">clip</span></code> function is shown below:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ivy/functional/ivy/elementwise.py:</span>
@@ -370,9 +263,9 @@ print(ivy.current_framework())
 </tbody>
 </table>
 <p>This implicit framework selection, and the use of a shared global ivy namespace for all backends, are both made possible via the framework handler.</p>
-</div>
-<div class="section" id="framework-handler">
-<h2>Framework Handler ✅<a class="headerlink" href="#framework-handler" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="framework-handler">
+<h2>Framework Handler ✅<a class="headerlink" href="#framework-handler" title="Permalink to this headline"></a></h2>
 <p>All code for setting and unsetting frameworks resides in the submodule at <code class="code docutils literal notranslate"><span class="pre">ivy/framework_handler.py</span></code>, and the front facing function is <code class="code docutils literal notranslate"><span class="pre">ivy.current_framework()</span></code>. The contents of this function are as follows:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ivy/framework_handler.py</span>
 <span class="k">def</span> <span class="nf">current_framework</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -487,9 +380,9 @@ print(ivy.current_framework())
 </div>
 <p>We <em>could</em> find and wrap the functional LSTM update methods for each backend framework which might bring a small performance improvement, but in this case there are no functional LSTM methods exposed in the official functional APIs of the backend frameworks, and therefore the functional LSTM code which does exist for these frameworks is much less stable and less reliable for wrapping into Ivy.
 Generally, we have made decisions so that Ivy is as stable and scalable as possible, minimizing dependencies to backend framework code where possible with minimal sacrifices in performance.</p>
-</div>
-<div class="section" id="graph-compiler">
-<h2>Graph Compiler 🚧<a class="headerlink" href="#graph-compiler" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="graph-compiler">
+<h2>Graph Compiler 🚧<a class="headerlink" href="#graph-compiler" title="Permalink to this headline"></a></h2>
 <p>“What about performance?” I hear you ask. This is a great point to raise!</p>
 <p>With the design as currently presented, there would be a small performance hit every time we call an Ivy function by virtue of the added Python wrapping. One reason we created the graph compiler was to address this issue.</p>
 <p>The compiler takes in any Ivy function, backend function, or composition, and returns the computation graph using the backend functional API only. The dependency graph for this process looks like this:</p>
@@ -679,56 +572,38 @@ Generally, we have made decisions so that Ivy is as stable and scalable as possi
 <p><strong>Round Up</strong></p>
 <p>Hopefully this has painted a clear picture of the fundamental building blocks underpinning the Ivy framework, being the backend functional APIs, Ivy functional API, framework handler and graph compiler 🙂</p>
 <p>Please check out the discussions on the <a class="reference external" href="https://github.com/unifyai/ivy">repo</a> for FAQs, and reach out on <a class="reference external" href="https://discord.gg/ZVQdvbzNQJ">discord</a> if you have any questions!</p>
-</div>
-</div>
+</section>
+</section>
 
 
            </div>
-           
           </div>
-          <footer>
-  
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="ivy_as_a_transpiler.html" class="btn btn-neutral float-right" title="Ivy as a Transpiler" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="../design.html" class="btn btn-neutral float-left" title="Design" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../design.html" class="btn btn-neutral float-left" title="Design" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="ivy_as_a_transpiler.html" class="btn btn-neutral float-right" title="Ivy as a Transpiler" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        &copy; Copyright 2020, Ivy Team
-
-    </p>
+    <p>&#169; Copyright 2020, Ivy Team.</p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
 
 </footer>
-
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>

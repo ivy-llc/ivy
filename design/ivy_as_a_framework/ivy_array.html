@@ -1,68 +1,35 @@
-
-
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
-  
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Ivy Array &mdash; Ivy 1.0 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
-
-  
-  
-  
-  
-
-  
-  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
-  
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    
-    <script type="text/javascript" src="../../_static/js/theme.js"></script>
-
-    
-
-  
-  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
+    <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="Extensions" href="../../extensions.html" />
     <link rel="prev" title="Ivy Stateful API" href="ivy_stateful_api.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-          
-
-          
             <a href="../../index.html" class="icon icon-home"> Ivy
-          
-
-          
           </a>
-
-          
-            
-            
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -70,18 +37,8 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
-              <p class="caption"><span class="caption-text">Overview</span></p>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Overview</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../../background.html">Background</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../../design.html">Design</a><ul class="current">
@@ -105,32 +62,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../roadmap.html">Roadmap</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../contributing.html">Contributing</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Container</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../container/activations.html">Activations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../container/base.html">Base</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../container/container.html">Container</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../container/creation.html">Creation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../container/data_types.html">Data types</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../container/device.html">Device</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../container/elementwise.html">Elementwise</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../container/general.html">General</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../container/gradients.html">Gradients</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../container/image.html">Image</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../container/layers.html">Layers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../container/linear_algebra.html">Linear algebra</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../container/losses.html">Losses</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../container/manipulation.html">Manipulation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../container/norms.html">Norms</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../container/random.html">Random</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../container/searching.html">Searching</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../container/set.html">Set</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../container/sorting.html">Sorting</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../container/statistical.html">Statistical</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../container/utility.html">Utility</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../container/wrapping.html">Wrapping</a></li>
-</ul>
-<p class="caption"><span class="caption-text">Functional</span></p>
+<p class="caption" role="heading"><span class="caption-text">Functional</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../functional/ivy/activations.html">Activations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../functional/ivy/compilation.html">Compilation</a></li>
@@ -156,7 +88,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../functional/ivy/statistical.html">Statistical</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../functional/ivy/utility.html">Utility</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Stateful</span></p>
+<p class="caption" role="heading"><span class="caption-text">Stateful</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../stateful/activations.html">Activations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../stateful/converters.html">Converters</a></li>
@@ -167,7 +99,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../stateful/optimizers.html">Optimizers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../stateful/sequential.html">Sequential</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Docs</span></p>
+<p class="caption" role="heading"><span class="caption-text">Docs</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../ivy"">Ivy</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../mech"">Ivy mech</a></li>
@@ -180,78 +112,38 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../ecosystem"">Ivy ecosystem</a></li>
 </ul>
 
-            
-          
         </div>
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../index.html">Ivy</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
-      <li><a href="../../index.html">Docs</a> &raquo;</li>
-        
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
           <li><a href="../../design.html">Design</a> &raquo;</li>
-        
           <li><a href="../ivy_as_a_framework.html">Ivy as a Framework</a> &raquo;</li>
-        
       <li>Ivy Array</li>
-    
-    
       <li class="wy-breadcrumbs-aside">
-        
-            
             <a href="../../_sources/design/ivy_as_a_framework/ivy_array.rst.txt" rel="nofollow"> View page source</a>
-          
-        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
-  <div class="section" id="ivy-array">
-<h1>Ivy Array<a class="headerlink" href="#ivy-array" title="Permalink to this headline">¶</a></h1>
+             
+  <section id="ivy-array">
+<h1>Ivy Array<a class="headerlink" href="#ivy-array" title="Permalink to this headline"></a></h1>
 <p>Here, we explain the <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> class, which is the class used to represent all arrays in Ivy. Every Ivy method
 returns <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> instances for all returned arrays.</p>
-<div class="section" id="the-array-class">
-<h2>The Array Class<a class="headerlink" href="#the-array-class" title="Permalink to this headline">¶</a></h2>
+<section id="the-array-class">
+<h2>The Array Class<a class="headerlink" href="#the-array-class" title="Permalink to this headline"></a></h2>
 <p>Let’s dive straight in and check out what the <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> constructor looks like.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ivy/array/__init__.py</span>
 <span class="k">class</span> <span class="nc">Array</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">ArrayWithDevice</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">ArrayWithGeneral</span><span class="p">,</span>
@@ -321,9 +213,9 @@ returns <code class="code docutils literal notranslate"><span class="pre">ivy.Ar
 <p>This is a great question, and has a couple of answers with varying importance.
 Perhaps the most important motivation for having a dedicated <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> class is the unification of array operators,
 which we discuss next!</p>
-</div>
-<div class="section" id="unifying-operators">
-<h2>Unifying Operators<a class="headerlink" href="#unifying-operators" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="unifying-operators">
+<h2>Unifying Operators<a class="headerlink" href="#unifying-operators" title="Permalink to this headline"></a></h2>
 <p>Let’s assume that there is no such thing as the <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> class,
 and we are just returning native arrays from all Ivy methods.</p>
 <p>Consider the code below:</p>
@@ -382,9 +274,9 @@ If the backend does not support inplace updates, then we can use the <code class
 For example, maybe one framework makes the strange decision to return rounded integer data types when integer arrays are raised to floating point powers.</p>
 <p>Without enforcing the use of the <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> class for arrays returned from Ivy methods, we would have no way to control this behaviour and unify the output <code class="code docutils literal notranslate"><span class="pre">z</span></code> for all backends.</p>
 <p>Therefore, with the design of Ivy, we have made the decision to require all arrays returned from Ivy methods to be instances of the <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> class.</p>
-</div>
-<div class="section" id="api-monkey-patching">
-<h2>API Monkey Patching<a class="headerlink" href="#api-monkey-patching" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="api-monkey-patching">
+<h2>API Monkey Patching<a class="headerlink" href="#api-monkey-patching" title="Permalink to this headline"></a></h2>
 <p>If you’ve looked through the code at all, you may notice that the Ivy methods do not return <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> instances at all.</p>
 <p>This is true, as far as the code appears, the methods actually return <code class="code docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code> instances.</p>
 <p>For example, let’s take a look at the <code class="code docutils literal notranslate"><span class="pre">ivy.inv</span></code> method with a PyTorch backend.</p>
@@ -449,9 +341,9 @@ but the returned arrays are always enforced to be <code class="code docutils lit
 </pre></div>
 </div>
 <p>This is called whenever a framework is unset, and each method is unwrapped back to the original version.</p>
-</div>
-<div class="section" id="instance-methods">
-<h2>Instance Methods<a class="headerlink" href="#instance-methods" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="instance-methods">
+<h2>Instance Methods<a class="headerlink" href="#instance-methods" title="Permalink to this headline"></a></h2>
 <p>Taking a look at the class definition, you may wonder why there are so many parent classes!
 The only reason the Array class derives from so many different Array classes is so we can compartmentalize the different array functions into separate classes for better code readability.</p>
 <p>All methods in the Ivy functional API are implemented as public instance methods in the <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> class via inheritance. For example, a few functions in <code class="code docutils literal notranslate"><span class="pre">ivy.ArrayWithGeneral</span></code> are shown below.</p>
@@ -495,56 +387,38 @@ The only reason the Array class derives from so many different Array classes is 
 <p><strong>Round Up</strong></p>
 <p>That should hopefully be enough to get you started with the Ivy Array 😊</p>
 <p>Please check out the discussions on the <a class="reference external" href="https://github.com/unifyai/ivy">repo</a> for FAQs, and reach out on <a class="reference external" href="https://discord.gg/ZVQdvbzNQJ">discord</a> if you have any questions!</p>
-</div>
-</div>
+</section>
+</section>
 
 
            </div>
-           
           </div>
-          <footer>
-  
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="../../extensions.html" class="btn btn-neutral float-right" title="Extensions" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="ivy_stateful_api.html" class="btn btn-neutral float-left" title="Ivy Stateful API" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="ivy_stateful_api.html" class="btn btn-neutral float-left" title="Ivy Stateful API" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../../extensions.html" class="btn btn-neutral float-right" title="Extensions" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        &copy; Copyright 2020, Ivy Team
-
-    </p>
+    <p>&#169; Copyright 2020, Ivy Team.</p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
 
 </footer>
-
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>

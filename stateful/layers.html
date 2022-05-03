@@ -1,68 +1,35 @@
-
-
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
-  
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Layers &mdash; Ivy 1.0 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
-
-  
-  
-  
-  
-
-  
-  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
-  
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    
-    <script type="text/javascript" src="../_static/js/theme.js"></script>
-
-    
-
-  
-  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
+    <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Linear" href="layers/Linear.html" />
     <link rel="prev" title="Siren" href="initializers/Siren.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-          
-
-          
             <a href="../index.html" class="icon icon-home"> Ivy
-          
-
-          
           </a>
-
-          
-            
-            
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -70,18 +37,8 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
-              <p class="caption"><span class="caption-text">Overview</span></p>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Overview</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../background.html">Background</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../design.html">Design</a></li>
@@ -89,32 +46,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../roadmap.html">Roadmap</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Container</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../container/activations.html">Activations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../container/base.html">Base</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../container/container.html">Container</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../container/creation.html">Creation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../container/data_types.html">Data types</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../container/device.html">Device</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../container/elementwise.html">Elementwise</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../container/general.html">General</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../container/gradients.html">Gradients</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../container/image.html">Image</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../container/layers.html">Layers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../container/linear_algebra.html">Linear algebra</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../container/losses.html">Losses</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../container/manipulation.html">Manipulation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../container/norms.html">Norms</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../container/random.html">Random</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../container/searching.html">Searching</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../container/set.html">Set</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../container/sorting.html">Sorting</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../container/statistical.html">Statistical</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../container/utility.html">Utility</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../container/wrapping.html">Wrapping</a></li>
-</ul>
-<p class="caption"><span class="caption-text">Functional</span></p>
+<p class="caption" role="heading"><span class="caption-text">Functional</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../functional/ivy/activations.html">Activations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../functional/ivy/compilation.html">Compilation</a></li>
@@ -140,7 +72,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../functional/ivy/statistical.html">Statistical</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../functional/ivy/utility.html">Utility</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Stateful</span></p>
+<p class="caption" role="heading"><span class="caption-text">Stateful</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="activations.html">Activations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="converters.html">Converters</a></li>
@@ -164,7 +96,7 @@
 <li class="toctree-l1"><a class="reference internal" href="optimizers.html">Optimizers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="sequential.html">Sequential</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Docs</span></p>
+<p class="caption" role="heading"><span class="caption-text">Docs</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../ivy"">Ivy</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../mech"">Ivy mech</a></li>
@@ -177,121 +109,385 @@
 <li class="toctree-l1"><a class="reference internal" href="../../ecosystem"">Ivy ecosystem</a></li>
 </ul>
 
-            
-          
         </div>
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">Ivy</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
-      <li><a href="../index.html">Docs</a> &raquo;</li>
-        
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
       <li>Layers</li>
-    
-    
       <li class="wy-breadcrumbs-aside">
-        
-            
             <a href="../_sources/stateful/layers.rst.txt" rel="nofollow"> View page source</a>
-          
-        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
-  <div class="section" id="layers">
-<h1>Layers<a class="headerlink" href="#layers" title="Permalink to this headline">¶</a></h1>
+             
+  <section id="module-ivy.stateful.layers">
+<span id="layers"></span><h1>Layers<a class="headerlink" href="#module-ivy.stateful.layers" title="Permalink to this headline"></a></h1>
+<p>Collection of Ivy neural network layers as stateful classes.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="ivy.stateful.layers.Conv1D">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ivy.stateful.layers.</span></span><span class="sig-name descname"><span class="pre">Conv1D</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_channels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_channels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">strides</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">padding</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight_initializer=&lt;ivy.stateful.initializers.GlorotUniform</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bias_initializer=&lt;ivy.stateful.initializers.Zeros</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_format='NWC'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dilations=1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v=None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/stateful/layers.html#Conv1D"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.stateful.layers.Conv1D" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="module/Module.html#ivy.stateful.module.Module" title="ivy.stateful.module.Module"><code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.stateful.module.Module</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="ivy.stateful.layers.Conv1D.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_channels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_channels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">strides</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">padding</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight_initializer=&lt;ivy.stateful.initializers.GlorotUniform</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bias_initializer=&lt;ivy.stateful.initializers.Zeros</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_format='NWC'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dilations=1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v=None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/stateful/layers.html#Conv1D.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.stateful.layers.Conv1D.__init__" title="Permalink to this definition"></a></dt>
+<dd><p>1D convolutional layer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>input_channels</strong> (<em>int</em>) – Number of input channels for the layer.</p></li>
+<li><p><strong>output_channels</strong> (<em>int</em>) – Number of output channels for the layer.</p></li>
+<li><p><strong>filter_size</strong> (<em>int</em>) – Size of the convolutional filter.</p></li>
+<li><p><strong>strides</strong> (<em>int</em><em> or </em><em>sequence of ints</em>) – The stride of the sliding window for each dimension of input.</p></li>
+<li><p><strong>padding</strong> (<em>string</em><em> or </em><em>sequence of ints</em>) – “SAME” or “VALID” indicating the algorithm, or list indicating the per-dimension paddings.</p></li>
+<li><p><strong>weight_initializer</strong> (<em>ivy.Initializer</em><em>, </em><em>optional</em>) – Initializer for the weights. Default is GlorotUniform.</p></li>
+<li><p><strong>bias_initializer</strong> (<em>ivy.Initializer</em><em>, </em><em>optional</em>) – Initializer for the bias. Default is Zeros.</p></li>
+<li><p><strong>data_format</strong> (<em>string</em>) – “NWC” or “NCW”. Defaults to “NWC”.</p></li>
+<li><p><strong>dilations</strong> (<em>int</em><em> or </em><em>sequence of ints</em>) – The dilation factor for each dimension of input.</p></li>
+<li><p><strong>device</strong> (<em>ivy.Device</em><em>, </em><em>optional</em>) – device on which to create the layer’s variables ‘cuda:0’, ‘cuda:1’, ‘cpu’ etc. Default is cpu.</p></li>
+<li><p><strong>v</strong> (<em>ivy container of variables</em><em>, </em><em>optional</em>) – the variables for each of the linear layer, as a container, constructed internally by default.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="ivy.stateful.layers.Conv1DTranspose">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ivy.stateful.layers.</span></span><span class="sig-name descname"><span class="pre">Conv1DTranspose</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_channels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_channels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">strides</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">padding</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight_initializer=&lt;ivy.stateful.initializers.GlorotUniform</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bias_initializer=&lt;ivy.stateful.initializers.Zeros</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_shape=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_format='NWC'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dilations=1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v=None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/stateful/layers.html#Conv1DTranspose"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.stateful.layers.Conv1DTranspose" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="module/Module.html#ivy.stateful.module.Module" title="ivy.stateful.module.Module"><code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.stateful.module.Module</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="ivy.stateful.layers.Conv1DTranspose.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_channels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_channels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">strides</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">padding</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight_initializer=&lt;ivy.stateful.initializers.GlorotUniform</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bias_initializer=&lt;ivy.stateful.initializers.Zeros</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_shape=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_format='NWC'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dilations=1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v=None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/stateful/layers.html#Conv1DTranspose.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.stateful.layers.Conv1DTranspose.__init__" title="Permalink to this definition"></a></dt>
+<dd><p>1D transpose convolutional layer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>input_channels</strong> (<em>int</em>) – Number of input channels for the layer.</p></li>
+<li><p><strong>output_channels</strong> (<em>int</em>) – Number of output channels for the layer.</p></li>
+<li><p><strong>filter_size</strong> (<em>int</em>) – Size of the convolutional filter.</p></li>
+<li><p><strong>strides</strong> (<em>int</em><em> or </em><em>sequence of ints</em>) – The stride of the sliding window for each dimension of input.</p></li>
+<li><p><strong>padding</strong> (<em>string</em><em> or </em><em>sequence of ints</em>) – “SAME” or “VALID” indicating the algorithm, or list indicating the per-dimension paddings.</p></li>
+<li><p><strong>weight_initializer</strong> (<em>ivy.Initializer</em><em>, </em><em>optional</em>) – Initializer for the weights. Default is GlorotUniform.</p></li>
+<li><p><strong>bias_initializer</strong> (<em>ivy.Initializer</em><em>, </em><em>optional</em>) – Initializer for the bias. Default is Zeros.</p></li>
+<li><p><strong>output_shape</strong> (<em>sequence of ints</em><em>, </em><em>needed for TensorFlow</em>) – Shape of the output</p></li>
+<li><p><strong>data_format</strong> (<em>string</em>) – “NWC” or “NCW”. Defaults to “NWC”.</p></li>
+<li><p><strong>dilations</strong> (<em>int</em><em> or </em><em>sequence of ints</em>) – The dilation factor for each dimension of input.</p></li>
+<li><p><strong>device</strong> (<em>ivy.Device</em><em>, </em><em>optional</em>) – device on which to create the layer’s variables ‘cuda:0’, ‘cuda:1’, ‘cpu’ etc. Default is cpu.</p></li>
+<li><p><strong>v</strong> (<em>ivy container of variables</em><em>, </em><em>optional</em>) – the variables for each of the linear layer, as a container, constructed internally by default.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="ivy.stateful.layers.Conv2D">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ivy.stateful.layers.</span></span><span class="sig-name descname"><span class="pre">Conv2D</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_channels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_channels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter_shape</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">strides</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">padding</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight_initializer=&lt;ivy.stateful.initializers.GlorotUniform</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bias_initializer=&lt;ivy.stateful.initializers.Zeros</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_format='NHWC'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dilations=1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v=None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/stateful/layers.html#Conv2D"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.stateful.layers.Conv2D" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="module/Module.html#ivy.stateful.module.Module" title="ivy.stateful.module.Module"><code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.stateful.module.Module</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="ivy.stateful.layers.Conv2D.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_channels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_channels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter_shape</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">strides</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">padding</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight_initializer=&lt;ivy.stateful.initializers.GlorotUniform</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bias_initializer=&lt;ivy.stateful.initializers.Zeros</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_format='NHWC'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dilations=1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v=None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/stateful/layers.html#Conv2D.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.stateful.layers.Conv2D.__init__" title="Permalink to this definition"></a></dt>
+<dd><p>2D convolutional layer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>input_channels</strong> (<em>int</em>) – Number of input channels for the layer.</p></li>
+<li><p><strong>output_channels</strong> (<em>int</em>) – Number of output channels for the layer.</p></li>
+<li><p><strong>filter_shape</strong> (<em>sequence of ints</em>) – Shape of the convolutional filter.</p></li>
+<li><p><strong>strides</strong> (<em>int</em><em> or </em><em>sequence of ints</em>) – The stride of the sliding window for each dimension of input.</p></li>
+<li><p><strong>padding</strong> (<em>string</em><em> or </em><em>sequence of ints</em>) – “SAME” or “VALID” indicating the algorithm, or list indicating the per-dimension paddings.</p></li>
+<li><p><strong>weight_initializer</strong> (<em>ivy.Initializer</em><em>, </em><em>optional</em>) – Initializer for the weights. Default is GlorotUniform.</p></li>
+<li><p><strong>bias_initializer</strong> (<em>ivy.Initializer</em><em>, </em><em>optional</em>) – Initializer for the bias. Default is Zeros.</p></li>
+<li><p><strong>data_format</strong> (<em>string</em>) – “NHWC” or “NCHW”. Defaults to “NHWC”.</p></li>
+<li><p><strong>dilations</strong> (<em>int</em><em> or </em><em>sequence of ints</em>) – The dilation factor for each dimension of input.</p></li>
+<li><p><strong>device</strong> (<em>ivy.Device</em><em>, </em><em>optional</em>) – device on which to create the layer’s variables ‘cuda:0’, ‘cuda:1’, ‘cpu’ etc. Default is cpu.</p></li>
+<li><p><strong>v</strong> (<em>ivy container of variables</em><em>, </em><em>optional</em>) – the variables for each of the linear layer, as a container, constructed internally by default.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="ivy.stateful.layers.Conv2DTranspose">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ivy.stateful.layers.</span></span><span class="sig-name descname"><span class="pre">Conv2DTranspose</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_channels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_channels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter_shape</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">strides</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">padding</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight_initializer=&lt;ivy.stateful.initializers.GlorotUniform</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bias_initializer=&lt;ivy.stateful.initializers.Zeros</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_shape=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_format='NHWC'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dilations=1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v=None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/stateful/layers.html#Conv2DTranspose"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.stateful.layers.Conv2DTranspose" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="module/Module.html#ivy.stateful.module.Module" title="ivy.stateful.module.Module"><code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.stateful.module.Module</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="ivy.stateful.layers.Conv2DTranspose.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_channels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_channels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter_shape</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">strides</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">padding</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight_initializer=&lt;ivy.stateful.initializers.GlorotUniform</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bias_initializer=&lt;ivy.stateful.initializers.Zeros</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_shape=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_format='NHWC'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dilations=1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v=None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/stateful/layers.html#Conv2DTranspose.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.stateful.layers.Conv2DTranspose.__init__" title="Permalink to this definition"></a></dt>
+<dd><p>2D convolutional transpose layer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>input_channels</strong> (<em>int</em>) – Number of input channels for the layer.</p></li>
+<li><p><strong>output_channels</strong> (<em>int</em>) – Number of output channels for the layer.</p></li>
+<li><p><strong>filter_shape</strong> (<em>sequence of ints</em>) – Shape of the convolutional filter.</p></li>
+<li><p><strong>strides</strong> (<em>int</em><em> or </em><em>sequence of ints</em>) – The stride of the sliding window for each dimension of input.</p></li>
+<li><p><strong>padding</strong> (<em>string</em><em> or </em><em>sequence of ints</em>) – “SAME” or “VALID” indicating the algorithm, or list indicating the per-dimension paddings.</p></li>
+<li><p><strong>weight_initializer</strong> (<em>ivy.Initializer</em><em>, </em><em>optional</em>) – Initializer for the weights. Default is GlorotUniform.</p></li>
+<li><p><strong>bias_initializer</strong> (<em>ivy.Initializer</em><em>, </em><em>optional</em>) – Initializer for the bias. Default is Zeros.</p></li>
+<li><p><strong>output_shape</strong> (<em>sequence of ints</em><em>, </em><em>needed for TensorFlow</em>) – Shape of the output</p></li>
+<li><p><strong>data_format</strong> (<em>string</em>) – “NHWC” or “NCHW”. Defaults to “NHWC”.</p></li>
+<li><p><strong>dilations</strong> (<em>int</em><em> or </em><em>sequence of ints</em>) – The dilation factor for each dimension of input.</p></li>
+<li><p><strong>device</strong> (<em>ivy.Device</em><em>, </em><em>optional</em>) – device on which to create the layer’s variables ‘cuda:0’, ‘cuda:1’, ‘cpu’ etc. Default is cpu.</p></li>
+<li><p><strong>v</strong> (<em>ivy container of variables</em><em>, </em><em>optional</em>) – the variables for each of the linear layer, as a container, constructed internally by default.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="ivy.stateful.layers.Conv3D">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ivy.stateful.layers.</span></span><span class="sig-name descname"><span class="pre">Conv3D</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_channels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_channels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter_shape</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">strides</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">padding</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight_initializer=&lt;ivy.stateful.initializers.GlorotUniform</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bias_initializer=&lt;ivy.stateful.initializers.Zeros</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_format='NDHWC'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dilations=1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v=None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/stateful/layers.html#Conv3D"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.stateful.layers.Conv3D" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="module/Module.html#ivy.stateful.module.Module" title="ivy.stateful.module.Module"><code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.stateful.module.Module</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="ivy.stateful.layers.Conv3D.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_channels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_channels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter_shape</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">strides</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">padding</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight_initializer=&lt;ivy.stateful.initializers.GlorotUniform</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bias_initializer=&lt;ivy.stateful.initializers.Zeros</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_format='NDHWC'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dilations=1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v=None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/stateful/layers.html#Conv3D.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.stateful.layers.Conv3D.__init__" title="Permalink to this definition"></a></dt>
+<dd><p>3D convolutional layer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>input_channels</strong> (<em>int</em>) – Number of input channels for the layer.</p></li>
+<li><p><strong>output_channels</strong> (<em>int</em>) – Number of output channels for the layer.</p></li>
+<li><p><strong>filter_shape</strong> (<em>sequence of ints</em>) – Shape of the convolutional filter.</p></li>
+<li><p><strong>strides</strong> (<em>int</em><em> or </em><em>sequence of ints</em>) – The stride of the sliding window for each dimension of input.</p></li>
+<li><p><strong>padding</strong> (<em>string</em><em> or </em><em>sequence of ints</em>) – “SAME” or “VALID” indicating the algorithm, or list indicating the per-dimension paddings.</p></li>
+<li><p><strong>weight_initializer</strong> (<em>ivy.Initializer</em><em>, </em><em>optional</em>) – Initializer for the weights. Default is GlorotUniform.</p></li>
+<li><p><strong>bias_initializer</strong> (<em>ivy.Initializer</em><em>, </em><em>optional</em>) – Initializer for the bias. Default is Zeros.</p></li>
+<li><p><strong>data_format</strong> (<em>string</em>) – “NDHWC” or “NCDHW”. Defaults to “NDHWC”.</p></li>
+<li><p><strong>dilations</strong> (<em>int</em><em> or </em><em>sequence of ints</em>) – The dilation factor for each dimension of input.</p></li>
+<li><p><strong>device</strong> (<em>ivy.Device</em><em>, </em><em>optional</em>) – device on which to create the layer’s variables ‘cuda:0’, ‘cuda:1’, ‘cpu’ etc. Default is cpu.</p></li>
+<li><p><strong>v</strong> (<em>ivy container of variables</em><em>, </em><em>optional</em>) – the variables for each of the linear layer, as a container, constructed internally by default.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="ivy.stateful.layers.Conv3DTranspose">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ivy.stateful.layers.</span></span><span class="sig-name descname"><span class="pre">Conv3DTranspose</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_channels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_channels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter_shape</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">strides</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">padding</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight_initializer=&lt;ivy.stateful.initializers.GlorotUniform</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bias_initializer=&lt;ivy.stateful.initializers.Zeros</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_shape=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_format='NDHWC'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dilations=1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v=None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/stateful/layers.html#Conv3DTranspose"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.stateful.layers.Conv3DTranspose" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="module/Module.html#ivy.stateful.module.Module" title="ivy.stateful.module.Module"><code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.stateful.module.Module</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="ivy.stateful.layers.Conv3DTranspose.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_channels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_channels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter_shape</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">strides</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">padding</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight_initializer=&lt;ivy.stateful.initializers.GlorotUniform</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bias_initializer=&lt;ivy.stateful.initializers.Zeros</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_shape=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_format='NDHWC'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dilations=1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v=None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/stateful/layers.html#Conv3DTranspose.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.stateful.layers.Conv3DTranspose.__init__" title="Permalink to this definition"></a></dt>
+<dd><p>3D convolutional transpose layer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>input_channels</strong> (<em>int</em>) – Number of input channels for the layer.</p></li>
+<li><p><strong>output_channels</strong> (<em>int</em>) – Number of output channels for the layer.</p></li>
+<li><p><strong>filter_shape</strong> (<em>sequence of ints</em>) – Shape of the convolutional filter.</p></li>
+<li><p><strong>strides</strong> (<em>int</em><em> or </em><em>sequence of ints</em>) – The stride of the sliding window for each dimension of input.</p></li>
+<li><p><strong>padding</strong> (<em>string</em><em> or </em><em>sequence of ints</em>) – “SAME” or “VALID” indicating the algorithm, or list indicating the per-dimension paddings.</p></li>
+<li><p><strong>weight_initializer</strong> (<em>ivy.Initializer</em><em>, </em><em>optional</em>) – Initializer for the weights. Default is GlorotUniform.</p></li>
+<li><p><strong>bias_initializer</strong> (<em>ivy.Initializer</em><em>, </em><em>optional</em>) – Initializer for the bias. Default is Zeros.</p></li>
+<li><p><strong>output_shape</strong> (<em>sequence of ints</em><em>, </em><em>needed for TensorFlow</em>) – Shape of the output</p></li>
+<li><p><strong>data_format</strong> (<em>string</em>) – “NDHWC” or “NCDHW”. Defaults to “NDHWC”.</p></li>
+<li><p><strong>dilations</strong> (<em>int</em><em> or </em><em>sequence of ints</em>) – The dilation factor for each dimension of input.</p></li>
+<li><p><strong>device</strong> (<em>ivy.Device</em><em>, </em><em>optional</em>) – device on which to create the layer’s variables ‘cuda:0’, ‘cuda:1’, ‘cpu’ etc. Default is cpu.</p></li>
+<li><p><strong>v</strong> (<em>ivy container of variables</em><em>, </em><em>optional</em>) – the variables for each of the linear layer, as a container, constructed internally by default.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="ivy.stateful.layers.DepthwiseConv2D">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ivy.stateful.layers.</span></span><span class="sig-name descname"><span class="pre">DepthwiseConv2D</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_channels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter_shape</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">strides</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">padding</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight_initializer=&lt;ivy.stateful.initializers.GlorotUniform</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bias_initializer=&lt;ivy.stateful.initializers.Zeros</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_format='NHWC'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dilations=1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v=None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/stateful/layers.html#DepthwiseConv2D"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.stateful.layers.DepthwiseConv2D" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="module/Module.html#ivy.stateful.module.Module" title="ivy.stateful.module.Module"><code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.stateful.module.Module</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="ivy.stateful.layers.DepthwiseConv2D.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_channels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter_shape</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">strides</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">padding</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight_initializer=&lt;ivy.stateful.initializers.GlorotUniform</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bias_initializer=&lt;ivy.stateful.initializers.Zeros</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_format='NHWC'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dilations=1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v=None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/stateful/layers.html#DepthwiseConv2D.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.stateful.layers.DepthwiseConv2D.__init__" title="Permalink to this definition"></a></dt>
+<dd><p>depthwise 2D convolutional layer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>num_channels</strong> (<em>int</em>) – Number of input channels for the layer.</p></li>
+<li><p><strong>filter_shape</strong> (<em>sequence of ints</em>) – Shape of the convolutional filter.</p></li>
+<li><p><strong>strides</strong> (<em>int</em><em> or </em><em>sequence of ints</em>) – The stride of the sliding window for each dimension of input.</p></li>
+<li><p><strong>padding</strong> (<em>string</em><em> or </em><em>sequence of ints</em>) – “SAME” or “VALID” indicating the algorithm, or list indicating the per-dimension paddings.</p></li>
+<li><p><strong>weight_initializer</strong> (<em>ivy.Initializer</em><em>, </em><em>optional</em>) – Initializer for the weights. Default is GlorotUniform.</p></li>
+<li><p><strong>bias_initializer</strong> (<em>ivy.Initializer</em><em>, </em><em>optional</em>) – Initializer for the bias. Default is Zeros.</p></li>
+<li><p><strong>data_format</strong> (<em>string</em>) – “NHWC” or “NCHW”. Defaults to “NHWC”.</p></li>
+<li><p><strong>dilations</strong> (<em>int</em><em> or </em><em>sequence of ints</em>) – The dilation factor for each dimension of input.</p></li>
+<li><p><strong>device</strong> (<em>ivy.Device</em><em>, </em><em>optional</em>) – device on which to create the layer’s variables ‘cuda:0’, ‘cuda:1’, ‘cpu’ etc. Default is cpu.</p></li>
+<li><p><strong>v</strong> (<em>ivy container of variables</em><em>, </em><em>optional</em>) – the variables for each of the linear layer, as a container, constructed internally by default.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="ivy.stateful.layers.Dropout">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ivy.stateful.layers.</span></span><span class="sig-name descname"><span class="pre">Dropout</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prob</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/stateful/layers.html#Dropout"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.stateful.layers.Dropout" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="module/Module.html#ivy.stateful.module.Module" title="ivy.stateful.module.Module"><code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.stateful.module.Module</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="ivy.stateful.layers.Dropout.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prob</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/stateful/layers.html#Dropout.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.stateful.layers.Dropout.__init__" title="Permalink to this definition"></a></dt>
+<dd><p>Dropout layer. The layer randomly zeroes some of the elements of the input tensor with probability p using
+samples from a Bernoull distribution.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>prob</strong> (<em>float</em>) – The probability of zeroing out each array element.</p></li>
+<li><p><strong>scale</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to scale the output by 1/(1-prob), default is True.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="ivy.stateful.layers.LSTM">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ivy.stateful.layers.</span></span><span class="sig-name descname"><span class="pre">LSTM</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_channels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_channels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight_initializer=&lt;ivy.stateful.initializers.GlorotUniform</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_layers=1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_sequence=True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_state=True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v=None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/stateful/layers.html#LSTM"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.stateful.layers.LSTM" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="module/Module.html#ivy.stateful.module.Module" title="ivy.stateful.module.Module"><code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.stateful.module.Module</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="ivy.stateful.layers.LSTM.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_channels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_channels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight_initializer=&lt;ivy.stateful.initializers.GlorotUniform</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_layers=1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_sequence=True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_state=True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v=None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/stateful/layers.html#LSTM.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.stateful.layers.LSTM.__init__" title="Permalink to this definition"></a></dt>
+<dd><p>LSTM layer, which is a set of stacked lstm cells.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>input_channels</strong> (<em>int</em>) – Number of input channels for the layer</p></li>
+<li><p><strong>output_channels</strong> (<em>int</em>) – Number of output channels for the layer</p></li>
+<li><p><strong>weight_initializer</strong> (<em>ivy.Initializer</em><em>, </em><em>optional</em>) – Initializer for the weights. Default is GlorotUniform.</p></li>
+<li><p><strong>num_layers</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of lstm cells in the lstm layer, default is 1.</p></li>
+<li><p><strong>return_sequence</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether or not to return the entire output sequence, or just the latest timestep.
+Default is True.</p></li>
+<li><p><strong>return_state</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether or not to return the latest hidden and cell states. Default is True.</p></li>
+<li><p><strong>device</strong> (<em>ivy.Device</em><em>, </em><em>optional</em>) – device on which to create the layer’s variables ‘cuda:0’, ‘cuda:1’, ‘cpu’ etc. Default is cpu.</p></li>
+<li><p><strong>v</strong> (<em>ivy container of parameter arrays</em><em>, </em><em>optional</em>) – the variables for each of the lstm cells, as a container, constructed internally by default.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ivy.stateful.layers.LSTM.get_initial_state">
+<span class="sig-name descname"><span class="pre">get_initial_state</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">batch_shape</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/stateful/layers.html#LSTM.get_initial_state"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.stateful.layers.LSTM.get_initial_state" title="Permalink to this definition"></a></dt>
+<dd><p>Get the initial state of the hidden and cell states, if not provided explicitly</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="ivy.stateful.layers.Linear">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ivy.stateful.layers.</span></span><span class="sig-name descname"><span class="pre">Linear</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_channels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_channels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight_initializer=&lt;ivy.stateful.initializers.GlorotUniform</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bias_initializer=&lt;ivy.stateful.initializers.Zeros</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">with_bias=True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v=None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/stateful/layers.html#Linear"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.stateful.layers.Linear" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="module/Module.html#ivy.stateful.module.Module" title="ivy.stateful.module.Module"><code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.stateful.module.Module</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="ivy.stateful.layers.Linear.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_channels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_channels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight_initializer=&lt;ivy.stateful.initializers.GlorotUniform</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bias_initializer=&lt;ivy.stateful.initializers.Zeros</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">with_bias=True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v=None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/stateful/layers.html#Linear.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.stateful.layers.Linear.__init__" title="Permalink to this definition"></a></dt>
+<dd><p>Linear layer, also referred to as dense or fully connected. The layer receives tensors with input_channels last
+dimension and returns a new tensor with output_channels last dimension, following matrix multiplication with the
+weight matrix and addition with the bias vector.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>input_channels</strong> (<em>int</em>) – Number of input channels for the layer.</p></li>
+<li><p><strong>output_channels</strong> (<em>int</em>) – Number of output channels for the layer.</p></li>
+<li><p><strong>weight_initializer</strong> (<em>ivy.Initializer</em><em>, </em><em>optional</em>) – Initializer for the weights. Default is GlorotUniform.</p></li>
+<li><p><strong>bias_initializer</strong> (<em>ivy.Initializer</em><em>, </em><em>optional</em>) – Initializer for the bias. Default is Zeros.</p></li>
+<li><p><strong>with_bias</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether or not to include a bias term, default is True.</p></li>
+<li><p><strong>device</strong> (<em>ivy.Device</em><em>, </em><em>optional</em>) – device on which to create the layer’s variables ‘cuda:0’, ‘cuda:1’, ‘cpu’ etc. Default is cpu.</p></li>
+<li><p><strong>v</strong> (<em>ivy container of variables</em><em>, </em><em>optional</em>) – the variables for the linear layer, as a container, constructed internally by default.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="ivy.stateful.layers.MultiHeadAttention">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ivy.stateful.layers.</span></span><span class="sig-name descname"><span class="pre">MultiHeadAttention</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query_dim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_heads</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">8</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">head_dim</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">64</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dropout_rate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context_dim</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">with_to_q_fn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">with_to_kv_fn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">with_to_out_fn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">build_mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'on_init'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/stateful/layers.html#MultiHeadAttention"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.stateful.layers.MultiHeadAttention" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="module/Module.html#ivy.stateful.module.Module" title="ivy.stateful.module.Module"><code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.stateful.module.Module</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="ivy.stateful.layers.MultiHeadAttention.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query_dim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_heads</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">8</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">head_dim</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">64</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dropout_rate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context_dim</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">with_to_q_fn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">with_to_kv_fn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">with_to_out_fn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">build_mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'on_init'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/stateful/layers.html#MultiHeadAttention.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.stateful.layers.MultiHeadAttention.__init__" title="Permalink to this definition"></a></dt>
+<dd><p>Multi Head Attention layer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>query_dim</strong> (<em>int</em>) – The dimension of the attention queries.</p></li>
+<li><p><strong>num_heads</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of attention heads. Default is 8.</p></li>
+<li><p><strong>head_dim</strong> (<em>int</em><em>, </em><em>optional</em>) – The dimension of each of the heads. Default is 64.</p></li>
+<li><p><strong>dropout_rate</strong> (<em>float</em><em>, </em><em>optional</em>) – The rate of dropout. Default is 0.</p></li>
+<li><p><strong>context_dim</strong> (<em>int</em><em>, </em><em>optional.</em>) – The dimension of the context array. Default is None, in which case the query dim is used.</p></li>
+<li><p><strong>scale</strong> (<em>float</em><em>, </em><em>optional</em>) – The value by which to scale the query-key similarity measure. Default is head_dim^-0.5</p></li>
+<li><p><strong>with_to_q_fn</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to include fully connected mapping from input x to queries. Default is True.</p></li>
+<li><p><strong>with_to_kv_fn</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to include fully connected mapping from input context to keys and values.
+Default is True.</p></li>
+<li><p><strong>with_to_out_fn</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to include fully connected mapping from output scaled dot-product attention to
+final output. Default is True.</p></li>
+<li><p><strong>device</strong> (<em>ivy.Device</em><em>, </em><em>optional</em>) – device on which to create the layer’s variables ‘cuda:0’, ‘cuda:1’, ‘cpu’ etc. Default is cpu.</p></li>
+<li><p><strong>v</strong> (<em>ivy container of variables</em><em>, </em><em>optional</em>) – the variables for the attention layer, as a container, constructed internally by default.</p></li>
+<li><p><strong>build_mode</strong> (<em>str</em><em>, </em><em>optional</em>) – How the Module is built, either on initialization (now), explicitly by the user by calling
+build(), or the first time the __call__ method is run. Default is on initialization.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
 <div class="toctree-wrapper compound">
 </div>
-</div>
+</section>
 
 
            </div>
-           
           </div>
-          <footer>
-  
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="layers/Linear.html" class="btn btn-neutral float-right" title="Linear" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="initializers/Siren.html" class="btn btn-neutral float-left" title="Siren" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="initializers/Siren.html" class="btn btn-neutral float-left" title="Siren" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="layers/Linear.html" class="btn btn-neutral float-right" title="Linear" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        &copy; Copyright 2020, Ivy Team
-
-    </p>
+    <p>&#169; Copyright 2020, Ivy Team.</p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
 
 </footer>
-
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>

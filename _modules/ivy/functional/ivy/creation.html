@@ -1,66 +1,32 @@
-
-
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
-  
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>ivy.functional.ivy.creation &mdash; Ivy 1.0 documentation</title>
+      <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/css/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
-
-  
-  
-  
-  
-
-  
-  <script type="text/javascript" src="../../../../_static/js/modernizr.min.js"></script>
-  
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../../../../" src="../../../../_static/documentation_options.js"></script>
+        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
         <script src="../../../../_static/jquery.js"></script>
         <script src="../../../../_static/underscore.js"></script>
         <script src="../../../../_static/doctools.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    
-    <script type="text/javascript" src="../../../../_static/js/theme.js"></script>
-
-    
-
-  
-  <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../../../../_static/css/custom.css" type="text/css" />
+    <script src="../../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../search.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-          
-
-          
             <a href="../../../../index.html" class="icon icon-home"> Ivy
-          
-
-          
           </a>
-
-          
-            
-            
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -68,18 +34,8 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
-              <p class="caption"><span class="caption-text">Overview</span></p>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Overview</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../background.html">Background</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../design.html">Design</a></li>
@@ -87,32 +43,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../roadmap.html">Roadmap</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../contributing.html">Contributing</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Container</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../container/activations.html">Activations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../container/base.html">Base</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../container/container.html">Container</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../container/creation.html">Creation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../container/data_types.html">Data types</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../container/device.html">Device</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../container/elementwise.html">Elementwise</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../container/general.html">General</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../container/gradients.html">Gradients</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../container/image.html">Image</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../container/layers.html">Layers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../container/linear_algebra.html">Linear algebra</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../container/losses.html">Losses</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../container/manipulation.html">Manipulation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../container/norms.html">Norms</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../container/random.html">Random</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../container/searching.html">Searching</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../container/set.html">Set</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../container/sorting.html">Sorting</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../container/statistical.html">Statistical</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../container/utility.html">Utility</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../container/wrapping.html">Wrapping</a></li>
-</ul>
-<p class="caption"><span class="caption-text">Functional</span></p>
+<p class="caption" role="heading"><span class="caption-text">Functional</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/activations.html">Activations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/compilation.html">Compilation</a></li>
@@ -138,7 +69,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/statistical.html">Statistical</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/utility.html">Utility</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Stateful</span></p>
+<p class="caption" role="heading"><span class="caption-text">Stateful</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../stateful/activations.html">Activations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../stateful/converters.html">Converters</a></li>
@@ -149,7 +80,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../stateful/optimizers.html">Optimizers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../stateful/sequential.html">Sequential</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Docs</span></p>
+<p class="caption" role="heading"><span class="caption-text">Docs</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../ivy"">Ivy</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../mech"">Ivy mech</a></li>
@@ -162,66 +93,30 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../../ecosystem"">Ivy ecosystem</a></li>
 </ul>
 
-            
-          
         </div>
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../../../index.html">Ivy</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
-      <li><a href="../../../../index.html">Docs</a> &raquo;</li>
-        
+      <li><a href="../../../../index.html" class="icon icon-home"></a> &raquo;</li>
           <li><a href="../../../index.html">Module code</a> &raquo;</li>
-        
       <li>ivy.functional.ivy.creation</li>
-    
-    
       <li class="wy-breadcrumbs-aside">
-        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
+             
   <h1>Source code for ivy.functional.ivy.creation</h1><div class="highlight"><pre>
 <span></span><span class="c1"># global</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -238,40 +133,26 @@
 
 <div class="viewcode-block" id="arange"><a class="viewcode-back" href="../../../../functional/ivy/creation/arange.html#ivy.functional.ivy.creation.arange">[docs]</a><span class="k">def</span> <span class="nf">arange</span><span class="p">(</span><span class="n">start</span><span class="p">:</span> <span class="n">Number</span><span class="p">,</span> <span class="n">stop</span><span class="p">:</span> <span class="n">Number</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">step</span><span class="p">:</span> <span class="n">Number</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">dtype</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">device</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Device</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
            <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]:</span>
-    <span class="sd">&quot;&quot;&quot;Returns evenly spaced values within a given interval, with the spacing being specified.</span>
-
-<span class="sd">    Values are generated within the half-open interval [start, stop) (in other words, the interval including start but</span>
-<span class="sd">    excluding stop). For integer arguments the function is equivalent to the Python built-in range function,</span>
-<span class="sd">    but returns an array in the chosen ml_framework rather than a list.</span>
-
-<span class="sd">    See :math:`linspace` for a certain number of evenly spaced values in an interval.</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns evenly spaced values within the half-open interval [start, stop) as a one-dimensional array.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    stop</span>
-<span class="sd">        End of interval. The interval does not include this value, except in some cases where step is not an</span>
-<span class="sd">        integer and floating point round-off affects the length of out.</span>
 <span class="sd">    start</span>
-<span class="sd">        Start of interval. The interval includes this value. The default start value is 0.</span>
+<span class="sd">        if stop is specified, the start of interval (inclusive); otherwise, the end of the interval (exclusive). If stop is not specified, the default starting value is 0.</span>
+<span class="sd">    stop</span>
+<span class="sd">        the end of the interval. Default: None.</span>
 <span class="sd">    step</span>
-<span class="sd">        Spacing between values. For any output out, this is the distance between two adjacent values,</span>
-<span class="sd">        out[i+1] - out[i]. The default step size is 1. If step is specified as a position argument,</span>
-<span class="sd">        start must also be given.</span>
+<span class="sd">        the distance between two adjacent elements (out[i+1] - out[i]). Must not be 0; may be negative, this results in an empty array if stop &gt;= start. Default: 1.</span>
 <span class="sd">    dtype</span>
-<span class="sd">        The desired data-type for the array in string format, i.e. &#39;float32&#39; or &#39;int64&#39;.</span>
-<span class="sd">        If not given, then the type will be determined as the minimum type required to hold the objects in the</span>
-<span class="sd">        sequence.</span>
+<span class="sd">        output array data type. If dtype is None, the output array data type must be inferred from start, stop and step. If those are all integers, the output array dtype must be the default integer dtype; if one or more have type float, then the output array dtype must be the default floating-point data type. Default: None.</span>
 <span class="sd">    device</span>
-<span class="sd">        device on which to create the array &#39;cuda:0&#39;, &#39;cuda:1&#39;, &#39;cpu&#39; etc.</span>
+<span class="sd">        device on which to place the created array. Default: None.</span>
 
 <span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">     ret</span>
-<span class="sd">        Tensor of evenly spaced values.</span>
-
-<span class="sd">        For floating point arguments, the length of the result is ceil((stop - start)/step).</span>
-<span class="sd">        Because of floating point overflow, this rule may result in the last element of out being greater than stop.</span>
-
+<span class="sd">    ----------</span>
+<span class="sd">    ret</span>
+<span class="sd">        a one-dimensional array containing evenly spaced values. The length of the output array must be ceil((stop-start)/step) if stop - start and step have the same sign, and length 0 otherwise.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">()</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">dtype</span><span class="p">,</span> <span class="n">device</span><span class="p">)</span></div>
 
@@ -760,42 +641,30 @@
 </pre></div>
 
            </div>
-           
           </div>
           <footer>
-  
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        &copy; Copyright 2020, Ivy Team
-
-    </p>
+    <p>&#169; Copyright 2020, Ivy Team.</p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
 
 </footer>
-
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>

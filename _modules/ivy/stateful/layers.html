@@ -1,66 +1,32 @@
-
-
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
-  
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>ivy.stateful.layers &mdash; Ivy 1.0 documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
-
-  
-  
-  
-  
-
-  
-  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
-  
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
         <script src="../../../_static/jquery.js"></script>
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/doctools.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    
-    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
-
-    
-
-  
-  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
+    <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-          
-
-          
             <a href="../../../index.html" class="icon icon-home"> Ivy
-          
-
-          
           </a>
-
-          
-            
-            
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -68,45 +34,42 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
-              <p class="caption"><span class="caption-text">Guides</span></p>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Overview</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../why_ivy.html">Why Ivy?</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../using_ivy.html">Using Ivy</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../training_a_network.html">Training a Network</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">Contributing to Ivy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../background.html">Background</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../design.html">Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../extensions.html">Extensions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../roadmap.html">Roadmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">Contributing</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Array</span></p>
+<p class="caption" role="heading"><span class="caption-text">Functional</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../array/array_api.html">Array api</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../array/conversions.html">Conversions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../array/device.html">Device</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../array/general.html">General</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../array/gradients.html">Gradients</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../array/image.html">Image</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../array/linalg.html">Linalg</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../array/logic.html">Logic</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../array/math.html">Math</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../array/meta.html">Meta</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../array/random.html">Random</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../array/reductions.html">Reductions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../functional/ivy/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../functional/ivy/compilation.html">Compilation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../functional/ivy/constants.html">Constants</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../functional/ivy/creation.html">Creation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../functional/ivy/data_type.html">Data type</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../functional/ivy/device.html">Device</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../functional/ivy/elementwise.html">Elementwise</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../functional/ivy/general.html">General</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../functional/ivy/gradients.html">Gradients</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../functional/ivy/image.html">Image</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../functional/ivy/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../functional/ivy/linear_algebra.html">Linear algebra</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../functional/ivy/losses.html">Losses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../functional/ivy/manipulation.html">Manipulation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../functional/ivy/meta.html">Meta</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../functional/ivy/nest.html">Nest</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../functional/ivy/norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../functional/ivy/random.html">Random</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../functional/ivy/searching.html">Searching</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../functional/ivy/set.html">Set</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../functional/ivy/sorting.html">Sorting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../functional/ivy/statistical.html">Statistical</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../functional/ivy/utility.html">Utility</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Functional</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../functional/backends.html">Backends</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../functional/ivy.html">Ivy</a></li>
-</ul>
-<p class="caption"><span class="caption-text">Stateful</span></p>
+<p class="caption" role="heading"><span class="caption-text">Stateful</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../stateful/activations.html">Activations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../stateful/converters.html">Converters</a></li>
@@ -117,7 +80,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../stateful/optimizers.html">Optimizers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../stateful/sequential.html">Sequential</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Docs</span></p>
+<p class="caption" role="heading"><span class="caption-text">Docs</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../ivy"">Ivy</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../mech"">Ivy mech</a></li>
@@ -130,66 +93,30 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../ecosystem"">Ivy ecosystem</a></li>
 </ul>
 
-            
-          
         </div>
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../../index.html">Ivy</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
-      <li><a href="../../../index.html">Docs</a> &raquo;</li>
-        
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
           <li><a href="../../index.html">Module code</a> &raquo;</li>
-        
       <li>ivy.stateful.layers</li>
-    
-    
       <li class="wy-breadcrumbs-aside">
-        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
+             
   <h1>Source code for ivy.stateful.layers</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">Collection of Ivy neural network layers as stateful classes.</span>
@@ -207,7 +134,7 @@
 <div class="viewcode-block" id="Linear"><a class="viewcode-back" href="../../../stateful/layers/Linear.html#ivy.stateful.layers.Linear">[docs]</a><span class="k">class</span> <span class="nc">Linear</span><span class="p">(</span><span class="n">Module</span><span class="p">):</span>
 
 <div class="viewcode-block" id="Linear.__init__"><a class="viewcode-back" href="../../../stateful/layers/Linear.html#ivy.stateful.layers.Linear.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_channels</span><span class="p">,</span> <span class="n">output_channels</span><span class="p">,</span> <span class="n">weight_initializer</span><span class="o">=</span><span class="n">GlorotUniform</span><span class="p">(),</span> <span class="n">bias_initializer</span><span class="o">=</span><span class="n">Zeros</span><span class="p">(),</span>
-                 <span class="n">with_bias</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">dev</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+                 <span class="n">with_bias</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Linear layer, also referred to as dense or fully connected. The layer receives tensors with input_channels last</span>
 <span class="sd">        dimension and returns a new tensor with output_channels last dimension, following matrix multiplication with the</span>
@@ -223,8 +150,8 @@
 <span class="sd">        :type bias_initializer: ivy.Initializer, optional</span>
 <span class="sd">        :param with_bias: Whether or not to include a bias term, default is True.</span>
 <span class="sd">        :type with_bias: bool, optional</span>
-<span class="sd">        :param dev: device on which to create the layer&#39;s variables &#39;cuda:0&#39;, &#39;cuda:1&#39;, &#39;cpu&#39; etc. Default is cpu.</span>
-<span class="sd">        :type dev: ivy.Device, optional</span>
+<span class="sd">        :param device: device on which to create the layer&#39;s variables &#39;cuda:0&#39;, &#39;cuda:1&#39;, &#39;cpu&#39; etc. Default is cpu.</span>
+<span class="sd">        :type device: ivy.Device, optional</span>
 <span class="sd">        :param v: the variables for the linear layer, as a container, constructed internally by default.</span>
 <span class="sd">        :type v: ivy container of variables, optional</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -235,15 +162,15 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_w_init</span> <span class="o">=</span> <span class="n">weight_initializer</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_b_init</span> <span class="o">=</span> <span class="n">bias_initializer</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_with_bias</span> <span class="o">=</span> <span class="n">with_bias</span>
-        <span class="n">Module</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dev</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span></div>
+        <span class="n">Module</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span></div>
 
-    <span class="k">def</span> <span class="nf">_create_variables</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dev</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_create_variables</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">device</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create internal variables for the layer</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">v</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;w&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_w_init</span><span class="o">.</span><span class="n">create_variables</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_w_shape</span><span class="p">,</span> <span class="n">dev</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_output_channels</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_input_channels</span><span class="p">)}</span>
+        <span class="n">v</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;w&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_w_init</span><span class="o">.</span><span class="n">create_variables</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_w_shape</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_output_channels</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_input_channels</span><span class="p">)}</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_with_bias</span><span class="p">:</span>
-            <span class="n">v</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="o">**</span><span class="n">v</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_b_init</span><span class="o">.</span><span class="n">create_variables</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_b_shape</span><span class="p">,</span> <span class="n">dev</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_output_channels</span><span class="p">))</span>
+            <span class="n">v</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="o">**</span><span class="n">v</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_b_init</span><span class="o">.</span><span class="n">create_variables</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_b_shape</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_output_channels</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">v</span>
 
     <span class="k">def</span> <span class="nf">_forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">):</span>
@@ -276,7 +203,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_scale</span> <span class="o">=</span> <span class="n">scale</span>
         <span class="n">Module</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span></div>
 
-    <span class="k">def</span> <span class="nf">_create_variables</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dev</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_create_variables</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">device</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create internal variables for the layer</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -298,7 +225,7 @@
 
 <div class="viewcode-block" id="MultiHeadAttention"><a class="viewcode-back" href="../../../stateful/layers/MultiHeadAttention.html#ivy.stateful.layers.MultiHeadAttention">[docs]</a><span class="k">class</span> <span class="nc">MultiHeadAttention</span><span class="p">(</span><span class="n">Module</span><span class="p">):</span>
 <div class="viewcode-block" id="MultiHeadAttention.__init__"><a class="viewcode-back" href="../../../stateful/layers/MultiHeadAttention.html#ivy.stateful.layers.MultiHeadAttention.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query_dim</span><span class="p">,</span> <span class="n">num_heads</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">head_dim</span><span class="o">=</span><span class="mi">64</span><span class="p">,</span> <span class="n">dropout_rate</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">context_dim</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                 <span class="n">with_to_q_fn</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">with_to_kv_fn</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">with_to_out_fn</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">dev</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">with_to_q_fn</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">with_to_kv_fn</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">with_to_out_fn</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">build_mode</span><span class="o">=</span><span class="s1">&#39;on_init&#39;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Multi Head Attention layer.</span>
@@ -323,8 +250,8 @@
 <span class="sd">        :param with_to_out_fn: Whether to include fully connected mapping from output scaled dot-product attention to</span>
 <span class="sd">                               final output. Default is True.</span>
 <span class="sd">        :type with_to_out_fn: bool, optional</span>
-<span class="sd">        :param dev: device on which to create the layer&#39;s variables &#39;cuda:0&#39;, &#39;cuda:1&#39;, &#39;cpu&#39; etc. Default is cpu.</span>
-<span class="sd">        :type dev: ivy.Device, optional</span>
+<span class="sd">        :param device: device on which to create the layer&#39;s variables &#39;cuda:0&#39;, &#39;cuda:1&#39;, &#39;cpu&#39; etc. Default is cpu.</span>
+<span class="sd">        :type device: ivy.Device, optional</span>
 <span class="sd">        :param v: the variables for the attention layer, as a container, constructed internally by default.</span>
 <span class="sd">        :type v: ivy container of variables, optional</span>
 <span class="sd">        :param build_mode: How the Module is built, either on initialization (now), explicitly by the user by calling</span>
@@ -342,24 +269,24 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_with_to_q_fn</span> <span class="o">=</span> <span class="n">with_to_q_fn</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_with_to_kv_fn</span> <span class="o">=</span> <span class="n">with_to_kv_fn</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_with_to_out_fn</span> <span class="o">=</span> <span class="n">with_to_out_fn</span>
-        <span class="n">ivy</span><span class="o">.</span><span class="n">Module</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dev</span><span class="p">,</span> <span class="n">v</span> <span class="k">if</span> <span class="n">v_exists</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span> <span class="n">build_mode</span><span class="p">,</span> <span class="n">with_partial_v</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+        <span class="n">ivy</span><span class="o">.</span><span class="n">Module</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">v</span> <span class="k">if</span> <span class="n">v_exists</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span> <span class="n">build_mode</span><span class="p">,</span> <span class="n">with_partial_v</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
 
     <span class="c1"># noinspection PyAttributeOutsideInit</span>
     <span class="k">def</span> <span class="nf">_build</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">agrs</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_to_q</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_query_dim</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inner_dim</span><span class="p">,</span> <span class="n">dev</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_dev</span><span class="p">)</span> \
+        <span class="bp">self</span><span class="o">.</span><span class="n">_to_q</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_query_dim</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inner_dim</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_dev</span><span class="p">)</span> \
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_with_to_q_fn</span> <span class="k">else</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_to_k</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_context_dim</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inner_dim</span><span class="p">,</span> <span class="n">dev</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_dev</span><span class="p">)</span> \
+        <span class="bp">self</span><span class="o">.</span><span class="n">_to_k</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_context_dim</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inner_dim</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_dev</span><span class="p">)</span> \
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_with_to_kv_fn</span> <span class="k">else</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_to_v</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_context_dim</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inner_dim</span><span class="p">,</span> <span class="n">dev</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_dev</span><span class="p">)</span> \
+        <span class="bp">self</span><span class="o">.</span><span class="n">_to_v</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_context_dim</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inner_dim</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_dev</span><span class="p">)</span> \
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_with_to_kv_fn</span> <span class="k">else</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_to_kv</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">context</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="kc">None</span><span class="p">:</span>\
             <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_to_k</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="n">v</span><span class="o">.</span><span class="n">k</span> <span class="k">if</span> <span class="n">v</span> <span class="k">else</span> <span class="kc">None</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_to_v</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="n">v</span><span class="o">.</span><span class="n">v</span> <span class="k">if</span> <span class="n">v</span> <span class="k">else</span> <span class="kc">None</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_to_out</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Sequential</span><span class="p">(</span>
-            <span class="n">ivy</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_inner_dim</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query_dim</span><span class="p">,</span> <span class="n">dev</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_dev</span><span class="p">),</span>
-            <span class="n">ivy</span><span class="o">.</span><span class="n">Dropout</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dropout_rate</span><span class="p">),</span> <span class="n">dev</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_dev</span>
+            <span class="n">ivy</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_inner_dim</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query_dim</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_dev</span><span class="p">),</span>
+            <span class="n">ivy</span><span class="o">.</span><span class="n">Dropout</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dropout_rate</span><span class="p">),</span> <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_dev</span>
         <span class="p">)</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_with_to_out_fn</span> <span class="k">else</span> <span class="kc">None</span>
 
-    <span class="k">def</span> <span class="nf">_create_variables</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dev</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_create_variables</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">device</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">to_kv</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;k&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_to_k</span><span class="o">.</span><span class="n">v</span><span class="p">,</span> <span class="s1">&#39;v&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_to_v</span><span class="o">.</span><span class="n">v</span><span class="p">})</span>
 
     <span class="k">def</span> <span class="nf">_forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">,</span> <span class="n">context</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -387,7 +314,7 @@
 
 <div class="viewcode-block" id="Conv1D.__init__"><a class="viewcode-back" href="../../../stateful/layers/Conv1D.html#ivy.stateful.layers.Conv1D.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_channels</span><span class="p">,</span> <span class="n">output_channels</span><span class="p">,</span> <span class="n">filter_size</span><span class="p">,</span> <span class="n">strides</span><span class="p">,</span> <span class="n">padding</span><span class="p">,</span>
                  <span class="n">weight_initializer</span><span class="o">=</span><span class="n">GlorotUniform</span><span class="p">(),</span> <span class="n">bias_initializer</span><span class="o">=</span><span class="n">Zeros</span><span class="p">(),</span> <span class="n">data_format</span><span class="o">=</span><span class="s1">&#39;NWC&#39;</span><span class="p">,</span> <span class="n">dilations</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-                 <span class="n">dev</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+                 <span class="n">device</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        1D convolutional layer.</span>
 
@@ -409,8 +336,8 @@
 <span class="sd">        :type data_format: string</span>
 <span class="sd">        :param dilations: The dilation factor for each dimension of input.</span>
 <span class="sd">        :type dilations: int or sequence of ints</span>
-<span class="sd">        :param dev: device on which to create the layer&#39;s variables &#39;cuda:0&#39;, &#39;cuda:1&#39;, &#39;cpu&#39; etc. Default is cpu.</span>
-<span class="sd">        :type dev: ivy.Device, optional</span>
+<span class="sd">        :param device: device on which to create the layer&#39;s variables &#39;cuda:0&#39;, &#39;cuda:1&#39;, &#39;cpu&#39; etc. Default is cpu.</span>
+<span class="sd">        :type device: ivy.Device, optional</span>
 <span class="sd">        :param v: the variables for each of the linear layer, as a container, constructed internally by default.</span>
 <span class="sd">        :type v: ivy container of variables, optional</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -426,14 +353,14 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_b_init</span> <span class="o">=</span> <span class="n">bias_initializer</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_data_format</span> <span class="o">=</span> <span class="n">data_format</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_dilations</span> <span class="o">=</span> <span class="n">dilations</span>
-        <span class="n">Module</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dev</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span></div>
+        <span class="n">Module</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span></div>
 
-    <span class="k">def</span> <span class="nf">_create_variables</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dev</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_create_variables</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">device</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create internal variables for the layer</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;w&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_w_init</span><span class="o">.</span><span class="n">create_variables</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_w_shape</span><span class="p">,</span> <span class="n">dev</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_output_channels</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_input_channels</span><span class="p">),</span>
-                <span class="s1">&#39;b&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_b_init</span><span class="o">.</span><span class="n">create_variables</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_b_shape</span><span class="p">,</span> <span class="n">dev</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_output_channels</span><span class="p">)}</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;w&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_w_init</span><span class="o">.</span><span class="n">create_variables</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_w_shape</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_output_channels</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_input_channels</span><span class="p">),</span>
+                <span class="s1">&#39;b&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_b_init</span><span class="o">.</span><span class="n">create_variables</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_b_shape</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_output_channels</span><span class="p">)}</span>
 
     <span class="k">def</span> <span class="nf">_forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -450,7 +377,7 @@
 
 <div class="viewcode-block" id="Conv1DTranspose.__init__"><a class="viewcode-back" href="../../../stateful/layers/Conv1DTranspose.html#ivy.stateful.layers.Conv1DTranspose.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_channels</span><span class="p">,</span> <span class="n">output_channels</span><span class="p">,</span> <span class="n">filter_size</span><span class="p">,</span> <span class="n">strides</span><span class="p">,</span> <span class="n">padding</span><span class="p">,</span>
                  <span class="n">weight_initializer</span><span class="o">=</span><span class="n">GlorotUniform</span><span class="p">(),</span> <span class="n">bias_initializer</span><span class="o">=</span><span class="n">Zeros</span><span class="p">(),</span> <span class="n">output_shape</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">data_format</span><span class="o">=</span><span class="s1">&#39;NWC&#39;</span><span class="p">,</span>
-                 <span class="n">dilations</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">dev</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+                 <span class="n">dilations</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        1D transpose convolutional layer.</span>
 
@@ -474,8 +401,8 @@
 <span class="sd">        :type data_format: string</span>
 <span class="sd">        :param dilations: The dilation factor for each dimension of input.</span>
 <span class="sd">        :type dilations: int or sequence of ints</span>
-<span class="sd">        :param dev: device on which to create the layer&#39;s variables &#39;cuda:0&#39;, &#39;cuda:1&#39;, &#39;cpu&#39; etc. Default is cpu.</span>
-<span class="sd">        :type dev: ivy.Device, optional</span>
+<span class="sd">        :param device: device on which to create the layer&#39;s variables &#39;cuda:0&#39;, &#39;cuda:1&#39;, &#39;cpu&#39; etc. Default is cpu.</span>
+<span class="sd">        :type device: ivy.Device, optional</span>
 <span class="sd">        :param v: the variables for each of the linear layer, as a container, constructed internally by default.</span>
 <span class="sd">        :type v: ivy container of variables, optional</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -492,14 +419,14 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_output_shape</span> <span class="o">=</span> <span class="n">output_shape</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_data_format</span> <span class="o">=</span> <span class="n">data_format</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_dilations</span> <span class="o">=</span> <span class="n">dilations</span>
-        <span class="n">Module</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dev</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span></div>
+        <span class="n">Module</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span></div>
 
-    <span class="k">def</span> <span class="nf">_create_variables</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dev</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_create_variables</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">device</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create internal variables for the layer</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;w&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_w_init</span><span class="o">.</span><span class="n">create_variables</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_w_shape</span><span class="p">,</span> <span class="n">dev</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_output_channels</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_input_channels</span><span class="p">),</span>
-                <span class="s1">&#39;b&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_b_init</span><span class="o">.</span><span class="n">create_variables</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_b_shape</span><span class="p">,</span> <span class="n">dev</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_output_channels</span><span class="p">)}</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;w&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_w_init</span><span class="o">.</span><span class="n">create_variables</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_w_shape</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_output_channels</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_input_channels</span><span class="p">),</span>
+                <span class="s1">&#39;b&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_b_init</span><span class="o">.</span><span class="n">create_variables</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_b_shape</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_output_channels</span><span class="p">)}</span>
 
     <span class="k">def</span> <span class="nf">_forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -517,7 +444,7 @@
 
 <div class="viewcode-block" id="Conv2D.__init__"><a class="viewcode-back" href="../../../stateful/layers/Conv2D.html#ivy.stateful.layers.Conv2D.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_channels</span><span class="p">,</span> <span class="n">output_channels</span><span class="p">,</span> <span class="n">filter_shape</span><span class="p">,</span> <span class="n">strides</span><span class="p">,</span> <span class="n">padding</span><span class="p">,</span>
                  <span class="n">weight_initializer</span><span class="o">=</span><span class="n">GlorotUniform</span><span class="p">(),</span> <span class="n">bias_initializer</span><span class="o">=</span><span class="n">Zeros</span><span class="p">(),</span> <span class="n">data_format</span><span class="o">=</span><span class="s1">&#39;NHWC&#39;</span><span class="p">,</span> <span class="n">dilations</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-                 <span class="n">dev</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+                 <span class="n">device</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        2D convolutional layer.</span>
 
@@ -539,8 +466,8 @@
 <span class="sd">        :type data_format: string</span>
 <span class="sd">        :param dilations: The dilation factor for each dimension of input.</span>
 <span class="sd">        :type dilations: int or sequence of ints</span>
-<span class="sd">        :param dev: device on which to create the layer&#39;s variables &#39;cuda:0&#39;, &#39;cuda:1&#39;, &#39;cpu&#39; etc. Default is cpu.</span>
-<span class="sd">        :type dev: ivy.Device, optional</span>
+<span class="sd">        :param device: device on which to create the layer&#39;s variables &#39;cuda:0&#39;, &#39;cuda:1&#39;, &#39;cpu&#39; etc. Default is cpu.</span>
+<span class="sd">        :type device: ivy.Device, optional</span>
 <span class="sd">        :param v: the variables for each of the linear layer, as a container, constructed internally by default.</span>
 <span class="sd">        :type v: ivy container of variables, optional</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -556,14 +483,14 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_b_init</span> <span class="o">=</span> <span class="n">bias_initializer</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_data_format</span> <span class="o">=</span> <span class="n">data_format</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_dilations</span> <span class="o">=</span> <span class="n">dilations</span>
-        <span class="n">Module</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dev</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span></div>
+        <span class="n">Module</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span></div>
 
-    <span class="k">def</span> <span class="nf">_create_variables</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dev</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_create_variables</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">device</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create internal variables for the layer</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;w&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_w_init</span><span class="o">.</span><span class="n">create_variables</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_w_shape</span><span class="p">,</span> <span class="n">dev</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_output_channels</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_input_channels</span><span class="p">),</span>
-                <span class="s1">&#39;b&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_b_init</span><span class="o">.</span><span class="n">create_variables</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_b_shape</span><span class="p">,</span> <span class="n">dev</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_output_channels</span><span class="p">)}</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;w&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_w_init</span><span class="o">.</span><span class="n">create_variables</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_w_shape</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_output_channels</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_input_channels</span><span class="p">),</span>
+                <span class="s1">&#39;b&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_b_init</span><span class="o">.</span><span class="n">create_variables</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_b_shape</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_output_channels</span><span class="p">)}</span>
 
     <span class="k">def</span> <span class="nf">_forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -580,7 +507,7 @@
 
 <div class="viewcode-block" id="Conv2DTranspose.__init__"><a class="viewcode-back" href="../../../stateful/layers/Conv2DTranspose.html#ivy.stateful.layers.Conv2DTranspose.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_channels</span><span class="p">,</span> <span class="n">output_channels</span><span class="p">,</span> <span class="n">filter_shape</span><span class="p">,</span> <span class="n">strides</span><span class="p">,</span> <span class="n">padding</span><span class="p">,</span>
                  <span class="n">weight_initializer</span><span class="o">=</span><span class="n">GlorotUniform</span><span class="p">(),</span> <span class="n">bias_initializer</span><span class="o">=</span><span class="n">Zeros</span><span class="p">(),</span> <span class="n">output_shape</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">data_format</span><span class="o">=</span><span class="s1">&#39;NHWC&#39;</span><span class="p">,</span>
-                 <span class="n">dilations</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">dev</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+                 <span class="n">dilations</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        2D convolutional transpose layer.</span>
 
@@ -604,8 +531,8 @@
 <span class="sd">        :type data_format: string</span>
 <span class="sd">        :param dilations: The dilation factor for each dimension of input.</span>
 <span class="sd">        :type dilations: int or sequence of ints</span>
-<span class="sd">        :param dev: device on which to create the layer&#39;s variables &#39;cuda:0&#39;, &#39;cuda:1&#39;, &#39;cpu&#39; etc. Default is cpu.</span>
-<span class="sd">        :type dev: ivy.Device, optional</span>
+<span class="sd">        :param device: device on which to create the layer&#39;s variables &#39;cuda:0&#39;, &#39;cuda:1&#39;, &#39;cpu&#39; etc. Default is cpu.</span>
+<span class="sd">        :type device: ivy.Device, optional</span>
 <span class="sd">        :param v: the variables for each of the linear layer, as a container, constructed internally by default.</span>
 <span class="sd">        :type v: ivy container of variables, optional</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -622,14 +549,14 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_output_shape</span> <span class="o">=</span> <span class="n">output_shape</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_data_format</span> <span class="o">=</span> <span class="n">data_format</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_dilations</span> <span class="o">=</span> <span class="n">dilations</span>
-        <span class="n">Module</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dev</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span></div>
+        <span class="n">Module</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span></div>
 
-    <span class="k">def</span> <span class="nf">_create_variables</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dev</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_create_variables</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">device</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create internal variables for the layer</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;w&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_w_init</span><span class="o">.</span><span class="n">create_variables</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_w_shape</span><span class="p">,</span> <span class="n">dev</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_output_channels</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_input_channels</span><span class="p">),</span>
-                <span class="s1">&#39;b&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_b_init</span><span class="o">.</span><span class="n">create_variables</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_b_shape</span><span class="p">,</span> <span class="n">dev</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_output_channels</span><span class="p">)}</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;w&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_w_init</span><span class="o">.</span><span class="n">create_variables</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_w_shape</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_output_channels</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_input_channels</span><span class="p">),</span>
+                <span class="s1">&#39;b&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_b_init</span><span class="o">.</span><span class="n">create_variables</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_b_shape</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_output_channels</span><span class="p">)}</span>
 
     <span class="k">def</span> <span class="nf">_forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -646,7 +573,7 @@
 <div class="viewcode-block" id="DepthwiseConv2D"><a class="viewcode-back" href="../../../stateful/layers/DepthwiseConv2D.html#ivy.stateful.layers.DepthwiseConv2D">[docs]</a><span class="k">class</span> <span class="nc">DepthwiseConv2D</span><span class="p">(</span><span class="n">Module</span><span class="p">):</span>
 
 <div class="viewcode-block" id="DepthwiseConv2D.__init__"><a class="viewcode-back" href="../../../stateful/layers/DepthwiseConv2D.html#ivy.stateful.layers.DepthwiseConv2D.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_channels</span><span class="p">,</span> <span class="n">filter_shape</span><span class="p">,</span> <span class="n">strides</span><span class="p">,</span> <span class="n">padding</span><span class="p">,</span> <span class="n">weight_initializer</span><span class="o">=</span><span class="n">GlorotUniform</span><span class="p">(),</span>
-                 <span class="n">bias_initializer</span><span class="o">=</span><span class="n">Zeros</span><span class="p">(),</span> <span class="n">data_format</span><span class="o">=</span><span class="s1">&#39;NHWC&#39;</span><span class="p">,</span> <span class="n">dilations</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">dev</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+                 <span class="n">bias_initializer</span><span class="o">=</span><span class="n">Zeros</span><span class="p">(),</span> <span class="n">data_format</span><span class="o">=</span><span class="s1">&#39;NHWC&#39;</span><span class="p">,</span> <span class="n">dilations</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        depthwise 2D convolutional layer.</span>
 
@@ -666,8 +593,8 @@
 <span class="sd">        :type data_format: string</span>
 <span class="sd">        :param dilations: The dilation factor for each dimension of input.</span>
 <span class="sd">        :type dilations: int or sequence of ints</span>
-<span class="sd">        :param dev: device on which to create the layer&#39;s variables &#39;cuda:0&#39;, &#39;cuda:1&#39;, &#39;cpu&#39; etc. Default is cpu.</span>
-<span class="sd">        :type dev: ivy.Device, optional</span>
+<span class="sd">        :param device: device on which to create the layer&#39;s variables &#39;cuda:0&#39;, &#39;cuda:1&#39;, &#39;cpu&#39; etc. Default is cpu.</span>
+<span class="sd">        :type device: ivy.Device, optional</span>
 <span class="sd">        :param v: the variables for each of the linear layer, as a container, constructed internally by default.</span>
 <span class="sd">        :type v: ivy container of variables, optional</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -682,14 +609,14 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_b_init</span> <span class="o">=</span> <span class="n">bias_initializer</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_data_format</span> <span class="o">=</span> <span class="n">data_format</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_dilations</span> <span class="o">=</span> <span class="n">dilations</span>
-        <span class="n">Module</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dev</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span></div>
+        <span class="n">Module</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span></div>
 
-    <span class="k">def</span> <span class="nf">_create_variables</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dev</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_create_variables</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">device</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create internal variables for the layer</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;w&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_w_init</span><span class="o">.</span><span class="n">create_variables</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_w_shape</span><span class="p">,</span> <span class="n">dev</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_num_channels</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_num_channels</span><span class="p">),</span>
-                <span class="s1">&#39;b&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_b_init</span><span class="o">.</span><span class="n">create_variables</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_b_shape</span><span class="p">,</span> <span class="n">dev</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_num_channels</span><span class="p">)}</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;w&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_w_init</span><span class="o">.</span><span class="n">create_variables</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_w_shape</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_num_channels</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_num_channels</span><span class="p">),</span>
+                <span class="s1">&#39;b&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_b_init</span><span class="o">.</span><span class="n">create_variables</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_b_shape</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_num_channels</span><span class="p">)}</span>
 
     <span class="k">def</span> <span class="nf">_forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -707,7 +634,7 @@
 
 <div class="viewcode-block" id="Conv3D.__init__"><a class="viewcode-back" href="../../../stateful/layers/Conv3D.html#ivy.stateful.layers.Conv3D.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_channels</span><span class="p">,</span> <span class="n">output_channels</span><span class="p">,</span> <span class="n">filter_shape</span><span class="p">,</span> <span class="n">strides</span><span class="p">,</span> <span class="n">padding</span><span class="p">,</span>
                  <span class="n">weight_initializer</span><span class="o">=</span><span class="n">GlorotUniform</span><span class="p">(),</span> <span class="n">bias_initializer</span><span class="o">=</span><span class="n">Zeros</span><span class="p">(),</span> <span class="n">data_format</span><span class="o">=</span><span class="s1">&#39;NDHWC&#39;</span><span class="p">,</span> <span class="n">dilations</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-                 <span class="n">dev</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+                 <span class="n">device</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        3D convolutional layer.</span>
 
@@ -729,8 +656,8 @@
 <span class="sd">        :type data_format: string</span>
 <span class="sd">        :param dilations: The dilation factor for each dimension of input.</span>
 <span class="sd">        :type dilations: int or sequence of ints</span>
-<span class="sd">        :param dev: device on which to create the layer&#39;s variables &#39;cuda:0&#39;, &#39;cuda:1&#39;, &#39;cpu&#39; etc. Default is cpu.</span>
-<span class="sd">        :type dev: ivy.Device, optional</span>
+<span class="sd">        :param device: device on which to create the layer&#39;s variables &#39;cuda:0&#39;, &#39;cuda:1&#39;, &#39;cpu&#39; etc. Default is cpu.</span>
+<span class="sd">        :type device: ivy.Device, optional</span>
 <span class="sd">        :param v: the variables for each of the linear layer, as a container, constructed internally by default.</span>
 <span class="sd">        :type v: ivy container of variables, optional</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -746,14 +673,14 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_b_init</span> <span class="o">=</span> <span class="n">bias_initializer</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_data_format</span> <span class="o">=</span> <span class="n">data_format</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_dilations</span> <span class="o">=</span> <span class="n">dilations</span>
-        <span class="n">Module</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dev</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span></div>
+        <span class="n">Module</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span></div>
 
-    <span class="k">def</span> <span class="nf">_create_variables</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dev</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_create_variables</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">device</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create internal variables for the layer</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;w&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_w_init</span><span class="o">.</span><span class="n">create_variables</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_w_shape</span><span class="p">,</span> <span class="n">dev</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_output_channels</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_input_channels</span><span class="p">),</span>
-                <span class="s1">&#39;b&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_b_init</span><span class="o">.</span><span class="n">create_variables</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_b_shape</span><span class="p">,</span> <span class="n">dev</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_output_channels</span><span class="p">)}</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;w&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_w_init</span><span class="o">.</span><span class="n">create_variables</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_w_shape</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_output_channels</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_input_channels</span><span class="p">),</span>
+                <span class="s1">&#39;b&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_b_init</span><span class="o">.</span><span class="n">create_variables</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_b_shape</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_output_channels</span><span class="p">)}</span>
 
     <span class="k">def</span> <span class="nf">_forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -770,7 +697,7 @@
 
 <div class="viewcode-block" id="Conv3DTranspose.__init__"><a class="viewcode-back" href="../../../stateful/layers/Conv3DTranspose.html#ivy.stateful.layers.Conv3DTranspose.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_channels</span><span class="p">,</span> <span class="n">output_channels</span><span class="p">,</span> <span class="n">filter_shape</span><span class="p">,</span> <span class="n">strides</span><span class="p">,</span> <span class="n">padding</span><span class="p">,</span>
                  <span class="n">weight_initializer</span><span class="o">=</span><span class="n">GlorotUniform</span><span class="p">(),</span> <span class="n">bias_initializer</span><span class="o">=</span><span class="n">Zeros</span><span class="p">(),</span> <span class="n">output_shape</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">data_format</span><span class="o">=</span><span class="s1">&#39;NDHWC&#39;</span><span class="p">,</span>
-                 <span class="n">dilations</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">dev</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+                 <span class="n">dilations</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        3D convolutional transpose layer.</span>
 
@@ -794,8 +721,8 @@
 <span class="sd">        :type data_format: string</span>
 <span class="sd">        :param dilations: The dilation factor for each dimension of input.</span>
 <span class="sd">        :type dilations: int or sequence of ints</span>
-<span class="sd">        :param dev: device on which to create the layer&#39;s variables &#39;cuda:0&#39;, &#39;cuda:1&#39;, &#39;cpu&#39; etc. Default is cpu.</span>
-<span class="sd">        :type dev: ivy.Device, optional</span>
+<span class="sd">        :param device: device on which to create the layer&#39;s variables &#39;cuda:0&#39;, &#39;cuda:1&#39;, &#39;cpu&#39; etc. Default is cpu.</span>
+<span class="sd">        :type device: ivy.Device, optional</span>
 <span class="sd">        :param v: the variables for each of the linear layer, as a container, constructed internally by default.</span>
 <span class="sd">        :type v: ivy container of variables, optional</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -812,14 +739,14 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_output_shape</span> <span class="o">=</span> <span class="n">output_shape</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_data_format</span> <span class="o">=</span> <span class="n">data_format</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_dilations</span> <span class="o">=</span> <span class="n">dilations</span>
-        <span class="n">Module</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dev</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span></div>
+        <span class="n">Module</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span></div>
 
-    <span class="k">def</span> <span class="nf">_create_variables</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dev</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_create_variables</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">device</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create internal variables for the layer</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;w&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_w_init</span><span class="o">.</span><span class="n">create_variables</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_w_shape</span><span class="p">,</span> <span class="n">dev</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_output_channels</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_input_channels</span><span class="p">),</span>
-                <span class="s1">&#39;b&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_b_init</span><span class="o">.</span><span class="n">create_variables</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_b_shape</span><span class="p">,</span> <span class="n">dev</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_output_channels</span><span class="p">)}</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;w&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_w_init</span><span class="o">.</span><span class="n">create_variables</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_w_shape</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_output_channels</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_input_channels</span><span class="p">),</span>
+                <span class="s1">&#39;b&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_b_init</span><span class="o">.</span><span class="n">create_variables</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_b_shape</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_output_channels</span><span class="p">)}</span>
 
     <span class="k">def</span> <span class="nf">_forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -839,7 +766,7 @@
 <div class="viewcode-block" id="LSTM"><a class="viewcode-back" href="../../../stateful/layers/LSTM.html#ivy.stateful.layers.LSTM">[docs]</a><span class="k">class</span> <span class="nc">LSTM</span><span class="p">(</span><span class="n">Module</span><span class="p">):</span>
 
 <div class="viewcode-block" id="LSTM.__init__"><a class="viewcode-back" href="../../../stateful/layers/LSTM.html#ivy.stateful.layers.LSTM.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_channels</span><span class="p">,</span> <span class="n">output_channels</span><span class="p">,</span> <span class="n">weight_initializer</span><span class="o">=</span><span class="n">GlorotUniform</span><span class="p">(),</span> <span class="n">num_layers</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-                 <span class="n">return_sequence</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">return_state</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">dev</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+                 <span class="n">return_sequence</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">return_state</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        LSTM layer, which is a set of stacked lstm cells.</span>
 
@@ -856,8 +783,8 @@
 <span class="sd">        :type return_sequence: bool, optional</span>
 <span class="sd">        :param return_state: Whether or not to return the latest hidden and cell states. Default is True.</span>
 <span class="sd">        :type return_state: bool, optional</span>
-<span class="sd">        :param dev: device on which to create the layer&#39;s variables &#39;cuda:0&#39;, &#39;cuda:1&#39;, &#39;cpu&#39; etc. Default is cpu.</span>
-<span class="sd">        :type dev: ivy.Device, optional</span>
+<span class="sd">        :param device: device on which to create the layer&#39;s variables &#39;cuda:0&#39;, &#39;cuda:1&#39;, &#39;cpu&#39; etc. Default is cpu.</span>
+<span class="sd">        :type device: ivy.Device, optional</span>
 <span class="sd">        :param v: the variables for each of the lstm cells, as a container, constructed internally by default.</span>
 <span class="sd">        :type v: ivy container of parameter arrays, optional</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -867,7 +794,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_num_layers</span> <span class="o">=</span> <span class="n">num_layers</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_return_sequence</span> <span class="o">=</span> <span class="n">return_sequence</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_return_state</span> <span class="o">=</span> <span class="n">return_state</span>
-        <span class="n">Module</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dev</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span></div>
+        <span class="n">Module</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span></div>
 
     <span class="c1"># Public #</span>
 
@@ -881,18 +808,18 @@
 
     <span class="c1"># Overridden</span>
 
-    <span class="k">def</span> <span class="nf">_create_variables</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dev</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_create_variables</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">device</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create internal variables for the layer</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">input_weights</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span>
             <span class="p">[</span><span class="s1">&#39;layer_&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_num_layers</span><span class="p">)],</span>
             <span class="p">[{</span><span class="s1">&#39;w&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_w_init</span><span class="o">.</span><span class="n">create_variables</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">_input_channels</span> <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">_output_channels</span><span class="p">,</span>
-                                                  <span class="mi">4</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_output_channels</span><span class="p">),</span> <span class="n">dev</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_output_channels</span><span class="p">,</span>
+                                                  <span class="mi">4</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_output_channels</span><span class="p">),</span> <span class="n">device</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_output_channels</span><span class="p">,</span>
                                                  <span class="bp">self</span><span class="o">.</span><span class="n">_input_channels</span><span class="p">)}</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_num_layers</span><span class="p">)]))</span>
         <span class="n">recurrent_weights</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span>
             <span class="p">[</span><span class="s1">&#39;layer_&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_num_layers</span><span class="p">)],</span>
-            <span class="p">[{</span><span class="s1">&#39;w&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_w_init</span><span class="o">.</span><span class="n">create_variables</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">_output_channels</span><span class="p">,</span> <span class="mi">4</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_output_channels</span><span class="p">),</span> <span class="n">dev</span><span class="p">,</span>
+            <span class="p">[{</span><span class="s1">&#39;w&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_w_init</span><span class="o">.</span><span class="n">create_variables</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">_output_channels</span><span class="p">,</span> <span class="mi">4</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_output_channels</span><span class="p">),</span> <span class="n">device</span><span class="p">,</span>
                                                  <span class="bp">self</span><span class="o">.</span><span class="n">_output_channels</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_input_channels</span><span class="p">)}</span>
              <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_num_layers</span><span class="p">)]))</span>
         <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;input&#39;</span><span class="p">:</span> <span class="n">input_weights</span><span class="p">,</span> <span class="s1">&#39;recurrent&#39;</span><span class="p">:</span> <span class="n">recurrent_weights</span><span class="p">}</span>
@@ -927,42 +854,30 @@
 </pre></div>
 
            </div>
-           
           </div>
           <footer>
-  
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        &copy; Copyright 2020, Ivy Team
-
-    </p>
+    <p>&#169; Copyright 2020, Ivy Team.</p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
 
 </footer>
-
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>
