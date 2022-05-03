@@ -11,49 +11,49 @@ import ivy
 # Array API Standard #
 # -------------------#
 
-def eigh(x: torch.Tensor,
-         out: Optional[torch.Tensor] = None)\
-  ->torch.Tensor:
-     return torch.linalg.eigh(x, out=out)
+
+def eigh(x: torch.Tensor, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+    return torch.linalg.eigh(x, out=out)
 
 
-def inv(x: torch.Tensor,
-        out: Optional[torch.Tensor] = None)\
-  ->torch.Tensor:
-    return torch.inverse(x, out= out)
+def inv(x: torch.Tensor, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+    return torch.inverse(x, out=out)
 
 
-def pinv(x: torch.Tensor,
-         rtol: Optional[Union[float, Tuple[float]]] = None,
-         out: Optional[torch.Tensor] = None) \
-        -> torch.Tensor:
+def pinv(
+    x: torch.Tensor,
+    rtol: Optional[Union[float, Tuple[float]]] = None,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
     if rtol is None:
         return torch.linalg.pinv(x, out=out)
     return torch.linalg.pinv(x, rtol, out=out)
 
 
-def matrix_transpose(x: torch.Tensor,
-                     out: Optional[torch.Tensor] = None)\
-        -> torch.Tensor:
+def matrix_transpose(
+    x: torch.Tensor, out: Optional[torch.Tensor] = None
+) -> torch.Tensor:
     ret = torch.swapaxes(x, -1, -2)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
     return ret
 
 
-def matrix_rank(x: torch.Tensor,
-                rtol: Optional[Union[float, Tuple[float]]] = None,
-                out: Optional[torch.Tensor] = None) \
-        -> torch.Tensor:
+def matrix_rank(
+    x: torch.Tensor,
+    rtol: Optional[Union[float, Tuple[float]]] = None,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
     return torch.linalg.matrix_rank(x, rtol, out=out)
 
 
-def vector_norm(x: torch.Tensor,
-                axis: Optional[Union[int, Tuple[int]]] = None,
-                keepdims: bool = False,
-                ord: Union[int, float, Literal[inf, - inf]] = 2,
-                out: Optional[torch.Tensor] = None)\
-        -> torch.Tensor:
+def vector_norm(
+    x: torch.Tensor,
+    axis: Optional[Union[int, Tuple[int]]] = None,
+    keepdims: bool = False,
+    ord: Union[int, float, Literal[inf, -inf]] = 2,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
 
     py_normalized_vector = torch.linalg.vector_norm(x, ord, axis, keepdims)
 
@@ -65,24 +65,24 @@ def vector_norm(x: torch.Tensor,
         return ivy.inplace_update(out, ret)
     return ret
 
-def matrix_norm(x: torch.Tensor,
-                ord: Optional[Union[int, float, Literal[inf, - inf, 'fro', 'nuc']]] ='fro',
-                keepdims: bool = False,
-                out: Optional[torch.Tensor] = None)\
-        -> torch.Tensor:
-    return torch.linalg.matrix_norm(x, ord=ord, dim=[-2, -1], keepdim=keepdims, out = out)
+
+def matrix_norm(
+    x: torch.Tensor,
+    ord: Optional[Union[int, float, Literal[inf, -inf, "fro", "nuc"]]] = "fro",
+    keepdims: bool = False,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.linalg.matrix_norm(x, ord=ord, dim=[-2, -1], keepdim=keepdims, out=out)
 
 
-def matrix_power(x: torch.Tensor, n: int) \
-        -> torch.Tensor:
+def matrix_power(x: torch.Tensor, n: int) -> torch.Tensor:
     return torch.linalg.matrix_power(x, n)
 
 
 # noinspection PyPep8Naming
-def svd(x: torch.Tensor,
-        full_matrices: bool = True,
-        out: Optional[torch.Tensor] = None)\
-        -> Union[torch.Tensor, Tuple[torch.Tensor,...]]:
+def svd(
+    x: torch.Tensor, full_matrices: bool = True, out: Optional[torch.Tensor] = None
+) -> Union[torch.Tensor, Tuple[torch.Tensor, ...]]:
     results = namedtuple("svd", "U S Vh")
 
     U, D, VT = torch.linalg.svd(x, full_matrices=full_matrices)
@@ -92,57 +92,53 @@ def svd(x: torch.Tensor,
     return ret
 
 
-
-def outer(x1: torch.Tensor,
-          x2: torch.Tensor,
-          out: Optional[torch.Tensor] = None)\
-        -> torch.Tensor:
+def outer(
+    x1: torch.Tensor, x2: torch.Tensor, out: Optional[torch.Tensor] = None
+) -> torch.Tensor:
     return torch.outer(x1, x2, out=out)
 
 
-def diagonal(x: torch.Tensor,
-             offset: int = 0,
-             axis1: int = -2,
-             axis2: int = -1) -> torch.Tensor:
+def diagonal(
+    x: torch.Tensor, offset: int = 0, axis1: int = -2, axis2: int = -1
+) -> torch.Tensor:
     return torch.diagonal(x, offset=offset, dim1=axis1, dim2=axis2)
 
 
-def svdvals(x: torch.Tensor,
-            out: Optional[torch.Tensor] = None)\
-        -> torch.Tensor:
-    return torch.linalg.svdvals(x, out = out)
+def svdvals(x: torch.Tensor, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+    return torch.linalg.svdvals(x, out=out)
 
 
-def qr(x: torch.Tensor,
-       mode: str = 'reduced',
-       out: Optional[torch.Tensor] = None)\
-       -> namedtuple('qr', ['Q', 'R']):
-    res = namedtuple('qr', ['Q', 'R'])
-    if mode == 'reduced':
+def qr(
+    x: torch.Tensor, mode: str = "reduced", out: Optional[torch.Tensor] = None
+) -> namedtuple("qr", ["Q", "R"]):
+    res = namedtuple("qr", ["Q", "R"])
+    if mode == "reduced":
         q, r = torch.qr(x, some=True)
         ret = res(q, r)
-    elif mode == 'complete':
+    elif mode == "complete":
         q, r = torch.qr(x, some=False)
         ret = res(q, r)
     else:
-        raise Exception("Only 'reduced' and 'complete' qr modes are allowed for the torch backend.")
+        raise Exception(
+            "Only 'reduced' and 'complete' qr modes are allowed for the torch backend."
+        )
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
     return ret
 
 
-def matmul(x1: torch.Tensor,
-           x2: torch.Tensor,
-           out: Optional[torch.Tensor] = None) -> torch.Tensor:
+def matmul(
+    x1: torch.Tensor, x2: torch.Tensor, out: Optional[torch.Tensor] = None
+) -> torch.Tensor:
     dtype_from = torch.promote_types(x1.dtype, x2.dtype)
     x1 = x1.type(dtype_from)
     x2 = x2.type(dtype_from)
     return torch.matmul(x1, x2, out=out).type(dtype_from)
 
 
-def slogdet(x: Union[ivy.Array, ivy.NativeArray],
-            out: Optional[torch.Tensor] = None)\
-        -> Union[ivy.Array, Tuple[ivy.Array, ...]]:
+def slogdet(
+    x: Union[ivy.Array, ivy.NativeArray], out: Optional[torch.Tensor] = None
+) -> Union[ivy.Array, Tuple[ivy.Array, ...]]:
     results = namedtuple("slogdet", "sign logabsdet")
     sign, logabsdet = torch.linalg.slogdet(x)
     res = results(sign, logabsdet)
@@ -152,10 +148,12 @@ def slogdet(x: Union[ivy.Array, ivy.NativeArray],
     return ret
 
 
-def tensordot(x1: torch.Tensor, x2: torch.Tensor,
-              axes: Union[int, Tuple[List[int], List[int]]] = 2,
-              out: Optional[torch.Tensor] = None) \
-        -> torch.Tensor:
+def tensordot(
+    x1: torch.Tensor,
+    x2: torch.Tensor,
+    axes: Union[int, Tuple[List[int], List[int]]] = 2,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
 
     # find the type to promote to
     dtype = torch.promote_types(x1.dtype, x2.dtype)
@@ -173,10 +171,9 @@ def tensordot(x1: torch.Tensor, x2: torch.Tensor,
     return ret
 
 
-def trace(x: torch.Tensor,
-          offset: int = 0,
-          out: Optional[torch.Tensor] = None)\
-              -> torch.Tensor:
+def trace(
+    x: torch.Tensor, offset: int = 0, out: Optional[torch.Tensor] = None
+) -> torch.Tensor:
     desired_dtype = x.dtype
     ret = torch.diagonal(x, offset=offset, dim1=-2, dim2=-1)
     ret = torch.sum(ret, dim=-1)
@@ -186,36 +183,38 @@ def trace(x: torch.Tensor,
     return ret
 
 
-def det(x: torch.Tensor,
-        out: Optional[torch.Tensor] = None) \
-    -> torch.Tensor:
+def det(x: torch.Tensor, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     return torch.linalg.det(x, out=out)
 
 
-def cholesky(x: torch.Tensor,
-            upper: bool = False,
-            out: Optional[torch.Tensor] = None)\
-        -> torch.Tensor:
+def cholesky(
+    x: torch.Tensor, upper: bool = False, out: Optional[torch.Tensor] = None
+) -> torch.Tensor:
     if not upper:
         ret = torch.linalg.cholesky(x)
     else:
-        ret = torch.transpose(torch.linalg.cholesky(torch.transpose(x, dim0=len(x.shape) - 1,dim1=len(x.shape) - 2)),
-                               dim0=len(x.shape) - 1, dim1=len(x.shape) - 2)
+        ret = torch.transpose(
+            torch.linalg.cholesky(
+                torch.transpose(x, dim0=len(x.shape) - 1, dim1=len(x.shape) - 2)
+            ),
+            dim0=len(x.shape) - 1,
+            dim1=len(x.shape) - 2,
+        )
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
     return ret
 
 
-def eigvalsh(x: torch.Tensor,
-             out: Optional[torch.Tensor] = None) -> torch.Tensor:
+def eigvalsh(x: torch.Tensor, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     return torch.linalg.eigvalsh(x, out=out)
 
 
-def cross (x1: torch.Tensor,
-           x2: torch.Tensor,
-           axis: int = -1,
-           out: Optional[torch.Tensor] = None)\
-        -> torch.Tensor:
+def cross(
+    x1: torch.Tensor,
+    x2: torch.Tensor,
+    axis: int = -1,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
     if axis is None:
         axis = -1
     promote_type = torch.promote_types(x1.dtype, x2.dtype)
@@ -224,11 +223,12 @@ def cross (x1: torch.Tensor,
     return torch.cross(input=x1, other=x2, dim=axis, out=out)
 
 
-def vecdot(x1: torch.Tensor,
-           x2: torch.Tensor,
-           axis: int = -1,
-           out: Optional[torch.Tensor] = None)\
-        -> torch.Tensor:
+def vecdot(
+    x1: torch.Tensor,
+    x2: torch.Tensor,
+    axis: int = -1,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
     dtype = torch.promote_types(x1.dtype, x2.dtype)
     x1, x2 = x1.type(torch.float32), x2.type(torch.float32)
     return torch.tensordot(x1, x2, dims=([axis], [axis]), out=out).type(dtype)
@@ -237,9 +237,10 @@ def vecdot(x1: torch.Tensor,
 # Extra #
 # ------#
 
-def vector_to_skew_symmetric_matrix(vector: torch.Tensor,
-                                    out: Optional[torch.Tensor] = None)\
-        -> torch.Tensor:
+
+def vector_to_skew_symmetric_matrix(
+    vector: torch.Tensor, out: Optional[torch.Tensor] = None
+) -> torch.Tensor:
     batch_shape = list(vector.shape[:-1])
     # BS x 3 x 1
     vector_expanded = torch.unsqueeze(vector, -1)
@@ -256,8 +257,8 @@ def vector_to_skew_symmetric_matrix(vector: torch.Tensor,
     # BS x 3 x 3
     return torch.cat((row1, row2, row3), -2, out=out)
 
-def solve(x1: torch.Tensor,
-          x2: torch.Tensor) -> torch.Tensor:
+
+def solve(x1: torch.Tensor, x2: torch.Tensor) -> torch.Tensor:
     if x1.dtype != torch.float:
         x1 = x1.type(torch.float)
     if x2.dtype != torch.float:
