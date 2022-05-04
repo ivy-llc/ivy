@@ -41,19 +41,35 @@ def squeeze(x: Union[ivy.Array, ivy.NativeArray],
         -> ivy.Array:
     """
     Removes singleton dimensions (axes) from ``x``.
+    
     Parameters
     ----------
-    x
+    x:
         input array.
-    axis
+    axis:
         axis (or axes) to squeeze. If a specified axis has a size greater than one, a ``ValueError`` must be raised.
-    out
+    out:
         optional output array, for writing the result to. It must have a shape that the inputs broadcast to.
 
     Returns
     -------
-     ret
+     ret:
         an output array having the same data type and elements as ``x``.
+        
+    Example
+    -------
+    >>> x = ivy.array([[[5., 8.], [7., 4.]]])
+    >>> print(x)
+    ivy.array([[[5., 8.],
+                [7., 4.]]])
+    >>> print(ivy.shape(x)) #Before squeezing
+    (1, 2, 2)
+    >>> x = ivy.squeeze(x, axis = 0) #Squeeze
+    >>> print(x)
+    ivy.array([[5., 8.],
+               [7., 4.]])
+    >>> print(ivy.shape(x)) #After squeezing
+    (2, 2)
     """
     return _cur_framework(x).squeeze(x, axis, out)
 
@@ -67,17 +83,34 @@ def flip(x: Union[ivy.Array, ivy.NativeArray],
 
     Parameters
     ----------
-    x
+    x:
         input array.
-    axis
+    axis:
         axis (or axes) along which to flip. If ``axis`` is ``None``, the function must flip all input array axes. If ``axis`` is negative, the function must count from the last dimension. If provided more than one axis, the function must flip only the specified axes. Default  ``None``.
-    out
+    out:
         optional output array, for writing the result to. It must have a shape that the inputs broadcast to.
 
     Returns
     -------
-     ret
+     ret:
         an output array having the same data type and shape as ``x`` and whose elements, relative to ``x``, are reordered.
+    
+    Example
+    -------
+    >>> x = ivy.randint(low = 0, high = 9, shape = (5, 5))
+    >>> print(x)
+    ivy.array([[0, 7, 4, 3, 8],
+               [2, 8, 8, 5, 2],
+               [7, 5, 4, 6, 4],
+               [2, 1, 6, 6, 7],
+               [1, 1, 2, 5, 3]])
+    >>> ret = ivy.flip(x, axis = (0, 1))
+    >>> print(ret)
+    ivy.array([[3, 5, 2, 1, 1],
+               [7, 6, 6, 1, 2],
+               [4, 6, 4, 5, 7],
+               [2, 5, 8, 8, 2],
+               [8, 3, 4, 7, 0]])
     """
 
     return _cur_framework(x).flip(x, axis, out)
@@ -119,7 +152,7 @@ def expand_dims(x: Union[ivy.Array, ivy.NativeArray],
 
 
 def permute_dims(x: Union[ivy.Array, ivy.NativeArray],
-                 axes: Tuple[int, ...],
+                 axes: Tuple[int],
                  out: Optional[Union[ivy.Array, ivy.NativeArray]] = None) \
         -> ivy.Array:
     """
@@ -127,17 +160,66 @@ def permute_dims(x: Union[ivy.Array, ivy.NativeArray],
 
     Parameters
     ----------
-    x
+    x:
         input array.
-    axes
+    axes:
         tuple containing a permutation of (0, 1, ..., N-1) where N is the number of axes (dimensions) of x.
-    out
+    out:
         optional output array, for writing the result to. It must have a shape that the inputs broadcast to.
 
     Returns
     -------
-     ret
+     ret:
         an array containing the axes permutation. The returned array must have the same data type as x.
+        
+    Example
+    -------
+    >>> x = ivy.randint(low = 0, high = 9, shape = (5, 4, 3))
+    >>> print(x)
+    ivy.array([[[8, 1, 4],
+                [8, 8, 8],
+                [1, 4, 8],
+                [8, 0, 0]],
+
+               [[8, 2, 3],
+                [4, 1, 4],
+                [2, 2, 6],
+                [6, 6, 6]],
+
+               [[1, 5, 5],
+                [5, 5, 1],
+                [7, 7, 3],
+                [5, 4, 8]],
+
+               [[3, 6, 4],
+                [4, 1, 2],
+                [3, 2, 8],
+                [0, 3, 3]],
+
+               [[8, 8, 0],
+                [6, 8, 1],
+                [4, 1, 8],
+                [2, 1, 5]]])
+    >>> print(ivy.shape(x))
+    (5, 4, 3)
+    >>> ret = ivy.permute_dims(x, axes = (2, 1, 0))
+    >>> print(ret)
+    ivy.array([[[8, 8, 1, 3, 8],
+                [8, 4, 5, 4, 6],
+                [1, 2, 7, 3, 4],
+                [8, 6, 5, 0, 2]],
+
+               [[1, 2, 5, 6, 8],
+                [8, 1, 5, 1, 8],
+                [4, 2, 7, 2, 1],
+                [0, 6, 4, 3, 1]],
+
+               [[4, 3, 5, 4, 0],
+                [8, 4, 1, 2, 1],
+                [8, 6, 3, 8, 8],
+                [0, 6, 8, 3, 5]]])
+    >>> print(ivy.shape(ret))
+    (3, 4, 5)
     """
     return _cur_framework(x).permute_dims(x, axes, out)
 
@@ -204,19 +286,47 @@ def concat(xs: Union[Tuple[Union[ivy.Array, ivy.NativeArray, ivy.Container]],
            axis: Optional[int] = 0,
            out: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None)\
         -> Union[ivy.Array, ivy.Container]:
-    """Casts an array to a specified type.
+    """
+    Casts an array to a specified type.
 
     Parameters
     ----------
-    xs 
+    xs: 
         The input arrays must have the same shape, except in the dimension corresponding to axis
         (the first, by default).
-    axis 
+    axis:
         The axis along which the arrays will be joined. Default is -1.
+    
     Returns
     -------
-     ret
+     ret:
         The concatenated array.
+        
+    Examples
+    --------
+    >>> x = ivy.array([[1,2,3], [4,5,6]])
+    >>> print(x)
+    ivy.array([[1,2,3],
+               [4,5,6]])
+    >>> print(ivy.shape(x))
+    (2, 3)
+    
+    >>> ret = ivy.concat([x, x], axis = 0) #Concatenate along axis 0
+    >>> print(ret)
+    ivy.array([[1, 2, 3],
+               [4, 5, 6],
+               [1, 2, 3],
+               [4, 5, 6]])
+    >>> print(ivy.shape(ret))
+    (4, 3)
+    
+    >>> ret = ivy.concat([x, x], axis = 1) #Concatenate along axis 1
+    >>> print(ret)
+    ivy.array([[1, 2, 3, 1, 2, 3],
+               [4, 5, 6, 4, 5, 6]])
+    >>> print(ivy.shape(ret))
+    (2, 6)
+    
     """
     return _cur_framework(xs[0]).concat(xs, axis, out)
 
@@ -225,27 +335,87 @@ def concat(xs: Union[Tuple[Union[ivy.Array, ivy.NativeArray, ivy.Container]],
 # ------#
 
 
-def split(x: Union[ivy.Array, ivy.NativeArray], num_or_size_splits: Union[int, Iterable[int]] = None, axis: int = 0,
-          with_remainder: bool = False) -> Union[ivy.Array, ivy.NativeArray]:
+def split(x: Union[ivy.Array, ivy.NativeArray],
+          num_or_size_splits: Union[int, Iterable[int]] = None,
+          axis: int = 0,
+          with_remainder: bool = False) \
+          -> List[ivy.Array]:
     """Splits an array into multiple sub-arrays.
 
     Parameters
     ----------
-    x 
+    x:
         Tensor to be divided into sub-arrays.
-    num_or_size_splits 
+    num_or_size_splits: 
         Number of equal arrays to divide the array into along the given axis if an integer.
         The size of each split element if a sequence of integers.
         Default is to divide into as many 1-dimensional arrays as the axis dimension.
-    axis 
+    axis:
         The axis along which to split, default is 0.
-    with_remainder 
+    with_remainder:
         If the tensor does not split evenly, then store the last remainder entry. Default is False.
 
     Returns
     -------
-     ret
+    ret:
         A list of sub-arrays.
+        
+    Example
+    -------
+    >>> x = ivy.randint(low = 0, high = 9, shape = (5, 4, 3))
+    >>> print(x)
+    ivy.array([[[8, 1, 4],
+                [8, 8, 8],
+                [1, 4, 8],
+                [8, 0, 0]],
+
+               [[8, 2, 3],
+                [4, 1, 4],
+                [2, 2, 6],
+                [6, 6, 6]],
+
+               [[1, 5, 5],
+                [5, 5, 1],
+                [7, 7, 3],
+                [5, 4, 8]],
+
+               [[3, 6, 4],
+                [4, 1, 2],
+                [3, 2, 8],
+                [0, 3, 3]],
+
+               [[8, 8, 0],
+                [6, 8, 1],
+                [4, 1, 8],
+                [2, 1, 5]]])
+                
+    >>> splits = ivy.split(x, num_or_size_splits = 3, axis = 1)
+    >>> print(type(splits))
+    <class 'list'>
+    >>> print(splits)
+    [ivy.array([[[8, 1, 4]],
+                [[8, 2, 3]],
+                [[1, 5, 5]],
+                [[3, 6, 4]],
+                [[8, 8, 0]]]),
+     
+     ivy.array([[[8, 8, 8]],
+                [[4, 1, 4]],
+                [[5, 5, 1]],
+                [[4, 1, 2]],
+                [[6, 8, 1]]]),
+    
+     ivy.array([[[1, 4, 8]],
+                [[2, 2, 6]],
+                [[7, 7, 3]],
+                [[3, 2, 8]],
+                [[4, 1, 8]]]),
+     
+     ivy.array([[[8, 0, 0]],
+                [[6, 6, 6]],
+                [[5, 4, 8]],
+                [[0, 3, 3]],
+                [[2, 1, 5]]])]
 
     """
     return _cur_framework(x).split(x, num_or_size_splits, axis, with_remainder)
