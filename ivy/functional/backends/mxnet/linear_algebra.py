@@ -7,17 +7,17 @@ from mxnet.ndarray.ndarray import NDArray
 from typing import Union, Optional, Tuple, Literal
 
 
-
 # local
 from ivy import inf
 import ivy as _ivy
+
 DET_THRESHOLD = 1e-12
 
 # Array API Standard #
 # -------------------#
 
-def eigh(x: mx.ndarray)\
-  ->mx.ndarray:
+
+def eigh(x: mx.ndarray) -> mx.ndarray:
     return mx.np.linalg.eigh(x)
 
 
@@ -48,57 +48,55 @@ def pinv(x):
                 return xT
 
 
-def vector_norm(x: NDArray,
-                p: Union[int, float, Literal[inf, - inf]] = 2,
-                axis: Optional[Union[int, Tuple[int]]] = None,
-                keepdims: bool = False) -> NDArray:
-                
-    return mx.np.linalg.norm(x,p,axis,keepdims)
+def vector_norm(
+    x: NDArray,
+    p: Union[int, float, Literal[inf, -inf]] = 2,
+    axis: Optional[Union[int, Tuple[int]]] = None,
+    keepdims: bool = False,
+) -> NDArray:
+
+    return mx.np.linalg.norm(x, p, axis, keepdims)
 
 
 def matrix_norm(x, p=2, axes=None, keepdims=False):
     axes = (-2, -1) if axes is None else axes
     if isinstance(axes, int):
-        raise Exception('if specified, axes must be a length-2 sequence of ints,'
-                        'but found {} of type {}'.format(axes, type(axes)))
+        raise Exception(
+            "if specified, axes must be a length-2 sequence of ints,"
+            "but found {} of type {}".format(axes, type(axes))
+        )
     return mx.nd.norm(x, p, axes, keepdims=keepdims)
 
 
 # noinspection PyPep8Naming
-def svd(x: NDArray, full_matrices: bool = True) -> Union[NDArray, Tuple[NDArray,...]]:
-    results=namedtuple("svd", "U S Vh")
-    U, D, VT=np.linalg.svd(x, full_matrices=full_matrices)
-    res=results(U, D, VT)
+def svd(x: NDArray, full_matrices: bool = True) -> Union[NDArray, Tuple[NDArray, ...]]:
+    results = namedtuple("svd", "U S Vh")
+    U, D, VT = np.linalg.svd(x, full_matrices=full_matrices)
+    res = results(U, D, VT)
     return res
 
     return mx.np.linalg.norm(x, p, axis, keepdims)
 
 
-def outer(x1: mx.nd.NDArray,
-          x2: mx.nd.NDArray)\
-        -> mx.nd.NDArray:
-    return mx.outer (x1,x2)
+def outer(x1: mx.nd.NDArray, x2: mx.nd.NDArray) -> mx.nd.NDArray:
+    return mx.outer(x1, x2)
 
 
-def diagonal(x: NDArray,
-             offset: int = 0,
-             axis1: int = -2,
-             axis2: int = -1) -> NDArray:
+def diagonal(x: NDArray, offset: int = 0, axis1: int = -2, axis2: int = -1) -> NDArray:
     return mx.nd.diag(x, k=offset, axis1=axis1, axis2=axis2)
 
 
-def slogdet(x: Union[_ivy.Array,_ivy.NativeArray],
-            full_matrices: bool = True) -> Union[_ivy.Array, Tuple[_ivy.Array,...]]:
+def slogdet(
+    x: Union[_ivy.Array, _ivy.NativeArray], full_matrices: bool = True
+) -> Union[_ivy.Array, Tuple[_ivy.Array, ...]]:
     results = namedtuple("slogdet", "sign logabsdet")
     sign, logabsdet = mx.linalg.slogdet(x)
     res = results(sign, logabsdet)
-    
+
     return res
 
 
-def trace(x: NDArray,
-          offset: int = 0)\
-              -> mx.np.ndarray:
+def trace(x: NDArray, offset: int = 0) -> mx.np.ndarray:
     return mx.np.trace(x, offset=offset)
 
 
@@ -106,35 +104,34 @@ def qr(x, mode):
     return mx.np.linalg.qr(x, mode=mode)
 
 
-def det(x: NDArray) \
-    -> NDArray:
+def det(x: NDArray) -> NDArray:
     return mx.linalg.det(x)
 
 
-def cholesky(x: mx.nd.NDArray, 
-             upper: bool = False) -> mx.nd.NDArray:
+def cholesky(x: mx.nd.NDArray, upper: bool = False) -> mx.nd.NDArray:
 
     if not upper:
         return mx.np.linalg.cholesky(x)
     else:
         axes = list(range(len(x.shape) - 2)) + [len(x.shape) - 1, len(x.shape) - 2]
-        return mx.np.transpose(mx.np.linalg.cholesky(mx.np.transpose(x, axes=axes)),
-                        axes=axes)
+        return mx.np.transpose(
+            mx.np.linalg.cholesky(mx.np.transpose(x, axes=axes)), axes=axes
+        )
 
 
 def eigvalsh(x: mx.ndarray.ndarray.NDArray) -> mx.ndarray.ndarray.NDArray:
     return mx.np.linalg.eigvalsh(x)
 
 
-def matrix_rank(x: NDArray,
-                rtol: Union[NDArray, float] = None) -> Union[NDArray, float]:
+def matrix_rank(
+    x: NDArray, rtol: Union[NDArray, float] = None
+) -> Union[NDArray, float]:
     return mx.np.linalg.matrix_rank(x, rtol)
 
-    
-def cross (x1: mx.nd.NDArray,
-           x2: mx.nd.NDArray,
-           axis:int = -1) -> mx.nd.NDArray:
-    return mx.np.cross(a= x1, b = x2, axis= axis)
+
+def cross(x1: mx.nd.NDArray, x2: mx.nd.NDArray, axis: int = -1) -> mx.nd.NDArray:
+    return mx.np.cross(a=x1, b=x2, axis=axis)
+
 
 def matrix_transpose(x, axes=None):
     if axes is None:
@@ -150,16 +147,20 @@ def matmul(x1, x2):
     x2_shape = list(x2.shape)
     if len(x1_shape) != 3:
         num_x1_dims = len(x1_shape)
-        x1 = mx.nd.reshape(x1, [1]*max(2-num_x1_dims, 0) + [-1] + x1_shape[-min(num_x1_dims, 2):])
+        x1 = mx.nd.reshape(
+            x1, [1] * max(2 - num_x1_dims, 0) + [-1] + x1_shape[-min(num_x1_dims, 2) :]
+        )
         expanded = True
     if len(x2_shape) != 3:
         num_x2_dims = len(x2_shape)
-        x2 = mx.nd.reshape(x2, [1]*max(2-num_x2_dims, 0) + [-1] + x2_shape[-min(num_x2_dims, 2):])
+        x2 = mx.nd.reshape(
+            x2, [1] * max(2 - num_x2_dims, 0) + [-1] + x2_shape[-min(num_x2_dims, 2) :]
+        )
         expanded = True
     x1_batch_size = x1.shape[0]
     x2_batch_size = x2.shape[0]
     if x1_batch_size > x2_batch_size:
-        x2 = mx.nd.tile(x2, (int(x1_batch_size/x2_batch_size), 1, 1))
+        x2 = mx.nd.tile(x2, (int(x1_batch_size / x2_batch_size), 1, 1))
     elif x2_batch_size > x1_batch_size:
         x1 = mx.nd.tile(x1, (int(x2_batch_size / x1_batch_size), 1, 1))
     res = mx.nd.batch_dot(x1, x2)
@@ -171,8 +172,8 @@ def matmul(x1, x2):
 # Extra #
 # ------#
 
-def vector_to_skew_symmetric_matrix(vector: NDArray)\
-        -> NDArray:
+
+def vector_to_skew_symmetric_matrix(vector: NDArray) -> NDArray:
     batch_shape = list(vector.shape[:-1])
     # BS x 3 x 1
     vector_expanded = mx.nd.expand_dims(vector, -1)
