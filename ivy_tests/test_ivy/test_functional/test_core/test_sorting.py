@@ -10,14 +10,10 @@ import ivy
 
 
 # argsort
-@pytest.mark.parametrize(
-    "dtype", ivy.all_dtype_strs)
-@pytest.mark.parametrize(
-    "as_variable", [True, False])
-@pytest.mark.parametrize(
-    "with_out", [True, False])
-@pytest.mark.parametrize(
-    "native_array", [True, False])
+@pytest.mark.parametrize("dtype", ivy.all_dtype_strs)
+@pytest.mark.parametrize("as_variable", [True, False])
+@pytest.mark.parametrize("with_out", [True, False])
+@pytest.mark.parametrize("native_array", [True, False])
 def test_argsort(dtype, as_variable, with_out, native_array):
     if dtype in ivy.invalid_dtype_strs:
         pytest.skip("invalid dtype")
@@ -46,14 +42,10 @@ def test_argsort(dtype, as_variable, with_out, native_array):
 
 
 # sort
-@pytest.mark.parametrize(
-    "dtype", ivy.all_dtype_strs)
-@pytest.mark.parametrize(
-    "as_variable", [True, False])
-@pytest.mark.parametrize(
-    "with_out", [True, False])
-@pytest.mark.parametrize(
-    "native_array", [True, False])
+@pytest.mark.parametrize("dtype", ivy.all_dtype_strs)
+@pytest.mark.parametrize("as_variable", [True, False])
+@pytest.mark.parametrize("with_out", [True, False])
+@pytest.mark.parametrize("native_array", [True, False])
 def test_sort(dtype, as_variable, with_out, native_array):
     if dtype in ivy.invalid_dtype_strs:
         pytest.skip("invalid dtype")
