@@ -391,8 +391,12 @@ def eye(n_rows: int,
 
 
 # noinspection PyShadowingNames
-def linspace(start: Union[ivy.Array, ivy.NativeArray, int], stop: Union[ivy.Array, ivy.NativeArray, int],
-             num: int, axis: int = None, device: ivy.Device = None) \
+def linspace(start: Union[int, float],
+             stop: Union[int, float], 
+             num: int,
+             dtype: Optional[dtype] = None,
+             device: Optional[device] = None,
+             endpoint: bool = True) \
         -> Union[ivy.Array, ivy.NativeArray]:
     """Generates a certain number of evenly-spaced values in an interval along a given axis.
 
