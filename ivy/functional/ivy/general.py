@@ -825,20 +825,20 @@ def einops_repeat(x: Union[ivy.Array, ivy.NativeArray], pattern: str, **axes_len
     return einops.repeat(x, pattern, **axes_lengths)
 
 
-def get_min_denominator() \
-        -> None:
+def get_min_denominator() -> float:
     """
     Get the global minimum denominator used by ivy for numerically stable division.
 
     Returns
     -------
-    out:
-       A float number of the global minimum denominator.
+    ret
+        A float number of the global minimum denominator.
 
-    Examples:
+    Examples
+    --------
     >>> x = get_min_denominator()
     >>> print(x)
-    0.01
+    1e-12
 
     """
     return ivy._MIN_DENOMINATOR
