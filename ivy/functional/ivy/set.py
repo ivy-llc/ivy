@@ -130,26 +130,5 @@ def unique_counts(x: Union[ivy.Array, ivy.NativeArray])\
         a namedtuple (values, counts) whose
         -first element must have the field name values and must be an array containing the unique elements of x. The array must have the same data type as x.
         -second element must have the field name counts and must be an array containing the number of times each unique element occurs in x. The returned array must have same shape as values and must have the default array index data type.
-    
-   Examples
-   --------
-   >>> x = ivy.random_normal(mean=0.0, std=1.0, shape=(4, 4))
-   >>> print(x)
-   ivy.array([[ 2.1141,  0.8101,  0.9298,  0.8460],
-              [-1.2119, -0.3519, -0.6252,  0.4033],
-              [ 0.7443,  0.2577, -0.3707, -0.0545],
-              [-0.3238,  0.5944,  0.0775, -0.4327]])
-   >>> x[range(4), range(4)] = ivy.constants.nan #Introduce NaN values
-   >>> print(x)
-   ivy.array([[    nan,  0.8101,  0.9298,  0.8460],
-              [-1.2119,     nan, -0.6252,  0.4033],
-              [ 0.7443,  0.2577,     nan, -0.0545],
-              [-0.3238,  0.5944,  0.0775,     nan]])
-   >>> values, counts = unique_counts(x)
-   >>> print(values)
-   ivy.array([-1.2119, -0.6252,  0.4033,     nan,     nan,     nan,     nan, -0.3238,
-              -0.0545,  0.0775,  0.2577,  0.5944,  0.7443,  0.8101,  0.8460,  0.9298])
-   >>> print(counts)
-   ivy.array([1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1])
    """
     return _cur_framework(x).unique_counts(x)
