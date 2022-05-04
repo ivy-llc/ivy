@@ -20,15 +20,26 @@ import ivy_tests.test_ivy.helpers as helpers
 # ------------#
 
 # fomaml step unique vars
-@given(inner_grad_steps=st.integers(1, 3),
-       with_outer_cost_fn=st.booleans(),
-       average_across_steps=st.booleans(),
-       batched=st.booleans(),
-       stop_gradients=st.booleans(),
-       num_tasks=st.integers(1, 2),
-       return_inner_v=st.sampled_from(['first', 'all', False]))
-def test_fomaml_step_unique_vars(device, call, inner_grad_steps, with_outer_cost_fn, average_across_steps,
-                                 batched, stop_gradients, num_tasks, return_inner_v):
+@given(
+    inner_grad_steps=st.integers(1, 3),
+    with_outer_cost_fn=st.booleans(),
+    average_across_steps=st.booleans(),
+    batched=st.booleans(),
+    stop_gradients=st.booleans(),
+    num_tasks=st.integers(1, 2),
+    return_inner_v=st.sampled_from(["first", "all", False]),
+)
+def test_fomaml_step_unique_vars(
+    device,
+    call,
+    inner_grad_steps,
+    with_outer_cost_fn,
+    average_across_steps,
+    batched,
+    stop_gradients,
+    num_tasks,
+    return_inner_v,
+):
 
     if call is helpers.np_call:
         # Numpy does not support gradients, and jax does not support gradients on custom nested classes
@@ -39,30 +50,45 @@ def test_fomaml_step_unique_vars(device, call, inner_grad_steps, with_outer_cost
 
     # create variables
     if batched:
-        variables = ivy.Container({'latent': ivy.variable(ivy.repeat(ivy.array([[0.]], device=device), num_tasks, 0)),
-                                   'weight': ivy.variable(
-                                       ivy.repeat(ivy.array([[1.]], device=device), num_tasks, 0))})
+        variables = ivy.Container(
+            {
+                "latent": ivy.variable(
+                    ivy.repeat(ivy.array([[0.0]], device=device), num_tasks, 0)
+                ),
+                "weight": ivy.variable(
+                    ivy.repeat(ivy.array([[1.0]], device=device), num_tasks, 0)
+                ),
+            }
+        )
     else:
-        variables = ivy.Container({'latent': ivy.variable(ivy.array([0.], device=device)),
-                                   'weight': ivy.variable(ivy.array([1.], device=device))})
+        variables = ivy.Container(
+            {
+                "latent": ivy.variable(ivy.array([0.0], device=device)),
+                "weight": ivy.variable(ivy.array([1.0], device=device)),
+            }
+        )
 
     # batch
-    batch = ivy.Container({'x': ivy.arange(1, num_tasks + 1, dtype='float32')})
+    batch = ivy.Container({"x": ivy.arange(1, num_tasks + 1, dtype="float32")})
 
     # inner cost function
     def inner_cost_fn(batch_in, v):
         cost = 0
         batch_size = batch_in.shape[0]
-        for sub_batch_in, sub_v in zip(batch_in.unstack(0, keepdims=True), v.unstack(0, keepdims=True)):
-            cost = cost - (sub_v['latent'] * sub_batch_in['x'] * sub_v['weight'])[0]
+        for sub_batch_in, sub_v in zip(
+            batch_in.unstack(0, keepdims=True), v.unstack(0, keepdims=True)
+        ):
+            cost = cost - (sub_v["latent"] * sub_batch_in["x"] * sub_v["weight"])[0]
         return cost / batch_size
 
     # outer cost function
     def outer_cost_fn(batch_in, v):
         cost = 0
         batch_size = batch_in.shape[0]
-        for sub_batch_in, sub_v in zip(batch_in.unstack(0, keepdims=True), v.unstack(0, keepdims=True)):
-            cost = cost + (sub_v['latent'] * sub_batch_in['x'] * sub_v['weight'])[0]
+        for sub_batch_in, sub_v in zip(
+            batch_in.unstack(0, keepdims=True), v.unstack(0, keepdims=True)
+        ):
+            cost = cost + (sub_v["latent"] * sub_batch_in["x"] * sub_v["weight"])[0]
         return cost / batch_size
 
     # numpy
@@ -74,29 +100,56 @@ def test_fomaml_step_unique_vars(device, call, inner_grad_steps, with_outer_cost
     all_outer_grads = list()
     for sub_batch in batch_np.unstack(0, True, num_tasks):
         all_outer_grads.append(
-            [(-i * inner_learning_rate * weight_np * sub_batch['x'][0] ** 2 - sub_batch['x'][0] * latent_np) *
-             (-1 if with_outer_cost_fn else 1) for i in range(inner_grad_steps + 1)])
+            [
+                (
+                    -i * inner_learning_rate * weight_np * sub_batch["x"][0] ** 2
+                    - sub_batch["x"][0] * latent_np
+                )
+                * (-1 if with_outer_cost_fn else 1)
+                for i in range(inner_grad_steps + 1)
+            ]
+        )
     if average_across_steps:
-        true_weight_grad = sum([sum(og) / len(og) for og in all_outer_grads]) / num_tasks
+        true_weight_grad = (
+            sum([sum(og) / len(og) for og in all_outer_grads]) / num_tasks
+        )
     else:
         true_weight_grad = sum([og[-1] for og in all_outer_grads]) / num_tasks
 
     # true cost
-    true_cost_dict = \
-        {1: {True: {True: {1: 0.005, 2: 0.0125}, False: {1: 0.01, 2: 0.025}},
-             False: {True: {1: -0.005, 2: -0.0125}, False: {1: -0.01, 2: -0.025}}},
-         2: {True: {True: {1: 0.01, 2: 0.025}, False: {1: 0.02, 2: 0.05}},
-             False: {True: {1: -0.01, 2: -0.025}, False: {1: -0.02, 2: -0.05}}},
-         3: {True: {True: {1: 0.015, 2: 0.0375}, False: {1: 0.03, 2: 0.075}},
-             False: {True: {1: -0.015, 2: -0.0375}, False: {1: -0.03, 2: -0.075}}}}
-    true_cost = true_cost_dict[inner_grad_steps][with_outer_cost_fn][average_across_steps][num_tasks]
+    true_cost_dict = {
+        1: {
+            True: {True: {1: 0.005, 2: 0.0125}, False: {1: 0.01, 2: 0.025}},
+            False: {True: {1: -0.005, 2: -0.0125}, False: {1: -0.01, 2: -0.025}},
+        },
+        2: {
+            True: {True: {1: 0.01, 2: 0.025}, False: {1: 0.02, 2: 0.05}},
+            False: {True: {1: -0.01, 2: -0.025}, False: {1: -0.02, 2: -0.05}},
+        },
+        3: {
+            True: {True: {1: 0.015, 2: 0.0375}, False: {1: 0.03, 2: 0.075}},
+            False: {True: {1: -0.015, 2: -0.0375}, False: {1: -0.03, 2: -0.075}},
+        },
+    }
+    true_cost = true_cost_dict[inner_grad_steps][with_outer_cost_fn][
+        average_across_steps
+    ][num_tasks]
 
     # meta update
     rets = ivy.fomaml_step(
-        batch, inner_cost_fn, outer_cost_fn if with_outer_cost_fn else None, variables,
-        inner_grad_steps, inner_learning_rate, average_across_steps=average_across_steps,
-        batched=batched, inner_v='latent', outer_v='weight', return_inner_v=return_inner_v,
-        stop_gradients=stop_gradients)
+        batch,
+        inner_cost_fn,
+        outer_cost_fn if with_outer_cost_fn else None,
+        variables,
+        inner_grad_steps,
+        inner_learning_rate,
+        average_across_steps=average_across_steps,
+        batched=batched,
+        inner_v="latent",
+        outer_v="weight",
+        return_inner_v=return_inner_v,
+        stop_gradients=stop_gradients,
+    )
     calc_cost = rets[0]
     if stop_gradients:
         assert not ivy.is_variable(calc_cost, exclusive=True)
@@ -107,22 +160,33 @@ def test_fomaml_step_unique_vars(device, call, inner_grad_steps, with_outer_cost
     if return_inner_v:
         inner_v_rets = rets[2]
         assert isinstance(inner_v_rets, ivy.Container)
-        if return_inner_v == 'all':
+        if return_inner_v == "all":
             assert list(inner_v_rets.shape) == [num_tasks, 1]
-        elif return_inner_v == 'first':
+        elif return_inner_v == "first":
             assert list(inner_v_rets.shape) == [1, 1]
 
 
 # fomaml step shared vars
-@given(inner_grad_steps=st.integers(1, 3),
-       with_outer_cost_fn=st.booleans(),
-       average_across_steps=st.booleans(),
-       batched=st.booleans(),
-       stop_gradients=st.booleans(),
-       num_tasks=st.integers(1, 2),
-       return_inner_v=st.sampled_from(['first', 'all', False]))
-def test_fomaml_step_shared_vars(device, call, inner_grad_steps, with_outer_cost_fn, average_across_steps, batched,
-                                 stop_gradients, num_tasks, return_inner_v):
+@given(
+    inner_grad_steps=st.integers(1, 3),
+    with_outer_cost_fn=st.booleans(),
+    average_across_steps=st.booleans(),
+    batched=st.booleans(),
+    stop_gradients=st.booleans(),
+    num_tasks=st.integers(1, 2),
+    return_inner_v=st.sampled_from(["first", "all", False]),
+)
+def test_fomaml_step_shared_vars(
+    device,
+    call,
+    inner_grad_steps,
+    with_outer_cost_fn,
+    average_across_steps,
+    batched,
+    stop_gradients,
+    num_tasks,
+    return_inner_v,
+):
     if call in [helpers.np_call, helpers.mx_call]:
         # Numpy does not support gradients, jax does not support gradients on custom nested classes,
         # and mxnet does not support only_inputs argument to mx.autograd.grad
@@ -134,27 +198,38 @@ def test_fomaml_step_shared_vars(device, call, inner_grad_steps, with_outer_cost
     # create variable
     if batched:
         variables = ivy.Container(
-            {'latent': ivy.variable(ivy.repeat(ivy.array([[1.]], device=device), num_tasks, 0))})
+            {
+                "latent": ivy.variable(
+                    ivy.repeat(ivy.array([[1.0]], device=device), num_tasks, 0)
+                )
+            }
+        )
     else:
-        variables = ivy.Container({'latent': ivy.variable(ivy.array([1.], device=device))})
+        variables = ivy.Container(
+            {"latent": ivy.variable(ivy.array([1.0], device=device))}
+        )
 
     # batch
-    batch = ivy.Container({'x': ivy.arange(1, num_tasks + 1, dtype='float32')})
+    batch = ivy.Container({"x": ivy.arange(1, num_tasks + 1, dtype="float32")})
 
     # inner cost function
     def inner_cost_fn(batch_in, v):
         cost = 0
         batch_size = batch_in.shape[0]
-        for sub_batch_in, sub_v in zip(batch_in.unstack(0, keepdims=True), v.unstack(0, keepdims=True)):
-            cost = cost - (sub_batch_in['x'] * sub_v['latent'] ** 2)[0]
+        for sub_batch_in, sub_v in zip(
+            batch_in.unstack(0, keepdims=True), v.unstack(0, keepdims=True)
+        ):
+            cost = cost - (sub_batch_in["x"] * sub_v["latent"] ** 2)[0]
         return cost / batch_size
 
     # outer cost function
     def outer_cost_fn(batch_in, v):
         cost = 0
         batch_size = batch_in.shape[0]
-        for sub_batch_in, sub_v in zip(batch_in.unstack(0, keepdims=True), v.unstack(0, keepdims=True)):
-            cost = cost + (sub_batch_in['x'] * sub_v['latent'] ** 2)[0]
+        for sub_batch_in, sub_v in zip(
+            batch_in.unstack(0, keepdims=True), v.unstack(0, keepdims=True)
+        ):
+            cost = cost + (sub_batch_in["x"] * sub_v["latent"] ** 2)[0]
         return cost / batch_size
 
     # numpy
@@ -163,7 +238,12 @@ def test_fomaml_step_shared_vars(device, call, inner_grad_steps, with_outer_cost
 
     # loss grad function
     def loss_grad_fn(sub_batch_in, w_in, outer=False):
-        return (1 if (with_outer_cost_fn and outer) else -1) * 2 * sub_batch_in['x'][0] * w_in
+        return (
+            (1 if (with_outer_cost_fn and outer) else -1)
+            * 2
+            * sub_batch_in["x"][0]
+            * w_in
+        )
 
     # true gradient
     true_outer_grads = list()
@@ -193,20 +273,49 @@ def test_fomaml_step_shared_vars(device, call, inner_grad_steps, with_outer_cost
     true_outer_grad = sum(true_outer_grads) / len(true_outer_grads)
 
     # true cost
-    true_cost_dict = \
-        {1: {True: {True: {1: 1.0202, 2: 1.5509}, False: {1: 1.0404, 2: 1.6018}},
-             False: {True: {1: -1.0202, 2: -1.5509}, False: {1: -1.0404, 2: -1.6018}}},
-         2: {True: {True: {1: 1.0409441, 2: 1.6042916}, False: {1: 1.0824323, 2: 1.7110746}},
-             False: {True: {1: -1.0409441, 2: -1.6042916}, False: {1: -1.0824323, 2: -1.7110746}}},
-         3: {True: {True: {1: 1.0622487, 2: 1.6603187}, False: {1: 1.1261624, 2: 1.8284001}},
-             False: {True: {1: -1.0622487, 2: -1.6603187}, False: {1: -1.1261624, 2: -1.8284001}}}}
-    true_cost = true_cost_dict[inner_grad_steps][with_outer_cost_fn][average_across_steps][num_tasks]
+    true_cost_dict = {
+        1: {
+            True: {True: {1: 1.0202, 2: 1.5509}, False: {1: 1.0404, 2: 1.6018}},
+            False: {True: {1: -1.0202, 2: -1.5509}, False: {1: -1.0404, 2: -1.6018}},
+        },
+        2: {
+            True: {
+                True: {1: 1.0409441, 2: 1.6042916},
+                False: {1: 1.0824323, 2: 1.7110746},
+            },
+            False: {
+                True: {1: -1.0409441, 2: -1.6042916},
+                False: {1: -1.0824323, 2: -1.7110746},
+            },
+        },
+        3: {
+            True: {
+                True: {1: 1.0622487, 2: 1.6603187},
+                False: {1: 1.1261624, 2: 1.8284001},
+            },
+            False: {
+                True: {1: -1.0622487, 2: -1.6603187},
+                False: {1: -1.1261624, 2: -1.8284001},
+            },
+        },
+    }
+    true_cost = true_cost_dict[inner_grad_steps][with_outer_cost_fn][
+        average_across_steps
+    ][num_tasks]
 
     # meta update
     rets = ivy.fomaml_step(
-        batch, inner_cost_fn, outer_cost_fn if with_outer_cost_fn else None, variables,
-        inner_grad_steps, inner_learning_rate, average_across_steps=average_across_steps, batched=batched,
-        return_inner_v=return_inner_v, stop_gradients=stop_gradients)
+        batch,
+        inner_cost_fn,
+        outer_cost_fn if with_outer_cost_fn else None,
+        variables,
+        inner_grad_steps,
+        inner_learning_rate,
+        average_across_steps=average_across_steps,
+        batched=batched,
+        return_inner_v=return_inner_v,
+        stop_gradients=stop_gradients,
+    )
     calc_cost = rets[0]
     if stop_gradients:
         assert not ivy.is_variable(calc_cost, exclusive=True)
@@ -217,22 +326,33 @@ def test_fomaml_step_shared_vars(device, call, inner_grad_steps, with_outer_cost
     if return_inner_v:
         inner_v_rets = rets[2]
         assert isinstance(inner_v_rets, ivy.Container)
-        if return_inner_v == 'all':
+        if return_inner_v == "all":
             assert list(inner_v_rets.shape) == [num_tasks, 1]
-        elif return_inner_v == 'first':
+        elif return_inner_v == "first":
             assert list(inner_v_rets.shape) == [1, 1]
 
 
 # fomaml step overlapping vars
-@given(inner_grad_steps=st.integers(1, 3),
-       with_outer_cost_fn=st.booleans(),
-       average_across_steps=st.booleans(),
-       batched=st.booleans(),
-       stop_gradients=st.booleans(),
-       num_tasks=st.integers(1, 2),
-       return_inner_v=st.sampled_from(['first', 'all', False]))
-def test_fomaml_step_overlapping_vars(device, call, inner_grad_steps, with_outer_cost_fn, average_across_steps,
-                                      batched, stop_gradients, num_tasks, return_inner_v):
+@given(
+    inner_grad_steps=st.integers(1, 3),
+    with_outer_cost_fn=st.booleans(),
+    average_across_steps=st.booleans(),
+    batched=st.booleans(),
+    stop_gradients=st.booleans(),
+    num_tasks=st.integers(1, 2),
+    return_inner_v=st.sampled_from(["first", "all", False]),
+)
+def test_fomaml_step_overlapping_vars(
+    device,
+    call,
+    inner_grad_steps,
+    with_outer_cost_fn,
+    average_across_steps,
+    batched,
+    stop_gradients,
+    num_tasks,
+    return_inner_v,
+):
     if call in [helpers.np_call, helpers.mx_call]:
         # Numpy does not support gradients, jax does not support gradients on custom nested classes,
         # and mxnet does not support only_inputs argument to mx.autograd.grad
@@ -243,30 +363,45 @@ def test_fomaml_step_overlapping_vars(device, call, inner_grad_steps, with_outer
 
     # create variables
     if batched:
-        variables = ivy.Container({'latent': ivy.variable(ivy.repeat(ivy.array([[0.]], device=device), num_tasks, 0)),
-                                   'weight': ivy.variable(
-                                       ivy.repeat(ivy.array([[1.]], device=device), num_tasks, 0))})
+        variables = ivy.Container(
+            {
+                "latent": ivy.variable(
+                    ivy.repeat(ivy.array([[0.0]], device=device), num_tasks, 0)
+                ),
+                "weight": ivy.variable(
+                    ivy.repeat(ivy.array([[1.0]], device=device), num_tasks, 0)
+                ),
+            }
+        )
     else:
-        variables = ivy.Container({'latent': ivy.variable(ivy.array([0.], device=device)),
-                                   'weight': ivy.variable(ivy.array([1.], device=device))})
+        variables = ivy.Container(
+            {
+                "latent": ivy.variable(ivy.array([0.0], device=device)),
+                "weight": ivy.variable(ivy.array([1.0], device=device)),
+            }
+        )
 
     # batch
-    batch = ivy.Container({'x': ivy.arange(1, num_tasks + 1, dtype='float32')})
+    batch = ivy.Container({"x": ivy.arange(1, num_tasks + 1, dtype="float32")})
 
     # inner cost function
     def inner_cost_fn(batch_in, v):
         cost = 0
         batch_size = batch_in.shape[0]
-        for sub_batch_in, sub_v in zip(batch_in.unstack(0, keepdims=True), v.unstack(0, keepdims=True)):
-            cost = cost - (sub_batch_in['x'] * sub_v['latent'] * sub_v['weight'])[0]
+        for sub_batch_in, sub_v in zip(
+            batch_in.unstack(0, keepdims=True), v.unstack(0, keepdims=True)
+        ):
+            cost = cost - (sub_batch_in["x"] * sub_v["latent"] * sub_v["weight"])[0]
         return cost / batch_size
 
     # outer cost function
     def outer_cost_fn(batch_in, v):
         cost = 0
         batch_size = batch_in.shape[0]
-        for sub_batch_in, sub_v in zip(batch_in.unstack(0, keepdims=True), v.unstack(0, keepdims=True)):
-            cost = cost + (sub_batch_in['x'] * sub_v['latent'] * sub_v['weight'])[0]
+        for sub_batch_in, sub_v in zip(
+            batch_in.unstack(0, keepdims=True), v.unstack(0, keepdims=True)
+        ):
+            cost = cost + (sub_batch_in["x"] * sub_v["latent"] * sub_v["weight"])[0]
         return cost / batch_size
 
     # numpy
@@ -278,31 +413,60 @@ def test_fomaml_step_overlapping_vars(device, call, inner_grad_steps, with_outer
     all_outer_grads = list()
     for sub_batch in batch_np.unstack(0, True, num_tasks):
         all_outer_grads.append(
-            [(-i * inner_learning_rate * weight_np * sub_batch['x'][0] ** 2 - sub_batch['x'][0] * latent_np) *
-             (-1 if with_outer_cost_fn else 1) for i in range(inner_grad_steps + 1)])
+            [
+                (
+                    -i * inner_learning_rate * weight_np * sub_batch["x"][0] ** 2
+                    - sub_batch["x"][0] * latent_np
+                )
+                * (-1 if with_outer_cost_fn else 1)
+                for i in range(inner_grad_steps + 1)
+            ]
+        )
     if average_across_steps:
-        true_weight_grad = sum([sum(og) / len(og) for og in all_outer_grads]) / num_tasks
+        true_weight_grad = (
+            sum([sum(og) / len(og) for og in all_outer_grads]) / num_tasks
+        )
     else:
         true_weight_grad = sum([og[-1] for og in all_outer_grads]) / num_tasks
 
     # true latent gradient
-    true_latent_grad = np.array([(-1 - (num_tasks - 1) / 2) * (-1 if with_outer_cost_fn else 1)])
+    true_latent_grad = np.array(
+        [(-1 - (num_tasks - 1) / 2) * (-1 if with_outer_cost_fn else 1)]
+    )
 
     # true cost
-    true_cost_dict = \
-        {1: {True: {True: {1: 0.005, 2: 0.0125}, False: {1: 0.01, 2: 0.025}},
-             False: {True: {1: -0.005, 2: -0.0125}, False: {1: -0.01, 2: -0.025}}},
-         2: {True: {True: {1: 0.01, 2: 0.025}, False: {1: 0.02, 2: 0.05}},
-             False: {True: {1: -0.01, 2: -0.025}, False: {1: -0.02, 2: -0.05}}},
-         3: {True: {True: {1: 0.015, 2: 0.0375}, False: {1: 0.03, 2: 0.075}},
-             False: {True: {1: -0.015, 2: -0.0375}, False: {1: -0.03, 2: -0.075}}}}
-    true_cost = true_cost_dict[inner_grad_steps][with_outer_cost_fn][average_across_steps][num_tasks]
+    true_cost_dict = {
+        1: {
+            True: {True: {1: 0.005, 2: 0.0125}, False: {1: 0.01, 2: 0.025}},
+            False: {True: {1: -0.005, 2: -0.0125}, False: {1: -0.01, 2: -0.025}},
+        },
+        2: {
+            True: {True: {1: 0.01, 2: 0.025}, False: {1: 0.02, 2: 0.05}},
+            False: {True: {1: -0.01, 2: -0.025}, False: {1: -0.02, 2: -0.05}},
+        },
+        3: {
+            True: {True: {1: 0.015, 2: 0.0375}, False: {1: 0.03, 2: 0.075}},
+            False: {True: {1: -0.015, 2: -0.0375}, False: {1: -0.03, 2: -0.075}},
+        },
+    }
+    true_cost = true_cost_dict[inner_grad_steps][with_outer_cost_fn][
+        average_across_steps
+    ][num_tasks]
 
     # meta update
     rets = ivy.fomaml_step(
-        batch, inner_cost_fn, outer_cost_fn if with_outer_cost_fn else None, variables,
-        inner_grad_steps, inner_learning_rate, average_across_steps=average_across_steps, batched=batched,
-        inner_v='latent', return_inner_v=return_inner_v, stop_gradients=stop_gradients)
+        batch,
+        inner_cost_fn,
+        outer_cost_fn if with_outer_cost_fn else None,
+        variables,
+        inner_grad_steps,
+        inner_learning_rate,
+        average_across_steps=average_across_steps,
+        batched=batched,
+        inner_v="latent",
+        return_inner_v=return_inner_v,
+        stop_gradients=stop_gradients,
+    )
     calc_cost = rets[0]
     if stop_gradients:
         assert not ivy.is_variable(calc_cost, exclusive=True)
@@ -314,24 +478,21 @@ def test_fomaml_step_overlapping_vars(device, call, inner_grad_steps, with_outer
     if return_inner_v:
         inner_v_rets = rets[2]
         assert isinstance(inner_v_rets, ivy.Container)
-        if return_inner_v == 'all':
+        if return_inner_v == "all":
             assert list(inner_v_rets.shape) == [num_tasks, 1]
-        elif return_inner_v == 'first':
+        elif return_inner_v == "first":
             assert list(inner_v_rets.shape) == [1, 1]
 
 
 # reptile step
-@pytest.mark.parametrize(
-    "inner_grad_steps", [1, 2, 3])
-@pytest.mark.parametrize(
-    "batched", [True, False])
-@pytest.mark.parametrize(
-    "stop_gradients", [True, False])
-@pytest.mark.parametrize(
-    "num_tasks", [1, 2])
-@pytest.mark.parametrize(
-    "return_inner_v", ['first', 'all', False])
-def test_reptile_step(device, call, inner_grad_steps, batched, stop_gradients, num_tasks, return_inner_v):
+@pytest.mark.parametrize("inner_grad_steps", [1, 2, 3])
+@pytest.mark.parametrize("batched", [True, False])
+@pytest.mark.parametrize("stop_gradients", [True, False])
+@pytest.mark.parametrize("num_tasks", [1, 2])
+@pytest.mark.parametrize("return_inner_v", ["first", "all", False])
+def test_reptile_step(
+    device, call, inner_grad_steps, batched, stop_gradients, num_tasks, return_inner_v
+):
     if call in [helpers.np_call, helpers.mx_call]:
         # Numpy does not support gradients, jax does not support gradients on custom nested classes,
         # and mxnet does not support only_inputs argument to mx.autograd.grad
@@ -343,19 +504,28 @@ def test_reptile_step(device, call, inner_grad_steps, batched, stop_gradients, n
     # create variable
     if batched:
         variables = ivy.Container(
-            {'latent': ivy.variable(ivy.repeat(ivy.array([[1.]], device=device), num_tasks, 0))})
+            {
+                "latent": ivy.variable(
+                    ivy.repeat(ivy.array([[1.0]], device=device), num_tasks, 0)
+                )
+            }
+        )
     else:
-        variables = ivy.Container({'latent': ivy.variable(ivy.array([1.], device=device))})
+        variables = ivy.Container(
+            {"latent": ivy.variable(ivy.array([1.0], device=device))}
+        )
 
     # batch
-    batch = ivy.Container({'x': ivy.arange(1, num_tasks + 1, dtype='float32')})
+    batch = ivy.Container({"x": ivy.arange(1, num_tasks + 1, dtype="float32")})
 
     # inner cost function
     def inner_cost_fn(batch_in, v):
         cost = 0
         batch_size = batch_in.shape[0]
-        for sub_batch_in, sub_v in zip(batch_in.unstack(0, keepdims=True), v.unstack(0, keepdims=True)):
-            cost = cost - (sub_batch_in['x'] * sub_v['latent'] ** 2)[0]
+        for sub_batch_in, sub_v in zip(
+            batch_in.unstack(0, keepdims=True), v.unstack(0, keepdims=True)
+        ):
+            cost = cost - (sub_batch_in["x"] * sub_v["latent"] ** 2)[0]
         return cost / batch_size
 
     # numpy
@@ -364,7 +534,7 @@ def test_reptile_step(device, call, inner_grad_steps, batched, stop_gradients, n
 
     # loss grad function
     def loss_grad_fn(sub_batch_in, w_in):
-        return -2 * sub_batch_in['x'][0] * w_in
+        return -2 * sub_batch_in["x"][0] * w_in
 
     # true gradient
     true_outer_grads = list()
@@ -382,18 +552,29 @@ def test_reptile_step(device, call, inner_grad_steps, batched, stop_gradients, n
         # true outer grad
         true_outer_grad = sum(grads) / len(grads)
         true_outer_grads.append(true_outer_grad)
-    true_outer_grad = (sum(true_outer_grads) / len(true_outer_grads)) / inner_learning_rate
+    true_outer_grad = (
+        sum(true_outer_grads) / len(true_outer_grads)
+    ) / inner_learning_rate
 
     # true cost
-    true_cost_dict = \
-        {1: {1: -1.0202, 2: -1.5509},
-         2: {1: -1.0409441, 2: -1.6042916},
-         3: {1: -1.0622487, 2: -1.6603187}}
+    true_cost_dict = {
+        1: {1: -1.0202, 2: -1.5509},
+        2: {1: -1.0409441, 2: -1.6042916},
+        3: {1: -1.0622487, 2: -1.6603187},
+    }
     true_cost = true_cost_dict[inner_grad_steps][num_tasks]
 
     # meta update
-    rets = ivy.reptile_step(batch, inner_cost_fn, variables, inner_grad_steps, inner_learning_rate,
-                            batched=batched, return_inner_v=return_inner_v, stop_gradients=stop_gradients)
+    rets = ivy.reptile_step(
+        batch,
+        inner_cost_fn,
+        variables,
+        inner_grad_steps,
+        inner_learning_rate,
+        batched=batched,
+        return_inner_v=return_inner_v,
+        stop_gradients=stop_gradients,
+    )
     calc_cost = rets[0]
     if stop_gradients:
         assert not ivy.is_variable(calc_cost, exclusive=True)
@@ -404,9 +585,9 @@ def test_reptile_step(device, call, inner_grad_steps, batched, stop_gradients, n
     if return_inner_v:
         inner_v_rets = rets[2]
         assert isinstance(inner_v_rets, ivy.Container)
-        if return_inner_v == 'all':
+        if return_inner_v == "all":
             assert list(inner_v_rets.shape) == [num_tasks, 1]
-        elif return_inner_v == 'first':
+        elif return_inner_v == "first":
             assert list(inner_v_rets.shape) == [1, 1]
 
 
@@ -648,27 +829,29 @@ def test_reptile_step(device, call, inner_grad_steps, batched, stop_gradients, n
 
 
 # maml step overlapping vars
-@pytest.mark.parametrize(
-    "inner_grad_steps", [1, 2, 3])
-@pytest.mark.parametrize(
-    "with_outer_cost_fn", [True, False])
-@pytest.mark.parametrize(
-    "average_across_steps", [True, False])
-@pytest.mark.parametrize(
-    "batched", [True, False])
-@pytest.mark.parametrize(
-    "stop_gradients", [True, False])
-@pytest.mark.parametrize(
-    "num_tasks", [1, 2])
-@pytest.mark.parametrize(
-    "return_inner_v", ['first', 'all', False])
-def test_maml_step_overlapping_vars(device, call, inner_grad_steps, with_outer_cost_fn, average_across_steps, batched,
-                                    stop_gradients, num_tasks, return_inner_v):
+@pytest.mark.parametrize("inner_grad_steps", [1, 2, 3])
+@pytest.mark.parametrize("with_outer_cost_fn", [True, False])
+@pytest.mark.parametrize("average_across_steps", [True, False])
+@pytest.mark.parametrize("batched", [True, False])
+@pytest.mark.parametrize("stop_gradients", [True, False])
+@pytest.mark.parametrize("num_tasks", [1, 2])
+@pytest.mark.parametrize("return_inner_v", ["first", "all", False])
+def test_maml_step_overlapping_vars(
+    device,
+    call,
+    inner_grad_steps,
+    with_outer_cost_fn,
+    average_across_steps,
+    batched,
+    stop_gradients,
+    num_tasks,
+    return_inner_v,
+):
     if call in [helpers.np_call, helpers.mx_call]:
         # Numpy does not support gradients, jax does not support gradients on custom nested classes,
         # and mxnet does not support only_inputs argument to mx.autograd.grad
         pytest.skip()
-    
+
     if call in [helpers.tf_call, helpers.tf_graph_call]:
         # ToDo: work out why MAML does not work for tensorflow in wrapped mode
         pytest.skip()
@@ -677,30 +860,45 @@ def test_maml_step_overlapping_vars(device, call, inner_grad_steps, with_outer_c
 
     # create variables
     if batched:
-        variables = ivy.Container({'latent': ivy.variable(ivy.repeat(ivy.array([[0.]], device=device), num_tasks, 0)),
-                                   'weight': ivy.variable(
-                                       ivy.repeat(ivy.array([[1.]], device=device), num_tasks, 0))})
+        variables = ivy.Container(
+            {
+                "latent": ivy.variable(
+                    ivy.repeat(ivy.array([[0.0]], device=device), num_tasks, 0)
+                ),
+                "weight": ivy.variable(
+                    ivy.repeat(ivy.array([[1.0]], device=device), num_tasks, 0)
+                ),
+            }
+        )
     else:
-        variables = ivy.Container({'latent': ivy.variable(ivy.array([0.], device=device)),
-                                   'weight': ivy.variable(ivy.array([1.], device=device))})
+        variables = ivy.Container(
+            {
+                "latent": ivy.variable(ivy.array([0.0], device=device)),
+                "weight": ivy.variable(ivy.array([1.0], device=device)),
+            }
+        )
 
     # batch
-    batch = ivy.Container({'x': ivy.arange(1, num_tasks + 1, dtype='float32')})
+    batch = ivy.Container({"x": ivy.arange(1, num_tasks + 1, dtype="float32")})
 
     # inner cost function
     def inner_cost_fn(batch_in, v):
         cost = 0
         batch_size = batch_in.shape[0]
-        for sub_batch_in, sub_v in zip(batch_in.unstack(0, keepdims=True), v.unstack(0, keepdims=True)):
-            cost = cost - (sub_batch_in['x'] * sub_v['latent'] * sub_v['weight'])[0]
+        for sub_batch_in, sub_v in zip(
+            batch_in.unstack(0, keepdims=True), v.unstack(0, keepdims=True)
+        ):
+            cost = cost - (sub_batch_in["x"] * sub_v["latent"] * sub_v["weight"])[0]
         return cost / batch_size
 
     # outer cost function
     def outer_cost_fn(batch_in, v):
         cost = 0
         batch_size = batch_in.shape[0]
-        for sub_batch_in, sub_v in zip(batch_in.unstack(0, keepdims=True), v.unstack(0, keepdims=True)):
-            cost = cost + (sub_batch_in['x'] * sub_v['latent'] * sub_v['weight'])[0]
+        for sub_batch_in, sub_v in zip(
+            batch_in.unstack(0, keepdims=True), v.unstack(0, keepdims=True)
+        ):
+            cost = cost + (sub_batch_in["x"] * sub_v["latent"] * sub_v["weight"])[0]
         return cost / batch_size
 
     # numpy
@@ -712,31 +910,60 @@ def test_maml_step_overlapping_vars(device, call, inner_grad_steps, with_outer_c
     all_outer_grads = list()
     for sub_batch in batch_np.unstack(0, True, num_tasks):
         all_outer_grads.append(
-            [(-2 * i * inner_learning_rate * weight_np * sub_batch['x'][0] ** 2 - sub_batch['x'][0] * latent_np) *
-             (-1 if with_outer_cost_fn else 1) for i in range(inner_grad_steps + 1)])
+            [
+                (
+                    -2 * i * inner_learning_rate * weight_np * sub_batch["x"][0] ** 2
+                    - sub_batch["x"][0] * latent_np
+                )
+                * (-1 if with_outer_cost_fn else 1)
+                for i in range(inner_grad_steps + 1)
+            ]
+        )
     if average_across_steps:
-        true_weight_grad = sum([sum(og) / len(og) for og in all_outer_grads]) / num_tasks
+        true_weight_grad = (
+            sum([sum(og) / len(og) for og in all_outer_grads]) / num_tasks
+        )
     else:
         true_weight_grad = sum([og[-1] for og in all_outer_grads]) / num_tasks
 
     # true latent gradient
-    true_latent_grad = np.array([(-1 - (num_tasks - 1) / 2) * (-1 if with_outer_cost_fn else 1)])
+    true_latent_grad = np.array(
+        [(-1 - (num_tasks - 1) / 2) * (-1 if with_outer_cost_fn else 1)]
+    )
 
     # true cost
-    true_cost_dict = \
-        {1: {True: {True: {1: 0.005, 2: 0.0125}, False: {1: 0.01, 2: 0.025}},
-             False: {True: {1: -0.005, 2: -0.0125}, False: {1: -0.01, 2: -0.025}}},
-         2: {True: {True: {1: 0.01, 2: 0.025}, False: {1: 0.02, 2: 0.05}},
-             False: {True: {1: -0.01, 2: -0.025}, False: {1: -0.02, 2: -0.05}}},
-         3: {True: {True: {1: 0.015, 2: 0.0375}, False: {1: 0.03, 2: 0.075}},
-             False: {True: {1: -0.015, 2: -0.0375}, False: {1: -0.03, 2: -0.075}}}}
-    true_cost = true_cost_dict[inner_grad_steps][with_outer_cost_fn][average_across_steps][num_tasks]
+    true_cost_dict = {
+        1: {
+            True: {True: {1: 0.005, 2: 0.0125}, False: {1: 0.01, 2: 0.025}},
+            False: {True: {1: -0.005, 2: -0.0125}, False: {1: -0.01, 2: -0.025}},
+        },
+        2: {
+            True: {True: {1: 0.01, 2: 0.025}, False: {1: 0.02, 2: 0.05}},
+            False: {True: {1: -0.01, 2: -0.025}, False: {1: -0.02, 2: -0.05}},
+        },
+        3: {
+            True: {True: {1: 0.015, 2: 0.0375}, False: {1: 0.03, 2: 0.075}},
+            False: {True: {1: -0.015, 2: -0.0375}, False: {1: -0.03, 2: -0.075}},
+        },
+    }
+    true_cost = true_cost_dict[inner_grad_steps][with_outer_cost_fn][
+        average_across_steps
+    ][num_tasks]
 
     # meta update
     rets = ivy.maml_step(
-        batch, inner_cost_fn, outer_cost_fn if with_outer_cost_fn else None, variables,
-        inner_grad_steps, inner_learning_rate, average_across_steps=average_across_steps, batched=batched,
-        inner_v='latent', return_inner_v=return_inner_v, stop_gradients=stop_gradients)
+        batch,
+        inner_cost_fn,
+        outer_cost_fn if with_outer_cost_fn else None,
+        variables,
+        inner_grad_steps,
+        inner_learning_rate,
+        average_across_steps=average_across_steps,
+        batched=batched,
+        inner_v="latent",
+        return_inner_v=return_inner_v,
+        stop_gradients=stop_gradients,
+    )
     calc_cost = rets[0]
     if stop_gradients:
         assert not ivy.is_variable(calc_cost, exclusive=True)
@@ -748,7 +975,7 @@ def test_maml_step_overlapping_vars(device, call, inner_grad_steps, with_outer_c
     if return_inner_v:
         inner_v_rets = rets[2]
         assert isinstance(inner_v_rets, ivy.Container)
-        if return_inner_v == 'all':
+        if return_inner_v == "all":
             assert list(inner_v_rets.shape) == [num_tasks, 1]
-        elif return_inner_v == 'first':
+        elif return_inner_v == "first":
             assert list(inner_v_rets.shape) == [1, 1]
