@@ -146,19 +146,19 @@ def empty_like(
     return torch.empty_like(x, dtype=dtype, device=dev_from_str(device))
 
 
-def _differentiable_linspace(start, stop, num, device):
+def _differentiable_linspace(start, stop, num, device, dtype=None):
     if num == 1:
         return torch.unsqueeze(start, 0)
     n_m_1 = num - 1
     increment = (stop - start) / n_m_1
     increment_tiled = increment.repeat(n_m_1)
-    increments = increment_tiled * torch.linspace(1, n_m_1, n_m_1, device=device)
-    res = torch.cat((torch.unsqueeze(torch.tensor(start), 0), start + increments), 0)
+    increments = increment_tiled * torch.linspace(1, n_m_1, n_m_1, device=device, dtype=dtype)
+    res = torch.cat((torch.unsqueeze(torch.tensor(start, dtype=dtype), 0), start + increments), 0)
     return res
 
 
 # noinspection PyUnboundLocalVariable,PyShadowingNames
-def linspace(start, stop, num, axis=None, device=None):
+def linspace_helper(start, stop, num, axis=None, device=None, dtype=None):
     num = num.detach().numpy().item() if isinstance(num, torch.Tensor) else num
     start_is_array = isinstance(start, torch.Tensor)
     stop_is_array = isinstance(stop, torch.Tensor)
@@ -200,7 +200,7 @@ def linspace(start, stop, num, axis=None, device=None):
             res.append(stop)
         else:
             res = [
-                linspace_method(strt, stp, num, device=dev_from_str(device))
+                linspace_method(strt, stp, num, device=dev_from_str(device), dtype=dtype)
                 for strt, stp in zip(start, stop)
             ]
         torch.cat(res, -1).reshape(start_shape + [num])
@@ -211,10 +211,10 @@ def linspace(start, stop, num, axis=None, device=None):
             inc = diff / (num - 1)
             res = [start]
             res += [start + inc * i for i in range(1, num - 1)]
-            res.append(torch.ones_like(start, device=dev_from_str(device)) * stop)
+            res.append(torch.ones_like(start, device=dev_from_str(device), dtype=dtype) * stop)
         else:
             res = [
-                linspace_method(strt, stop, num, device=dev_from_str(device))
+                linspace_method(strt, stop, num, device=dev_from_str(device), dtype=dtype)
                 for strt in start
             ]
     elif not start_is_array and stop_is_array:
@@ -222,20 +222,30 @@ def linspace(start, stop, num, axis=None, device=None):
             stop = stop.unsqueeze(-1)
             diff = stop - start
             inc = diff / (num - 1)
-            res = [torch.ones_like(stop, device=dev_from_str(device)) * start]
+            res = [torch.ones_like(stop, device=dev_from_str(device), dtype=dtype) * start]
             res += [start + inc * i for i in range(1, num - 1)]
             res.append(stop)
         else:
             res = [
-                linspace_method(start, stp, num, device=dev_from_str(device))
+                linspace_method(start, stp, num, device=dev_from_str(device), dtype=dtype)
                 for stp in stop
             ]
     else:
-        return linspace_method(start, stop, num, device=dev_from_str(device))
+        return linspace_method(start, stop, num, device=dev_from_str(device), dtype=dtype)
     res = torch.cat(res, -1).reshape(sos_shape + [num])
     if axis is not None:
         res = torch.transpose(res, axis, -1)
     return res.to(dev_from_str(device))
+
+
+def linspace(start, stop, num, axis=None, device=None, dtype=None, endpoint=True):
+    if not endpoint:
+        ans = linspace_helper(start, stop, num+1, axis, device, dtype=dtype)[:-1]
+    else:
+        ans = linspace_helper(start, stop, num, axis, device, dtype=dtype)
+    if dtype is None:
+        ans = ans.type(torch.float32)
+    return ans
 
 
 def eye(
