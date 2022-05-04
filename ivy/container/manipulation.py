@@ -10,16 +10,18 @@ from ivy.container.base import ContainerBase
 
 # noinspection PyMissingConstructor
 class ContainerWithManipulation(ContainerBase):
-
-    def concat(self: ivy.Container,
-               xs: Union[Tuple[Union[ivy.Array, ivy.NativeArray, ivy.Container]],
-                         List[Union[ivy.Array, ivy.NativeArray, ivy.Container]]],
-               axis: Optional[int] = 0,
-               key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-               to_apply: bool = True,
-               prune_unapplied: bool = False,
-               out: Optional[ivy.Container] = None) \
-            -> ivy.Container:
+    def concat(
+        self: ivy.Container,
+        xs: Union[
+            Tuple[Union[ivy.Array, ivy.NativeArray, ivy.Container]],
+            List[Union[ivy.Array, ivy.NativeArray, ivy.Container]],
+        ],
+        axis: Optional[int] = 0,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
         conts = [self]
         arrays = [None]
         for x in xs:
@@ -30,6 +32,15 @@ class ContainerWithManipulation(ContainerBase):
                 arrays.append(x)
         return ContainerBase.handle_inplace(
             ContainerBase.multi_map(
-                lambda xs_, _: ivy.concat(xs=[a if ivy.exists(a) else xs_.pop(0) for a in arrays], axis=axis)
-                if ivy.is_array(xs_[0]) else xs_,
-                conts, key_chains, to_apply, prune_unapplied), out)
+                lambda xs_, _: ivy.concat(
+                    xs=[a if ivy.exists(a) else xs_.pop(0) for a in arrays], axis=axis
+                )
+                if ivy.is_array(xs_[0])
+                else xs_,
+                conts,
+                key_chains,
+                to_apply,
+                prune_unapplied,
+            ),
+            out,
+        )
