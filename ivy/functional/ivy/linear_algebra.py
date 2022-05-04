@@ -516,13 +516,20 @@ def cholesky(x: Union[ivy.Array, ivy.NativeArray], upper: bool = False) -> ivy.A
     
     Examples
     --------
+    1. Returns a lower-triangular Cholesky factor L
+
     >>> x = ivy.array([[1., -2.], [2., 5.]])  
     >>> l = ivy.cholesky(x)
-    >>> u = ivy.cholesky(x, upper = True) #will return the result which will be upper triangular
     >>> print(l)
     ivy.array([[ 1., 0.], [ 2., 1.]])
+
+    2. Returns an upper-triangular cholesky factor U
+
+    >>> x = ivy.array([[1., -2.], [2., 5.]])  
+    >>> u = ivy.cholesky(x, upper = True)
     >>> print(u)
     ivy.array([[ 1., -2.],[ 0.,  1.]])
+    
     """
     return _cur_framework(x).cholesky(x, upper)
 
