@@ -4,13 +4,15 @@ Collection of helpers for ivy unit tests
 
 # global
 import numpy as np
+
 try:
     import jax.numpy as _jnp
 except ImportError:
     _jnp = None
 try:
     import tensorflow as _tf
-    _tf_version = float('.'.join(_tf.__version__.split('.')[0:2]))
+
+    _tf_version = float(".".join(_tf.__version__.split(".")[0:2]))
     if _tf_version >= 2.3:
         # noinspection PyPep8Naming,PyUnresolvedReferences
         from tensorflow.python.types.core import Tensor as tensor_type
@@ -18,7 +20,7 @@ try:
         # noinspection PyPep8Naming
         # noinspection PyProtectedMember,PyUnresolvedReferences
         from tensorflow.python.framework.tensor_like import _TensorLike as tensor_type
-    physical_devices = _tf.config.list_physical_devices('GPU')
+    physical_devices = _tf.config.list_physical_devices("GPU")
     for device in physical_devices:
         _tf.config.experimental.set_memory_growth(device, True)
 except ImportError:
@@ -80,18 +82,22 @@ def get_ivy_mxnet():
     return ivy.functional.backends.mxnet
 
 
-_ivy_fws_dict = {'numpy': lambda: get_ivy_numpy(),
-                 'jax': lambda: get_ivy_jax(),
-                 'tensorflow': lambda: get_ivy_tensorflow(),
-                 'tensorflow_graph': lambda: get_ivy_tensorflow(),
-                 'torch': lambda: get_ivy_torch(),
-                 'mxnet': lambda: get_ivy_mxnet()}
+_ivy_fws_dict = {
+    "numpy": lambda: get_ivy_numpy(),
+    "jax": lambda: get_ivy_jax(),
+    "tensorflow": lambda: get_ivy_tensorflow(),
+    "tensorflow_graph": lambda: get_ivy_tensorflow(),
+    "torch": lambda: get_ivy_torch(),
+    "mxnet": lambda: get_ivy_mxnet(),
+}
 
 _iterable_types = [list, tuple, dict]
 _excluded = []
 
 
-def _convert_vars(vars_in, from_type, to_type_callable=None, keep_other=True, to_type=None):
+def _convert_vars(
+    vars_in, from_type, to_type_callable=None, keep_other=True, to_type=None
+):
     new_vars = list()
     for var in vars_in:
         if type(var) in _iterable_types:
@@ -106,7 +112,7 @@ def _convert_vars(vars_in, from_type, to_type_callable=None, keep_other=True, to
             if to_type_callable:
                 new_vars.append(to_type_callable(var))
             else:
-                raise Exception('Invalid. A conversion callable is required.')
+                raise Exception("Invalid. A conversion callable is required.")
         elif to_type is not None and isinstance(var, to_type):
             new_vars.append(var)
         elif keep_other:
@@ -178,9 +184,13 @@ def mx_call(func, *args, **kwargs):
     new_kwargs = dict(zip(kwargs.keys(), new_kw_items))
     output = func(*new_args, **new_kwargs)
     if isinstance(output, tuple):
-        return tuple(_convert_vars(output, (_mx_nd.ndarray.NDArray, ivy.Array), ivy.to_numpy))
+        return tuple(
+            _convert_vars(output, (_mx_nd.ndarray.NDArray, ivy.Array), ivy.to_numpy)
+        )
     else:
-        return _convert_vars([output], (_mx_nd.ndarray.NDArray, ivy.Array), ivy.to_numpy)[0]
+        return _convert_vars(
+            [output], (_mx_nd.ndarray.NDArray, ivy.Array), ivy.to_numpy
+        )[0]
 
 
 _calls = [np_call, jnp_call, tf_call, tf_graph_call, torch_call, mx_call]
@@ -194,7 +204,7 @@ def assert_compilable(fn):
 
 
 def docstring_examples_run(fn):
-    if not hasattr(fn, '__name__'):
+    if not hasattr(fn, "__name__"):
         return True
     fn_name = fn.__name__
     if fn_name not in ivy.framework_handler.ivy_original_dict:
@@ -202,7 +212,9 @@ def docstring_examples_run(fn):
     docstring = ivy.framework_handler.ivy_original_dict[fn_name].__doc__
     if docstring is None:
         return True
-    executable_lines = [line.split('>>>')[1][1:] for line in docstring.split('\n') if '>>>' in line]
+    executable_lines = [
+        line.split(">>>")[1][1:] for line in docstring.split("\n") if ">>>" in line
+    ]
     for line in executable_lines:
         # noinspection PyBroadException
         try:
@@ -222,25 +234,40 @@ def exclude(exclusion_list):
 
 
 def frameworks():
-    return list(set([ivy_fw() for fw_str, ivy_fw in _ivy_fws_dict.items()
-                     if ivy_fw() is not None and fw_str not in _excluded]))
+    return list(
+        set(
+            [
+                ivy_fw()
+                for fw_str, ivy_fw in _ivy_fws_dict.items()
+                if ivy_fw() is not None and fw_str not in _excluded
+            ]
+        )
+    )
 
 
 def calls():
-    return [call for (fw_str, ivy_fw), call in zip(_ivy_fws_dict.items(), _calls)
-            if ivy_fw() is not None and fw_str not in _excluded]
+    return [
+        call
+        for (fw_str, ivy_fw), call in zip(_ivy_fws_dict.items(), _calls)
+        if ivy_fw() is not None and fw_str not in _excluded
+    ]
 
 
 def f_n_calls():
-    return [(ivy_fw(), call) for (fw_str, ivy_fw), call in zip(_ivy_fws_dict.items(), _calls)
-            if ivy_fw() is not None and fw_str not in _excluded]
+    return [
+        (ivy_fw(), call)
+        for (fw_str, ivy_fw), call in zip(_ivy_fws_dict.items(), _calls)
+        if ivy_fw() is not None and fw_str not in _excluded
+    ]
 
 
 def assert_all_close(x, y, rtol=1e-05, atol=1e-08):
     if ivy.is_ivy_container(x) and ivy.is_ivy_container(y):
         ivy.Container.multi_map(assert_all_close, [x, y])
     else:
-        assert np.allclose(np.nan_to_num(x), np.nan_to_num(y), rtol=rtol, atol=atol), '{} != {}'.format(x, y)
+        assert np.allclose(
+            np.nan_to_num(x), np.nan_to_num(y), rtol=rtol, atol=atol
+        ), "{} != {}".format(x, y)
 
 
 def kwargs_to_args_n_kwargs(num_positional_args, kwargs):
@@ -254,9 +281,7 @@ def list_of_length(x, length):
 
 
 def as_cont(x):
-    return ivy.Container({'a': x,
-                          'b': {'c': x,
-                                'd': x}})
+    return ivy.Container({"a": x, "b": {"c": x, "d": x}})
 
 
 def as_lists(dtype, as_variable, with_out, native_array, container):
@@ -273,15 +298,31 @@ def as_lists(dtype, as_variable, with_out, native_array, container):
     return dtype, as_variable, with_out, native_array, container
 
 
-def test_array_function(dtype, as_variable, with_out, num_positional_args, native_array, container, instance_method,
-                        fw, fn_name, rtol=1e-05, atol=1e-08, **all_as_kwargs_np):
+def test_array_function(
+    dtype,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    fw,
+    fn_name,
+    rtol=1e-05,
+    atol=1e-08,
+    **all_as_kwargs_np
+):
 
     # convert single values to length 1 lists
     dtype, as_variable, with_out, native_array, container = as_lists(
-        dtype, as_variable, with_out, native_array, container)
+        dtype, as_variable, with_out, native_array, container
+    )
 
     # update variable flags to be compatible with float dtype and with_out args
-    as_variable = [v if ivy.is_float_dtype(d) and not with_out else False for v, d in zip(as_variable, dtype)]
+    as_variable = [
+        v if ivy.is_float_dtype(d) and not with_out else False
+        for v, d in zip(as_variable, dtype)
+    ]
 
     # update instance_method flag to only be considered if the first term is either an ivy.Array or ivy.Container
     instance_method = instance_method and (not native_array[0] or container[0])
@@ -290,32 +331,61 @@ def test_array_function(dtype, as_variable, with_out, num_positional_args, nativ
     args_np, kwargs_np = kwargs_to_args_n_kwargs(num_positional_args, all_as_kwargs_np)
 
     # change all data types so that they are supported by this framework
-    dtype = ['float32' if d in ivy.invalid_dtype_strs else d for d in dtype]
+    dtype = ["float32" if d in ivy.invalid_dtype_strs else d for d in dtype]
 
     # create args
     args_idxs = ivy.nested_indices_where(args_np, lambda x: isinstance(x, np.ndarray))
     arg_np_vals = ivy.multi_index_nest(args_np, args_idxs)
     num_arg_vals = len(arg_np_vals)
-    arg_array_vals = [ivy.array(x, dtype=d) for x, d in zip(arg_np_vals, dtype[:num_arg_vals])]
-    arg_array_vals = [ivy.variable(x) if v else x for x, v in zip(arg_array_vals, as_variable[:num_arg_vals])]
-    arg_array_vals = [ivy.to_native(x) if n else x for x, n in zip(arg_array_vals, native_array[:num_arg_vals])]
-    arg_array_vals = [as_cont(x) if c else x for x, c in zip(arg_array_vals, container[:num_arg_vals])]
+    arg_array_vals = [
+        ivy.array(x, dtype=d) for x, d in zip(arg_np_vals, dtype[:num_arg_vals])
+    ]
+    arg_array_vals = [
+        ivy.variable(x) if v else x
+        for x, v in zip(arg_array_vals, as_variable[:num_arg_vals])
+    ]
+    arg_array_vals = [
+        ivy.to_native(x) if n else x
+        for x, n in zip(arg_array_vals, native_array[:num_arg_vals])
+    ]
+    arg_array_vals = [
+        as_cont(x) if c else x for x, c in zip(arg_array_vals, container[:num_arg_vals])
+    ]
     args = ivy.copy_nest(args_np, to_mutable=True)
     ivy.set_nest_at_indices(args, args_idxs, arg_array_vals)
 
     # create kwargs
-    kwargs_idxs = ivy.nested_indices_where(kwargs_np, lambda x: isinstance(x, np.ndarray))
+    kwargs_idxs = ivy.nested_indices_where(
+        kwargs_np, lambda x: isinstance(x, np.ndarray)
+    )
     kwarg_np_vals = ivy.multi_index_nest(kwargs_np, kwargs_idxs)
-    kwarg_array_vals = [ivy.array(x, dtype=d) for x, d in zip(kwarg_np_vals, dtype[num_arg_vals:])]
-    kwarg_array_vals = [ivy.variable(x) if v else x for x, v in zip(kwarg_array_vals, as_variable[num_arg_vals:])]
-    kwarg_array_vals = [ivy.to_native(x) if n else x for x, n in zip(kwarg_array_vals, native_array[num_arg_vals:])]
-    kwarg_array_vals = [as_cont(x) if c else x for x, c in zip(kwarg_array_vals, container[num_arg_vals:])]
+    kwarg_array_vals = [
+        ivy.array(x, dtype=d) for x, d in zip(kwarg_np_vals, dtype[num_arg_vals:])
+    ]
+    kwarg_array_vals = [
+        ivy.variable(x) if v else x
+        for x, v in zip(kwarg_array_vals, as_variable[num_arg_vals:])
+    ]
+    kwarg_array_vals = [
+        ivy.to_native(x) if n else x
+        for x, n in zip(kwarg_array_vals, native_array[num_arg_vals:])
+    ]
+    kwarg_array_vals = [
+        as_cont(x) if c else x
+        for x, c in zip(kwarg_array_vals, container[num_arg_vals:])
+    ]
     kwargs = ivy.copy_nest(kwargs_np, to_mutable=True)
     ivy.set_nest_at_indices(kwargs, kwargs_idxs, kwarg_array_vals)
 
     # create numpy args
-    args_np = ivy.nested_map(args, lambda x: ivy.to_numpy(x) if ivy.is_ivy_container(x) or ivy.is_array(x) else x)
-    kwargs_np = ivy.nested_map(kwargs, lambda x: ivy.to_numpy(x) if ivy.is_ivy_container(x) or ivy.is_array(x) else x)
+    args_np = ivy.nested_map(
+        args,
+        lambda x: ivy.to_numpy(x) if ivy.is_ivy_container(x) or ivy.is_array(x) else x,
+    )
+    kwargs_np = ivy.nested_map(
+        kwargs,
+        lambda x: ivy.to_numpy(x) if ivy.is_ivy_container(x) or ivy.is_array(x) else x,
+    )
 
     # run either as an instance method or from the API directly
     instance = None
@@ -369,7 +439,7 @@ def test_array_function(dtype, as_variable, with_out, num_positional_args, nativ
     # value test
     if not isinstance(ret, tuple):
         ret = (ret,)
-    if dtype == 'bfloat16':
+    if dtype == "bfloat16":
         return  # bfloat16 is not supported by numpy
     ret_idxs = ivy.nested_indices_where(ret, ivy.is_ivy_array)
     ret_flat = ivy.multi_index_nest(ret, ret_idxs)
@@ -385,14 +455,19 @@ def test_array_function(dtype, as_variable, with_out, num_positional_args, nativ
 # Hypothesis #
 # -----------#
 
+
 @st.composite
-def array_dtypes(draw, na=st.shared(st.integers(), key='num_arrays')):
+def array_dtypes(draw, na=st.shared(st.integers(), key="num_arrays")):
     size = na if isinstance(na, int) else draw(na)
-    return draw(st.lists(st.sampled_from(ivy_np.valid_float_dtype_strs), min_size=size, max_size=size))
+    return draw(
+        st.lists(
+            st.sampled_from(ivy_np.valid_float_dtype_strs), min_size=size, max_size=size
+        )
+    )
 
 
 @st.composite
-def array_bools(draw, na=st.shared(st.integers(), key='num_arrays')):
+def array_bools(draw, na=st.shared(st.integers(), key="num_arrays")):
     size = na if isinstance(na, int) else draw(na)
     return draw(st.lists(st.booleans(), min_size=size, max_size=size))
 
@@ -433,28 +508,30 @@ def dtype_and_values(draw, available_dtypes, n_arrays=1):
 
 @st.composite
 def array_values(draw, dtype, size):
-    if dtype == 'int8':
+    if dtype == "int8":
         values = draw(list_of_length(st.integers(-128, 127), size))
-    elif dtype == 'int16':
+    elif dtype == "int16":
         values = draw(list_of_length(st.integers(-32768, 32767), size))
-    elif dtype == 'int32':
+    elif dtype == "int32":
         values = draw(list_of_length(st.integers(-2147483648, 2147483647), size))
-    elif dtype == 'int64':
-        values = draw(list_of_length(st.integers(-9223372036854775808, 9223372036854775807), size))
-    elif dtype == 'uint8':
+    elif dtype == "int64":
+        values = draw(
+            list_of_length(st.integers(-9223372036854775808, 9223372036854775807), size)
+        )
+    elif dtype == "uint8":
         values = draw(list_of_length(st.integers(0, 255), size))
-    elif dtype == 'uint16':
+    elif dtype == "uint16":
         values = draw(list_of_length(st.integers(0, 65535), size))
-    elif dtype == 'uint32':
+    elif dtype == "uint32":
         values = draw(list_of_length(st.integers(0, 4294967295), size))
-    elif dtype == 'uint64':
+    elif dtype == "uint64":
         values = draw(list_of_length(st.integers(0, 18446744073709551615), size))
-    elif dtype == 'float16':
+    elif dtype == "float16":
         values = draw(list_of_length(st.floats(width=16), size))
-    elif dtype == 'float32':
+    elif dtype == "float32":
         values = draw(list_of_length(st.floats(width=32), size))
-    elif dtype == 'float64':
+    elif dtype == "float64":
         values = draw(list_of_length(st.floats(width=64), size))
-    elif dtype == 'bool':
+    elif dtype == "bool":
         values = draw(list_of_length(st.booleans(), size))
     return values
