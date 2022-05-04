@@ -157,7 +157,6 @@ def expand_dims(
     return _cur_framework(x).expand_dims(x, axis, out)
 
 
-<<<<<<< HEAD
 def permute_dims(x: Union[ivy.Array, ivy.NativeArray],
                  axes: Tuple[int],
                  out: Optional[Union[ivy.Array, ivy.NativeArray]] = None) \
