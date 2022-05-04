@@ -8,7 +8,6 @@ from ivy.stateful.module import Module
 
 
 class GELU(Module):
-
     def __init__(self):
         """
         Applies the GELU activation function.
@@ -27,7 +26,6 @@ class GELU(Module):
 
 
 class GEGLU(Module):
-
     def __init__(self):
         """
         Applies the GEGLU activation function.

@@ -33,7 +33,7 @@ try:
 except ImportError:
     _mx = None
     _mx_nd = None
-from hypothesis import strategies as st
+from hypothesis import assume, strategies as st
 
 # local
 import ivy
@@ -255,8 +255,8 @@ def list_of_length(x, length):
 
 def as_cont(x):
     return ivy.Container({'a': x,
-                          'b': {'c': ivy.random_uniform(shape=x.shape),
-                                'd': ivy.random_uniform(shape=x.shape)}})
+                          'b': {'c': x,
+                                'd': x}})
 
 
 def as_lists(dtype, as_variable, with_out, native_array, container):
@@ -419,6 +419,8 @@ def integers(draw, min_value=None, max_value=None):
 @st.composite
 def dtype_and_values(draw, available_dtypes, n_arrays=1):
     dtype = draw(list_of_length(st.sampled_from(available_dtypes), n_arrays))
+    if n_arrays == 2:
+        assume((dtype[0], dtype[1]) in ivy.promotion_table)
     size = draw(st.integers(0, 10))
     values = []
     for i in range(n_arrays):

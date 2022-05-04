@@ -3,16 +3,22 @@ import mxnet as mx
 import math
 import numpy as np
 from typing import Union, Tuple, Optional, List
-from ivy.functional.backends.mxnet import _flat_array_to_1_dim_array, _handle_flat_arrays_in_out, _handle_flat_arrays_in, _1_dim_array_to_flat_array
+from ivy.functional.backends.mxnet import (
+    _flat_array_to_1_dim_array,
+    _handle_flat_arrays_in_out,
+    _handle_flat_arrays_in,
+    _1_dim_array_to_flat_array,
+)
 
 # local
 import ivy
 
 
-def flip(x: mx.ndarray.ndarray.NDArray,
-         axis: Optional[Union[int, Tuple[int], List[int]]] = None,
-         out: Optional[mx.ndarray.ndarray.NDArray] = None)\
-         -> mx.ndarray.ndarray.NDArray:
+def flip(
+    x: mx.ndarray.ndarray.NDArray,
+    axis: Optional[Union[int, Tuple[int], List[int]]] = None,
+    out: Optional[mx.ndarray.ndarray.NDArray] = None,
+) -> mx.ndarray.ndarray.NDArray:
     num_dims = len(x.shape)
     if not num_dims:
         if ivy.exists(out):
@@ -33,10 +39,11 @@ def flip(x: mx.ndarray.ndarray.NDArray,
     return ret
 
 
-def expand_dims(x: mx.ndarray.ndarray.NDArray,
-                axis: Optional[Union[int, Tuple[int], List[int]]] = None,
-                out: Optional[mx.ndarray.ndarray.NDArray] = None) \
-        -> mx.ndarray.ndarray.NDArray:
+def expand_dims(
+    x: mx.ndarray.ndarray.NDArray,
+    axis: Optional[Union[int, Tuple[int], List[int]]] = None,
+    out: Optional[mx.ndarray.ndarray.NDArray] = None,
+) -> mx.ndarray.ndarray.NDArray:
     if x.shape == ():
         ret = _flat_array_to_1_dim_array(x)
     else:
@@ -46,9 +53,11 @@ def expand_dims(x: mx.ndarray.ndarray.NDArray,
     return ret
 
 
-def stack(x: Union[Tuple[mx.ndarray.ndarray.NDArray], List[mx.ndarray.ndarray.NDArray]],
-          axis: Optional[int] = 0, out: Optional[mx.ndarray.ndarray.NDArray] = None)\
-          -> mx.ndarray.ndarray.NDArray:
+def stack(
+    x: Union[Tuple[mx.ndarray.ndarray.NDArray], List[mx.ndarray.ndarray.NDArray]],
+    axis: Optional[int] = 0,
+    out: Optional[mx.ndarray.ndarray.NDArray] = None,
+) -> mx.ndarray.ndarray.NDArray:
     ret = mx.nd.stack(x, axis)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
@@ -61,7 +70,9 @@ def squeeze(x, axis=None, out: Optional[mx.ndarray.ndarray.NDArray] = None):
             if ivy.exists(out):
                 return ivy.inplace_update(out, x)
             return x
-        raise Exception('tried to squeeze a zero-dimensional input by axis {}'.format(axis))
+        raise Exception(
+            "tried to squeeze a zero-dimensional input by axis {}".format(axis)
+        )
     ret = mx.nd.squeeze(x, axis)
     if axis is None:
         ret = _1_dim_array_to_flat_array(ret)
@@ -88,28 +99,43 @@ def concat(xs, axis=-1, out: Optional[mx.ndarray.ndarray.NDArray] = None):
 def split(x, num_or_size_splits=None, axis=0, with_remainder=False):
     if x.shape == ():
         if num_or_size_splits is not None and num_or_size_splits != 1:
-            raise Exception('input array had no shape, but num_sections specified was {}'.format(num_or_size_splits))
+            raise Exception(
+                "input array had no shape, but num_sections specified was {}".format(
+                    num_or_size_splits
+                )
+            )
         return [x]
     if num_or_size_splits == 1:
         return [x]
     elif with_remainder and isinstance(num_or_size_splits, int):
-        num_or_size_splits = x.shape[axis] if not num_or_size_splits else num_or_size_splits
+        num_or_size_splits = (
+            x.shape[axis] if not num_or_size_splits else num_or_size_splits
+        )
         num_chunks = x.shape[axis] / num_or_size_splits
         num_chunks_int = math.floor(num_chunks)
         remainder_size = int((num_chunks - num_chunks_int) * num_or_size_splits)
-        num_or_size_splits = [num_or_size_splits]*num_chunks_int + [remainder_size]
+        num_or_size_splits = [num_or_size_splits] * num_chunks_int + [remainder_size]
     if isinstance(num_or_size_splits, (list, tuple)):
         csum = [0] + np.cumsum(num_or_size_splits).tolist()
         starts = csum[:-1]
         ends = csum[1:]
         if axis < 0:
-            slices = [tuple([Ellipsis, slice(s, e, 1)] + [slice(None, None, None)]*int(abs(axis)-1))
-                      for s, e in zip(starts, ends)]
+            slices = [
+                tuple(
+                    [Ellipsis, slice(s, e, 1)]
+                    + [slice(None, None, None)] * int(abs(axis) - 1)
+                )
+                for s, e in zip(starts, ends)
+            ]
         else:
-            slices = [tuple([slice(None, None, None)]*axis + [slice(s, e, 1)])
-                      for s, e in zip(starts, ends)]
+            slices = [
+                tuple([slice(None, None, None)] * axis + [slice(s, e, 1)])
+                for s, e in zip(starts, ends)
+            ]
         return [x[so] for so in slices]
-    return mx.nd.split(x, x.shape[axis] if not num_or_size_splits else num_or_size_splits, axis)
+    return mx.nd.split(
+        x, x.shape[axis] if not num_or_size_splits else num_or_size_splits, axis
+    )
 
 
 @_handle_flat_arrays_in_out
@@ -130,20 +156,33 @@ def tile(x, reps, out: Optional[mx.ndarray.ndarray.NDArray] = None):
 
 
 @_handle_flat_arrays_in
-def constant_pad(x, pad_width, value=0, out: Optional[mx.ndarray.ndarray.NDArray] = None):
+def constant_pad(
+    x, pad_width, value=0, out: Optional[mx.ndarray.ndarray.NDArray] = None
+):
     if isinstance(pad_width, mx.ndarray.ndarray.NDArray):
         pad_width = pad_width.asnumpy().tolist()
     x_shape = list(x.shape)
     num_dims = len(x_shape)
     if num_dims > 3:
-        raise Exception('Invalid inputs. Pad for mxnet only supports inputs with 3 dimensions or smaller.')
+        raise Exception(
+            "Invalid inputs. Pad for mxnet only supports inputs with 3 dimensions or smaller."
+        )
     num_dims_to_add = 4 - num_dims
     new_shape = tuple([1] * num_dims_to_add + x_shape)
     mat_expanded_dims = mx.nd.reshape(x, new_shape)
-    pad_width_flat = [0]*num_dims_to_add*2 + [item for sublist in pad_width for item in sublist]
-    pad_expanded_dims = mx.nd.pad(mat_expanded_dims, mode="constant", pad_width=tuple(pad_width_flat),
-                                   constant_value=value)
-    new_shape = [orig_dim + pad_width_item[0] + pad_width_item[1] for orig_dim, pad_width_item in zip(x_shape, pad_width)]
+    pad_width_flat = [0] * num_dims_to_add * 2 + [
+        item for sublist in pad_width for item in sublist
+    ]
+    pad_expanded_dims = mx.nd.pad(
+        mat_expanded_dims,
+        mode="constant",
+        pad_width=tuple(pad_width_flat),
+        constant_value=value,
+    )
+    new_shape = [
+        orig_dim + pad_width_item[0] + pad_width_item[1]
+        for orig_dim, pad_width_item in zip(x_shape, pad_width)
+    ]
     ret = mx.nd.reshape(pad_expanded_dims, tuple(new_shape))
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
