@@ -33,7 +33,7 @@ try:
 except ImportError:
     _mx = None
     _mx_nd = None
-from hypothesis import strategies as st
+from hypothesis import assume, strategies as st
 
 # local
 import ivy
@@ -283,7 +283,6 @@ def test_array_function(dtype, as_variable, with_out, num_positional_args, nativ
     # update variable flags to be compatible with float dtype and with_out args
     as_variable = [v if ivy.is_float_dtype(d) and not with_out else False for v, d in zip(as_variable, dtype)]
 
-
     # update instance_method flag to only be considered if the first term is either an ivy.Array or ivy.Container
     instance_method = instance_method and (not native_array[0] or container[0])
 
@@ -420,6 +419,8 @@ def integers(draw, min_value=None, max_value=None):
 @st.composite
 def dtype_and_values(draw, available_dtypes, n_arrays=1):
     dtype = draw(list_of_length(st.sampled_from(available_dtypes), n_arrays))
+    if n_arrays == 2:
+        assume((dtype[0], dtype[1]) in ivy.promotion_table)
     size = draw(st.integers(0, 10))
     values = []
     for i in range(n_arrays):

@@ -7,7 +7,6 @@ from ivy.stateful.module import Module
 
 
 class Sequential(Module):
-
     def __init__(self, *sub_modules, device=None, v=None):
         """
         A sequential container. Modules will be added to it in the order they are passed in the constructor.
@@ -22,11 +21,13 @@ class Sequential(Module):
         if v is not None:
             for i, submod in enumerate(sub_modules):
                 try:
-                    submod.v = v['submodules']['v' + str(i)]
+                    submod.v = v["submodules"]["v" + str(i)]
                 except KeyError:
                     if submod.v:
-                        raise Exception('variables v passed to Sequential class must have key chains in the form of'
-                                        '"submodules/v{}", where {} is an idx')
+                        raise Exception(
+                            "variables v passed to Sequential class must have key chains in the form of"
+                            '"submodules/v{}", where {} is an idx'
+                        )
         self._submodules = list(sub_modules)
         Module.__init__(self, device, v)
 
@@ -41,10 +42,12 @@ class Sequential(Module):
         x = inputs
         for i, submod in enumerate(self._submodules):
             try:
-                x = submod(x, v=self.v.submodules['v' + str(i)])
+                x = submod(x, v=self.v.submodules["v" + str(i)])
             except KeyError:
                 if submod.v:
-                    raise Exception('variables v passed to Sequential class must have key chains in the form of'
-                                    '"submodules/v{}", where {} is an idx')
+                    raise Exception(
+                        "variables v passed to Sequential class must have key chains in the form of"
+                        '"submodules/v{}", where {} is an idx'
+                    )
                 x = submod(x)
         return x
