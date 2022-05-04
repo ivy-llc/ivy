@@ -5,7 +5,7 @@ Collection of tests for elementwise functions
 # global
 import pytest
 import numpy as np
-from hypothesis import given, strategies as st
+from hypothesis import given, assume, strategies as st
 
 # local
 import ivy
@@ -416,57 +416,54 @@ def test_expm1(dtype_and_x, as_variable, with_out, num_positional_args, native_a
 
 
 # floor_divide
-# @given(dtype_and_x=helpers.dtype_and_values(ivy_np.valid_numeric_dtype_strs),
-#        as_variable=helpers.list_of_length(st.booleans(), 2),
-#        with_out=st.booleans(),
-#        num_positional_args=st.integers(0, 2),
-#        native_array=helpers.list_of_length(st.booleans(), 2),
-#        container=helpers.list_of_length(st.booleans(), 2),
-#        instance_method=st.booleans())
-# def test_floor_divide(dtype_and_x, as_variable, with_out, num_positional_args, native_array, container, instance_method, fw):
-#     dtype, x = dtype_and_x
-#     if dtype in ivy.invalid_dtype_strs:
-#         return
-#     dtype = [dtype, dtype]
-#     helpers.test_array_function(
-#         dtype, as_variable, with_out, num_positional_args, native_array, container, instance_method, fw, 'floor_divide',
-#         x1=np.asarray(x, dtype=dtype[0]), x2=np.asarray(x, dtype=dtype[1]))
+@given(dtype_and_x=helpers.dtype_and_values(ivy_np.valid_numeric_dtype_strs, 2),
+       as_variable=helpers.list_of_length(st.booleans(), 2),
+       with_out=st.booleans(),
+       num_positional_args=st.integers(0, 2),
+       native_array=helpers.list_of_length(st.booleans(), 2),
+       container=helpers.list_of_length(st.booleans(), 2),
+       instance_method=st.booleans())
+def test_floor_divide(dtype_and_x, as_variable, with_out, num_positional_args, native_array, container, instance_method, fw):
+    dtype, x = dtype_and_x
+    assume(not any(xi == 0 for xi in x[1]))
+    if any(d in ivy.invalid_dtype_strs for d in dtype):
+        return
+    helpers.test_array_function(
+        dtype, as_variable, with_out, num_positional_args, native_array, container, instance_method, fw, 'floor_divide',
+        x1=np.asarray(x[0], dtype=dtype[0]), x2=np.asarray(x[1], dtype=dtype[1]))
 
 
 # greater
-# @given(dtype_and_x=helpers.dtype_and_values(ivy_np.valid_numeric_dtype_strs),
-#        as_variable=helpers.list_of_length(st.booleans(), 2),
-#        with_out=st.booleans(),
-#        num_positional_args=st.integers(0, 2),
-#        native_array=helpers.list_of_length(st.booleans(), 2),
-#        container=helpers.list_of_length(st.booleans(), 2),
-#        instance_method=st.booleans())
-# def test_greater(dtype_and_x, as_variable, with_out, num_positional_args, native_array, container, instance_method, fw):
-#     dtype, x = dtype_and_x
-#     if dtype in ivy.invalid_dtype_strs:
-#         return
-#     dtype = [dtype, dtype]
-#     helpers.test_array_function(
-#         dtype, as_variable, with_out, num_positional_args, native_array, container, instance_method, fw, 'greater',
-#         x1=np.asarray(x, dtype=dtype[0]), x2=np.asarray(x, dtype=dtype[1]))
+@given(dtype_and_x=helpers.dtype_and_values(ivy_np.valid_numeric_dtype_strs, 2),
+       as_variable=helpers.list_of_length(st.booleans(), 2),
+       with_out=st.booleans(),
+       num_positional_args=st.integers(0, 2),
+       native_array=helpers.list_of_length(st.booleans(), 2),
+       container=helpers.list_of_length(st.booleans(), 2),
+       instance_method=st.booleans())
+def test_greater(dtype_and_x, as_variable, with_out, num_positional_args, native_array, container, instance_method, fw):
+    dtype, x = dtype_and_x
+    if any(d in ivy.invalid_dtype_strs for d in dtype):
+        return
+    helpers.test_array_function(
+        dtype, as_variable, with_out, num_positional_args, native_array, container, instance_method, fw, 'greater',
+        x1=np.asarray(x[0], dtype=dtype[0]), x2=np.asarray(x[1], dtype=dtype[1]))
 
 
 # greater_equal
-# @given(dtype_and_x=helpers.dtype_and_values(ivy_np.valid_numeric_dtype_strs),
-#        as_variable=helpers.list_of_length(st.booleans(), 2),
-#        with_out=st.booleans(),
-#        num_positional_args=st.integers(0, 2),
-#        native_array=helpers.list_of_length(st.booleans(), 2),
-#        container=helpers.list_of_length(st.booleans(), 2),
-#        instance_method=st.booleans())
-# def test_greater_equal(dtype_and_x, as_variable, with_out, num_positional_args, native_array, container, instance_method, fw):
-#     dtype, x = dtype_and_x
-#     if dtype in ivy.invalid_dtype_strs:
-#         return
-#     dtype = [dtype, dtype]
-#     helpers.test_array_function(
-#         dtype, as_variable, with_out, num_positional_args, native_array, container, instance_method, fw, 'greater_equal',
-#         x1=np.asarray(x, dtype=dtype[0]), x2=np.asarray(x, dtype=dtype[1]))
+@given(dtype_and_x=helpers.dtype_and_values(ivy_np.valid_numeric_dtype_strs, 2),
+       as_variable=helpers.list_of_length(st.booleans(), 2),
+       with_out=st.booleans(),
+       num_positional_args=st.integers(0, 2),
+       native_array=helpers.list_of_length(st.booleans(), 2),
+       container=helpers.list_of_length(st.booleans(), 2),
+       instance_method=st.booleans())
+def test_greater_equal(dtype_and_x, as_variable, with_out, num_positional_args, native_array, container, instance_method, fw):
+    dtype, x = dtype_and_x
+    assume(not any(d in ivy.invalid_dtype_strs for d in dtype))
+    helpers.test_array_function(
+        dtype, as_variable, with_out, num_positional_args, native_array, container, instance_method, fw, 'greater_equal',
+        x1=np.asarray(x[0], dtype=dtype[0]), x2=np.asarray(x[1], dtype=dtype[1]))
 
 
 # isfinite
@@ -521,39 +518,35 @@ def test_isnan(dtype_and_x, as_variable, with_out, num_positional_args, native_a
 
 
 # less
-# @given(dtype_and_x=helpers.dtype_and_values(ivy_np.valid_numeric_dtype_strs),
-#        as_variable=helpers.list_of_length(st.booleans(), 2),
-#        with_out=st.booleans(),
-#        num_positional_args=st.integers(0, 2),
-#        native_array=helpers.list_of_length(st.booleans(), 2),
-#        container=helpers.list_of_length(st.booleans(), 2),
-#        instance_method=st.booleans())
-# def test_less(dtype_and_x, as_variable, with_out, num_positional_args, native_array, container, instance_method, fw):
-#     dtype, x = dtype_and_x
-#     if dtype in ivy.invalid_dtype_strs:
-#         return
-#     dtype = [dtype, dtype]
-#     helpers.test_array_function(
-#         dtype, as_variable, with_out, num_positional_args, native_array, container, instance_method, fw, 'less',
-#         x1=np.asarray(x, dtype=dtype[0]), x2=np.asarray(x, dtype=dtype[1]))
+@given(dtype_and_x=helpers.dtype_and_values(ivy_np.valid_numeric_dtype_strs, 2),
+       as_variable=helpers.list_of_length(st.booleans(), 2),
+       with_out=st.booleans(),
+       num_positional_args=st.integers(0, 2),
+       native_array=helpers.list_of_length(st.booleans(), 2),
+       container=helpers.list_of_length(st.booleans(), 2),
+       instance_method=st.booleans())
+def test_less(dtype_and_x, as_variable, with_out, num_positional_args, native_array, container, instance_method, fw):
+    dtype, x = dtype_and_x
+    assume(not any(d in ivy.invalid_dtype_strs for d in dtype))
+    helpers.test_array_function(
+        dtype, as_variable, with_out, num_positional_args, native_array, container, instance_method, fw, 'less',
+        x1=np.asarray(x[0], dtype=dtype[0]), x2=np.asarray(x[1], dtype=dtype[1]))
 
 
 # less_equal
-# @given(dtype_and_x=helpers.dtype_and_values(ivy_np.valid_numeric_dtype_strs),
-#        as_variable=helpers.list_of_length(st.booleans(), 2),
-#        with_out=st.booleans(),
-#        num_positional_args=st.integers(0, 2),
-#        native_array=helpers.list_of_length(st.booleans(), 2),
-#        container=helpers.list_of_length(st.booleans(), 2),
-#        instance_method=st.booleans())
-# def test_less_equal(dtype_and_x, as_variable, with_out, num_positional_args, native_array, container, instance_method, fw):
-#     dtype, x = dtype_and_x
-#     if dtype in ivy.invalid_dtype_strs:
-#         return
-#     dtype = [dtype, dtype]
-#     helpers.test_array_function(
-#         dtype, as_variable, with_out, num_positional_args, native_array, container, instance_method, fw, 'less_equal',
-#         x1=np.asarray(x, dtype=dtype[0]), x2=np.asarray(x, dtype=dtype[1]))
+@given(dtype_and_x=helpers.dtype_and_values(ivy_np.valid_numeric_dtype_strs, 2),
+       as_variable=helpers.list_of_length(st.booleans(), 2),
+       with_out=st.booleans(),
+       num_positional_args=st.integers(0, 2),
+       native_array=helpers.list_of_length(st.booleans(), 2),
+       container=helpers.list_of_length(st.booleans(), 2),
+       instance_method=st.booleans())
+def test_less_equal(dtype_and_x, as_variable, with_out, num_positional_args, native_array, container, instance_method, fw):
+    dtype, x = dtype_and_x
+    assume(not any(d in ivy.invalid_dtype_strs for d in dtype))
+    helpers.test_array_function(
+        dtype, as_variable, with_out, num_positional_args, native_array, container, instance_method, fw, 'less_equal',
+        x1=np.asarray(x[0], dtype=dtype[0]), x2=np.asarray(x[1], dtype=dtype[1]))
 
 
 # log
