@@ -2,7 +2,7 @@
 Collection of random Ivy functions
 """
 
-# global
+# global 
 from typing import Optional, Union, Tuple
 
 # local
@@ -14,17 +14,16 @@ import ivy
 # ------#
 
 
-def random_uniform(
-    low: float = 0.0,
-    high: float = 1.0,
-    shape: Optional[Union[int, Tuple[int, ...]]] = None,
-    device: Optional[ivy.Device] = None,
-) -> ivy.array:
+def random_uniform(low: float = 0.0, 
+                   high: float = 1.0,
+                   shape: Optional[Union[int, Tuple[int, ...]]] = None,
+                   device: Optional[ivy.Device] = None)\
+        -> ivy.array:
     """
-    Draws samples from a uniform distribution. Samples are uniformly distributed over the half-open
-    interval ``[low, high)`` (includes ``low``, but excludes ``high``). In other words, any value within the given
+    Draws samples from a uniform distribution. Samples are uniformly distributed over the half-open 
+    interval ``[low, high)`` (includes ``low``, but excludes ``high``). In other words, any value within the given 
     interval is equally likely to be drawn by uniform.
-
+    
     Parameters
     -----------
     low
@@ -32,7 +31,7 @@ def random_uniform(
     high
         Upper boundary of the output interval. All the values generated will be less than ``high``.
     shape
-        If the given shape is, e.g ``(m, n, k)``, then ``m * n * k`` samples are drawn. If size is ``None``
+        If the given shape is, e.g ``(m, n, k)``, then ``m * n * k`` samples are drawn. If size is ``None`` 
         (Default), a single value is returned.
     device
         device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
@@ -47,7 +46,7 @@ def random_uniform(
     >>> y = ivy.random_uniform(0.0, 2.0)
     >>> print(y)
     ivy.array(1.89150229)
-
+    
     """
     return _cur_framework().random_uniform(low, high, shape, device)
 
@@ -130,9 +129,7 @@ def multinomial(population_size: int,
                [2, 3, 2, 0],
                [4, 4, 1, 0]])
     """
-    return _cur_framework().multinomial(
-        population_size, num_samples, batch_size, probs, replace, device
-    )
+    return _cur_framework().multinomial(population_size, num_samples, batch_size, probs, replace, device)
 
 
 def randint(low: int,

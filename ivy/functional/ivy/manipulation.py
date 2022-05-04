@@ -350,14 +350,9 @@ def split(x: Union[ivy.Array, ivy.NativeArray],
           num_or_size_splits: Union[int, Iterable[int]] = None,
           axis: int = 0,
           with_remainder: bool = False) \
-<<<<<<< HEAD
           -> List[ivy.Array]:
-    """Splits an array into multiple sub-arrays.
-=======
-          -> List[ivy.Array, ...]:
     """
     Splits an array into multiple sub-arrays.
->>>>>>> 861028d6e4b481ef236d06165ca7588c06532c7a
 
     Parameters
     ----------
