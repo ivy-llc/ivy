@@ -370,7 +370,10 @@ def negative(x: Tensor, out: Optional[Tensor] = None) -> Tensor:
 
 
 def not_equal(x1: Tensor, x2: Tensor, out: Optional[Tensor] = None) -> Tensor:
-    x1, x2 = _cast_for_binary_op(x1, x2)
+    if hasattr(x1, "dtype") and hasattr(x2, "dtype"):
+        promoted_type = tf.experimental.numpy.promote_types(x1.dtype, x2.dtype)
+        x1 = tf.cast(x1, promoted_type)
+        x2 = tf.cast(x2, promoted_type)
     ret = tf.math.not_equal(x1, x2)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
@@ -452,7 +455,10 @@ def pow(x1: Tensor, x2: Tensor, out: Optional[Tensor] = None) -> Tensor:
 
 
 def remainder(x1: Tensor, x2: Tensor, out: Optional[Tensor] = None) -> Tensor:
-    x1, x2 = _cast_for_binary_op(x1, x2)
+    if hasattr(x1, "dtype") and hasattr(x2, "dtype"):
+        promoted_type = tf.experimental.numpy.promote_types(x1.dtype, x2.dtype)
+        x1 = tf.cast(x1, promoted_type)
+        x2 = tf.cast(x2, promoted_type)
     ret = tf.math.floormod(x1, x2)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
