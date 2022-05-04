@@ -871,8 +871,21 @@ def einops_repeat(
 
 
 def get_min_denominator() -> float:
-    """Get the global minimum denominator used by ivy for numerically stable division."""
-    # noinspection PyProtectedMember
+    """
+    Get the global minimum denominator used by ivy for numerically stable division.
+
+    Returns
+    -------
+    ret
+        A float number of the global minimum denominator.
+
+    Examples
+    --------
+    >>> x = ivy.get_min_denominator()
+    >>> print(x)
+    1e-12
+
+    """
     return ivy._MIN_DENOMINATOR
 
 
