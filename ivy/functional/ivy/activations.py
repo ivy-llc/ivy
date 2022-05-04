@@ -12,9 +12,11 @@ from ivy.framework_handler import current_framework as _cur_framework
 # Extra #
 # ------#
 
-def relu(x: Union[ivy.Array, ivy.NativeArray],
-         out: Optional[Union[ivy.Array, ivy.NativeArray]] = None)\
-        -> ivy.Array:
+
+def relu(
+    x: Union[ivy.Array, ivy.NativeArray],
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+) -> ivy.Array:
     """
     Applies the rectified linear unit function element-wise.
 
@@ -40,8 +42,9 @@ def relu(x: Union[ivy.Array, ivy.NativeArray],
     return _cur_framework(x).relu(x, out)
 
 
-def leaky_relu(x: Union[ivy.Array, ivy.NativeArray], alpha: Optional[float] = 0.2)\
-        -> ivy.Array:
+def leaky_relu(
+    x: Union[ivy.Array, ivy.NativeArray], alpha: Optional[float] = 0.2
+) -> ivy.Array:
     """Applies the leaky rectified linear unit function element-wise.
 
     Parameters
@@ -85,8 +88,7 @@ def gelu(x, approximate=True):
     return _cur_framework(x).gelu(x, approximate)
 
 
-def tanh(x: Union[ivy.Array, ivy.NativeArray])\
-        -> ivy.Array:
+def tanh(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
     """
     Applies the Hyperbolic tangent activation function element-wise.
 
@@ -110,8 +112,7 @@ def tanh(x: Union[ivy.Array, ivy.NativeArray])\
     return _cur_framework(x).tanh(x)
 
 
-def sigmoid(x: Union[ivy.Array, ivy.NativeArray])\
-        -> ivy.Array:
+def sigmoid(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
     """
     Applies the sigmoid function element-wise.
 
@@ -136,8 +137,9 @@ def sigmoid(x: Union[ivy.Array, ivy.NativeArray])\
     return _cur_framework(x).sigmoid(x)
 
 
-def softmax(x: Union[ivy.Array, ivy.NativeArray], axis: Optional[int] = -1)\
-        -> ivy.Array:
+def softmax(
+    x: Union[ivy.Array, ivy.NativeArray], axis: Optional[int] = -1
+) -> ivy.Array:
     """
     Applies the softmax function element-wise.
 
@@ -162,8 +164,7 @@ def softmax(x: Union[ivy.Array, ivy.NativeArray], axis: Optional[int] = -1)\
     return _cur_framework(x).softmax(x, axis)
 
 
-def softplus(x: Union[ivy.Array, ivy.NativeArray])\
-        -> ivy.Array:
+def softplus(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
     """Applies the softplus function element-wise.
 
     Parameters

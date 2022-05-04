@@ -71,8 +71,7 @@ def unique_all(x: Union[ivy.Array, ivy.NativeArray]) \
     return _cur_framework(x).unique_all(x)
 
 
-def unique_inverse(x: Union[ivy.Array, ivy.NativeArray]) \
-        -> Tuple[ivy.Array, ivy.Array]:
+def unique_inverse(x: Union[ivy.Array, ivy.NativeArray]) -> Tuple[ivy.Array, ivy.Array]:
     """Returns a tuple of two arrays, one being the unique elements of an input array x and the other one the indices from
     the set of uniques elements that reconstruct x.
 
@@ -90,8 +89,10 @@ def unique_inverse(x: Union[ivy.Array, ivy.NativeArray]) \
     return _cur_framework(x).unique_inverse(x)
 
 
-def unique_values(x: Union[ivy.Array, ivy.NativeArray], out: Optional[Union[ivy.Array, ivy.NativeArray]] = None) \
-        -> ivy.Array:
+def unique_values(
+    x: Union[ivy.Array, ivy.NativeArray],
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+) -> ivy.Array:
     """
     Returns the unique elements of an input array ``x``.
     .. admonition:: Data-dependent output shape
@@ -115,8 +116,7 @@ def unique_values(x: Union[ivy.Array, ivy.NativeArray], out: Optional[Union[ivy.
     return _cur_framework(x).unique_values(x, out)
 
 
-def unique_counts(x: Union[ivy.Array, ivy.NativeArray])\
-        -> Tuple[ivy.Array, ivy.Array]:
+def unique_counts(x: Union[ivy.Array, ivy.NativeArray]) -> Tuple[ivy.Array, ivy.Array]:
     """Returns the unique elements of an input array x and the corresponding counts for each unique element in x.
 
     Parameters
