@@ -11,14 +11,10 @@ import ivy_tests.test_ivy.helpers as helpers
 
 
 # min
-@pytest.mark.parametrize(
-    "dtype", ivy.numeric_dtype_strs)
-@pytest.mark.parametrize(
-    "as_variable", [True, False])
-@pytest.mark.parametrize(
-    "with_out", [True, False])
-@pytest.mark.parametrize(
-    "native_array", [True, False])
+@pytest.mark.parametrize("dtype", ivy.numeric_dtype_strs)
+@pytest.mark.parametrize("as_variable", [True, False])
+@pytest.mark.parametrize("with_out", [True, False])
+@pytest.mark.parametrize("native_array", [True, False])
 def test_min(dtype, as_variable, with_out, native_array):
     if dtype in ivy.invalid_dtype_strs:
         pytest.skip("invalid dtype")
@@ -48,14 +44,10 @@ def test_min(dtype, as_variable, with_out, native_array):
 
 
 # max
-@pytest.mark.parametrize(
-    "dtype", ivy.numeric_dtype_strs)
-@pytest.mark.parametrize(
-    "as_variable", [True, False])
-@pytest.mark.parametrize(
-    "with_out", [True, False])
-@pytest.mark.parametrize(
-    "native_array", [True, False])
+@pytest.mark.parametrize("dtype", ivy.numeric_dtype_strs)
+@pytest.mark.parametrize("as_variable", [True, False])
+@pytest.mark.parametrize("with_out", [True, False])
+@pytest.mark.parametrize("native_array", [True, False])
 def test_max(dtype, as_variable, with_out, native_array):
     if dtype in ivy.invalid_dtype_strs:
         pytest.skip("invalid dtype")
@@ -85,14 +77,10 @@ def test_max(dtype, as_variable, with_out, native_array):
 
 
 # mean
-@pytest.mark.parametrize(
-    "dtype", ivy.float_dtype_strs)
-@pytest.mark.parametrize(
-    "as_variable", [True, False])
-@pytest.mark.parametrize(
-    "with_out", [True, False])
-@pytest.mark.parametrize(
-    "native_array", [True, False])
+@pytest.mark.parametrize("dtype", ivy.float_dtype_strs)
+@pytest.mark.parametrize("as_variable", [True, False])
+@pytest.mark.parametrize("with_out", [True, False])
+@pytest.mark.parametrize("native_array", [True, False])
 def test_mean(dtype, as_variable, with_out, native_array):
     if dtype in ivy.invalid_dtype_strs:
         pytest.skip("invalid dtype")
@@ -122,14 +110,10 @@ def test_mean(dtype, as_variable, with_out, native_array):
 
 
 # var
-@pytest.mark.parametrize(
-    "dtype", ivy.float_dtype_strs)
-@pytest.mark.parametrize(
-    "as_variable", [True, False])
-@pytest.mark.parametrize(
-    "with_out", [True, False])
-@pytest.mark.parametrize(
-    "native_array", [True, False])
+@pytest.mark.parametrize("dtype", ivy.float_dtype_strs)
+@pytest.mark.parametrize("as_variable", [True, False])
+@pytest.mark.parametrize("with_out", [True, False])
+@pytest.mark.parametrize("native_array", [True, False])
 def test_var(dtype, as_variable, with_out, native_array):
     if dtype in ivy.invalid_dtype_strs:
         pytest.skip("invalid dtype")
@@ -159,16 +143,14 @@ def test_var(dtype, as_variable, with_out, native_array):
 
 
 # prod
-@pytest.mark.parametrize(
-    "dtype", ivy.all_dtype_strs)
-@pytest.mark.parametrize(
-    "as_variable", [True, False])
-@pytest.mark.parametrize(
-    "with_out", [True, False])
-@pytest.mark.parametrize(
-    "native_array", [True, False])
+@pytest.mark.parametrize("dtype", ivy.all_dtype_strs)
+@pytest.mark.parametrize("as_variable", [True, False])
+@pytest.mark.parametrize("with_out", [True, False])
+@pytest.mark.parametrize("native_array", [True, False])
 def test_prod(dtype, as_variable, with_out, native_array):
-    if dtype in ivy.invalid_dtype_strs or (ivy.backend == 'torch' and (dtype == 'bfloat16' or dtype == 'float16')):
+    if dtype in ivy.invalid_dtype_strs or (
+        ivy.backend == "torch" and (dtype == "bfloat16" or dtype == "float16")
+    ):
         pytest.skip("invalid dtype")
     x = ivy.array([2, 3, 4], dtype=dtype)
     out = ivy.array(24, dtype=dtype)
@@ -196,14 +178,10 @@ def test_prod(dtype, as_variable, with_out, native_array):
 
 
 # sum
-@pytest.mark.parametrize(
-    "dtype", ivy.all_dtype_strs)
-@pytest.mark.parametrize(
-    "as_variable", [True, False])
-@pytest.mark.parametrize(
-    "with_out", [True, False])
-@pytest.mark.parametrize(
-    "native_array", [True, False])
+@pytest.mark.parametrize("dtype", ivy.all_dtype_strs)
+@pytest.mark.parametrize("as_variable", [True, False])
+@pytest.mark.parametrize("with_out", [True, False])
+@pytest.mark.parametrize("native_array", [True, False])
 def test_sum(dtype, as_variable, with_out, native_array):
     if dtype in ivy.invalid_dtype_strs:
         pytest.skip("invalid dtype")
@@ -233,14 +211,10 @@ def test_sum(dtype, as_variable, with_out, native_array):
 
 
 # std
-@pytest.mark.parametrize(
-    "dtype", ivy.float_dtype_strs)
-@pytest.mark.parametrize(
-    "as_variable", [True, False])
-@pytest.mark.parametrize(
-    "with_out", [True, False])
-@pytest.mark.parametrize(
-    "native_array", [True, False])
+@pytest.mark.parametrize("dtype", ivy.float_dtype_strs)
+@pytest.mark.parametrize("as_variable", [True, False])
+@pytest.mark.parametrize("with_out", [True, False])
+@pytest.mark.parametrize("native_array", [True, False])
 def test_std(dtype, as_variable, with_out, native_array):
     if dtype in ivy.invalid_dtype_strs:
         pytest.skip("invalid dtype")
@@ -271,15 +245,16 @@ def test_std(dtype, as_variable, with_out, native_array):
 
 # einsum
 @pytest.mark.parametrize(
-    "eq_n_op_n_shp", [("ii", (np.arange(25).reshape(5, 5),), ()),
-                      ("ii->i", (np.arange(25).reshape(5, 5),), (5,)),
-                      ("ij,j", (np.arange(25).reshape(5, 5), np.arange(5)), (5,))])
-@pytest.mark.parametrize(
-    "dtype", ['float32'])
-@pytest.mark.parametrize(
-    "with_out", [True, False])
-@pytest.mark.parametrize(
-    "tensor_fn", [ivy.array, helpers.var_fn])
+    "eq_n_op_n_shp",
+    [
+        ("ii", (np.arange(25).reshape(5, 5),), ()),
+        ("ii->i", (np.arange(25).reshape(5, 5),), (5,)),
+        ("ij,j", (np.arange(25).reshape(5, 5), np.arange(5)), (5,)),
+    ],
+)
+@pytest.mark.parametrize("dtype", ["float32"])
+@pytest.mark.parametrize("with_out", [True, False])
+@pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn])
 def test_einsum(eq_n_op_n_shp, dtype, with_out, tensor_fn, device, call):
     # smoke test
     eq, operands, true_shape = eq_n_op_n_shp
@@ -294,8 +269,12 @@ def test_einsum(eq_n_op_n_shp, dtype, with_out, tensor_fn, device, call):
     # cardinality test
     assert ret.shape == true_shape
     # value test
-    assert np.allclose(call(ivy.einsum, eq, *operands),
-                       ivy.functional.backends.numpy.einsum(eq, *[ivy.to_numpy(op) for op in operands]))
+    assert np.allclose(
+        call(ivy.einsum, eq, *operands),
+        ivy.functional.backends.numpy.einsum(
+            eq, *[ivy.to_numpy(op) for op in operands]
+        ),
+    )
     # out test
     if with_out:
         assert ret is out

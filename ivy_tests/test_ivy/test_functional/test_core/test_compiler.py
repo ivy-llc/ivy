@@ -32,7 +32,7 @@ def _fn_2(x, with_non_compiled: bool = False):
         pass
     if with_non_compiled:
         (x + 3) * 4  # ops not to be compiled into the graph
-    return (x + 10)**0.5 - 5
+    return (x + 10) ** 0.5 - 5
 
 
 # @pytest.mark.parametrize(
