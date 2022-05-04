@@ -152,12 +152,21 @@ def empty_like(
         return tf.experimental.numpy.empty_like(x, dtype=dtype)
 
 
-def linspace(start, stop, num, axis=None, device=None):
+def linspace(start, stop, num, axis=None, device=None, dtype=None, endpoint=True):
     if axis is None:
         axis = -1
     device = default_device(device)
     with tf.device(ivy.dev_from_str(device)):
-        return tf.linspace(start, stop, num, axis=axis)
+        start = tf.constant(start, dtype=dtype)
+        stop = tf.constant(stop, dtype=dtype)
+        if not endpoint:
+            ans = tf.linspace(start, stop, num+1, axis=axis)[:-1]
+        else:
+            ans = tf.linspace(start, stop, num, axis=axis)
+        if dtype is None:
+            dtype = tf.float32
+        ans = tf.cast(ans, dtype)
+        return ans
 
 
 def meshgrid(*arrays: tf.Tensor, indexing: str = "xy") -> List[tf.Tensor]:

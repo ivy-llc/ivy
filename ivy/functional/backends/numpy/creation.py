@@ -123,10 +123,13 @@ def empty_like(
     return _to_dev(np.empty_like(x, dtype=dtype), device)
 
 
-def linspace(start, stop, num, axis=None, device=None):
+def linspace(start, stop, num, axis=None, device=None, dtype=None, endpoint=True):
     if axis is None:
         axis = -1
-    return _to_dev(np.linspace(start, stop, num, axis=axis), device)
+    ans = np.linspace(start, stop, num, endpoint, dtype=dtype, axis=axis)
+    if dtype is None:
+        ans = np.float32(ans)
+    return _to_dev(ans, device)
 
 
 def meshgrid(*arrays: np.ndarray, indexing: str = "xy") -> List[np.ndarray]:

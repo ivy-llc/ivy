@@ -417,7 +417,7 @@ def linspace(start: Union[ivy.Array, ivy.NativeArray, int], stop: Union[ivy.Arra
         Tensor of evenly-spaced values.
 
     """
-    return _cur_framework(start).linspace(start, stop, num, axis, device)
+    return _cur_framework(start).linspace(start, stop, num, axis, device, dtype, endpoint)
 
 
 def meshgrid(
