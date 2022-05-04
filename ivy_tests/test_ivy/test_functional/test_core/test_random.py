@@ -58,7 +58,6 @@ def test_random_uniform(low, high, shape, dtype, tensor_fn, device, call):
     "tensor_fn", [ivy.array, helpers.var_fn, lambda x: x])
 def test_random_normal(mean, std, shape, dtype, tensor_fn, device, call):
     # smoke test
-    ivy.seed(0)
     if tensor_fn == helpers.var_fn and call is helpers.mx_call:
         # mxnet does not support 0-dimensional variables
         pytest.skip()
