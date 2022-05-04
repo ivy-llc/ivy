@@ -12,7 +12,7 @@ import ivy_tests.test_ivy.helpers as helpers
 
 # cross_entropy
 @given(t_n_p_n_res=st.sampled_from([([[0., 1., 0.]], [[0.3, 0.2, 0.5]], [1.609438])]),
-       dtype=st.sampled_from(['float32']),
+       dtype=st.sampled_from(['float32', 'float64']),
        tensor_fn=st.sampled_from([ivy.array, helpers.var_fn]))
 def test_cross_entropy(t_n_p_n_res, dtype, tensor_fn, device, call):
     # smoke test
@@ -30,7 +30,7 @@ def test_cross_entropy(t_n_p_n_res, dtype, tensor_fn, device, call):
 
 # binary_cross_entropy
 @given(t_n_p_n_res=st.sampled_from([([[0., 1., 0.]], [[0.3, 0.7, 0.5]], [[0.35667494, 0.35667494, 0.69314718]])]),
-       dtype=st.sampled_from(['float32']),
+       dtype=st.sampled_from(['float32', 'float64']),
        tensor_fn=st.sampled_from([ivy.array, helpers.var_fn]))
 def test_binary_cross_entropy(t_n_p_n_res, dtype, tensor_fn, device, call):
     # smoke test
@@ -48,9 +48,10 @@ def test_binary_cross_entropy(t_n_p_n_res, dtype, tensor_fn, device, call):
 
 # sparse_cross_entropy
 @given(t_n_p_n_res=st.sampled_from([([1], [[0.3, 0.2, 0.5]], [1.609438])]),
-       dtype=st.sampled_from(['float32']),
+       dtype=st.sampled_from(['float32', 'float64']),
        tensor_fn=st.sampled_from([ivy.array, helpers.var_fn]))
 def test_sparse_cross_entropy(t_n_p_n_res, dtype, tensor_fn, device, call):
+    # smoke test
     true, pred, true_target = t_n_p_n_res
     pred = tensor_fn(pred, dtype, device)
     true = ivy.array(true, 'int32', device)
