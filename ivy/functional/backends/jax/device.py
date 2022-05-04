@@ -14,6 +14,7 @@ from ivy.functional.ivy.device import Profiler as BaseProfiler
 # Helpers #
 # --------#
 
+
 def _to_array(x):
     if isinstance(x, jax.interpreters.ad.JVPTracer):
         return _to_array(x.primal)
@@ -24,6 +25,7 @@ def _to_array(x):
 
 # API #
 # ----#
+
 
 def dev(x, as_str=False):
     if isinstance(x, jax.interpreters.partial_eval.DynamicJaxprTracer):
@@ -57,15 +59,15 @@ def dev_to_str(device):
     if device is None:
         return None
     p, dev_id = (device.platform, device.id)
-    if p == 'cpu':
+    if p == "cpu":
         return p
-    return p + ':' + str(dev_id)
+    return p + ":" + str(dev_id)
 
 
 def dev_from_str(device):
     if not isinstance(device, str):
         return device
-    dev_split = device.split(':')
+    dev_split = device.split(":")
     device = dev_split[0]
     if len(dev_split) > 1:
         idx = int(dev_split[1])
@@ -86,26 +88,25 @@ def _dev_is_available(base_dev):
 
 
 def gpu_is_available() -> bool:
-    return _dev_is_available('gpu')
+    return _dev_is_available("gpu")
 
 
 def num_gpus() -> int:
     try:
-        return len(jax.devices('gpu'))
+        return len(jax.devices("gpu"))
     except RuntimeError:
         return 0
 
 
-def tpu_is_available() -> bool: 
-    return _dev_is_available('tpu')
+def tpu_is_available() -> bool:
+    return _dev_is_available("tpu")
 
 
 # noinspection PyMethodMayBeStatic
 class Profiler(BaseProfiler):
-
     def __init__(self, save_dir):
         super(Profiler, self).__init__(save_dir)
-        self._save_dir = os.path.join(self._save_dir, 'profile')
+        self._save_dir = os.path.join(self._save_dir, "profile")
 
     def start(self):
         jax.profiler.start_trace(self._save_dir)
