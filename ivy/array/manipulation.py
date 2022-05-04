@@ -9,11 +9,13 @@ import ivy
 
 
 class ArrayWithManipulation(abc.ABC):
-
-    def concat(self: ivy.Array,
-               xs: Union[Tuple[Union[ivy.Array, ivy.NativeArray, ivy.Container]],
-                         List[Union[ivy.Array, ivy.NativeArray, ivy.Container]]],
-               axis: Optional[int] = 0,
-               out: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None) \
-            -> Union[ivy.Array, ivy.Container]:
+    def concat(
+        self: ivy.Array,
+        xs: Union[
+            Tuple[Union[ivy.Array, ivy.NativeArray, ivy.Container]],
+            List[Union[ivy.Array, ivy.NativeArray, ivy.Container]],
+        ],
+        axis: Optional[int] = 0,
+        out: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
+    ) -> Union[ivy.Array, ivy.Container]:
         return ivy.concat([self] + xs, axis, out=out)
