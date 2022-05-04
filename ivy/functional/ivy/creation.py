@@ -378,10 +378,10 @@ def empty_like(
 
     Examples:
     ---------
-    >>> x = ivy.array([1,2,3], [4,5,6])
+    >>> x = ivy.array([[1,2,3], [4,5,6]])
     >>> y = ivy.empty_like(x)
     >>> print(y)
-    ivy.array([[-1073741821, -1073741821,           3],
+    ivy.array([[-1073741821, -1073741821,          3],
        [          0,           0, -1073741821]])
     """
     return _cur_framework(x).empty_like(x, dtype, device)
