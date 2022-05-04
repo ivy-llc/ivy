@@ -6,6 +6,7 @@ Collection of tests for unified gradient functions
 from numbers import Number
 import pytest
 import numpy as np
+from hypothesis import given, strategies as st
 
 # local
 import ivy
@@ -19,7 +20,7 @@ from ivy.container import Container
     "object_in", [[], [0.], [1], [True], [[1., 2.]]])
 @pytest.mark.parametrize(
     "dtype", ['float16', 'float32', 'float64'])
-def test_variable(object_in, dtype, dev, call):
+def test_variable(object_in, dtype, device, call):
     if call is helpers.tf_graph_call:
         # cannot create variables as part of compiled tf graph
         pytest.skip()
@@ -30,14 +31,14 @@ def test_variable(object_in, dtype, dev, call):
         # mxnet does not support 0-dimensional variables
         pytest.skip()
     # smoke test
-    ret = ivy.variable(ivy.array(object_in, dtype, dev))
+    ret = ivy.variable(ivy.array(object_in, dtype, device))
     # type test
     if call is not helpers.np_call:
         assert ivy.is_variable(ret)
     # cardinality test
     assert ret.shape == np.array(object_in).shape
     # value test
-    assert np.allclose(call(ivy.variable, ivy.array(object_in, dtype, dev)),
+    assert np.allclose(call(ivy.variable, ivy.array(object_in, dtype, device)),
                        np.array(object_in).astype(dtype))
     # compilation test
     if call in [helpers.torch_call]:
@@ -50,7 +51,7 @@ def test_variable(object_in, dtype, dev, call):
     "object_in", [[], [0.], [1], [True], [[1., 2.]]])
 @pytest.mark.parametrize(
     "dtype", ['float16', 'float32', 'float64'])
-def test_is_variable(object_in, dtype, dev, call):
+def test_is_variable(object_in, dtype, device, call):
     if call is helpers.tf_graph_call:
         # cannot create variables as part of compiled tf graph
         pytest.skip()
@@ -61,8 +62,8 @@ def test_is_variable(object_in, dtype, dev, call):
         # mxnet does not support 0-dimensional variables
         pytest.skip()
     # smoke test
-    non_var = ivy.array(object_in, dtype, dev)
-    var = ivy.variable(ivy.array(object_in, dtype, dev))
+    non_var = ivy.array(object_in, dtype, device)
+    var = ivy.variable(ivy.array(object_in, dtype, device))
     non_var_res = ivy.is_variable(non_var)
     var_res = ivy.is_variable(var)
     # type test
@@ -82,7 +83,7 @@ def test_is_variable(object_in, dtype, dev, call):
     "object_in", [[], [0.], [1], [True], [[1., 2.]]])
 @pytest.mark.parametrize(
     "dtype", ['float16', 'float32', 'float64'])
-def test_variable_data(object_in, dtype, dev, call):
+def test_variable_data(object_in, dtype, device, call):
     if call is helpers.tf_graph_call:
         # cannot create variables as part of compiled tf graph
         pytest.skip()
@@ -93,7 +94,7 @@ def test_variable_data(object_in, dtype, dev, call):
         # mxnet does not support 0-dimensional variables
         pytest.skip()
     # smoke test
-    var = ivy.variable(ivy.array(object_in, dtype, dev))
+    var = ivy.variable(ivy.array(object_in, dtype, device))
     var_data = ivy.variable_data(var)
     # type test
     if call is not helpers.np_call:
@@ -116,10 +117,10 @@ def test_variable_data(object_in, dtype, dev, call):
     "dtype", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [('array', ivy.array), ('var', helpers.var_fn)])
-def test_stop_gradient(x_raw, dtype, tensor_fn, dev, call):
+def test_stop_gradient(x_raw, dtype, tensor_fn, device, call):
     # smoke test
     fn_name, tensor_fn = tensor_fn
-    x = tensor_fn(x_raw, dtype, dev)
+    x = tensor_fn(x_raw, dtype, device)
     ret = ivy.stop_gradient(x)
     # type test
     if fn_name == 'array':
@@ -152,7 +153,7 @@ def test_stop_gradient(x_raw, dtype, tensor_fn, dev, call):
     "dtype", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array])
-def test_execute_with_gradients(func_n_xs_n_ty_n_te_n_tg, dtype, tensor_fn, dev, compile_graph, call):
+def test_execute_with_gradients(func_n_xs_n_ty_n_te_n_tg, dtype, tensor_fn, device, compile_graph, call):
     # smoke test
     func, xs_raw, true_y, true_extra, true_dydxs = func_n_xs_n_ty_n_te_n_tg
     xs = xs_raw.map(lambda x, _: ivy.variable(ivy.array(x)))
@@ -198,7 +199,7 @@ def test_execute_with_gradients(func_n_xs_n_ty_n_te_n_tg, dtype, tensor_fn, dev,
     "dtype", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_gradient_descent_update(ws_n_grads_n_lr_n_wsnew, dtype, tensor_fn, dev, call):
+def test_gradient_descent_update(ws_n_grads_n_lr_n_wsnew, dtype, tensor_fn, device, call):
     # smoke test
     ws_raw, dcdws_raw, lr, ws_raw_new = ws_n_grads_n_lr_n_wsnew
     ws = ws_raw.map(lambda x, _: ivy.variable(ivy.array(x)))
@@ -227,7 +228,7 @@ def test_gradient_descent_update(ws_n_grads_n_lr_n_wsnew, dtype, tensor_fn, dev,
     "dtype", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_layerwise_gradient_descent_update(ws_n_grads_n_lr_n_wsnew, dtype, tensor_fn, dev, call):
+def test_layerwise_gradient_descent_update(ws_n_grads_n_lr_n_wsnew, dtype, tensor_fn, device, call):
     # smoke test
     ws_raw, dcdws_raw, lr_raw, ws_raw_new = ws_n_grads_n_lr_n_wsnew
     ws = ws_raw.map(lambda x, _: ivy.variable(ivy.array(x)))
@@ -257,7 +258,7 @@ def test_layerwise_gradient_descent_update(ws_n_grads_n_lr_n_wsnew, dtype, tenso
     "dtype", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_lars_update(ws_n_grads_n_lr_n_wsnew, dtype, tensor_fn, dev, call):
+def test_lars_update(ws_n_grads_n_lr_n_wsnew, dtype, tensor_fn, device, call):
     # smoke test
     ws_raw, dcdws_raw, lr_raw, ws_raw_new = ws_n_grads_n_lr_n_wsnew
     ws = ws_raw.map(lambda x, _: ivy.variable(ivy.array(x)))
@@ -286,7 +287,7 @@ def test_lars_update(ws_n_grads_n_lr_n_wsnew, dtype, tensor_fn, dev, call):
     "dtype", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_adam_update(ws_n_grads_n_lr_n_wsnew, dtype, tensor_fn, dev, call):
+def test_adam_update(ws_n_grads_n_lr_n_wsnew, dtype, tensor_fn, device, call):
     # smoke test
     ws_raw, dcdws_raw, lr, ws_raw_new = ws_n_grads_n_lr_n_wsnew
     ws = ws_raw.map(lambda x, _: ivy.variable(ivy.array(x)))
@@ -323,7 +324,7 @@ def test_adam_update(ws_n_grads_n_lr_n_wsnew, dtype, tensor_fn, dev, call):
     "dtype", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_layerwise_adam_update(ws_n_grads_n_lr_n_wsnew, dtype, tensor_fn, dev, call):
+def test_layerwise_adam_update(ws_n_grads_n_lr_n_wsnew, dtype, tensor_fn, device, call):
     # smoke test
     ws_raw, dcdws_raw, lr_raw, ws_raw_new = ws_n_grads_n_lr_n_wsnew
     ws = ws_raw.map(lambda x, _: ivy.variable(ivy.array(x)))
@@ -361,7 +362,7 @@ def test_layerwise_adam_update(ws_n_grads_n_lr_n_wsnew, dtype, tensor_fn, dev, c
     "dtype", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_lamb_update(ws_n_grads_n_lr_n_wsnew, dtype, tensor_fn, dev, call):
+def test_lamb_update(ws_n_grads_n_lr_n_wsnew, dtype, tensor_fn, device, call):
     # smoke test
     ws_raw, dcdws_raw, lr_raw, ws_raw_new = ws_n_grads_n_lr_n_wsnew
     ws = ws_raw.map(lambda x, _: ivy.variable(ivy.array(x)))

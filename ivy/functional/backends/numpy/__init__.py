@@ -14,48 +14,95 @@ Device = str
 Dtype = np.dtype
 
 # data types
-int8 = np.dtype('int8')
-int16 = np.dtype('int16')
-int32 = np.dtype('int32')
-int64 = np.dtype('int64')
-uint8 = np.dtype('uint8')
-uint16 = np.dtype('uint16')
-uint32 = np.dtype('uint32')
-uint64 = np.dtype('uint64')
-float16 = np.dtype('float16')
-float32 = np.dtype('float32')
-float64 = np.dtype('float64')
+int8 = np.dtype("int8")
+int16 = np.dtype("int16")
+int32 = np.dtype("int32")
+int64 = np.dtype("int64")
+uint8 = np.dtype("uint8")
+uint16 = np.dtype("uint16")
+uint32 = np.dtype("uint32")
+uint64 = np.dtype("uint64")
+float16 = np.dtype("float16")
+float32 = np.dtype("float32")
+float64 = np.dtype("float64")
 # noinspection PyShadowingBuiltins
-bool = np.dtype('bool')
+bool = np.dtype("bool")
 
-valid_dtypes = (int8, int16, int32, int64,
-                uint8, uint16, uint32, uint64,
-                float16, float32, float64,
-                bool)
-valid_numeric_dtypes = (int8, int16, int32, int64,
-                        uint8, uint16, uint32, uint64,
-                        float16, float32, float64)
-valid_int_dtypes = (int8, int16, int32, int64,
-                    uint8, uint16, uint32, uint64)
+valid_dtypes = (
+    int8,
+    int16,
+    int32,
+    int64,
+    uint8,
+    uint16,
+    uint32,
+    uint64,
+    float16,
+    float32,
+    float64,
+    bool,
+)
+valid_numeric_dtypes = (
+    int8,
+    int16,
+    int32,
+    int64,
+    uint8,
+    uint16,
+    uint32,
+    uint64,
+    float16,
+    float32,
+    float64,
+)
+valid_int_dtypes = (int8, int16, int32, int64, uint8, uint16, uint32, uint64)
 valid_float_dtypes = (float16, float32, float64)
 
 # valid
-valid_dtype_strs = ('int8', 'int16', 'int32', 'int64',
-                    'uint8', 'uint16', 'uint32', 'uint64',
-                    'float16', 'float32', 'float64',
-                    'bool')
-valid_numeric_dtype_strs = ('int8', 'int16', 'int32', 'int64',
-                            'uint8', 'uint16', 'uint32', 'uint64',
-                            'float16', 'float32', 'float64')
-valid_int_dtype_strs = ('int8', 'int16', 'int32', 'int64',
-                        'uint8', 'uint16', 'uint32', 'uint64')
-valid_float_dtype_strs = ('float16', 'float32', 'float64')
+valid_dtype_strs = (
+    "int8",
+    "int16",
+    "int32",
+    "int64",
+    "uint8",
+    "uint16",
+    "uint32",
+    "uint64",
+    "float16",
+    "float32",
+    "float64",
+    "bool",
+)
+valid_numeric_dtype_strs = (
+    "int8",
+    "int16",
+    "int32",
+    "int64",
+    "uint8",
+    "uint16",
+    "uint32",
+    "uint64",
+    "float16",
+    "float32",
+    "float64",
+)
+valid_int_dtype_strs = (
+    "int8",
+    "int16",
+    "int32",
+    "int64",
+    "uint8",
+    "uint16",
+    "uint32",
+    "uint64",
+)
+valid_float_dtype_strs = ("float16", "float32", "float64")
 
 # invalid
-invalid_dtype_strs = ('bfloat16',)
-invalid_numeric_dtype_strs = ('bfloat16',)
+invalid_dtype_strs = ("bfloat16",)
+invalid_numeric_dtype_strs = ("bfloat16",)
 invalid_int_dtype_strs = ()
-invalid_float_dtype_strs = ('bfloat16',)
+invalid_float_dtype_strs = ("bfloat16",)
 
 
 def closest_valid_dtype(type):
@@ -63,11 +110,11 @@ def closest_valid_dtype(type):
         return ivy.default_dtype()
     type_str = dtype_to_str(type)
     if type_str in invalid_dtype_strs:
-        return {'bfloat16': float16}[type_str]
+        return {"bfloat16": float16}[type_str]
     return type
 
 
-backend = 'numpy'
+backend = "numpy"
 
 
 # local sub-modules
