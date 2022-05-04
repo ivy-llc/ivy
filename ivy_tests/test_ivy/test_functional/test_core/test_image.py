@@ -60,14 +60,11 @@ def test_bilinear_resample(x_n_warp, dtype, tensor_fn, device, call):
 
 
 # gradient_image
-@pytest.mark.parametrize(
-    "x_n_dy_n_dx", [([[[[0.], [1.], [2.]], [[5.], [4.], [3.]], [[6.], [8.], [7.]]]],
-                     [[[[5.], [3.], [1.]], [[1.], [4.], [4.]], [[0.], [0.], [0.]]]],
-                     [[[[1.], [1.], [0.]], [[-1.], [-1.], [0.]], [[2.], [-1.], [0.]]]])])
-@pytest.mark.parametrize(
-    "dtype", ['float32'])
-@pytest.mark.parametrize(
-    "tensor_fn", [ivy.array, helpers.var_fn])
+@given(x_n_dy_n_dx=st.sampled_from([([[[[0.], [1.], [2.]], [[5.], [4.], [3.]], [[6.], [8.], [7.]]]],
+                                     [[[[5.], [3.], [1.]], [[1.], [4.], [4.]], [[0.], [0.], [0.]]]],
+                                     [[[[1.], [1.], [0.]], [[-1.], [-1.], [0.]], [[2.], [-1.], [0.]]]])]),
+       dtype=st.sampled_from(['float32', 'float64']),
+       tensor_fn=st.sampled_from([ivy.array, helpers.var_fn]))
 def test_gradient_image(x_n_dy_n_dx, dtype, tensor_fn, device, call):
     # smoke test
     x, dy_true, dx_true = x_n_dy_n_dx
