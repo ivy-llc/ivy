@@ -814,8 +814,16 @@ def cos(
 
     Returns
     -------
-      return
+    ret
         an array containing the cosine of each element in ``x``. The returned array must have a floating-point data type determined by :ref:`type-promotion`.
+    
+    Examples
+    --------
+    >>> x = ivy.array([0., 1., 2.])
+    >>> y = ivy.cos(x)
+    >>> print(y)
+    ivy.array([1., 0.54030231, -0.41614684])
+    
     """
     return _cur_framework(x).cos(x, out)
 
