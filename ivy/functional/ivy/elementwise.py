@@ -791,7 +791,7 @@ def cos(x: Union[ivy.Array, ivy.NativeArray],
     
     Examples
     --------
-    >>> x = ivy.array([0. ,1. ,2. ])
+    >>> x = ivy.array([0., 1., 2.])
     >>> y = ivy.cos(x)
     >>> print(y)
     ivy.array([1., 0.54030231, -0.41614684])
