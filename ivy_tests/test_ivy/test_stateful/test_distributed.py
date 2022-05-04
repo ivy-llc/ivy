@@ -12,8 +12,15 @@ from ivy_tests.test_ivy.test_stateful.test_converters import NATIVE_MODULES
 
 
 class TrainableModule(ivy.Module):
-
-    def __init__(self, in_size, out_size, device=None, build_mode='explicit', hidden_size=64, store_vars=True):
+    def __init__(
+        self,
+        in_size,
+        out_size,
+        device=None,
+        build_mode="explicit",
+        hidden_size=64,
+        store_vars=True,
+    ):
         self._in_size = in_size
         self._out_size = out_size
         self._hidden_size = hidden_size
@@ -21,7 +28,9 @@ class TrainableModule(ivy.Module):
 
     def _build(self):
         self._linear0 = ivy.Linear(self._in_size, self._hidden_size, device=self._dev)
-        self._linear1 = ivy.Linear(self._hidden_size, self._hidden_size, device=self._dev)
+        self._linear1 = ivy.Linear(
+            self._hidden_size, self._hidden_size, device=self._dev
+        )
         self._linear2 = ivy.Linear(self._hidden_size, self._out_size, device=self._dev)
 
     def _forward(self, x):
@@ -32,8 +41,15 @@ class TrainableModule(ivy.Module):
 
 
 class TrainableModuleWithSplit(ivy.Module):
-
-    def __init__(self, in_size, out_size, device=None, build_mode='explicit', hidden_size=64, store_vars=True):
+    def __init__(
+        self,
+        in_size,
+        out_size,
+        device=None,
+        build_mode="explicit",
+        hidden_size=64,
+        store_vars=True,
+    ):
         self._in_size = in_size
         self._out_size = out_size
         self._hidden_size = hidden_size
@@ -41,7 +57,9 @@ class TrainableModuleWithSplit(ivy.Module):
 
     def _build(self):
         self._linear0 = ivy.Linear(self._in_size, self._hidden_size, device=self._dev)
-        self._linear1 = ivy.Linear(self._hidden_size, self._hidden_size, device=self._dev)
+        self._linear1 = ivy.Linear(
+            self._hidden_size, self._hidden_size, device=self._dev
+        )
         self._linear2 = ivy.Linear(self._hidden_size, self._out_size, device=self._dev)
 
     def _forward_unsplit(self, x):
@@ -51,7 +69,7 @@ class TrainableModuleWithSplit(ivy.Module):
         return ivy.tanh(self._linear2(x))[0]
 
     def _forward(self, x):
-        return ivy.split_func_call(self._forward_unsplit, [x], 'concat', x.shape[0])
+        return ivy.split_func_call(self._forward_unsplit, [x], "concat", x.shape[0])
 
 
 def loss_fn(module, x_, v_):
@@ -64,8 +82,7 @@ def map_fn(module, device, xn, vc):
 
 
 # distributed training
-@pytest.mark.parametrize(
-    "bs_ic_oc", [([2, 1], 4, 5)])
+@pytest.mark.parametrize("bs_ic_oc", [([2, 1], 4, 5)])
 def test_distributed_training(bs_ic_oc, device, call):
     # smoke test
     if call is helpers.np_call:
@@ -82,19 +99,33 @@ def test_distributed_training(bs_ic_oc, device, call):
 
     # first input
     batch_shape, input_channels, output_channels = bs_ic_oc
-    dev_batch_shape = [int(batch_shape[0]/2)] + batch_shape[1:]
-    xs[dev0] = ivy.asarray(ivy.linspace(ivy.zeros(dev_batch_shape), ivy.ones(dev_batch_shape),
-                                         input_channels, device=dev0), 'float32')
+    dev_batch_shape = [int(batch_shape[0] / 2)] + batch_shape[1:]
+    xs[dev0] = ivy.asarray(
+        ivy.linspace(
+            ivy.zeros(dev_batch_shape),
+            ivy.ones(dev_batch_shape),
+            input_channels,
+            device=dev0,
+        ),
+        "float32",
+    )
 
     # second device
-    if 'gpu' in device and ivy.num_gpus() > 1:
+    if "gpu" in device and ivy.num_gpus() > 1:
         idx = ivy.num_gpus() - 1
         dev1 = device[:-1] + str(idx)
         devices.append(dev1)
 
         # second input
-        xs[dev1] = ivy.asarray(ivy.linspace(ivy.zeros(dev_batch_shape), ivy.ones(dev_batch_shape),
-                                             input_channels, device=dev1), 'float32')
+        xs[dev1] = ivy.asarray(
+            ivy.linspace(
+                ivy.zeros(dev_batch_shape),
+                ivy.ones(dev_batch_shape),
+                input_channels,
+                device=dev1,
+            ),
+            "float32",
+        )
 
     # combined inputs
     x = ivy.DevDistItem(xs)
@@ -112,10 +143,14 @@ def test_distributed_training(bs_ic_oc, device, call):
     grads = None
     for i in range(10):
         loss_n_grads = ivy.MultiDevIter(
-            ivy.map(map_fn,
-                    constant={'module': module, 'device': dev0},
-                    unique={'xn': x.values(), 'vc': module.v.dev_clone(devices).values()}), devices)
-        loss, grads = ivy.dev_unify_iter(loss_n_grads, dev0, 'mean', transpose=True)
+            ivy.map(
+                map_fn,
+                constant={"module": module, "device": dev0},
+                unique={"xn": x.values(), "vc": module.v.dev_clone(devices).values()},
+            ),
+            devices,
+        )
+        loss, grads = ivy.dev_unify_iter(loss_n_grads, dev0, "mean", transpose=True)
         module.v = optim.step(module.v, grads)
         assert loss < loss_tm1
         loss_tm1 = loss
@@ -516,18 +551,23 @@ def test_distributed_training(bs_ic_oc, device, call):
 # device manager unwrapped tuning
 @pytest.mark.parametrize(
     # "bs_ic_oc", [([384, 1], 2048, 2048)])
-    "bs_ic_oc", [([2, 1], 4, 5)])
+    "bs_ic_oc",
+    [([2, 1], 4, 5)],
+)
 def test_device_manager_unwrapped_tuning(bs_ic_oc, device, call):
     # smoke test
     if call is helpers.np_call:
         # NumPy does not support gradients
         pytest.skip()
 
-
     # input
     batch_shape, input_channels, output_channels = bs_ic_oc
-    x = ivy.astype(ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape),
-                              input_channels, device=device), 'float32')
+    x = ivy.astype(
+        ivy.linspace(
+            ivy.zeros(batch_shape), ivy.ones(batch_shape), input_channels, device=device
+        ),
+        "float32",
+    )
 
     # optimizer
     optim = ivy.SGD(1e-4)
@@ -536,8 +576,9 @@ def test_device_manager_unwrapped_tuning(bs_ic_oc, device, call):
     dev_manager = ivy.DevManager(devices=[device], tune_dev_alloc=False)
 
     # module
-    module = TrainableModuleWithSplit(input_channels, output_channels,
-                                      device=device, store_vars=True)  # , hidden_size=2048)
+    module = TrainableModuleWithSplit(
+        input_channels, output_channels, device=device, store_vars=True
+    )  # , hidden_size=2048)
     module.build()
 
     # train
