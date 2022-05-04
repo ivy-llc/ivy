@@ -64,9 +64,9 @@ def random_normal(
     Parameters
     -----------
     mean
-        The mean of the normal distribution to sample from. Default is 0.
+        The mean of the normal distribution to sample from. Default is ``0``.
     std
-        The standard deviation of the normal distribution to sample from. Default is 1.
+        The standard deviation of the normal distribution to sample from. Default is ``1``.
     shape
         Output shape. If the given shape is, e.g., ``(m, n, k)``, then ``m * n * k`` samples are drawn.
         If size is ``None`` (default), a single value is returned.
@@ -82,7 +82,7 @@ def random_normal(
     --------
     >>> y = ivy.random_normal(0.0, 2.0)
     >>> print(y)
-    ivy.array(0.64447747)
+    ivy.array(0.6444774682897879)
 
     """
     return _cur_framework().random_normal(mean, std, shape, device)
