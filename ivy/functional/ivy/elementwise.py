@@ -143,10 +143,10 @@ def exp(
     
     Examples
     --------
-    >>> x = ivy.array([0., 1., 2.])
+    >>> x = ivy.array([1., 2., 3.])
     >>> y = ivy.exp(x)
     >>> print(y)
-    ivy.array([1.0000, 2.7183, 7.3891])
+    ivy.array([2.71828183, 7.3890561 , 20.08553692])
 
     """
     return _cur_framework(x).exp(x, out)
