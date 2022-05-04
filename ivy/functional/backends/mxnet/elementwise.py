@@ -346,18 +346,6 @@ def abs(
         return ivy.inplace_update(out, ret)
     return ret
 
-def exp(x: mx.ndarray.ndarray.NDArray,
-        out: Optional[mx.ndarray.ndarray.NDArray] = None) \
-        -> mx.nd.ndarray.NDArray:
-    if isinstance(x,float):
-        ret = math.exp(x)
-    else:
-        ret = mx.nd.exp(x)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
-
-
 def cos(x: mx.ndarray.ndarray.NDArray,
           out: Optional[mx.ndarray.ndarray.NDArray] = None)\
       -> mx.ndarray.ndarray.NDArray:
@@ -365,6 +353,17 @@ def cos(x: mx.ndarray.ndarray.NDArray,
         ret = math.cos(x)
     else:
         ret = mx.nd.cos(x)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
+
+def exp(x: mx.ndarray.ndarray.NDArray,
+          out: Optional[mx.ndarray.ndarray.NDArray] = None)\
+      -> mx.ndarray.ndarray.NDArray:
+    if isinstance(x, float):
+        ret = math.exp(x)
+    else:
+        ret = mx.nd.exp(x)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
     return ret
