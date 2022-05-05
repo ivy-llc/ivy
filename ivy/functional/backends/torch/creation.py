@@ -244,7 +244,10 @@ def linspace(start, stop, num, axis=None, device=None, dtype=None, endpoint=True
     else:
         ans = linspace_helper(start, stop, num, axis, device, dtype=dtype)
     if dtype is None:
-        ans = ans.type(torch.float32)
+        dtype = torch.float32
+    ans = ans.type(dtype)
+    if endpoint and ans.shape[0] >= 1:
+        ans[-1] = stop
     return ans
 
 
