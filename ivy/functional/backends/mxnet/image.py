@@ -1,6 +1,5 @@
-"""
-Collection of MXNet image functions, wrapped to fit Ivy syntax and signature.
-"""
+"""Collection of MXNet image functions, wrapped to fit Ivy syntax and
+signature."""
 
 import math
 from functools import reduce as _reduce

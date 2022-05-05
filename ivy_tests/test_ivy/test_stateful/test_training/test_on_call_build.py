@@ -1,6 +1,5 @@
-"""
-Collection of tests for training neural network layers with "on call" building
-"""
+"""Collection of tests for training neural network layers with "on call"
+building."""
 
 # global
 import pytest
