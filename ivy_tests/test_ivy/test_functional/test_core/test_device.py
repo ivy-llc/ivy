@@ -1,6 +1,4 @@
-"""
-Collection of tests for unified device functions
-"""
+"""Collection of tests for unified device functions."""
 
 # global
 import math

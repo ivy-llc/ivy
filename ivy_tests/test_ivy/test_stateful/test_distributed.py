@@ -1,6 +1,4 @@
-"""
-Collection of tests for Ivy distributed training
-"""
+"""Collection of tests for Ivy distributed training."""
 
 # global
 import pytest
