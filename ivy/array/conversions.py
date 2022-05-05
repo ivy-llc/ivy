@@ -1,6 +1,5 @@
-"""
-Collection of Ivy functions for wrapping functions to accept and return ivy.Array instances.
-"""
+"""Collection of Ivy functions for wrapping functions to accept and return
+ivy.Array instances."""
 
 # global
 from typing import Any, Union, Tuple, Dict, Iterable
@@ -44,9 +43,10 @@ def to_ivy(
     nested: bool = False,
     include_derived: Dict[type, bool] = None,
 ) -> Union[Union[ivy.Array, ivy.NativeArray], Iterable]:
-    """Returns the input array converted to an ivy.Array instances if it is an array type, otherwise the input is
-    returned unchanged. If nested is set, the check is applied to all nested leafs of tuples,
-    lists and dicts contained within x.
+    """Returns the input array converted to an ivy.Array instances if it is an
+    array type, otherwise the input is returned unchanged. If nested is set,
+    the check is applied to all nested leafs of tuples, lists and dicts
+    contained within x.
 
     Parameters
     ----------
@@ -74,8 +74,8 @@ def args_to_ivy(
     include_derived: Dict[type, bool] = None,
     **kwargs: Dict[str, Any],
 ) -> Tuple[Iterable[Any], Dict[str, Any]]:
-    """Returns args and keyword args in their ivy.Array or ivy.Variable form for all nested instances,
-    otherwise the arguments are returned unchanged.
+    """Returns args and keyword args in their ivy.Array or ivy.Variable form
+    for all nested instances, otherwise the arguments are returned unchanged.
 
     Parameters
     ----------
@@ -101,9 +101,10 @@ def to_native(
     nested: bool = False,
     include_derived: Dict[type, bool] = None,
 ) -> Union[Union[ivy.Array, ivy.NativeArray], Iterable]:
-    """Returns the input item in it's native backend framework form if it is an ivy.Array or ivy.Variable instance.
-    otherwise the input is returned unchanged. If nested is set, the check is applied to all nested leafs of tuples,
-    lists and dicts contained within x.
+    """Returns the input item in it's native backend framework form if it is an
+    ivy.Array or ivy.Variable instance. otherwise the input is returned
+    unchanged. If nested is set, the check is applied to all nested leafs of
+    tuples, lists and dicts contained within x.
 
     Parameters
     ----------
@@ -120,7 +121,6 @@ def to_native(
     -------
      ret
         the input in it's native framework form in the case of ivy.Array or ivy.Variable instances.
-
     """
     if nested:
         return ivy.nested_map(x, _to_native, include_derived)
@@ -132,8 +132,9 @@ def args_to_native(
     include_derived: Dict[type, bool] = None,
     **kwargs: Dict[str, Any],
 ) -> Tuple[Iterable[Any], Dict[str, Any]]:
-    """Returns args and keyword args in their native backend framework form for all nested ivy.Array or ivy.Variable
-    instances, otherwise the arguments are returned unchanged.
+    """Returns args and keyword args in their native backend framework form for
+    all nested ivy.Array or ivy.Variable instances, otherwise the arguments are
+    returned unchanged.
 
     Parameters
     ----------
@@ -148,7 +149,6 @@ def args_to_native(
     -------
      ret
         the same arguments, with any nested ivy.Array or ivy.Variable instances converted to their native form.
-
     """
     native_args = ivy.nested_map(args, _to_native, include_derived)
     native_kwargs = ivy.nested_map(kwargs, _to_native, include_derived)

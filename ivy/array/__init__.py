@@ -142,8 +142,7 @@ class Array(
 
     @property
     def size(self):
-        """
-        Number of elements in an array.
+        """Number of elements in an array.
 
         .. note::
            This must equal the product of the array's dimensions.
