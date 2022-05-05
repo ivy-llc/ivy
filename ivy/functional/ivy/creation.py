@@ -19,7 +19,8 @@ def arange(
     dtype: ivy.Dtype = None,
     device: ivy.Device = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
-    """Returns evenly spaced values within a given interval, with the spacing being specified.
+    """Returns evenly spaced values within a given interval, with the spacing
+    being specified.
 
     Values are generated within the half-open interval [start, stop) (in other words, the interval including start but
     excluding stop). For integer arguments the function is equivalent to the Python built-in range function,
@@ -44,6 +45,7 @@ def arange(
     ----------
     ret
         a one-dimensional array containing evenly spaced values. The length of the output array must be ceil((stop-start)/step) if stop - start and step have the same sign, and length 0 otherwise.
+
     """
     return _cur_framework().arange(start, stop, step, dtype, device)
 
@@ -53,8 +55,7 @@ def asarray(
     dtype: Optional[Union[ivy.Dtype, str]] = None,
     device: Optional[Union[ivy.Device, str]] = None,
 ) -> ivy.Array:
-    """
-    Converts the input to an array.
+    """Converts the input to an array.
 
     Parameters
     ----------
@@ -71,6 +72,7 @@ def asarray(
     Returns
     --------
     An array interpretation of x.
+
     """
     return _cur_framework(x).asarray(x, dtype, device)
 
@@ -80,8 +82,7 @@ def zeros(
     dtype: Optional[ivy.Dtype] = None,
     device: Optional[ivy.Device] = None,
 ) -> ivy.Array:
-    """
-    Returns a new array having a specified ``shape`` and filled with zeros.
+    """Returns a new array having a specified ``shape`` and filled with zeros.
 
     Parameters
     ----------
@@ -105,6 +106,7 @@ def zeros(
     ivy.array([[0., 0., 0., 0., 0.],
                [0., 0., 0., 0., 0.],
                [0., 0., 0., 0., 0.]])
+
     """
     return _cur_framework().zeros(shape, dtype, device)
 
@@ -114,8 +116,7 @@ def ones(
     dtype: Optional[ivy.Dtype] = None,
     device: Optional[ivy.Device] = None,
 ) -> ivy.Array:
-    """
-    Returns a new array having a specified ``shape`` and filled with ones.
+    """Returns a new array having a specified ``shape`` and filled with ones.
 
     Parameters
     ----------
@@ -139,6 +140,7 @@ def ones(
     >>> print(y)
     ivy.array([[1.,  1.],
                [1.,  1.]])
+
     """
     return _cur_framework().ones(shape, dtype, device)
 
@@ -149,8 +151,8 @@ def full_like(
     dtype: Optional[Union[ivy.Dtype, str]] = None,
     device: Optional[Union[ivy.Device, str]] = None,
 ) -> ivy.Array:
-    """
-    Returns a new array filled with ``fill_value`` and having the same ``shape`` as an input array ``x``.
+    """Returns a new array filled with ``fill_value`` and having the same
+    ``shape`` as an input array ``x``.
 
     Parameters
     ----------
@@ -180,6 +182,7 @@ def full_like(
     >>> y = ivy.full_like(x, fill_value)
     >>> print(y)
     ivy.array([1, 1, 1, 1, 1, 1])
+
     """
     return _cur_framework(x).full_like(x, fill_value, dtype=dtype, device=device)
 
@@ -189,8 +192,8 @@ def ones_like(
     dtype: Optional[Union[ivy.Dtype, str]] = None,
     device: Optional[Union[ivy.Device, str]] = None,
 ) -> ivy.Array:
-    """
-    Returns a new array filled with ones and having the same shape as an input array x.
+    """Returns a new array filled with ones and having the same shape as an
+    input array x.
 
     Parameters
     ----------
@@ -215,6 +218,7 @@ def ones_like(
     >>> y = ivy.ones_like(x)
     >>> print(y)
     ivy.array([[1, 1, 1],[1, 1, 1]])
+
     """
     return _cur_framework(x).ones_like(x, dtype, device)
 
@@ -224,8 +228,8 @@ def zeros_like(
     dtype: Optional[Union[ivy.Dtype, str]] = None,
     device: Optional[Union[ivy.Device, str]] = None,
 ) -> ivy.Array:
-    """
-    Returns a new array filled with zeros and having the same ``shape`` as an input array ``x``.
+    """Returns a new array filled with zeros and having the same ``shape`` as
+    an input array ``x``.
 
     Parameters
     ----------
@@ -252,13 +256,14 @@ def zeros_like(
     >>> print(y)
     ivy.array([[0, 0, 0],
                [0, 0, 0]])
+
     """
     return _cur_framework(x).zeros_like(x, dtype, device)
 
 
 def tril(x: Union[ivy.Array, ivy.NativeArray], k: int = 0) -> ivy.Array:
-    """
-    Returns the lower triangular part of a matrix (or a stack of matrices) x.
+    """Returns the lower triangular part of a matrix (or a stack of matrices)
+    x.
 
     Parameters
     ----------
@@ -274,13 +279,14 @@ def tril(x: Union[ivy.Array, ivy.NativeArray], k: int = 0) -> ivy.Array:
         an array containing the lower triangular part(s). The returned array must have the same shape and data type as
         x. All elements above the specified diagonal k must be zeroed. The returned array should be allocated on the
         same device as x.
+
     """
     return _cur_framework(x).tril(x, k)
 
 
 def triu(x: Union[ivy.Array, ivy.NativeArray], k: int = 0) -> ivy.Array:
-    """
-    Returns the upper triangular part of a matrix (or a stack of matrices) x.
+    """Returns the upper triangular part of a matrix (or a stack of matrices)
+    x.
 
     Parameters
     ----------
@@ -296,6 +302,7 @@ def triu(x: Union[ivy.Array, ivy.NativeArray], k: int = 0) -> ivy.Array:
         an array containing the upper triangular part(s). The returned array must have the same shape and data type as
         x. All elements below the specified diagonal k must be zeroed. The returned array should be allocated on the
         same device as x.
+
     """
     return _cur_framework(x).triu(x, k)
 
@@ -358,7 +365,8 @@ def eye(
     dtype: Optional[ivy.Dtype] = None,
     device: Optional[ivy.Device] = None,
 ) -> ivy.Array:
-    """Returns a two-dimensional array with ones on the k h diagonal and zeros elsewhere.
+    """Returns a two-dimensional array with ones on the k h diagonal and zeros
+    elsewhere.
 
     Parameters
 
@@ -391,7 +399,8 @@ def eye(
 def linspace(start: Union[ivy.Array, ivy.NativeArray, int], stop: Union[ivy.Array, ivy.NativeArray, int],
              num: int, axis: int = None, device: ivy.Device = None, dtype = None, endpoint: bool = True) \
         -> Union[ivy.Array, ivy.NativeArray]:
-    """Generates a certain number of evenly-spaced values in an interval along a given axis.
+    """Generates a certain number of evenly-spaced values in an interval along
+    a given axis.
 
     See :math:`arange` that allows to specify the step size of evenly spaced values in an interval.
 
@@ -447,8 +456,8 @@ def full(
     dtype: Optional[ivy.Dtype] = None,
     device: Optional[ivy.Device] = None,
 ) -> ivy.Array:
-    """
-    Returns a new array having a specified ``shape`` and filled with ``fill_value``.
+    """Returns a new array having a specified ``shape`` and filled with
+    ``fill_value``.
 
     Parameters
     ----------
@@ -474,13 +483,14 @@ def full(
     >>> print(y)
     ivy.array([[10, 10],
                [10, 10]])
+
     """
     return _cur_framework().full(shape, fill_value, dtype, device)
 
 
 def from_dlpack(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
-    """
-    Returns a new array containing the data from another (array) object with a ``__dlpack__`` method.
+    """Returns a new array containing the data from another (array) object with
+    a ``__dlpack__`` method.
 
     Parameters
     ----------
@@ -496,6 +506,7 @@ def from_dlpack(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
            :class: note
 
            The returned array may be either a copy or a view. See :ref:`data-interchange` for details.
+
     """
     return _cur_framework(x).from_dlpack(x)
 
@@ -515,7 +526,8 @@ def logspace(
     axis: int = None,
     device: ivy.Device = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
-    """Generates a certain number of evenly-spaced values in log space, in an interval along a given axis.
+    """Generates a certain number of evenly-spaced values in log space, in an
+    interval along a given axis.
 
     See :math:`arange` that allows to specify the step size of evenly spaced values in an interval.
 
