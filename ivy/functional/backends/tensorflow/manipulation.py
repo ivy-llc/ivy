@@ -244,7 +244,7 @@ def clip(x, x_min, x_max, out: Optional[Tensor] = None):
     if hasattr(x_min,'dtype') and hasattr(x_max,'dtype'):
         promoted_type = tf.experimental.numpy.promote_types(x.dtype, x_min.dtype)
         promoted_type = tf.experimental.numpy.promote_types(promoted_type, x_max.dtype)
-    x = tf.cast(x,promoted_type)
+        x = tf.cast(x,promoted_type)
     if tf.size(x) == 0:
         ret = x
     elif x.dtype == tf.bool:
