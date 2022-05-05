@@ -1,6 +1,4 @@
-"""
-Collection of tests for unified neural network layers
-"""
+"""Collection of tests for unified neural network layers."""
 
 # global
 import pytest

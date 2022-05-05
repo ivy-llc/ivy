@@ -1,6 +1,4 @@
-"""
-Collection of tests for statstical functions
-"""
+"""Collection of tests for statstical functions."""
 # global
 import pytest
 import numpy as np

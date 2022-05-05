@@ -1,6 +1,4 @@
-"""
-Collection of tests for unified general functions
-"""
+"""Collection of tests for unified general functions."""
 
 # global
 import copy

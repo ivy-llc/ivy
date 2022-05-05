@@ -1,6 +1,4 @@
-"""
-Collection of tests for elementwise functions
-"""
+"""Collection of tests for elementwise functions."""
 
 # global
 import pytest
