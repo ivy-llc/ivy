@@ -1,6 +1,4 @@
-"""
-Collection of gradient Ivy functions.
-"""
+"""Collection of gradient Ivy functions."""
 
 # local
 import ivy
@@ -16,7 +14,7 @@ with_grads_stack = list()
 
 
 class GradientTracking:
-    """ """
+    """"""
 
     # noinspection PyShadowingNames
     def __init__(self, with_grads):
@@ -75,7 +73,7 @@ def set_with_grads(with_grads):
 
 
 def unset_with_grads():
-    """ """
+    """"""
     global with_grads_stack
     if with_grads_stack:
         with_grads_stack.pop(-1)
@@ -123,8 +121,10 @@ def is_variable(x, exclusive=False):
 
 
 def variable_data(x):
-    """Some backends wrap arrays in a dedicated variable class. For those frameworks, this function returns that wrapped
-    array. For frameworks which do not have a dedicated variable class, the function returns the data passed in.
+    """Some backends wrap arrays in a dedicated variable class. For those
+    frameworks, this function returns that wrapped array. For frameworks which
+    do not have a dedicated variable class, the function returns the data
+    passed in.
 
     Parameters
     ----------
@@ -166,8 +166,9 @@ def stop_gradient(x, preserve_type=True):
 
 
 def execute_with_gradients(func, xs, retain_grads=False):
-    """Call function func with input of xs variables, and return func first output y, the gradients [dy/dx for x in xs],
-    and any other function outputs after the returned y value
+    """Call function func with input of xs variables, and return func first
+    output y, the gradients [dy/dx for x in xs], and any other function outputs
+    after the returned y value.
 
     Parameters
     ----------
@@ -191,8 +192,9 @@ def execute_with_gradients(func, xs, retain_grads=False):
 
 
 def adam_step(dcdws, mw, vw, step, beta1=0.9, beta2=0.999, epsilon=1e-7):
-    """Compute adam step delta, given the derivatives of some cost c with respect to ws, using ADAM update.
-    `[reference] <https://en.wikipedia.org/wiki/Stochastic_gradient_descent#Adam>`_
+    """Compute adam step delta, given the derivatives of some cost c with
+    respect to ws, using ADAM update. `[reference]
+    <https://en.wikipedia.org/wiki/Stochastic_gradient_descent#Adam>`_
 
     Parameters
     ----------
@@ -231,7 +233,9 @@ def adam_step(dcdws, mw, vw, step, beta1=0.9, beta2=0.999, epsilon=1e-7):
 
 
 def optimizer_update(ws, effective_grads, lr, inplace=None, stop_gradients=True):
-    """Update weights ws of some function, given the true or effective derivatives of some cost c with respect to ws,
+    """Update weights ws of some function, given the true or effective
+    derivatives of some cost c with respect to ws,
+
     [dc/dw for w in ws].
 
     Parameters
@@ -271,7 +275,8 @@ def optimizer_update(ws, effective_grads, lr, inplace=None, stop_gradients=True)
 
 
 def gradient_descent_update(ws, dcdws, lr, inplace=None, stop_gradients=True):
-    """Update weights ws of some function, given the derivatives of some cost c with respect to ws, [dc/dw for w in ws].
+    """Update weights ws of some function, given the derivatives of some cost c
+    with respect to ws, [dc/dw for w in ws].
 
     Parameters
     ----------
@@ -299,8 +304,9 @@ def gradient_descent_update(ws, dcdws, lr, inplace=None, stop_gradients=True):
 
 
 def lars_update(ws, dcdws, lr, decay_lambda=0, inplace=None, stop_gradients=True):
-    """Update weights ws of some function, given the derivatives of some cost c with respect to ws, [dc/dw for w in ws],
-    by applying Layerwise Adaptive Rate Scaling (LARS) method.
+    """Update weights ws of some function, given the derivatives of some cost c
+    with respect to ws, [dc/dw for w in ws], by applying Layerwise Adaptive
+    Rate Scaling (LARS) method.
 
     Parameters
     ----------
@@ -346,8 +352,9 @@ def adam_update(
     inplace=None,
     stop_gradients=True,
 ):
-    """Update weights ws of some function, given the derivatives of some cost c with respect to ws, using ADAM update.
-    `[reference] <https://en.wikipedia.org/wiki/Stochastic_gradient_descent#Adam>`_
+    """Update weights ws of some function, given the derivatives of some cost c
+    with respect to ws, using ADAM update. `[reference]
+    <https://en.wikipedia.org/wiki/Stochastic_gradient_descent#Adam>`_
 
     Parameters
     ----------
@@ -404,8 +411,8 @@ def lamb_update(
     inplace=None,
     stop_gradients=True,
 ):
-    """Update weights ws of some function, given the derivatives of some cost c with respect to ws, [dc/dw for w in ws],
-    by applying LAMB method.
+    """Update weights ws of some function, given the derivatives of some cost c
+    with respect to ws, [dc/dw for w in ws], by applying LAMB method.
 
     Parameters
     ----------

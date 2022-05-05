@@ -1,6 +1,4 @@
-"""
-Collection of tests for module converters
-"""
+"""Collection of tests for module converters."""
 
 # global
 import pytest
