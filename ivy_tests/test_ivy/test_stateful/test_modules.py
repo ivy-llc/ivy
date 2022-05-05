@@ -1,6 +1,4 @@
-"""
-Collection of tests for Ivy modules
-"""
+"""Collection of tests for Ivy modules."""
 
 # global
 import pytest
