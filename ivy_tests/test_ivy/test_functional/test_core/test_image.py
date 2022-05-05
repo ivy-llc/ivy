@@ -1,6 +1,4 @@
-"""
-Collection of tests for unified image-related functions
-"""
+"""Collection of tests for unified image-related functions."""
 
 # global
 import pytest

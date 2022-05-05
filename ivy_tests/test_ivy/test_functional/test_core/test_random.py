@@ -1,6 +1,4 @@
-"""
-Collection of tests for unified reduction functions
-"""
+"""Collection of tests for unified reduction functions."""
 
 # global
 import pytest

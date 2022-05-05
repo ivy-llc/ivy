@@ -1,6 +1,4 @@
-"""
-Collection of Ivy activation functions.
-"""
+"""Collection of Ivy activation functions."""
 
 from typing import Union, Optional
 
@@ -17,8 +15,7 @@ def relu(
     x: Union[ivy.Array, ivy.NativeArray],
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
-    """
-    Applies the rectified linear unit function element-wise.
+    """Applies the rectified linear unit function element-wise.
 
      Parameters
      ----------
@@ -38,6 +35,7 @@ def relu(
     >>> y = ivy.relu(x)
     >>> print(y)
     ivy.array([0., 0., 1.])
+
     """
     return _cur_framework(x).relu(x, out)
 
@@ -89,8 +87,7 @@ def gelu(x, approximate=True):
 
 
 def tanh(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
-    """
-    Applies the Hyperbolic tangent activation function element-wise.
+    """Applies the Hyperbolic tangent activation function element-wise.
 
     Parameters
      ----------
@@ -108,13 +105,13 @@ def tanh(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
     >>> y = ivy.tanh(x)
     >>> print(y)
     ivy.array([0.50, -0.50])
+
     """
     return _cur_framework(x).tanh(x)
 
 
 def sigmoid(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
-    """
-    Applies the sigmoid function element-wise.
+    """Applies the sigmoid function element-wise.
 
     Parameters
     ----------
@@ -133,6 +130,7 @@ def sigmoid(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
     >>> y = ivy.sigmoid(x)
     >>> print(y)
     ivy.array([0.268, 0.5, 0.880])
+
     """
     return _cur_framework(x).sigmoid(x)
 
@@ -140,8 +138,7 @@ def sigmoid(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
 def softmax(
     x: Union[ivy.Array, ivy.NativeArray], axis: Optional[int] = -1
 ) -> ivy.Array:
-    """
-    Applies the softmax function element-wise.
+    """Applies the softmax function element-wise.
 
     Parameters
     ----------
@@ -160,6 +157,7 @@ def softmax(
     >>> y = ivy.softmax(x)
     >>> print(y)
     ivy.array([0.09003057, 0.24472847, 0.66524096])
+
     """
     return _cur_framework(x).softmax(x, axis)
 
@@ -181,5 +179,6 @@ def softplus(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
     >>> y = ivy.softplus(x)
     >>> print(y)
     ivy.array([0.5350, 0.4203])
+
     """
     return _cur_framework(x).softplus(x)
