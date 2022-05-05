@@ -13,8 +13,11 @@ from ivy.framework_handler import current_framework as _cur_framework
 def unique_all(
     x: Union[ivy.Array, ivy.NativeArray]
 ) -> Tuple[ivy.Array, ivy.Array, ivy.Array, ivy.Array]:
-    """
-    Returns the unique elements of an input array ``x``, the first occurring indices for each unique element in ``x``, the indices from the set of unique elements that reconstruct ``x``, and the corresponding counts for each unique element in ``x``.
+    """Returns the unique elements of an input array ``x``, the first occurring
+    indices for each unique element in ``x``, the indices from the set of
+    unique elements that reconstruct ``x``, and the corresponding counts for
+    each unique element in ``x``.
+
     .. admonition:: Data-dependent output shape
         :class: important
         The shapes of two of the output arrays for this function depend on the data values in the input array; hence, array libraries which build computation graphs (e.g., JAX, Dask, etc.) may find this function difficult to implement without knowing array values. Accordingly, such libraries may choose to omit this function. See :ref:`data-dependent-output-shapes` section for more details.
@@ -38,13 +41,15 @@ def unique_all(
         - fourth element must have the field name ``counts`` and must be an array containing the number of times each unique element occurs in ``x``. The returned array must have same shape as ``values`` and must have the default array index data type.
         .. note::
            The order of unique elements is not specified and may vary between implementations.
+
     """
     return _cur_framework(x).unique_all(x)
 
 
 def unique_inverse(x: Union[ivy.Array, ivy.NativeArray]) -> Tuple[ivy.Array, ivy.Array]:
-    """Returns a tuple of two arrays, one being the unique elements of an input array x and the other one the indices from
-    the set of uniques elements that reconstruct x.
+    """Returns a tuple of two arrays, one being the unique elements of an input
+    array x and the other one the indices from the set of uniques elements that
+    reconstruct x.
 
     Parameters
     ----------
@@ -64,8 +69,8 @@ def unique_values(
     x: Union[ivy.Array, ivy.NativeArray],
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
-    """
-    Returns the unique elements of an input array ``x``.
+    """Returns the unique elements of an input array ``x``.
+
     .. admonition:: Data-dependent output shape
         :class: important
         The shapes of two of the output arrays for this function depend on the data values in the input array; hence, array libraries which build computation graphs (e.g., JAX, Dask, etc.) may find this function difficult to implement without knowing array values. Accordingly, such libraries may choose to omit this function. See :ref:`data-dependent-output-shapes` section for more details.
@@ -83,12 +88,14 @@ def unique_values(
         an array containing the set of unique elements in ``x``. The returned array must have the same data type as ``x``.
         .. note::
            The order of unique elements is not specified and may vary between implementations.
+
     """
     return _cur_framework(x).unique_values(x, out)
 
 
 def unique_counts(x: Union[ivy.Array, ivy.NativeArray]) -> Tuple[ivy.Array, ivy.Array]:
-    """Returns the unique elements of an input array x and the corresponding counts for each unique element in x.
+    """Returns the unique elements of an input array x and the corresponding
+    counts for each unique element in x.
 
     Parameters
     ----------

@@ -67,8 +67,8 @@ def flip(
     axis: Optional[Union[int, Tuple[int], List[int]]] = None,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
-    """
-    Reverses the order of elements in an array along the given axis. The shape of the array must be preserved.
+    """Reverses the order of elements in an array along the given axis. The
+    shape of the array must be preserved.
 
     Parameters
     ----------
@@ -83,6 +83,7 @@ def flip(
     -------
      ret
         an output array having the same data type and shape as ``x`` and whose elements, relative to ``x``, are reordered.
+
     """
 
     return _cur_framework(x).flip(x, axis, out)
@@ -93,8 +94,9 @@ def expand_dims(
     axis: int = 0,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
-    """
-    Expands the shape of an array by inserting a new axis with the size of one. This new axis will appear at the ``axis`` position in the expanded array shape.
+    """Expands the shape of an array by inserting a new axis with the size of
+    one. This new axis will appear at the ``axis`` position in the expanded
+    array shape.
 
     Parameters
     ----------
@@ -129,8 +131,7 @@ def permute_dims(
     axes: Tuple[int, ...],
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
-    """
-    Permutes the axes (dimensions) of an array x.
+    """Permutes the axes (dimensions) of an array x.
 
     Parameters
     ----------
@@ -145,6 +146,7 @@ def permute_dims(
     -------
      ret
         an array containing the axes permutation. The returned array must have the same data type as x.
+
     """
     return _cur_framework(x).permute_dims(x, axes, out)
 
@@ -156,8 +158,7 @@ def stack(
     axis: int = 0,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
-    """
-    Joins a sequence of arrays along a new axis.
+    """Joins a sequence of arrays along a new axis.
 
     Parameters
     ----------
@@ -174,6 +175,7 @@ def stack(
         an output array having rank ``N+1``, where ``N`` is the rank (number of dimensions) of ``x``. If the input arrays have different data types, normal ref:`type-promotion` must apply. If the input arrays have the same data type, the output array must have the same data type as the input arrays.
         .. note::
            This specification leaves type promotion between data type families (i.e., ``intxx`` and ``floatxx``) unspecified.
+
     """
 
     return _cur_framework(arrays).stack(arrays, axis, out)
@@ -207,6 +209,7 @@ def reshape(
     ivy.array([[1, 2],
                [3, 4],
                [5, 6]])
+
     """
     return _cur_framework(x).reshape(x, shape, copy, out)
 
@@ -232,6 +235,7 @@ def concat(
     -------
      ret
         The concatenated array.
+
     """
     return _cur_framework(xs[0]).concat(xs, axis, out)
 
@@ -276,7 +280,7 @@ def repeat(
     axis: int = None,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
-    """Repeat values along a given dimension
+    """Repeat values along a given dimension.
 
     Parameters
     ----------
