@@ -1,6 +1,4 @@
-"""
-Collection of general Ivy functions.
-"""
+"""Collection of general Ivy functions."""
 
 # global
 import gc
@@ -220,6 +218,7 @@ def array_equal(
     >>> k = ivy.array_equal(i,j)
     >>> print(k)
     False
+
     """
     return _cur_framework(x0).array_equal(x0, x1)
 
@@ -288,8 +287,7 @@ def all_equal(
 
 
 def to_numpy(x: Union[ivy.Array, ivy.NativeArray]) -> np.ndarray:
-    """
-    Converts an array into a numpy array.
+    """Converts an array into a numpy array.
 
      Parameters
      ----------
@@ -310,13 +308,13 @@ def to_numpy(x: Union[ivy.Array, ivy.NativeArray]) -> np.ndarray:
     array([-1, 0, 1])
     >>> print(type(y))
     <class 'numpy.ndarray'>
+
     """
     return _cur_framework(x).to_numpy(x)
 
 
 def to_scalar(x: Union[ivy.Array, ivy.NativeArray]) -> Number:
-    """
-    Converts an array with a single element into a scalar.
+    """Converts an array with a single element into a scalar.
 
      Parameters
      ----------
@@ -337,13 +335,13 @@ def to_scalar(x: Union[ivy.Array, ivy.NativeArray]) -> Number:
     -1
     >>> print(ivy.is_int_dtype(y))
     True
+
     """
     return _cur_framework(x).to_scalar(x)
 
 
 def to_list(x: Union[ivy.Array, ivy.NativeArray]) -> List:
-    """
-    Creates a (possibly nested) list from input array.
+    """Creates a (possibly nested) list from input array.
 
      Parameters
      ----------
@@ -364,6 +362,7 @@ def to_list(x: Union[ivy.Array, ivy.NativeArray]) -> List:
     [-1, 0, 1]
     >>> print(isinstance(y, list))
     True
+
     """
     return _cur_framework(x).to_list(x)
 
@@ -547,7 +546,7 @@ def fourier_encode(
 def value_is_nan(
     x: Union[ivy.Array, ivy.NativeArray, Number], include_infs: bool = True
 ) -> bool:
-    """Determine whether the single valued array or scalar is of nan type
+    """Determine whether the single valued array or scalar is of nan type.
 
     Parameters
     ----------
@@ -570,7 +569,8 @@ def value_is_nan(
 
 
 def has_nans(x: Union[ivy.Array, ivy.NativeArray], include_infs: bool = True) -> bool:
-    """Determine whether the array contains any nans, as well as infs or -infs if specified.
+    """Determine whether the array contains any nans, as well as infs or -infs
+    if specified.
 
     Parameters
     ----------
@@ -674,7 +674,8 @@ def shape_to_tuple(shape: Union[int, Tuple[int], List[int]]):
 
 
 def try_else_none(fn):
-    """Try and return the function, otherwise return None if an exception was raised during function execution.
+    """Try and return the function, otherwise return None if an exception was
+    raised during function execution.
 
     Parameters
     ----------
@@ -735,7 +736,8 @@ def match_kwargs(kwargs, *receivers, allow_duplicates=False):
 
 
 def cache_fn(func: Callable) -> Callable:
-    """Wrap a function, such that when cache=True is passed as an argument, a previously cached output is returned.
+    """Wrap a function, such that when cache=True is passed as an argument, a
+    previously cached output is returned.
 
     Parameters
     ----------
@@ -871,8 +873,8 @@ def einops_repeat(
 
 
 def get_min_denominator() -> float:
-    """
-    Get the global minimum denominator used by ivy for numerically stable division.
+    """Get the global minimum denominator used by ivy for numerically stable
+    division.
 
     Returns
     -------
@@ -890,7 +892,8 @@ def get_min_denominator() -> float:
 
 
 def set_min_denominator(val: float) -> None:
-    """Set the global minimum denominator used by ivy for numerically stable division.
+    """Set the global minimum denominator used by ivy for numerically stable
+    division.
 
     Parameters
     ----------
@@ -905,13 +908,15 @@ def set_min_denominator(val: float) -> None:
 
 
 def get_min_base() -> float:
-    """Get the global minimum base used by ivy for numerically stable power raising."""
+    """Get the global minimum base used by ivy for numerically stable power
+    raising."""
     # noinspection PyProtectedMember
     return ivy._MIN_BASE
 
 
 def set_min_base(val: float) -> None:
-    """Set the global minimum base used by ivy for numerically stable power raising.
+    """Set the global minimum base used by ivy for numerically stable power
+    raising.
 
     Parameters
     ----------
@@ -928,7 +933,8 @@ def set_min_base(val: float) -> None:
 def stable_divide(
     numerator: Any, denominator: Any, min_denominator: float = None
 ) -> Any:
-    """Divide the numerator by the denominator, with min denominator added to the denominator for numerical stability.
+    """Divide the numerator by the denominator, with min denominator added to
+    the denominator for numerical stability.
 
     Parameters
     ----------
@@ -950,7 +956,8 @@ def stable_divide(
 
 
 def stable_pow(base: Any, exponent: Any, min_base: float = None) -> Any:
-    """Raise the base by the power, with MIN_BASE added to the base when exponent > 1 for numerical stability.
+    """Raise the base by the power, with MIN_BASE added to the base when
+    exponent > 1 for numerical stability.
 
     Parameters
     ----------
@@ -996,7 +1003,8 @@ def print_all_arrays_in_memory():
 
 
 def set_queue_timeout(timeout):
-    """Set the global queue timeout values (in seconds). Default value without this function being called is 10 seconds.
+    """Set the global queue timeout values (in seconds). Default value without
+    this function being called is 10 seconds.
 
     Parameters
     ----------
@@ -1012,13 +1020,17 @@ def set_queue_timeout(timeout):
 
 
 def queue_timeout():
-    """Get the global queue timeout values (in seconds). Default value without this function being called is 10 seconds."""
+    """Get the global queue timeout values (in seconds).
+
+    Default value without this function being called is 10 seconds.
+
+    """
     global TIMEOUT
     return TIMEOUT
 
 
 def tmp_dir():
-    """ """
+    """"""
     return TMP_DIR
 
 
@@ -1058,7 +1070,8 @@ def container_types():
 
 
 def inplace_arrays_supported(f=None):
-    """Determine whether inplace arrays are supported for the current backend framework.
+    """Determine whether inplace arrays are supported for the current backend
+    framework.
 
     Parameters
     ----------
@@ -1075,8 +1088,8 @@ def inplace_arrays_supported(f=None):
 
 
 def inplace_variables_supported(f=None):
-    """Determine whether inplace variables are supported for the current backend framework.
-
+    """Determine whether inplace variables are supported for the current
+    backend framework.
 
     Parameters
     ----------
@@ -1093,7 +1106,8 @@ def inplace_variables_supported(f=None):
 
 
 def supports_inplace(x):
-    """Determine whether inplace operations are supported for the data type of x.
+    """Determine whether inplace operations are supported for the data type of
+    x.
 
     Parameters
     ----------
@@ -1114,7 +1128,8 @@ def supports_inplace(x):
 
 
 def assert_supports_inplace(x):
-    """Asserts that inplace operations are supported for x, else raises exception.
+    """Asserts that inplace operations are supported for x, else raises
+    exception.
 
     Parameters
     ----------
@@ -1137,8 +1152,10 @@ def assert_supports_inplace(x):
 
 
 def inplace_update(x, val):
-    """Perform in-place update for the input array. This will always be performed on ivy.Array instances pass in the input,
-    and will also be performed on the native array classes in the backend, when the backend supports this.
+    """Perform in-place update for the input array. This will always be
+    performed on ivy.Array instances pass in the input, and will also be
+    performed on the native array classes in the backend, when the backend
+    supports this.
 
     Parameters
     ----------
@@ -1327,9 +1344,7 @@ def gather(
     device: ivy.Device = None,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
-    """
-    Gather slices from params at axis according to indices.
-
+    """Gather slices from params at axis according to indices.
 
     Parameters
     ----------
@@ -1347,6 +1362,7 @@ def gather(
     Returns
     ----------
         New array with the values gathered at the specified indices along the specified axis.
+
     """
     return _cur_framework(params).gather(params, indices, axis, device, out=out)
 
@@ -1378,7 +1394,7 @@ def gather_nd(
 
 
 def multiprocessing(context: str = None):
-    """Return framewrk-specific multi-processing module
+    """Return framewrk-specific multi-processing module.
 
     Parameters
     ----------
@@ -1419,7 +1435,7 @@ def indices_where(
 def one_hot(
     indices: Union[ivy.Array, ivy.NativeArray], depth: int, device: ivy.Device = None
 ) -> Union[ivy.Array, ivy.NativeArray]:
-    """Returns a one-hot array
+    """Returns a one-hot array.
 
     Parameters
     ----------
