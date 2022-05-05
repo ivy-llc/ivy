@@ -1,6 +1,4 @@
-"""
-Collection of helpers for ivy unit tests
-"""
+"""Collection of helpers for ivy unit tests."""
 
 # global
 import numpy as np
