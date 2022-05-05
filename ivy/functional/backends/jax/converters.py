@@ -1,6 +1,4 @@
-"""
-Converter from JAX Haiku Modules to Ivy Modules
-"""
+"""Converter from JAX Haiku Modules to Ivy Modules."""
 
 # global
 import haiku as hk

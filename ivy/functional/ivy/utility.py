@@ -16,8 +16,8 @@ def all(
     keepdims: bool = False,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
-    """
-    Tests whether all input array elements evaluate to ``True`` along a specified axis.
+    """Tests whether all input array elements evaluate to ``True`` along a
+    specified axis.
 
     .. note::
        Positive infinity, negative infinity, and NaN must evaluate to ``True``.
@@ -40,6 +40,7 @@ def all(
      -------
     ret
         if a logical AND reduction was performed over the entire array, the returned array must be a zero-dimensional array containing the test result; otherwise, the returned array must be a non-zero-dimensional array containing the test results. The returned array must have a data type of ``bool``.
+
     """
     return _cur_framework(x).all(x, axis, keepdims, out=out)
 
@@ -51,8 +52,8 @@ def any(
     keepdims: bool = False,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
-    """
-    Tests whether any input array element evaluates to ``True`` along a specified axis.
+    """Tests whether any input array element evaluates to ``True`` along a
+    specified axis.
 
     .. note::
        Positive infinity, negative infinity, and NaN must evaluate to ``True``.
@@ -75,6 +76,7 @@ def any(
      -------
     ret
         if a logical OR reduction was performed over the entire array, the returned array must be a zero-dimensional array containing the test result; otherwise, the returned array must be a non-zero-dimensional array containing the test results. The returned array must have a data type of ``bool``.
+
     """
     return _cur_framework(x).any(x, axis, keepdims, out=out)
 
