@@ -16,8 +16,7 @@ def min(
     keepdims: bool = False,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
-    """
-    Calculates the minimum value of the input array x.
+    """Calculates the minimum value of the input array x.
 
     .. note::
     When the number of elements over which to compute the minimum value is zero,
@@ -54,6 +53,7 @@ def min(
         if the minimum value was computed over the entire array, a zero-dimensional array containing the
         minimum value; otherwise, a non-zero-dimensional array containing the minimum values.
         The returned array must have the same data type as x.
+
     """
     return _cur_framework.min(x, axis, keepdims, out)
 
@@ -65,8 +65,8 @@ def max(
     keepdims: bool = False,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
-    """
-    Calculates the maximum value of the input array ``x``.
+    """Calculates the maximum value of the input array ``x``.
+
     .. note::
        When the number of elements over which to compute the maximum value is zero,
        the maximum value is implementation-defined. Specification-compliant libraries may choose to raise
@@ -98,6 +98,7 @@ def max(
         if the maximum value was computed over the entire array, a zero-dimensional array containing the
         maximum value; otherwise, a non-zero-dimensional array containing the maximum values.
         The returned array must have the same data type as ``x``.
+
     """
     return _cur_framework.max(x, axis, keepdims, out=out)
 
@@ -109,8 +110,7 @@ def var(
     keepdims: bool = False,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
-    """
-    Calculates the variance of the input array x.
+    """Calculates the variance of the input array x.
 
     Special Cases
     Let N equal the number of elements over which to compute the variance.
@@ -152,6 +152,7 @@ def var(
         if the variance was computed over the entire array, a zero-dimensional array containing the
         variance; otherwise, a non-zero-dimensional array containing the variances. The returned array
         must have the same data type as x.
+
     """
     return _cur_framework(x).var(x, axis, correction, keepdims, out=out)
 
@@ -162,8 +163,8 @@ def mean(
     keepdims: bool = False,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
-    """
-    Calculates the arithmetic mean of the input array ``x``.
+    """Calculates the arithmetic mean of the input array ``x``.
+
     **Special Cases**
     Let ``N`` equal the number of elements over which to compute the arithmetic mean.
     -   If ``N`` is ``0``, the arithmetic mean is ``NaN``.
@@ -185,6 +186,7 @@ def mean(
         array, if the arithmetic mean was computed over the entire array, a zero-dimensional array containing the arithmetic mean; otherwise, a non-zero-dimensional array containing the arithmetic means. The returned array must have the same data type as ``x``.
         .. note::
            While this specification recommends that this function only accept input arrays having a floating-point data type, specification-compliant array libraries may choose to accept input arrays having an integer data type. While mixed data type promotion is implementation-defined, if the input array ``x`` has an integer data type, the returned array must have the default floating-point data type.
+
     """
     return _cur_framework(x).mean(x, axis, keepdims, out=out)
 
@@ -196,8 +198,7 @@ def prod(
     keepdims: bool = False,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
-    """
-    Calculates the product of input array x elements.
+    """Calculates the product of input array x elements.
 
     x
         input array. Should have a numeric data type.
@@ -229,6 +230,7 @@ def prod(
         array,  if the product was computed over the entire array, a zero-dimensional array containing the
         product; otherwise, a non-zero-dimensional array containing the products. The returned array must
         have a data type as described by the dtype parameter above.
+
     """
     return _cur_framework.prod(x, axis, dtype, keepdims, out=out)
 
@@ -240,8 +242,8 @@ def sum(
     keepdims: bool = False,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
-    """
-    Calculates the sum of the input array ``x``.
+    """Calculates the sum of the input array ``x``.
+
     **Special Cases**
     Let ``N`` equal the number of elements over which to compute the sum.
     -   If ``N`` is ``0``, the sum is ``0`` (i.e., the empty sum).
@@ -279,6 +281,7 @@ def sum(
     >>> y = ivy.sum(x)
     >>> print(y)
     ivy.array(1.3)
+
     """
 
     return _cur_framework(x).sum(x, axis, dtype, keepdims, out=out)
@@ -291,8 +294,7 @@ def std(
     keepdims: bool = False,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
-    """
-    Calculates the standard deviation of the input array ``x``.
+    """Calculates the standard deviation of the input array ``x``.
 
     **Special Cases**
 
@@ -356,9 +358,8 @@ def einsum(
     *operands: Union[ivy.Array, ivy.NativeArray],
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None
 ) -> ivy.Array:
-    """
-    Sums the product of the elements of the input operands along dimensions specified using a notation based on the
-    Einstein summation convention.
+    """Sums the product of the elements of the input operands along dimensions
+    specified using a notation based on the Einstein summation convention.
 
     Parameters
     ----------
