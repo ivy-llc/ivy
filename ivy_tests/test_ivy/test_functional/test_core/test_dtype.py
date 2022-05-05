@@ -1,6 +1,4 @@
-"""
-Collection of tests for unified dtype functions
-"""
+"""Collection of tests for unified dtype functions."""
 
 # global
 import pytest

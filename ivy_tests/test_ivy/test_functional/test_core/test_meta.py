@@ -1,6 +1,4 @@
-"""
-Collection of tests for unified meta functions
-"""
+"""Collection of tests for unified meta functions."""
 
 # global
 import pytest
