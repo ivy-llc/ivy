@@ -1797,6 +1797,7 @@ class ContainerBase(dict, abc.ABC):
         to_apply=True,
         prune_unapplied=False,
         map_sequences=False,
+        out = None,
     ):
         """Computes the elementwise minimum between this container and another container or number.
 
@@ -1820,7 +1821,7 @@ class ContainerBase(dict, abc.ABC):
 
         """
         is_container = isinstance(other, ivy.Container)
-        return self.map(
+        return self.handle_inplace(self.map(
             lambda x, kc: self._ivy.minimum(x, other[kc] if is_container else other)
             if self._ivy.is_native_array(x) or isinstance(x, ivy.Array)
             else x,
@@ -1828,7 +1829,8 @@ class ContainerBase(dict, abc.ABC):
             to_apply,
             prune_unapplied,
             map_sequences,
-        )
+        ),
+        out)
 
     def maximum(
         self,
@@ -1837,6 +1839,7 @@ class ContainerBase(dict, abc.ABC):
         to_apply=True,
         prune_unapplied=False,
         map_sequences=False,
+        out = None,
     ):
         """Computes the elementwise maximum between this container and another container or number.
 
@@ -1860,7 +1863,7 @@ class ContainerBase(dict, abc.ABC):
 
         """
         is_container = isinstance(other, ivy.Container)
-        return self.map(
+        return self.handle_inplace(self.map(
             lambda x, kc: self._ivy.maximum(x, other[kc] if is_container else other)
             if self._ivy.is_native_array(x) or isinstance(x, ivy.Array)
             else x,
@@ -1868,6 +1871,8 @@ class ContainerBase(dict, abc.ABC):
             to_apply,
             prune_unapplied,
             map_sequences,
+            ),
+            out
         )
 
     def clip(
@@ -1878,6 +1883,7 @@ class ContainerBase(dict, abc.ABC):
         to_apply=True,
         prune_unapplied=False,
         map_sequences=False,
+        out = None,
     ):
         """Computes the elementwise clipped values between this container and clip_min and clip_max containers or numbers.
 
@@ -1904,7 +1910,7 @@ class ContainerBase(dict, abc.ABC):
         """
         min_is_container = isinstance(clip_min, ivy.Container)
         max_is_container = isinstance(clip_max, ivy.Container)
-        return self.map(
+        return self.handle_inplace(self.map(
             lambda x, kc: self._ivy.clip(
                 x,
                 clip_min[kc] if min_is_container else clip_min,
@@ -1916,7 +1922,8 @@ class ContainerBase(dict, abc.ABC):
             to_apply,
             prune_unapplied,
             map_sequences,
-        )
+        ),
+        out)
 
     def clip_vector_norm(
         self,
