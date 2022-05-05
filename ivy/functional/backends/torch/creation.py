@@ -246,7 +246,7 @@ def linspace(start, stop, num, axis=None, device=None, dtype=None, endpoint=True
     if dtype is None:
         dtype = torch.float32
     ans = ans.type(dtype)
-    if endpoint and ans.shape[0] >= 1:
+    if endpoint and ans.shape[0] > 1:
         ans[-1] = stop
     return ans
 
