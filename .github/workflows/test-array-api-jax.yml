@@ -18,6 +18,7 @@ jobs:
           
       - name: Set hypothesis profile
         run: |
+          cd ivy
           python3 ivy_tests/set-profile.py
 
       - name: Cache hypothesis
