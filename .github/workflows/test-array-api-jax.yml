@@ -10,6 +10,15 @@ jobs:
           path: ivy
           persist-credentials: false
           submodules: 'recursive'
+          
+      - name: Set up python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.8'
+          
+      - name: Set hypothesis profile
+        run: |
+          python3 ivy_tests/set-profile.py
 
       - name: Cache hypothesis
         uses: actions/cache@v3
