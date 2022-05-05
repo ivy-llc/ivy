@@ -1,6 +1,4 @@
-"""
-Collection of tests for utility functions
-"""
+"""Collection of tests for utility functions."""
 
 # global
 import pytest

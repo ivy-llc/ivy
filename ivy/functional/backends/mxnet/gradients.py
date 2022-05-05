@@ -1,6 +1,5 @@
-"""
-Collection of MXNet gradient functions, wrapped to fit Ivy syntax and signature.
-"""
+"""Collection of MXNet gradient functions, wrapped to fit Ivy syntax and
+signature."""
 
 # global
 import ivy
