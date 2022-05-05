@@ -1,6 +1,4 @@
-"""
-Collection of tests for unified gradient functions
-"""
+"""Collection of tests for unified gradient functions."""
 
 # global
 from numbers import Number

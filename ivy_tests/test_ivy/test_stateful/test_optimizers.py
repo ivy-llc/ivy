@@ -1,6 +1,4 @@
-"""
-Collection of tests for Ivy optimizers
-"""
+"""Collection of tests for Ivy optimizers."""
 
 # global
 import pytest

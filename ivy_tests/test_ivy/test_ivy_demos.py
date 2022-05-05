@@ -1,6 +1,4 @@
-"""
-Collection of tests for the demos
-"""
+"""Collection of tests for the demos."""
 
 # global
 import pytest
