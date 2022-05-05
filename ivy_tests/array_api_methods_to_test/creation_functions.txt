@@ -1,4 +1,4 @@
-#arange #failing for tensorflow
+#arange #fails for tensorflow - https://github.com/tensorflow/tensorflow/issues/55796
 asarray
 empty
 empty_like
@@ -6,7 +6,7 @@ empty_like
 from_dlpack
 full
 full_like
-#linspace
+linspace
 meshgrid
 ones
 ones_like

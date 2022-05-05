@@ -2,7 +2,7 @@
 Collection of random Ivy functions
 """
 
-# global 
+# global
 from typing import Optional, Union, Tuple
 
 # local
@@ -14,16 +14,17 @@ import ivy
 # ------#
 
 
-def random_uniform(low: float = 0.0, 
-                   high: float = 1.0,
-                   shape: Optional[Union[int, Tuple[int, ...]]] = None,
-                   dev: Optional[ivy.Device] = None)\
-        -> ivy.array:
+def random_uniform(
+    low: float = 0.0,
+    high: float = 1.0,
+    shape: Optional[Union[int, Tuple[int, ...]]] = None,
+    device: Optional[ivy.Device] = None,
+) -> ivy.array:
     """
-    Draws samples from a uniform distribution. Samples are uniformly distributed over the half-open 
-    interval ``[low, high)`` (includes ``low``, but excludes ``high``). In other words, any value within the given 
+    Draws samples from a uniform distribution. Samples are uniformly distributed over the half-open
+    interval ``[low, high)`` (includes ``low``, but excludes ``high``). In other words, any value within the given
     interval is equally likely to be drawn by uniform.
-    
+
     Parameters
     -----------
     low
@@ -31,9 +32,9 @@ def random_uniform(low: float = 0.0,
     high
         Upper boundary of the output interval. All the values generated will be less than ``high``.
     shape
-        If the given shape is, e.g ``(m, n, k)``, then ``m * n * k`` samples are drawn. If size is ``None`` 
+        If the given shape is, e.g ``(m, n, k)``, then ``m * n * k`` samples are drawn. If size is ``None``
         (Default), a single value is returned.
-    dev
+    device
         device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
 
     Returns
@@ -46,12 +47,12 @@ def random_uniform(low: float = 0.0,
     >>> y = ivy.random_uniform(0.0, 2.0)
     >>> print(y)
     ivy.array(1.89150229)
-    
+
     """
-    return _cur_framework().random_uniform(low, high, shape, dev)
+    return _cur_framework().random_uniform(low, high, shape, device)
 
 
-def random_normal(mean=0.0, std=1.0, shape=None, dev=None):
+def random_normal(mean=0.0, std=1.0, shape=None, device=None):
     """Draws samples from a normal distribution.
 
     Parameters
@@ -63,7 +64,7 @@ def random_normal(mean=0.0, std=1.0, shape=None, dev=None):
     shape
         Output shape. If the given shape is, e.g., (m, n, k), then m * n * k samples are drawn.
         If size is None (default), a single value is returned.
-    dev
+    device
         device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. (Default value = None)
 
     Returns
@@ -72,10 +73,12 @@ def random_normal(mean=0.0, std=1.0, shape=None, dev=None):
         Drawn samples from the parameterized uniform distribution.
 
     """
-    return _cur_framework().random_normal(mean, std, shape, dev)
+    return _cur_framework().random_normal(mean, std, shape, device)
 
 
-def multinomial(population_size, num_samples, batch_size, probs=None, replace=True, dev=None):
+def multinomial(
+    population_size, num_samples, batch_size, probs=None, replace=True, device=None
+):
     """Draws samples from a multinomial distribution. Specifcally, returns a tensor where each row contains num_samples
     indices sampled from the multinomial probability distribution located in the corresponding row of tensor input.
 
@@ -92,7 +95,7 @@ def multinomial(population_size, num_samples, batch_size, probs=None, replace=Tr
         default is uniform *[batch_shape, num_classes]*
     replace
         Whether to replace samples once they've been drawn. Default is True.
-    dev
+    device
         device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. (Default value = None)
 
     Returns
@@ -101,10 +104,12 @@ def multinomial(population_size, num_samples, batch_size, probs=None, replace=Tr
         Drawn samples indices from the multinomial distribution.
 
     """
-    return _cur_framework().multinomial(population_size, num_samples, batch_size, probs, replace, dev)
+    return _cur_framework().multinomial(
+        population_size, num_samples, batch_size, probs, replace, device
+    )
 
 
-def randint(low, high, shape, dev=None):
+def randint(low, high, shape, device=None):
     """Returns a tensor filled with random integers generated uniformly between low (inclusive) and high (exclusive).
 
     Parameters
@@ -115,14 +120,14 @@ def randint(low, high, shape, dev=None):
         One above the highest integer to be drawn from the distribution.
     shape
         a tuple defining the shape of the output tensor.
-    dev
+    device
         device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. (Default value = None)
 
     Returns
     -------
 
     """
-    return _cur_framework().randint(low, high, shape, dev)
+    return _cur_framework().randint(low, high, shape, device)
 
 
 def seed(seed_value=0):
