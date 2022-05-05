@@ -1,6 +1,5 @@
 # global
 import numpy as np
-import numpy.array_api as npa
 from typing import Union, Tuple, List
 
 # local
