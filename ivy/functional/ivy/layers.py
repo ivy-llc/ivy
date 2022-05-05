@@ -1,6 +1,4 @@
-"""
-Collection of Ivy neural network layers in functional form.
-"""
+"""Collection of Ivy neural network layers in functional form."""
 
 # global
 import numpy as np
@@ -76,8 +74,8 @@ def linear(x, weight, bias=None):
 
 
 def dropout(x, prob, scale=True):
-    """Randomly zeroes some of the elements of the input tensor with probability p using samples from a Bernoull
-    distribution.
+    """Randomly zeroes some of the elements of the input tensor with
+    probability p using samples from a Bernoull distribution.
 
     Parameters
     ----------
@@ -276,6 +274,7 @@ def conv1d(
     >>> result = ivy.conv1d(x, filters, (1,), 'SAME', 'NWC', (1,))
     >>> print(result)
     ivy.array([[[0.], [3.], [0.]]])
+
     """
     return _cur_framework(x).conv1d(
         x, filters, strides, padding, data_format, dilations
@@ -285,7 +284,8 @@ def conv1d(
 def conv1d_transpose(
     x, filters, strides, padding, output_shape=None, data_format="NWC", dilations=1
 ):
-    """Computes a 1-D transpose convolution given 3-D input x and filters arrays.
+    """Computes a 1-D transpose convolution given 3-D input x and filters
+    arrays.
 
     Parameters
     ----------
@@ -347,7 +347,8 @@ def conv2d(x, filters, strides, padding, data_format="NHWC", dilations=1):
 def conv2d_transpose(
     x, filters, strides, padding, output_shape=None, data_format="NHWC", dilations=1
 ):
-    """Computes a 2-D transpose convolution given 4-D input x and filters arrays.
+    """Computes a 2-D transpose convolution given 4-D input x and filters
+    arrays.
 
     Parameters
     ----------
@@ -378,7 +379,8 @@ def conv2d_transpose(
 
 
 def depthwise_conv2d(x, filters, strides, padding, data_format="NHWC", dilations=1):
-    """Computes a 2-D depthwise convolution given 4-D input x and filters arrays.
+    """Computes a 2-D depthwise convolution given 4-D input x and filters
+    arrays.
 
     Parameters
     ----------
@@ -439,7 +441,8 @@ def conv3d(x, filters, strides, padding, data_format="NDHWC", dilations=1):
 def conv3d_transpose(
     x, filters, strides, padding, output_shape=None, data_format="NDHWC", dilations=1
 ):
-    """Computes a 3-D transpose convolution given 5-D input x and filters arrays.
+    """Computes a 3-D transpose convolution given 5-D input x and filters
+    arrays.
 
     Parameters
     ----------
@@ -475,7 +478,8 @@ def conv3d_transpose(
 def lstm_update(
     x, init_h, init_c, kernel, recurrent_kernel, bias=None, recurrent_bias=None
 ):
-    """Perform long-short term memory update by unrolling time dimension of input array.
+    """Perform long-short term memory update by unrolling time dimension of
+    input array.
 
     Parameters
     ----------

@@ -17,8 +17,7 @@ def argsort(
     stable: bool = True,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
-    """
-    Returns the indices that sort an array ``x`` along a specified axis.
+    """Returns the indices that sort an array ``x`` along a specified axis.
 
     Parameters
     ----------
@@ -37,6 +36,7 @@ def argsort(
     -------
     return
         an array of indices. The returned array must have the same shape as ``x``. The returned array must have the default array index data type.
+
     """
     return _cur_framework(x).argsort(x, axis, descending, stable, out)
 
@@ -48,8 +48,7 @@ def sort(
     stable: bool = True,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
-    """
-    Returns a sorted copy of an array
+    """Returns a sorted copy of an array.
 
     Parameters
     ___________
@@ -70,6 +69,7 @@ def sort(
     _______
      return
         An array with the same dtype and shape as `values`, with the elements sorted along the given `axis`.
+
     """
     return _cur_framework(x).sort(x, axis, descending, stable, out)
 

@@ -1,6 +1,4 @@
-"""
-Collection of image Ivy functions.
-"""
+"""Collection of image Ivy functions."""
 
 # local
 import ivy as ivy
@@ -19,8 +17,8 @@ def stack_images(
     images: List[Union[ivy.Array, ivy.Array, ivy.NativeArray]],
     desired_aspect_ratio: Tuple[int, int] = (1, 1),
 ) -> ivy.Array:
-    """
-    Stacks a group of images into a combined windowed image, fitting the desired aspect ratio as closely as possible.
+    """Stacks a group of images into a combined windowed image, fitting the
+    desired aspect ratio as closely as possible.
 
      Parameters
      ----------
@@ -50,6 +48,7 @@ def stack_images(
             [1., 1., 1.],
             [0., 0., 0.],
             [0., 0., 0.]]]
+
     """
     return _cur_framework(images[0]).stack_images(images, desired_aspect_ratio)
 
@@ -91,7 +90,8 @@ def gradient_image(x):
 
 
 def float_img_to_uint8_img(x):
-    """Converts an image of floats into a bit-cast 4-channel image of uint8s, which can be saved to disk.
+    """Converts an image of floats into a bit-cast 4-channel image of uint8s,
+    which can be saved to disk.
 
     Parameters
     ----------
