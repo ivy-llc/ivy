@@ -18,6 +18,7 @@ jobs:
           
       - name: Set hypothesis profile
         run: |
+          pip install hypothesis
           cd ivy
           python3 ivy_tests/set-profile.py
 
