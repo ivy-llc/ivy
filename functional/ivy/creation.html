@@ -146,7 +146,8 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="ivy.functional.ivy.creation.arange">
 <span class="sig-prename descclassname"><span class="pre">ivy.functional.ivy.creation.</span></span><span class="sig-name descname"><span class="pre">arange</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/creation.html#arange"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.creation.arange" title="Permalink to this definition"></a></dt>
-<dd><p>Returns evenly spaced values within a given interval, with the spacing being specified.</p>
+<dd><p>Returns evenly spaced values within a given interval, with the spacing
+being specified.</p>
 <p>Values are generated within the half-open interval [start, stop) (in other words, the interval including start but
 excluding stop). For integer arguments the function is equivalent to the Python built-in range function,
 but returns an array in the chosen ml_framework rather than a list.</p>
@@ -258,7 +259,8 @@ floating-point data type. Default: None.</p></li>
 <dl class="py function">
 <dt class="sig sig-object py" id="ivy.functional.ivy.creation.eye">
 <span class="sig-prename descclassname"><span class="pre">ivy.functional.ivy.creation.</span></span><span class="sig-name descname"><span class="pre">eye</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_rows</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_cols</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/creation.html#eye"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.creation.eye" title="Permalink to this definition"></a></dt>
-<dd><p>Returns a two-dimensional array with ones on the k h diagonal and zeros elsewhere.</p>
+<dd><p>Returns a two-dimensional array with ones on the k h diagonal and zeros
+elsewhere.</p>
 <p>Parameters</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -284,7 +286,8 @@ point data type. Default: None.</p></li>
 <dl class="py function">
 <dt class="sig sig-object py" id="ivy.functional.ivy.creation.from_dlpack">
 <span class="sig-prename descclassname"><span class="pre">ivy.functional.ivy.creation.</span></span><span class="sig-name descname"><span class="pre">from_dlpack</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/creation.html#from_dlpack"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.creation.from_dlpack" title="Permalink to this definition"></a></dt>
-<dd><p>Returns a new array containing the data from another (array) object with a <code class="docutils literal notranslate"><span class="pre">__dlpack__</span></code> method.</p>
+<dd><p>Returns a new array containing the data from another (array) object with
+a <code class="docutils literal notranslate"><span class="pre">__dlpack__</span></code> method.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -307,7 +310,8 @@ point data type. Default: None.</p></li>
 <dl class="py function">
 <dt class="sig sig-object py" id="ivy.functional.ivy.creation.full">
 <span class="sig-prename descclassname"><span class="pre">ivy.functional.ivy.creation.</span></span><span class="sig-name descname"><span class="pre">full</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shape</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fill_value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/creation.html#full"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.creation.full" title="Permalink to this definition"></a></dt>
-<dd><p>Returns a new array having a specified <code class="docutils literal notranslate"><span class="pre">shape</span></code> and filled with <code class="docutils literal notranslate"><span class="pre">fill_value</span></code>.</p>
+<dd><p>Returns a new array having a specified <code class="docutils literal notranslate"><span class="pre">shape</span></code> and filled with
+<code class="docutils literal notranslate"><span class="pre">fill_value</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -338,7 +342,8 @@ point data type. Default: None.</p></li>
 <dl class="py function">
 <dt class="sig sig-object py" id="ivy.functional.ivy.creation.full_like">
 <span class="sig-prename descclassname"><span class="pre">ivy.functional.ivy.creation.</span></span><span class="sig-name descname"><span class="pre">full_like</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fill_value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/creation.html#full_like"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.creation.full_like" title="Permalink to this definition"></a></dt>
-<dd><p>Returns a new array filled with <code class="docutils literal notranslate"><span class="pre">fill_value</span></code> and having the same <code class="docutils literal notranslate"><span class="pre">shape</span></code> as an input array <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p>
+<dd><p>Returns a new array filled with <code class="docutils literal notranslate"><span class="pre">fill_value</span></code> and having the same
+<code class="docutils literal notranslate"><span class="pre">shape</span></code> as an input array <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -370,7 +375,8 @@ Default: <code class="docutils literal notranslate"><span class="pre">None</span
 <dl class="py function">
 <dt class="sig sig-object py" id="ivy.functional.ivy.creation.linspace">
 <span class="sig-prename descclassname"><span class="pre">ivy.functional.ivy.creation.</span></span><span class="sig-name descname"><span class="pre">linspace</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">endpoint</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/creation.html#linspace"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.creation.linspace" title="Permalink to this definition"></a></dt>
-<dd><p>Generates a certain number of evenly-spaced values in an interval along a given axis.</p>
+<dd><p>Generates a certain number of evenly-spaced values in an interval along
+a given axis.</p>
 <p>See <span class="math notranslate nohighlight">\(arange\)</span> that allows to specify the step size of evenly spaced values in an interval.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -393,7 +399,8 @@ Default: <code class="docutils literal notranslate"><span class="pre">None</span
 <dl class="py function">
 <dt class="sig sig-object py" id="ivy.functional.ivy.creation.logspace">
 <span class="sig-prename descclassname"><span class="pre">ivy.functional.ivy.creation.</span></span><span class="sig-name descname"><span class="pre">logspace</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">base</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/creation.html#logspace"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.creation.logspace" title="Permalink to this definition"></a></dt>
-<dd><p>Generates a certain number of evenly-spaced values in log space, in an interval along a given axis.</p>
+<dd><p>Generates a certain number of evenly-spaced values in log space, in an
+interval along a given axis.</p>
 <p>See <span class="math notranslate nohighlight">\(arange\)</span> that allows to specify the step size of evenly spaced values in an interval.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -474,7 +481,8 @@ Each returned array should have the same data type as the input arrays.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="ivy.functional.ivy.creation.ones_like">
 <span class="sig-prename descclassname"><span class="pre">ivy.functional.ivy.creation.</span></span><span class="sig-name descname"><span class="pre">ones_like</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/creation.html#ones_like"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.creation.ones_like" title="Permalink to this definition"></a></dt>
-<dd><p>Returns a new array filled with ones and having the same shape as an input array x.</p>
+<dd><p>Returns a new array filled with ones and having the same shape as an
+input array x.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -512,7 +520,8 @@ Default: <code class="docutils literal notranslate"><span class="pre">None</span
 <dl class="py function">
 <dt class="sig sig-object py" id="ivy.functional.ivy.creation.tril">
 <span class="sig-prename descclassname"><span class="pre">ivy.functional.ivy.creation.</span></span><span class="sig-name descname"><span class="pre">tril</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/creation.html#tril"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.creation.tril" title="Permalink to this definition"></a></dt>
-<dd><p>Returns the lower triangular part of a matrix (or a stack of matrices) x.</p>
+<dd><p>Returns the lower triangular part of a matrix (or a stack of matrices)
+x.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -534,7 +543,8 @@ same device as x.</p></li>
 <dl class="py function">
 <dt class="sig sig-object py" id="ivy.functional.ivy.creation.triu">
 <span class="sig-prename descclassname"><span class="pre">ivy.functional.ivy.creation.</span></span><span class="sig-name descname"><span class="pre">triu</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/creation.html#triu"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.creation.triu" title="Permalink to this definition"></a></dt>
-<dd><p>Returns the upper triangular part of a matrix (or a stack of matrices) x.</p>
+<dd><p>Returns the upper triangular part of a matrix (or a stack of matrices)
+x.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -598,7 +608,8 @@ same device as x.</p></li>
 <dl class="py function">
 <dt class="sig sig-object py" id="ivy.functional.ivy.creation.zeros_like">
 <span class="sig-prename descclassname"><span class="pre">ivy.functional.ivy.creation.</span></span><span class="sig-name descname"><span class="pre">zeros_like</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/creation.html#zeros_like"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.creation.zeros_like" title="Permalink to this definition"></a></dt>
-<dd><p>Returns a new array filled with zeros and having the same <code class="docutils literal notranslate"><span class="pre">shape</span></code> as an input array <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p>
+<dd><p>Returns a new array filled with zeros and having the same <code class="docutils literal notranslate"><span class="pre">shape</span></code> as
+an input array <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">

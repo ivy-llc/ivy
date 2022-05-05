@@ -183,9 +183,10 @@ must be the lower-triangular Cholesky factor L. Default: False.</p></li>
 <dl class="py function">
 <dt class="sig sig-object py" id="ivy.functional.ivy.linear_algebra.cross">
 <span class="sig-prename descclassname"><span class="pre">ivy.functional.ivy.linear_algebra.</span></span><span class="sig-name descname"><span class="pre">cross</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-</span> <span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/linear_algebra.html#cross"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.linear_algebra.cross" title="Permalink to this definition"></a></dt>
-<dd><p>The cross product of 3-element vectors. If x1 and x2 are multi-dimensional arrays
-(i.e., both have a rank greater than 1), then the cross-product of each pair of corresponding
-3-element vectors is independently computed.</p>
+<dd><p>The cross product of 3-element vectors. If x1 and x2 are multi-
+dimensional arrays (i.e., both have a rank greater than 1), then the cross-
+product of each pair of corresponding 3-element vectors is independently
+computed.</p>
 <p>Parameters</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -211,7 +212,8 @@ Default: -1.</p></li>
 <dl class="py function">
 <dt class="sig sig-object py" id="ivy.functional.ivy.linear_algebra.det">
 <span class="sig-prename descclassname"><span class="pre">ivy.functional.ivy.linear_algebra.</span></span><span class="sig-name descname"><span class="pre">det</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/linear_algebra.html#det"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.linear_algebra.det" title="Permalink to this definition"></a></dt>
-<dd><p>Returns the determinant of a square matrix (or a stack of square matrices) <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p>
+<dd><p>Returns the determinant of a square matrix (or a stack of square
+matrices) <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>x</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – input array having shape <code class="docutils literal notranslate"><span class="pre">(...,</span> <span class="pre">M,</span> <span class="pre">M)</span></code> and whose innermost two dimensions form square matrices.
@@ -300,7 +302,8 @@ Each returned array must have the same floating-point data type as <code class="
 <dl class="py function">
 <dt class="sig sig-object py" id="ivy.functional.ivy.linear_algebra.eigvalsh">
 <span class="sig-prename descclassname"><span class="pre">ivy.functional.ivy.linear_algebra.</span></span><span class="sig-name descname"><span class="pre">eigvalsh</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/linear_algebra.html#eigvalsh"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.linear_algebra.eigvalsh" title="Permalink to this definition"></a></dt>
-<dd><p>Return the eigenvalues of a symmetric matrix (or a stack of symmetric matrices) x.</p>
+<dd><p>Return the eigenvalues of a symmetric matrix (or a stack of symmetric
+matrices) x.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>x</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – input array having shape (…, M, M) and whose innermost two dimensions form square matrices.
@@ -319,7 +322,8 @@ have the same data type as x.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="ivy.functional.ivy.linear_algebra.inv">
 <span class="sig-prename descclassname"><span class="pre">ivy.functional.ivy.linear_algebra.</span></span><span class="sig-name descname"><span class="pre">inv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/linear_algebra.html#inv"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.linear_algebra.inv" title="Permalink to this definition"></a></dt>
-<dd><p>Returns the multiplicative inverse of a square matrix (or a stack of square matrices) <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p>
+<dd><p>Returns the multiplicative inverse of a square matrix (or a stack of
+square matrices) <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>x</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – input array having shape <code class="docutils literal notranslate"><span class="pre">(...,</span> <span class="pre">M,</span> <span class="pre">M)</span></code> and whose innermost two dimensions form square matrices.
@@ -411,7 +415,8 @@ Default is False.</p></li>
 <dl class="py function">
 <dt class="sig sig-object py" id="ivy.functional.ivy.linear_algebra.matrix_power">
 <span class="sig-prename descclassname"><span class="pre">ivy.functional.ivy.linear_algebra.</span></span><span class="sig-name descname"><span class="pre">matrix_power</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/linear_algebra.html#matrix_power"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.linear_algebra.matrix_power" title="Permalink to this definition"></a></dt>
-<dd><p>Raises a square matrix (or a stack of square matrices) x to an integer power n.</p>
+<dd><p>Raises a square matrix (or a stack of square matrices) x to an integer
+power n.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></p>
@@ -422,7 +427,8 @@ Default is False.</p></li>
 <dl class="py function">
 <dt class="sig sig-object py" id="ivy.functional.ivy.linear_algebra.matrix_rank">
 <span class="sig-prename descclassname"><span class="pre">ivy.functional.ivy.linear_algebra.</span></span><span class="sig-name descname"><span class="pre">matrix_rank</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rtol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/linear_algebra.html#matrix_rank"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.linear_algebra.matrix_rank" title="Permalink to this definition"></a></dt>
-<dd><p>Returns the rank (i.e., number of non-zero singular values) of a matrix (or a stack of matrices).</p>
+<dd><p>Returns the rank (i.e., number of non-zero singular values) of a matrix
+(or a stack of matrices).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -502,7 +508,8 @@ A location where the result is stored</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="ivy.functional.ivy.linear_algebra.pinv">
 <span class="sig-prename descclassname"><span class="pre">ivy.functional.ivy.linear_algebra.</span></span><span class="sig-name descname"><span class="pre">pinv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rtol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/linear_algebra.html#pinv"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.linear_algebra.pinv" title="Permalink to this definition"></a></dt>
-<dd><p>Returns the (Moore-Penrose) pseudo-inverse of a matrix (or a stack of matrices) <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p>
+<dd><p>Returns the (Moore-Penrose) pseudo-inverse of a matrix (or a stack of
+matrices) <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -602,8 +609,8 @@ The returned array must have the same shape as x2 (i.e., the array corresponding
 <dl class="py function">
 <dt class="sig sig-object py" id="ivy.functional.ivy.linear_algebra.svd">
 <span class="sig-prename descclassname"><span class="pre">ivy.functional.ivy.linear_algebra.</span></span><span class="sig-name descname"><span class="pre">svd</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">full_matrices</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/linear_algebra.html#svd"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.linear_algebra.svd" title="Permalink to this definition"></a></dt>
-<dd><p>Singular Value Decomposition.
-When x is a 2D array, it is factorized as u &#64; numpy.diag(s) &#64; vh = (u * s) &#64; vh, where u and vh are 2D unitary
+<dd><p>Singular Value Decomposition.</p>
+<p>When x is a 2D array, it is factorized as u &#64; numpy.diag(s) &#64; vh = (u * s) &#64; vh, where u and vh are 2D unitary
 arrays and s is a 1D array of a’s singular values. When x is higher-dimensional, SVD is applied in batched mode.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -673,7 +680,8 @@ Should have a numeric data type.</p></li>
 <dl class="py function">
 <dt class="sig sig-object py" id="ivy.functional.ivy.linear_algebra.trace">
 <span class="sig-prename descclassname"><span class="pre">ivy.functional.ivy.linear_algebra.</span></span><span class="sig-name descname"><span class="pre">trace</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/linear_algebra.html#trace"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.linear_algebra.trace" title="Permalink to this definition"></a></dt>
-<dd><p>Returns the sum along the specified diagonals of a matrix (or a stack of matrices) <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p>
+<dd><p>Returns the sum along the specified diagonals of a matrix (or a stack of
+matrices) <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">

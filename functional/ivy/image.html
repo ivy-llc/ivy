@@ -153,7 +153,8 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="ivy.functional.ivy.image.float_img_to_uint8_img">
 <span class="sig-prename descclassname"><span class="pre">ivy.functional.ivy.image.</span></span><span class="sig-name descname"><span class="pre">float_img_to_uint8_img</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/image.html#float_img_to_uint8_img"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.image.float_img_to_uint8_img" title="Permalink to this definition"></a></dt>
-<dd><p>Converts an image of floats into a bit-cast 4-channel image of uint8s, which can be saved to disk.</p>
+<dd><p>Converts an image of floats into a bit-cast 4-channel image of uint8s,
+which can be saved to disk.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>x</strong> – Input float image <em>[batch_shape,h,w]</em>.</p>
@@ -221,7 +222,8 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="ivy.functional.ivy.image.stack_images">
 <span class="sig-prename descclassname"><span class="pre">ivy.functional.ivy.image.</span></span><span class="sig-name descname"><span class="pre">stack_images</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">images</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">desired_aspect_ratio</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(1,</span> <span class="pre">1)</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/image.html#stack_images"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.image.stack_images" title="Permalink to this definition"></a></dt>
-<dd><p>Stacks a group of images into a combined windowed image, fitting the desired aspect ratio as closely as possible.</p>
+<dd><p>Stacks a group of images into a combined windowed image, fitting the
+desired aspect ratio as closely as possible.</p>
 <blockquote>
 <div><dl class="simple">
 <dt>images:</dt><dd><p>Sequence of image arrays to be stacked <em>[batch_shape,height,width,dims]</em></p>

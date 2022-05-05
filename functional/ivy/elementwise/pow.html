@@ -188,11 +188,14 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="ivy.functional.ivy.elementwise.pow">
 <span class="sig-prename descclassname"><span class="pre">ivy.functional.ivy.elementwise.</span></span><span class="sig-name descname"><span class="pre">pow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/elementwise.html#pow"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.elementwise.pow" title="Permalink to this definition"></a></dt>
-<dd><p>Calculates an implementation-dependent approximation of exponentiation by raising each element <code class="docutils literal notranslate"><span class="pre">x1_i</span></code> (the base) of the input array <code class="docutils literal notranslate"><span class="pre">x1</span></code> to the power of <code class="docutils literal notranslate"><span class="pre">x2_i</span></code> (the exponent), where <code class="docutils literal notranslate"><span class="pre">x2_i</span></code> is the corresponding element of the input array <code class="docutils literal notranslate"><span class="pre">x2</span></code>.
-.. note:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>If both ``x1`` and ``x2`` have integer data types, the result of ``pow`` when ``x2_i`` is negative (i.e., less than zero) is unspecified and thus implementation-dependent.
-If ``x1`` has an integer data type and ``x2`` has a floating-point data type, behavior is implementation-dependent (type promotion between data type &quot;kinds&quot; (integer versus floating-point) is unspecified).
-</pre></div>
+<dd><p>Calculates an implementation-dependent approximation of exponentiation
+by raising each element <code class="docutils literal notranslate"><span class="pre">x1_i</span></code> (the base) of the input array <code class="docutils literal notranslate"><span class="pre">x1</span></code> to
+the power of <code class="docutils literal notranslate"><span class="pre">x2_i</span></code> (the exponent), where <code class="docutils literal notranslate"><span class="pre">x2_i</span></code> is the corresponding
+element of the input array <code class="docutils literal notranslate"><span class="pre">x2</span></code>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If both <code class="docutils literal notranslate"><span class="pre">x1</span></code> and <code class="docutils literal notranslate"><span class="pre">x2</span></code> have integer data types, the result of <code class="docutils literal notranslate"><span class="pre">pow</span></code> when <code class="docutils literal notranslate"><span class="pre">x2_i</span></code> is negative (i.e., less than zero) is unspecified and thus implementation-dependent.
+If <code class="docutils literal notranslate"><span class="pre">x1</span></code> has an integer data type and <code class="docutils literal notranslate"><span class="pre">x2</span></code> has a floating-point data type, behavior is implementation-dependent (type promotion between data type “kinds” (integer versus floating-point) is unspecified).</p>
 </div>
 <p><strong>Special cases</strong>
 For floating-point operands,

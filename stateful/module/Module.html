@@ -133,7 +133,8 @@
 <dl class="py method">
 <dt class="sig sig-object py" id="ivy.stateful.module.Module.__init__">
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">build_mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'on_init'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compile_on_next_step</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">store_vars</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stateful</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg_stateful_idxs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwarg_stateful_idxs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fallback_to_non_compiled</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">with_partial_v</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">devices</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/stateful/module.html#Module.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.stateful.module.Module.__init__" title="Permalink to this definition"></a></dt>
-<dd><p>Initialze Ivy layer, which is a stateful object consisting of trainable variables.</p>
+<dd><p>Initialze Ivy layer, which is a stateful object consisting of
+trainable variables.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -202,9 +203,12 @@ raised during the compiled forward pass. Default is True.</p></li>
 <dl class="py method">
 <dt class="sig sig-object py" id="ivy.stateful.module.Module.save_weights">
 <span class="sig-name descname"><span class="pre">save_weights</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">weights_path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/stateful/module.html#Module.save_weights"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.stateful.module.Module.save_weights" title="Permalink to this definition"></a></dt>
-<dd><p>Save the weights on the Module.
-:param weights_path: The hdf5 file for saving the weights.
-:type weights_path: string</p>
+<dd><p>Save the weights on the Module.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>weights_path</strong> (<em>string</em>) – The hdf5 file for saving the weights.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">

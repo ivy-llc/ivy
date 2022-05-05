@@ -145,7 +145,8 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="ivy.functional.ivy.nest.all_nested_indices">
 <span class="sig-prename descclassname"><span class="pre">ivy.functional.ivy.nest.</span></span><span class="sig-name descname"><span class="pre">all_nested_indices</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_nests</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_base</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/nest.html#all_nested_indices"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.nest.all_nested_indices" title="Permalink to this definition"></a></dt>
-<dd><p>Checks the leaf nodes of nested x via function fn, and returns all nest indices where the method evaluates as True.</p>
+<dd><p>Checks the leaf nodes of nested x via function fn, and returns all nest
+indices where the method evaluates as True.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -168,7 +169,8 @@ Used internally, do not set manually.</p></li>
 <dl class="py function">
 <dt class="sig sig-object py" id="ivy.functional.ivy.nest.copy_nest">
 <span class="sig-prename descclassname"><span class="pre">ivy.functional.ivy.nest.</span></span><span class="sig-name descname"><span class="pre">copy_nest</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_derived</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_mutable</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/nest.html#copy_nest"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.nest.copy_nest" title="Permalink to this definition"></a></dt>
-<dd><p>Copies a nest deeply, but without copying leaves of the nest, only the nest lists, tuples and dicts are copied.</p>
+<dd><p>Copies a nest deeply, but without copying leaves of the nest, only the
+nest lists, tuples and dicts are copied.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -188,7 +190,8 @@ Used internally, do not set manually.</p></li>
 <dl class="py function">
 <dt class="sig sig-object py" id="ivy.functional.ivy.nest.index_nest">
 <span class="sig-prename descclassname"><span class="pre">ivy.functional.ivy.nest.</span></span><span class="sig-name descname"><span class="pre">index_nest</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/nest.html#index_nest"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.nest.index_nest" title="Permalink to this definition"></a></dt>
-<dd><p>Index a nested object, using a tuple of indices or keys in the case of dicts.</p>
+<dd><p>Index a nested object, using a tuple of indices or keys in the case of
+dicts.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -207,7 +210,8 @@ Used internally, do not set manually.</p></li>
 <dl class="py function">
 <dt class="sig sig-object py" id="ivy.functional.ivy.nest.insert_into_nest_at_indices">
 <span class="sig-prename descclassname"><span class="pre">ivy.functional.ivy.nest.</span></span><span class="sig-name descname"><span class="pre">insert_into_nest_at_indices</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indices</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/nest.html#insert_into_nest_at_indices"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.nest.insert_into_nest_at_indices" title="Permalink to this definition"></a></dt>
-<dd><p>Insert a value into the nested item at specified indices with specified values.</p>
+<dd><p>Insert a value into the nested item at specified indices with specified
+values.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -244,7 +248,7 @@ Used internally, do not set manually.</p></li>
 <dl class="py function">
 <dt class="sig sig-object py" id="ivy.functional.ivy.nest.map_nest_at_index">
 <span class="sig-prename descclassname"><span class="pre">ivy.functional.ivy.nest.</span></span><span class="sig-name descname"><span class="pre">map_nest_at_index</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fn</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/nest.html#map_nest_at_index"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.nest.map_nest_at_index" title="Permalink to this definition"></a></dt>
-<dd><p>Map a function to the value of a nested item at a specified index</p>
+<dd><p>Map a function to the value of a nested item at a specified index.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -259,7 +263,7 @@ Used internally, do not set manually.</p></li>
 <dl class="py function">
 <dt class="sig sig-object py" id="ivy.functional.ivy.nest.map_nest_at_indices">
 <span class="sig-prename descclassname"><span class="pre">ivy.functional.ivy.nest.</span></span><span class="sig-name descname"><span class="pre">map_nest_at_indices</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indices</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fn</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/nest.html#map_nest_at_indices"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.nest.map_nest_at_indices" title="Permalink to this definition"></a></dt>
-<dd><p>Map a function to the values of a nested item at the specified indices</p>
+<dd><p>Map a function to the values of a nested item at the specified indices.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -274,7 +278,8 @@ Used internally, do not set manually.</p></li>
 <dl class="py function">
 <dt class="sig sig-object py" id="ivy.functional.ivy.nest.multi_index_nest">
 <span class="sig-prename descclassname"><span class="pre">ivy.functional.ivy.nest.</span></span><span class="sig-name descname"><span class="pre">multi_index_nest</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indices</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/nest.html#multi_index_nest"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.nest.multi_index_nest" title="Permalink to this definition"></a></dt>
-<dd><p>Repeatedly index a nested object, using a tuple of tuples of indices or keys in the case of dicts.</p>
+<dd><p>Repeatedly index a nested object, using a tuple of tuples of indices or
+keys in the case of dicts.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -288,7 +293,8 @@ Used internally, do not set manually.</p></li>
 <dl class="py function">
 <dt class="sig sig-object py" id="ivy.functional.ivy.nest.nested_any">
 <span class="sig-prename descclassname"><span class="pre">ivy.functional.ivy.nest.</span></span><span class="sig-name descname"><span class="pre">nested_any</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fn</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_nests</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_base</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/nest.html#nested_any"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.nest.nested_any" title="Permalink to this definition"></a></dt>
-<dd><p>Checks the leaf nodes of nest x via function fn, and returns True if any evaluate to True, else False.</p>
+<dd><p>Checks the leaf nodes of nest x via function fn, and returns True if any
+evaluate to True, else False.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -310,7 +316,8 @@ Used internally, do not set manually.</p></li>
 <dl class="py function">
 <dt class="sig sig-object py" id="ivy.functional.ivy.nest.nested_indices_where">
 <span class="sig-prename descclassname"><span class="pre">ivy.functional.ivy.nest.</span></span><span class="sig-name descname"><span class="pre">nested_indices_where</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fn</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_nests</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_ignore</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_base</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/nest.html#nested_indices_where"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.nest.nested_indices_where" title="Permalink to this definition"></a></dt>
-<dd><p>Checks the leaf nodes of nested x via function fn, and returns all nest indices where the method evaluates as True.</p>
+<dd><p>Checks the leaf nodes of nested x via function fn, and returns all nest
+indices where the method evaluates as True.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -334,8 +341,9 @@ Used internally, do not set manually.</p></li>
 <dl class="py function">
 <dt class="sig sig-object py" id="ivy.functional.ivy.nest.nested_map">
 <span class="sig-prename descclassname"><span class="pre">ivy.functional.ivy.nest.</span></span><span class="sig-name descname"><span class="pre">nested_map</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fn</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_derived</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_mutable</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_depth</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_depth</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_tuple_check_fn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_list_check_fn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_dict_check_fn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/nest.html#nested_map"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.nest.nested_map" title="Permalink to this definition"></a></dt>
-<dd><p>Applies a function on x in a nested manner, whereby all dicts, lists and tuples are traversed to their lowest
-leaves before applying the method and returning x. If x is not nested, the method is applied to x directly.</p>
+<dd><p>Applies a function on x in a nested manner, whereby all dicts, lists and
+tuples are traversed to their lowest leaves before applying the method and
+returning x. If x is not nested, the method is applied to x directly.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -361,7 +369,7 @@ leaves before applying the method and returning x. If x is not nested, the metho
 <dl class="py function">
 <dt class="sig sig-object py" id="ivy.functional.ivy.nest.prune_nest_at_index">
 <span class="sig-prename descclassname"><span class="pre">ivy.functional.ivy.nest.</span></span><span class="sig-name descname"><span class="pre">prune_nest_at_index</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/nest.html#prune_nest_at_index"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.nest.prune_nest_at_index" title="Permalink to this definition"></a></dt>
-<dd><p>Prune a nested object at a specified index</p>
+<dd><p>Prune a nested object at a specified index.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -389,7 +397,7 @@ leaves before applying the method and returning x. If x is not nested, the metho
 <dl class="py function">
 <dt class="sig sig-object py" id="ivy.functional.ivy.nest.set_nest_at_index">
 <span class="sig-prename descclassname"><span class="pre">ivy.functional.ivy.nest.</span></span><span class="sig-name descname"><span class="pre">set_nest_at_index</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/nest.html#set_nest_at_index"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.nest.set_nest_at_index" title="Permalink to this definition"></a></dt>
-<dd><p>Set the value of a nested item at a specified index</p>
+<dd><p>Set the value of a nested item at a specified index.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -404,7 +412,8 @@ leaves before applying the method and returning x. If x is not nested, the metho
 <dl class="py function">
 <dt class="sig sig-object py" id="ivy.functional.ivy.nest.set_nest_at_indices">
 <span class="sig-prename descclassname"><span class="pre">ivy.functional.ivy.nest.</span></span><span class="sig-name descname"><span class="pre">set_nest_at_indices</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indices</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/nest.html#set_nest_at_indices"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.nest.set_nest_at_indices" title="Permalink to this definition"></a></dt>
-<dd><p>Set the value of a nested item at specified indices with specified values.</p>
+<dd><p>Set the value of a nested item at specified indices with specified
+values.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">

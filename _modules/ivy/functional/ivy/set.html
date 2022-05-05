@@ -133,8 +133,11 @@
 <div class="viewcode-block" id="unique_all"><a class="viewcode-back" href="../../../../functional/ivy/set/unique_all.html#ivy.functional.ivy.set.unique_all">[docs]</a><span class="k">def</span> <span class="nf">unique_all</span><span class="p">(</span>
     <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Returns the unique elements of an input array ``x``, the first occurring indices for each unique element in ``x``, the indices from the set of unique elements that reconstruct ``x``, and the corresponding counts for each unique element in ``x``.</span>
+    <span class="sd">&quot;&quot;&quot;Returns the unique elements of an input array ``x``, the first occurring</span>
+<span class="sd">    indices for each unique element in ``x``, the indices from the set of</span>
+<span class="sd">    unique elements that reconstruct ``x``, and the corresponding counts for</span>
+<span class="sd">    each unique element in ``x``.</span>
+
 <span class="sd">    .. admonition:: Data-dependent output shape</span>
 <span class="sd">        :class: important</span>
 <span class="sd">        The shapes of two of the output arrays for this function depend on the data values in the input array; hence, array libraries which build computation graphs (e.g., JAX, Dask, etc.) may find this function difficult to implement without knowing array values. Accordingly, such libraries may choose to omit this function. See :ref:`data-dependent-output-shapes` section for more details.</span>
@@ -158,13 +161,15 @@
 <span class="sd">        - fourth element must have the field name ``counts`` and must be an array containing the number of times each unique element occurs in ``x``. The returned array must have same shape as ``values`` and must have the default array index data type.</span>
 <span class="sd">        .. note::</span>
 <span class="sd">           The order of unique elements is not specified and may vary between implementations.</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">unique_all</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="unique_inverse"><a class="viewcode-back" href="../../../../functional/ivy/set/unique_inverse.html#ivy.functional.ivy.set.unique_inverse">[docs]</a><span class="k">def</span> <span class="nf">unique_inverse</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]:</span>
-    <span class="sd">&quot;&quot;&quot;Returns a tuple of two arrays, one being the unique elements of an input array x and the other one the indices from</span>
-<span class="sd">    the set of uniques elements that reconstruct x.</span>
+    <span class="sd">&quot;&quot;&quot;Returns a tuple of two arrays, one being the unique elements of an input</span>
+<span class="sd">    array x and the other one the indices from the set of uniques elements that</span>
+<span class="sd">    reconstruct x.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -184,8 +189,8 @@
     <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Returns the unique elements of an input array ``x``.</span>
+    <span class="sd">&quot;&quot;&quot;Returns the unique elements of an input array ``x``.</span>
+
 <span class="sd">    .. admonition:: Data-dependent output shape</span>
 <span class="sd">        :class: important</span>
 <span class="sd">        The shapes of two of the output arrays for this function depend on the data values in the input array; hence, array libraries which build computation graphs (e.g., JAX, Dask, etc.) may find this function difficult to implement without knowing array values. Accordingly, such libraries may choose to omit this function. See :ref:`data-dependent-output-shapes` section for more details.</span>
@@ -203,12 +208,14 @@
 <span class="sd">        an array containing the set of unique elements in ``x``. The returned array must have the same data type as ``x``.</span>
 <span class="sd">        .. note::</span>
 <span class="sd">           The order of unique elements is not specified and may vary between implementations.</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">unique_values</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="unique_counts"><a class="viewcode-back" href="../../../../functional/ivy/set/unique_counts.html#ivy.functional.ivy.set.unique_counts">[docs]</a><span class="k">def</span> <span class="nf">unique_counts</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]:</span>
-    <span class="sd">&quot;&quot;&quot;Returns the unique elements of an input array x and the corresponding counts for each unique element in x.</span>
+    <span class="sd">&quot;&quot;&quot;Returns the unique elements of an input array x and the corresponding</span>
+<span class="sd">    counts for each unique element in x.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>

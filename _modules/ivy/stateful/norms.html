@@ -118,9 +118,7 @@
            <div itemprop="articleBody">
              
   <h1>Source code for ivy.stateful.norms</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">Collection of Ivy normalization classes.</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span></span><span class="sd">&quot;&quot;&quot;Collection of Ivy normalization classes.&quot;&quot;&quot;</span>
 
 <span class="c1"># local</span>
 <span class="kn">import</span> <span class="nn">ivy</span>
@@ -138,8 +136,7 @@
         <span class="n">device</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">v</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Class for applying Layer Normalization over a mini-batch of inputs</span>
+        <span class="sd">&quot;&quot;&quot;Class for applying Layer Normalization over a mini-batch of inputs.</span>
 
 <span class="sd">        :param normalized_shape: Trailing shape to applying the normalization to.</span>
 <span class="sd">        :type normalized_shape: int or sequence of ints</span>
@@ -153,6 +150,7 @@
 <span class="sd">        :type device: ivy.Device, optional</span>
 <span class="sd">        :param v: the variables for each submodule in the sequence, constructed internally by default.</span>
 <span class="sd">        :type v: ivy container of variables, optional</span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_normalized_idxs</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">normalized_shape</span><span class="p">))]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_epsilon</span> <span class="o">=</span> <span class="n">epsilon</span>
@@ -165,9 +163,7 @@
         <span class="n">Module</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="nf">_create_variables</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">device</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Create internal variables for the layer</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Create internal variables for the layer.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_elementwise_affine</span><span class="p">:</span>
             <span class="k">return</span> <span class="p">{</span>
                 <span class="s2">&quot;scale&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_scale_init</span><span class="o">.</span><span class="n">create_variables</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_scale_shape</span><span class="p">,</span> <span class="n">device</span><span class="p">),</span>
@@ -178,12 +174,12 @@
         <span class="k">return</span> <span class="p">{}</span>
 
     <span class="k">def</span> <span class="nf">_forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Perform forward pass of the LayerNorm layer.</span>
+        <span class="sd">&quot;&quot;&quot;Perform forward pass of the LayerNorm layer.</span>
 
 <span class="sd">        :param inputs: Inputs to process.</span>
 <span class="sd">        :type inputs: array</span>
 <span class="sd">        :return: The outputs following the layer normalization operation.</span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">layer_norm</span><span class="p">(</span>
             <span class="n">inputs</span><span class="p">,</span>

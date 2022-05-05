@@ -348,8 +348,9 @@
 <dl class="py method">
 <dt class="sig sig-object py" id="ivy.stateful.layers.Dropout.__init__">
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prob</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/stateful/layers.html#Dropout.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.stateful.layers.Dropout.__init__" title="Permalink to this definition"></a></dt>
-<dd><p>Dropout layer. The layer randomly zeroes some of the elements of the input tensor with probability p using
-samples from a Bernoull distribution.</p>
+<dd><p>Dropout layer. The layer randomly zeroes some of the elements of the
+input tensor with probability p using samples from a Bernoull
+distribution.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -390,7 +391,8 @@ Default is True.</p></li>
 <dl class="py method">
 <dt class="sig sig-object py" id="ivy.stateful.layers.LSTM.get_initial_state">
 <span class="sig-name descname"><span class="pre">get_initial_state</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">batch_shape</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/stateful/layers.html#LSTM.get_initial_state"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.stateful.layers.LSTM.get_initial_state" title="Permalink to this definition"></a></dt>
-<dd><p>Get the initial state of the hidden and cell states, if not provided explicitly</p>
+<dd><p>Get the initial state of the hidden and cell states, if not provided
+explicitly.</p>
 </dd></dl>
 
 </dd></dl>
@@ -402,9 +404,11 @@ Default is True.</p></li>
 <dl class="py method">
 <dt class="sig sig-object py" id="ivy.stateful.layers.Linear.__init__">
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_channels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_channels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight_initializer=&lt;ivy.stateful.initializers.GlorotUniform</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bias_initializer=&lt;ivy.stateful.initializers.Zeros</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">with_bias=True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v=None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/stateful/layers.html#Linear.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.stateful.layers.Linear.__init__" title="Permalink to this definition"></a></dt>
-<dd><p>Linear layer, also referred to as dense or fully connected. The layer receives tensors with input_channels last
-dimension and returns a new tensor with output_channels last dimension, following matrix multiplication with the
-weight matrix and addition with the bias vector.</p>
+<dd><p>Linear layer, also referred to as dense or fully connected. The
+layer receives tensors with input_channels last dimension and returns a
+new tensor with output_channels last dimension, following matrix
+multiplication with the weight matrix and addition with the bias
+vector.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">

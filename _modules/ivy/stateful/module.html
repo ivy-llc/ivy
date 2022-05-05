@@ -118,9 +118,7 @@
            <div itemprop="articleBody">
              
   <h1>Source code for ivy.stateful.module</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">Base class for deriving trainable modules</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span></span><span class="sd">&quot;&quot;&quot;Base class for deriving trainable modules.&quot;&quot;&quot;</span>
 
 <span class="c1"># global</span>
 <span class="kn">import</span> <span class="nn">os</span>
@@ -153,8 +151,8 @@
         <span class="n">with_partial_v</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
         <span class="n">devices</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Initialze Ivy layer, which is a stateful object consisting of trainable variables.</span>
+        <span class="sd">&quot;&quot;&quot;Initialze Ivy layer, which is a stateful object consisting of</span>
+<span class="sd">        trainable variables.</span>
 
 <span class="sd">        :param device: device on which to create the module&#39;s variables &#39;cuda:0&#39;, &#39;cuda:1&#39;, &#39;cpu&#39; etc.</span>
 <span class="sd">        :type device: ivy.Device, optional</span>
@@ -184,6 +182,7 @@
 <span class="sd">        :param devices: devices on which to distribute the module&#39;s variables &#39;cuda:0&#39;, &#39;cuda:1&#39;, &#39;cpu&#39; etc.</span>
 <span class="sd">        :type devices: sequence of str, optional</span>
 <span class="sd">        :type build_mode: str, optional</span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">valid_build_modes</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;on_init&quot;</span><span class="p">,</span> <span class="s2">&quot;explicit&quot;</span><span class="p">,</span> <span class="s2">&quot;on_call&quot;</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">build_mode</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">valid_build_modes</span><span class="p">:</span>
@@ -423,19 +422,23 @@
 
     <span class="c1"># noinspection PyMethodMayBeStatic,PyUnusedLocal</span>
     <span class="k">def</span> <span class="nf">_create_variables</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">device</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        create internal trainable variables, and return as arbitrary nested dict. Overridable.</span>
+        <span class="sd">&quot;&quot;&quot;create internal trainable variables, and return as arbitrary nested</span>
+<span class="sd">        dict. Overridable.</span>
 
 <span class="sd">        :param device: The device string, specifying the device on which to create the variables.</span>
 <span class="sd">        :type device: ivy.Deviceing</span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">{}</span>
 
     <span class="k">def</span> <span class="nf">_build</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Build the internal layers and variables for this module. Overridable.</span>
-<span class="sd">        Return False or empty Container if the build only partially completed (i.e. some child Modules have</span>
-<span class="sd">        &quot;on_call&quot; build mode). Alternatviely, return True or a container of the built variables if the module is built.</span>
+        <span class="sd">&quot;&quot;&quot;Build the internal layers and variables for this module.</span>
+
+<span class="sd">        Overridable. Return False or empty Container if the build only</span>
+<span class="sd">        partially completed (i.e. some child Modules have &quot;on_call&quot;</span>
+<span class="sd">        build mode). Alternatviely, return True or a container of the</span>
+<span class="sd">        built variables if the module is built.</span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="kc">True</span>
 
@@ -443,15 +446,13 @@
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">_forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Forward pass of the layer, called after handling the optional input variables.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Forward pass of the layer, called after handling the optional input</span>
+<span class="sd">        variables.&quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span>
 
     <span class="k">def</span> <span class="nf">_forward_with_tracking</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Forward pass while optionally tracking submodule returns and call order</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Forward pass while optionally tracking submodule returns and call</span>
+<span class="sd">        order.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">track_submod_call_order</span><span class="p">():</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_add_submod_enter</span><span class="p">()</span>
         <span class="n">ret</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_forward</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
@@ -464,9 +465,8 @@
         <span class="k">return</span> <span class="n">ret</span>
 
     <span class="k">def</span> <span class="nf">_call</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">with_grads</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        the forward pass of the layer, treating layer instance as callable function.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;the forward pass of the layer, treating layer instance as callable</span>
+<span class="sd">        function.&quot;&quot;&quot;</span>
         <span class="n">with_grads</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">with_grads</span><span class="p">(</span><span class="n">with_grads</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_built</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span> <span class="n">from_call</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -761,18 +761,17 @@
         <span class="k">return</span> <span class="n">ret</span>
 
 <div class="viewcode-block" id="Module.save_weights"><a class="viewcode-back" href="../../../stateful/module/Module.html#ivy.stateful.module.Module.save_weights">[docs]</a>    <span class="k">def</span> <span class="nf">save_weights</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">weights_path</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Save the weights on the Module.</span>
+        <span class="sd">&quot;&quot;&quot;Save the weights on the Module.</span>
+
 <span class="sd">        :param weights_path: The hdf5 file for saving the weights.</span>
 <span class="sd">        :type weights_path: string</span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">weights_path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]),</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">to_disk_as_hdf5</span><span class="p">(</span><span class="n">weights_path</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Module.build"><a class="viewcode-back" href="../../../stateful/module/Module.html#ivy.stateful.module.Module.build">[docs]</a>    <span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">from_call</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Build the internal layers and variables for this module.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Build the internal layers and variables for this module.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_dev</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">default</span><span class="p">(</span><span class="n">device</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dev</span><span class="p">)</span>
 
         <span class="c1"># return False if not from_call but build_mode is on_call</span>

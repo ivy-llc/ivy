@@ -133,16 +133,10 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="ivy.functional.ivy.set.unique_all">
 <span class="sig-prename descclassname"><span class="pre">ivy.functional.ivy.set.</span></span><span class="sig-name descname"><span class="pre">unique_all</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/set.html#unique_all"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.set.unique_all" title="Permalink to this definition"></a></dt>
-<dd><p>Returns the unique elements of an input array <code class="docutils literal notranslate"><span class="pre">x</span></code>, the first occurring indices for each unique element in <code class="docutils literal notranslate"><span class="pre">x</span></code>, the indices from the set of unique elements that reconstruct <code class="docutils literal notranslate"><span class="pre">x</span></code>, and the corresponding counts for each unique element in <code class="docutils literal notranslate"><span class="pre">x</span></code>.
-.. admonition:: Data-dependent output shape</p>
-<blockquote>
-<div><dl class="field-list simple">
-<dt class="field-odd">class</dt>
-<dd class="field-odd"><p>important</p>
-</dd>
-</dl>
-<p>The shapes of two of the output arrays for this function depend on the data values in the input array; hence, array libraries which build computation graphs (e.g., JAX, Dask, etc.) may find this function difficult to implement without knowing array values. Accordingly, such libraries may choose to omit this function. See <span class="xref std std-ref">data-dependent-output-shapes</span> section for more details.</p>
-</div></blockquote>
+<dd><p>Returns the unique elements of an input array <code class="docutils literal notranslate"><span class="pre">x</span></code>, the first occurring
+indices for each unique element in <code class="docutils literal notranslate"><span class="pre">x</span></code>, the indices from the set of
+unique elements that reconstruct <code class="docutils literal notranslate"><span class="pre">x</span></code>, and the corresponding counts for
+each unique element in <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>Uniqueness should be determined based on value equality (i.e., <code class="docutils literal notranslate"><span class="pre">x_i</span> <span class="pre">==</span> <span class="pre">x_j</span></code>). For input arrays having floating-point data types, value-based equality implies the following behavior.

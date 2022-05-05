@@ -160,8 +160,7 @@
 
 <span class="c1"># noinspection PyShadowingBuiltins</span>
 <div class="viewcode-block" id="iinfo"><a class="viewcode-back" href="../../../../functional/ivy/data_type/iinfo.html#ivy.functional.ivy.data_type.iinfo">[docs]</a><span class="k">def</span> <span class="nf">iinfo</span><span class="p">(</span><span class="nb">type</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Iinfo</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Machine limits for integer data types.</span>
+    <span class="sd">&quot;&quot;&quot;Machine limits for integer data types.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -178,14 +177,14 @@
 <span class="sd">          largest representable number.</span>
 <span class="sd">        - **min**: *int*</span>
 <span class="sd">          smallest representable number.</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span><span class="o">.</span><span class="n">iinfo</span><span class="p">(</span><span class="nb">type</span><span class="p">)</span></div>
 
 
 <span class="c1"># noinspection PyShadowingBuiltins</span>
 <div class="viewcode-block" id="finfo"><a class="viewcode-back" href="../../../../functional/ivy/data_type/finfo.html#ivy.functional.ivy.data_type.finfo">[docs]</a><span class="k">def</span> <span class="nf">finfo</span><span class="p">(</span><span class="nb">type</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Finfo</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Machine limits for floating-point data types.</span>
+    <span class="sd">&quot;&quot;&quot;Machine limits for floating-point data types.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -206,6 +205,7 @@
 <span class="sd">          smallest representable number.</span>
 <span class="sd">        - **smallest_normal**: *float*</span>
 <span class="sd">          smallest positive floating-point number with full precision.</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span><span class="o">.</span><span class="n">finfo</span><span class="p">(</span><span class="nb">type</span><span class="p">)</span></div>
 
@@ -213,7 +213,7 @@
 <div class="viewcode-block" id="broadcast_to"><a class="viewcode-back" href="../../../../functional/ivy/data_type/broadcast_to.html#ivy.functional.ivy.data_type.broadcast_to">[docs]</a><span class="k">def</span> <span class="nf">broadcast_to</span><span class="p">(</span>
     <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span> <span class="n">shape</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Broadcasts an array to a specified shape</span>
+    <span class="sd">&quot;&quot;&quot;Broadcasts an array to a specified shape.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -277,8 +277,8 @@
 <div class="viewcode-block" id="astype"><a class="viewcode-back" href="../../../../functional/ivy/data_type/astype.html#ivy.functional.ivy.data_type.astype">[docs]</a><span class="k">def</span> <span class="nf">astype</span><span class="p">(</span>
     <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span> <span class="n">dtype</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="n">copy</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Copies an array to a specified data type irrespective of :ref:`type-promotion` rules.</span>
+    <span class="sd">&quot;&quot;&quot;Copies an array to a specified data type irrespective of :ref:`type-</span>
+<span class="sd">    promotion` rules.</span>
 
 <span class="sd">    .. note::</span>
 <span class="sd">       Casting floating-point ``NaN`` and ``infinity`` values to integral data types is not specified and is implementation-dependent.</span>
@@ -321,7 +321,7 @@
 
 
 <div class="viewcode-block" id="DefaultDtype"><a class="viewcode-back" href="../../../../functional/ivy/data_type.html#ivy.functional.ivy.data_type.DefaultDtype">[docs]</a><span class="k">class</span> <span class="nc">DefaultDtype</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot; &quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;&quot;&quot;&quot;</span>
 
     <span class="c1"># noinspection PyShadowingNames</span>
 <div class="viewcode-block" id="DefaultDtype.__init__"><a class="viewcode-back" href="../../../../functional/ivy/data_type.html#ivy.functional.ivy.data_type.DefaultDtype.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dtype</span><span class="p">):</span>
@@ -337,7 +337,7 @@
 
 
 <div class="viewcode-block" id="DefaultFloatDtype"><a class="viewcode-back" href="../../../../functional/ivy/data_type.html#ivy.functional.ivy.data_type.DefaultFloatDtype">[docs]</a><span class="k">class</span> <span class="nc">DefaultFloatDtype</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot; &quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;&quot;&quot;&quot;</span>
 
     <span class="c1"># noinspection PyShadowingNames</span>
 <div class="viewcode-block" id="DefaultFloatDtype.__init__"><a class="viewcode-back" href="../../../../functional/ivy/data_type.html#ivy.functional.ivy.data_type.DefaultFloatDtype.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">float_dtype</span><span class="p">):</span>
@@ -353,7 +353,7 @@
 
 
 <div class="viewcode-block" id="DefaultIntDtype"><a class="viewcode-back" href="../../../../functional/ivy/data_type.html#ivy.functional.ivy.data_type.DefaultIntDtype">[docs]</a><span class="k">class</span> <span class="nc">DefaultIntDtype</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot; &quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;&quot;&quot;&quot;</span>
 
     <span class="c1"># noinspection PyShadowingNames</span>
 <div class="viewcode-block" id="DefaultIntDtype.__init__"><a class="viewcode-back" href="../../../../functional/ivy/data_type.html#ivy.functional.ivy.data_type.DefaultIntDtype.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">float_dtype</span><span class="p">):</span>
@@ -686,7 +686,7 @@
 
 
 <div class="viewcode-block" id="unset_default_dtype"><a class="viewcode-back" href="../../../../functional/ivy/data_type/unset_default_dtype.html#ivy.functional.ivy.data_type.unset_default_dtype">[docs]</a><span class="k">def</span> <span class="nf">unset_default_dtype</span><span class="p">():</span>
-    <span class="sd">&quot;&quot;&quot; &quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;&quot;&quot;&quot;</span>
     <span class="k">global</span> <span class="n">default_dtype_stack</span>
     <span class="k">if</span> <span class="n">default_dtype_stack</span><span class="p">:</span>
         <span class="n">default_dtype_stack</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span></div>
@@ -711,7 +711,7 @@
 
 
 <div class="viewcode-block" id="unset_default_int_dtype"><a class="viewcode-back" href="../../../../functional/ivy/data_type/unset_default_int_dtype.html#ivy.functional.ivy.data_type.unset_default_int_dtype">[docs]</a><span class="k">def</span> <span class="nf">unset_default_int_dtype</span><span class="p">():</span>
-    <span class="sd">&quot;&quot;&quot; &quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;&quot;&quot;&quot;</span>
     <span class="k">global</span> <span class="n">default_int_dtype_stack</span>
     <span class="k">if</span> <span class="n">default_int_dtype_stack</span><span class="p">:</span>
         <span class="n">default_int_dtype_stack</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span></div>
@@ -736,7 +736,7 @@
 
 
 <div class="viewcode-block" id="unset_default_float_dtype"><a class="viewcode-back" href="../../../../functional/ivy/data_type/unset_default_float_dtype.html#ivy.functional.ivy.data_type.unset_default_float_dtype">[docs]</a><span class="k">def</span> <span class="nf">unset_default_float_dtype</span><span class="p">():</span>
-    <span class="sd">&quot;&quot;&quot; &quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;&quot;&quot;&quot;</span>
     <span class="k">global</span> <span class="n">default_float_dtype_stack</span>
     <span class="k">if</span> <span class="n">default_float_dtype_stack</span><span class="p">:</span>
         <span class="n">default_float_dtype_stack</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span></div>
@@ -834,8 +834,9 @@
 <div class="viewcode-block" id="result_type"><a class="viewcode-back" href="../../../../functional/ivy/data_type/result_type.html#ivy.functional.ivy.data_type.result_type">[docs]</a><span class="k">def</span> <span class="nf">result_type</span><span class="p">(</span>
     <span class="o">*</span><span class="n">arrays_and_dtypes</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">]</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Returns the dtype that results from applying the type promotion rules (see :ref:`type-promotion`) to the arguments.</span>
+    <span class="sd">&quot;&quot;&quot;Returns the dtype that results from applying the type promotion rules</span>
+<span class="sd">    (see :ref:`type-promotion`) to the arguments.</span>
+
 <span class="sd">    .. note::</span>
 <span class="sd">       If provided mixed dtypes (e.g., integer and floating-point), the returned dtype will be implementation-specific.</span>
 <span class="sd">    Parameters</span>
@@ -846,12 +847,14 @@
 <span class="sd">     -------</span>
 <span class="sd">    ret</span>
 <span class="sd">        the dtype resulting from an operation involving the input arrays and dtypes.</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">arrays_and_dtypes</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">result_type</span><span class="p">(</span><span class="n">arrays_and_dtypes</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="valid_dtype"><a class="viewcode-back" href="../../../../functional/ivy/data_type/valid_dtype.html#ivy.functional.ivy.data_type.valid_dtype">[docs]</a><span class="k">def</span> <span class="nf">valid_dtype</span><span class="p">(</span><span class="n">dtype_in</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Determines whether the provided data type is support by the current framework.</span>
+    <span class="sd">&quot;&quot;&quot;Determines whether the provided data type is support by the current</span>
+<span class="sd">    framework.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -870,7 +873,8 @@
 
 
 <div class="viewcode-block" id="invalid_dtype"><a class="viewcode-back" href="../../../../functional/ivy/data_type/invalid_dtype.html#ivy.functional.ivy.data_type.invalid_dtype">[docs]</a><span class="k">def</span> <span class="nf">invalid_dtype</span><span class="p">(</span><span class="n">dtype_in</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Determines whether the provided data type is not support by the current framework.</span>
+    <span class="sd">&quot;&quot;&quot;Determines whether the provided data type is not support by the current</span>
+<span class="sd">    framework.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -889,7 +893,8 @@
 
 
 <div class="viewcode-block" id="convert_dtype"><a class="viewcode-back" href="../../../../functional/ivy/data_type/convert_dtype.html#ivy.functional.ivy.data_type.convert_dtype">[docs]</a><span class="k">def</span> <span class="nf">convert_dtype</span><span class="p">(</span><span class="n">dtype_in</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="n">backend</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Converts a data type from one backend framework representation to another.</span>
+    <span class="sd">&quot;&quot;&quot;Converts a data type from one backend framework representation to</span>
+<span class="sd">    another.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>

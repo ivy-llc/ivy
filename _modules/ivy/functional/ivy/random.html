@@ -118,9 +118,7 @@
            <div itemprop="articleBody">
              
   <h1>Source code for ivy.functional.ivy.random</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">Collection of random Ivy functions</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span></span><span class="sd">&quot;&quot;&quot;Collection of random Ivy functions.&quot;&quot;&quot;</span>
 
 <span class="c1"># global</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Tuple</span>
@@ -140,10 +138,10 @@
     <span class="n">shape</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">device</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Device</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Draws samples from a uniform distribution. Samples are uniformly distributed over the half-open</span>
-<span class="sd">    interval ``[low, high)`` (includes ``low``, but excludes ``high``). In other words, any value within the given</span>
-<span class="sd">    interval is equally likely to be drawn by uniform.</span>
+    <span class="sd">&quot;&quot;&quot;Draws samples from a uniform distribution. Samples are uniformly</span>
+<span class="sd">    distributed over the half-open interval ``[low, high)`` (includes ``low``,</span>
+<span class="sd">    but excludes ``high``). In other words, any value within the given interval</span>
+<span class="sd">    is equally likely to be drawn by uniform.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    -----------</span>
@@ -199,8 +197,10 @@
 <div class="viewcode-block" id="multinomial"><a class="viewcode-back" href="../../../../functional/ivy/random/multinomial.html#ivy.functional.ivy.random.multinomial">[docs]</a><span class="k">def</span> <span class="nf">multinomial</span><span class="p">(</span>
     <span class="n">population_size</span><span class="p">,</span> <span class="n">num_samples</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">,</span> <span class="n">probs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">replace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="kc">None</span>
 <span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Draws samples from a multinomial distribution. Specifcally, returns a tensor where each row contains num_samples</span>
-<span class="sd">    indices sampled from the multinomial probability distribution located in the corresponding row of tensor input.</span>
+    <span class="sd">&quot;&quot;&quot;Draws samples from a multinomial distribution. Specifcally, returns a</span>
+<span class="sd">    tensor where each row contains num_samples indices sampled from the</span>
+<span class="sd">    multinomial probability distribution located in the corresponding row of</span>
+<span class="sd">    tensor input.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -230,7 +230,8 @@
 
 
 <div class="viewcode-block" id="randint"><a class="viewcode-back" href="../../../../functional/ivy/random/randint.html#ivy.functional.ivy.random.randint">[docs]</a><span class="k">def</span> <span class="nf">randint</span><span class="p">(</span><span class="n">low</span><span class="p">,</span> <span class="n">high</span><span class="p">,</span> <span class="n">shape</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Returns a tensor filled with random integers generated uniformly between low (inclusive) and high (exclusive).</span>
+    <span class="sd">&quot;&quot;&quot;Returns a tensor filled with random integers generated uniformly between</span>
+<span class="sd">    low (inclusive) and high (exclusive).</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
