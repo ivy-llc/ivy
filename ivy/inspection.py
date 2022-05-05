@@ -89,12 +89,13 @@ def _get_array_idxs(typ, idx_so_far=None):
 
 
 def fn_array_spec(fn):
-    """
-    Return a specification of the function, indicating all arguments which include arrays, and the indexes of these.
+    """Return a specification of the function, indicating all arguments which
+    include arrays, and the indexes of these.
 
     :param fn: function to inspect
     :type fn: callable
     :return: specification
+
     """
     type_hints = get_type_hints(fn)
     array_idxs = list()
