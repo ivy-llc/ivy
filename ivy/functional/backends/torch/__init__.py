@@ -26,33 +26,63 @@ float64 = torch.float64
 # noinspection PyShadowingBuiltins
 bool = torch.bool
 
-valid_dtypes = (int8, int16, int32, int64,
-                uint8,
-                bfloat16, float16, float32, float64,
-                bool)
-valid_numeric_dtypes = (int8, int16, int32, int64,
-                        uint8,
-                        bfloat16, float16, float32, float64)
-valid_int_dtypes = (int8, int16, int32, int64,
-                    uint8)
+valid_dtypes = (
+    int8,
+    int16,
+    int32,
+    int64,
+    uint8,
+    bfloat16,
+    float16,
+    float32,
+    float64,
+    bool,
+)
+valid_numeric_dtypes = (
+    int8,
+    int16,
+    int32,
+    int64,
+    uint8,
+    bfloat16,
+    float16,
+    float32,
+    float64,
+)
+valid_int_dtypes = (int8, int16, int32, int64, uint8)
 valid_float_dtypes = (bfloat16, float16, float32, float64)
 
 # valid
-valid_dtype_strs = ('int8', 'int16', 'int32', 'int64',
-                    'uint8',
-                    'bfloat16', 'float16', 'float32', 'float64',
-                    'bool')
-valid_numeric_dtype_strs = ('int8', 'int16', 'int32', 'int64',
-                            'uint8',
-                            'bfloat16', 'float16', 'float32', 'float64')
-valid_int_dtype_strs = ('int8', 'int16', 'int32', 'int64',
-                        'uint8')
-valid_float_dtype_strs = ('bfloat16', 'float16', 'float32', 'float64')
+valid_dtype_strs = (
+    "int8",
+    "int16",
+    "int32",
+    "int64",
+    "uint8",
+    "bfloat16",
+    "float16",
+    "float32",
+    "float64",
+    "bool",
+)
+valid_numeric_dtype_strs = (
+    "int8",
+    "int16",
+    "int32",
+    "int64",
+    "uint8",
+    "bfloat16",
+    "float16",
+    "float32",
+    "float64",
+)
+valid_int_dtype_strs = ("int8", "int16", "int32", "int64", "uint8")
+valid_float_dtype_strs = ("bfloat16", "float16", "float32", "float64")
 
 # invalid
-invalid_dtype_strs = ('uint16', 'uint32', 'uint64')
-invalid_num_dtype_strs = ('uint16', 'uint32', 'uint64')
-invalid_int_dtype_strs = ('uint16', 'uint32', 'uint64')
+invalid_dtype_strs = ("uint16", "uint32", "uint64")
+invalid_num_dtype_strs = ("uint16", "uint32", "uint64")
+invalid_int_dtype_strs = ("uint16", "uint32", "uint64")
 invalid_float_dtype_strs = ()
 
 
@@ -61,13 +91,11 @@ def closest_valid_dtype(type):
         return ivy.default_dtype()
     type_str = dtype_to_str(type)
     if type_str in invalid_dtype_strs:
-        return {'uint16': uint8,
-                'uint32': uint8,
-                'uint64': uint8}[type_str]
+        return {"uint16": uint8, "uint32": uint8, "uint64": uint8}[type_str]
     return type
 
 
-backend = 'torch'
+backend = "torch"
 
 
 # local sub-modules
