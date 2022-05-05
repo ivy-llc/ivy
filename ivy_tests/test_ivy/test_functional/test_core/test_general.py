@@ -390,7 +390,7 @@ def test_get_num_dims(x0_n_x1_n_res, as_tensor, tensor_fn, device, call, fw):
 
 
 # minimum
-@given(xy=helpers.dtype_and_values(ivy_np.valid_dtype_strs,n_arrays=2),
+@given(xy=helpers.dtype_and_values(ivy_np.valid_numeric_dtype_strs,n_arrays=2),
        as_variable=st.booleans(),
        with_out=st.booleans(),
        num_positional_args=st.integers(2),
@@ -414,7 +414,7 @@ def test_minimum(xy, as_variable, with_out, num_positional_args, native_array, c
 
 
 # maximum
-@given(xy=helpers.dtype_and_values(ivy_np.valid_dtype_strs,n_arrays=2),
+@given(xy=helpers.dtype_and_values(ivy_np.valid_numeric_dtype_strs,n_arrays=2),
        as_variable=st.booleans(),
        with_out=st.booleans(),
        num_positional_args=st.integers(2),
