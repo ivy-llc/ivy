@@ -1,6 +1,4 @@
-"""
-Collection of tests for training normalization layers
-"""
+"""Collection of tests for training normalization layers."""
 
 # global
 import pytest

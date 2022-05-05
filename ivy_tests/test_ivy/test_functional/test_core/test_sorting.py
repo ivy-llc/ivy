@@ -1,6 +1,4 @@
-"""
-Collection of tests for sorting functions
-"""
+"""Collection of tests for sorting functions."""
 
 # global
 import pytest
