@@ -595,103 +595,107 @@ def test_reptile_step(
 # -------------#
 
 # maml step unique vars
-# @pytest.mark.parametrize(
-#     "inner_grad_steps", [1, 2, 3])
-# @pytest.mark.parametrize(
-#     "with_outer_cost_fn", [True, False])
-# @pytest.mark.parametrize(
-#     "average_across_steps", [True, False])
-# @pytest.mark.parametrize(
-#     "batched", [True, False])
-# @pytest.mark.parametrize(
-#     "stop_gradients", [True, False])
-# @pytest.mark.parametrize(
-#     "num_tasks", [1, 2])
-# @pytest.mark.parametrize(
-#     "return_inner_v", ['first', 'all', False])
-# def test_maml_step_unique_vars(device, call, inner_grad_steps, with_outer_cost_fn, average_across_steps, batched,
-#                                stop_gradients, num_tasks, return_inner_v):
-#     if call in [helpers.np_call, helpers.mx_call]:
-#         # Numpy does not support gradients, jax does not support gradients on custom nested classes,
-#         # and mxnet does not support only_inputs argument to mx.autograd.grad
-#         pytest.skip()
-#
-#     # config
-#     inner_learning_rate = 1e-2
-#
-#     # create variables
-#     if batched:
-#         variables = ivy.Container({'latent': ivy.variable(ivy.repeat(ivy.array([[0.]], device=device), num_tasks, 0)),
-#                                    'weight': ivy.variable(
-#                                        ivy.repeat(ivy.array([[1.]], device=device), num_tasks, 0))})
-#     else:
-#         variables = ivy.Container({'latent': ivy.variable(ivy.array([0.], device=device)),
-#                                    'weight': ivy.variable(ivy.array([1.], device=device))})
-#
-#     # batch
-#     batch = ivy.Container({'x': ivy.arange(1, num_tasks + 1, dtype='float32')})
-#
-#     # inner cost function
-#     def inner_cost_fn(batch_in, v):
-#         cost = 0
-#         batch_size = batch_in.shape[0]
-#         for sub_batch_in, sub_v in zip(batch_in.unstack(0, keepdims=True), v.unstack(0, keepdims=True)):
-#             cost = cost - (sub_batch_in['x'] * sub_v['latent'] * sub_v['weight'])[0]
-#         return cost / batch_size
-#
-#     # outer cost function
-#     def outer_cost_fn(batch_in, v):
-#         cost = 0
-#         batch_size = batch_in.shape[0]
-#         for sub_batch_in, sub_v in zip(batch_in.unstack(0, keepdims=True), v.unstack(0, keepdims=True)):
-#             cost = cost + (sub_batch_in['x'] * sub_v['latent'] * sub_v['weight'])[0]
-#         return cost / batch_size
-#
-#     # numpy
-#     weight_np = ivy.to_numpy(variables.weight[0:1])
-#     latent_np = ivy.to_numpy(variables.latent[0:1])
-#     batch_np = batch.map(lambda x, kc: ivy.to_numpy(x))
-#
-#     # true gradient
-#     all_outer_grads = list()
-#     for sub_batch in batch_np.unstack(0, True, num_tasks):
-#         all_outer_grads.append(
-#             [(-2 * i * inner_learning_rate * weight_np * sub_batch['x'][0] ** 2 - sub_batch['x'][0] * latent_np) *
-#              (-1 if with_outer_cost_fn else 1) for i in range(inner_grad_steps + 1)])
-#     if average_across_steps:
-#         true_outer_grad = sum([sum(og) / len(og) for og in all_outer_grads]) / num_tasks
-#     else:
-#         true_outer_grad = sum([og[-1] for og in all_outer_grads]) / num_tasks
-#
-#     # true cost
-#     true_cost_dict = \
-#         {1: {True: {True: {1: 0.005, 2: 0.0125}, False: {1: 0.01, 2: 0.025}},
-#              False: {True: {1: -0.005, 2: -0.0125}, False: {1: -0.01, 2: -0.025}}},
-#          2: {True: {True: {1: 0.01, 2: 0.025}, False: {1: 0.02, 2: 0.05}},
-#              False: {True: {1: -0.01, 2: -0.025}, False: {1: -0.02, 2: -0.05}}},
-#          3: {True: {True: {1: 0.015, 2: 0.0375}, False: {1: 0.03, 2: 0.075}},
-#              False: {True: {1: -0.015, 2: -0.0375}, False: {1: -0.03, 2: -0.075}}}}
-#     true_cost = true_cost_dict[inner_grad_steps][with_outer_cost_fn][average_across_steps][num_tasks]
-#
-#     # meta update
-#     rets = ivy.maml_step(
-#         batch, inner_cost_fn, outer_cost_fn if with_outer_cost_fn else None, variables,
-#         inner_grad_steps, inner_learning_rate, average_across_steps=average_across_steps, batched=batched,
-#         inner_v='latent', outer_v='weight', return_inner_v=return_inner_v, stop_gradients=stop_gradients)
-#     calc_cost = rets[0]
-#     if stop_gradients:
-#         assert not ivy.is_variable(calc_cost, exclusive=True)
-#     assert np.allclose(ivy.to_scalar(calc_cost), true_cost)
-#     outer_grads = rets[1]
-#     assert not ivy.is_variable(outer_grads)
-#     assert np.allclose(ivy.to_numpy(outer_grads.weight[0]), np.array(true_outer_grad))
-#     if return_inner_v:
-#         inner_v_rets = rets[2]
-#         assert isinstance(inner_v_rets, ivy.Container)
-#         if return_inner_v == 'all':
-#             assert list(inner_v_rets.shape) == [num_tasks, 1]
-#         elif return_inner_v == 'first':
-#             assert list(inner_v_rets.shape) == [1, 1]
+@pytest.mark.parametrize(
+    "inner_grad_steps", [1, 2, 3])
+@pytest.mark.parametrize(
+    "with_outer_cost_fn", [True, False])
+@pytest.mark.parametrize(
+    "average_across_steps", [True, False])
+@pytest.mark.parametrize(
+    "batched", [True, False])
+@pytest.mark.parametrize(
+    "stop_gradients", [True, False])
+@pytest.mark.parametrize(
+    "num_tasks", [1, 2])
+@pytest.mark.parametrize(
+    "return_inner_v", ['first', 'all', False])
+def test_maml_step_unique_vars(device, call, inner_grad_steps, with_outer_cost_fn, average_across_steps, batched,
+                               stop_gradients, num_tasks, return_inner_v):
+    if call in [helpers.np_call, helpers.mx_call]:
+        # Numpy does not support gradients, jax does not support gradients on custom nested classes,
+        # and mxnet does not support only_inputs argument to mx.autograd.grad
+        pytest.skip()
+
+    if call in [helpers.tf_call, helpers.tf_graph_call]:
+        # ToDo: work out why MAML does not work for tensorflow
+        pytest.skip()
+
+    # config
+    inner_learning_rate = 1e-2
+
+    # create variables
+    if batched:
+        variables = ivy.Container({'latent': ivy.variable(ivy.repeat(ivy.array([[0.]], device=device), num_tasks, 0)),
+                                   'weight': ivy.variable(
+                                       ivy.repeat(ivy.array([[1.]], device=device), num_tasks, 0))})
+    else:
+        variables = ivy.Container({'latent': ivy.variable(ivy.array([0.], device=device)),
+                                   'weight': ivy.variable(ivy.array([1.], device=device))})
+
+    # batch
+    batch = ivy.Container({'x': ivy.arange(1, num_tasks + 1, dtype='float32')})
+
+    # inner cost function
+    def inner_cost_fn(batch_in, v):
+        cost = 0
+        batch_size = batch_in.shape[0]
+        for sub_batch_in, sub_v in zip(batch_in.unstack(0, keepdims=True), v.unstack(0, keepdims=True)):
+            cost = cost - (sub_batch_in['x'] * sub_v['latent'] * sub_v['weight'])[0]
+        return cost / batch_size
+
+    # outer cost function
+    def outer_cost_fn(batch_in, v):
+        cost = 0
+        batch_size = batch_in.shape[0]
+        for sub_batch_in, sub_v in zip(batch_in.unstack(0, keepdims=True), v.unstack(0, keepdims=True)):
+            cost = cost + (sub_batch_in['x'] * sub_v['latent'] * sub_v['weight'])[0]
+        return cost / batch_size
+
+    # numpy
+    weight_np = ivy.to_numpy(variables.weight[0:1])
+    latent_np = ivy.to_numpy(variables.latent[0:1])
+    batch_np = batch.map(lambda x, kc: ivy.to_numpy(x))
+
+    # true gradient
+    all_outer_grads = list()
+    for sub_batch in batch_np.unstack(0, True, num_tasks):
+        all_outer_grads.append(
+            [(-2 * i * inner_learning_rate * weight_np * sub_batch['x'][0] ** 2 - sub_batch['x'][0] * latent_np) *
+             (-1 if with_outer_cost_fn else 1) for i in range(inner_grad_steps + 1)])
+    if average_across_steps:
+        true_outer_grad = sum([sum(og) / len(og) for og in all_outer_grads]) / num_tasks
+    else:
+        true_outer_grad = sum([og[-1] for og in all_outer_grads]) / num_tasks
+
+    # true cost
+    true_cost_dict = \
+        {1: {True: {True: {1: 0.005, 2: 0.0125}, False: {1: 0.01, 2: 0.025}},
+             False: {True: {1: -0.005, 2: -0.0125}, False: {1: -0.01, 2: -0.025}}},
+         2: {True: {True: {1: 0.01, 2: 0.025}, False: {1: 0.02, 2: 0.05}},
+             False: {True: {1: -0.01, 2: -0.025}, False: {1: -0.02, 2: -0.05}}},
+         3: {True: {True: {1: 0.015, 2: 0.0375}, False: {1: 0.03, 2: 0.075}},
+             False: {True: {1: -0.015, 2: -0.0375}, False: {1: -0.03, 2: -0.075}}}}
+    true_cost = true_cost_dict[inner_grad_steps][with_outer_cost_fn][average_across_steps][num_tasks]
+
+    # meta update
+    rets = ivy.maml_step(
+        batch, inner_cost_fn, outer_cost_fn if with_outer_cost_fn else None, variables,
+        inner_grad_steps, inner_learning_rate, average_across_steps=average_across_steps, batched=batched,
+        inner_v='latent', outer_v='weight', return_inner_v=return_inner_v, stop_gradients=stop_gradients)
+    calc_cost = rets[0]
+    if stop_gradients:
+        assert not ivy.is_variable(calc_cost, exclusive=True)
+    assert np.allclose(ivy.to_scalar(calc_cost), true_cost)
+    outer_grads = rets[1]
+    assert not ivy.is_variable(outer_grads)
+    assert np.allclose(ivy.to_numpy(outer_grads.weight), np.array(true_outer_grad))
+    if return_inner_v:
+        inner_v_rets = rets[2]
+        assert isinstance(inner_v_rets, ivy.Container)
+        if return_inner_v == 'all':
+            assert list(inner_v_rets.shape) == [num_tasks, 1]
+        elif return_inner_v == 'first':
+            assert list(inner_v_rets.shape) == [1, 1]
 
 
 # maml step shared vars
