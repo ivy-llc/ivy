@@ -1,6 +1,4 @@
-"""
-Base Container Object
-"""
+"""Base Container Object."""
 
 # global
 import colorama

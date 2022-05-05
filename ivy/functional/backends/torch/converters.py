@@ -1,6 +1,4 @@
-"""
-Converter from PyTorch Modules to Ivy Modules
-"""
+"""Converter from PyTorch Modules to Ivy Modules."""
 
 # global
 import torch

@@ -1,6 +1,4 @@
-"""
-Converters from Native Modules to Ivy Modules
-"""
+"""Converters from Native Modules to Ivy Modules."""
 
 # local
 from ivy.framework_handler import current_framework as _cur_framework
@@ -15,8 +13,8 @@ def to_ivy_module(
     devices=None,
     inplace_update=False,
 ):
-    """
-    Convert an instance of a trainable module from a native framework into a trainable ivy.Module instance.
+    """Convert an instance of a trainable module from a native framework into a
+    trainable ivy.Module instance.
 
     :param native_module: The module in the native framework to convert, required if native_module_class is not given.
                           Default is None.
@@ -35,6 +33,7 @@ def to_ivy_module(
                            Default is False.
     :type inplace_update: bool, optional
     :return: The new trainable ivy.Module instance.
+
     """
     return _cur_framework().to_ivy_module(
         native_module,
