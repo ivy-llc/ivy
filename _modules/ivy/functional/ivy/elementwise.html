@@ -1521,12 +1521,12 @@
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="tan"><a class="viewcode-back" href="../../../../functional/ivy/elementwise/tan.html#ivy.functional.ivy.elementwise.tan">[docs]</a><span class="k">def</span> <span class="nf">tan</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
-        <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span>\
-        <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+<div class="viewcode-block" id="tan"><a class="viewcode-back" href="../../../../functional/ivy/elementwise/tan.html#ivy.functional.ivy.elementwise.tan">[docs]</a><span class="k">def</span> <span class="nf">tan</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">],</span>
+        <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span>\
+        <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Calculates an implementation-dependent approximation to the tangent, having domain ``(-infinity, +infinity)`` and</span>
-<span class="sd">    codomain ``(-infinity, +infinity)``, for each element ``x_i`` of the input ``x``. Each element ``x_i``</span>
+<span class="sd">    codomain ``(-infinity, +infinity)``, for each element ``x_i`` of the input array ``x``. Each element ``x_i``</span>
 <span class="sd">    is assumed to be expressed in radians.</span>
 
 <span class="sd">    **Special cases**</span>
@@ -1541,52 +1541,48 @@
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    x</span>
-<span class="sd">        input whose elements are expressed in radians. Should have a floating-point data type.</span>
+<span class="sd">        input array whose elements are expressed in radians. Should have a floating-point data type.</span>
 <span class="sd">    out</span>
 <span class="sd">        optional output, for writing the result to. It must have a shape that the inputs broadcast to.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    out</span>
-<span class="sd">        the tangent of each element in ``x``. The return must have a floating-point data type determined by</span>
-<span class="sd">        :ref:`type-promotion`.</span>
+<span class="sd">    ret</span>
+<span class="sd">        an array containing the tangent of each element in ``x``. The return must have a floating-point data type</span>
+<span class="sd">        determined by :ref:`type-promotion`.</span>
 
 
 <span class="sd">    This method conforms to the `Array API Standard &lt;https://data-apis.org/array-api/latest/&gt;`_.</span>
 <span class="sd">    This docstring is an extension of the `docstring</span>
 <span class="sd">    &lt;https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.tan.html&gt;`_</span>
-<span class="sd">    in the standard.</span>
+<span class="sd">    in the standard. The descriptions above assume an array input for simplicity, but the methods also accepts</span>
+<span class="sd">    :code:`ivy.Container` instances in place of :code:`ivy.Array` or :code:`ivy.NativeArray` instances, as shown in</span>
+<span class="sd">    the type hints and also the examples below.</span>
 
-<span class="sd">    Functional Array Examples</span>
-<span class="sd">    -------------------------</span>
+<span class="sd">    Functional Examples</span>
+<span class="sd">    -------------------</span>
 
-<span class="sd">    With no :code:`out` argument provided, the result is returned as a new array:</span>
+<span class="sd">    With :code:`ivy.Array` input:</span>
 
-<span class="sd">    &gt;&gt;&gt; x = ivy.array([0., 1., 2.])</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([0, 1, 2])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.tan(x)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    ivy.array([0., 1.56, -2.19])</span>
+<span class="sd">    ivy.array([0., 1.5574077, -2.1850398])</span>
 
-<span class="sd">    With the :code:`out` argument provided, the result is returned in this :code:`out` array:</span>
-
-<span class="sd">    &gt;&gt;&gt; x = ivy.array([0., 1., 2.])</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([0.5, -0.7, 2.4])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.zeros(3)</span>
 <span class="sd">    &gt;&gt;&gt; ivy.tan(x, out=y)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    ivy.array([0., 1.56, -2.19])</span>
+<span class="sd">    ivy.array([0.5463025, -0.8422884, -0.91601413])</span>
 
-<span class="sd">    This enables in-place updates:</span>
-
-<span class="sd">    &gt;&gt;&gt; x = ivy.array([0., 1., 2.])</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[1.1, 2.2, 3.3],</span>
+<span class="sd">    &gt;&gt;&gt;                [-4.4, -5.5, -6.6]])</span>
 <span class="sd">    &gt;&gt;&gt; ivy.tan(x, out=x)</span>
 <span class="sd">    &gt;&gt;&gt; print(x)</span>
-<span class="sd">    ivy.array([0., 1.56, -2.19])</span>
+<span class="sd">    ivy.array([[ 1.9647598, -1.3738229,  0.1597457],</span>
+<span class="sd">               [-3.0963247,  0.9955841, -0.3278579]])</span>
 
-<span class="sd">    Functional Container Examples</span>
-<span class="sd">    -----------------------------</span>
-
-<span class="sd">    The method can also accept an :code:`ivy.Container` instance instead of an array.</span>
-<span class="sd">    In this case, an :code:`ivy.Container` instance is also returned:</span>
+<span class="sd">    With :code:`ivy.Container` input:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.tan(x)</span>
@@ -1596,31 +1592,17 @@
 <span class="sd">        b: ivy.array([-0.14254655, 1.1578213, -3.380515])</span>
 <span class="sd">    }</span>
 
-<span class="sd">    If operating on an :code:`ivy.Container` instance, :code:`out` must also be an :code:`ivy.Container` instance.</span>
+<span class="sd">    Instance Method Examples</span>
+<span class="sd">    ------------------------</span>
 
-<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))</span>
-<span class="sd">    &gt;&gt;&gt; y = ivy.Container()</span>
-<span class="sd">    &gt;&gt;&gt; ivy.tan(x, out=y)</span>
-<span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    {</span>
-<span class="sd">        a: ivy.array([0., 1.5574077, -2.1850398]),</span>
-<span class="sd">        b: ivy.array([-0.14254655, 1.1578213, -3.380515])</span>
-<span class="sd">    }</span>
-
-<span class="sd">    Array Instance Method Example</span>
-<span class="sd">    -----------------------------</span>
-
-<span class="sd">    The method can also be called as an instance method of an :code:`ivy.Array` instance:</span>
+<span class="sd">    Using :code:`ivy.Array` instance method:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([0., 1., 2.])</span>
 <span class="sd">    &gt;&gt;&gt; y = x.tan()</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    ivy.array([0., 1.56, -2.19])</span>
+<span class="sd">    ivy.array([0., 1.5574077, -2.1850398])</span>
 
-<span class="sd">    Container Instance Method Example</span>
-<span class="sd">    ---------------------------------</span>
-
-<span class="sd">    The method can also be called as an instance method of an :code:`ivy.Container` instance:</span>
+<span class="sd">    Using :code:`ivy.Container` instance method:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))</span>
 <span class="sd">    &gt;&gt;&gt; y = x.tan()</span>
