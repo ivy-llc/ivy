@@ -1,6 +1,4 @@
-"""
-Collection of image Ivy functions.
-"""
+"""Collection of image Ivy functions."""
 
 # local
 import ivy as ivy
@@ -14,10 +12,13 @@ from typing import Union, List, Tuple
 # Extra #
 # ------#
 
-def stack_images(images: List[Union[ivy.Array, ivy.Array, ivy.NativeArray]],
-                 desired_aspect_ratio: Tuple[int, int] = (1, 1)) -> ivy.Array:
-    """
-    Stacks a group of images into a combined windowed image, fitting the desired aspect ratio as closely as possible.
+
+def stack_images(
+    images: List[Union[ivy.Array, ivy.Array, ivy.NativeArray]],
+    desired_aspect_ratio: Tuple[int, int] = (1, 1),
+) -> ivy.Array:
+    """Stacks a group of images into a combined windowed image, fitting the
+    desired aspect ratio as closely as possible.
 
      Parameters
      ----------
@@ -47,6 +48,7 @@ def stack_images(images: List[Union[ivy.Array, ivy.Array, ivy.NativeArray]],
             [1., 1., 1.],
             [0., 0., 0.],
             [0., 0., 0.]]]
+
     """
     return _cur_framework(images[0]).stack_images(images, desired_aspect_ratio)
 
@@ -88,7 +90,8 @@ def gradient_image(x):
 
 
 def float_img_to_uint8_img(x):
-    """Converts an image of floats into a bit-cast 4-channel image of uint8s, which can be saved to disk.
+    """Converts an image of floats into a bit-cast 4-channel image of uint8s,
+    which can be saved to disk.
 
     Parameters
     ----------
@@ -171,8 +174,10 @@ def random_crop(x, crop_size, batch_shape=None, image_dims=None):
     y_offsets = _np.random.randint(0, margins[1] + 1, [flat_batch_size]).tolist()
 
     # list of 1 x NH x NW x F
-    cropped_list = [img[..., xo:xo + crop_size[0], yo:yo + crop_size[1], :] for img, xo, yo
-                    in zip(ivy.unstack(x_flat, 0, True), x_offsets, y_offsets)]
+    cropped_list = [
+        img[..., xo : xo + crop_size[0], yo : yo + crop_size[1], :]
+        for img, xo, yo in zip(ivy.unstack(x_flat, 0, True), x_offsets, y_offsets)
+    ]
 
     # FBS x NH x NW x F
     flat_cropped = ivy.concat(cropped_list, 0)
@@ -181,8 +186,9 @@ def random_crop(x, crop_size, batch_shape=None, image_dims=None):
     return ivy.reshape(flat_cropped, batch_shape + crop_size + [num_channels])
 
 
-def linear_resample(x: Union[ivy.Array, ivy.NativeArray], num_samples: int, axis: int = -1) \
-        -> Union[ivy.Array, ivy.NativeArray]:
+def linear_resample(
+    x: Union[ivy.Array, ivy.NativeArray], num_samples: int, axis: int = -1
+) -> Union[ivy.Array, ivy.NativeArray]:
     """Performs linear re-sampling on input image.
 
     Parameters

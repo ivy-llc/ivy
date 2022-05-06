@@ -22,8 +22,9 @@ jobs:
           cd ivy
           rm -rf .gitignore
           cd docs
-          bash make_docs.sh usr
-          cp .nojekyll build/
+          bash make_docs.sh root
+          sudo touch .nojekyll
+          sudo cp .nojekyll build/
           cd ../..
 
       - name: Deploy 🚀
