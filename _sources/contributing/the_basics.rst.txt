@@ -22,26 +22,25 @@ We make extensive use of ToDo list issues, which act as placeholders for trackin
 
 We have a clear process for contributors to engage with such ToDo lists:
 
-(a) Find a task to work on which (i) is not marked as completed with a tick (ii) does not have an issue created and
-(iii) is not mentioned in the comments.
+<a> Find a task to work on which (i) is not marked as completed with a tick (ii) does not have an issue created and (iii) is not mentioned in the comments.
 
-(b) Create a new issue with the title being just the name of the task you would like to work on.
+<b> Create a new issue with the title being just the name of the task you would like to work on.
 
-(c) comment on the ToDo list issue with a reference to this issue like so:
+<c> comment on the ToDo list issue with a reference to this issue like so:
 
 - [ ] #Issue_number
 
 Your issue will then automatically be added to the ToDo list at some point, and the comment will be deleted.
-No need to wait for this to happen before progressing to stage d.
+No need to wait for this to happen before progressing to stage.
 
-(d) Start working on the task, and create a PR as soon as you have a full or partial solution, and then directly
+<d> Start working on the task, and create a PR as soon as you have a full or partial solution, and then directly
 reference the issue in the pull request. If you have a partial solution, the Ivy team can help to guide you through
-the process of getting it working :)
+the process of getting it working 🙂
 
-(e) Wait for us to review your PR. Once we have reviewed your PR we will either merge or request changes. Every time you
+<e> Wait for us to review your PR. Once we have reviewed your PR we will either merge or request changes. Every time you
 respond to our requested changes you must re-request a review in order for us to re-engage with the PR.
 
-(f) Once the PR is in good shape, we will merge into master, and you then become and Ivy contributor!
+<f> Once the PR is in good shape, we will merge into master, and you then become and Ivy contributor!
 
 In order to keep our ToDo lists moving quickly, if your PR is not created within 7 days of creating the issue, then
 the issue will be closed and the method will be made free for others in the community. Likewise, if we have requested
