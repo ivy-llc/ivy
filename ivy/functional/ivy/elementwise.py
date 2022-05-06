@@ -39,8 +39,8 @@ def add(
     x2: Union[ivy.Array, ivy.NativeArray],
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
-    """
-    Calculates the sum for each element ``x1_i`` of the input array ``x1`` with the respective element ``x2_i`` of the input array ``x2``.
+    """Calculates the sum for each element ``x1_i`` of the input array ``x1``
+    with the respective element ``x2_i`` of the input array ``x2``.
 
     **Special cases**
 
@@ -121,8 +121,12 @@ def exp(
     x: Union[ivy.Array, ivy.NativeArray],
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
-    """
-    Calculates an implementation-dependent approximation to the exponential function, having domain ``[-infinity, +infinity]`` and codomain ``[+0, +infinity]``, for each element ``x_i`` of the input array ``x`` (``e`` raised to the power of ``x_i``, where ``e`` is the base of the natural logarithm).
+    """Calculates an implementation-dependent approximation to the exponential
+    function, having domain ``[-infinity, +infinity]`` and codomain ``[+0,
+    +infinity]``, for each element ``x_i`` of the input array ``x`` (``e``
+    raised to the power of ``x_i``, where ``e`` is the base of the natural
+    logarithm).
+
     **Special cases**
     For floating-point operands,
     - If ``x_i`` is ``NaN``, the result is ``NaN``.
@@ -138,7 +142,7 @@ def exp(
         optional output array, for writing the result to. It must have a shape that the inputs broadcast to.
     Returns
     -------
-     ret
+    ret
         an array containing the evaluated exponential function result for each element in ``x``. The returned array must have a floating-point data type determined by :ref:`type-promotion`.
     
     Examples
@@ -156,8 +160,10 @@ def expm1(
     x: Union[ivy.Array, ivy.NativeArray],
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
-    """
-    Calculates an implementation-dependent approximation to ``exp(x)-1``, having domain ``[-infinity, +infinity]`` and codomain ``[-1, +infinity]``, for each element ``x_i`` of the input array ``x``.
+    """Calculates an implementation-dependent approximation to ``exp(x)-1``,
+    having domain ``[-infinity, +infinity]`` and codomain ``[-1, +infinity]``,
+    for each element ``x_i`` of the input array ``x``.
+
     .. note::
        The purpose of this function is to calculate ``exp(x)-1.0`` more accurately when `x` is close to zero. Accordingly, conforming implementations should avoid implementing this function as simply ``exp(x)-1.0``. See FDLIBM, or some other IEEE 754-2019 compliant mathematical library, for a potential reference implementation.
     **Special cases**
@@ -177,6 +183,7 @@ def expm1(
     -------
      ret
         an array containing the evaluated result for each element in ``x``. The returned array must have a floating-point data type determined by :ref:`type-promotion`.
+
     """
     return _cur_framework(x).expm1(x, out)
 
@@ -185,8 +192,8 @@ def bitwise_invert(
     x: Union[ivy.Array, ivy.NativeArray],
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
-    """
-    Inverts (flips) each bit for each element ``x_i`` of the input array ``x``.
+    """Inverts (flips) each bit for each element ``x_i`` of the input array
+    ``x``.
 
     Parameters
     ----------
@@ -216,8 +223,9 @@ def bitwise_and(
     x2: Union[ivy.Array, ivy.NativeArray],
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
-    """
-    Computes the bitwise AND of the underlying binary representation of each element ``x1_i`` of the input array ``x1`` with the respective element ``x2_i`` of the input array ``x2``.
+    """Computes the bitwise AND of the underlying binary representation of each
+    element ``x1_i`` of the input array ``x1`` with the respective element
+    ``x2_i`` of the input array ``x2``.
 
     Parameters
     ----------
@@ -232,6 +240,7 @@ def bitwise_and(
     -------
      ret
         an array containing the element-wise results. The returned array must have a data type determined by :ref:`type-promotion`.
+
     """
     return _cur_framework(x1, x2).bitwise_and(x1, x2, out)
 
@@ -240,8 +249,9 @@ def ceil(
     x: Union[ivy.Array, ivy.NativeArray],
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
-    """
-    Rounds each element ``x_i`` of the input array ``x`` to the smallest (i.e., closest to ``-infinity``) integer-valued number that is not less than ``x_i``.
+    """Rounds each element ``x_i`` of the input array ``x`` to the smallest
+    (i.e., closest to ``-infinity``) integer-valued number that is not less
+    than ``x_i``.
 
     **Special cases**
 
@@ -273,6 +283,7 @@ def ceil(
     >>> y = ivy.ceil(x)
     >>> print(y)
     ivy.array([1.0, 0.0, -0.0])
+
     """
     return _cur_framework(x).ceil(x, out)
 
@@ -281,8 +292,9 @@ def floor(
     x: Union[ivy.Array, ivy.NativeArray],
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
-    """
-    Rounds each element ``x_i`` of the input array ``x`` to the greatest (i.e., closest to ``+infinity``) integer-valued number that is not greater than ``x_i``.
+    """Rounds each element ``x_i`` of the input array ``x`` to the greatest
+    (i.e., closest to ``+infinity``) integer-valued number that is not greater
+    than ``x_i``.
 
     **Special cases**
 
@@ -307,6 +319,7 @@ def floor(
     -------
      ret
         an array containing the rounded result for each element in ``x``. The returned array must have the same data type as ``x``.
+
     """
     return _cur_framework(x).floor(x, out)
 
@@ -315,8 +328,8 @@ def isfinite(
     x: Union[ivy.Array, ivy.NativeArray],
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
-    """
-     Tests each element ``x_i`` of the input array ``x`` to determine if finite (i.e., not ``NaN`` and not equal to positive or negative infinity).
+    """Tests each element ``x_i`` of the input array ``x`` to determine if
+    finite (i.e., not ``NaN`` and not equal to positive or negative infinity).
 
      Parameters
      ----------
@@ -329,6 +342,7 @@ def isfinite(
      -------
       ret
         an array containing test results. An element ``out_i`` is ``True`` if ``x_i`` is finite and ``False`` otherwise. The returned array must have a data type of ``bool``.
+
     """
     return _cur_framework(x).isfinite(x, out)
 
@@ -337,8 +351,10 @@ def asin(
     x: Union[ivy.Array, ivy.NativeArray],
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
-    """
-    Calculates an implementation-dependent approximation of the principal value of the inverse sine, having domain ``[-1, +1]`` and codomain ``[-π/2, +π/2]`` for each element ``x_i`` of the input array ``x``. Each element-wise result is expressed in radians.
+    """Calculates an implementation-dependent approximation of the principal
+    value of the inverse sine, having domain ``[-1, +1]`` and codomain ``[-π/2,
+    +π/2]`` for each element ``x_i`` of the input array ``x``. Each element-
+    wise result is expressed in radians.
 
     **Special cases**
 
@@ -361,6 +377,7 @@ def asin(
     -------
      ret
         an array containing the inverse sine of each element in ``x``. The returned array must have a floating-point data type determined by :ref:`type-promotion`.
+
     """
     return _cur_framework(x).asin(x, out)
 
@@ -391,8 +408,8 @@ def greater(
     x2: Union[ivy.Array, ivy.NativeArray],
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
-    """Computes the truth value of x1_i < x2_i for each element x1_i of the input array x1 with the respective
-    element x2_i of the input array x2.
+    """Computes the truth value of x1_i < x2_i for each element x1_i of the
+    input array x1 with the respective element x2_i of the input array x2.
 
     Parameters
     ----------
@@ -412,6 +429,7 @@ def greater(
     >>> x = ivy.greater(ivy.array([1,2,3]),ivy.array([2,2,2]))
     >>> print(x)
     ivy.array([False, False,  True])
+
     """
     return _cur_framework(x1, x2).greater(x1, x2, out)
 
@@ -421,8 +439,8 @@ def greater_equal(
     x2: Union[ivy.Array, ivy.NativeArray],
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
-    """Computes the truth value of x1_i >= x2_i for each element x1_i of the input array x1 with the respective
-    element x2_i of the input array x2.
+    """Computes the truth value of x1_i >= x2_i for each element x1_i of the
+    input array x1 with the respective element x2_i of the input array x2.
 
     Parameters
     ----------
@@ -445,8 +463,8 @@ def less_equal(
     x2: Union[ivy.Array, ivy.NativeArray],
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
-    """Computes the truth value of x1_i <= x2_i for each element x1_i of the input array x1 with the respective
-    element x2_i of the input array x2.
+    """Computes the truth value of x1_i <= x2_i for each element x1_i of the
+    input array x1 with the respective element x2_i of the input array x2.
 
     Parameters
     ----------
@@ -469,8 +487,8 @@ def multiply(
     x2: Union[ivy.Array, ivy.NativeArray],
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
-    """
-    Calculates the product for each element ``x1_i`` of the input array ``x1`` with the respective element ``x2_i`` of the input array ``x2``.
+    """Calculates the product for each element ``x1_i`` of the input array
+    ``x1`` with the respective element ``x2_i`` of the input array ``x2``.
 
     **Special cases**
 
@@ -503,6 +521,7 @@ def multiply(
     -------
      ret
         an array containing the element-wise products. The returned array must have a data type determined by :ref:`Type Promotion Rules`.
+
     """
     return _cur_framework(x1, x2).multiply(x1, x2, out)
 
@@ -511,8 +530,10 @@ def asinh(
     x: Union[ivy.Array, ivy.NativeArray],
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
-    """
-    Calculates an implementation-dependent approximation to the inverse hyperbolic sine, having domain ``[-infinity, +infinity]`` and codomain ``[-infinity, +infinity]``, for each element ``x_i`` in the input array ``x``.
+    """Calculates an implementation-dependent approximation to the inverse
+    hyperbolic sine, having domain ``[-infinity, +infinity]`` and codomain
+    ``[-infinity, +infinity]``, for each element ``x_i`` in the input array
+    ``x``.
 
     **Special cases**
 
@@ -535,6 +556,7 @@ def asinh(
     -------
      ret
         an array containing the inverse hyperbolic sine of each element in ``x``. The returned array must have a floating-point data type determined by :ref:`type-promotion`.
+
     """
     return _cur_framework(x).asinh(x, out)
 
@@ -543,8 +565,9 @@ def sign(
     x: Union[ivy.Array, ivy.NativeArray],
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
-    """
-    Returns an indication of the sign of a number for each element ``x_i`` of the input array ``x``.
+    """Returns an indication of the sign of a number for each element ``x_i``
+    of the input array ``x``.
+
     **Special cases**
     - If ``x_i`` is less than ``0``, the result is ``-1``.
     - If ``x_i`` is either ``-0`` or ``+0``, the result is ``0``.
@@ -560,6 +583,7 @@ def sign(
     -------
       return
         an array containing the evaluated result for each element in ``x``. The returned array must have the same data type as ``x``.
+
     """
     return _cur_framework(x).sign(x, out)
 
@@ -568,8 +592,11 @@ def sqrt(
     x: Union[ivy.Array, ivy.NativeArray],
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
-    """
-    Calculates the square root, having domain ``[0, +infinity]`` and codomain ``[0, +infinity]``, for each element ``x_i`` of the input array ``x``. After rounding, each result must be indistinguishable from the infinitely precise result (as required by IEEE 754).
+    """Calculates the square root, having domain ``[0, +infinity]`` and
+    codomain ``[0, +infinity]``, for each element ``x_i`` of the input array
+    ``x``. After rounding, each result must be indistinguishable from the
+    infinitely precise result (as required by IEEE 754).
+
     **Special cases**
 
     For floating-point operands,
@@ -591,6 +618,7 @@ def sqrt(
     -------
       return
         an array containing the square root of each element in ``x``. The returned array must have a floating-point data type determined by :ref:`type-promotion`.
+
     """
     return _cur_framework(x).sqrt(x, out)
 
@@ -599,8 +627,9 @@ def cosh(
     x: Union[ivy.Array, ivy.NativeArray],
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
-    """
-    Calculates an implementation-dependent approximation to the hyperbolic cosine, having domain ``[-infinity, +infinity]`` and codomain ``[-infinity, +infinity]``, for each element ``x_i`` in the input array ``x``.
+    """Calculates an implementation-dependent approximation to the hyperbolic
+    cosine, having domain ``[-infinity, +infinity]`` and codomain ``[-infinity,
+    +infinity]``, for each element ``x_i`` in the input array ``x``.
 
     **Special cases**
 
@@ -623,6 +652,7 @@ def cosh(
     -------
       return
         an array containing the hyperbolic cosine of each element in ``x``. The returned array must have a floating-point data type determined by :ref:`type-promotion`.
+
     """
 
     return _cur_framework(x).cosh(x, out)
@@ -632,8 +662,11 @@ def log(
     x: Union[ivy.Array, ivy.NativeArray],
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
-    """
-    Calculates an implementation-dependent approximation to the natural (base ``e``) logarithm, having domain ``[0, +infinity]`` and codomain ``[-infinity, +infinity]``, for each element ``x_i`` of the input array ``x``.
+    """Calculates an implementation-dependent approximation to the natural
+    (base ``e``) logarithm, having domain ``[0, +infinity]`` and codomain
+    ``[-infinity, +infinity]``, for each element ``x_i`` of the input array
+    ``x``.
+
     **Special cases**
     For floating-point operands,
     - If ``x_i`` is ``NaN``, the result is ``NaN``.
@@ -652,6 +685,7 @@ def log(
     -------
       return
         an array containing the evaluated natural logarithm for each element in ``x``. The returned array must have a floating-point data type determined by :ref:`type-promotion`.
+
     """
     return _cur_framework(x).log(x, out)
 
@@ -660,8 +694,9 @@ def log2(
     x: Union[ivy.Array, ivy.NativeArray],
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
-    """
-    Calculates an implementation-dependent approximation to the base ``2`` logarithm, having domain ``[0, +infinity]`` and codomain ``[-infinity, +infinity]``, for each element ``x_i`` of the input array ``x``.
+    """Calculates an implementation-dependent approximation to the base ``2``
+    logarithm, having domain ``[0, +infinity]`` and codomain ``[-infinity,
+    +infinity]``, for each element ``x_i`` of the input array ``x``.
 
     **Special cases**
 
@@ -684,6 +719,7 @@ def log2(
     -------
       return
         an array containing the evaluated base ``2`` logarithm for each element in ``x``. The returned array must have a floating-point data type determined by :ref:`type-promotion`.
+
     """
     return _cur_framework(x).log2(x, out)
 
@@ -692,8 +728,9 @@ def log10(
     x: Union[ivy.Array, ivy.NativeArray],
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
-    """
-    Calculates an implementation-dependent approximation to the base ``10`` logarithm, having domain ``[0, +infinity]`` and codomain ``[-infinity, +infinity]``, for each element ``x_i`` of the input array ``x``.
+    """Calculates an implementation-dependent approximation to the base ``10``
+    logarithm, having domain ``[0, +infinity]`` and codomain ``[-infinity,
+    +infinity]``, for each element ``x_i`` of the input array ``x``.
 
     **Special cases**
 
@@ -716,6 +753,7 @@ def log10(
     -------
       return
         an array containing the evaluated base ``10`` logarithm for each element in ``x``. The returned array must have a floating-point data type determined by :ref:`type-promotion`.
+
     """
     return _cur_framework(x).log10(x, out)
 
@@ -724,9 +762,8 @@ def log1p(
     x: Union[ivy.Array, ivy.NativeArray],
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
-    """
-    Calculates an implementation-dependent approximation to log(1+x), where log refers to the natural (base e)
-    logarithm.
+    """Calculates an implementation-dependent approximation to log(1+x), where
+    log refers to the natural (base e) logarithm.
 
     Parameters
     ----------
@@ -739,6 +776,7 @@ def log1p(
     -------
       return
         a new array containing the evaluated result for each element in x.
+
     """
     return _cur_framework(x).log1p(x, out)
 
@@ -747,8 +785,8 @@ def isnan(
     x: Union[ivy.Array, ivy.NativeArray],
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
-    """
-    Tests each element ``x_i`` of the input array ``x`` to determine whether the element is ``NaN``.
+    """Tests each element ``x_i`` of the input array ``x`` to determine whether
+    the element is ``NaN``.
 
     Parameters
     ----------
@@ -761,6 +799,7 @@ def isnan(
     -------
       return
         an array containing test results. An element ``out_i`` is ``True`` if ``x_i`` is ``NaN`` and ``False`` otherwise. The returned array should have a data type of ``bool``.
+
     """
     return _cur_framework(x).isnan(x, out)
 
@@ -770,8 +809,9 @@ def less(
     x2: Union[ivy.Array, ivy.NativeArray],
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
-    """
-    Computes the truth value of ``x1_i < x2_i`` for each element ``x1_i`` of the input array ``x1`` with the respective element ``x2_i`` of the input array ``x2``.
+    """Computes the truth value of ``x1_i < x2_i`` for each element ``x1_i`` of
+    the input array ``x1`` with the respective element ``x2_i`` of the input
+    array ``x2``.
 
     Parameters
     ----------
@@ -792,6 +832,7 @@ def less(
     >>> x = ivy.less(ivy.array([1,2,3]),ivy.array([2,2,2]))
     >>> print(x)
     ivy.array([True, False, False])
+
     """
     return _cur_framework(x1).less(x1, x2, out)
 
@@ -800,8 +841,10 @@ def cos(
     x: Union[ivy.Array, ivy.NativeArray],
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
-    """
-    Calculates an implementation-dependent approximation to the cosine, having domain ``(-infinity, +infinity)`` and codomain ``[-1, +1]``, for each element ``x_i`` of the input array ``x``. Each element ``x_i`` is assumed to be expressed in radians.
+    """Calculates an implementation-dependent approximation to the cosine,
+    having domain ``(-infinity, +infinity)`` and codomain ``[-1, +1]``, for
+    each element ``x_i`` of the input array ``x``. Each element ``x_i`` is
+    assumed to be expressed in radians.
 
     **Special cases**
 
@@ -831,7 +874,7 @@ def cos(
     >>> y = ivy.cos(x)
     >>> print(y)
     ivy.array([1., 0.54030231, -0.41614684])
-    
+
     """
     return _cur_framework(x).cos(x, out)
 
@@ -840,8 +883,10 @@ def acos(
     x: Union[ivy.Array, ivy.NativeArray],
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
-    """
-    Calculates an implementation-dependent approximation of the principal value of the inverse cosine, having domain [-1, +1] and codomain [+0, +π], for each element x_i of the input array x. Each element-wise result is expressed in radians.
+    """Calculates an implementation-dependent approximation of the principal
+    value of the inverse cosine, having domain [-1, +1] and codomain [+0, +π],
+    for each element x_i of the input array x. Each element-wise result is
+    expressed in radians.
 
     **Special cases**
 
@@ -863,6 +908,7 @@ def acos(
     -------
       return
         an array containing the inverse cosine of each element in x. The returned array must have a floating-point data type determined by :ref:`type-promotion`.
+
     """
     return _cur_framework(x).acos(x, out)
 
@@ -871,8 +917,8 @@ def logical_not(
     x: Union[ivy.Array, ivy.NativeArray],
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
-    """
-    Computes the logical NOT for each element ``x_i`` of the input array ``x``.
+    """Computes the logical NOT for each element ``x_i`` of the input array
+    ``x``.
 
     .. note::
        While this specification recommends that this function only accept input arrays having a boolean data type, specification-compliant array libraries may choose to accept input arrays having numeric data types. If non-boolean data types are supported, zeros must be considered the equivalent of ``False``, while non-zeros must be considered the equivalent of ``True``.
@@ -888,6 +934,7 @@ def logical_not(
     -------
      ret
         an array containing the element-wise results. The returned array must have a data type of ``bool``.
+
     """
     return _cur_framework(x).logical_not(x, out)
 
@@ -921,8 +968,8 @@ def logical_or(
     x2: Union[ivy.Array, ivy.NativeArray],
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
-    """
-    Computes the logical OR for each element ``x1_i`` of the input array ``x1`` with the respective element ``x2_i`` of the input array ``x2``.
+    """Computes the logical OR for each element ``x1_i`` of the input array
+    ``x1`` with the respective element ``x2_i`` of the input array ``x2``.
 
     .. note::
        While this specification recommends that this function only accept input arrays having a boolean data type, specification-compliant array libraries may choose to accept input arrays having numeric data types. If non-boolean data types are supported, zeros must be considered the equivalent of ``False``, while non-zeros must be considered the equivalent of ``True``.
@@ -940,6 +987,7 @@ def logical_or(
     -------
       return
         out (array) – an array containing the element-wise results. The returned array must have a data type of ``bool``.
+
     """
     return _cur_framework(x1, x2).logical_or(x1, x2, out)
 
@@ -949,9 +997,8 @@ def logical_and(
     x2: ivy.Array,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
-    """
-    Computes the logical AND for each element x1_i of the input array x1 with the respective
-    element x2_i of the input array x2.
+    """Computes the logical AND for each element x1_i of the input array x1
+    with the respective element x2_i of the input array x2.
 
     Parameters
     ----------
@@ -968,6 +1015,7 @@ def logical_and(
       return
         out (array) – an array containing the element-wise results.
         The returned array must have a data type of bool.
+
     """
     return _cur_framework(x1, x2).logical_and(x1, x2, out)
 
@@ -976,8 +1024,9 @@ def acosh(
     x: Union[ivy.Array, ivy.NativeArray],
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
-    """
-    Calculates an implementation-dependent approximation to the inverse hyperbolic cosine, having domain ``[+1, +infinity]`` and codomain ``[+0, +infinity]``, for each element ``x_i`` of the input array ``x``.
+    """Calculates an implementation-dependent approximation to the inverse
+    hyperbolic cosine, having domain ``[+1, +infinity]`` and codomain ``[+0,
+    +infinity]``, for each element ``x_i`` of the input array ``x``.
 
     **Special cases**
 
@@ -999,6 +1048,7 @@ def acosh(
     -------
       return
         an array containing the inverse hyperbolic cosine of each element in x. The returned array must have a floating-point data type determined by :ref:`type-promotion`.
+
     """
     return _cur_framework(x).acosh(x, out)
 
@@ -1007,8 +1057,10 @@ def sin(
     x: Union[ivy.Array, ivy.NativeArray],
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
-    """
-    Calculates an implementation-dependent approximation to the sine, having domain ``(-infinity, +infinity)`` and codomain ``[-1, +1]``, for each element ``x_i`` of the input array ``x``. Each element ``x_i`` is assumed to be expressed in radians.
+    """Calculates an implementation-dependent approximation to the sine, having
+    domain ``(-infinity, +infinity)`` and codomain ``[-1, +1]``, for each
+    element ``x_i`` of the input array ``x``. Each element ``x_i`` is assumed
+    to be expressed in radians.
 
     **Special cases**
 
@@ -1030,6 +1082,7 @@ def sin(
     -------
       return
         an array containing the sine of each element in ``x``. The returned array must have a floating-point data type determined by :ref:`type-promotion`.
+
     """
     return _cur_framework(x).sin(x, out)
 
@@ -1038,7 +1091,7 @@ def negative(
     x: Union[ivy.Array, ivy.NativeArray],
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
-    """Computes the numerical negative of each element
+    """Computes the numerical negative of each element.
 
     Parameters
     ----------
@@ -1059,8 +1112,9 @@ def not_equal(
     x2: Union[ivy.Array, ivy.NativeArray],
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
-    """
-    Computes the truth value of ``x1_i != x2_i`` for each element ``x1_i`` of the input array ``x1`` with the respective element ``x2_i`` of the input array ``x2``.
+    """Computes the truth value of ``x1_i != x2_i`` for each element ``x1_i``
+    of the input array ``x1`` with the respective element ``x2_i`` of the input
+    array ``x2``.
 
     Parameters
     ----------
@@ -1075,6 +1129,7 @@ def not_equal(
     -------
       return
         an array containing the element-wise results. The returned array must have a data type of ``bool``.
+
     """
     return _cur_framework(x1, x2).not_equal(x1, x2, out)
 
@@ -1084,9 +1139,10 @@ def floor_divide(
     x2: Union[ivy.Array, ivy.NativeArray],
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
-    """Rounds the result of dividing each element x1_i of the input array x1 by the respective element x2_i
-    of the input array x2 to the greatest (i.e., closest to +infinity) integer-value number that is not
-    greater than the division result.
+    """Rounds the result of dividing each element x1_i of the input array x1 by
+    the respective element x2_i of the input array x2 to the greatest (i.e.,
+    closest to +infinity) integer-value number that is not greater than the
+    division result.
 
     Parameters
     ----------
@@ -1109,8 +1165,9 @@ def bitwise_or(
     x2: Union[ivy.Array, ivy.NativeArray],
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
-    """
-    Computes the bitwise OR of the underlying binary representation of each element ``x1_i`` of the input array ``x1`` with the respective element ``x2_i`` of the input array ``x2``.
+    """Computes the bitwise OR of the underlying binary representation of each
+    element ``x1_i`` of the input array ``x1`` with the respective element
+    ``x2_i`` of the input array ``x2``.
 
     Parameters
     ----------
@@ -1125,6 +1182,7 @@ def bitwise_or(
     -------
       return
         an array containing the element-wise results. The returned array must have a data type determined by :ref:`type-promotion`.
+
     """
     return _cur_framework(x1, x2).bitwise_or(x1, x2, out)
 
@@ -1133,8 +1191,9 @@ def sinh(
     x: Union[ivy.Array, ivy.NativeArray],
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
-    """
-    Calculates an implementation-dependent approximation to the hyperbolic sine, having domain ``[-infinity, +infinity]`` and codomain ``[-infinity, +infinity]``, for each element ``x_i`` of the input array ``x``.
+    """Calculates an implementation-dependent approximation to the hyperbolic
+    sine, having domain ``[-infinity, +infinity]`` and codomain ``[-infinity,
+    +infinity]``, for each element ``x_i`` of the input array ``x``.
 
     **Special cases**
 
@@ -1157,6 +1216,7 @@ def sinh(
     -------
       return
         an array containing the hyperbolic sine of each element in ``x``. The returned array must have a floating-point data type determined by :ref:`type-promotion`.
+
     """
     return _cur_framework(x).sinh(x, out)
 
@@ -1207,8 +1267,10 @@ def logaddexp(
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
 
-    """
-    Calculates the logarithm of the sum of exponentiations ``log(exp(x1) + exp(x2))`` for each element ``x1_i`` of the input array ``x1`` with the respective element ``x2_i`` of the input array ``x2``.
+    """Calculates the logarithm of the sum of exponentiations ``log(exp(x1) +
+    exp(x2))`` for each element ``x1_i`` of the input array ``x1`` with the
+    respective element ``x2_i`` of the input array ``x2``.
+
     **Special cases**
     For floating-point operands,
     - If either ``x1_i`` or ``x2_i`` is ``NaN``, the result is ``NaN``.
@@ -1228,6 +1290,7 @@ def logaddexp(
     -------
       return
         an array containing the element-wise results. The returned array must have a floating-point data type determined by :ref:`type-promotion`.
+
     """
 
     return _cur_framework(x1, x2).logaddexp(x1, x2, out)
@@ -1257,9 +1320,8 @@ def trunc(
     x: Union[ivy.Array, ivy.NativeArray],
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
-    """Rounds each element x_i of the input array x to the integer-valued number that is closest to but no greater than
-    x_i.
-
+    """Rounds each element x_i of the input array x to the integer-valued
+    number that is closest to but no greater than x_i.
 
     **Special cases**
     - If ``x_i`` is already an integer-valued, the result is ``x_i``.
@@ -1291,8 +1353,9 @@ def abs(
     *,
     out: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None
 ) -> Union[ivy.Array, ivy.Container]:
-    """
-    Calculates the absolute value for each element ``x_i`` of the input array ``x`` (i.e., the element-wise result has the same magnitude as the respective element in ``x`` but has positive sign).
+    """Calculates the absolute value for each element ``x_i`` of the input
+    array ``x`` (i.e., the element-wise result has the same magnitude as the
+    respective element in ``x`` but has positive sign).
 
     .. note::
         For signed integer data types, the absolute value of the minimum representable integer is implementation-dependent.
@@ -1316,6 +1379,7 @@ def abs(
      -------
     ret
         an array containing the absolute value of each element in ``x``. The returned array must have the same data type as ``x``.
+
     """
     return _cur_framework(x).abs(x, out)
 
@@ -1324,8 +1388,8 @@ def tan(
     x: Union[ivy.Array, ivy.NativeArray],
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
-    """Computes tangent element-wise.
-    Equivalent to f.sin(x)/f.cos(x) element-wise.
+    """Computes tangent element-wise. Equivalent to f.sin(x)/f.cos(x) element-
+    wise.
 
     Parameters
     ----------
@@ -1345,8 +1409,11 @@ def atan(
     x: Union[ivy.Array, ivy.NativeArray],
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
-    """
-    Calculates an implementation-dependent approximation of the principal value of the inverse tangent, having domain ``[-infinity, +infinity]`` and codomain ``[-π/2, +π/2]``, for each element ``x_i`` of the input array ``x``. Each element-wise result is expressed in radians.
+    """Calculates an implementation-dependent approximation of the principal
+    value of the inverse tangent, having domain ``[-infinity, +infinity]`` and
+    codomain ``[-π/2, +π/2]``, for each element ``x_i`` of the input array
+    ``x``. Each element-wise result is expressed in radians.
+
     **Special cases**
     For floating-point operands,
     - If ``x_i`` is ``NaN``, the result is ``NaN``.
@@ -1365,6 +1432,7 @@ def atan(
      -------
     ret
         an array containing the inverse tangent of each element in ``x``. The returned array must have a floating-point data type determined by :ref:`type-promotion`.
+
     """
     return _cur_framework(x).atan(x, out)
 
@@ -1374,9 +1442,17 @@ def atan2(
     x2: Union[ivy.Array, ivy.NativeArray],
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
-    """
-    Calculates an implementation-dependent approximation of the inverse tangent of the quotient ``x1/x2``, having domain ``[-infinity, +infinity] x [-infinity, +infinity]`` (where the ``x`` notation denotes the set of ordered pairs of elements ``(x1_i, x2_i)``) and codomain ``[-π, +π]``, for each pair of elements ``(x1_i, x2_i)`` of the input arrays ``x1`` and ``x2``, respectively. Each element-wise result is expressed in radians.
-    The mathematical signs of ``x1_i and x2_i`` determine the quadrant of each element-wise result. The quadrant (i.e., branch) is chosen such that each element-wise result is the signed angle in radians between the ray ending at the origin and passing through the point ``(1,0)`` and the ray ending at the origin and passing through the point ``(x2_i, x1_i)``.
+    """Calculates an implementation-dependent approximation of the inverse
+    tangent of the quotient ``x1/x2``, having domain ``[-infinity, +infinity] x
+    [-infinity, +infinity]`` (where the ``x`` notation denotes the set of
+    ordered pairs of elements ``(x1_i, x2_i)``) and codomain ``[-π, +π]``, for
+    each pair of elements ``(x1_i, x2_i)`` of the input arrays ``x1`` and
+    ``x2``, respectively. Each element-wise result is expressed in radians. The
+    mathematical signs of ``x1_i and x2_i`` determine the quadrant of each
+    element-wise result. The quadrant (i.e., branch) is chosen such that each
+    element-wise result is the signed angle in radians between the ray ending
+    at the origin and passing through the point ``(1,0)`` and the ray ending at
+    the origin and passing through the point ``(x2_i, x1_i)``.
 
     **Special cases**
 
@@ -1420,6 +1496,7 @@ def atan2(
      -------
     ret
         an array containing the inverse tangent of the quotient ``x1/x2``. The returned array must have a floating-point data type.
+
     """
     return _cur_framework(x1).atan2(x1, x2, out)
 
@@ -1448,7 +1525,8 @@ def atanh(
     x: Union[ivy.Array, ivy.NativeArray],
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
-    """Returns a new array with the inverse hyperbolic tangent of the elements of x.
+    """Returns a new array with the inverse hyperbolic tangent of the elements
+    of x.
 
     Parameters
     ----------
@@ -1464,6 +1542,7 @@ def atanh(
     >>> x = ivy.atanh(ivy.array([0, -0.5]))
     >>> print(x)
     ivy.array([ 0., -0.54930614])
+
     """
     return _cur_framework(x).atanh(x, out)
 
@@ -1473,9 +1552,8 @@ def subtract(
     x2: Union[ivy.Array, ivy.NativeArray],
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
-    """
-    Calculates the difference for each element ``x1_i`` of the input array ``x1`` with the respective element ``x2_i``
-    of the input array ``x2``.
+    """Calculates the difference for each element ``x1_i`` of the input array
+    ``x1`` with the respective element ``x2_i`` of the input array ``x2``.
 
     Parameters
     ----------
@@ -1490,6 +1568,7 @@ def subtract(
      -------
     ret
         an array containing the element-wise differences.
+
     """
     return _cur_framework(x1).subtract(x1, x2, out)
 
@@ -1499,8 +1578,8 @@ def divide(
     x2: Union[ivy.Array, ivy.NativeArray],
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
-    """Calculates the division for each element x1_i of the input array x1 with the respective element x2_i of the
-    input array x2.
+    """Calculates the division for each element x1_i of the input array x1 with
+    the respective element x2_i of the input array x2.
 
     Parameters
     ----------
@@ -1524,8 +1603,11 @@ def pow(
     x2: Union[ivy.Array, ivy.NativeArray],
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
-    """
-    Calculates an implementation-dependent approximation of exponentiation by raising each element ``x1_i`` (the base) of the input array ``x1`` to the power of ``x2_i`` (the exponent), where ``x2_i`` is the corresponding element of the input array ``x2``.
+    """Calculates an implementation-dependent approximation of exponentiation
+    by raising each element ``x1_i`` (the base) of the input array ``x1`` to
+    the power of ``x2_i`` (the exponent), where ``x2_i`` is the corresponding
+    element of the input array ``x2``.
+
     .. note::
        If both ``x1`` and ``x2`` have integer data types, the result of ``pow`` when ``x2_i`` is negative (i.e., less than zero) is unspecified and thus implementation-dependent.
        If ``x1`` has an integer data type and ``x2`` has a floating-point data type, behavior is implementation-dependent (type promotion between data type "kinds" (integer versus floating-point) is unspecified).
@@ -1568,6 +1650,7 @@ def pow(
      -------
     ret
         an array containing the element-wise results. The returned array must have a data type determined by :ref:`type-promotion`.
+
     """
     return _cur_framework(x1, x2).pow(x1, x2, out)
 
@@ -1577,9 +1660,8 @@ def remainder(
     x2: Union[ivy.Array, ivy.NativeArray],
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
-    """
-    Returns the remainder of division for each element ``x1_i`` of the input array ``x1``
-    and the respective element ``x2_i`` of the input array ``x2``.
+    """Returns the remainder of division for each element ``x1_i`` of the input
+    array ``x1`` and the respective element ``x2_i`` of the input array ``x2``.
 
     .. note::
         This function is equivalent to the Python modulus operator ``x1_i % x2_i``.
@@ -1624,6 +1706,7 @@ def remainder(
      -------
     ret
         an array containing the element-wise results. Each element-wise result must have the same sign as the respective element ``x2_i``. The returned array must have a data type determined by :ref:`Type Promotion Rules`.
+
     """
     return _cur_framework(x1, x2).remainder(x1, x2, out)
 
@@ -1633,8 +1716,9 @@ def bitwise_right_shift(
     x2: Union[ivy.Array, ivy.NativeArray],
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
-    """
-    Shifts the bits of each element ``x1_i`` of the input array ``x1`` to the right according to the respective element ``x2_i`` of the input array ``x2``.
+    """Shifts the bits of each element ``x1_i`` of the input array ``x1`` to
+    the right according to the respective element ``x2_i`` of the input array
+    ``x2``.
 
     .. note::
        This operation must be an arithmetic shift (i.e., sign-propagating) and thus equivalent to floor division by a power of two.
@@ -1652,6 +1736,7 @@ def bitwise_right_shift(
      -------
     ret
         out (array) – an array containing the element-wise results. The returned array must have a data type determined by :ref:`Type Promotion Rules`.
+
     """
     return _cur_framework(x1, x2).bitwise_right_shift(x1, x2, out)
 
@@ -1661,8 +1746,8 @@ def equal(
     x2: Union[ivy.Array, ivy.NativeArray],
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
-    """Computes the truth value of x1_i == x2_i for each element x1_i of the input array x1 with the respective
-    element x2_i of the input array x2.
+    """Computes the truth value of x1_i == x2_i for each element x1_i of the
+    input array x1 with the respective element x2_i of the input array x2.
 
     Parameters
     ----------
