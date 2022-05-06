@@ -142,8 +142,15 @@ def exp(
         optional output array, for writing the result to. It must have a shape that the inputs broadcast to.
     Returns
     -------
-     ret
+    ret
         an array containing the evaluated exponential function result for each element in ``x``. The returned array must have a floating-point data type determined by :ref:`type-promotion`.
+    
+    Examples
+    --------
+    >>> x = ivy.array([1., 2., 3.])
+    >>> y = ivy.exp(x)
+    >>> print(y)
+    ivy.array([2.71828183, 7.3890561 , 20.08553692])
 
     """
     return _cur_framework(x).exp(x, out)
