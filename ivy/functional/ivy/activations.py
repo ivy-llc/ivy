@@ -67,7 +67,6 @@ def leaky_relu(x: Union[ivy.Array, ivy.NativeArray], alpha: Optional[float] = 0.
     return _cur_framework(x).leaky_relu(x, alpha)
 
 
-<<<<<<< HEAD
 def gelu(x: Union[ivy.Array, ivy.NativeArray], approximate: bool = True)\
     -> ivy.Array:
     """
@@ -91,22 +90,6 @@ def gelu(x: Union[ivy.Array, ivy.NativeArray], approximate: bool = True)\
     >>> print(y)
     [-0.5,  0. ,  0.5]
 
-=======
-def gelu(x, approximate=True):
-    """Applies the Gaussian error linear unit (GELU) activation function.
-
-    Parameters
-    ----------
-    x
-        Input array.
-    approximate
-        Whether to approximate, default is True.
-
-    Returns
-    -------
-        The input array with leaky relu applied element-wise.
-
->>>>>>> 464f96bfbef0c7b408a6fe23783748f2e2b83eb5
     """
     return _cur_framework(x).gelu(x, approximate)
 
