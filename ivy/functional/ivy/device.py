@@ -166,6 +166,14 @@ def dev_to_str(device: Union[ivy.Device, str]) -> str:
      ret
         Device string e.g. 'cuda:0'.
 
+    Examples
+    --------
+    >>> arr = ivy.array([0.1, 2, 3])
+    >>> device = ivy.dev(arr)
+    >>> y = ivy.dev_to_str(device)
+    >>> print(y)
+
+
     """
     return _cur_framework().dev_to_str(device)
 
@@ -324,6 +332,8 @@ def dev_util(device: ivy.Device) -> float:
     -------
      ret
         The device utilization (%)
+
+
 
     """
     if device == "cpu":
