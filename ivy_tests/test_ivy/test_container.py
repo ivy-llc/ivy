@@ -5,6 +5,7 @@ import pytest
 import random
 import numpy as np
 import multiprocessing
+import pickle
 
 # local
 import ivy
@@ -4144,32 +4145,32 @@ def test_container_to_disk_shuffle_and_from_disk_as_hdf5(device, call):
     os.remove(save_filepath)
 
 
-# def test_container_pickle(device, call):
-#     if call in [helpers.tf_graph_call]:
-#         # container disk saving requires eager execution
-#         pytest.skip()
-#     dict_in = {'a': ivy.array([np.float32(1.)], device=device),
-#                'b': {'c': ivy.array([np.float32(2.)], device=device),
-#                      'd': ivy.array([np.float32(3.)], device=device)}}
-#
-#     # without module attribute
-#     cont = Container(dict_in)
-#     assert cont._local_ivy is None
-#     pickled = pickle.dumps(cont)
-#     cont_again = pickle.loads(pickled)
-#     assert cont_again._local_ivy is None
-#     ivy.Container.identical_structure([cont, cont_again])
-#     ivy.Container.identical_configs([cont, cont_again])
-#
-#     # with module attribute
-#     cont = Container(dict_in, ivyh=ivy)
-#     assert cont._local_ivy is ivy
-#     pickled = pickle.dumps(cont)
-#     cont_again = pickle.loads(pickled)
-#     # noinspection PyUnresolvedReferences
-#     assert cont_again._local_ivy.current_framework_str() is ivy.current_framework_str()
-#     ivy.Container.identical_structure([cont, cont_again])
-#     ivy.Container.identical_configs([cont, cont_again])
+def test_container_pickle(device, call):
+    if call in [helpers.tf_graph_call]:
+        # container disk saving requires eager execution
+        pytest.skip()
+    dict_in = {'a': ivy.array([np.float32(1.)], device=device),
+               'b': {'c': ivy.array([np.float32(2.)], device=device),
+                     'd': ivy.array([np.float32(3.)], device=device)}}
+
+    # without module attribute
+    cont = Container(dict_in)
+    assert cont._local_ivy is None
+    pickled = pickle.dumps(cont)
+    cont_again = pickle.loads(pickled)
+    assert cont_again._local_ivy is None
+    ivy.Container.identical_structure([cont, cont_again])
+    ivy.Container.identical_configs([cont, cont_again])
+
+    # with module attribute
+    cont = Container(dict_in, ivyh=ivy)
+    assert cont._local_ivy is ivy
+    pickled = pickle.dumps(cont)
+    cont_again = pickle.loads(pickled)
+    # noinspection PyUnresolvedReferences
+    assert cont_again._local_ivy.current_framework_str() is ivy.current_framework_str()
+    ivy.Container.identical_structure([cont, cont_again])
+    ivy.Container.identical_configs([cont, cont_again])
 
 
 def test_container_to_and_from_disk_as_pickled(device, call):
