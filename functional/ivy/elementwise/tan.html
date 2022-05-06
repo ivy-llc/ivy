@@ -188,20 +188,96 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="ivy.functional.ivy.elementwise.tan">
 <span class="sig-prename descclassname"><span class="pre">ivy.functional.ivy.elementwise.</span></span><span class="sig-name descname"><span class="pre">tan</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/elementwise.html#tan"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.elementwise.tan" title="Permalink to this definition"></a></dt>
-<dd><p>Computes tangent element-wise. Equivalent to f.sin(x)/f.cos(x) element-
-wise.</p>
+<dd><p>Calculates an implementation-dependent approximation to the tangent, having domain <code class="docutils literal notranslate"><span class="pre">(-infinity,</span> <span class="pre">+infinity)</span></code> and
+codomain <code class="docutils literal notranslate"><span class="pre">(-infinity,</span> <span class="pre">+infinity)</span></code>, for each element <code class="docutils literal notranslate"><span class="pre">x_i</span></code> of the input <code class="docutils literal notranslate"><span class="pre">x</span></code>. Each element <code class="docutils literal notranslate"><span class="pre">x_i</span></code>
+is assumed to be expressed in radians.</p>
+<p><strong>Special cases</strong></p>
+<p>For floating-point operands,</p>
+<ul class="simple">
+<li><p>If <code class="docutils literal notranslate"><span class="pre">x_i</span></code> is <code class="docutils literal notranslate"><span class="pre">NaN</span></code>, the result is <code class="docutils literal notranslate"><span class="pre">NaN</span></code>.</p></li>
+<li><p>If <code class="docutils literal notranslate"><span class="pre">x_i</span></code> is <code class="docutils literal notranslate"><span class="pre">+0</span></code>, the result is <code class="docutils literal notranslate"><span class="pre">+0</span></code>.</p></li>
+<li><p>If <code class="docutils literal notranslate"><span class="pre">x_i</span></code> is <code class="docutils literal notranslate"><span class="pre">-0</span></code>, the result is <code class="docutils literal notranslate"><span class="pre">-0</span></code>.</p></li>
+<li><p>If <code class="docutils literal notranslate"><span class="pre">x_i</span></code> is either <code class="docutils literal notranslate"><span class="pre">+infinity</span></code> or <code class="docutils literal notranslate"><span class="pre">-infinity</span></code>, the result is <code class="docutils literal notranslate"><span class="pre">NaN</span></code>.</p></li>
+</ul>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – Input array, in radians (2*pi radian equals 360 degrees).</p></li>
-<li><p><strong>Returns</strong> – </p></li>
-<li><p><strong>ret</strong> – The tangent of x element-wise.</p></li>
+<li><p><strong>x</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – input whose elements are expressed in radians. Should have a floating-point data type.</p></li>
+<li><p><strong>out</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]]) – optional output, for writing the result to. It must have a shape that the inputs broadcast to. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>
 <dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></p>
 </dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><em>out</em> – the tangent of each element in <code class="docutils literal notranslate"><span class="pre">x</span></code>. The return must have a floating-point data type determined by
+<span class="xref std std-ref">type-promotion</span>.</p>
+</dd>
 </dl>
+<p>This method conforms to the <a class="reference external" href="https://data-apis.org/array-api/latest/">Array API Standard</a>.
+This docstring is an extension of the <a class="reference external" href="https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.tan.html">docstring</a>
+in the standard.</p>
+<p>With no <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument provided, the result is returned as a new array:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">tan</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+<span class="go">ivy.array([0., 1.56, -2.19])</span>
+</pre></div>
+</div>
+<p>With the <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument provided, the result is returned in this <code class="code docutils literal notranslate"><span class="pre">out</span></code> array:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">tan</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">y</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+<span class="go">ivy.array([0., 1.56, -2.19])</span>
+</pre></div>
+</div>
+<p>This enables in-place updates:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">tan</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">x</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="go">ivy.array([0., 1.56, -2.19])</span>
+</pre></div>
+</div>
+<p>The method can also accept an <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> instance instead of an array.
+In this case, an <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> instance is also returned:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">]),</span> <span class="n">b</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">3.</span><span class="p">,</span> <span class="mf">4.</span><span class="p">,</span> <span class="mf">5.</span><span class="p">]))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">tan</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+<span class="go">{</span>
+<span class="go">    a: ivy.array([0., 1.5574077, -2.1850398]),</span>
+<span class="go">    b: ivy.array([-0.14254655, 1.1578213, -3.380515])</span>
+<span class="go">}</span>
+</pre></div>
+</div>
+<p>If operating on an <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> instance, <code class="code docutils literal notranslate"><span class="pre">out</span></code> must also be an <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> instance.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">]),</span> <span class="n">b</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">3.</span><span class="p">,</span> <span class="mf">4.</span><span class="p">,</span> <span class="mf">5.</span><span class="p">]))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">tan</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">y</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+<span class="go">{</span>
+<span class="go">    a: ivy.array([0., 1.5574077, -2.1850398]),</span>
+<span class="go">    b: ivy.array([-0.14254655, 1.1578213, -3.380515])</span>
+<span class="go">}</span>
+</pre></div>
+</div>
+<p>The method can also be called as an instance method of an <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> instance:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">tan</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+<span class="go">ivy.array([0., 1.56, -2.19])</span>
+</pre></div>
+</div>
+<p>The method can also be called as an instance method of an <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> instance:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">]),</span> <span class="n">b</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">3.</span><span class="p">,</span> <span class="mf">4.</span><span class="p">,</span> <span class="mf">5.</span><span class="p">]))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">tan</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+<span class="go">{</span>
+<span class="go">    a: ivy.array([0., 1.5574077, -2.1850398]),</span>
+<span class="go">    b: ivy.array([-0.14254655, 1.1578213, -3.380515])</span>
+<span class="go">}</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <div class="line-block">
