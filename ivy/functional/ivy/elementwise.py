@@ -1401,12 +1401,12 @@ def abs(
     return _cur_framework(x).abs(x, out)
 
 
-def tan(x: Union[ivy.Array, ivy.NativeArray],
-        out: Optional[Union[ivy.Array, ivy.NativeArray]] = None)\
-        -> ivy.Array:
+def tan(x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        out: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None)\
+        -> Union[ivy.Array, ivy.Container]:
     """
     Calculates an implementation-dependent approximation to the tangent, having domain ``(-infinity, +infinity)`` and
-    codomain ``(-infinity, +infinity)``, for each element ``x_i`` of the input ``x``. Each element ``x_i``
+    codomain ``(-infinity, +infinity)``, for each element ``x_i`` of the input array ``x``. Each element ``x_i``
     is assumed to be expressed in radians.
 
     **Special cases**
@@ -1421,52 +1421,48 @@ def tan(x: Union[ivy.Array, ivy.NativeArray],
     Parameters
     ----------
     x
-        input whose elements are expressed in radians. Should have a floating-point data type.
+        input array whose elements are expressed in radians. Should have a floating-point data type.
     out
         optional output, for writing the result to. It must have a shape that the inputs broadcast to.
 
     Returns
     -------
-    out
-        the tangent of each element in ``x``. The return must have a floating-point data type determined by
-        :ref:`type-promotion`.
+    ret
+        an array containing the tangent of each element in ``x``. The return must have a floating-point data type
+        determined by :ref:`type-promotion`.
 
 
     This method conforms to the `Array API Standard <https://data-apis.org/array-api/latest/>`_.
     This docstring is an extension of the `docstring
     <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.tan.html>`_
-    in the standard.
+    in the standard. The descriptions above assume an array input for simplicity, but the methods also accepts
+    :code:`ivy.Container` instances in place of :code:`ivy.Array` or :code:`ivy.NativeArray` instances, as shown in
+    the type hints and also the examples below.
 
-    Functional Array Examples
-    -------------------------
+    Functional Examples
+    -------------------
 
-    With no :code:`out` argument provided, the result is returned as a new array:
+    With :code:`ivy.Array` input:
 
-    >>> x = ivy.array([0., 1., 2.])
+    >>> x = ivy.array([0, 1, 2])
     >>> y = ivy.tan(x)
     >>> print(y)
-    ivy.array([0., 1.56, -2.19])
+    ivy.array([0., 1.5574077, -2.1850398])
 
-    With the :code:`out` argument provided, the result is returned in this :code:`out` array:
-
-    >>> x = ivy.array([0., 1., 2.])
+    >>> x = ivy.array([0.5, -0.7, 2.4])
     >>> y = ivy.zeros(3)
     >>> ivy.tan(x, out=y)
     >>> print(y)
-    ivy.array([0., 1.56, -2.19])
+    ivy.array([0.5463025, -0.8422884, -0.91601413])
 
-    This enables in-place updates:
-
-    >>> x = ivy.array([0., 1., 2.])
+    >>> x = ivy.array([[1.1, 2.2, 3.3],
+    >>>                [-4.4, -5.5, -6.6]])
     >>> ivy.tan(x, out=x)
     >>> print(x)
-    ivy.array([0., 1.56, -2.19])
+    ivy.array([[ 1.9647598, -1.3738229,  0.1597457],
+               [-3.0963247,  0.9955841, -0.3278579]])
 
-    Functional Container Examples
-    -----------------------------
-
-    The method can also accept an :code:`ivy.Container` instance instead of an array.
-    In this case, an :code:`ivy.Container` instance is also returned:
+    With :code:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
     >>> y = ivy.tan(x)
@@ -1476,31 +1472,17 @@ def tan(x: Union[ivy.Array, ivy.NativeArray],
         b: ivy.array([-0.14254655, 1.1578213, -3.380515])
     }
 
-    If operating on an :code:`ivy.Container` instance, :code:`out` must also be an :code:`ivy.Container` instance.
+    Instance Method Examples
+    ------------------------
 
-    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
-    >>> y = ivy.Container()
-    >>> ivy.tan(x, out=y)
-    >>> print(y)
-    {
-        a: ivy.array([0., 1.5574077, -2.1850398]),
-        b: ivy.array([-0.14254655, 1.1578213, -3.380515])
-    }
-
-    Array Instance Method Example
-    -----------------------------
-
-    The method can also be called as an instance method of an :code:`ivy.Array` instance:
+    Using :code:`ivy.Array` instance method:
 
     >>> x = ivy.array([0., 1., 2.])
     >>> y = x.tan()
     >>> print(y)
-    ivy.array([0., 1.56, -2.19])
+    ivy.array([0., 1.5574077, -2.1850398])
 
-    Container Instance Method Example
-    ---------------------------------
-
-    The method can also be called as an instance method of an :code:`ivy.Container` instance:
+    Using :code:`ivy.Container` instance method:
 
     >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
     >>> y = x.tan()
