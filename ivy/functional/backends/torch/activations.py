@@ -22,11 +22,10 @@ def leaky_relu(x: torch.Tensor, alpha: Optional[float] = 0.2) -> torch.Tensor:
     return torch.nn.functional.leaky_relu(x, alpha)
 
 
-def gelu(x, approximate: bool = True):
+def gelu(x: torch.Tensor, approximate: bool = True)\
+     -> torch.Tensor:
     if approximate:
-        return (
-            0.5 * x * (1 + torch.tanh(((2 / np.pi) ** 0.5) * (x + 0.044715 * x**3)))
-        )
+        return 0.5 * x * (1 + torch.tanh(((2 / np.pi) ** 0.5) * (x + 0.044715 * x ** 3)))
     return torch.nn.functional.gelu(x)
 
 

@@ -22,7 +22,8 @@ def leaky_relu(x: mx.nd.NDArray, alpha: Optional[float] = 0.2) -> mx.nd.NDArray:
     return mx.nd.LeakyReLU(x, slope=alpha)
 
 
-def gelu(x, approximate=True):
+def gelu(x: mx.md.NDArray, approximate:bool=True)\
+    -> mx.md.NDArray:
     if approximate:
         return (
             0.5 * x * (1 + mx.nd.tanh(((2 / np.pi) ** 0.5) * (x + 0.044715 * x**3)))
