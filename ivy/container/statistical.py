@@ -66,3 +66,62 @@ class ContainerWithStatistical(ContainerBase):
             ),
             out,
         )
+
+    def var(
+        self: ivy.Container,
+        axis: Union[int, Tuple[int]] = None,
+        keepdims: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        return self.handle_inplace(
+            self.map(
+                lambda x_, _: ivy.var(x_, axis, keepdims) if ivy.is_array(x_) else x_,
+                key_chains,
+                to_apply,
+                prune_unapplied,
+            ),
+            out,
+        )
+
+    def prod(
+        self: ivy.Container,
+        axis: Union[int, Tuple[int]] = None,
+        dtype: Optional[Union[ivy.Dtype, str]] = None,
+        keepdims: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        return self.handle_inplace(
+            self.map(
+                lambda x_, _: ivy.prod(x_, axis, dtype, keepdims) if ivy.is_array(x_) else x_,
+                key_chains,
+                to_apply,
+                prune_unapplied,
+            ),
+            out,
+        )
+
+    def sum(
+        self: ivy.Container,
+        axis: Union[int, Tuple[int]] = None,
+        dtype: Optional[Union[ivy.Dtype, str]] = None,
+        keepdims: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        return self.handle_inplace(
+            self.map(
+                lambda x_, _: ivy.sum(x_, axis, dtype, keepdims) if ivy.is_array(x_) else x_,
+                key_chains,
+                to_apply,
+                prune_unapplied,
+            ),
+            out,
+        )
