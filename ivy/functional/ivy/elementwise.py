@@ -37,12 +37,13 @@ def bitwise_left_shift(
 
 
 def add(
-    x1: Union[ivy.Array, ivy.NativeArray],
-    x2: Union[ivy.Array, ivy.NativeArray],
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-) -> ivy.Array:
-    """Calculates the sum for each element ``x1_i`` of the input array ``x1``
-    with the respective element ``x2_i`` of the input array ``x2``.
+    x1: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+    x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+    out: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
+) -> Union[ivy.Array, ivy.Container]:
+    """
+    Calculates the sum for each element ``x1_i`` of the input array ``x1`` with the respective element ``x2_i`` of the
+    input array ``x2``.
 
     **Special cases**
 
@@ -64,7 +65,10 @@ def add(
     - If ``x1_i`` is either ``+0`` or ``-0`` and ``x2_i`` is a nonzero finite number, the result is ``x2_i``.
     - If ``x1_i`` is a nonzero finite number and ``x2_i`` is either ``+0`` or ``-0``, the result is ``x1_i``.
     - If ``x1_i`` is a nonzero finite number and ``x2_i`` is ``-x1_i``, the result is ``+0``.
-    - In the remaining cases, when neither ``infinity``, ``+0``, ``-0``, nor a ``NaN`` is involved, and the operands have the same mathematical sign or have different magnitudes, the sum must be computed and rounded to the nearest representable value according to IEEE 754-2019 and a supported round mode. If the magnitude is too large to represent, the operation overflows and the result is an `infinity` of appropriate mathematical sign.
+    - In the remaining cases, when neither ``infinity``, ``+0``, ``-0``, nor a ``NaN`` is involved, and the operands
+    have the same mathematical sign or have different magnitudes, the sum must be computed and rounded to the nearest
+    representable value according to IEEE 754-2019 and a supported round mode. If the magnitude is too large to
+    represent, the operation overflows and the result is an `infinity` of appropriate mathematical sign.
 
     .. note::
        Floating-point addition is a commutative operation, but not always associative.
@@ -81,16 +85,129 @@ def add(
     Returns
     -------
      ret
-        an array containing the element-wise sums. The returned array must have a data type determined by :ref:`type-promotion`.
+        an array containing the element-wise sums. The returned array must have a data type determined by
+        :ref:`type-promotion`.
 
-    Examples
-    --------
+
+    This method conforms to the `Array API Standard <https://data-apis.org/array-api/latest/>`_.
+    This docstring is an extension of the `docstring
+    <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.tan.html>`_
+    in the standard. The descriptions above assume an array input for simplicity, but the method also accepts
+    :code:`ivy.Container` instances in place of :code:`ivy.Array` or :code:`ivy.NativeArray` instances, as shown in
+    the type hints and also the examples below.
+
+    Functional Examples
+    -------------------
+
+    With :code:`ivy.Array` input:
+
     >>> x = ivy.array([1, 2, 3])
     >>> y = ivy.array([4, 5, 6])
     >>> z = ivy.add(x, y)
     >>> print(z)
     ivy.array([5, 7, 9])
 
+    >>> x = ivy.array([[1.1, 2.3, -3.6]])
+    >>> y = ivy.array([[4.8], [5.2], [6.1]])
+    >>> z = ivy.zeros((3, 3))
+    >>> ivy.add(x, y, out=z)
+    >>> print(z)
+    ivy.array([[5.9, 7.1, 1.2],
+               [6.3, 7.5, 1.6],
+               [7.2, 8.4, 2.5]])
+
+    With :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([1, 2, 3]),
+    >>>                   b=ivy.array([2, 3, 4]))
+    >>> y = ivy.Container(a=ivy.array([4, 5, 6]),
+    >>>                   b=ivy.array([5, 6, 7]))
+    >>> z = ivy.add(x, y)
+    >>> print(z)
+    {
+        a: ivy.array([5, 7, 9]),
+        b: ivy.array([7, 9, 11])
+    }
+
+    With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:
+
+    >>> x = ivy.array([[1.1, 2.3, -3.6]])
+    >>> y = ivy.Container(a=ivy.array([[4.], [5.], [6.]]),
+    >>>                   b=ivy.array([[5.], [6.], [7.]]))
+    >>> z = ivy.add(x, y)
+    >>> print(z)
+    {
+        a: ivy.array([[5.1, 6.3, 0.4],
+                      [6.1, 7.3, 1.4],
+                      [7.1, 8.3, 2.4]]),
+        b: ivy.array([[6.1, 7.3, 1.4],
+                      [7.1, 8.3, 2.4],
+                      [8.1, 9.3, 3.4]])
+    }
+
+    Instance Method Examples
+    ------------------------
+
+    Using :code:`ivy.Array` instance method:
+
+    >>> x = ivy.array([1, 2, 3])
+    >>> y = ivy.array([4, 5, 6])
+    >>> z = x.add(y)
+    >>> print(z)
+    ivy.array([5, 7, 9])
+
+    Using :code:`ivy.Container` instance method:
+
+    >>> x = ivy.Container(a=ivy.array([1, 2, 3]),
+    >>>                   b=ivy.array([2, 3, 4]))
+    >>> y = ivy.Container(a=ivy.array([4, 5, 6]),
+    >>>                   b=ivy.array([5, 6, 7]))
+    >>> z = x.add(y)
+    >>> print(z)
+    {
+        a: ivy.array([5, 7, 9]),
+        b: ivy.array([7, 9, 11])
+    }
+
+    Operator Examples
+    -----------------
+
+    With :code:`ivy.Array` instances:
+
+    >>> x = ivy.array([1, 2, 3])
+    >>> y = ivy.array([4, 5, 6])
+    >>> z = x + y
+    >>> print(z)
+    ivy.array([5, 7, 9])
+
+    With :code:`ivy.Container` instances:
+
+    >>> x = ivy.Container(a=ivy.array([1, 2, 3]),
+    >>>                   b=ivy.array([2, 3, 4]))
+    >>> y = ivy.Container(a=ivy.array([4, 5, 6]),
+    >>>                   b=ivy.array([5, 6, 7]))
+    >>> z = x + y
+    >>> print(z)
+    {
+        a: ivy.array([5, 7, 9]),
+        b: ivy.array([7, 9, 11])
+    }
+
+    With mix of :code:`ivy.Array` and :code:`ivy.Container` instances:
+
+    >>> x = ivy.array([[1.1, 2.3, -3.6]])
+    >>> y = ivy.Container(a=ivy.array([[4.], [5.], [6.]]),
+    >>>                   b=ivy.array([[5.], [6.], [7.]]))
+    >>> z = x + y
+    >>> print(z)
+    {
+        a: ivy.array([[5.1, 6.3, 0.4],
+                      [6.1, 7.3, 1.4],
+                      [7.1, 8.3, 2.4]]),
+        b: ivy.array([[6.1, 7.3, 1.4],
+                      [7.1, 8.3, 2.4],
+                      [8.1, 9.3, 3.4]])
+    }
     """
     return _cur_framework(x1, x2).add(x1, x2, out)
 
@@ -1435,7 +1552,7 @@ def tan(x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
     This method conforms to the `Array API Standard <https://data-apis.org/array-api/latest/>`_.
     This docstring is an extension of the `docstring
     <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.tan.html>`_
-    in the standard. The descriptions above assume an array input for simplicity, but the methods also accepts
+    in the standard. The descriptions above assume an array input for simplicity, but the method also accepts
     :code:`ivy.Container` instances in place of :code:`ivy.Array` or :code:`ivy.NativeArray` instances, as shown in
     the type hints and also the examples below.
 
