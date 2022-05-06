@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Basics &mdash; Ivy 1.0 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Navigating the Code" href="navigating_the_code.html" />
+    <link rel="prev" title="Contributing" href="../contributing.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> Ivy
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Overview</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../background.html">Background</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../design.html">Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../extensions.html">Extensions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../roadmap.html">Roadmap</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../contributing.html">Contributing</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">The Basics</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#managing-your-fork">Managing Your Fork</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#todo-list-issues">ToDo List Issues</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#creating-pull-requests">Creating Pull Requests</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="navigating_the_code.html">Navigating the Code</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Functional</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/compilation.html">Compilation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/constants.html">Constants</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/creation.html">Creation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/data_type.html">Data type</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/device.html">Device</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/elementwise.html">Elementwise</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/general.html">General</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/gradients.html">Gradients</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/image.html">Image</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/linear_algebra.html">Linear algebra</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/losses.html">Losses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/manipulation.html">Manipulation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/meta.html">Meta</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/nest.html">Nest</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/random.html">Random</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/searching.html">Searching</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/set.html">Set</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/sorting.html">Sorting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/statistical.html">Statistical</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/utility.html">Utility</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Stateful</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/converters.html">Converters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/initializers.html">Initializers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/module.html">Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/optimizers.html">Optimizers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/sequential.html">Sequential</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Docs</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../ivy"">Ivy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../mech"">Ivy mech</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../vision"">Ivy vision</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../robot"">Ivy robot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../gym"">Ivy gym</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../memory"">Ivy memory</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../builder"">Ivy builder</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../models"">Ivy models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ecosystem"">Ivy ecosystem</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Ivy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../contributing.html">Contributing</a> &raquo;</li>
+      <li>The Basics</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/contributing/the_basics.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="the-basics">
+<h1>The Basics<a class="headerlink" href="#the-basics" title="Permalink to this headline"></a></h1>
+<section id="managing-your-fork">
+<h2>Managing Your Fork<a class="headerlink" href="#managing-your-fork" title="Permalink to this headline"></a></h2>
+<p>When contributing to Ivy, the first step is create a fork of the repository.
+Then, it’s best practice to create a separate branch for each new pull request you create.
+The master branch then simply has the role of being kept up to date with upstream.
+You can create PRs based on the master branch of your fork, but this will make things more complicated if you would then like to create additional PRs in future.</p>
+<p>For keeping any branch on your fork up to date, there is a script in the root folder of the repo <code class="code docutils literal notranslate"><span class="pre">merge_with_upstream.sh</span></code>.
+To update your fork’s branch to the upstream master branch, simply run <code class="code docutils literal notranslate"><span class="pre">./merge_with_upstream.sh</span> <span class="pre">name_of_your_branch</span></code>.
+To update the master branch, this would then be: <code class="code docutils literal notranslate"><span class="pre">./merge_with_upstream.sh</span> <span class="pre">master</span></code>.</p>
+</section>
+<section id="todo-list-issues">
+<h2>ToDo List Issues<a class="headerlink" href="#todo-list-issues" title="Permalink to this headline"></a></h2>
+<p>We make extensive use of ToDo list issues, which act as placeholders for tracking many related sub-tasks in a ToDo list.</p>
+<p>We have a clear process for contributors to engage with such ToDo lists:</p>
+<p>(a) Find a task to work on which (i) is not marked as completed with a tick (ii) does not have an issue created and
+(iii) is not mentioned in the comments.</p>
+<ol class="loweralpha simple" start="2">
+<li><p>Create a new issue with the title being just the name of the task you would like to work on.</p></li>
+<li><p>comment on the ToDo list issue with a reference to this issue like so:</p></li>
+</ol>
+<ul class="simple">
+<li><p>[ ] #Issue_number</p></li>
+</ul>
+<p>Your issue will then automatically be added to the ToDo list at some point, and the comment will be deleted.
+No need to wait for this to happen before progressing to stage d.</p>
+<p>(d) Start working on the task, and create a PR as soon as you have a full or partial solution, and then directly
+reference the issue in the pull request. If you have a partial solution, the Ivy team can help to guide you through
+the process of getting it working :)</p>
+<p>(e) Wait for us to review your PR. Once we have reviewed your PR we will either merge or request changes. Every time you
+respond to our requested changes you must re-request a review in order for us to re-engage with the PR.</p>
+<ol class="loweralpha simple" start="6">
+<li><p>Once the PR is in good shape, we will merge into master, and you then become and Ivy contributor!</p></li>
+</ol>
+<p>In order to keep our ToDo lists moving quickly, if your PR is not created within 7 days of creating the issue, then
+the issue will be closed and the method will be made free for others in the community. Likewise, if we have requested
+changes on your PR, and you do not respond and request a new code review within 7 days, then the PR and the associated
+issue will be closed, and the method will be freed for others in the community. Even if you do not make code changes,
+you should request a new code review to flag to us that our attention is again needed to further the discussion.</p>
+<p>The purpose of this is to ensure our ToDo lists remain accessible for all in the community to engage with, where
+priority is given to those who can engage on a more short-term basis. We want to avoid the situation where tasks are
+allocated but then are not acted upon for long periods of time, whilst preveting others in the community from working
+on these instead.</p>
+<p>Starting an issue and then being unable to complete it is not a problem from our side at all, we automatically close
+these just so we can keep our communuty engaged with these tasks :)</p>
+<p>Our automatic closing is obviously never a reflection on the quality of the PR or the developer who made it, or any
+reflection of hypothetical frustration we have for more delayed response times etc. Developers are of course very busy
+people, and sometimes there is not as much free time available as initially thought. Please don’t take it personally
+if your issue or PR gets closed because of these time limits.</p>
+<p>Reach out to me on discord if at any point you believe this happened to you unfairly, and we will definitely
+investigate!</p>
+</section>
+<section id="creating-pull-requests">
+<h2>Creating Pull Requests<a class="headerlink" href="#creating-pull-requests" title="Permalink to this headline"></a></h2>
+<p>Our process for responding to pull requests is simple. All newly created PRs will be reviewed by a member of the team,
+and then the PR will either be merged or changes will be requested. In order for us to look at the changes you have made,
+you will then need to request a code review once you have addressed our requested changes.
+We will then take another look, and either merge the PR or request further changes.
+This process then will repeat until either the PR is closed by us or yourslef, or the PR is merged.</p>
+<p>If we request changes, you make those changes, but you do not request a code review, then we will not check the changes.
+This is the case even if you comment on the PR. This simple process makes it much simpler for us to track where and when
+attention is needed.</p>
+<p>Note that you cannot request a code review until you have already received at least one review from us. All new PRs will
+receive a code review, so just wait and we will check out and review your newly created PR as soon as possible!</p>
+<p>Finally, all PRs must give write access to Ivy maintainers of the branch. This can be done by checking a tickbox in the
+lower right corner of the PR. This will enable us to quickly fix conflicts, merge with upstream, and get things moving
+much more quickly without us needing to request very simple fixes from yourself.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../contributing.html" class="btn btn-neutral float-left" title="Contributing" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="navigating_the_code.html" class="btn btn-neutral float-right" title="Navigating the Code" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020, Ivy Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

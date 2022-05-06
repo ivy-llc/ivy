@@ -19,7 +19,7 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="&lt;no title&gt;" href="functional/ivy.html" />
+    <link rel="next" title="The Basics" href="contributing/the_basics.html" />
     <link rel="prev" title="Roadmap" href="roadmap.html" /> 
 </head>
 
@@ -45,12 +45,8 @@
 <li class="toctree-l1"><a class="reference internal" href="extensions.html">Extensions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="roadmap.html">Roadmap</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Contributing</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#managing-your-fork">Managing Your Fork</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#todo-list-issues">ToDo List Issues</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#creating-pull-requests">Creating Pull Requests</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#submodule-design">Submodule Design</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#ivy-api">Ivy API</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#backend-api">Backend API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contributing/the_basics.html">The Basics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contributing/navigating_the_code.html">Navigating the Code</a></li>
 </ul>
 </li>
 </ul>
@@ -130,174 +126,15 @@
              
   <section id="contributing">
 <h1>Contributing<a class="headerlink" href="#contributing" title="Permalink to this headline"></a></h1>
-<section id="managing-your-fork">
-<h2>Managing Your Fork<a class="headerlink" href="#managing-your-fork" title="Permalink to this headline"></a></h2>
-<p>When contributing to Ivy, the first step is create a fork of the repository.
-Then, it’s best practice to create a separate branch for each new pull request you create.
-The master branch then simply has the role of being kept up to date with upstream.
-You can create PRs based on the master branch of your fork, but this will make things more complicated if you would then like to create additional PRs in future.</p>
-<p>For keeping any branch on your fork up to date, there is a script in the root folder of the repo <code class="code docutils literal notranslate"><span class="pre">merge_with_upstream.sh</span></code>.
-To update your fork’s branch to the upstream master branch, simply run <code class="code docutils literal notranslate"><span class="pre">./merge_with_upstream.sh</span> <span class="pre">name_of_your_branch</span></code>.
-To update the master branch, this would then be: <code class="code docutils literal notranslate"><span class="pre">./merge_with_upstream.sh</span> <span class="pre">master</span></code>.</p>
-</section>
-<section id="todo-list-issues">
-<h2>ToDo List Issues<a class="headerlink" href="#todo-list-issues" title="Permalink to this headline"></a></h2>
-<p>We make extensive use of ToDo list issues, which act as placeholders for tracking many related sub-tasks in a ToDo list.</p>
-<p>We have a clear process for contributors to engage with such ToDo lists:</p>
-<p>(a) Find a task to work on which (i) is not marked as completed with a tick (ii) does not have an issue created and
-(iii) is not mentioned in the comments.</p>
-<ol class="loweralpha simple" start="2">
-<li><p>Create a new issue with the title being just the name of the task you would like to work on.</p></li>
-<li><p>comment on the ToDo list issue with a reference to this issue like so:</p></li>
-</ol>
-<ul class="simple">
-<li><p>[ ] #Issue_number</p></li>
-</ul>
-<p>Your issue will then automatically be added to the ToDo list at some point, and the comment will be deleted.
-No need to wait for this to happen before progressing to stage d.</p>
-<p>(d) Start working on the task, and create a PR as soon as you have a full or partial solution, and then directly
-reference the issue in the pull request. If you have a partial solution, the Ivy team can help to guide you through
-the process of getting it working :)</p>
-<p>(e) Wait for us to review your PR. Once we have reviewed your PR we will either merge or request changes. Every time you
-respond to our requested changes you must re-request a review in order for us to re-engage with the PR.</p>
-<ol class="loweralpha simple" start="5">
-<li><p>Once the PR is in good shape, we will merge into master, and you then become and Ivy contributor!</p></li>
-</ol>
-<p>In order to keep our ToDo lists moving quickly, if your PR is not created within 7 days of creating the issue, then
-the issue will be closed and the method will be made free for others in the community. Likewise, if we have requested
-changes on your PR, and you do not respond and request a new code review within 7 days, then the PR and the associated
-issue will be closed, and the method will be freed for others in the community. Even if you do not make code changes,
-you should request a new code review to flag to us that our attention is again needed to further the discussion.</p>
-<p>The purpose of this is to ensure our ToDo lists remain accessible for all in the community to engage with, where
-priority is given to those who can engage on a more short-term basis. We want to avoid the situation where tasks are
-allocated but then are not acted upon for long periods of time, whilst preveting others in the community from working
-on these instead.</p>
-<p>Starting an issue and then being unable to complete it is not a problem from our side at all, we automatically close
-these just so we can keep our communuty engaged with these tasks :)</p>
-<p>Our automatic closing is obviously never a reflection on the quality of the PR or the developer who made it, or any
-reflection of hypothetical frustration we have for more delayed response times etc. Developers are of course very busy
-people, and sometimes there is not as much free time available as initially thought. Please don’t take it personally
-if your issue or PR gets closed because of these time limits.</p>
-<p>Reach out to me on discord if at any point you believe this happened to you unfairly, and we will definitely
-investigate!</p>
-</section>
-<section id="creating-pull-requests">
-<h2>Creating Pull Requests<a class="headerlink" href="#creating-pull-requests" title="Permalink to this headline"></a></h2>
-<p>Our process for responding to pull requests is simple. All newly created PRs will be reviewed by a member of the team,
-and then the PR will either be merged or changes will be requested. In order for us to look at the changes you have made,
-you will then need to request a code review once you have addressed our requested changes.
-We will then take another look, and either merge the PR or request further changes.
-This process then will repeat until either the PR is closed by us or yourslef, or the PR is merged.</p>
-<p>If we request changes, you make those changes, but you do not request a code review, then we will not check the changes.
-This is the case even if you comment on the PR. This simple process makes it much simpler for us to track where and when
-attention is needed.</p>
-<p>Note that you cannot request a code review until you have already received at least one review from us. All new PRs will
-receive a code review, so just wait and we will check out and review your newly created PR as soon as possible!</p>
-<p>Finally, all PRs must give write access to Ivy maintainers of the branch. This can be done by checking a tickbox in the
-lower right corner of the PR. This will enable us to quickly fix conflicts, merge with upstream, and get things moving
-much more quickly without us needing to request very simple fixes from yourself.</p>
-</section>
-<section id="submodule-design">
-<h2>Submodule Design<a class="headerlink" href="#submodule-design" title="Permalink to this headline"></a></h2>
-<p>Many already-implemented methods will need to be moved into new locations during various stages of refactoring.
-The package is designed so all methods are called directly from the <code class="code docutils literal notranslate"><span class="pre">ivy</span></code> namespace, such as <code class="code docutils literal notranslate"><span class="pre">ivy.matmul</span></code>,
-and not <code class="code docutils literal notranslate"><span class="pre">ivy.some_namespace.matmul</span></code>. Therefore, inside any of the folders <code class="code docutils literal notranslate"><span class="pre">ivy.functional.ivy</span></code>,
-<code class="code docutils literal notranslate"><span class="pre">ivy.functional.backends.some_backend</span></code>, <code class="code docutils literal notranslate"><span class="pre">ivy.functional.backends.another_backend</span></code> the functions can be moved
-to different files or folders without breaking anything. This makes it very simple to continually refactor and re-organize
-the code structure in an ongoing manner.</p>
-<p>Currently, we are in the process of refactoring things to more closely follow the Array API standard. Many methods will
-need to be moved to new locations. Again, this is not a problem, provided the <code class="code docutils literal notranslate"><span class="pre">__init__</span></code> files have the correct
-imports. Generally, these files look like the following, so that both the submodule namespace is imported but also
-all methods.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">dtype</span>
-<span class="kn">from</span> <span class="nn">.dtype</span> <span class="kn">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">general</span>
-<span class="kn">from</span> <span class="nn">.general</span> <span class="kn">import</span> <span class="o">*</span>
-<span class="c1"># etc.</span>
-</pre></div>
+<div class="line-block">
+<div class="line">(a) <a class="reference internal" href="contributing/the_basics.html#the-basics"><span class="std std-ref">The Basics</span></a></div>
+<div class="line">Managing your fork 🇾, creating issues ⭕, and creating pull-requests ⬆️</div>
+<div class="line"><br /></div>
+<div class="line">(b) <a class="reference internal" href="contributing/navigating_the_code.html#navigating-the-code"><span class="std std-ref">Navigating the Code</span></a></div>
+<div class="line">A quick tour through the codebase 🔍</div>
 </div>
-</section>
-<section id="ivy-api">
-<h2>Ivy API<a class="headerlink" href="#ivy-api" title="Permalink to this headline"></a></h2>
-<p>All function signatures for the Ivy API are defined in the <code class="code docutils literal notranslate"><span class="pre">ivy.functional.ivy</span></code> submodule. Functions written here
-should adhere to the following type hint format:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">my_func</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
-            <span class="n">axes</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]],</span>
-            <span class="n">dtype</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-            <span class="n">dev</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dev</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> \
-        <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    My function does something cool.</span>
-
-<span class="sd">    .. note::</span>
-<span class="sd">        This is an important note.</span>
-
-<span class="sd">    **Special Cases**</span>
-
-<span class="sd">    For this particular case,</span>
-
-<span class="sd">    - If ``x`` is ``NaN``, do something</span>
-<span class="sd">    - If ``y`` is ``-0``, do something else</span>
-<span class="sd">    - etc.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    x:</span>
-<span class="sd">        input array. Should have a numeric data type.</span>
-<span class="sd">    axes:</span>
-<span class="sd">        the axes along which to perform the op.</span>
-<span class="sd">    dtype:</span>
-<span class="sd">        array data type.</span>
-<span class="sd">    dev:</span>
-<span class="sd">        the device on which to place the new array.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    out:</span>
-<span class="sd">        a cooler array.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">my_func</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dtype</span><span class="p">,</span> <span class="n">dev</span><span class="p">)</span>
-</pre></div>
+<div class="toctree-wrapper compound">
 </div>
-<p>Note that the input array has type <code class="code docutils literal notranslate"><span class="pre">Union[ivy.Array,</span> <span class="pre">ivy.NativeArray]</span></code> whereas the output array has type
-<code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code>. This is the case for all functions in the ivy API.
-We always return an <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> instance to ensure that any subsequent Ivy code is fully framework-agnostic, with
-all operators performed on the array being handled by Ivy, and not the backend framework. However, there is no need to
-prevent native arrays from being permitted in the input. For Ivy methods which wrap backend-specific implementations, the
-input would need to be converted to a native array (such as <code class="code docutils literal notranslate"><span class="pre">torch.Tensor</span></code>) anyway before calling the backend method,
-and for Ivy methods implemented as a composition of other Ivy methods such as <code class="code docutils literal notranslate"><span class="pre">ivy.lstm_update</span></code>, the native inputs can
-just be converted to <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> instances before executing the Ivy implementation.</p>
-<p>As for the <code class="code docutils literal notranslate"><span class="pre">axes</span></code> arg, generally the <a class="reference external" href="https://data-apis.org/array-api/latest/">Array API</a> standard dictates that shapes, axes and other similar args should be
-of type <code class="code docutils literal notranslate"><span class="pre">Tuple[int]</span></code> when representing a sequence, not <code class="code docutils literal notranslate"><span class="pre">List[int]</span></code>. However, in order to make Ivy code
-less brittle, we accept both tuples and lists for such arguments. This does not break the standard, as the standard is only
-intended to define a subset of required function behaviour. The standard can be freely extended, as we are doing here.</p>
-<p>As for the other arguments in the example above, <code class="code docutils literal notranslate"><span class="pre">dtype</span></code> and <code class="code docutils literal notranslate"><span class="pre">dev</span></code> do not need to be added to all methods,
-these are just examples. These should be added to all creation methods though. Note that for both of these, the type is a
-<code class="code docutils literal notranslate"><span class="pre">Union</span></code> including <code class="code docutils literal notranslate"><span class="pre">str</span></code>. This is because, in order to remain fully framework agnostic, Ivy accepts string
-representations of devices and data types, such as <code class="code docutils literal notranslate"><span class="pre">&quot;int32&quot;</span></code>, <code class="code docutils literal notranslate"><span class="pre">&quot;float32&quot;</span></code>, <code class="code docutils literal notranslate"><span class="pre">&quot;bool&quot;</span></code>, <code class="code docutils literal notranslate"><span class="pre">&quot;cpu&quot;</span></code>,
-<code class="code docutils literal notranslate"><span class="pre">&quot;gpu0&quot;</span></code>, <code class="code docutils literal notranslate"><span class="pre">&quot;gpu2&quot;</span></code> etc.</p>
-<p>All functions which adhere to the <a class="reference external" href="https://data-apis.org/array-api/latest/">Array API</a> standard should be placed in the correct file in alignment with the
-categories used in the standard.</p>
-</section>
-<section id="backend-api">
-<h2>Backend API<a class="headerlink" href="#backend-api" title="Permalink to this headline"></a></h2>
-<p>Code in the backend submodules such as <code class="code docutils literal notranslate"><span class="pre">ivy.functional.backends.torch</span></code> should then look something like:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">my_func</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span>
-            <span class="n">dtype</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-            <span class="n">dev</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> \
-        <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
-    <span class="n">dtype</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">dtype_from_str</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">default_dtype</span><span class="p">(</span><span class="n">dtype</span><span class="p">,</span> <span class="n">x</span><span class="p">))</span>
-    <span class="n">dev</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">dev_from_str</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">default_dev</span><span class="p">(</span><span class="n">dev</span><span class="p">,</span> <span class="n">x</span><span class="p">))</span>
-    <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">something_cool</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dtype</span><span class="p">,</span> <span class="n">dev</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>Specifically, we should use type hints for all arguments in the Ivy API and also the backend APIs. These type hints
-should be identical apart from all <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code>, <code class="code docutils literal notranslate"><span class="pre">ivy.Dtype</span></code> and <code class="code docutils literal notranslate"><span class="pre">ivy.Dev</span></code> types replaced by
-framework-specific types, in this case <code class="code docutils literal notranslate"><span class="pre">torch.Tensor</span></code>, <code class="code docutils literal notranslate"><span class="pre">torch.dtype</span></code> and <code class="code docutils literal notranslate"><span class="pre">torch.device</span></code>.</p>
-<p>The backend methods should not add a docstring, as this would be identical to the docstring provided in the Ivy API.</p>
-<p>All backend functions which adhere to the <a class="reference external" href="https://data-apis.org/array-api/latest/">Array API</a> standard should also be placed in the correct file in alignment with the
-categories used in the standard.</p>
-</section>
 </section>
 
 
@@ -305,7 +142,7 @@ categories used in the standard.</p>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="roadmap.html" class="btn btn-neutral float-left" title="Roadmap" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="functional/ivy.html" class="btn btn-neutral float-right" title="&lt;no title&gt;" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="contributing/the_basics.html" class="btn btn-neutral float-right" title="The Basics" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
