@@ -1384,23 +1384,114 @@ def abs(
     return _cur_framework(x).abs(x, out)
 
 
-def tan(
-    x: Union[ivy.Array, ivy.NativeArray],
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-) -> ivy.Array:
-    """Computes tangent element-wise. Equivalent to f.sin(x)/f.cos(x) element-
-    wise.
+def tan(x: Union[ivy.Array, ivy.NativeArray],
+        out: Optional[Union[ivy.Array, ivy.NativeArray]] = None)\
+        -> ivy.Array:
+    """
+    Calculates an implementation-dependent approximation to the tangent, having domain ``(-infinity, +infinity)`` and
+    codomain ``(-infinity, +infinity)``, for each element ``x_i`` of the input ``x``. Each element ``x_i``
+    is assumed to be expressed in radians.
+
+    **Special cases**
+
+    For floating-point operands,
+
+    - If ``x_i`` is ``NaN``, the result is ``NaN``.
+    - If ``x_i`` is ``+0``, the result is ``+0``.
+    - If ``x_i`` is ``-0``, the result is ``-0``.
+    - If ``x_i`` is either ``+infinity`` or ``-infinity``, the result is ``NaN``.
 
     Parameters
     ----------
     x
-        Input array, in radians (2*pi radian equals 360 degrees).
+        input whose elements are expressed in radians. Should have a floating-point data type.
+    out
+        optional output, for writing the result to. It must have a shape that the inputs broadcast to.
 
     Returns
-     -------
-    ret
-        The tangent of x element-wise.
+    -------
+    out
+        the tangent of each element in ``x``. The return must have a floating-point data type determined by
+        :ref:`type-promotion`.
 
+
+    This method conforms to the `Array API Standard <https://data-apis.org/array-api/latest/>`_.
+    This docstring is an extension of the `docstring
+    <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.tan.html>`_
+    in the standard.
+
+    Functional Array Examples
+    -------------------------
+
+    With no :code:`out` argument provided, the result is returned as a new array:
+
+    >>> x = ivy.array([0., 1., 2.])
+    >>> y = ivy.tan(x)
+    >>> print(y)
+    ivy.array([0., 1.56, -2.19])
+
+    With the :code:`out` argument provided, the result is returned in this :code:`out` array:
+
+    >>> x = ivy.array([0., 1., 2.])
+    >>> y = ivy.zeros(3)
+    >>> ivy.tan(x, out=y)
+    >>> print(y)
+    ivy.array([0., 1.56, -2.19])
+
+    This enables in-place updates:
+
+    >>> x = ivy.array([0., 1., 2.])
+    >>> ivy.tan(x, out=x)
+    >>> print(x)
+    ivy.array([0., 1.56, -2.19])
+
+    Functional Container Examples
+    -----------------------------
+
+    The method can also accept an :code:`ivy.Container` instance instead of an array.
+    In this case, an :code:`ivy.Container` instance is also returned:
+
+    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
+    >>> y = ivy.tan(x)
+    >>> print(y)
+    {
+        a: ivy.array([0., 1.5574077, -2.1850398]),
+        b: ivy.array([-0.14254655, 1.1578213, -3.380515])
+    }
+
+    If operating on an :code:`ivy.Container` instance, :code:`out` must also be an :code:`ivy.Container` instance.
+
+    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
+    >>> y = ivy.Container()
+    >>> ivy.tan(x, out=y)
+    >>> print(y)
+    {
+        a: ivy.array([0., 1.5574077, -2.1850398]),
+        b: ivy.array([-0.14254655, 1.1578213, -3.380515])
+    }
+
+    Array Instance Method Example
+    -----------------------------
+
+    The method can also be called as an instance method of an :code:`ivy.Array` instance:
+
+    >>> x = ivy.array([0., 1., 2.])
+    >>> y = x.tan()
+    >>> print(y)
+    ivy.array([0., 1.56, -2.19])
+
+    Container Instance Method Example
+    ---------------------------------
+
+    The method can also be called as an instance method of an :code:`ivy.Container` instance:
+
+    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
+    >>> y = x.tan()
+    >>> print(y)
+    {
+        a: ivy.array([0., 1.5574077, -2.1850398]),
+        b: ivy.array([-0.14254655, 1.1578213, -3.380515])
+    }
     """
     return _cur_framework(x).tan(x, out)
 
