@@ -57,24 +57,11 @@ def asarray(
         return torch.as_tensor(object_in, dtype=dtype).to(dev_from_str(device))
 
 
-<<<<<<< HEAD
 def zeros(shape: Union[int, Tuple[int]],
           dtype: Optional[torch.dtype] = None,
           device: Optional[torch.device] = None) \
         -> torch.Tensor:
     return torch.zeros(shape, dtype=dtype_from_str(default_dtype(dtype)), device=dev_from_str(default_device(device)))
-=======
-def zeros(
-    shape: Union[int, Tuple[int]],
-    dtype: Optional[torch.dtype] = None,
-    device: Optional[torch.device] = None,
-) -> Tensor:
-    return torch.zeros(
-        shape,
-        dtype=dtype_from_str(default_dtype(dtype)),
-        device=dev_from_str(default_device(device)),
-    )
->>>>>>> 11942b2457e1f0e7da7cb175a838a4347ef9e0f5
 
 
 def ones(
@@ -129,20 +116,17 @@ def tril(x: torch.Tensor, k: int = 0) -> torch.Tensor:
 def triu(x: torch.Tensor, k: int = 0) -> torch.Tensor:
     return torch.triu(x, diagonal=k)
 
-<<<<<<< HEAD
 def empty(shape: Union[int, Tuple[int]],
           dtype: Optional[torch.dtype] = None,
           device: Optional[torch.device] = None) \
         -> torch.Tensor:
     return torch.empty(shape, dtype=dtype_from_str(default_dtype(dtype)), device=dev_from_str(default_device(device)))
-=======
->>>>>>> 11942b2457e1f0e7da7cb175a838a4347ef9e0f5
 
 def empty(
     shape: Union[int, Tuple[int]],
     dtype: Optional[torch.dtype] = None,
     device: Optional[torch.device] = None,
-) -> Tensor:
+) -> torch.Tensor:
     return torch.empty(
         shape,
         dtype=dtype_from_str(default_dtype(dtype)),
@@ -333,7 +317,7 @@ def full(
     fill_value: Union[int, float],
     dtype: Optional[torch.dtype] = None,
     device: Optional[torch.device] = None,
-) -> Tensor:
+) -> torch.Tensor:
     return torch.full(
         shape_to_tuple(shape),
         fill_value,

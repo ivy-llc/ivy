@@ -26,7 +26,6 @@ def gelu(x: JaxArray, approximate: bool = True)\
     -> JaxArray:
     return jax.nn.gelu(x, approximate)
 
-
 def sigmoid(x: JaxArray) -> JaxArray:
     return 1 / (1 + jnp.exp(-x))
 

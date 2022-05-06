@@ -82,7 +82,7 @@ def gelu(x: Union[ivy.Array, ivy.NativeArray], approximate: bool = True)\
 
     Returns
     -------
-    out: 
+    out:  
         The input array with gelu applied element-wise on ``x``.
 
     Examples:

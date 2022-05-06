@@ -21,27 +21,14 @@ def relu(x: Tensor, out: Optional[Tensor] = None) -> Tensor:
 def leaky_relu(x: Tensor, alpha: Optional[float] = 0.2) -> Tensor:
     return tf.nn.leaky_relu(x, alpha)
 
-
-<<<<<<< HEAD
 def gelu(x: Tensor, approximate: bool =True)\
     -> Tensor:
     return tf.nn.gelu(x, approximate)
-    
-=======
-gelu = lambda x, approximate=True: tf.nn.gelu(x, approximate)
-
 
 def sigmoid(x: Tensor) -> Tensor:
     return tf.nn.sigmoid(x)
 
-
-<<<<<<< HEAD
->>>>>>> 464f96bfbef0c7b408a6fe23783748f2e2b83eb5
-def tanh(x: Tensor)\
-        -> Tensor:
-=======
 def tanh(x: Tensor) -> Tensor:
->>>>>>> 11942b2457e1f0e7da7cb175a838a4347ef9e0f5
     return tf.nn.tanh(x)
 
 
