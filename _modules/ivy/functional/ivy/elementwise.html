@@ -157,12 +157,13 @@
 
 
 <div class="viewcode-block" id="add"><a class="viewcode-back" href="../../../../functional/ivy/elementwise/add.html#ivy.functional.ivy.elementwise.add">[docs]</a><span class="k">def</span> <span class="nf">add</span><span class="p">(</span>
-    <span class="n">x1</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
-    <span class="n">x2</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
-    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Calculates the sum for each element ``x1_i`` of the input array ``x1``</span>
-<span class="sd">    with the respective element ``x2_i`` of the input array ``x2``.</span>
+    <span class="n">x1</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">],</span>
+    <span class="n">x2</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">],</span>
+    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Calculates the sum for each element ``x1_i`` of the input array ``x1`` with the respective element ``x2_i`` of the</span>
+<span class="sd">    input array ``x2``.</span>
 
 <span class="sd">    **Special cases**</span>
 
@@ -184,7 +185,10 @@
 <span class="sd">    - If ``x1_i`` is either ``+0`` or ``-0`` and ``x2_i`` is a nonzero finite number, the result is ``x2_i``.</span>
 <span class="sd">    - If ``x1_i`` is a nonzero finite number and ``x2_i`` is either ``+0`` or ``-0``, the result is ``x1_i``.</span>
 <span class="sd">    - If ``x1_i`` is a nonzero finite number and ``x2_i`` is ``-x1_i``, the result is ``+0``.</span>
-<span class="sd">    - In the remaining cases, when neither ``infinity``, ``+0``, ``-0``, nor a ``NaN`` is involved, and the operands have the same mathematical sign or have different magnitudes, the sum must be computed and rounded to the nearest representable value according to IEEE 754-2019 and a supported round mode. If the magnitude is too large to represent, the operation overflows and the result is an `infinity` of appropriate mathematical sign.</span>
+<span class="sd">    - In the remaining cases, when neither ``infinity``, ``+0``, ``-0``, nor a ``NaN`` is involved, and the operands</span>
+<span class="sd">    have the same mathematical sign or have different magnitudes, the sum must be computed and rounded to the nearest</span>
+<span class="sd">    representable value according to IEEE 754-2019 and a supported round mode. If the magnitude is too large to</span>
+<span class="sd">    represent, the operation overflows and the result is an `infinity` of appropriate mathematical sign.</span>
 
 <span class="sd">    .. note::</span>
 <span class="sd">       Floating-point addition is a commutative operation, but not always associative.</span>
@@ -201,16 +205,129 @@
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">     ret</span>
-<span class="sd">        an array containing the element-wise sums. The returned array must have a data type determined by :ref:`type-promotion`.</span>
+<span class="sd">        an array containing the element-wise sums. The returned array must have a data type determined by</span>
+<span class="sd">        :ref:`type-promotion`.</span>
 
-<span class="sd">    Examples</span>
-<span class="sd">    --------</span>
+
+<span class="sd">    This method conforms to the `Array API Standard &lt;https://data-apis.org/array-api/latest/&gt;`_.</span>
+<span class="sd">    This docstring is an extension of the `docstring</span>
+<span class="sd">    &lt;https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.tan.html&gt;`_</span>
+<span class="sd">    in the standard. The descriptions above assume an array input for simplicity, but the method also accepts</span>
+<span class="sd">    :code:`ivy.Container` instances in place of :code:`ivy.Array` or :code:`ivy.NativeArray` instances, as shown in</span>
+<span class="sd">    the type hints and also the examples below.</span>
+
+<span class="sd">    Functional Examples</span>
+<span class="sd">    -------------------</span>
+
+<span class="sd">    With :code:`ivy.Array` input:</span>
+
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([1, 2, 3])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.array([4, 5, 6])</span>
 <span class="sd">    &gt;&gt;&gt; z = ivy.add(x, y)</span>
 <span class="sd">    &gt;&gt;&gt; print(z)</span>
 <span class="sd">    ivy.array([5, 7, 9])</span>
 
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[1.1, 2.3, -3.6]])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.array([[4.8], [5.2], [6.1]])</span>
+<span class="sd">    &gt;&gt;&gt; z = ivy.zeros((3, 3))</span>
+<span class="sd">    &gt;&gt;&gt; ivy.add(x, y, out=z)</span>
+<span class="sd">    &gt;&gt;&gt; print(z)</span>
+<span class="sd">    ivy.array([[5.9, 7.1, 1.2],</span>
+<span class="sd">               [6.3, 7.5, 1.6],</span>
+<span class="sd">               [7.2, 8.4, 2.5]])</span>
+
+<span class="sd">    With :code:`ivy.Container` input:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([1, 2, 3]),</span>
+<span class="sd">    &gt;&gt;&gt;                   b=ivy.array([2, 3, 4]))</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.Container(a=ivy.array([4, 5, 6]),</span>
+<span class="sd">    &gt;&gt;&gt;                   b=ivy.array([5, 6, 7]))</span>
+<span class="sd">    &gt;&gt;&gt; z = ivy.add(x, y)</span>
+<span class="sd">    &gt;&gt;&gt; print(z)</span>
+<span class="sd">    {</span>
+<span class="sd">        a: ivy.array([5, 7, 9]),</span>
+<span class="sd">        b: ivy.array([7, 9, 11])</span>
+<span class="sd">    }</span>
+
+<span class="sd">    With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[1.1, 2.3, -3.6]])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.Container(a=ivy.array([[4.], [5.], [6.]]),</span>
+<span class="sd">    &gt;&gt;&gt;                   b=ivy.array([[5.], [6.], [7.]]))</span>
+<span class="sd">    &gt;&gt;&gt; z = ivy.add(x, y)</span>
+<span class="sd">    &gt;&gt;&gt; print(z)</span>
+<span class="sd">    {</span>
+<span class="sd">        a: ivy.array([[5.1, 6.3, 0.4],</span>
+<span class="sd">                      [6.1, 7.3, 1.4],</span>
+<span class="sd">                      [7.1, 8.3, 2.4]]),</span>
+<span class="sd">        b: ivy.array([[6.1, 7.3, 1.4],</span>
+<span class="sd">                      [7.1, 8.3, 2.4],</span>
+<span class="sd">                      [8.1, 9.3, 3.4]])</span>
+<span class="sd">    }</span>
+
+<span class="sd">    Instance Method Examples</span>
+<span class="sd">    ------------------------</span>
+
+<span class="sd">    Using :code:`ivy.Array` instance method:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([1, 2, 3])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.array([4, 5, 6])</span>
+<span class="sd">    &gt;&gt;&gt; z = x.add(y)</span>
+<span class="sd">    &gt;&gt;&gt; print(z)</span>
+<span class="sd">    ivy.array([5, 7, 9])</span>
+
+<span class="sd">    Using :code:`ivy.Container` instance method:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([1, 2, 3]),</span>
+<span class="sd">    &gt;&gt;&gt;                   b=ivy.array([2, 3, 4]))</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.Container(a=ivy.array([4, 5, 6]),</span>
+<span class="sd">    &gt;&gt;&gt;                   b=ivy.array([5, 6, 7]))</span>
+<span class="sd">    &gt;&gt;&gt; z = x.add(y)</span>
+<span class="sd">    &gt;&gt;&gt; print(z)</span>
+<span class="sd">    {</span>
+<span class="sd">        a: ivy.array([5, 7, 9]),</span>
+<span class="sd">        b: ivy.array([7, 9, 11])</span>
+<span class="sd">    }</span>
+
+<span class="sd">    Operator Examples</span>
+<span class="sd">    -----------------</span>
+
+<span class="sd">    With :code:`ivy.Array` instances:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([1, 2, 3])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.array([4, 5, 6])</span>
+<span class="sd">    &gt;&gt;&gt; z = x + y</span>
+<span class="sd">    &gt;&gt;&gt; print(z)</span>
+<span class="sd">    ivy.array([5, 7, 9])</span>
+
+<span class="sd">    With :code:`ivy.Container` instances:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([1, 2, 3]),</span>
+<span class="sd">    &gt;&gt;&gt;                   b=ivy.array([2, 3, 4]))</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.Container(a=ivy.array([4, 5, 6]),</span>
+<span class="sd">    &gt;&gt;&gt;                   b=ivy.array([5, 6, 7]))</span>
+<span class="sd">    &gt;&gt;&gt; z = x + y</span>
+<span class="sd">    &gt;&gt;&gt; print(z)</span>
+<span class="sd">    {</span>
+<span class="sd">        a: ivy.array([5, 7, 9]),</span>
+<span class="sd">        b: ivy.array([7, 9, 11])</span>
+<span class="sd">    }</span>
+
+<span class="sd">    With mix of :code:`ivy.Array` and :code:`ivy.Container` instances:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[1.1, 2.3, -3.6]])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.Container(a=ivy.array([[4.], [5.], [6.]]),</span>
+<span class="sd">    &gt;&gt;&gt;                   b=ivy.array([[5.], [6.], [7.]]))</span>
+<span class="sd">    &gt;&gt;&gt; z = x + y</span>
+<span class="sd">    &gt;&gt;&gt; print(z)</span>
+<span class="sd">    {</span>
+<span class="sd">        a: ivy.array([[5.1, 6.3, 0.4],</span>
+<span class="sd">                      [6.1, 7.3, 1.4],</span>
+<span class="sd">                      [7.1, 8.3, 2.4]]),</span>
+<span class="sd">        b: ivy.array([[6.1, 7.3, 1.4],</span>
+<span class="sd">                      [7.1, 8.3, 2.4],</span>
+<span class="sd">                      [8.1, 9.3, 3.4]])</span>
+<span class="sd">    }</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">)</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span></div>
 
@@ -1555,7 +1672,7 @@
 <span class="sd">    This method conforms to the `Array API Standard &lt;https://data-apis.org/array-api/latest/&gt;`_.</span>
 <span class="sd">    This docstring is an extension of the `docstring</span>
 <span class="sd">    &lt;https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.tan.html&gt;`_</span>
-<span class="sd">    in the standard. The descriptions above assume an array input for simplicity, but the methods also accepts</span>
+<span class="sd">    in the standard. The descriptions above assume an array input for simplicity, but the method also accepts</span>
 <span class="sd">    :code:`ivy.Container` instances in place of :code:`ivy.Array` or :code:`ivy.NativeArray` instances, as shown in</span>
 <span class="sd">    the type hints and also the examples below.</span>
 
