@@ -39,7 +39,7 @@ def bitwise_left_shift(
 def add(
     x1: Union[ivy.Array, ivy.NativeArray, ivy.Container],
     x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-    out: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
+    out: Optional[Union[ivy.Array, ivy.Container]] = None,
 ) -> Union[ivy.Array, ivy.Container]:
     """
     Calculates the sum for each element ``x1_i`` of the input array ``x1`` with the respective element ``x2_i`` of the
@@ -1519,7 +1519,7 @@ def abs(
 
 
 def tan(x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-        out: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None)\
+        out: Optional[Union[ivy.Array, ivy.Container]] = None)\
         -> Union[ivy.Array, ivy.Container]:
     """
     Calculates an implementation-dependent approximation to the tangent, having domain ``(-infinity, +infinity)`` and
