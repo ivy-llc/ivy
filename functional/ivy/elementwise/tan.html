@@ -217,6 +217,7 @@ is assumed to be expressed in radians.</p>
 <p>This method conforms to the <a class="reference external" href="https://data-apis.org/array-api/latest/">Array API Standard</a>.
 This docstring is an extension of the <a class="reference external" href="https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.tan.html">docstring</a>
 in the standard.</p>
+<p class="rubric">Functional Array Examples</p>
 <p>With no <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument provided, the result is returned as a new array:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">tan</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
@@ -239,6 +240,7 @@ in the standard.</p>
 <span class="go">ivy.array([0., 1.56, -2.19])</span>
 </pre></div>
 </div>
+<p class="rubric">Functional Container Examples</p>
 <p>The method can also accept an <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> instance instead of an array.
 In this case, an <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> instance is also returned:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">]),</span> <span class="n">b</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">3.</span><span class="p">,</span> <span class="mf">4.</span><span class="p">,</span> <span class="mf">5.</span><span class="p">]))</span>
@@ -261,6 +263,7 @@ In this case, an <code class="code docutils literal notranslate"><span class="pr
 <span class="go">}</span>
 </pre></div>
 </div>
+<p class="rubric">Array Instance Method Example</p>
 <p>The method can also be called as an instance method of an <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> instance:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">tan</span><span class="p">()</span>
@@ -268,6 +271,7 @@ In this case, an <code class="code docutils literal notranslate"><span class="pr
 <span class="go">ivy.array([0., 1.56, -2.19])</span>
 </pre></div>
 </div>
+<p class="rubric">Container Instance Method Example</p>
 <p>The method can also be called as an instance method of an <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> instance:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">]),</span> <span class="n">b</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">3.</span><span class="p">,</span> <span class="mf">4.</span><span class="p">,</span> <span class="mf">5.</span><span class="p">]))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">tan</span><span class="p">()</span>

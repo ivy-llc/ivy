@@ -192,20 +192,20 @@
 of x.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – input array whose elements each represent the area of a hyperbolic sector. Should have a floating-point data type.</p></li>
-<li><p><strong>Returns</strong> – </p></li>
-<li><p><strong>ret</strong> – an array containing the inverse hyperbolic tangent of each element in x. The returned array must have a floating-point data type determined by Type Promotion Rules.</p></li>
-<li><p><strong>Examples</strong> – </p></li>
-<li><p><strong>ivy.atanh</strong><strong>(</strong><strong>ivy.array</strong><strong>(</strong><strong>[</strong><strong>0</strong> (<em>&gt;&gt;&gt; x =</em>) – </p></li>
-<li><p><strong>-0.5</strong><strong>]</strong><strong>)</strong><strong>)</strong> – </p></li>
-<li><p><strong>print</strong><strong>(</strong><strong>x</strong><strong>)</strong> (<em>&gt;&gt;&gt;</em>) – </p></li>
-<li><p><strong>0.</strong> (<em>ivy.array</em><em>(</em><em>[</em>) – </p></li>
-<li><p><strong>-0.54930614</strong><strong>]</strong><strong>)</strong> – </p></li>
-</ul>
+<dd class="field-odd"><p><strong>x</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – input array whose elements each represent the area of a hyperbolic sector. Should have a floating-point data type.</p>
 </dd>
 <dt class="field-even">Return type</dt>
 <dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><ul class="simple">
+<li><p><em>ret</em> – an array containing the inverse hyperbolic tangent of each element in x. The returned array must have a floating-point data type determined by Type Promotion Rules.</p></li>
+<li><p><em>Examples</em></p></li>
+<li><p><em>&gt;&gt;&gt; x = ivy.atanh(ivy.array([0, -0.5]))</em></p></li>
+<li><p><em>&gt;&gt;&gt; print(x)</em></p></li>
+<li><p><em>ivy.array([ 0., -0.54930614])</em></p></li>
+</ul>
+</p>
 </dd>
 </dl>
 </dd></dl>
