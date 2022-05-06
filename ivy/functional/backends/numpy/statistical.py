@@ -48,7 +48,7 @@ def var(
     if ivy.exists(out):
         return ivy.inplace_update(out, np.var(x, axis=axis, keepdims=keepdims))
     else:
-        return np.var(x, axis=axis, keepdims=keepdims)
+        return np.asarray(np.var(x, axis=axis, keepdims=keepdims))
 
 
 def sum(
@@ -81,7 +81,7 @@ def sum(
             out, np.sum(x, axis=axis, dtype=dtype, keepdims=keepdims)
         )
     else:
-        return np.sum(a=x, axis=axis, dtype=dtype, keepdims=keepdims)
+        return np.asarray(np.sum(a=x, axis=axis, dtype=dtype, keepdims=keepdims))
 
 
 def prod(
@@ -114,7 +114,7 @@ def prod(
             out, np.prod(x, axis=axis, dtype=dtype, keepdims=keepdims)
         )
     else:
-        return np.prod(a=x, axis=axis, dtype=dtype, keepdims=keepdims)
+        return np.asarray(np.prod(a=x, axis=axis, dtype=dtype, keepdims=keepdims))
 
 
 def mean(
