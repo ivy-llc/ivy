@@ -18,7 +18,7 @@ def min(
     if ivy.exists(out):
         return ivy.inplace_update(out, np.amin(x, axis=axis, keepdims=keepdims))
     else:
-        return np.asarray(np.amin(a=x, axis=axis, keepdims=keepdims))
+        return np.amin(a=x, axis=axis, keepdims=keepdims)
 
 
 def max(
@@ -30,7 +30,7 @@ def max(
     if ivy.exists(out):
         return ivy.inplace_update(out, np.amax(x, axis=axis, keepdims=keepdims))
     else:
-        return np.asarray(np.amax(a=x, axis=axis, keepdims=keepdims))
+        return np.amax(a=x, axis=axis, keepdims=keepdims)
 
 
 def var(
@@ -131,7 +131,7 @@ def mean(
     if ivy.exists(out):
         return ivy.inplace_update(out, np.mean(x, axis=axis, keepdims=keepdims))
     else:
-        return np.asarray(np.mean(x, axis=axis, keepdims=keepdims))
+        return np.mean(x, axis=axis, keepdims=keepdims)
 
 
 def std(
