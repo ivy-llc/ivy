@@ -132,21 +132,29 @@
 
 
 <div class="viewcode-block" id="roll"><a class="viewcode-back" href="../../../../functional/ivy/manipulation/roll.html#ivy.functional.ivy.manipulation.roll">[docs]</a><span class="k">def</span> <span class="nf">roll</span><span class="p">(</span>
-    <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+    <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">],</span>
     <span class="n">shift</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">]],</span>
     <span class="n">axis</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Rolls array elements along a specified axis. Array elements that roll beyond the last position are re-introduced at the first position. Array elements that roll beyond the first position are re-introduced at the last position.</span>
+<span class="sd">    Rolls array elements along a specified axis. Array elements that roll beyond the last position are re-introduced at</span>
+<span class="sd">    the first position. Array elements that roll beyond the first position are re-introduced at the last position.</span>
+
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    x</span>
 <span class="sd">        input array.</span>
 <span class="sd">    shift</span>
-<span class="sd">        number of places by which the elements are shifted. If ``shift`` is a tuple, then ``axis`` must be a tuple of the same size, and each of the given axes must be shifted by the corresponding element in ``shift``. If ``shift`` is an ``int`` and ``axis`` a tuple, then the same ``shift`` must be used for all specified axes. If a shift is positive, then array elements must be shifted positively (toward larger indices) along the dimension of ``axis``. If a shift is negative, then array elements must be shifted negatively (toward smaller indices) along the dimension of ``axis``.</span>
+<span class="sd">        number of places by which the elements are shifted. If ``shift`` is a tuple, then ``axis`` must be a tuple of</span>
+<span class="sd">        the same size, and each of the given axes must be shifted by the corresponding element in ``shift``. If</span>
+<span class="sd">        ``shift`` is an ``int`` and ``axis`` a tuple, then the same ``shift`` must be used for all specified axes. If a</span>
+<span class="sd">        shift is positive, then array elements must be shifted positively (toward larger indices) along the dimension of</span>
+<span class="sd">        ``axis``. If a shift is negative, then array elements must be shifted negatively (toward smaller indices) along</span>
+<span class="sd">        the dimension of ``axis``.</span>
 <span class="sd">    axis</span>
-<span class="sd">        axis (or axes) along which elements to shift. If ``axis`` is ``None``, the array must be flattened, shifted, and then restored to its original shape. Default  ``None``.</span>
+<span class="sd">        axis (or axes) along which elements to shift. If ``axis`` is ``None``, the array must be flattened, shifted, and</span>
+<span class="sd">        then restored to its original shape. Default  ``None``.</span>
 <span class="sd">    out</span>
 <span class="sd">        optional output array, for writing the result to. It must have a shape that the inputs broadcast to.</span>
 
@@ -154,6 +162,74 @@
 <span class="sd">    -------</span>
 <span class="sd">     ret</span>
 <span class="sd">        an output array having the same data type as ``x`` and whose elements, relative to ``x``, are shifted.</span>
+
+
+<span class="sd">    This method conforms to the `Array API Standard &lt;https://data-apis.org/array-api/latest/&gt;`_.</span>
+<span class="sd">    This docstring is an extension of the `docstring</span>
+<span class="sd">    &lt;https://data-apis.org/array-api/latest/API_specification/generated/signatures.manipulation_functions.roll.html&gt;`_</span>
+<span class="sd">    in the standard. The descriptions above assume an array input for simplicity, but the methods also accepts</span>
+<span class="sd">    :code:`ivy.Container` instances in place of :code:`ivy.Array` or :code:`ivy.NativeArray` instances, as shown in</span>
+<span class="sd">    the type hints and also the examples below.</span>
+
+<span class="sd">    Functional Examples</span>
+<span class="sd">    -------------------</span>
+
+<span class="sd">    With :code:`ivy.Array` input:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([0., 1., 2.])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.roll(x, 1)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    ivy.array([2., 0., 1.])</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[0., 1., 2.],</span>
+<span class="sd">    &gt;&gt;&gt;                [3., 4., 5.]])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.zeros((2, 3))</span>
+<span class="sd">    &gt;&gt;&gt; ivy.roll(x, 2, -1, out=y)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    ivy.array([[1., 2., 0.],</span>
+<span class="sd">               [4., 5., 3.]])</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[[0., 0.], [1., 3.], [2., 6.]],</span>
+<span class="sd">    &gt;&gt;&gt;                [[3., 9.], [4., 12.], [5., 15.]]])</span>
+<span class="sd">    &gt;&gt;&gt; ivy.roll(x, (1, -1), (0, 2), out=x)</span>
+<span class="sd">    &gt;&gt;&gt; print(x)</span>
+<span class="sd">    ivy.array([[[ 9., 3.],</span>
+<span class="sd">                [12., 4.],</span>
+<span class="sd">                [15., 5.]],</span>
+<span class="sd">               [[ 0., 0.],</span>
+<span class="sd">                [ 3., 1.],</span>
+<span class="sd">                [ 6., 2.]]])</span>
+
+<span class="sd">    With :code:`ivy.Container` input:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0., 1., 2.]),</span>
+<span class="sd">    &gt;&gt;&gt;                   b=ivy.array([3., 4., 5.]))</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.roll(x, 1)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    {</span>
+<span class="sd">        a: ivy.array([2., 0., 1.]),</span>
+<span class="sd">        b: ivy.array([5., 3., 4.])</span>
+<span class="sd">    }</span>
+
+<span class="sd">    Instance Method Examples</span>
+<span class="sd">    ------------------------</span>
+
+<span class="sd">    Using :code:`ivy.Array` instance method:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([0., 1., 2.])</span>
+<span class="sd">    &gt;&gt;&gt; y = x.roll(1)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    ivy.array([2., 0., 1.])</span>
+
+<span class="sd">    Using :code:`ivy.Container` instance method:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))</span>
+<span class="sd">    &gt;&gt;&gt; y = x.roll(1)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    {</span>
+<span class="sd">        a: ivy.array([2., 0., 1.], dtype=float32),</span>
+<span class="sd">        b: ivy.array([5., 3., 4.], dtype=float32)</span>
+<span class="sd">    }</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">roll</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">shift</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span></div>
 
