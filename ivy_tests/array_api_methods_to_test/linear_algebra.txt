@@ -1,11 +1,11 @@
 cholesky
-#cross #fails for jax health check, as well as torch's issue: https://github.com/pytorch/pytorch/issues/76588
+#cross #fails for torch, issue: https://github.com/pytorch/pytorch/issues/76588
 det
 diagonal
 eigh
 eigvalsh
-#inv #Fails for jax randomly due to Failed Health Check: Data Generation is slow: issue: https://github.com/data-apis/array-api-tests/issues/115
-#matmul #health check fails. Updates on issue at https://github.com/data-apis/array-api-tests/issues/117
+inv
+matmul
 #matrix_norm #failing for jax non-deterministically
 #matrix_power #failing for jax, torch, and tensorflow- waiting on fix for https://github.com/data-apis/array-api-tests/issues/117
 matrix_rank
@@ -14,7 +14,7 @@ outer
 pinv
 qr
 slogdet
-#solve #failing for jax and tensorflow due to healthchecks 
+solve
 svd
 svdvals
 tensordot
