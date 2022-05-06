@@ -84,39 +84,39 @@ def test_max(
 
 
 # mean
-# @given(
-#     dtype_and_x=helpers.dtype_and_values(ivy_np.valid_float_dtype_strs),
-#     as_variable=st.booleans(),
-#     with_out=st.booleans(),
-#     num_positional_args=st.integers(0, 1),
-#     native_array=st.booleans(),
-#     container=st.booleans(),
-#     instance_method=st.booleans(),
-# )
-# def test_mean(
-#     dtype_and_x,
-#     as_variable,
-#     with_out,
-#     num_positional_args,
-#     native_array,
-#     container,
-#     instance_method,
-#     fw,
-# ):
-#     dtype, x = dtype_and_x
-#     assume(x)
-#     helpers.test_array_function(
-#         dtype,
-#         as_variable,
-#         with_out,
-#         num_positional_args,
-#         native_array,
-#         container,
-#         instance_method,
-#         fw,
-#         "mean",
-#         x=np.asarray(x, dtype=dtype),
-#     )
+@given(
+    dtype_and_x=helpers.dtype_and_values(ivy_np.valid_float_dtype_strs),
+    as_variable=st.booleans(),
+    with_out=st.booleans(),
+    num_positional_args=st.integers(0, 1),
+    native_array=st.booleans(),
+    container=st.booleans(),
+    instance_method=st.booleans(),
+)
+def test_mean(
+    dtype_and_x,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    fw,
+):
+    dtype, x = dtype_and_x
+    assume(x)
+    helpers.test_array_function(
+        dtype,
+        as_variable,
+        with_out,
+        num_positional_args,
+        native_array,
+        container,
+        instance_method,
+        fw,
+        "mean",
+        x=np.asarray(x, dtype=dtype),
+    )
 
 
 # var
