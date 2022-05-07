@@ -210,7 +210,7 @@
     <span class="n">keepdims</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="nb">ord</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">Literal</span><span class="p">[</span><span class="n">inf</span><span class="p">,</span> <span class="o">-</span><span class="n">inf</span><span class="p">]]</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Computes the vector norm of a vector (or batch of vectors) ``x``.</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Computes the vector norm of a vector (or batch of vectors) ``x``.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -222,6 +222,7 @@
 <span class="sd">        If ``True``, the axes (dimensions) specified by ``axis`` must be included in the result as singleton dimensions, and, accordingly, the result must be compatible with the input array (see :ref:`broadcasting`). Otherwise, if ``False``, the axes (dimensions) specified by ``axis`` must not be included in the result. Default: ``False``.</span>
 <span class="sd">    ord</span>
 <span class="sd">        order of the norm. The following mathematical norms must be supported:</span>
+
 <span class="sd">        +------------------+----------------------------+</span>
 <span class="sd">        | ord              | description                |</span>
 <span class="sd">        +==================+============================+</span>
@@ -233,7 +234,9 @@
 <span class="sd">        +------------------+----------------------------+</span>
 <span class="sd">        | (int,float &gt;= 1) | p-norm                     |</span>
 <span class="sd">        +------------------+----------------------------+</span>
+
 <span class="sd">        The following non-mathematical &quot;norms&quot; must be supported:</span>
+
 <span class="sd">        +------------------+--------------------------------+</span>
 <span class="sd">        | ord              | description                    |</span>
 <span class="sd">        +==================+================================+</span>
@@ -247,6 +250,7 @@
 <span class="sd">        +------------------+--------------------------------+</span>
 <span class="sd">        | (int,float &lt; 1)  | sum(abs(a)\*\*ord)\*\*(1./ord) |</span>
 <span class="sd">        +------------------+--------------------------------+</span>
+
 <span class="sd">        Default: ``2``.</span>
 
 <span class="sd">    Returns</span>
@@ -255,7 +259,6 @@
 <span class="sd">        an array containing the vector norms. If ``axis`` is ``None``, the returned array must be a zero-dimensional array containing a vector norm. If ``axis`` is a scalar value (``int`` or ``float``), the returned array must have a rank which is one less than the rank of ``x``. If ``axis`` is a ``n``-tuple, the returned array must have a rank which is ``n`` less than the rank of ``x``. The returned array must have a floating-point data type determined by :ref:`type-promotion`.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-
     <span class="k">if</span> <span class="nb">ord</span> <span class="o">==</span> <span class="o">-</span><span class="nb">float</span><span class="p">(</span><span class="s2">&quot;inf&quot;</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">reduce_min</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">axis</span><span class="p">,</span> <span class="n">keepdims</span><span class="p">)</span>
     <span class="k">elif</span> <span class="nb">ord</span> <span class="o">==</span> <span class="nb">float</span><span class="p">(</span><span class="s2">&quot;inf&quot;</span><span class="p">):</span>
@@ -269,31 +272,27 @@
 <div class="viewcode-block" id="svd"><a class="viewcode-back" href="../../../../functional/ivy/linear_algebra/svd.html#ivy.functional.ivy.linear_algebra.svd">[docs]</a><span class="k">def</span> <span class="nf">svd</span><span class="p">(</span>
     <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span> <span class="n">full_matrices</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="o">...</span><span class="p">]]:</span>
-    <span class="sd">&quot;&quot;&quot;Singular Value Decomposition.</span>
-
-<span class="sd">    When x is a 2D array, it is factorized as u @ numpy.diag(s) @ vh = (u * s) @ vh, where u and vh are 2D unitary</span>
-<span class="sd">    arrays and s is a 1D array of a’s singular values. When x is higher-dimensional, SVD is applied in batched mode.</span>
+    <span class="sd">&quot;&quot;&quot;Returns a singular value decomposition A = USVh of a matrix (or a stack of matrices) ``x``, where ``U`` is a matrix (or a stack of matrices) with orthonormal columns, ``S`` is a vector of non-negative numbers (or stack of vectors), and ``Vh`` is a matrix (or a stack of matrices) with orthonormal rows.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    x</span>
-<span class="sd">        Input array with number of dimensions &gt;= 2.</span>
+<span class="sd">        input array having shape ``(..., M, N)`` and whose innermost two dimensions form matrices on which to perform singular value decomposition. Should have a floating-point data type.</span>
+<span class="sd">    full_matrices</span>
+<span class="sd">        If ``True``, compute full-sized ``U`` and ``Vh``, such that ``U`` has shape ``(..., M, M)`` and ``Vh`` has shape ``(..., N, N)``. If ``False``, compute on the leading ``K`` singular vectors, such that ``U`` has shape ``(..., M, K)`` and ``Vh`` has shape ``(..., K, N)`` and where ``K = min(M, N)``. Default: ``True``.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
+<span class="sd">    ..</span>
+<span class="sd">      NOTE: once complex numbers are supported, each square matrix must be Hermitian.</span>
 <span class="sd">    ret</span>
-<span class="sd">        urn:</span>
-<span class="sd">        u -&gt; { (…, M, M), (…, M, K) } array \n</span>
-<span class="sd">        Unitary array(s). The first (number of dims - 2) dimensions have the same size as those of the input a.</span>
-<span class="sd">        The size of the last two dimensions depends on the value of full_matrices.</span>
+<span class="sd">        a namedtuple ``(U, S, Vh)`` whose</span>
 
-<span class="sd">        s -&gt; (…, K) array \n</span>
-<span class="sd">        Vector(s) with the singular values, within each vector sorted in descending ord.</span>
-<span class="sd">        The first (number of dims - 2) dimensions have the same size as those of the input a.</span>
+<span class="sd">        -   first element must have the field name ``U`` and must be an array whose shape depends on the value of ``full_matrices`` and contain matrices with orthonormal columns (i.e., the columns are left singular vectors). If ``full_matrices`` is ``True``, the array must have shape ``(..., M, M)``. If ``full_matrices`` is ``False``, the array must have shape ``(..., M, K)``, where ``K = min(M, N)``. The first ``x.ndim-2`` dimensions must have the same shape as those of the input ``x``.</span>
+<span class="sd">        -   second element must have the field name ``S`` and must be an array with shape ``(..., K)`` that contains the vector(s) of singular values of length ``K``, where ``K = min(M, N)``. For each vector, the singular values must be sorted in descending order by magnitude, such that ``s[..., 0]`` is the largest value, ``s[..., 1]`` is the second largest value, et cetera. The first ``x.ndim-2`` dimensions must have the same shape as those of the input ``x``.</span>
+<span class="sd">        -   third element must have the field name ``Vh`` and must be an array whose shape depends on the value of ``full_matrices`` and contain orthonormal rows (i.e., the rows are the right singular vectors and the array is the adjoint). If ``full_matrices`` is ``True``, the array must have shape ``(..., N, N)``. If ``full_matrices`` is ``False``, the array must have shape ``(..., K, N)`` where ``K = min(M, N)``. The first ``x.ndim-2`` dimensions must have the same shape as those of the input ``x``.</span>
 
-<span class="sd">        vh -&gt; { (…, N, N), (…, K, N) } array \n</span>
-<span class="sd">        Unitary array(s). The first (number of dims - 2) dimensions have the same size as those of the input a.</span>
-<span class="sd">        The size of the last two dimensions depends on the value of full_matrices.</span>
+<span class="sd">        Each returned array must have the same floating-point data type as ``x``.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">svd</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">full_matrices</span><span class="p">)</span></div>
@@ -302,7 +301,7 @@
 <div class="viewcode-block" id="outer"><a class="viewcode-back" href="../../../../functional/ivy/linear_algebra/outer.html#ivy.functional.ivy.linear_algebra.outer">[docs]</a><span class="k">def</span> <span class="nf">outer</span><span class="p">(</span>
     <span class="n">x1</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span> <span class="n">x2</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;returns the outer product of two vectors ``x1`` and ``x2``.</span>
+    <span class="sd">&quot;&quot;&quot;Returns the outer product of two vectors ``x1`` and ``x2``.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -465,7 +464,8 @@
 
 <div class="viewcode-block" id="matrix_power"><a class="viewcode-back" href="../../../../functional/ivy/linear_algebra/matrix_power.html#ivy.functional.ivy.linear_algebra.matrix_power">[docs]</a><span class="k">def</span> <span class="nf">matrix_power</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span> <span class="n">n</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Raises a square matrix (or a stack of square matrices) x to an integer</span>
-<span class="sd">    power n.&quot;&quot;&quot;</span>
+<span class="sd">    power n.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">matrix_power</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span></div>
 
 
@@ -518,7 +518,6 @@
 <span class="sd">        The tensor contraction of x1 and x2 over the specified axes.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">)</span><span class="o">.</span><span class="n">tensordot</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">axes</span><span class="p">)</span></div>
 
 
@@ -569,13 +568,13 @@
 
 <span class="sd">         The returned array must have the same data type as ``x``.</span>
 
-<span class="sd">     Examples</span>
-<span class="sd">     --------</span>
-<span class="sd">     &gt;&gt;&gt; x = ivy.array([[1.0, 2.0],[3.0, 4.0]])</span>
-<span class="sd">     &gt;&gt;&gt; offset = 0</span>
-<span class="sd">     &gt;&gt;&gt; y = ivy.trace(x, offset)</span>
-<span class="sd">     &gt;&gt;&gt; print(y)</span>
-<span class="sd">     ivy.array(5.)</span>
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[1.0, 2.0],[3.0, 4.0]])</span>
+<span class="sd">    &gt;&gt;&gt; offset = 0</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.trace(x, offset)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    ivy.array(5.)</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">offset</span><span class="p">)</span></div>
@@ -789,7 +788,7 @@
 <div class="viewcode-block" id="vector_to_skew_symmetric_matrix"><a class="viewcode-back" href="../../../../functional/ivy/linear_algebra/vector_to_skew_symmetric_matrix.html#ivy.functional.ivy.linear_algebra.vector_to_skew_symmetric_matrix">[docs]</a><span class="k">def</span> <span class="nf">vector_to_skew_symmetric_matrix</span><span class="p">(</span>
     <span class="n">vector</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Given vector :math:`\mathbf{a}\in\mathbb{R}^3`, return associated skew-symmetric matrix</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Given vector :math:`\mathbf{a}\in\mathbb{R}^3`, return associated skew-symmetric matrix</span>
 <span class="sd">    :math:`[\mathbf{a}]_×\in\mathbb{R}^{3×3}` satisfying :math:`\mathbf{a}×\mathbf{b}=[\mathbf{a}]_×\mathbf{b}`.\n</span>
 <span class="sd">    `[reference] &lt;https://en.wikipedia.org/wiki/Skew-symmetric_matrix#Cross_product&gt;`_</span>
 

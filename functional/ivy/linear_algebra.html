@@ -471,7 +471,7 @@ If <code class="docutils literal notranslate"><span class="pre">None</span></cod
 <dl class="py function">
 <dt class="sig sig-object py" id="ivy.functional.ivy.linear_algebra.outer">
 <span class="sig-prename descclassname"><span class="pre">ivy.functional.ivy.linear_algebra.</span></span><span class="sig-name descname"><span class="pre">outer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/linear_algebra.html#outer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.linear_algebra.outer" title="Permalink to this definition"></a></dt>
-<dd><p>returns the outer product of two vectors <code class="docutils literal notranslate"><span class="pre">x1</span></code> and <code class="docutils literal notranslate"><span class="pre">x2</span></code>.</p>
+<dd><p>Returns the outer product of two vectors <code class="docutils literal notranslate"><span class="pre">x1</span></code> and <code class="docutils literal notranslate"><span class="pre">x2</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -592,27 +592,29 @@ The returned array must have the same shape as x2 (i.e., the array corresponding
 <dl class="py function">
 <dt class="sig sig-object py" id="ivy.functional.ivy.linear_algebra.svd">
 <span class="sig-prename descclassname"><span class="pre">ivy.functional.ivy.linear_algebra.</span></span><span class="sig-name descname"><span class="pre">svd</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">full_matrices</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/linear_algebra.html#svd"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.linear_algebra.svd" title="Permalink to this definition"></a></dt>
-<dd><p>Singular Value Decomposition.</p>
-<p>When x is a 2D array, it is factorized as u &#64; numpy.diag(s) &#64; vh = (u * s) &#64; vh, where u and vh are 2D unitary
-arrays and s is a 1D array of a’s singular values. When x is higher-dimensional, SVD is applied in batched mode.</p>
+<dd><p>Returns a singular value decomposition A = USVh of a matrix (or a stack of matrices) <code class="docutils literal notranslate"><span class="pre">x</span></code>, where <code class="docutils literal notranslate"><span class="pre">U</span></code> is a matrix (or a stack of matrices) with orthonormal columns, <code class="docutils literal notranslate"><span class="pre">S</span></code> is a vector of non-negative numbers (or stack of vectors), and <code class="docutils literal notranslate"><span class="pre">Vh</span></code> is a matrix (or a stack of matrices) with orthonormal rows.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>x</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – Input array with number of dimensions &gt;= 2.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – input array having shape <code class="docutils literal notranslate"><span class="pre">(...,</span> <span class="pre">M,</span> <span class="pre">N)</span></code> and whose innermost two dimensions form matrices on which to perform singular value decomposition. Should have a floating-point data type.</p></li>
+<li><p><strong>full_matrices</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, compute full-sized <code class="docutils literal notranslate"><span class="pre">U</span></code> and <code class="docutils literal notranslate"><span class="pre">Vh</span></code>, such that <code class="docutils literal notranslate"><span class="pre">U</span></code> has shape <code class="docutils literal notranslate"><span class="pre">(...,</span> <span class="pre">M,</span> <span class="pre">M)</span></code> and <code class="docutils literal notranslate"><span class="pre">Vh</span></code> has shape <code class="docutils literal notranslate"><span class="pre">(...,</span> <span class="pre">N,</span> <span class="pre">N)</span></code>. If <code class="docutils literal notranslate"><span class="pre">False</span></code>, compute on the leading <code class="docutils literal notranslate"><span class="pre">K</span></code> singular vectors, such that <code class="docutils literal notranslate"><span class="pre">U</span></code> has shape <code class="docutils literal notranslate"><span class="pre">(...,</span> <span class="pre">M,</span> <span class="pre">K)</span></code> and <code class="docutils literal notranslate"><span class="pre">Vh</span></code> has shape <code class="docutils literal notranslate"><span class="pre">(...,</span> <span class="pre">K,</span> <span class="pre">N)</span></code> and where <code class="docutils literal notranslate"><span class="pre">K</span> <span class="pre">=</span> <span class="pre">min(M,</span> <span class="pre">N)</span></code>. Default: <code class="docutils literal notranslate"><span class="pre">True</span></code>. (default: <code class="docutils literal notranslate"><span class="pre">True</span></code>)</p></li>
+</ul>
 </dd>
 <dt class="field-even">Return type</dt>
 <dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">...</span></code>]]</p>
 </dd>
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><p><em>ret</em> – urn:
-u -&gt; { (…, M, M), (…, M, K) } array</p>
-<p>Unitary array(s). The first (number of dims - 2) dimensions have the same size as those of the input a.
-The size of the last two dimensions depends on the value of full_matrices.</p>
-<p>s -&gt; (…, K) array</p>
-<p>Vector(s) with the singular values, within each vector sorted in descending ord.
-The first (number of dims - 2) dimensions have the same size as those of the input a.</p>
-<p>vh -&gt; { (…, N, N), (…, K, N) } array</p>
-<p>Unitary array(s). The first (number of dims - 2) dimensions have the same size as those of the input a.
-The size of the last two dimensions depends on the value of full_matrices.</p>
+<dd class="field-odd"><p><ul>
+<li><p><em>..</em> – NOTE: once complex numbers are supported, each square matrix must be Hermitian.</p></li>
+<li><p><em>ret</em> – a namedtuple <code class="docutils literal notranslate"><span class="pre">(U,</span> <span class="pre">S,</span> <span class="pre">Vh)</span></code> whose</p>
+<ul class="simple">
+<li><p>first element must have the field name <code class="docutils literal notranslate"><span class="pre">U</span></code> and must be an array whose shape depends on the value of <code class="docutils literal notranslate"><span class="pre">full_matrices</span></code> and contain matrices with orthonormal columns (i.e., the columns are left singular vectors). If <code class="docutils literal notranslate"><span class="pre">full_matrices</span></code> is <code class="docutils literal notranslate"><span class="pre">True</span></code>, the array must have shape <code class="docutils literal notranslate"><span class="pre">(...,</span> <span class="pre">M,</span> <span class="pre">M)</span></code>. If <code class="docutils literal notranslate"><span class="pre">full_matrices</span></code> is <code class="docutils literal notranslate"><span class="pre">False</span></code>, the array must have shape <code class="docutils literal notranslate"><span class="pre">(...,</span> <span class="pre">M,</span> <span class="pre">K)</span></code>, where <code class="docutils literal notranslate"><span class="pre">K</span> <span class="pre">=</span> <span class="pre">min(M,</span> <span class="pre">N)</span></code>. The first <code class="docutils literal notranslate"><span class="pre">x.ndim-2</span></code> dimensions must have the same shape as those of the input <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p></li>
+<li><p>second element must have the field name <code class="docutils literal notranslate"><span class="pre">S</span></code> and must be an array with shape <code class="docutils literal notranslate"><span class="pre">(...,</span> <span class="pre">K)</span></code> that contains the vector(s) of singular values of length <code class="docutils literal notranslate"><span class="pre">K</span></code>, where <code class="docutils literal notranslate"><span class="pre">K</span> <span class="pre">=</span> <span class="pre">min(M,</span> <span class="pre">N)</span></code>. For each vector, the singular values must be sorted in descending order by magnitude, such that <code class="docutils literal notranslate"><span class="pre">s[...,</span> <span class="pre">0]</span></code> is the largest value, <code class="docutils literal notranslate"><span class="pre">s[...,</span> <span class="pre">1]</span></code> is the second largest value, et cetera. The first <code class="docutils literal notranslate"><span class="pre">x.ndim-2</span></code> dimensions must have the same shape as those of the input <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p></li>
+<li><p>third element must have the field name <code class="docutils literal notranslate"><span class="pre">Vh</span></code> and must be an array whose shape depends on the value of <code class="docutils literal notranslate"><span class="pre">full_matrices</span></code> and contain orthonormal rows (i.e., the rows are the right singular vectors and the array is the adjoint). If <code class="docutils literal notranslate"><span class="pre">full_matrices</span></code> is <code class="docutils literal notranslate"><span class="pre">True</span></code>, the array must have shape <code class="docutils literal notranslate"><span class="pre">(...,</span> <span class="pre">N,</span> <span class="pre">N)</span></code>. If <code class="docutils literal notranslate"><span class="pre">full_matrices</span></code> is <code class="docutils literal notranslate"><span class="pre">False</span></code>, the array must have shape <code class="docutils literal notranslate"><span class="pre">(...,</span> <span class="pre">K,</span> <span class="pre">N)</span></code> where <code class="docutils literal notranslate"><span class="pre">K</span> <span class="pre">=</span> <span class="pre">min(M,</span> <span class="pre">N)</span></code>. The first <code class="docutils literal notranslate"><span class="pre">x.ndim-2</span></code> dimensions must have the same shape as those of the input <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p></li>
+</ul>
+<p>Each returned array must have the same floating-point data type as <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p>
+</li>
+</ul>
 </p>
 </dd>
 </dl>
@@ -681,13 +683,14 @@ matrices) <code class="docutils literal notranslate"><span class="pre">x</span><
 <dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></p>
 </dd>
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><p><em>ret</em> –     an array containing the traces and whose shape is determined by removing the last two dimensions and storing the traces in the last array dimension. For example, if <code class="docutils literal notranslate"><span class="pre">x</span></code> has rank <code class="docutils literal notranslate"><span class="pre">k</span></code> and shape <code class="docutils literal notranslate"><span class="pre">(I,</span> <span class="pre">J,</span> <span class="pre">K,</span> <span class="pre">...,</span> <span class="pre">L,</span> <span class="pre">M,</span> <span class="pre">N)</span></code>, then an output array has rank <code class="docutils literal notranslate"><span class="pre">k-2</span></code> and shape <code class="docutils literal notranslate"><span class="pre">(I,</span> <span class="pre">J,</span> <span class="pre">K,</span> <span class="pre">...,</span> <span class="pre">L)</span></code> where</p>
-<blockquote>
-<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">out</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="o">...</span><span class="p">,</span> <span class="n">l</span><span class="p">]</span> <span class="o">=</span> <span class="n">trace</span><span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="o">...</span><span class="p">,</span> <span class="n">l</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:])</span>
+<dd class="field-odd"><p><p><em>ret</em> – an array containing the traces and whose shape is determined by removing the last two dimensions and storing the traces in the last array dimension. For example, if <code class="docutils literal notranslate"><span class="pre">x</span></code> has rank <code class="docutils literal notranslate"><span class="pre">k</span></code> and shape <code class="docutils literal notranslate"><span class="pre">(I,</span> <span class="pre">J,</span> <span class="pre">K,</span> <span class="pre">...,</span> <span class="pre">L,</span> <span class="pre">M,</span> <span class="pre">N)</span></code>, then an output array has rank <code class="docutils literal notranslate"><span class="pre">k-2</span></code> and shape <code class="docutils literal notranslate"><span class="pre">(I,</span> <span class="pre">J,</span> <span class="pre">K,</span> <span class="pre">...,</span> <span class="pre">L)</span></code> where</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">out</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="o">...</span><span class="p">,</span> <span class="n">l</span><span class="p">]</span> <span class="o">=</span> <span class="n">trace</span><span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="o">...</span><span class="p">,</span> <span class="n">l</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:])</span>
 </pre></div>
 </div>
 <p>The returned array must have the same data type as <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p>
-</div></blockquote>
+</p>
+</dd>
+</dl>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">],[</span><span class="mf">3.0</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">]])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">offset</span> <span class="o">=</span> <span class="mi">0</span>
@@ -696,9 +699,6 @@ matrices) <code class="docutils literal notranslate"><span class="pre">x</span><
 <span class="go">ivy.array(5.)</span>
 </pre></div>
 </div>
-</p>
-</dd>
-</dl>
 </dd></dl>
 
 <dl class="py function">
@@ -744,33 +744,63 @@ matrices) <code class="docutils literal notranslate"><span class="pre">x</span><
 <li><p><strong>x</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – input array. Should have a floating-point data type.</p></li>
 <li><p><strong>axis</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]]]) – If an integer, <code class="docutils literal notranslate"><span class="pre">axis</span></code> specifies the axis (dimension) along which to compute vector norms. If an n-tuple, <code class="docutils literal notranslate"><span class="pre">axis</span></code> specifies the axes (dimensions) along which to compute batched vector norms. If <code class="docutils literal notranslate"><span class="pre">None</span></code>, the vector norm must be computed over all array values (i.e., equivalent to computing the vector norm of a flattened array). Negative indices must be supported. Default: <code class="docutils literal notranslate"><span class="pre">None</span></code>. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
 <li><p><strong>keepdims</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, the axes (dimensions) specified by <code class="docutils literal notranslate"><span class="pre">axis</span></code> must be included in the result as singleton dimensions, and, accordingly, the result must be compatible with the input array (see <span class="xref std std-ref">broadcasting</span>). Otherwise, if <code class="docutils literal notranslate"><span class="pre">False</span></code>, the axes (dimensions) specified by <code class="docutils literal notranslate"><span class="pre">axis</span></code> must not be included in the result. Default: <code class="docutils literal notranslate"><span class="pre">False</span></code>. (default: <code class="docutils literal notranslate"><span class="pre">False</span></code>)</p></li>
-<li><p><strong>ord</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Literal</span></code>[inf, -inf]]) – order of the norm. The following mathematical norms must be supported: (default: <code class="docutils literal notranslate"><span class="pre">2</span></code>)
-+——————+—————————-+
-| ord              | description                |
-+==================+============================+
-| 1                | L1-norm (Manhattan)        |
-+——————+—————————-+
-| 2                | L2-norm (Euclidean)        |
-+——————+—————————-+
-| inf              | infinity norm              |
-+——————+—————————-+
-| (int,float &gt;= 1) | p-norm                     |
-+——————+—————————-+
-The following non-mathematical “norms” must be supported:
-+——————+——————————–+
-| ord              | description                    |
-+==================+================================+
-| 0                | sum(a != 0)                    |
-+——————+——————————–+
-| -1               | 1./sum(1./abs(a))              |
-+——————+——————————–+
-| -2               | 1./sqrt(sum(1./abs(a)**2))   |
-+——————+——————————–+
-| -inf             | min(abs(a))                    |
-+——————+——————————–+
-| (int,float &lt; 1)  | sum(abs(a)**ord)**(1./ord) |
-+——————+——————————–+
-Default: <code class="docutils literal notranslate"><span class="pre">2</span></code>.</p></li>
+<li><p><strong>ord</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Literal</span></code>[inf, -inf]]) – <p>order of the norm. The following mathematical norms must be supported: (default: <code class="docutils literal notranslate"><span class="pre">2</span></code>)</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 39%" />
+<col style="width: 61%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>ord</p></th>
+<th class="head"><p>description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>1</p></td>
+<td><p>L1-norm (Manhattan)</p></td>
+</tr>
+<tr class="row-odd"><td><p>2</p></td>
+<td><p>L2-norm (Euclidean)</p></td>
+</tr>
+<tr class="row-even"><td><p>inf</p></td>
+<td><p>infinity norm</p></td>
+</tr>
+<tr class="row-odd"><td><p>(int,float &gt;= 1)</p></td>
+<td><p>p-norm</p></td>
+</tr>
+</tbody>
+</table>
+<p>The following non-mathematical “norms” must be supported:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 36%" />
+<col style="width: 64%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>ord</p></th>
+<th class="head"><p>description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>0</p></td>
+<td><p>sum(a != 0)</p></td>
+</tr>
+<tr class="row-odd"><td><p>-1</p></td>
+<td><p>1./sum(1./abs(a))</p></td>
+</tr>
+<tr class="row-even"><td><p>-2</p></td>
+<td><p>1./sqrt(sum(1./abs(a)**2))</p></td>
+</tr>
+<tr class="row-odd"><td><p>-inf</p></td>
+<td><p>min(abs(a))</p></td>
+</tr>
+<tr class="row-even"><td><p>(int,float &lt; 1)</p></td>
+<td><p>sum(abs(a)**ord)**(1./ord)</p></td>
+</tr>
+</tbody>
+</table>
+<p>Default: <code class="docutils literal notranslate"><span class="pre">2</span></code>.</p>
+</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>
@@ -786,8 +816,8 @@ Default: <code class="docutils literal notranslate"><span class="pre">2</span></
 <dt class="sig sig-object py" id="ivy.functional.ivy.linear_algebra.vector_to_skew_symmetric_matrix">
 <span class="sig-prename descclassname"><span class="pre">ivy.functional.ivy.linear_algebra.</span></span><span class="sig-name descname"><span class="pre">vector_to_skew_symmetric_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vector</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/linear_algebra.html#vector_to_skew_symmetric_matrix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.linear_algebra.vector_to_skew_symmetric_matrix" title="Permalink to this definition"></a></dt>
 <dd><p>Given vector <span class="math notranslate nohighlight">\(\mathbf{a}\in\mathbb{R}^3\)</span>, return associated skew-symmetric matrix
-<span class="math notranslate nohighlight">\([\mathbf{a}]_×\in\mathbb{R}^{3×3}\)</span> satisfying <span class="math notranslate nohighlight">\(\mathbf{a}×\mathbf{b}=[\mathbf{a}]_×\mathbf{b}\)</span>.</p>
-<p><a class="reference external" href="https://en.wikipedia.org/wiki/Skew-symmetric_matrix#Cross_product">[reference]</a></p>
+<span class="math notranslate nohighlight">\([\mathbf{a}]_×\in\mathbb{R}^{3×3}\)</span> satisfying <span class="math notranslate nohighlight">\(\mathbf{a}×\mathbf{b}=[\mathbf{a}]_×\mathbf{b}\)</span>.n
+<a class="reference external" href="https://en.wikipedia.org/wiki/Skew-symmetric_matrix#Cross_product">[reference]</a></p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>vector</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – Vector to convert <em>[batch_shape,3]</em>.</p>

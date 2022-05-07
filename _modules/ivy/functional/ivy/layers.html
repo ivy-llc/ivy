@@ -248,7 +248,6 @@
 <span class="sd">        The output following application of scaled dot-product attention. *[batch_shape,num_queries,feat_dim]*</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-
     <span class="c1"># BS x Q x K</span>
     <span class="n">sim</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;... q f, ... k f -&gt; ... q k&quot;</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span> <span class="o">*</span> <span class="n">scale</span>
 
@@ -316,7 +315,6 @@
 <span class="sd">        The output following application of multi-head attention. *[batch_shape,num_queries,out_feat_dim]*</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-
     <span class="c1"># BS x Q x (HxF)</span>
     <span class="n">q</span> <span class="o">=</span> <span class="n">to_q_fn</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="n">to_q_v</span><span class="p">)</span> <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">to_q_fn</span><span class="p">)</span> <span class="k">else</span> <span class="n">x</span>
 
@@ -626,7 +624,6 @@
 <span class="sd">        hidden state for all timesteps *[batch_shape,t,out]* and cell state for last timestep *[batch_shape,out]*</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-
     <span class="c1"># get shapes</span>
     <span class="n">x_shape</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
     <span class="n">batch_shape</span> <span class="o">=</span> <span class="n">x_shape</span><span class="p">[:</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span>

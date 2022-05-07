@@ -422,7 +422,7 @@
 
     <span class="c1"># noinspection PyMethodMayBeStatic,PyUnusedLocal</span>
     <span class="k">def</span> <span class="nf">_create_variables</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">device</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;create internal trainable variables, and return as arbitrary nested</span>
+        <span class="sd">&quot;&quot;&quot;Create internal trainable variables, and return as arbitrary nested</span>
 <span class="sd">        dict. Overridable.</span>
 
 <span class="sd">        :param device: The device string, specifying the device on which to create the variables.</span>
@@ -447,12 +447,14 @@
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">_forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Forward pass of the layer, called after handling the optional input</span>
-<span class="sd">        variables.&quot;&quot;&quot;</span>
+<span class="sd">        variables.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span>
 
     <span class="k">def</span> <span class="nf">_forward_with_tracking</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Forward pass while optionally tracking submodule returns and call</span>
-<span class="sd">        order.&quot;&quot;&quot;</span>
+<span class="sd">        order.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">track_submod_call_order</span><span class="p">():</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_add_submod_enter</span><span class="p">()</span>
         <span class="n">ret</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_forward</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
@@ -465,8 +467,9 @@
         <span class="k">return</span> <span class="n">ret</span>
 
     <span class="k">def</span> <span class="nf">_call</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">with_grads</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;the forward pass of the layer, treating layer instance as callable</span>
-<span class="sd">        function.&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;The forward pass of the layer, treating layer instance as callable</span>
+<span class="sd">        function.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">with_grads</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">with_grads</span><span class="p">(</span><span class="n">with_grads</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_built</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span> <span class="n">from_call</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>

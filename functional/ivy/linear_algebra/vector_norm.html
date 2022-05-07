@@ -161,33 +161,63 @@
 <li><p><strong>x</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – input array. Should have a floating-point data type.</p></li>
 <li><p><strong>axis</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]]]) – If an integer, <code class="docutils literal notranslate"><span class="pre">axis</span></code> specifies the axis (dimension) along which to compute vector norms. If an n-tuple, <code class="docutils literal notranslate"><span class="pre">axis</span></code> specifies the axes (dimensions) along which to compute batched vector norms. If <code class="docutils literal notranslate"><span class="pre">None</span></code>, the vector norm must be computed over all array values (i.e., equivalent to computing the vector norm of a flattened array). Negative indices must be supported. Default: <code class="docutils literal notranslate"><span class="pre">None</span></code>. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
 <li><p><strong>keepdims</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, the axes (dimensions) specified by <code class="docutils literal notranslate"><span class="pre">axis</span></code> must be included in the result as singleton dimensions, and, accordingly, the result must be compatible with the input array (see <span class="xref std std-ref">broadcasting</span>). Otherwise, if <code class="docutils literal notranslate"><span class="pre">False</span></code>, the axes (dimensions) specified by <code class="docutils literal notranslate"><span class="pre">axis</span></code> must not be included in the result. Default: <code class="docutils literal notranslate"><span class="pre">False</span></code>. (default: <code class="docutils literal notranslate"><span class="pre">False</span></code>)</p></li>
-<li><p><strong>ord</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Literal</span></code>[inf, -inf]]) – order of the norm. The following mathematical norms must be supported: (default: <code class="docutils literal notranslate"><span class="pre">2</span></code>)
-+——————+—————————-+
-| ord              | description                |
-+==================+============================+
-| 1                | L1-norm (Manhattan)        |
-+——————+—————————-+
-| 2                | L2-norm (Euclidean)        |
-+——————+—————————-+
-| inf              | infinity norm              |
-+——————+—————————-+
-| (int,float &gt;= 1) | p-norm                     |
-+——————+—————————-+
-The following non-mathematical “norms” must be supported:
-+——————+——————————–+
-| ord              | description                    |
-+==================+================================+
-| 0                | sum(a != 0)                    |
-+——————+——————————–+
-| -1               | 1./sum(1./abs(a))              |
-+——————+——————————–+
-| -2               | 1./sqrt(sum(1./abs(a)**2))   |
-+——————+——————————–+
-| -inf             | min(abs(a))                    |
-+——————+——————————–+
-| (int,float &lt; 1)  | sum(abs(a)**ord)**(1./ord) |
-+——————+——————————–+
-Default: <code class="docutils literal notranslate"><span class="pre">2</span></code>.</p></li>
+<li><p><strong>ord</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Literal</span></code>[inf, -inf]]) – <p>order of the norm. The following mathematical norms must be supported: (default: <code class="docutils literal notranslate"><span class="pre">2</span></code>)</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 39%" />
+<col style="width: 61%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>ord</p></th>
+<th class="head"><p>description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>1</p></td>
+<td><p>L1-norm (Manhattan)</p></td>
+</tr>
+<tr class="row-odd"><td><p>2</p></td>
+<td><p>L2-norm (Euclidean)</p></td>
+</tr>
+<tr class="row-even"><td><p>inf</p></td>
+<td><p>infinity norm</p></td>
+</tr>
+<tr class="row-odd"><td><p>(int,float &gt;= 1)</p></td>
+<td><p>p-norm</p></td>
+</tr>
+</tbody>
+</table>
+<p>The following non-mathematical “norms” must be supported:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 36%" />
+<col style="width: 64%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>ord</p></th>
+<th class="head"><p>description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>0</p></td>
+<td><p>sum(a != 0)</p></td>
+</tr>
+<tr class="row-odd"><td><p>-1</p></td>
+<td><p>1./sum(1./abs(a))</p></td>
+</tr>
+<tr class="row-even"><td><p>-2</p></td>
+<td><p>1./sqrt(sum(1./abs(a)**2))</p></td>
+</tr>
+<tr class="row-odd"><td><p>-inf</p></td>
+<td><p>min(abs(a))</p></td>
+</tr>
+<tr class="row-even"><td><p>(int,float &lt; 1)</p></td>
+<td><p>sum(abs(a)**ord)**(1./ord)</p></td>
+</tr>
+</tbody>
+</table>
+<p>Default: <code class="docutils literal notranslate"><span class="pre">2</span></code>.</p>
+</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>

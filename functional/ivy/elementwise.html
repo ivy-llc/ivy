@@ -608,16 +608,15 @@ of x.</p>
 <dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></p>
 </dd>
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><ul class="simple">
-<li><p><em>ret</em> – an array containing the inverse hyperbolic tangent of each element in x. The returned array must have a floating-point data type determined by Type Promotion Rules.</p></li>
-<li><p><em>Examples</em></p></li>
-<li><p><em>&gt;&gt;&gt; x = ivy.atanh(ivy.array([0, -0.5]))</em></p></li>
-<li><p><em>&gt;&gt;&gt; print(x)</em></p></li>
-<li><p><em>ivy.array([ 0., -0.54930614])</em></p></li>
-</ul>
-</p>
+<dd class="field-odd"><p><em>ret</em> – an array containing the inverse hyperbolic tangent of each element in x. The returned array must have a floating-point data type determined by Type Promotion Rules.</p>
 </dd>
 </dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">atanh</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.5</span><span class="p">]))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="go">ivy.array([ 0., -0.54930614])</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py function">
@@ -1079,17 +1078,15 @@ input array x1 with the respective element x2_i of the input array x2.</p>
 <dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></p>
 </dd>
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><ul class="simple">
-<li><p><em>ret</em> – an array containing the element-wise results. The returned array must have a data type of bool.</p></li>
-<li><p><em>Examples</em></p></li>
-<li><p><em>———</em></p></li>
-<li><p><em>&gt;&gt;&gt; x = ivy.greater(ivy.array([1,2,3]),ivy.array([2,2,2]))</em></p></li>
-<li><p><em>&gt;&gt;&gt; print(x)</em></p></li>
-<li><p><em>ivy.array([False, False,  True])</em></p></li>
-</ul>
-</p>
+<dd class="field-odd"><p><em>ret</em> – an array containing the element-wise results. The returned array must have a data type of bool.</p>
 </dd>
 </dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">greater</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">]),</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">]))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="go">ivy.array([False, False,  True])</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py function">
@@ -1849,7 +1846,7 @@ infinitely precise result (as required by IEEE 754).</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="ivy.functional.ivy.elementwise.square">
 <span class="sig-prename descclassname"><span class="pre">ivy.functional.ivy.elementwise.</span></span><span class="sig-name descname"><span class="pre">square</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/elementwise.html#square"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.elementwise.square" title="Permalink to this definition"></a></dt>
-<dd><p>each element <code class="docutils literal notranslate"><span class="pre">x_i</span></code> of the input array <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p>
+<dd><p>Each element <code class="docutils literal notranslate"><span class="pre">x_i</span></code> of the input array <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>x</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – Input array.</p>

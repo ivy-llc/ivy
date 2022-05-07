@@ -408,10 +408,10 @@
 <div class="viewcode-block" id="to_numpy"><a class="viewcode-back" href="../../../../functional/ivy/general/to_numpy.html#ivy.functional.ivy.general.to_numpy">[docs]</a><span class="k">def</span> <span class="nf">to_numpy</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Converts an array into a numpy array.</span>
 
-<span class="sd">     Parameters</span>
-<span class="sd">     ----------</span>
-<span class="sd">     x</span>
-<span class="sd">         input array</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x</span>
+<span class="sd">        input array</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -434,10 +434,10 @@
 <div class="viewcode-block" id="to_scalar"><a class="viewcode-back" href="../../../../functional/ivy/general/to_scalar.html#ivy.functional.ivy.general.to_scalar">[docs]</a><span class="k">def</span> <span class="nf">to_scalar</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Number</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Converts an array with a single element into a scalar.</span>
 
-<span class="sd">     Parameters</span>
-<span class="sd">     ----------</span>
-<span class="sd">     x</span>
-<span class="sd">         Input array with a single element.</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x</span>
+<span class="sd">        Input array with a single element.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -460,10 +460,10 @@
 <div class="viewcode-block" id="to_list"><a class="viewcode-back" href="../../../../functional/ivy/general/to_list.html#ivy.functional.ivy.general.to_list">[docs]</a><span class="k">def</span> <span class="nf">to_list</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Creates a (possibly nested) list from input array.</span>
 
-<span class="sd">     Parameters</span>
-<span class="sd">     ----------</span>
-<span class="sd">     x</span>
-<span class="sd">         Input array.</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x</span>
+<span class="sd">        Input array.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -864,7 +864,6 @@
 <span class="sd">        The newly cache wrapped function.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-
     <span class="k">global</span> <span class="n">FN_CACHE</span>
     <span class="k">if</span> <span class="n">func</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">FN_CACHE</span><span class="p">:</span>
         <span class="n">FN_CACHE</span><span class="p">[</span><span class="n">func</span><span class="p">]</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
@@ -1017,7 +1016,8 @@
 
 <div class="viewcode-block" id="get_min_base"><a class="viewcode-back" href="../../../../functional/ivy/general/get_min_base.html#ivy.functional.ivy.general.get_min_base">[docs]</a><span class="k">def</span> <span class="nf">get_min_base</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Get the global minimum base used by ivy for numerically stable power</span>
-<span class="sd">    raising.&quot;&quot;&quot;</span>
+<span class="sd">    raising.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># noinspection PyProtectedMember</span>
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">_MIN_BASE</span></div>
 

@@ -750,7 +750,7 @@
         <span class="n">device</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">v</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;depthwise 2D convolutional layer.</span>
+        <span class="sd">&quot;&quot;&quot;Depthwise 2D convolutional layer.</span>
 
 <span class="sd">        :param num_channels: Number of input channels for the layer.</span>
 <span class="sd">        :type num_channels: int</span>
@@ -1056,7 +1056,8 @@
 
 <div class="viewcode-block" id="LSTM.get_initial_state"><a class="viewcode-back" href="../../../stateful/layers/LSTM.html#ivy.stateful.layers.LSTM.get_initial_state">[docs]</a>    <span class="k">def</span> <span class="nf">get_initial_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">batch_shape</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Get the initial state of the hidden and cell states, if not provided</span>
-<span class="sd">        explicitly.&quot;&quot;&quot;</span>
+<span class="sd">        explicitly.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">batch_shape</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">batch_shape</span><span class="p">)</span>
         <span class="k">return</span> <span class="p">(</span>
             <span class="p">[</span>

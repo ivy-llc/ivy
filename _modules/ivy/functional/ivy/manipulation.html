@@ -282,7 +282,6 @@
 <span class="sd">        an output array having the same data type and shape as ``x`` and whose elements, relative to ``x``, are reordered.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">flip</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span></div>
 
 
@@ -367,14 +366,13 @@
 <span class="sd">        optional output array, for writing the result to. It must have a shape that the inputs broadcast to.</span>
 
 <span class="sd">    Returns</span>
-<span class="sd">    --------</span>
+<span class="sd">    -------</span>
 <span class="sd">    ret</span>
 <span class="sd">        an output array having rank ``N+1``, where ``N`` is the rank (number of dimensions) of ``x``. If the input arrays have different data types, normal ref:`type-promotion` must apply. If the input arrays have the same data type, the output array must have the same data type as the input arrays.</span>
 <span class="sd">        .. note::</span>
 <span class="sd">           This specification leaves type promotion between data type families (i.e., ``intxx`` and ``floatxx``) unspecified.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">arrays</span><span class="p">)</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">arrays</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span></div>
 
 
