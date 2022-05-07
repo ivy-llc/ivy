@@ -23,9 +23,6 @@ def index_nest(nest, index):
     index
         A tuple of indices for indexing.
 
-    Returns
-    -------
-
     """
     ret = nest
     for i in index:
@@ -42,9 +39,6 @@ def prune_nest_at_index(nest, index):
         The nested object to prune.
     index
         A tuple of indices for the index at which to prune.
-
-    Returns
-    -------
 
     """
     if len(index) == 1:
@@ -64,9 +58,6 @@ def set_nest_at_index(nest, index, value):
         A tuple of indices for the index at which to update.
     value
         The new value for updating.
-
-    Returns
-    -------
 
     """
     if len(index) == 1:
@@ -98,9 +89,6 @@ def map_nest_at_index(nest, index, fn):
     fn
         The function to perform on the nest at the given index.
 
-    Returns
-    -------
-
     """
     if len(index) == 1:
         nest[index[0]] = fn(nest[index[0]])
@@ -119,9 +107,6 @@ def multi_index_nest(nest, indices):
     indices
         A tuple of tuples of indices to apply.
 
-    Returns
-    -------
-
     """
     return [index_nest(nest, index) for index in indices]
 
@@ -135,9 +120,6 @@ def prune_nest_at_indices(nest, indices):
         The nested object to prune.
     indices
         A tuple of tuples of indices for the indices at which to prune.
-
-    Returns
-    -------
 
     """
     [prune_nest_at_index(nest, index) for index in indices]
@@ -155,9 +137,6 @@ def set_nest_at_indices(nest, indices, values):
         A tuple of tuples of indices for the indices at which to update.
     values
         The new values for updating.
-
-    Returns
-    -------
 
     """
     if not isinstance(values, (list, tuple)):
@@ -197,9 +176,6 @@ def map_nest_at_indices(nest, indices, fn):
     fn
         The function to perform on the nest at the given index.
 
-    Returns
-    -------
-
     """
     [map_nest_at_index(nest, index, fn) for index in indices]
 
@@ -231,7 +207,7 @@ def nested_indices_where(
 
     Returns
     -------
-     ret
+    ret
         A set of indices for the nest where the function evaluated as True.
 
     """
@@ -281,7 +257,7 @@ def all_nested_indices(
 
     Returns
     -------
-     ret
+    ret
         A set of indices for the nest where the function evaluated as True.
 
     """
@@ -329,7 +305,7 @@ def map(
 
     Returns
     -------
-     ret
+    ret
         x following the applicable of fn to each of it's iterated items.
 
     """
@@ -383,7 +359,7 @@ def nested_map(
         Placeholder for the dict check function, do not set this parameter.
 
     Returns
-     -------
+    -------
     ret
         x following the applicable of fn to it's nested leaves, or x itself if x is not nested.
 
@@ -495,7 +471,7 @@ def nested_any(
         Used internally, do not set manually.
 
     Returns
-     -------
+    -------
     ret
         A boolean, whether the function evaluates to true for any leaf node.
 
@@ -535,7 +511,7 @@ def copy_nest(
         Whether to convert the nest to a mutable form, changing all tuples to lists. Default is False.
 
     Returns
-     -------
+    -------
     ret
         The copied nest.
 
