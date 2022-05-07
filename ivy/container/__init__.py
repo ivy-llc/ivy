@@ -1,9 +1,8 @@
-"""
-Base Container Object
-"""
+"""Base Container Object."""
 
 # global
 import colorama
+
 try:
     # noinspection PyPackageRequirements
     import h5py as _h5py

@@ -1,6 +1,4 @@
-"""
-Collection of Ivy normalization classes.
-"""
+"""Collection of Ivy normalization classes."""
 
 # local
 import ivy
@@ -9,10 +7,16 @@ from ivy.stateful.initializers import Zeros, Ones
 
 
 class LayerNorm(Module):
-
-    def __init__(self, normalized_shape, epsilon=None, elementwise_affine=True, new_std=None, device=None, v=None):
-        """
-        Class for applying Layer Normalization over a mini-batch of inputs
+    def __init__(
+        self,
+        normalized_shape,
+        epsilon=None,
+        elementwise_affine=True,
+        new_std=None,
+        device=None,
+        v=None,
+    ):
+        """Class for applying Layer Normalization over a mini-batch of inputs.
 
         :param normalized_shape: Trailing shape to applying the normalization to.
         :type normalized_shape: int or sequence of ints
@@ -26,8 +30,9 @@ class LayerNorm(Module):
         :type device: ivy.Device, optional
         :param v: the variables for each submodule in the sequence, constructed internally by default.
         :type v: ivy container of variables, optional
+
         """
-        self._normalized_idxs = [-(i+1) for i in range(len(normalized_shape))]
+        self._normalized_idxs = [-(i + 1) for i in range(len(normalized_shape))]
         self._epsilon = epsilon
         self._elementwise_affine = elementwise_affine
         self._new_std = new_std
@@ -38,23 +43,29 @@ class LayerNorm(Module):
         Module.__init__(self, device, v)
 
     def _create_variables(self, device):
-        """
-        Create internal variables for the layer
-        """
+        """Create internal variables for the layer."""
         if self._elementwise_affine:
-            return {'scale': self._scale_init.create_variables(self._scale_shape, device),
-                    'offset': self._offset_init.create_variables(self._offset_shape, device)}
+            return {
+                "scale": self._scale_init.create_variables(self._scale_shape, device),
+                "offset": self._offset_init.create_variables(
+                    self._offset_shape, device
+                ),
+            }
         return {}
 
     def _forward(self, inputs):
-        """
-        Perform forward pass of the LayerNorm layer.
+        """Perform forward pass of the LayerNorm layer.
 
         :param inputs: Inputs to process.
         :type inputs: array
         :return: The outputs following the layer normalization operation.
+
         """
-        return ivy.layer_norm(inputs, self._normalized_idxs, epsilon=self._epsilon,
-                              scale=self.v.scale if self._elementwise_affine else None,
-                              offset=self.v.offset if self._elementwise_affine else None,
-                              new_std=self._new_std)
+        return ivy.layer_norm(
+            inputs,
+            self._normalized_idxs,
+            epsilon=self._epsilon,
+            scale=self.v.scale if self._elementwise_affine else None,
+            offset=self.v.offset if self._elementwise_affine else None,
+            new_std=self._new_std,
+        )
