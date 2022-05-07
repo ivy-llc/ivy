@@ -1,9 +1,9 @@
-name: docstrings
+name: test-numpy-style-docstrings
 
 on: [push, pull_request]
 
 jobs:
-  test-numpy-docstrings:
+  run-docstring-tests:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
