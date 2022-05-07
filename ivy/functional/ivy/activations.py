@@ -58,7 +58,7 @@ def leaky_relu(
         The input array with leaky relu applied element-wise.
 
     Examples
-    ---------
+    --------
     >>> x = ivy.array([0.39, -0.85])
     >>> y = ivy.leaky_relu(x)
     >>> print(y)
@@ -90,7 +90,7 @@ def tanh(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
     """Applies the Hyperbolic tangent activation function element-wise.
 
     Parameters
-     ----------
+    ----------
     x
         input array
 
