@@ -118,7 +118,6 @@ class ContainerBase(dict, abc.ABC):
             keyword arguments for dict creation. Default is None.
 
         """
-
         self._queues = queues
         self._container_combine_method = container_combine_method
         if ivy.exists(self._queues):
@@ -165,9 +164,9 @@ class ContainerBase(dict, abc.ABC):
 
         Parameters
         ----------
-        ret:
+        ret
             The container with the return values
-        out:
+        out
             The optional out container, which is primed for being overwritten if it exists
 
         Returns
@@ -196,7 +195,6 @@ class ContainerBase(dict, abc.ABC):
             List joined containers, with each entry being a list of arrays
 
         """
-
         container0 = containers[0]
         if not ivy.exists(config):
             config = container0.config if isinstance(container0, ivy.Container) else {}
@@ -230,7 +228,6 @@ class ContainerBase(dict, abc.ABC):
             Stacked containers, with each entry being a list of arrays
 
         """
-
         container0 = containers[0]
         if not ivy.exists(config):
             config = container0.config if isinstance(container0, ivy.Container) else {}
@@ -302,7 +299,6 @@ class ContainerBase(dict, abc.ABC):
             Stacked containers
 
         """
-
         container0 = containers[0]
         if not ivy.exists(config):
             config = container0.config if isinstance(container0, ivy.Container) else {}
@@ -349,7 +345,6 @@ class ContainerBase(dict, abc.ABC):
             Combined containers
 
         """
-
         # if inputs are not dicts, then simply return the right-most value
         container_rightmost = containers[-1]
         if not isinstance(container_rightmost, dict):
@@ -425,7 +420,6 @@ class ContainerBase(dict, abc.ABC):
             Compared containers
 
         """
-
         if mode not in ["all", "same_only", "diff_only"]:
             raise Exception(
                 'mode must be one of [ "all" | "same_only" | "diff_only" ], but found {}'.format(
@@ -560,7 +554,6 @@ class ContainerBase(dict, abc.ABC):
         config
             The configuration for the containers. Default is the same as container0.
         *containers
-
 
         Returns
         -------
@@ -705,7 +698,7 @@ class ContainerBase(dict, abc.ABC):
 
         Returns
         -------
-            Boolean
+        Boolean
 
         """
         if partial:
@@ -1154,7 +1147,7 @@ class ContainerBase(dict, abc.ABC):
     def flatten_key_chain(
         key_chain, replacement="__", above_height=None, below_depth=None
     ):
-        """
+        """Summary.
 
         Parameters
         ----------
@@ -1193,7 +1186,7 @@ class ContainerBase(dict, abc.ABC):
 
     @staticmethod
     def trim_key(key, max_length):
-        """
+        """Summary.
 
         Parameters
         ----------
@@ -1347,7 +1340,6 @@ class ContainerBase(dict, abc.ABC):
         **config
 
         """
-
         # update config
         self.update_config(**config)
 
@@ -2111,7 +2103,6 @@ class ContainerBase(dict, abc.ABC):
             Container object with all entries boolean evaluated.
 
         """
-
         def _ret_bool(x):
             if assert_is_bool:
                 assert isinstance(x, bool)
@@ -4257,7 +4248,7 @@ class ContainerBase(dict, abc.ABC):
     def flatten_key_chains(
         self, include_empty=False, above_height=None, below_depth=None
     ):
-        """
+        """Summary.
 
         Parameters
         ----------
@@ -4282,9 +4273,6 @@ class ContainerBase(dict, abc.ABC):
     def copy(self):
         """Create a copy of this container.
 
-        Parameters
-        ----------
-
         Returns
         -------
             A copy of the container
@@ -4296,9 +4284,6 @@ class ContainerBase(dict, abc.ABC):
         """Create a deep copy (copying all internal tensors) of this container.
 
         return: A deep copy of the container
-
-         Parameters
-         ----------
 
         """
         return self.map(lambda x, kc: ivy.copy_array(x) if ivy.is_array(x) else x)
@@ -4441,10 +4426,7 @@ class ContainerBase(dict, abc.ABC):
         return ret
 
     def dtype(self):
-        """
-
-        Parameters
-        ----------
+        """Summary.
 
         Returns
         -------
@@ -4456,19 +4438,6 @@ class ContainerBase(dict, abc.ABC):
 
     def with_entries_as_lists(self):
         def to_list(x, _=""):
-            """
-
-            Parameters
-            ----------
-            x
-                param _: (Default value = '')
-            _
-                 (Default value = '')
-
-            Returns
-            -------
-
-            """
             try:
                 return self._ivy.to_list(x)
             except (AttributeError, ValueError):
@@ -4552,7 +4521,7 @@ class ContainerBase(dict, abc.ABC):
             return self
 
     def cutoff_at_depth(self, depth_cutoff, inplace=False):
-        """
+        """Summary.
 
         Parameters
         ----------
@@ -4578,7 +4547,7 @@ class ContainerBase(dict, abc.ABC):
         return ret
 
     def cutoff_at_height(self, height_cutoff, inplace=False):
-        """
+        """Summary.
 
         Parameters
         ----------
@@ -4618,7 +4587,7 @@ class ContainerBase(dict, abc.ABC):
         return ret.at_key_chains(desired_keys)
 
     def slice_keys(self, key_slice, all_depths=False):
-        """
+        """Summary.
 
         Parameters
         ----------
@@ -4650,7 +4619,7 @@ class ContainerBase(dict, abc.ABC):
         return self._slice_keys(key_slice)
 
     def with_print_limit(self, print_limit, inplace=False):
-        """
+        """Summary.
 
         Parameters
         ----------
@@ -4660,7 +4629,6 @@ class ContainerBase(dict, abc.ABC):
              (Default value = False)
 
         """
-
         def _update_print_limit(cont, _):
             cont._print_limit = print_limit
             return cont
@@ -4672,7 +4640,7 @@ class ContainerBase(dict, abc.ABC):
 
     # noinspection PyTypeChecker
     def remove_print_limit(self, inplace=False):
-        """
+        """Summary.
 
         Parameters
         ----------
@@ -4683,7 +4651,7 @@ class ContainerBase(dict, abc.ABC):
         return self.with_print_limit(None, inplace)
 
     def with_key_length_limit(self, key_length_limit, inplace=False):
-        """
+        """Summary.
 
         Parameters
         ----------
@@ -4693,7 +4661,6 @@ class ContainerBase(dict, abc.ABC):
              (Default value = False)
 
         """
-
         def _update_key_length_limit(cont, _):
             cont._key_length_limit = key_length_limit
             return cont
@@ -4704,7 +4671,7 @@ class ContainerBase(dict, abc.ABC):
         return ret
 
     def remove_key_length_limit(self, inplace=False):
-        """
+        """Summary.
 
         Parameters
         ----------
@@ -4715,7 +4682,7 @@ class ContainerBase(dict, abc.ABC):
         return self.with_key_length_limit(None, inplace)
 
     def with_print_indent(self, print_indent, inplace=False):
-        """
+        """Summary.
 
         Parameters
         ----------
@@ -4725,7 +4692,6 @@ class ContainerBase(dict, abc.ABC):
              (Default value = False)
 
         """
-
         def _update_print_indent(cont, _):
             cont._print_indent = print_indent
             return cont
@@ -4736,7 +4702,7 @@ class ContainerBase(dict, abc.ABC):
         return ret
 
     def with_print_line_spacing(self, print_line_spacing, inplace=False):
-        """
+        """Summary.
 
         Parameters
         ----------
@@ -4746,7 +4712,6 @@ class ContainerBase(dict, abc.ABC):
              (Default value = False)
 
         """
-
         def _update_print_line_spacing(cont, _):
             cont._print_line_spacing = print_line_spacing
             return cont
@@ -4757,7 +4722,7 @@ class ContainerBase(dict, abc.ABC):
         return ret
 
     def with_default_key_color(self, default_key_color, inplace=False):
-        """
+        """Summary.
 
         Parameters
         ----------
@@ -4767,7 +4732,6 @@ class ContainerBase(dict, abc.ABC):
              (Default value = False)
 
         """
-
         def _update_default_key_color(cont, _):
             cont._default_key_color = default_key_color
             return cont
@@ -4778,23 +4742,21 @@ class ContainerBase(dict, abc.ABC):
         return ret
 
     def with_ivy_backend(self, ivy_backend):
-        """
+        """Summary.
 
         Parameters
         ----------
         ivy_backend
-
 
         """
         return ivy.Container(self, ivyh=ivy_backend)
 
     def set_ivy_backend(self, ivy_backend):
-        """
+        """Summary.
 
         Parameters
         ----------
         ivy_backend
-
 
         """
         self._local_ivy = ivy_backend
@@ -4805,12 +4767,11 @@ class ContainerBase(dict, abc.ABC):
 
     # noinspection PyUnresolvedReferences
     def show_sub_container(self, sub_cont_or_keychain):
-        """
+        """Summary.
 
         Parameters
         ----------
         sub_cont_or_keychain
-
 
         """
 
