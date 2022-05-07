@@ -37,7 +37,7 @@ def all(
         optional output array, for writing the result to. It must have a shape that the inputs broadcast to.
 
     Returns
-     -------
+    -------
     ret
         if a logical AND reduction was performed over the entire array, the returned array must be a zero-dimensional array containing the test result; otherwise, the returned array must be a non-zero-dimensional array containing the test results. The returned array must have a data type of ``bool``.
 
@@ -73,7 +73,7 @@ def any(
         optional output array, for writing the result to. It must have a shape that the inputs broadcast to.
 
     Returns
-     -------
+    -------
     ret
         if a logical OR reduction was performed over the entire array, the returned array must be a zero-dimensional array containing the test result; otherwise, the returned array must be a non-zero-dimensional array containing the test results. The returned array must have a data type of ``bool``.
 

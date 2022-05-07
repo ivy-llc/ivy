@@ -27,13 +27,15 @@ def unique_all(
        -   As ``-0`` and ``+0`` compare as ``True``, signed zeros should not be considered distinct, and the corresponding unique element will be implementation-dependent (e.g., an implementation could choose to return ``-0`` if ``-0`` occurs before ``+0``).
        As signed zeros are not distinct, using ``inverse_indices`` to reconstruct the input array is not guaranteed to return an array having the exact same values.
        Each ``nan`` value should have a count of one, while the counts for signed zeros should be aggregated as a single count.
+
     Parameters
     ----------
-    x: array
+    x
         input array. If ``x`` has more than one dimension, the function must flatten ``x`` and return the unique elements of the flattened array.
+
     Returns
     -------
-    out: Tuple[array, array, array, array]
+    out
         a namedtuple ``(values, indices, inverse_indices, counts)`` whose
         - first element must have the field name ``values`` and must be an array containing the unique elements of ``x``. The array must have the same data type as ``x``.
         - second element must have the field name ``indices`` and must be an array containing the indices (first occurrences) of ``x`` that result in ``values``. The array must have the same shape as ``values`` and must have the default array index data type.
@@ -57,7 +59,7 @@ def unique_inverse(x: Union[ivy.Array, ivy.NativeArray]) -> Tuple[ivy.Array, ivy
         input array.
 
     Returns
-     -------
+    -------
     ret
         tuple of two arrays (values, inverse_indices)
 
@@ -78,12 +80,14 @@ def unique_values(
        Uniqueness should be determined based on value equality (i.e., ``x_i == x_j``). For input arrays having floating-point data types, value-based equality implies the following behavior.
        -   As ``nan`` values compare as ``False``, ``nan`` values should be considered distinct.
        -   As ``-0`` and ``+0`` compare as ``True``, signed zeros should not be considered distinct, and the corresponding unique element will be implementation-dependent (e.g., an implementation could choose to return ``-0`` if ``-0`` occurs before ``+0``).
+
     Parameters
     ----------
     x
         input array. If ``x`` has more than one dimension, the function must flatten ``x`` and return the unique elements of the flattened array.
+
     Returns
-     -------
+    -------
     ret
         an array containing the set of unique elements in ``x``. The returned array must have the same data type as ``x``.
         .. note::
@@ -103,7 +107,7 @@ def unique_counts(x: Union[ivy.Array, ivy.NativeArray]) -> Tuple[ivy.Array, ivy.
         input array. If x has more than one dimension, the function must flatten x and return the unique elements of the flattened array.
 
     Returns
-     -------
+    -------
     ret
         a namedtuple (values, counts) whose
         -first element must have the field name values and must be an array containing the unique elements of x. The array must have the same data type as x.
