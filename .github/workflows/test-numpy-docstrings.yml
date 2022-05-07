@@ -15,4 +15,4 @@ jobs:
         pip install pydocstyle
     - name: Analyse docstrings with pydocstyle
       run: |
-        pydocstyle --add-ignore=D100,D101,D102,D103,D104,D105,D400,D401 --convention=numpy $(git ls-files '*.py')
+        pydocstyle --add-ignore=D100,D101,D102,D103,D104,D105,D205,D400,D401 --convention=numpy $(git ls-files '*.py')
