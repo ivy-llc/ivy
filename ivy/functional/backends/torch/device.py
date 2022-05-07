@@ -42,7 +42,8 @@ def to_dev(
     return ret
 
 
-def dev_to_str(device: torch.device):
+def dev_to_str(device: torch.device)\
+        -> str:
     if isinstance(device, str):
         return device
     dev_type, dev_idx = (device.type, device.index)

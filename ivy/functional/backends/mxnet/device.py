@@ -5,6 +5,8 @@ Collection of MXNet general functions, wrapped to fit Ivy syntax and signature.
 # global
 import os
 
+from ivy.functional.backends.mxnet import Device
+
 _round = round
 import mxnet as mx
 from mxnet import profiler as _profiler
@@ -32,14 +34,15 @@ def to_dev(x, device=None, out=None):
     return x
 
 
-def dev_to_str(device):
+def dev_to_str(device: Device) \
+        -> str:
     if isinstance(device, str):
         return device
     device_type = device.device_type
     if device_type == "cpu":
         return device_type
     return device_type + (
-        ":" + (str(device.device_id) if device.device_id is not None else "0")
+            ":" + (str(device.device_id) if device.device_id is not None else "0")
     )
 
 

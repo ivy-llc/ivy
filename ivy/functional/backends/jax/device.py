@@ -8,6 +8,7 @@ import jax
 import ivy
 
 # local
+from ivy.functional.backends.jax import Device
 from ivy.functional.ivy.device import Profiler as BaseProfiler
 
 
@@ -53,7 +54,8 @@ def to_dev(x, device=None, out=None):
     return x
 
 
-def dev_to_str(device):
+def dev_to_str(device: Device) \
+        -> str:
     if isinstance(device, str):
         return device
     if device is None:

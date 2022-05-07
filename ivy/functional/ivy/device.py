@@ -25,6 +25,7 @@ from typing import Union, Type, Callable, Iterable, Dict, Any
 
 # local
 import ivy
+from ivy import Device
 from ivy.framework_handler import current_framework as _cur_framework
 
 default_device_stack = list()
@@ -131,7 +132,7 @@ def print_all_arrays_on_dev(device):
 
 
 def dev(
-    x: Union[ivy.Array, ivy.NativeArray], as_str: bool = False
+        x: Union[ivy.Array, ivy.NativeArray], as_str: bool = False
 ) -> Union[ivy.Device, str]:
     """Get the native device handle for input array x.
 
@@ -154,7 +155,7 @@ def dev(
 # Conversions
 
 # noinspection PyShadowingNames
-def dev_to_str(device: Union[ivy.Device, str]) -> str:
+def dev_to_str(device: Union[Device, str]) -> str:
     """Convert native data type to string representation.
 
     Parameters
@@ -165,8 +166,12 @@ def dev_to_str(device: Union[ivy.Device, str]) -> str:
     Returns
     -------
      ret
-        Device string e.g. 'cuda:0'.
+       Device string representation e.g. 'cuda:0'.
 
+    Examples:
+    >>> device = ivy.Device()
+    >>> print(device)
+    'cuda:0'
     """
     return _cur_framework().dev_to_str(device)
 
@@ -465,9 +470,9 @@ def unset_default_device():
 
 # noinspection PyShadowingNames
 def to_dev(
-    x: Union[ivy.Array, ivy.NativeArray],
-    device: ivy.Device = None,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+        x: Union[ivy.Array, ivy.NativeArray],
+        device: ivy.Device = None,
+        out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """
     Move the input array x to the desired device, specified by device string.
@@ -544,15 +549,15 @@ def set_split_factor(factor, device=None):
 
 # noinspection PyShadowingNames
 def split_func_call(
-    func: Callable,
-    inputs: Iterable[Union[Union[ivy.Array, ivy.NativeArray], ivy.Container]],
-    mode: str,
-    max_chunk_size: int = None,
-    chunk_size: int = None,
-    input_axes: Union[int, Iterable[int]] = 0,
-    output_axes: Union[int, Iterable[int]] = None,
-    stop_gradients: bool = False,
-    device=None,
+        func: Callable,
+        inputs: Iterable[Union[Union[ivy.Array, ivy.NativeArray], ivy.Container]],
+        mode: str,
+        max_chunk_size: int = None,
+        chunk_size: int = None,
+        input_axes: Union[int, Iterable[int]] = 0,
+        output_axes: Union[int, Iterable[int]] = None,
+        stop_gradients: bool = False,
+        device=None,
 ) -> Iterable[Union[Union[ivy.Array, ivy.NativeArray], ivy.Container]]:
     """Call a function by splitting its inputs along a given axis, and calling the function in chunks, rather than feeding
     the entire input array at once. This can be useful to reduce memory usage of the device the arrays are on.
@@ -600,7 +605,7 @@ def split_func_call(
     chunk_size = ivy.default(
         chunk_size,
         lambda: 1
-        + int(
+                + int(
             round((max_chunk_size - 1) * ivy.split_factor(ivy.default_device(device)))
         ),
         True,
@@ -709,7 +714,7 @@ class MultiDevItem(MultiDev):
                     ret_dict[ds] = sub_item[rel_slice_obj]
                     return MultiDevItem(ret_dict)
                 else:
-                    ret_dict[ds] = sub_item[rel_slice_obj.start :]
+                    ret_dict[ds] = sub_item[rel_slice_obj.start:]
         return MultiDevItem(ret_dict)
 
     def __getitem__(self, query):
@@ -839,8 +844,8 @@ def dev_dist_array(x, devices: Union[Iterable[str], Dict[str, int]], axis=0):
         {
             ds: ivy.to_dev(x_sub, ds)
             for x_sub, ds in zip(
-                ivy.split(x, split_arg, axis, with_remainder=True), devices
-            )
+            ivy.split(x, split_arg, axis, with_remainder=True), devices
+        )
         }
     )
 
@@ -900,7 +905,7 @@ def dev_dist_iter(xs, devices: Union[Iterable[str], Dict[str, int]], axis=0):
 
 
 def dev_dist_nest(
-    args, kwargs, devices: Union[Iterable[str], Dict[str, int]], axis=0, max_depth=1
+        args, kwargs, devices: Union[Iterable[str], Dict[str, int]], axis=0, max_depth=1
 ):
     """Distribute the nested input arguments across the specified devices.
 
@@ -1166,7 +1171,7 @@ def dev_unify_iter(xs, device, mode, axis=0, transpose=False):
 
 # noinspection PyShadowingNames,PyProtectedMember
 def dev_unify_nest(
-    args: Type[MultiDev], kwargs: Type[MultiDev], device, mode, axis=0, max_depth=1
+        args: Type[MultiDev], kwargs: Type[MultiDev], device, mode, axis=0, max_depth=1
 ):
     """Unify the input nested arguments, which consist of sub-arrays spread across arbitrary devices, to unified arrays
     on the single target device.
@@ -1212,15 +1217,15 @@ def dev_unify_nest(
 
 class DevMapper(abc.ABC):
     def __init__(
-        self,
-        fn,
-        ret_fn,
-        queue_class,
-        worker_class,
-        devices,
-        timeout=None,
-        constant=None,
-        unique=None,
+            self,
+            fn,
+            ret_fn,
+            queue_class,
+            worker_class,
+            devices,
+            timeout=None,
+            constant=None,
+            unique=None,
     ):
         """Device Mapper base class.
 
@@ -1388,19 +1393,19 @@ class DevManager:
     """ """
 
     def __init__(
-        self,
-        dev_mapper=None,
-        devices: Union[Iterable[str], Dict[str, int]] = None,
-        da_dim_size=None,
-        safety_factor=1.1,
-        min_dev_dim_size=0,
-        max_dev_dim_step_ratio=0.1,
-        min_unit_dev_tune_steps=10,
-        min_sf_tune_steps=10,
-        starting_split_factor=0.0,
-        max_split_factor_step_size=0.05,
-        tune_dev_alloc=True,
-        tune_dev_splits=True,
+            self,
+            dev_mapper=None,
+            devices: Union[Iterable[str], Dict[str, int]] = None,
+            da_dim_size=None,
+            safety_factor=1.1,
+            min_dev_dim_size=0,
+            max_dev_dim_step_ratio=0.1,
+            min_unit_dev_tune_steps=10,
+            min_sf_tune_steps=10,
+            starting_split_factor=0.0,
+            max_split_factor_step_size=0.05,
+            tune_dev_alloc=True,
+            tune_dev_splits=True,
     ):
         """Create device manager, which unlike the device mapper, handles all argument cloning and distributing internally.
         The device manager only receivess a specification regarding the ratio of the batch each device should consume.
@@ -1455,8 +1460,8 @@ class DevManager:
         self._tune_da = tune_dev_alloc
         self._tune_ds = tune_dev_splits
         self._tuned = (
-            not tune_dev_alloc or self._num_devs == 1
-        ) and not tune_dev_splits
+                              not tune_dev_alloc or self._num_devs == 1
+                      ) and not tune_dev_splits
         self._first_da_tune_step = True
         self._first_ds_tune_step = True
         self._da_tune_count = 0
@@ -1621,11 +1626,11 @@ class DevManager:
         }
         self._percent_mem_inc_per_unit_da_dim = {
             k: (
-                (
-                    (self._da_tune_count - 1) * self._percent_mem_inc_per_unit_da_dim[k]
-                    + (delta_percent_mems[k] / delta_dim_size)
-                )
-                / self._da_tune_count
+                    (
+                            (self._da_tune_count - 1) * self._percent_mem_inc_per_unit_da_dim[k]
+                            + (delta_percent_mems[k] / delta_dim_size)
+                    )
+                    / self._da_tune_count
             )
             if delta_dim_size != 0
             else self._percent_mem_inc_per_unit_da_dim[k]
@@ -1639,12 +1644,12 @@ class DevManager:
         self._percent_util_inc_per_unit_da_dim = {
             k: max(
                 (
-                    (
-                        (self._da_tune_count - 1)
-                        * self._percent_util_inc_per_unit_da_dim[k]
-                        + (delta_utils[k] / delta_dim_size)
-                    )
-                    / self._da_tune_count
+                        (
+                                (self._da_tune_count - 1)
+                                * self._percent_util_inc_per_unit_da_dim[k]
+                                + (delta_utils[k] / delta_dim_size)
+                        )
+                        / self._da_tune_count
                 ),
                 0.1,
             )
@@ -1670,8 +1675,8 @@ class DevManager:
             k: min(
                 math.floor(
                     (
-                        (100 - new_dev_percent_mems[k])
-                        / max(self._percent_mem_inc_per_unit_da_dim[k], 0.1)
+                            (100 - new_dev_percent_mems[k])
+                            / max(self._percent_mem_inc_per_unit_da_dim[k], 0.1)
                     )
                     / self._safety_factor
                 ),
@@ -1700,10 +1705,10 @@ class DevManager:
 
             # check if da tuning is complete
             if (
-                self.repeated_config_check()
-                and self._unit_da_tune_count >= self._min_unit_dev_tune_steps
-                and not self._tune_ds
-                or (self._ds_tune_count >= self._min_sf_tune_steps)
+                    self.repeated_config_check()
+                    and self._unit_da_tune_count >= self._min_unit_dev_tune_steps
+                    and not self._tune_ds
+                    or (self._ds_tune_count >= self._min_sf_tune_steps)
             ):
                 self._observed_configs.clear()
                 self._percent_mem_inc_per_unit_da_dim.clear()
@@ -1785,11 +1790,11 @@ class DevManager:
         }
         self._percent_mem_inc_per_sf = {
             k: (
-                (
-                    (self._ds_tune_count - 1) * self._percent_mem_inc_per_sf[k]
-                    + (delta_percent_mems[k] / delta_sf)
-                )
-                / self._ds_tune_count
+                    (
+                            (self._ds_tune_count - 1) * self._percent_mem_inc_per_sf[k]
+                            + (delta_percent_mems[k] / delta_sf)
+                    )
+                    / self._ds_tune_count
             )
             if delta_sf != 0
             else self._percent_mem_inc_per_sf[k]
@@ -1820,11 +1825,11 @@ class DevManager:
 
         # check if ds tuning is complete
         if (
-            da_can_terminate
-            and self.repeated_config_check()
-            and self._ds_tune_count >= self._min_sf_tune_steps
-            and not self._tune_da
-            or (self._unit_da_tune_count >= self._min_unit_dev_tune_steps)
+                da_can_terminate
+                and self.repeated_config_check()
+                and self._ds_tune_count >= self._min_sf_tune_steps
+                and not self._tune_da
+                or (self._unit_da_tune_count >= self._min_unit_dev_tune_steps)
         ):
             self._observed_configs.clear()
             self._percent_mem_inc_per_sf.clear()
