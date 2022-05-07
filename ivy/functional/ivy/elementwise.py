@@ -18,6 +18,7 @@ def bitwise_left_shift(
 ) -> ivy.Array:
     """
     Shifts the bits of each element ``x1_i`` of the input array ``x1`` to the left by appending ``x2_i`` (i.e., the respective element in the input array ``x2``) zeros to the right of ``x1_i``.
+
     Parameters
     ----------
     x1
@@ -26,21 +27,23 @@ def bitwise_left_shift(
         second input array. Must be compatible with ``x1`` (see :ref:`broadcasting`). Should have an integer data type. Each element must be greater than or equal to ``0``.
     out
         optional output array, for writing the result to. It must have a shape that the inputs broadcast to.
+
     Returns
     -------
-     ret
+    ret
         an array containing the element-wise results. The returned array must have a data type determined by :ref:`type-promotion`.
     """
     return _cur_framework(x1, x2).bitwise_left_shift(x1, x2, out)
 
 
 def add(
-    x1: Union[ivy.Array, ivy.NativeArray],
-    x2: Union[ivy.Array, ivy.NativeArray],
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-) -> ivy.Array:
-    """Calculates the sum for each element ``x1_i`` of the input array ``x1``
-    with the respective element ``x2_i`` of the input array ``x2``.
+    x1: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+    x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+    out: Optional[Union[ivy.Array, ivy.Container]] = None,
+) -> Union[ivy.Array, ivy.Container]:
+    """
+    Calculates the sum for each element ``x1_i`` of the input array ``x1`` with the respective element ``x2_i`` of the
+    input array ``x2``.
 
     **Special cases**
 
@@ -62,7 +65,10 @@ def add(
     - If ``x1_i`` is either ``+0`` or ``-0`` and ``x2_i`` is a nonzero finite number, the result is ``x2_i``.
     - If ``x1_i`` is a nonzero finite number and ``x2_i`` is either ``+0`` or ``-0``, the result is ``x1_i``.
     - If ``x1_i`` is a nonzero finite number and ``x2_i`` is ``-x1_i``, the result is ``+0``.
-    - In the remaining cases, when neither ``infinity``, ``+0``, ``-0``, nor a ``NaN`` is involved, and the operands have the same mathematical sign or have different magnitudes, the sum must be computed and rounded to the nearest representable value according to IEEE 754-2019 and a supported round mode. If the magnitude is too large to represent, the operation overflows and the result is an `infinity` of appropriate mathematical sign.
+    - In the remaining cases, when neither ``infinity``, ``+0``, ``-0``, nor a ``NaN`` is involved, and the operands
+    have the same mathematical sign or have different magnitudes, the sum must be computed and rounded to the nearest
+    representable value according to IEEE 754-2019 and a supported round mode. If the magnitude is too large to
+    represent, the operation overflows and the result is an `infinity` of appropriate mathematical sign.
 
     .. note::
        Floating-point addition is a commutative operation, but not always associative.
@@ -79,17 +85,129 @@ def add(
     Returns
     -------
      ret
+        an array containing the element-wise sums. The returned array must have a data type determined by
+        :ref:`type-promotion`.
 
-        an array containing the element-wise sums. The returned array must have a data type determined by :ref:`type-promotion`.
 
-    Examples
-    --------
+    This method conforms to the `Array API Standard <https://data-apis.org/array-api/latest/>`_.
+    This docstring is an extension of the `docstring
+    <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.tan.html>`_
+    in the standard. The descriptions above assume an array input for simplicity, but the method also accepts
+    :code:`ivy.Container` instances in place of :code:`ivy.Array` or :code:`ivy.NativeArray` instances, as shown in
+    the type hints and also the examples below.
+
+    Functional Examples
+    -------------------
+
+    With :code:`ivy.Array` input:
+
     >>> x = ivy.array([1, 2, 3])
     >>> y = ivy.array([4, 5, 6])
     >>> z = ivy.add(x, y)
     >>> print(z)
     ivy.array([5, 7, 9])
 
+    >>> x = ivy.array([[1.1, 2.3, -3.6]])
+    >>> y = ivy.array([[4.8], [5.2], [6.1]])
+    >>> z = ivy.zeros((3, 3))
+    >>> ivy.add(x, y, out=z)
+    >>> print(z)
+    ivy.array([[5.9, 7.1, 1.2],
+               [6.3, 7.5, 1.6],
+               [7.2, 8.4, 2.5]])
+
+    With :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([1, 2, 3]),
+    >>>                   b=ivy.array([2, 3, 4]))
+    >>> y = ivy.Container(a=ivy.array([4, 5, 6]),
+    >>>                   b=ivy.array([5, 6, 7]))
+    >>> z = ivy.add(x, y)
+    >>> print(z)
+    {
+        a: ivy.array([5, 7, 9]),
+        b: ivy.array([7, 9, 11])
+    }
+
+    With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:
+
+    >>> x = ivy.array([[1.1, 2.3, -3.6]])
+    >>> y = ivy.Container(a=ivy.array([[4.], [5.], [6.]]),
+    >>>                   b=ivy.array([[5.], [6.], [7.]]))
+    >>> z = ivy.add(x, y)
+    >>> print(z)
+    {
+        a: ivy.array([[5.1, 6.3, 0.4],
+                      [6.1, 7.3, 1.4],
+                      [7.1, 8.3, 2.4]]),
+        b: ivy.array([[6.1, 7.3, 1.4],
+                      [7.1, 8.3, 2.4],
+                      [8.1, 9.3, 3.4]])
+    }
+
+    Instance Method Examples
+    ------------------------
+
+    Using :code:`ivy.Array` instance method:
+
+    >>> x = ivy.array([1, 2, 3])
+    >>> y = ivy.array([4, 5, 6])
+    >>> z = x.add(y)
+    >>> print(z)
+    ivy.array([5, 7, 9])
+
+    Using :code:`ivy.Container` instance method:
+
+    >>> x = ivy.Container(a=ivy.array([1, 2, 3]),
+    >>>                   b=ivy.array([2, 3, 4]))
+    >>> y = ivy.Container(a=ivy.array([4, 5, 6]),
+    >>>                   b=ivy.array([5, 6, 7]))
+    >>> z = x.add(y)
+    >>> print(z)
+    {
+        a: ivy.array([5, 7, 9]),
+        b: ivy.array([7, 9, 11])
+    }
+
+    Operator Examples
+    -----------------
+
+    With :code:`ivy.Array` instances:
+
+    >>> x = ivy.array([1, 2, 3])
+    >>> y = ivy.array([4, 5, 6])
+    >>> z = x + y
+    >>> print(z)
+    ivy.array([5, 7, 9])
+
+    With :code:`ivy.Container` instances:
+
+    >>> x = ivy.Container(a=ivy.array([1, 2, 3]),
+    >>>                   b=ivy.array([2, 3, 4]))
+    >>> y = ivy.Container(a=ivy.array([4, 5, 6]),
+    >>>                   b=ivy.array([5, 6, 7]))
+    >>> z = x + y
+    >>> print(z)
+    {
+        a: ivy.array([5, 7, 9]),
+        b: ivy.array([7, 9, 11])
+    }
+
+    With mix of :code:`ivy.Array` and :code:`ivy.Container` instances:
+
+    >>> x = ivy.array([[1.1, 2.3, -3.6]])
+    >>> y = ivy.Container(a=ivy.array([[4.], [5.], [6.]]),
+    >>>                   b=ivy.array([[5.], [6.], [7.]]))
+    >>> z = x + y
+    >>> print(z)
+    {
+        a: ivy.array([[5.1, 6.3, 0.4],
+                      [6.1, 7.3, 1.4],
+                      [7.1, 8.3, 2.4]]),
+        b: ivy.array([[6.1, 7.3, 1.4],
+                      [7.1, 8.3, 2.4],
+                      [8.1, 9.3, 3.4]])
+    }
     """
     return _cur_framework(x1, x2).add(x1, x2, out)
 
@@ -101,6 +219,7 @@ def bitwise_xor(
 ) -> ivy.Array:
     """
     Computes the bitwise XOR of the underlying binary representation of each element ``x1_i`` of the input array ``x1`` with the respective element ``x2_i`` of the input array ``x2``.
+
     Parameters
     ----------
     x1
@@ -109,9 +228,10 @@ def bitwise_xor(
         second input array. Must be compatible with ``x1`` (see :ref:`broadcasting`). Should have an integer or boolean data type.
     out
         optional output array, for writing the result to. It must have a shape that the inputs broadcast to.
+
     Returns
     -------
-     ret
+    ret
         an array containing the element-wise results. The returned array must have a data type determined by :ref:`type-promotion`.
     """
     return _cur_framework(x1, x2).bitwise_xor(x1, x2, out)
@@ -128,22 +248,32 @@ def exp(
     logarithm).
 
     **Special cases**
+
     For floating-point operands,
     - If ``x_i`` is ``NaN``, the result is ``NaN``.
     - If ``x_i`` is ``+0``, the result is ``1``.
     - If ``x_i`` is ``-0``, the result is ``1``.
     - If ``x_i`` is ``+infinity``, the result is ``+infinity``.
     - If ``x_i`` is ``-infinity``, the result is ``+0``.
+
     Parameters
     ----------
     x
         input array. Should have a floating-point data type.
     out
         optional output array, for writing the result to. It must have a shape that the inputs broadcast to.
+
     Returns
     -------
-     ret
+    ret
         an array containing the evaluated exponential function result for each element in ``x``. The returned array must have a floating-point data type determined by :ref:`type-promotion`.
+    
+    Examples
+    --------
+    >>> x = ivy.array([1., 2., 3.])
+    >>> y = ivy.exp(x)
+    >>> print(y)
+    ivy.array([2.71828183, 7.3890561 , 20.08553692])
 
     """
     return _cur_framework(x).exp(x, out)
@@ -159,22 +289,26 @@ def expm1(
 
     .. note::
        The purpose of this function is to calculate ``exp(x)-1.0`` more accurately when `x` is close to zero. Accordingly, conforming implementations should avoid implementing this function as simply ``exp(x)-1.0``. See FDLIBM, or some other IEEE 754-2019 compliant mathematical library, for a potential reference implementation.
+
     **Special cases**
+
     For floating-point operands,
     - If ``x_i`` is ``NaN``, the result is ``NaN``.
     - If ``x_i`` is ``+0``, the result is ``+0``.
     - If ``x_i`` is ``-0``, the result is ``-0``.
     - If ``x_i`` is ``+infinity``, the result is ``+infinity``.
     - If ``x_i`` is ``-infinity``, the result is ``-1``.
+
     Parameters
     ----------
     x
         input array. Should have a numeric data type.
     out
         optional output array, for writing the result to. It must have a shape that the inputs broadcast to.
+
     Returns
     -------
-     ret
+    ret
         an array containing the evaluated result for each element in ``x``. The returned array must have a floating-point data type determined by :ref:`type-promotion`.
 
     """
@@ -197,7 +331,7 @@ def bitwise_invert(
 
     Returns
     -------
-     ret
+    ret
         an array containing the element-wise results. The returned array must have the same data type as x.
 
     Examples
@@ -231,7 +365,7 @@ def bitwise_and(
 
     Returns
     -------
-     ret
+    ret
         an array containing the element-wise results. The returned array must have a data type determined by :ref:`type-promotion`.
 
     """
@@ -267,11 +401,11 @@ def ceil(
 
     Returns
     -------
-     ret
+    ret
         an array containing the rounded result for each element in ``x``. The returned array must have the same data type as ``x``.
 
-    Examples:
-    ---------
+    Examples
+    --------
     >>> x = ivy.array([0.1, 0, -0.1])
     >>> y = ivy.ceil(x)
     >>> print(y)
@@ -310,7 +444,7 @@ def floor(
 
     Returns
     -------
-     ret
+    ret
         an array containing the rounded result for each element in ``x``. The returned array must have the same data type as ``x``.
 
     """
@@ -324,16 +458,16 @@ def isfinite(
     """Tests each element ``x_i`` of the input array ``x`` to determine if
     finite (i.e., not ``NaN`` and not equal to positive or negative infinity).
 
-     Parameters
-     ----------
-     x
+    Parameters
+    ----------
+    x
         input array. Should have a numeric data type.
     out
-         optional output array, for writing the result to. It must have a shape that the inputs broadcast to.
+        optional output array, for writing the result to. It must have a shape that the inputs broadcast to.
 
-     Returns
-     -------
-      ret
+    Returns
+    -------
+    ret
         an array containing test results. An element ``out_i`` is ``True`` if ``x_i`` is finite and ``False`` otherwise. The returned array must have a data type of ``bool``.
 
     """
@@ -368,7 +502,7 @@ def asin(
 
     Returns
     -------
-     ret
+    ret
         an array containing the inverse sine of each element in ``x``. The returned array must have a floating-point data type determined by :ref:`type-promotion`.
 
     """
@@ -381,6 +515,7 @@ def isinf(
 ) -> ivy.Array:
     """
     Tests each element x_i of the input array x to determine if equal to positive or negative infinity.
+
     Parameters
     ----------
     x
@@ -390,7 +525,7 @@ def isinf(
 
     Returns
     -------
-     ret
+    ret
         an array containing test results. An element out_i is True if x_i is either positive or negative infinity and False otherwise. The returned array must have a data type of bool.
     """
     return _cur_framework(x).isinf(x, out)
@@ -412,9 +547,10 @@ def greater(
         Input array.
     f
         Machine learning framework. Inferred from inputs if None.
+
     Returns
     -------
-     ret
+    ret
         an array containing the element-wise results. The returned array must have a data type of bool.
 
     Examples:
@@ -444,7 +580,7 @@ def greater_equal(
 
     Returns
     -------
-     ret
+    ret
         an array containing the element-wise results. The returned array must have a data type of bool.
 
     """
@@ -512,7 +648,7 @@ def multiply(
 
     Returns
     -------
-     ret
+    ret
         an array containing the element-wise products. The returned array must have a data type determined by :ref:`Type Promotion Rules`.
 
     """
@@ -547,7 +683,7 @@ def asinh(
 
     Returns
     -------
-     ret
+    ret
         an array containing the inverse hyperbolic sine of each element in ``x``. The returned array must have a floating-point data type determined by :ref:`type-promotion`.
 
     """
@@ -562,6 +698,7 @@ def sign(
     of the input array ``x``.
 
     **Special cases**
+
     - If ``x_i`` is less than ``0``, the result is ``-1``.
     - If ``x_i`` is either ``-0`` or ``+0``, the result is ``0``.
     - If ``x_i`` is greater than ``0``, the result is ``+1``.
@@ -574,7 +711,7 @@ def sign(
 
     Returns
     -------
-      return
+    ret
         an array containing the evaluated result for each element in ``x``. The returned array must have the same data type as ``x``.
 
     """
@@ -609,7 +746,7 @@ def sqrt(
 
     Returns
     -------
-      return
+    ret
         an array containing the square root of each element in ``x``. The returned array must have a floating-point data type determined by :ref:`type-promotion`.
 
     """
@@ -643,7 +780,7 @@ def cosh(
 
     Returns
     -------
-      return
+    ret
         an array containing the hyperbolic cosine of each element in ``x``. The returned array must have a floating-point data type determined by :ref:`type-promotion`.
 
     """
@@ -661,12 +798,14 @@ def log(
     ``x``.
 
     **Special cases**
+
     For floating-point operands,
     - If ``x_i`` is ``NaN``, the result is ``NaN``.
     - If ``x_i`` is less than ``0``, the result is ``NaN``.
     - If ``x_i`` is either ``+0`` or ``-0``, the result is ``-infinity``.
     - If ``x_i`` is ``1``, the result is ``+0``.
     - If ``x_i`` is ``+infinity``, the result is ``+infinity``.
+
     Parameters
     ----------
     x
@@ -676,7 +815,7 @@ def log(
 
     Returns
     -------
-      return
+    ret
         an array containing the evaluated natural logarithm for each element in ``x``. The returned array must have a floating-point data type determined by :ref:`type-promotion`.
 
     """
@@ -710,7 +849,7 @@ def log2(
 
     Returns
     -------
-      return
+    ret
         an array containing the evaluated base ``2`` logarithm for each element in ``x``. The returned array must have a floating-point data type determined by :ref:`type-promotion`.
 
     """
@@ -744,7 +883,7 @@ def log10(
 
     Returns
     -------
-      return
+    ret
         an array containing the evaluated base ``10`` logarithm for each element in ``x``. The returned array must have a floating-point data type determined by :ref:`type-promotion`.
 
     """
@@ -767,7 +906,7 @@ def log1p(
 
     Returns
     -------
-      return
+    ret
         a new array containing the evaluated result for each element in x.
 
     """
@@ -790,7 +929,7 @@ def isnan(
 
     Returns
     -------
-      return
+    ret
         an array containing test results. An element ``out_i`` is ``True`` if ``x_i`` is ``NaN`` and ``False`` otherwise. The returned array should have a data type of ``bool``.
 
     """
@@ -817,10 +956,10 @@ def less(
 
     Returns
     -------
-      return
+    ret
         an array containing the element-wise results. The returned array must have a data type of ``bool``.
 
-    Examples:
+    Examples
     ---------
     >>> x = ivy.less(ivy.array([1,2,3]),ivy.array([2,2,2]))
     >>> print(x)
@@ -899,7 +1038,7 @@ def acos(
 
     Returns
     -------
-      return
+    ret
         an array containing the inverse cosine of each element in x. The returned array must have a floating-point data type determined by :ref:`type-promotion`.
 
     """
@@ -925,7 +1064,7 @@ def logical_not(
 
     Returns
     -------
-     ret
+    ret
         an array containing the element-wise results. The returned array must have a data type of ``bool``.
 
     """
@@ -939,18 +1078,19 @@ def logical_xor(
 ) -> ivy.Array:
     """
     Computes the bitwise XOR of the underlying binary representation of each element ``x1_i`` of the input array ``x1`` with the respective element ``x2_i`` of the input array ``x2``.
+
     Parameters
     ----------
     x1
         first input array. Should have an integer or boolean data type.
     x2
         second input array. Must be compatible with ``x1`` (see :ref:`broadcasting`). Should have an integer or boolean data type.
-    out:
+    out
         optional output array, for writing the result to. It must have a shape that the inputs broadcast to.
 
     Returns
     -------
-     ret
+    ret
         an array containing the element-wise results. The returned array must have a data type determined by :ref:`type-promotion`.
     """
     return _cur_framework(x1, x2).logical_xor(x1, x2, out)
@@ -978,8 +1118,8 @@ def logical_or(
 
     Returns
     -------
-      return
-        out (array) – an array containing the element-wise results. The returned array must have a data type of ``bool``.
+    ret
+        an array containing the element-wise results. The returned array must have a data type of ``bool``.
 
     """
     return _cur_framework(x1, x2).logical_or(x1, x2, out)
@@ -1005,9 +1145,8 @@ def logical_and(
 
     Returns
     -------
-      return
-        out (array) – an array containing the element-wise results.
-        The returned array must have a data type of bool.
+    ret
+        an array containing the element-wise results. The returned array must have a data type of bool.
 
     """
     return _cur_framework(x1, x2).logical_and(x1, x2, out)
@@ -1039,7 +1178,7 @@ def acosh(
 
     Returns
     -------
-      return
+    ret
         an array containing the inverse hyperbolic cosine of each element in x. The returned array must have a floating-point data type determined by :ref:`type-promotion`.
 
     """
@@ -1073,7 +1212,7 @@ def sin(
 
     Returns
     -------
-      return
+    ret
         an array containing the sine of each element in ``x``. The returned array must have a floating-point data type determined by :ref:`type-promotion`.
 
     """
@@ -1093,7 +1232,7 @@ def negative(
 
     Returns
     -------
-      return
+    ret
         an array containing the evaluated result for each element in x
 
     """
@@ -1120,7 +1259,7 @@ def not_equal(
 
     Returns
     -------
-      return
+    ret
         an array containing the element-wise results. The returned array must have a data type of ``bool``.
 
     """
@@ -1146,7 +1285,7 @@ def floor_divide(
 
     Returns
     -------
-      return
+    ret
         an array containing the element-wise results. The returned array must have a numeric data type.
 
     """
@@ -1173,7 +1312,7 @@ def bitwise_or(
 
     Returns
     -------
-      return
+    ret
         an array containing the element-wise results. The returned array must have a data type determined by :ref:`type-promotion`.
 
     """
@@ -1207,7 +1346,7 @@ def sinh(
 
     Returns
     -------
-      return
+    ret
         an array containing the hyperbolic sine of each element in ``x``. The returned array must have a floating-point data type determined by :ref:`type-promotion`.
 
     """
@@ -1218,7 +1357,7 @@ def positive(
     x: Union[ivy.Array, ivy.NativeArray],
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
-    """Returns a new array with the positive value of each element in x.
+    """Returns a new array with the positive value of each element in ``x``.
 
     Parameters
     ----------
@@ -1226,9 +1365,9 @@ def positive(
         Input array.
 
     Returns
-     -------
+    -------
     ret
-        A new array with the positive value of each element in x.
+        A new array with the positive value of each element in ``x``.
 
     """
     return _cur_framework(x).positive(x, out)
@@ -1238,7 +1377,7 @@ def square(
     x: Union[ivy.Array, ivy.NativeArray],
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
-    """each element x_i of the input array x.
+    """each element ``x_i`` of the input array ``x``.
 
     Parameters
     ----------
@@ -1246,9 +1385,9 @@ def square(
         Input array.
 
     Returns
-     -------
+    -------
     ret
-        an array containing the evaluated result for each element in x.
+        an array containing the evaluated result for each element in ``x``.
 
     """
     return _cur_framework(x).square(x, out)
@@ -1259,13 +1398,14 @@ def logaddexp(
     x2: Union[ivy.Array, ivy.NativeArray],
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
-
     """Calculates the logarithm of the sum of exponentiations ``log(exp(x1) +
     exp(x2))`` for each element ``x1_i`` of the input array ``x1`` with the
     respective element ``x2_i`` of the input array ``x2``.
 
     **Special cases**
+
     For floating-point operands,
+
     - If either ``x1_i`` or ``x2_i`` is ``NaN``, the result is ``NaN``.
     - If ``x1_i`` is ``+infinity`` and ``x2_i`` is not ``NaN``, the result is ``+infinity``.
     - If ``x1_i`` is not ``NaN`` and ``x2_i`` is ``+infinity``, the result is ``+infinity``.
@@ -1281,11 +1421,10 @@ def logaddexp(
 
     Returns
     -------
-      return
+    ret
         an array containing the element-wise results. The returned array must have a floating-point data type determined by :ref:`type-promotion`.
 
     """
-
     return _cur_framework(x1, x2).logaddexp(x1, x2, out)
 
 
@@ -1301,7 +1440,7 @@ def round(
         Input array containing elements to round.
 
     Returns
-     -------
+    -------
     ret
         An array of the same shape and type as x, with the elements rounded to integers.
 
@@ -1317,9 +1456,11 @@ def trunc(
     number that is closest to but no greater than x_i.
 
     **Special cases**
+
     - If ``x_i`` is already an integer-valued, the result is ``x_i``.
 
     For floating-point operands,
+
     - If ``x_i`` is ``+infinity``, the result is ``+infinity``.
     - If ``x_i`` is ``-infinity``, the result is ``-infinity``.
     - If ``x_i`` is ``+0``, the result is ``+0``.
@@ -1332,10 +1473,10 @@ def trunc(
         input array. Should have a numeric data type.
 
     Returns
-     -------
+    -------
     ret
         an array containing the values before the decimal point for each element ``x``. The returned array must have
-        the same data type as x.
+        the same data type as ``x``.
 
     """
     return _cur_framework(x).trunc(x, out)
@@ -1369,7 +1510,7 @@ def abs(
         optional output array, for writing the result to. It must have a shape that the inputs broadcast to.
 
     Returns
-     -------
+    -------
     ret
         an array containing the absolute value of each element in ``x``. The returned array must have the same data type as ``x``.
 
@@ -1377,23 +1518,96 @@ def abs(
     return _cur_framework(x).abs(x, out)
 
 
-def tan(
-    x: Union[ivy.Array, ivy.NativeArray],
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-) -> ivy.Array:
-    """Computes tangent element-wise. Equivalent to f.sin(x)/f.cos(x) element-
-    wise.
+def tan(x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        out: Optional[Union[ivy.Array, ivy.Container]] = None)\
+        -> Union[ivy.Array, ivy.Container]:
+    """
+    Calculates an implementation-dependent approximation to the tangent, having domain ``(-infinity, +infinity)`` and
+    codomain ``(-infinity, +infinity)``, for each element ``x_i`` of the input array ``x``. Each element ``x_i``
+    is assumed to be expressed in radians.
+
+    **Special cases**
+
+    For floating-point operands,
+
+    - If ``x_i`` is ``NaN``, the result is ``NaN``.
+    - If ``x_i`` is ``+0``, the result is ``+0``.
+    - If ``x_i`` is ``-0``, the result is ``-0``.
+    - If ``x_i`` is either ``+infinity`` or ``-infinity``, the result is ``NaN``.
 
     Parameters
     ----------
     x
-        Input array, in radians (2*pi radian equals 360 degrees).
+        input array whose elements are expressed in radians. Should have a floating-point data type.
+    out
+        optional output, for writing the result to. It must have a shape that the inputs broadcast to.
 
     Returns
-     -------
+    -------
     ret
-        The tangent of x element-wise.
+        an array containing the tangent of each element in ``x``. The return must have a floating-point data type
+        determined by :ref:`type-promotion`.
 
+
+    This method conforms to the `Array API Standard <https://data-apis.org/array-api/latest/>`_.
+    This docstring is an extension of the `docstring
+    <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.tan.html>`_
+    in the standard. The descriptions above assume an array input for simplicity, but the method also accepts
+    :code:`ivy.Container` instances in place of :code:`ivy.Array` or :code:`ivy.NativeArray` instances, as shown in
+    the type hints and also the examples below.
+
+    Functional Examples
+    -------------------
+
+    With :code:`ivy.Array` input:
+
+    >>> x = ivy.array([0, 1, 2])
+    >>> y = ivy.tan(x)
+    >>> print(y)
+    ivy.array([0., 1.5574077, -2.1850398])
+
+    >>> x = ivy.array([0.5, -0.7, 2.4])
+    >>> y = ivy.zeros(3)
+    >>> ivy.tan(x, out=y)
+    >>> print(y)
+    ivy.array([0.5463025, -0.8422884, -0.91601413])
+
+    >>> x = ivy.array([[1.1, 2.2, 3.3],
+    >>>                [-4.4, -5.5, -6.6]])
+    >>> ivy.tan(x, out=x)
+    >>> print(x)
+    ivy.array([[ 1.9647598, -1.3738229,  0.1597457],
+               [-3.0963247,  0.9955841, -0.3278579]])
+
+    With :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
+    >>> y = ivy.tan(x)
+    >>> print(y)
+    {
+        a: ivy.array([0., 1.5574077, -2.1850398]),
+        b: ivy.array([-0.14254655, 1.1578213, -3.380515])
+    }
+
+    Instance Method Examples
+    ------------------------
+
+    Using :code:`ivy.Array` instance method:
+
+    >>> x = ivy.array([0., 1., 2.])
+    >>> y = x.tan()
+    >>> print(y)
+    ivy.array([0., 1.5574077, -2.1850398])
+
+    Using :code:`ivy.Container` instance method:
+
+    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
+    >>> y = x.tan()
+    >>> print(y)
+    {
+        a: ivy.array([0., 1.5574077, -2.1850398]),
+        b: ivy.array([-0.14254655, 1.1578213, -3.380515])
+    }
     """
     return _cur_framework(x).tan(x, out)
 
@@ -1408,12 +1622,15 @@ def atan(
     ``x``. Each element-wise result is expressed in radians.
 
     **Special cases**
+
     For floating-point operands,
+
     - If ``x_i`` is ``NaN``, the result is ``NaN``.
     - If ``x_i`` is ``+0``, the result is ``+0``.
     - If ``x_i`` is ``-0``, the result is ``-0``.
     - If ``x_i`` is ``+infinity``, the result is an implementation-dependent approximation to ``+π/2``.
     - If ``x_i`` is ``-infinity``, the result is an implementation-dependent approximation to ``-π/2``.
+
     Parameters
     ----------
     x
@@ -1422,7 +1639,7 @@ def atan(
         optional output array, for writing the result to. It must have a shape that the inputs broadcast to.
 
     Returns
-     -------
+    -------
     ret
         an array containing the inverse tangent of each element in ``x``. The returned array must have a floating-point data type determined by :ref:`type-promotion`.
 
@@ -1479,14 +1696,13 @@ def atan2(
     ----------
     x1
         input array corresponding to the y-coordinates. Should have a floating-point data type.
-
     x2
         input array corresponding to the x-coordinates. Must be compatible with ``x1``. Should have a floating-point data type.
     out
         optional output array, for writing the result to. It must have a shape that the inputs broadcast to.
 
     Returns
-     -------
+    -------
     ret
         an array containing the inverse tangent of the quotient ``x1/x2``. The returned array must have a floating-point data type.
 
@@ -1506,7 +1722,7 @@ def tanh(
         Input array.
 
     Returns
-     -------
+    -------
     ret
         A new array with the hyperbolic tangent of the elements of x.
 
@@ -1527,7 +1743,7 @@ def atanh(
         input array whose elements each represent the area of a hyperbolic sector. Should have a floating-point data type.
 
     Returns
-     -------
+    -------
     ret
         an array containing the inverse hyperbolic tangent of each element in x. The returned array must have a floating-point data type determined by Type Promotion Rules.
 
@@ -1558,7 +1774,7 @@ def subtract(
         optional output array, for writing the result to. It must have a shape that the inputs broadcast to.
 
     Returns
-     -------
+    -------
     ret
         an array containing the element-wise differences.
 
@@ -1582,7 +1798,7 @@ def divide(
         divisor input array. Must be compatible with x1 (see Broadcasting). Should have a numeric data type.
 
     Returns
-     -------
+    -------
     ret
         an array containing the element-wise results. The returned array must have a floating-point data type
         determined by Type Promotion Rules.
@@ -1604,8 +1820,11 @@ def pow(
     .. note::
        If both ``x1`` and ``x2`` have integer data types, the result of ``pow`` when ``x2_i`` is negative (i.e., less than zero) is unspecified and thus implementation-dependent.
        If ``x1`` has an integer data type and ``x2`` has a floating-point data type, behavior is implementation-dependent (type promotion between data type "kinds" (integer versus floating-point) is unspecified).
+
     **Special cases**
+
     For floating-point operands,
+
     - If ``x1_i`` is not equal to ``1`` and ``x2_i`` is ``NaN``, the result is ``NaN``.
     - If ``x2_i`` is ``+0``, the result is ``1``, even if ``x1_i`` is ``NaN``.
     - If ``x2_i`` is ``-0``, the result is ``1``, even if ``x1_i`` is ``NaN``.
@@ -1630,6 +1849,7 @@ def pow(
     - If ``x1_i`` is ``-0``, ``x2_i`` is less than ``0``, and ``x2_i`` is an odd integer value, the result is ``-infinity``.
     - If ``x1_i`` is ``-0``, ``x2_i`` is less than ``0``, and ``x2_i`` is not an odd integer value, the result is ``+infinity``.
     - If ``x1_i`` is less than ``0``, ``x1_i`` is a finite number, ``x2_i`` is a finite number, and ``x2_i`` is not an integer value, the result is ``NaN``.
+
     Parameters
     ----------
     x1
@@ -1640,7 +1860,7 @@ def pow(
         optional output array, for writing the result to. It must have a shape that the inputs broadcast to.
 
     Returns
-     -------
+    -------
     ret
         an array containing the element-wise results. The returned array must have a data type determined by :ref:`type-promotion`.
 
@@ -1696,7 +1916,7 @@ def remainder(
         optional output array, for writing the result to. It must have a shape that the inputs broadcast to.
 
     Returns
-     -------
+    -------
     ret
         an array containing the element-wise results. Each element-wise result must have the same sign as the respective element ``x2_i``. The returned array must have a data type determined by :ref:`Type Promotion Rules`.
 
@@ -1726,9 +1946,9 @@ def bitwise_right_shift(
         optional output array, for writing the result to. It must have a shape that the inputs broadcast to.
 
     Returns
-     -------
+    -------
     ret
-        out (array) – an array containing the element-wise results. The returned array must have a data type determined by :ref:`Type Promotion Rules`.
+        an array containing the element-wise results. The returned array must have a data type determined by :ref:`Type Promotion Rules`.
 
     """
     return _cur_framework(x1, x2).bitwise_right_shift(x1, x2, out)
@@ -1750,7 +1970,7 @@ def equal(
         second input array. Must be compatible with x1 (with Broadcasting). May have any data type.
 
     Returns
-     -------
+    -------
     ret
         an array containing the element-wise results. The returned array must have a data type of bool.
 
@@ -1766,7 +1986,7 @@ def erf(
     x: Union[ivy.Array, ivy.NativeArray],
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
-    """Computes the Gauss error function of x element-wise.
+    """Computes the Gauss error function of ``x`` element-wise.
 
     Parameters
     ----------
@@ -1774,7 +1994,7 @@ def erf(
         Value to compute exponential for.
 
     Returns
-     -------
+    -------
     ret
         The Gauss error function of x.
 
@@ -1797,7 +2017,7 @@ def minimum(
         Tensor containing minimum values, must be broadcastable to x.
 
     Returns
-     -------
+    -------
     ret
         An array with the elements of x, but clipped to not exceed the y values.
 
@@ -1820,7 +2040,7 @@ def maximum(
         Tensor containing maximum values, must be broadcastable to x.
 
     Returns
-     -------
+    -------
     ret
         An array with the elements of x, but clipped to not be lower than the y values.
 
