@@ -289,7 +289,6 @@ def sum(
     ivy.array(1.3)
 
     """
-
     return _cur_framework(x).sum(x, axis, dtype, keepdims, out=out)
 
 

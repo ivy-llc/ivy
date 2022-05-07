@@ -1,5 +1,6 @@
 """Collection of PyTorch general functions, wrapped to fit Ivy syntax and
-signature."""
+signature.
+"""
 
 # global
 import ivy

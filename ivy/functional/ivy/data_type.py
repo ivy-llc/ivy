@@ -112,7 +112,6 @@ def broadcast_to(
         an array having a specified shape. Must have the same data type as x.
 
     """
-
     return _cur_framework(x).broadcast_to(x, shape)
 
 
