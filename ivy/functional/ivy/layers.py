@@ -128,7 +128,6 @@ def scaled_dot_product_attention(q, k, v, scale, mask=None):
         The output following application of scaled dot-product attention. *[batch_shape,num_queries,feat_dim]*
 
     """
-
     # BS x Q x K
     sim = ivy.einsum("... q f, ... k f -> ... q k", q, k) * scale
 
@@ -196,7 +195,6 @@ def multi_head_attention(
         The output following application of multi-head attention. *[batch_shape,num_queries,out_feat_dim]*
 
     """
-
     # BS x Q x (HxF)
     q = to_q_fn(x, v=to_q_v) if ivy.exists(to_q_fn) else x
 
@@ -506,7 +504,6 @@ def lstm_update(
         hidden state for all timesteps *[batch_shape,t,out]* and cell state for last timestep *[batch_shape,out]*
 
     """
-
     # get shapes
     x_shape = list(x.shape)
     batch_shape = x_shape[:-2]

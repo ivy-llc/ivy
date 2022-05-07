@@ -24,7 +24,7 @@ def random_uniform(
     is equally likely to be drawn by uniform.
 
     Parameters
-    -----------
+    ----------
     low
         Lower boundary of the output interval. All values generated will be greater than or equal to ``low``.
     high

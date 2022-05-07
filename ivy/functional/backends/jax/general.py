@@ -1,5 +1,6 @@
 """Collection of Jax general functions, wrapped to fit Ivy syntax and
-signature."""
+signature.
+"""
 
 # global
 from optparse import Option

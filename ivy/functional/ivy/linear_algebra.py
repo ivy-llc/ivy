@@ -90,7 +90,7 @@ def vector_norm(
     keepdims: bool = False,
     ord: Union[int, float, Literal[inf, -inf]] = 2,
 ) -> ivy.Array:
-    """Computes the vector norm of a vector (or batch of vectors) ``x``.
+    r"""Computes the vector norm of a vector (or batch of vectors) ``x``.
 
     Parameters
     ----------
@@ -102,6 +102,7 @@ def vector_norm(
         If ``True``, the axes (dimensions) specified by ``axis`` must be included in the result as singleton dimensions, and, accordingly, the result must be compatible with the input array (see :ref:`broadcasting`). Otherwise, if ``False``, the axes (dimensions) specified by ``axis`` must not be included in the result. Default: ``False``.
     ord
         order of the norm. The following mathematical norms must be supported:
+
         +------------------+----------------------------+
         | ord              | description                |
         +==================+============================+
@@ -113,7 +114,9 @@ def vector_norm(
         +------------------+----------------------------+
         | (int,float >= 1) | p-norm                     |
         +------------------+----------------------------+
+
         The following non-mathematical "norms" must be supported:
+
         +------------------+--------------------------------+
         | ord              | description                    |
         +==================+================================+
@@ -127,6 +130,7 @@ def vector_norm(
         +------------------+--------------------------------+
         | (int,float < 1)  | sum(abs(a)\*\*ord)\*\*(1./ord) |
         +------------------+--------------------------------+
+
         Default: ``2``.
 
     Returns
@@ -135,7 +139,6 @@ def vector_norm(
         an array containing the vector norms. If ``axis`` is ``None``, the returned array must be a zero-dimensional array containing a vector norm. If ``axis`` is a scalar value (``int`` or ``float``), the returned array must have a rank which is one less than the rank of ``x``. If ``axis`` is a ``n``-tuple, the returned array must have a rank which is ``n`` less than the rank of ``x``. The returned array must have a floating-point data type determined by :ref:`type-promotion`.
 
     """
-
     if ord == -float("inf"):
         return ivy.reduce_min(ivy.abs(x), axis, keepdims)
     elif ord == float("inf"):
@@ -149,31 +152,27 @@ def vector_norm(
 def svd(
     x: Union[ivy.Array, ivy.NativeArray], full_matrices: bool = True
 ) -> Union[ivy.Array, Tuple[ivy.Array, ...]]:
-    """Singular Value Decomposition.
-
-    When x is a 2D array, it is factorized as u @ numpy.diag(s) @ vh = (u * s) @ vh, where u and vh are 2D unitary
-    arrays and s is a 1D array of a’s singular values. When x is higher-dimensional, SVD is applied in batched mode.
+    """Returns a singular value decomposition A = USVh of a matrix (or a stack of matrices) ``x``, where ``U`` is a matrix (or a stack of matrices) with orthonormal columns, ``S`` is a vector of non-negative numbers (or stack of vectors), and ``Vh`` is a matrix (or a stack of matrices) with orthonormal rows.
 
     Parameters
     ----------
     x
-        Input array with number of dimensions >= 2.
+        input array having shape ``(..., M, N)`` and whose innermost two dimensions form matrices on which to perform singular value decomposition. Should have a floating-point data type.
+    full_matrices
+        If ``True``, compute full-sized ``U`` and ``Vh``, such that ``U`` has shape ``(..., M, M)`` and ``Vh`` has shape ``(..., N, N)``. If ``False``, compute on the leading ``K`` singular vectors, such that ``U`` has shape ``(..., M, K)`` and ``Vh`` has shape ``(..., K, N)`` and where ``K = min(M, N)``. Default: ``True``.
 
     Returns
     -------
+    ..
+      NOTE: once complex numbers are supported, each square matrix must be Hermitian.
     ret
-        urn:
-        u -> { (…, M, M), (…, M, K) } array \n
-        Unitary array(s). The first (number of dims - 2) dimensions have the same size as those of the input a.
-        The size of the last two dimensions depends on the value of full_matrices.
+        a namedtuple ``(U, S, Vh)`` whose
 
-        s -> (…, K) array \n
-        Vector(s) with the singular values, within each vector sorted in descending ord.
-        The first (number of dims - 2) dimensions have the same size as those of the input a.
+        -   first element must have the field name ``U`` and must be an array whose shape depends on the value of ``full_matrices`` and contain matrices with orthonormal columns (i.e., the columns are left singular vectors). If ``full_matrices`` is ``True``, the array must have shape ``(..., M, M)``. If ``full_matrices`` is ``False``, the array must have shape ``(..., M, K)``, where ``K = min(M, N)``. The first ``x.ndim-2`` dimensions must have the same shape as those of the input ``x``.
+        -   second element must have the field name ``S`` and must be an array with shape ``(..., K)`` that contains the vector(s) of singular values of length ``K``, where ``K = min(M, N)``. For each vector, the singular values must be sorted in descending order by magnitude, such that ``s[..., 0]`` is the largest value, ``s[..., 1]`` is the second largest value, et cetera. The first ``x.ndim-2`` dimensions must have the same shape as those of the input ``x``.
+        -   third element must have the field name ``Vh`` and must be an array whose shape depends on the value of ``full_matrices`` and contain orthonormal rows (i.e., the rows are the right singular vectors and the array is the adjoint). If ``full_matrices`` is ``True``, the array must have shape ``(..., N, N)``. If ``full_matrices`` is ``False``, the array must have shape ``(..., K, N)`` where ``K = min(M, N)``. The first ``x.ndim-2`` dimensions must have the same shape as those of the input ``x``.
 
-        vh -> { (…, N, N), (…, K, N) } array \n
-        Unitary array(s). The first (number of dims - 2) dimensions have the same size as those of the input a.
-        The size of the last two dimensions depends on the value of full_matrices.
+        Each returned array must have the same floating-point data type as ``x``.
 
     """
     return _cur_framework(x).svd(x, full_matrices)
@@ -182,7 +181,7 @@ def svd(
 def outer(
     x1: Union[ivy.Array, ivy.NativeArray], x2: Union[ivy.Array, ivy.NativeArray]
 ) -> ivy.Array:
-    """returns the outer product of two vectors ``x1`` and ``x2``.
+    """Returns the outer product of two vectors ``x1`` and ``x2``.
 
     Parameters
     ----------
@@ -345,7 +344,8 @@ def matmul(
 
 def matrix_power(x: Union[ivy.Array, ivy.NativeArray], n: int) -> ivy.Array:
     """Raises a square matrix (or a stack of square matrices) x to an integer
-    power n."""
+    power n.
+    """
     return _cur_framework(x).matrix_power(x, n)
 
 
@@ -398,7 +398,6 @@ def tensordot(
         The tensor contraction of x1 and x2 over the specified axes.
 
     """
-
     return _cur_framework(x1, x2).tensordot(x1, x2, axes)
 
 
@@ -449,13 +448,13 @@ def trace(x: Union[ivy.Array, ivy.NativeArray], offset: int = 0) -> ivy.Array:
 
          The returned array must have the same data type as ``x``.
 
-     Examples
-     --------
-     >>> x = ivy.array([[1.0, 2.0],[3.0, 4.0]])
-     >>> offset = 0
-     >>> y = ivy.trace(x, offset)
-     >>> print(y)
-     ivy.array(5.)
+    Examples
+    --------
+    >>> x = ivy.array([[1.0, 2.0],[3.0, 4.0]])
+    >>> offset = 0
+    >>> y = ivy.trace(x, offset)
+    >>> print(y)
+    ivy.array(5.)
 
     """
     return _cur_framework(x).trace(x, offset)
@@ -669,7 +668,7 @@ def cross(
 def vector_to_skew_symmetric_matrix(
     vector: Union[ivy.Array, ivy.NativeArray]
 ) -> ivy.Array:
-    """Given vector :math:`\mathbf{a}\in\mathbb{R}^3`, return associated skew-symmetric matrix
+    r"""Given vector :math:`\mathbf{a}\in\mathbb{R}^3`, return associated skew-symmetric matrix
     :math:`[\mathbf{a}]_×\in\mathbb{R}^{3×3}` satisfying :math:`\mathbf{a}×\mathbf{b}=[\mathbf{a}]_×\mathbf{b}`.\n
     `[reference] <https://en.wikipedia.org/wiki/Skew-symmetric_matrix#Cross_product>`_
 

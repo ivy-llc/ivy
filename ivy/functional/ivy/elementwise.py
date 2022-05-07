@@ -553,8 +553,8 @@ def greater(
     ret
         an array containing the element-wise results. The returned array must have a data type of bool.
 
-    Examples:
-    ---------
+    Examples
+    --------
     >>> x = ivy.greater(ivy.array([1,2,3]),ivy.array([2,2,2]))
     >>> print(x)
     ivy.array([False, False,  True])
@@ -702,6 +702,7 @@ def sign(
     - If ``x_i`` is less than ``0``, the result is ``-1``.
     - If ``x_i`` is either ``-0`` or ``+0``, the result is ``0``.
     - If ``x_i`` is greater than ``0``, the result is ``+1``.
+
     Parameters
     ----------
     x
@@ -784,7 +785,6 @@ def cosh(
         an array containing the hyperbolic cosine of each element in ``x``. The returned array must have a floating-point data type determined by :ref:`type-promotion`.
 
     """
-
     return _cur_framework(x).cosh(x, out)
 
 
@@ -960,7 +960,7 @@ def less(
         an array containing the element-wise results. The returned array must have a data type of ``bool``.
 
     Examples
-    ---------
+    --------
     >>> x = ivy.less(ivy.array([1,2,3]),ivy.array([2,2,2]))
     >>> print(x)
     ivy.array([True, False, False])
@@ -1377,7 +1377,7 @@ def square(
     x: Union[ivy.Array, ivy.NativeArray],
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
-    """each element ``x_i`` of the input array ``x``.
+    """Each element ``x_i`` of the input array ``x``.
 
     Parameters
     ----------
@@ -1747,7 +1747,8 @@ def atanh(
     ret
         an array containing the inverse hyperbolic tangent of each element in x. The returned array must have a floating-point data type determined by Type Promotion Rules.
 
-    Examples:
+    Examples
+    --------
     >>> x = ivy.atanh(ivy.array([0, -0.5]))
     >>> print(x)
     ivy.array([ 0., -0.54930614])
