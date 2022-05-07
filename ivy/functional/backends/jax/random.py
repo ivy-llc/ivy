@@ -1,5 +1,6 @@
 """Collection of Jax random functions, wrapped to fit Ivy syntax and
-signature."""
+signature.
+"""
 
 # global
 import jax as _jax
