@@ -67,7 +67,7 @@ def binary_cross_entropy(true, pred, epsilon=1e-7):
 
     Returns
     -------
-     ret
+    ret
         The binary cross entropy loss array.
 
     """
@@ -92,7 +92,7 @@ def sparse_cross_entropy(true, pred, axis=-1, epsilon=1e-7):
 
     Returns
     -------
-     ret
+    ret
         The sparse cross entropy loss
 
     """
