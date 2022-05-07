@@ -12,21 +12,29 @@ from ivy.framework_handler import current_framework as _cur_framework
 
 
 def roll(
-    x: Union[ivy.Array, ivy.NativeArray],
+    x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
     shift: Union[int, Tuple[int, ...]],
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-) -> ivy.Array:
+    out: Optional[Union[ivy.Array, ivy.Container]] = None,
+) -> Union[ivy.Array, ivy.Container]:
     """
-    Rolls array elements along a specified axis. Array elements that roll beyond the last position are re-introduced at the first position. Array elements that roll beyond the first position are re-introduced at the last position.
+    Rolls array elements along a specified axis. Array elements that roll beyond the last position are re-introduced at
+    the first position. Array elements that roll beyond the first position are re-introduced at the last position.
+
     Parameters
     ----------
     x
         input array.
     shift
-        number of places by which the elements are shifted. If ``shift`` is a tuple, then ``axis`` must be a tuple of the same size, and each of the given axes must be shifted by the corresponding element in ``shift``. If ``shift`` is an ``int`` and ``axis`` a tuple, then the same ``shift`` must be used for all specified axes. If a shift is positive, then array elements must be shifted positively (toward larger indices) along the dimension of ``axis``. If a shift is negative, then array elements must be shifted negatively (toward smaller indices) along the dimension of ``axis``.
+        number of places by which the elements are shifted. If ``shift`` is a tuple, then ``axis`` must be a tuple of
+        the same size, and each of the given axes must be shifted by the corresponding element in ``shift``. If
+        ``shift`` is an ``int`` and ``axis`` a tuple, then the same ``shift`` must be used for all specified axes. If a
+        shift is positive, then array elements must be shifted positively (toward larger indices) along the dimension of
+        ``axis``. If a shift is negative, then array elements must be shifted negatively (toward smaller indices) along
+        the dimension of ``axis``.
     axis
-        axis (or axes) along which elements to shift. If ``axis`` is ``None``, the array must be flattened, shifted, and then restored to its original shape. Default  ``None``.
+        axis (or axes) along which elements to shift. If ``axis`` is ``None``, the array must be flattened, shifted, and
+        then restored to its original shape. Default  ``None``.
     out
         optional output array, for writing the result to. It must have a shape that the inputs broadcast to.
 
@@ -34,6 +42,74 @@ def roll(
     -------
      ret
         an output array having the same data type as ``x`` and whose elements, relative to ``x``, are shifted.
+
+
+    This method conforms to the `Array API Standard <https://data-apis.org/array-api/latest/>`_.
+    This docstring is an extension of the `docstring
+    <https://data-apis.org/array-api/latest/API_specification/generated/signatures.manipulation_functions.roll.html>`_
+    in the standard. The descriptions above assume an array input for simplicity, but the method also accepts
+    :code:`ivy.Container` instances in place of :code:`ivy.Array` or :code:`ivy.NativeArray` instances, as shown in
+    the type hints and also the examples below.
+
+    Functional Examples
+    -------------------
+
+    With :code:`ivy.Array` input:
+
+    >>> x = ivy.array([0., 1., 2.])
+    >>> y = ivy.roll(x, 1)
+    >>> print(y)
+    ivy.array([2., 0., 1.])
+
+    >>> x = ivy.array([[0., 1., 2.],
+    >>>                [3., 4., 5.]])
+    >>> y = ivy.zeros((2, 3))
+    >>> ivy.roll(x, 2, -1, out=y)
+    >>> print(y)
+    ivy.array([[1., 2., 0.],
+               [4., 5., 3.]])
+
+    >>> x = ivy.array([[[0., 0.], [1., 3.], [2., 6.]],
+    >>>                [[3., 9.], [4., 12.], [5., 15.]]])
+    >>> ivy.roll(x, (1, -1), (0, 2), out=x)
+    >>> print(x)
+    ivy.array([[[ 9., 3.],
+                [12., 4.],
+                [15., 5.]],
+               [[ 0., 0.],
+                [ 3., 1.],
+                [ 6., 2.]]])
+
+    With :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]),
+    >>>                   b=ivy.array([3., 4., 5.]))
+    >>> y = ivy.roll(x, 1)
+    >>> print(y)
+    {
+        a: ivy.array([2., 0., 1.]),
+        b: ivy.array([5., 3., 4.])
+    }
+
+    Instance Method Examples
+    ------------------------
+
+    Using :code:`ivy.Array` instance method:
+
+    >>> x = ivy.array([0., 1., 2.])
+    >>> y = x.roll(1)
+    >>> print(y)
+    ivy.array([2., 0., 1.])
+
+    Using :code:`ivy.Container` instance method:
+
+    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
+    >>> y = x.roll(1)
+    >>> print(y)
+    {
+        a: ivy.array([2., 0., 1.], dtype=float32),
+        b: ivy.array([5., 3., 4.], dtype=float32)
+    }
     """
     return _cur_framework(x).roll(x, shift, axis, out)
 
@@ -67,8 +143,8 @@ def flip(
     axis: Optional[Union[int, Tuple[int], List[int]]] = None,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
-    """
-    Reverses the order of elements in an array along the given axis. The shape of the array must be preserved.
+    """Reverses the order of elements in an array along the given axis. The
+    shape of the array must be preserved.
 
     Parameters
     ----------
@@ -83,6 +159,7 @@ def flip(
     -------
      ret
         an output array having the same data type and shape as ``x`` and whose elements, relative to ``x``, are reordered.
+
     """
 
     return _cur_framework(x).flip(x, axis, out)
@@ -93,8 +170,9 @@ def expand_dims(
     axis: int = 0,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
-    """
-    Expands the shape of an array by inserting a new axis with the size of one. This new axis will appear at the ``axis`` position in the expanded array shape.
+    """Expands the shape of an array by inserting a new axis with the size of
+    one. This new axis will appear at the ``axis`` position in the expanded
+    array shape.
 
     Parameters
     ----------
@@ -129,8 +207,7 @@ def permute_dims(
     axes: Tuple[int, ...],
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
-    """
-    Permutes the axes (dimensions) of an array x.
+    """Permutes the axes (dimensions) of an array x.
 
     Parameters
     ----------
@@ -145,6 +222,7 @@ def permute_dims(
     -------
      ret
         an array containing the axes permutation. The returned array must have the same data type as x.
+
     """
     return _cur_framework(x).permute_dims(x, axes, out)
 
@@ -156,8 +234,7 @@ def stack(
     axis: int = 0,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
-    """
-    Joins a sequence of arrays along a new axis.
+    """Joins a sequence of arrays along a new axis.
 
     Parameters
     ----------
@@ -174,6 +251,7 @@ def stack(
         an output array having rank ``N+1``, where ``N`` is the rank (number of dimensions) of ``x``. If the input arrays have different data types, normal ref:`type-promotion` must apply. If the input arrays have the same data type, the output array must have the same data type as the input arrays.
         .. note::
            This specification leaves type promotion between data type families (i.e., ``intxx`` and ``floatxx``) unspecified.
+
     """
 
     return _cur_framework(arrays).stack(arrays, axis, out)
@@ -207,6 +285,7 @@ def reshape(
     ivy.array([[1, 2],
                [3, 4],
                [5, 6]])
+
     """
     return _cur_framework(x).reshape(x, shape, copy, out)
 
@@ -232,6 +311,7 @@ def concat(
     -------
      ret
         The concatenated array.
+
     """
     return _cur_framework(xs[0]).concat(xs, axis, out)
 
@@ -276,7 +356,7 @@ def repeat(
     axis: int = None,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
-    """Repeat values along a given dimension
+    """Repeat values along a given dimension.
 
     Parameters
     ----------

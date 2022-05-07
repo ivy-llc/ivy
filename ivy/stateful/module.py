@@ -1,6 +1,4 @@
-"""
-Base class for deriving trainable modules
-"""
+"""Base class for deriving trainable modules."""
 
 # global
 import os
@@ -33,8 +31,8 @@ class Module(abc.ABC):
         with_partial_v=False,
         devices=None,
     ):
-        """
-        Initialze Ivy layer, which is a stateful object consisting of trainable variables.
+        """Initialze Ivy layer, which is a stateful object consisting of
+        trainable variables.
 
         :param device: device on which to create the module's variables 'cuda:0', 'cuda:1', 'cpu' etc.
         :type device: ivy.Device, optional
@@ -64,6 +62,7 @@ class Module(abc.ABC):
         :param devices: devices on which to distribute the module's variables 'cuda:0', 'cuda:1', 'cpu' etc.
         :type devices: sequence of str, optional
         :type build_mode: str, optional
+
         """
         valid_build_modes = ["on_init", "explicit", "on_call"]
         if build_mode not in valid_build_modes:
@@ -303,19 +302,23 @@ class Module(abc.ABC):
 
     # noinspection PyMethodMayBeStatic,PyUnusedLocal
     def _create_variables(self, device):
-        """
-        create internal trainable variables, and return as arbitrary nested dict. Overridable.
+        """create internal trainable variables, and return as arbitrary nested
+        dict. Overridable.
 
         :param device: The device string, specifying the device on which to create the variables.
         :type device: ivy.Deviceing
+
         """
         return {}
 
     def _build(self, *args, **kwargs) -> bool:
-        """
-        Build the internal layers and variables for this module. Overridable.
-        Return False or empty Container if the build only partially completed (i.e. some child Modules have
-        "on_call" build mode). Alternatviely, return True or a container of the built variables if the module is built.
+        """Build the internal layers and variables for this module.
+
+        Overridable. Return False or empty Container if the build only
+        partially completed (i.e. some child Modules have "on_call"
+        build mode). Alternatviely, return True or a container of the
+        built variables if the module is built.
+
         """
         return True
 
@@ -323,15 +326,13 @@ class Module(abc.ABC):
 
     @abc.abstractmethod
     def _forward(self, *args, **kwargs):
-        """
-        Forward pass of the layer, called after handling the optional input variables.
-        """
+        """Forward pass of the layer, called after handling the optional input
+        variables."""
         raise NotImplementedError
 
     def _forward_with_tracking(self, *args, **kwargs):
-        """
-        Forward pass while optionally tracking submodule returns and call order
-        """
+        """Forward pass while optionally tracking submodule returns and call
+        order."""
         if self.track_submod_call_order():
             self._add_submod_enter()
         ret = self._forward(*args, **kwargs)
@@ -344,9 +345,8 @@ class Module(abc.ABC):
         return ret
 
     def _call(self, *args, v=None, with_grads=None, **kwargs):
-        """
-        the forward pass of the layer, treating layer instance as callable function.
-        """
+        """the forward pass of the layer, treating layer instance as callable
+        function."""
         with_grads = ivy.with_grads(with_grads)
         if not self._built:
             self.build(*args, **kwargs, from_call=True)
@@ -641,18 +641,17 @@ class Module(abc.ABC):
         return ret
 
     def save_weights(self, weights_path):
-        """
-        Save the weights on the Module.
+        """Save the weights on the Module.
+
         :param weights_path: The hdf5 file for saving the weights.
         :type weights_path: string
+
         """
         os.makedirs("/".join(weights_path.split("/")[:-1]), exist_ok=True)
         self.v.to_disk_as_hdf5(weights_path)
 
     def build(self, *args, from_call=False, device=None, **kwargs):
-        """
-        Build the internal layers and variables for this module.
-        """
+        """Build the internal layers and variables for this module."""
         self._dev = ivy.default(device, self._dev)
 
         # return False if not from_call but build_mode is on_call
