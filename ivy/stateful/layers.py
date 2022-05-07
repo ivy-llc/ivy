@@ -630,7 +630,7 @@ class DepthwiseConv2D(Module):
         device=None,
         v=None,
     ):
-        """depthwise 2D convolutional layer.
+        """Depthwise 2D convolutional layer.
 
         :param num_channels: Number of input channels for the layer.
         :type num_channels: int
@@ -936,7 +936,8 @@ class LSTM(Module):
 
     def get_initial_state(self, batch_shape):
         """Get the initial state of the hidden and cell states, if not provided
-        explicitly."""
+        explicitly.
+        """
         batch_shape = list(batch_shape)
         return (
             [

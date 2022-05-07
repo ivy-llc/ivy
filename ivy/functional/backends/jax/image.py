@@ -1,5 +1,6 @@
 """Collection of Jax image functions, wrapped to fit Ivy syntax and
-signature."""
+signature.
+"""
 
 # global
 import math

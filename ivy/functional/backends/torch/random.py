@@ -1,5 +1,6 @@
 """Collection of PyTorch random functions, wrapped to fit Ivy syntax and
-signature."""
+signature.
+"""
 
 # global
 import torch

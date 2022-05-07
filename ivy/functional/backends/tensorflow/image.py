@@ -1,5 +1,6 @@
 """Collection of TensorFlow image functions, wrapped to fit Ivy syntax and
-signature."""
+signature.
+"""
 
 # global
 from typing import List, Union, Tuple

@@ -162,7 +162,6 @@ def flip(
         an output array having the same data type and shape as ``x`` and whose elements, relative to ``x``, are reordered.
 
     """
-
     return _cur_framework(x).flip(x, axis, out)
 
 
@@ -247,14 +246,13 @@ def stack(
         optional output array, for writing the result to. It must have a shape that the inputs broadcast to.
 
     Returns
-    --------
+    -------
     ret
         an output array having rank ``N+1``, where ``N`` is the rank (number of dimensions) of ``x``. If the input arrays have different data types, normal ref:`type-promotion` must apply. If the input arrays have the same data type, the output array must have the same data type as the input arrays.
         .. note::
            This specification leaves type promotion between data type families (i.e., ``intxx`` and ``floatxx``) unspecified.
 
     """
-
     return _cur_framework(arrays).stack(arrays, axis, out)
 
 
