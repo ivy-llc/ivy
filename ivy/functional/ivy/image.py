@@ -152,7 +152,6 @@ def random_crop(x, crop_size, batch_shape=None, image_dims=None):
         The new cropped image *[batch_shape,nh,nw,f]*
 
     """
-
     x_shape = x.shape
     if batch_shape is None:
         batch_shape = x_shape[:-3]

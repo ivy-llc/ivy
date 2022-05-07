@@ -340,6 +340,7 @@ class ContainerBase(dict, abc.ABC):
             containers to compare
         config
             The configuration for the containers. Default is the same as container_rightmost.
+
         Returns
         -------
             Combined containers
@@ -2314,6 +2315,7 @@ class ContainerBase(dict, abc.ABC):
             The devices along which to distribute the container.
         axis
             The axis along which to split the arrays at the container leaves. Default is 0.
+
         Returns
         -------
             a set of distributed sub-containers across the specified devices.
@@ -3213,7 +3215,6 @@ class ContainerBase(dict, abc.ABC):
             Filepath for where to save the container to disk.
 
         """
-
         with open(json_filepath, "w+") as json_data_file:
             _json.dump(self.to_jsonable().to_dict(), json_data_file, indent=4)
 
@@ -3227,14 +3228,11 @@ class ContainerBase(dict, abc.ABC):
         return return_list
 
     def to_raw(self):
-        """constructor to their original form.
-
-        Parameters
-        ----------
+        """Constructor to their original form.
 
         Returns
         -------
-             ret
+        ret
              Container data in it's raw form.
 
         """
@@ -3255,10 +3253,7 @@ class ContainerBase(dict, abc.ABC):
         return return_item
 
     def to_dict(self):
-        """
-
-        Parameters
-        ----------
+        """Summary.
 
         Returns
         -------
@@ -3349,15 +3344,12 @@ class ContainerBase(dict, abc.ABC):
                 yield kc
 
     def to_flat_list(self):
-        """
-
-        Parameters
-        ----------
+        """Summary.
 
         Returns
         -------
-            ret
-                Container as flat list.
+        ret
+            Container as flat list.
 
         """
         return list([item for key, item in self.to_iterator()])
@@ -3454,7 +3446,6 @@ class ContainerBase(dict, abc.ABC):
             Whether to also check for partially complete sub-containers. Default is False.
 
         """
-
         key_chain_found = False
 
         def _check_sub_cont(sub_cont, kc):
@@ -3538,7 +3529,6 @@ class ContainerBase(dict, abc.ABC):
             Whether to also check for partially complete sub-containers. Default is False.
 
         """
-
         key_chain_found = False
 
         def _check_sub_cont(sub_cont, kc):
@@ -3549,10 +3539,6 @@ class ContainerBase(dict, abc.ABC):
             sub_cont
                 param kc:
             kc
-
-
-            Returns
-            -------
 
             """
             sub_struc_key_chains = sub_struc_to_find.all_key_chains()
@@ -3680,19 +3666,6 @@ class ContainerBase(dict, abc.ABC):
             queries = [queries]
 
         def map_fn(x, kc):
-            """
-
-            Parameters
-            ----------
-            x
-                param kc:
-            kc
-
-
-            Returns
-            -------
-
-            """
             nonlocal key_chains_to_keep
             kc_split = re.split("[/.]", kc)
             for query_key in queries:
@@ -3990,10 +3963,6 @@ class ContainerBase(dict, abc.ABC):
                 param kc:
             kc
 
-
-            Returns
-            -------
-
             """
             nonlocal key_chains_to_prune
             for query_key in query_keys:
@@ -4010,7 +3979,6 @@ class ContainerBase(dict, abc.ABC):
         Parameters
         ----------
         key_chain
-
 
         Returns
         -------
@@ -4781,7 +4749,6 @@ class ContainerBase(dict, abc.ABC):
         sub_cont_or_keychain
 
         """
-
         # copy this container
         this_cont = self.copy()
 
@@ -5346,25 +5313,29 @@ class ContainerBase(dict, abc.ABC):
     @property
     def shape(self):
         """The shape of the arrays in the container, with None placed in
-        indices which are not consistent across arrays."""
+        indices which are not consistent across arrays.
+        """
         return self._get_shape()
 
     @property
     def shapes(self):
         """The shapes of each array in the container, with None placed in leaf
-        entries without a shape attribute."""
+        entries without a shape attribute.
+        """
         return self._get_shapes()
 
     @property
     def dev(self):
         """The device to which the arrays in the container belong, with None
-        returned if the devices are not consistent."""
+        returned if the devices are not consistent.
+        """
         return self._get_dev()
 
     @property
     def dev_str(self):
         """The device to which the arrays in the container belong, with None
-        returned if the devices are not consistent."""
+        returned if the devices are not consistent.
+        """
         return self._get_dev(as_str=True)
 
     @property

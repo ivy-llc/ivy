@@ -1,5 +1,6 @@
 """Collection of Numpy random functions, wrapped to fit Ivy syntax and
-signature."""
+signature.
+"""
 
 # global
 import numpy as np

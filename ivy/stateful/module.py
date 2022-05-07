@@ -302,7 +302,7 @@ class Module(abc.ABC):
 
     # noinspection PyMethodMayBeStatic,PyUnusedLocal
     def _create_variables(self, device):
-        """create internal trainable variables, and return as arbitrary nested
+        """Create internal trainable variables, and return as arbitrary nested
         dict. Overridable.
 
         :param device: The device string, specifying the device on which to create the variables.
@@ -327,12 +327,14 @@ class Module(abc.ABC):
     @abc.abstractmethod
     def _forward(self, *args, **kwargs):
         """Forward pass of the layer, called after handling the optional input
-        variables."""
+        variables.
+        """
         raise NotImplementedError
 
     def _forward_with_tracking(self, *args, **kwargs):
         """Forward pass while optionally tracking submodule returns and call
-        order."""
+        order.
+        """
         if self.track_submod_call_order():
             self._add_submod_enter()
         ret = self._forward(*args, **kwargs)
@@ -345,8 +347,9 @@ class Module(abc.ABC):
         return ret
 
     def _call(self, *args, v=None, with_grads=None, **kwargs):
-        """the forward pass of the layer, treating layer instance as callable
-        function."""
+        """The forward pass of the layer, treating layer instance as callable
+        function.
+        """
         with_grads = ivy.with_grads(with_grads)
         if not self._built:
             self.build(*args, **kwargs, from_call=True)
