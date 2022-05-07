@@ -71,7 +71,6 @@ def argmin(
         Array containing the indices of the minimum values across the specified axis.
 
     """
-
     return _cur_framework(x).argmin(x, axis, keepdims)
 
 

@@ -1,5 +1,6 @@
 """Collection of NumPy gradient functions, wrapped to fit Ivy syntax and
-signature."""
+signature.
+"""
 
 # global
 import logging

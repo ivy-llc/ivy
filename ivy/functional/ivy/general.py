@@ -288,10 +288,10 @@ def all_equal(
 def to_numpy(x: Union[ivy.Array, ivy.NativeArray]) -> np.ndarray:
     """Converts an array into a numpy array.
 
-     Parameters
-     ----------
-     x
-         input array
+    Parameters
+    ----------
+    x
+        input array
 
     Returns
     -------
@@ -314,10 +314,10 @@ def to_numpy(x: Union[ivy.Array, ivy.NativeArray]) -> np.ndarray:
 def to_scalar(x: Union[ivy.Array, ivy.NativeArray]) -> Number:
     """Converts an array with a single element into a scalar.
 
-     Parameters
-     ----------
-     x
-         Input array with a single element.
+    Parameters
+    ----------
+    x
+        Input array with a single element.
 
     Returns
     -------
@@ -340,10 +340,10 @@ def to_scalar(x: Union[ivy.Array, ivy.NativeArray]) -> Number:
 def to_list(x: Union[ivy.Array, ivy.NativeArray]) -> List:
     """Creates a (possibly nested) list from input array.
 
-     Parameters
-     ----------
-     x
-         Input array.
+    Parameters
+    ----------
+    x
+        Input array.
 
     Returns
     -------
@@ -744,7 +744,6 @@ def cache_fn(func: Callable) -> Callable:
         The newly cache wrapped function.
 
     """
-
     global FN_CACHE
     if func not in FN_CACHE:
         FN_CACHE[func] = dict()
@@ -897,7 +896,8 @@ def set_min_denominator(val: float) -> None:
 
 def get_min_base() -> float:
     """Get the global minimum base used by ivy for numerically stable power
-    raising."""
+    raising.
+    """
     # noinspection PyProtectedMember
     return ivy._MIN_BASE
 
