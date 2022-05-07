@@ -40,7 +40,7 @@ def roll(
 
     Returns
     -------
-     ret
+    ret
         an output array having the same data type as ``x`` and whose elements, relative to ``x``, are shifted.
 
 
@@ -121,6 +121,7 @@ def squeeze(
 ) -> ivy.Array:
     """
     Removes singleton dimensions (axes) from ``x``.
+
     Parameters
     ----------
     x
@@ -132,7 +133,7 @@ def squeeze(
 
     Returns
     -------
-     ret
+    ret
         an output array having the same data type and elements as ``x``.
     """
     return _cur_framework(x).squeeze(x, axis, out)
@@ -157,7 +158,7 @@ def flip(
 
     Returns
     -------
-     ret
+    ret
         an output array having the same data type and shape as ``x`` and whose elements, relative to ``x``, are reordered.
 
     """
@@ -220,7 +221,7 @@ def permute_dims(
 
     Returns
     -------
-     ret
+    ret
         an array containing the axes permutation. The returned array must have the same data type as x.
 
     """
@@ -247,7 +248,7 @@ def stack(
 
     Returns
     --------
-     ret
+    ret
         an output array having rank ``N+1``, where ``N`` is the rank (number of dimensions) of ``x``. If the input arrays have different data types, normal ref:`type-promotion` must apply. If the input arrays have the same data type, the output array must have the same data type as the input arrays.
         .. note::
            This specification leaves type promotion between data type families (i.e., ``intxx`` and ``floatxx``) unspecified.
@@ -275,9 +276,10 @@ def reshape(
 
     Returns
     -------
-     ret
+    ret
         Reshaped array.
-    Examples:
+
+    Examples
     --------
     >>> x = ivy.array([[1,2,3], [4,5,6]])
     >>> y = ivy.reshape(x, (3,2))
@@ -307,9 +309,10 @@ def concat(
         (the first, by default).
     axis
         The axis along which the arrays will be joined. Default is -1.
+
     Returns
     -------
-     ret
+    ret
         The concatenated array.
 
     """
@@ -343,7 +346,7 @@ def split(
 
     Returns
     -------
-     ret
+    ret
         A list of sub-arrays.
 
     """
@@ -370,7 +373,7 @@ def repeat(
 
     Returns
     -------
-     ret
+    ret
         The repeated output array.
 
     """
@@ -393,7 +396,7 @@ def tile(
 
     Returns
     -------
-     ret
+    ret
         The tiled output array.
 
     """
@@ -420,7 +423,7 @@ def constant_pad(
 
     Returns
     -------
-     ret
+    ret
         Padded array of rank equal to x with shape increased according to pad_width.
 
     """
@@ -444,7 +447,7 @@ def zero_pad(
 
     Returns
     -------
-     ret
+    ret
         Padded array of rank equal to x with shape increased according to pad_width.
 
     """
@@ -470,7 +473,7 @@ def swapaxes(
 
     Returns
     -------
-     ret
+    ret
         x with its axes permuted.
 
     """
@@ -500,7 +503,7 @@ def clip(
 
     Returns
     -------
-     ret
+    ret
         An array with the elements of x, but where values < x_min are replaced with x_min,
         and those > x_max with x_max.
 

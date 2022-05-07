@@ -17,17 +17,17 @@ def relu(
 ) -> ivy.Array:
     """Applies the rectified linear unit function element-wise.
 
-     Parameters
-     ----------
-     x
-         input array
+    Parameters
+    ----------
+    x
+        input array
     out
         optional output array, for writing the result to. It must have a shape that the inputs broadcast to.
 
     Returns
-     -------
+    -------
     ret
-       an array containing the rectified linear unit activation of each element in ``x``.
+        an array containing the rectified linear unit activation of each element in ``x``.
 
     Examples
     --------
@@ -54,10 +54,10 @@ def leaky_relu(
 
     Returns
     -------
-    ivy.Array
+    ret
         The input array with leaky relu applied element-wise.
 
-    Examples:
+    Examples
     ---------
     >>> x = ivy.array([0.39, -0.85])
     >>> y = ivy.leaky_relu(x)
@@ -92,7 +92,7 @@ def tanh(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
     Parameters
      ----------
     x
-         input array
+        input array
 
     Returns
     -------
@@ -118,11 +118,10 @@ def sigmoid(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
     x
         input array.
 
-
     Returns
     -------
     ret
-       an array containing the sigmoid activation of each element in ``x``.
+        an array containing the sigmoid activation of each element in ``x``.
 
     Examples
     --------
@@ -142,17 +141,18 @@ def softmax(
 
     Parameters
     ----------
-    x:
+    x
         Input array.
-    axis:
+    axis
         The dimension softmax would be performed on. The default is -1 which indicates the last dimension.
 
     Returns
     -------
-    out:
+    ret
         The input array with softmax applied element-wise.
 
-    Examples:
+    Examples
+    --------
     >>> x = ivy.array([-1.0, 0, 1.0])
     >>> y = ivy.softmax(x)
     >>> print(y)
@@ -172,9 +172,11 @@ def softplus(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
 
     Returns
     -------
+    ret
         an array containing the softplus activation of each element in ``x``.
-    Examples:
-    ---------
+
+    Examples
+    --------
     >>> x = ivy.array([-0.3461, -0.6491])
     >>> y = ivy.softplus(x)
     >>> print(y)

@@ -67,7 +67,7 @@ def random_normal(mean=0.0, std=1.0, shape=None, device=None):
 
     Returns
     -------
-     ret
+    ret
         Drawn samples from the parameterized uniform distribution.
 
     """
@@ -100,7 +100,7 @@ def multinomial(
 
     Returns
     -------
-     ret
+    ret
         Drawn samples indices from the multinomial distribution.
 
     """
@@ -124,9 +124,6 @@ def randint(low, high, shape, device=None):
     device
         device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. (Default value = None)
 
-    Returns
-    -------
-
     """
     return _cur_framework().randint(low, high, shape, device)
 
@@ -138,9 +135,6 @@ def seed(seed_value=0):
     ----------
     seed_value
         Seed for random number generation, must be a positive integer. (Default value = 0)
-
-    Returns
-    -------
 
     """
     return _cur_framework().seed(seed_value)
@@ -156,7 +150,7 @@ def shuffle(x):
 
     Returns
     -------
-     ret
+    ret
         An array object, shuffled along the first dimension.
 
     """
