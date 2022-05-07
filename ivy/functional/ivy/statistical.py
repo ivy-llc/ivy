@@ -26,6 +26,7 @@ def min(
     return +infinity).
 
     **Special Cases**
+
     For floating-point operands,
 
     If x_i is NaN, the minimum value is NaN (i.e., NaN values propagate).
@@ -48,7 +49,7 @@ def min(
         optional output array, for writing the result to.
 
     Returns
-     -------
+    -------
     ret
         if the minimum value was computed over the entire array, a zero-dimensional array containing the
         minimum value; otherwise, a non-zero-dimensional array containing the minimum values.
@@ -75,7 +76,9 @@ def max(
        floating-point array, return ``-infinity``).
 
     **Special Cases**
+
     For floating-point operands,
+
     -   If ``x_i`` is ``NaN``, the maximum value is ``NaN`` (i.e., ``NaN`` values propagate).
 
     Parameters
@@ -94,7 +97,7 @@ def max(
 
     Returns
     -------
-     ret
+    ret
         if the maximum value was computed over the entire array, a zero-dimensional array containing the
         maximum value; otherwise, a non-zero-dimensional array containing the maximum values.
         The returned array must have the same data type as ``x``.
@@ -112,7 +115,8 @@ def var(
 ) -> ivy.Array:
     """Calculates the variance of the input array x.
 
-    Special Cases
+    **Special Cases**
+
     Let N equal the number of elements over which to compute the variance.
 
     If N - correction is less than or equal to 0, the variance is NaN.
@@ -136,18 +140,16 @@ def var(
         population). When computing the unbiased sample variance, setting this parameter to 1 is the standard
         choice (i.e., the provided array contains data sampled from a larger population; this is commonly
         referred to as Bessel's correction). Default: 0.
-
     keepdims
         if True, the reduced axes (dimensions) must be included in the result as singleton dimensions,
         and, accordingly, the result must be compatible with the input array (see Broadcasting).
         Otherwise, if False, the reduced axes (dimensions) must not be included in the result.
         Default: False.
-
     out
         optional output array, for writing the result to.
 
     Returns
-     -------
+    -------
     ret
         if the variance was computed over the entire array, a zero-dimensional array containing the
         variance; otherwise, a non-zero-dimensional array containing the variances. The returned array
@@ -166,9 +168,11 @@ def mean(
     """Calculates the arithmetic mean of the input array ``x``.
 
     **Special Cases**
+
     Let ``N`` equal the number of elements over which to compute the arithmetic mean.
     -   If ``N`` is ``0``, the arithmetic mean is ``NaN``.
     -   If ``x_i`` is ``NaN``, the arithmetic mean is ``NaN`` (i.e., ``NaN`` values propagate).
+
     Parameters
     ----------
     x
@@ -182,7 +186,7 @@ def mean(
 
     Returns
     -------
-     ret
+    ret
         array, if the arithmetic mean was computed over the entire array, a zero-dimensional array containing the arithmetic mean; otherwise, a non-zero-dimensional array containing the arithmetic means. The returned array must have the same data type as ``x``.
         .. note::
            While this specification recommends that this function only accept input arrays having a floating-point data type, specification-compliant array libraries may choose to accept input arrays having an integer data type. While mixed data type promotion is implementation-defined, if the input array ``x`` has an integer data type, the returned array must have the default floating-point data type.
@@ -219,14 +223,14 @@ def prod(
         to the specified data type before computing the product. Default: None.
     keepdims
         bool, if True, the reduced axes (dimensions) must be included in the result as singleton dimensions, and,
-    accordingly, the result must be compatible with the input array (see Broadcasting). Otherwise, if False, the reduced axes
-    (dimensions) must not be included in the result. Default: False.
+        accordingly, the result must be compatible with the input array (see Broadcasting). Otherwise, if False, the reduced axes
+        (dimensions) must not be included in the result. Default: False.
     out
         optional output array, for writing the result to.
 
     Returns
     -------
-     ret
+    ret
         array,  if the product was computed over the entire array, a zero-dimensional array containing the
         product; otherwise, a non-zero-dimensional array containing the products. The returned array must
         have a data type as described by the dtype parameter above.
@@ -245,8 +249,10 @@ def sum(
     """Calculates the sum of the input array ``x``.
 
     **Special Cases**
+
     Let ``N`` equal the number of elements over which to compute the sum.
     -   If ``N`` is ``0``, the sum is ``0`` (i.e., the empty sum).
+
     For floating-point operands,
     -   If ``x_i`` is ``NaN``, the sum is ``NaN`` (i.e., ``NaN`` values propagate).
 
@@ -367,7 +373,7 @@ def einsum(
         A str describing the contraction, in the same format as numpy.einsum.
     operands
         seq of arrays, the inputs to contract (each one an ivy.Array), whose shapes should be consistent with equation.
-     out
+    out
         optional output array, for writing the result to.
 
     Returns

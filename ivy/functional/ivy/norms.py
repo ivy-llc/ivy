@@ -28,7 +28,7 @@ def layer_norm(x, normalized_idxs, epsilon=None, scale=None, offset=None, new_st
 
     Returns
     -------
-     ret
+    ret
         The layer after applying layer normalization.
 
     """
