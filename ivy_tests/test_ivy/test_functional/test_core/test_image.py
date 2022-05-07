@@ -118,8 +118,7 @@ def test_float_img_to_uint8_img(fi_tui, tensor_fn, dev, call):
     if call in [helpers.torch_call]:
         # torch device cannot be assigned value of string while scripting
         return
-    # docstring test
-    helpers.docstring_examples_run(ivy.float_img_to_uint8_img)
+   
 
 # uint8_img_to_float_img
 @pytest.mark.parametrize(
