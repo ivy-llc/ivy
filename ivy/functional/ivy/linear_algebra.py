@@ -393,6 +393,46 @@ def tensordot(
     -------
      ret
         The tensor contraction of x1 and x2 over the specified axes.
+    
+    Examples
+    ---------
+    1. Axes = 0 : tensor product 
+
+    >>> x = ivy.array([[1., 2.], [2., 3.]])
+    >>> y = ivy.array([[3., 4.], [4., 5.]])
+    >>> res = ivy.tensordot(x, y, axes =0)
+    >>> print(res)
+    ivy.array([[[[ 3.,  4.],
+                 [ 4.,  5.]],
+
+                [[ 6.,  8.],
+                 [ 8., 10.]]],
+
+               [[[ 6.,  8.],
+                 [ 8., 10.]],
+
+                [[ 9., 12.],
+                 [12., 15.]]]])
+
+    
+    2. Axes = 1 : tensor dot product
+
+    >>> x = ivy.array([[1., 0., 1.], [2., 3., 6.], [0., 7., 2.]])
+    >>> y = ivy.array([[1.], [2.], [3.]])
+    >>> res = ivy.tensordot(x, y, axes = 1)
+    >>> print(res)
+    ivy.array([[ 4.],
+               [26.],
+               [20.]])
+
+    
+    3. Axes = 2: (default) tensor double contraction 
+
+    >>> x = ivy.array([[1., 0., 3.],[2., 3., 4.]])
+    >>> y = ivy.array([[5., 6., 7.],[3., 4., 8.]])
+    >>> res = ivy.tensordot(x, y) 
+    >>> print(res)
+    ivy.array(76.)
 
     """
 
