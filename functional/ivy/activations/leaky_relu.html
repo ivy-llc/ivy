@@ -148,18 +148,16 @@
 <dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></p>
 </dd>
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><ul class="simple">
-<li><p><em>ivy.Array</em> – The input array with leaky relu applied element-wise.</p></li>
-<li><p><em>Examples</em></p></li>
-<li><p><em>———</em></p></li>
-<li><p><em>&gt;&gt;&gt; x = ivy.array([0.39, -0.85])</em></p></li>
-<li><p><em>&gt;&gt;&gt; y = ivy.leaky_relu(x)</em></p></li>
-<li><p><em>&gt;&gt;&gt; print(y)</em></p></li>
-<li><p><em>ivy.array([0.39, -0.17])</em></p></li>
-</ul>
-</p>
+<dd class="field-odd"><p><em>ret</em> – The input array with leaky relu applied element-wise.</p>
 </dd>
 </dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.39</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.85</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">leaky_relu</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+<span class="go">ivy.array([0.39, -0.17])</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <div class="line-block">

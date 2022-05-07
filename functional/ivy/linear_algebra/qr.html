@@ -154,29 +154,24 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="ivy.functional.ivy.linear_algebra.qr">
 <span class="sig-prename descclassname"><span class="pre">ivy.functional.ivy.linear_algebra.</span></span><span class="sig-name descname"><span class="pre">qr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'reduced'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/linear_algebra.html#qr"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.linear_algebra.qr" title="Permalink to this definition"></a></dt>
-<dd><p>Returns the qr decomposition x = QR of a full column rank matrix (or a stack of matrices), where Q is an orthonormal matrix (or a stack of matrices) and R is an upper-triangular matrix (or a stack of matrices).
-:type x: <code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>
-:param x: input array having shape (…, M, N) and whose innermost two dimensions form MxN matrices of rank N. Should have a floating-point data type.
-:type mode: <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>
-:param mode: decomposition mode. Should be one of the following modes: (default: <code class="docutils literal notranslate"><span class="pre">'reduced'</span></code>)</p>
-<blockquote>
-<div><ul class="simple">
-<li><p>‘reduced’: compute only the leading K columns of q, such that q and r have dimensions (…, M, K) and (…, K, N), respectively, and where K = min(M, N).</p></li>
-<li><p>‘complete’: compute q and r with dimensions (…, M, M) and (…, M, N), respectively.</p></li>
-</ul>
-<p>Default: ‘reduced’.</p>
-</div></blockquote>
+<dd><p>Returns the qr decomposition x = QR of a full column rank matrix (or a stack of matrices), where Q is an orthonormal matrix (or a stack of matrices) and R is an upper-triangular matrix (or a stack of matrices).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>Returns</strong> – </p></li>
-<li><p><strong>ret</strong> – a namedtuple (Q, R) whose
-- first element must have the field name Q and must be an array whose shape depends on the value of mode and contain matrices with orthonormal columns. If mode is ‘complete’, the array must have shape (…, M, M). If mode is ‘reduced’, the array must have shape (…, M, K), where K = min(M, N). The first x.ndim-2 dimensions must have the same size as those of the input array x.
-- second element must have the field name R and must be an array whose shape depends on the value of mode and contain upper-triangular matrices. If mode is ‘complete’, the array must have shape (…, M, N). If mode is ‘reduced’, the array must have shape (…, K, N), where K = min(M, N). The first x.ndim-2 dimensions must have the same size as those of the input x.</p></li>
+<li><p><strong>x</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>) – input array having shape (…, M, N) and whose innermost two dimensions form MxN matrices of rank N. Should have a floating-point data type.</p></li>
+<li><p><strong>mode</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – decomposition mode. Should be one of the following modes: (default: <code class="docutils literal notranslate"><span class="pre">'reduced'</span></code>)
+- ‘reduced’: compute only the leading K columns of q, such that q and r have dimensions (…, M, K) and (…, K, N), respectively, and where K = min(M, N).
+- ‘complete’: compute q and r with dimensions (…, M, M) and (…, M, N), respectively.
+Default: ‘reduced’.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>
 <dd class="field-even"><p><a class="reference internal" href="#ivy.functional.ivy.linear_algebra.qr" title="ivy.functional.ivy.linear_algebra.qr"><code class="xref py py-class docutils literal notranslate"><span class="pre">qr</span></code></a></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><em>ret</em> – a namedtuple (Q, R) whose
+- first element must have the field name Q and must be an array whose shape depends on the value of mode and contain matrices with orthonormal columns. If mode is ‘complete’, the array must have shape (…, M, M). If mode is ‘reduced’, the array must have shape (…, M, K), where K = min(M, N). The first x.ndim-2 dimensions must have the same size as those of the input array x.
+- second element must have the field name R and must be an array whose shape depends on the value of mode and contain upper-triangular matrices. If mode is ‘complete’, the array must have shape (…, M, N). If mode is ‘reduced’, the array must have shape (…, K, N), where K = min(M, N). The first x.ndim-2 dimensions must have the same size as those of the input x.</p>
 </dd>
 </dl>
 </dd></dl>

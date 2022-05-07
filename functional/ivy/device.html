@@ -256,7 +256,8 @@ and use the provided values for initialization. Default is True.</p></li>
 <dl class="py method">
 <dt class="sig sig-object py" id="ivy.functional.ivy.device.DevManager.da_tune_step">
 <span class="sig-name descname"><span class="pre">da_tune_step</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">oom</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/device.html#DevManager.da_tune_step"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.device.DevManager.da_tune_step" title="Permalink to this definition"></a></dt>
-<dd><dl class="field-list simple">
+<dd><p>Summary.</p>
+<dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>oom</strong> – (Default value = False)</p>
 </dd>
@@ -271,7 +272,8 @@ and use the provided values for initialization. Default is True.</p></li>
 <dl class="py method">
 <dt class="sig sig-object py" id="ivy.functional.ivy.device.DevManager.ds_tune_step">
 <span class="sig-name descname"><span class="pre">ds_tune_step</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">oom</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/device.html#DevManager.ds_tune_step"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.device.DevManager.ds_tune_step" title="Permalink to this definition"></a></dt>
-<dd><dl class="field-list simple">
+<dd><p>Summary.</p>
+<dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>oom</strong> – (Default value = False)</p>
 </dd>
@@ -293,7 +295,7 @@ running each function in parallel with CUDA-safe multiprocessing.</p>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p><em>type</em> – The results of the function, returned as a MultiDevice instance.</p>
+<dd class="field-even"><p><em>ret</em> – The results of the function, returned as a MultiDevice instance.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -353,7 +355,7 @@ running each function in parallel with CUDA-safe multiprocessing.</p>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p><em>type</em> – The results of the function, returned as a MultiDevice instance.</p>
+<dd class="field-even"><p><em>ret</em> – The results of the function, returned as a MultiDevice instance.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -440,7 +442,8 @@ running each function in parallel with CUDA-safe multiprocessing.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="ivy.functional.ivy.device.MultiDevIter.at_dev">
 <span class="sig-name descname"><span class="pre">at_dev</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">device</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/device.html#MultiDevIter.at_dev"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.device.MultiDevIter.at_dev" title="Permalink to this definition"></a></dt>
-<dd><dl class="field-list simple">
+<dd><p>Summary.</p>
+<dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>device</strong> – </p>
 </dd>
@@ -466,7 +469,8 @@ running each function in parallel with CUDA-safe multiprocessing.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="ivy.functional.ivy.device.MultiDevNest.at_dev">
 <span class="sig-name descname"><span class="pre">at_dev</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">device</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/device.html#MultiDevNest.at_dev"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.device.MultiDevNest.at_dev" title="Permalink to this definition"></a></dt>
-<dd><dl class="field-list simple">
+<dd><p>Summary.</p>
+<dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>device</strong> – </p>
 </dd>
@@ -513,7 +517,8 @@ running each function in parallel with CUDA-safe multiprocessing.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="ivy.functional.ivy.device.default_device">
 <span class="sig-prename descclassname"><span class="pre">ivy.functional.ivy.device.</span></span><span class="sig-name descname"><span class="pre">default_device</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/device.html#default_device"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.device.default_device" title="Permalink to this definition"></a></dt>
-<dd><dl class="field-list simple">
+<dd><p>Summary.</p>
+<dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>device</strong> – (Default value = None)</p>
 </dd>
@@ -553,9 +558,10 @@ of cloned items, each on a different device.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>x</strong> – The input array or container to clone to each device.</p></li>
 <li><p><strong>devices</strong> – The deviceices to clone the input to.</p></li>
-<li><p><strong>Returns</strong> – </p></li>
-<li><p><strong>ret</strong> – array or container distributed across the target devices</p></li>
 </ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>ret</em> – array or container distributed across the target devices</p>
 </dd>
 </dl>
 </dd></dl>
@@ -570,9 +576,10 @@ arrays, each on a different device.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>x</strong> – The array to clone across devices.</p></li>
 <li><p><strong>devices</strong> – The devices to clone the array to.</p></li>
-<li><p><strong>Returns</strong> – </p></li>
-<li><p><strong>ret</strong> – array cloned to each of the target devices</p></li>
 </ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>ret</em> – array cloned to each of the target devices</p>
 </dd>
 </dl>
 </dd></dl>
@@ -586,9 +593,10 @@ arrays, each on a different device.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>xs</strong> – The iterable of items to clone.</p></li>
 <li><p><strong>devices</strong> – The devices to clone each of the iterable elements to.</p></li>
-<li><p><strong>Returns</strong> – </p></li>
-<li><p><strong>ret</strong> – iterable with each element cloned to each of the target devices</p></li>
 </ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>ret</em> – iterable with each element cloned to each of the target devices</p>
 </dd>
 </dl>
 </dd></dl>
@@ -604,9 +612,10 @@ arrays, each on a different device.</p>
 <li><p><strong>kwargs</strong> – The keyword arguments to clone.</p></li>
 <li><p><strong>devices</strong> – The devices to clone the arguments to.</p></li>
 <li><p><strong>max_depth</strong> – The maximum nested depth to reach. Default is 1. Increase this if the nest is deeper.</p></li>
-<li><p><strong>Returns</strong> – </p></li>
-<li><p><strong>ret</strong> – arguments cloned to each of the target devices</p></li>
 </ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>ret</em> – arguments cloned to each of the target devices</p>
 </dd>
 </dl>
 </dd></dl>
@@ -624,9 +633,10 @@ of sub-items, each on a different device.</p>
 <li><p><strong>axis</strong> – The axis along which to split the input. Default is 0.</p></li>
 <li><p><strong>devices</strong> – </p></li>
 <li><p><strong>Dict</strong> – </p></li>
-<li><p><strong>Returns</strong> – </p></li>
-<li><p><strong>ret</strong> – array or container distributed across the target devices</p></li>
 </ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>ret</em> – array or container distributed across the target devices</p>
 </dd>
 </dl>
 </dd></dl>
@@ -644,9 +654,10 @@ sub-arrays, each on a different device.</p>
 <li><p><strong>axis</strong> – The axis along which to split the array. Default is 0.</p></li>
 <li><p><strong>devices</strong> – </p></li>
 <li><p><strong>Dict</strong> – </p></li>
-<li><p><strong>Returns</strong> – </p></li>
-<li><p><strong>ret</strong> – array distributed across the target devices</p></li>
 </ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>ret</em> – array distributed across the target devices</p>
 </dd>
 </dl>
 </dd></dl>
@@ -663,9 +674,10 @@ sub-arrays, each on a different device.</p>
 <li><p><strong>axis</strong> – The axis along which to split the arrays in the iterable xs. Default is 0.</p></li>
 <li><p><strong>devices</strong> – </p></li>
 <li><p><strong>Dict</strong> – </p></li>
-<li><p><strong>Returns</strong> – </p></li>
-<li><p><strong>ret</strong> – iterable with each element distributed to the target devices</p></li>
 </ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>ret</em> – iterable with each element distributed to the target devices</p>
 </dd>
 </dl>
 </dd></dl>
@@ -686,10 +698,8 @@ sub-arrays, each on a different device.</p>
 <li><p><strong>Dict</strong> – </p></li>
 </ul>
 </dd>
-</dl>
-<dl class="simple">
-<dt>Returns</dt><dd></dd>
-<dt>ret</dt><dd><p>nested arguments distributed to the target devices</p>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>ret</em> – nested arguments distributed to the target devices</p>
 </dd>
 </dl>
 </dd></dl>
@@ -740,9 +750,10 @@ concattenated array on the specified device.</p>
 <li><p><strong>device</strong> – The device to unify the sub-arrays to.</p></li>
 <li><p><strong>mode</strong> – The mode by which to unify, must be one of [ concat | mean | sum ]</p></li>
 <li><p><strong>axis</strong> – The axis along which to concattenate the array, if concat mode is set. Default is 0.</p></li>
-<li><p><strong>Returns</strong> – </p></li>
-<li><p><strong>ret</strong> – array unified to the target device</p></li>
 </ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>ret</em> – array unified to the target device</p>
 </dd>
 </dl>
 </dd></dl>
@@ -759,9 +770,10 @@ the specified device.</p>
 <li><p><strong>device</strong> – The device to unify the arrays to.</p></li>
 <li><p><strong>mode</strong> – The mode by which to unify, must be one of [ concat | mean | sum ]</p></li>
 <li><p><strong>axis</strong> – The axis along which to concattenate the array, if concat mode is set. Default is 0.</p></li>
-<li><p><strong>Returns</strong> – </p></li>
-<li><p><strong>ret</strong> – array unified to the target device</p></li>
 </ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>ret</em> – array unified to the target device</p>
 </dd>
 </dl>
 </dd></dl>
@@ -778,9 +790,10 @@ the specified device.</p>
 <li><p><strong>mode</strong> – The mode by which to unify, must be one of [ concat | mean | sum ]</p></li>
 <li><p><strong>axis</strong> – The axis along which to concattenate the sub-arrays. Default is 0.</p></li>
 <li><p><strong>transpose</strong> – Whether to transpose the first and second dimensions of the iterator. Default is False.</p></li>
-<li><p><strong>Returns</strong> – </p></li>
-<li><p><strong>ret</strong> – iterable with each element unified to a single target devices</p></li>
 </ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>ret</em> – iterable with each element unified to a single target devices</p>
 </dd>
 </dl>
 </dd></dl>
@@ -803,10 +816,8 @@ across arbitrary devices, to unified arrays on the single target device.</p>
 <li><p><strong>kwargs</strong> – </p></li>
 </ul>
 </dd>
-</dl>
-<dl class="simple">
-<dt>Returns</dt><dd></dd>
-<dt>ret</dt><dd><p>nested arguments unified to the target device</p>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>ret</em> – nested arguments unified to the target device</p>
 </dd>
 </dl>
 </dd></dl>
@@ -844,11 +855,11 @@ across arbitrary devices, to unified arrays on the single target device.</p>
 <span class="sig-prename descclassname"><span class="pre">ivy.functional.ivy.device.</span></span><span class="sig-name descname"><span class="pre">gpu_is_available</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/device.html#gpu_is_available"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.device.gpu_is_available" title="Permalink to this definition"></a></dt>
 <dd><p>Determine whether a GPU is available to use, with the backend framework.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>Returns</strong> – </p></li>
-<li><p><strong>ret</strong> – Boolean, as to whether a gpu is available.</p></li>
-</ul>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>ret</em> – Boolean, as to whether a gpu is available.</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
@@ -856,11 +867,6 @@ across arbitrary devices, to unified arrays on the single target device.</p>
 <span class="go">True</span>
 </pre></div>
 </div>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
-</dd>
-</dl>
 </dd></dl>
 
 <dl class="py function">
@@ -895,15 +901,14 @@ device.</p>
 <dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p><ul class="simple">
-<li><p><em>out</em> – Number of available GPUs.</p></li>
-<li><p><em>Examples</em></p></li>
-<li><p><em>&gt;&gt;&gt; print(ivy.num_gpus())</em></p></li>
-<li><p><em>1</em></p></li>
-</ul>
-</p>
+<dd class="field-even"><p><em>ret</em> – Number of available GPUs.</p>
 </dd>
 </dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">num_gpus</span><span class="p">())</span>
+<span class="go">1</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py function">
@@ -941,7 +946,8 @@ CPU, the used RAM is returned.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="ivy.functional.ivy.device.set_default_device">
 <span class="sig-prename descclassname"><span class="pre">ivy.functional.ivy.device.</span></span><span class="sig-name descname"><span class="pre">set_default_device</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">device</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/device.html#set_default_device"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.device.set_default_device" title="Permalink to this definition"></a></dt>
-<dd><dl class="field-list simple">
+<dd><p>Summary.</p>
+<dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>device</strong> – </p>
 </dd>
@@ -998,12 +1004,13 @@ global split factor. Default is None.</p></li>
 <li><p><strong>output_axes</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Iterable</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]]]) – The axes along which to concat each of the returned outputs. Default is same as fist input axis. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
 <li><p><strong>stop_gradients</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – Whether to stop the gradients for each computed return. Default is False. (default: <code class="docutils literal notranslate"><span class="pre">False</span></code>)</p></li>
 <li><p><strong>device</strong> – The device to set the split factor for. Sets the default device by default.</p></li>
-<li><p><strong>Returns</strong> – </p></li>
-<li><p><strong>ret</strong> – The return from the function, following input splitting and re-concattenation.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>
 <dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Iterable</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code>]]</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><em>ret</em> – The return from the function, following input splitting and re-concattenation.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1019,9 +1026,13 @@ string.</p>
 <li><p><strong>x</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – input array to be moved to the desired device</p></li>
 <li><p><strong>device</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Device</span></code>]) – device to move the input array <cite>x</cite> to (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
 <li><p><strong>out</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]]) – optional output array, for writing the result to. It must have a shape that the inputs broadcast to. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
-<li><p><strong>Returns</strong> – </p></li>
-<li><p><strong>ret</strong> – input array x placed on the desired device</p></li>
 </ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><em>ret</em> – input array x placed on the desired device</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
@@ -1029,11 +1040,6 @@ string.</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">to_dev</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="s1">&#39;cpu&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]</p>
-</dd>
-</dl>
 </dd></dl>
 
 <dl class="py function">
@@ -1063,11 +1069,7 @@ case of CPU, the total RAM is returned.</p>
 <dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p><ul class="simple">
-<li><p><em>ret</em></p></li>
-<li><p><em>Boolean, as to whether a tpu is available.</em></p></li>
-</ul>
-</p>
+<dd class="field-even"><p><em>ret</em> – Boolean, as to whether a tpu is available.</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>

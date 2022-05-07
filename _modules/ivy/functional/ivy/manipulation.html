@@ -160,7 +160,7 @@
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">     ret</span>
+<span class="sd">    ret</span>
 <span class="sd">        an output array having the same data type as ``x`` and whose elements, relative to ``x``, are shifted.</span>
 
 
@@ -241,6 +241,7 @@
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Removes singleton dimensions (axes) from ``x``.</span>
+
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    x</span>
@@ -252,7 +253,7 @@
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">     ret</span>
+<span class="sd">    ret</span>
 <span class="sd">        an output array having the same data type and elements as ``x``.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span></div>
@@ -277,7 +278,7 @@
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">     ret</span>
+<span class="sd">    ret</span>
 <span class="sd">        an output array having the same data type and shape as ``x`` and whose elements, relative to ``x``, are reordered.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -340,7 +341,7 @@
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">     ret</span>
+<span class="sd">    ret</span>
 <span class="sd">        an array containing the axes permutation. The returned array must have the same data type as x.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -367,7 +368,7 @@
 
 <span class="sd">    Returns</span>
 <span class="sd">    --------</span>
-<span class="sd">     ret</span>
+<span class="sd">    ret</span>
 <span class="sd">        an output array having rank ``N+1``, where ``N`` is the rank (number of dimensions) of ``x``. If the input arrays have different data types, normal ref:`type-promotion` must apply. If the input arrays have the same data type, the output array must have the same data type as the input arrays.</span>
 <span class="sd">        .. note::</span>
 <span class="sd">           This specification leaves type promotion between data type families (i.e., ``intxx`` and ``floatxx``) unspecified.</span>
@@ -395,9 +396,10 @@
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">     ret</span>
+<span class="sd">    ret</span>
 <span class="sd">        Reshaped array.</span>
-<span class="sd">    Examples:</span>
+
+<span class="sd">    Examples</span>
 <span class="sd">    --------</span>
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([[1,2,3], [4,5,6]])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.reshape(x, (3,2))</span>
@@ -427,9 +429,10 @@
 <span class="sd">        (the first, by default).</span>
 <span class="sd">    axis</span>
 <span class="sd">        The axis along which the arrays will be joined. Default is -1.</span>
+
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">     ret</span>
+<span class="sd">    ret</span>
 <span class="sd">        The concatenated array.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -463,7 +466,7 @@
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">     ret</span>
+<span class="sd">    ret</span>
 <span class="sd">        A list of sub-arrays.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -490,7 +493,7 @@
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">     ret</span>
+<span class="sd">    ret</span>
 <span class="sd">        The repeated output array.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -513,7 +516,7 @@
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">     ret</span>
+<span class="sd">    ret</span>
 <span class="sd">        The tiled output array.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -540,7 +543,7 @@
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">     ret</span>
+<span class="sd">    ret</span>
 <span class="sd">        Padded array of rank equal to x with shape increased according to pad_width.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -564,7 +567,7 @@
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">     ret</span>
+<span class="sd">    ret</span>
 <span class="sd">        Padded array of rank equal to x with shape increased according to pad_width.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -590,7 +593,7 @@
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">     ret</span>
+<span class="sd">    ret</span>
 <span class="sd">        x with its axes permuted.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -620,7 +623,7 @@
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">     ret</span>
+<span class="sd">    ret</span>
 <span class="sd">        An array with the elements of x, but where values &lt; x_min are replaced with x_min,</span>
 <span class="sd">        and those &gt; x_max with x_max.</span>
 

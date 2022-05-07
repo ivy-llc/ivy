@@ -147,13 +147,15 @@
 <span class="sd">       -   As ``-0`` and ``+0`` compare as ``True``, signed zeros should not be considered distinct, and the corresponding unique element will be implementation-dependent (e.g., an implementation could choose to return ``-0`` if ``-0`` occurs before ``+0``).</span>
 <span class="sd">       As signed zeros are not distinct, using ``inverse_indices`` to reconstruct the input array is not guaranteed to return an array having the exact same values.</span>
 <span class="sd">       Each ``nan`` value should have a count of one, while the counts for signed zeros should be aggregated as a single count.</span>
+
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    x: array</span>
+<span class="sd">    x</span>
 <span class="sd">        input array. If ``x`` has more than one dimension, the function must flatten ``x`` and return the unique elements of the flattened array.</span>
+
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    out: Tuple[array, array, array, array]</span>
+<span class="sd">    out</span>
 <span class="sd">        a namedtuple ``(values, indices, inverse_indices, counts)`` whose</span>
 <span class="sd">        - first element must have the field name ``values`` and must be an array containing the unique elements of ``x``. The array must have the same data type as ``x``.</span>
 <span class="sd">        - second element must have the field name ``indices`` and must be an array containing the indices (first occurrences) of ``x`` that result in ``values``. The array must have the same shape as ``values`` and must have the default array index data type.</span>
@@ -177,7 +179,7 @@
 <span class="sd">        input array.</span>
 
 <span class="sd">    Returns</span>
-<span class="sd">     -------</span>
+<span class="sd">    -------</span>
 <span class="sd">    ret</span>
 <span class="sd">        tuple of two arrays (values, inverse_indices)</span>
 
@@ -198,12 +200,14 @@
 <span class="sd">       Uniqueness should be determined based on value equality (i.e., ``x_i == x_j``). For input arrays having floating-point data types, value-based equality implies the following behavior.</span>
 <span class="sd">       -   As ``nan`` values compare as ``False``, ``nan`` values should be considered distinct.</span>
 <span class="sd">       -   As ``-0`` and ``+0`` compare as ``True``, signed zeros should not be considered distinct, and the corresponding unique element will be implementation-dependent (e.g., an implementation could choose to return ``-0`` if ``-0`` occurs before ``+0``).</span>
+
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    x</span>
 <span class="sd">        input array. If ``x`` has more than one dimension, the function must flatten ``x`` and return the unique elements of the flattened array.</span>
+
 <span class="sd">    Returns</span>
-<span class="sd">     -------</span>
+<span class="sd">    -------</span>
 <span class="sd">    ret</span>
 <span class="sd">        an array containing the set of unique elements in ``x``. The returned array must have the same data type as ``x``.</span>
 <span class="sd">        .. note::</span>
@@ -223,7 +227,7 @@
 <span class="sd">        input array. If x has more than one dimension, the function must flatten x and return the unique elements of the flattened array.</span>
 
 <span class="sd">    Returns</span>
-<span class="sd">     -------</span>
+<span class="sd">    -------</span>
 <span class="sd">    ret</span>
 <span class="sd">        a namedtuple (values, counts) whose</span>
 <span class="sd">        -first element must have the field name values and must be an array containing the unique elements of x. The array must have the same data type as x.</span>

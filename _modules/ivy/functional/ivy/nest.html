@@ -143,9 +143,6 @@
 <span class="sd">    index</span>
 <span class="sd">        A tuple of indices for indexing.</span>
 
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">ret</span> <span class="o">=</span> <span class="n">nest</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">index</span><span class="p">:</span>
@@ -162,9 +159,6 @@
 <span class="sd">        The nested object to prune.</span>
 <span class="sd">    index</span>
 <span class="sd">        A tuple of indices for the index at which to prune.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">index</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
@@ -184,9 +178,6 @@
 <span class="sd">        A tuple of indices for the index at which to update.</span>
 <span class="sd">    value</span>
 <span class="sd">        The new value for updating.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">index</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
@@ -218,9 +209,6 @@
 <span class="sd">    fn</span>
 <span class="sd">        The function to perform on the nest at the given index.</span>
 
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">index</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
         <span class="n">nest</span><span class="p">[</span><span class="n">index</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="n">fn</span><span class="p">(</span><span class="n">nest</span><span class="p">[</span><span class="n">index</span><span class="p">[</span><span class="mi">0</span><span class="p">]])</span>
@@ -239,9 +227,6 @@
 <span class="sd">    indices</span>
 <span class="sd">        A tuple of tuples of indices to apply.</span>
 
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="p">[</span><span class="n">index_nest</span><span class="p">(</span><span class="n">nest</span><span class="p">,</span> <span class="n">index</span><span class="p">)</span> <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="n">indices</span><span class="p">]</span></div>
 
@@ -255,9 +240,6 @@
 <span class="sd">        The nested object to prune.</span>
 <span class="sd">    indices</span>
 <span class="sd">        A tuple of tuples of indices for the indices at which to prune.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="p">[</span><span class="n">prune_nest_at_index</span><span class="p">(</span><span class="n">nest</span><span class="p">,</span> <span class="n">index</span><span class="p">)</span> <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="n">indices</span><span class="p">]</span></div>
@@ -275,9 +257,6 @@
 <span class="sd">        A tuple of tuples of indices for the indices at which to update.</span>
 <span class="sd">    values</span>
 <span class="sd">        The new values for updating.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
@@ -317,9 +296,6 @@
 <span class="sd">    fn</span>
 <span class="sd">        The function to perform on the nest at the given index.</span>
 
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="p">[</span><span class="n">map_nest_at_index</span><span class="p">(</span><span class="n">nest</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">fn</span><span class="p">)</span> <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="n">indices</span><span class="p">]</span></div>
 
@@ -351,7 +327,7 @@
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">     ret</span>
+<span class="sd">    ret</span>
 <span class="sd">        A set of indices for the nest where the function evaluated as True.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -401,7 +377,7 @@
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">     ret</span>
+<span class="sd">    ret</span>
 <span class="sd">        A set of indices for the nest where the function evaluated as True.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -449,7 +425,7 @@
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">     ret</span>
+<span class="sd">    ret</span>
 <span class="sd">        x following the applicable of fn to each of it&#39;s iterated items.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -503,7 +479,7 @@
 <span class="sd">        Placeholder for the dict check function, do not set this parameter.</span>
 
 <span class="sd">    Returns</span>
-<span class="sd">     -------</span>
+<span class="sd">    -------</span>
 <span class="sd">    ret</span>
 <span class="sd">        x following the applicable of fn to it&#39;s nested leaves, or x itself if x is not nested.</span>
 
@@ -615,7 +591,7 @@
 <span class="sd">        Used internally, do not set manually.</span>
 
 <span class="sd">    Returns</span>
-<span class="sd">     -------</span>
+<span class="sd">    -------</span>
 <span class="sd">    ret</span>
 <span class="sd">        A boolean, whether the function evaluates to true for any leaf node.</span>
 
@@ -655,7 +631,7 @@
 <span class="sd">        Whether to convert the nest to a mutable form, changing all tuples to lists. Default is False.</span>
 
 <span class="sd">    Returns</span>
-<span class="sd">     -------</span>
+<span class="sd">    -------</span>
 <span class="sd">    ret</span>
 <span class="sd">        The copied nest.</span>
 

@@ -158,15 +158,13 @@ the returned array must have a uint32 data type).</p>
 <p>If the data type (either specified or resolved) differs from the data type of x, the input array should be cast
 to the specified data type before computing the product. Default: None.</p>
 </dd>
-<dt>keepdims</dt><dd><p>bool, if True, the reduced axes (dimensions) must be included in the result as singleton dimensions, and,</p>
+<dt>keepdims</dt><dd><p>bool, if True, the reduced axes (dimensions) must be included in the result as singleton dimensions, and,
+accordingly, the result must be compatible with the input array (see Broadcasting). Otherwise, if False, the reduced axes
+(dimensions) must not be included in the result. Default: False.</p>
+</dd>
+<dt>out</dt><dd><p>optional output array, for writing the result to.</p>
 </dd>
 </dl>
-<p>accordingly, the result must be compatible with the input array (see Broadcasting). Otherwise, if False, the reduced axes
-(dimensions) must not be included in the result. Default: False.
-out</p>
-<blockquote>
-<div><p>optional output array, for writing the result to.</p>
-</div></blockquote>
 <dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></p>

@@ -143,12 +143,8 @@ specified using a notation based on the Einstein summation convention.</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>equation</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – A str describing the contraction, in the same format as numpy.einsum.</p></li>
-<li><p><strong>operands</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – <p>seq of arrays, the inputs to contract (each one an ivy.Array), whose shapes should be consistent with equation.
-out</p>
-<blockquote>
-<div><p>optional output array, for writing the result to.</p>
-</div></blockquote>
-</p></li>
+<li><p><strong>operands</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – seq of arrays, the inputs to contract (each one an ivy.Array), whose shapes should be consistent with equation.</p></li>
+<li><p><strong>out</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]]) – optional output array, for writing the result to. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>

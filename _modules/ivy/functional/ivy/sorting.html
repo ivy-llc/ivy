@@ -149,12 +149,12 @@
 <span class="sd">        sort order. If ``True``, the returned indices sort ``x`` in descending order (by value). If ``False``, the returned indices sort ``x`` in ascending order (by value). Default: ``False``.</span>
 <span class="sd">    stable</span>
 <span class="sd">        sort stability. If ``True``, the returned indices must maintain the relative order of ``x`` values which compare as equal. If ``False``, the returned indices may or may not maintain the relative order of ``x`` values which compare as equal (i.e., the relative order of ``x`` values which compare as equal is implementation-dependent). Default: ``True``.</span>
-<span class="sd">     out</span>
-<span class="sd">         optional output array, for writing the result to. It must have a shape that the inputs broadcast to.</span>
+<span class="sd">    out</span>
+<span class="sd">        optional output array, for writing the result to. It must have a shape that the inputs broadcast to.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    return</span>
+<span class="sd">    ret</span>
 <span class="sd">        an array of indices. The returned array must have the same shape as ``x``. The returned array must have the default array index data type.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -171,7 +171,7 @@
     <span class="sd">&quot;&quot;&quot;Returns a sorted copy of an array.</span>
 
 <span class="sd">    Parameters</span>
-<span class="sd">    ___________</span>
+<span class="sd">    ----------</span>
 <span class="sd">    x</span>
 <span class="sd">        input array</span>
 <span class="sd">    axis</span>
@@ -186,8 +186,8 @@
 <span class="sd">        optional output array, for writing the result to. It must have a shape that the inputs broadcast to.</span>
 
 <span class="sd">    Returns</span>
-<span class="sd">    _______</span>
-<span class="sd">     return</span>
+<span class="sd">    -------</span>
+<span class="sd">    ret</span>
 <span class="sd">        An array with the same dtype and shape as `values`, with the elements sorted along the given `axis`.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>

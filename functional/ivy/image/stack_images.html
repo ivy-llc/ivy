@@ -138,43 +138,40 @@
 <span class="sig-prename descclassname"><span class="pre">ivy.functional.ivy.image.</span></span><span class="sig-name descname"><span class="pre">stack_images</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">images</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">desired_aspect_ratio</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(1,</span> <span class="pre">1)</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/image.html#stack_images"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.image.stack_images" title="Permalink to this definition"></a></dt>
 <dd><p>Stacks a group of images into a combined windowed image, fitting the
 desired aspect ratio as closely as possible.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>images</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]]) – Sequence of image arrays to be stacked <em>[batch_shape,height,width,dims]</em></p></li>
+<li><p><strong>desired_aspect_ratio</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]) – desired aspect ratio of the stacked image (default: <code class="docutils literal notranslate"><span class="pre">(1,</span> <span class="pre">1)</span></code>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><em>ret</em> – an array containing the stacked images in a specified aspect ratio/dimensions</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">ivy</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">shape</span><span class="p">,</span> <span class="n">num</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="mi">2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">shape</span><span class="p">)]</span> <span class="o">*</span> <span class="n">num</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">stacked</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">stack_images</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">stacked</span><span class="p">)</span>
+<span class="go">[[[1., 1., 1.],</span>
+<span class="go">        [1., 1., 1.],</span>
+<span class="go">        [0., 0., 0.],</span>
+<span class="go">        [0., 0., 0.]],</span>
+</pre></div>
+</div>
 <blockquote>
 <div><dl class="simple">
-<dt>images:</dt><dd><p>Sequence of image arrays to be stacked <em>[batch_shape,height,width,dims]</em></p>
-</dd>
-<dt>desired_aspect_ratio:</dt><dd><p>desired aspect ratio of the stacked image</p>
-</dd>
-</dl>
-</div></blockquote>
-<dl class="simple">
-<dt>out:</dt><dd><p>an array containing the stacked images in a specified aspect ratio/dimensions</p>
-</dd>
-</dl>
-<p>Examples:
-&gt;&gt;&gt; import ivy
-&gt;&gt;&gt; shape, num = (1, 2, 3), 2
-&gt;&gt;&gt; data = [ivy.ones(shape)] * num
-&gt;&gt;&gt; stacked = ivy.stack_images(data, (2, 1))
-&gt;&gt;&gt; print(stacked)
-[[[1., 1., 1.],</p>
-<blockquote>
-<div><blockquote>
-<div><p>[1., 1., 1.],
-[0., 0., 0.],
-[0., 0., 0.]],</p>
-</div></blockquote>
-<dl class="simple">
 <dt>[[1., 1., 1.],</dt><dd><p>[1., 1., 1.],
 [0., 0., 0.],
 [0., 0., 0.]]]</p>
 </dd>
 </dl>
 </div></blockquote>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></p>
-</dd>
-</dl>
 </dd></dl>
 
 <div class="line-block">

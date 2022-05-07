@@ -143,7 +143,7 @@
 <div class="viewcode-block" id="get_referrers_recursive"><a class="viewcode-back" href="../../../../functional/ivy/general/get_referrers_recursive.html#ivy.functional.ivy.general.get_referrers_recursive">[docs]</a><span class="k">def</span> <span class="nf">get_referrers_recursive</span><span class="p">(</span>
     <span class="n">item</span><span class="p">,</span> <span class="n">depth</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">max_depth</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">seen_set</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">local_set</span><span class="o">=</span><span class="kc">None</span>
 <span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Summary.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -157,9 +157,6 @@
 <span class="sd">         (Default value = None)</span>
 <span class="sd">    local_set</span>
 <span class="sd">         (Default value = None)</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">seen_set</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">default</span><span class="p">(</span><span class="n">seen_set</span><span class="p">,</span> <span class="nb">set</span><span class="p">())</span>
@@ -215,7 +212,7 @@
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">     ret</span>
+<span class="sd">    ret</span>
 <span class="sd">        Boolean, whether or not x is an array.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -237,7 +234,7 @@
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">     ret</span>
+<span class="sd">    ret</span>
 <span class="sd">        Boolean, whether or not x is an array.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -256,7 +253,7 @@
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">     ret</span>
+<span class="sd">    ret</span>
 <span class="sd">        Boolean, whether or not x is an array.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -273,7 +270,7 @@
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">     ret</span>
+<span class="sd">    ret</span>
 <span class="sd">        Boolean, whether or not x is an ivy container.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -289,7 +286,7 @@
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    ret</span>
-<span class="sd">       a copy of the input array ``x``.</span>
+<span class="sd">        a copy of the input array ``x``.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
@@ -313,26 +310,28 @@
 <span class="sd">        The first input array to compare.</span>
 <span class="sd">    x1</span>
 <span class="sd">        The second input array to compare.</span>
-
 <span class="sd">    dtype</span>
 <span class="sd">        array data type</span>
 
 <span class="sd">    Returns</span>
-<span class="sd">    ----------</span>
+<span class="sd">    -------</span>
 <span class="sd">    ret</span>
 <span class="sd">        Boolean, whether or not the input arrays are equal across all elements.</span>
 
-<span class="sd">    Examples:</span>
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([1,0,1])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.array([1,0,-1])</span>
 <span class="sd">    &gt;&gt;&gt; z = ivy.array_equal(x,y)</span>
 <span class="sd">    &gt;&gt;&gt; print(z)</span>
 <span class="sd">    False</span>
+
 <span class="sd">    &gt;&gt;&gt; a = ivy.array([1, 2])</span>
 <span class="sd">    &gt;&gt;&gt; b = ivy.array([1, 2])</span>
 <span class="sd">    &gt;&gt;&gt; c = ivy.array_equal(a,b)</span>
 <span class="sd">    &gt;&gt;&gt; print(c)</span>
 <span class="sd">    True</span>
+
 <span class="sd">    &gt;&gt;&gt; i = ivy.array([1, 2])</span>
 <span class="sd">    &gt;&gt;&gt; j = ivy.array([1, 2, 3])</span>
 <span class="sd">    &gt;&gt;&gt; k = ivy.array_equal(i,j)</span>
@@ -353,7 +352,7 @@
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">     ret</span>
+<span class="sd">    ret</span>
 <span class="sd">        Boolean, whether or not all of the input arrays are equal across all elements.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -379,7 +378,7 @@
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">     ret</span>
+<span class="sd">    ret</span>
 <span class="sd">        Boolean, whether or not the inputs are equal, or matrix array of booleans if equality_matrix=True is set.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -414,14 +413,13 @@
 <span class="sd">     x</span>
 <span class="sd">         input array</span>
 
-
 <span class="sd">    Returns</span>
-<span class="sd">     -------</span>
+<span class="sd">    -------</span>
 <span class="sd">    ret</span>
-<span class="sd">       a numpy array copying all the element of the array ``x``.</span>
+<span class="sd">        a numpy array copying all the element of the array ``x``.</span>
 
-<span class="sd">    Examples:</span>
-<span class="sd">    ---------</span>
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([-1, 0, 1])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.to_numpy(x)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
@@ -441,14 +439,13 @@
 <span class="sd">     x</span>
 <span class="sd">         Input array with a single element.</span>
 
-
 <span class="sd">    Returns</span>
-<span class="sd">     -------</span>
+<span class="sd">    -------</span>
 <span class="sd">    ret</span>
-<span class="sd">       a scalar copying the element of the array ``x``.</span>
+<span class="sd">        a scalar copying the element of the array ``x``.</span>
 
-<span class="sd">    Examples:</span>
-<span class="sd">    ---------</span>
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([-1])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.to_scalar(x)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
@@ -468,14 +465,13 @@
 <span class="sd">     x</span>
 <span class="sd">         Input array.</span>
 
-
 <span class="sd">    Returns</span>
-<span class="sd">     -------</span>
+<span class="sd">    -------</span>
 <span class="sd">    ret</span>
-<span class="sd">       A list representation of the input array ``x``.</span>
+<span class="sd">        A list representation of the input array ``x``.</span>
 
-<span class="sd">    Examples:</span>
-<span class="sd">    ---------</span>
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([-1, 0, 1])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.to_list(x)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
@@ -495,6 +491,7 @@
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Clips (limits) the vector p-norm of an array.</span>
+
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    x</span>
@@ -505,9 +502,10 @@
 <span class="sd">        optional float, the p-value for computing the p-norm. Default is 2.</span>
 <span class="sd">    out</span>
 <span class="sd">        optional output array, for writing the result to. It must have a shape that the inputs broadcast to.</span>
+
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">     ret</span>
+<span class="sd">    ret</span>
 <span class="sd">        An array with the vector norm downscaled to the max norm if needed.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">norm</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">vector_norm</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="nb">ord</span><span class="o">=</span><span class="n">p</span><span class="p">)</span>
@@ -539,7 +537,7 @@
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">     ret</span>
+<span class="sd">    ret</span>
 <span class="sd">        An array with the matrix norm downscaled to the max norm if needed.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -555,6 +553,7 @@
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns element-wise remainder of division.</span>
+
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    x</span>
@@ -566,7 +565,7 @@
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">     ret</span>
+<span class="sd">    ret</span>
 <span class="sd">        An array of the same shape and type as x, with the elements floor modded.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">floormod</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span></div>
@@ -588,7 +587,7 @@
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">     ret</span>
+<span class="sd">    ret</span>
 <span class="sd">        List of arrays, unpacked along specified dimensions.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -622,7 +621,7 @@
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">     ret</span>
+<span class="sd">    ret</span>
 <span class="sd">        New array with the final dimension expanded, and the encodings stored in this channel.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -677,6 +676,7 @@
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
+<span class="sd">    ret</span>
 <span class="sd">        Boolean as to whether the input value is a nan or not.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -701,7 +701,7 @@
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">     ret</span>
+<span class="sd">    ret</span>
 <span class="sd">        Boolean as to whether the array contains nans.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -718,7 +718,7 @@
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">     ret</span>
+<span class="sd">    ret</span>
 <span class="sd">        True if x is not None, else False.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -746,9 +746,10 @@
 <span class="sd">        Whether to reverse the input x and default_val. Default is False.</span>
 <span class="sd">    with_callable</span>
 <span class="sd">        Whether either of the arguments might be callable functions. Default is False.</span>
+
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">     ret</span>
+<span class="sd">    ret</span>
 <span class="sd">        x if x exists (is not None), else default.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -802,9 +803,6 @@
 <span class="sd">    fn</span>
 <span class="sd">        Function to try and call and return.</span>
 
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">default</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span></div>
 
@@ -815,10 +813,6 @@
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    receiver</span>
-
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">inspect</span><span class="o">.</span><span class="n">signature</span><span class="p">(</span><span class="n">receiver</span><span class="p">)</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span></div>
@@ -838,7 +832,7 @@
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">     ret</span>
+<span class="sd">    ret</span>
 <span class="sd">        Sequence of keyword arguments split as best as possible.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -866,7 +860,7 @@
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">     ret</span>
+<span class="sd">    ret</span>
 <span class="sd">        The newly cache wrapped function.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -876,7 +870,7 @@
         <span class="n">FN_CACHE</span><span class="p">[</span><span class="n">func</span><span class="p">]</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">cached_fn</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Summary.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -901,15 +895,12 @@
 
 
 <div class="viewcode-block" id="current_framework_str"><a class="viewcode-back" href="../../../../functional/ivy/general/current_framework_str.html#ivy.functional.ivy.general.current_framework_str">[docs]</a><span class="k">def</span> <span class="nf">current_framework_str</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
+    <span class="sd">&quot;&quot;&quot;Summary.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">     ret</span>
-<span class="sd">         The framework string.</span>
+<span class="sd">    ret</span>
+<span class="sd">        The framework string.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">fw</span> <span class="o">=</span> <span class="n">_cur_framework</span><span class="p">()</span>
@@ -933,7 +924,7 @@
 <span class="sd">        Any additional specifications for dimensions.</span>
 
 <span class="sd">    Returns</span>
-<span class="sd">     -------</span>
+<span class="sd">    -------</span>
 <span class="sd">    ret</span>
 <span class="sd">        New array with einops.rearrange having been applied.</span>
 
@@ -961,7 +952,7 @@
 <span class="sd">        Any additional specifications for dimensions.</span>
 
 <span class="sd">    Returns</span>
-<span class="sd">     -------</span>
+<span class="sd">    -------</span>
 <span class="sd">    ret</span>
 <span class="sd">        New array with einops.reduce having been applied.</span>
 
@@ -984,7 +975,7 @@
 <span class="sd">        Any additional specifications for dimensions.</span>
 
 <span class="sd">    Returns</span>
-<span class="sd">     -------</span>
+<span class="sd">    -------</span>
 <span class="sd">    ret</span>
 <span class="sd">        New array with einops.repeat having been applied.</span>
 
@@ -1020,9 +1011,6 @@
 <span class="sd">    val</span>
 <span class="sd">        The new value to set the minimum denominator to.</span>
 
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">ivy</span><span class="o">.</span><span class="n">_MIN_DENOMINATOR</span> <span class="o">=</span> <span class="n">val</span></div>
 
@@ -1042,9 +1030,6 @@
 <span class="sd">    ----------</span>
 <span class="sd">    val</span>
 <span class="sd">        The new value to set the minimum base to.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">ivy</span><span class="o">.</span><span class="n">_MIN_BASE</span> <span class="o">=</span> <span class="n">val</span></div>
@@ -1066,7 +1051,7 @@
 <span class="sd">        The minimum denominator to use, use global ivy._MIN_DENOMINATOR by default.</span>
 
 <span class="sd">    Returns</span>
-<span class="sd">     -------</span>
+<span class="sd">    -------</span>
 <span class="sd">    ret</span>
 <span class="sd">        The new item following the numerically stable division.</span>
 
@@ -1089,7 +1074,7 @@
 <span class="sd">        The minimum base to use, use global ivy._MIN_BASE by default.</span>
 
 <span class="sd">    Returns</span>
-<span class="sd">     -------</span>
+<span class="sd">    -------</span>
 <span class="sd">    ret</span>
 <span class="sd">        The new item following the numerically stable division.</span>
 
@@ -1131,9 +1116,6 @@
 <span class="sd">    timeout</span>
 <span class="sd">        The timeout to set in seconds.</span>
 
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">global</span> <span class="n">TIMEOUT</span>
     <span class="n">TIMEOUT</span> <span class="o">=</span> <span class="n">timeout</span></div>
@@ -1161,23 +1143,16 @@
 <span class="sd">    ----------</span>
 <span class="sd">    tmp_dr</span>
 
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">global</span> <span class="n">TMP_DIR</span>
     <span class="n">TMP_DIR</span> <span class="o">=</span> <span class="n">tmp_dr</span></div>
 
 
 <div class="viewcode-block" id="container_types"><a class="viewcode-back" href="../../../../functional/ivy/general/container_types.html#ivy.functional.ivy.general.container_types">[docs]</a><span class="k">def</span> <span class="nf">container_types</span><span class="p">():</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
+    <span class="sd">&quot;&quot;&quot;Summary.</span>
 
 <span class="sd">    Returns</span>
-<span class="sd">     -------</span>
+<span class="sd">    -------</span>
 <span class="sd">    ret</span>
 <span class="sd">        a key-value structure, and exposes public methods .keys(), .values() and items().</span>
 
@@ -1199,7 +1174,7 @@
 <span class="sd">         (Default value = None)</span>
 
 <span class="sd">    Returns</span>
-<span class="sd">     -------</span>
+<span class="sd">    -------</span>
 <span class="sd">    ret</span>
 <span class="sd">        Boolean, whether or not inplace arrays are supported.</span>
 
@@ -1217,7 +1192,7 @@
 <span class="sd">         (Default value = None)</span>
 
 <span class="sd">    Returns</span>
-<span class="sd">     -------</span>
+<span class="sd">    -------</span>
 <span class="sd">    ret</span>
 <span class="sd">        Boolean, whether or not inplace variables are supported.</span>
 
@@ -1235,7 +1210,7 @@
 <span class="sd">        Input variable or array to check for inplace support for.</span>
 
 <span class="sd">    Returns</span>
-<span class="sd">     -------</span>
+<span class="sd">    -------</span>
 <span class="sd">    ret</span>
 <span class="sd">        Boolean, whether or not inplace operations are supported for x.</span>
 
@@ -1257,7 +1232,7 @@
 <span class="sd">        Input variable or array to check for inplace support for.</span>
 
 <span class="sd">    Returns</span>
-<span class="sd">     -------</span>
+<span class="sd">    -------</span>
 <span class="sd">    ret</span>
 <span class="sd">        True if support, raises exception otherwise</span>
 
@@ -1285,7 +1260,7 @@
 <span class="sd">        The array to update the variable with.</span>
 
 <span class="sd">    Returns</span>
-<span class="sd">     -------</span>
+<span class="sd">    -------</span>
 <span class="sd">    ret</span>
 <span class="sd">        The array following the in-place update.</span>
 
@@ -1304,7 +1279,7 @@
 <span class="sd">        The array to decrement the variable with.</span>
 
 <span class="sd">    Returns</span>
-<span class="sd">     -------</span>
+<span class="sd">    -------</span>
 <span class="sd">    ret</span>
 <span class="sd">        The array following the in-place decrement.</span>
 
@@ -1323,7 +1298,7 @@
 <span class="sd">        The array to increment the variable with.</span>
 
 <span class="sd">    Returns</span>
-<span class="sd">     -------</span>
+<span class="sd">    -------</span>
 <span class="sd">    ret</span>
 <span class="sd">        The array following the in-place increment.</span>
 
@@ -1338,6 +1313,7 @@
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns the cumulative sum of the elements along a given axis.</span>
+
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    x</span>
@@ -1349,7 +1325,7 @@
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">     ret</span>
+<span class="sd">    ret</span>
 <span class="sd">        Input array with cumulatively summed elements along axis</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
@@ -1363,6 +1339,7 @@
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns the cumulative product of the elements along a given axis.</span>
+
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    x</span>
@@ -1374,8 +1351,9 @@
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">     ret</span>
+<span class="sd">    ret</span>
 <span class="sd">        Input array with cumulatively multiplied elements along axis.</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">cumprod</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">exclusive</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
@@ -1408,7 +1386,7 @@
 <span class="sd">        device on which to create the array &#39;cuda:0&#39;, &#39;cuda:1&#39;, &#39;cpu&#39; etc. Same as updates if None.</span>
 
 <span class="sd">    Returns</span>
-<span class="sd">     -------</span>
+<span class="sd">    -------</span>
 <span class="sd">    ret</span>
 <span class="sd">        New array of given shape, with the values scattered at the indices.</span>
 
@@ -1446,7 +1424,7 @@
 <span class="sd">        device on which to create the array &#39;cuda:0&#39;, &#39;cuda:1&#39;, &#39;cpu&#39; etc. Same as updates if None.</span>
 
 <span class="sd">    Returns</span>
-<span class="sd">     -------</span>
+<span class="sd">    -------</span>
 <span class="sd">    ret</span>
 <span class="sd">        New array of given shape, with the values scattered at the indices.</span>
 
@@ -1468,7 +1446,7 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    paramas</span>
+<span class="sd">    params</span>
 <span class="sd">        array, the array from which to gather values.</span>
 <span class="sd">    indices</span>
 <span class="sd">        array, index array.</span>
@@ -1480,7 +1458,8 @@
 <span class="sd">        optional output array, for writing the result to.</span>
 
 <span class="sd">    Returns</span>
-<span class="sd">    ----------</span>
+<span class="sd">    -------</span>
+<span class="sd">    ret</span>
 <span class="sd">        New array with the values gathered at the specified indices along the specified axis.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -1505,7 +1484,7 @@
 <span class="sd">        device on which to create the array &#39;cuda:0&#39;, &#39;cuda:1&#39;, &#39;cpu&#39; etc. Same as x if None.</span>
 
 <span class="sd">    Returns</span>
-<span class="sd">     -------</span>
+<span class="sd">    -------</span>
 <span class="sd">    ret</span>
 <span class="sd">        New array of given shape, with the values gathered at the indices.</span>
 
@@ -1514,7 +1493,7 @@
 
 
 <div class="viewcode-block" id="multiprocessing"><a class="viewcode-back" href="../../../../functional/ivy/general/multiprocessing.html#ivy.functional.ivy.general.multiprocessing">[docs]</a><span class="k">def</span> <span class="nf">multiprocessing</span><span class="p">(</span><span class="n">context</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Return framewrk-specific multi-processing module.</span>
+    <span class="sd">&quot;&quot;&quot;Return framework-specific multiprocessing module.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -1524,7 +1503,7 @@
 <span class="sd">         (Default value = None)</span>
 
 <span class="sd">    Returns</span>
-<span class="sd">     -------</span>
+<span class="sd">    -------</span>
 <span class="sd">    ret</span>
 <span class="sd">        Multiprocessing module</span>
 
@@ -1543,7 +1522,7 @@
 <span class="sd">        Boolean array, for which indices are desired.</span>
 
 <span class="sd">    Returns</span>
-<span class="sd">     -------</span>
+<span class="sd">    -------</span>
 <span class="sd">    ret</span>
 <span class="sd">        Indices for where the boolean array is True.</span>
 
@@ -1567,7 +1546,7 @@
 <span class="sd">        device on which to create the array &#39;cuda:0&#39;, &#39;cuda:1&#39;, &#39;cpu&#39; etc. Same as x if None.</span>
 
 <span class="sd">    Returns</span>
-<span class="sd">     -------</span>
+<span class="sd">    -------</span>
 <span class="sd">    ret</span>
 <span class="sd">        Tensor of zeros with the same shape and type as a, unless dtype provided which overrides.</span>
 
@@ -1588,7 +1567,7 @@
 <span class="sd">        Whether to return the shape as a array, default False.</span>
 
 <span class="sd">    Returns</span>
-<span class="sd">     -------</span>
+<span class="sd">    -------</span>
 <span class="sd">    ret</span>
 <span class="sd">        Shape of the array</span>
 
@@ -1607,7 +1586,7 @@
 <span class="sd">        Whether to return the shape as a array, default False.</span>
 
 <span class="sd">    Returns</span>
-<span class="sd">     -------</span>
+<span class="sd">    -------</span>
 <span class="sd">    ret</span>
 <span class="sd">        Shape of the array</span>
 

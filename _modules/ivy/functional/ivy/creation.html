@@ -162,7 +162,7 @@
 <span class="sd">        device on which to place the created array. Default: None.</span>
 
 <span class="sd">    Returns</span>
-<span class="sd">    ----------</span>
+<span class="sd">    -------</span>
 <span class="sd">    ret</span>
 <span class="sd">        a one-dimensional array containing evenly spaced values. The length of the output array must be ceil((stop-start)/step) if stop - start and step have the same sign, and length 0 otherwise.</span>
 
@@ -182,16 +182,15 @@
 <span class="sd">    x</span>
 <span class="sd">        input data, in any form that can be converted to an array.</span>
 <span class="sd">        This includes lists, lists of tuples, tuples, tuples of tuples, tuples of lists and ndarrays.</span>
-
 <span class="sd">    dtype</span>
 <span class="sd">        datatype, optional. Datatype is inferred from the input data.</span>
-
 <span class="sd">    device</span>
 <span class="sd">        device on which to place the created array. Default: None.</span>
 
 <span class="sd">    Returns</span>
-<span class="sd">    --------</span>
-<span class="sd">    An array interpretation of x.</span>
+<span class="sd">    -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        An array interpretation of x.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dtype</span><span class="p">,</span> <span class="n">device</span><span class="p">)</span></div>
@@ -214,12 +213,12 @@
 <span class="sd">       device on which to place the created array. Default: ``None``.</span>
 
 <span class="sd">    Returns</span>
-<span class="sd">     -------</span>
+<span class="sd">    -------</span>
 <span class="sd">    ret</span>
-<span class="sd">       an array containing zeros.</span>
+<span class="sd">        an array containing zeros.</span>
 
-<span class="sd">    Examples:</span>
-<span class="sd">    ---------</span>
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
 <span class="sd">    &gt;&gt;&gt; shape = (3, 5)</span>
 <span class="sd">    &gt;&gt;&gt; x = ivy.zeros(shape)</span>
 <span class="sd">    &gt;&gt;&gt; print(x)</span>
@@ -248,13 +247,12 @@
 <span class="sd">        device on which to place the created array. Default: ``None``.</span>
 
 <span class="sd">    Returns</span>
-<span class="sd">     -------</span>
+<span class="sd">    -------</span>
 <span class="sd">    ret</span>
 <span class="sd">        an array containing ones.</span>
 
-<span class="sd">    Examples:</span>
-<span class="sd">    ---------</span>
-
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
 <span class="sd">    &gt;&gt;&gt; shape = (2,2)</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.ones(shape)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
@@ -278,21 +276,18 @@
 <span class="sd">    ----------</span>
 <span class="sd">    x</span>
 <span class="sd">        input array from which to derive the output array shape.</span>
-
 <span class="sd">    fill_value</span>
 <span class="sd">        Scalar fill value</span>
-
 <span class="sd">    dtype</span>
 <span class="sd">        output array data type. If ``dtype`` is `None`, the output array data type must be inferred from ``x``.</span>
 <span class="sd">        Default: ``None``.</span>
-
 <span class="sd">    device</span>
 <span class="sd">        device on which to place the created array. If ``device`` is ``None``, the output array device must be inferred from ``x``.</span>
 <span class="sd">        Default: ``None``.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    ret:</span>
+<span class="sd">    ret</span>
 <span class="sd">        an array having the same shape as ``x`` and where every element is equal to ``fill_value``.</span>
 
 <span class="sd">    Examples</span>
@@ -327,13 +322,12 @@
 <span class="sd">        Default: ``None``.</span>
 
 <span class="sd">    Returns</span>
-<span class="sd">     -------</span>
+<span class="sd">    -------</span>
 <span class="sd">    ret</span>
 <span class="sd">        an array having the same shape as x and filled with ones.</span>
 
-<span class="sd">    Examples:</span>
-<span class="sd">    ---------</span>
-
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([[0, 1, 2],[3, 4, 5]])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.ones_like(x)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
@@ -355,11 +349,9 @@
 <span class="sd">    ----------</span>
 <span class="sd">    x</span>
 <span class="sd">         input array from which to derive the output array shape.</span>
-
 <span class="sd">    dtype</span>
 <span class="sd">        output array data type. If ``dtype`` is ``None``, the output array data type must be inferred from ``x``.</span>
 <span class="sd">        Default: ``None``.</span>
-
 <span class="sd">    device</span>
 <span class="sd">        device on which to place the created array. If ``device`` is ``None``, the output array device must be inferred from ``x``.</span>
 <span class="sd">        Default: ``None``.</span>
@@ -383,7 +375,7 @@
 
 <div class="viewcode-block" id="tril"><a class="viewcode-back" href="../../../../functional/ivy/creation/tril.html#ivy.functional.ivy.creation.tril">[docs]</a><span class="k">def</span> <span class="nf">tril</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span> <span class="n">k</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Returns the lower triangular part of a matrix (or a stack of matrices)</span>
-<span class="sd">    x.</span>
+<span class="sd">    ``x``.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -394,7 +386,7 @@
 <span class="sd">        below the main diagonal. If k &gt; 0, the diagonal is above the main diagonal. Default: 0.</span>
 
 <span class="sd">    Returns</span>
-<span class="sd">     -------</span>
+<span class="sd">    -------</span>
 <span class="sd">    ret</span>
 <span class="sd">        an array containing the lower triangular part(s). The returned array must have the same shape and data type as</span>
 <span class="sd">        x. All elements above the specified diagonal k must be zeroed. The returned array should be allocated on the</span>
@@ -417,7 +409,7 @@
 <span class="sd">        below the main diagonal. If k &gt; 0, the diagonal is above the main diagonal. Default: 0.</span>
 
 <span class="sd">    Returns</span>
-<span class="sd">     -------</span>
+<span class="sd">    -------</span>
 <span class="sd">    ret</span>
 <span class="sd">        an array containing the upper triangular part(s). The returned array must have the same shape and data type as</span>
 <span class="sd">        x. All elements below the specified diagonal k must be zeroed. The returned array should be allocated on the</span>
@@ -445,7 +437,7 @@
 <span class="sd">        device on which to place the created array. Default: None.</span>
 
 <span class="sd">    Returns</span>
-<span class="sd">     -------</span>
+<span class="sd">    -------</span>
 <span class="sd">    ret</span>
 <span class="sd">        an uninitialized array having a specified shape</span>
 
@@ -470,7 +462,7 @@
 <span class="sd">        device on which to place the created array. If device is None, the output array device must be inferred from x. Default: None.</span>
 
 <span class="sd">    Returns</span>
-<span class="sd">     -------</span>
+<span class="sd">    -------</span>
 <span class="sd">    ret</span>
 <span class="sd">        an array having the same shape as x and containing uninitialized data.</span>
 
@@ -489,8 +481,6 @@
 <span class="sd">    elsewhere.</span>
 
 <span class="sd">    Parameters</span>
-
-<span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    n_rows</span>
 <span class="sd">        number of rows in the output array.</span>
@@ -507,7 +497,7 @@
 <span class="sd">         device on which to place the created array.</span>
 
 <span class="sd">    Returns</span>
-<span class="sd">     -------</span>
+<span class="sd">    -------</span>
 <span class="sd">    ret</span>
 <span class="sd">        device on which to place the created array. Default: None.</span>
 
@@ -538,7 +528,7 @@
 <span class="sd">        device on which to create the array &#39;cuda:0&#39;, &#39;cuda:1&#39;, &#39;cpu&#39; etc.</span>
 
 <span class="sd">    Returns</span>
-<span class="sd">     -------</span>
+<span class="sd">    -------</span>
 <span class="sd">    ret</span>
 <span class="sd">        Tensor of evenly-spaced values.</span>
 
@@ -551,15 +541,17 @@
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns coordinate matrices from coordinate vectors.</span>
+
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    arrays</span>
 <span class="sd">        an arbitrary number of one-dimensional arrays representing grid coordinates. Each array should have the same numeric data type.</span>
 <span class="sd">    indexing</span>
 <span class="sd">        Cartesian ``&#39;xy&#39;`` or matrix ``&#39;ij&#39;`` indexing of output. If provided zero or one one-dimensional vector(s) (i.e., the zero- and one-dimensional cases, respectively), the ``indexing`` keyword has no effect and should be ignored. Default: ``&#39;xy&#39;``.</span>
+
 <span class="sd">    Returns</span>
-<span class="sd">     -------</span>
-<span class="sd">    ret List[array]</span>
+<span class="sd">    -------</span>
+<span class="sd">    ret</span>
 <span class="sd">        list of N arrays, where ``N`` is the number of provided one-dimensional input arrays. Each returned array must have rank ``N``. For ``N`` one-dimensional arrays having lengths ``Ni = len(xi)``,</span>
 <span class="sd">        - if matrix indexing ``ij``, then each returned array must have the shape ``(N1, N2, N3, ..., Nn)``.</span>
 <span class="sd">        - if Cartesian indexing ``xy``, then each returned array must have shape ``(N2, N1, N3, ..., Nn)``.</span>
@@ -618,7 +610,7 @@
 <span class="sd">        input (array) object.</span>
 
 <span class="sd">    Returns</span>
-<span class="sd">     -------</span>
+<span class="sd">    -------</span>
 <span class="sd">    ret</span>
 <span class="sd">        an array containing the data in `x`.</span>
 
@@ -667,7 +659,7 @@
 <span class="sd">        device on which to create the array &#39;cuda:0&#39;, &#39;cuda:1&#39;, &#39;cpu&#39; etc.</span>
 
 <span class="sd">    Returns</span>
-<span class="sd">     -------</span>
+<span class="sd">    -------</span>
 <span class="sd">    ret</span>
 <span class="sd">        Tensor of evenly-spaced values.</span>
 

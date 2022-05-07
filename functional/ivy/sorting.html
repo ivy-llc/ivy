@@ -137,19 +137,15 @@
 <li><p><strong>x</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – input array.</p></li>
 <li><p><strong>axis</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – axis along which to sort. If set to <code class="docutils literal notranslate"><span class="pre">-1</span></code>, the function must sort along the last axis. Default: <code class="docutils literal notranslate"><span class="pre">-1</span></code>. (default: <code class="docutils literal notranslate"><span class="pre">-1</span></code>)</p></li>
 <li><p><strong>descending</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – sort order. If <code class="docutils literal notranslate"><span class="pre">True</span></code>, the returned indices sort <code class="docutils literal notranslate"><span class="pre">x</span></code> in descending order (by value). If <code class="docutils literal notranslate"><span class="pre">False</span></code>, the returned indices sort <code class="docutils literal notranslate"><span class="pre">x</span></code> in ascending order (by value). Default: <code class="docutils literal notranslate"><span class="pre">False</span></code>. (default: <code class="docutils literal notranslate"><span class="pre">False</span></code>)</p></li>
-<li><p><strong>stable</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – <p>sort stability. If <code class="docutils literal notranslate"><span class="pre">True</span></code>, the returned indices must maintain the relative order of <code class="docutils literal notranslate"><span class="pre">x</span></code> values which compare as equal. If <code class="docutils literal notranslate"><span class="pre">False</span></code>, the returned indices may or may not maintain the relative order of <code class="docutils literal notranslate"><span class="pre">x</span></code> values which compare as equal (i.e., the relative order of <code class="docutils literal notranslate"><span class="pre">x</span></code> values which compare as equal is implementation-dependent). Default: <code class="docutils literal notranslate"><span class="pre">True</span></code>. (default: <code class="docutils literal notranslate"><span class="pre">True</span></code>)
-out</p>
-<blockquote>
-<div><p>optional output array, for writing the result to. It must have a shape that the inputs broadcast to.</p>
-</div></blockquote>
-</p></li>
+<li><p><strong>stable</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – sort stability. If <code class="docutils literal notranslate"><span class="pre">True</span></code>, the returned indices must maintain the relative order of <code class="docutils literal notranslate"><span class="pre">x</span></code> values which compare as equal. If <code class="docutils literal notranslate"><span class="pre">False</span></code>, the returned indices may or may not maintain the relative order of <code class="docutils literal notranslate"><span class="pre">x</span></code> values which compare as equal (i.e., the relative order of <code class="docutils literal notranslate"><span class="pre">x</span></code> values which compare as equal is implementation-dependent). Default: <code class="docutils literal notranslate"><span class="pre">True</span></code>. (default: <code class="docutils literal notranslate"><span class="pre">True</span></code>)</p></li>
+<li><p><strong>out</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]]) – optional output array, for writing the result to. It must have a shape that the inputs broadcast to. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>
 <dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></p>
 </dd>
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><em>return</em> – an array of indices. The returned array must have the same shape as <code class="docutils literal notranslate"><span class="pre">x</span></code>. The returned array must have the default array index data type.</p>
+<dd class="field-odd"><p><em>ret</em> – an array of indices. The returned array must have the same shape as <code class="docutils literal notranslate"><span class="pre">x</span></code>. The returned array must have the default array index data type.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -174,7 +170,7 @@ If <code class="docutils literal notranslate"><span class="pre">False</span></co
 <dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></p>
 </dd>
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><em>return</em> – An array with the same dtype and shape as <cite>values</cite>, with the elements sorted along the given <cite>axis</cite>.</p>
+<dd class="field-odd"><p><em>ret</em> – An array with the same dtype and shape as <cite>values</cite>, with the elements sorted along the given <cite>axis</cite>.</p>
 </dd>
 </dl>
 </dd></dl>

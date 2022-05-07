@@ -153,36 +153,24 @@
 <li><p><strong>shape</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>], <code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]]) – output array shape.</p></li>
 <li><p><strong>dtype</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Dtype</span></code>]) – output array data type. If <code class="docutils literal notranslate"><span class="pre">dtype</span></code> is <code class="docutils literal notranslate"><span class="pre">None</span></code>, the output array data type must be the default floating-point data type. Default  <code class="docutils literal notranslate"><span class="pre">None</span></code>. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
 <li><p><strong>device</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Device</span></code>]) – device on which to place the created array. Default: <code class="docutils literal notranslate"><span class="pre">None</span></code>. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
-<li><p><strong>Returns</strong> – </p></li>
-<li><p><strong>ret</strong> – an array containing zeros.</p></li>
-<li><p><strong>Examples</strong> – </p></li>
-<li><p><strong>---------</strong> – </p></li>
-<li><p><strong>(</strong><strong>3</strong> (<em>&gt;&gt;&gt; shape =</em>) – </p></li>
-<li><p><strong>5</strong><strong>)</strong> – </p></li>
-<li><p><strong>ivy.zeros</strong><strong>(</strong><strong>shape</strong><strong>)</strong> (<em>&gt;&gt;&gt; x =</em>) – </p></li>
-<li><p><strong>print</strong><strong>(</strong><strong>x</strong><strong>)</strong> (<em>&gt;&gt;&gt;</em>) – </p></li>
-<li><p><strong>ivy.array</strong><strong>(</strong><strong>[</strong><strong>[</strong><strong>0.</strong> – [0., 0., 0., 0., 0.],
-[0., 0., 0., 0., 0.]])</p></li>
-<li><p><strong>0.</strong> – [0., 0., 0., 0., 0.],
-[0., 0., 0., 0., 0.]])</p></li>
-<li><p><strong>0.</strong> – [0., 0., 0., 0., 0.],
-[0., 0., 0., 0., 0.]])</p></li>
-<li><p><strong>0.</strong> – [0., 0., 0., 0., 0.],
-[0., 0., 0., 0., 0.]])</p></li>
-<li><p><strong>0.</strong><strong>]</strong> – [0., 0., 0., 0., 0.],
-[0., 0., 0., 0., 0.]])</p></li>
 </ul>
 </dd>
-</dl>
-<dl class="simple">
-<dt>:param<span class="classifier">[0., 0., 0., 0., 0.],</span></dt><dd><p>[0., 0., 0., 0., 0.]])</p>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><em>ret</em> – an array containing zeros.</p>
 </dd>
 </dl>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></p>
-</dd>
-</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">shape</span> <span class="o">=</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="go">ivy.array([[0., 0., 0., 0., 0.],</span>
+<span class="go">           [0., 0., 0., 0., 0.],</span>
+<span class="go">           [0., 0., 0., 0., 0.]])</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <div class="line-block">

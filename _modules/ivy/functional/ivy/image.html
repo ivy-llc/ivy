@@ -140,20 +140,20 @@
     <span class="sd">&quot;&quot;&quot;Stacks a group of images into a combined windowed image, fitting the</span>
 <span class="sd">    desired aspect ratio as closely as possible.</span>
 
-<span class="sd">     Parameters</span>
-<span class="sd">     ----------</span>
-<span class="sd">     images:</span>
-<span class="sd">         Sequence of image arrays to be stacked *[batch_shape,height,width,dims]*</span>
-
-<span class="sd">     desired_aspect_ratio:</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    images</span>
+<span class="sd">        Sequence of image arrays to be stacked *[batch_shape,height,width,dims]*</span>
+<span class="sd">    desired_aspect_ratio:</span>
 <span class="sd">        desired aspect ratio of the stacked image</span>
 
-<span class="sd">     Returns</span>
-<span class="sd">     -------</span>
-<span class="sd">    out:</span>
-<span class="sd">       an array containing the stacked images in a specified aspect ratio/dimensions</span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        an array containing the stacked images in a specified aspect ratio/dimensions</span>
 
-<span class="sd">    Examples:</span>
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
 <span class="sd">    &gt;&gt;&gt; import ivy</span>
 <span class="sd">    &gt;&gt;&gt; shape, num = (1, 2, 3), 2</span>
 <span class="sd">    &gt;&gt;&gt; data = [ivy.ones(shape)] * num</span>
@@ -185,7 +185,7 @@
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">     ret</span>
+<span class="sd">    ret</span>
 <span class="sd">        Image after bilinear re-sampling.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -202,7 +202,7 @@
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">     ret</span>
+<span class="sd">    ret</span>
 <span class="sd">        Gradient images dy *[batch_shape,h,w,d]* and dx *[batch_shape,h,w,d]* .</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -220,7 +220,7 @@
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">     ret</span>
+<span class="sd">    ret</span>
 <span class="sd">        The new encoded uint8 image *[batch_shape,h,w,4]* .</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -241,7 +241,7 @@
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">     ret</span>
+<span class="sd">    ret</span>
 <span class="sd">        The new float image *[batch_shape,h,w]*</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -268,7 +268,7 @@
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">     ret</span>
+<span class="sd">    ret</span>
 <span class="sd">        The new cropped image *[batch_shape,nh,nw,f]*</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -322,7 +322,7 @@
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">     ret</span>
+<span class="sd">    ret</span>
 <span class="sd">        The array after the linear resampling.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>

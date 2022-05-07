@@ -143,8 +143,8 @@ the minimum value is implementation-defined. Specification-compliant libraries m
 an error, return a sentinel value (e.g., if x is a floating-point input array, return NaN), or return
 the maximum possible value for the input array x data type (e.g., if x is a floating-point array,
 return +infinity).</p>
-<p><strong>Special Cases</strong>
-For floating-point operands,</p>
+<p><strong>Special Cases</strong></p>
+<p>For floating-point operands,</p>
 <p>If x_i is NaN, the minimum value is NaN (i.e., NaN values propagate).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -159,14 +159,15 @@ the input array (see Broadcasting).
 Otherwise, if False, the reduced axes (dimensions) must not be included in the result.
 Default: False.</p></li>
 <li><p><strong>out</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]]) – optional output array, for writing the result to. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
-<li><p><strong>Returns</strong> – </p></li>
-<li><p><strong>ret</strong> – if the minimum value was computed over the entire array, a zero-dimensional array containing the
-minimum value; otherwise, a non-zero-dimensional array containing the minimum values.
-The returned array must have the same data type as x.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>
 <dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><em>ret</em> – if the minimum value was computed over the entire array, a zero-dimensional array containing the
+minimum value; otherwise, a non-zero-dimensional array containing the minimum values.
+The returned array must have the same data type as x.</p>
 </dd>
 </dl>
 </dd></dl>

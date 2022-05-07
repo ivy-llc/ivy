@@ -196,10 +196,6 @@
 <span class="sd">    ----------</span>
 <span class="sd">    device</span>
 
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">all_arrays</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
     <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">gc</span><span class="o">.</span><span class="n">get_objects</span><span class="p">():</span>
@@ -221,10 +217,6 @@
 <span class="sd">    ----------</span>
 <span class="sd">    device</span>
 
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">get_all_arrays_on_dev</span><span class="p">(</span><span class="n">device</span><span class="p">))</span></div>
 
@@ -237,16 +229,12 @@
 <span class="sd">    ----------</span>
 <span class="sd">    device</span>
 
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">for</span> <span class="n">arr</span> <span class="ow">in</span> <span class="n">get_all_arrays_on_dev</span><span class="p">(</span><span class="n">device</span><span class="p">):</span>
         <span class="nb">print</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">arr</span><span class="p">),</span> <span class="n">arr</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span></div>
 
 
-<span class="c1"># Retreival</span>
+<span class="c1"># Retrieval</span>
 
 
 <div class="viewcode-block" id="dev"><a class="viewcode-back" href="../../../../functional/ivy/device/dev.html#ivy.functional.ivy.device.dev">[docs]</a><span class="k">def</span> <span class="nf">dev</span><span class="p">(</span>
@@ -263,7 +251,7 @@
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">     ret</span>
+<span class="sd">    ret</span>
 <span class="sd">        Device handle for the array, in native framework format.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -283,7 +271,7 @@
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">     ret</span>
+<span class="sd">    ret</span>
 <span class="sd">        Device string e.g. &#39;cuda:0&#39;.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -301,7 +289,7 @@
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">     ret</span>
+<span class="sd">    ret</span>
 <span class="sd">        Native device handle.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -319,9 +307,6 @@
 <span class="sd">    device</span>
 <span class="sd">        The device string to conver to native device handle.</span>
 
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span><span class="o">.</span><span class="n">clear_mem_on_dev</span><span class="p">(</span><span class="n">device</span><span class="p">)</span></div>
 
@@ -338,7 +323,7 @@
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">     ret</span>
+<span class="sd">    ret</span>
 <span class="sd">        The total memory on the device in GB.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -369,7 +354,7 @@
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">     ret</span>
+<span class="sd">    ret</span>
 <span class="sd">        The used memory on the device in GB.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -406,7 +391,7 @@
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">     ret</span>
+<span class="sd">    ret</span>
 <span class="sd">        The percentage used memory on the device.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -442,7 +427,7 @@
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">     ret</span>
+<span class="sd">    ret</span>
 <span class="sd">        The device utilization (%)</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -464,11 +449,8 @@
 <div class="viewcode-block" id="gpu_is_available"><a class="viewcode-back" href="../../../../functional/ivy/device/gpu_is_available.html#ivy.functional.ivy.device.gpu_is_available">[docs]</a><span class="k">def</span> <span class="nf">gpu_is_available</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Determine whether a GPU is available to use, with the backend framework.</span>
 
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-
 <span class="sd">    Returns</span>
-<span class="sd">     -------</span>
+<span class="sd">    -------</span>
 <span class="sd">    ret</span>
 <span class="sd">        Boolean, as to whether a gpu is available.</span>
 
@@ -489,15 +471,13 @@
 <div class="viewcode-block" id="num_gpus"><a class="viewcode-back" href="../../../../functional/ivy/device/num_gpus.html#ivy.functional.ivy.device.num_gpus">[docs]</a><span class="k">def</span> <span class="nf">num_gpus</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Determine the number of available GPUs, with the backend framework.</span>
 
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    out:</span>
+<span class="sd">    ret</span>
 <span class="sd">        Number of available GPUs.</span>
 
-<span class="sd">    Examples:</span>
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
 <span class="sd">    &gt;&gt;&gt; print(ivy.num_gpus())</span>
 <span class="sd">    1</span>
 
@@ -508,12 +488,9 @@
 <div class="viewcode-block" id="tpu_is_available"><a class="viewcode-back" href="../../../../functional/ivy/device/tpu_is_available.html#ivy.functional.ivy.device.tpu_is_available">[docs]</a><span class="k">def</span> <span class="nf">tpu_is_available</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Determine whether a TPU is available to use, with the backend framework.</span>
 
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">        ret</span>
+<span class="sd">    ret</span>
 <span class="sd">        Boolean, as to whether a tpu is available.</span>
 
 <span class="sd">    Examples</span>
@@ -537,7 +514,7 @@
 
 <span class="c1"># noinspection PyShadowingNames</span>
 <div class="viewcode-block" id="default_device"><a class="viewcode-back" href="../../../../functional/ivy/device/default_device.html#ivy.functional.ivy.device.default_device">[docs]</a><span class="k">def</span> <span class="nf">default_device</span><span class="p">(</span><span class="n">device</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Summary.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -546,7 +523,7 @@
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">     ret</span>
+<span class="sd">    ret</span>
 
 
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -563,15 +540,11 @@
 
 <span class="c1"># noinspection PyShadowingNames</span>
 <div class="viewcode-block" id="set_default_device"><a class="viewcode-back" href="../../../../functional/ivy/device/set_default_device.html#ivy.functional.ivy.device.set_default_device">[docs]</a><span class="k">def</span> <span class="nf">set_default_device</span><span class="p">(</span><span class="n">device</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Summary.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    device</span>
-
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">_assert_dev_correct_formatting</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
@@ -607,12 +580,12 @@
 <span class="sd">        optional output array, for writing the result to. It must have a shape that the inputs broadcast to.</span>
 
 <span class="sd">    Returns</span>
-<span class="sd">     -------</span>
+<span class="sd">    -------</span>
 <span class="sd">    ret</span>
 <span class="sd">        input array x placed on the desired device</span>
 
 <span class="sd">    Examples</span>
-<span class="sd">    -------</span>
+<span class="sd">    --------</span>
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([1., 2., 3.])</span>
 <span class="sd">    &gt;&gt;&gt; x = ivy.to_dev(x, &#39;cpu&#39;)</span>
 
@@ -635,7 +608,7 @@
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">     ret</span>
+<span class="sd">    ret</span>
 <span class="sd">        The split factor for the specified device.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -658,9 +631,6 @@
 <span class="sd">        The factor to set the device-specific split factor to.</span>
 <span class="sd">    device</span>
 <span class="sd">        The device to set the split factor for. Sets the default device by default.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">assert</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">factor</span>
@@ -708,7 +678,7 @@
 <span class="sd">        The device to set the split factor for. Sets the default device by default.</span>
 
 <span class="sd">    Returns</span>
-<span class="sd">     -------</span>
+<span class="sd">    -------</span>
 <span class="sd">    ret</span>
 <span class="sd">        The return from the function, following input splitting and re-concattenation.</span>
 
@@ -868,7 +838,7 @@
 
     <span class="c1"># noinspection PyShadowingNames</span>
 <div class="viewcode-block" id="MultiDevIter.at_dev"><a class="viewcode-back" href="../../../../functional/ivy/device/MultiDevIter.html#ivy.functional.ivy.device.MultiDevIter.at_dev">[docs]</a>    <span class="k">def</span> <span class="nf">at_dev</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">device</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Summary.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -906,7 +876,7 @@
 
     <span class="c1"># noinspection PyShadowingNames</span>
 <div class="viewcode-block" id="MultiDevNest.at_dev"><a class="viewcode-back" href="../../../../functional/ivy/device/MultiDevNest.html#ivy.functional.ivy.device.MultiDevNest.at_dev">[docs]</a>    <span class="k">def</span> <span class="nf">at_dev</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">device</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Summary.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -958,7 +928,7 @@
 <span class="sd">    Dict</span>
 
 <span class="sd">    Returns</span>
-<span class="sd">     -------</span>
+<span class="sd">    -------</span>
 <span class="sd">    ret</span>
 <span class="sd">        array distributed across the target devices</span>
 
@@ -991,7 +961,7 @@
 <span class="sd">    Dict</span>
 
 <span class="sd">    Returns</span>
-<span class="sd">     -------</span>
+<span class="sd">    -------</span>
 <span class="sd">    ret</span>
 <span class="sd">        array or container distributed across the target devices</span>
 
@@ -1019,7 +989,7 @@
 <span class="sd">    Dict</span>
 
 <span class="sd">    Returns</span>
-<span class="sd">     -------</span>
+<span class="sd">    -------</span>
 <span class="sd">    ret</span>
 <span class="sd">        iterable with each element distributed to the target devices</span>
 
@@ -1052,7 +1022,7 @@
 
 
 <span class="sd">    Returns</span>
-<span class="sd">     -------</span>
+<span class="sd">    -------</span>
 <span class="sd">    ret</span>
 <span class="sd">        nested arguments distributed to the target devices</span>
 
@@ -1098,7 +1068,7 @@
 <span class="sd">        The devices to clone the array to.</span>
 
 <span class="sd">    Returns</span>
-<span class="sd">     -------</span>
+<span class="sd">    -------</span>
 <span class="sd">    ret</span>
 <span class="sd">        array cloned to each of the target devices</span>
 
@@ -1118,7 +1088,7 @@
 <span class="sd">        The deviceices to clone the input to.</span>
 
 <span class="sd">    Returns</span>
-<span class="sd">     -------</span>
+<span class="sd">    -------</span>
 <span class="sd">    ret</span>
 <span class="sd">        array or container distributed across the target devices</span>
 
@@ -1141,7 +1111,7 @@
 <span class="sd">        The devices to clone each of the iterable elements to.</span>
 
 <span class="sd">    Returns</span>
-<span class="sd">     -------</span>
+<span class="sd">    -------</span>
 <span class="sd">    ret</span>
 <span class="sd">        iterable with each element cloned to each of the target devices</span>
 
@@ -1166,7 +1136,7 @@
 <span class="sd">        The maximum nested depth to reach. Default is 1. Increase this if the nest is deeper.</span>
 
 <span class="sd">    Returns</span>
-<span class="sd">     -------</span>
+<span class="sd">    -------</span>
 <span class="sd">    ret</span>
 <span class="sd">        arguments cloned to each of the target devices</span>
 
@@ -1216,7 +1186,7 @@
 <span class="sd">        The axis along which to concattenate the array, if concat mode is set. Default is 0.</span>
 
 <span class="sd">    Returns</span>
-<span class="sd">     -------</span>
+<span class="sd">    -------</span>
 <span class="sd">    ret</span>
 <span class="sd">        array unified to the target device</span>
 
@@ -1245,7 +1215,7 @@
 <span class="sd">        The axis along which to concattenate the array, if concat mode is set. Default is 0.</span>
 
 <span class="sd">    Returns</span>
-<span class="sd">     -------</span>
+<span class="sd">    -------</span>
 <span class="sd">    ret</span>
 <span class="sd">        array unified to the target device</span>
 
@@ -1281,7 +1251,7 @@
 <span class="sd">        Whether to transpose the first and second dimensions of the iterator. Default is False.</span>
 
 <span class="sd">    Returns</span>
-<span class="sd">     -------</span>
+<span class="sd">    -------</span>
 <span class="sd">    ret</span>
 <span class="sd">        iterable with each element unified to a single target devices</span>
 
@@ -1325,7 +1295,7 @@
 
 
 <span class="sd">    Returns</span>
-<span class="sd">     -------</span>
+<span class="sd">    -------</span>
 <span class="sd">    ret</span>
 <span class="sd">        nested arguments unified to the target device</span>
 
@@ -1454,7 +1424,7 @@
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        type</span>
+<span class="sd">        ret</span>
 <span class="sd">            The results of the function, returned as a MultiDevice instance.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -1682,7 +1652,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_dev_da_ratios</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dim_size</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_devs_da</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
 
 <div class="viewcode-block" id="DevManager.da_tune_step"><a class="viewcode-back" href="../../../../functional/ivy/device.html#ivy.functional.ivy.device.DevManager.da_tune_step">[docs]</a>    <span class="k">def</span> <span class="nf">da_tune_step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">oom</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Summary.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -1876,7 +1846,7 @@
                 <span class="n">ivy</span><span class="o">.</span><span class="n">set_split_factor</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_devs_ds</span><span class="p">[</span><span class="n">ds</span><span class="p">]</span> <span class="o">+</span> <span class="n">clipped_delta</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">ds</span><span class="p">)</span>
 
 <div class="viewcode-block" id="DevManager.ds_tune_step"><a class="viewcode-back" href="../../../../functional/ivy/device.html#ivy.functional.ivy.device.DevManager.ds_tune_step">[docs]</a>    <span class="k">def</span> <span class="nf">ds_tune_step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">oom</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Summary.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -2022,7 +1992,7 @@
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        type</span>
+<span class="sd">        ret</span>
 <span class="sd">            The results of the function, returned as a MultiDevice instance.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -2074,7 +2044,7 @@
 
     <span class="nd">@dim_size</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">dim_size</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Summary.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>

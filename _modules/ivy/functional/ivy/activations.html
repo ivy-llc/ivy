@@ -137,17 +137,17 @@
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Applies the rectified linear unit function element-wise.</span>
 
-<span class="sd">     Parameters</span>
-<span class="sd">     ----------</span>
-<span class="sd">     x</span>
-<span class="sd">         input array</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x</span>
+<span class="sd">        input array</span>
 <span class="sd">    out</span>
 <span class="sd">        optional output array, for writing the result to. It must have a shape that the inputs broadcast to.</span>
 
 <span class="sd">    Returns</span>
-<span class="sd">     -------</span>
+<span class="sd">    -------</span>
 <span class="sd">    ret</span>
-<span class="sd">       an array containing the rectified linear unit activation of each element in ``x``.</span>
+<span class="sd">        an array containing the rectified linear unit activation of each element in ``x``.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
@@ -174,10 +174,10 @@
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    ivy.Array</span>
+<span class="sd">    ret</span>
 <span class="sd">        The input array with leaky relu applied element-wise.</span>
 
-<span class="sd">    Examples:</span>
+<span class="sd">    Examples</span>
 <span class="sd">    ---------</span>
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([0.39, -0.85])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.leaky_relu(x)</span>
@@ -212,7 +212,7 @@
 <span class="sd">    Parameters</span>
 <span class="sd">     ----------</span>
 <span class="sd">    x</span>
-<span class="sd">         input array</span>
+<span class="sd">        input array</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -238,11 +238,10 @@
 <span class="sd">    x</span>
 <span class="sd">        input array.</span>
 
-
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    ret</span>
-<span class="sd">       an array containing the sigmoid activation of each element in ``x``.</span>
+<span class="sd">        an array containing the sigmoid activation of each element in ``x``.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
@@ -262,17 +261,18 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    x:</span>
+<span class="sd">    x</span>
 <span class="sd">        Input array.</span>
-<span class="sd">    axis:</span>
+<span class="sd">    axis</span>
 <span class="sd">        The dimension softmax would be performed on. The default is -1 which indicates the last dimension.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    out:</span>
+<span class="sd">    ret</span>
 <span class="sd">        The input array with softmax applied element-wise.</span>
 
-<span class="sd">    Examples:</span>
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([-1.0, 0, 1.0])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.softmax(x)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
@@ -292,9 +292,11 @@
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
+<span class="sd">    ret</span>
 <span class="sd">        an array containing the softplus activation of each element in ``x``.</span>
-<span class="sd">    Examples:</span>
-<span class="sd">    ---------</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([-0.3461, -0.6491])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.softplus(x)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>

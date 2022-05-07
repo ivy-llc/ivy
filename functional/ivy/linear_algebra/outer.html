@@ -154,34 +154,24 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="ivy.functional.ivy.linear_algebra.outer">
 <span class="sig-prename descclassname"><span class="pre">ivy.functional.ivy.linear_algebra.</span></span><span class="sig-name descname"><span class="pre">outer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/linear_algebra.html#outer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.linear_algebra.outer" title="Permalink to this definition"></a></dt>
-<dd><p>returns the outer product of two vectors x1 and x2.</p>
+<dd><p>returns the outer product of two vectors <code class="docutils literal notranslate"><span class="pre">x1</span></code> and <code class="docutils literal notranslate"><span class="pre">x2</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x1</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – </p></li>
-<li><p><strong>type.</strong> (<em>second one-dimensional input array of size M. Should have a numeric data</em>) – </p></li>
-<li><p><strong>a</strong><strong>(</strong><strong>M</strong> – </p></li>
-<li><p><strong>array_like</strong> (<em>)</em>) – </p></li>
-<li><p><strong>1-dimensional.</strong> (<em>Second input vector. Input is flattened if not already</em>) – </p></li>
-<li><p><strong>x2</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – </p></li>
-<li><p><strong>type.</strong> – </p></li>
-<li><p><strong>b</strong><strong>(</strong><strong>N</strong> – </p></li>
-<li><p><strong>array_like</strong> – </p></li>
-<li><p><strong>1-dimensional.</strong> – </p></li>
+<li><p><strong>x1</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – first one-dimensional input array of size N. Should have a numeric data type.
+a(M,) array_like
+First input vector. Input is flattened if not already 1-dimensional.</p></li>
+<li><p><strong>x2</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – second one-dimensional input array of size M. Should have a numeric data type.
+b(N,) array_like
+Second input vector. Input is flattened if not already 1-dimensional.</p></li>
 </ul>
 </dd>
-</dl>
-<dl class="simple">
-<dt>Returns</dt><dd></dd>
-</dl>
-<p>ret
-a two-dimensional array containing the outer product and whose shape is (N, M).
-The returned array must have a data type determined by Type Promotion Rules.
-out(M, N) ndarray, optional
-A location where the result is stored</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></p>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><em>ret</em> – a two-dimensional array containing the outer product and whose shape is (N, M).
+The returned array must have a data type determined by Type Promotion Rules.</p>
 </dd>
 </dl>
 </dd></dl>
