@@ -442,7 +442,7 @@ def fomaml_step(
         Whether to stop the gradients of the cost. Default is True.
 
     Returns
-     -------
+    -------
     ret
         The cost and the gradients with respect to the outer loop variables.
 
@@ -519,7 +519,7 @@ def reptile_step(
         Whether to stop the gradients of the cost. Default is True.
 
     Returns
-     -------
+    -------
     ret
         The cost and the gradients with respect to the outer loop variables.
 
@@ -630,7 +630,7 @@ def maml_step(
         Whether to stop the gradients of the cost. Default is True.
 
     Returns
-     -------
+    -------
     ret
         The cost and the gradients with respect to the outer loop variables.
 

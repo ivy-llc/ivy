@@ -29,12 +29,12 @@ def argsort(
         sort order. If ``True``, the returned indices sort ``x`` in descending order (by value). If ``False``, the returned indices sort ``x`` in ascending order (by value). Default: ``False``.
     stable
         sort stability. If ``True``, the returned indices must maintain the relative order of ``x`` values which compare as equal. If ``False``, the returned indices may or may not maintain the relative order of ``x`` values which compare as equal (i.e., the relative order of ``x`` values which compare as equal is implementation-dependent). Default: ``True``.
-     out
-         optional output array, for writing the result to. It must have a shape that the inputs broadcast to.
+    out
+        optional output array, for writing the result to. It must have a shape that the inputs broadcast to.
 
     Returns
     -------
-    return
+    ret
         an array of indices. The returned array must have the same shape as ``x``. The returned array must have the default array index data type.
 
     """
@@ -51,7 +51,7 @@ def sort(
     """Returns a sorted copy of an array.
 
     Parameters
-    ___________
+    ----------
     x
         input array
     axis
@@ -66,8 +66,8 @@ def sort(
         optional output array, for writing the result to. It must have a shape that the inputs broadcast to.
 
     Returns
-    _______
-     return
+    -------
+    ret
         An array with the same dtype and shape as `values`, with the elements sorted along the given `axis`.
 
     """

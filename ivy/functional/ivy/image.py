@@ -20,20 +20,20 @@ def stack_images(
     """Stacks a group of images into a combined windowed image, fitting the
     desired aspect ratio as closely as possible.
 
-     Parameters
-     ----------
-     images:
-         Sequence of image arrays to be stacked *[batch_shape,height,width,dims]*
-
-     desired_aspect_ratio:
+    Parameters
+    ----------
+    images
+        Sequence of image arrays to be stacked *[batch_shape,height,width,dims]*
+    desired_aspect_ratio:
         desired aspect ratio of the stacked image
 
-     Returns
-     -------
-    out:
-       an array containing the stacked images in a specified aspect ratio/dimensions
+    Returns
+    -------
+    ret
+        an array containing the stacked images in a specified aspect ratio/dimensions
 
-    Examples:
+    Examples
+    --------
     >>> import ivy
     >>> shape, num = (1, 2, 3), 2
     >>> data = [ivy.ones(shape)] * num
@@ -65,7 +65,7 @@ def bilinear_resample(x, warp):
 
     Returns
     -------
-     ret
+    ret
         Image after bilinear re-sampling.
 
     """
@@ -82,7 +82,7 @@ def gradient_image(x):
 
     Returns
     -------
-     ret
+    ret
         Gradient images dy *[batch_shape,h,w,d]* and dx *[batch_shape,h,w,d]* .
 
     """
@@ -100,7 +100,7 @@ def float_img_to_uint8_img(x):
 
     Returns
     -------
-     ret
+    ret
         The new encoded uint8 image *[batch_shape,h,w,4]* .
 
     """
@@ -121,7 +121,7 @@ def uint8_img_to_float_img(x):
 
     Returns
     -------
-     ret
+    ret
         The new float image *[batch_shape,h,w]*
 
     """
@@ -148,7 +148,7 @@ def random_crop(x, crop_size, batch_shape=None, image_dims=None):
 
     Returns
     -------
-     ret
+    ret
         The new cropped image *[batch_shape,nh,nw,f]*
 
     """
@@ -202,7 +202,7 @@ def linear_resample(
 
     Returns
     -------
-     ret
+    ret
         The array after the linear resampling.
 
     """
