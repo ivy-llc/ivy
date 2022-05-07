@@ -340,6 +340,7 @@ class ContainerBase(dict, abc.ABC):
             containers to compare
         config
             The configuration for the containers. Default is the same as container_rightmost.
+
         Returns
         -------
             Combined containers
@@ -1530,6 +1531,7 @@ class ContainerBase(dict, abc.ABC):
         to_apply=True,
         prune_unapplied=False,
         map_sequences=False,
+        out = None,
     ):
         """Computes the elementwise minimum between this container and another
         container or number.
@@ -1554,7 +1556,7 @@ class ContainerBase(dict, abc.ABC):
 
         """
         is_container = isinstance(other, ivy.Container)
-        return self.map(
+        return self.handle_inplace(self.map(
             lambda x, kc: self._ivy.minimum(x, other[kc] if is_container else other)
             if self._ivy.is_native_array(x) or isinstance(x, ivy.Array)
             else x,
@@ -1562,7 +1564,8 @@ class ContainerBase(dict, abc.ABC):
             to_apply,
             prune_unapplied,
             map_sequences,
-        )
+        ),
+        out)
 
     def maximum(
         self,
@@ -1571,6 +1574,7 @@ class ContainerBase(dict, abc.ABC):
         to_apply=True,
         prune_unapplied=False,
         map_sequences=False,
+        out = None,
     ):
         """Computes the elementwise maximum between this container and another
         container or number.
@@ -1595,7 +1599,7 @@ class ContainerBase(dict, abc.ABC):
 
         """
         is_container = isinstance(other, ivy.Container)
-        return self.map(
+        return self.handle_inplace(self.map(
             lambda x, kc: self._ivy.maximum(x, other[kc] if is_container else other)
             if self._ivy.is_native_array(x) or isinstance(x, ivy.Array)
             else x,
@@ -1603,6 +1607,8 @@ class ContainerBase(dict, abc.ABC):
             to_apply,
             prune_unapplied,
             map_sequences,
+            ),
+            out
         )
 
     def clip(
@@ -1613,6 +1619,7 @@ class ContainerBase(dict, abc.ABC):
         to_apply=True,
         prune_unapplied=False,
         map_sequences=False,
+        out = None,
     ):
         """Computes the elementwise clipped values between this container and
         clip_min and clip_max containers or numbers.
@@ -1640,7 +1647,7 @@ class ContainerBase(dict, abc.ABC):
         """
         min_is_container = isinstance(clip_min, ivy.Container)
         max_is_container = isinstance(clip_max, ivy.Container)
-        return self.map(
+        return self.handle_inplace(self.map(
             lambda x, kc: self._ivy.clip(
                 x,
                 clip_min[kc] if min_is_container else clip_min,
@@ -1652,7 +1659,8 @@ class ContainerBase(dict, abc.ABC):
             to_apply,
             prune_unapplied,
             map_sequences,
-        )
+        ),
+        out)
 
     def clip_vector_norm(
         self,
@@ -2307,6 +2315,7 @@ class ContainerBase(dict, abc.ABC):
             The devices along which to distribute the container.
         axis
             The axis along which to split the arrays at the container leaves. Default is 0.
+
         Returns
         -------
             a set of distributed sub-containers across the specified devices.
@@ -3206,7 +3215,6 @@ class ContainerBase(dict, abc.ABC):
             Filepath for where to save the container to disk.
 
         """
-
         with open(json_filepath, "w+") as json_data_file:
             _json.dump(self.to_jsonable().to_dict(), json_data_file, indent=4)
 
@@ -3220,14 +3228,11 @@ class ContainerBase(dict, abc.ABC):
         return return_list
 
     def to_raw(self):
-        """constructor to their original form.
-
-        Parameters
-        ----------
+        """Constructor to their original form.
 
         Returns
         -------
-             ret
+        ret
              Container data in it's raw form.
 
         """
@@ -3248,10 +3253,7 @@ class ContainerBase(dict, abc.ABC):
         return return_item
 
     def to_dict(self):
-        """
-
-        Parameters
-        ----------
+        """Summary.
 
         Returns
         -------
@@ -3342,15 +3344,12 @@ class ContainerBase(dict, abc.ABC):
                 yield kc
 
     def to_flat_list(self):
-        """
-
-        Parameters
-        ----------
+        """Summary.
 
         Returns
         -------
-            ret
-                Container as flat list.
+        ret
+            Container as flat list.
 
         """
         return list([item for key, item in self.to_iterator()])
@@ -3447,7 +3446,6 @@ class ContainerBase(dict, abc.ABC):
             Whether to also check for partially complete sub-containers. Default is False.
 
         """
-
         key_chain_found = False
 
         def _check_sub_cont(sub_cont, kc):
@@ -3531,7 +3529,6 @@ class ContainerBase(dict, abc.ABC):
             Whether to also check for partially complete sub-containers. Default is False.
 
         """
-
         key_chain_found = False
 
         def _check_sub_cont(sub_cont, kc):
@@ -3542,10 +3539,6 @@ class ContainerBase(dict, abc.ABC):
             sub_cont
                 param kc:
             kc
-
-
-            Returns
-            -------
 
             """
             sub_struc_key_chains = sub_struc_to_find.all_key_chains()
@@ -3673,19 +3666,6 @@ class ContainerBase(dict, abc.ABC):
             queries = [queries]
 
         def map_fn(x, kc):
-            """
-
-            Parameters
-            ----------
-            x
-                param kc:
-            kc
-
-
-            Returns
-            -------
-
-            """
             nonlocal key_chains_to_keep
             kc_split = re.split("[/.]", kc)
             for query_key in queries:
@@ -3983,10 +3963,6 @@ class ContainerBase(dict, abc.ABC):
                 param kc:
             kc
 
-
-            Returns
-            -------
-
             """
             nonlocal key_chains_to_prune
             for query_key in query_keys:
@@ -4003,7 +3979,6 @@ class ContainerBase(dict, abc.ABC):
         Parameters
         ----------
         key_chain
-
 
         Returns
         -------
@@ -4774,7 +4749,6 @@ class ContainerBase(dict, abc.ABC):
         sub_cont_or_keychain
 
         """
-
         # copy this container
         this_cont = self.copy()
 
@@ -5339,25 +5313,29 @@ class ContainerBase(dict, abc.ABC):
     @property
     def shape(self):
         """The shape of the arrays in the container, with None placed in
-        indices which are not consistent across arrays."""
+        indices which are not consistent across arrays.
+        """
         return self._get_shape()
 
     @property
     def shapes(self):
         """The shapes of each array in the container, with None placed in leaf
-        entries without a shape attribute."""
+        entries without a shape attribute.
+        """
         return self._get_shapes()
 
     @property
     def dev(self):
         """The device to which the arrays in the container belong, with None
-        returned if the devices are not consistent."""
+        returned if the devices are not consistent.
+        """
         return self._get_dev()
 
     @property
     def dev_str(self):
         """The device to which the arrays in the container belong, with None
-        returned if the devices are not consistent."""
+        returned if the devices are not consistent.
+        """
         return self._get_dev(as_str=True)
 
     @property

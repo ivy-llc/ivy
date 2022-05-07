@@ -1,5 +1,6 @@
 """Collection of Ivy functions for wrapping functions to accept and return
-ivy.Array instances."""
+ivy.Array instances.
+"""
 
 # global
 from typing import Any, Union, Tuple, Dict, Iterable

@@ -73,7 +73,6 @@ def _determine_framework_from_args(args):
 
 def current_framework(*args, **kwargs):
     """Priorities: global_framework > argument's framework."""
-
     if framework_stack:
         f = framework_stack[-1]
         if verbosity.level > 0:

@@ -122,9 +122,10 @@ class Array(
     def ndim(self):
         """
         Number of array dimensions (axes).
+
         Returns
         -------
-        out: int
+        ret
             number of array dimensions (axes).
         """
         return len(tuple(self._shape))
