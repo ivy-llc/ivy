@@ -1,6 +1,4 @@
-"""
-Collection of Ivy neural network layers in functional form.
-"""
+"""Collection of Ivy neural network layers in functional form."""
 
 # global
 import numpy as np
@@ -33,7 +31,7 @@ def linear(x, weight, bias=None):
 
     Returns
     -------
-     ret
+    ret
         Result array of the linear transformation. *[outer_batch_shape,inner_batch_shape,out_features]*
 
     """
@@ -76,8 +74,8 @@ def linear(x, weight, bias=None):
 
 
 def dropout(x, prob, scale=True):
-    """Randomly zeroes some of the elements of the input tensor with probability p using samples from a Bernoull
-    distribution.
+    """Randomly zeroes some of the elements of the input tensor with
+    probability p using samples from a Bernoull distribution.
 
     Parameters
     ----------
@@ -90,7 +88,7 @@ def dropout(x, prob, scale=True):
 
     Returns
     -------
-     ret
+    ret
         Result array of the linear transformation. *[N,∗,out_features]*
 
     """
@@ -126,10 +124,10 @@ def scaled_dot_product_attention(q, k, v, scale, mask=None):
 
     Returns
     -------
+    ret
         The output following application of scaled dot-product attention. *[batch_shape,num_queries,feat_dim]*
 
     """
-
     # BS x Q x K
     sim = ivy.einsum("... q f, ... k f -> ... q k", q, k) * scale
 
@@ -193,10 +191,10 @@ def multi_head_attention(
 
     Returns
     -------
+    ret
         The output following application of multi-head attention. *[batch_shape,num_queries,out_feat_dim]*
 
     """
-
     # BS x Q x (HxF)
     q = to_q_fn(x, v=to_q_v) if ivy.exists(to_q_fn) else x
 
@@ -266,16 +264,17 @@ def conv1d(
 
     Returns
     -------
-     ret
+    ret
         The result of the convolution operation.
 
-    Examples:
+    Examples
     --------
     >>> x = ivy.asarray([[[0.], [3.], [0.]]]) #NWC
     >>> filters = ivy.array([[[0.]], [[1.]], [[0.]]]) #WIO
     >>> result = ivy.conv1d(x, filters, (1,), 'SAME', 'NWC', (1,))
     >>> print(result)
     ivy.array([[[0.], [3.], [0.]]])
+
     """
     return _cur_framework(x).conv1d(
         x, filters, strides, padding, data_format, dilations
@@ -285,7 +284,8 @@ def conv1d(
 def conv1d_transpose(
     x, filters, strides, padding, output_shape=None, data_format="NWC", dilations=1
 ):
-    """Computes a 1-D transpose convolution given 3-D input x and filters arrays.
+    """Computes a 1-D transpose convolution given 3-D input x and filters
+    arrays.
 
     Parameters
     ----------
@@ -306,7 +306,7 @@ def conv1d_transpose(
 
     Returns
     -------
-     ret
+    ret
         The result of the transpose convolution operation.
 
     """
@@ -335,7 +335,7 @@ def conv2d(x, filters, strides, padding, data_format="NHWC", dilations=1):
 
     Returns
     -------
-     ret
+    ret
         The result of the convolution operation.
 
     """
@@ -347,7 +347,8 @@ def conv2d(x, filters, strides, padding, data_format="NHWC", dilations=1):
 def conv2d_transpose(
     x, filters, strides, padding, output_shape=None, data_format="NHWC", dilations=1
 ):
-    """Computes a 2-D transpose convolution given 4-D input x and filters arrays.
+    """Computes a 2-D transpose convolution given 4-D input x and filters
+    arrays.
 
     Parameters
     ----------
@@ -368,7 +369,7 @@ def conv2d_transpose(
 
     Returns
     -------
-     ret
+    ret
         The result of the transpose convolution operation.
 
     """
@@ -378,7 +379,8 @@ def conv2d_transpose(
 
 
 def depthwise_conv2d(x, filters, strides, padding, data_format="NHWC", dilations=1):
-    """Computes a 2-D depthwise convolution given 4-D input x and filters arrays.
+    """Computes a 2-D depthwise convolution given 4-D input x and filters
+    arrays.
 
     Parameters
     ----------
@@ -397,7 +399,7 @@ def depthwise_conv2d(x, filters, strides, padding, data_format="NHWC", dilations
 
     Returns
     -------
-     ret
+    ret
         The result of the convolution operation.
 
     """
@@ -427,7 +429,7 @@ def conv3d(x, filters, strides, padding, data_format="NDHWC", dilations=1):
 
     Returns
     -------
-     ret
+    ret
         The result of the convolution operation.
 
     """
@@ -439,7 +441,8 @@ def conv3d(x, filters, strides, padding, data_format="NDHWC", dilations=1):
 def conv3d_transpose(
     x, filters, strides, padding, output_shape=None, data_format="NDHWC", dilations=1
 ):
-    """Computes a 3-D transpose convolution given 5-D input x and filters arrays.
+    """Computes a 3-D transpose convolution given 5-D input x and filters
+    arrays.
 
     Parameters
     ----------
@@ -460,7 +463,7 @@ def conv3d_transpose(
 
     Returns
     -------
-     ret
+    ret
         The result of the transpose convolution operation.
 
     """
@@ -475,7 +478,8 @@ def conv3d_transpose(
 def lstm_update(
     x, init_h, init_c, kernel, recurrent_kernel, bias=None, recurrent_bias=None
 ):
-    """Perform long-short term memory update by unrolling time dimension of input array.
+    """Perform long-short term memory update by unrolling time dimension of
+    input array.
 
     Parameters
     ----------
@@ -496,11 +500,10 @@ def lstm_update(
 
     Returns
     -------
-     ret
+    ret
         hidden state for all timesteps *[batch_shape,t,out]* and cell state for last timestep *[batch_shape,out]*
 
     """
-
     # get shapes
     x_shape = list(x.shape)
     batch_shape = x_shape[:-2]

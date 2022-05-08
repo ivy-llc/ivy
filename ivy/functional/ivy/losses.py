@@ -1,6 +1,4 @@
-"""
-Collection of Ivy loss functions.
-"""
+"""Collection of Ivy loss functions."""
 
 # local
 import ivy
@@ -16,8 +14,8 @@ def cross_entropy(
     axis: Optional[int] = -1,
     epsilon: Optional[float] = 1e-7,
 ) -> ivy.Array:
-    """
-    Computes cross-entropy between predicted and true discrete distributions.
+    """Computes cross-entropy between predicted and true discrete
+    distributions.
 
     Parameters
     ----------
@@ -69,7 +67,7 @@ def binary_cross_entropy(true, pred, epsilon=1e-7):
 
     Returns
     -------
-     ret
+    ret
         The binary cross entropy loss array.
 
     """
@@ -94,7 +92,7 @@ def sparse_cross_entropy(true, pred, axis=-1, epsilon=1e-7):
 
     Returns
     -------
-     ret
+    ret
         The sparse cross entropy loss
 
     """
