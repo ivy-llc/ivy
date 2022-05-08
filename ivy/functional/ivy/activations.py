@@ -22,12 +22,14 @@ def relu(
     x
         input array
     out
-        optional output array, for writing the result to. It must have a shape that the inputs broadcast to.
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------
     ret
-        an array containing the rectified linear unit activation of each element in ``x``.
+        an array containing the rectified linear unit activation of each element in
+        ``x``.
 
     Examples
     --------
@@ -80,6 +82,7 @@ def gelu(x, approximate=True):
 
     Returns
     -------
+    ret
         The input array with leaky relu applied element-wise.
 
     """
@@ -144,7 +147,8 @@ def softmax(
     x
         Input array.
     axis
-        The dimension softmax would be performed on. The default is -1 which indicates the last dimension.
+        The dimension softmax would be performed on. The default is -1 which indicates
+        the last dimension.
 
     Returns
     -------
