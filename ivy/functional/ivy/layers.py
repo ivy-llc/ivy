@@ -438,7 +438,8 @@ def conv3d(
     -------
     ret
         The result of the convolution operation.
-         Examples
+
+    Examples
     --------
     >>> x = ivy.array([[[[[1.],[2.]],[[1.],[2.]],[[1.],[2.]]],[[[3.],[4.]],[[3.],[4.]],[[3.],[4.]]]]]) #NDHWC
     >>> filters = ivy.array([[[[[1]],[[0.]]]]]) #DHWIO
