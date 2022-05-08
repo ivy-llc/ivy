@@ -187,30 +187,39 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="ivy.functional.ivy.data_type.astype">
 <span class="sig-prename descclassname"><span class="pre">ivy.functional.ivy.data_type.</span></span><span class="sig-name descname"><span class="pre">astype</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">copy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/data_type.html#astype"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.data_type.astype" title="Permalink to this definition"></a></dt>
-<dd><p>Copies an array to a specified data type irrespective of <span class="xref std std-ref">type-
-promotion</span> rules.</p>
+<dd><p>Copies an array to a specified data type irrespective of <span class="xref std std-ref">type-promotion</span>
+rules.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>Casting floating-point <code class="docutils literal notranslate"><span class="pre">NaN</span></code> and <code class="docutils literal notranslate"><span class="pre">infinity</span></code> values to integral data types is not specified and is implementation-dependent.</p>
+<p>Casting floating-point <code class="docutils literal notranslate"><span class="pre">NaN</span></code> and <code class="docutils literal notranslate"><span class="pre">infinity</span></code> values to integral data types is
+not specified and is implementation-dependent.</p>
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>When casting a boolean input array to a numeric data type, a value of <code class="docutils literal notranslate"><span class="pre">True</span></code> must cast to a numeric value equal to <code class="docutils literal notranslate"><span class="pre">1</span></code>, and a value of <code class="docutils literal notranslate"><span class="pre">False</span></code> must cast to a numeric value equal to <code class="docutils literal notranslate"><span class="pre">0</span></code>.
-When casting a numeric input array to <code class="docutils literal notranslate"><span class="pre">bool</span></code>, a value of <code class="docutils literal notranslate"><span class="pre">0</span></code> must cast to <code class="docutils literal notranslate"><span class="pre">False</span></code>, and a non-zero value must cast to <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p>
+<p>When casting a boolean input array to a numeric data type, a value of <code class="docutils literal notranslate"><span class="pre">True</span></code>
+must cast to a numeric value equal to <code class="docutils literal notranslate"><span class="pre">1</span></code>, and a value of <code class="docutils literal notranslate"><span class="pre">False</span></code> must cast
+to a numeric value equal to <code class="docutils literal notranslate"><span class="pre">0</span></code>.</p>
+<p>When casting a numeric input array to <code class="docutils literal notranslate"><span class="pre">bool</span></code>, a value of <code class="docutils literal notranslate"><span class="pre">0</span></code> must cast to
+<code class="docutils literal notranslate"><span class="pre">False</span></code>, and a non-zero value must cast to <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>x</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – array to cast.</p></li>
 <li><p><strong>dtype</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Dtype</span></code>) – desired data type.</p></li>
-<li><p><strong>copy</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – specifies whether to copy an array when the specified <code class="docutils literal notranslate"><span class="pre">dtype</span></code> matches the data type of the input array <code class="docutils literal notranslate"><span class="pre">x</span></code>. If <code class="docutils literal notranslate"><span class="pre">True</span></code>, a newly allocated array must always be returned. If <code class="docutils literal notranslate"><span class="pre">False</span></code> and the specified <code class="docutils literal notranslate"><span class="pre">dtype</span></code> matches the data type of the input array, the input array must be returned; otherwise, a newly allocated must be returned. Default: <code class="docutils literal notranslate"><span class="pre">True</span></code>. (default: <code class="docutils literal notranslate"><span class="pre">True</span></code>)</p></li>
+<li><p><strong>copy</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – specifies whether to copy an array when the specified <code class="docutils literal notranslate"><span class="pre">dtype</span></code> matches the data (default: <code class="docutils literal notranslate"><span class="pre">True</span></code>)
+type of the input array <code class="docutils literal notranslate"><span class="pre">x</span></code>. If <code class="docutils literal notranslate"><span class="pre">True</span></code>, a newly allocated array must always
+be returned. If <code class="docutils literal notranslate"><span class="pre">False</span></code> and the specified <code class="docutils literal notranslate"><span class="pre">dtype</span></code> matches the data type of
+the input array, the input array must be returned; otherwise, a newly allocated
+must be returned. Default: <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>
 <dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></p>
 </dd>
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><em>ret</em> – an array having the specified data type. The returned array must have the same shape as <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p>
+<dd class="field-odd"><p><em>ret</em> – an array having the specified data type. The returned array must have the same
+shape as <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
@@ -235,7 +244,8 @@ When casting a numeric input array to <code class="docutils literal notranslate"
 <dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>]</p>
 </dd>
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><em>ret</em> – Each array must have the same shape. Each array must have the same dtype as its corresponding input array.</p>
+<dd class="field-odd"><p><em>ret</em> – Each array must have the same shape. Each array must have the same dtype as its
+corresponding input array.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -265,7 +275,8 @@ exception.</p></li>
 <dl class="py function">
 <dt class="sig sig-object py" id="ivy.functional.ivy.data_type.can_cast">
 <span class="sig-prename descclassname"><span class="pre">ivy.functional.ivy.data_type.</span></span><span class="sig-name descname"><span class="pre">can_cast</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">from_</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/data_type.html#can_cast"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.data_type.can_cast" title="Permalink to this definition"></a></dt>
-<dd><p>Determines if one data type can be cast to another data type accordingref:<cite>type-promotion</cite> rules.</p>
+<dd><p>Determines if one data type can be cast to another data type according to
+<span class="xref std std-ref">type-promotion</span> rules.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -277,7 +288,8 @@ exception.</p></li>
 <dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
 </dd>
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><em>ret</em> – <code class="docutils literal notranslate"><span class="pre">True</span></code> if the cast can occur according toref:<cite>type-promotion</cite> rules; otherwise, <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
+<dd class="field-odd"><p><em>ret</em> – <code class="docutils literal notranslate"><span class="pre">True</span></code> if the cast can occur according to <span class="xref std std-ref">type-promotion</span> rules;
+otherwise, <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -302,8 +314,7 @@ exception.</p></li>
 <dl class="py function">
 <dt class="sig sig-object py" id="ivy.functional.ivy.data_type.convert_dtype">
 <span class="sig-prename descclassname"><span class="pre">ivy.functional.ivy.data_type.</span></span><span class="sig-name descname"><span class="pre">convert_dtype</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dtype_in</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">backend</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/data_type.html#convert_dtype"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.data_type.convert_dtype" title="Permalink to this definition"></a></dt>
-<dd><p>Converts a data type from one backend framework representation to
-another.</p>
+<dd><p>Converts a data type from one backend framework representation to another.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -359,7 +370,11 @@ another.</p>
 <dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Dtype</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</p>
 </dd>
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><em>Return the input float dtype if provided, otherwise return the global default float dtype.</em></p>
+<dd class="field-odd"><p><ul class="simple">
+<li><p><em>Return the input float dtype if provided, otherwise return the global default</em></p></li>
+<li><p><em>float dtype.</em></p></li>
+</ul>
+</p>
 </dd>
 </dl>
 </dd></dl>
@@ -381,7 +396,11 @@ another.</p>
 <dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Dtype</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</p>
 </dd>
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><em>Return the input int dtype if provided, otherwise return the global default int dtype.</em></p>
+<dd class="field-odd"><p><ul class="simple">
+<li><p><em>Return the input int dtype if provided, otherwise return the global default int</em></p></li>
+<li><p><em>dtype.</em></p></li>
+</ul>
+</p>
 </dd>
 </dl>
 </dd></dl>
@@ -476,7 +495,8 @@ another.</p>
 </div></blockquote>
 <ul class="simple">
 <li><p><strong>eps</strong>: <em>float</em>
-difference between 1.0 and the next smallest representable floating-point number larger than 1.0 according to the IEEE-754 standard.</p></li>
+difference between 1.0 and the next smallest representable floating-point
+number larger than 1.0 according to the IEEE-754 standard.</p></li>
 <li><p><strong>max</strong>: <em>float</em>
 largest representable number.</p></li>
 <li><p><strong>min</strong>: <em>float</em>
@@ -576,7 +596,8 @@ framework.</p>
 (see <span class="xref std std-ref">type-promotion</span>) to the arguments.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>If provided mixed dtypes (e.g., integer and floating-point), the returned dtype will be implementation-specific.</p>
+<p>If provided mixed dtypes (e.g., integer and floating-point), the returned dtype
+will be implementation-specific.</p>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -642,8 +663,7 @@ framework.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="ivy.functional.ivy.data_type.valid_dtype">
 <span class="sig-prename descclassname"><span class="pre">ivy.functional.ivy.data_type.</span></span><span class="sig-name descname"><span class="pre">valid_dtype</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dtype_in</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/data_type.html#valid_dtype"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.data_type.valid_dtype" title="Permalink to this definition"></a></dt>
-<dd><p>Determines whether the provided data type is support by the current
-framework.</p>
+<dd><p>Determines whether the provided data type is support by the current framework.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>dtype_in</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Dtype</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]]) – The data type for which to check for backend support</p>

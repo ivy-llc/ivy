@@ -175,15 +175,16 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="ivy.functional.ivy.device.dev_unify_array">
 <span class="sig-prename descclassname"><span class="pre">ivy.functional.ivy.device.</span></span><span class="sig-name descname"><span class="pre">dev_unify_array</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/device.html#dev_unify_array"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.device.dev_unify_array" title="Permalink to this definition"></a></dt>
-<dd><p>Unify a list of sub-arrays, on arbitrary devices, to a single array on
-the specified device.</p>
+<dd><p>Unify a list of sub-arrays, on arbitrary devices, to a single array on the
+specified device.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>xs</strong> – The list of arrays to unify onto the specified device.</p></li>
 <li><p><strong>device</strong> – The device to unify the arrays to.</p></li>
 <li><p><strong>mode</strong> – The mode by which to unify, must be one of [ concat | mean | sum ]</p></li>
-<li><p><strong>axis</strong> – The axis along which to concattenate the array, if concat mode is set. Default is 0.</p></li>
+<li><p><strong>axis</strong> – The axis along which to concattenate the array, if concat mode is set. Default
+is 0.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>

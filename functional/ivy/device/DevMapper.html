@@ -184,13 +184,16 @@
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>fn</strong> – The function which the device mapper parallelises across devices.</p></li>
-<li><p><strong>ret_fn</strong> – The function which receives the ivy.MultiDevIter as input, and produces a single device output.</p></li>
+<li><p><strong>ret_fn</strong> – The function which receives the ivy.MultiDevIter as input, and produces a
+single device output.</p></li>
 <li><p><strong>queue_class</strong> – The class to use for creating queues.</p></li>
 <li><p><strong>worker_class</strong> – The class to use for creating parallel workers.</p></li>
 <li><p><strong>devices</strong> – A list of devices on which to parallelise the function.</p></li>
 <li><p><strong>timeout</strong> – The timeout for getting items from the queues. Default is global.</p></li>
-<li><p><strong>constant</strong> – A dict of keyword arguments which are the same for each process. Default is None.</p></li>
-<li><p><strong>unique</strong> – A dict of keyword argument sequences which are unique for each process. Default is None.</p></li>
+<li><p><strong>constant</strong> – A dict of keyword arguments which are the same for each process. Default is
+None.</p></li>
+<li><p><strong>unique</strong> – A dict of keyword argument sequences which are unique for each process.
+Default is None.</p></li>
 </ul>
 </dd>
 </dl>
@@ -199,8 +202,8 @@
 <dl class="py method">
 <dt class="sig sig-object py" id="ivy.functional.ivy.device.DevMapper.map">
 <span class="sig-name descname"><span class="pre">map</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">used_devs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">split_factors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/device.html#DevMapper.map"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.device.DevMapper.map" title="Permalink to this definition"></a></dt>
-<dd><p>Map the function fn to each of the MultiDevice args and kwargs,
-running each function in parallel with CUDA-safe multiprocessing.</p>
+<dd><p>Map the function fn to each of the MultiDevice args and kwargs, running each
+function in parallel with CUDA-safe multiprocessing.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">

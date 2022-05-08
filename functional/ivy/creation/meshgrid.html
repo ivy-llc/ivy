@@ -150,20 +150,37 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>arrays</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – an arbitrary number of one-dimensional arrays representing grid coordinates. Each array should have the same numeric data type.</p></li>
-<li><p><strong>indexing</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – Cartesian <code class="docutils literal notranslate"><span class="pre">'xy'</span></code> or matrix <code class="docutils literal notranslate"><span class="pre">'ij'</span></code> indexing of output. If provided zero or one one-dimensional vector(s) (i.e., the zero- and one-dimensional cases, respectively), the <code class="docutils literal notranslate"><span class="pre">indexing</span></code> keyword has no effect and should be ignored. Default: <code class="docutils literal notranslate"><span class="pre">'xy'</span></code>. (default: <code class="docutils literal notranslate"><span class="pre">'xy'</span></code>)</p></li>
+<li><p><strong>arrays</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – an arbitrary number of one-dimensional arrays representing grid coordinates.
+Each array should have the same numeric data type.</p></li>
+<li><p><strong>indexing</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – Cartesian <code class="docutils literal notranslate"><span class="pre">'xy'</span></code> or matrix <code class="docutils literal notranslate"><span class="pre">'ij'</span></code> indexing of output. If provided zero or (default: <code class="docutils literal notranslate"><span class="pre">'xy'</span></code>)
+one one-dimensional vector(s) (i.e., the zero- and one-dimensional cases,
+respectively), the <code class="docutils literal notranslate"><span class="pre">indexing</span></code> keyword has no effect and should be ignored.
+Default: <code class="docutils literal notranslate"><span class="pre">'xy'</span></code>.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>
 <dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>]</p>
 </dd>
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><em>ret</em> – list of N arrays, where <code class="docutils literal notranslate"><span class="pre">N</span></code> is the number of provided one-dimensional input arrays. Each returned array must have rank <code class="docutils literal notranslate"><span class="pre">N</span></code>. For <code class="docutils literal notranslate"><span class="pre">N</span></code> one-dimensional arrays having lengths <code class="docutils literal notranslate"><span class="pre">Ni</span> <span class="pre">=</span> <span class="pre">len(xi)</span></code>,
-- if matrix indexing <code class="docutils literal notranslate"><span class="pre">ij</span></code>, then each returned array must have the shape <code class="docutils literal notranslate"><span class="pre">(N1,</span> <span class="pre">N2,</span> <span class="pre">N3,</span> <span class="pre">...,</span> <span class="pre">Nn)</span></code>.
-- if Cartesian indexing <code class="docutils literal notranslate"><span class="pre">xy</span></code>, then each returned array must have shape <code class="docutils literal notranslate"><span class="pre">(N2,</span> <span class="pre">N1,</span> <span class="pre">N3,</span> <span class="pre">...,</span> <span class="pre">Nn)</span></code>.
-Accordingly, for the two-dimensional case with input one-dimensional arrays of length <code class="docutils literal notranslate"><span class="pre">M</span></code> and <code class="docutils literal notranslate"><span class="pre">N</span></code>, if matrix indexing <code class="docutils literal notranslate"><span class="pre">ij</span></code>, then each returned array must have shape <code class="docutils literal notranslate"><span class="pre">(M,</span> <span class="pre">N)</span></code>, and, if Cartesian indexing <code class="docutils literal notranslate"><span class="pre">xy</span></code>, then each returned array must have shape <code class="docutils literal notranslate"><span class="pre">(N,</span> <span class="pre">M)</span></code>.
-Similarly, for the three-dimensional case with input one-dimensional arrays of length <code class="docutils literal notranslate"><span class="pre">M</span></code>, <code class="docutils literal notranslate"><span class="pre">N</span></code>, and <code class="docutils literal notranslate"><span class="pre">P</span></code>, if matrix indexing <code class="docutils literal notranslate"><span class="pre">ij</span></code>, then each returned array must have shape <code class="docutils literal notranslate"><span class="pre">(M,</span> <span class="pre">N,</span> <span class="pre">P)</span></code>, and, if Cartesian indexing <code class="docutils literal notranslate"><span class="pre">xy</span></code>, then each returned array must have shape <code class="docutils literal notranslate"><span class="pre">(N,</span> <span class="pre">M,</span> <span class="pre">P)</span></code>.
-Each returned array should have the same data type as the input arrays.</p>
+<dd class="field-odd"><p><p><em>ret</em> – list of N arrays, where <code class="docutils literal notranslate"><span class="pre">N</span></code> is the number of provided one-dimensional input
+arrays. Each returned array must have rank <code class="docutils literal notranslate"><span class="pre">N</span></code>. For <code class="docutils literal notranslate"><span class="pre">N</span></code> one-dimensional
+arrays having lengths <code class="docutils literal notranslate"><span class="pre">Ni</span> <span class="pre">=</span> <span class="pre">len(xi)</span></code>,</p>
+<ul class="simple">
+<li><p>if matrix indexing <code class="docutils literal notranslate"><span class="pre">ij</span></code>, then each returned array must have the shape
+<code class="docutils literal notranslate"><span class="pre">(N1,</span> <span class="pre">N2,</span> <span class="pre">N3,</span> <span class="pre">...,</span> <span class="pre">Nn)</span></code>.</p></li>
+<li><p>if Cartesian indexing <code class="docutils literal notranslate"><span class="pre">xy</span></code>, then each returned array must have shape
+<code class="docutils literal notranslate"><span class="pre">(N2,</span> <span class="pre">N1,</span> <span class="pre">N3,</span> <span class="pre">...,</span> <span class="pre">Nn)</span></code>.</p></li>
+</ul>
+<p>Accordingly, for the two-dimensional case with input one-dimensional arrays of
+length <code class="docutils literal notranslate"><span class="pre">M</span></code> and <code class="docutils literal notranslate"><span class="pre">N</span></code>, if matrix indexing <code class="docutils literal notranslate"><span class="pre">ij</span></code>, then each returned array must
+have shape <code class="docutils literal notranslate"><span class="pre">(M,</span> <span class="pre">N)</span></code>, and, if Cartesian indexing <code class="docutils literal notranslate"><span class="pre">xy</span></code>, then each returned
+array must have shape <code class="docutils literal notranslate"><span class="pre">(N,</span> <span class="pre">M)</span></code>.</p>
+<p>Similarly, for the three-dimensional case with input one-dimensional arrays of
+length <code class="docutils literal notranslate"><span class="pre">M</span></code>, <code class="docutils literal notranslate"><span class="pre">N</span></code>, and <code class="docutils literal notranslate"><span class="pre">P</span></code>, if matrix indexing <code class="docutils literal notranslate"><span class="pre">ij</span></code>, then each returned
+array must have shape <code class="docutils literal notranslate"><span class="pre">(M,</span> <span class="pre">N,</span> <span class="pre">P)</span></code>, and, if Cartesian indexing <code class="docutils literal notranslate"><span class="pre">xy</span></code>, then
+each returned array must have shape <code class="docutils literal notranslate"><span class="pre">(N,</span> <span class="pre">M,</span> <span class="pre">P)</span></code>.</p>
+<p>Each returned array should have the same data type as the input arrays.</p>
+</p>
 </dd>
 </dl>
 </dd></dl>

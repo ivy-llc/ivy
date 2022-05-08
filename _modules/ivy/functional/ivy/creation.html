@@ -139,32 +139,42 @@
     <span class="n">dtype</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">device</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Device</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]:</span>
-    <span class="sd">&quot;&quot;&quot;Returns evenly spaced values within a given interval, with the spacing</span>
-<span class="sd">    being specified.</span>
+    <span class="sd">&quot;&quot;&quot;Returns evenly spaced values within a given interval, with the spacing being</span>
+<span class="sd">     specified.</span>
 
-<span class="sd">    Values are generated within the half-open interval [start, stop) (in other words, the interval including start but</span>
-<span class="sd">    excluding stop). For integer arguments the function is equivalent to the Python built-in range function,</span>
-<span class="sd">    but returns an array in the chosen ml_framework rather than a list.</span>
+<span class="sd">    Values are generated within the half-open interval [start, stop) (in other words,</span>
+<span class="sd">    the interval including start but excluding stop). For integer arguments the function</span>
+<span class="sd">    is equivalent to the Python built-in range function, but returns an array in the</span>
+<span class="sd">    chosen ml_framework rather than a list.</span>
 
 <span class="sd">    See :math:`linspace` for a certain number of evenly spaced values in an interval.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    start</span>
-<span class="sd">        if stop is specified, the start of interval (inclusive); otherwise, the end of the interval (exclusive). If stop is not specified, the default starting value is 0.</span>
+<span class="sd">        if stop is specified, the start of interval (inclusive); otherwise, the end of</span>
+<span class="sd">        the interval (exclusive). If stop is not specified, the default starting value</span>
+<span class="sd">        is 0.</span>
 <span class="sd">    stop</span>
 <span class="sd">        the end of the interval. Default: None.</span>
 <span class="sd">    step</span>
-<span class="sd">        the distance between two adjacent elements (out[i+1] - out[i]). Must not be 0; may be negative, this results in an empty array if stop &gt;= start. Default: 1.</span>
+<span class="sd">        the distance between two adjacent elements (out[i+1] - out[i]). Must not be 0;</span>
+<span class="sd">        may be negative, this results in an empty array if stop &gt;= start. Default: 1.</span>
 <span class="sd">    dtype</span>
-<span class="sd">        output array data type. If dtype is None, the output array data type must be inferred from start, stop and step. If those are all integers, the output array dtype must be the default integer dtype; if one or more have type float, then the output array dtype must be the default floating-point data type. Default: None.</span>
+<span class="sd">        output array data type. If dtype is None, the output array data type must be</span>
+<span class="sd">        inferred from start, stop and step. If those are all integers, the output array</span>
+<span class="sd">        dtype must be the default integer dtype; if one or more have type float, then</span>
+<span class="sd">        the output array dtype must be the default floating-point data type. Default:</span>
+<span class="sd">        None.</span>
 <span class="sd">    device</span>
 <span class="sd">        device on which to place the created array. Default: None.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    ret</span>
-<span class="sd">        a one-dimensional array containing evenly spaced values. The length of the output array must be ceil((stop-start)/step) if stop - start and step have the same sign, and length 0 otherwise.</span>
+<span class="sd">        a one-dimensional array containing evenly spaced values. The length of the</span>
+<span class="sd">        output array must be ceil((stop-start)/step) if stop - start and step have the</span>
+<span class="sd">        same sign, and length 0 otherwise.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">()</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">dtype</span><span class="p">,</span> <span class="n">device</span><span class="p">)</span></div>
@@ -180,8 +190,8 @@
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    x</span>
-<span class="sd">        input data, in any form that can be converted to an array.</span>
-<span class="sd">        This includes lists, lists of tuples, tuples, tuples of tuples, tuples of lists and ndarrays.</span>
+<span class="sd">        input data, in any form that can be converted to an array. This includes lists,</span>
+<span class="sd">        lists of tuples, tuples, tuples of tuples, tuples of lists and ndarrays.</span>
 <span class="sd">    dtype</span>
 <span class="sd">        datatype, optional. Datatype is inferred from the input data.</span>
 <span class="sd">    device</span>
@@ -208,7 +218,8 @@
 <span class="sd">    shape</span>
 <span class="sd">       output array shape.</span>
 <span class="sd">    dtype</span>
-<span class="sd">       output array data type. If ``dtype`` is ``None``, the output array data type must be the default floating-point data type. Default  ``None``.</span>
+<span class="sd">       output array data type. If ``dtype`` is ``None``, the output array data type must</span>
+<span class="sd">       be the default floating-point data type. Default  ``None``.</span>
 <span class="sd">    device</span>
 <span class="sd">       device on which to place the created array. Default: ``None``.</span>
 
@@ -242,7 +253,8 @@
 <span class="sd">    shape</span>
 <span class="sd">        output array shape.</span>
 <span class="sd">    dtype</span>
-<span class="sd">        output array data type. If ``dtype`` is ``None``, the output array data type must be the default floating-point data type. Default  ``None``.</span>
+<span class="sd">        output array data type. If ``dtype`` is ``None``, the output array data type</span>
+<span class="sd">        must be the default floating-point data type. Default  ``None``.</span>
 <span class="sd">    device</span>
 <span class="sd">        device on which to place the created array. Default: ``None``.</span>
 
@@ -269,8 +281,8 @@
     <span class="n">dtype</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">device</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Device</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Returns a new array filled with ``fill_value`` and having the same</span>
-<span class="sd">    ``shape`` as an input array ``x``.</span>
+    <span class="sd">&quot;&quot;&quot;Returns a new array filled with ``fill_value`` and having the same ``shape`` as</span>
+<span class="sd">    an input array ``x``.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -279,16 +291,17 @@
 <span class="sd">    fill_value</span>
 <span class="sd">        Scalar fill value</span>
 <span class="sd">    dtype</span>
-<span class="sd">        output array data type. If ``dtype`` is `None`, the output array data type must be inferred from ``x``.</span>
-<span class="sd">        Default: ``None``.</span>
+<span class="sd">        output array data type. If ``dtype`` is `None`, the output array data type must</span>
+<span class="sd">        be inferred from ``x``. Default: ``None``.</span>
 <span class="sd">    device</span>
-<span class="sd">        device on which to place the created array. If ``device`` is ``None``, the output array device must be inferred from ``x``.</span>
-<span class="sd">        Default: ``None``.</span>
+<span class="sd">        device on which to place the created array. If ``device`` is ``None``, the</span>
+<span class="sd">        output array device must be inferred from ``x``. Default: ``None``.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    ret</span>
-<span class="sd">        an array having the same shape as ``x`` and where every element is equal to ``fill_value``.</span>
+<span class="sd">        an array having the same shape as ``x`` and where every element is equal to</span>
+<span class="sd">        ``fill_value``.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
@@ -307,19 +320,19 @@
     <span class="n">dtype</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">device</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Device</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Returns a new array filled with ones and having the same shape as an</span>
-<span class="sd">    input array x.</span>
+    <span class="sd">&quot;&quot;&quot;Returns a new array filled with ones and having the same shape as an input array</span>
+<span class="sd">    ``x``.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    x</span>
 <span class="sd">        input array from which to derive the output array shape.</span>
 <span class="sd">    dtype</span>
-<span class="sd">        output array data type. If ``dtype`` is ``None``, the output array data type must be inferred from x.</span>
-<span class="sd">        Default  ``None``.</span>
+<span class="sd">        output array data type. If ``dtype`` is ``None``, the output array data type</span>
+<span class="sd">        must be inferred from x. Default  ``None``.</span>
 <span class="sd">    device</span>
-<span class="sd">        device on which to place the created array. If device is ``None``, the output array device must be inferred from x.</span>
-<span class="sd">        Default: ``None``.</span>
+<span class="sd">        device on which to place the created array. If device is ``None``, the output</span>
+<span class="sd">        array device must be inferred from x. Default: ``None``.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -342,19 +355,19 @@
     <span class="n">dtype</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">device</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Device</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Returns a new array filled with zeros and having the same ``shape`` as</span>
-<span class="sd">    an input array ``x``.</span>
+    <span class="sd">&quot;&quot;&quot;Returns a new array filled with zeros and having the same ``shape`` as an input</span>
+<span class="sd">    array ``x``.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    x</span>
 <span class="sd">         input array from which to derive the output array shape.</span>
 <span class="sd">    dtype</span>
-<span class="sd">        output array data type. If ``dtype`` is ``None``, the output array data type must be inferred from ``x``.</span>
-<span class="sd">        Default: ``None``.</span>
+<span class="sd">        output array data type. If ``dtype`` is ``None``, the output array data type</span>
+<span class="sd">        must be inferred from ``x``. Default: ``None``.</span>
 <span class="sd">    device</span>
-<span class="sd">        device on which to place the created array. If ``device`` is ``None``, the output array device must be inferred from ``x``.</span>
-<span class="sd">        Default: ``None``.</span>
+<span class="sd">        device on which to place the created array. If ``device`` is ``None``, the</span>
+<span class="sd">        output array device must be inferred from ``x``. Default: ``None``.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -374,46 +387,48 @@
 
 
 <div class="viewcode-block" id="tril"><a class="viewcode-back" href="../../../../functional/ivy/creation/tril.html#ivy.functional.ivy.creation.tril">[docs]</a><span class="k">def</span> <span class="nf">tril</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span> <span class="n">k</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Returns the lower triangular part of a matrix (or a stack of matrices)</span>
-<span class="sd">    ``x``.</span>
+    <span class="sd">&quot;&quot;&quot;Returns the lower triangular part of a matrix (or a stack of matrices) ``x``.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    x</span>
-<span class="sd">        input array having shape (..., M, N) and whose innermost two dimensions form MxN matrices.</span>
+<span class="sd">        input array having shape (..., M, N) and whose innermost two dimensions form MxN</span>
+<span class="sd">        matrices.</span>
 <span class="sd">    k</span>
-<span class="sd">        diagonal above which to zero elements. If k = 0, the diagonal is the main diagonal. If k &lt; 0, the diagonal is</span>
-<span class="sd">        below the main diagonal. If k &gt; 0, the diagonal is above the main diagonal. Default: 0.</span>
+<span class="sd">        diagonal above which to zero elements. If k = 0, the diagonal is the main</span>
+<span class="sd">        diagonal. If k &lt; 0, the diagonal is below the main diagonal. If k &gt; 0, the</span>
+<span class="sd">        diagonal is above the main diagonal. Default: 0.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    ret</span>
-<span class="sd">        an array containing the lower triangular part(s). The returned array must have the same shape and data type as</span>
-<span class="sd">        x. All elements above the specified diagonal k must be zeroed. The returned array should be allocated on the</span>
-<span class="sd">        same device as x.</span>
+<span class="sd">        an array containing the lower triangular part(s). The returned array must have</span>
+<span class="sd">        the same shape and data type as x. All elements above the specified diagonal k</span>
+<span class="sd">        must be zeroed. The returned array should be allocated on the same device as x.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">tril</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="triu"><a class="viewcode-back" href="../../../../functional/ivy/creation/triu.html#ivy.functional.ivy.creation.triu">[docs]</a><span class="k">def</span> <span class="nf">triu</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span> <span class="n">k</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Returns the upper triangular part of a matrix (or a stack of matrices)</span>
-<span class="sd">    x.</span>
+    <span class="sd">&quot;&quot;&quot;Returns the upper triangular part of a matrix (or a stack of matrices) ``x``.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    x</span>
-<span class="sd">        input array having shape (..., M, N) and whose innermost two dimensions form MxN matrices.</span>
+<span class="sd">        input array having shape (..., M, N) and whose innermost two dimensions form MxN</span>
+<span class="sd">        matrices.</span>
 <span class="sd">    k</span>
-<span class="sd">        diagonal below which to zero elements. If k = 0, the diagonal is the main diagonal. If k &lt; 0, the diagonal is</span>
-<span class="sd">        below the main diagonal. If k &gt; 0, the diagonal is above the main diagonal. Default: 0.</span>
+<span class="sd">        diagonal below which to zero elements. If k = 0, the diagonal is the main</span>
+<span class="sd">        diagonal. If k &lt; 0, the diagonal is below the main diagonal. If k &gt; 0, the</span>
+<span class="sd">        diagonal is above the main diagonal. Default: 0.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    ret</span>
-<span class="sd">        an array containing the upper triangular part(s). The returned array must have the same shape and data type as</span>
-<span class="sd">        x. All elements below the specified diagonal k must be zeroed. The returned array should be allocated on the</span>
-<span class="sd">        same device as x.</span>
+<span class="sd">        an array containing the upper triangular part(s). The returned array must have</span>
+<span class="sd">        the same shape and data type as x. All elements below the specified diagonal k</span>
+<span class="sd">        must be zeroed. The returned array should be allocated on the same device as x.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">triu</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span></div>
@@ -431,8 +446,8 @@
 <span class="sd">    shape</span>
 <span class="sd">        output array shape.</span>
 <span class="sd">    dtype</span>
-<span class="sd">        output array data type. If dtype is None, the output array data type must be the default</span>
-<span class="sd">        floating-point data type. Default: None.</span>
+<span class="sd">        output array data type. If dtype is None, the output array data type must be the</span>
+<span class="sd">        default floating-point data type. Default: None.</span>
 <span class="sd">    device</span>
 <span class="sd">        device on which to place the created array. Default: None.</span>
 
@@ -457,9 +472,11 @@
 <span class="sd">    x</span>
 <span class="sd">        input array from which to derive the output array shape.</span>
 <span class="sd">    dtype</span>
-<span class="sd">        output array data type. If dtype is None, the output array data type must be inferred from x. Default  None.</span>
+<span class="sd">        output array data type. If dtype is None, the output array data type must be</span>
+<span class="sd">        inferred from x. Default  None.</span>
 <span class="sd">    device</span>
-<span class="sd">        device on which to place the created array. If device is None, the output array device must be inferred from x. Default: None.</span>
+<span class="sd">        device on which to place the created array. If device is None, the output array</span>
+<span class="sd">        device must be inferred from x. Default: None.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -477,22 +494,21 @@
     <span class="n">dtype</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">device</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Device</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Returns a two-dimensional array with ones on the k h diagonal and zeros</span>
-<span class="sd">    elsewhere.</span>
+    <span class="sd">&quot;&quot;&quot;Returns a two-dimensional array with ones on the k diagonal and zeros elsewhere.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    n_rows</span>
 <span class="sd">        number of rows in the output array.</span>
 <span class="sd">    n_cols</span>
-<span class="sd">        number of columns in the output array. If None, the default number of columns in the output array is</span>
-<span class="sd">        equal to n_rows. Default: None.</span>
+<span class="sd">        number of columns in the output array. If None, the default number of columns in</span>
+<span class="sd">        the output array is equal to n_rows. Default: None.</span>
 <span class="sd">    k</span>
-<span class="sd">        index of the diagonal. A positive value refers to an upper diagonal, a negative value to a lower diagonal,</span>
-<span class="sd">        and 0 to the main diagonal. Default: 0.</span>
+<span class="sd">        index of the diagonal. A positive value refers to an upper diagonal, a negative</span>
+<span class="sd">        value to a lower diagonal, and 0 to the main diagonal. Default: 0.</span>
 <span class="sd">    dtype</span>
-<span class="sd">        output array data type. If dtype is None, the output array data type must be the default floating-</span>
-<span class="sd">        point data type. Default: None.</span>
+<span class="sd">        output array data type. If dtype is None, the output array data type must be the</span>
+<span class="sd">        default floating-point data type. Default: None.</span>
 <span class="sd">    device</span>
 <span class="sd">         device on which to place the created array.</span>
 
@@ -509,10 +525,11 @@
 <div class="viewcode-block" id="linspace"><a class="viewcode-back" href="../../../../functional/ivy/creation/linspace.html#ivy.functional.ivy.creation.linspace">[docs]</a><span class="k">def</span> <span class="nf">linspace</span><span class="p">(</span><span class="n">start</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="n">stop</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span>
              <span class="n">num</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">axis</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">device</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Device</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">dtype</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">endpoint</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> \
         <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]:</span>
-    <span class="sd">&quot;&quot;&quot;Generates a certain number of evenly-spaced values in an interval along</span>
-<span class="sd">    a given axis.</span>
+    <span class="sd">&quot;&quot;&quot;Generates a certain number of evenly-spaced values in an interval along a given</span>
+<span class="sd">    axis.</span>
 
-<span class="sd">    See :math:`arange` that allows to specify the step size of evenly spaced values in an interval.</span>
+<span class="sd">    See :math:`arange` that allows to specify the step size of evenly spaced values in</span>
+<span class="sd">    an interval.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -545,19 +562,38 @@
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    arrays</span>
-<span class="sd">        an arbitrary number of one-dimensional arrays representing grid coordinates. Each array should have the same numeric data type.</span>
+<span class="sd">        an arbitrary number of one-dimensional arrays representing grid coordinates.</span>
+<span class="sd">        Each array should have the same numeric data type.</span>
 <span class="sd">    indexing</span>
-<span class="sd">        Cartesian ``&#39;xy&#39;`` or matrix ``&#39;ij&#39;`` indexing of output. If provided zero or one one-dimensional vector(s) (i.e., the zero- and one-dimensional cases, respectively), the ``indexing`` keyword has no effect and should be ignored. Default: ``&#39;xy&#39;``.</span>
+<span class="sd">        Cartesian ``&#39;xy&#39;`` or matrix ``&#39;ij&#39;`` indexing of output. If provided zero or</span>
+<span class="sd">        one one-dimensional vector(s) (i.e., the zero- and one-dimensional cases,</span>
+<span class="sd">        respectively), the ``indexing`` keyword has no effect and should be ignored.</span>
+<span class="sd">        Default: ``&#39;xy&#39;``.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    ret</span>
-<span class="sd">        list of N arrays, where ``N`` is the number of provided one-dimensional input arrays. Each returned array must have rank ``N``. For ``N`` one-dimensional arrays having lengths ``Ni = len(xi)``,</span>
-<span class="sd">        - if matrix indexing ``ij``, then each returned array must have the shape ``(N1, N2, N3, ..., Nn)``.</span>
-<span class="sd">        - if Cartesian indexing ``xy``, then each returned array must have shape ``(N2, N1, N3, ..., Nn)``.</span>
-<span class="sd">        Accordingly, for the two-dimensional case with input one-dimensional arrays of length ``M`` and ``N``, if matrix indexing ``ij``, then each returned array must have shape ``(M, N)``, and, if Cartesian indexing ``xy``, then each returned array must have shape ``(N, M)``.</span>
-<span class="sd">        Similarly, for the three-dimensional case with input one-dimensional arrays of length ``M``, ``N``, and ``P``, if matrix indexing ``ij``, then each returned array must have shape ``(M, N, P)``, and, if Cartesian indexing ``xy``, then each returned array must have shape ``(N, M, P)``.</span>
+<span class="sd">        list of N arrays, where ``N`` is the number of provided one-dimensional input</span>
+<span class="sd">        arrays. Each returned array must have rank ``N``. For ``N`` one-dimensional</span>
+<span class="sd">        arrays having lengths ``Ni = len(xi)``,</span>
+
+<span class="sd">        - if matrix indexing ``ij``, then each returned array must have the shape</span>
+<span class="sd">          ``(N1, N2, N3, ..., Nn)``.</span>
+<span class="sd">        - if Cartesian indexing ``xy``, then each returned array must have shape</span>
+<span class="sd">          ``(N2, N1, N3, ..., Nn)``.</span>
+
+<span class="sd">        Accordingly, for the two-dimensional case with input one-dimensional arrays of</span>
+<span class="sd">        length ``M`` and ``N``, if matrix indexing ``ij``, then each returned array must</span>
+<span class="sd">        have shape ``(M, N)``, and, if Cartesian indexing ``xy``, then each returned</span>
+<span class="sd">        array must have shape ``(N, M)``.</span>
+
+<span class="sd">        Similarly, for the three-dimensional case with input one-dimensional arrays of</span>
+<span class="sd">        length ``M``, ``N``, and ``P``, if matrix indexing ``ij``, then each returned</span>
+<span class="sd">        array must have shape ``(M, N, P)``, and, if Cartesian indexing ``xy``, then</span>
+<span class="sd">        each returned array must have shape ``(N, M, P)``.</span>
+
 <span class="sd">        Each returned array should have the same data type as the input arrays.</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">()</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="o">*</span><span class="n">arrays</span><span class="p">,</span> <span class="n">indexing</span><span class="o">=</span><span class="n">indexing</span><span class="p">)</span></div>
 
@@ -568,8 +604,7 @@
     <span class="n">dtype</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">device</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Device</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Returns a new array having a specified ``shape`` and filled with</span>
-<span class="sd">    ``fill_value``.</span>
+    <span class="sd">&quot;&quot;&quot;Returns a new array having a specified ``shape`` and filled with ``fill_value``.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -578,7 +613,12 @@
 <span class="sd">    fill_value</span>
 <span class="sd">        fill value.</span>
 <span class="sd">    dtype</span>
-<span class="sd">        output array data type. If ``dtype`` is `None`, the output array data type must be inferred from ``fill_value``. If the fill value is an ``int``, the output array data type must be the default integer data type. If the fill value is a ``float``, the output array data type must be the default floating-point data type. If the fill value is a ``bool``, the output array must have boolean data type. Default: ``None``.</span>
+<span class="sd">        output array data type. If ``dtype`` is `None`, the output array data type must</span>
+<span class="sd">        be inferred from ``fill_value``. If the fill value is an ``int``, the output</span>
+<span class="sd">        array data type must be the default integer data type. If the fill value is a</span>
+<span class="sd">        ``float``, the output array data type must be the default floating-point data</span>
+<span class="sd">        type. If the fill value is a ``bool``, the output array must have boolean data</span>
+<span class="sd">        type. Default: ``None``.</span>
 <span class="sd">    device</span>
 <span class="sd">        device on which to place the created array. Default: ``None``.</span>
 
@@ -617,7 +657,8 @@
 <span class="sd">        .. admonition:: Note</span>
 <span class="sd">           :class: note</span>
 
-<span class="sd">           The returned array may be either a copy or a view. See :ref:`data-interchange` for details.</span>
+<span class="sd">           The returned array may be either a copy or a view. See</span>
+<span class="sd">           :ref:`data-interchange` for details.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">from_dlpack</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
@@ -638,10 +679,11 @@
     <span class="n">axis</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">device</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Device</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]:</span>
-    <span class="sd">&quot;&quot;&quot;Generates a certain number of evenly-spaced values in log space, in an</span>
-<span class="sd">    interval along a given axis.</span>
+    <span class="sd">&quot;&quot;&quot;Generates a certain number of evenly-spaced values in log space, in an interval</span>
+<span class="sd">    along a given axis.</span>
 
-<span class="sd">    See :math:`arange` that allows to specify the step size of evenly spaced values in an interval.</span>
+<span class="sd">    See :math:`arange` that allows to specify the step size of evenly spaced values in</span>
+<span class="sd">    an interval.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>

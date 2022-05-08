@@ -146,18 +146,17 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="ivy.functional.ivy.creation.eye">
 <span class="sig-prename descclassname"><span class="pre">ivy.functional.ivy.creation.</span></span><span class="sig-name descname"><span class="pre">eye</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_rows</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_cols</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/creation.html#eye"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.creation.eye" title="Permalink to this definition"></a></dt>
-<dd><p>Returns a two-dimensional array with ones on the k h diagonal and zeros
-elsewhere.</p>
+<dd><p>Returns a two-dimensional array with ones on the k diagonal and zeros elsewhere.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>n_rows</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – number of rows in the output array.</p></li>
-<li><p><strong>n_cols</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]) – number of columns in the output array. If None, the default number of columns in the output array is (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
-equal to n_rows. Default: None.</p></li>
-<li><p><strong>k</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]) – index of the diagonal. A positive value refers to an upper diagonal, a negative value to a lower diagonal, (default: <code class="docutils literal notranslate"><span class="pre">0</span></code>)
-and 0 to the main diagonal. Default: 0.</p></li>
-<li><p><strong>dtype</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Dtype</span></code>]) – output array data type. If dtype is None, the output array data type must be the default floating- (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
-point data type. Default: None.</p></li>
+<li><p><strong>n_cols</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]) – number of columns in the output array. If None, the default number of columns in (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
+the output array is equal to n_rows. Default: None.</p></li>
+<li><p><strong>k</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]) – index of the diagonal. A positive value refers to an upper diagonal, a negative (default: <code class="docutils literal notranslate"><span class="pre">0</span></code>)
+value to a lower diagonal, and 0 to the main diagonal. Default: 0.</p></li>
+<li><p><strong>dtype</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Dtype</span></code>]) – output array data type. If dtype is None, the output array data type must be the (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
+default floating-point data type. Default: None.</p></li>
 <li><p><strong>device</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Device</span></code>]) – device on which to place the created array. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
 </ul>
 </dd>

@@ -210,8 +210,7 @@
 
 <span class="c1"># noinspection PyShadowingNames</span>
 <div class="viewcode-block" id="num_arrays_on_dev"><a class="viewcode-back" href="../../../../functional/ivy/device/num_arrays_on_dev.html#ivy.functional.ivy.device.num_arrays_on_dev">[docs]</a><span class="k">def</span> <span class="nf">num_arrays_on_dev</span><span class="p">(</span><span class="n">device</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Returns the number of arrays which are currently alive on the specified</span>
-<span class="sd">    device.</span>
+    <span class="sd">&quot;&quot;&quot;Returns the number of arrays which are currently alive on the specified device.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -313,8 +312,8 @@
 
 <span class="c1"># noinspection PyShadowingNames</span>
 <div class="viewcode-block" id="total_mem_on_dev"><a class="viewcode-back" href="../../../../functional/ivy/device/total_mem_on_dev.html#ivy.functional.ivy.device.total_mem_on_dev">[docs]</a><span class="k">def</span> <span class="nf">total_mem_on_dev</span><span class="p">(</span><span class="n">device</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Device</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Get the total amount of memory (in GB) for a given device string. In</span>
-<span class="sd">    case of CPU, the total RAM is returned.</span>
+    <span class="sd">&quot;&quot;&quot;Get the total amount of memory (in GB) for a given device string. In case of CPU,</span>
+<span class="sd">    the total RAM is returned.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -342,15 +341,16 @@
 
 <span class="c1"># noinspection PyShadowingNames</span>
 <div class="viewcode-block" id="used_mem_on_dev"><a class="viewcode-back" href="../../../../functional/ivy/device/used_mem_on_dev.html#ivy.functional.ivy.device.used_mem_on_dev">[docs]</a><span class="k">def</span> <span class="nf">used_mem_on_dev</span><span class="p">(</span><span class="n">device</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Device</span><span class="p">,</span> <span class="n">process_specific</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Get the used memory (in GB) for a given device string. In case of CPU,</span>
-<span class="sd">    the used RAM is returned.</span>
+    <span class="sd">&quot;&quot;&quot;Get the used memory (in GB) for a given device string. In case of CPU, the used</span>
+<span class="sd">    RAM is returned.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    device</span>
 <span class="sd">        The device string to conver to native device handle.</span>
 <span class="sd">    process_specific</span>
-<span class="sd">        Whether the check the memory used by this python process alone. Default is False.</span>
+<span class="sd">        Whether the check the memory used by this python process alone. Default is</span>
+<span class="sd">        False.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -379,15 +379,16 @@
 
 <span class="c1"># noinspection PyShadowingNames</span>
 <div class="viewcode-block" id="percent_used_mem_on_dev"><a class="viewcode-back" href="../../../../functional/ivy/device/percent_used_mem_on_dev.html#ivy.functional.ivy.device.percent_used_mem_on_dev">[docs]</a><span class="k">def</span> <span class="nf">percent_used_mem_on_dev</span><span class="p">(</span><span class="n">device</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Device</span><span class="p">,</span> <span class="n">process_specific</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Get the percentage used memory for a given device string. In case of</span>
-<span class="sd">    CPU, the used RAM is returned.</span>
+    <span class="sd">&quot;&quot;&quot;Get the percentage used memory for a given device string. In case of CPU, the</span>
+<span class="sd">    used RAM is returned.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    device</span>
 <span class="sd">        The device string to conver to native device handle.</span>
 <span class="sd">    process_specific</span>
-<span class="sd">        Whether the check the memory used by this python process alone. Default is False.</span>
+<span class="sd">        Whether the check the memory used by this python process alone. Default is</span>
+<span class="sd">        False.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -525,7 +526,6 @@
 <span class="sd">    -------</span>
 <span class="sd">    ret</span>
 
-
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">device</span><span class="p">):</span>
         <span class="n">_assert_dev_correct_formatting</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">dev_to_str</span><span class="p">(</span><span class="n">device</span><span class="p">))</span>
@@ -567,8 +567,7 @@
     <span class="n">device</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Device</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]:</span>
-    <span class="sd">&quot;&quot;&quot;Move the input array x to the desired device, specified by device</span>
-<span class="sd">    string.</span>
+    <span class="sd">&quot;&quot;&quot;Move the input array x to the desired device, specified by device string.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -577,7 +576,8 @@
 <span class="sd">    device</span>
 <span class="sd">        device to move the input array `x` to</span>
 <span class="sd">    out</span>
-<span class="sd">        optional output array, for writing the result to. It must have a shape that the inputs broadcast to.</span>
+<span class="sd">        optional output array, for writing the result to. It must have a shape that the</span>
+<span class="sd">        inputs broadcast to.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -597,9 +597,9 @@
 
 <span class="c1"># noinspection PyShadowingNames</span>
 <div class="viewcode-block" id="split_factor"><a class="viewcode-back" href="../../../../functional/ivy/device/split_factor.html#ivy.functional.ivy.device.split_factor">[docs]</a><span class="k">def</span> <span class="nf">split_factor</span><span class="p">(</span><span class="n">device</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Get the global split factor for a given device, which can be used to</span>
-<span class="sd">    scale batch splitting chunk sizes for the device across the codebase.</span>
-<span class="sd">    Default global value for each device is 1.</span>
+    <span class="sd">&quot;&quot;&quot;Get the global split factor for a given device, which can be used to scale batch</span>
+<span class="sd">    splitting chunk sizes for the device across the codebase. Default global value for</span>
+<span class="sd">    each device is 1.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -622,8 +622,8 @@
 
 <span class="c1"># noinspection PyShadowingNames</span>
 <div class="viewcode-block" id="set_split_factor"><a class="viewcode-back" href="../../../../functional/ivy/device/set_split_factor.html#ivy.functional.ivy.device.set_split_factor">[docs]</a><span class="k">def</span> <span class="nf">set_split_factor</span><span class="p">(</span><span class="n">factor</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Set the global split factor for a given device, which can be used to</span>
-<span class="sd">    scale batch splitting chunk sizes for the device across the codebase.</span>
+    <span class="sd">&quot;&quot;&quot;Set the global split factor for a given device, which can be used to scale batch</span>
+<span class="sd">    splitting chunk sizes for the device across the codebase.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -651,9 +651,9 @@
     <span class="n">stop_gradients</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="n">device</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">]]:</span>
-    <span class="sd">&quot;&quot;&quot;Call a function by splitting its inputs along a given axis, and calling</span>
-<span class="sd">    the function in chunks, rather than feeding the entire input array at once.</span>
-<span class="sd">    This can be useful to reduce memory usage of the device the arrays are on.</span>
+    <span class="sd">&quot;&quot;&quot;Call a function by splitting its inputs along a given axis, and calling the</span>
+<span class="sd">    function in chunks, rather than feeding the entire input array at once. This can be</span>
+<span class="sd">    useful to reduce memory usage of the device the arrays are on.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -662,16 +662,19 @@
 <span class="sd">    inputs</span>
 <span class="sd">        A list of inputs to pass into the function.</span>
 <span class="sd">    mode</span>
-<span class="sd">        The mode by which to unify the return values, must be one of [ concat | mean | sum ]</span>
+<span class="sd">        The mode by which to unify the return values, must be one of</span>
+<span class="sd">        [ concat | mean | sum ]</span>
 <span class="sd">    max_chunk_size</span>
 <span class="sd">        The maximum size of each of the chunks to be fed into the function.</span>
 <span class="sd">    chunk_size</span>
-<span class="sd">        The size of each of the chunks to be fed into the function. Specifying this arg overwrites the</span>
-<span class="sd">        global split factor. Default is None.</span>
+<span class="sd">        The size of each of the chunks to be fed into the function. Specifying this arg</span>
+<span class="sd">        overwrites the global split factor. Default is None.</span>
 <span class="sd">    input_axes</span>
-<span class="sd">        The axes along which to split each of the inputs, before passing to the function. Default is 0.</span>
+<span class="sd">        The axes along which to split each of the inputs, before passing to the</span>
+<span class="sd">        function. Default is 0.</span>
 <span class="sd">    output_axes</span>
-<span class="sd">        The axes along which to concat each of the returned outputs. Default is same as fist input axis.</span>
+<span class="sd">        The axes along which to concat each of the returned outputs. Default is same as</span>
+<span class="sd">        fist input axis.</span>
 <span class="sd">    stop_gradients</span>
 <span class="sd">        Whether to stop the gradients for each computed return. Default is False.</span>
 <span class="sd">    device</span>
@@ -912,8 +915,8 @@
 
 
 <div class="viewcode-block" id="dev_dist_array"><a class="viewcode-back" href="../../../../functional/ivy/device/dev_dist_array.html#ivy.functional.ivy.device.dev_dist_array">[docs]</a><span class="k">def</span> <span class="nf">dev_dist_array</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">devices</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Distribute an array across the specified devices, returning a list of</span>
-<span class="sd">    sub-arrays, each on a different device.</span>
+    <span class="sd">&quot;&quot;&quot;Distribute an array across the specified devices, returning a list of sub-arrays,</span>
+<span class="sd">    each on a different device.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -945,8 +948,8 @@
 
 
 <div class="viewcode-block" id="dev_dist"><a class="viewcode-back" href="../../../../functional/ivy/device/dev_dist.html#ivy.functional.ivy.device.dev_dist">[docs]</a><span class="k">def</span> <span class="nf">dev_dist</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">devices</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Distribute the input item across the specified devices, returning a list</span>
-<span class="sd">    of sub-items, each on a different device.</span>
+    <span class="sd">&quot;&quot;&quot;Distribute the input item across the specified devices, returning a list of</span>
+<span class="sd">    sub-items, each on a different device.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -1015,7 +1018,8 @@
 <span class="sd">    axis</span>
 <span class="sd">        The axis along which to split the arrays in the arguments. Default is 0.</span>
 <span class="sd">    max_depth</span>
-<span class="sd">        The maximum nested depth to reach. Default is 1. Increase this if the nest is deeper.</span>
+<span class="sd">        The maximum nested depth to reach. Default is 1. Increase this if the nest is</span>
+<span class="sd">        deeper.</span>
 <span class="sd">    devices</span>
 
 <span class="sd">    Dict</span>
@@ -1057,8 +1061,8 @@
 
 
 <div class="viewcode-block" id="dev_clone_array"><a class="viewcode-back" href="../../../../functional/ivy/device/dev_clone_array.html#ivy.functional.ivy.device.dev_clone_array">[docs]</a><span class="k">def</span> <span class="nf">dev_clone_array</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">devices</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Clone an array across the specified devices, returning a list of cloned</span>
-<span class="sd">    arrays, each on a different device.</span>
+    <span class="sd">&quot;&quot;&quot;Clone an array across the specified devices, returning a list of cloned arrays,</span>
+<span class="sd">    each on a different device.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -1077,8 +1081,8 @@
 
 
 <div class="viewcode-block" id="dev_clone"><a class="viewcode-back" href="../../../../functional/ivy/device/dev_clone.html#ivy.functional.ivy.device.dev_clone">[docs]</a><span class="k">def</span> <span class="nf">dev_clone</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">devices</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Clone the input item to each of the specified devices, returning a list</span>
-<span class="sd">    of cloned items, each on a different device.</span>
+    <span class="sd">&quot;&quot;&quot;Clone the input item to each of the specified devices, returning a list of cloned</span>
+<span class="sd">    items, each on a different device.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -1101,7 +1105,7 @@
 
 
 <div class="viewcode-block" id="dev_clone_iter"><a class="viewcode-back" href="../../../../functional/ivy/device/dev_clone_iter.html#ivy.functional.ivy.device.dev_clone_iter">[docs]</a><span class="k">def</span> <span class="nf">dev_clone_iter</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">devices</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Clone elements of the iterbale xs to each of the specified devices.</span>
+    <span class="sd">&quot;&quot;&quot;Clone elements of the iterable xs to each of the specified devices.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -1133,7 +1137,8 @@
 <span class="sd">    devices</span>
 <span class="sd">        The devices to clone the arguments to.</span>
 <span class="sd">    max_depth</span>
-<span class="sd">        The maximum nested depth to reach. Default is 1. Increase this if the nest is deeper.</span>
+<span class="sd">        The maximum nested depth to reach. Default is 1. Increase this if the nest is</span>
+<span class="sd">        deeper.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -1171,8 +1176,8 @@
 
 <span class="c1"># noinspection PyShadowingNames</span>
 <div class="viewcode-block" id="dev_unify_array"><a class="viewcode-back" href="../../../../functional/ivy/device/dev_unify_array.html#ivy.functional.ivy.device.dev_unify_array">[docs]</a><span class="k">def</span> <span class="nf">dev_unify_array</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">mode</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Unify a list of sub-arrays, on arbitrary devices, to a single array on</span>
-<span class="sd">    the specified device.</span>
+    <span class="sd">&quot;&quot;&quot;Unify a list of sub-arrays, on arbitrary devices, to a single array on the</span>
+<span class="sd">    specified device.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -1183,7 +1188,8 @@
 <span class="sd">    mode</span>
 <span class="sd">        The mode by which to unify, must be one of [ concat | mean | sum ]</span>
 <span class="sd">    axis</span>
-<span class="sd">        The axis along which to concattenate the array, if concat mode is set. Default is 0.</span>
+<span class="sd">        The axis along which to concattenate the array, if concat mode is set. Default</span>
+<span class="sd">        is 0.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -1200,8 +1206,8 @@
 
 <span class="c1"># noinspection PyShadowingNames</span>
 <div class="viewcode-block" id="dev_unify"><a class="viewcode-back" href="../../../../functional/ivy/device/dev_unify.html#ivy.functional.ivy.device.dev_unify">[docs]</a><span class="k">def</span> <span class="nf">dev_unify</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">mode</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Unify a list of sub-arrays, on arbitrary devices, to a single</span>
-<span class="sd">    concattenated array on the specified device.</span>
+    <span class="sd">&quot;&quot;&quot;Unify a list of sub-arrays, on arbitrary devices, to a single concattenated array</span>
+<span class="sd">    on the specified device.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -1212,7 +1218,8 @@
 <span class="sd">    mode</span>
 <span class="sd">        The mode by which to unify, must be one of [ concat | mean | sum ]</span>
 <span class="sd">    axis</span>
-<span class="sd">        The axis along which to concattenate the array, if concat mode is set. Default is 0.</span>
+<span class="sd">        The axis along which to concattenate the array, if concat mode is set. Default</span>
+<span class="sd">        is 0.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -1248,7 +1255,8 @@
 <span class="sd">    axis</span>
 <span class="sd">        The axis along which to concattenate the sub-arrays. Default is 0.</span>
 <span class="sd">    transpose</span>
-<span class="sd">        Whether to transpose the first and second dimensions of the iterator. Default is False.</span>
+<span class="sd">        Whether to transpose the first and second dimensions of the iterator. Default is</span>
+<span class="sd">        False.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -1272,8 +1280,8 @@
 <div class="viewcode-block" id="dev_unify_nest"><a class="viewcode-back" href="../../../../functional/ivy/device/dev_unify_nest.html#ivy.functional.ivy.device.dev_unify_nest">[docs]</a><span class="k">def</span> <span class="nf">dev_unify_nest</span><span class="p">(</span>
     <span class="n">args</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">MultiDev</span><span class="p">],</span> <span class="n">kwargs</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">MultiDev</span><span class="p">],</span> <span class="n">device</span><span class="p">,</span> <span class="n">mode</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">max_depth</span><span class="o">=</span><span class="mi">1</span>
 <span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Unify the input nested arguments, which consist of sub-arrays spread</span>
-<span class="sd">    across arbitrary devices, to unified arrays on the single target device.</span>
+    <span class="sd">&quot;&quot;&quot;Unify the input nested arguments, which consist of sub-arrays spread across</span>
+<span class="sd">    arbitrary devices, to unified arrays on the single target device.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -1288,11 +1296,10 @@
 <span class="sd">    axis</span>
 <span class="sd">        The axis along which to concattenate the sub-arrays. Default is 0.</span>
 <span class="sd">    max_depth</span>
-<span class="sd">        The maximum nested depth to reach. Default is 1. Increase this if the nest is deeper.</span>
+<span class="sd">        The maximum nested depth to reach. Default is 1. Increase this if the nest is</span>
+<span class="sd">        deeper.</span>
 <span class="sd">    args</span>
-
 <span class="sd">    kwargs</span>
-
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -1333,7 +1340,8 @@
 <span class="sd">        fn</span>
 <span class="sd">            The function which the device mapper parallelises across devices.</span>
 <span class="sd">        ret_fn</span>
-<span class="sd">            The function which receives the ivy.MultiDevIter as input, and produces a single device output.</span>
+<span class="sd">            The function which receives the ivy.MultiDevIter as input, and produces a</span>
+<span class="sd">            single device output.</span>
 <span class="sd">        queue_class</span>
 <span class="sd">            The class to use for creating queues.</span>
 <span class="sd">        worker_class</span>
@@ -1343,9 +1351,11 @@
 <span class="sd">        timeout</span>
 <span class="sd">            The timeout for getting items from the queues. Default is global.</span>
 <span class="sd">        constant</span>
-<span class="sd">            A dict of keyword arguments which are the same for each process. Default is None.</span>
+<span class="sd">            A dict of keyword arguments which are the same for each process. Default is</span>
+<span class="sd">            None.</span>
 <span class="sd">        unique</span>
-<span class="sd">            A dict of keyword argument sequences which are unique for each process. Default is None.</span>
+<span class="sd">            A dict of keyword argument sequences which are unique for each process.</span>
+<span class="sd">            Default is None.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">constant_kwargs</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">default</span><span class="p">(</span><span class="n">constant</span><span class="p">,</span> <span class="p">{})</span>
@@ -1410,8 +1420,8 @@
             <span class="n">output_queue</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">ret</span><span class="p">)</span>
 
 <div class="viewcode-block" id="DevMapper.map"><a class="viewcode-back" href="../../../../functional/ivy/device/DevMapper.html#ivy.functional.ivy.device.DevMapper.map">[docs]</a>    <span class="k">def</span> <span class="nf">map</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">used_devs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">split_factors</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Map the function fn to each of the MultiDevice args and kwargs,</span>
-<span class="sd">        running each function in parallel with CUDA-safe multiprocessing.</span>
+        <span class="sd">&quot;&quot;&quot;Map the function fn to each of the MultiDevice args and kwargs, running each</span>
+<span class="sd">        function in parallel with CUDA-safe multiprocessing.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -1507,28 +1517,31 @@
         <span class="n">tune_dev_alloc</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="n">tune_dev_splits</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
     <span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Create device manager, which unlike the device mapper, handles all</span>
-<span class="sd">        argument cloning and distributing internally. The device manager only</span>
-<span class="sd">        receivess a specification regarding the ratio of the batch each device</span>
-<span class="sd">        should consume.</span>
+        <span class="sd">&quot;&quot;&quot;Create device manager, which unlike the device mapper, handles all argument</span>
+<span class="sd">        cloning and distributing internally. The device manager only receivess a</span>
+<span class="sd">        specification regarding the ratio of the batch each device should consume.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        dev_mapper</span>
-<span class="sd">            The pre-built device mapper used by the manager internally. (Default value = None)</span>
+<span class="sd">            The pre-built device mapper used by the manager internally.</span>
+<span class="sd">            (Default value = None)</span>
 <span class="sd">        devices</span>
 <span class="sd">            The devices to distribute and clone the arguments across.</span>
 <span class="sd">        da_dim_size</span>
-<span class="sd">            The size of the dimension along which the device allocation splitting is performed. (Default value = None)</span>
+<span class="sd">            The size of the dimension along which the device allocation splitting is</span>
+<span class="sd">            performed. (Default value = None)</span>
 <span class="sd">        safety_factor</span>
-<span class="sd">            The factor by which to be safe in the avoidance of OOM GPU errors. Default is 1.1.</span>
+<span class="sd">            The factor by which to be safe in the avoidance of OOM GPU errors.</span>
+<span class="sd">            Default is 1.1.</span>
 <span class="sd">        min_dev_dim_size</span>
 <span class="sd">            The minimum dimension size to pass to a device. Default is 0.</span>
 <span class="sd">        max_dev_dim_step_ratio</span>
-<span class="sd">            The maximum step ratio for changing the dimension for a device. Default is 0.1.</span>
+<span class="sd">            The maximum step ratio for changing the dimension for a device.</span>
+<span class="sd">            Default is 0.1.</span>
 <span class="sd">        min_unit_dev_tune_steps</span>
-<span class="sd">            The minimum number of tune steps to make when optimizing with unit step size.</span>
-<span class="sd">            Default is 10.</span>
+<span class="sd">            The minimum number of tune steps to make when optimizing with unit step</span>
+<span class="sd">            size. Default is 10.</span>
 <span class="sd">        min_sf_tune_steps</span>
 <span class="sd">            Minimum number of split factor tune steps. Default is 10.</span>
 <span class="sd">        starting_split_factor</span>
@@ -1537,8 +1550,9 @@
 <span class="sd">            The maximum step size for changing the split factor for a device.</span>
 <span class="sd">            Default is 0.05.</span>
 <span class="sd">        tune_dev_alloc</span>
-<span class="sd">            Whether to tune the device split sizes internally based on device utilization tracking,</span>
-<span class="sd">            and use the provided values for initialization. Default is True.</span>
+<span class="sd">            Whether to tune the device split sizes internally based on device</span>
+<span class="sd">            utilization tracking, and use the provided values for initialization.</span>
+<span class="sd">            Default is True.</span>
 <span class="sd">        tune_dev_splits</span>
 <span class="sd">            Whether to tune the per-device split sizes internally. Default is True.</span>
 
@@ -1976,19 +1990,22 @@
     <span class="c1"># Mapping #</span>
 
 <div class="viewcode-block" id="DevManager.map"><a class="viewcode-back" href="../../../../functional/ivy/device.html#ivy.functional.ivy.device.DevManager.map">[docs]</a>    <span class="k">def</span> <span class="nf">map</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cloned</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">to_clone</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">distributed</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">to_distribute</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Map the function fn to each of the MultiDevice args and kwargs,</span>
-<span class="sd">        running each function in parallel with CUDA-safe multiprocessing.</span>
+        <span class="sd">&quot;&quot;&quot;Map the function fn to each of the MultiDevice args and kwargs, running each</span>
+<span class="sd">        function in parallel with CUDA-safe multiprocessing.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        cloned</span>
 <span class="sd">            The MutliDevice keyword arguments which are already cloned. Default is None.</span>
 <span class="sd">        to_clone</span>
-<span class="sd">            The MutliDevice keyword arguments to clone and map to the function. Default is None.</span>
+<span class="sd">            The MutliDevice keyword arguments to clone and map to the function.</span>
+<span class="sd">            Default is None.</span>
 <span class="sd">        distributed</span>
-<span class="sd">            The MutliDevice keyword arguments which already distributed. Default is None.</span>
+<span class="sd">            The MutliDevice keyword arguments which already distributed.</span>
+<span class="sd">            Default is None.</span>
 <span class="sd">        to_distribute</span>
-<span class="sd">            The MutliDevice keyword arguments to distribute and map to the function. Default is None.</span>
+<span class="sd">            The MutliDevice keyword arguments to distribute and map to the function.</span>
+<span class="sd">            Default is None.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>

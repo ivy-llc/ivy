@@ -147,19 +147,29 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="ivy.functional.ivy.creation.arange">
 <span class="sig-prename descclassname"><span class="pre">ivy.functional.ivy.creation.</span></span><span class="sig-name descname"><span class="pre">arange</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/creation.html#arange"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.creation.arange" title="Permalink to this definition"></a></dt>
-<dd><p>Returns evenly spaced values within a given interval, with the spacing
-being specified.</p>
-<p>Values are generated within the half-open interval [start, stop) (in other words, the interval including start but
-excluding stop). For integer arguments the function is equivalent to the Python built-in range function,
-but returns an array in the chosen ml_framework rather than a list.</p>
+<dd><dl class="simple">
+<dt>Returns evenly spaced values within a given interval, with the spacing being</dt><dd><p>specified.</p>
+</dd>
+</dl>
+<p>Values are generated within the half-open interval [start, stop) (in other words,
+the interval including start but excluding stop). For integer arguments the function
+is equivalent to the Python built-in range function, but returns an array in the
+chosen ml_framework rather than a list.</p>
 <p>See <span class="math notranslate nohighlight">\(linspace\)</span> for a certain number of evenly spaced values in an interval.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>start</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Number</span></code>) – if stop is specified, the start of interval (inclusive); otherwise, the end of the interval (exclusive). If stop is not specified, the default starting value is 0.</p></li>
+<li><p><strong>start</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Number</span></code>) – if stop is specified, the start of interval (inclusive); otherwise, the end of
+the interval (exclusive). If stop is not specified, the default starting value
+is 0.</p></li>
 <li><p><strong>stop</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Number</span></code>]) – the end of the interval. Default: None. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
-<li><p><strong>step</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Number</span></code>) – the distance between two adjacent elements (out[i+1] - out[i]). Must not be 0; may be negative, this results in an empty array if stop &gt;= start. Default: 1. (default: <code class="docutils literal notranslate"><span class="pre">1</span></code>)</p></li>
-<li><p><strong>dtype</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Dtype</span></code>]) – output array data type. If dtype is None, the output array data type must be inferred from start, stop and step. If those are all integers, the output array dtype must be the default integer dtype; if one or more have type float, then the output array dtype must be the default floating-point data type. Default: None. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
+<li><p><strong>step</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Number</span></code>) – the distance between two adjacent elements (out[i+1] - out[i]). Must not be 0; (default: <code class="docutils literal notranslate"><span class="pre">1</span></code>)
+may be negative, this results in an empty array if stop &gt;= start. Default: 1.</p></li>
+<li><p><strong>dtype</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Dtype</span></code>]) – output array data type. If dtype is None, the output array data type must be (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
+inferred from start, stop and step. If those are all integers, the output array
+dtype must be the default integer dtype; if one or more have type float, then
+the output array dtype must be the default floating-point data type. Default:
+None.</p></li>
 <li><p><strong>device</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Device</span></code>]) – device on which to place the created array. Default: None. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
 </ul>
 </dd>
@@ -167,7 +177,9 @@ but returns an array in the chosen ml_framework rather than a list.</p>
 <dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]</p>
 </dd>
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><em>ret</em> – a one-dimensional array containing evenly spaced values. The length of the output array must be ceil((stop-start)/step) if stop - start and step have the same sign, and length 0 otherwise.</p>
+<dd class="field-odd"><p><em>ret</em> – a one-dimensional array containing evenly spaced values. The length of the
+output array must be ceil((stop-start)/step) if stop - start and step have the
+same sign, and length 0 otherwise.</p>
 </dd>
 </dl>
 </dd></dl>

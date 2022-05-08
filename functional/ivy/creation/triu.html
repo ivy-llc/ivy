@@ -146,23 +146,24 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="ivy.functional.ivy.creation.triu">
 <span class="sig-prename descclassname"><span class="pre">ivy.functional.ivy.creation.</span></span><span class="sig-name descname"><span class="pre">triu</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/creation.html#triu"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.creation.triu" title="Permalink to this definition"></a></dt>
-<dd><p>Returns the upper triangular part of a matrix (or a stack of matrices)
-x.</p>
+<dd><p>Returns the upper triangular part of a matrix (or a stack of matrices) <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – input array having shape (…, M, N) and whose innermost two dimensions form MxN matrices.</p></li>
-<li><p><strong>k</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – diagonal below which to zero elements. If k = 0, the diagonal is the main diagonal. If k &lt; 0, the diagonal is (default: <code class="docutils literal notranslate"><span class="pre">0</span></code>)
-below the main diagonal. If k &gt; 0, the diagonal is above the main diagonal. Default: 0.</p></li>
+<li><p><strong>x</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – input array having shape (…, M, N) and whose innermost two dimensions form MxN
+matrices.</p></li>
+<li><p><strong>k</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – diagonal below which to zero elements. If k = 0, the diagonal is the main (default: <code class="docutils literal notranslate"><span class="pre">0</span></code>)
+diagonal. If k &lt; 0, the diagonal is below the main diagonal. If k &gt; 0, the
+diagonal is above the main diagonal. Default: 0.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>
 <dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></p>
 </dd>
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><em>ret</em> – an array containing the upper triangular part(s). The returned array must have the same shape and data type as
-x. All elements below the specified diagonal k must be zeroed. The returned array should be allocated on the
-same device as x.</p>
+<dd class="field-odd"><p><em>ret</em> – an array containing the upper triangular part(s). The returned array must have
+the same shape and data type as x. All elements below the specified diagonal k
+must be zeroed. The returned array should be allocated on the same device as x.</p>
 </dd>
 </dl>
 </dd></dl>

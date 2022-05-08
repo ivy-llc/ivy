@@ -143,7 +143,8 @@
     <span class="n">from_</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span> <span class="n">to</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Determines if one data type can be cast to another data type accordingref:`type-promotion` rules.</span>
+<span class="sd">    Determines if one data type can be cast to another data type according to</span>
+<span class="sd">    :ref:`type-promotion` rules.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -155,7 +156,9 @@
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    ret</span>
-<span class="sd">        ``True`` if the cast can occur according toref:`type-promotion` rules; otherwise, ``False``.</span>
+<span class="sd">        ``True`` if the cast can occur according to :ref:`type-promotion` rules;</span>
+<span class="sd">        otherwise, ``False``.</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">from_</span><span class="p">)</span><span class="o">.</span><span class="n">can_cast</span><span class="p">(</span><span class="n">from_</span><span class="p">,</span> <span class="n">to</span><span class="p">)</span></div>
 
@@ -200,7 +203,8 @@
 <span class="sd">        - **bits**: *int*</span>
 <span class="sd">          number of bits occupied by the floating-point data type.</span>
 <span class="sd">        - **eps**: *float*</span>
-<span class="sd">          difference between 1.0 and the next smallest representable floating-point number larger than 1.0 according to the IEEE-754 standard.</span>
+<span class="sd">          difference between 1.0 and the next smallest representable floating-point</span>
+<span class="sd">          number larger than 1.0 according to the IEEE-754 standard.</span>
 <span class="sd">        - **max**: *float*</span>
 <span class="sd">          largest representable number.</span>
 <span class="sd">        - **min**: *float*</span>
@@ -246,7 +250,8 @@
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    ret</span>
-<span class="sd">        Each array must have the same shape. Each array must have the same dtype as its corresponding input array.</span>
+<span class="sd">        Each array must have the same shape. Each array must have the same dtype as its</span>
+<span class="sd">        corresponding input array.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">arrays</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">broadcast_arrays</span><span class="p">(</span><span class="o">*</span><span class="n">arrays</span><span class="p">)</span></div>
@@ -277,14 +282,20 @@
 <div class="viewcode-block" id="astype"><a class="viewcode-back" href="../../../../functional/ivy/data_type/astype.html#ivy.functional.ivy.data_type.astype">[docs]</a><span class="k">def</span> <span class="nf">astype</span><span class="p">(</span>
     <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span> <span class="n">dtype</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="n">copy</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Copies an array to a specified data type irrespective of :ref:`type-</span>
-<span class="sd">    promotion` rules.</span>
+    <span class="sd">&quot;&quot;&quot;Copies an array to a specified data type irrespective of :ref:`type-promotion`</span>
+<span class="sd">    rules.</span>
 
 <span class="sd">    .. note::</span>
-<span class="sd">       Casting floating-point ``NaN`` and ``infinity`` values to integral data types is not specified and is implementation-dependent.</span>
+<span class="sd">       Casting floating-point ``NaN`` and ``infinity`` values to integral data types is</span>
+<span class="sd">       not specified and is implementation-dependent.</span>
+
 <span class="sd">    .. note::</span>
-<span class="sd">       When casting a boolean input array to a numeric data type, a value of ``True`` must cast to a numeric value equal to ``1``, and a value of ``False`` must cast to a numeric value equal to ``0``.</span>
-<span class="sd">       When casting a numeric input array to ``bool``, a value of ``0`` must cast to ``False``, and a non-zero value must cast to ``True``.</span>
+<span class="sd">       When casting a boolean input array to a numeric data type, a value of ``True``</span>
+<span class="sd">       must cast to a numeric value equal to ``1``, and a value of ``False`` must cast</span>
+<span class="sd">       to a numeric value equal to ``0``.</span>
+
+<span class="sd">       When casting a numeric input array to ``bool``, a value of ``0`` must cast to</span>
+<span class="sd">       ``False``, and a non-zero value must cast to ``True``.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -293,12 +304,17 @@
 <span class="sd">    dtype</span>
 <span class="sd">        desired data type.</span>
 <span class="sd">    copy</span>
-<span class="sd">        specifies whether to copy an array when the specified ``dtype`` matches the data type of the input array ``x``. If ``True``, a newly allocated array must always be returned. If ``False`` and the specified ``dtype`` matches the data type of the input array, the input array must be returned; otherwise, a newly allocated must be returned. Default: ``True``.</span>
+<span class="sd">        specifies whether to copy an array when the specified ``dtype`` matches the data</span>
+<span class="sd">        type of the input array ``x``. If ``True``, a newly allocated array must always</span>
+<span class="sd">        be returned. If ``False`` and the specified ``dtype`` matches the data type of</span>
+<span class="sd">        the input array, the input array must be returned; otherwise, a newly allocated</span>
+<span class="sd">        must be returned. Default: ``True``.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    ret</span>
-<span class="sd">        an array having the specified data type. The returned array must have the same shape as ``x``.</span>
+<span class="sd">        an array having the specified data type. The returned array must have the same</span>
+<span class="sd">        shape as ``x``.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
@@ -453,7 +469,8 @@
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">        Return the input int dtype if provided, otherwise return the global default int dtype.</span>
+<span class="sd">        Return the input int dtype if provided, otherwise return the global default int</span>
+<span class="sd">        dtype.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">int_dtype</span><span class="p">):</span>
@@ -543,7 +560,8 @@
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">        Return the input float dtype if provided, otherwise return the global default float dtype.</span>
+<span class="sd">        Return the input float dtype if provided, otherwise return the global default</span>
+<span class="sd">        float dtype.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">float_dtype</span><span class="p">):</span>
@@ -799,7 +817,8 @@
 <span class="sd">    (see :ref:`type-promotion`) to the arguments.</span>
 
 <span class="sd">    .. note::</span>
-<span class="sd">       If provided mixed dtypes (e.g., integer and floating-point), the returned dtype will be implementation-specific.</span>
+<span class="sd">       If provided mixed dtypes (e.g., integer and floating-point), the returned dtype</span>
+<span class="sd">       will be implementation-specific.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -816,8 +835,7 @@
 
 
 <div class="viewcode-block" id="valid_dtype"><a class="viewcode-back" href="../../../../functional/ivy/data_type/valid_dtype.html#ivy.functional.ivy.data_type.valid_dtype">[docs]</a><span class="k">def</span> <span class="nf">valid_dtype</span><span class="p">(</span><span class="n">dtype_in</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Determines whether the provided data type is support by the current</span>
-<span class="sd">    framework.</span>
+    <span class="sd">&quot;&quot;&quot;Determines whether the provided data type is support by the current framework.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -856,8 +874,7 @@
 
 
 <div class="viewcode-block" id="convert_dtype"><a class="viewcode-back" href="../../../../functional/ivy/data_type/convert_dtype.html#ivy.functional.ivy.data_type.convert_dtype">[docs]</a><span class="k">def</span> <span class="nf">convert_dtype</span><span class="p">(</span><span class="n">dtype_in</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="n">backend</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Converts a data type from one backend framework representation to</span>
-<span class="sd">    another.</span>
+    <span class="sd">&quot;&quot;&quot;Converts a data type from one backend framework representation to another.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
