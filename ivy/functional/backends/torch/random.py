@@ -16,10 +16,10 @@ from ivy.functional.ivy.device import default_device
 
 
 def random_uniform(
-    low: float = 0.0,
-    high: float = 1.0,
-    shape: Optional[Union[int, Tuple[int, ...]]] = None,
-    device: Optional[ivy.Device] = None,
+        low: float = 0.0,
+        high: float = 1.0,
+        shape: Optional[Union[int, Tuple[int, ...]]] = None,
+        device: Optional[ivy.Device] = None,
 ) -> torch.Tensor:
     rand_range = high - low
     if shape is None:
@@ -28,10 +28,10 @@ def random_uniform(
 
 
 def random_normal(
-    mean: float = 0.0,
-    std: float = 1.0,
-    shape: Optional[List[int]] = None,
-    device: ivy.Device = None,
+        mean: float = 0.0,
+        std: float = 1.0,
+        shape: Optional[List[int]] = None,
+        device: ivy.Device = None,
 ):
     if shape is None:
         true_shape: List[int] = []
@@ -45,27 +45,32 @@ def random_normal(
 
 
 def multinomial(
-    population_size: int,
-    num_samples: int,
-    batch_size: int,
-    probs: Optional[torch.Tensor] = None,
-    replace: bool = True,
-    device: ivy.Device = None,
+        population_size: int,
+        num_samples: int,
+        batch_size: int,
+        probs: Optional[torch.Tensor] = None,
+        replace: bool = True,
+        device: ivy.Device = None,
 ):
     if probs is None:
         probs = (
-            torch.ones(
-                (
-                    batch_size,
-                    population_size,
+                torch.ones(
+                    (
+                        batch_size,
+                        population_size,
+                    )
                 )
-            )
-            / population_size
+                / population_size
         )
     return torch.multinomial(probs, num_samples, replace).to(default_device(device))
 
 
-def randint(low: int, high: int, shape: List[int], device: ivy.Device = None):
+def randint(
+        low: int,
+        high: int,
+        shape: Union[int, Tuple[int, ...]],
+        device: Optional[ivy.Device] = None,
+) -> torch.Tensor:
     return torch.randint(low, high, shape, device=default_device(device))
 
 

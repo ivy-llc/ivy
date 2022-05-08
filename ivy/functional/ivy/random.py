@@ -13,10 +13,10 @@ import ivy
 
 
 def random_uniform(
-    low: float = 0.0,
-    high: float = 1.0,
-    shape: Optional[Union[int, Tuple[int, ...]]] = None,
-    device: Optional[ivy.Device] = None,
+        low: float = 0.0,
+        high: float = 1.0,
+        shape: Optional[Union[int, Tuple[int, ...]]] = None,
+        device: Optional[ivy.Device] = None,
 ) -> ivy.array:
     """Draws samples from a uniform distribution. Samples are uniformly
     distributed over the half-open interval ``[low, high)`` (includes ``low``,
@@ -75,7 +75,7 @@ def random_normal(mean=0.0, std=1.0, shape=None, device=None):
 
 
 def multinomial(
-    population_size, num_samples, batch_size, probs=None, replace=True, device=None
+        population_size, num_samples, batch_size, probs=None, replace=True, device=None
 ):
     """Draws samples from a multinomial distribution. Specifcally, returns a
     tensor where each row contains num_samples indices sampled from the
@@ -109,8 +109,13 @@ def multinomial(
     )
 
 
-def randint(low, high, shape, device=None):
-    """Returns a tensor filled with random integers generated uniformly between
+def randint(
+        low: int,
+        high: int,
+        shape: Union[int, Tuple[int, ...]],
+        device: Optional[ivy.Device] = None,
+) -> ivy.array:
+    """Returns an array filled with random integers generated uniformly between
     low (inclusive) and high (exclusive).
 
     Parameters
@@ -120,10 +125,22 @@ def randint(low, high, shape, device=None):
     high
         One above the highest integer to be drawn from the distribution.
     shape
-        a tuple defining the shape of the output tensor.
+        a tuple defining the shape of the output array.
     device
-        device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. (Default value = None)
+        device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. (Default value = None).
 
+    Returns
+    -------
+    ret
+        Returns an array with the given shape filled with integers from
+        the uniform distribution in the “half-open” interval [low, high)
+
+    Examples
+    --------
+    >>> y = ivy.randint(3, 10, (2, 2))
+    >>> print(y)
+    ivy.array([[9, 9],
+           [8, 9]])
     """
     return _cur_framework().randint(low, high, shape, device)
 

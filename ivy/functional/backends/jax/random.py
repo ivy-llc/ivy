@@ -13,7 +13,6 @@ from ivy.functional.backends.jax.device import to_dev
 from ivy.functional.ivy.device import default_device
 from ivy.functional.backends.jax import JaxArray
 
-
 # Extra #
 # ------#
 
@@ -21,10 +20,10 @@ RNG = _jax.random.PRNGKey(0)
 
 
 def random_uniform(
-    low: float = 0.0,
-    high: float = 1.0,
-    shape: Optional[Union[int, Tuple[int, ...]]] = None,
-    device: Optional[ivy.Device] = None,
+        low: float = 0.0,
+        high: float = 1.0,
+        shape: Optional[Union[int, Tuple[int, ...]]] = None,
+        device: Optional[ivy.Device] = None,
 ) -> JaxArray:
     global RNG
     RNG, rng_input = _jax.random.split(RNG)
@@ -38,29 +37,29 @@ def random_normal(mean=0.0, std=1.0, shape=None, device=None):
     global RNG
     RNG, rng_input = _jax.random.split(RNG)
     return (
-        to_dev(
-            _jax.random.normal(rng_input, shape if shape else ()),
-            default_device(device),
-        )
-        * std
-        + mean
+            to_dev(
+                _jax.random.normal(rng_input, shape if shape else ()),
+                default_device(device),
+            )
+            * std
+            + mean
     )
 
 
 def multinomial(
-    population_size, num_samples, batch_size, probs=None, replace=True, device=None
+        population_size, num_samples, batch_size, probs=None, replace=True, device=None
 ):
     global RNG
     RNG, rng_input = _jax.random.split(RNG)
     if probs is None:
         probs = (
-            _jnp.ones(
-                (
-                    batch_size,
-                    population_size,
+                _jnp.ones(
+                    (
+                        batch_size,
+                        population_size,
+                    )
                 )
-            )
-            / population_size
+                / population_size
         )
     orig_probs_shape = list(probs.shape)
     num_classes = orig_probs_shape[-1]
@@ -78,7 +77,12 @@ def multinomial(
     )
 
 
-def randint(low, high, shape, device=None):
+def randint(
+        low: int,
+        high: int,
+        shape: Union[int, Tuple[int, ...]],
+        device: Optional[ivy.Device] = None,
+) -> JaxArray:
     global RNG
     RNG, rng_input = _jax.random.split(RNG)
     return to_dev(

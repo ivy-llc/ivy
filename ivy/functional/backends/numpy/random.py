@@ -9,15 +9,16 @@ from typing import Optional, Union, Tuple
 # local
 import ivy
 
+
 # Extra #
 # ------#
 
 
 def random_uniform(
-    low: float = 0.0,
-    high: float = 1.0,
-    shape: Optional[Union[int, Tuple[int, ...]]] = None,
-    device: Optional[ivy.Device] = None,
+        low: float = 0.0,
+        high: float = 1.0,
+        shape: Optional[Union[int, Tuple[int, ...]]] = None,
+        device: Optional[ivy.Device] = None,
 ) -> np.ndarray:
     return np.asarray(np.random.uniform(low, high, shape))
 
@@ -28,17 +29,17 @@ random_normal = lambda mean=0.0, std=1.0, shape=None, device=None: np.asarray(
 
 
 def multinomial(
-    population_size, num_samples, batch_size, probs=None, replace=True, device=None
+        population_size, num_samples, batch_size, probs=None, replace=True, device=None
 ):
     if probs is None:
         probs = (
-            np.ones(
-                (
-                    batch_size,
-                    population_size,
+                np.ones(
+                    (
+                        batch_size,
+                        population_size,
+                    )
                 )
-            )
-            / population_size
+                / population_size
         )
     orig_probs_shape = list(probs.shape)
     num_classes = orig_probs_shape[-1]
@@ -53,7 +54,15 @@ def multinomial(
     return np.asarray(np.reshape(samples_flat, orig_probs_shape[:-1] + [num_samples]))
 
 
-randint = lambda low, high, shape, device=None: np.random.randint(low, high, shape)
+def randint(
+        low: int,
+        high: int,
+        shape: Union[int, Tuple[int, ...]],
+        device: Optional[ivy.Device] = None,
+) -> np.ndarray:
+    return np.random.randint(low, high, shape)
+
+
 seed = lambda seed_value=0: np.random.seed(seed_value)
 
 
