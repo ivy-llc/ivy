@@ -409,7 +409,14 @@ def depthwise_conv2d(x, filters, strides, padding, data_format="NHWC", dilations
 
 
 # noinspection PyDefaultArgument
-def conv3d(x, filters, strides, padding, data_format="NDHWC", dilations=1):
+def conv3d(
+    x: Union[ivy.Array, ivy.NativeArray],
+    filters: Union[ivy.Array, ivy.NativeArray],
+    strides: int,
+    padding: str,
+    data_format: str = "NDHWC",
+    dilations: int = 1,
+) -> ivy.Array:
     """Computes a 3-D convolution given 5-D input x and filters arrays.
 
     Parameters
