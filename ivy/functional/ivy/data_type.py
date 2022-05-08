@@ -23,7 +23,8 @@ def can_cast(
     from_: Union[ivy.Dtype, ivy.Array, ivy.NativeArray], to: ivy.Dtype
 ) -> bool:
     """
-    Determines if one data type can be cast to another data type accordingref:`type-promotion` rules.
+    Determines if one data type can be cast to another data type according to
+    :ref:`type-promotion` rules.
 
     Parameters
     ----------
@@ -35,7 +36,9 @@ def can_cast(
     Returns
     -------
     ret
-        ``True`` if the cast can occur according toref:`type-promotion` rules; otherwise, ``False``.
+        ``True`` if the cast can occur according to :ref:`type-promotion` rules;
+        otherwise, ``False``.
+
     """
     return _cur_framework(from_).can_cast(from_, to)
 
@@ -80,7 +83,8 @@ def finfo(type: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray]) -> Finfo:
         - **bits**: *int*
           number of bits occupied by the floating-point data type.
         - **eps**: *float*
-          difference between 1.0 and the next smallest representable floating-point number larger than 1.0 according to the IEEE-754 standard.
+          difference between 1.0 and the next smallest representable floating-point
+          number larger than 1.0 according to the IEEE-754 standard.
         - **max**: *float*
           largest representable number.
         - **min**: *float*
@@ -126,7 +130,8 @@ def broadcast_arrays(*arrays: Union[ivy.Array, ivy.NativeArray]) -> List[ivy.Arr
     Returns
     -------
     ret
-        Each array must have the same shape. Each array must have the same dtype as its corresponding input array.
+        Each array must have the same shape. Each array must have the same dtype as its
+        corresponding input array.
 
     """
     return _cur_framework(arrays[0]).broadcast_arrays(*arrays)
@@ -157,14 +162,20 @@ def dtype(x: Union[ivy.Array, ivy.NativeArray], as_str: bool = False) -> ivy.Dty
 def astype(
     x: Union[ivy.Array, ivy.NativeArray], dtype: ivy.Dtype, copy: bool = True
 ) -> ivy.Array:
-    """Copies an array to a specified data type irrespective of :ref:`type-
-    promotion` rules.
+    """Copies an array to a specified data type irrespective of :ref:`type-promotion`
+    rules.
 
     .. note::
-       Casting floating-point ``NaN`` and ``infinity`` values to integral data types is not specified and is implementation-dependent.
+       Casting floating-point ``NaN`` and ``infinity`` values to integral data types is
+       not specified and is implementation-dependent.
+
     .. note::
-       When casting a boolean input array to a numeric data type, a value of ``True`` must cast to a numeric value equal to ``1``, and a value of ``False`` must cast to a numeric value equal to ``0``.
-       When casting a numeric input array to ``bool``, a value of ``0`` must cast to ``False``, and a non-zero value must cast to ``True``.
+       When casting a boolean input array to a numeric data type, a value of ``True``
+       must cast to a numeric value equal to ``1``, and a value of ``False`` must cast
+       to a numeric value equal to ``0``.
+
+       When casting a numeric input array to ``bool``, a value of ``0`` must cast to
+       ``False``, and a non-zero value must cast to ``True``.
 
     Parameters
     ----------
@@ -173,12 +184,17 @@ def astype(
     dtype
         desired data type.
     copy
-        specifies whether to copy an array when the specified ``dtype`` matches the data type of the input array ``x``. If ``True``, a newly allocated array must always be returned. If ``False`` and the specified ``dtype`` matches the data type of the input array, the input array must be returned; otherwise, a newly allocated must be returned. Default: ``True``.
+        specifies whether to copy an array when the specified ``dtype`` matches the data
+        type of the input array ``x``. If ``True``, a newly allocated array must always
+        be returned. If ``False`` and the specified ``dtype`` matches the data type of
+        the input array, the input array must be returned; otherwise, a newly allocated
+        must be returned. Default: ``True``.
 
     Returns
     -------
     ret
-        an array having the specified data type. The returned array must have the same shape as ``x``.
+        an array having the specified data type. The returned array must have the same
+        shape as ``x``.
 
     Examples
     --------
@@ -333,7 +349,8 @@ def default_int_dtype(
 
     Returns
     -------
-        Return the input int dtype if provided, otherwise return the global default int dtype.
+        Return the input int dtype if provided, otherwise return the global default int
+        dtype.
 
     """
     if ivy.exists(int_dtype):
@@ -423,7 +440,8 @@ def default_float_dtype(
 
     Returns
     -------
-        Return the input float dtype if provided, otherwise return the global default float dtype.
+        Return the input float dtype if provided, otherwise return the global default
+        float dtype.
 
     """
     if ivy.exists(float_dtype):
@@ -679,7 +697,8 @@ def result_type(
     (see :ref:`type-promotion`) to the arguments.
 
     .. note::
-       If provided mixed dtypes (e.g., integer and floating-point), the returned dtype will be implementation-specific.
+       If provided mixed dtypes (e.g., integer and floating-point), the returned dtype
+       will be implementation-specific.
 
     Parameters
     ----------
@@ -696,8 +715,7 @@ def result_type(
 
 
 def valid_dtype(dtype_in: Union[ivy.Dtype, str, None]) -> bool:
-    """Determines whether the provided data type is support by the current
-    framework.
+    """Determines whether the provided data type is support by the current framework.
 
     Parameters
     ----------
@@ -736,8 +754,7 @@ def invalid_dtype(dtype_in: Union[ivy.Dtype, str, None]) -> bool:
 
 
 def convert_dtype(dtype_in: Union[ivy.Dtype, str], backend: str) -> ivy.Dtype:
-    """Converts a data type from one backend framework representation to
-    another.
+    """Converts a data type from one backend framework representation to another.
 
     Parameters
     ----------
