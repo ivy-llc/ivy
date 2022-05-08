@@ -57,5 +57,5 @@ randint = lambda low, high, shape, device=None: np.random.randint(low, high, sha
 seed = lambda seed_value=0: np.random.seed(seed_value)
 
 
-def shuffle(x):
+def shuffle(x: np.ndarray) -> None:
     return np.random.permutation(x)
