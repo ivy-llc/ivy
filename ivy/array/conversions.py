@@ -53,16 +53,18 @@ def to_ivy(
     x
         The input to maybe convert.
     nested
-        Whether to apply the conversion on arguments in a nested manner. If so, all dicts, lists and
-        tuples will be traversed to their lowest leaves in search of ivy.Array and ivy.Variable instances.
-        Default is False.
+        Whether to apply the conversion on arguments in a nested manner. If so, all
+        dicts, lists and tuples will be traversed to their lowest leaves in search of
+        ivy.Array and ivy.Variable instances. Default is False.
     include_derived
-        Whether to also recursive for classes derived from tuple, list and dict. Default is False.
+        Whether to also recursive for classes derived from tuple, list and dict. Default
+        is False.
 
     Returns
     -------
      ret
-        the input in it's native framework form in the case of ivy.Array or ivy.Variable instances.
+        the input in it's native framework form in the case of ivy.Array or ivy.Variable
+        instances.
 
     """
     if nested:
@@ -83,14 +85,16 @@ def args_to_ivy(
     args
         The positional arguments to check
     include_derived
-        Whether to also recursive for classes derived from tuple, list and dict. Default is False.
+        Whether to also recursive for classes derived from tuple, list and dict.
+        Default is False.
     kwargs
         The key-word arguments to check
 
     Returns
     -------
      ret
-        the same arguments, with any nested arrays converted to ivy.Array or ivy.Variable instances.
+        the same arguments, with any nested arrays converted to ivy.Array or
+        ivy.Variable instances.
 
     """
     native_args = ivy.nested_map(args, _to_ivy, include_derived)
@@ -113,16 +117,18 @@ def to_native(
     x
         The input to maybe convert.
     nested
-        Whether to apply the conversion on arguments in a nested manner. If so, all dicts, lists and
-        tuples will be traversed to their lowest leaves in search of ivy.Array and ivy.Variable instances.
-        Default is False.
+        Whether to apply the conversion on arguments in a nested manner. If so, all
+        dicts, lists and tuples will be traversed to their lowest leaves in search of
+        ivy.Array and ivy.Variable instances. Default is False.
     include_derived
-        Whether to also recursive for classes derived from tuple, list and dict. Default is False.
+        Whether to also recursive for classes derived from tuple, list and dict.
+        Default is False.
 
     Returns
     -------
      ret
-        the input in it's native framework form in the case of ivy.Array or ivy.Variable instances.
+        the input in it's native framework form in the case of ivy.Array or ivy.Variable
+        instances.
 
     """
     if nested:
@@ -144,14 +150,16 @@ def args_to_native(
     args
         The positional arguments to check
     include_derived
-        Whether to also recursive for classes derived from tuple, list and dict. Default is False.
+        Whether to also recursive for classes derived from tuple, list and dict.
+        Default is False.
     kwargs
         The key-word arguments to check
 
     Returns
     -------
      ret
-        the same arguments, with any nested ivy.Array or ivy.Variable instances converted to their native form.
+        the same arguments, with any nested ivy.Array or ivy.Variable instances
+        converted to their native form.
 
     """
     native_args = ivy.nested_map(args, _to_native, include_derived)
