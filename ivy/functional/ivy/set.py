@@ -13,10 +13,9 @@ from ivy.framework_handler import current_framework as _cur_framework
 def unique_all(
     x: Union[ivy.Array, ivy.NativeArray]
 ) -> Tuple[ivy.Array, ivy.Array, ivy.Array, ivy.Array]:
-    """Returns the unique elements of an input array ``x``, the first occurring
-    indices for each unique element in ``x``, the indices from the set of
-    unique elements that reconstruct ``x``, and the corresponding counts for
-    each unique element in ``x``.
+    """Returns the unique elements of an input array ``x``, the first occurring indices
+    for each unique element in ``x``, the indices from the set of unique elements that
+    reconstruct ``x``, and the corresponding counts for each unique element in ``x``.
 
     .. admonition:: Data-dependent output shape
         :class: important
@@ -49,9 +48,8 @@ def unique_all(
 
 
 def unique_inverse(x: Union[ivy.Array, ivy.NativeArray]) -> Tuple[ivy.Array, ivy.Array]:
-    """Returns a tuple of two arrays, one being the unique elements of an input
-    array x and the other one the indices from the set of uniques elements that
-    reconstruct x.
+    """Returns a tuple of two arrays, one being the unique elements of an input array x
+    and the other one the indices from the set of uniques elements that reconstruct x.
 
     Parameters
     ----------
@@ -98,8 +96,8 @@ def unique_values(
 
 
 def unique_counts(x: Union[ivy.Array, ivy.NativeArray]) -> Tuple[ivy.Array, ivy.Array]:
-    """Returns the unique elements of an input array x and the corresponding
-    counts for each unique element in x.
+    """Returns the unique elements of an input array x and the corresponding counts for
+    each unique element in x.
 
     Parameters
     ----------
